@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+         xmlns:ed="editor.*" 
+         styleName = "plain" 
+         layout="absolute" 
+         width ="100%"
+         height="100%"
+         creationComplete="InitApp()">
+   
+   
+   <mx:Box direction="vertical" borderStyle="solid" width="100%" height="100%" 
+               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+               horizontalGap="0" verticalGap="0">
+      <mx:Box direction="horizontal" borderStyle="solid" height="100%" width="100%" 
+                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" 
+                  horizontalGap="0" verticalGap="0">
+         <mx:Box direction="vertical" borderStyle="solid" height="100%" 
+                     paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
+                     horizontalGap="0" verticalGap="0">
+            <mx:Button id="Button_CreateBox" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box.png')" downIcon="@Embed('create/box-sel.png')" overIcon="@Embed('create/box.png')" selectedUpIcon="@Embed('create/box-sel.png')" selectedOverIcon="@Embed('create/box-sel.png')" selectedDownIcon="@Embed('create/box.png')"   />
+            <mx:Button id="Button_CreateBox_Static" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_static.png')" downIcon="@Embed('create/box-sel_static.png')" overIcon="@Embed('create/box_static.png')" selectedUpIcon="@Embed('create/box-sel_static.png')" selectedOverIcon="@Embed('create/box-sel_static.png')" selectedDownIcon="@Embed('create/box_static.png')"   />
+            <mx:Button id="Button_CreateBox_Breakable" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_breakable.png')" downIcon="@Embed('create/box-sel_breakable.png')" overIcon="@Embed('create/box_breakable.png')" selectedUpIcon="@Embed('create/box-sel_breakable.png')" selectedOverIcon="@Embed('create/box-sel_breakable.png')" selectedDownIcon="@Embed('create/box_breakable.png')"   />
+            <mx:Button id="Button_CreateBall_Uninfected" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_uninfected.png')" downIcon="@Embed('create/ball-sel_uninfected.png')" overIcon="@Embed('create/ball_uninfected.png')" selectedUpIcon="@Embed('create/ball-sel_uninfected.png')" selectedOverIcon="@Embed('create/ball-sel_uninfected.png')" selectedDownIcon="@Embed('create/ball_uninfected.png')"   />
+            <mx:Button id="Button_CreateBall_DontInfect" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_dontinfect.png')" downIcon="@Embed('create/ball-sel_dontinfect.png')" overIcon="@Embed('create/ball_dontinfect.png')" selectedUpIcon="@Embed('create/ball-sel_dontinfect.png')" selectedOverIcon="@Embed('create/ball-sel_dontinfect.png')" selectedDownIcon="@Embed('create/ball_dontinfect.png')"   />
+            <mx:Button id="Button_CreateBall_Infected" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_infected.png')" downIcon="@Embed('create/ball-sel_infected.png')" overIcon="@Embed('create/ball_infected.png')" selectedUpIcon="@Embed('create/ball-sel_infected.png')" selectedOverIcon="@Embed('create/ball-sel_infected.png')" selectedDownIcon="@Embed('create/ball_infected.png')"   />
+            <mx:Button id="Button_CreateBall" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball.png')" downIcon="@Embed('create/ball-sel.png')" overIcon="@Embed('create/ball.png')" selectedUpIcon="@Embed('create/ball-sel.png')" selectedOverIcon="@Embed('create/ball-sel.png')" selectedDownIcon="@Embed('create/ball.png')"   />
+            <mx:Button id="Button_CreateBall_Static" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_static.png')" downIcon="@Embed('create/ball-sel_static.png')" overIcon="@Embed('create/ball_static.png')" selectedUpIcon="@Embed('create/ball-sel_static.png')" selectedOverIcon="@Embed('create/ball-sel_static.png')" selectedDownIcon="@Embed('create/ball_static.png')"   />
+            <mx:Spacer height="10"/>
+            <mx:Button id="Button_CreateJoint_Hinge" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_hinge.png')" downIcon="@Embed('create/joint-sel_hinge.png')" overIcon="@Embed('create/joint_hinge.png')" selectedUpIcon="@Embed('create/joint-sel_hinge.png')" selectedOverIcon="@Embed('create/joint-sel_hinge.png')" selectedDownIcon="@Embed('create/joint_hinge.png')"   />
+            <mx:Button id="Button_CreateJoint_Slider" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_slider.png')" downIcon="@Embed('create/joint-sel_slider.png')" overIcon="@Embed('create/joint_slider.png')" selectedUpIcon="@Embed('create/joint-sel_slider.png')" selectedOverIcon="@Embed('create/joint-sel_slider.png')" selectedDownIcon="@Embed('create/joint_slider.png')"   />
+            <mx:Button id="Button_CreateJoint_Rope" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_rope.png')" downIcon="@Embed('create/joint-sel_rope.png')" overIcon="@Embed('create/joint_rope.png')" selectedUpIcon="@Embed('create/joint-sel_rope.png')" selectedOverIcon="@Embed('create/joint-sel_rope.png')" selectedDownIcon="@Embed('create/joint_rope.png')"   />
+            <mx:Button id="Button_CreateJoint_Spring" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_rope.png')" downIcon="@Embed('create/joint-sel_rope.png')" overIcon="@Embed('create/joint_rope.png')" selectedUpIcon="@Embed('create/joint-sel_rope.png')" selectedOverIcon="@Embed('create/joint-sel_rope.png')" selectedDownIcon="@Embed('create/joint_rope.png')"   />
+            <mx:Spacer height="10"/>
+            <mx:Button id="Button_CreateComponent_T" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/component_t.png')" downIcon="@Embed('create/component-sel_t.png')" overIcon="@Embed('create/component_t.png')" selectedUpIcon="@Embed('create/component-sel_t.png')" selectedOverIcon="@Embed('create/component-sel_t.png')" selectedDownIcon="@Embed('create/component_t.png')"   />
+            <mx:Button id="Button_CreateComponent_V" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/component_v.png')" downIcon="@Embed('create/component-sel_v.png')" overIcon="@Embed('create/component_v.png')" selectedUpIcon="@Embed('create/component-sel_v.png')" selectedOverIcon="@Embed('create/component-sel_v.png')" selectedDownIcon="@Embed('create/component_v.png')"   />
+            <mx:Button id="Button_CreateComponent_7" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/component_7.png')" downIcon="@Embed('create/component-sel_7.png')" overIcon="@Embed('create/component_7.png')" selectedUpIcon="@Embed('create/component-sel_7.png')" selectedOverIcon="@Embed('create/component-sel_7.png')" selectedDownIcon="@Embed('create/component_7.png')"   />
+         </mx:Box>
+         <mx:Box direction="vertical" borderStyle="solid" height="100%" width="100%"
+                     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                     horizontalGap="0" verticalGap="0">
+            <ed:WorldView id="MainView" height="100%" width="100%" />
+         </mx:Box>
+         <mx:Box direction="vertical" borderStyle="solid" height="100%"
+                     paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
+                     horizontalGap="0" verticalGap="0">
+            <mx:Box direction="horizontal" borderStyle="solid" width="100%"
+                        paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
+                        horizontalGap="0" verticalGap="0">
+               <mx:Button id="Button_EditingLevel_Body" click="OnChangeEditingLevel(event);" selected="true" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/level_body.png')" downIcon="@Embed('edit/level-sel_body.png')" overIcon="@Embed('edit/level_body.png')" selectedUpIcon="@Embed('edit/level-sel_body.png')" selectedOverIcon="@Embed('edit/level-sel_body.png')" selectedDownIcon="@Embed('edit/level_body.png')"   />
+               <mx:Spacer width="100%"/>
+               <mx:Button id="Button_EditingLevel_SubBody" click="OnChangeEditingLevel(event);" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/level_sub_body.png')" downIcon="@Embed('edit/level-sel_sub_body.png')" overIcon="@Embed('edit/level_sub_body.png')" selectedUpIcon="@Embed('edit/level-sel_sub_body.png')" selectedOverIcon="@Embed('edit/level-sel_sub_body.png')" selectedDownIcon="@Embed('edit/level_sub_body.png')"   />
+               <mx:Spacer width="100%"/>
+               <mx:Button id="Button_EditingLevel_Shape" click="OnChangeEditingLevel(event);" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/level_shape.png')" downIcon="@Embed('edit/level-sel_shape.png')" overIcon="@Embed('edit/level_shape.png')" selectedUpIcon="@Embed('edit/level-sel_shape.png')" selectedOverIcon="@Embed('edit/level-sel_shape.png')" selectedDownIcon="@Embed('edit/level_shape.png')"   />
+            </mx:Box>
+            <mx:Spacer height="10"/>
+            <mx:Box id="Box_BodyEditCommand" direction="vertical" borderStyle="solid"  width="100%" 
+                        paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
+                        horizontalGap="0" verticalGap="0">
+               <mx:Button id="Button_BodyEditingMode_Move" label="Move" click="OnChangeBodyEditingMode(event);" selected="true" fontSize="8" left="5" top="5" width="100%" toggle="true" cornerRadius="0"    />
+               <mx:Button id="Button_BodyEditingMode_Rotate" label="Rotate" click="OnChangeBodyEditingMode(event);" fontSize="8" left="5" top="5" width="100%" toggle="true" cornerRadius="0"    />
+               <mx:Button id="Button_BodyEditingMode_Scale" label="Scale" click="OnChangeBodyEditingMode(event);" fontSize="8" left="5" top="5" width="100%" toggle="true" cornerRadius="0"    />
+               <mx:Spacer height="10"/>
+               <mx:Button label="Clone" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button label="Flip --" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button label="Flip |" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button label="Delete" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Spacer height="10"/>
+               <mx:Button label="Clear" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Spacer height="10"/>
+               <mx:Button label="Glue" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button label="Break Apart" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+            </mx:Box>
+            <mx:Spacer height="10"/>
+            <mx:Box id="Box_SaveLoad" direction="vertical" borderStyle="solid"  width="100%"
+                        paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
+                        horizontalGap="0" verticalGap="0">
+               <mx:Button label="Save Online" width="100%" fontSize="8" />
+               <mx:Button label="Save As Online" width="100%" fontSize="8" />
+               <mx:Button label="Load Online" width="100%" fontSize="8" />
+               <mx:Button label="Load Example" width="100%" fontSize="8" />
+               <mx:Button label="Save Local" width="100%" fontSize="8" />
+               <mx:Button label="Load Local" width="100%" fontSize="8" />
+               <mx:Spacer height="10"/>
+            </mx:Box>
+            <mx:Box direction="vertical" borderStyle="solid" height="100%"
+                        paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
+                        horizontalGap="0" verticalGap="0">
+               <mx:Box direction="horizontal" borderStyle="solid" width="100%"
+                        paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                        horizontalGap="0" verticalGap="0">
+                  <mx:Button id="ButtonPlay_Restart" label="Restart" click="OnPlayControlling(event);" enabled="false" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" icon="@Embed('play/play-restart.png')"   />
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="ButtonPlay_RunPause" label="Run" click="OnPlayControlling(event);" enabled="true" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" icon="@Embed('play/play-run.png')"   />
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="ButtonPlay_Stop" label="Stop" click="OnPlayControlling(event);" enabled="false" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" icon="@Embed('play/play-stop.png')"   />
+               </mx:Box>
+               <mx:Box id="Box_PlaySpeed" enabled="false" direction="horizontal" borderStyle="solid" width="100%"
+                        paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                        horizontalGap="0" verticalGap="0">
+                  <mx:Button id="ButtonPlay_x05" label="x.5" click="OnPlayControlling(event);" fontSize="8" width="24" height="32" toggle="true" cornerRadius="0"   />
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="ButtonPlay_x1" label="x1" click="OnPlayControlling(event);" fontSize="8" width="24" height="32" toggle="true" cornerRadius="0"   />
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="ButtonPlay_x2" label="x2" click="OnPlayControlling(event);" fontSize="8" width="24" height="32" toggle="true" cornerRadius="0"   />
+                  <mx:Spacer width="100%"/>
+                  <mx:Button id="ButtonPlay_x5" label="x5" click="OnPlayControlling(event);" fontSize="8" width="24" height="32" toggle="true" cornerRadius="0"   />
+               </mx:Box>
+            </mx:Box>
+            <mx:Spacer height="100%"/>
+            <mx:Image source="@Embed('logo/logo-phyard_100x32.png')"   />
+         </mx:Box>
+      </mx:Box>
+   </mx:Box>
+
+
+   <mx:Script>
+        <![CDATA[
+            
+            import editor.WorldView;
+            
+            private function InitApp ():void
+            {
+               MainView.mButtonCreateBoxMovable      = Button_CreateBox;
+               MainView.mButtonCreateBoxStatic      = Button_CreateBox_Static;
+               MainView.mButtonCreateBoxBreakable      = Button_CreateBox_Breakable;
+               
+               MainView.mButtonCreateBallUninfected     = Button_CreateBall_Uninfected;
+               MainView.mButtonCreateBallDontInfect     = Button_CreateBall_DontInfect;
+               MainView.mButtonCreateBallInfected     = Button_CreateBall_Infected;
+               MainView.mButtonCreateBallMovable     = Button_CreateBall;
+               MainView.mButtonCreateBallStatic     = Button_CreateBall_Static;
+               
+               MainView.mButtonCreateComponentT  = Button_CreateComponent_T
+               MainView.mButtonCreateComponentV = Button_CreateComponent_V;
+               MainView.mButtonCreateComponent7   = Button_CreateComponent_7;
+               
+               MainView.mButtonCreateJointHinge  = Button_CreateJoint_Hinge
+               MainView.mButtonCreateJointSlider = Button_CreateJoint_Slider;
+               MainView.mButtonCreateJointRope = Button_CreateJoint_Rope;
+               
+               Button_CreateBox.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateBox_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateBox_Breakable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               
+               Button_CreateBall_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateBall_DontInfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateBall_Infected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateBall.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateBall_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               
+               Button_CreateComponent_T.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateComponent_V.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateComponent_7.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               
+               Button_CreateJoint_Hinge.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateJoint_Slider.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateJoint_Rope.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+            }
+            
+            private function OnChangeEditingLevel(event:Event):void
+            {
+               switch (event.target)
+               {
+                  case Button_EditingLevel_Body:
+                  {
+                     MainView.SetEditingLevel (WorldView.EditingLevel_Body);
+                     
+                     Button_EditingLevel_SubBody.selected = false;
+                     Button_EditingLevel_Shape.selected = false;
+                     
+                     Box_BodyEditCommand.enabled = true;
+                     
+                     break;
+                  }
+                  case Button_EditingLevel_SubBody:
+                  {
+                     MainView.SetEditingLevel (WorldView.EditingLevel_SubBody);
+                     
+                     Button_EditingLevel_Body.selected = false;
+                     Button_EditingLevel_Shape.selected = false;
+                     
+                     Box_BodyEditCommand.enabled = true;
+                     
+                     break;
+                  }
+                  case Button_EditingLevel_Shape:
+                  {
+                     MainView.SetEditingLevel (WorldView.EditingLevel_Shape);
+                     
+                     Button_EditingLevel_SubBody.selected = false;
+                     Button_EditingLevel_Body.selected = false;
+                     
+                     Box_BodyEditCommand.enabled = false;
+                     
+                     break;
+                  }
+                  default:
+               }
+            }
+            
+            
+            private function OnChangeBodyEditingMode(event:Event):void
+            {
+               switch (event.target)
+               {
+                  case Button_BodyEditingMode_Move:
+                  {
+                     MainView.SetBodyEditingMode (WorldView.BodyEditingMode_Move);
+                     
+                     Button_BodyEditingMode_Rotate.selected = false;
+                     Button_BodyEditingMode_Scale.selected = false;
+                     
+                     break;
+                  }
+                  case Button_BodyEditingMode_Rotate:
+                  {
+                     MainView.SetBodyEditingMode (WorldView.BodyEditingMode_Rotate);
+                     
+                     Button_BodyEditingMode_Move.selected = false;
+                     Button_BodyEditingMode_Scale.selected = false;
+                     
+                     break;
+                  }
+                  case Button_BodyEditingMode_Scale:
+                  {
+                     MainView.SetBodyEditingMode (WorldView.BodyEditingMode_Scale);
+                     
+                     Button_BodyEditingMode_Rotate.selected = false;
+                     Button_BodyEditingMode_Move.selected = false;
+                     
+                     break;
+                  }
+                  default:
+               }
+            }
+            
+            
+            private function OnPlayControlling(event:Event):void
+            {
+               switch (event.target)
+               {
+                  case ButtonPlay_RunPause:
+                  {
+                     
+                     break;
+                  }
+                  case ButtonPlay_Restart:
+                  {
+                     
+                     break;
+                  }
+                  case ButtonPlay_Stop:
+                  {
+                     
+                     break;
+                  }
+                  default:
+               }
+            }
+            
+		  ]]>
+   </mx:Script>
+</mx:Application>
+

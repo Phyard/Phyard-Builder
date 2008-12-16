@@ -44,7 +44,7 @@ package editor.entity {
             borderSize  = mDrawBorder ? 1 : 0;
          }
          
-         alpha = 0.7;
+         alpha = 0.5;
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, mFilledColor);
       }
@@ -81,23 +81,33 @@ package editor.entity {
          return mHalfHeight;
       }
       
-      override public function ScaleSelf (ratio:Number):void
+      override public function Destroy ():void
       {
-         var halfWidth:Number  = mHalfWidth * ratio;
-         var halfHeight:Number = mHalfHeight * ratio;
+         SetVertexControllersVisible (false);
          
-         if (halfWidth < EditorSetting.MinRectSideLength)
-            halfWidth =  EditorSetting.MinRectSideLength;
-         if (halfWidth > EditorSetting.MaxRectSideLength)
-            halfWidth =  EditorSetting.MaxRectSideLength;
+         super.Destroy ();
+      }
+      
+      
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityShapeRectangle (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
-         if (halfHeight < EditorSetting.MinRectSideLength)
-            halfHeight =  EditorSetting.MinRectSideLength;
-         if (halfHeight > EditorSetting.MaxRectSideLength)
-            halfHeight =  EditorSetting.MaxRectSideLength;
-         
-         SetHalfWidth (halfWidth);
-         SetHalfHeight (halfHeight);
+         var rect:EntityShapeRectangle = entity as EntityShapeRectangle;
+         rect.SetHalfWidth ( GetHalfWidth () );
+         rect.SetHalfHeight ( GetHalfHeight () );
+         rect.UpdateAppearance ();
+         rect.UpdateSelectionProxy ();
       }
       
       
@@ -143,7 +153,7 @@ package editor.entity {
                addChild (mVertexController3);
             }
             
-            UpdateVertexControllers ();
+            UpdateVertexControllers (true);
          }
          else
          {
@@ -185,53 +195,74 @@ package editor.entity {
          }
       }
       
-      private function UpdateVertexControllers ():void
+      private function UpdateVertexControllers (updateSelectionProxy:Boolean):void
       {
          if (mVertexController0 != null)
          {
             mVertexController0.SetPosition (- GetHalfWidth (), - GetHalfHeight ());
-            mVertexController0.UpdateSelectionProxy ();
+            
+            if (updateSelectionProxy)
+               mVertexController0.UpdateSelectionProxy ();
          }
          
          if (mVertexController1 != null)
          {
             mVertexController1.SetPosition ( GetHalfWidth (), - GetHalfHeight ());
-            mVertexController1.UpdateSelectionProxy ();
+            
+            if (updateSelectionProxy)
+               mVertexController1.UpdateSelectionProxy ();
          }
          
          if (mVertexController2 != null)
          {
             mVertexController2.SetPosition ( GetHalfWidth (), GetHalfHeight ());
-            mVertexController2.UpdateSelectionProxy ();
+            
+            if (updateSelectionProxy)
+               mVertexController2.UpdateSelectionProxy ();
          }
          
          if (mVertexController3 != null)
          {
             mVertexController3.SetPosition (- GetHalfWidth (), GetHalfHeight ());
-            mVertexController3.UpdateSelectionProxy ();
+            
+            if (updateSelectionProxy)
+               mVertexController3.UpdateSelectionProxy ();
          }
       }
       
+      public function GetDigonalVertexController (vertexController:VertexController):VertexController
+      {
+         if (vertexController == mVertexController0)
+            return mVertexController2;
+         if (vertexController == mVertexController1)
+            return mVertexController3;
+         if (vertexController == mVertexController2)
+            return mVertexController0;
+         if (vertexController == mVertexController3)
+            return mVertexController1;
+         
+         return null;
+      }
+      
+      private var _DigonalVertexControllerX:Number = 0;
+      private var _DigonalVertexControllerY:Number = 0;
+      public function NotifyBeginMovingVertexController (vertexController:VertexController):void
+      {
+         var vertexController2:VertexController = GetDigonalVertexController (vertexController);
+         
+         if (vertexController2 == null)
+            return;
+         
+         var worldVertex2Pos:Point = World.LocalToLocal (this, mWorld, new Point ( vertexController2.GetPositionX (), vertexController2.GetPositionY () ) );
+         
+         _DigonalVertexControllerX = worldVertex2Pos.x;
+         _DigonalVertexControllerY = worldVertex2Pos.y;
+      }
       
       override public function OnMovingVertexController (vertexController:VertexController, localOffsetX:Number, localOffsetY:Number):void
       {
       // ...
-      
-         var vertexIndex:int = -1;
-         if (vertexController == mVertexController0) vertexIndex = 0;
-         if (vertexController == mVertexController1) vertexIndex = 1;
-         if (vertexController == mVertexController2) vertexIndex = 2;
-         if (vertexController == mVertexController3) vertexIndex = 3;
-         
-         if (vertexIndex < 0)
-            return;
-      
-         var vertexIndex2:int = (vertexIndex + 2) % 4;
-         var vertexController2:VertexController = null;
-         if (vertexIndex2 == 0) vertexController2 = mVertexController0;
-         if (vertexIndex2 == 1) vertexController2 = mVertexController1;
-         if (vertexIndex2 == 2) vertexController2 = mVertexController2;
-         if (vertexIndex2 == 3) vertexController2 = mVertexController3;
+         var vertexController2:VertexController = GetDigonalVertexController (vertexController);
          
          if (vertexController2 == null)
             return;
@@ -241,25 +272,25 @@ package editor.entity {
          var x2:Number;
          var y2:Number;
          
-         if (vertexController.x < vertexController2.x)
+         if (vertexController.GetPositionX () < vertexController2.GetPositionX ())
          {
-            x1 = vertexController.x + localOffsetX;
-            x2 = vertexController2.x;
+            x1 = vertexController.GetPositionX () + localOffsetX;
+            x2 = vertexController2.GetPositionX ();
          }
          else
          {
-            x1 = vertexController2.x;
-            x2 = vertexController.x + localOffsetX;
+            x1 = vertexController2.GetPositionX ();
+            x2 = vertexController.GetPositionX () + localOffsetX;
          }
-         if (vertexController.y < vertexController2.y)
+         if (vertexController.GetPositionY () < vertexController2.GetPositionY ())
          {
-            y1 = vertexController.y + localOffsetY;
-            y2 = vertexController2.y;
+            y1 = vertexController.GetPositionY () + localOffsetY;
+            y2 = vertexController2.GetPositionY ();
          }
          else
          {
-            y1 = vertexController2.y;
-            y2 = vertexController.y + localOffsetY;
+            y1 = vertexController2.GetPositionY ();
+            y2 = vertexController.GetPositionY () + localOffsetY;
          }
          
          var halfWidth:Number  = (x2 - x1) * 0.5;
@@ -275,41 +306,92 @@ package editor.entity {
          if (halfHeight > EditorSetting.MaxRectSideLength)
             return;
          
+         var worldCenterPos:Point = World.LocalToLocal (this, mWorld, new Point ( (x2 + x1) * 0.5, (y2 + y1) * 0.5 ) );
+         
+         SetPosition (worldCenterPos.x, worldCenterPos.y);
+         
+         // seems, in SetPosition, flash will slightly adjust the values provided.
+         // to make the postion of vertex controller2 uncahnged ...
+         
+         var localVertex2Pos:Point = World.LocalToLocal (mWorld, this, new Point (_DigonalVertexControllerX, _DigonalVertexControllerY) );
+         
+         halfWidth  = localVertex2Pos.x;
+         halfHeight = localVertex2Pos.y;
+         if (halfWidth  < 0) halfWidth  = - halfWidth;
+         if (halfHeight < 0) halfHeight = - halfHeight;
+         
          SetHalfWidth  (halfWidth);
          SetHalfHeight (halfHeight);
          
-         var worldPos:Point = World.LocalToLocal (this, mWorld, new Point ( (x2 + x1) * 0.5, (y2 + y1) * 0.5) );
          
-         SetPosition (worldPos.x, worldPos.y);
+         
+         
          
       // ...
          
          UpdateAppearance ();
          UpdateSelectionProxy ();
-         UpdateVertexControllers ();
+         UpdateVertexControllers (true);
       }
       
-      override public function Move (offsetX:Number, offsetY:Number):void
+//====================================================================
+//   move, rotate, scale
+//====================================================================
+      
+      override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
       {
-         super.Move (offsetX, offsetY);
+         super.Move (offsetX, offsetY, updateSelectionProxy);
          
-         UpdateVertexControllers ();
+         UpdateVertexControllers (updateSelectionProxy);
       }
       
-      override public function Rotate (centerX:Number, centerY:Number, dRadians:Number):void
+      override public function Rotate (centerX:Number, centerY:Number, dRadians:Number, updateSelectionProxy:Boolean = true):void
       {
-         super.Rotate (centerX, centerY, dRadians);
+         super.Rotate (centerX, centerY, dRadians, updateSelectionProxy);
          
-         UpdateVertexControllers ();
+         UpdateVertexControllers (updateSelectionProxy);
       }
       
-      override public function Scale (centerX:Number, centerY:Number, ratio:Number):void
+      override public function Scale (centerX:Number, centerY:Number, ratio:Number, updateSelectionProxy:Boolean = true):void
       {
-         super.Scale (centerX, centerY, ratio);
+         super.Scale (centerX, centerY, ratio, updateSelectionProxy);
          
-         UpdateVertexControllers ();
+         UpdateVertexControllers (updateSelectionProxy);
       }
       
+      override public function ScaleSelf (ratio:Number):void
+      {
+         var halfWidth:Number  = mHalfWidth * ratio;
+         var halfHeight:Number = mHalfHeight * ratio;
+         
+         if (halfWidth < EditorSetting.MinRectSideLength)
+            halfWidth =  EditorSetting.MinRectSideLength;
+         if (halfWidth > EditorSetting.MaxRectSideLength)
+            halfWidth =  EditorSetting.MaxRectSideLength;
+         
+         if (halfHeight < EditorSetting.MinRectSideLength)
+            halfHeight =  EditorSetting.MinRectSideLength;
+         if (halfHeight > EditorSetting.MaxRectSideLength)
+            halfHeight =  EditorSetting.MaxRectSideLength;
+         
+         SetHalfWidth (halfWidth);
+         SetHalfHeight (halfHeight);
+      }
       
+      override public function FlipHorizontally (mirrorX:Number):void
+      {
+         super.FlipHorizontally (mirrorX);
+         
+         UpdateVertexControllers (true);
+      }
+      
+      override public function FlipVertically (mirrorY:Number):void
+      {
+         super.FlipVertically (mirrorY);
+         
+         UpdateVertexControllers (true);
+      }
+      
+
    }
 }

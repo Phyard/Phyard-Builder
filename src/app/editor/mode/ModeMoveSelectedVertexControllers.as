@@ -77,8 +77,6 @@ package editor.mode {
       
       override public function OnMouseMove (mouseX:Number, mouseY:Number):void
       {
-         trace ("mIsStarted = "  + mIsStarted);
-         
          if (! mIsStarted)
             return;
          

@@ -18,6 +18,10 @@ package editor.entity {
       
       public var mRadius:Number;
       
+      // ball
+      // wheel
+      public var mAppearanceType:int;
+      
       public function EntityShapeCircle (world:World)
       {
          super (world);
@@ -41,7 +45,7 @@ package editor.entity {
             borderSize  = mDrawBorder ? 1 : 0;
          }
          
-         alpha = 0.7;
+         alpha = 0.5;
          
          GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, mFilledColor);
       }
@@ -67,6 +71,30 @@ package editor.entity {
       {
          return mRadius;
       }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityShapeCircle (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var cirlce:EntityShapeCircle = entity as EntityShapeCircle;
+         cirlce.SetRadius ( GetRadius () );
+         cirlce.UpdateAppearance ();
+         cirlce.UpdateSelectionProxy ();
+      }
+      
+      
+//====================================================================
+//   move, rotate, scale
+//====================================================================
       
       override public function ScaleSelf (ratio:Number):void
       {

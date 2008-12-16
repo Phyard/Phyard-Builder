@@ -12,7 +12,7 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class EntityJointHinge extends Entity 
+   public class EntityJointHinge extends EntityJoint 
    {
       
       public var mAnchor:SubEntityHingeAnchor;
@@ -37,6 +37,34 @@ package editor.entity {
          return mAnchor;
       }
       
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityJointHinge (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, 0, 0);
+         
+         var hinge:EntityJointHinge = entity as EntityJointHinge;
+         
+         var anchor:SubEntityHingeAnchor = GetAnchor ();
+         var newAnchor:SubEntityHingeAnchor = hinge.GetAnchor ();
+         
+         anchor.SetPropertiesForClonedEntity (newAnchor, displayOffsetX, displayOffsetY);
+         
+         newAnchor.UpdateAppearance ();
+         newAnchor.UpdateSelectionProxy ();
+      }
+      
+      override public function GetSubEntities ():Array
+      {
+         return [mAnchor];
+      }
       
       
    }

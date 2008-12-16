@@ -53,7 +53,7 @@ package editor.entity {
          
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = 0x008080; // EditorSetting.BorderColorSelectedObject;
             borderSize  = 3;
          }
          else
@@ -136,9 +136,8 @@ package editor.entity {
       
       public function Move (worldOffsetX:Number, worldOffsetY:Number):void
       {
-         // !!! here this hould be GetOwnerEntity (), temp 
-         var point1:Point = World.LocalToLocal (mWorld, this, new Point (0, 0));
-         var point2:Point = World.LocalToLocal (mWorld, this, new Point (worldOffsetX, worldOffsetY));
+         var point1:Point = World.LocalToLocal (mWorld, mOwnerEntity, new Point (0, 0));
+         var point2:Point = World.LocalToLocal (mWorld, mOwnerEntity, new Point (worldOffsetX, worldOffsetY));
          
          mOwnerEntity.OnMovingVertexController (this, point2.x - point1.x, point2.y - point1.y);
       }

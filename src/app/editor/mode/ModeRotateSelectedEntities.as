@@ -22,6 +22,9 @@ package editor.mode {
       
       override public function Reset ():void
       {
+         if (mIsStarted)
+            UpdateSession (mStartX, mStartY, true);
+         
          ResetSession ();
          
          mMainView.SetCurrentEditMode (null);
@@ -42,26 +45,24 @@ package editor.mode {
          mIsStarted = true;
       }
       
-      protected function UpdateSession (endX:Number, endY:Number):void
+      protected function UpdateSession (endX:Number, endY:Number, updateSelectionProxy:Boolean):void
       {
-         var center:Point = mMainView.GetSelectedEntitiesCenterPoint ();
-         
-         var dx1:Number = mStartX - center.x;
-         var dy1:Number = mStartY - center.y;
-         var dx2:Number = endX - center.x;
-         var dy2:Number = endY - center.y;
+         var dx1:Number = mStartX - mMainView.GetSelectedEntitiesCenterX ();
+         var dy1:Number = mStartY - mMainView.GetSelectedEntitiesCenterY ();
+         var dx2:Number = endX - mMainView.GetSelectedEntitiesCenterX ();
+         var dy2:Number = endY - mMainView.GetSelectedEntitiesCenterY ();
          mStartX = endX;
          mStartY = endY;
          
          var radians1:Number = Math.atan2 (dy1, dx1);
          var radians2:Number = Math.atan2 (dy2, dx2);
          
-         mMainView.RotateSelectedEntities (radians2 - radians1);
+         mMainView.RotateSelectedEntities (radians2 - radians1, updateSelectionProxy);
       }
       
       protected function FinishSession (endX:Number, endY:Number):void
       {
-         UpdateSession (endX, endY);
+         UpdateSession (endX, endY, true);
          
          ResetSession ();
          
@@ -83,7 +84,7 @@ package editor.mode {
          if (! mIsStarted)
             return;
          
-         UpdateSession (mouseX, mouseY);
+         UpdateSession (mouseX, mouseY, false);
       }
       
       override public function OnMouseUp (mouseX:Number, mouseY:Number):void

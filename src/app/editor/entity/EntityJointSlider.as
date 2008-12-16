@@ -12,7 +12,7 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class EntityJointSlider extends Entity 
+   public class EntityJointSlider extends EntityJoint 
    {
       
       public var mAnchor1:SubEntitySliderAnchor;
@@ -35,8 +35,10 @@ package editor.entity {
       
       override public function Destroy ():void
       {
+         SetVertexControllersVisible (false);
+         
          mWorld.DestroyEntity (mAnchor1);
-         mWorld.DestroyEntity (mAnchor1);
+         mWorld.DestroyEntity (mAnchor2);
          
          super.Destroy ();
       }
@@ -117,6 +119,57 @@ package editor.entity {
          
          mUpperTranslation = upperTranslation;
       }
+      
+      public function GetLowerTranslation ():Number
+      {
+         return mLowerTranslation;
+      }
+      
+      public function GetUpperTranslation ():Number
+      {
+         return mUpperTranslation;
+      }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityJointSlider (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, 0, 0);
+         
+         var slider:EntityJointSlider = entity as EntityJointSlider;
+         
+         slider.SetLowerTranslation ( GetLowerTranslation () );
+         slider.SetUpperTranslation ( GetUpperTranslation () );
+         
+         var anchor1:SubEntitySliderAnchor = GetAnchor1 ();
+         var anchor2:SubEntitySliderAnchor = GetAnchor2 ();
+         var newAnchor1:SubEntitySliderAnchor = slider.GetAnchor1 ();
+         var newAnchor2:SubEntitySliderAnchor = slider.GetAnchor2 ();
+         
+         anchor1.SetPropertiesForClonedEntity (newAnchor1, displayOffsetX, displayOffsetY);
+         anchor2.SetPropertiesForClonedEntity (newAnchor2, displayOffsetX, displayOffsetY);
+         
+         newAnchor1.UpdateAppearance ();
+         newAnchor1.UpdateSelectionProxy ();
+         newAnchor2.UpdateAppearance ();
+         newAnchor2.UpdateSelectionProxy ();
+         
+         slider.UpdateAppearance ();
+      }
+      
+      override public function GetSubEntities ():Array
+      {
+         return [mAnchor1, mAnchor2];
+      }
+      
+      
       
       
       

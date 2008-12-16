@@ -41,6 +41,28 @@ package editor.entity {
          super (world);
       }
       
+//====================================================================
+//   clone
+//====================================================================
+      
+      // to override
+      override protected function CreateCloneShell ():Entity
+      {
+         return null;
+      }
+      
+      // to override
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var shape:EntityShape = entity as EntityShape;
+         shape.SetFilledColor ( GetFilledColor () );
+         shape.SetBorderColor ( GetBorderColor () );
+         shape.SetDrawBorder ( GetDrawBorder () );
+      }
+      
+      
 //======================================================
 // appearance
 //======================================================
@@ -73,7 +95,7 @@ package editor.entity {
       public function SetDrawBorder (draw:Boolean):void
       {
          mDrawBorder = draw;
-      } 
+      }
       
 //======================================================
 // physics

@@ -4,6 +4,7 @@ package editor.world {
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.geom.Point;
+   import flash.geom.Matrix;
    
    import com.tapirgames.util.Logger;
    
@@ -27,7 +28,9 @@ package editor.world {
       
       public var mSelectionEngine:SelectionEngine; // used within package
       
-      public var mSelectionListManager:SelectionListManager; 
+      public var mSelectionListManager:SelectionListManager;
+      
+      public var mBrothersManager:BrothersManager;
       
       
       public function World ()
@@ -36,6 +39,8 @@ package editor.world {
          mSelectionEngine = new SelectionEngine ();
          
          mSelectionListManager = new SelectionListManager ();
+         
+         mBrothersManager = new BrothersManager ();
       }
       
       
@@ -56,6 +61,15 @@ package editor.world {
 //   create and destroy
 //=================================================================================
       
+      public function DestroyAllEntities ():void
+      {
+         while (numChildren > 0)
+         {
+            var entity:Entity = getChildAt (0) as Entity;
+            DestroyEntity (entity.GetMainEntity ());
+         }
+      }
+      
       public function DestroyEntity (entity:Entity):void
       {
       // selected
@@ -68,6 +82,7 @@ package editor.world {
          
       // brothers
          
+         mBrothersManager.OnDestroyEntity (entity);
          
       // ...
          
@@ -248,9 +263,6 @@ package editor.world {
                vertexControllerArray.push (objectArray [i]);
          }
          
-         trace ("objectArray.length = " + objectArray.length);
-         trace ("vertexControllerArray.length = " + vertexControllerArray.length);
-         
          return vertexControllerArray;
       }
       
@@ -268,11 +280,11 @@ package editor.world {
       }
       
 //=================================================================================
-//   move. clone, destroy
+//   move. clone, flip, ...
 //=================================================================================
       
       
-      public function MoveSelectedEntities (offsetX:Number, offsetY:Number):void
+      public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
       {
          var entityArray:Array = GetSelectedEntities ();
          
@@ -282,11 +294,11 @@ package editor.world {
          {
             entity = entityArray [i] as Entity;
             
-            entity.Move (offsetX, offsetY);
+            entity.Move (offsetX, offsetY, updateSelectionProxy);
          }
       }
       
-      public function RotateSelectedEntities (centerX:Number, centerY:Number, dRadians:Number):void
+      public function RotateSelectedEntities (centerX:Number, centerY:Number, dRadians:Number, updateSelectionProxy:Boolean):void
       {
          var entityArray:Array = GetSelectedEntities ();
          
@@ -296,11 +308,11 @@ package editor.world {
          {
             entity = entityArray [i] as Entity;
             
-            entity.Rotate (centerX, centerY, dRadians);
+            entity.Rotate (centerX, centerY, dRadians, updateSelectionProxy);
          }
       }
       
-      public function ScaleSelectedEntities (centerX:Number, centerY:Number, ratio:Number):void
+      public function ScaleSelectedEntities (centerX:Number, centerY:Number, ratio:Number, updateSelectionProxy:Boolean):void
       {
          var entityArray:Array = GetSelectedEntities ();
          
@@ -310,7 +322,7 @@ package editor.world {
          {
             entity = entityArray [i] as Entity;
             
-            entity.Scale (centerX, centerY, ratio);
+            entity.Scale (centerX, centerY, ratio, updateSelectionProxy);
          }
       }
       
@@ -348,9 +360,37 @@ package editor.world {
                {
                   addChild (newEntity);
                   
-                  SelectEntity (newEntity);
+                  SelectEntities (newEntity.GetSubEntities ());
                }
             }
+         }
+      }
+      
+      public function FlipSelectedEntitiesHorizontally (mirrorX:Number):void
+      {
+         var entityArray:Array = GetSelectedEntities ();
+         
+         var entity:Entity;
+         
+         for (var i:int = 0; i < entityArray.length; ++ i)
+         {
+            entity = entityArray [i] as Entity;
+            
+            entity.FlipHorizontally (mirrorX);
+         }
+      }
+      
+      public function FlipSelectedEntitiesVertically (mirrorY:Number):void
+      {
+         var entityArray:Array = GetSelectedEntities ();
+         
+         var entity:Entity;
+         
+         for (var i:int = 0; i < entityArray.length; ++ i)
+         {
+            entity = entityArray [i] as Entity;
+            
+            entity.FlipVertically (mirrorY);
          }
       }
       
@@ -362,10 +402,63 @@ package editor.world {
       
       public function GlueSelectedEntities ():void
       {
+         var entityArray:Array = GetSelectedEntities ();
+         
+         mBrothersManager.MakeBrothers (entityArray);
       }
       
       public function BreakApartSelectedEntities ():void
       {
+         var entityArray:Array = GetSelectedEntities ();
+         
+         mBrothersManager.BreakApartBrothers (entityArray);
+      }
+      
+      public function GetGluedEntitiesWithEntity (entity:Entity):Array
+      {
+         var brothers:Array = mBrothersManager.GetBrothersOfEntity (entity);
+         return brothers == null ? new Array () : brothers;
+      }
+      
+      
+      public function SelectGluedEntitiesOfSelectedEntities ():void
+      {
+         var brotherGroups:Array = new Array ();
+         var entityId:int;
+         var brothers:Array;
+         var groupId:int;
+         var index:int;
+         var entity:Entity;
+         
+         var selectedEntities:Array = GetSelectedEntities ();
+         
+         for (entityId = 0; entityId < selectedEntities.length; ++ entityId)
+         {
+            brothers = selectedEntities [entityId].GetBrothers ();
+            
+            if (brothers != null)
+            {
+               index = brotherGroups.indexOf (brothers);
+               if (index < 0)
+                  brotherGroups.push (brothers);
+            }
+         }
+         
+         for (groupId = 0; groupId < brotherGroups.length; ++ groupId)
+         {
+            brothers = brotherGroups [groupId];
+            
+            for (entityId = 0; entityId < brothers.length; ++ entityId)
+            {
+               entity = brothers [entityId] as Entity;
+               
+               //if ( ! IsEntitySelected (entity) )
+               if ( ! entity.IsSelected () )  // not formal, but fast
+               {
+                  SelectEntity (entity);
+               }
+            }
+         }
       }
       
 //=================================================================================
@@ -394,7 +487,16 @@ package editor.world {
       // here, the display1 and display2 are not essentially the children of this world
       public static function LocalToLocal (display1:DisplayObject, display2:DisplayObject, point:Point):Point
       {
-         return display2.globalToLocal ( display1.localToGlobal (point) );
+         // seems flash will auto postions of displayobjects. so the current implementings of this
+         // function is not very accurate!
+         
+         
+         //
+         var matrix:Matrix = display2.transform.concatenatedMatrix.clone();
+         matrix.invert();
+         return matrix.transformPoint (display1.transform.concatenatedMatrix.transformPoint (point));
+         
+         //return display2.globalToLocal ( display1.localToGlobal (point) );
       }
       
       

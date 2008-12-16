@@ -12,7 +12,7 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class EntityJointRope extends Entity 
+   public class EntityJointRope extends EntityJoint 
    {
       
       public var mAnchor1:SubEntityRopeAnchor;
@@ -31,7 +31,7 @@ package editor.entity {
       override public function Destroy ():void
       {
          mWorld.DestroyEntity (mAnchor1);
-         mWorld.DestroyEntity (mAnchor1);
+         mWorld.DestroyEntity (mAnchor2);
          
          super.Destroy ();
       }
@@ -56,6 +56,42 @@ package editor.entity {
       public function GetAnchor2 ():SubEntityRopeAnchor
       {
          return mAnchor2;
+      }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityJointRope (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, 0, 0);
+         
+         var rope:EntityJointRope = entity as EntityJointRope;
+         
+         var anchor1:SubEntityRopeAnchor = GetAnchor1 ();
+         var anchor2:SubEntityRopeAnchor = GetAnchor2 ();
+         var newAnchor1:SubEntityRopeAnchor = rope.GetAnchor1 ();
+         var newAnchor2:SubEntityRopeAnchor = rope.GetAnchor2 ();
+         
+         anchor1.SetPropertiesForClonedEntity (newAnchor1, displayOffsetX, displayOffsetY);
+         anchor2.SetPropertiesForClonedEntity (newAnchor2, displayOffsetX, displayOffsetY);
+         
+         newAnchor1.UpdateAppearance ();
+         newAnchor1.UpdateSelectionProxy ();
+         newAnchor2.UpdateAppearance ();
+         newAnchor2.UpdateSelectionProxy ();
+         
+         rope.UpdateAppearance ();
+      }
+      
+      override public function GetSubEntities ():Array
+      {
+         return [mAnchor1, mAnchor2];
       }
       
       

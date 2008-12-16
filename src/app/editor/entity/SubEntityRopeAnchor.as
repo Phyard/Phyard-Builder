@@ -12,7 +12,7 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class SubEntityRopeAnchor extends SubEntity 
+   public class SubEntityRopeAnchor extends SubEntityJointAnchor 
    {
       private var mRadius:Number = 3;
       
@@ -54,27 +54,6 @@ package editor.entity {
          }
          
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle ( GetRotation (), GetPositionX (), GetPositionY (), mRadius );
-      }
-      
-      override public function Move (offsetX:Number, offsetY:Number):void
-      {
-         super.Move (offsetX, offsetY);
-         
-         GetMainEntity ().UpdateAppearance ();
-      }
-      
-      override public function Rotate (centerX:Number, centerY:Number, dRadians:Number):void
-      {
-         super.Rotate (centerX, centerY, dRadians);
-         
-         GetMainEntity ().UpdateAppearance ();
-      }
-      
-      override public function Scale (centerX:Number, centerY:Number, ratio:Number):void
-      {
-         super.Scale (centerX, centerY, ratio);
-         
-         GetMainEntity ().UpdateAppearance ();
       }
       
       

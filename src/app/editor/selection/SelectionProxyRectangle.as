@@ -21,9 +21,6 @@ package editor.selection {
       
       public function RebuildRectangle (rotation:Number, centerX:Number, centerY:Number, halfWidth:Number, halfHeight:Number):void
       {
-         trace ("centerX = " + centerX + ", centerY = " + centerY);
-         trace ("halfWidth = " + halfWidth + ", halfHeight = " + halfHeight);
-         
          var p1:Point = new Point (centerX - halfWidth, centerY - halfHeight);
          var p2:Point = new Point (centerX + halfWidth, centerY - halfHeight);
          var p3:Point = new Point (centerX + halfWidth, centerY + halfHeight);

@@ -22,5 +22,7 @@ package editor.entity {
       {
          return mMainEntity == null ? this : mMainEntity;
       }
+      
+      
    }
 }

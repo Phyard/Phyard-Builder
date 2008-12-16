@@ -17,14 +17,15 @@ package editor.mode {
       
       private var mStartX:Number;
       private var mStartY:Number;
-      private var mEndX:Number;
-      private var mEndY:Number;
       
       private var mIsStarted:Boolean = false;
       
       
       override public function Reset ():void
       {
+         if (mIsStarted)
+            UpdateSession (mStartX, mStartY, true);
+         
          ResetSession ();
          
          mMainView.SetCurrentEditMode (null);
@@ -45,7 +46,7 @@ package editor.mode {
          mIsStarted = true;
       }
       
-      private function UpdateSession (endX:Number, endY:Number):void
+      private function UpdateSession (endX:Number, endY:Number, updateSelectionProxy:Boolean):void
       {
          var dx:Number = endX - mStartX;
          var dy:Number = endY - mStartY;
@@ -53,12 +54,12 @@ package editor.mode {
          mStartX = endX;
          mStartY = endY;
          
-         mMainView.MoveSelectedEntities (dx, dy);
+         mMainView.MoveSelectedEntities (dx, dy, updateSelectionProxy);
       }
       
       protected function FinishSession (endX:Number, endY:Number):void
       {
-         UpdateSession (endX, endY);
+         UpdateSession (endX, endY, true);
          
          ResetSession ();
          
@@ -80,7 +81,7 @@ package editor.mode {
          if (! mIsStarted)
             return;
          
-         UpdateSession (mouseX, mouseY);
+         UpdateSession (mouseX, mouseY, false);
       }
       
       override public function OnMouseUp (mouseX:Number, mouseY:Number):void

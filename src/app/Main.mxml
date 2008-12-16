@@ -10,10 +10,12 @@
    
    <mx:Box direction="vertical" borderStyle="solid" width="100%" height="100%" 
                paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-               horizontalGap="0" verticalGap="0">
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
       <mx:Box direction="horizontal" borderStyle="solid" height="100%" width="100%" 
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" 
-                  horizontalGap="0" verticalGap="0">
+                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                  horizontalGap="0" verticalGap="0" borderThickness="0">
          <mx:Box direction="vertical" borderStyle="solid" height="100%" 
                      paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
                      horizontalGap="0" verticalGap="0">
@@ -29,7 +31,6 @@
             <mx:Button id="Button_CreateJoint_Hinge" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_hinge.png')" downIcon="@Embed('create/joint-sel_hinge.png')" overIcon="@Embed('create/joint_hinge.png')" selectedUpIcon="@Embed('create/joint-sel_hinge.png')" selectedOverIcon="@Embed('create/joint-sel_hinge.png')" selectedDownIcon="@Embed('create/joint_hinge.png')"   />
             <mx:Button id="Button_CreateJoint_Slider" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_slider.png')" downIcon="@Embed('create/joint-sel_slider.png')" overIcon="@Embed('create/joint_slider.png')" selectedUpIcon="@Embed('create/joint-sel_slider.png')" selectedOverIcon="@Embed('create/joint-sel_slider.png')" selectedDownIcon="@Embed('create/joint_slider.png')"   />
             <mx:Button id="Button_CreateJoint_Rope" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_rope.png')" downIcon="@Embed('create/joint-sel_rope.png')" overIcon="@Embed('create/joint_rope.png')" selectedUpIcon="@Embed('create/joint-sel_rope.png')" selectedOverIcon="@Embed('create/joint-sel_rope.png')" selectedDownIcon="@Embed('create/joint_rope.png')"   />
-            <mx:Button id="Button_CreateJoint_Spring" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_rope.png')" downIcon="@Embed('create/joint-sel_rope.png')" overIcon="@Embed('create/joint_rope.png')" selectedUpIcon="@Embed('create/joint-sel_rope.png')" selectedOverIcon="@Embed('create/joint-sel_rope.png')" selectedDownIcon="@Embed('create/joint_rope.png')"   />
             <mx:Spacer height="10"/>
             <mx:Button id="Button_CreateComponent_T" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/component_t.png')" downIcon="@Embed('create/component-sel_t.png')" overIcon="@Embed('create/component_t.png')" selectedUpIcon="@Embed('create/component-sel_t.png')" selectedOverIcon="@Embed('create/component-sel_t.png')" selectedDownIcon="@Embed('create/component_t.png')"   />
             <mx:Button id="Button_CreateComponent_V" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/component_v.png')" downIcon="@Embed('create/component-sel_v.png')" overIcon="@Embed('create/component_v.png')" selectedUpIcon="@Embed('create/component-sel_v.png')" selectedOverIcon="@Embed('create/component-sel_v.png')" selectedDownIcon="@Embed('create/component_v.png')"   />
@@ -37,7 +38,7 @@
          </mx:Box>
          <mx:Box direction="vertical" borderStyle="solid" height="100%" width="100%"
                      paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-                     horizontalGap="0" verticalGap="0">
+                     horizontalGap="0" verticalGap="0" borderThickness="0">
             <ed:WorldView id="MainView" height="100%" width="100%" />
          </mx:Box>
          <mx:Box direction="vertical" borderStyle="solid" height="100%"
@@ -60,15 +61,15 @@
                <mx:Button id="Button_BodyEditingMode_Rotate" label="Rotate" click="OnChangeBodyEditingMode(event);" fontSize="8" left="5" top="5" width="100%" toggle="true" cornerRadius="0"    />
                <mx:Button id="Button_BodyEditingMode_Scale" label="Scale" click="OnChangeBodyEditingMode(event);" fontSize="8" left="5" top="5" width="100%" toggle="true" cornerRadius="0"    />
                <mx:Spacer height="10"/>
-               <mx:Button label="Clone" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button label="Flip --" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button label="Flip |" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button label="Delete" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_Clone" label="Clone (A)" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_FlipH" label="Flip | (S)" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_FlipV" label="Flip -- (W)" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_Delete" label="Delete (D)" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
                <mx:Spacer height="10"/>
-               <mx:Button label="Clear" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_ClearAll" label="Clear" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
                <mx:Spacer height="10"/>
-               <mx:Button label="Glue" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button label="Break Apart" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_Glue" label="Glue (G)" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_BreakApart" label="Break Apart (B)" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
             </mx:Box>
             <mx:Spacer height="10"/>
             <mx:Box id="Box_SaveLoad" direction="vertical" borderStyle="solid"  width="100%"
@@ -155,6 +156,24 @@
                Button_CreateJoint_Hinge.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Slider.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Rope.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               
+               
+               
+               MainView.mButtonClone = Button_Clone;
+               MainView.mButtonDelete = Button_Delete;
+               MainView.mButtonFlipH = Button_FlipH;
+               MainView.mButtonFlipV = Button_FlipV;
+               MainView.mButtonGlue = Button_Glue;
+               MainView.mButtonBreakApart = Button_BreakApart;
+               MainView.mButtonClearAll = Button_ClearAll;
+               
+               Button_Clone.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_Delete.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_FlipH.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_FlipV.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_Glue.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_BreakApart.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_ClearAll.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
             }
             
             private function OnChangeEditingLevel(event:Event):void

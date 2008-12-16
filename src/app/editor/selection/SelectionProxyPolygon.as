@@ -49,8 +49,6 @@ package editor.selection {
          for (i =0; i < vertexCount; ++ i)
          {
             polygonDef.vertices [i].Set (points [i].x - centerX, points [i].y - centerY);
-            
-            trace ("polygonDef.vertices [i]: " + polygonDef.vertices [i].x + ", " + polygonDef.vertices [i].y);
          }
          
          _b2Body.CreateShape (polygonDef);

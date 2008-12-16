@@ -12,7 +12,7 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class SubEntitySliderAnchor extends SubEntity 
+   public class SubEntitySliderAnchor extends SubEntityJointAnchor 
    {
       private var mRadius:Number = 5;
       
@@ -62,36 +62,20 @@ package editor.entity {
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle ( GetRotation (), GetPositionX (), GetPositionY (), mRadius );
       }
       
-      override public function Move (offsetX:Number, offsetY:Number):void
-      {
-         super.Move (offsetX, offsetY);
-         
-         GetMainEntity ().UpdateAppearance ();
-      }
-      
-      override public function Rotate (centerX:Number, centerY:Number, dRadians:Number):void
-      {
-         super.Rotate (centerX, centerY, dRadians);
-         
-         GetMainEntity ().UpdateAppearance ();
-      }
-      
-      override public function Scale (centerX:Number, centerY:Number, ratio:Number):void
-      {
-         super.Scale (centerX, centerY, ratio);
-         
-         GetMainEntity ().UpdateAppearance ();
-      }
-      
-      
       override public function NotifySelectedChanged (selected:Boolean):void
       {
          super.NotifySelectedChanged (selected);
          
-         if (mIsSecondAnchor)
-            GetMainEntity ().SetVertexControllersVisible (selected);
+         //if (mIsSecondAnchor)
+         //   GetMainEntity ().SetVertexControllersVisible (selected);
       }
-
+      
+      override public function SetVertexControllersVisible (visible:Boolean):void
+      {
+         super.SetVertexControllersVisible (visible);
+         
+         GetMainEntity ().SetVertexControllersVisible (visible);
+      }
       
    }
 }

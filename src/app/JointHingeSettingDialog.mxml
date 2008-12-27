@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+    title="Hinge Setting" width="500">
+   
+   
+   <mx:XMLList id="IsBulletOptions">
+      <node label="Default"/>
+      <node label="Yes"/>
+      <node label="No"/>
+   </mx:XMLList>
+
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limit"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_LowerAngle" text="Lower Angle:" textAlign="right" width="20%"/>
+      <mx:HSlider id="Slider_LowerAngle" focusEnabled="false" minimum="-180" maximum="0" value="0" width="80%"
+          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="45"
+          labels="['-180', '-90', '0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_UpperAngle" text="Upper Angle:" textAlign="right" width="20%"/>
+      <mx:HSlider id="Slider_UpperAngle" focusEnabled="false" minimum="0" maximum="180" value="0" width="80%"
+          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="45"
+          labels="['0', '90', '180']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   
+   <mx:Spacer height="6"/>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:CheckBox id="CheckBox_MotorEnabled" label="Enable Motor"/>
+   </mx:HBox>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="20%"/>
+      <mx:HSlider id="Slider_MotorSpeed" focusEnabled="false" minimum="-360" maximum="360" value="0" width="80%"
+          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="90"
+          labels="['-360', '0', '360']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth between Limits"/>
+   </mx:HBox>
+   
+   
+   <mx:Spacer height="20"/>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   
+   <mx:Script>
+     <![CDATA[       
+         import mx.managers.PopUpManager;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         public function SetValues (values:Object):void
+         {
+            CheckBox_IsVisible.selected = values.mIsVisible;
+            CheckBox_LimitEnabled.selected = values.mEnableLimit;
+            Slider_LowerAngle.value = values.mLowerAngle;
+            Slider_UpperAngle.value = values.mUpperAngle;
+            
+            CheckBox_MotorEnabled.selected = values.mEnableMotor;
+            Slider_MotorSpeed.value = values.mMotorSpeed;
+            
+            CheckBox_BackAndForth.selected = values.mBackAndForth;
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+             var params:Object = new Object ();
+             
+             params.mIsVisible = CheckBox_IsVisible.selected;
+             params.mEnableLimit = CheckBox_LimitEnabled.selected;
+             params.mLowerAngle = Slider_LowerAngle.value;
+             params.mUpperAngle = Slider_UpperAngle.value;
+             
+             params.mEnableMotor = CheckBox_MotorEnabled.selected;
+             params.mMotorSpeed = Slider_MotorSpeed.value;
+             
+             params.mBackAndForth = CheckBox_BackAndForth.selected;
+             
+             PopUpManager.removePopUp(this);
+             
+            if (OnConfirm != null)
+               OnConfirm (params);
+            
+            if (OnClose != null)
+               OnClose ();
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         private function OnClickDefaultButton ():void
+         {
+            var values:Object = new Object ();
+            
+            // ...
+            
+            SetValues (values);
+         }
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

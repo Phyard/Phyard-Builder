@@ -34,6 +34,12 @@ package editor.entity {
          UpdateAppearance ();
       }
       
+      public function SetSelectable (selectable:Boolean):void
+      {
+         if (mSelectionProxy != null)
+            mSelectionProxy.SetSelectable (selectable);
+      }
+      
       public function GetOwnerEntity ():Entity
       {
          return mOwnerEntity;
@@ -64,7 +70,6 @@ package editor.entity {
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfSize, - mHalfSize, mHalfSize + mHalfSize, mHalfSize + mHalfSize, borderColor, borderSize, true, filledColor);
       }
-      
       
 //======================================================
 // pos, rotition

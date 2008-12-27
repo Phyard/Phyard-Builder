@@ -21,15 +21,19 @@ package editor.entity {
       
    // physics
       
-      protected var mIsStatic:Boolean = true;
-      protected var mLinearDamping:Number = 0.0;
-      protected var mAngularDamping:Number = 0.0;
-      protected var mIsBullet:Boolean = false;
+      protected var mIsStatic:Boolean = false;
+      public var mIsBullet:Boolean = false;
       
-      protected var mDensity:Number = 1.0;
-      protected var mFriction:Number = 0.2;
-      protected var mRestitution:Number = 0.2;
-      protected var mIsSensor:Boolean = false;
+      public var mDensity:Number = 1.0;
+      public var mFriction:Number = 0.1;
+      public var mRestitution:Number = 0.2;
+      
+      
+      // !!! when open these, remember modify SetPropertiesForClonedEntity
+      //public var mLinearDamping:Number = 0.0;
+      //public var mAngularDamping:Number = 0.0;
+      // allow sleep
+      // is sleeping
       
    // collison friends
       
@@ -60,6 +64,12 @@ package editor.entity {
          shape.SetFilledColor ( GetFilledColor () );
          shape.SetBorderColor ( GetBorderColor () );
          shape.SetDrawBorder ( GetDrawBorder () );
+         shape.SetStatic ( IsStatic () );
+         
+         shape.mIsBullet = mIsBullet;
+         shape.mDensity = mDensity;
+         shape.mFriction = mFriction;
+         shape.mRestitution = mRestitution;
       }
       
       
@@ -110,6 +120,5 @@ package editor.entity {
       {
          return mIsStatic;
       }
-      
    }
 }

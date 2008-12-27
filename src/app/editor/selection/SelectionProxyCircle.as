@@ -25,6 +25,7 @@ package editor.selection {
          var circleDef:b2CircleDef = new b2CircleDef ();
          circleDef.localPosition.Set(0, 0);
          circleDef.radius = radius;
+         circleDef.filter.groupIndex = IsSelectable () ? 0 : -1;
          _b2Body.CreateShape (circleDef);
       }
    }

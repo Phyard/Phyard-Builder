@@ -17,6 +17,8 @@ package editor.selection {
       
       public var _b2Body:b2Body = null; // used within package
       
+      protected var mSelectable:Boolean = true;
+      
       public function SelectionProxy (selEngine:SelectionEngine):void
       {
          mSelectionEngine = selEngine;
@@ -25,6 +27,29 @@ package editor.selection {
       public function SetUserData (userData:Object):void
       {
          mUserData = userData;
+      }
+      
+      public function SetSelectable (selectable:Boolean):void
+      {
+         mSelectable = selectable;
+         
+         if (_b2Body == null)
+            return;
+         
+      //
+         var shape:b2Shape = _b2Body.m_shapeList;
+         
+         while (shape != null)
+         {
+            shape.m_filter.groupIndex = mSelectable ? 0 : -1;
+            
+            shape = shape.m_next;
+         }
+      }
+      
+      public function IsSelectable ():Boolean
+      {
+         return mSelectable;
       }
       
       protected function Rebuild_b2Body (rotation:Number, pointX:Number, pointY:Number):void

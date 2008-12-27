@@ -17,6 +17,13 @@ package editor.entity {
       
       public var mAnchor:SubEntityHingeAnchor;
       
+      protected var mEnableLimits:Boolean = false;
+      protected var mLowerAngle:Number = 0;
+      protected var mUpperAngle:Number = 0;
+      public var mEnableMotor:Boolean = false;
+      public var mMotorSpeed:Number = 0;
+      public var mBackAndForth:Boolean = false;
+      
       public function EntityJointHinge (world:World)
       {
          super (world);
@@ -24,6 +31,34 @@ package editor.entity {
          mAnchor = new SubEntityHingeAnchor (world, this);
          world.addChild (mAnchor);
       }
+      
+      public function IsLimitsEnabled ():Boolean
+      {
+         return mEnableLimits;
+      }
+      
+      public function SetLimitsEnabled (enabled:Boolean):void
+      {
+         mEnableLimits = enabled;
+      }
+      
+      public function SetLimits (lower:Number, upper:Number):void
+      {
+         mLowerAngle = lower;
+         mUpperAngle = upper;
+         
+         UpdateAppearance ();
+      }
+      
+      public function GetLowerLimit ():Number
+      {
+         return mLowerAngle;
+      }
+      public function GetUpperLimit ():Number
+      {
+         return mUpperAngle;
+      }
+      
       
       override public function Destroy ():void
       {

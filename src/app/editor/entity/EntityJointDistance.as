@@ -12,19 +12,19 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class EntityJointRope extends EntityJoint 
+   public class EntityJointDistance extends EntityJoint 
    {
       
-      public var mAnchor1:SubEntityRopeAnchor;
-      public var mAnchor2:SubEntityRopeAnchor;
+      public var mAnchor1:SubEntityDistanceAnchor;
+      public var mAnchor2:SubEntityDistanceAnchor;
       
-      public function EntityJointRope (world:World)
+      public function EntityJointDistance (world:World)
       {
          super (world);
          
-         mAnchor1 = new SubEntityRopeAnchor (world, this);
+         mAnchor1 = new SubEntityDistanceAnchor (world, this);
          world.addChild (mAnchor1);
-         mAnchor2 = new SubEntityRopeAnchor (world, this);
+         mAnchor2 = new SubEntityDistanceAnchor (world, this);
          world.addChild (mAnchor2);
       }
       
@@ -48,12 +48,12 @@ package editor.entity {
          GraphicsUtil.ClearAndDrawLine (this, x1, y1, x2, y2);
       }
       
-      public function GetAnchor1 ():SubEntityRopeAnchor
+      public function GetAnchor1 ():SubEntityDistanceAnchor
       {
          return mAnchor1;
       }
       
-      public function GetAnchor2 ():SubEntityRopeAnchor
+      public function GetAnchor2 ():SubEntityDistanceAnchor
       {
          return mAnchor2;
       }
@@ -64,19 +64,19 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityJointRope (mWorld);
+         return new EntityJointDistance (mWorld);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
       {
          super.SetPropertiesForClonedEntity (entity, 0, 0);
          
-         var rope:EntityJointRope = entity as EntityJointRope;
+         var rope:EntityJointDistance = entity as EntityJointDistance;
          
-         var anchor1:SubEntityRopeAnchor = GetAnchor1 ();
-         var anchor2:SubEntityRopeAnchor = GetAnchor2 ();
-         var newAnchor1:SubEntityRopeAnchor = rope.GetAnchor1 ();
-         var newAnchor2:SubEntityRopeAnchor = rope.GetAnchor2 ();
+         var anchor1:SubEntityDistanceAnchor = GetAnchor1 ();
+         var anchor2:SubEntityDistanceAnchor = GetAnchor2 ();
+         var newAnchor1:SubEntityDistanceAnchor = rope.GetAnchor1 ();
+         var newAnchor2:SubEntityDistanceAnchor = rope.GetAnchor2 ();
          
          anchor1.SetPropertiesForClonedEntity (newAnchor1, displayOffsetX, displayOffsetY);
          anchor2.SetPropertiesForClonedEntity (newAnchor2, displayOffsetX, displayOffsetY);

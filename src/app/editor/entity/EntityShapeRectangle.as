@@ -44,7 +44,7 @@ package editor.entity {
             borderSize  = mDrawBorder ? 1 : 0;
          }
          
-         alpha = 0.5;
+         alpha = 0.7;
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, mFilledColor);
       }
@@ -55,6 +55,8 @@ package editor.entity {
          {
             mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
+            
+            SetVertexControllersVisible (AreVertexControlPointsVisible ());
          }
          
          (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), GetHalfWidth (), GetHalfHeight () );
@@ -125,10 +127,16 @@ package editor.entity {
          // mVertexControlPointsVisible = visible;
          super.SetVertexControllersVisible (visible);
          
+         if (mSelectionProxy == null)
+            return;
+         
       // create / destroy controllers
          
          if ( AreVertexControlPointsVisible () )
          {
+            SetVertexControllersVisible (false);
+            super.SetVertexControllersVisible (true);
+            
             if (mVertexController0 == null)
             {
                mVertexController0 = new VertexController (mWorld, this);

@@ -12,11 +12,11 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class SubEntityRopeAnchor extends SubEntityJointAnchor 
+   public class SubEntityDistanceAnchor extends SubEntityJointAnchor 
    {
       private var mRadius:Number = 3;
       
-      public function SubEntityRopeAnchor (world:World, mainEntity:Entity)
+      public function SubEntityDistanceAnchor (world:World, mainEntity:Entity)
       {
          super (world, mainEntity);
          

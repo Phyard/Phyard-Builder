@@ -1,6 +1,7 @@
 package com.tapirgames.util {
    
-
+   import flash.net.navigateToURL;
+   import flash.net.URLRequest;
    
    public class UrlUtil 
    {
@@ -87,5 +88,22 @@ package com.tapirgames.util {
          
          return false;
       }
+      
+//==============================================================================
+//
+//==============================================================================
+      
+      public static function PopupPage (url:String):void
+      {
+         var request:URLRequest = new URLRequest(url);
+         try {            
+             navigateToURL(request, "_blank"); // "MathSolitaireSolutions"
+         }
+         catch (e:Error) {
+             Logger.Trace ("navigateToURL error.");
+         }
+      }
+      
+      
    }
 }

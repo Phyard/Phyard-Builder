@@ -46,6 +46,7 @@ package editor.selection {
       //
          var polygonDef:b2PolygonDef = new b2PolygonDef ();
          polygonDef.vertexCount = vertexCount;
+         polygonDef.filter.groupIndex = IsSelectable () ? 0 : -1;
          for (i =0; i < vertexCount; ++ i)
          {
             polygonDef.vertices [i].Set (points [i].x - centerX, points [i].y - centerY);

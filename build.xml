@@ -153,7 +153,7 @@
       <antcall target="--compile">
          <param name="--debug" value="true" />
          <param name="--game-mode" value="" />
-         <param name="--width" value="750" />
+         <param name="--width" value="730" />
          <param name="--height" value="600" />
       </antcall>
    </target>
@@ -162,7 +162,7 @@
       <antcall target="--compile">
          <param name="--debug" value="false" />
          <param name="--game-mode" value="" />
-         <param name="--width" value="750" />
+         <param name="--width" value="730" />
          <param name="--height" value="600" />
       </antcall>
    </target>
@@ -171,7 +171,7 @@
       <antcall target="--compile">
          <param name="--debug" value="false" />
          <param name="--game-mode" value="" />
-         <param name="--width" value="750" />
+         <param name="--width" value="730" />
          <param name="--height" value="600" />
       </antcall>
    </target>

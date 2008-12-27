@@ -18,6 +18,7 @@ package editor.entity {
       private var mPosY:Number = 0;
       private var mRotation:Number = 0;
       
+      private var mIsVisible:Boolean = true;
       
       public function Entity (world:World)
       {
@@ -39,6 +40,26 @@ package editor.entity {
       {
       }
       
+      public function SetSelectable (selectable:Boolean):void
+      {
+         if (mSelectionProxy != null)
+            mSelectionProxy.SetSelectable (selectable);
+      }
+      
+      
+//======================================================
+// visible
+//======================================================
+      
+      public function SetVisible (visible:Boolean):void
+      {
+         mIsVisible = visible;
+      }
+      
+      public function IsVisible ():Boolean
+      {
+         return mIsVisible;
+      }
       
 //======================================================
 // pos, rotition
@@ -71,7 +92,7 @@ package editor.entity {
       {
          mRotation = rot;
          
-         rotation = mRotation * 180.0 / Math.PI;
+         rotation = (mRotation * 180.0 / Math.PI) % 360;
       }
       
 //====================================================================

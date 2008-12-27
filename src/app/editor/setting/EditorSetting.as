@@ -1,6 +1,8 @@
 
 package editor.setting {
    
+   import common.Define;
+   
    public class EditorSetting
    {
       
@@ -9,27 +11,27 @@ package editor.setting {
       public static const BodyCloneOffsetX:uint = 20;
       public static const BodyCloneOffsetY:uint = 0;
       
-      public static const MinCircleRadium:uint = 2;
-      public static const MaxCircleRadium:uint = 100;
+      public static const MinCircleRadium:uint = Define.MinCircleRadium;
+      public static const MaxCircleRadium:uint = Define.MaxCircleRadium;
       
       public static const MinRectSideLength:uint = 2;
       public static const MaxRectSideLength:uint = 600;
       public static const MaxRectArea:uint = 600 * 200;
       
-      public static const HingeRadium:uint = 4;
+      //public static const HingeRadium:uint = 4;
       
       public static const BorderColorSelectedObject:uint = 0xFF0000FF;
-      public static const BorderColorUnselectedObject:uint = 0xFF000000;
+      public static const BorderColorUnselectedObject:uint = Define.ColorObjectBorder;
       
       
-      public static const ColorStaticObject:uint = 0xFF606060;
-      public static const ColorMovableObject:uint = 0xFFA0A0FF;
+      public static const ColorStaticObject:uint = Define.ColorStaticObject;
+      public static const ColorMovableObject:uint = Define.ColorMovableObject;
       
-      public static const ColorBreakableObject:uint = 0xFFFF00FF;
+      public static const ColorBreakableObject:uint = Define.ColorBreakableObject;
       
-      public static const ColorInfectedObject:uint = 0xFF804000;;
-      public static const ColorUninfectedObject:uint = 0xFFFFFF00;
-      public static const ColorDontInfectObject:uint = 0xFF60FF60;
+      public static const ColorInfectedObject:uint = Define.ColorInfectedObject;;
+      public static const ColorUninfectedObject:uint = Define.ColorUninfectedObject;
+      public static const ColorDontInfectObject:uint = Define.ColorDontInfectObject;
       
    }
    

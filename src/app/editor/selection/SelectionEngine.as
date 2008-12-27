@@ -99,11 +99,10 @@ package editor.selection {
          for (var i:int = 0; i < count; ++ i)
          {
             var body:b2Body = shapes[i].GetBody();
+            var selProxy:SelectionProxy = body.GetUserData () as SelectionProxy;
             
-            if (shapes[i].TestPoint(body.GetXForm(), vertex))
+            if (selProxy.IsSelectable () && shapes[i].TestPoint(body.GetXForm(), vertex))
             {
-               var selProxy:SelectionProxy = body.GetUserData () as SelectionProxy;
-               
                objectArray.push (selProxy.mUserData);
             }
          }

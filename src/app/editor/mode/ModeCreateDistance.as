@@ -7,12 +7,12 @@ package editor.mode {
    import editor.WorldView;
    import editor.setting.EditorSetting;
    
-   import editor.entity.EntityJointRope;
-   import editor.entity.SubEntityRopeAnchor;
+   import editor.entity.EntityJointDistance;
+   import editor.entity.SubEntityDistanceAnchor;
    
-   public class ModeCreateRope extends Mode
+   public class ModeCreateDistance extends Mode
    {
-      public function ModeCreateRope (mainView:WorldView)
+      public function ModeCreateDistance (mainView:WorldView)
       {
          super (mainView);
       }
@@ -21,7 +21,7 @@ package editor.mode {
       private var mStartX:Number = 0;
       private var mStartY:Number = 0;
       
-      private var mEntityJointRope:EntityJointRope = null;
+      private var mEntityJointDistance:EntityJointDistance = null;
       
       override public function Initialize ():void
       {
@@ -37,51 +37,51 @@ package editor.mode {
       
       protected function ResetSession (isCancelled:Boolean):void
       {
-         if (isCancelled && mEntityJointRope != null)
-            mMainView.DestroyEntity (mEntityJointRope);
+         if (isCancelled && mEntityJointDistance != null)
+            mMainView.DestroyEntity (mEntityJointDistance);
          
-         mEntityJointRope = null;
+         mEntityJointDistance = null;
       }
       
       protected function StartSession ():void
       {
          ResetSession (true);
          
-         mEntityJointRope = mMainView.CreateRope (0, 0, 0, 0);
-         mEntityJointRope.GetAnchor1 ().visible = false;
-         mEntityJointRope.GetAnchor2 ().visible = false;
-         mEntityJointRope.visible = false;
+         mEntityJointDistance = mMainView.CreateRope (0, 0, 0, 0);
+         mEntityJointDistance.GetAnchor1 ().visible = false;
+         mEntityJointDistance.GetAnchor2 ().visible = false;
+         mEntityJointDistance.visible = false;
       }
       
       protected function UpdateSession (posX:Number, posY:Number):void
       {
          if (mCurrrentStep == 0)
          {
-            mEntityJointRope.GetAnchor1 ().visible = true;
-            mEntityJointRope.GetAnchor2 ().visible = false;
-            mEntityJointRope.visible = false;
+            mEntityJointDistance.GetAnchor1 ().visible = true;
+            mEntityJointDistance.GetAnchor2 ().visible = false;
+            mEntityJointDistance.visible = false;
             
-            mEntityJointRope.GetAnchor1 ().SetPosition (posX, posY);
+            mEntityJointDistance.GetAnchor1 ().SetPosition (posX, posY);
          }
          else
          {
-            mEntityJointRope.GetAnchor1 ().visible = true;
-            mEntityJointRope.GetAnchor2 ().visible = true;
-            mEntityJointRope.visible = true;
+            mEntityJointDistance.GetAnchor1 ().visible = true;
+            mEntityJointDistance.GetAnchor2 ().visible = true;
+            mEntityJointDistance.visible = true;
             
-            mEntityJointRope.GetAnchor2 ().SetPosition (posX, posY);
+            mEntityJointDistance.GetAnchor2 ().SetPosition (posX, posY);
          }
          
          
-         mEntityJointRope.UpdateAppearance ();
+         mEntityJointDistance.UpdateAppearance ();
       }
       
       protected function FinishSession (endX:Number, endY:Number):void
       {
          UpdateSession (endX, endY);
          
-         mEntityJointRope.GetAnchor1 ().UpdateSelectionProxy ();
-         mEntityJointRope.GetAnchor2 ().UpdateSelectionProxy ();
+         mEntityJointDistance.GetAnchor1 ().UpdateSelectionProxy ();
+         mEntityJointDistance.GetAnchor2 ().UpdateSelectionProxy ();
          
          
          ResetSession (false);
@@ -104,7 +104,7 @@ package editor.mode {
       
       override public function OnMouseMove (mouseX:Number, mouseY:Number):void
       {
-         if (mEntityJointRope == null)
+         if (mEntityJointDistance == null)
             return;
          
          UpdateSession (mouseX, mouseY);
@@ -112,7 +112,7 @@ package editor.mode {
       
       override public function OnMouseUp (mouseX:Number, mouseY:Number):void
       {
-         if (mEntityJointRope == null)
+         if (mEntityJointDistance == null)
             return;
          
          FinishSession (mouseX, mouseY);

@@ -33,8 +33,16 @@ package editor.mode {
       
       protected function ResetSession (isCancelled:Boolean):void
       {
-         if (isCancelled && mCircleEntity != null)
-            mMainView.DestroyEntity (mCircleEntity);
+         if (isCancelled)
+         {
+            if (mCircleEntity != null)
+               mMainView.DestroyEntity (mCircleEntity);
+         }
+         else
+         {
+            if (mCircleEntity != null)
+                mMainView.SetTheOnlySelectedEntity (mCircleEntity);
+         }
          
          mCircleEntity = null;
       }

@@ -9,14 +9,15 @@ package editor.world {
    import com.tapirgames.util.Logger;
    
    import editor.entity.Entity;
+   import editor.entity.SubEntity;
    
    import editor.entity.EntityShapeCircle;
    import editor.entity.EntityShapeRectangle;
    
-   import editor.entity.EntityJointRope;
+   import editor.entity.EntityJointDistance;
    import editor.entity.EntityJointHinge;
-   
    import editor.entity.EntityJointSlider;
+   
    import editor.entity.SubEntitySliderAnchor;
    
    import editor.entity.VertexController;
@@ -32,6 +33,8 @@ package editor.world {
       
       public var mBrothersManager:BrothersManager;
       
+      private var mAuthorName:String = "";
+      private var mAuthorHomepage:String = "";
       
       public function World ()
       {
@@ -58,7 +61,31 @@ package editor.world {
       }
       
 //=================================================================================
-//   create and destroy
+//   author
+//=================================================================================
+      
+      public function SetAuthorName (name:String):void
+      {
+         mAuthorName = name;
+      }
+      
+      public function GetAuthorName ():String
+      {
+         return mAuthorName;
+      }
+      
+      public function SetAuthorHomepage (link:String):void
+      {
+         mAuthorHomepage = link;
+      }
+      
+      public function GetAuthorHomepage ():String
+      {
+         return mAuthorHomepage;
+      }
+      
+//=================================================================================
+//   create and destroy entities
 //=================================================================================
       
       public function DestroyAllEntities ():void
@@ -108,9 +135,9 @@ package editor.world {
          return rect;
       }
       
-      public function CreateEntityJointRope ():EntityJointRope
+      public function CreateEntityDistanceRope ():EntityJointDistance
       {
-         var rope:EntityJointRope = new EntityJointRope (this);
+         var rope:EntityJointDistance = new EntityJointDistance (this);
          addChild (rope);
          
          return rope;
@@ -394,11 +421,64 @@ package editor.world {
          }
       }
       
+      public function MoveSelectedEntitiesToTop ():void
+      {
+         var entityArray:Array = GetSelectedEntities ();
+         
+         var entity:Entity;
+         
+         for (var i:int = 0; i < entityArray.length; ++ i)
+         {
+            entity = entityArray [i];
+            
+            if ( entity.GetMainEntity () != null && contains (entity.GetMainEntity ()) )
+            {
+               removeChild (entity.GetMainEntity ());
+               addChild (entity.GetMainEntity ());
+            }
+            
+            if ( entity != null && contains (entity) )
+            {
+               removeChild (entity);
+               addChild (entity);
+            }
+         }
+      }
+      
+      public function MoveSelectedEntitiesToBottom ():void
+      {
+         var entityArray:Array = GetSelectedEntities ();
+         
+         var entity:Entity;
+         
+         for (var i:int = 0; i < entityArray.length; ++ i)
+         {
+            entity = entityArray [i];
+            
+            if ( entity != null && contains (entity) )
+            {
+               removeChild (entity);
+               addChildAt (entity, 0);
+            }
+            
+            if ( entity.GetMainEntity () != null && contains (entity.GetMainEntity ()) )
+            {
+               removeChild (entity.GetMainEntity ());
+               addChildAt (entity.GetMainEntity (), 0);
+            }
+         }
+      }
+      
+      
       
 //=================================================================================
 //   brothers
 //=================================================================================
       
+      public function GetBrotherGroups ():Array
+      {
+         return mBrothersManager.mBrotherGroupArray;
+      }
       
       public function GlueSelectedEntities ():void
       {

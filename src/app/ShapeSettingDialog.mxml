@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+    title="Shape Setting" width="500">
+   
+   
+   <mx:XMLList id="IsBulletOptions">
+      <node label="Default"/>
+      <node label="Yes"/>
+      <node label="No"/>
+   </mx:XMLList>
+   
+   
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_IsStatic" label="Is Static"/>
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_IsBullet" label="Is Bullet"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_Density" text="Density:" textAlign="right" width="30%"/>
+      <mx:HSlider id="Slider_Denstiy" focusEnabled="false" minimum="0" maximum="10" value="1" width="70%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="1"
+          labels="['0', '5.0', '10.0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_Friction" text="Friction:" textAlign="right" width="30%"/>
+      <mx:HSlider id="Slider_Friction" focusEnabled="false" minimum="0" maximum="1" value="0.1" width="70%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
+          labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_Restitution" text="Restitution:" textAlign="right" width="30%"/>
+      <mx:HSlider id="Slider_Restitution" focusEnabled="false" minimum="0" maximum="1" value="0.2" width="70%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
+          labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   
+   <mx:Spacer height="20"/>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   
+   <mx:Script>
+     <![CDATA[       
+         import mx.managers.PopUpManager;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         public function SetValues (values:Object):void
+         {
+            CheckBox_IsStatic.selected = values.mIsStatic;
+            CheckBox_IsVisible.selected = values.mIsVisible;
+            CheckBox_IsBullet.selected = values.mIsBullet;
+            
+            Slider_Denstiy.value = values.mDensity;
+            Slider_Friction.value = values.mFriction;
+            Slider_Restitution.value = values.mRestitution;
+            
+            CheckBox_IsVisible.enabled = values.mVisibleEditable;
+            CheckBox_IsStatic.enabled = values.mStaticEditable;
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             var params:Object = new Object ();
+             
+            params.mIsStatic = CheckBox_IsStatic.selected;
+            params.mIsVisible = CheckBox_IsVisible.selected;
+            params.mIsBullet = CheckBox_IsBullet.selected;
+            
+            params.mDensity = Slider_Denstiy.value;
+            params.mFriction = Slider_Friction.value;
+            params.mRestitution = Slider_Restitution.value;
+             
+             
+            if (OnConfirm != null)
+               OnConfirm (params);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         
+         private function OnClickDefaultButton ():void
+         {
+            var values:Object = new Object ();
+            
+            // ...
+            
+            SetValues (values);
+         }
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

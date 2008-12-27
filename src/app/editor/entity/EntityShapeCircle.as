@@ -12,6 +12,8 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
+   import common.Define;
+   
    public class EntityShapeCircle extends EntityShape 
    {
    // geom
@@ -20,7 +22,7 @@ package editor.entity {
       
       // ball
       // wheel
-      public var mAppearanceType:int;
+      protected var mAppearanceType:int = Define.CircleAppearanceType_Ball;
       
       public function EntityShapeCircle (world:World)
       {
@@ -45,9 +47,22 @@ package editor.entity {
             borderSize  = mDrawBorder ? 1 : 0;
          }
          
-         alpha = 0.5;
+         alpha = 0.7;
          
          GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, mFilledColor);
+         
+         if (mAppearanceType == Define.CircleAppearanceType_Ball)
+         {
+            var pos:Number = (mRadius * 0.66) * 0.707 - 1;
+            if (pos < 0) pos = 0;
+            GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, borderColor, 1, true, borderColor);
+         }
+         else if (mAppearanceType == Define.CircleAppearanceType_Column)
+         {
+            var radius2:Number = mRadius * 0.5;
+            GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, mFilledColor);
+            GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
+         }
       }
       
       override public function UpdateSelectionProxy ():void
@@ -64,12 +79,27 @@ package editor.entity {
       
       public function SetRadius (radius:Number):void
       {
-         mRadius = radius;
+         mRadius = Math.floor (radius + 0.5);
+         
+         UpdateAppearance ();
+         UpdateSelectionProxy ();
       }
       
       public function GetRadius ():Number
       {
          return mRadius;
+      }
+      
+      public function SetAppearanceType (appearanceType:int):void
+      {
+         mAppearanceType = appearanceType;
+         
+         UpdateAppearance ();
+      }
+      
+      public function GetAppearanceType ():int
+      {
+         return mAppearanceType;
       }
       
 //====================================================================

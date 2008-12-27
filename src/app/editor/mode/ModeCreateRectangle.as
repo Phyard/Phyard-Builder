@@ -34,8 +34,16 @@ package editor.mode {
       
       protected function ResetSession (isCancelled:Boolean):void
       {
-         if (isCancelled && mRectEntity != null)
-            mMainView.DestroyEntity (mRectEntity);
+         if (isCancelled)
+         {
+            if (mRectEntity != null)
+               mMainView.DestroyEntity (mRectEntity);
+         }
+         else
+         {
+            if (mRectEntity != null)
+                mMainView.SetTheOnlySelectedEntity (mRectEntity);
+         }
          
          mRectEntity = null;
       }

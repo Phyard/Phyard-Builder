@@ -1,0 +1,101 @@
+
+package player.entity {
+   
+   import flash.geom.Point;
+   
+   import player.world.World;
+   
+   import player.physics.PhysicsProxyBody;
+   
+   import common.Define;
+   
+   public class ShapeContainer extends Entity
+   {
+      private var mIsBullet:Boolean = false;
+      
+      public function ShapeContainer (world:World)
+      {
+         super (world);
+      }
+      
+      override public function Update (dt:Number):void
+      {
+         if (mPhysicsProxy != null)
+         {
+            var point:Point = GetPosition ();
+            
+            x = point.x;
+            y = point.y;
+            
+            SetRotation ((mPhysicsProxy as PhysicsProxyBody).GetRotation ());
+         }
+      }
+      
+      public function SetBullet (bullet:Boolean):void
+      {
+         mIsBullet = bullet;
+         
+         if (mPhysicsProxy != null)
+            (mPhysicsProxy as PhysicsProxyBody).SetBullet (mIsBullet);
+      }
+      
+      
+      override public function BuildPhysicsProxy (params:Object):void
+      {
+         if (mPhysicsProxy == null)
+         {
+            // 
+            mPhysicsProxy = mWorld.mPhysicsEngine.CreateProxyBody (params.mPosX, params.mPosY, 0, params);
+            
+            mPhysicsProxy.SetUserData (this);
+            
+            (mPhysicsProxy as PhysicsProxyBody).SetBullet (mIsBullet);
+         }
+      }
+      
+      public function GetPosition ():Point
+      {
+         var point:Point;
+         if (mPhysicsProxy != null)
+         {
+            point = (mPhysicsProxy as PhysicsProxyBody).GetPosition ();
+            mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point);
+         }
+         else
+            point = new Point (0, 0);
+         
+         return point;
+      }
+      
+      public function UpdateMass ():void
+      {
+         if (mPhysicsProxy == null)
+            return;
+         
+         var isStatic:Boolean = false;
+         
+         for (var i:int = 0; i < numChildren; ++ i)
+         {
+            var shape:EntityShape = getChildAt (i) as EntityShape;
+            if (shape != null)
+            {
+               if ( shape.IsStatic () )
+               {
+                  isStatic = true;
+                  break;
+               }
+            }
+         }
+         
+         if (isStatic)
+         {
+         }
+         else
+         {
+            (mPhysicsProxy as PhysicsProxyBody).UpdateMass ();
+         }
+      }
+      
+   }
+   
+}

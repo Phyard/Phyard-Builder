@@ -18,10 +18,16 @@ package editor.entity {
       public var mAnchor1:SubEntitySliderAnchor;
       public var mAnchor2:SubEntitySliderAnchor;
       
-      public var mLowerTranslation:Number = -30;
-      public var mUpperTranslation:Number = 30;
+      protected var mEnableLimits:Boolean = true;
+      protected var mLowerTranslation:Number = -20;
+      protected var mUpperTranslation:Number = 20;
+      public var mEnableMotor:Boolean = true;
+      public var mMotorSpeed:Number = 30;
+      public var mBackAndForth:Boolean = true;
       
-      public var mRangeBarHalfHeight:Number = 3;
+      
+      
+      private var mRangeBarHalfHeight:Number = 3;
       
       public function EntityJointSlider (world:World)
       {
@@ -31,6 +37,35 @@ package editor.entity {
          world.addChild (mAnchor1);
          mAnchor2 = new SubEntitySliderAnchor (world, this, true);
          world.addChild (mAnchor2);
+      }
+      
+      public function IsLimitsEnabled ():Boolean
+      {
+         return mEnableLimits;
+      }
+      
+      public function SetLimitsEnabled (enabled:Boolean):void
+      {
+         mEnableLimits = enabled;
+         
+         UpdateAppearance ();
+      }
+      
+      public function SetLimits (lower:Number, upper:Number):void
+      {
+         mLowerTranslation = lower;
+         mUpperTranslation = upper;
+         
+         UpdateAppearance ();
+      }
+      
+      public function GetLowerLimit ():Number
+      {
+         return mLowerTranslation;
+      }
+      public function GetUpperLimit ():Number
+      {
+         return mUpperTranslation;
       }
       
       override public function Destroy ():void
@@ -60,7 +95,7 @@ package editor.entity {
          SetPosition (x1, y1);
          
          //GraphicsUtil.ClearAndDrawLine (this, x1, y1, x2, y2);
-         GraphicsUtil.ClearAndDrawLine (this, 0, 0, distance, 0);
+         GraphicsUtil.ClearAndDrawLine (this, 0, 0, distance * 1.5, 0);
          
          
          if (distance < 0.01)
@@ -74,7 +109,8 @@ package editor.entity {
          
          //GraphicsUtil.DrawLine (this, lowerX, lowerY, upperX, upperY, 0x808080, 5);
          
-         GraphicsUtil.DrawLine (this,distance +  mLowerTranslation, 0, distance + mUpperTranslation, 0, 0x808080, 5);
+         if ( IsLimitsEnabled () )
+            GraphicsUtil.DrawLine (this,distance +  mLowerTranslation, 0, distance + mUpperTranslation, 0, 0x808080, 5);
          
          //var dxHalfHeight:Number = - mRangeBarHalfHeight * dy / distance;
          //var dyHalfHeight:Number =   mRangeBarHalfHeight * dx / distance;
@@ -85,12 +121,18 @@ package editor.entity {
          {
             mVertexControllerLower.SetPosition (distance + mLowerTranslation, 0);
             mVertexControllerLower.UpdateSelectionProxy ();
+            
+            mVertexControllerLower.SetSelectable (IsLimitsEnabled ());
+            mVertexControllerLower.visible = IsLimitsEnabled ();
          }
          
          if (mVertexControllerUpper != null)
          {
             mVertexControllerUpper.SetPosition (distance + mUpperTranslation, 0);
             mVertexControllerUpper.UpdateSelectionProxy ();
+            
+            mVertexControllerUpper.SetSelectable (IsLimitsEnabled ());
+            mVertexControllerUpper.visible = IsLimitsEnabled ();
          }
       }
       

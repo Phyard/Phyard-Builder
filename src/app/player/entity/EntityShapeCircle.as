@@ -44,8 +44,6 @@ package player.entity {
          displayX -= containerPosition.x;
          displayY -= containerPosition.y;
          
-         trace ("1 params.mFriction = " + params.mFriction);
-         
          if (mIsPhysicsShape && mPhysicsProxy == null)
          {
             mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeCircle (

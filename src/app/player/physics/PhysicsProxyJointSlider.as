@@ -3,12 +3,10 @@ package player.physics {
    
    import flash.geom.Point;
    
-   import Box2D.Common.*;
-   import Box2D.Dynamics.*;
-   import Box2D.Dynamics.Joints.*;
-   import Box2D.Collision.*;
-   import Box2D.Collision.Shapes.*;
-   import Box2D.Common.Math.*;
+   import Box2D.Dynamics.Joints.b2PrismaticJoint;
+   import Box2D.Dynamics.Joints.b2PrismaticJointDef;
+   import Box2D.Dynamics.b2Body;
+   import Box2D.Common.Math.b2Vec2;
    
    
    public class PhysicsProxyJointSlider extends PhysicsProxyJoint
@@ -29,6 +27,8 @@ package player.physics {
          axis.Normalize ();
          
          prismaticJointDef.Initialize(body1, body2, new b2Vec2 (anchorPhysicsPosX1, anchorPhysicsPosY1), axis);
+         
+         prismaticJointDef.collideConnected = params.mCollideConnected;
          
          prismaticJointDef.enableLimit      = params.mEnableLimits;
          prismaticJointDef.lowerTranslation = params.mLowerTranslation;

@@ -3,12 +3,10 @@ package player.physics {
    
    import flash.geom.Point;
    
-   import Box2D.Common.*;
-   import Box2D.Dynamics.*;
-   import Box2D.Dynamics.Joints.*;
-   import Box2D.Collision.*;
-   import Box2D.Collision.Shapes.*;
-   import Box2D.Common.Math.*;
+   import Box2D.Dynamics.b2World;
+   import Box2D.Dynamics.b2Body;
+   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Collision.b2AABB;
    
    
    public class PhysicsEngine

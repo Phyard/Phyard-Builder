@@ -35,6 +35,11 @@ package player.world {
    // ...
       //protected var mEditorEntityArray:Array = new Array ();
       
+   // ...
+      
+      private var mAuthorName:String = "";
+      private var mAuthorHonepage:String = "";
+      
       public function World ()
       {
          mPhysicsEngine = new PhysicsEngine ();
@@ -51,6 +56,26 @@ package player.world {
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
       }
       
+      public function SetAuthorName (name:String):void
+      {
+         mAuthorName = name;
+      }
+      
+      public function SetAuthorHomepage (url:String):void
+      {
+         mAuthorHonepage = url;
+      }
+      
+      public function GetAuthorName ():String
+      {
+         return mAuthorName;
+      }
+      
+      public function GetAuthorHomepage ():String
+      {
+         return mAuthorHonepage;
+      }
+      
       public function Destroy ():void
       {
       }
@@ -63,6 +88,9 @@ package player.world {
          for (var k:int = 0; k < speedX; ++ k)
             mPhysicsEngine.Update (dt);
          
+         
+         ClearReport ();
+         
          for (var i:uint=0; i < numChildren; ++ i)
          {
             var displayBoject:Object = getChildAt (i);
@@ -71,6 +99,57 @@ package player.world {
                (displayBoject as Entity).Update (escapedTime);
             }
          }
+         
+         trace ("mNumToBeInfecteds = " + mNumToBeInfecteds);
+         trace ("mNumIntectedToBeInfecteds = " + mNumIntectedToBeInfecteds);
+         trace ("mNumDontInfecteds = " + mNumDontInfecteds);
+         trace ("mNumInfectedDontInfects = " + mNumInfectedDontInfects);
+      }
+      
+      private var mPuzzleSolved:Boolean = false;
+      private var mNumToBeInfecteds:int = 0;
+      private var mNumDontInfecteds:int = 0;
+      private var mNumIntectedToBeInfecteds:int = 0;
+      private var mNumInfectedDontInfects:int = 0;
+      
+      public function ClearReport ():void
+      {
+         mPuzzleSolved = true;
+         
+         mNumToBeInfecteds = 0;
+         mNumDontInfecteds = 0;
+         mNumIntectedToBeInfecteds = 0;
+         mNumInfectedDontInfects = 0;
+      }
+      
+      public function ReportShapeStatus (origionalShapeAiType:int, currentShapeAiType:int):void
+      {
+         if (origionalShapeAiType == Define.ShapeAiType_Uninfected)
+         {
+            mNumToBeInfecteds ++ ;
+            
+            if (currentShapeAiType == Define.ShapeAiType_Infected)
+            {
+               mNumIntectedToBeInfecteds ++;
+            }
+         }
+         
+         if (origionalShapeAiType == Define.ShapeAiType_DontInfect)
+         {
+            mNumDontInfecteds ++;
+            
+            if (currentShapeAiType == Define.ShapeAiType_Infected)
+            {
+               mNumInfectedDontInfects ++;
+            }
+         }
+         
+         mPuzzleSolved = mNumToBeInfecteds != 0 && (mNumIntectedToBeInfecteds == mNumToBeInfecteds) && (mNumInfectedDontInfects == 0);
+      }
+      
+      public function IsPuzzleSolved ():Boolean
+      {
+         return mPuzzleSolved;
       }
       
       private function CreateBackgroundAndBorders ():void

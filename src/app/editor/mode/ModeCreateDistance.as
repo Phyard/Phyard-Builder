@@ -10,6 +10,8 @@ package editor.mode {
    import editor.entity.EntityJointDistance;
    import editor.entity.SubEntityDistanceAnchor;
    
+   import common.Define;
+   
    public class ModeCreateDistance extends Mode
    {
       public function ModeCreateDistance (mainView:WorldView)
@@ -47,7 +49,13 @@ package editor.mode {
       {
          ResetSession (true);
          
-         mEntityJointDistance = mMainView.CreateRope (0, 0, 0, 0);
+         mEntityJointDistance = mMainView.CreateDistance (0, 0, 0, 0);
+         if (mEntityJointDistance == null)
+         {
+            Reset ();
+            return
+         }
+         
          mEntityJointDistance.GetAnchor1 ().visible = false;
          mEntityJointDistance.GetAnchor2 ().visible = false;
          mEntityJointDistance.visible = false;
@@ -86,6 +94,7 @@ package editor.mode {
          
          ResetSession (false);
          
+         mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);
       }
       

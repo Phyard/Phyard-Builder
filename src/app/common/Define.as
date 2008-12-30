@@ -9,11 +9,15 @@ package common {
 // general
 //===========================================================================
       
-      public static const AboutUrl:String = "http://www.tapirgames.com";
+      public static const AboutUrl:String = "http://www.colorinfection.com";
+      public static const EditingTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/basic-editing";
+      public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/publish-your-puzzles";
       
 //===========================================================================
 // world
 //===========================================================================
+      
+      public static const MaxEntitiesCount:int = 300;
       
       public static const WorldWidth:int = 600; 
       public static const WorldHeight:int = 600; 

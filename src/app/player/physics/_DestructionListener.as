@@ -1,13 +1,8 @@
 
 package player.physics {
 
-   import Box2D.Collision.*;
-   import Box2D.Collision.Shapes.*;
-   import Box2D.Dynamics.Contacts.*;
-   import Box2D.Dynamics.Joints.*;
-   import Box2D.Dynamics.*;
-   import Box2D.Common.Math.*;
-   import Box2D.Common.*;
+   import Box2D.Dynamics.Joints.b2Joint;
+   import Box2D.Collision.Shapes.b2Shape;
 
    import Box2D.Dynamics.b2DestructionListener;
    

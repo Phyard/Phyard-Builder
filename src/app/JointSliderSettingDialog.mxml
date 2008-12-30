@@ -13,6 +13,12 @@
       <node label="No"/>
    </mx:XMLList>
 
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limit"/>
@@ -74,6 +80,10 @@
          
          public function SetValues (values:Object):void
          {
+            CheckBox_IsVisible.selected = values.mIsVisible;
+            CheckBox_IsVisible.enabled = false;
+            CheckBox_CollideConnected.selected = values.mCollideConnected;
+            
             CheckBox_LimitEnabled.selected = values.mEnableLimit;
             Slider_LowerTranslation.value = values.mLowerTranslation;
             Slider_UpperTranslation.value = values.mUpperTranslation;
@@ -97,6 +107,9 @@
          private function OnClickOkButton():void 
          {
              var params:Object = new Object ();
+             
+             params.mIsVisible = CheckBox_IsVisible.selected;
+             params.mCollideConnected = CheckBox_CollideConnected.selected;
              
              params.mEnableLimit = CheckBox_LimitEnabled.selected;
              params.mLowerTranslation = Slider_LowerTranslation.value;

@@ -9,6 +9,8 @@ package common {
       
       public var mBrotherGroups:Array = new Array ();
       
+      public var mAuthorName:String = "";
+      public var mAuthorHomepage:String = "";
    }
 }
 

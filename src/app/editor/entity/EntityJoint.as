@@ -15,6 +15,8 @@ package editor.entity {
    public class EntityJoint extends Entity 
    {
       
+      public var mCollideConnected:Boolean = false;
+      
       public function EntityJoint (world:World)
       {
          super (world);

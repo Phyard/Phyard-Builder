@@ -26,6 +26,8 @@ package editor.entity {
          world.addChild (mAnchor1);
          mAnchor2 = new SubEntityDistanceAnchor (world, this);
          world.addChild (mAnchor2);
+         
+         mCollideConnected = true;
       }
       
       override public function Destroy ():void

@@ -12,6 +12,7 @@ package player.entity {
       
       protected var mIsPhysicsShape:Boolean = true;
       
+      protected var mOriginalAiType:int = Define.ShapeAiType_Unkown;
       protected var mAiType:int = Define.ShapeAiType_Unkown;
       
       protected var mIsStatic:Boolean = false;
@@ -25,8 +26,16 @@ package player.entity {
          mShapeContainer = shapeContainer;
       }
       
+      override public function Update (dt:Number):void
+      {
+         mWorld.ReportShapeStatus (mOriginalAiType, mAiType);
+      }
+      
       public function SetShapeAiType (aiType:int):void
       {
+         if (mAiType == Define.ShapeAiType_Unkown)
+            mOriginalAiType = aiType;
+         
          mAiType = aiType;
          
          if (Define.IsBreakableShape (mAiType))

@@ -9,11 +9,22 @@ package player.entity {
    public class EntityJointSlider extends EntityJoint
    {
       
+      //private var mSpriteAnchor1:Sprite; // 
+      //private var mSpriteAnchor2:Sprite;
+      
       private var mBackAndForth:Boolean = true;
       
       public function EntityJointSlider (world:World)
       {
          super (world);
+         
+         //mSpriteAnchor1 = new Sprite ();
+         //GraphicsUtil.ClearAndDrawLine (mSpriteAnchor1, 0, -3, 0, 3);
+         //addChild (mSpriteAnchor1);
+         //
+         //mSpriteAnchor2 = new Sprite ();
+         //GraphicsUtil.ClearAndDrawLine (mSpriteAnchor2, 0, -3, 0, 3);
+         //addChild (mSpriteAnchor2);
       }
       
       override public function Update (dt:Number):void
@@ -31,11 +42,6 @@ package player.entity {
                slider.SetMotorSpeed (-speed);
             }
          }
-         
-         trace ("---------------------------");
-         trace ("translation = " + slider.GetJointTranslation ());
-         trace ("speed = " + slider.GetMotorSpeed ());
-         trace ("mBackAndForth = " + mBackAndForth);
       }
       
       override public function BuildPhysicsProxy (params:Object):void
@@ -60,6 +66,7 @@ package player.entity {
          }
          
          mBackAndForth = params.mBackAndForth;
+         visible = params.mIsVisible && params.mEnableLimits;
          
          RebuildAppearance ();
       }

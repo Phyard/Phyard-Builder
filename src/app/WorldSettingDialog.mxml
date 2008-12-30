@@ -64,7 +64,7 @@
                name = name.substr (0, 50);
             params.mAuthorName = name;
             
-            var url:String = Text_AuthorHomePage.text;
+            var url:String = Text_AuthorHomePage.text.toLowerCase();
             if (url.indexOf ("http") != 0)
                url = "http://" + url;
             if (url.length > 100)

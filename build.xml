@@ -19,6 +19,12 @@
    
    <property name="editor-main-class-name" value="com.meme.app.Suit2d" />
    
+   <property name="editor-width" value="730" />
+   <property name="editor-height" value="600" />
+   
+   <property name="player-width" value="600" />
+   <property name="player-height" value="600" />
+   
    <path id="class-path">
       <fileset dir="${dir.third-party}/java_libs" includes="**/*.jar" />
       <fileset dir="${dir.tools}/editor" includes="**/*.jar" />
@@ -69,7 +75,7 @@
       </exec>
    </target>
    
-   <target name="--compile">
+   <target name="--pre-compile">
       <delete dir="${dir.release}" quiet="true" />
       <delete dir="${dir.build.src}" quiet="true" />
       <mkdir dir="${dir.release}" />
@@ -97,6 +103,10 @@
       <copy todir="${dir.build.src}" overwrite="true">
          <fileset dir="${dir.build.res-compiled}" />
       </copy>
+   </target>
+   
+   <target name="--compile">
+      <antcall target="--pre-compile" />
       
       <condition property="special-game-mode">
          <length string="${--game-mode}" when="greater" length="0" />
@@ -110,7 +120,7 @@
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
          <arg line="-define+=App::Default_Width,${--width}" />
          <arg line="-define+=App::Default_Height,${--height}" />
-         <arg line="-output=${dir.release}/PhysicsEditor.swf"/>
+         <arg line="-output=${dir.release}/CIEditor.swf"/>
          <arg line="-default-background-color 0xFFFFFF"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
@@ -135,7 +145,7 @@
 
       </exec>
       
-      <copy tofile="F:/__WebApps/_homepage/PhysicsEditor.swf" file="${dir.release}/PhysicsEditor.swf"  overwrite="true" verbose="true">
+      <copy tofile="F:/__WebApps/_homepage/PhysicsEditor.swf" file="${dir.release}/CIEditor.swf"  overwrite="true" verbose="true">
       </copy>
    </target>
    
@@ -153,8 +163,8 @@
       <antcall target="--compile">
          <param name="--debug" value="true" />
          <param name="--game-mode" value="" />
-         <param name="--width" value="730" />
-         <param name="--height" value="600" />
+         <param name="--width" value="${editor-width}" />
+         <param name="--height" value="${editor-height}" />
       </antcall>
    </target>
    
@@ -162,8 +172,8 @@
       <antcall target="--compile">
          <param name="--debug" value="false" />
          <param name="--game-mode" value="" />
-         <param name="--width" value="730" />
-         <param name="--height" value="600" />
+         <param name="--width" value="${editor-width}" />
+         <param name="--height" value="${editor-height}" />
       </antcall>
    </target>
    
@@ -171,23 +181,109 @@
       <antcall target="--compile">
          <param name="--debug" value="false" />
          <param name="--game-mode" value="" />
-         <param name="--width" value="730" />
-         <param name="--height" value="600" />
+         <param name="--width" value="${editor-width}" />
+         <param name="--height" value="${editor-height}" />
       </antcall>
    </target>
    
-   
+    <target name="release-editor-wrapper" depends="release">
+      <copy tofile="${dir.build.src}/wrapper/CIEditor.swf" file="${dir.release}/CIEditor.swf"  overwrite="true" verbose="true">
+      </copy>
+      
+      <exec dir="${dir.build.src}" executable="mxmlc.exe">
+         <arg line="-debug=false"/>
+         <arg line="-define+=Compile::Is_Debugging,false" />
+         <arg line="-define+=App::Default_Width,${editor-width}" />
+         <arg line="-define+=App::Default_Height,${editor-height}" />
+         <arg line="-output=${dir.release}/editor.swf"/>
+         <arg line="-default-background-color 0xFFFFFF"/>
+         <arg line="-default-frame-rate 30"/>
+         <arg line="-optimize=true" />
+         <arg line="-use-network" />
+         <arg line="-default-size ${editor-width} ${editor-height}" />
+         <arg line="-source-path=${dir.build.src}" />
+         <arg line="-locale=en_US" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
+         <arg line="-library-path=${dir.third-party}/kongragate_api/KongregateAPI.swc" />
+         <arg line="-library-path=${dir.third-party}/mindjolt_api/MindJoltAPI.swc" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         
+         
+         <!-- method 1 -->
+         <!--
+         <arg line="${dir.build.src}/main.mxml" />
+         -->
+         
+         <!-- method 2 -->
+         <arg line="wrapper/ColorInfectionEditor.as" />
+         
+         <!-- method 3 -->
+         <!--
+         <arg line="-frame=editor,wrapper.ColorInfectionEditor" />
+         <arg line=" EditorPreloader.as" />
+         -->
 
-
-   
-   
-   
-   <target name="analyzer">
-      <exec dir="${basedir}" executable="jrunscript.exe">
-         <arg line="-cp ${string.class-path}"/>
-         <arg line="-f ${dir.tools}/analyzer/analyzer.js"/>
       </exec>
+      
+      <copy tofile="F:/__WebApps/_homepage/PhysicsEditor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true">
+      </copy>
+      
+      <copy tofile="D:/projects/PhysicsEditor/googleapp/src/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true">
+      </copy>
+      
+      
+      
+
    </target>
+   
+    <target name="release-player-wrapper" depends="compile-resource">
+    
+      <antcall target="--pre-compile" />
+      
+      <exec dir="${dir.build.src}" executable="mxmlc.exe">
+         <arg line="-debug=false"/>
+         <arg line="-define+=Compile::Is_Debugging,false" />
+         <arg line="-define+=App::Default_Width,${player-width}" />
+         <arg line="-define+=App::Default_Height,${player-height}" />
+         <arg line="-output=${dir.release}/player.swf"/>
+         <arg line="-default-background-color 0xDDDDA0"/>
+         <arg line="-default-frame-rate 30"/>
+         <arg line="-optimize=true" />
+         <arg line="-use-network" />
+         <arg line="-default-size ${player-width} ${player-height}" />
+         <arg line="-source-path=${dir.build.src}" />
+         <arg line="-locale=en_US" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
+         <arg line="-library-path=${dir.third-party}/kongragate_api/KongregateAPI.swc" />
+         <arg line="-library-path=${dir.third-party}/mindjolt_api/MindJoltAPI.swc" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         
+         
+         <!-- method 1 -->
+         <!--
+         <arg line="${dir.build.src}/main.mxml" />
+         -->
+         
+         <!-- method 2 -->
+         <arg line="wrapper/ColorInfectionPlayer.as" />
+         
+         <!-- method 3 -->
+         <!--
+         <arg line="-frame=editor,wrapper.ColorInfectionEditor" />
+         <arg line=" EditorPreloader.as" />
+         -->
+
+      </exec>
+      
+      <copy tofile="F:/__WebApps/_homepage/ColorInfectionPlayer.swf" file="${dir.release}/player.swf"  overwrite="true" verbose="true">
+      </copy>
+
+   </target>
+   
+     
+
+
+
    
    
 </project>

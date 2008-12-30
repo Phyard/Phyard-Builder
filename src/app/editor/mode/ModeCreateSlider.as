@@ -10,6 +10,8 @@ package editor.mode {
    import editor.entity.EntityJointSlider;
    import editor.entity.SubEntitySliderAnchor;
    
+   import common.Define;
+   
    public class ModeCreateSlider extends Mode
    {
       public function ModeCreateSlider (mainView:WorldView)
@@ -48,6 +50,12 @@ package editor.mode {
          ResetSession (true);
          
          mEntityJointSlider = mMainView.CreateSlider (0, 0, 0, 0);
+         if (mEntityJointSlider == null)
+         {
+            Reset ();
+            return
+         }
+         
          mEntityJointSlider.GetAnchor1 ().visible = false;
          mEntityJointSlider.GetAnchor2 ().visible = false;
          mEntityJointSlider.visible = false;
@@ -83,9 +91,9 @@ package editor.mode {
          mEntityJointSlider.GetAnchor1 ().UpdateSelectionProxy ();
          mEntityJointSlider.GetAnchor2 ().UpdateSelectionProxy ();
          
-         
          ResetSession (false);
          
+         mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);
       }
       

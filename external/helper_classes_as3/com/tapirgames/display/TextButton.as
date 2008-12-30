@@ -22,6 +22,8 @@ package com.tapirgames.display {
       private var mOverState:DisplayObject;
       private var mDownState:DisplayObject;
       private var mDisableState:DisplayObject;
+      
+      private var mSelected:Boolean;
 
       
       public function TextButton (text:String = "", onClick:Function = null)
@@ -58,6 +60,22 @@ package com.tapirgames.display {
          }
          
           hitTestState = upState;
+      }
+      
+      public function SetSelected (selected:Boolean):void
+      {
+         mSelected = selected;
+         
+         if (mSelected)
+         {
+            upState = overState = downState = mDownState;
+         }
+         else
+         {
+            upState = mUpState;
+            overState = mOverState;
+            downState = mDownState;
+         }
       }
       
       private function OnButtonClick( event:MouseEvent ):void 

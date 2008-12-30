@@ -52,8 +52,8 @@ package com.tapirgames.util {
             newText = newText + " face=\"" + fontFace + "\"";
          
          return newText + ">" + text + "</font>";
-      }
       
+      }
 
    }
 }

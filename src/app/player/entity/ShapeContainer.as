@@ -29,6 +29,13 @@ package player.entity {
             
             SetRotation ((mPhysicsProxy as PhysicsProxyBody).GetRotation ());
          }
+         
+         for (var i:int = 0; i < numChildren; ++ i)
+         {
+            var object:Object = getChildAt (i);
+            if (object is Entity)
+               (object as Entity).Update (dt);
+         }
       }
       
       public function SetBullet (bullet:Boolean):void

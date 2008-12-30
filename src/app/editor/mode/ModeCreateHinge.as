@@ -10,6 +10,8 @@ package editor.mode {
    import editor.entity.EntityJointHinge;
    import editor.entity.SubEntityHingeAnchor;
    
+   import common.Define;
+   
    public class ModeCreateHinge extends Mode
    {
       public function ModeCreateHinge (mainView:WorldView)
@@ -44,6 +46,12 @@ package editor.mode {
          ResetSession (true);
          
          mEntityJointHinge = mMainView.CreateHinge (0, 0);
+         if (mEntityJointHinge == null)
+         {
+            Reset ();
+            return
+         }
+         
          mEntityJointHinge.GetAnchor ().visible = false;
          mEntityJointHinge.visible = false;
       }
@@ -55,7 +63,6 @@ package editor.mode {
          
          mEntityJointHinge.GetAnchor ().SetPosition (posX, posY);
          
-         
          mEntityJointHinge.UpdateAppearance ();
       }
       
@@ -65,9 +72,9 @@ package editor.mode {
          
          mEntityJointHinge.GetAnchor ().UpdateSelectionProxy ();
          
-         
          ResetSession (false);
          
+         mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);
       }
       

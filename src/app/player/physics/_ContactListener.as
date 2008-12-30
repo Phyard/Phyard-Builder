@@ -1,12 +1,9 @@
 
 package player.physics {
 
-   import Box2D.Collision.*;
-   import Box2D.Collision.Shapes.*;
-   import Box2D.Dynamics.Contacts.*;
-   import Box2D.Dynamics.*;
-   import Box2D.Common.Math.*;
-   import Box2D.Common.*;
+   import Box2D.Collision.b2ContactPoint;
+   import Box2D.Collision.Shapes.b2Shape;
+   import Box2D.Dynamics.Contacts.b2ContactResult;
 
    import Box2D.Dynamics.b2ContactListener;
    

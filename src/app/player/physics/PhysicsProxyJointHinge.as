@@ -3,12 +3,10 @@ package player.physics {
    
    import flash.geom.Point;
    
-   import Box2D.Common.*;
-   import Box2D.Dynamics.*;
-   import Box2D.Dynamics.Joints.*;
-   import Box2D.Collision.*;
-   import Box2D.Collision.Shapes.*;
-   import Box2D.Common.Math.*;
+   import Box2D.Dynamics.Joints.b2RevoluteJoint;
+   import Box2D.Dynamics.Joints.b2RevoluteJointDef;
+   import Box2D.Dynamics.b2Body;
+   import Box2D.Common.Math.b2Vec2;
    
    
    public class PhysicsProxyJointHinge extends PhysicsProxyJoint
@@ -27,6 +25,8 @@ package player.physics {
          var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.GetGroundBody () : proxyBody2._b2Body;
          
          hingeJointDef.Initialize(body1, body2, new b2Vec2 (anchorPhysicsPosX, anchorPhysicsPosY));
+         
+         hingeJointDef.collideConnected = params.mCollideConnected;
          
          hingeJointDef.enableLimit = params.mEnableLimits;
          hingeJointDef.lowerAngle = params.mLowerAngle;

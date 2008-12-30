@@ -24,6 +24,8 @@ package editor.world {
    
    import editor.selection.SelectionEngine;
    
+   import common.Define;
+   
    public class World extends Sprite 
    {
       
@@ -121,6 +123,9 @@ package editor.world {
       
       public function CreateEntityShapeCircle ():EntityShapeCircle
       {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
          var circle:EntityShapeCircle = new EntityShapeCircle (this);
          addChild (circle);
          
@@ -129,14 +134,20 @@ package editor.world {
       
       public function CreateEntityShapeRectangle ():EntityShapeRectangle
       {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
          var rect:EntityShapeRectangle = new EntityShapeRectangle (this);
          addChild (rect);
          
          return rect;
       }
       
-      public function CreateEntityDistanceRope ():EntityJointDistance
+      public function CreateEntityJointDistance ():EntityJointDistance
       {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
          var rope:EntityJointDistance = new EntityJointDistance (this);
          addChild (rope);
          
@@ -145,6 +156,9 @@ package editor.world {
       
       public function CreateEntityJointHinge ():EntityJointHinge
       {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
          var hinge:EntityJointHinge = new EntityJointHinge (this);
          addChild (hinge);
          
@@ -153,6 +167,9 @@ package editor.world {
       
       public function CreateEntityJointSlider ():EntityJointSlider
       {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
          var slider:EntityJointSlider = new EntityJointSlider (this);
          addChild (slider);
          
@@ -381,6 +398,9 @@ package editor.world {
             
             if (entity != null)
             {
+               if (numChildren >= Define.MaxEntitiesCount)
+                  return;
+                  
                var newEntity:Entity = entity.Clone (offsetX, offsetY);
                
                if (newEntity != null)
@@ -480,11 +500,28 @@ package editor.world {
          return mBrothersManager.mBrotherGroupArray;
       }
       
+      public function GlueEntities (entities:Array):void
+      {
+         mBrothersManager.MakeBrothers (entities);
+      }
+      
+      public function GlueEntitiesByIndices (entityIndices:Array):void
+      {
+         var entities:Array = new Array (entityIndices.length);
+         
+         for (var i:int = 0; i < entityIndices.length; ++ i)
+         {
+            entities [i] = getChildAt (entityIndices [i]);
+         }
+         
+         mBrothersManager.MakeBrothers (entities);
+      }
+      
       public function GlueSelectedEntities ():void
       {
          var entityArray:Array = GetSelectedEntities ();
          
-         mBrothersManager.MakeBrothers (entityArray);
+         GlueEntities (entityArray);
       }
       
       public function BreakApartSelectedEntities ():void

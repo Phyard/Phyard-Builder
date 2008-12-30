@@ -22,6 +22,7 @@ package editor.entity {
    // physics
       
       protected var mIsStatic:Boolean = false;
+      
       public var mIsBullet:Boolean = false;
       
       public var mDensity:Number = 1.0;

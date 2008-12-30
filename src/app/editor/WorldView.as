@@ -77,6 +77,7 @@ package editor {
    import player.world.World;
    
    import common.DataFormat;
+   import common.DataFormat2;
    import common.Define;
    
    public class WorldView extends UIComponent 
@@ -180,29 +181,17 @@ package editor {
          mEditorElementsContainer.addChild (mCursorLayer);
          
          //
-         mEditorWorld = new editor.world.World ();
-         mContentContainer.addChild (mEditorWorld);
-         
-         //
          mPlayerElementsContainer = new Sprite ();
          mPlayerElementsContainer.visible = false;
          addChild (mPlayerElementsContainer);
          
          //
-         var theContextMenu:ContextMenu = new ContextMenu ();
-         theContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
-         defaultItems.print = true;
          
-            var itemWorldSetting:ContextMenuItem = new ContextMenuItem ("World Setting ...");
-            theContextMenu.customItems.push (itemWorldSetting);
-            itemWorldSetting.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnWorldSetting);
-            
-            var itemAbout:ContextMenuItem = new ContextMenuItem("About This Editor");
-            theContextMenu.customItems.push (itemAbout);
-            itemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
+         SetEditorWorld (new editor.world.World ());
          
-         contextMenu = theContextMenu;
+         //
+         
+         BuildContextMenu ();
       }
       
       
@@ -287,6 +276,9 @@ package editor {
          mStepTimeSpan.End ();
          mStepTimeSpan.Start ();
          
+         if ( ! HasSettingDialogOpened () )
+            stage.focus = stage;
+         
          if ( IsPlaying () )
          {
             if (mPlayerWorld != null && ! IsPlayingPaused () )
@@ -298,6 +290,7 @@ package editor {
          }
          
          // !!! seems if (DEFINE_VAR) can't includes another if clause.
+         /*
          if ( Boolean(Compile::Is_Debugging) )
          {
             if (mFpsCounter == null)
@@ -310,30 +303,11 @@ package editor {
             mFpsCounter.y = height - mFpsCounter.height;
             mFpsCounter.Update (mStepTimeSpan.GetLastSpan ());
          }
+         */
       }
       
       
       
-      
-//==================================================================================
-// editing level
-//==================================================================================
-      
-      public static const EditingLevel_Body:int = 0;
-      public static const EditingLevel_SubBody:int = 1;
-      public static const EditingLevel_Shape:int = 2;
-      
-      private var mEditingLevel:int = EditingLevel_Body;
-      
-      public function SetEditingLevel (level:int):void
-      {
-         mEditingLevel = level;
-      }
-      
-      public function GetEditingLevel ():int
-      {
-         return mEditingLevel;
-      }
       
       
 //==================================================================================
@@ -438,7 +412,7 @@ package editor {
             mCurrentEditMode.Initialize ();
       }
       
-      private var mIsCreating:Boolean = true;
+      private var mIsCreating:Boolean = false;
       private var mIsPlaying:Boolean = false;
       private var mIsPlayingPaused:Boolean = false;
       
@@ -584,6 +558,11 @@ package editor {
       public var mButtonMoveToTop:Button;
       public var mButtonMoveToBottom:Button;
       
+      public var mButtonAuthorInfo:Button;
+      public var mButtonSaveWorld:Button;
+      public var mButtonLoadWorld:Button;
+      
+      
       
       private function UpdateEditingButtonsEnabled ():void
       {
@@ -633,11 +612,127 @@ package editor {
             case mButtonMoveToBottom:
                MoveSelectedEntitiesToBottom ();
                break
+            case mButtonAuthorInfo:
+               OpenWorldSettingDialog ();
+               break
+            case mButtonSaveWorld:
+               OpenWorldSavingDialog ();
+               break
+            case mButtonLoadWorld:
+               OpenWorldLoadingDialog ();
+               break
             default:
                break;
          }
       }
       
+      //private var mMenuItemAuthorInfo:ContextMenuItem;
+      //private var mMenuItemSaveWorld:ContextMenuItem;
+      //private var mMenuItemLoadWorld:ContextMenuItem;
+      private var mMenuItemAuthorInfo:ContextMenuItem;
+      
+      private var mMenuItemAbout:ContextMenuItem;
+      
+      private function BuildContextMenu ():void
+      {
+         var theContextMenu:ContextMenu = new ContextMenu ();
+         theContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
+         defaultItems.print = true;
+            /*
+            mMenuItemAuthorInfo = new ContextMenuItem ("Author Setting ...", true);
+            theContextMenu.customItems.push (mMenuItemAuthorInfo);
+            mMenuItemAuthorInfo.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+            
+            mMenuItemSaveWorld = new ContextMenuItem ("Save World ...");
+            theContextMenu.customItems.push (mMenuItemSaveWorld);
+            mMenuItemSaveWorld.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+            
+            mMenuItemLoadWorld = new ContextMenuItem ("Load World ...");
+            theContextMenu.customItems.push (mMenuItemLoadWorld);
+            mMenuItemLoadWorld.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+            */
+            mMenuItemAbout = new ContextMenuItem("About This Editor", false);
+            theContextMenu.customItems.push (mMenuItemAbout);
+            mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         
+         contextMenu = theContextMenu;
+      }
+      
+      private function OnContextMenuEvent (event:ContextMenuEvent):void
+      {
+         switch (event.target)
+         {
+            /*
+            case mMenuItemAuthorInfo:
+               OpenWorldSettingDialog ();
+               break;
+            case mMenuItemSaveWorld:
+               break;
+            case mMenuItemLoadWorld:
+               break;
+            */
+            case mMenuItemAbout:
+               OpenAboutLink ();
+               break;
+            default:
+               break;
+         }
+      }
+      
+      private function SetEditorWorld (newEditorWorld:editor.world.World):void
+      {
+         if (mEditorWorld == null)
+         {
+            mEditorWorld = newEditorWorld;
+            mContentContainer.addChild (mEditorWorld);
+            
+            return;
+         }
+         
+         if (newEditorWorld == null)
+            return;
+         
+         newEditorWorld.x = mEditorWorld.x;
+         newEditorWorld.y = mEditorWorld.y;
+         newEditorWorld.scaleX = mEditorWorld.scaleX;
+         newEditorWorld.scaleY = mEditorWorld.scaleY;
+         
+         mContentContainer.removeChild (mEditorWorld);
+         
+         mEditorWorld = newEditorWorld;
+         mContentContainer.addChild (mEditorWorld);
+         
+         //
+         
+         mTheSelectedVertexController = null;
+         mLastSelectedEntity = null;
+         mLastSelectedEntities = null;
+         
+         CalSelectedEntitiesCenterPoint ();
+      }
+      
+      private function SetPlayerWorld (newPlayerWorld:player.world.World):void
+      {
+         if (mPlayerWorld == null)
+         {
+            mPlayerWorld = newPlayerWorld;
+            mPlayerElementsContainer.addChild (mPlayerWorld);
+         }
+         else
+         {
+            mPlayerElementsContainer.removeChild (mPlayerWorld);
+            
+            if (newPlayerWorld == null)
+               return;
+               
+            mPlayerWorld = newPlayerWorld;
+         }
+         
+         SynchrinizePlayerWorldWithEditorWorld ();
+         mPlayerWorld.Update (0, 1);
+         mPlayerElementsContainer.addChild (mPlayerWorld);
+      }
       
       private function DestroyPlayerWorld ():void
       {
@@ -657,16 +752,9 @@ package editor {
          
          DestroyPlayerWorld ();
          
-         var object:Object = DataFormat.EditorWorld2WorldDefine (mEditorWorld);
+         var playerWorld:player.world.World = DataFormat2.WorldDefine2PlayerWorld (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
          
-         
-         mPlayerWorld = DataFormat.WorldDefine2PlayerWorld (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
-         SynchrinizePlayerWorldWithEditorWorld ();
-         if (mPlayerWorld != null)
-         {
-            mPlayerWorld.Update (0, 1);
-            mPlayerElementsContainer.addChild (mPlayerWorld);
-         }
+         SetPlayerWorld (playerWorld);
          
          mIsPlaying = true;
          mIsPlayingPaused = false;
@@ -705,7 +793,12 @@ package editor {
       public var ShowShapeCircleSettingDialog:Function = null;
       public var ShowHingeSettingDialog:Function = null;
       public var ShowSliderSettingDialog:Function = null;
+      
       public var ShowWorldSettingDialog:Function = null;
+      public var ShowWorldSavingDialog:Function = null;
+      public var ShowWorldLoadingDialog:Function = null;
+      
+      public var ShowPlayCodeLoadingDialog:Function = null;
       
       public function IsEntitySettingable (entity:Entity):Boolean
       {
@@ -772,6 +865,7 @@ package editor {
             var hinge:EntityJointHinge = entity.GetMainEntity () as EntityJointHinge;
             
             values.mIsVisible = hinge.IsVisible ();
+            values.mCollideConnected = hinge.mCollideConnected;
             values.mEnableLimit = hinge.IsLimitsEnabled ();
             values.mLowerAngle = hinge.GetLowerLimit ();
             values.mUpperAngle = hinge.GetUpperLimit ();
@@ -785,6 +879,8 @@ package editor {
          {
             var slider:EntityJointSlider = entity.GetMainEntity () as EntityJointSlider;
             
+            values.mIsVisible = slider.IsVisible ();
+            values.mCollideConnected = slider.mCollideConnected;
             values.mEnableLimit = slider.IsLimitsEnabled ();
             values.mLowerTranslation = slider.GetLowerLimit ();
             values.mUpperTranslation = slider.GetUpperLimit ();
@@ -796,8 +892,14 @@ package editor {
          }
       }
       
-      private function OnWorldSetting (event:ContextMenuEvent):void
+      private function OpenWorldSettingDialog ():void
       {
+         if (! IsEditing ())
+            return;
+         
+         if (HasSettingDialogOpened ())
+            return;
+         
          var values:Object = new Object ();
          
          values.mAuthorName = mEditorWorld.GetAuthorName ();
@@ -806,12 +908,51 @@ package editor {
          ShowWorldSettingDialog (values, SetWorldProperties);
       }
       
-      private function OnAbout (event:ContextMenuEvent):void
+      
+      private function OpenWorldSavingDialog ():void
+      {
+         if (! IsEditing ())
+            return;
+         
+         if (HasSettingDialogOpened ())
+            return;
+         
+         var values:Object = new Object ();
+         
+         values.mXmlString = DataFormat.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         values.mHexString = DataFormat.WorldDefine2HexString (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         
+         ShowWorldSavingDialog (values);
+      }
+      
+      
+      private function OpenWorldLoadingDialog ():void
+      {
+         if (! IsEditing ())
+            return;
+         
+         if (HasSettingDialogOpened ())
+            return;
+         
+         ShowWorldLoadingDialog (LoadEditorWorldFromXmlString);
+      }
+      
+      
+      private function OpenAboutLink ():void
       {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
       
-      
+      private function OpenPlayCodeLoadingDialog ():void
+      {
+         if (! IsPlaying ())
+            return;
+         
+         if (HasSettingDialogOpened ())
+            return;
+         
+         ShowPlayCodeLoadingDialog (LoadPlayerWorldFromHexString);
+      }
       
 //=================================================================================
 //   mouse and key events
@@ -1006,6 +1147,17 @@ package editor {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
+         var point:Point = LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
+         
+         if ( ! rect.containsPoint (point) )
+         {
+            // wired: sometimes, moust out event can't be captured, so create a fake mouse out event here
+            OnMouseOut (event);
+            return;
+         }
+
+         
          _isZeroMove = false;
          
          var viewPoint:Point = LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
@@ -1040,7 +1192,6 @@ package editor {
       {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
-         
          
          var worldPoint:Point = LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
          
@@ -1173,6 +1324,9 @@ package editor {
                break;
             case Keyboard.ESCAPE:
                break;
+            case 76: // L
+               OpenPlayCodeLoadingDialog ();
+               break
             default:
                break;
          }
@@ -1197,6 +1351,8 @@ package editor {
          
          
          var circle:EntityShapeCircle = mEditorWorld.CreateEntityShapeCircle ();
+         if (circle == null)
+            return null;
          
          circle.SetPosition (centerX, centerY);
          circle.SetRadius (radius);
@@ -1221,6 +1377,8 @@ package editor {
          var halfHeight:Number = (startPoint.y - endPoint.y) * 0.5; if (halfHeight < 0) halfHeight = - halfHeight;
          
          var rect:EntityShapeRectangle = mEditorWorld.CreateEntityShapeRectangle ();
+         if (rect == null)
+            return null;
          
          rect.SetPosition (centerX, centerY);
          rect.SetHalfWidth  (halfWidth);
@@ -1237,6 +1395,9 @@ package editor {
       public function CreateHinge (posX:Number, posY:Number):EntityJointHinge
       {
          var hinge:EntityJointHinge = mEditorWorld.CreateEntityJointHinge ();
+         if (hinge == null)
+            return null;
+            
          hinge.GetAnchor ().SetPosition (posX, posY);
          
          SetTheOnlySelectedEntity (hinge.GetAnchor ());
@@ -1244,9 +1405,12 @@ package editor {
          return hinge;
       }
       
-      public function CreateRope (posX1:Number, posY1:Number, posX2:Number, posY2:Number):EntityJointDistance
+      public function CreateDistance (posX1:Number, posY1:Number, posX2:Number, posY2:Number):EntityJointDistance
       {
-         var rope:EntityJointDistance = mEditorWorld.CreateEntityDistanceRope ();
+         var rope:EntityJointDistance = mEditorWorld.CreateEntityJointDistance ();
+         if (rope == null)
+            return null;
+         
          rope.GetAnchor1 ().SetPosition (posX1, posY1);
          rope.GetAnchor2 ().SetPosition (posX2, posY2);
          
@@ -1258,6 +1422,9 @@ package editor {
       public function CreateSlider (posX1:Number, posY1:Number, posX2:Number, posY2:Number):EntityJointSlider
       {
          var slider:EntityJointSlider = mEditorWorld.CreateEntityJointSlider ();
+         if (slider == null)
+            return null;
+         
          slider.GetAnchor1 ().SetPosition (posX1, posY1);
          slider.GetAnchor2 ().SetPosition (posX2, posY2);
          
@@ -1386,6 +1553,10 @@ package editor {
          mSelectedEntitiesCenterSprite.visible = (count > 1);
          
          UpdateEditingButtonsEnabled ();
+         
+         trace ("centerX = " + centerX);
+         trace ("centerY = " + centerY);
+         trace ("count = " + count);
       }
       
       public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
@@ -1528,6 +1699,7 @@ package editor {
             var hinge:EntityJointHinge = entity.GetMainEntity () as EntityJointHinge;
             
             hinge.SetVisible (params.mIsVisible);
+            hinge.mCollideConnected = params.mCollideConnected;
             hinge.SetLimitsEnabled (params.mEnableLimit);
             hinge.SetLimits (params.mLowerAngle, params.mUpperAngle);
             hinge.mEnableMotor = params.mEnableMotor;
@@ -1548,6 +1720,8 @@ package editor {
          {
             var slider:EntityJointSlider = entity.GetMainEntity () as EntityJointSlider;
             
+            slider.SetVisible (params.mIsVisible);
+            slider.mCollideConnected = params.mCollideConnected;
             slider.SetLimitsEnabled (params.mEnableLimit);
             slider.SetLimits (params.mLowerTranslation, params.mUpperTranslation);
             slider.mEnableMotor = params.mEnableMotor;
@@ -1562,7 +1736,25 @@ package editor {
          mEditorWorld.SetAuthorHomepage (params.mAuthorHomepage);
       }
       
+      public function LoadEditorWorldFromXmlString (params:Object):void
+      {
+         var xmlString:String = params.mXmlString;
+         
+         var xml:XML = new XML (xmlString);
+         
+         var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (DataFormat.Xml2WorldDefine (xml));
+         
+         SetEditorWorld (newEditorWorld);
+      }
       
+      public function LoadPlayerWorldFromHexString (params:Object):void
+      {
+         var hexString:String = params.mHexString;
+         
+         var newPlayerWorld:player.world.World = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (hexString));
+         
+         SetPlayerWorld (newPlayerWorld);
+      }
       
 //============================================================================
 //    

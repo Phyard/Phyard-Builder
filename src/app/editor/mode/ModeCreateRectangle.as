@@ -10,6 +10,8 @@ package editor.mode {
    
    import editor.entity.EntityShapeRectangle;
    
+   import common.Define;
+   
    public class ModeCreateRectangle extends ModeCreateShape
    {
       
@@ -56,6 +58,11 @@ package editor.mode {
          mStartY = startY;
          
          mRectEntity = mMainView.CreateRectangle (mStartX, mStartY, mStartX, mStartY, mFilledColor, mIsStatic);
+          if (mRectEntity == null)
+         {
+            Reset ();
+            return
+         }
          
          UpdateSession (startX, startY);
       }

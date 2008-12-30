@@ -10,6 +10,8 @@ package editor.mode {
    
    import editor.entity.EntityShapeCircle;
    
+   import common.Define;
+   
    public class ModeCreateCircle extends ModeCreateShape
    {
       public function ModeCreateCircle (mainView:WorldView, filledColor:uint, isStatic:Boolean)
@@ -55,6 +57,11 @@ package editor.mode {
          mCenterY = startY;
          
          mCircleEntity = mMainView.CreateCircle (mCenterX, mCenterY, 0, mFilledColor, mIsStatic);
+         if (mCircleEntity == null)
+         {
+            Reset ();
+            return
+         }
          
          UpdateSession (startX, startY);
       }

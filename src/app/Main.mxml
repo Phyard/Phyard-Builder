@@ -19,23 +19,23 @@
          <mx:Box id="Box_BodyCreateCommand" direction="vertical" borderStyle="solid" width="40" height="100%" 
                      paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
                      horizontalGap="0" verticalGap="0">
-            <mx:Button id="Button_CreateBox" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box.png')" downIcon="@Embed('create/box-sel.png')" overIcon="@Embed('create/box.png')" selectedUpIcon="@Embed('create/box-sel.png')" selectedOverIcon="@Embed('create/box-sel.png')" selectedDownIcon="@Embed('create/box.png')"   />
-            <mx:Button id="Button_CreateBox_Static" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_static.png')" downIcon="@Embed('create/box-sel_static.png')" overIcon="@Embed('create/box_static.png')" selectedUpIcon="@Embed('create/box-sel_static.png')" selectedOverIcon="@Embed('create/box-sel_static.png')" selectedDownIcon="@Embed('create/box_static.png')"   />
-            <mx:Button id="Button_CreateBox_Breakable" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_breakable.png')" downIcon="@Embed('create/box-sel_breakable.png')" overIcon="@Embed('create/box_breakable.png')" selectedUpIcon="@Embed('create/box-sel_breakable.png')" selectedOverIcon="@Embed('create/box-sel_breakable.png')" selectedDownIcon="@Embed('create/box_breakable.png')"   />
-            <mx:Button id="Button_CreateBox_Infected" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_infected.png')" downIcon="@Embed('create/box-sel_infected.png')" overIcon="@Embed('create/box_infected.png')" selectedUpIcon="@Embed('create/box-sel_infected.png')" selectedOverIcon="@Embed('create/box-sel_infected.png')" selectedDownIcon="@Embed('create/box_infected.png')"   />
-            <mx:Button id="Button_CreateBox_Uninfected" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_uninfected.png')" downIcon="@Embed('create/box-sel_uninfected.png')" overIcon="@Embed('create/box_uninfected.png')" selectedUpIcon="@Embed('create/box-sel_uninfected.png')" selectedOverIcon="@Embed('create/box-sel_uninfected.png')" selectedDownIcon="@Embed('create/box_uninfected.png')"   />
-            <mx:Button id="Button_CreateBox_Dontinfect" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_dontinfect.png')" downIcon="@Embed('create/box-sel_dontinfect.png')" overIcon="@Embed('create/box_dontinfect.png')" selectedUpIcon="@Embed('create/box-sel_dontinfect.png')" selectedOverIcon="@Embed('create/box-sel_dontinfect.png')" selectedDownIcon="@Embed('create/box_dontinfect.png')"   />
+            <mx:Button id="Button_CreateBox" toolTip="Create Movable Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box.png')" downIcon="@Embed('create/box-sel.png')" overIcon="@Embed('create/box.png')" selectedUpIcon="@Embed('create/box-sel.png')" selectedOverIcon="@Embed('create/box-sel.png')" selectedDownIcon="@Embed('create/box.png')"   />
+            <mx:Button id="Button_CreateBox_Static" toolTip="Create Static Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_static.png')" downIcon="@Embed('create/box-sel_static.png')" overIcon="@Embed('create/box_static.png')" selectedUpIcon="@Embed('create/box-sel_static.png')" selectedOverIcon="@Embed('create/box-sel_static.png')" selectedDownIcon="@Embed('create/box_static.png')"   />
+            <mx:Button id="Button_CreateBox_Breakable" toolTip="Create Breakable Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_breakable.png')" downIcon="@Embed('create/box-sel_breakable.png')" overIcon="@Embed('create/box_breakable.png')" selectedUpIcon="@Embed('create/box-sel_breakable.png')" selectedOverIcon="@Embed('create/box-sel_breakable.png')" selectedDownIcon="@Embed('create/box_breakable.png')"   />
+            <mx:Button id="Button_CreateBox_Infected" toolTip="Create Infected Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_infected.png')" downIcon="@Embed('create/box-sel_infected.png')" overIcon="@Embed('create/box_infected.png')" selectedUpIcon="@Embed('create/box-sel_infected.png')" selectedOverIcon="@Embed('create/box-sel_infected.png')" selectedDownIcon="@Embed('create/box_infected.png')"   />
+            <mx:Button id="Button_CreateBox_Uninfected" toolTip="Create Uninfected Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_uninfected.png')" downIcon="@Embed('create/box-sel_uninfected.png')" overIcon="@Embed('create/box_uninfected.png')" selectedUpIcon="@Embed('create/box-sel_uninfected.png')" selectedOverIcon="@Embed('create/box-sel_uninfected.png')" selectedDownIcon="@Embed('create/box_uninfected.png')"   />
+            <mx:Button id="Button_CreateBox_Dontinfect" toolTip="Create &quot;Don't Infect Me&quot; Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/box_dontinfect.png')" downIcon="@Embed('create/box-sel_dontinfect.png')" overIcon="@Embed('create/box_dontinfect.png')" selectedUpIcon="@Embed('create/box-sel_dontinfect.png')" selectedOverIcon="@Embed('create/box-sel_dontinfect.png')" selectedDownIcon="@Embed('create/box_dontinfect.png')"   />
             <mx:Spacer height="10"/>
-            <mx:Button id="Button_CreateBall" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball.png')" downIcon="@Embed('create/ball-sel.png')" overIcon="@Embed('create/ball.png')" selectedUpIcon="@Embed('create/ball-sel.png')" selectedOverIcon="@Embed('create/ball-sel.png')" selectedDownIcon="@Embed('create/ball.png')"   />
-            <mx:Button id="Button_CreateBall_Static" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_static.png')" downIcon="@Embed('create/ball-sel_static.png')" overIcon="@Embed('create/ball_static.png')" selectedUpIcon="@Embed('create/ball-sel_static.png')" selectedOverIcon="@Embed('create/ball-sel_static.png')" selectedDownIcon="@Embed('create/ball_static.png')"   />
-            <mx:Button id="Button_CreateBall_Breakable" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_breakable.png')" downIcon="@Embed('create/ball-sel_breakable.png')" overIcon="@Embed('create/ball_breakable.png')" selectedUpIcon="@Embed('create/ball-sel_breakable.png')" selectedOverIcon="@Embed('create/ball-sel_breakable.png')" selectedDownIcon="@Embed('create/ball_breakable.png')"   />
-            <mx:Button id="Button_CreateBall_Infected" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_infected.png')" downIcon="@Embed('create/ball-sel_infected.png')" overIcon="@Embed('create/ball_infected.png')" selectedUpIcon="@Embed('create/ball-sel_infected.png')" selectedOverIcon="@Embed('create/ball-sel_infected.png')" selectedDownIcon="@Embed('create/ball_infected.png')"   />
-            <mx:Button id="Button_CreateBall_Uninfected" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_uninfected.png')" downIcon="@Embed('create/ball-sel_uninfected.png')" overIcon="@Embed('create/ball_uninfected.png')" selectedUpIcon="@Embed('create/ball-sel_uninfected.png')" selectedOverIcon="@Embed('create/ball-sel_uninfected.png')" selectedDownIcon="@Embed('create/ball_uninfected.png')"   />
-            <mx:Button id="Button_CreateBall_DontInfect" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_dontinfect.png')" downIcon="@Embed('create/ball-sel_dontinfect.png')" overIcon="@Embed('create/ball_dontinfect.png')" selectedUpIcon="@Embed('create/ball-sel_dontinfect.png')" selectedOverIcon="@Embed('create/ball-sel_dontinfect.png')" selectedDownIcon="@Embed('create/ball_dontinfect.png')"   />
+            <mx:Button id="Button_CreateBall" toolTip="Create Movable Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball.png')" downIcon="@Embed('create/ball-sel.png')" overIcon="@Embed('create/ball.png')" selectedUpIcon="@Embed('create/ball-sel.png')" selectedOverIcon="@Embed('create/ball-sel.png')" selectedDownIcon="@Embed('create/ball.png')"   />
+            <mx:Button id="Button_CreateBall_Static" toolTip="Create Static Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_static.png')" downIcon="@Embed('create/ball-sel_static.png')" overIcon="@Embed('create/ball_static.png')" selectedUpIcon="@Embed('create/ball-sel_static.png')" selectedOverIcon="@Embed('create/ball-sel_static.png')" selectedDownIcon="@Embed('create/ball_static.png')"   />
+            <mx:Button id="Button_CreateBall_Breakable" toolTip="Create Breakable Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_breakable.png')" downIcon="@Embed('create/ball-sel_breakable.png')" overIcon="@Embed('create/ball_breakable.png')" selectedUpIcon="@Embed('create/ball-sel_breakable.png')" selectedOverIcon="@Embed('create/ball-sel_breakable.png')" selectedDownIcon="@Embed('create/ball_breakable.png')"   />
+            <mx:Button id="Button_CreateBall_Infected" toolTip="Create Infected Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_infected.png')" downIcon="@Embed('create/ball-sel_infected.png')" overIcon="@Embed('create/ball_infected.png')" selectedUpIcon="@Embed('create/ball-sel_infected.png')" selectedOverIcon="@Embed('create/ball-sel_infected.png')" selectedDownIcon="@Embed('create/ball_infected.png')"   />
+            <mx:Button id="Button_CreateBall_Uninfected" toolTip="Create Uninfected Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_uninfected.png')" downIcon="@Embed('create/ball-sel_uninfected.png')" overIcon="@Embed('create/ball_uninfected.png')" selectedUpIcon="@Embed('create/ball-sel_uninfected.png')" selectedOverIcon="@Embed('create/ball-sel_uninfected.png')" selectedDownIcon="@Embed('create/ball_uninfected.png')"   />
+            <mx:Button id="Button_CreateBall_DontInfect" toolTip="Create &quot;Don't Infect Me&quot; Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/ball_dontinfect.png')" downIcon="@Embed('create/ball-sel_dontinfect.png')" overIcon="@Embed('create/ball_dontinfect.png')" selectedUpIcon="@Embed('create/ball-sel_dontinfect.png')" selectedOverIcon="@Embed('create/ball-sel_dontinfect.png')" selectedDownIcon="@Embed('create/ball_dontinfect.png')"   />
             <mx:Spacer height="10"/>
-            <mx:Button id="Button_CreateJoint_Hinge" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_hinge.png')" downIcon="@Embed('create/joint-sel_hinge.png')" overIcon="@Embed('create/joint_hinge.png')" selectedUpIcon="@Embed('create/joint-sel_hinge.png')" selectedOverIcon="@Embed('create/joint-sel_hinge.png')" selectedDownIcon="@Embed('create/joint_hinge.png')"   />
-            <mx:Button id="Button_CreateJoint_Slider" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_slider.png')" downIcon="@Embed('create/joint-sel_slider.png')" overIcon="@Embed('create/joint_slider.png')" selectedUpIcon="@Embed('create/joint-sel_slider.png')" selectedOverIcon="@Embed('create/joint-sel_slider.png')" selectedDownIcon="@Embed('create/joint_slider.png')"   />
-            <mx:Button id="Button_CreateJoint_Rope" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_rope.png')" downIcon="@Embed('create/joint-sel_rope.png')" overIcon="@Embed('create/joint_rope.png')" selectedUpIcon="@Embed('create/joint-sel_rope.png')" selectedOverIcon="@Embed('create/joint-sel_rope.png')" selectedDownIcon="@Embed('create/joint_rope.png')"   />
+            <mx:Button id="Button_CreateJoint_Hinge" toolTip="Create Hinge Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_hinge.png')" downIcon="@Embed('create/joint-sel_hinge.png')" overIcon="@Embed('create/joint_hinge.png')" selectedUpIcon="@Embed('create/joint-sel_hinge.png')" selectedOverIcon="@Embed('create/joint-sel_hinge.png')" selectedDownIcon="@Embed('create/joint_hinge.png')"   />
+            <mx:Button id="Button_CreateJoint_Slider" toolTip="Create Slider Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_slider.png')" downIcon="@Embed('create/joint-sel_slider.png')" overIcon="@Embed('create/joint_slider.png')" selectedUpIcon="@Embed('create/joint-sel_slider.png')" selectedOverIcon="@Embed('create/joint-sel_slider.png')" selectedDownIcon="@Embed('create/joint_slider.png')"   />
+            <mx:Button id="Button_CreateJoint_Rope" toolTip="Create Distance Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('create/joint_rope.png')" downIcon="@Embed('create/joint-sel_rope.png')" overIcon="@Embed('create/joint_rope.png')" selectedUpIcon="@Embed('create/joint-sel_rope.png')" selectedOverIcon="@Embed('create/joint-sel_rope.png')" selectedDownIcon="@Embed('create/joint_rope.png')"   />
             <mx:Spacer height="10"/>
          </mx:Box>
          <mx:Box direction="vertical" borderStyle="solid" height="100%"  width="100%"
@@ -46,43 +46,50 @@
          <mx:Box direction="vertical" borderStyle="solid" width="88" height="100%"
                      paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
                      horizontalGap="0" verticalGap="0">
-            <mx:LinkButton label="Help" color="#0000FF" fontWeight="bold" width="100%" click="OnClickHelp(event);"/>
+            <mx:Box direction="horizontal" borderStyle="solid" width="100%"
+                        paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                        horizontalGap="0" verticalGap="0">
+               <mx:Spacer width="100%"/>
+               <mx:LinkButton id="Label_TutorialLink" label="Tutorials" fontSize="12" color="0x0000FF" click="OnClickTutorialLink(event)" />
+               <mx:Spacer width="100%"/>
+            </mx:Box>
+            <mx:Spacer height="6"/>
             <mx:Box direction="horizontal" borderStyle="solid" width="100%"
                         paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="0"
                         horizontalGap="0" verticalGap="0">
                <mx:Spacer width="100%"/>
-               <mx:Button id="Button_SingleHandMode_SelectMove" focusEnabled="false" click="OnChangeSingleHandMode(event);" selected="true" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/singlehandmode_selectmove.png')" downIcon="@Embed('edit/singlehandmode-sel_selectmove.png')" overIcon="@Embed('edit/singlehandmode_selectmove.png')" selectedUpIcon="@Embed('edit/singlehandmode-sel_selectmove.png')" selectedOverIcon="@Embed('edit/singlehandmode-sel_selectmove.png')" selectedDownIcon="@Embed('edit/singlehandmode_selectmove.png')"   />
+               <mx:Button id="Button_SingleHandMode_SelectMove" toolTip="Move Mode (Select All Glued Objects)" focusEnabled="false" click="OnChangeSingleHandMode(event);" selected="true" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/singlehandmode_selectmove.png')" downIcon="@Embed('edit/singlehandmode-sel_selectmove.png')" overIcon="@Embed('edit/singlehandmode_selectmove.png')" selectedUpIcon="@Embed('edit/singlehandmode-sel_selectmove.png')" selectedOverIcon="@Embed('edit/singlehandmode-sel_selectmove.png')" selectedDownIcon="@Embed('edit/singlehandmode_selectmove.png')"   />
                <mx:Spacer width="1"/>
-               <mx:Button id="Button_SingleHandMode_SelectMoveSubEntity" focusEnabled="false" click="OnChangeSingleHandMode(event);" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/singlehandmode_selectmove_subentity.png')" downIcon="@Embed('edit/singlehandmode-sel_selectmove_subentity.png')" overIcon="@Embed('edit/singlehandmode_selectmove_subentity.png')" selectedUpIcon="@Embed('edit/singlehandmode-sel_selectmove_subentity.png')" selectedOverIcon="@Embed('edit/singlehandmode-sel_selectmove_subentity.png')" selectedDownIcon="@Embed('edit/singlehandmode_selectmove_subentity.png')"   />
+               <mx:Button id="Button_SingleHandMode_SelectMoveSubEntity" toolTip="Move Mode" focusEnabled="false" click="OnChangeSingleHandMode(event);" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/singlehandmode_selectmove_subentity.png')" downIcon="@Embed('edit/singlehandmode-sel_selectmove_subentity.png')" overIcon="@Embed('edit/singlehandmode_selectmove_subentity.png')" selectedUpIcon="@Embed('edit/singlehandmode-sel_selectmove_subentity.png')" selectedOverIcon="@Embed('edit/singlehandmode-sel_selectmove_subentity.png')" selectedDownIcon="@Embed('edit/singlehandmode_selectmove_subentity.png')"   />
                <mx:Spacer width="100%"/>
             </mx:Box>
             <mx:Box direction="horizontal" borderStyle="solid" width="100%"
                         paddingTop="0" paddingLeft="1" paddingRight="1" paddingBottom="1"
                         horizontalGap="0" verticalGap="0">
                <mx:Spacer width="100%"/>
-               <mx:Button id="Button_SingleHandMode_Rotate" focusEnabled="false" click="OnChangeSingleHandMode(event);" selected="false" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/singlehandmode_rotate.png')" downIcon="@Embed('edit/singlehandmode-sel_rotate.png')" overIcon="@Embed('edit/singlehandmode_rotate.png')" selectedUpIcon="@Embed('edit/singlehandmode-sel_rotate.png')" selectedOverIcon="@Embed('edit/singlehandmode-sel_rotate.png')" selectedDownIcon="@Embed('edit/singlehandmode_rotate.png')"   />
+               <mx:Button id="Button_SingleHandMode_Rotate" toolTip="Rotate Mode" focusEnabled="false" click="OnChangeSingleHandMode(event);" selected="false" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/singlehandmode_rotate.png')" downIcon="@Embed('edit/singlehandmode-sel_rotate.png')" overIcon="@Embed('edit/singlehandmode_rotate.png')" selectedUpIcon="@Embed('edit/singlehandmode-sel_rotate.png')" selectedOverIcon="@Embed('edit/singlehandmode-sel_rotate.png')" selectedDownIcon="@Embed('edit/singlehandmode_rotate.png')"   />
                <mx:Spacer width="1"/>
-               <mx:Button id="Button_SingleHandMode_Scale" focusEnabled="false" click="OnChangeSingleHandMode(event);" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/singlehandmode_scale.png')" downIcon="@Embed('edit/singlehandmode-sel_scale.png')" overIcon="@Embed('edit/singlehandmode_scale.png')" selectedUpIcon="@Embed('edit/singlehandmode-sel_scale.png')" selectedOverIcon="@Embed('edit/singlehandmode-sel_scale.png')" selectedDownIcon="@Embed('edit/singlehandmode_scale.png')"   />
+               <mx:Button id="Button_SingleHandMode_Scale" toolTip="Scale Mode" focusEnabled="false" click="OnChangeSingleHandMode(event);" fontSize="8" width="32" height="32" toggle="true" cornerRadius="0" upIcon="@Embed('edit/singlehandmode_scale.png')" downIcon="@Embed('edit/singlehandmode-sel_scale.png')" overIcon="@Embed('edit/singlehandmode_scale.png')" selectedUpIcon="@Embed('edit/singlehandmode-sel_scale.png')" selectedOverIcon="@Embed('edit/singlehandmode-sel_scale.png')" selectedDownIcon="@Embed('edit/singlehandmode_scale.png')"   />
                <mx:Spacer width="100%"/>
             </mx:Box>
             <mx:Spacer height="10"/>
             <mx:Box id="Box_BodyEditCommand" direction="vertical" borderStyle="solid"  width="100%" 
                         paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
                         horizontalGap="0" verticalGap="0" backgroundAlpha="1.0" >
-               <mx:Button id="Button_Setting" label="Setting..." focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_Setting" label="Setting..." toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
                <mx:Spacer height="10"/>
-               <mx:Button id="Button_Clone" label="Clone (C)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button id="Button_FlipH" label="Flip | (X)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button id="Button_FlipV" label="Flip -- (Y)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button id="Button_Delete" label="Delete (D)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_Clone" label="Clone (C)" toolTip="Clone Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_FlipH" label="Flip | (X)" toolTip="Flip Selected(s) Horizontally" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_FlipV" label="Flip -- (Y)" toolTip="Flip Selected(s) Vertically" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_Delete" label="Delete (D)" toolTip="Delete Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
                <mx:Spacer height="10"/>
-               <mx:Button id="Button_Glue" label="Glue (G)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button id="Button_BreakApart" label="Break (B)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_Glue" label="Glue (G)" toolTip="Glue Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_BreakApart" label="Break (B)" toolTip="Break Apart Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
                <mx:Spacer height="10"/>
-               <mx:Button id="Button_MoveToTop" label="to Top" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
-               <mx:Button id="Button_MoveToBottom" label="to Bottom" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_MoveToTop" label="to Top" toolTip="Move Selected(s) to Top Layer" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_MoveToBottom" label="to Bottom" toolTip="Move Selected(s) to Bottom Layer" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
                <mx:Spacer height="10"/>
-               <mx:Button id="Button_ClearAll" label="Clear All" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
+               <mx:Button id="Button_ClearAll" label="Clear All" toolTip="Clear All Objects" focusEnabled="false" fontSize="8" left="5" top="5" width="100%" toggle="false" cornerRadius="0"    />
             </mx:Box>
             <mx:Spacer height="10"/>
             <mx:Box direction="vertical" borderStyle="solid" width="100%"
@@ -91,16 +98,16 @@
                <mx:Box direction="horizontal" borderStyle="solid" width="100%"
                         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                         horizontalGap="0" verticalGap="0">
-                  <mx:Button id="Button_PlayRestart" focusEnabled="false" label="Restart" click="OnPlayControlling(event);" enabled="false" fontSize="8" width="24" height="24" toggle="false" cornerRadius="0" icon="@Embed('play/play-restart.png')" disabledIcon="@Embed('play/play-restart-disabled.png')"   />
+                  <mx:Button id="Button_PlayRestart" toolTip="Restart" focusEnabled="false" label="Restart" click="OnPlayControlling(event);" enabled="false" fontSize="8" width="24" height="24" toggle="false" cornerRadius="0" icon="@Embed('play/play-restart.png')" disabledIcon="@Embed('play/play-restart-disabled.png')"   />
                   <mx:Spacer width="100%"/>
-                  <mx:Button id="Button_PlayRunPause" focusEnabled="false" label="Run" click="OnPlayControlling(event);" enabled="true" fontSize="8" width="24" height="24" toggle="true" cornerRadius="0" upIcon="@Embed('play/play-run.png')" downIcon="@Embed('play/play-run.png')" overIcon="@Embed('play/play-run.png')" selectedUpIcon="@Embed('play/play-pause.png')" selectedOverIcon="@Embed('play/play-pause.png')" selectedDownIcon="@Embed('play/play-pause.png')"   />
+                  <mx:Button id="Button_PlayRunPause" toolTip="Play / Pause" focusEnabled="false" label="Run" click="OnPlayControlling(event);" enabled="true" fontSize="8" width="24" height="24" toggle="true" cornerRadius="0" upIcon="@Embed('play/play-run.png')" downIcon="@Embed('play/play-run.png')" overIcon="@Embed('play/play-run.png')" selectedUpIcon="@Embed('play/play-pause.png')" selectedOverIcon="@Embed('play/play-pause.png')" selectedDownIcon="@Embed('play/play-pause.png')"   />
                   <mx:Spacer width="100%"/>
-                  <mx:Button id="Button_PlayStop" focusEnabled="false" label="Stop" click="OnPlayControlling(event);" enabled="false" fontSize="8" width="24" height="24" toggle="false" cornerRadius="0" icon="@Embed('play/play-stop.png')" disabledIcon="@Embed('play/play-stop-disabled.png')"   />
+                  <mx:Button id="Button_PlayStop" toolTip="Stop" focusEnabled="false" label="Stop" click="OnPlayControlling(event);" enabled="false" fontSize="8" width="24" height="24" toggle="false" cornerRadius="0" icon="@Embed('play/play-stop.png')" disabledIcon="@Embed('play/play-stop-disabled.png')"   />
                </mx:Box>
                <mx:Box id="Box_PlaySpeed" enabled="false" direction="horizontal" borderStyle="solid" width="100%"
                         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                         horizontalGap="0" verticalGap="0">
-                  <mx:HSlider id="Slider_PlaySpeed" focusEnabled="false" minimum="0" maximum="5" value="1" width="76" 
+                  <mx:HSlider id="Slider_PlaySpeed" toolTip="Set Playing Speed" focusEnabled="false" minimum="0" maximum="5" value="1" width="76" 
                       dataTipPlacement="top" tickColor="black" snapInterval="0.5" tickInterval="0.5"
                       labels="['0','5']" allowTrackClick="true" liveDragging="true" change="OnChangePlayingSpeed();"/>
                </mx:Box>
@@ -109,18 +116,17 @@
             <mx:Box id="Box_SaveLoad" direction="vertical" borderStyle="solid"  width="100%"
                         paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
                         horizontalGap="0" verticalGap="0">
-               <mx:Button label="Save ..." focusEnabled="false" width="100%" fontSize="8" />
-               <mx:Button label="Load ..." focusEnabled="false" width="100%" fontSize="8" />
-               <mx:Button label="Examples" focusEnabled="false" width="100%" fontSize="8" />
+               <mx:Button id="Button_AuthorInfo" label="Author ..." toolTip="Author Info" focusEnabled="false" width="100%" fontSize="8" />
+               <mx:Button id="Button_SaveWorld" label="Save ..." toolTip="Save World" focusEnabled="false" width="100%" fontSize="8" />
+               <mx:Button id="Button_LoadWorld" label="Load ..." toolTip="Load World" focusEnabled="false" width="100%" fontSize="8" />
             </mx:Box>
-            <mx:Spacer height="10"/>
             
             <mx:Spacer height="100%"/>
             <mx:Box direction="vertical" borderStyle="solid" width="100%"
                         paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
                         horizontalGap="0" verticalGap="0">
                <mx:Spacer width="100%"/>
-               <mx:Image focusEnabled="false" source="@Embed('logo/logo-phyard_86x32.png')"   />
+               <mx:Image focusEnabled="false" source="@Embed('logo/logo-colorinfection_80x50.png')" click="OnClickLogo(event);"   />
                <mx:Spacer width="100%"/>
             </mx:Box>
          </mx:Box>
@@ -131,8 +137,11 @@
    <mx:Script>
         <![CDATA[
             
+            import flash.events.TextEvent;
             import mx.managers.PopUpManager;
+            import com.tapirgames.util.UrlUtil;
             import editor.WorldView;
+            import common.Define;
             
             private function InitApp ():void
             {
@@ -193,6 +202,10 @@
                MainView.mButtonMoveToTop = Button_MoveToTop;
                MainView.mButtonMoveToBottom = Button_MoveToBottom;
                
+               MainView.mButtonAuthorInfo = Button_AuthorInfo;
+               MainView.mButtonSaveWorld = Button_SaveWorld;
+               MainView.mButtonLoadWorld = Button_LoadWorld;
+               
                Button_Clone.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_Delete.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_FlipH.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
@@ -204,19 +217,32 @@
                Button_MoveToTop.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_MoveToBottom.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                
+               Button_AuthorInfo.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_SaveWorld.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_LoadWorld.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               
                
                
                MainView.ShowShapeSettingDialog = ShowShapeSettingDialog;
                MainView.ShowShapeCircleSettingDialog = ShowShapeCircleSettingDialog;
                MainView.ShowHingeSettingDialog = ShowHingeSettingDialog;
                MainView.ShowSliderSettingDialog = ShowSliderSettingDialog;
+               
                MainView.ShowWorldSettingDialog = ShowWorldSettingDialog;
+               MainView.ShowWorldSavingDialog = ShowWorldSavingDialog;
+               MainView.ShowWorldLoadingDialog = ShowWorldLoadingDialog;
                
-               
+               MainView.ShowPlayCodeLoadingDialog = ShowPlayCodeLoadingDialog;
             }
             
-            private function OnClickHelp (event:Event):void
+            private function OnClickTutorialLink (event:Event):void
             {
+               UrlUtil.PopupPage (Define.EditingTutorialUrl);
+            }
+            
+            private function OnClickLogo (event:Event):void
+            {
+               UrlUtil.PopupPage (Define.AboutUrl);
             }
             
             private function OnChangeSingleHandMode (event:Event):void
@@ -382,7 +408,38 @@
                settingDialog.SetCloseFunc (OnCloseDialog);
             }
             
+            private function ShowWorldSavingDialog (initialValues:Object):void
+            {
+               MainView.SetHasSettingDialogOpened (true);
+               
+               var dialog:WorldSavingDialog = new WorldSavingDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetValues (initialValues);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
             
+            private function ShowWorldLoadingDialog (onConfirmFunc:Function):void
+            {
+               MainView.SetHasSettingDialogOpened (true);
+               
+               var dialog:WorldLoadingDialog = new WorldLoadingDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (onConfirmFunc);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowPlayCodeLoadingDialog (onConfirmFunc:Function):void
+            {
+               MainView.SetHasSettingDialogOpened (true);
+               
+               var dialog:PlayCodeLoadingDialog = new PlayCodeLoadingDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (onConfirmFunc);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
             
 		  ]]>
    </mx:Script>

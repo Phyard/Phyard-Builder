@@ -3,12 +3,10 @@ package player.physics {
    
    import flash.geom.Point;
    
-   import Box2D.Common.*;
-   import Box2D.Dynamics.*;
-   import Box2D.Dynamics.Joints.*;
-   import Box2D.Collision.*;
-   import Box2D.Collision.Shapes.*;
-   import Box2D.Common.Math.*;
+   import Box2D.Dynamics.Joints.b2DistanceJoint;
+   import Box2D.Dynamics.Joints.b2DistanceJointDef;
+   import Box2D.Dynamics.b2Body;
+   import Box2D.Common.Math.b2Vec2;
    
    
    public class PhysicsProxyJointDistance extends PhysicsProxyJoint
@@ -26,7 +24,8 @@ package player.physics {
          var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.GetGroundBody () : proxyBody2._b2Body;
          
          distanceJointDef.Initialize(body1, body2, new b2Vec2 (anchorPhysicsPosX1, anchorPhysicsPosY1), new b2Vec2 (anchorPhysicsPosX2, anchorPhysicsPosY2));
-         distanceJointDef.collideConnected = true;
+         
+         distanceJointDef.collideConnected = params.mCollideConnected;
          
          _b2Joint = mPhysicsEngine._b2World.CreateJoint(distanceJointDef) as b2DistanceJoint;
          

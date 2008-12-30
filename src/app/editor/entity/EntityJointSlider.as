@@ -25,8 +25,6 @@ package editor.entity {
       public var mMotorSpeed:Number = 30;
       public var mBackAndForth:Boolean = true;
       
-      
-      
       private var mRangeBarHalfHeight:Number = 3;
       
       public function EntityJointSlider (world:World)
@@ -37,6 +35,8 @@ package editor.entity {
          world.addChild (mAnchor1);
          mAnchor2 = new SubEntitySliderAnchor (world, this, true);
          world.addChild (mAnchor2);
+         
+         SetVisible (false);
       }
       
       public function IsLimitsEnabled ():Boolean

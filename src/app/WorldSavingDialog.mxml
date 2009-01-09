@@ -80,7 +80,32 @@
             TextArea_SourceCode.text = values.mXmlString;
             TextArea_PlayCode.text = values.mHexString;
             
-            var embedCode:String = values.mHexString;
+            var embedCode:String = 
+"<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"600\" height=\"600\">\n"
++ 
+"<param name=\"FlashVars\" value=\"playcode=" + values.mHexString + "\" />\n"
++
+"<param name=\"movie\" value=\"http://swfs.colorinfection.com/player.swf\" />\n"
++
+"<param name=\"quality\" value=\"high\" />\n"
++
+"<embed src=\"http://swfs.colorinfection.com/player.swf\"\n"
++
+"  width=\"600\" height=\"600\"\n"
++
+"  FlashVars=\"playcode=" + values.mHexString + "\"\n"
++
+"  quality=\"high\"\n"
++
+"  type=\"application/x-shockwave-flash\"\n"
++
+"  pluginspage=\"http://www.adobe.com/go/getflashplayer\">\n"
++
+"</embed>\n"
++
+"</object>\n"
+;
+
             
             TextArea_EmbedCode.text = embedCode;
          }

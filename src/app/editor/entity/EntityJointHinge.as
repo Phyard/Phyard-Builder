@@ -72,6 +72,32 @@ package editor.entity {
          return mAnchor;
       }
       
+      
+//====================================================================
+//   flip
+//====================================================================
+      
+      override public function FlipHorizontally (mirrorX:Number):void
+      {
+         FlipOtherParams ();
+         
+         super.FlipHorizontally (mirrorX);
+      }
+      
+      override public function FlipVertically (mirrorY:Number):void
+      {
+         FlipOtherParams ();
+         
+         super.FlipVertically (mirrorY);
+      }
+      
+      private function FlipOtherParams ():void
+      {
+         SetLimits (- mUpperAngle, - mLowerAngle);
+         
+         mMotorSpeed = - mMotorSpeed;
+      }
+      
 //====================================================================
 //   clone
 //====================================================================
@@ -86,6 +112,12 @@ package editor.entity {
          super.SetPropertiesForClonedEntity (entity, 0, 0);
          
          var hinge:EntityJointHinge = entity as EntityJointHinge;
+         
+         hinge.SetLimitsEnabled ( IsLimitsEnabled () );
+         hinge.SetLimits (GetLowerLimit (), GetUpperLimit ());
+         hinge.mEnableMotor = mEnableMotor;
+         hinge.mMotorSpeed = mMotorSpeed;
+         hinge.mBackAndForth = mBackAndForth;
          
          var anchor:SubEntityHingeAnchor = GetAnchor ();
          var newAnchor:SubEntityHingeAnchor = hinge.GetAnchor ();

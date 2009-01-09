@@ -169,8 +169,6 @@ package common {
          
          var numEntities:int = byteArray.readShort ();
          
-         trace ("numEntities = " + numEntities);
-         
          var entityId:int;
          
          for (entityId = 0; entityId < numEntities; ++ entityId)
@@ -182,8 +180,6 @@ package common {
             entityDefine.mPosY = byteArray.readFloat ();
             entityDefine.mRotation = byteArray.readFloat ();
             entityDefine.mIsVisible = byteArray.readByte ();
-            
-         trace ("  entityDefine.mEntityType = " + entityDefine.mEntityType);
             
             if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
             {
@@ -246,8 +242,6 @@ package common {
          var numGroups:int = byteArray.readShort ();
          var numEntityIds:int;
          
-         trace ("numGroups = " + numGroups);
-         
          var groupId:int;
          
          for (groupId = 0; groupId < numGroups; ++ groupId)
@@ -256,8 +250,6 @@ package common {
             
             numEntityIds = byteArray.readShort ();
             
-         trace ("  numEntityIds = " + numEntityIds);
-         
             for (entityId = 0; entityId < numEntityIds; ++ entityId)
             {
                brotherIDs.push (byteArray.readShort ());
@@ -280,6 +272,8 @@ package common {
       {
          if (hexString == null)
             return null;
+         
+         hexString = De (hexString);
          
          var byteArray:ByteArray = new ByteArray ();
          byteArray.length = hexString.length / 2;
@@ -308,7 +302,65 @@ package common {
          return byteValue;
       }
       
+      public static const Value2CharTable:String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.";
       
+      public static function Value2Char (value:int, num:uint = 1):String
+      {
+         if (value < 0 || value >= 16 || num > 4 || num <= 0)
+            return "?";
+         
+         return Value2CharTable.charAt (value + (num - 1) * 16);
+      }
+      
+      public static var Char2ValueTable:Array = null;
+      
+      public static function Char2Value (charCode:int):int
+      {
+         if (Char2ValueTable == null)
+         {
+            Char2ValueTable = new Array (128);
+            for (var i:int = 0; i < Char2ValueTable.length; ++ i)
+               Char2ValueTable [i] = -1;
+            for (var k:int = 0; k < Value2CharTable.length; ++ k)
+               Char2ValueTable [Value2CharTable.charCodeAt (k)] = k;
+         }
+         
+         if (charCode < 0 || charCode >= Char2ValueTable.length)
+            return -1;
+         
+         return Char2ValueTable [charCode];
+      }
+      
+      public static function De (enStr:String):String
+      {
+         var str:String = "";
+         
+         var char:String;
+         var value:int;
+         var num:int;
+         for (var i:int = 0; i < enStr.length; ++ i)
+         {
+            value = Char2Value (enStr.charCodeAt (i));
+            
+            if (value >= 0 && value < 64)
+            {
+               num = ( (value & 0x3F) >> 4 ) + 1;
+               value = value & 0xF;
+               
+               char =  Value2Char (value);
+               for (var k:int = 0; k < num; ++ k)
+                  str = str + char;
+            }
+            else
+            {
+               char = enStr.charAt (i);
+               str = str + char;
+               trace ("De str error. char = " + char);
+            }
+         }
+         
+         return str;
+      }
       
    }
    

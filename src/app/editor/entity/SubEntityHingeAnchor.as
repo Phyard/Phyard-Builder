@@ -58,5 +58,23 @@ package editor.entity {
       }
       
       
+//====================================================================
+//   flip
+//====================================================================
+      
+      override public function FlipHorizontally (mirrorX:Number):void
+      {
+         super.FlipHorizontally (mirrorX);
+         
+         GetMainEntity ().FlipHorizontally (mirrorX);
+      }
+      
+      override public function FlipVertically (mirrorY:Number):void
+      {
+         super.FlipVertically (mirrorY);
+         
+         GetMainEntity ().FlipVertically (mirrorY);
+      }
+      
    }
 }

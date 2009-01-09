@@ -8,7 +8,6 @@ package player.physics {
    import Box2D.Common.Math.b2Vec2;
    import Box2D.Collision.b2AABB;
    
-   
    public class PhysicsEngine
    {
       
@@ -113,10 +112,18 @@ package player.physics {
          aabb.lowerBound.Set (lowerPoint.x, lowerPoint.y);
          aabb.upperBound.Set (upperPoint.x, upperPoint.y);
          
-         var maxCount:uint = 16;
-         var shapes:Array = new Array (maxCount); 
+         var maxCount:uint = 128;
+         var shapes:Array;
          
-         var count:int = _b2World.Query(aabb, shapes, maxCount);
+         var count:int = maxCount;
+         
+         while (count == maxCount)
+         {
+            maxCount *= 2;
+            shapes = new Array (maxCount);
+            
+            count = _b2World.Query(aabb, shapes, maxCount);
+         }
          
          var vertex:b2Vec2 = new b2Vec2 ();
          vertex.Set(point.x, point.y);

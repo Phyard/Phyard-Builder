@@ -84,7 +84,8 @@ package editor {
    {
       public static const WorldWidth:int = Define.WorldWidth; 
       public static const WorldHeight:int = Define.WorldHeight;
-      public static const WorldBorderThinkness:int = Define.WorldBorderThinkness;
+      public static const WorldBorderThinknessLR:int = Define.WorldBorderThinknessLR;
+      public static const WorldBorderThinknessTB:int = Define.WorldBorderThinknessTB;
       
       
       
@@ -105,6 +106,8 @@ package editor {
          private var mPlayerWorld:player.world.World = null;
          
          private var mWorldPlayingSpeedX:int = 2;
+         
+      private var mOuterWorldHexString:String;
       
       public function WorldView ()
       {
@@ -142,13 +145,13 @@ package editor {
          mBackgroundSprite.graphics.lineStyle ();
          
          mBackgroundSprite.graphics.beginFill(0x606060);
-         mBackgroundSprite.graphics.drawRect (0, 0, WorldBorderThinkness, WorldHeight);
-         mBackgroundSprite.graphics.drawRect (WorldWidth - WorldBorderThinkness, 0, WorldBorderThinkness, WorldHeight);
+         mBackgroundSprite.graphics.drawRect (0, 0, WorldBorderThinknessLR, WorldHeight);
+         mBackgroundSprite.graphics.drawRect (WorldWidth - WorldBorderThinknessLR, 0, WorldBorderThinknessLR, WorldHeight);
          mBackgroundSprite.graphics.endFill ();
          
          mBackgroundSprite.graphics.beginFill(0x606060);
-         mBackgroundSprite.graphics.drawRect (0, 0, WorldWidth, WorldBorderThinkness);
-         mBackgroundSprite.graphics.drawRect (0, WorldHeight - WorldBorderThinkness, WorldWidth, WorldBorderThinkness);
+         mBackgroundSprite.graphics.drawRect (0, 0, WorldWidth, WorldBorderThinknessTB);
+         mBackgroundSprite.graphics.drawRect (0, WorldHeight - WorldBorderThinknessTB, WorldWidth, WorldBorderThinknessTB);
          mBackgroundSprite.graphics.endFill ();
          
          
@@ -745,19 +748,36 @@ package editor {
          mPlayerWorld = null;
       }
       
-      public function OnPlayRunRestart ():void
+      public function OnPlayRunRestart (keepPauseStatus:Boolean = false):void
       {
          if (HasSettingDialogOpened ())
             return;
          
          DestroyPlayerWorld ();
          
-         var playerWorld:player.world.World = DataFormat2.WorldDefine2PlayerWorld (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         var playerWorld:player.world.World = null;
+         
+         if (mOuterWorldHexString != null)
+         {
+            try 
+            {
+               playerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (mOuterWorldHexString));
+            }
+            catch (err:Error)
+            {
+               mOuterWorldHexString = null;
+               playerWorld = null;
+            }
+         }
+         
+         if (playerWorld == null)
+            playerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
          
          SetPlayerWorld (playerWorld);
          
          mIsPlaying = true;
-         mIsPlayingPaused = false;
+         if ( ! keepPauseStatus )
+            mIsPlayingPaused = false;
          
          mPlayerElementsContainer.visible = true;
          mEditorElementsContainer.visible = false;
@@ -770,6 +790,8 @@ package editor {
       
       public function OnPlayStop ():void
       {
+         mOuterWorldHexString = null;
+         
          DestroyPlayerWorld ();
          
          
@@ -1056,7 +1078,7 @@ package editor {
             }
             
          // entities
-         
+            
             var entityArray:Array = mEditorWorld.GetEntitiesAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
             var entity:Entity;
             
@@ -1121,6 +1143,9 @@ package editor {
                   return;
                }
             }
+            
+            if (mSingleHandMode == SingleHandMode_Scale)
+               _mouseEventCtrlDown = false;
             
             if (_mouseEventCtrlDown)
                mLastSelectedEntities = mEditorWorld.GetSelectedEntities ();
@@ -1230,7 +1255,7 @@ package editor {
                      }
                      else
                      {
-                       SetTheOnlySelectedEntity (entity);
+                        SetTheOnlySelectedEntity (entity);
                      }
                   }
                 }
@@ -1475,9 +1500,9 @@ package editor {
                mLastSelectedEntity.SetVertexControllersVisible (false);
             
             entity.SetVertexControllersVisible (true);
-            
-            mLastSelectedEntity = entity;
          }
+         
+         mLastSelectedEntity = entity;
          
          // to make selecting part of a glued possible
          // mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
@@ -1496,7 +1521,11 @@ package editor {
             if (mLastSelectedEntities != null)
                mEditorWorld.SelectEntities (mLastSelectedEntities);
             
-            mEditorWorld.SelectEntities (entities);
+            //mEditorWorld.SelectEntities (entities);
+            for (var i:int = 0; i < entities.length; ++ i)
+            {
+               mEditorWorld.ToggleEntitySelected (entities [i]);
+            }
          }
          else
             mEditorWorld.SelectEntities (entities);
@@ -1553,10 +1582,6 @@ package editor {
          mSelectedEntitiesCenterSprite.visible = (count > 1);
          
          UpdateEditingButtonsEnabled ();
-         
-         trace ("centerX = " + centerX);
-         trace ("centerY = " + centerY);
-         trace ("count = " + count);
       }
       
       public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
@@ -1751,9 +1776,9 @@ package editor {
       {
          var hexString:String = params.mHexString;
          
-         var newPlayerWorld:player.world.World = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (hexString));
+         mOuterWorldHexString = hexString;
          
-         SetPlayerWorld (newPlayerWorld);
+         OnPlayRunRestart (true);
       }
       
 //============================================================================

@@ -26,9 +26,9 @@ package editor.selection {
           var body1:b2Body = point.shape1.GetBody();
           var body2:b2Body = point.shape2.GetBody();
          
-         if (body1 == mCollideWithBody)
+         if (body1 == mCollideWithBody && mIntersectedBodies.indexOf (body2) < 0)
             mIntersectedBodies.push (body2);
-         if (body2 == mCollideWithBody)
+         if (body2 == mCollideWithBody && mIntersectedBodies.indexOf (body1) < 0)
             mIntersectedBodies.push (body1);
       }
       

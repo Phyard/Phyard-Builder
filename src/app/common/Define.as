@@ -10,8 +10,9 @@ package common {
 //===========================================================================
       
       public static const AboutUrl:String = "http://www.colorinfection.com";
-      public static const EditingTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/basic-editing";
-      public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/publish-your-puzzles";
+      public static const EditingTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/basic-editing";
+      public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/publish-your-puzzles";
+      public static const EditorUrl:String = "http://colorinfection.appspot.com/htmls/editor_page1.html";
       
 //===========================================================================
 // world
@@ -21,7 +22,8 @@ package common {
       
       public static const WorldWidth:int = 600; 
       public static const WorldHeight:int = 600; 
-      public static const WorldBorderThinkness:int = 10; 
+      public static const WorldBorderThinknessLR:int = 10; 
+      public static const WorldBorderThinknessTB:int = 20; 
       
       public static const WorldStepTimeInterval:Number = 1.0 / 30;
       

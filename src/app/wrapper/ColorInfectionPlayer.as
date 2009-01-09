@@ -3,12 +3,21 @@ package wrapper {
 
    import flash.display.DisplayObject;
    import flash.display.Sprite;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
    import flash.display.MovieClip;
    import flash.display.Stage;
    import flash.events.Event;
    import flash.display.LoaderInfo;
    
+   import flash.system.System;
+   
    import flash.events.Event;
+   
+   import flash.ui.ContextMenu;
+   import flash.ui.ContextMenuItem;
+   import flash.ui.ContextMenuBuiltInItems;
+   import flash.events.ContextMenuEvent;
    
    import com.tapirgames.display.FpsCounter;
    import com.tapirgames.util.TimeSpan;
@@ -17,6 +26,7 @@ package wrapper {
    import com.tapirgames.util.TextUtil;
    import com.tapirgames.display.TextFieldEx;
    import com.tapirgames.display.TextButton;
+   import com.tapirgames.display.ImageButton;
    
    import player.world.World;
    
@@ -27,15 +37,47 @@ package wrapper {
    public dynamic class ColorInfectionPlayer extends Sprite 
    {
       
+      
+      [Embed(source="../res/player/player-restart.png")]
+      private static var IconRestart:Class;
+      [Embed(source="../res/player/player-restart-disabled.png")]
+      private static var IconRestartDisabled:Class;
+      [Embed(source="../res/player/player-start.png")]
+      private static var IconStart:Class;
+      [Embed(source="../res/player/player-pause.png")]
+      private static var IconPause:Class;
+      
+      [Embed(source="../res/player/player-help.png")]
+      private static var IconHelp:Class;
+      
+      [Embed(source="../res/player/player-speed.png")]
+      private static var IconSpeed:Class;
+      [Embed(source="../res/player/player-speed-selected.png")]
+      private static var IconSpeedSelected:Class;
+      
+      private var mBitmapDataRetart:BitmapData = new IconRestart ().bitmapData;
+      private var mBitmapDataRetartDisabled:BitmapData = new IconRestartDisabled ().bitmapData;
+      private var mBitmapDataStart:BitmapData = new IconStart ().bitmapData;
+      private var mBitmapDataPause:BitmapData = new IconPause ().bitmapData;
+      private var mBitmapDataHelp:BitmapData  = new IconHelp ().bitmapData;
+      private var mBitmapDataSpeed:BitmapData  = new IconSpeed ().bitmapData;
+      private var mBitmapDataSpeedSelected:BitmapData  = new IconSpeedSelected ().bitmapData;
+      
+//======================================================================
+//
+//======================================================================
+      
       private var mWorldLayer:Sprite = new Sprite ();
-      private var mUiLayer:Sprite = new Sprite ();
+      private var mTopBarLayer:Sprite = new Sprite ();
+      private var mBottomBarLayer:Sprite = new Sprite ();
       private var mFinishedTextLayer:Sprite = new Sprite ();
       private var mDialogLayer:Sprite = new Sprite ();
       
          private var mHelpDialog:Sprite;
          private var mFinishedDialog:Sprite;
       
-      private var mWorldDefine:WorldDefine = null;
+      private var mWorldDataHexString:String = null;
+      //private var mWorldDefine:WorldDefine = null;
       private var mPlayerWorld:World = null;
       
       private var mIsPlaying:Boolean = false;
@@ -46,7 +88,8 @@ package wrapper {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
          addChild (mWorldLayer);
-         addChild (mUiLayer);
+         addChild (mTopBarLayer);
+         addChild (mBottomBarLayer);
          addChild (mFinishedTextLayer);
          addChild (mDialogLayer);
       }
@@ -73,6 +116,9 @@ package wrapper {
       private var mFpsCounter:FpsCounter;
       private var mStepTimeSpan:TimeSpan = new TimeSpan ();
       
+      
+      private var _temp:int = 0;
+      
       public function Update ():void
       {
       // ...
@@ -80,38 +126,57 @@ package wrapper {
          mStepTimeSpan.Start ();
          
       // ...
-         if (mStateId == StateId_Load)
+         if (mStateId == StateId_None)
          {
-            ParseParams ();
+         }
+         else if (mStateId == StateId_Load)
+         {
+            trace ("root.parent");
+               ParseParams (LoaderInfo(root.parent.loaderInfo));
+            trace ("stage");
+               ParseParams (LoaderInfo(stage.loaderInfo));
+            trace ("stage.root");
+               ParseParams (LoaderInfo(stage.root.loaderInfo));
+            trace ("root");
+               ParseParams (LoaderInfo(root.loaderInfo));
             
             while (mWorldLayer.numChildren > 0)
                mWorldLayer.removeChildAt (0);
             
-            if (mWorldDefine == null)
+            if (mWorldDataHexString != null)
+            {
+               CreateUI ();
+               
+               BuildContextMenu ();
+               
+               OnRestart (null);
+            }
+            
+            //if (mWorldDefine == null)
+            if (mWorldDataHexString == null || mPlayerWorld == null)
             {
                var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Fail to parse play code."));
                errorText.x = (Define.WorldWidth  - errorText.width ) * 0.5;
                errorText.y = (Define.WorldHeight - errorText.height) * 0.5;
                mWorldLayer.addChild (errorText);
                
-               var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='8' color='#0000ff'><u><a href='http://www.colorinfection.com'>ColorInfection.com</a></u></font>"));
+               var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='10' color='#0000ff'><u><a href='http://www.colorinfection.com' target='_blank'>ColorInfection.com</a></u></font>"));
                linkText.x = (Define.WorldWidth  - linkText.width ) * 0.5;
-               linkText.y = Define.WorldHeight - linkText.height;
+               linkText.y = Define.WorldHeight - linkText.height - 20;
                mWorldLayer.addChild (linkText);
                ChangeState (StateId_None);
                return;
             }
             
             
-            CreateUI ();
-            
-            OnRestart ();
+            OnPause (null);
             
             CreateHelpDialog ();
-            OpenHelpDialog ();
+            //OpenHelpDialog ();
             
             CreateFinishedDialog ();
             
+            CreateBottomBar ();
             
             ChangeState (StateId_Play);
          }
@@ -149,12 +214,10 @@ package wrapper {
          mStateId = newStateId;
       }
       
-      private function ParseParams ():void
+      private function ParseParams (loadInfo:LoaderInfo):void
       {
          try 
          {
-            var loadInfo:LoaderInfo = LoaderInfo(root.loaderInfo);
-            
             var flashVars:Object = loaderInfo.parameters;
             
             if (flashVars != null)
@@ -169,7 +232,8 @@ package wrapper {
                   
                   if (keyStr == "playcode")
                   {
-                     mWorldDefine = DataFormat2.HexString2WorldDefine (valueStr);
+                     mWorldDataHexString = valueStr; 
+                     //mWorldDefine = DataFormat2.HexString2WorldDefine (valueStr);
                   }
                }
             }
@@ -180,17 +244,95 @@ package wrapper {
          }
       }
       
+      private function BuildContextMenu ():void
+      {
+         var theContextMenu:ContextMenu = new ContextMenu ();
+         theContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
+         defaultItems.print = true;
+         
+         var copyPlayCodeItem:ContextMenuItem = new ContextMenuItem("Copy Play Code", false);
+         theContextMenu.customItems.push (copyPlayCodeItem);
+         copyPlayCodeItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyPlayCode);
+         
+         contextMenu = theContextMenu;
+      }
+      
+      private function OnCopyPlayCode (event:ContextMenuEvent):void
+      {
+         if (mWorldDataHexString != null)
+            System.setClipboard(mWorldDataHexString);
+      }
+      
+      private function CreateBottomBar ():void
+      {
+         if (mWorldLayer != null)
+         {
+            var authorName:String = mPlayerWorld.GetAuthorName ();
+            var anthorUrl:String = mPlayerWorld.GetAuthorHomepage ().toLowerCase();
+            
+            var infoText:String = "<font face='Verdana' size='10'> Designed by: ";
+            
+            if (authorName != null && authorName.length > 0)
+            {
+               authorName = TextUtil.TrimString (authorName);
+               
+               if (authorName.length > 50)
+                  authorName = authorName.substr (0, 50);
+               
+               infoText = infoText + "<b><i>" + authorName + "</i></b>";
+               
+               if (anthorUrl != null)
+               {
+                  if (anthorUrl.indexOf ("http") != 0)
+                     anthorUrl = null;
+               }
+               
+               if (anthorUrl != null)
+               {
+                  anthorUrl = TextUtil.TrimString (anthorUrl);
+                  
+                  var maxUrlLength:int = 100 - authorName.length;
+                  
+                  var anthorUrlShort:String = anthorUrl;
+                  
+                  if (anthorUrl.length > maxUrlLength)
+                  {
+                     anthorUrlShort = anthorUrl.substr (0, maxUrlLength - 3) + "...";
+                  }
+                  else
+                     anthorUrl = anthorUrl;
+                  
+                  
+                  infoText = infoText + " (<u><font color='#0000ff'><a href='" + anthorUrl + "' target='_blank' >" + anthorUrlShort + "</a></font></u>)";
+               }
+               
+               mBottomBarLayer.addChild ( TextFieldEx.CreateTextField (infoText, true, 0xDDDDDD));
+            }
+            
+            mBottomBarLayer.x = (Define.WorldWidth - mBottomBarLayer.width) * 0.5;
+            mBottomBarLayer.y = Define.WorldHeight - mBottomBarLayer.height - 2;
+         }
+      }
       
       private var mTextFinished:TextFieldEx;
       private var mTextAuthorInfo:TextFieldEx;
       private var mButtonReplay:TextButton;
+      private var mButtonCloseFinishDialog:TextButton;
+      
+      private var mEverFinished:Boolean = false;
       
       private function CreateFinishedDialog ():void
       {
          var finishedText:String = "<font size='30' face='Verdana' color='#000000'> <b>Cool! It is solved.</b></font>";
          mTextFinished = TextFieldEx.CreateTextField (finishedText, false, 0xFFFFFF, 0x0, false);
          
-         mButtonReplay = new TextButton ("<font size='30' face='Verdana' color='#0000FF'>   Replay   </font>", OnRestart);
+         mButtonReplay = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>   Replay   </font>", OnRestart);
+         mButtonCloseFinishDialog = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>   Close   </font>", CloseFinishedDialog);
+         var buttonContainer:Sprite = new Sprite ();
+         buttonContainer.addChild (mButtonReplay);
+         buttonContainer.addChild (mButtonCloseFinishDialog);
+         mButtonCloseFinishDialog.x = mButtonReplay.x + mButtonReplay.width + 50;
          
          var infoText:String = "";
          
@@ -211,17 +353,21 @@ package wrapper {
                var authorInfoText:String;
                
                if (anthorUrl == null)
-                  infoText = infoText + "<font face='Verdana' size='15'>This puzzle in created by <b><i>" + authorName + "</i></b></font>";
+                  infoText = infoText + "<font face='Verdana' size='15'>This puzzle in created by <b><i>" + authorName + "</i></b></font>.";
                else
                   infoText = infoText + "<font face='Verdana' size='15'>This puzzle in created by <font color='#0000FF'><b><i><u><a href='" + anthorUrl + "' target='_blank' >" + authorName + "</a></u></i></b></font>.</font>";
             }
          }
-            
-         infoText = infoText + "<font face='Verdana' size='15'> Want to <font color='#0000FF'><u><a href='http://www.colorinfection.com' target='_blank'>design your own puzzles</a></u></font>?</font>";
          
-         mTextAuthorInfo = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, 0x0, true);
+         if (infoText.length > 0 )
+            infoText = infoText + "<br>";
+         infoText = infoText + "<br><font face='Verdana' size='15'>";
+         infoText = infoText + "Want to <font color='#0000FF'><u><a href='" + Define.EditorUrl + "' target='_blank'>design your own puzzles</a></u></font>?";
+         infoText = infoText + "</font>";
          
-         mFinishedDialog = CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, mButtonReplay]);
+         mTextAuthorInfo = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, 0x0);
+         
+         mFinishedDialog = CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, buttonContainer]);
          mFinishedDialog.visible = false;
          mFinishedDialog.alpha = 0.9;
          
@@ -230,11 +376,18 @@ package wrapper {
       
       private function OpenFinishedDialog ():void
       {
-         if (mFinishedDialog != null)
+         if (mFinishedDialog != null && ! mEverFinished)
          {
-            mFinishedDialog.visible = true;
+            mEverFinished = true;
             
+            mFinishedDialog.visible = true;
+         }
+         
+         if (mFinishedDialog.visible)
+         {
             mFinishedDialog.alpha += 0.025;
+            if (mFinishedDialog.alpha > 0.9)
+               mFinishedDialog.alpha = 0.9;
          }
       }
       
@@ -250,6 +403,8 @@ package wrapper {
       private var mTextTutorial:TextFieldEx;
       private var mButtonCloseHelpDialog:TextButton;
       
+      private var mBox2dText:TextFieldEx;
+      
       private function CreateHelpDialog ():void
       {
          var tutorialText:String = 
@@ -260,9 +415,12 @@ package wrapper {
          
          mTextTutorial = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, Define.WorldWidth / 2);
          
+         var box2dText:String =  "<font size='10' face='Verdana' color='#000000'>(This player is based on Box2d physics engine (AS3).)</font>";
+         mBox2dText = TextFieldEx.CreateTextField (box2dText);
+         
          mButtonCloseHelpDialog = new TextButton ("<font face='Verdana' size='16' color='#0000FF'>   Close   </font>", CloseHelpDialog);
          
-         mHelpDialog = CreateDialog ([mTextTutorial, 20, mButtonCloseHelpDialog]);
+         mHelpDialog = CreateDialog ([mTextTutorial, 20 ,mBox2dText, 20, mButtonCloseHelpDialog]);
          mHelpDialog.visible = false;
          
          mDialogLayer.addChild (mHelpDialog);
@@ -274,15 +432,13 @@ package wrapper {
          if (mHelpDialog != null)
             mHelpDialog.visible = true;
          
-         mIsPlaying = false;
+         OnPause (null);
       }
       
       private function CloseHelpDialog ():void
       {
          if (mHelpDialog != null)
             mHelpDialog.visible = false;
-         
-         mIsPlaying = true;
       }
       
       private function CreateDialog (components:Array):Sprite
@@ -339,88 +495,131 @@ package wrapper {
          return dialog;
       }
       
-      private var mButtonRestart:TextButton;
-      private var mButtonSlow:TextButton;
-      private var mButtonNormal:TextButton;
-      private var mButtonSpeedy:TextButton;
-      private var mButtonHelp:TextButton;
+      private var mButtonRestart:ImageButton;
+      private var mButtonStartPause:ImageButton;
+      private var mButtonHelp:ImageButton;
+      private var mButtonSpeeds:Array;
+      
+      private static const NumButtonSpeed:int = 5;
+      private static const ButtonMargin:int = 8;
       
       private function CreateUI ():void
       {
-         mButtonRestart = new TextButton ("<font face='Verdana' size='10' color='#0000FF'>Restart</font>", OnRestart);
-         mButtonSlow = new TextButton ("<font face='Verdana' size='10' color='#0000FF'>Slow</font>", OnSlow);
-         mButtonNormal = new TextButton ("<font face='Verdana' size='10' color='#0000FF'>Normal</font>", OnNormal);
-         mButtonSpeedy = new TextButton ("<font face='Verdana' size='10' color='#0000FF'>Speedy</font>", OnSpeedy);
-         mButtonHelp = new TextButton ("<font face='Verdana' size='10' color='#0000FF'>Help (?)</font>", OnHelp);
+         var i:int;
+         var buttonX:Number = 0;
          
-         mUiLayer.addChild (mButtonRestart);
-         mUiLayer.addChild (mButtonSlow); mButtonSlow.x = mButtonRestart.x + mButtonRestart.width + 2;
-         mUiLayer.addChild (mButtonNormal); mButtonNormal.x = mButtonSlow.x + mButtonSlow.width;
-         mUiLayer.addChild (mButtonSpeedy); mButtonSpeedy.x = mButtonNormal.x + mButtonNormal.width;
-         mUiLayer.addChild (mButtonHelp); mButtonHelp.x = mButtonSpeedy.x + mButtonSpeedy.width + 2;
+         mButtonRestart = new ImageButton (null, mBitmapDataRetartDisabled);
+         mTopBarLayer.addChild (mButtonRestart); 
+         mButtonRestart.x = buttonX; 
+         buttonX += mButtonRestart.width;
          
-         var dialogWidth:Number = mUiLayer.width;
-         var bg:Sprite = new Sprite ();
-         var radius:int = 5;
-         bg.graphics.beginFill(Define.ColorStaticObject);
-         bg.graphics.lineStyle(1, Define.ColorStaticObject);
-         bg.graphics.drawRoundRect(- radius, 0, mUiLayer.width + radius + radius,  mUiLayer.height + radius, radius, radius);
-         bg.graphics.endFill();
-         mUiLayer.addChildAt (bg, 0);
+         mButtonStartPause = new ImageButton (OnStart, mBitmapDataStart);
+         mTopBarLayer.addChild (mButtonStartPause); 
+         mButtonStartPause.x = buttonX; 
+         buttonX += mButtonStartPause.width - 1 + ButtonMargin;
          
-         mUiLayer.x= (Define.WorldWidth - dialogWidth) * 0.5;
-         mUiLayer.y = 2;
+         mButtonSpeeds = new Array (5);
+         for (i = 0; i < NumButtonSpeed; ++ i)
+         {
+            mButtonSpeeds [i] = new ImageButton (OnSpeed, mBitmapDataSpeed, i);
+            mTopBarLayer.addChild (mButtonSpeeds[i]); 
+            mButtonSpeeds[i].x = buttonX; 
+            buttonX += mButtonSpeeds[i].width - 1;
+         }
          
-         OnNormal ();
+         mButtonHelp = new ImageButton (OnHelp, mBitmapDataHelp);
+         buttonX += ButtonMargin;
+         mTopBarLayer.addChild (mButtonHelp); 
+         mButtonHelp.x = buttonX;
+         
+         mTopBarLayer.x= (Define.WorldWidth - mTopBarLayer.width) * 0.5;
+         mTopBarLayer.y = 2;
+         
+         OnSpeed (1);
       }
       
-      private function OnRestart ():void
+      private function OnRestart (data:Object = null):void
       {
-         if (mPlayerWorld != null && mWorldLayer.contains (mPlayerWorld))
-            mWorldLayer.removeChild (mPlayerWorld);
-         
-         mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (mWorldDefine);
-         
-         if (mPlayerWorld != null)
+         try
          {
-            mPlayerWorld.Update (0, 1);
-            mIsPlaying = true;
+            if (mPlayerWorld != null && mWorldLayer.contains (mPlayerWorld))
+               mWorldLayer.removeChild (mPlayerWorld);
             
-            mWorldLayer.addChild (mPlayerWorld);
+            mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (mWorldDataHexString));
+            
+            if (mPlayerWorld != null)
+            {
+               mPlayerWorld.Update (0, 1);
+               
+               mWorldLayer.addChild (mPlayerWorld);
+               
+               mEverFinished = false;
+               
+               if (mIsPlaying)
+               {
+                  mButtonRestart.SetBitmapData (mBitmapDataRetart);
+                  mButtonRestart.SetClickEventHandler (OnRestart);
+                  OnStart (null);
+               }
+               else
+               {
+                  mButtonRestart.SetBitmapData (mBitmapDataRetartDisabled);
+                  mButtonRestart.SetClickEventHandler (null);
+                  OnPause (null);
+               }
+            }
+         }
+         catch (error:Error)
+         {
+            mPlayerWorld = null;
          }
          
          CloseFinishedDialog ();
          CloseHelpDialog ();
       }
       
-      private function OnNormal ():void
+      public function OnStart (data:Object = null):void
       {
-         mPlayingSpeedX = 2;
+         mButtonRestart.SetBitmapData (mBitmapDataRetart);
+         mButtonRestart.SetClickEventHandler (OnRestart);
          
-         mButtonNormal.SetSelected (true);
-         mButtonSlow.SetSelected (false);
-         mButtonSpeedy.SetSelected (false);
+         mIsPlaying = true;
+         
+         mButtonStartPause.SetBitmapData (mBitmapDataPause);
+         mButtonStartPause.SetClickEventHandler (OnPause);
+         
+         CloseFinishedDialog ();
+         CloseHelpDialog ();
       }
       
-      private function OnSpeedy ():void
+      public function OnPause (data:Object = null):void
       {
-         mPlayingSpeedX = 6;
+         mIsPlaying = false;
          
-         mButtonNormal.SetSelected (false);
-         mButtonSlow.SetSelected (false);
-         mButtonSpeedy.SetSelected (true);
+         mButtonStartPause.SetBitmapData (mBitmapDataStart);
+         mButtonStartPause.SetClickEventHandler (OnStart);
       }
       
-      private function OnSlow ():void
+      private static const ButtonIndex2SpeedXTable:Array = [1, 2, 3, 4, 5];
+      
+      private function OnSpeed (data:Object):void
       {
-         mPlayingSpeedX = 1;
+         var index:int = int (data);
+         if (index < 0) index = 0;
+         if (index >= NumButtonSpeed) index = NumButtonSpeed - 1;
          
-         mButtonNormal.SetSelected (false);
-         mButtonSlow.SetSelected (true);
-         mButtonSpeedy.SetSelected (false);
+         for (var i:int = 0; i < NumButtonSpeed; ++ i)
+         {
+            if (i == index)
+               mButtonSpeeds [i].SetBitmapData ( mBitmapDataSpeedSelected );
+            else
+               mButtonSpeeds [i].SetBitmapData ( mBitmapDataSpeed );
+         }
+         
+         mPlayingSpeedX = ButtonIndex2SpeedXTable [index];
       }
       
-      private function OnHelp():void
+      private function OnHelp(data:Object):void
       {
          OpenHelpDialog ();
       }

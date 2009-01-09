@@ -48,14 +48,14 @@ package com.tapirgames.display {
             overState = mOverState;
             downState = mDownState;
             
-            addEventListener( MouseEvent.CLICK, OnButtonClick );            
+            addEventListener( MouseEvent.CLICK, OnButtonClick ); 
             useHandCursor = true;
          }
          else
          {
             upState = overState = downState = mDisableState;
             
-            removeEventListener( MouseEvent.CLICK, OnButtonClick );            
+            removeEventListener( MouseEvent.CLICK, OnButtonClick );
             useHandCursor = false;
          }
          

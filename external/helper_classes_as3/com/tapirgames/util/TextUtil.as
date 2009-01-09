@@ -55,5 +55,36 @@ package com.tapirgames.util {
       
       }
 
+      public static function ReplaceString (str:String, oldSubStr:String, newSubStr:String):String {
+        return str.split(oldSubStr).join(newSubStr);
+      }
+
+      public static function TrimString (str:String, char:String = " "):String {
+        return TrimBackString(TrimFrontString(str, char), char);
+      }
+
+      public static function TrimFrontString(str:String, char:String):String {
+        char = stringToCharacter(char);
+        if (str.charAt(0) == char) {
+            str = TrimFrontString(str.substring(1), char);
+        }
+        return str;
+      }
+
+      public static function TrimBackString (str:String, char:String):String {
+        char = stringToCharacter(char);
+        if (str.charAt(str.length - 1) == char) {
+            str = TrimBackString(str.substring(0, str.length - 1), char);
+        }
+        return str;
+      }
+      
+      private static function stringToCharacter(str:String):String {
+         if (str.length == 1) {
+            return str;
+         }
+         return str.slice(0, 1);
+      }
+      
    }
 }

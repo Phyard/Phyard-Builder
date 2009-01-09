@@ -100,7 +100,7 @@
             <exclude name="**/.svn/**"/>
          </fileset>
       </copy>
-      <copy todir="${dir.build.src}" overwrite="true">
+      <copy todir="${dir.build.src}/res" overwrite="true">
          <fileset dir="${dir.build.res-compiled}" />
       </copy>
    </target>
@@ -215,13 +215,13 @@
          -->
          
          <!-- method 2 -->
+         <!--
          <arg line="wrapper/ColorInfectionEditor.as" />
+         -->
          
          <!-- method 3 -->
-         <!--
          <arg line="-frame=editor,wrapper.ColorInfectionEditor" />
-         <arg line=" EditorPreloader.as" />
-         -->
+         <arg line=" wrapper/EditorPreloader.as" />
 
       </exec>
       
@@ -264,13 +264,14 @@
          <arg line="${dir.build.src}/main.mxml" />
          -->
          
-         <!-- method 2 -->
+         <!-- method 2 -->         
          <arg line="wrapper/ColorInfectionPlayer.as" />
+
          
          <!-- method 3 -->
          <!--
-         <arg line="-frame=editor,wrapper.ColorInfectionEditor" />
-         <arg line=" EditorPreloader.as" />
+         <arg line="-frame=editor,wrapper.ColorInfectionPlayer" />
+         <arg line=" wrapper/PlayerPreloader.as" />
          -->
 
       </exec>

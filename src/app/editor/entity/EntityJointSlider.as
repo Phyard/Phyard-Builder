@@ -187,8 +187,11 @@ package editor.entity {
          
          var slider:EntityJointSlider = entity as EntityJointSlider;
          
-         slider.SetLowerTranslation ( GetLowerTranslation () );
-         slider.SetUpperTranslation ( GetUpperTranslation () );
+         slider.SetLimitsEnabled ( IsLimitsEnabled () );
+         slider.SetLimits (GetLowerTranslation (), GetUpperTranslation ());
+         slider.mEnableMotor = mEnableMotor;
+         slider.mMotorSpeed = mMotorSpeed;
+         slider.mBackAndForth = mBackAndForth;
          
          var anchor1:SubEntitySliderAnchor = GetAnchor1 ();
          var anchor2:SubEntitySliderAnchor = GetAnchor2 ();
@@ -210,8 +213,6 @@ package editor.entity {
       {
          return [mAnchor1, mAnchor2];
       }
-      
-      
       
       
       

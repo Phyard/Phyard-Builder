@@ -245,10 +245,6 @@ package common {
                   slider.mMotorSpeed = entityDefine.mMotorSpeed;
                   slider.mBackAndForth = entityDefine.mBackAndForth;
                   
-                  trace ("entityDefine.mLowerTranslation =  " + entityDefine.mLowerTranslation);
-                  trace ("entityDefine.mUpperTranslation =  " + entityDefine.mUpperTranslation);
-                  trace ("entityDefine.mMotorSpeed =  " + entityDefine.mMotorSpeed);
-                  
                   entity = slider;
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
@@ -280,9 +276,6 @@ package common {
                
                entity.UpdateAppearance ();
                entity.UpdateSelectionProxy ();
-               
-               trace ("numChildren = " + editorWorld.numChildren);
-               trace (" --- entity: " + entity + "> " + entity.GetPositionX () + ", " + entity.GetPositionY () + " v=" + entity.IsVisible ());
             }
          }
          
@@ -535,9 +528,6 @@ package common {
             var indicesStr:String = element.@brother_indices;
             var indexStrArray:Array = indicesStr.split (/,/);
             
-            trace ("numBrothers = " + numBrothers);
-            trace ("indexStrArray.length = " + indexStrArray.length);
-            
             var brotherIDs:Array = new Array (indexStrArray.length);
             for (entityId = 0; entityId < indexStrArray.length; ++ entityId)
             {
@@ -689,24 +679,7 @@ package common {
          if (hexString.length != arrayLength * 2)
             trace ("hexString.length != arrayLength * 2");
          
-         return hexString;
-      }
-      
-      public static function GetHexChar (n:int):String
-      {
-         if (n >= 0 && n < 10)
-            return "" + n;
-         
-         switch (n)
-         {
-            case 10: return "A";
-            case 11: return "B";
-            case 12: return "C";
-            case 13: return "D";
-            case 14: return "E";
-            case 15: return "F";
-            default: return "?";
-         }
+         return En (hexString);
       }
       
       public static function MakeHexStringFromByte (byteValue:int):String
@@ -720,10 +693,32 @@ package common {
          var n1:int = (byteValue & 0xF0) >> 4;
          var n2:int = (byteValue & 0x0F);
          
-         return GetHexChar (n1) + GetHexChar (n2);
+         return DataFormat2.Value2Char (n1) + DataFormat2.Value2Char (n2);
       }
       
-      
+      public static function En (str:String):String
+      {
+         var enStr:String = "";
+         
+         var index:int = 0;
+         var code:int;
+         var num:int;
+         while (index < str.length)
+         {
+            code = str.charCodeAt (index);
+            num = 1;
+            ++ index;
+            while (num < 4 && index < str.length && str.charCodeAt (index) == code)
+            {
+               ++ num;
+               ++ index;
+            }
+            
+            enStr = enStr + DataFormat2.Value2Char (DataFormat2.Char2Value (code), num);
+         }
+         
+         return enStr;
+      }
       
    }
    

@@ -56,12 +56,13 @@
             var params:Object = new Object ();
             
            params.mHexString = TextArea_PlayCode.text;
-            
-           if (OnConfirm != null)
-              OnConfirm (params);
-             
+           
+           // for this dialog, OnClose must be front of OnConfirm
            if (OnClose != null)
               OnClose ();
+           
+           if (OnConfirm != null)
+              OnConfirm (params);
          }
          
          private function OnClickCancelButton():void 

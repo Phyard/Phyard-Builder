@@ -136,6 +136,7 @@ package editor.entity {
       {
          entity.SetPosition ( GetPositionX () + displayOffsetX, GetPositionY () + displayOffsetY );
          entity.SetRotation ( GetRotation () );
+         entity.SetVisible ( IsVisible () );
       }
       
       

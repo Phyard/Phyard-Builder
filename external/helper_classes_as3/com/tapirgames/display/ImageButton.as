@@ -17,11 +17,28 @@ package com.tapirgames.display {
    {
       private var mBitmap:Bitmap;
       private var mOnClikFunc:Function;
+      private var mUserData:Object;
       
-      public function ImageButton (bitmapData:BitmapData, onClick:Function = null)
+      public function ImageButton (onClick:Function, bitmapData:BitmapData, userData:Object = null)
+      {
+         addEventListener( MouseEvent.CLICK, OnButtonClick );
+         
+         SetClickEventHandler (onClick);
+         
+         SetBitmapData (bitmapData);
+         
+         SetUserData (userData);
+      }
+      
+      public function SetClickEventHandler (onClick:Function):void
       {
          mOnClikFunc = onClick;
          
+         useHandCursor = (mOnClikFunc != null);
+      }
+      
+      public function SetBitmapData (bitmapData:BitmapData):void
+      {
          mBitmap = new Bitmap (bitmapData);
          
          upState = mBitmap;
@@ -29,13 +46,22 @@ package com.tapirgames.display {
          overState = mBitmap;
          downState = mBitmap;
          
-         addEventListener( MouseEvent.CLICK, OnButtonClick );            
       }
       
       private function OnButtonClick( event:MouseEvent ):void 
       {
          if (mOnClikFunc != null)
-            mOnClikFunc ();
+            mOnClikFunc (mUserData);
+      }
+      
+      public function SetUserData (userData:Object):void
+      {
+         mUserData = userData;
+      }
+      
+      public function GetUserData ():Object
+      {
+         return mUserData;
       }
    }
    

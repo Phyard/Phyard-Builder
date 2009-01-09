@@ -21,5 +21,14 @@ package editor.entity {
       {
          super (world);
       }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, 0, 0);
+         
+         (entity as EntityJoint).mCollideConnected = mCollideConnected;
+         
+      }
+      
    }
 }

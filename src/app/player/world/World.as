@@ -26,7 +26,8 @@ package player.world {
    {
       public static const WorldWidth:int = Define.WorldWidth; 
       public static const WorldHeight:int = Define.WorldHeight;
-      public static const WorldBorderThinkness:int = Define.WorldBorderThinkness;
+      public static const WorldBorderThinknessLR:int = Define.WorldBorderThinknessLR;
+      public static const WorldBorderThinknessTB:int = Define.WorldBorderThinknessTB;
       
       
    // ...
@@ -99,11 +100,6 @@ package player.world {
                (displayBoject as Entity).Update (escapedTime);
             }
          }
-         
-         trace ("mNumToBeInfecteds = " + mNumToBeInfecteds);
-         trace ("mNumIntectedToBeInfecteds = " + mNumIntectedToBeInfecteds);
-         trace ("mNumDontInfecteds = " + mNumDontInfecteds);
-         trace ("mNumInfectedDontInfects = " + mNumInfectedDontInfects);
       }
       
       private var mPuzzleSolved:Boolean = false;
@@ -167,10 +163,10 @@ package player.world {
          borderContainerParams.mPosY = WorldHeight * 0.5;
          
          var borderContainer:ShapeContainer = CreateShapeContainer (borderContainerParams, true);
-         CreateBorder (borderContainer, WorldWidth * 0.5, WorldBorderThinkness * 0.5 - 0.5, WorldWidth, WorldBorderThinkness);
-         CreateBorder (borderContainer, WorldWidth * 0.5, WorldHeight - WorldBorderThinkness * 0.5, WorldWidth, WorldBorderThinkness);
-         CreateBorder (borderContainer, WorldBorderThinkness * 0.5 - 0.5, WorldHeight * 0.5, WorldBorderThinkness, WorldWidth);
-         CreateBorder (borderContainer, WorldWidth - WorldBorderThinkness * 0.5, WorldHeight * 0.5, WorldBorderThinkness, WorldWidth);
+         CreateBorder (borderContainer, WorldWidth * 0.5, WorldBorderThinknessTB * 0.5 - 0.5, WorldWidth, WorldBorderThinknessTB);
+         CreateBorder (borderContainer, WorldWidth * 0.5, WorldHeight - WorldBorderThinknessTB * 0.5, WorldWidth, WorldBorderThinknessTB);
+         CreateBorder (borderContainer, WorldBorderThinknessLR * 0.5 - 0.5, WorldHeight * 0.5, WorldBorderThinknessLR, WorldWidth);
+         CreateBorder (borderContainer, WorldWidth - WorldBorderThinknessLR * 0.5, WorldHeight * 0.5, WorldBorderThinknessLR, WorldWidth);
       }
       
       private function CreateBorder (borderContainer:ShapeContainer, posX:Number, posY:Number, rectW:Number, rectH:Number):void

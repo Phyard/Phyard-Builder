@@ -8,6 +8,7 @@ package player.physics {
    import Box2D.Dynamics.b2Body;
    import Box2D.Common.Math.b2Vec2;
    
+   import Box2D.Dynamics.Joints.b2DistanceJointDef;
    
    public class PhysicsProxyJointHinge extends PhysicsProxyJoint
    {
@@ -39,6 +40,16 @@ package player.physics {
          _b2Joint = mPhysicsEngine._b2World.CreateJoint(hingeJointDef) as b2RevoluteJoint;
          
          _b2Joint.SetUserData (this);
+         
+         // ...
+         
+         //var distanceJointDef:b2DistanceJointDef = new b2DistanceJointDef ();
+         //
+         //distanceJointDef.Initialize(body1, body2, new b2Vec2 (anchorPhysicsPosX, anchorPhysicsPosY), new b2Vec2 (anchorPhysicsPosX, anchorPhysicsPosY));
+         //
+         //distanceJointDef.collideConnected = params.mCollideConnected;
+         //
+         //mPhysicsEngine._b2World.CreateJoint(distanceJointDef);
       }
       
       public function IsLimitsEnabled ():Boolean

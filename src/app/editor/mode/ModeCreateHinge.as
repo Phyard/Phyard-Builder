@@ -64,6 +64,8 @@ package editor.mode {
          mEntityJointHinge.GetAnchor ().SetPosition (posX, posY);
          
          mEntityJointHinge.UpdateAppearance ();
+         
+         mMainView.UpdateEntityInfoOnStatusBar ();
       }
       
       protected function FinishSession (endX:Number, endY:Number):void

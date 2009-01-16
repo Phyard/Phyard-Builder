@@ -23,8 +23,11 @@ package player.entity {
       public function EntityShapeCircle (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
-         
-         shapeContainer.addChild (this);
+      }
+      
+      public function GetRadius ():Number
+      {
+         return mRadius;
       }
       
       override public function BuildPhysicsProxy (params:Object):void
@@ -72,17 +75,34 @@ package player.entity {
          
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
          {
-            var pos:Number = (mRadius * 0.66) * 0.707 - 1;
-            if (pos < 0) pos = 0;
-            GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, borderColor, 1, true, borderColor);
+            var pos:Number;
+            if (Define.IsBombShape (GetShapeAiType ()))
+            {
+               pos = mRadius * 0.75 * 0.707;
+               if (pos < 0) pos = 0;
+               GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, 0xFFFFFF, 1, true, 0xFFFFFF);
+            }
+            else
+            {
+               pos = (mRadius * 0.66) * 0.707 - 1;
+               if (pos < 0) pos = 0;
+               GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, borderColor, 1, true, borderColor);
+            }
          }
          else if (mAppearanceType == Define.CircleAppearanceType_Column)
          {
             var radius2:Number = mRadius * 0.5;
             GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
-            GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
+            if (Define.IsBombShape (GetShapeAiType ()))
+               GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, 0x808080, 1);
+            else
+               GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
+         }
+         
+         if (Define.IsBombShape (GetShapeAiType ()))
+         {
+            GraphicsUtil.DrawEllipse (this, - mRadius * 0.5, - mRadius * 0.5, mRadius, mRadius, 0x808080, 0, true, 0x808080);
          }
       }
-      
    }
 }

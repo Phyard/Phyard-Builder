@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Slider Setting" width="500">
+    title="Spring Setting" width="500">
 
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
@@ -14,40 +14,25 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limit"/>
+      <mx:Label id="Label_StaticLength" text="Static Length / Current Length:" textAlign="right" width="23%"/>
+      <mx:HSlider id="Slider_StaticLengthRatio" focusEnabled="false" minimum="0" maximum="5" value="1" width="60%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="1"
+          labels="['0', '5.0']" allowTrackClick="true" liveDragging="true" />
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_LowerTranslation" text="Lower Translation:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_LowerTranslation" focusEnabled="false" minimum="-600" maximum="0" value="-10" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="100"
-          labels="['-600', '-300', '0']" allowTrackClick="true" liveDragging="true" />
+      <mx:Label id="Label_FrequencyHz" text="Frequency (Hz):" textAlign="right" width="23%"/>
+      <mx:HSlider id="Slider_FrequencyHz" focusEnabled="false" minimum="0" maximum="5" value="10" width="77%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.05" tickInterval="1"
+          labels="['0', '5']" allowTrackClick="true" liveDragging="true" />
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_UpperTranslation" text="Upper Translation:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_UpperTranslation" focusEnabled="false" minimum="0" maximum="600" value="10" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="100"
-          labels="['0', '300', '600']" allowTrackClick="true" liveDragging="true" />
+      <mx:Label id="Label_DampingRatio" text="Damping Ratio:" textAlign="right" width="23%"/>
+      <mx:HSlider id="Slider_DampingRatio" focusEnabled="false" minimum="0" maximum="1" value="10" width="77%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
+          labels="['0', '1.0']" allowTrackClick="true" liveDragging="true" />
    </mx:HBox>
-   
-   <mx:Spacer height="6"/>
-   
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:CheckBox id="CheckBox_MotorEnabled" label="Enable Motor"/>
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_MotorSpeed" focusEnabled="false" minimum="-300" maximum="300" value="0" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="60"
-          labels="['-300', '0', '300']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth between Limits"/>
-   </mx:HBox>
-
 
    <mx:Spacer height="20"/>
 
@@ -77,14 +62,9 @@
             CheckBox_IsVisible.enabled = false;
             CheckBox_CollideConnected.selected = values.mCollideConnected;
             
-            CheckBox_LimitEnabled.selected = values.mEnableLimit;
-            Slider_LowerTranslation.value = values.mLowerTranslation;
-            Slider_UpperTranslation.value = values.mUpperTranslation;
-            
-            CheckBox_MotorEnabled.selected = values.mEnableMotor;
-            Slider_MotorSpeed.value = values.mMotorSpeed;
-            
-            CheckBox_BackAndForth.selected = values.mBackAndForth;
+            Slider_StaticLengthRatio.value = values.mStaticLengthRatio;
+            Slider_FrequencyHz.value = values.mFrequencyHz;
+            Slider_DampingRatio.value = values.mDampingRatio;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -104,18 +84,13 @@
              params.mIsVisible = CheckBox_IsVisible.selected;
              params.mCollideConnected = CheckBox_CollideConnected.selected;
              
-             params.mEnableLimit = CheckBox_LimitEnabled.selected;
-             params.mLowerTranslation = Slider_LowerTranslation.value;
-             params.mUpperTranslation = Slider_UpperTranslation.value;
-             
-             params.mEnableMotor = CheckBox_MotorEnabled.selected;
-             params.mMotorSpeed = Slider_MotorSpeed.value;
-             
-             params.mBackAndForth = CheckBox_BackAndForth.selected;
+             params.mStaticLengthRatio = Slider_StaticLengthRatio.value;
+             params.mFrequencyHz = Slider_FrequencyHz.value;
+             params.mDampingRatio = Slider_DampingRatio.value;
              
              PopUpManager.removePopUp(this);
              
-            if (OnConfirm != null)
+             if (OnConfirm != null)
                OnConfirm (params);
              
              if (OnClose != null)

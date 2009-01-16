@@ -13,6 +13,8 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
+   import common.Define;
+   
    public class EntityShapeRectangle extends EntityShape 
    {
    // geom
@@ -26,6 +28,11 @@ package editor.entity {
          
          SetHalfWidth (0);
          SetHalfHeight (0);
+      }
+      
+      override public function GetTypeName ():String
+      {
+         return "Rectangle";
       }
       
       override public function UpdateAppearance ():void
@@ -47,6 +54,11 @@ package editor.entity {
          alpha = 0.7;
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, mFilledColor);
+         
+         if (GetFilledColor () == Define.ColorBombObject)
+         {
+            GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
+         }
       }
       
       override public function UpdateSelectionProxy ():void
@@ -63,13 +75,41 @@ package editor.entity {
       }
       
       
-      public function SetHalfWidth (halfWidth:Number):void
+      public function SetHalfWidth (halfWidth:Number, validate:Boolean = true):void
       {
+         if (validate)
+         {
+            var minHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
+            var maxHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
+            
+            if (halfWidth * mHalfHeight * 4 > EditorSetting.MaxRectArea)
+               halfWidth = EditorSetting.MaxRectArea / (mHalfHeight * 4);
+            
+            if (halfWidth > maxHalfWidth)
+               halfWidth = maxHalfWidth;
+            if (halfWidth < minHalfWidth)
+               halfWidth = minHalfWidth;
+         }
+         
          mHalfWidth = halfWidth;
       }
       
-      public function SetHalfHeight (halfHeight:Number):void
+      public function SetHalfHeight (halfHeight:Number, validate:Boolean = true):void
       {
+         if (validate)
+         {
+            var minHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
+            var maxHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
+            
+            if (halfHeight * mHalfWidth * 4 > EditorSetting.MaxRectArea)
+               halfHeight = EditorSetting.MaxRectArea / (mHalfWidth * 4);
+            
+            if (halfHeight > maxHalfWidth)
+               halfHeight = maxHalfWidth;
+            if (halfHeight < minHalfWidth)
+               halfHeight = minHalfWidth;
+         }
+         
          mHalfHeight = halfHeight;
       }
       
@@ -301,8 +341,8 @@ package editor.entity {
             y2 = vertexController.GetPositionY () + localOffsetY;
          }
          
-         var halfWidth:Number  = (x2 - x1) * 0.5;
-         var halfHeight:Number = (y2 - y1) * 0.5;
+         var halfWidth:Number  = (x2 - x1);// * 0.5;
+         var halfHeight:Number = (y2 - y1);// * 0.5;
       
          if (halfWidth < EditorSetting.MinRectSideLength)
             return;
@@ -313,6 +353,25 @@ package editor.entity {
             return;
          if (halfHeight > EditorSetting.MaxRectSideLength)
             return;
+         
+         if (halfWidth * halfHeight > EditorSetting.MaxRectArea)
+            return;
+         
+         if (GetFilledColor () == Define.ColorBombObject)
+         {
+            if (halfHeight > halfWidth)
+               halfWidth = halfHeight;
+            else
+               halfHeight = halfWidth;
+            
+            if (halfHeight < EditorSetting.MinBombSquareSideLength)
+               return;
+            if (halfHeight > EditorSetting.MaxBombSquareSideLength)
+               return;
+         }
+         
+         halfWidth  *= 0.5;
+         halfHeight *= 0.5;
          
          var worldCenterPos:Point = World.LocalToLocal (this, mWorld, new Point ( (x2 + x1) * 0.5, (y2 + y1) * 0.5 ) );
          
@@ -372,15 +431,15 @@ package editor.entity {
          var halfWidth:Number  = mHalfWidth * ratio;
          var halfHeight:Number = mHalfHeight * ratio;
          
-         if (halfWidth < EditorSetting.MinRectSideLength)
-            halfWidth =  EditorSetting.MinRectSideLength;
-         if (halfWidth > EditorSetting.MaxRectSideLength)
-            halfWidth =  EditorSetting.MaxRectSideLength;
+         //if (halfWidth < EditorSetting.MinRectSideLength)
+         //   halfWidth =  EditorSetting.MinRectSideLength;
+         //if (halfWidth > EditorSetting.MaxRectSideLength)
+         //   halfWidth =  EditorSetting.MaxRectSideLength;
          
-         if (halfHeight < EditorSetting.MinRectSideLength)
-            halfHeight =  EditorSetting.MinRectSideLength;
-         if (halfHeight > EditorSetting.MaxRectSideLength)
-            halfHeight =  EditorSetting.MaxRectSideLength;
+         //if (halfHeight < EditorSetting.MinRectSideLength)
+         //   halfHeight =  EditorSetting.MinRectSideLength;
+         //if (halfHeight > EditorSetting.MaxRectSideLength)
+         //   halfHeight =  EditorSetting.MaxRectSideLength;
          
          SetHalfWidth (halfWidth);
          SetHalfHeight (halfHeight);

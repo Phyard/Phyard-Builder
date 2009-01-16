@@ -36,6 +36,9 @@ package editor.entity {
       // allow sleep
       // is sleeping
       
+      // isSensor
+      
+      
    // collison friends
       
       protected var mFriends:Array = new Array ();
@@ -44,6 +47,11 @@ package editor.entity {
       public function EntityShape (world:World)
       {
          super (world);
+      }
+      
+      override public function GetTypeName ():String
+      {
+         return "Shape";
       }
       
 //====================================================================

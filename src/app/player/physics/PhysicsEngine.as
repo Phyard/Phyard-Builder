@@ -20,11 +20,14 @@ package player.physics {
       private var _OnShapeCollision:Function = null; //  (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
       
       
-      public function PhysicsEngine ():void
+      public function PhysicsEngine (lowerDisplayPoint:Point, upperDisplayPoint:Point):void
       {
+         _DisplayPoint2PhysicsPoint (lowerDisplayPoint);
+         _DisplayPoint2PhysicsPoint (upperDisplayPoint);
+         
          var worldAABB:b2AABB = new b2AABB();
-         worldAABB.lowerBound.Set(-100000.0, -100000.0);
-         worldAABB.upperBound.Set(100000.0, 100000.0);
+         worldAABB.lowerBound.Set(lowerDisplayPoint.x, lowerDisplayPoint.y);
+         worldAABB.upperBound.Set(upperDisplayPoint.x, upperDisplayPoint.y);
          
          var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
          var doSleep:Boolean = true;
@@ -164,11 +167,11 @@ package player.physics {
 //   
 //=================================================================
       
-      public function CreateProxyBody (displayX:Number, displayY:Number, rotation:Number, params:Object = null):PhysicsProxyBody
+      public function CreateProxyBody (displayX:Number, displayY:Number, rotation:Number, static:Boolean, params:Object = null):PhysicsProxyBody
       {
          var point:Point = DisplayPosition2PhysicsPoint (displayX, displayY);
          
-         var proxyBody:PhysicsProxyBody = new PhysicsProxyBody (this, point.x, point.y, rotation, params);
+         var proxyBody:PhysicsProxyBody = new PhysicsProxyBody (this, point.x, point.y, rotation, static, params);
          
          return proxyBody;
       }
@@ -311,6 +314,7 @@ package player.physics {
 //=================================================================
 //   
 //=================================================================
+      
       
       
 //=================================================================

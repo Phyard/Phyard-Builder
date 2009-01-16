@@ -19,6 +19,9 @@ package player.world {
    import player.entity.EntityJointHinge;
    import player.entity.EntityJointSlider;
    import player.entity.EntityJointDistance;
+   import player.entity.EntityJointSpring;
+   
+   import player.entity.EntityParticle;
    
    import common.Define;
    
@@ -33,6 +36,8 @@ package player.world {
    // ...
       public var mPhysicsEngine:PhysicsEngine; // used internally
       
+      public var mParticleManager:ParticleManager;
+      
    // ...
       //protected var mEditorEntityArray:Array = new Array ();
       
@@ -43,11 +48,14 @@ package player.world {
       
       public function World ()
       {
-         mPhysicsEngine = new PhysicsEngine ();
+         mPhysicsEngine = new PhysicsEngine (new Point (-WorldWidth * 0.5, -WorldHeight * 0.5), new Point (WorldWidth * 1.5, WorldHeight * 1.5));
          mPhysicsEngine.SetJointRemovedListener (OnJointRemoved);
          mPhysicsEngine.SetShapeRemovedListener (OnShapeRemoved);
          mPhysicsEngine.SetShapeCollisionListener (OnShapeCollision);
          
+      // ...
+         
+         mParticleManager = new ParticleManager (this);
          
       // create borders
          
@@ -81,14 +89,19 @@ package player.world {
       {
       }
       
-      public function Update (escapedTime:Number, speedX:int):void
+      public function Update (escapedTime1:Number, speedX:int):void
       {
          //var dt:Number = escapedTime * 0.5;
          var dt:Number = Define.WorldStepTimeInterval * 0.5;
          
          for (var k:int = 0; k < speedX; ++ k)
+         {
+            mParticleManager.Update (dt);
             mPhysicsEngine.Update (dt);
+         }
          
+         if (speedX == 0)
+            dt = 0;
          
          ClearReport ();
          
@@ -97,7 +110,7 @@ package player.world {
             var displayBoject:Object = getChildAt (i);
             if (displayBoject is Entity)
             {
-               (displayBoject as Entity).Update (escapedTime);
+               (displayBoject as Entity).Update (dt);
             }
          }
       }
@@ -202,11 +215,14 @@ package player.world {
 //=============================================================
       
       
-      public function CreateShapeContainer (params:Object, containsPhyShapes:Boolean):ShapeContainer
+      public function CreateShapeContainer (params:Object, containsPhyShapes:Boolean, static:Boolean = true):ShapeContainer
       {
          var shapeContainer:ShapeContainer = new ShapeContainer (this);
          if (containsPhyShapes)
+         {
+            params.mIsStatic = true; // temp
             shapeContainer.BuildPhysicsProxy (params);
+         }
          
          addChild (shapeContainer);
             
@@ -262,7 +278,12 @@ package player.world {
          var jointHinge:EntityJointHinge = new EntityJointHinge (this);
          jointHinge.BuildPhysicsProxy (params);
          
-         addChild (jointHinge);
+         var index:int = jointHinge.GetRecommendedChildIndex ();
+         
+         if (index < 0)
+            addChild (jointHinge);
+         else
+            addChildAt (jointHinge, index + 1);
          
          return jointHinge;
       }
@@ -272,7 +293,12 @@ package player.world {
          var jointSlider:EntityJointSlider = new EntityJointSlider (this);
          jointSlider.BuildPhysicsProxy (params);
          
-         addChild (jointSlider);
+         var index:int = jointSlider.GetRecommendedChildIndex ();
+         
+         if (index < 0)
+            addChild (jointSlider);
+         else
+            addChildAt (jointSlider, index + 1);
          
          return jointSlider;
       }
@@ -282,9 +308,45 @@ package player.world {
          var jointDistance:EntityJointDistance = new EntityJointDistance (this);
          jointDistance.BuildPhysicsProxy (params);
          
-         addChild (jointDistance);
+         var index:int = jointDistance.GetRecommendedChildIndex ();
+         
+         if (index < 0)
+            addChild (jointDistance);
+         else
+            addChildAt (jointDistance, index + 1);
          
          return jointDistance;
+      }
+      
+      public function CreateEntityJointSpring (params:Object):EntityJointSpring
+      {
+         var jointSpring:EntityJointSpring = new EntityJointSpring (this);
+         jointSpring.BuildPhysicsProxy (params);
+         
+         var index:int = jointSpring.GetRecommendedChildIndex ();
+         
+         if (index < 0)
+            addChild (jointSpring);
+         else
+            addChildAt (jointSpring, index + 1);
+         
+         return jointSpring;
+      }
+      
+//=============================================================
+//   dynamic creating
+//=============================================================
+      
+      public function CreateEntityParticle (params:Object):EntityParticle
+      {
+         params.mIsStatic = false;
+         
+         var particle:EntityParticle = new EntityParticle (this);
+         particle.BuildPhysicsProxy (params);
+         
+         addChild (particle);
+         
+         return particle;
       }
       
       
@@ -339,9 +401,11 @@ package player.world {
          
          var shapeId:int;
          var shape:EntityShape;
+         var container:ShapeContainer;
          
-         var body:ShapeContainer;
-         var breakableBodies:Array = new Array ();
+         var breakableShapes:Array = new Array ();
+         
+         var bombDefines:Array = new Array ();
          
          for (shapeId = 0; shapeId < shapeArray.length; ++ shapeId)
          {
@@ -349,17 +413,72 @@ package player.world {
             
             if ( Define.IsBreakableShape (shape.GetShapeAiType ()) )
             {
-               body = shape.GetParentContainer ();
-               if ( breakableBodies.indexOf (body) < 0 )
-                  breakableBodies.push (body);
+               if ( breakableShapes.indexOf (shape) < 0 )
+                  breakableShapes.push (shape);
+            }
+            
+            if ( Define.IsBombShape (shape.GetShapeAiType ()) )
+            {
+               if ( breakableShapes.indexOf (shape) < 0 )
+               {
+                  breakableShapes.push (shape);
+                  
+                  // bomb params
+                  
+                  container = shape.GetParentContainer ();
+                  
+                  var bombDefine:Object = new Object ();
+                  bombDefines.push (bombDefine);
+                  
+                  var bombPos:Point = container.GetPosition ().add (shape.GetLocalPosition ());
+                  var bombSize:Number = Define.DefaultBombSquareSideLength;
+                  
+                  if (shape is EntityShapeCircle)
+                  {
+                     bombSize = (shape as EntityShapeCircle).GetRadius () * 2.0;
+                  }
+                  else if (shape is EntityShapeRectangle)
+                  {
+                     bombSize = (shape as EntityShapeRectangle).GetWidth ();
+                     if (bombSize > (shape as EntityShapeRectangle).GetHeight ())
+                        bombSize = (shape as EntityShapeRectangle).GetHeight ();
+                  }
+                  
+                  bombDefine.mPosX = bombPos.x;
+                  bombDefine.mPosY = bombPos.y;
+                  bombDefine.mRadius = bombSize * 0.5;
+               }
             }
          }
          
-         while (breakableBodies.length > 0)
+         while (breakableShapes.length > 0)
          {
-            removeChild (breakableBodies[0]);
-            (breakableBodies[0] as ShapeContainer).Destroy ();
-            breakableBodies.splice (0, 1);
+            shape = breakableShapes[0] as EntityShape;
+            container = shape.GetParentContainer ();
+            
+            container.removeChild (shape);
+            shape.Destroy ();
+            
+            breakableShapes.splice (0, 1);
+            
+            if (container.numChildren == 0)
+            {
+               container.Destroy ();
+            }
+            else if (! container.ContainsPhysicsEntities ())
+            {
+               container.DestroyPhysicsProxy ();
+            }
+         }
+         
+         for (var bombId:int = 0; bombId < bombDefines.length; ++ bombId)
+         {
+            bombDefine = bombDefines [bombId];
+            
+            mParticleManager.AddBomb (bombDefine.mPosX,
+                                      bombDefine.mPosY,
+                                      bombDefine.mRadius
+                                      );
          }
       }
       

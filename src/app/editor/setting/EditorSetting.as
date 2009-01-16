@@ -14,9 +14,12 @@ package editor.setting {
       public static const MinCircleRadium:uint = Define.MinCircleRadium;
       public static const MaxCircleRadium:uint = Define.MaxCircleRadium;
       
-      public static const MinRectSideLength:uint = 2;
-      public static const MaxRectSideLength:uint = 600;
-      public static const MaxRectArea:uint = 600 * 200;
+      public static const MinRectSideLength:uint = Define.MinRectSideLength;
+      public static const MaxRectSideLength:uint = Define.MaxRectSideLength;
+      public static const MaxRectArea      :uint = Define.MaxRectArea;
+      
+      public static const MinBombSquareSideLength:uint = Define.MinBombSquareSideLength;
+      public static const MaxBombSquareSideLength:uint = Define.MaxBombSquareSideLength;
       
       //public static const HingeRadium:uint = 4;
       
@@ -32,6 +35,7 @@ package editor.setting {
       public static const ColorInfectedObject:uint = Define.ColorInfectedObject;;
       public static const ColorUninfectedObject:uint = Define.ColorUninfectedObject;
       public static const ColorDontInfectObject:uint = Define.ColorDontInfectObject;
+      public static const ColorBombObject:uint = Define.ColorBombObject;
       
    }
    

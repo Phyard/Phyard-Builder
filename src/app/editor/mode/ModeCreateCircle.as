@@ -14,14 +14,20 @@ package editor.mode {
    
    public class ModeCreateCircle extends ModeCreateShape
    {
-      public function ModeCreateCircle (mainView:WorldView, filledColor:uint, isStatic:Boolean)
+      public function ModeCreateCircle (mainView:WorldView, filledColor:uint, isStatic:Boolean, minRadius:Number = EditorSetting.MinCircleRadium, maxRadius:Number = EditorSetting.MaxCircleRadium)
       {
          super (mainView, filledColor, isStatic);
+         
+         mMinRadius = minRadius;
+         mMaxRadius = maxRadius;
       }
       
       private var mCenterX:Number;
       private var mCenterY:Number;
       private var mRadius:Number;
+      
+      private var mMinRadius:Number;
+      private var mMaxRadius:Number;
       
       private var mCircleEntity:EntityShapeCircle = null;
       
@@ -73,8 +79,8 @@ package editor.mode {
          
          mRadius = Point.distance (startPoint, endPoint);
          
-         if (mRadius > EditorSetting.MaxCircleRadium)
-            mRadius = EditorSetting.MaxCircleRadium;
+         if (mRadius > mMaxRadius)
+            mRadius = mMaxRadius;
          
          mCircleEntity.SetRadius (mRadius);
          mCircleEntity.UpdateAppearance ();
@@ -84,7 +90,7 @@ package editor.mode {
       {
          UpdateSession (endX, endY);
          
-         if (mRadius < EditorSetting.MinCircleRadium)
+         if (mRadius < mMinRadius)
          {
             ResetSession (true);
             

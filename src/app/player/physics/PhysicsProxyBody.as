@@ -12,13 +12,14 @@ package player.physics {
       
       public var _b2Body:b2Body = null; // used internally
       
-      public function PhysicsProxyBody (phyEngine:PhysicsEngine, physicsX:Number = 0, physicsY:Number = 0, rotation:Number = 0, params:Object = null):void
+      public function PhysicsProxyBody (phyEngine:PhysicsEngine, physicsX:Number = 0, physicsY:Number = 0, rotation:Number = 0, static:Boolean = true, params:Object = null):void
       {
          super (phyEngine);
          
          var bodyDef:b2BodyDef = new b2BodyDef ();
          bodyDef.position.Set (physicsX, physicsY);
          bodyDef.angle = rotation;
+         if (! static) bodyDef.massData.mass = 1; // temp value, it will be modified
          _b2Body = mPhysicsEngine._b2World.CreateBody (bodyDef);
          
          _b2Body.SetUserData (this);
@@ -83,6 +84,27 @@ package player.physics {
          {
             _b2Body.SetBullet (bullet);
          }
+      }
+      
+      public function SetLinearVelocity (vel:Point):void
+      {
+         if (_b2Body != null)
+         {
+            var vec2:b2Vec2 = new b2Vec2 (vel.x, vel.y);
+            _b2Body.SetLinearVelocity (vec2);
+         }
+      }
+      
+      public function ApplyBodyForce (force:Point):void
+      {
+         if (_b2Body != null)
+         {
+            //_b2Body.ApplyForce ( , GetWorldCenter ());
+         }
+      }
+      
+      public function ApplyPointForce (force:Point, point:Point):void
+      {
       }
       
 //=================================================================

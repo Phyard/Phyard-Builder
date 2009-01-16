@@ -46,6 +46,15 @@ package editor.entity {
             mSelectionProxy.SetSelectable (selectable);
       }
       
+      public function GetTypeName ():String
+      {
+         return "Entity";
+      }
+      
+      public function GetInfoText ():String
+      {
+         return "x: " + mPosX + ", y = " + mPosY + ", angle = " + (mRotation * 180.0 / Math.PI);
+      }
       
 //======================================================
 // visible

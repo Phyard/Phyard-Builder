@@ -171,10 +171,56 @@ public class b2BroadPhase
 			upperIndex = upperIndexOut[0];
 			
 			// Replace memmove calls
+			
+			var bound_0:b2Bound = bounds [boundCount];
+			var bound_1:b2Bound = bounds [boundCount + 1];
+			for (index = boundCount + 1; index >= upperIndex + 2; -- index)
+			{
+			   bounds [index] = bounds[index - 2];
+			}
+			for (index = upperIndex; index > lowerIndex; -- index)
+			{
+			   bounds [index] = bounds[index - 1];
+			}
+			
+			bounds[lowerIndex] = bound_0;
+			bounds[upperIndex + 1] = bound_1;
+			
+			++upperIndex;
+			
+			// Copy in the new bounds.
+			bounds[lowerIndex].value = lowerValues[axis];
+			bounds[lowerIndex].proxyId = proxyId;
+			bounds[upperIndex].value = upperValues[axis];
+			bounds[upperIndex].proxyId = proxyId;
+			
+			bounds[lowerIndex].stabbingCount = lowerIndex == 0 ? 0 : bounds[lowerIndex - 1].stabbingCount;
+			bounds[upperIndex].stabbingCount = bounds[upperIndex - 1].stabbingCount;
+			
+			// Adjust the stabbing count between the new bounds.
+			for (index = lowerIndex; index < upperIndex; ++index)
+			{
+				++ bounds[index].stabbingCount;
+			}
+			
+			for (index = lowerIndex; index < boundCount + 2; ++ index)
+			{
+				var proxy2:b2Proxy = m_proxyPool[ bounds [index].proxyId ];
+				if (bounds [index].IsLower())
+				{
+					proxy2.lowerBounds[axis] = index;
+				}
+				else
+				{
+					proxy2.upperBounds[axis] = index;
+				}
+			}
+			
+			/*
 			//memmove(bounds + upperIndex + 2, bounds + upperIndex, (edgeCount - upperIndex) * sizeof(b2Bound));
 			var tArr:Array = new Array();
 			var j:int;
-			var tEnd:int = boundCount - upperIndex
+			var tEnd:int = boundCount - upperIndex;
 			var tBound1:b2Bound;
 			var tBound2:b2Bound;
 			var tBoundAS3:b2Bound;
@@ -198,6 +244,7 @@ public class b2BroadPhase
 				tBound1.proxyId = tBound2.proxyId;
 				tBound1.stabbingCount = tBound2.stabbingCount;
 			}
+			
 			//memmove(bounds + lowerIndex + 1, bounds + lowerIndex, (upperIndex - lowerIndex) * sizeof(b2Bound));
 			// make temp array
 			tArr = new Array();
@@ -259,6 +306,7 @@ public class b2BroadPhase
 					proxy2.upperBounds[axis] = index;
 				}
 			}
+			*/
 		}
 		
 		++m_proxyCount;

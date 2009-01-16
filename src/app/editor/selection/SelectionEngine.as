@@ -19,8 +19,8 @@ package editor.selection {
       public function SelectionEngine ():void
       {
          var worldAABB:b2AABB = new b2AABB();
-         worldAABB.lowerBound.Set(-100000.0, -100000.0);
-         worldAABB.upperBound.Set(100000.0, 100000.0);
+         worldAABB.lowerBound.Set(-10000.0, -10000.0);
+         worldAABB.upperBound.Set(10000.0, 10000.0);
          
          var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
          var doSleep:Boolean = true;

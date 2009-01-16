@@ -6,14 +6,6 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
     title="Hinge Setting" width="500">
    
-   
-   <mx:XMLList id="IsBulletOptions">
-      <node label="Default"/>
-      <node label="Yes"/>
-      <node label="No"/>
-   </mx:XMLList>
-
-
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
       <mx:Spacer width="100%"/>

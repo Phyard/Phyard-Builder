@@ -17,6 +17,11 @@ package player.physics {
          
       }
       
+      public function GetPhysicsEngie ():PhysicsEngine
+      {
+         return mPhysicsEngine;
+      }
+      
       public function Destroy ():void
       {
       }

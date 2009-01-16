@@ -40,24 +40,33 @@ public class b2PairManager
 		{
 			m_hashTable[i] = b2Pair.b2_nullPair;
 		}
-		m_pairs = new Array(b2Settings.b2_maxPairs);
-		for (i = 0; i < b2Settings.b2_maxPairs; ++i)
-		{
-			m_pairs[i] = new b2Pair();
-		}
+		
 		m_pairBuffer = new Array(b2Settings.b2_maxPairs);
 		for (i = 0; i < b2Settings.b2_maxPairs; ++i)
 		{
 			m_pairBuffer[i] = new b2BufferedPair();
 		}
 		
+		var pair:b2Pair;
+		m_pairs = new Array(b2Settings.b2_maxPairs);
 		for (i = 0; i < b2Settings.b2_maxPairs; ++i)
 		{
-			m_pairs[i].proxyId1 = b2Pair.b2_nullProxy;
-			m_pairs[i].proxyId2 = b2Pair.b2_nullProxy;
-			m_pairs[i].userData = null;
-			m_pairs[i].status = 0;
-			m_pairs[i].next = (i + 1);
+		//	m_pairs[i] = new b2Pair();
+			m_pairs[i] = pair = new b2Pair();
+		//}
+		//
+		//for (i = 0; i < b2Settings.b2_maxPairs; ++i)
+		//{
+		//	m_pairs[i].proxyId1 = b2Pair.b2_nullProxy;
+		//	m_pairs[i].proxyId2 = b2Pair.b2_nullProxy;
+		//	m_pairs[i].userData = null;
+		//	m_pairs[i].status = 0;
+		//	m_pairs[i].next = (i + 1);
+			pair.proxyId1 = b2Pair.b2_nullProxy;
+			pair.proxyId2 = b2Pair.b2_nullProxy;
+			pair.userData = null;
+			pair.status = 0;
+			pair.next = (i + 1);
 		}
 		m_pairs[int(b2Settings.b2_maxPairs-1)].next = b2Pair.b2_nullPair;
 		m_pairCount = 0;

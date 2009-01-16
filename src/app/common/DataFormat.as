@@ -36,7 +36,7 @@ package common {
          
          
          var worldDefine:WorldDefine = new WorldDefine ();
-         worldDefine.mVersion = 0x0100;
+         worldDefine.mVersion = 0x0101;
          
          worldDefine.mAuthorName = editorWorld.GetAuthorName ();
          worldDefine.mAuthorHomepage = editorWorld.GetAuthorHomepage ();
@@ -117,9 +117,23 @@ package common {
                }
                else if (child is editor.entity.EntityJointDistance)
                {
+                  var distanceJoint:editor.entity.EntityJointDistance = child as editor.entity.EntityJointDistance;
+                  
                   entityDefine.mEntityType = Define.EntityType_JointDistance;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.getChildIndex ( (child as editor.entity.EntityJointDistance).GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.getChildIndex ( (child as editor.entity.EntityJointDistance).GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = editorWorld.getChildIndex ( distanceJoint.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.getChildIndex ( distanceJoint.GetAnchor2 () );
+               }
+               else if (child is editor.entity.EntityJointSpring)
+               {
+                  var spring:editor.entity.EntityJointSpring = child as editor.entity.EntityJointSpring;
+                  
+                  entityDefine.mEntityType = Define.EntityType_JointSpring;
+                  entityDefine.mAnchor1EntityIndex = editorWorld.getChildIndex ( spring.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.getChildIndex ( spring.GetAnchor2 () );
+                  
+                  entityDefine.mStaticLengthRatio = spring.GetStaticLengthRatio ();
+                  entityDefine.mFrequencyHz = spring.GetFrequencyHz ();
+                  entityDefine.mDampingRatio = spring.mDampingRatio;
                }
             }
             else if (child is editor.entity.SubEntityJointAnchor)
@@ -258,6 +272,21 @@ package common {
                   
                   entity = disJoint;
                }
+               else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
+               {
+                  var spring:editor.entity.EntityJointSpring = editorWorld.CreateEntityJointSpring ();
+                  
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor1 ());
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor2 ());
+                  
+                  spring.SetStaticLengthRatio (entityDefine.mStaticLengthRatio);
+                  spring.SetFrequencyHz (entityDefine.mFrequencyHz);
+                  spring.mDampingRatio = entityDefine.mDampingRatio;
+                  
+                  entity = spring;
+               }
             }
             else if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
             {
@@ -344,65 +373,7 @@ package common {
          for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
          {
             var entityDefine:Object = worldDefine.mEntityDefines [entityId];
-            element = <Entity />;
-            element.@entity_type = entityDefine.mEntityType;
-            element.@x = entityDefine.mPosX;
-            element.@y = entityDefine.mPosY;
-            element.@r = entityDefine.mRotation;
-            element.@visible = entityDefine.mIsVisible ? 1 : 0;
-            
-            if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
-            {
-               element.@ai_type = entityDefine.mAiType;
-               element.@is_static = entityDefine.mIsStatic ? 1 : 0;
-               element.@is_bullet = entityDefine.mIsBullet ? 1 : 0;
-               element.@density = entityDefine.mDensity;
-               element.@friction = entityDefine.mFriction;
-               element.@restitution = entityDefine.mRestitution;
-               
-               if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
-               {
-                  element.@radius = entityDefine.mRadius;
-                  element.@appearance_type = entityDefine.mAppearanceType;
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
-               {
-                  element.@half_width = entityDefine.mHalfWidth;
-                  element.@half_height = entityDefine.mHalfHeight;
-               }
-            }
-            
-            if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
-            {
-               element.@collide_connected = entityDefine.mCollideConnected;
-               
-               if (entityDefine.mEntityType == Define.EntityType_JointHinge)
-               {
-                  element.@anchor_index = entityDefine.mAnchorEntityIndex;
-                  element.@enable_limits = entityDefine.mEnableLimits ? 1 : 0;
-                  element.@lower_angle = entityDefine.mLowerAngle;
-                  element.@upper_angle = entityDefine.mUpperAngle;
-                  element.@enable_motor = entityDefine.mEnableMotor ? 1 : 0;
-                  element.@motor_speed = entityDefine.mMotorSpeed;
-                  element.@back_and_forth = entityDefine.mBackAndForth ? 1 : 0;
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
-               {
-                  element.@anchor1_index = entityDefine.mAnchor1EntityIndex;
-                  element.@anchor2_index = entityDefine.mAnchor2EntityIndex;
-                  element.@enable_limits = entityDefine.mEnableLimits ? 1 : 0;
-                  element.@lower_translation = entityDefine.mLowerTranslation;
-                  element.@upper_translation = entityDefine.mUpperTranslation;
-                  element.@enable_motor = entityDefine.mEnableMotor ? 1 : 0;
-                  element.@motor_speed = entityDefine.mMotorSpeed;
-                  element.@back_and_forth = entityDefine.mBackAndForth ? 1: 0;
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
-               {
-                  element.@anchor1_index = entityDefine.mAnchor1EntityIndex;
-                  element.@anchor2_index = entityDefine.mAnchor2EntityIndex;
-               }
-            }
+            element = EntityDefine2XmlElement (entityDefine);
             
             xml.Entities.appendChild (element);
          }
@@ -436,11 +407,87 @@ package common {
          return xml;
       }
       
+      public static function EntityDefine2XmlElement (entityDefine:Object):Object
+      {
+         var element:Object = <Entity />;
+         element.@entity_type = entityDefine.mEntityType;
+         element.@x = entityDefine.mPosX;
+         element.@y = entityDefine.mPosY;
+         element.@r = entityDefine.mRotation;
+         element.@visible = entityDefine.mIsVisible ? 1 : 0;
+         
+         if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
+         {
+            element.@ai_type = entityDefine.mAiType;
+            element.@is_static = entityDefine.mIsStatic ? 1 : 0;
+            element.@is_bullet = entityDefine.mIsBullet ? 1 : 0;
+            element.@density = entityDefine.mDensity;
+            element.@friction = entityDefine.mFriction;
+            element.@restitution = entityDefine.mRestitution;
+            
+            if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
+            {
+               element.@radius = entityDefine.mRadius;
+               element.@appearance_type = entityDefine.mAppearanceType;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
+            {
+               element.@half_width = entityDefine.mHalfWidth;
+               element.@half_height = entityDefine.mHalfHeight;
+            }
+         }
+         
+         if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
+         {
+            element.@collide_connected = entityDefine.mCollideConnected;
+            
+            if (entityDefine.mEntityType == Define.EntityType_JointHinge)
+            {
+               element.@anchor_index = entityDefine.mAnchorEntityIndex;
+               
+               element.@enable_limits = entityDefine.mEnableLimits ? 1 : 0;
+               element.@lower_angle = entityDefine.mLowerAngle;
+               element.@upper_angle = entityDefine.mUpperAngle;
+               element.@enable_motor = entityDefine.mEnableMotor ? 1 : 0;
+               element.@motor_speed = entityDefine.mMotorSpeed;
+               element.@back_and_forth = entityDefine.mBackAndForth ? 1 : 0;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
+            {
+               element.@anchor1_index = entityDefine.mAnchor1EntityIndex;
+               element.@anchor2_index = entityDefine.mAnchor2EntityIndex;
+               
+               element.@enable_limits = entityDefine.mEnableLimits ? 1 : 0;
+               element.@lower_translation = entityDefine.mLowerTranslation;
+               element.@upper_translation = entityDefine.mUpperTranslation;
+               element.@enable_motor = entityDefine.mEnableMotor ? 1 : 0;
+               element.@motor_speed = entityDefine.mMotorSpeed;
+               element.@back_and_forth = entityDefine.mBackAndForth ? 1: 0;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
+            {
+               element.@anchor1_index = entityDefine.mAnchor1EntityIndex;
+               element.@anchor2_index = entityDefine.mAnchor2EntityIndex;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
+            {
+               element.@anchor1_index = entityDefine.mAnchor1EntityIndex;
+               element.@anchor2_index = entityDefine.mAnchor2EntityIndex;
+               
+               element.@static_length_ratio = entityDefine.mStaticLengthRatio;
+               element.@frequency_hz = entityDefine.mFrequencyHz;
+               element.@damping_ratio = entityDefine.mDampingRatio;
+            }
+         }
+         
+         return element;
+      }
+      
       public static function Xml2WorldDefine (worldXml:XML):WorldDefine
       {
          var worldDefine:WorldDefine = new WorldDefine ();
          
-         worldDefine.mVersion = parseInt (worldXml.@app_id, 16);
+         worldDefine.mVersion = parseInt (worldXml.@version, 16);
          worldDefine.mAuthorName = worldXml.@author_name;
          worldDefine.mAuthorHomepage = worldXml.@author_homepage;
          
@@ -450,69 +497,7 @@ package common {
          
          for each (element in worldXml.Entities.Entity)
          {
-            var entityDefine:Object = new Object ();
-            
-            entityDefine.mEntityType = parseInt (element.@entity_type);
-            entityDefine.mPosX = parseFloat (element.@x);
-            entityDefine.mPosY = parseFloat (element.@y);
-            entityDefine.mRotation = parseFloat (element.@r);
-            entityDefine.mIsVisible = parseInt (element.@visible) != 0;
-            
-            if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
-            {
-               entityDefine.mAiType = parseInt (element.@ai_type);
-               
-               entityDefine.mIsStatic = parseInt (element.@is_static) != 0;
-               entityDefine.mIsBullet = parseInt (element.@is_bullet) != 0;
-               entityDefine.mDensity = parseFloat (element.@density);
-               entityDefine.mFriction = parseFloat (element.@friction);
-               entityDefine.mRestitution = parseFloat (element.@restitution);
-               
-               
-               if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
-               {
-                  entityDefine.mRadius = parseFloat (element.@radius);
-                  entityDefine.mAppearanceType = parseInt (element.@appearance_type);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
-               {
-                  entityDefine.mHalfWidth = parseFloat (element.@half_width);
-                  entityDefine.mHalfHeight = parseFloat (element.@half_height);
-               }
-            }
-            if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
-            {
-               entityDefine.mCollideConnected = parseInt (element.@collide_connected) != 0;
-               
-               if (entityDefine.mEntityType == Define.EntityType_JointHinge)
-               {
-                  entityDefine.mAnchorEntityIndex = parseInt (element.@anchor_index);
-                  
-                  entityDefine.mEnableLimits = parseInt (element.@enable_limits) != 0;
-                  entityDefine.mLowerAngle = parseFloat (element.@lower_angle);
-                  entityDefine.mUpperAngle = parseFloat (element.@upper_angle);
-                  entityDefine.mEnableMotor = parseInt (element.@enable_motor) != 0;
-                  entityDefine.mMotorSpeed = parseFloat (element.@motor_speed);
-                  entityDefine.mBackAndForth = parseInt (element.@back_and_forth) != 0;
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
-               {
-                  entityDefine.mAnchor1EntityIndex = parseInt (element.@anchor1_index);
-                  entityDefine.mAnchor2EntityIndex = parseInt (element.@anchor2_index);
-                  
-                  entityDefine.mEnableLimits = parseInt (element.@enable_limits) != 0;
-                  entityDefine.mLowerTranslation = parseFloat (element.@lower_translation);
-                  entityDefine.mUpperTranslation = parseFloat (element.@upper_translation);
-                  entityDefine.mEnableMotor = parseInt (element.@enable_motor) != 0;
-                  entityDefine.mMotorSpeed = parseFloat (element.@motor_speed);
-                  entityDefine.mBackAndForth = parseInt (element.@back_and_forth) != 0;
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
-               {
-                  entityDefine.mAnchor1EntityIndex = parseInt (element.@anchor1_index);
-                  entityDefine.mAnchor2EntityIndex = parseInt (element.@anchor2_index);
-               }
-            }
+            var entityDefine:Object = XmlElement2EntityDefine (element);
             
             worldDefine.mEntityDefines.push (entityDefine);
          }
@@ -538,6 +523,84 @@ package common {
          }
          
          return worldDefine;
+      }
+      
+      public static function XmlElement2EntityDefine (element:XML):Object
+      {
+         var entityDefine:Object = new Object ();
+         
+         entityDefine.mEntityType = parseInt (element.@entity_type);
+         entityDefine.mPosX = parseFloat (element.@x);
+         entityDefine.mPosY = parseFloat (element.@y);
+         entityDefine.mRotation = parseFloat (element.@r);
+         entityDefine.mIsVisible = parseInt (element.@visible) != 0;
+         
+         if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
+         {
+            entityDefine.mAiType = parseInt (element.@ai_type);
+            
+            entityDefine.mIsStatic = parseInt (element.@is_static) != 0;
+            entityDefine.mIsBullet = parseInt (element.@is_bullet) != 0;
+            entityDefine.mDensity = parseFloat (element.@density);
+            entityDefine.mFriction = parseFloat (element.@friction);
+            entityDefine.mRestitution = parseFloat (element.@restitution);
+            
+            
+            if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
+            {
+               entityDefine.mRadius = parseFloat (element.@radius);
+               entityDefine.mAppearanceType = parseInt (element.@appearance_type);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
+            {
+               entityDefine.mHalfWidth = parseFloat (element.@half_width);
+               entityDefine.mHalfHeight = parseFloat (element.@half_height);
+            }
+         }
+         if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
+         {
+            entityDefine.mCollideConnected = parseInt (element.@collide_connected) != 0;
+            
+            if (entityDefine.mEntityType == Define.EntityType_JointHinge)
+            {
+               entityDefine.mAnchorEntityIndex = parseInt (element.@anchor_index);
+               
+               entityDefine.mEnableLimits = parseInt (element.@enable_limits) != 0;
+               entityDefine.mLowerAngle = parseFloat (element.@lower_angle);
+               entityDefine.mUpperAngle = parseFloat (element.@upper_angle);
+               entityDefine.mEnableMotor = parseInt (element.@enable_motor) != 0;
+               entityDefine.mMotorSpeed = parseFloat (element.@motor_speed);
+               entityDefine.mBackAndForth = parseInt (element.@back_and_forth) != 0;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
+            {
+               entityDefine.mAnchor1EntityIndex = parseInt (element.@anchor1_index);
+               entityDefine.mAnchor2EntityIndex = parseInt (element.@anchor2_index);
+               
+               entityDefine.mEnableLimits = parseInt (element.@enable_limits) != 0;
+               entityDefine.mLowerTranslation = parseFloat (element.@lower_translation);
+               entityDefine.mUpperTranslation = parseFloat (element.@upper_translation);
+               entityDefine.mEnableMotor = parseInt (element.@enable_motor) != 0;
+               entityDefine.mMotorSpeed = parseFloat (element.@motor_speed);
+               entityDefine.mBackAndForth = parseInt (element.@back_and_forth) != 0;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
+            {
+               entityDefine.mAnchor1EntityIndex = parseInt (element.@anchor1_index);
+               entityDefine.mAnchor2EntityIndex = parseInt (element.@anchor2_index);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
+            {
+               entityDefine.mAnchor1EntityIndex = parseInt (element.@anchor1_index);
+               entityDefine.mAnchor2EntityIndex = parseInt (element.@anchor2_index);
+               
+               entityDefine.mStaticLengthRatio = parseFloat (element.@static_length_ratio);
+               entityDefine.mFrequencyHz = parseFloat (element.@frequency_hz);
+               entityDefine.mDampingRatio = parseFloat (element.@damping_ratio);
+            }
+         }
+         
+         return entityDefine;
       }
       
       public static function WorldDefine2ByteArray (worldDefine:WorldDefine):ByteArray
@@ -603,6 +666,7 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_JointHinge)
                {
                   byteArray.writeShort (entityDefine.mAnchorEntityIndex);
+                  
                   byteArray.writeByte (entityDefine.mEnableLimits);
                   byteArray.writeFloat (entityDefine.mLowerAngle);
                   byteArray.writeFloat (entityDefine.mUpperAngle);
@@ -615,6 +679,7 @@ package common {
                {
                   byteArray.writeShort (entityDefine.mAnchor1EntityIndex);
                   byteArray.writeShort (entityDefine.mAnchor2EntityIndex);
+                  
                   byteArray.writeByte (entityDefine.mEnableLimits);
                   byteArray.writeFloat (entityDefine.mLowerTranslation);
                   byteArray.writeFloat (entityDefine.mUpperTranslation);
@@ -626,6 +691,15 @@ package common {
                {
                   byteArray.writeShort (entityDefine.mAnchor1EntityIndex);
                   byteArray.writeShort (entityDefine.mAnchor2EntityIndex);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
+               {
+                  byteArray.writeShort (entityDefine.mAnchor1EntityIndex);
+                  byteArray.writeShort (entityDefine.mAnchor2EntityIndex);
+                  
+                  byteArray.writeFloat (entityDefine.mStaticLengthRatio);
+                  byteArray.writeFloat (entityDefine.mFrequencyHz);
+                  byteArray.writeFloat (entityDefine.mDampingRatio);
                }
             }
          }

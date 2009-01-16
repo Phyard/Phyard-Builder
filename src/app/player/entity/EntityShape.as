@@ -1,6 +1,8 @@
 
 package player.entity {
    
+   import flash.geom.Point;
+   
    import player.world.World;
    
    import common.Define;
@@ -24,6 +26,8 @@ package player.entity {
          super (world);
          
          mShapeContainer = shapeContainer;
+         
+         mShapeContainer.addChild (this);
       }
       
       override public function Update (dt:Number):void
@@ -86,6 +90,14 @@ package player.entity {
          SetStatic (params.mIsStatic);
          SetShapeAiType (params.mAiType);
       }
+      
+      // maybe change later
+      public function GetLocalPosition ():Point
+      {
+         return new Point (x, y);
+      }
+      
+      
       
    }
    

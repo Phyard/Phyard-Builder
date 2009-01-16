@@ -52,12 +52,25 @@ package player.entity {
          if (mPhysicsProxy == null)
          {
             // 
-            mPhysicsProxy = mWorld.mPhysicsEngine.CreateProxyBody (params.mPosX, params.mPosY, 0, params);
+            mPhysicsProxy = mWorld.mPhysicsEngine.CreateProxyBody (params.mPosX, params.mPosY, 0, params.mIsStatic, params);
             
             mPhysicsProxy.SetUserData (this);
             
             (mPhysicsProxy as PhysicsProxyBody).SetBullet (mIsBullet);
          }
+      }
+      
+      public function ContainsPhysicsEntities ():Boolean
+      {
+         for (var i:int = 0; i < numChildren; ++ i)
+         {
+            var entity:Entity = getChildAt (i) as Entity;
+            
+            if ( entity.IsPhysicsEntity () )
+               return true;
+         }
+         
+         return false;
       }
       
       public function GetPosition ():Point

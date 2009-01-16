@@ -15,14 +15,22 @@ package player.entity {
    public class EntityShapeRectangle extends EntityShape
    {
       
-      private var mHalfWidth:Number;
-      private var mHalfHeight:Number;
+      private var mHalfWidth:Number = 0;
+      private var mHalfHeight:Number = 0;
       
       public function EntityShapeRectangle (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
-         
-         shapeContainer.addChild (this);
+      }
+      
+      public function GetWidth ():Number
+      {
+         return mHalfWidth * 2.0;
+      }
+      
+      public function GetHeight ():Number
+      {
+         return mHalfHeight * 2.0;
       }
       
       override public function BuildPhysicsProxy (params:Object):void
@@ -79,6 +87,11 @@ package player.entity {
          GraphicsUtil.ClearAndDrawRect (this, 
                                           - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
                                           borderColor, 1, true, filledColor);
+         
+         if (Define.IsBombShape (GetShapeAiType ()))
+         {
+            GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
+         }
       }
 
       

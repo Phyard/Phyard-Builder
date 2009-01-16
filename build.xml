@@ -19,7 +19,7 @@
    
    <property name="editor-main-class-name" value="com.meme.app.Suit2d" />
    
-   <property name="editor-width" value="730" />
+   <property name="editor-width" value="780" />
    <property name="editor-height" value="600" />
    
    <property name="player-width" value="600" />

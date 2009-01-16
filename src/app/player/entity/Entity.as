@@ -25,8 +25,7 @@ package player.entity {
       
       public function Destroy ():void
       {
-         if (mPhysicsProxy != null)
-            mPhysicsProxy.Destroy ();
+         DestroyPhysicsProxy ();
       }
       
       public function SetRotation (rot:Number):void
@@ -43,10 +42,29 @@ package player.entity {
       {
       }
       
+//=============================================================
+//   
+//=============================================================
+      
+      public function IsPhysicsEntity ():Boolean
+      {
+         return true;
+      }
+      
       public function BuildPhysicsProxy (params:Object):void
       {
       }
       
+      public function DestroyPhysicsProxy ():void
+      {
+         if (mPhysicsProxy != null)
+            mPhysicsProxy.Destroy ();
+      }
+      
+      public function GetPhysicsProxy ():PhysicsProxy
+      {
+         return mPhysicsProxy;
+      }
       
    }
 }

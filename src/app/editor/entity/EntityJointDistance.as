@@ -73,12 +73,12 @@ package editor.entity {
       {
          super.SetPropertiesForClonedEntity (entity, 0, 0);
          
-         var rope:EntityJointDistance = entity as EntityJointDistance;
+         var distanceJoint:EntityJointDistance = entity as EntityJointDistance;
          
          var anchor1:SubEntityDistanceAnchor = GetAnchor1 ();
          var anchor2:SubEntityDistanceAnchor = GetAnchor2 ();
-         var newAnchor1:SubEntityDistanceAnchor = rope.GetAnchor1 ();
-         var newAnchor2:SubEntityDistanceAnchor = rope.GetAnchor2 ();
+         var newAnchor1:SubEntityDistanceAnchor = distanceJoint.GetAnchor1 ();
+         var newAnchor2:SubEntityDistanceAnchor = distanceJoint.GetAnchor2 ();
          
          anchor1.SetPropertiesForClonedEntity (newAnchor1, displayOffsetX, displayOffsetY);
          anchor2.SetPropertiesForClonedEntity (newAnchor2, displayOffsetX, displayOffsetY);
@@ -88,7 +88,7 @@ package editor.entity {
          newAnchor2.UpdateAppearance ();
          newAnchor2.UpdateSelectionProxy ();
          
-         rope.UpdateAppearance ();
+         distanceJoint.UpdateAppearance ();
       }
       
       override public function GetSubEntities ():Array

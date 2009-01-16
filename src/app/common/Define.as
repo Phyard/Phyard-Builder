@@ -10,7 +10,8 @@ package common {
 //===========================================================================
       
       public static const AboutUrl:String = "http://www.colorinfection.com";
-      public static const EditingTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/basic-editing";
+      public static const EditingTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/toturials";
+      public static const ShowcasesUrl:String = "http://sites.google.com/site/colorinfectiondocument/showcases";
       public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/publish-your-puzzles";
       public static const EditorUrl:String = "http://colorinfection.appspot.com/htmls/editor_page1.html";
       
@@ -25,10 +26,20 @@ package common {
       public static const WorldBorderThinknessLR:int = 10; 
       public static const WorldBorderThinknessTB:int = 20; 
       
+      public static const MinRectSideLength:uint = 4;
+      public static const MaxRectSideLength:uint = 600;
+      public static const MaxRectArea:uint = 600 * 200;
+      
+      public static const MinBombSquareSideLength:uint = MinRectSideLength; // don't change
+      public static const MaxBombSquareSideLength:uint = 32;
+      public static const DefaultBombSquareSideLength:uint = 16;
+      
       public static const WorldStepTimeInterval:Number = 1.0 / 30;
       
-      public static const MinCircleRadium:uint = 2;
+      public static const MinCircleRadium:uint = MinRectSideLength * 0.5; // don't change
       public static const MaxCircleRadium:uint = 100;
+      
+      public static const SpringSegmentLength:int = 16;
       
 //===========================================================================
 // colors
@@ -45,6 +56,10 @@ package common {
       public static const ColorInfectedObject:uint = 0xFF804000;;
       public static const ColorUninfectedObject:uint = 0xFFFFFF00;
       public static const ColorDontInfectObject:uint = 0xFF60FF60;
+      
+      // v2.0
+      public static const ColorBombObject:uint = 0xFF000000;
+      
       
       
 //===========================================================================
@@ -66,6 +81,9 @@ package common {
       public static const EntityType_JointDistance:int = 62;
       public static const SubEntityType_JointAnchor:int = 100;
       
+      // v2.0
+      public static const EntityType_JointSpring:int = 63;
+      
       public static function IsPhysicsShapeEntity (entityType:int):Boolean
       {
          return entityType == EntityType_ShapeCircle || entityType == EntityType_ShapeRectangle;
@@ -73,7 +91,9 @@ package common {
       
       public static function IsPhysicsJointEntity (entityType:int):Boolean
       {
-         return entityType == EntityType_JointHinge || entityType == EntityType_JointSlider || entityType == EntityType_JointDistance;
+         return entityType == EntityType_JointHinge || entityType == EntityType_JointSlider || entityType == EntityType_JointDistance
+                              || entityType == EntityType_JointSpring // v2.0
+                              ;
       }
       
       public static function IsJointAnchorEntity (entityType:int):Boolean
@@ -93,6 +113,9 @@ package common {
       public static const ShapeAiType_Uninfected:int = 4;
       public static const ShapeAiType_DontInfect:int = 5;
       
+      // v2.0
+      public static const ShapeAiType_Bomb:int = 6;
+      public static const ShapeAiType_BombParticle:int = 100;
       
       public static function IsBreakableShape (shapeAiType:int):Boolean
       {
@@ -107,6 +130,11 @@ package common {
       public static function IsInfectedShape (shapeAiType:int):Boolean
       {
          return shapeAiType == ShapeAiType_Infected;
+      }
+      
+      public static function IsBombShape (shapeAiType:int):Boolean
+      {
+         return shapeAiType == ShapeAiType_Bomb;
       }
       
       public static function GetShapeAiType (filledColor:uint):int
@@ -125,6 +153,9 @@ package common {
                return ShapeAiType_Uninfected;
             case ColorDontInfectObject:
                return ShapeAiType_DontInfect;
+            
+            case ColorBombObject:
+               return ShapeAiType_Bomb;
             default:
                return ShapeAiType_Unkown;
          }
@@ -146,6 +177,10 @@ package common {
                return ColorUninfectedObject;
             case ShapeAiType_DontInfect:
                return ColorDontInfectObject;
+            
+            case ShapeAiType_Bomb:
+            case ShapeAiType_BombParticle:
+               return ColorBombObject;
             default:
                return 0xFFFFFF;
          }

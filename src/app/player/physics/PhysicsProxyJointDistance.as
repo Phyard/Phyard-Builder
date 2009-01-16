@@ -27,11 +27,40 @@ package player.physics {
          
          distanceJointDef.collideConnected = params.mCollideConnected;
          
+         // v2.0
+         {
+            if ( ! isNaN (params.mStaticLengthRatio) )
+            {
+               distanceJointDef.length *= params.mStaticLengthRatio;
+            }
+            if ( ! isNaN (params.mFrequencyHz) )
+            {
+               distanceJointDef.frequencyHz = params.mFrequencyHz;
+            }
+            if ( ! isNaN (params.mDampingRatio) )
+            {
+               distanceJointDef.dampingRatio = params.mDampingRatio;
+            }
+            
+            trace ("distanceJointDef.length = " + distanceJointDef.length);
+            trace ("distanceJointDef.frequencyHz = " + distanceJointDef.frequencyHz);
+            trace ("distanceJointDef.dampingRatio = " + distanceJointDef.dampingRatio);
+         }
+         
          _b2Joint = mPhysicsEngine._b2World.CreateJoint(distanceJointDef) as b2DistanceJoint;
          
          _b2Joint.SetUserData (this);
       }
       
+      public function GetStaticLength ():Number
+      {
+         return (_b2Joint as b2DistanceJoint).m_length;
+      }
+      
+      public function GetFrequencyHz ():Number
+      {
+         return (_b2Joint as b2DistanceJoint).m_frequencyHz;
+      }
       
    }
    

@@ -80,8 +80,9 @@ package editor.mode {
             mEntityJointSlider.GetAnchor2 ().SetPosition (posX, posY);
          }
          
-         
          mEntityJointSlider.UpdateAppearance ();
+         
+         mMainView.UpdateEntityInfoOnStatusBar ();
       }
       
       protected function FinishSession (endX:Number, endY:Number):void

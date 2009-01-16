@@ -31,6 +31,16 @@ package editor.entity {
          SetRadius (0.0);
       }
       
+      override public function GetTypeName ():String
+      {
+         return "Circle";
+      }
+      
+      override public function GetInfoText ():String
+      {
+         return super.GetInfoText () + ", radius = " + GetRadius ();
+      }
+      
       override public function UpdateAppearance ():void
       {
          var borderColor:uint;
@@ -53,15 +63,33 @@ package editor.entity {
          
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
          {
-            var pos:Number = (mRadius * 0.66) * 0.707 - 1;
-            if (pos < 0) pos = 0;
-            GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, borderColor, 1, true, borderColor);
+            var pos:Number;
+            if (GetFilledColor () == Define.ColorBombObject)
+            {
+               pos = mRadius * 0.75 * 0.707;
+               if (pos < 0) pos = 0;
+               GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, 0xFFFFFF, 1, true, 0xFFFFFF);
+            }
+            else
+            {
+               pos = (mRadius * 0.66) * 0.707 - 1;
+               if (pos < 0) pos = 0;
+               GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, borderColor, 1, true, borderColor);
+            }
          }
          else if (mAppearanceType == Define.CircleAppearanceType_Column)
          {
             var radius2:Number = mRadius * 0.5;
             GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, mFilledColor);
-            GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
+            if (GetFilledColor () == Define.ColorBombObject)
+               GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, 0x808080, 1);
+            else
+               GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
+         }
+         
+         if (GetFilledColor () == Define.ColorBombObject)
+         {
+            GraphicsUtil.DrawEllipse (this, - mRadius * 0.5, - mRadius * 0.5, mRadius, mRadius, 0x808080, 0, true, 0x808080);
          }
       }
       
@@ -77,8 +105,19 @@ package editor.entity {
       }
       
       
-      public function SetRadius (radius:Number):void
+      public function SetRadius (radius:Number, validate:Boolean = true):void
       {
+         if (validate)
+         {
+            var minRadius:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength : EditorSetting.MinCircleRadium;
+            var maxRadius:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength : EditorSetting.MaxCircleRadium;
+            
+            if (radius > EditorSetting.MaxCircleRadium)
+               radius =  EditorSetting.MaxCircleRadium;
+            if (radius < EditorSetting.MinCircleRadium)
+               radius =  EditorSetting.MinCircleRadium;
+         }
+         
          mRadius = Math.floor (radius + 0.5);
          
          UpdateAppearance ();
@@ -130,11 +169,6 @@ package editor.entity {
       override public function ScaleSelf (ratio:Number):void
       {
          var radius:Number = mRadius * ratio;
-         
-         if (radius > EditorSetting.MaxCircleRadium)
-            radius =  EditorSetting.MaxCircleRadium;
-         if (radius < EditorSetting.MinCircleRadium)
-            radius =  EditorSetting.MinCircleRadium;
          
          SetRadius (radius);
       }

@@ -137,6 +137,13 @@ package common {
                   
                   playerWorld.CreateEntityJointDistance (entityDefine);
                }
+               else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
+               {
+                  entityDefine.mAnchor1Params = entityDefineArray [entityDefine.mAnchor1EntityIndex];
+                  entityDefine.mAnchor2Params = entityDefineArray [entityDefine.mAnchor2EntityIndex];
+                  
+                  playerWorld.CreateEntityJointSpring (entityDefine);
+               }
             }
          }
          
@@ -209,6 +216,7 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_JointHinge)
                {
                   entityDefine.mAnchorEntityIndex = byteArray.readShort ();
+                  
                   entityDefine.mEnableLimits = byteArray.readByte ();
                   entityDefine.mLowerAngle = byteArray.readFloat ();
                   entityDefine.mUpperAngle = byteArray.readFloat ();
@@ -220,6 +228,7 @@ package common {
                {
                   entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
                   entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
+                  
                   entityDefine.mEnableLimits = byteArray.readByte ();
                   entityDefine.mLowerTranslation = byteArray.readFloat ();
                   entityDefine.mUpperTranslation = byteArray.readFloat ();
@@ -231,6 +240,15 @@ package common {
                {
                   entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
                   entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
+               {
+                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
+                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
+                  
+                  entityDefine.mStaticLengthRatio = byteArray.readFloat ();
+                  entityDefine.mFrequencyHz = byteArray.readFloat ();
+                  entityDefine.mDampingRatio = byteArray.readFloat ();
                }
             }
             

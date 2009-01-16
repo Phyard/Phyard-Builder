@@ -17,6 +17,7 @@ package editor.world {
    import editor.entity.EntityJointDistance;
    import editor.entity.EntityJointHinge;
    import editor.entity.EntityJointSlider;
+   import editor.entity.EntityJointSpring;
    
    import editor.entity.SubEntitySliderAnchor;
    
@@ -148,10 +149,10 @@ package editor.world {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
             
-         var rope:EntityJointDistance = new EntityJointDistance (this);
-         addChild (rope);
+         var distaneJoint:EntityJointDistance = new EntityJointDistance (this);
+         addChild (distaneJoint);
          
-         return rope;
+         return distaneJoint;
       }
       
       public function CreateEntityJointHinge ():EntityJointHinge
@@ -176,6 +177,16 @@ package editor.world {
          return slider;
       }
       
+      public function CreateEntityJointSpring ():EntityJointSpring
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
+         var spring:EntityJointSpring = new EntityJointSpring (this);
+         addChild (spring);
+         
+         return spring;
+      }
       
 //=================================================================================
 //   selection list

@@ -15,15 +15,42 @@ package editor.mode {
    public class ModeCreateRectangle extends ModeCreateShape
    {
       
-      public function ModeCreateRectangle (mainView:WorldView, filledColor:uint, isStatic:Boolean)
+      public function ModeCreateRectangle (mainView:WorldView, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = EditorSetting.MinRectSideLength, maxSideLength:Number = EditorSetting.MaxRectSideLength)
       {
          super (mainView, filledColor, isStatic);
+         
+         if (maxSideLength < minSideLength)
+         {
+            var temp:Number = maxSideLength;
+            maxSideLength = minSideLength;
+            minSideLength = temp;
+         }
+         
+         mIsSquare = isSquare;
+         
+         if (minSideLength < EditorSetting.MinRectSideLength)
+            mMinSideLength = EditorSetting.MinRectSideLength;
+         else if (minSideLength > EditorSetting.MaxRectSideLength)
+            mMinSideLength = EditorSetting.MaxRectSideLength;
+         else
+            mMinSideLength = minSideLength;
+         
+         if (maxSideLength < EditorSetting.MinRectSideLength)
+            mMaxSideLength = EditorSetting.MinRectSideLength;
+         else if (maxSideLength > EditorSetting.MaxRectSideLength)
+            mMaxSideLength = EditorSetting.MaxRectSideLength;
+         else
+            mMaxSideLength = maxSideLength;
       }
       
       private var mStartX:Number;
       private var mStartY:Number;
       private var mEndX:Number;
       private var mEndY:Number;
+      
+      private var mIsSquare:Boolean;
+      private var mMinSideLength:Number;
+      private var mMaxSideLength:Number;
       
       private var mRectEntity:EntityShapeRectangle = null;
       
@@ -75,13 +102,23 @@ package editor.mode {
          var w:Number = startPoint.x - endPoint.x; if (w < 0) w = - w;
          var h:Number = startPoint.y - endPoint.y; if (h < 0) h = - h;
          
-         if (w <= EditorSetting.MaxRectSideLength && h <= EditorSetting.MaxRectSideLength && w * h <= EditorSetting.MaxRectArea)
+         if (w <= mMaxSideLength && h <= mMaxSideLength && w * h <= EditorSetting.MaxRectArea)
          {
             mEndX = endPoint.x;
             mEndY = endPoint.y;
          }
          else
+         {
+            if (w * h <= EditorSetting.MaxRectArea)
+            {
+               if (w <= mMaxSideLength)
+                  mEndX = endPoint.x;
+               if (h <= mMaxSideLength)
+                  mEndY = endPoint.y;
+            }
+            
             endPoint = new Point (mEndX, mEndY);
+         }
          
          w = startPoint.x - endPoint.x; if (w < 0) w = - w;
          h = startPoint.y - endPoint.y; if (h < 0) h = - h;
@@ -90,8 +127,8 @@ package editor.mode {
          var centerY:Number = (startPoint.y + endPoint.y) * 0.5;
          
          mRectEntity.SetPosition (centerX, centerY);
-         mRectEntity.SetHalfWidth  (w * 0.5);
-         mRectEntity.SetHalfHeight (h * 0.5);
+         mRectEntity.SetHalfWidth  (w * 0.5, false);
+         mRectEntity.SetHalfHeight (h * 0.5, false);
          mRectEntity.UpdateAppearance ();
       }
       
@@ -102,7 +139,7 @@ package editor.mode {
          var w:Number = mEndX - mStartX; if (w < 0) w = -w;
          var h:Number = mEndY - mStartY; if (h < 0) h = -h;
          
-         if (w < EditorSetting.MinRectSideLength || h < EditorSetting.MinRectSideLength)
+         if (w < mMinSideLength || h < mMinSideLength)
          {
             ResetSession (true);
             

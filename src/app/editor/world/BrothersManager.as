@@ -40,6 +40,7 @@ package editor.world {
             }
          }
          
+         /*
          if (hasBreakables)
          {
             for (i = 0; i < brothers.length; ++ i)
@@ -51,6 +52,7 @@ package editor.world {
                }
             }
          }
+         */
       }
       
       public function BreakApartBrothers (entityArray:Array):void

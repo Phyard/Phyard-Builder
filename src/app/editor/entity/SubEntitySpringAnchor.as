@@ -12,11 +12,11 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class SubEntityDistanceAnchor extends SubEntityJointAnchor 
+   public class SubEntitySpringAnchor extends SubEntityJointAnchor 
    {
       private var mRadius:Number = 3;
       
-      public function SubEntityDistanceAnchor (world:World, mainEntity:Entity)
+      public function SubEntitySpringAnchor (world:World, mainEntity:Entity)
       {
          super (world, mainEntity);
          
@@ -25,7 +25,7 @@ package editor.entity {
       
       override public function GetTypeName ():String
       {
-         return "Distance Joint Anchor";
+         return "Spring Joint Anchor";
       }
       
       override public function GetInfoText ():String

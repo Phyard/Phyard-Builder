@@ -16,41 +16,54 @@
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" 
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0">
-         <mx:Box id="Box_BodyCreateCommand" direction="vertical" borderStyle="solid" width="40" height="100%" 
+         <mx:Box id="Box_BodyCreateCommand" direction="horizontal" borderStyle="solid" width="86" height="100%"
                      paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
                      horizontalGap="0" verticalGap="0">
-            <mx:Button id="Button_CreateBox" toolTip="Create Movable Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box.png')" downIcon="@Embed('res/create/box-sel.png')" overIcon="@Embed('res/create/box.png')" selectedUpIcon="@Embed('res/create/box-sel.png')" selectedOverIcon="@Embed('res/create/box-sel.png')" selectedDownIcon="@Embed('res/create/box.png')"   />
-            <mx:Button id="Button_CreateBox_Static" toolTip="Create Static Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_static.png')" downIcon="@Embed('res/create/box-sel_static.png')" overIcon="@Embed('res/create/box_static.png')" selectedUpIcon="@Embed('res/create/box-sel_static.png')" selectedOverIcon="@Embed('res/create/box-sel_static.png')" selectedDownIcon="@Embed('res/create/box_static.png')"   />
-            <mx:Button id="Button_CreateBox_Breakable" toolTip="Create Breakable Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_breakable.png')" downIcon="@Embed('res/create/box-sel_breakable.png')" overIcon="@Embed('res/create/box_breakable.png')" selectedUpIcon="@Embed('res/create/box-sel_breakable.png')" selectedOverIcon="@Embed('res/create/box-sel_breakable.png')" selectedDownIcon="@Embed('res/create/box_breakable.png')"   />
-            <mx:Button id="Button_CreateBox_Infected" toolTip="Create Infected Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_infected.png')" downIcon="@Embed('res/create/box-sel_infected.png')" overIcon="@Embed('res/create/box_infected.png')" selectedUpIcon="@Embed('res/create/box-sel_infected.png')" selectedOverIcon="@Embed('res/create/box-sel_infected.png')" selectedDownIcon="@Embed('res/create/box_infected.png')"   />
-            <mx:Button id="Button_CreateBox_Uninfected" toolTip="Create Uninfected Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_uninfected.png')" downIcon="@Embed('res/create/box-sel_uninfected.png')" overIcon="@Embed('res/create/box_uninfected.png')" selectedUpIcon="@Embed('res/create/box-sel_uninfected.png')" selectedOverIcon="@Embed('res/create/box-sel_uninfected.png')" selectedDownIcon="@Embed('res/create/box_uninfected.png')"   />
-            <mx:Button id="Button_CreateBox_Dontinfect" toolTip="Create &quot;Don't Infect Me&quot; Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_dontinfect.png')" downIcon="@Embed('res/create/box-sel_dontinfect.png')" overIcon="@Embed('res/create/box_dontinfect.png')" selectedUpIcon="@Embed('res/create/box-sel_dontinfect.png')" selectedOverIcon="@Embed('res/create/box-sel_dontinfect.png')" selectedDownIcon="@Embed('res/create/box_dontinfect.png')"   />
-            <mx:Spacer height="10"/>
-            <mx:Button id="Button_CreateBall" toolTip="Create Movable Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball.png')" downIcon="@Embed('res/create/ball-sel.png')" overIcon="@Embed('res/create/ball.png')" selectedUpIcon="@Embed('res/create/ball-sel.png')" selectedOverIcon="@Embed('res/create/ball-sel.png')" selectedDownIcon="@Embed('res/create/ball.png')"   />
-            <mx:Button id="Button_CreateBall_Static" toolTip="Create Static Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_static.png')" downIcon="@Embed('res/create/ball-sel_static.png')" overIcon="@Embed('res/create/ball_static.png')" selectedUpIcon="@Embed('res/create/ball-sel_static.png')" selectedOverIcon="@Embed('res/create/ball-sel_static.png')" selectedDownIcon="@Embed('res/create/ball_static.png')"   />
-            <mx:Button id="Button_CreateBall_Breakable" toolTip="Create Breakable Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_breakable.png')" downIcon="@Embed('res/create/ball-sel_breakable.png')" overIcon="@Embed('res/create/ball_breakable.png')" selectedUpIcon="@Embed('res/create/ball-sel_breakable.png')" selectedOverIcon="@Embed('res/create/ball-sel_breakable.png')" selectedDownIcon="@Embed('res/create/ball_breakable.png')"   />
-            <mx:Button id="Button_CreateBall_Infected" toolTip="Create Infected Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_infected.png')" downIcon="@Embed('res/create/ball-sel_infected.png')" overIcon="@Embed('res/create/ball_infected.png')" selectedUpIcon="@Embed('res/create/ball-sel_infected.png')" selectedOverIcon="@Embed('res/create/ball-sel_infected.png')" selectedDownIcon="@Embed('res/create/ball_infected.png')"   />
-            <mx:Button id="Button_CreateBall_Uninfected" toolTip="Create Uninfected Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_uninfected.png')" downIcon="@Embed('res/create/ball-sel_uninfected.png')" overIcon="@Embed('res/create/ball_uninfected.png')" selectedUpIcon="@Embed('res/create/ball-sel_uninfected.png')" selectedOverIcon="@Embed('res/create/ball-sel_uninfected.png')" selectedDownIcon="@Embed('res/create/ball_uninfected.png')"   />
-            <mx:Button id="Button_CreateBall_DontInfect" toolTip="Create &quot;Don't Infect Me&quot; Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_dontinfect.png')" downIcon="@Embed('res/create/ball-sel_dontinfect.png')" overIcon="@Embed('res/create/ball_dontinfect.png')" selectedUpIcon="@Embed('res/create/ball-sel_dontinfect.png')" selectedOverIcon="@Embed('res/create/ball-sel_dontinfect.png')" selectedDownIcon="@Embed('res/create/ball_dontinfect.png')"   />
-            <mx:Spacer height="10"/>
-            <mx:Button id="Button_CreateJoint_Hinge" toolTip="Create Hinge Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_hinge.png')" downIcon="@Embed('res/create/joint-sel_hinge.png')" overIcon="@Embed('res/create/joint_hinge.png')" selectedUpIcon="@Embed('res/create/joint-sel_hinge.png')" selectedOverIcon="@Embed('res/create/joint-sel_hinge.png')" selectedDownIcon="@Embed('res/create/joint_hinge.png')"   />
-            <mx:Button id="Button_CreateJoint_Slider" toolTip="Create Slider Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_slider.png')" downIcon="@Embed('res/create/joint-sel_slider.png')" overIcon="@Embed('res/create/joint_slider.png')" selectedUpIcon="@Embed('res/create/joint-sel_slider.png')" selectedOverIcon="@Embed('res/create/joint-sel_slider.png')" selectedDownIcon="@Embed('res/create/joint_slider.png')"   />
-            <mx:Button id="Button_CreateJoint_Rope" toolTip="Create Distance Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_rope.png')" downIcon="@Embed('res/create/joint-sel_rope.png')" overIcon="@Embed('res/create/joint_rope.png')" selectedUpIcon="@Embed('res/create/joint-sel_rope.png')" selectedOverIcon="@Embed('res/create/joint-sel_rope.png')" selectedDownIcon="@Embed('res/create/joint_rope.png')"   />
-            <mx:Spacer height="10"/>
+            <mx:Box direction="vertical" borderStyle="none" width="42" height="100%"
+                        paddingTop="1" paddingLeft="5" paddingRight="0" paddingBottom="1"
+                        horizontalGap="0" verticalGap="0">
+               <mx:Button id="Button_CreateBox" toolTip="Create Movable Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box.png')" downIcon="@Embed('res/create/box-sel.png')" overIcon="@Embed('res/create/box.png')" selectedUpIcon="@Embed('res/create/box-sel.png')" selectedOverIcon="@Embed('res/create/box-sel.png')" selectedDownIcon="@Embed('res/create/box.png')"   />
+               <mx:Button id="Button_CreateBox_Static" toolTip="Create Static Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_static.png')" downIcon="@Embed('res/create/box-sel_static.png')" overIcon="@Embed('res/create/box_static.png')" selectedUpIcon="@Embed('res/create/box-sel_static.png')" selectedOverIcon="@Embed('res/create/box-sel_static.png')" selectedDownIcon="@Embed('res/create/box_static.png')"   />
+               <mx:Button id="Button_CreateBox_Breakable" toolTip="Create Breakable Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_breakable.png')" downIcon="@Embed('res/create/box-sel_breakable.png')" overIcon="@Embed('res/create/box_breakable.png')" selectedUpIcon="@Embed('res/create/box-sel_breakable.png')" selectedOverIcon="@Embed('res/create/box-sel_breakable.png')" selectedDownIcon="@Embed('res/create/box_breakable.png')"   />
+               <mx:Button id="Button_CreateBox_Infected" toolTip="Create Infected Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_infected.png')" downIcon="@Embed('res/create/box-sel_infected.png')" overIcon="@Embed('res/create/box_infected.png')" selectedUpIcon="@Embed('res/create/box-sel_infected.png')" selectedOverIcon="@Embed('res/create/box-sel_infected.png')" selectedDownIcon="@Embed('res/create/box_infected.png')"   />
+               <mx:Button id="Button_CreateBox_Uninfected" toolTip="Create Uninfected Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_uninfected.png')" downIcon="@Embed('res/create/box-sel_uninfected.png')" overIcon="@Embed('res/create/box_uninfected.png')" selectedUpIcon="@Embed('res/create/box-sel_uninfected.png')" selectedOverIcon="@Embed('res/create/box-sel_uninfected.png')" selectedDownIcon="@Embed('res/create/box_uninfected.png')"   />
+               <mx:Button id="Button_CreateBox_Dontinfect" toolTip="Create &quot;Don't Infect Me&quot; Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_dontinfect.png')" downIcon="@Embed('res/create/box-sel_dontinfect.png')" overIcon="@Embed('res/create/box_dontinfect.png')" selectedUpIcon="@Embed('res/create/box-sel_dontinfect.png')" selectedOverIcon="@Embed('res/create/box-sel_dontinfect.png')" selectedDownIcon="@Embed('res/create/box_dontinfect.png')"   />
+               <mx:Button id="Button_CreateBox_Bomb" toolTip="Create Bomb Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_bomb.png')" downIcon="@Embed('res/create/box-sel_bomb.png')" overIcon="@Embed('res/create/box_bomb.png')" selectedUpIcon="@Embed('res/create/box-sel_bomb.png')" selectedOverIcon="@Embed('res/create/box-sel_bomb.png')" selectedDownIcon="@Embed('res/create/box_bomb.png')"   />
+               <mx:Spacer height="10"/>
+               <mx:Button id="Button_CreateJoint_Hinge" toolTip="Create Hinge Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_hinge.png')" downIcon="@Embed('res/create/joint-sel_hinge.png')" overIcon="@Embed('res/create/joint_hinge.png')" selectedUpIcon="@Embed('res/create/joint-sel_hinge.png')" selectedOverIcon="@Embed('res/create/joint-sel_hinge.png')" selectedDownIcon="@Embed('res/create/joint_hinge.png')"   />
+               <mx:Button id="Button_CreateJoint_Rope" toolTip="Create Distance Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_rope.png')" downIcon="@Embed('res/create/joint-sel_rope.png')" overIcon="@Embed('res/create/joint_rope.png')" selectedUpIcon="@Embed('res/create/joint-sel_rope.png')" selectedOverIcon="@Embed('res/create/joint-sel_rope.png')" selectedDownIcon="@Embed('res/create/joint_rope.png')"   />
+               <mx:Spacer height="10"/>
+            </mx:Box>
+            <mx:Box direction="vertical" borderStyle="none" width="40" height="100%"
+                        paddingTop="1" paddingLeft="0" paddingRight="3" paddingBottom="1"
+                        horizontalGap="0" verticalGap="0">
+               <mx:Button id="Button_CreateBall" toolTip="Create Movable Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball.png')" downIcon="@Embed('res/create/ball-sel.png')" overIcon="@Embed('res/create/ball.png')" selectedUpIcon="@Embed('res/create/ball-sel.png')" selectedOverIcon="@Embed('res/create/ball-sel.png')" selectedDownIcon="@Embed('res/create/ball.png')"   />
+               <mx:Button id="Button_CreateBall_Static" toolTip="Create Static Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_static.png')" downIcon="@Embed('res/create/ball-sel_static.png')" overIcon="@Embed('res/create/ball_static.png')" selectedUpIcon="@Embed('res/create/ball-sel_static.png')" selectedOverIcon="@Embed('res/create/ball-sel_static.png')" selectedDownIcon="@Embed('res/create/ball_static.png')"   />
+               <mx:Button id="Button_CreateBall_Breakable" toolTip="Create Breakable Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_breakable.png')" downIcon="@Embed('res/create/ball-sel_breakable.png')" overIcon="@Embed('res/create/ball_breakable.png')" selectedUpIcon="@Embed('res/create/ball-sel_breakable.png')" selectedOverIcon="@Embed('res/create/ball-sel_breakable.png')" selectedDownIcon="@Embed('res/create/ball_breakable.png')"   />
+               <mx:Button id="Button_CreateBall_Infected" toolTip="Create Infected Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_infected.png')" downIcon="@Embed('res/create/ball-sel_infected.png')" overIcon="@Embed('res/create/ball_infected.png')" selectedUpIcon="@Embed('res/create/ball-sel_infected.png')" selectedOverIcon="@Embed('res/create/ball-sel_infected.png')" selectedDownIcon="@Embed('res/create/ball_infected.png')"   />
+               <mx:Button id="Button_CreateBall_Uninfected" toolTip="Create Uninfected Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_uninfected.png')" downIcon="@Embed('res/create/ball-sel_uninfected.png')" overIcon="@Embed('res/create/ball_uninfected.png')" selectedUpIcon="@Embed('res/create/ball-sel_uninfected.png')" selectedOverIcon="@Embed('res/create/ball-sel_uninfected.png')" selectedDownIcon="@Embed('res/create/ball_uninfected.png')"   />
+               <mx:Button id="Button_CreateBall_DontInfect" toolTip="Create &quot;Don't Infect Me&quot; Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_dontinfect.png')" downIcon="@Embed('res/create/ball-sel_dontinfect.png')" overIcon="@Embed('res/create/ball_dontinfect.png')" selectedUpIcon="@Embed('res/create/ball-sel_dontinfect.png')" selectedOverIcon="@Embed('res/create/ball-sel_dontinfect.png')" selectedDownIcon="@Embed('res/create/ball_dontinfect.png')"   />
+               <mx:Button id="Button_CreateBall_Bomb" toolTip="Create Bomb Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_bomb.png')" downIcon="@Embed('res/create/ball-sel_bomb.png')" overIcon="@Embed('res/create/ball_bomb.png')" selectedUpIcon="@Embed('res/create/ball-sel_bomb.png')" selectedOverIcon="@Embed('res/create/ball-sel_bomb.png')" selectedDownIcon="@Embed('res/create/ball_bomb.png')"   />
+               <mx:Spacer height="10"/>
+               <mx:Button id="Button_CreateJoint_Slider" toolTip="Create Slider Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_slider.png')" downIcon="@Embed('res/create/joint-sel_slider.png')" overIcon="@Embed('res/create/joint_slider.png')" selectedUpIcon="@Embed('res/create/joint-sel_slider.png')" selectedOverIcon="@Embed('res/create/joint-sel_slider.png')" selectedDownIcon="@Embed('res/create/joint_slider.png')"   />
+               <mx:Button id="Button_CreateJoint_Spring" toolTip="Create Spring Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_spring.png')" downIcon="@Embed('res/create/joint-sel_spring.png')" overIcon="@Embed('res/create/joint_spring.png')" selectedUpIcon="@Embed('res/create/joint-sel_spring.png')" selectedOverIcon="@Embed('res/create/joint-sel_spring.png')" selectedDownIcon="@Embed('res/create/joint_spring.png')"   />
+               <mx:Spacer height="10"/>
+            </mx:Box>
          </mx:Box>
          <mx:Box direction="vertical" borderStyle="solid" height="100%"  width="100%"
                      paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                      horizontalGap="0" verticalGap="0" borderThickness="0" clipContent="true">
             <ed:WorldView id="MainView" height="100%" width="100%" />
          </mx:Box>
-         <mx:Box direction="vertical" borderStyle="solid" width="88" height="100%"
+         <mx:Box direction="vertical" borderStyle="solid" width="90" height="100%"
                      paddingTop="1" paddingLeft="1" paddingRight="1" paddingBottom="1"
                      horizontalGap="0" verticalGap="0">
-            <mx:Box direction="horizontal" borderStyle="solid" width="100%"
+            <mx:Box direction="vertical" borderStyle="solid" width="100%"
                         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                         horizontalGap="0" verticalGap="0">
                <mx:Spacer width="100%"/>
                <mx:LinkButton id="Label_TutorialLink" label="Tutorials" fontSize="12" color="0x0000FF" click="OnClickTutorialLink(event)" />
+               <mx:LinkButton id="Label_ShowcasesLink" label="Examples" fontSize="12" color="0x0000FF" click="OnClickShowcasesLink(event)" />
                <mx:Spacer width="100%"/>
             </mx:Box>
             <mx:Spacer height="6"/>
@@ -150,6 +163,7 @@
                MainView.mButtonCreateBoxInfected      = Button_CreateBox_Infected;
                MainView.mButtonCreateBoxUninfected      = Button_CreateBox_Uninfected;
                MainView.mButtonCreateBoxDontinfect      = Button_CreateBox_Dontinfect;
+               MainView.mButtonCreateBoxBomb     = Button_CreateBox_Bomb;
                
                MainView.mButtonCreateBallMovable     = Button_CreateBall;
                MainView.mButtonCreateBallStatic     = Button_CreateBall_Static;
@@ -157,6 +171,7 @@
                MainView.mButtonCreateBallInfected     = Button_CreateBall_Infected;
                MainView.mButtonCreateBallUninfected     = Button_CreateBall_Uninfected;
                MainView.mButtonCreateBallDontInfect     = Button_CreateBall_DontInfect;
+               MainView.mButtonCreateBallBomb     = Button_CreateBall_Bomb;
                
                //MainView.mButtonCreateComponentT  = Button_CreateComponent_T
                //MainView.mButtonCreateComponentV = Button_CreateComponent_V;
@@ -165,6 +180,7 @@
                MainView.mButtonCreateJointHinge  = Button_CreateJoint_Hinge
                MainView.mButtonCreateJointSlider = Button_CreateJoint_Slider;
                MainView.mButtonCreateJointRope = Button_CreateJoint_Rope;
+               MainView.mButtonCreateJointSpring = Button_CreateJoint_Spring;
                
                Button_CreateBox.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBox_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -172,6 +188,7 @@
                Button_CreateBox_Infected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBox_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBox_Dontinfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateBox_Bomb.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                Button_CreateBall.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBall_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -179,6 +196,7 @@
                Button_CreateBall_Infected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBall_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBall_DontInfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateBall_Bomb.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                //Button_CreateComponent_T.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                //Button_CreateComponent_V.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -187,7 +205,7 @@
                Button_CreateJoint_Hinge.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Slider.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Rope.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
+               Button_CreateJoint_Spring.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                
                MainView.mButtonClone = Button_Clone;
@@ -226,6 +244,7 @@
                MainView.ShowShapeCircleSettingDialog = ShowShapeCircleSettingDialog;
                MainView.ShowHingeSettingDialog = ShowHingeSettingDialog;
                MainView.ShowSliderSettingDialog = ShowSliderSettingDialog;
+               MainView.ShowSpringSettingDialog = ShowSpringSettingDialog;
                
                MainView.ShowWorldSettingDialog = ShowWorldSettingDialog;
                MainView.ShowWorldSavingDialog = ShowWorldSavingDialog;
@@ -237,6 +256,11 @@
             private function OnClickTutorialLink (event:Event):void
             {
                UrlUtil.PopupPage (Define.EditingTutorialUrl);
+            }
+            
+            private function OnClickShowcasesLink (event:Event):void
+            {
+               UrlUtil.PopupPage (Define.ShowcasesUrl);
             }
             
             private function OnClickLogo (event:Event):void
@@ -393,6 +417,18 @@
                MainView.SetHasSettingDialogOpened (true);
                
                var settingDialog:JointSliderSettingDialog = new JointSliderSettingDialog ();
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowSpringSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               MainView.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:JointSpringSettingDialog = new JointSpringSettingDialog ();
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
                settingDialog.SetValues (initialValues);

@@ -7,14 +7,14 @@ package editor.mode {
    import editor.WorldView;
    import editor.setting.EditorSetting;
    
-   import editor.entity.EntityJointDistance;
-   import editor.entity.SubEntityDistanceAnchor;
+   import editor.entity.EntityJointSpring;
+   import editor.entity.SubEntitySpringAnchor;
    
    import common.Define;
    
-   public class ModeCreateDistance extends Mode
+   public class ModeCreateSpring extends Mode
    {
-      public function ModeCreateDistance (mainView:WorldView)
+      public function ModeCreateSpring (mainView:WorldView)
       {
          super (mainView);
       }
@@ -23,7 +23,7 @@ package editor.mode {
       private var mStartX:Number = 0;
       private var mStartY:Number = 0;
       
-      private var mEntityJointDistance:EntityJointDistance = null;
+      private var mEntityJointSpring:EntityJointSpring = null;
       
       override public function Initialize ():void
       {
@@ -39,48 +39,48 @@ package editor.mode {
       
       protected function ResetSession (isCancelled:Boolean):void
       {
-         if (isCancelled && mEntityJointDistance != null)
-            mMainView.DestroyEntity (mEntityJointDistance);
+         if (isCancelled && mEntityJointSpring != null)
+            mMainView.DestroyEntity (mEntityJointSpring);
          
-         mEntityJointDistance = null;
+         mEntityJointSpring = null;
       }
       
       protected function StartSession ():void
       {
          ResetSession (true);
          
-         mEntityJointDistance = mMainView.CreateDistance (0, 0, 0, 0);
-         if (mEntityJointDistance == null)
+         mEntityJointSpring = mMainView.CreateSpring (0, 0, 0, 0);
+         if (mEntityJointSpring == null)
          {
             Reset ();
             return
          }
          
-         mEntityJointDistance.GetAnchor1 ().visible = false;
-         mEntityJointDistance.GetAnchor2 ().visible = false;
-         mEntityJointDistance.visible = false;
+         mEntityJointSpring.GetAnchor1 ().visible = false;
+         mEntityJointSpring.GetAnchor2 ().visible = false;
+         mEntityJointSpring.visible = false;
       }
       
       protected function UpdateSession (posX:Number, posY:Number):void
       {
          if (mCurrrentStep == 0)
          {
-            mEntityJointDistance.GetAnchor1 ().visible = true;
-            mEntityJointDistance.GetAnchor2 ().visible = false;
-            mEntityJointDistance.visible = false;
+            mEntityJointSpring.GetAnchor1 ().visible = true;
+            mEntityJointSpring.GetAnchor2 ().visible = false;
+            mEntityJointSpring.visible = false;
             
-            mEntityJointDistance.GetAnchor1 ().SetPosition (posX, posY);
+            mEntityJointSpring.GetAnchor1 ().SetPosition (posX, posY);
          }
          else
          {
-            mEntityJointDistance.GetAnchor1 ().visible = true;
-            mEntityJointDistance.GetAnchor2 ().visible = true;
-            mEntityJointDistance.visible = true;
+            mEntityJointSpring.GetAnchor1 ().visible = true;
+            mEntityJointSpring.GetAnchor2 ().visible = true;
+            mEntityJointSpring.visible = true;
             
-            mEntityJointDistance.GetAnchor2 ().SetPosition (posX, posY);
+            mEntityJointSpring.GetAnchor2 ().SetPosition (posX, posY);
          }
          
-         mEntityJointDistance.UpdateAppearance ();
+         mEntityJointSpring.UpdateAppearance ();
          
          mMainView.UpdateEntityInfoOnStatusBar ();
       }
@@ -89,8 +89,8 @@ package editor.mode {
       {
          UpdateSession (endX, endY);
          
-         mEntityJointDistance.GetAnchor1 ().UpdateSelectionProxy ();
-         mEntityJointDistance.GetAnchor2 ().UpdateSelectionProxy ();
+         mEntityJointSpring.GetAnchor1 ().UpdateSelectionProxy ();
+         mEntityJointSpring.GetAnchor2 ().UpdateSelectionProxy ();
          
          
          ResetSession (false);
@@ -114,7 +114,7 @@ package editor.mode {
       
       override public function OnMouseMove (mouseX:Number, mouseY:Number):void
       {
-         if (mEntityJointDistance == null)
+         if (mEntityJointSpring == null)
             return;
          
          UpdateSession (mouseX, mouseY);
@@ -122,7 +122,7 @@ package editor.mode {
       
       override public function OnMouseUp (mouseX:Number, mouseY:Number):void
       {
-         if (mEntityJointDistance == null)
+         if (mEntityJointSpring == null)
             return;
          
          FinishSession (mouseX, mouseY);

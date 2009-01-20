@@ -45,6 +45,14 @@ package common {
 // colors
 //===========================================================================
       
+      public static const SpringType_Unkonwn:int = -1;
+      public static const SpringType_Weak:int = 0;
+      public static const SpringType_Normal:int = 1;
+      
+//===========================================================================
+// colors
+//===========================================================================
+      
       public static const ColorObjectBorder:uint = 0xFF000000;
       
       

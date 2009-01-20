@@ -111,8 +111,17 @@ package player.physics {
 //    
 //=================================================================
       
+      private var _tempValue:Number = 0;
       
+      public function SetTempValue (value:Number):void
+      {
+         _tempValue = value;
+      }
       
+      public function GetTempValue ():Number
+      {
+         return _tempValue;
+      }
    }
    
 }

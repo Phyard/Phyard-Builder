@@ -70,6 +70,7 @@ package editor {
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointSpring;
    
+   import editor.entity.SubEntityJointAnchor;
    import editor.entity.SubEntityHingeAnchor;
    import editor.entity.SubEntitySliderAnchor;
    import editor.entity.SubEntityDistanceAnchor;
@@ -416,12 +417,6 @@ package editor {
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
             return;
-         }
-         
-         if (_capsLock)
-         {
-            if (mode is ModeMoveSelectedEntities || mode is ModeRotateSelectedEntities || mode is ModeScaleSelectedEntities)
-               return;
          }
          
          mCurrentEditMode = mode;
@@ -965,7 +960,8 @@ package editor {
             values.mIsVisible = spring.IsVisible ();
             values.mCollideConnected = spring.mCollideConnected;
             values.mStaticLengthRatio = spring.GetStaticLengthRatio ();
-            values.mFrequencyHz = spring.GetFrequencyHz ();
+            //values.mFrequencyHz = spring.GetFrequencyHz ();
+            values.mSpringType = spring.GetSpringType ();
             values.mDampingRatio = spring.mDampingRatio;
             
             ShowSpringSettingDialog (values, SetSpringPropertities);
@@ -1085,9 +1081,16 @@ package editor {
       private var _mouseEventCtrlDown:Boolean = false;
       private var _mouseEventShiftDown:Boolean = false;
       private var _mouseEventAltDown:Boolean = false;
+      
       private var _capsLock:Boolean = false;
+      private var _mouseEventCtrlShiftDown:Boolean = false;
       
       private var _isZeroMove:Boolean = false;
+      
+      private function IsEntityMovingLocked ():Boolean
+      {
+         return _capsLock;
+      }
       
       private function CheckModifierKeys (event:MouseEvent):void
       {
@@ -1443,16 +1446,19 @@ package editor {
                OpenPlayCodeLoadingDialog ();
                break;
             case Keyboard.LEFT:
-               MoveSelectedEntities (-1, 0, true);
+               MoveSelectedEntities (-1, 0, true, false);
                break;
             case Keyboard.RIGHT:
-               MoveSelectedEntities (1, 0, true);
+               MoveSelectedEntities (1, 0, true, false);
                break;
             case Keyboard.UP:
-               MoveSelectedEntities (0, -1, true);
+               MoveSelectedEntities (0, -1, true, false);
                break;
             case Keyboard.DOWN:
-               MoveSelectedEntities (0, 1, true);
+               MoveSelectedEntities (0, 1, true, false);
+               break;
+            case 187:// +
+               AlignCenterSelectedEntities ();
                break;
             default:
                break;
@@ -1707,8 +1713,11 @@ package editor {
          UpdateEntityInfoOnStatusBar ();
       }
       
-      public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void
+      public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean, byMouse:Boolean = true):void
       {
+         if (byMouse && IsEntityMovingLocked ())
+            return;
+         
          mEditorWorld.MoveSelectedEntities (offsetX, offsetY, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
@@ -1716,6 +1725,9 @@ package editor {
       
       public function RotateSelectedEntities (dAngle:Number, updateSelectionProxy:Boolean):void
       {
+         if (IsEntityMovingLocked ())
+            return;
+         
          mEditorWorld.RotateSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), dAngle, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
@@ -1723,6 +1735,9 @@ package editor {
       
       public function ScaleSelectedEntities (ratio:Number, updateSelectionProxy:Boolean):void
       {
+         if (IsEntityMovingLocked ())
+            return;
+         
          mEditorWorld.ScaleSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), ratio, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
@@ -1785,6 +1800,58 @@ package editor {
       public function MoveSelectedEntitiesToBottom ():void
       {
          mEditorWorld.MoveSelectedEntitiesToBottom ();
+      }
+      
+      public function AlignCenterSelectedEntities ():void
+      {
+         // try to find the largest circle and set its position as target position, 
+         // if no circle found, set the first joint anchor as target position,
+         // 
+         
+         var entities:Array = mEditorWorld.GetSelectedEntities ();
+         var entity:Entity;
+         var i:int;
+         var centerX:Number;
+         var centerY:Number;
+         var maxCircleRadius:Number = 0;
+         var numCircles:int = 0;
+         var numAnchors:int = 0;
+         for (i = 0; i < entities.length; ++ i)
+         {
+            entity = entities [i] as Entity;
+            if (entity is EntityShapeCircle)
+            {
+               ++ numCircles;
+               if ( (entity as EntityShapeCircle).GetRadius () > maxCircleRadius )
+               {
+                  maxCircleRadius = (entity as EntityShapeCircle).GetRadius ();
+                  centerX = entity.GetPositionX ();
+                  centerY = entity.GetPositionY ();
+               }
+            }
+            else if (entity is SubEntityJointAnchor)
+            {
+               if (numCircles == 0 && numAnchors == 0)
+               {
+                  centerX = entity.GetPositionX ();
+                  centerY = entity.GetPositionY ();
+               }
+               
+               ++ numAnchors;
+            }
+         }
+         
+         if (numCircles + numAnchors > 1)
+         {
+            for (i = 0; i < entities.length; ++ i)
+            {
+               entity = entities [i] as Entity;
+               if (entity is EntityShapeCircle || entity is SubEntityJointAnchor)
+                  entity.Move (centerX - entity.GetPositionX (), centerY - entity.GetPositionY (), true);
+            }
+            
+            CalSelectedEntitiesCenterPoint ();
+         }
       }
       
 //============================================================================
@@ -1895,7 +1962,8 @@ package editor {
             spring.SetVisible (params.mIsVisible);
             spring.mCollideConnected = params.mCollideConnected;
             spring.SetStaticLengthRatio (params.mStaticLengthRatio);
-            spring.SetFrequencyHz (params.mFrequencyHz);
+            //spring.SetFrequencyHz (params.mFrequencyHz);
+            spring.SetSpringType (params.mSpringType);
             spring.mDampingRatio = params.mDampingRatio;
          }
       }

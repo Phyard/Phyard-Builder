@@ -19,7 +19,7 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_SourceCode" width="100%" height="80" editable="false" wordWrap="false">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="150" editable="true" wordWrap="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
@@ -32,7 +32,7 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_PlayCode" width="100%" height="80" editable="false">
+      <mx:TextArea id="TextArea_PlayCode" width="100%" height="30" editable="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
@@ -45,7 +45,7 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_EmbedCode" width="100%" height="80" editable="false">
+      <mx:TextArea id="TextArea_EmbedCode" width="100%" height="60" editable="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>

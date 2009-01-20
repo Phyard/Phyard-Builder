@@ -131,13 +131,13 @@ package wrapper {
          }
          else if (mStateId == StateId_Load)
          {
-            trace ("root.parent");
-               ParseParams (LoaderInfo(root.parent.loaderInfo));
-            trace ("stage");
-               ParseParams (LoaderInfo(stage.loaderInfo));
-            trace ("stage.root");
-               ParseParams (LoaderInfo(stage.root.loaderInfo));
-            trace ("root");
+            //trace ("root.parent");
+            //   ParseParams (LoaderInfo(root.parent.loaderInfo));
+            //trace ("stage");
+            //   ParseParams (LoaderInfo(stage.loaderInfo));
+            //trace ("stage.root");
+            //   ParseParams (LoaderInfo(stage.root.loaderInfo));
+            //trace ("root");
                ParseParams (LoaderInfo(root.loaderInfo));
             
             while (mWorldLayer.numChildren > 0)
@@ -155,6 +155,10 @@ package wrapper {
             //if (mWorldDefine == null)
             if (mWorldDataHexString == null || mPlayerWorld == null)
             {
+               mTopBarLayer.visible = false;
+               
+               // ...
+               
                var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Fail to parse play code."));
                errorText.x = (Define.WorldWidth  - errorText.width ) * 0.5;
                errorText.y = (Define.WorldHeight - errorText.height) * 0.5;
@@ -228,7 +232,7 @@ package wrapper {
                {
                   valueStr = String(flashVars[keyStr]);
                   
-                  trace (keyStr + "=" + valueStr);
+                  //trace (keyStr + "=" + valueStr);
                   
                   if (keyStr == "playcode")
                   {

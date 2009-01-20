@@ -10,12 +10,18 @@ package player.entity {
    import player.physics.PhysicsProxyJointDistance;
    
    import common.Define;
+   import common.Setting;
    
    public class EntityJointSpring extends EntityJoint
    {
       
       private var mSpriteAnchor1:Sprite;
       private var mSpriteAnchor2:Sprite;
+      
+      //private var mWireDiameter:Number = 2;
+      //private var mDiameter:Number = 9;
+      
+      private var mSpringType:int = Define.SpringType_Unkonwn;
       
       public function EntityJointSpring (world:World)
       {
@@ -32,23 +38,26 @@ package player.entity {
       
       override public function Update (dt:Number):void
       {
-         var point1:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint1 ();
-         var point2:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint2 ();
-         mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point1);
-         mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point2);
-         
-         
-         
-         mSpriteAnchor1.x = point1.x;
-         mSpriteAnchor1.y = point1.y;
-         mSpriteAnchor2.x = point2.x;
-         mSpriteAnchor2.y = point2.y;
-         
          RebuildAppearance ();
       }
       
       override public function BuildPhysicsProxy (params:Object):void
       {
+         // ...
+         /*
+         mWireDiameter = params.mWireDiameter;
+         if (mWireDiameter < 1)
+            mWireDiameter = 1;
+         if (mWireDiameter > 2)
+            mWireDiameter = 2;
+         mDiameter = params.mDiameter;
+         if (mDiameter < 3)
+            mDiameter = 3;
+         */
+         
+         mSpringType = params.mSpringType;
+         
+         // ...
          var anchor1Params:Object = params.mAnchor1Params;
          var anchor2Params:Object = params.mAnchor2Params;
          
@@ -57,6 +66,11 @@ package player.entity {
          var anchorDisplayX2:Number = anchor2Params.mPosX;
          var anchorDisplayY2:Number = anchor2Params.mPosY;
          
+         var currentLength:Number = Math.sqrt ( (anchorDisplayX1 - anchorDisplayX2) * (anchorDisplayX1 - anchorDisplayX2) 
+                                             + (anchorDisplayY1 - anchorDisplayY2) * (anchorDisplayY1 - anchorDisplayY2) );
+         
+         params.mFrequencyHz = Setting.GetSpringParamsByType (mSpringType, currentLength * params.mStaticLengthRatio).mFrequencyHz;
+         
          if (mPhysicsProxy == null)
          {
             mPhysicsProxy  =  mWorld.mPhysicsEngine.CreateProxyJointDistanceAuto (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
@@ -64,10 +78,10 @@ package player.entity {
             mPhysicsProxy.SetUserData (this);
          }
          
-         mSpriteAnchor1.x = anchorDisplayX1;
-         mSpriteAnchor1.y = anchorDisplayY1;
-         mSpriteAnchor2.x = anchorDisplayX2;
-         mSpriteAnchor2.y = anchorDisplayY2;
+         //mSpriteAnchor1.x = anchorDisplayX1;
+         //mSpriteAnchor1.y = anchorDisplayY1;
+         //mSpriteAnchor2.x = anchorDisplayX2;
+         //mSpriteAnchor2.y = anchorDisplayY2;
          
          //
          RebuildAppearance ();
@@ -75,13 +89,64 @@ package player.entity {
       
       override public function RebuildAppearance ():void
       {
-         var x1:Number = mSpriteAnchor1.x;
-         var y1:Number = mSpriteAnchor1.y;
-         var x2:Number = mSpriteAnchor2.x;
-         var y2:Number = mSpriteAnchor2.y;
+         var point1:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint1 ();
+         var point2:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint2 ();
+         mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point1);
+         mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point2);
+         
+         var x1:Number = point1.x;
+         var y1:Number = point1.y;
+         var x2:Number = point2.x;
+         var y2:Number = point2.y;
          
          var dx:Number = x2 - x1;
          var dy:Number = y2 - y1;
+         var length:Number = Math.sqrt (dx * dx + dy * dy);
+         
+         x = point1.x;
+         y = point1.y;
+         
+         SetRotation (Math.atan2 (dy, dx));
+         
+         mSpriteAnchor1.x = 0;
+         mSpriteAnchor1.y = 0;
+         mSpriteAnchor2.x = length;
+         mSpriteAnchor2.y = 0;
+         
+         var staticLength:Number = mWorld.mPhysicsEngine.PhysicsLength2DisplayLength ( (mPhysicsProxy as PhysicsProxyJointDistance).GetStaticLength () );
+         
+         var params:Object = Setting.GetSpringParamsByType (mSpringType, staticLength);
+         
+         var halfSpringWidth:Number = int (params.mDiameter * 0.5);
+         var springWireWidth:Number = params.mWireDiameter;
+         var staticSegmentLen:Number = params.mStaticSegmentLength;
+         var numSegments:int = int ( staticLength / staticSegmentLen );
+         if (numSegments < 1) numSegments = 1;
+         var segmentLen:Number = length / numSegments;
+         
+         graphics.clear ();
+         
+         var xa:Number = 0;
+         var ya:Number = 0;
+         var xb:Number = segmentLen / 3;
+         var yb:Number = - halfSpringWidth;
+         var xc:Number = segmentLen * 2 / 3;
+         var yc:Number = halfSpringWidth;
+         var xd:Number = segmentLen;
+         var yd:Number = 0;
+         for (var i:int = 0; i < numSegments; ++ i)
+         {
+            GraphicsUtil.DrawLine (this, xa, ya, xb, yb, 0x0, springWireWidth);
+            GraphicsUtil.DrawLine (this, xb, yb, xc, yc, 0x0, springWireWidth);
+            GraphicsUtil.DrawLine (this, xc, yc, xd, yd, 0x0, springWireWidth);
+            
+            xa += segmentLen;
+            xb += segmentLen;
+            xc += segmentLen;
+            xd += segmentLen;
+         }
+         
+         /*
          var length:Number = Math.sqrt (dx * dx + dy * dy);
          
          var staticLength:Number = mWorld.mPhysicsEngine.PhysicsLength2DisplayLength ( (mPhysicsProxy as PhysicsProxyJointDistance).GetStaticLength ());
@@ -122,6 +187,7 @@ package player.entity {
                endLen += stepLen;
             }
          }
+         */
       }
       
       

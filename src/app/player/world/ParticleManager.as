@@ -28,14 +28,10 @@ package player.world {
          var bomb:Object = new Object ();
          mBombs [nNumBombs ++] = bomb;
          
-         var numParticles:int = 32 * radius * 2.0 * radius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength);
-         var particleSpeed:Number = 10.0 * ( 0.5 + 0.75 * radius / Number (Define.DefaultBombSquareSideLength) );
+         var numParticles:int = 32 * ( 0.5 + radius * 2.0 * radius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength) );
+         var particleSpeed:Number = 8.0 * ( 0.25 + 1.0 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
          var particleDensity:Number = 5.0;
-         var particleLifeTime:Number = Define.WorldStepTimeInterval * 9 * ( 1.0 + 1.5 * radius / Number (Define.DefaultBombSquareSideLength) );
-         
-         trace ("numParticles = " + numParticles);
-         trace ("particleSpeed = " + particleSpeed);
-         trace ("particleLifeTime = " + particleLifeTime);
+         var particleLifeTime:Number = Define.WorldStepTimeInterval * 9 * ( 0.5 + 1.5 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
          
          if (radius > 12) radius = 12;
          if (radius < 5 ) radius = 5;
@@ -75,10 +71,12 @@ package player.world {
             
             bomb.mLastTimeStamp = bomb.mBornTime;
             
+            bomb.mParticleStartId += 4; // because 5 is a ZhiShu
             var particleId:int = bomb.mParticleStartId ++;
             var count:int = bomb.mNumParticles - bomb.mNumCreateParticles;
             if (count > NumParticlesToCreatedEachStep) 
                count = NumParticlesToCreatedEachStep;
+            var idInterval:int = int (bomb.mParticleIdCreateInterval * NumParticlesToCreatedEachStep / count + 0.5);
             
             for (var i:int = 0; i < count; ++ i)
             {
@@ -93,7 +91,7 @@ package player.world {
                
                mWorld.CreateEntityParticle (params).Update (0);
                
-               particleId += bomb.mParticleIdCreateInterval;
+               particleId += idInterval;
                ++ bomb.mNumCreateParticles;
             }
             

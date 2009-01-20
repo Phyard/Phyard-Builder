@@ -132,7 +132,8 @@ package common {
                   entityDefine.mAnchor2EntityIndex = editorWorld.getChildIndex ( spring.GetAnchor2 () );
                   
                   entityDefine.mStaticLengthRatio = spring.GetStaticLengthRatio ();
-                  entityDefine.mFrequencyHz = spring.GetFrequencyHz ();
+                  //entityDefine.mFrequencyHz = spring.GetFrequencyHz ();
+                  entityDefine.mSpringType = spring.GetSpringType ();
                   entityDefine.mDampingRatio = spring.mDampingRatio;
                }
             }
@@ -282,7 +283,9 @@ package common {
                   anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor2 ());
                   
                   spring.SetStaticLengthRatio (entityDefine.mStaticLengthRatio);
-                  spring.SetFrequencyHz (entityDefine.mFrequencyHz);
+                  //spring.SetFrequencyHz (entityDefine.mFrequencyHz);
+                  spring.SetSpringType (entityDefine.mSpringType);
+                  
                   spring.mDampingRatio = entityDefine.mDampingRatio;
                   
                   entity = spring;
@@ -475,7 +478,9 @@ package common {
                element.@anchor2_index = entityDefine.mAnchor2EntityIndex;
                
                element.@static_length_ratio = entityDefine.mStaticLengthRatio;
-               element.@frequency_hz = entityDefine.mFrequencyHz;
+               //element.@frequency_hz = entityDefine.mFrequencyHz;
+               element.@spring_type = entityDefine.mSpringType;
+               
                element.@damping_ratio = entityDefine.mDampingRatio;
             }
          }
@@ -595,7 +600,9 @@ package common {
                entityDefine.mAnchor2EntityIndex = parseInt (element.@anchor2_index);
                
                entityDefine.mStaticLengthRatio = parseFloat (element.@static_length_ratio);
-               entityDefine.mFrequencyHz = parseFloat (element.@frequency_hz);
+               //entityDefine.mFrequencyHz = parseFloat (element.@frequency_hz);
+               entityDefine.mSpringType = parseFloat (element.@spring_type);
+               
                entityDefine.mDampingRatio = parseFloat (element.@damping_ratio);
             }
          }
@@ -698,7 +705,9 @@ package common {
                   byteArray.writeShort (entityDefine.mAnchor2EntityIndex);
                   
                   byteArray.writeFloat (entityDefine.mStaticLengthRatio);
-                  byteArray.writeFloat (entityDefine.mFrequencyHz);
+                  //byteArray.writeFloat (entityDefine.mFrequencyHz);
+                  byteArray.writeByte (entityDefine.mSpringType);
+                  
                   byteArray.writeFloat (entityDefine.mDampingRatio);
                }
             }

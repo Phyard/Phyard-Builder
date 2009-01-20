@@ -10,6 +10,8 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
+   import common.Define;
+   
    public class EntityShape extends Entity 
    {
    // visual
@@ -122,6 +124,18 @@ package editor.entity {
       
       public function SetStatic (isStatic:Boolean):void
       {
+         if (mIsStatic && ! isStatic && mFilledColor == Define.ColorStaticObject)
+         {
+            SetFilledColor (Define.ColorMovableObject);
+            UpdateAppearance ();
+         }
+         
+         if (! mIsStatic && isStatic && mFilledColor == Define.ColorMovableObject)
+         {
+            SetFilledColor (Define.ColorStaticObject);
+            UpdateAppearance ();
+         }
+         
          mIsStatic = isStatic;
       }
       

@@ -399,11 +399,27 @@ package editor.world {
       {
          var entityArray:Array = mSelectionListManager.GetSelectedMainEntities ();
          
+         var i:uint;
+         for (i = 0; i < entityArray.length; ++ i)
+         {
+            var params:Object = new Object ();
+            params.mEntity = entityArray [i];
+            params.mEntityIndex = contains (entityArray [i]) ? getChildIndex (entityArray [i]) : -1;
+            entityArray [i] = params;
+         }
+         
+         entityArray.sortOn("mEntityIndex", Array.NUMERIC);
+         
+         for (i = 0; i < entityArray.length; ++ i)
+         {
+            entityArray [i] = entityArray [i].mEntity;
+         }
+         
          var entity:Entity;
          
          mSelectionListManager.ClearSelectedEntities ();
          
-         for (var i:uint = 0; i < entityArray.length; ++ i)
+         for (i = 0; i < entityArray.length; ++ i)
          {
             entity = entityArray [i] as Entity;
             

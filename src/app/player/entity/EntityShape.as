@@ -21,6 +21,8 @@ package player.entity {
       
       public var mIsBullet:Boolean = false;
       
+      private var mEntityId:int = -1;
+      
       public function EntityShape (world:World, shapeContainer:ShapeContainer)
       {
          super (world);
@@ -28,6 +30,16 @@ package player.entity {
          mShapeContainer = shapeContainer;
          
          mShapeContainer.addChild (this);
+      }
+      
+      public function GetEntityId ():int
+      {
+         return mEntityId;
+      }
+      
+      public function IsPhysicsShape ():Boolean
+      {
+         return mPhysicsProxy != null;
       }
       
       override public function Update (dt:Number):void
@@ -81,6 +93,15 @@ package player.entity {
       override public function BuildPhysicsProxy (params:Object):void
       {
          // for the initial pos and rot of shapeContainer are zeroes, so no need to translate to local values
+         
+         if ( params.mWorldDefine != null )
+         {
+            if (params.mWorldDefine.mVersion >= 0x101)
+            {
+               if (! isNaN (params.mEntityId))
+                  mEntityId = params.mEntityId;
+            }
+         }
          
          visible = params.mIsVisible;
          

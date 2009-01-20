@@ -41,10 +41,6 @@ package player.physics {
             {
                distanceJointDef.dampingRatio = params.mDampingRatio;
             }
-            
-            trace ("distanceJointDef.length = " + distanceJointDef.length);
-            trace ("distanceJointDef.frequencyHz = " + distanceJointDef.frequencyHz);
-            trace ("distanceJointDef.dampingRatio = " + distanceJointDef.dampingRatio);
          }
          
          _b2Joint = mPhysicsEngine._b2World.CreateJoint(distanceJointDef) as b2DistanceJoint;

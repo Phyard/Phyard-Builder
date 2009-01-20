@@ -14,24 +14,50 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_StaticLength" text="Static Length / Current Length:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_StaticLengthRatio" focusEnabled="false" minimum="0" maximum="5" value="1" width="60%"
-          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="1"
-          labels="['0', '5.0']" allowTrackClick="true" liveDragging="true" />
+      <mx:Label id="Label_StaticLength" text="Static Length / Current Length:" textAlign="right" width="39%"/>
+      <mx:HSlider id="Slider_StaticLengthRatio" focusEnabled="false" minimum="0" maximum="2" value="1" width="60%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
+          labels="['0', '1,0', '2.0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   
+   <!--
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_WireDiameter" text="Wire Diameter:" textAlign="right" width="39%"/>
+      <mx:HSlider id="Slider_WireDiameter" focusEnabled="false" minimum="1" maximum="3" value="2" width="77%"
+          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="1"
+          labels="['1', '2', '3']" allowTrackClick="true" liveDragging="true" />
    </mx:HBox>
 
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_Diameter" text="Diameter:" textAlign="right" width="23%"/>
+      <mx:HSlider id="Slider_Diameter" focusEnabled="false" minimum="5" maximum="21" value="9" width="77%"
+          dataTipPlacement="top" tickColor="black" snapInterval="2" tickInterval="2"
+          labels="['5', '21']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   -->
+   
+   <!--
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Label id="Label_FrequencyHz" text="Frequency (Hz):" textAlign="right" width="23%"/>
       <mx:HSlider id="Slider_FrequencyHz" focusEnabled="false" minimum="0" maximum="5" value="10" width="77%"
           dataTipPlacement="top" tickColor="black" snapInterval="0.05" tickInterval="1"
           labels="['0', '5']" allowTrackClick="true" liveDragging="true" />
    </mx:HBox>
-
+   -->
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Label id="Label_DampingRatio" text="Damping Ratio:" textAlign="right" width="23%"/>
       <mx:HSlider id="Slider_DampingRatio" focusEnabled="false" minimum="0" maximum="1" value="10" width="77%"
           dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
           labels="['0', '1.0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_Type" text="Type:" textAlign="right" width="23%"/>
+      <mx:HBox width="77%" verticalAlign="bottom">
+         <mx:RadioButton groupName="Type" id="TypeWeak" label="Weak"/>
+         <mx:RadioButton groupName="Type" id="TypeNormal" label="Normal"/>
+         <mx:Spacer width="100%"/>
+      </mx:HBox>
    </mx:HBox>
 
    <mx:Spacer height="20"/>
@@ -48,10 +74,10 @@
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
-
    <mx:Script>
       <![CDATA[       
          import mx.managers.PopUpManager;
+         import common.Define;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
@@ -63,7 +89,9 @@
             CheckBox_CollideConnected.selected = values.mCollideConnected;
             
             Slider_StaticLengthRatio.value = values.mStaticLengthRatio;
-            Slider_FrequencyHz.value = values.mFrequencyHz;
+            //Slider_FrequencyHz.value = values.mFrequencyHz;
+            TypeWeak.selected = values.mSpringType == Define.SpringType_Weak;
+            TypeNormal.selected = values.mSpringType != Define.SpringType_Weak;
             Slider_DampingRatio.value = values.mDampingRatio;
          }
          
@@ -85,7 +113,8 @@
              params.mCollideConnected = CheckBox_CollideConnected.selected;
              
              params.mStaticLengthRatio = Slider_StaticLengthRatio.value;
-             params.mFrequencyHz = Slider_FrequencyHz.value;
+             //params.mFrequencyHz = Slider_FrequencyHz.value;
+             params.mSpringType = TypeWeak.selected ? Define.SpringType_Weak : Define.SpringType_Normal;
              params.mDampingRatio = Slider_DampingRatio.value;
              
              PopUpManager.removePopUp(this);

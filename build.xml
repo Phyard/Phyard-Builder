@@ -145,7 +145,7 @@
 
       </exec>
       
-      <copy tofile="F:/__WebApps/_homepage/PhysicsEditor.swf" file="${dir.release}/CIEditor.swf"  overwrite="true" verbose="true">
+      <copy tofile="F:/__WebApps/_homepage/colorinfection_test/editor.swf" file="${dir.release}/CIEditor.swf"  overwrite="true" verbose="true">
       </copy>
    </target>
    
@@ -225,15 +225,9 @@
 
       </exec>
       
-      <copy tofile="F:/__WebApps/_homepage/PhysicsEditor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true">
+      <copy tofile="F:/__WebApps/_homepage/colorinfection_test/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true">
       </copy>
       
-      <copy tofile="D:/projects/PhysicsEditor/googleapp/src/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true">
-      </copy>
-      
-      
-      
-
    </target>
    
     <target name="release-player-wrapper" depends="compile-resource">
@@ -276,7 +270,7 @@
 
       </exec>
       
-      <copy tofile="F:/__WebApps/_homepage/ColorInfectionPlayer.swf" file="${dir.release}/player.swf"  overwrite="true" verbose="true">
+      <copy tofile="F:/__WebApps/_homepage/colorinfection_test/player.swf" file="${dir.release}/player.swf"  overwrite="true" verbose="true">
       </copy>
 
    </target>

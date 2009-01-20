@@ -19,11 +19,17 @@ package player.physics {
       private var _OnShapeRemoved:Function = null; //  (proxyShape:PhysicsProxyShape):void
       private var _OnShapeCollision:Function = null; //  (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
       
+      private var _GetBodyIndex:Function = null; // (proxyBody:PhysicsProxyBody):int
+      private var _GetShapeIndex:Function = null; // (proxyBody:PhysicsProxyShape):int
       
-      public function PhysicsEngine (lowerDisplayPoint:Point, upperDisplayPoint:Point):void
+      
+      public function PhysicsEngine (lowerDisplayPoint:Point, upperDisplayPoint:Point, version100:Boolean):void
       {
-         _DisplayPoint2PhysicsPoint (lowerDisplayPoint);
-         _DisplayPoint2PhysicsPoint (upperDisplayPoint);
+         if (! version100)
+         {
+            _DisplayPoint2PhysicsPoint (lowerDisplayPoint);
+            _DisplayPoint2PhysicsPoint (upperDisplayPoint);
+         }
          
          var worldAABB:b2AABB = new b2AABB();
          worldAABB.lowerBound.Set(lowerDisplayPoint.x, lowerDisplayPoint.y);
@@ -56,6 +62,16 @@ package player.physics {
       public function SetShapeCollisionListener (func:Function):void
       {
          _OnShapeCollision = func;
+      }
+      
+      public function SetGetBodyIndexCallback (func:Function):void
+      {
+         _GetBodyIndex = func;
+      }
+      
+      public function SetGetShapeIndexCallback (func:Function):void
+      {
+         _GetShapeIndex = func;
       }
       
 //=================================================================
@@ -91,9 +107,9 @@ package player.physics {
 //   
 //=================================================================
       
-      public function GetProxyBoiesAtPoint (displayX:Number, displayY:Number):Array
+      public function GetProxyBoiesAtPoint (displayX:Number, displayY:Number, setMaxShapeIndex:Boolean = false):Array
       {
-         return GetProxiesAtPoint (displayX, displayY, true);
+         return GetProxiesAtPoint (displayX, displayY, true, setMaxShapeIndex);
       }
       
       public function GetProxyShapesAtPoint (displayX:Number, displayY:Number):Array
@@ -102,7 +118,7 @@ package player.physics {
       }
       
       // isGettingBody - false means to get shapes
-      private function GetProxiesAtPoint (displayX:Number, displayY:Number, isGettingBody:Boolean):Array
+      private function GetProxiesAtPoint (displayX:Number, displayY:Number, isGettingBody:Boolean, setMaxShapeIndex:Boolean = false):Array
       {
          var windowSize:Number = 3.0;
          var lowerPoint:Point = DisplayPosition2PhysicsPoint (displayX - windowSize, displayY - windowSize);
@@ -139,29 +155,39 @@ package player.physics {
             
             if (shapes[i].TestPoint(body.GetXForm(), vertex))
             {
-               var proxy:PhysicsProxy;
-               
                if (isGettingBody)
-                  proxy = body.GetUserData () as PhysicsProxyBody;
-               else
-                  proxy = shapes[i].GetUserData () as PhysicsProxyShape;
-               
-               if (proxy == null)
                {
-                  // ??? error
-                  continue;
+                  var proxyBody:PhysicsProxyBody = body.GetUserData () as PhysicsProxyBody;
+                  
+                  var shapeIndex:Number = _GetShapeIndex (shapes[i].GetUserData () as PhysicsProxyShape);
+                  
+                  if (objectArray.indexOf (proxyBody) < 0)
+                  {
+                     objectArray.push (proxyBody);
+                     proxyBody.SetTempValue (shapeIndex);
+                  }
+                  else if (setMaxShapeIndex && (_GetShapeIndex != null) )
+                  {
+                     var oldShapeIndex:Number = proxyBody.GetTempValue ();
+                     
+                     if (oldShapeIndex < shapeIndex)
+                        proxyBody.SetTempValue (shapeIndex);
+                  }
                }
-               
-               if (objectArray.indexOf (proxy) < 0)
-                  objectArray.push (proxy);
+               else
+               {
+                  var proxyShape:PhysicsProxyShape = shapes[i].GetUserData () as PhysicsProxyShape;
+                  
+                  if (objectArray.indexOf (proxyShape) < 0)
+                  {
+                     objectArray.push (proxyShape);
+                  }
+               }
             }
          }
          
          return objectArray;
       }
-      
-      
-      
       
 //=================================================================
 //   
@@ -220,7 +246,9 @@ package player.physics {
          var proxyBody1:PhysicsProxyBody = null;
          var proxyBody2:PhysicsProxyBody = null;
          
-         var bodies:Array = GetProxyBoiesAtPoint (anchorDisplayX, anchorDisplayY);
+         var temp:PhysicsProxyBody;
+         
+         var bodies:Array = GetProxyBoiesAtPoint (anchorDisplayX, anchorDisplayY, true);
          
          if (bodies.length >= 2)
          {
@@ -229,7 +257,7 @@ package player.physics {
             
             if (proxyBody2.IsStatic () && ! proxyBody1.IsStatic ())
             {
-               var temp:PhysicsProxyBody = proxyBody1;
+               temp = proxyBody1;
                proxyBody1 = proxyBody2;
                proxyBody2 = temp;
             }
@@ -239,6 +267,24 @@ package player.physics {
             proxyBody2 = bodies [0] as PhysicsProxyBody;
          }
          
+         if ( params.mWorldDefine != null )
+         {
+            if (params.mWorldDefine.mVersion >= 0x101 && _GetShapeIndex != null)
+            {
+               var shapeMaxIndex1:int = proxyBody1.GetTempValue ();
+               var shapeMaxIndex2:int = proxyBody2.GetTempValue ();
+               
+               //trace ("shapeMaxIndex1 = " + shapeMaxIndex1);
+               //trace ("shapeMaxIndex2 = " + shapeMaxIndex2);
+               
+               if (shapeMaxIndex1 > shapeMaxIndex2)
+               {
+                  temp = proxyBody2;
+                  proxyBody2 = proxyBody1;
+                  proxyBody1 = temp;
+               }
+            }
+         }
          
          return CreateProxyJointHinge (proxyBody1, proxyBody2, anchorDisplayX, anchorDisplayY, params);
       }

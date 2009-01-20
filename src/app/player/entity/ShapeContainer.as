@@ -116,6 +116,24 @@ package player.entity {
          }
       }
       
+      public function GetMaxChildEntityId ():int
+      {
+         var maxEntityId:int = -1;
+         for (var j:int = 0; j < numChildren; ++ j)
+         {
+            var shape:EntityShape = getChildAt (j) as EntityShape;
+            if (shape != null)
+            {
+               var shapeLayerId:int = shape.GetEntityId ();
+               
+               if (shapeLayerId > maxEntityId)
+                  maxEntityId = shapeLayerId;
+            }
+         }
+         
+         return maxEntityId;
+      }
+      
    }
    
 }

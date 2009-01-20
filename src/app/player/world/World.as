@@ -43,17 +43,37 @@ package player.world {
       
    // ...
       
+      private var mVersion:int = 0x0;
       private var mAuthorName:String = "";
       private var mAuthorHonepage:String = "";
       
-      public function World ()
+      public function World (version:int)
       {
-         mPhysicsEngine = new PhysicsEngine (new Point (-WorldWidth * 0.5, -WorldHeight * 0.5), new Point (WorldWidth * 1.5, WorldHeight * 1.5));
+         mVersion = version;
+         
+         // the aabb setting will affect some queries in box2d
+         if (mVersion >= 0x101)
+         {
+            mPhysicsEngine = new PhysicsEngine (
+                  new Point (-WorldWidth * 0.5, -WorldHeight * 0.5), 
+                  new Point (WorldWidth * 1.5, WorldHeight * 1.5),
+                  false);
+         }
+         else
+         {
+            mPhysicsEngine = new PhysicsEngine (
+                  new Point (-100000.0, -100000.0), 
+                  new Point (100000.0, 100000.0),
+                  true);
+         }
+         
          mPhysicsEngine.SetJointRemovedListener (OnJointRemoved);
          mPhysicsEngine.SetShapeRemovedListener (OnShapeRemoved);
          mPhysicsEngine.SetShapeCollisionListener (OnShapeCollision);
+         mPhysicsEngine.SetGetBodyIndexCallback (GetBodyIndex);
+         mPhysicsEngine.SetGetShapeIndexCallback (GetShapeIndex);
          
-      // ...
+      // 
          
          mParticleManager = new ParticleManager (this);
          
@@ -63,6 +83,11 @@ package player.world {
          
       // 
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+      }
+      
+      public function GetVersion ():int
+      {
+         return mVersion;
       }
       
       public function SetAuthorName (name:String):void
@@ -241,6 +266,43 @@ package player.world {
          }
       }
       
+      // call this function before any joint is created
+      public function UpdateShapeLayers ():void
+      {
+         var containerParams:Array = new Array ();
+         var i:int;
+         for (i = 0; i < numChildren; ++ i)
+         {
+            var child:Object = getChildAt (i);
+            if (child is ShapeContainer)
+            {
+               var container:ShapeContainer = child as ShapeContainer;
+               var maxEntityId:int = container.GetMaxChildEntityId ();
+               
+               var params:Object = new Object ();
+               params.mLayerIndex = maxEntityId;
+               params.mShapeContainer = container;
+               
+               containerParams.push (params);
+            }
+         }
+         
+         if (containerParams.length < 2)
+            return;
+         
+         for (i = 0; i < containerParams.length; ++ i)
+         {
+            removeChild (containerParams[i].mShapeContainer);
+         }
+         
+         containerParams.sortOn("mLayerIndex", Array.NUMERIC);
+         
+         for (i = 0; i < containerParams.length; ++ i)
+         {
+            addChild (containerParams[i].mShapeContainer);
+         }
+      }
+      
 //=============================================================
 //   shapes & joints
 //=============================================================
@@ -255,7 +317,6 @@ package player.world {
          
          return voidEntity;
       }
-      
       
       public function CreateEntityShapeCircle (shapeContainer:ShapeContainer, params:Object):EntityShapeCircle
       {
@@ -354,6 +415,30 @@ package player.world {
 //=============================================================
 //   PhysicsEngine callbacks 
 //=============================================================
+      
+      private function GetBodyIndex (proxyBody:PhysicsProxyBody):int
+      {
+         if (proxyBody == null)
+            return -1;
+            
+         var container:ShapeContainer = proxyBody.GetUserData () as ShapeContainer;
+         if (container == null || ! contains (container) )
+            return -1;
+         
+         return getChildIndex (container);
+      }
+      
+      private function GetShapeIndex (proxyShape:PhysicsProxyShape):int
+      {
+         if (proxyShape == null)
+            return -1;
+            
+         var shape:EntityShape = proxyShape.GetUserData () as EntityShape;
+         if (shape == null)
+            return -1;
+         
+         return shape.GetEntityId ();
+      }
       
       private function OnJointRemoved (proxyJoint:PhysicsProxyJoint):void
       {

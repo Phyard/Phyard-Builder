@@ -17,7 +17,7 @@ package common {
       
       public static function WorldDefine2PlayerWorld (worldDefine:WorldDefine):player.world.World
       {
-         var playerWorld:player.world.World = new player.world.World ();
+         var playerWorld:player.world.World = new player.world.World (worldDefine.mVersion);
          
          playerWorld.SetAuthorName (worldDefine.mAuthorName);
          playerWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
@@ -59,6 +59,7 @@ package common {
                continue;
             
             params = new Object ();
+            params.mWorldDefine = worldDefine;
             params.mPosX = centerX / numPhyShapes;
             params.mPosY = centerY / numPhyShapes;
             
@@ -80,12 +81,18 @@ package common {
          {
             entityDefine = entityDefineArray [entityId];
             
+            // >> starts from version 1.01
+            entityDefine.mWorldDefine = worldDefine;
+            entityDefine.mEntityId = entityId;
+            // <<
+            
             if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
             {
                shapeContainer = entityDefine.mShapeContainer;
                if (shapeContainer == null)
                {
                   params = new Object ();
+                  params.mWorldDefine = worldDefine;
                   params.mPosX = entityDefine.mPosX;
                   params.mPosY = entityDefine.mPosY;
                   
@@ -103,8 +110,9 @@ package common {
             }
          }
          
-      // update masses
+      // update z-order and masses
          
+         playerWorld.UpdateShapeLayers ();
          playerWorld.UpdateShapeMasses (); // 
          
       // create joints
@@ -147,14 +155,12 @@ package common {
             }
          }
          
-         
          return playerWorld;
       }
       
       public static function ByteArray2WorldDefine (byteArray:ByteArray):WorldDefine
       {
          var worldDefine:WorldDefine = new WorldDefine ();
-         
          
          // COlor INfection
          byteArray.readByte (); // "C".charCodeAt (0);
@@ -247,7 +253,9 @@ package common {
                   entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
                   
                   entityDefine.mStaticLengthRatio = byteArray.readFloat ();
-                  entityDefine.mFrequencyHz = byteArray.readFloat ();
+                  //entityDefine.mFrequencyHz = byteArray.readFloat ();
+                  entityDefine.mSpringType = byteArray.readByte ();
+                  
                   entityDefine.mDampingRatio = byteArray.readFloat ();
                }
             }

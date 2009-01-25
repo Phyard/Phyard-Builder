@@ -17,6 +17,7 @@ package editor {
    import flash.geom.Rectangle;
    
    import flash.ui.Mouse;
+   import flash.system.System;
    
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
@@ -267,6 +268,8 @@ package editor {
          mBackgroundSprite.y = mEditorWorld.y;
          mBackgroundSprite.scaleX = mEditorWorld.scaleX;
          mBackgroundSprite.scaleY = mEditorWorld.scaleY;
+         
+         UpdateEntityInfoOnStatusBar ();
       }
       
       private function SynchrinizePlayerWorldWithEditorWorld ():void
@@ -405,6 +408,17 @@ package editor {
          
          if (mCurrentCreatMode != null)
             mCurrentCreatMode.Initialize ();
+      }
+      
+      public function CancelCurrentCreatingMode ():void
+      {
+         if (mCurrentCreatMode != null)
+         {
+            mCurrentCreatMode.Reset ();
+            SetCurrentCreateMode (null);
+         }
+         
+         CalSelectedEntitiesCenterPoint ();
       }
       
       public function SetCurrentEditMode (mode:Mode):void
@@ -1036,7 +1050,6 @@ package editor {
          if (_EntityInfoTextOnStatusBar == null)
          {
             _EntityInfoTextOnStatusBar = TextFieldEx.CreateTextField ("", false, 0xFFFF00, 0x0);
-            _EntityInfoTextOnStatusBar.x = WorldBorderThinknessLR;
             
             mForegroundSprite.addChild (_EntityInfoTextOnStatusBar);
          }
@@ -1056,7 +1069,14 @@ package editor {
          var infoText:String = mLastSelectedEntity.GetInfoText ();
          
          _EntityInfoTextOnStatusBar.htmlText = "<font color='#FFFFFF'><b>" + typeName + "</b>: " + infoText + "</font>";
-         _EntityInfoTextOnStatusBar.y = WorldHeight - (WorldBorderThinknessTB + _EntityInfoTextOnStatusBar.height) * 0.5;
+         
+         var infoWorldX:Number = WorldBorderThinknessLR;
+         var infoWorldY:Number = WorldHeight - (WorldBorderThinknessTB + _EntityInfoTextOnStatusBar.height) * 0.5;
+         
+         var point:Point = LocalToLocal (mEditorWorld, mForegroundSprite, new Point (infoWorldX, infoWorldY));
+         
+         _EntityInfoTextOnStatusBar.x = point.x;
+         _EntityInfoTextOnStatusBar.y = point.y;
       }
       
 //=================================================================================
@@ -1077,6 +1097,10 @@ package editor {
          return LocalToLocal (this, mEditorWorld, point);
       }
       
+      public function WorldToView (point:Point):Point
+      {
+         return LocalToLocal (mEditorWorld, this, point);
+      }
       
       private var _mouseEventCtrlDown:Boolean = false;
       private var _mouseEventShiftDown:Boolean = false;
@@ -1380,10 +1404,7 @@ package editor {
          {
             if (mCurrentCreatMode != null)
             {
-               mCurrentCreatMode.Reset ();
-               SetCurrentCreateMode (null);
-               
-               CalSelectedEntitiesCenterPoint ();
+               CancelCurrentCreatingMode ();
             }
          }
          
@@ -1413,6 +1434,9 @@ package editor {
       {
          switch (event.keyCode)
          {
+            case Keyboard.ESCAPE:
+               CancelCurrentCreatingMode ();
+               break;
             case Keyboard.SPACE:
                OpenEntitySettingDialog ();
                break;
@@ -1439,8 +1463,10 @@ package editor {
                BreakApartSelectedEntities ();
                break;
             case Keyboard.TAB:
-               break;
-            case Keyboard.ESCAPE:
+               //if (IsPlaying () && mOuterWorldHexString != null)
+               //{
+               //   System.setClipboard ((DataFormat.WorldDefine2Xml(DataFormat2.HexString2WorldDefine (mOuterWorldHexString))).toXMLString ());
+               //}
                break;
             case 76: // L
                OpenPlayCodeLoadingDialog ();

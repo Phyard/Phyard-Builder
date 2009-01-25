@@ -37,6 +37,7 @@ package player.entity {
          //
          
          mRadius = params.mRadius;
+         //mRadius = Math.floor (params.mRadius + 0.5);
          mAppearanceType = params.mAppearanceType;
          
          var displayX:Number = params.mPosX;
@@ -67,7 +68,8 @@ package player.entity {
       {
          var filledColor:uint = Define.GetShapeFilledColor (mAiType);
          var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
-         var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
+         //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
+         var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
          
          GraphicsUtil.ClearAndDrawEllipse (this, 
                                           - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, 

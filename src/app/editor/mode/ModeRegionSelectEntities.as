@@ -1,6 +1,7 @@
 package editor.mode {
 
    import flash.display.Shape;
+   import flash.geom.Point;
    
    import com.tapirgames.util.GraphicsUtil;
    
@@ -21,6 +22,10 @@ package editor.mode {
       private var mEndX:Number;
       private var mEndY:Number;
       
+      override public function Destroy ():void
+      {
+         ResetSession ();
+      }
       
       override public function Reset ():void
       {
@@ -37,7 +42,6 @@ package editor.mode {
          mBoxShape = null;
       }
       
-      private var a:int = 1;
       protected function StartSession (startX:Number, startY:Number):void
       {
          ResetSession ();
@@ -64,7 +68,10 @@ package editor.mode {
          mEndX = endX;
          mEndY = endY;
          
-         GraphicsUtil.ClearAndDrawRect (mBoxShape, left, top, right - left, bottom - top);
+         var point1:Point = mMainView.WorldToView ( new Point (left, top) );
+         var point2:Point = mMainView.WorldToView ( new Point (top, bottom) );
+         
+         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, w, h);
          
          mMainView.RegionSelectEntities (left, top, right, bottom);
       }

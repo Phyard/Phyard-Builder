@@ -70,6 +70,11 @@ package player.entity {
                                              + (anchorDisplayY1 - anchorDisplayY2) * (anchorDisplayY1 - anchorDisplayY2) );
          
          params.mFrequencyHz = Setting.GetSpringParamsByType (mSpringType, currentLength * params.mStaticLengthRatio).mFrequencyHz;
+         if (params.mFrequencyHz >= Define.MaxSpringFrequencyHz)
+         {
+            params.mFrequencyHz = 0;
+            params.mStaticLengthRatio = 1.0;
+         }
          
          if (mPhysicsProxy == null)
          {

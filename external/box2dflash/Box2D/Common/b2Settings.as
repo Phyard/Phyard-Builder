@@ -34,7 +34,7 @@ public class b2Settings{
 	static public const b2_maxManifoldPoints:int = 2;
 	static public const b2_maxPolygonVertices:int = 8;
 	static public const b2_maxProxies:int = 512 * 2;				// this must be a power of two
-	static public const b2_maxPairs:int = 8 * b2_maxProxies * 8;	// this must be a power of two
+	static public const b2_maxPairs:int = 8 * b2_maxProxies * 16;	// this must be a power of two
 
 
 

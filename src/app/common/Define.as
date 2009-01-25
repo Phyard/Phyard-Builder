@@ -19,7 +19,7 @@ package common {
 // world
 //===========================================================================
       
-      public static const MaxEntitiesCount:int = 300;
+      public static const MaxEntitiesCount:int = 512;
       
       public static const WorldWidth:int = 600; 
       public static const WorldHeight:int = 600; 
@@ -48,6 +48,9 @@ package common {
       public static const SpringType_Unkonwn:int = -1;
       public static const SpringType_Weak:int = 0;
       public static const SpringType_Normal:int = 1;
+      public static const SpringType_Strong:int = 2;
+      
+      public static const MaxSpringFrequencyHz:Number = Infinity; // 100;
       
 //===========================================================================
 // colors

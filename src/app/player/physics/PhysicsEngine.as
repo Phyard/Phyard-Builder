@@ -267,7 +267,7 @@ package player.physics {
             proxyBody2 = bodies [0] as PhysicsProxyBody;
          }
          
-         if ( params.mWorldDefine != null )
+         if ( params.mWorldDefine != null && bodies.length >= 2)
          {
             if (params.mWorldDefine.mVersion >= 0x101 && _GetShapeIndex != null)
             {

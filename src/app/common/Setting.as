@@ -61,6 +61,13 @@ package common {
          
          switch (type)
          {
+            case Define.SpringType_Strong:
+               params.mDiameter = 15;
+               params.mWireDiameter = 3;
+               params.mStaticSegmentLength = 8;
+               params.mFrequencyHz = 1.5;
+               
+               break;
             case Define.SpringType_Weak:
                params.mDiameter = 7;
                params.mWireDiameter = 1;
@@ -72,8 +79,8 @@ package common {
             default:
                params.mDiameter = 11;
                params.mWireDiameter = 2;
-               params.mStaticSegmentLength = 8;
-               params.mFrequencyHz = 1;
+               params.mStaticSegmentLength = 6;
+               params.mFrequencyHz = 0.75;
                
                break;
          }

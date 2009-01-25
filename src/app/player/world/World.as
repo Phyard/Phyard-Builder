@@ -125,8 +125,7 @@ package player.world {
             mPhysicsEngine.Update (dt);
          }
          
-         if (speedX == 0)
-            dt = 0;
+         dt *= speedX;
          
          ClearReport ();
          
@@ -498,8 +497,19 @@ package player.world {
             
             if ( Define.IsBreakableShape (shape.GetShapeAiType ()) )
             {
-               if ( breakableShapes.indexOf (shape) < 0 )
-                  breakableShapes.push (shape);
+               // all breakable shapes in teh container will be removed
+               
+               container = shape.GetParentContainer ();
+               
+               for (var i:int = 0; i < container.numChildren; ++ i)
+               {
+                  var child:EntityShape = container.getChildAt (i) as EntityShape;
+                  if ( child != null && Define.IsBreakableShape (child.GetShapeAiType ()) )
+                  {
+                     if ( breakableShapes.indexOf (child) < 0 )
+                        breakableShapes.push (child);
+                  }
+               }
             }
             
             if ( Define.IsBombShape (shape.GetShapeAiType ()) )

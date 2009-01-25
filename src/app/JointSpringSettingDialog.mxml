@@ -15,9 +15,9 @@
 
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Label id="Label_StaticLength" text="Static Length / Current Length:" textAlign="right" width="39%"/>
-      <mx:HSlider id="Slider_StaticLengthRatio" focusEnabled="false" minimum="0" maximum="2" value="1" width="60%"
+      <mx:HSlider id="Slider_StaticLengthRatio" focusEnabled="false" minimum="0" maximum="3" value="1" width="60%"
           dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
-          labels="['0', '1,0', '2.0']" allowTrackClick="true" liveDragging="true" />
+          labels="['0', '1.0', '2.0', '3.0']" allowTrackClick="true" liveDragging="true" />
    </mx:HBox>
    
    <!--
@@ -56,6 +56,7 @@
       <mx:HBox width="77%" verticalAlign="bottom">
          <mx:RadioButton groupName="Type" id="TypeWeak" label="Weak"/>
          <mx:RadioButton groupName="Type" id="TypeNormal" label="Normal"/>
+         <mx:RadioButton groupName="Type" id="TypeStrong" label="Strong"/>
          <mx:Spacer width="100%"/>
       </mx:HBox>
    </mx:HBox>
@@ -89,10 +90,14 @@
             CheckBox_CollideConnected.selected = values.mCollideConnected;
             
             Slider_StaticLengthRatio.value = values.mStaticLengthRatio;
-            //Slider_FrequencyHz.value = values.mFrequencyHz;
-            TypeWeak.selected = values.mSpringType == Define.SpringType_Weak;
-            TypeNormal.selected = values.mSpringType != Define.SpringType_Weak;
             Slider_DampingRatio.value = values.mDampingRatio;
+            //Slider_FrequencyHz.value = values.mFrequencyHz;
+            if (values.mSpringType == Define.SpringType_Strong)
+               TypeStrong.selected = true;
+            else if (values.mSpringType == Define.SpringType_Weak)
+               TypeWeak.selected = true;
+            else
+               TypeNormal.selected = true;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -113,9 +118,14 @@
              params.mCollideConnected = CheckBox_CollideConnected.selected;
              
              params.mStaticLengthRatio = Slider_StaticLengthRatio.value;
-             //params.mFrequencyHz = Slider_FrequencyHz.value;
-             params.mSpringType = TypeWeak.selected ? Define.SpringType_Weak : Define.SpringType_Normal;
              params.mDampingRatio = Slider_DampingRatio.value;
+             //params.mFrequencyHz = Slider_FrequencyHz.value;
+             if (TypeStrong.selected)
+               params.mSpringType = Define.SpringType_Strong;
+             else if (TypeWeak.selected)
+               params.mSpringType = Define.SpringType_Weak;
+             else
+               params.mSpringType = Define.SpringType_Normal;
              
              PopUpManager.removePopUp(this);
              

@@ -82,7 +82,8 @@ package player.entity {
       {
          var filledColor:uint = Define.GetShapeFilledColor (mAiType);
          var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
-         var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
+         //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
+         var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
          
          GraphicsUtil.ClearAndDrawRect (this, 
                                           - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 

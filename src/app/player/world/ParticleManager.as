@@ -31,7 +31,7 @@ package player.world {
          var numParticles:int = 32 * ( 0.5 + radius * 2.0 * radius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength) );
          var particleSpeed:Number = 8.0 * ( 0.25 + 1.0 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
          var particleDensity:Number = 5.0;
-         var particleLifeTime:Number = Define.WorldStepTimeInterval * 9 * ( 0.5 + 1.5 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
+         var particleLifeTime:Number = Define.WorldStepTimeInterval * 18 * ( 0.5 + 1.5 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
          
          if (radius > 12) radius = 12;
          if (radius < 5 ) radius = 5;
@@ -71,8 +71,12 @@ package player.world {
             
             bomb.mLastTimeStamp = bomb.mBornTime;
             
-            bomb.mParticleStartId += 4; // because 5 is a ZhiShu
-            var particleId:int = bomb.mParticleStartId ++;
+            bomb.mParticleStartId += 997; // because 997 is the max ZhiShu less than 1000
+            
+            trace ("bomb.mParticleStartId = " + bomb.mParticleStartId);
+            trace ("bomb.mNumParticles = " + bomb.mNumParticles);
+            
+            var particleId:int = bomb.mParticleStartId;// ++;
             var count:int = bomb.mNumParticles - bomb.mNumCreateParticles;
             if (count > NumParticlesToCreatedEachStep) 
                count = NumParticlesToCreatedEachStep;

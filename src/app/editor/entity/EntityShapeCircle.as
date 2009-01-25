@@ -112,13 +112,17 @@ package editor.entity {
             var minRadius:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength : EditorSetting.MinCircleRadium;
             var maxRadius:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength : EditorSetting.MaxCircleRadium;
             
-            if (radius > EditorSetting.MaxCircleRadium)
-               radius =  EditorSetting.MaxCircleRadium;
-            if (radius < EditorSetting.MinCircleRadium)
-               radius =  EditorSetting.MinCircleRadium;
+            if (radius > maxRadius)
+               radius =  maxRadius;
+            if (radius < minRadius)
+               radius =  minRadius;
          }
          
+         if (radius < 0)
+            radius = 0;
+         
          mRadius = Math.floor (radius + 0.5);
+         //mRadius = radius;
          
          UpdateAppearance ();
          UpdateSelectionProxy ();

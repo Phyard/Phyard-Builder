@@ -3,14 +3,14 @@ package editor.entity {
    
    import flash.display.Sprite;
    
-   
-   import editor.world.World;
+   import editor.world.EntityContainer;
+   //import editor.world.World;
    
    import editor.selection.SelectionProxy;
    
    public class Entity extends Sprite 
    {
-      protected var mWorld:World;
+      protected var mEntityContainer:EntityContainer;
       
       protected var mSelectionProxy:SelectionProxy = null;
       
@@ -20,11 +20,15 @@ package editor.entity {
       
       private var mIsVisible:Boolean = true;
       
-      public function Entity (world:World)
+      public function Entity (container:EntityContainer)
       {
-         mWorld = world;
+         mEntityContainer = container;
       }
       
+      public function IsPhysicsEntity ():Boolean
+      {
+         return true;
+      }
       
       public function Destroy ():void
       {
@@ -97,9 +101,13 @@ package editor.entity {
          y = mPosY;
       }
       
+      private static const PI2:Number = Math.PI * 2.0;
+      
       public function SetRotation (rot:Number):void
       {
-         mRotation = rot;
+         mRotation = rot % PI2;
+         if (mRotation < 0)
+            mRotation += PI2;
          
          rotation = (mRotation * 180.0 / Math.PI) % 360;
       }
@@ -125,11 +133,19 @@ package editor.entity {
 //   clone
 //====================================================================
       
+      public function IsClonedable ():Boolean
+      {
+         return true;
+      }
+      
       public function Clone (displayOffsetX:Number, displayOffsetY:Number):Entity
       {
          var entity:Entity = CreateCloneShell ();
          
-         SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         if (entity != null)
+         {
+            SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         }
          
          return entity;
       }

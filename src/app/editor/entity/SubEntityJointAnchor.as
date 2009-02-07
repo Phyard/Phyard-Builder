@@ -14,10 +14,22 @@ package editor.entity {
    
    public class SubEntityJointAnchor extends SubEntity 
    {
+      protected var mWorld:World;
       
-      public function SubEntityJointAnchor (world:World, mainEntity:Entity)
+      private var mAnchorIndex:int;
+      
+      public function SubEntityJointAnchor (world:World, mainEntity:Entity, anchorIndex:int)
       {
          super (world, mainEntity);
+         
+         mWorld = world;
+         
+         mAnchorIndex = anchorIndex;
+      }
+      
+      public function GetAnchorIndex ():int
+      {
+         return mAnchorIndex;
       }
       
       override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void

@@ -245,8 +245,19 @@ public class b2DistanceJoint extends b2Joint
 		
 		//float32 length = d.Normalize();
 		var length:Number = Math.sqrt(dX*dX + dY*dY);
-		dX /= length;
-		dY /= length;
+		
+		//>>
+		if (length < b2Settings.b2_linearSlop)
+		{
+		   dX = 0;
+		   dY = 0;
+		}
+		else
+		//<<
+		{
+		   dX /= length;
+		   dY /= length;
+		}
 		//float32 C = length - m_length;
 		var C:Number = length - m_length;
 		C = b2Math.b2Clamp(C, -b2Settings.b2_maxLinearCorrection, b2Settings.b2_maxLinearCorrection);

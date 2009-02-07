@@ -18,7 +18,7 @@ package editor.entity {
       
       public function SubEntityHingeAnchor (world:World, mainEntity:Entity)
       {
-         super (world, mainEntity);
+         super (world, mainEntity, 0);
          
          UpdateAppearance ();
       }

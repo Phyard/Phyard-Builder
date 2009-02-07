@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+    title="Gravity Controller Setting" width="500">
+
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_PosX" text="X:" textAlign="right"/>
+      <mx:TextInput id="Text_PosX" text="" width="100"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_PosY" text="Y:" textAlign="right"/>
+      <mx:TextInput id="Text_PosY" text="" width="100"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_Angle" text="Angle:" textAlign="right"/>
+      <mx:TextInput id="Text_Angle" text="" width="100"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_GravityAcceleration" text="Gravity Acceleration:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_GravityAcceleration" minimum="0" maximum="9.8"
+         stepSize="0.1" width="100" />
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_GravityAngle" text="Gravity Angle:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_GravityAngle" minimum="0" maximum="360"
+         stepSize="1" width="100" />
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_Interactive" label="Interactive"/>
+      <!--
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
+      -->
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_Radius" text="Radius:" textAlign="right" />
+      <mx:NumericStepper id="NumericStepper_Radius" minimum="10" maximum="100"
+         stepSize="1" width="100" />
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:Spacer height="20"/>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:Script>
+      <![CDATA[       
+         import mx.managers.PopUpManager;
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mInputValues:Object;
+         
+         private var mAdvancePageCreated:Boolean = false;
+         
+         public function SetValues (values:Object):void
+         {
+            mInputValues = values;
+            mAdvancePageCreated = true;
+            
+            //CheckBox_IsVisible.selected = values.mIsVisible;
+            CheckBox_Interactive.selected = values.mIsInteractive;
+            NumericStepper_Radius.value = values.mRadius;
+            
+            NumericStepper_GravityAcceleration.value = values.mInitialGravityAcceleration;
+            NumericStepper_GravityAngle.value = values.mInitialGravityAngle;
+            
+            Text_PosX.text = "" + values.mPosX;
+            Text_PosY.text = "" + values.mPosY;
+            Text_Angle.text = "" + values.mAngle;
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            var params:Object = new Object ();
+            
+            //params.mIsVisible = CheckBox_IsVisible.selected;
+            params.mIsInteractive = CheckBox_Interactive.selected;
+            params.mRadius = NumericStepper_Radius.value;
+            
+            params.mInitialGravityAcceleration = NumericStepper_GravityAcceleration.value;
+            params.mInitialGravityAngle = NumericStepper_GravityAngle.value;
+            
+            if (mAdvancePageCreated)
+            {
+               var valuePosX:Number = parseFloat (Text_PosX.text);
+               if ( ! isNaN (valuePosX) )
+                  params.mPosX = valuePosX;
+               else
+                  params.mPosX = mInputValues.mPosX;
+               
+               var valuePosY:Number = parseFloat (Text_PosY.text);
+               if ( ! isNaN (valuePosY) )
+                  params.mPosY = valuePosY;
+               else
+                  params.mPosY = mInputValues.mPosY;
+               
+               var valueAngle:Number = parseFloat (Text_Angle.text);
+               if ( ! isNaN (valueAngle) )
+                  params.mAngle = valueAngle;
+               else
+                  params.mAngle = mInputValues.mAngle;
+            }
+            else
+            {
+               params.mPosX = mInputValues.mPosX;
+               params.mPosY = mInputValues.mPosY;
+               params.mAngle = mInputValues.mAngle;
+            }
+            
+            PopUpManager.removePopUp(this);
+            
+            if (OnConfirm != null)
+              OnConfirm (params);
+            
+            if (OnClose != null)
+              OnClose ();
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         
+         private function OnClickDefaultButton ():void
+         {
+            var values:Object = new Object ();
+            
+            // ...
+            
+            SetValues (values);
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

@@ -31,7 +31,6 @@ package editor.mode {
       
       private var mCircleEntity:EntityShapeCircle = null;
       
-      
       override public function Reset ():void
       {
          ResetSession (true);
@@ -66,7 +65,7 @@ package editor.mode {
          if (mCircleEntity == null)
          {
             Reset ();
-            return
+            return;
          }
          
          UpdateSession (startX, startY);

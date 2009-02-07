@@ -22,9 +22,9 @@ package editor.entity {
       {
          super (world);
          
-         mAnchor1 = new SubEntityDistanceAnchor (world, this);
+         mAnchor1 = new SubEntityDistanceAnchor (world, this, 0);
          world.addChild (mAnchor1);
-         mAnchor2 = new SubEntityDistanceAnchor (world, this);
+         mAnchor2 = new SubEntityDistanceAnchor (world, this, 1);
          world.addChild (mAnchor2);
          
          mCollideConnected = true;

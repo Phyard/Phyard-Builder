@@ -15,6 +15,8 @@ package player.world {
    import player.entity.EntityShape;
    import player.entity.EntityShapeCircle;
    import player.entity.EntityShapeRectangle;
+   import player.entity.EntityShapeText;
+   import player.entity.EntityShapeGravityController;
    import player.entity.EntityJoint;
    import player.entity.EntityJointHinge;
    import player.entity.EntityJointSlider;
@@ -46,6 +48,11 @@ package player.world {
       private var mVersion:int = 0x0;
       private var mAuthorName:String = "";
       private var mAuthorHonepage:String = "";
+      private var mShareSourceCode:Boolean = false;
+      private var mPermitPublishing:Boolean = false;
+      
+      private var mDefaultCollisionCategories:Object = null;
+      private var mCollisionCategories:Array = new Array ();
       
       public function World (version:int)
       {
@@ -55,15 +62,17 @@ package player.world {
          if (mVersion >= 0x101)
          {
             mPhysicsEngine = new PhysicsEngine (
+                  new Point (0, Define.DefaultGravityAcceleration), 
                   new Point (-WorldWidth * 0.5, -WorldHeight * 0.5), 
-                  new Point (WorldWidth * 1.5, WorldHeight * 1.5),
+                  new Point (WorldWidth * 1.5, WorldHeight * 1.5), 
                   false);
          }
          else
          {
             mPhysicsEngine = new PhysicsEngine (
+                  new Point (0, Define.DefaultGravityAcceleration), 
                   new Point (-100000.0, -100000.0), 
-                  new Point (100000.0, 100000.0),
+                  new Point (100000.0, 100000.0), 
                   true);
          }
          
@@ -74,6 +83,7 @@ package player.world {
          mPhysicsEngine.SetGetShapeIndexCallback (GetShapeIndex);
          
       // 
+         CreateDefaultCollisionCategory ();
          
          mParticleManager = new ParticleManager (this);
          
@@ -110,14 +120,157 @@ package player.world {
          return mAuthorHonepage;
       }
       
+      public function SetShareSourceCode (share:Boolean):void
+      {
+         mShareSourceCode = share;
+      }
+      
+      public function IsShareSourceCode ():Boolean
+      {
+         return mShareSourceCode;
+      }
+      
+      public function SetPermitPublishing (permit:Boolean):void
+      {
+         mPermitPublishing = permit;
+      }
+      
+      public function IsPermitPublishing ():Boolean
+      {
+         return mPermitPublishing;
+      }
+      
+      public function GetPhysicsEngine ():PhysicsEngine
+      {
+         return mPhysicsEngine;
+      }
+      
       public function Destroy ():void
       {
       }
       
+//=============================================================
+//   
+//=============================================================
+      
+      private function CreateBackgroundAndBorders ():void
+      {
+         var bgSprite:Sprite = new Sprite ();
+         bgSprite.graphics.clear ();
+         bgSprite.graphics.beginFill(0xDDDDA0);
+         bgSprite.graphics.drawRect (0, 0, WorldWidth, WorldHeight);
+         bgSprite.graphics.endFill ();
+         addChild (bgSprite);
+         
+         
+         var borderContainerParams:Object = new Object ();
+         borderContainerParams.mContainsPhysicsShapes = true;
+         borderContainerParams.mPosX = WorldWidth * 0.5;
+         borderContainerParams.mPosY = WorldHeight * 0.5;
+         
+         var borderContainer:ShapeContainer = CreateShapeContainer (borderContainerParams, true);
+         CreateBorder (borderContainer, WorldWidth * 0.5, WorldBorderThinknessTB * 0.5 - 0.5, WorldWidth, WorldBorderThinknessTB);
+         CreateBorder (borderContainer, WorldWidth * 0.5, WorldHeight - WorldBorderThinknessTB * 0.5, WorldWidth, WorldBorderThinknessTB);
+         CreateBorder (borderContainer, WorldBorderThinknessLR * 0.5 - 0.5, WorldHeight * 0.5, WorldBorderThinknessLR, WorldWidth);
+         CreateBorder (borderContainer, WorldWidth - WorldBorderThinknessLR * 0.5, WorldHeight * 0.5, WorldBorderThinknessLR, WorldWidth);
+      }
+      
+      private function CreateBorder (borderContainer:ShapeContainer, posX:Number, posY:Number, rectW:Number, rectH:Number):void
+      {
+         var shapeParams:Object = new Object ();
+         shapeParams.mEntityType = Define.EntityType_ShapeRectangle;
+         shapeParams.mHalfWidth = rectW * 0.5;
+         shapeParams.mHalfHeight = rectH * 0.5;
+         shapeParams.mPosX = posX;
+         shapeParams.mPosY = posY;
+         shapeParams.mRotation = 0;
+         shapeParams.mAiType = Define.ShapeAiType_Static;
+         shapeParams.mIsStatic = true;
+         shapeParams.mIsVisible = true;
+         shapeParams.mIsBullet = true;
+         shapeParams.mDensity = 0;
+         shapeParams.mFriction = 0.1;
+         shapeParams.mRestitution = 0.2;
+         
+         SetCollisionCategoryParamsForShapeParams (shapeParams, Define.CollisionCategoryId_HiddenCategory);
+         
+         CreateEntityShapeRectangle (borderContainer, shapeParams);
+      }
+      
+//=============================================================
+//   collision category
+//=============================================================
+      
+      public function CreateDefaultCollisionCategory ():void
+      {
+         if (mDefaultCollisionCategories == null)
+         {
+            mDefaultCollisionCategories = new Object ();
+            
+            mDefaultCollisionCategories.mMaskBits = 0xFFFF;
+            mDefaultCollisionCategories.mCategoryBits = 0x1;
+            mDefaultCollisionCategories.mGroupIndex = 0;
+         }
+      }
+      
+      public function GetDefaultCollisionCategory ():Object
+      {
+         return mDefaultCollisionCategories;
+      }
+      
+      public function CreateCollisionCategory (ccDefine:Object):void
+      {
+         var numCategories:int = mCollisionCategories.length; // with out the default one
+         if (numCategories >= Define.MaxCollisionCategoriesCount)
+            return;
+         
+         var categoryIndex:int = numCategories + 1;
+         
+         var category:Object = new Object ();
+         
+         category.mMaskBits = 0xFFFF;
+         category.mCategoryBits = 0x1 << categoryIndex;
+         category.mGroupIndex = ccDefine.mCollideInternally ? categoryIndex : - categoryIndex;
+         
+         mCollisionCategories.push (category);
+      }
+      
+      public function GetCollisioonCategory (index:int):Object
+      {
+         if (index < 0 || index >= mCollisionCategories.length)
+            return mDefaultCollisionCategories;
+         
+         return mCollisionCategories [index];
+      }
+      
+      public function CreateCollisionCategoryFriendLink (category1Index:int, category2Index:int):void
+      {
+         var category1:Object = GetCollisioonCategory (category1Index);
+         var category2:Object = GetCollisioonCategory (category2Index);
+         
+         category1.mMaskBits &= ~category2.mCategoryBits;
+         category2.mMaskBits &= ~category1.mCategoryBits;
+      }
+      
+      public function SetCollisionCategoryParamsForShapeParams (shapeParams:Object, shapeCCid:int):void
+      {
+         var category:Object = GetCollisioonCategory (shapeCCid);
+         
+         shapeParams.mMaskBits = category.mMaskBits;
+         shapeParams.mCategoryBits = category.mCategoryBits;
+         shapeParams.mGroupIndex = category.mGroupIndex;
+      }
+      
+//=============================================================
+//   update
+//=============================================================
+      
       public function Update (escapedTime1:Number, speedX:int):void
       {
-         //var dt:Number = escapedTime * 0.5;
+         //var dt:Number = escapedTime1 * 0.5;
          var dt:Number = Define.WorldStepTimeInterval * 0.5;
+         if (escapedTime1 == 0)
+            dt = 0;
          
          for (var k:int = 0; k < speedX; ++ k)
          {
@@ -131,10 +284,10 @@ package player.world {
          
          for (var i:uint=0; i < numChildren; ++ i)
          {
-            var displayBoject:Object = getChildAt (i);
-            if (displayBoject is Entity)
+            var displayObject:Object = getChildAt (i);
+            if (displayObject is Entity)
             {
-               (displayBoject as Entity).Update (dt);
+               (displayObject as Entity).Update (dt);
             }
          }
       }
@@ -185,46 +338,6 @@ package player.world {
          return mPuzzleSolved;
       }
       
-      private function CreateBackgroundAndBorders ():void
-      {
-         var bgSprite:Sprite = new Sprite ();
-         bgSprite.graphics.clear ();
-         bgSprite.graphics.beginFill(0xDDDDA0);
-         bgSprite.graphics.drawRect (0, 0, WorldWidth, WorldHeight);
-         bgSprite.graphics.endFill ();
-         addChild (bgSprite);
-         
-         
-         var borderContainerParams:Object = new Object ();
-         borderContainerParams.mPosX = WorldWidth * 0.5;
-         borderContainerParams.mPosY = WorldHeight * 0.5;
-         
-         var borderContainer:ShapeContainer = CreateShapeContainer (borderContainerParams, true);
-         CreateBorder (borderContainer, WorldWidth * 0.5, WorldBorderThinknessTB * 0.5 - 0.5, WorldWidth, WorldBorderThinknessTB);
-         CreateBorder (borderContainer, WorldWidth * 0.5, WorldHeight - WorldBorderThinknessTB * 0.5, WorldWidth, WorldBorderThinknessTB);
-         CreateBorder (borderContainer, WorldBorderThinknessLR * 0.5 - 0.5, WorldHeight * 0.5, WorldBorderThinknessLR, WorldWidth);
-         CreateBorder (borderContainer, WorldWidth - WorldBorderThinknessLR * 0.5, WorldHeight * 0.5, WorldBorderThinknessLR, WorldWidth);
-      }
-      
-      private function CreateBorder (borderContainer:ShapeContainer, posX:Number, posY:Number, rectW:Number, rectH:Number):void
-      {
-         var shapeParams:Object = new Object ();
-         shapeParams.mHalfWidth = rectW * 0.5;
-         shapeParams.mHalfHeight = rectH * 0.5;
-         shapeParams.mPosX = posX;
-         shapeParams.mPosY = posY;
-         shapeParams.mRotation = 0;
-         shapeParams.mAiType = Define.ShapeAiType_Static;
-         shapeParams.mIsStatic = true;
-         shapeParams.mIsVisible = true;
-         shapeParams.mIsBullet = true;
-         shapeParams.mDensity = 0;
-         shapeParams.mFriction = 0.1;
-         shapeParams.mRestitution = 0.2;
-         
-         CreateEntityShapeRectangle (borderContainer, shapeParams);
-      }
-      
 //=============================================================
 //   editor entities
 //=============================================================
@@ -245,7 +358,7 @@ package player.world {
          if (containsPhyShapes)
          {
             params.mIsStatic = true; // temp
-            shapeContainer.BuildPhysicsProxy (params);
+            shapeContainer.BuildFromParams (params);
          }
          
          addChild (shapeContainer);
@@ -319,24 +432,44 @@ package player.world {
       
       public function CreateEntityShapeCircle (shapeContainer:ShapeContainer, params:Object):EntityShapeCircle
       {
+         SetCollisionCategoryParamsForShapeParams (params, params.mCollisionCategoryIndex);
+         
          var shapeCircle:EntityShapeCircle = new EntityShapeCircle (this, shapeContainer);
-         shapeCircle.BuildPhysicsProxy (params);
+         shapeCircle.BuildFromParams (params);
          
          return shapeCircle;
       }
       
       public function CreateEntityShapeRectangle (shapeContainer:ShapeContainer, params:Object):EntityShapeRectangle
       {
+         SetCollisionCategoryParamsForShapeParams (params, params.mCollisionCategoryIndex);
+         
          var shapeRect:EntityShapeRectangle = new EntityShapeRectangle (this, shapeContainer);
-         shapeRect.BuildPhysicsProxy (params);
+         shapeRect.BuildFromParams (params);
          
          return shapeRect;
+      }
+      
+      public function CreateEntityShapeText (shapeContainer:ShapeContainer, params:Object):EntityShapeText
+      {
+         var shapeText:EntityShapeText = new EntityShapeText (this, shapeContainer);
+         shapeText.BuildFromParams (params);
+         
+         return shapeText;
+      }
+      
+      public function CreateEntityShapeGravityController (shapeContainer:ShapeContainer, params:Object):EntityShapeGravityController
+      {
+         var gController:EntityShapeGravityController = new EntityShapeGravityController(this, shapeContainer);
+         gController.BuildFromParams (params);
+         
+         return gController;
       }
       
       public function CreateEntityJointHinge (params:Object):EntityJointHinge
       {
          var jointHinge:EntityJointHinge = new EntityJointHinge (this);
-         jointHinge.BuildPhysicsProxy (params);
+         jointHinge.BuildFromParams (params);
          
          var index:int = jointHinge.GetRecommendedChildIndex ();
          
@@ -351,7 +484,7 @@ package player.world {
       public function CreateEntityJointSlider (params:Object):EntityJointSlider
       {
          var jointSlider:EntityJointSlider = new EntityJointSlider (this);
-         jointSlider.BuildPhysicsProxy (params);
+         jointSlider.BuildFromParams (params);
          
          var index:int = jointSlider.GetRecommendedChildIndex ();
          
@@ -366,7 +499,7 @@ package player.world {
       public function CreateEntityJointDistance (params:Object):EntityJointDistance
       {
          var jointDistance:EntityJointDistance = new EntityJointDistance (this);
-         jointDistance.BuildPhysicsProxy (params);
+         jointDistance.BuildFromParams (params);
          
          var index:int = jointDistance.GetRecommendedChildIndex ();
          
@@ -381,7 +514,7 @@ package player.world {
       public function CreateEntityJointSpring (params:Object):EntityJointSpring
       {
          var jointSpring:EntityJointSpring = new EntityJointSpring (this);
-         jointSpring.BuildPhysicsProxy (params);
+         jointSpring.BuildFromParams (params);
          
          var index:int = jointSpring.GetRecommendedChildIndex ();
          
@@ -402,7 +535,7 @@ package player.world {
          params.mIsStatic = false;
          
          var particle:EntityParticle = new EntityParticle (this);
-         particle.BuildPhysicsProxy (params);
+         particle.BuildFromParams (params);
          
          addChild (particle);
          

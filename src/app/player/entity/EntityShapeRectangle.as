@@ -15,8 +15,8 @@ package player.entity {
    public class EntityShapeRectangle extends EntityShape
    {
       
-      private var mHalfWidth:Number = 0;
-      private var mHalfHeight:Number = 0;
+      protected var mHalfWidth:Number = 0;
+      protected var mHalfHeight:Number = 0;
       
       public function EntityShapeRectangle (world:World, shapeContainer:ShapeContainer)
       {
@@ -33,9 +33,9 @@ package player.entity {
          return mHalfHeight * 2.0;
       }
       
-      override public function BuildPhysicsProxy (params:Object):void
+      override public function BuildFromParams (params:Object):void
       {
-         super.BuildPhysicsProxy (params);
+         super.BuildFromParams (params);
          
          //
          
@@ -50,24 +50,27 @@ package player.entity {
          displayX -= containerPosition.x;
          displayY -= containerPosition.y;
          
-         var cos:Number = Math.cos (rot);
-         var sin:Number = Math.sin (rot);
-         
-         var displayPoints:Array = new Array ();
-         var tx:Number;
-         var ty:Number;
-         
-         tx = - mHalfWidth; ty = - mHalfHeight; displayPoints [0] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-         tx =   mHalfWidth; ty = - mHalfHeight; displayPoints [1] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-         tx =   mHalfWidth; ty =   mHalfHeight; displayPoints [2] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-         tx = - mHalfWidth; ty =   mHalfHeight; displayPoints [3] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-         
-         if (mIsPhysicsShape && mPhysicsProxy == null)
+         if (IsPhysicsEntity ())
          {
-            mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapePolygon (
-                                    mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
+            var cos:Number = Math.cos (rot);
+            var sin:Number = Math.sin (rot);
             
-            mPhysicsProxy.SetUserData (this);
+            var displayPoints:Array = new Array ();
+            var tx:Number;
+            var ty:Number;
+            
+            tx = - mHalfWidth; ty = - mHalfHeight; displayPoints [0] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            tx =   mHalfWidth; ty = - mHalfHeight; displayPoints [1] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            tx =   mHalfWidth; ty =   mHalfHeight; displayPoints [2] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            tx = - mHalfWidth; ty =   mHalfHeight; displayPoints [3] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            
+            if (IsPhysicsEntity () && mPhysicsProxy == null)
+            {
+               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapePolygon (
+                                       mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
+               
+               mPhysicsProxy.SetUserData (this);
+            }
          }
          
          // for the initial pos and rot of shapeContainer are zeroes, so no need to translate to local values
@@ -83,7 +86,8 @@ package player.entity {
          var filledColor:uint = Define.GetShapeFilledColor (mAiType);
          var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
          //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
+         //var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
+         var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
          
          GraphicsUtil.ClearAndDrawRect (this, 
                                           - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 

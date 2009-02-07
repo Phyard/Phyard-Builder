@@ -7,6 +7,7 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
+   import editor.world.EntityContainer;
    import editor.world.World;
    
    import editor.selection.SelectionEngine;
@@ -122,14 +123,14 @@ package editor.entity {
       
       public function GetWorldPosition ():Point
       {
-         return World.LocalToLocal (this, mWorld, new Point (0, 0))
+         return EntityContainer.LocalToLocal (this, mWorld, new Point (0, 0))
       }
       
       public function GetWorldRotation ():Number
       {
          // !!! here this hould be GetOwnerEntity (), temp 
-         var point1:Point = World.LocalToLocal (mWorld, this, new Point (0, 0));
-         var point2:Point = World.LocalToLocal (mWorld, this, new Point (1, 0));
+         var point1:Point = EntityContainer.LocalToLocal (mWorld, this, new Point (0, 0));
+         var point2:Point = EntityContainer.LocalToLocal (mWorld, this, new Point (1, 0));
          
          return Math.atan2 (point2.y - point1.y, point2.x - point1.x);
       }
@@ -141,8 +142,8 @@ package editor.entity {
       
       public function Move (worldOffsetX:Number, worldOffsetY:Number):void
       {
-         var point1:Point = World.LocalToLocal (mWorld, mOwnerEntity, new Point (0, 0));
-         var point2:Point = World.LocalToLocal (mWorld, mOwnerEntity, new Point (worldOffsetX, worldOffsetY));
+         var point1:Point = EntityContainer.LocalToLocal (mWorld, mOwnerEntity, new Point (0, 0));
+         var point2:Point = EntityContainer.LocalToLocal (mWorld, mOwnerEntity, new Point (worldOffsetX, worldOffsetY));
          
          mOwnerEntity.OnMovingVertexController (this, point2.x - point1.x, point2.y - point1.y);
       }

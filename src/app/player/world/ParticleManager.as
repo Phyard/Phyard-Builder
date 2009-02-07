@@ -45,6 +45,7 @@ package player.world {
          bomb.mParticleSpeed = particleSpeed;
          bomb.mParticelDensity = particleDensity;
          bomb.mParticelLifeDuration = particleLifeTime;
+         bomb.mParticleStartIdInterval = GetParticleStartIdInterval (bomb.mNumParticles);
          
          bomb.mParticleIdCreateInterval = bomb.mNumParticles / NumParticlesToCreatedEachStep;
          bomb.mBornTime = 0;
@@ -71,10 +72,8 @@ package player.world {
             
             bomb.mLastTimeStamp = bomb.mBornTime;
             
-            bomb.mParticleStartId += 997; // because 997 is the max ZhiShu less than 1000
-            
-            trace ("bomb.mParticleStartId = " + bomb.mParticleStartId);
-            trace ("bomb.mNumParticles = " + bomb.mNumParticles);
+            bomb.mParticleStartId += bomb.mParticleStartIdInterval;
+            bomb.mParticleStartId %= bomb.mNumParticles;
             
             var particleId:int = bomb.mParticleStartId;// ++;
             var count:int = bomb.mNumParticles - bomb.mNumCreateParticles;
@@ -107,7 +106,21 @@ package player.world {
          }
       }
       
-      
+      private function GetParticleStartIdInterval (numParticles:int):int
+      {
+         if (numParticles >= 92)
+            return 569;
+         if (numParticles >= 88)
+            return 1669;
+         else if (numParticles >= 72)
+            return 569;
+         else if (numParticles >= 50)
+            return 389;
+         else if (numParticles >= 32)
+            return 569;
+         else
+            return 859;
+      }
       
    }
 }

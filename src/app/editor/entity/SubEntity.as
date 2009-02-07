@@ -1,15 +1,16 @@
 
 package editor.entity {
    
-   import editor.world.World;
+   import editor.world.EntityContainer;
+   //import editor.world.World;
    
    public class SubEntity extends Entity 
    {
       protected var mMainEntity:Entity;
       
-      public function SubEntity (world:World, mainEntity:Entity = null)
+      public function SubEntity (container:EntityContainer, mainEntity:Entity = null)
       {
-         super (world);
+         super (container);
          
          mMainEntity = mainEntity;
       }

@@ -13,12 +13,13 @@ package player.entity {
    import player.physics.PhysicsProxyShapeCircle;
    
    import common.Define;
+   import common.ValueAdjuster;
    
    public class EntityShapeCircle extends EntityShape
    {
       
-      private var mRadius:Number = 0;
-      private var mAppearanceType:int = Define.CircleAppearanceType_Ball;
+      protected var mRadius:Number = 0;
+      protected var mAppearanceType:int = Define.CircleAppearanceType_Ball;
       
       public function EntityShapeCircle (world:World, shapeContainer:ShapeContainer)
       {
@@ -30,14 +31,19 @@ package player.entity {
          return mRadius;
       }
       
-      override public function BuildPhysicsProxy (params:Object):void
+      override public function BuildFromParams (params:Object):void
       {
-         super.BuildPhysicsProxy (params);
+         super.BuildFromParams (params);
          
-         //
+         if ( params.mWorldDefine != null && params.mWorldDefine.mVersion >= 0x0102)
+         {
+            mRadius = ValueAdjuster.AdjustCircleRadius (params.mRadius, params.mWorldDefine.mVersion);
+         }
+         else
+         {
+            mRadius = params.mRadius;
+         }
          
-         mRadius = params.mRadius;
-         //mRadius = Math.floor (params.mRadius + 0.5);
          mAppearanceType = params.mAppearanceType;
          
          var displayX:Number = params.mPosX;
@@ -48,7 +54,7 @@ package player.entity {
          displayX -= containerPosition.x;
          displayY -= containerPosition.y;
          
-         if (mIsPhysicsShape && mPhysicsProxy == null)
+         if (IsPhysicsEntity () && mPhysicsProxy == null)
          {
             mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeCircle (
                                     mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayX, displayY, mRadius, params);
@@ -69,7 +75,8 @@ package player.entity {
          var filledColor:uint = Define.GetShapeFilledColor (mAiType);
          var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
          //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
+         //var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
+         var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
          
          GraphicsUtil.ClearAndDrawEllipse (this, 
                                           - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, 

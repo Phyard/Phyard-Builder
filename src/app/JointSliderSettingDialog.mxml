@@ -7,6 +7,7 @@
     title="Slider Setting" width="500">
 
    <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
       <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
@@ -14,9 +15,20 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_ConnectedShape1" text="Shape 1:" textAlign="right" width="25%"/>
+      <mx:ComboBox id="SelectList_ConnectedShape1" rowCount="10" width="10%" />
+      <mx:Spacer width="20"/>
+      <mx:Label id="Label_ConnectedShape2" text="Shape 2:" textAlign="right" width="25%"/>
+      <mx:ComboBox id="SelectList_ConnectedShape2" rowCount="10" width="10%" />
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
       <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limit"/>
    </mx:HBox>
 
+   <!--
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Label id="Label_LowerTranslation" text="Lower Translation:" textAlign="right" width="23%"/>
       <mx:HSlider id="Slider_LowerTranslation" focusEnabled="false" minimum="-600" maximum="0" value="-10" width="77%"
@@ -32,16 +44,38 @@
    </mx:HBox>
    
    <mx:Spacer height="6"/>
-   
+   -->
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_LowerTranslation" text="Lower Translation:" textAlign="right" width="150"/>
+      <mx:NumericStepper id="NumericStepper_LowerTranslation" minimum="-600" maximum="0"
+            stepSize="1" width="60" />
+      <mx:Label text="px" textAlign="left"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_UpperTranslation" text="Upper Translation:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_UpperTranslation" minimum="0" maximum="600"
+            stepSize="1" width="60" />
+      <mx:Label text="px" textAlign="left"/>
+   </mx:HBox>
+
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:CheckBox id="CheckBox_MotorEnabled" label="Enable Motor"/>
    </mx:HBox>
 
+   <!--
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="23%"/>
       <mx:HSlider id="Slider_MotorSpeed" focusEnabled="false" minimum="-300" maximum="300" value="0" width="77%"
           dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="60"
           labels="['-300', '0', '300']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   -->
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="150"/>
+      <mx:NumericStepper id="NumericStepper_MotorSpeed" minimum="-300" maximum="300"
+            stepSize="1" width="60" />
+      <mx:Label text="px" textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
@@ -78,13 +112,26 @@
             CheckBox_CollideConnected.selected = values.mCollideConnected;
             
             CheckBox_LimitEnabled.selected = values.mEnableLimit;
-            Slider_LowerTranslation.value = values.mLowerTranslation;
-            Slider_UpperTranslation.value = values.mUpperTranslation;
+            //Slider_LowerTranslation.value = values.mLowerTranslation;
+            //Slider_UpperTranslation.value = values.mUpperTranslation;
+            
+            NumericStepper_LowerTranslation.value = values.mLowerTranslation;
+            NumericStepper_UpperTranslation.value = values.mUpperTranslation;
             
             CheckBox_MotorEnabled.selected = values.mEnableMotor;
-            Slider_MotorSpeed.value = values.mMotorSpeed;
+            //Slider_MotorSpeed.value = values.mMotorSpeed;
+            NumericStepper_MotorSpeed.value = values.mMotorSpeed;
             
             CheckBox_BackAndForth.selected = values.mBackAndForth;
+            
+            //
+            SelectList_ConnectedShape1.dataProvider = values.mShapeListDataProvider;
+            SelectList_ConnectedShape2.dataProvider = values.mShapeListDataProvider;
+            SelectList_ConnectedShape1.selectedIndex = values.mShapeList1SelectedIndex;
+            SelectList_ConnectedShape2.selectedIndex = values.mShapeList2SelectedIndex;
+            
+            SelectList_ConnectedShape1.enabled = values.mAnchorIndex == 0;
+            SelectList_ConnectedShape2.enabled = values.mAnchorIndex == 1;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -105,13 +152,20 @@
              params.mCollideConnected = CheckBox_CollideConnected.selected;
              
              params.mEnableLimit = CheckBox_LimitEnabled.selected;
-             params.mLowerTranslation = Slider_LowerTranslation.value;
-             params.mUpperTranslation = Slider_UpperTranslation.value;
+             //params.mLowerTranslation = Slider_LowerTranslation.value;
+             //params.mUpperTranslation = Slider_UpperTranslation.value;
+             params.mLowerTranslation = NumericStepper_LowerTranslation.value;
+             params.mUpperTranslation = NumericStepper_UpperTranslation.value;
              
              params.mEnableMotor = CheckBox_MotorEnabled.selected;
-             params.mMotorSpeed = Slider_MotorSpeed.value;
+             //params.mMotorSpeed = Slider_MotorSpeed.value;
+             params.mMotorSpeed = NumericStepper_MotorSpeed.value;
              
              params.mBackAndForth = CheckBox_BackAndForth.selected;
+             
+             //
+             params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.data;
+             params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.data;
              
              PopUpManager.removePopUp(this);
              

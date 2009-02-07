@@ -6,6 +6,7 @@ package editor.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
+   import editor.world.EntityContainer;
    import editor.world.World;
    
    import editor.selection.SelectionEngine;
@@ -47,18 +48,22 @@ package editor.entity {
          }
          else
          {
-            borderColor = mDrawBorder ? mBorderColor : mFilledColor;
-            borderSize  = mDrawBorder ? 1 : 0;
+            //borderColor = IsDrawBorder () ? mBorderColor : mFilledColor;
+            //borderSize  = IsDrawBorder () ? 1 : 0;
+            
+            borderColor = mBorderColor;
+            borderSize = 1;
          }
          
-         alpha = 0.7;
+         if (GetFilledColor () == Define.ColorTextBackground)
+            alpha = 0.5;
+         else
+            alpha = 0.7;
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, mFilledColor);
          
          if (GetFilledColor () == Define.ColorBombObject)
-         {
             GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
-         }
       }
       
       override public function UpdateSelectionProxy ():void
@@ -243,7 +248,7 @@ package editor.entity {
          }
       }
       
-      private function UpdateVertexControllers (updateSelectionProxy:Boolean):void
+      public function UpdateVertexControllers (updateSelectionProxy:Boolean):void
       {
          if (mVertexController0 != null)
          {
@@ -301,7 +306,7 @@ package editor.entity {
          if (vertexController2 == null)
             return;
          
-         var worldVertex2Pos:Point = World.LocalToLocal (this, mWorld, new Point ( vertexController2.GetPositionX (), vertexController2.GetPositionY () ) );
+         var worldVertex2Pos:Point = EntityContainer.LocalToLocal (this, mWorld, new Point ( vertexController2.GetPositionX (), vertexController2.GetPositionY () ) );
          
          _DigonalVertexControllerX = worldVertex2Pos.x;
          _DigonalVertexControllerY = worldVertex2Pos.y;
@@ -373,14 +378,14 @@ package editor.entity {
          halfWidth  *= 0.5;
          halfHeight *= 0.5;
          
-         var worldCenterPos:Point = World.LocalToLocal (this, mWorld, new Point ( (x2 + x1) * 0.5, (y2 + y1) * 0.5 ) );
+         var worldCenterPos:Point = EntityContainer.LocalToLocal (this, mWorld, new Point ( (x2 + x1) * 0.5, (y2 + y1) * 0.5 ) );
          
          SetPosition (worldCenterPos.x, worldCenterPos.y);
          
          // seems, in SetPosition, flash will slightly adjust the values provided.
          // to make the postion of vertex controller2 uncahnged ...
          
-         var localVertex2Pos:Point = World.LocalToLocal (mWorld, this, new Point (_DigonalVertexControllerX, _DigonalVertexControllerY) );
+         var localVertex2Pos:Point = EntityContainer.LocalToLocal (mWorld, this, new Point (_DigonalVertexControllerX, _DigonalVertexControllerY) );
          
          halfWidth  = localVertex2Pos.x;
          halfHeight = localVertex2Pos.y;

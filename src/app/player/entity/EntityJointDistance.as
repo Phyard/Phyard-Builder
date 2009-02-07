@@ -45,8 +45,10 @@ package player.entity {
          RebuildAppearance ();
       }
       
-      override public function BuildPhysicsProxy (params:Object):void
+      override public function BuildFromParams (params:Object):void
       {
+         super.BuildFromParams (params);
+         
          var anchor1Params:Object = params.mAnchor1Params;
          var anchor2Params:Object = params.mAnchor2Params;
          

@@ -7,10 +7,17 @@ package common {
       
       public var mEntityDefines:Array = new Array ();
       
-      public var mBrotherGroups:Array = new Array ();
+      public var mBrotherGroupDefines:Array = new Array ();
       
       public var mAuthorName:String = "";
       public var mAuthorHomepage:String = "";
+      
+      public var mShareSourceCode:Boolean = false;
+      public var mPermitPublishing:Boolean = false;
+      
+      public var mCollisionCategoryDefines:Array = new Array ();
+      public var mDefaultCollisionCategoryIndex:int = Define.CollisionCategoryId_HiddenCategory;
+      public var mCollisionCategoryFriendLinkDefines:Array = new Array ();
    }
 }
 

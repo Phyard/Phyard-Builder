@@ -35,9 +35,9 @@ package editor.entity {
       {
          super (world);
          
-         mAnchor1 = new SubEntitySpringAnchor (world, this);
+         mAnchor1 = new SubEntitySpringAnchor (world, this, 0);
          world.addChild (mAnchor1);
-         mAnchor2 = new SubEntitySpringAnchor (world, this);
+         mAnchor2 = new SubEntitySpringAnchor (world, this, 1);
          world.addChild (mAnchor2);
          
          mCollideConnected = true;

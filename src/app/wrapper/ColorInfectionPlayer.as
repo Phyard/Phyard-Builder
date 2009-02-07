@@ -29,30 +29,36 @@ package wrapper {
    import com.tapirgames.display.ImageButton;
    
    import player.world.World;
+   import player.ui.UiUtil;
+   import player.ui.PlayHelpDialog;
+   import player.ui.PlayControlBar;
    
    import common.DataFormat2;
    import common.Define;
-   import common.WorldDefine;;
+   import common.WorldDefine;
+   
+   import common.Config;
+   //import misc.Analytics;
    
    public dynamic class ColorInfectionPlayer extends Sprite 
    {
       
       
-      [Embed(source="../res/player/player-restart.png")]
+      [Embed(source="../../res/player/player-restart.png")]
       private static var IconRestart:Class;
-      [Embed(source="../res/player/player-restart-disabled.png")]
+      [Embed(source="../../res/player/player-restart-disabled.png")]
       private static var IconRestartDisabled:Class;
-      [Embed(source="../res/player/player-start.png")]
+      [Embed(source="../../res/player/player-start.png")]
       private static var IconStart:Class;
-      [Embed(source="../res/player/player-pause.png")]
+      [Embed(source="../../res/player/player-pause.png")]
       private static var IconPause:Class;
       
-      [Embed(source="../res/player/player-help.png")]
+      [Embed(source="../../res/player/player-help.png")]
       private static var IconHelp:Class;
       
-      [Embed(source="../res/player/player-speed.png")]
+      [Embed(source="../../res/player/player-speed.png")]
       private static var IconSpeed:Class;
-      [Embed(source="../res/player/player-speed-selected.png")]
+      [Embed(source="../../res/player/player-speed-selected.png")]
       private static var IconSpeedSelected:Class;
       
       private var mBitmapDataRetart:BitmapData = new IconRestart ().bitmapData;
@@ -73,15 +79,17 @@ package wrapper {
       private var mFinishedTextLayer:Sprite = new Sprite ();
       private var mDialogLayer:Sprite = new Sprite ();
       
-         private var mHelpDialog:Sprite;
-         private var mFinishedDialog:Sprite;
-      
-      private var mWorldDataHexString:String = null;
+      private var mWorldPlayCode:String = null;
       //private var mWorldDefine:WorldDefine = null;
       private var mPlayerWorld:World = null;
+      private var mWorldSourceCode:String = null;
       
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
+      
+      //
+      //private var mAnalyticsDurations:Array = [0.20, 0.30, 1, 1.5, 2, 3, 5];
+      //private var mAnalytics:Analytics;
       
       public function ColorInfectionPlayer ()
       {
@@ -99,11 +107,18 @@ package wrapper {
          addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          
          ChangeState (StateId_Load);
+         
+         //
+         //mAnalytics = new Analytics (this, mAnalyticsDurations);
+         //mAnalytics.TrackPageview (Config.VirtualPageName_PlayerJustLoaded);
       }
       
       private function OnEnterFrame (event:Event):void 
       {
          Update ();
+         
+         // ...
+         //mAnalytics.TrackTime (Config.VirtualPageName_PlayerTimePrefix);
       }
       
       
@@ -143,17 +158,17 @@ package wrapper {
             while (mWorldLayer.numChildren > 0)
                mWorldLayer.removeChildAt (0);
             
-            if (mWorldDataHexString != null)
+            if (mWorldPlayCode != null)
             {
                CreateUI ();
                
-               BuildContextMenu ();
-               
                OnRestart (null);
+               
+               BuildContextMenu ();
             }
             
             //if (mWorldDefine == null)
-            if (mWorldDataHexString == null || mPlayerWorld == null)
+            if (mWorldPlayCode == null || mPlayerWorld == null)
             {
                mTopBarLayer.visible = false;
                
@@ -186,8 +201,8 @@ package wrapper {
          }
          else if (mStateId == StateId_Play)
          {
-            if (mPlayerWorld != null && mIsPlaying)
-               mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), mPlayingSpeedX);
+            if ( mPlayerWorld != null && IsPlaying () && mHelpDialog.visible == false )
+               mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
             
             if ( mPlayerWorld.IsPuzzleSolved () )
                OpenFinishedDialog ();
@@ -236,7 +251,7 @@ package wrapper {
                   
                   if (keyStr == "playcode")
                   {
-                     mWorldDataHexString = valueStr; 
+                     mWorldPlayCode = valueStr; 
                      //mWorldDefine = DataFormat2.HexString2WorldDefine (valueStr);
                   }
                }
@@ -255,17 +270,52 @@ package wrapper {
          var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
          defaultItems.print = true;
          
-         var copyPlayCodeItem:ContextMenuItem = new ContextMenuItem("Copy Play Code", false);
-         theContextMenu.customItems.push (copyPlayCodeItem);
-         copyPlayCodeItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyPlayCode);
+         var addSeperaor:Boolean = false;
+         if (Compile::Is_Debugging || mWorldPlayCode != null && mPlayerWorld != null && mPlayerWorld.IsShareSourceCode ())
+         {
+            mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
+            
+            if (mWorldSourceCode != null)
+            {
+               var copySourceCodeItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", false);
+               theContextMenu.customItems.push (copySourceCodeItem);
+               copySourceCodeItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
+               
+               addSeperaor = true;
+            }
+         }
+         
+         if (Compile::Is_Debugging || mWorldPlayCode != null &&  mPlayerWorld != null && mPlayerWorld.IsPermitPublishing ())
+         {
+            var copyPlayCodeItem:ContextMenuItem = new ContextMenuItem("Copy Play Code", false);
+            theContextMenu.customItems.push (copyPlayCodeItem);
+            copyPlayCodeItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyPlayCode);
+            
+            addSeperaor = true;
+         }
+         
+         var aboutItem:ContextMenuItem = new ContextMenuItem("About Color Infection Player", addSeperaor);
+         theContextMenu.customItems.push (aboutItem);
+         aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
          
          contextMenu = theContextMenu;
       }
       
+      private function OnCopySourceCode (event:ContextMenuEvent):void
+      {
+         if (mWorldSourceCode != null)
+            System.setClipboard(mWorldSourceCode);
+      }
+      
       private function OnCopyPlayCode (event:ContextMenuEvent):void
       {
-         if (mWorldDataHexString != null)
-            System.setClipboard(mWorldDataHexString);
+         if (mWorldPlayCode != null)
+            System.setClipboard(mWorldPlayCode);
+      }
+      
+      private function OnAbout (event:ContextMenuEvent):void
+      {
+         UrlUtil.PopupPage (Define.AboutUrl);
       }
       
       private function CreateBottomBar ():void
@@ -281,8 +331,8 @@ package wrapper {
             {
                authorName = TextUtil.TrimString (authorName);
                
-               if (authorName.length > 50)
-                  authorName = authorName.substr (0, 50);
+               if (authorName.length > 30)
+                  authorName = authorName.substr (0, 30);
                
                infoText = infoText + "<b><i>" + authorName + "</i></b>";
                
@@ -296,7 +346,7 @@ package wrapper {
                {
                   anthorUrl = TextUtil.TrimString (anthorUrl);
                   
-                  var maxUrlLength:int = 100 - authorName.length;
+                  var maxUrlLength:int = 60 - authorName.length;
                   
                   var anthorUrlShort:String = anthorUrl;
                   
@@ -318,6 +368,8 @@ package wrapper {
             mBottomBarLayer.y = Define.WorldHeight - mBottomBarLayer.height - 2;
          }
       }
+      
+      private var mFinishedDialog:Sprite;
       
       private var mTextFinished:TextFieldEx;
       private var mTextAuthorInfo:TextFieldEx;
@@ -371,7 +423,7 @@ package wrapper {
          
          mTextAuthorInfo = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, 0x0);
          
-         mFinishedDialog = CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, buttonContainer]);
+         mFinishedDialog = UiUtil.CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, buttonContainer]);
          mFinishedDialog.visible = false;
          mFinishedDialog.alpha = 0.9;
          
@@ -404,39 +456,22 @@ package wrapper {
          }
       }
       
-      private var mTextTutorial:TextFieldEx;
-      private var mButtonCloseHelpDialog:TextButton;
-      
-      private var mBox2dText:TextFieldEx;
+      private var mHelpDialog:Sprite;
       
       private function CreateHelpDialog ():void
       {
-         var tutorialText:String = 
-            "<font size='15' face='Verdana' color='#000000'>The goal of <b>Color Infection</b> puzzles is to infect all <font color='#FFFF00'><b>YELLOW</b></font> objects with "
-                        + "the <font color='#804000'><b>BROWN</b></font> color by colliding them with <font color='#804000'><b>BROWN</b></font> objects "
-                        + "but keep all <font color='#60FF60'><b>GREEN</b></font> objects uninfected."
-                        + "<br /><br />To play, click a <font color='#FF00FF'><b>PINK</b></font> object to destroy it.</font>";
-         
-         mTextTutorial = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, Define.WorldWidth / 2);
-         
-         var box2dText:String =  "<font size='10' face='Verdana' color='#000000'>(This player is based on Box2d physics engine (AS3).)</font>";
-         mBox2dText = TextFieldEx.CreateTextField (box2dText);
-         
-         mButtonCloseHelpDialog = new TextButton ("<font face='Verdana' size='16' color='#0000FF'>   Close   </font>", CloseHelpDialog);
-         
-         mHelpDialog = CreateDialog ([mTextTutorial, 20 ,mBox2dText, 20, mButtonCloseHelpDialog]);
+         mHelpDialog = new PlayHelpDialog (CloseHelpDialog);
          mHelpDialog.visible = false;
          
          mDialogLayer.addChild (mHelpDialog);
       }
-      
       
       private function OpenHelpDialog ():void
       {
          if (mHelpDialog != null)
             mHelpDialog.visible = true;
          
-         OnPause (null);
+         //OnPause (null);
       }
       
       private function CloseHelpDialog ():void
@@ -445,101 +480,31 @@ package wrapper {
             mHelpDialog.visible = false;
       }
       
-      private function CreateDialog (components:Array):Sprite
-      {
-         var dialog:Sprite = new Sprite ();
-         
-         var margin:int = 20;
-         var dialogWidth:Number = 0;
-         var dialogHeight:Number = margin;
-         
-         var sprite:DisplayObject;
-         var i:int;
-         
-         for (i = 0; i < components.length; ++ i)
-         {
-            if (components [i] is DisplayObject)
-            {
-               sprite = components [i] as DisplayObject;
-               
-               sprite.y = dialogHeight;
-               
-               if (sprite.width > dialogWidth)
-                  dialogWidth = sprite.width;
-               dialogHeight += sprite.height;
-               
-               dialog.addChild (sprite);
-            }
-            else
-            {
-               dialogHeight += components [i];
-            }
-         }
-         
-         dialogHeight += margin;
-         dialogWidth += margin + margin;
-         
-         var bg:Sprite = new Sprite ();
-         GraphicsUtil.DrawRect (bg, 0, 0, dialogWidth, dialogHeight, 0x606060, 3, true, 0x8080D0);
-         dialog.addChildAt (bg, 0);
-         
-         for (i = 0; i < components.length; ++ i)
-         {
-            if (components [i] is DisplayObject)
-            {
-               sprite = components [i] as DisplayObject;
-               
-               sprite.x = (dialogWidth - sprite.width) * 0.5;
-            }
-         }
-         
-         dialog.x = (Define.WorldWidth - dialog.width) * 0.5;
-         dialog.y = (Define.WorldHeight - dialog.height) * 0.5;
-         
-         return dialog;
-      }
-      
-      private var mButtonRestart:ImageButton;
-      private var mButtonStartPause:ImageButton;
-      private var mButtonHelp:ImageButton;
-      private var mButtonSpeeds:Array;
-      
-      private static const NumButtonSpeed:int = 5;
-      private static const ButtonMargin:int = 8;
+      private var mPlayControlBar:PlayControlBar = null;
       
       private function CreateUI ():void
       {
-         var i:int;
-         var buttonX:Number = 0;
-         
-         mButtonRestart = new ImageButton (null, mBitmapDataRetartDisabled);
-         mTopBarLayer.addChild (mButtonRestart); 
-         mButtonRestart.x = buttonX; 
-         buttonX += mButtonRestart.width;
-         
-         mButtonStartPause = new ImageButton (OnStart, mBitmapDataStart);
-         mTopBarLayer.addChild (mButtonStartPause); 
-         mButtonStartPause.x = buttonX; 
-         buttonX += mButtonStartPause.width - 1 + ButtonMargin;
-         
-         mButtonSpeeds = new Array (5);
-         for (i = 0; i < NumButtonSpeed; ++ i)
-         {
-            mButtonSpeeds [i] = new ImageButton (OnSpeed, mBitmapDataSpeed, i);
-            mTopBarLayer.addChild (mButtonSpeeds[i]); 
-            mButtonSpeeds[i].x = buttonX; 
-            buttonX += mButtonSpeeds[i].width - 1;
-         }
-         
-         mButtonHelp = new ImageButton (OnHelp, mBitmapDataHelp);
-         buttonX += ButtonMargin;
-         mTopBarLayer.addChild (mButtonHelp); 
-         mButtonHelp.x = buttonX;
+         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, OnSpeed, OnHelp);
+         mTopBarLayer.addChild (mPlayControlBar); 
          
          mTopBarLayer.x= (Define.WorldWidth - mTopBarLayer.width) * 0.5;
          mTopBarLayer.y = 2;
+      }
+      
+      private function IsPlaying ():Boolean
+      {
+         if(mPlayControlBar == null)
+            return false;
          
-         OnSpeed (1);
+         return mPlayControlBar.IsPlaying ();
+      }
+      
+      private function GetPlayingSpeedX ():int
+      {
+         if(mPlayControlBar == null)
+            return 2;
+         
+         return mPlayControlBar.GetPlayingSpeedX ();
       }
       
       private function OnRestart (data:Object = null):void
@@ -549,7 +514,7 @@ package wrapper {
             if (mPlayerWorld != null && mWorldLayer.contains (mPlayerWorld))
                mWorldLayer.removeChild (mPlayerWorld);
             
-            mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (mWorldDataHexString));
+            mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
             
             if (mPlayerWorld != null)
             {
@@ -558,19 +523,6 @@ package wrapper {
                mWorldLayer.addChild (mPlayerWorld);
                
                mEverFinished = false;
-               
-               if (mIsPlaying)
-               {
-                  mButtonRestart.SetBitmapData (mBitmapDataRetart);
-                  mButtonRestart.SetClickEventHandler (OnRestart);
-                  OnStart (null);
-               }
-               else
-               {
-                  mButtonRestart.SetBitmapData (mBitmapDataRetartDisabled);
-                  mButtonRestart.SetClickEventHandler (null);
-                  OnPause (null);
-               }
             }
          }
          catch (error:Error)
@@ -584,46 +536,17 @@ package wrapper {
       
       public function OnStart (data:Object = null):void
       {
-         mButtonRestart.SetBitmapData (mBitmapDataRetart);
-         mButtonRestart.SetClickEventHandler (OnRestart);
-         
-         mIsPlaying = true;
-         
-         mButtonStartPause.SetBitmapData (mBitmapDataPause);
-         mButtonStartPause.SetClickEventHandler (OnPause);
-         
-         CloseFinishedDialog ();
-         CloseHelpDialog ();
       }
       
       public function OnPause (data:Object = null):void
       {
-         mIsPlaying = false;
-         
-         mButtonStartPause.SetBitmapData (mBitmapDataStart);
-         mButtonStartPause.SetClickEventHandler (OnStart);
       }
       
-      private static const ButtonIndex2SpeedXTable:Array = [1, 2, 3, 4, 5];
-      
-      private function OnSpeed (data:Object):void
+      private function OnSpeed (data:Object = null):void
       {
-         var index:int = int (data);
-         if (index < 0) index = 0;
-         if (index >= NumButtonSpeed) index = NumButtonSpeed - 1;
-         
-         for (var i:int = 0; i < NumButtonSpeed; ++ i)
-         {
-            if (i == index)
-               mButtonSpeeds [i].SetBitmapData ( mBitmapDataSpeedSelected );
-            else
-               mButtonSpeeds [i].SetBitmapData ( mBitmapDataSpeed );
-         }
-         
-         mPlayingSpeedX = ButtonIndex2SpeedXTable [index];
       }
       
-      private function OnHelp(data:Object):void
+      private function OnHelp(data:Object = null):void
       {
          OpenHelpDialog ();
       }

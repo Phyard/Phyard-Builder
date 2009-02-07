@@ -16,13 +16,9 @@ package editor.entity {
    {
       private var mRadius:Number = 5;
       
-      private var mIsSecondAnchor:Boolean;
-      
-      public function SubEntitySliderAnchor (world:World, mainEntity:Entity, isSecond:Boolean)
+      public function SubEntitySliderAnchor (world:World, mainEntity:Entity, anchorIndex:int)
       {
-         super (world, mainEntity);
-         
-         mIsSecondAnchor = isSecond;
+         super (world, mainEntity, anchorIndex);
          
          UpdateAppearance ();
       }
@@ -75,9 +71,6 @@ package editor.entity {
       override public function NotifySelectedChanged (selected:Boolean):void
       {
          super.NotifySelectedChanged (selected);
-         
-         //if (mIsSecondAnchor)
-         //   GetMainEntity ().SetVertexControllersVisible (selected);
       }
       
       override public function SetVertexControllersVisible (visible:Boolean):void

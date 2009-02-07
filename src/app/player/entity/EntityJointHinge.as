@@ -42,8 +42,10 @@ package player.entity {
          }
       }
       
-      override public function BuildPhysicsProxy (params:Object):void
+      override public function BuildFromParams (params:Object):void
       {
+         super.BuildFromParams (params);
+         
          var anchorParams:Object = params.mAnchorParams;
          
          var anchorDisplayX:Number = anchorParams.mPosX;

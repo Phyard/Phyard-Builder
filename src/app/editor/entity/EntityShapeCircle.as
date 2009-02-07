@@ -13,6 +13,8 @@ package editor.entity {
    import editor.setting.EditorSetting;
    
    import common.Define;
+   import common.ValueAdjuster;
+   import common.Config;
    
    public class EntityShapeCircle extends EntityShape 
    {
@@ -38,7 +40,7 @@ package editor.entity {
       
       override public function GetInfoText ():String
       {
-         return super.GetInfoText () + ", radius = " + GetRadius ();
+         return super.GetInfoText () + ", radius = " + ValueAdjuster.AdjustCircleRadius (GetRadius (), Config.VersionNumber);
       }
       
       override public function UpdateAppearance ():void
@@ -53,8 +55,11 @@ package editor.entity {
          }
          else
          {
-            borderColor = mDrawBorder ? mBorderColor : mFilledColor;
-            borderSize  = mDrawBorder ? 1 : 0;
+            //borderColor = IsDrawBorder () ? mBorderColor : mFilledColor;
+            //borderSize  = IsDrawBorder () ? 1 : 0;
+            
+            borderColor = mBorderColor;
+            borderSize = 1;
          }
          
          alpha = 0.7;
@@ -121,8 +126,10 @@ package editor.entity {
          if (radius < 0)
             radius = 0;
          
-         mRadius = Math.floor (radius + 0.5);
-         //mRadius = radius;
+         //mRadius = Math.floor (radius + 0.5);
+         //>> from 1.02
+         mRadius = radius;
+         //<<
          
          UpdateAppearance ();
          UpdateSelectionProxy ();

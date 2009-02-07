@@ -29,7 +29,6 @@ import Box2D.Dynamics.Joints.*;
 
 public class b2World
 {
-	
 	// Construct a world object.
 	/// @param worldAABB a bounding box that completely encompasses all your shapes.
 	/// @param gravity the world gravity vector.
@@ -164,6 +163,25 @@ public class b2World
 		while (jn)
 		{
 			var jn0:b2JointEdge = jn;
+			
+			//>> patch, if is possible the 2 bodies of a joint are the same body., 
+			// which means there are 2 same joints in the joint list of a body
+			
+			var jnPrev:b2JointEdge = jn0;
+			var jnNext:b2JointEdge = jnPrev.next;
+			while (jnNext)
+			{
+			   if (jnNext.joint == jn0.joint)
+			   {
+			      jnPrev.next = jnNext.next;
+			   }
+			   
+			   jnPrev = jnNext;
+			   jnNext = jnPrev.next;
+			}
+			
+			//<<
+			
 			jn = jn.next;
 			
 			if (m_destructionListener)
@@ -1266,6 +1284,22 @@ public class b2World
 
 	// This is for debugging the solver.
 	static public var m_continuousPhysics:Boolean;
+	
+	
+	
+	//>>
+	public function WakeUpAllBodies ():void
+	{
+	   var b:b2Body = m_bodyList;
+	   
+	   while (b)
+		{
+		   b.WakeUp ();
+			b = b.m_next;
+		}
+
+	}
+	//<<
 	
 };
 

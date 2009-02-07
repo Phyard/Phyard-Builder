@@ -13,6 +13,8 @@ package player.entity {
    {
       private var mIsBullet:Boolean = false;
       
+      private var mContainsPhysicsShapes:Boolean = false;
+      
       public function ShapeContainer (world:World)
       {
          super (world);
@@ -46,10 +48,16 @@ package player.entity {
             (mPhysicsProxy as PhysicsProxyBody).SetBullet (mIsBullet);
       }
       
-      
-      override public function BuildPhysicsProxy (params:Object):void
+      override public function IsPhysicsEntity ():Boolean
       {
-         if (mPhysicsProxy == null)
+         return mContainsPhysicsShapes;
+      }
+      
+      override public function BuildFromParams (params:Object):void
+      {
+         mContainsPhysicsShapes = params.mContainsPhysicsShapes;
+         
+         if (mContainsPhysicsShapes && mPhysicsProxy == null)
          {
             // 
             mPhysicsProxy = mWorld.mPhysicsEngine.CreateProxyBody (params.mPosX, params.mPosY, 0, params.mIsStatic, params);
@@ -58,6 +66,9 @@ package player.entity {
             
             (mPhysicsProxy as PhysicsProxyBody).SetBullet (mIsBullet);
          }
+         
+         x = params.mPosX;
+         y = params.mPosY;
       }
       
       public function ContainsPhysicsEntities ():Boolean
@@ -82,7 +93,7 @@ package player.entity {
             mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point);
          }
          else
-            point = new Point (0, 0);
+            point = new Point (x, y);
          
          return point;
       }

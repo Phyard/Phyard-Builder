@@ -14,11 +14,14 @@ package editor.entity {
    
    public class EntityShape extends Entity 
    {
+      protected var mWorld:World;
+      
    // visual
+      protected var mBorderColor:uint = EditorSetting.BorderColorUnselectedObject;
       
       protected var mFilledColor:uint = 0xFFFFFF;
-      protected var mBorderColor:uint = EditorSetting.BorderColorUnselectedObject;
       protected var mDrawBorder:Boolean = true;
+      protected var mDrawBackground:Boolean = true;
       
       
    // physics
@@ -40,15 +43,14 @@ package editor.entity {
       
       // isSensor
       
-      
-   // collison friends
-      
-      protected var mFriends:Array = new Array ();
-      
+      // collision category
+      private var mCollisionCategory:EntityCollisionCategory = null;
       
       public function EntityShape (world:World)
       {
          super (world);
+         
+         mWorld = world;
       }
       
       override public function GetTypeName ():String
@@ -74,13 +76,16 @@ package editor.entity {
          var shape:EntityShape = entity as EntityShape;
          shape.SetFilledColor ( GetFilledColor () );
          shape.SetBorderColor ( GetBorderColor () );
-         shape.SetDrawBorder ( GetDrawBorder () );
+         shape.SetDrawBorder ( IsDrawBorder () );
+         shape.SetDrawBackground ( IsDrawBackground () );
          shape.SetStatic ( IsStatic () );
          
          shape.mIsBullet = mIsBullet;
          shape.mDensity = mDensity;
          shape.mFriction = mFriction;
          shape.mRestitution = mRestitution;
+         
+         shape.SetCollisionCategoryIndex ( GetCollisionCategoryIndex () );
       }
       
       
@@ -98,9 +103,14 @@ package editor.entity {
          return mBorderColor;
       }
       
-      public function GetDrawBorder ():Boolean
+      public function IsDrawBorder ():Boolean
       {
          return mDrawBorder;
+      }
+      
+      public function IsDrawBackground ():Boolean
+      {
+         return mDrawBackground;
       }
       
       public function SetFilledColor (color:uint):void
@@ -115,7 +125,17 @@ package editor.entity {
       
       public function SetDrawBorder (draw:Boolean):void
       {
+         var needUpdateArrearance:Boolean = (mDrawBorder != draw);
+         
          mDrawBorder = draw;
+         
+         //if (needUpdateArrearance)
+         //   UpdateAppearance ();
+      }
+      
+      public function SetDrawBackground (draw:Boolean):void
+      {
+         mDrawBackground = draw;
       }
       
 //======================================================
@@ -127,12 +147,14 @@ package editor.entity {
          if (mIsStatic && ! isStatic && mFilledColor == Define.ColorStaticObject)
          {
             SetFilledColor (Define.ColorMovableObject);
+            SetDrawBorder (true);
             UpdateAppearance ();
          }
          
          if (! mIsStatic && isStatic && mFilledColor == Define.ColorMovableObject)
          {
             SetFilledColor (Define.ColorStaticObject);
+            SetDrawBorder (false);
             UpdateAppearance ();
          }
          
@@ -143,5 +165,27 @@ package editor.entity {
       {
          return mIsStatic;
       }
+      
+//======================================================
+// collision category
+//======================================================
+      
+      public function GetCollisionCategoryIndex ():int
+      {
+         var index:int = mWorld.mCollisionManager.GetCollisionCategoryIndex (mCollisionCategory);
+         
+         if (index == Define.CollisionCategoryId_HiddenCategory)
+            mCollisionCategory = null;
+         
+         return index;
+      }
+      
+      public function SetCollisionCategoryIndex (index:int):void
+      {
+         mCollisionCategory = mWorld.mCollisionManager.GetCollisionCategoryByIndex (index);
+      }
+      
+      
+      
    }
 }

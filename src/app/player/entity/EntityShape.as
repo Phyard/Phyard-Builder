@@ -12,8 +12,6 @@ package player.entity {
       
       protected var mShapeContainer:ShapeContainer;
       
-      protected var mIsPhysicsShape:Boolean = true;
-      
       protected var mOriginalAiType:int = Define.ShapeAiType_Unkown;
       protected var mAiType:int = Define.ShapeAiType_Unkown;
       
@@ -21,7 +19,8 @@ package player.entity {
       
       public var mIsBullet:Boolean = false;
       
-      private var mEntityId:int = -1;
+      protected var mDrawBorder:Boolean = true;
+      protected var mDrawBackground:Boolean = true;
       
       public function EntityShape (world:World, shapeContainer:ShapeContainer)
       {
@@ -32,14 +31,9 @@ package player.entity {
          mShapeContainer.addChild (this);
       }
       
-      public function GetEntityId ():int
+      override public function IsPhysicsEntity ():Boolean
       {
-         return mEntityId;
-      }
-      
-      public function IsPhysicsShape ():Boolean
-      {
-         return mPhysicsProxy != null;
+         return Define.IsPhysicsShapeEntity (mEntityType)
       }
       
       override public function Update (dt:Number):void
@@ -65,14 +59,14 @@ package player.entity {
          return mAiType;
       }
       
-      public function IsStatic ():Boolean
-      {
-         return mIsStatic;
-      }
-      
       public function SetStatic (static:Boolean):void
       {
          mIsStatic = static;
+      }
+      
+      public function IsStatic ():Boolean
+      {
+         return mIsStatic;
       }
       
       public function SetBullet (bullet:Boolean):void
@@ -85,23 +79,34 @@ package player.entity {
          return mIsBullet;
       }
       
+      public function SetDrawBorder (drawBorder:Boolean):void
+      {
+         mDrawBorder = drawBorder;
+      }
+      
+      public function IsDrawBorder ():Boolean
+      {
+         return mDrawBorder;
+      }
+      
+      public function SetDrawBackground (draw:Boolean):void
+      {
+         mDrawBackground = draw;
+      }
+      
+      public function IsDrawBackground ():Boolean
+      {
+         return mDrawBackground;
+      }
+      
       public function GetParentContainer ():ShapeContainer
       {
          return mShapeContainer;
       }
       
-      override public function BuildPhysicsProxy (params:Object):void
+      override public function BuildFromParams (params:Object):void
       {
-         // for the initial pos and rot of shapeContainer are zeroes, so no need to translate to local values
-         
-         if ( params.mWorldDefine != null )
-         {
-            if (params.mWorldDefine.mVersion >= 0x101)
-            {
-               if (! isNaN (params.mEntityId))
-                  mEntityId = params.mEntityId;
-            }
-         }
+         super.BuildFromParams (params);
          
          visible = params.mIsVisible;
          
@@ -110,6 +115,11 @@ package player.entity {
          
          SetStatic (params.mIsStatic);
          SetShapeAiType (params.mAiType);
+         
+         // >> from v1.02
+         SetDrawBorder (params.mDrawBorder);
+         SetDrawBackground (params.mDrawBackground);
+         //<<
       }
       
       // maybe change later

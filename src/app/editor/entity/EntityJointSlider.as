@@ -31,9 +31,9 @@ package editor.entity {
       {
          super (world);
          
-         mAnchor1 = new SubEntitySliderAnchor (world, this, false);
+         mAnchor1 = new SubEntitySliderAnchor (world, this, 0);
          world.addChild (mAnchor1);
-         mAnchor2 = new SubEntitySliderAnchor (world, this, true);
+         mAnchor2 = new SubEntitySliderAnchor (world, this, 1);
          world.addChild (mAnchor2);
          
          SetVisible (false);

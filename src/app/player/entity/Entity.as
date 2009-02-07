@@ -7,8 +7,12 @@ package player.entity {
    
    import player.physics.PhysicsProxy;
    
+   import common.Define;
+   
    public class Entity extends Sprite
    {
+      protected var mEntityType:int = Define.EntityType_Unkonwn;
+      protected var mEntityId:int = -1;
       
       protected var mWorld:World;
       
@@ -17,6 +21,11 @@ package player.entity {
       public function Entity (world:World)
       {
          mWorld = world;
+      }
+      
+      public function GetEntityId ():int
+      {
+         return mEntityId;
       }
       
       public function Update (dt:Number):void
@@ -33,6 +42,10 @@ package player.entity {
          rotation = (rot * 180.0 / Math.PI) % 360;
       }
       
+      public function GetRotation ():Number
+      {
+         return rotation;
+      }
       
 //=============================================================
 //   
@@ -51,8 +64,14 @@ package player.entity {
          return true;
       }
       
-      public function BuildPhysicsProxy (params:Object):void
+      public function BuildFromParams (params:Object):void
       {
+         mEntityType = params.mEntityType;
+         
+         // >> from version 1.01
+         mEntityId = params.mEntityId;
+         // <<
+         
       }
       
       public function DestroyPhysicsProxy ():void

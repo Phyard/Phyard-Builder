@@ -16,9 +16,9 @@ package editor.entity {
    {
       private var mRadius:Number = 3;
       
-      public function SubEntitySpringAnchor (world:World, mainEntity:Entity)
+      public function SubEntitySpringAnchor (world:World, mainEntity:Entity, anchorIndex:int)
       {
-         super (world, mainEntity);
+         super (world, mainEntity, anchorIndex);
          
          UpdateAppearance ();
       }

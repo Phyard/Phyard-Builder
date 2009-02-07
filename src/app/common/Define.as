@@ -13,7 +13,16 @@ package common {
       public static const EditingTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/toturials";
       public static const ShowcasesUrl:String = "http://sites.google.com/site/colorinfectiondocument/showcases";
       public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/publish-your-puzzles";
-      public static const EditorUrl:String = "http://colorinfection.appspot.com/htmls/editor_page1.html";
+      public static const EditorUrl:String = "http://colorinfection.appspot.com/htmls/editor_page_beta.html";
+      
+//===========================================================================
+// number precision
+//===========================================================================
+      
+      // this values are presumed for the max float value is -5000.0 - 5000.0
+      
+      // Fixed Number FractionDigits
+      public static const FractionDigits_General:int = 3;
       
 //===========================================================================
 // world
@@ -26,23 +35,58 @@ package common {
       public static const WorldBorderThinknessLR:int = 10; 
       public static const WorldBorderThinknessTB:int = 20; 
       
+      public static const CategoryViewWidth:int = 680; 
+      
+      public static const WorldStepTimeInterval:Number = 1.0 / 30;
+      
+      public static const DefaultGravityAcceleration:Number = 9.8;
+      
+//===========================================================================
+// joint connected shape index
+//===========================================================================
+      
+      public static const EntityId_None:int = -1;
+      public static const EntityId_Ground:int = -2;
+      public static const MinEntityId:int = -2;
+      
+//===========================================================================
+// collsion category
+//===========================================================================
+      
+      public static const MaxCollisionCategoriesCount:int = 15;
+      
+      public static const CategoryDefaultName:String = "Category";
+      public static const MinCollisionCategoryNameLength:int = 1;
+      public static const MaxCollisionCategoryNameLength:int = 30; // would be 32 when plus 2 digits number
+      
+      public static const CollisionCategoryId_HiddenCategory:int = -1;
+      public static const MinCollisionCategoryId:int = -1;
+      
+//===========================================================================
+// rect
+//===========================================================================
+      
       public static const MinRectSideLength:uint = 4;
       public static const MaxRectSideLength:uint = 600;
       public static const MaxRectArea:uint = 600 * 200;
+      
+//===========================================================================
+// circle
+//===========================================================================
+      
+      public static const MinCircleRadium:uint = MinRectSideLength * 0.5; // don't change
+      public static const MaxCircleRadium:uint = 100;
+      
+//===========================================================================
+// bomb
+//===========================================================================
       
       public static const MinBombSquareSideLength:uint = MinRectSideLength; // don't change
       public static const MaxBombSquareSideLength:uint = 32;
       public static const DefaultBombSquareSideLength:uint = 16;
       
-      public static const WorldStepTimeInterval:Number = 1.0 / 30;
-      
-      public static const MinCircleRadium:uint = MinRectSideLength * 0.5; // don't change
-      public static const MaxCircleRadium:uint = 100;
-      
-      public static const SpringSegmentLength:int = 16;
-      
 //===========================================================================
-// colors
+// spring
 //===========================================================================
       
       public static const SpringType_Unkonwn:int = -1;
@@ -51,6 +95,26 @@ package common {
       public static const SpringType_Strong:int = 2;
       
       public static const MaxSpringFrequencyHz:Number = Infinity; // 100;
+      
+      public static const SpringSegmentLength:int = 16;
+      
+//===========================================================================
+// text
+//===========================================================================
+      
+      public static const MinTextSideLength:uint = 10;
+      
+      public static const MaxTextLength:uint = 1000;
+      
+//===========================================================================
+// gravity controller
+//===========================================================================
+      
+      public static const MinGravityControllerRadium:uint = 10;
+      public static const MaxGravityControllerRadium:uint = 100;
+      
+      public static const GravityControllerZeroRegionRadius:int = 5;
+      public static const GravityControllerOneRegionThinkness:int = 5;
       
 //===========================================================================
 // colors
@@ -68,9 +132,11 @@ package common {
       public static const ColorUninfectedObject:uint = 0xFFFFFF00;
       public static const ColorDontInfectObject:uint = 0xFF60FF60;
       
-      // v2.0
+      // v1.01
       public static const ColorBombObject:uint = 0xFF000000;
       
+      //v1.02
+      public static const ColorTextBackground:uint = 0xFFFEFEFE; // if set as FFFFFF, no bakcground is painted, why?
       
       
 //===========================================================================
@@ -87,17 +153,30 @@ package common {
       public static const EntityType_Unkonwn:int = -1;
       public static const EntityType_ShapeCircle:int = 10;
       public static const EntityType_ShapeRectangle:int = 11;
+      
+      public static const EntityType_ShapeText:int = 31; // from v1.02
+      public static const EntityType_ShapeGravityController:int = 32; // from v1.02
+      
       public static const EntityType_JointHinge:int = 60;
       public static const EntityType_JointSlider:int = 61;
       public static const EntityType_JointDistance:int = 62;
-      public static const SubEntityType_JointAnchor:int = 100;
+      public static const EntityType_JointSpring:int = 63; // from v1.01
       
-      // v2.0
-      public static const EntityType_JointSpring:int = 63;
+      public static const SubEntityType_JointAnchor:int = 100;
       
       public static function IsPhysicsShapeEntity (entityType:int):Boolean
       {
-         return entityType == EntityType_ShapeCircle || entityType == EntityType_ShapeRectangle;
+         return   entityType == EntityType_ShapeCircle 
+               || entityType == EntityType_ShapeRectangle;
+      }
+      
+      public static function IsShapeEntity (entityType:int):Boolean
+      {
+         return   entityType == EntityType_ShapeCircle 
+               || entityType == EntityType_ShapeRectangle 
+               || entityType == EntityType_ShapeText
+               || entityType == EntityType_ShapeGravityController
+               ;
       }
       
       public static function IsPhysicsJointEntity (entityType:int):Boolean

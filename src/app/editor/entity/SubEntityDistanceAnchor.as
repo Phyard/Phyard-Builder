@@ -16,9 +16,9 @@ package editor.entity {
    {
       private var mRadius:Number = 3;
       
-      public function SubEntityDistanceAnchor (world:World, mainEntity:Entity)
+      public function SubEntityDistanceAnchor (world:World, mainEntity:Entity, anchorIndex:int)
       {
-         super (world, mainEntity);
+         super (world, mainEntity, anchorIndex);
          
          UpdateAppearance ();
       }

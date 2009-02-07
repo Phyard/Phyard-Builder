@@ -7,6 +7,7 @@
     title="Hinge Setting" width="500">
    
    <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
       <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
@@ -14,9 +15,20 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_ConnectedShape1" text="Shape 1:" textAlign="right" width="25%"/>
+      <mx:ComboBox id="SelectList_ConnectedShape1" rowCount="10" width="10%" />
+      <mx:Spacer width="20"/>
+      <mx:Label id="Label_ConnectedShape2" text="Shape 2:" textAlign="right" width="25%"/>
+      <mx:ComboBox id="SelectList_ConnectedShape2" rowCount="10" width="10%" />
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
       <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limit"/>
    </mx:HBox>
 
+   <!--
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Label id="Label_LowerAngle" text="Lower Angle:" textAlign="right" width="20%"/>
       <mx:HSlider id="Slider_LowerAngle" focusEnabled="false" minimum="-180" maximum="0" value="0" width="80%"
@@ -32,23 +44,44 @@
    </mx:HBox>
    
    <mx:Spacer height="6"/>
+   -->
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_LowerAngle" text="Lower Angle:" textAlign="right" width="120"/>
+      <mx:NumericStepper id="NumericStepper_LowerAngle" minimum="-36000" maximum="0"
+            stepSize="1" width="80" />
+      <mx:Label text="deg" textAlign="left"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_UpperAngle" text="Upper Angle:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_UpperAngle" minimum="0" maximum="36000"
+            stepSize="1" width="80" />
+      <mx:Label text="deg" textAlign="left"/>
+   </mx:HBox>
    
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:CheckBox id="CheckBox_MotorEnabled" label="Enable Motor"/>
    </mx:HBox>
-   
+
+   <!--
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="20%"/>
       <mx:HSlider id="Slider_MotorSpeed" focusEnabled="false" minimum="-360" maximum="360" value="0" width="80%"
           dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="90"
           labels="['-360', '0', '360']" allowTrackClick="true" liveDragging="true" />
    </mx:HBox>
+   -->
    
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="120"/>
+      <mx:NumericStepper id="NumericStepper_MotorSpeed" minimum="-360" maximum="360"
+            stepSize="0.1" width="80" />
+      <mx:Label text="deg" textAlign="left"/>
+   </mx:HBox>
+
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth between Limits"/>
    </mx:HBox>
-   
-   
+
    <mx:Spacer height="20"/>
    
    <mx:HBox width="100%" verticalAlign="bottom">
@@ -67,6 +100,7 @@
    <mx:Script>
      <![CDATA[       
          import mx.managers.PopUpManager;
+         import mx.events.MenuEvent;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
@@ -75,16 +109,25 @@
          {
             CheckBox_IsVisible.selected = values.mIsVisible;
             CheckBox_CollideConnected.selected = values.mCollideConnected;
-            CheckBox_CollideConnected.enabled = false;
+            //CheckBox_CollideConnected.enabled = false;
             
             CheckBox_LimitEnabled.selected = values.mEnableLimit;
-            Slider_LowerAngle.value = values.mLowerAngle;
-            Slider_UpperAngle.value = values.mUpperAngle;
+            //Slider_LowerAngle.value = values.mLowerAngle;
+            //Slider_UpperAngle.value = values.mUpperAngle;
+            NumericStepper_LowerAngle.value = values.mLowerAngle;
+            NumericStepper_UpperAngle.value = values.mUpperAngle;
             
             CheckBox_MotorEnabled.selected = values.mEnableMotor;
-            Slider_MotorSpeed.value = values.mMotorSpeed;
+            //Slider_MotorSpeed.value = values.mMotorSpeed;
+            NumericStepper_MotorSpeed.value = values.mMotorSpeed;
             
             CheckBox_BackAndForth.selected = values.mBackAndForth;
+            
+            //
+            SelectList_ConnectedShape1.dataProvider = values.mShapeListDataProvider;
+            SelectList_ConnectedShape2.dataProvider = values.mShapeListDataProvider;
+            SelectList_ConnectedShape1.selectedIndex = values.mShapeList1SelectedIndex;
+            SelectList_ConnectedShape2.selectedIndex = values.mShapeList2SelectedIndex;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -102,14 +145,25 @@
              var params:Object = new Object ();
              
              params.mIsVisible = CheckBox_IsVisible.selected;
+             params.mCollideConnected = CheckBox_CollideConnected.selected;
+             
              params.mEnableLimit = CheckBox_LimitEnabled.selected;
-             params.mLowerAngle = Slider_LowerAngle.value;
-             params.mUpperAngle = Slider_UpperAngle.value;
+             //params.mLowerAngle = Slider_LowerAngle.value;
+             //params.mUpperAngle = Slider_UpperAngle.value;
+             params.mLowerAngle = NumericStepper_LowerAngle.value;
+             params.mUpperAngle = NumericStepper_UpperAngle.value;
              
              params.mEnableMotor = CheckBox_MotorEnabled.selected;
-             params.mMotorSpeed = Slider_MotorSpeed.value;
+             //params.mMotorSpeed = Slider_MotorSpeed.value;
+             params.mMotorSpeed = NumericStepper_MotorSpeed.value;
              
              params.mBackAndForth = CheckBox_BackAndForth.selected;
+             
+             //
+             params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.data;
+             params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.data;
+             
+             //
              
              PopUpManager.removePopUp(this);
              
@@ -135,6 +189,10 @@
             // ...
             
             SetValues (values);
+         }
+         
+         private function OnSelectConnectedShape1(event:MenuEvent):void 
+         {
          }
          
      ]]>

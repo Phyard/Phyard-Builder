@@ -31,7 +31,11 @@ package player.physics {
             circleDef.restitution = 0.2;
          }
          
-         //circleDef.filter.groupIndex = 
+         //>>froomv1.02
+         circleDef.filter.maskBits  = params.mMaskBits;
+         circleDef.filter.categoryBits = params.mCategoryBits;
+         circleDef.filter.groupIndex = params.mGroupIndex;
+         //<<
          
          _b2Shape = mPhysicsProxyBody._b2Body.CreateShape (circleDef);
          

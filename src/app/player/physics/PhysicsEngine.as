@@ -23,7 +23,7 @@ package player.physics {
       private var _GetShapeIndex:Function = null; // (proxyBody:PhysicsProxyShape):int
       
       
-      public function PhysicsEngine (lowerDisplayPoint:Point, upperDisplayPoint:Point, version100:Boolean):void
+      public function PhysicsEngine (initialBravity:Point, lowerDisplayPoint:Point, upperDisplayPoint:Point, version100:Boolean):void
       {
          if (! version100)
          {
@@ -35,7 +35,7 @@ package player.physics {
          worldAABB.lowerBound.Set(lowerDisplayPoint.x, lowerDisplayPoint.y);
          worldAABB.upperBound.Set(upperDisplayPoint.x, upperDisplayPoint.y);
          
-         var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
+         var gravity:b2Vec2 = new b2Vec2 (initialBravity.x * GlobalGravityScale, initialBravity.y * GlobalGravityScale);
          var doSleep:Boolean = true;
          
          _b2World = new b2World(worldAABB, gravity, doSleep);
@@ -43,6 +43,38 @@ package player.physics {
          _b2World.SetContactListener(new _ContactListener (this));
          _b2World.SetDestructionListener(new _DestructionListener (this));
       }
+      
+//=================================================================
+//   
+//=================================================================
+      
+      private static const GlobalGravityScale:Number = 2.0; // don't change
+      
+      public function SetGravityByScaleAndAngle (ga:Number, angle:Number):void
+      {
+         //
+         ga *= GlobalGravityScale;
+         
+         var gravity:b2Vec2 = new b2Vec2 (ga * Math.cos (angle), ga * Math.sin (angle));
+         
+         _b2World.SetGravity (gravity);
+         
+          _b2World.WakeUpAllBodies ();
+      }
+      
+      public function SetGravityByVector (gx:Number, gy:Number):void
+      {
+         //
+         var gravity:b2Vec2 = new b2Vec2 (gx * GlobalGravityScale, gy * GlobalGravityScale);
+         
+         _b2World.SetGravity (gravity);
+         
+          _b2World.WakeUpAllBodies ();
+      }
+      
+//=================================================================
+//   
+//=================================================================
       
       public function Update (escapedTime:Number):void
       {
@@ -81,7 +113,6 @@ package player.physics {
       public function OnJointRemoved (proxyJoint:PhysicsProxyJoint):void
       {
          // ...
-         proxyJoint
          
          if (_OnJointRemoved != null)
             _OnJointRemoved (proxyJoint);
@@ -243,48 +274,9 @@ package player.physics {
       
       public function CreateProxyJointHingeAuto (anchorDisplayX:Number, anchorDisplayY:Number, params:Object):PhysicsProxyJointHinge
       {
-         var proxyBody1:PhysicsProxyBody = null;
-         var proxyBody2:PhysicsProxyBody = null;
-         
-         var temp:PhysicsProxyBody;
-         
-         var bodies:Array = GetProxyBoiesAtPoint (anchorDisplayX, anchorDisplayY, true);
-         
-         if (bodies.length >= 2)
-         {
-            proxyBody1 = bodies [0] as PhysicsProxyBody;
-            proxyBody2 = bodies [1] as PhysicsProxyBody;
-            
-            if (proxyBody2.IsStatic () && ! proxyBody1.IsStatic ())
-            {
-               temp = proxyBody1;
-               proxyBody1 = proxyBody2;
-               proxyBody2 = temp;
-            }
-         }
-         else if (bodies.length == 1)
-         {
-            proxyBody2 = bodies [0] as PhysicsProxyBody;
-         }
-         
-         if ( params.mWorldDefine != null && bodies.length >= 2)
-         {
-            if (params.mWorldDefine.mVersion >= 0x101 && _GetShapeIndex != null)
-            {
-               var shapeMaxIndex1:int = proxyBody1.GetTempValue ();
-               var shapeMaxIndex2:int = proxyBody2.GetTempValue ();
-               
-               //trace ("shapeMaxIndex1 = " + shapeMaxIndex1);
-               //trace ("shapeMaxIndex2 = " + shapeMaxIndex2);
-               
-               if (shapeMaxIndex1 > shapeMaxIndex2)
-               {
-                  temp = proxyBody2;
-                  proxyBody2 = proxyBody1;
-                  proxyBody1 = temp;
-               }
-            }
-         }
+         var object:Object = GetJointConnectedBodies_a (anchorDisplayX, anchorDisplayY, params);
+         var proxyBody1:PhysicsProxyBody = object.mProxyBody1;
+         var proxyBody2:PhysicsProxyBody = object.mProxyBody2;
          
          return CreateProxyJointHinge (proxyBody1, proxyBody2, anchorDisplayX, anchorDisplayY, params);
       }
@@ -300,25 +292,9 @@ package player.physics {
       
       public function CreateProxyJointSliderAuto (anchorDisplayX1:Number, anchorDisplayY1:Number, anchorDisplayX2:Number, anchorDisplayY2:Number, params:Object):PhysicsProxyJointSlider
       {
-         var proxyBody1:PhysicsProxyBody = null;
-         var proxyBody2:PhysicsProxyBody = null;
-         
-         var bodies:Array = GetProxyBoiesAtPoint (anchorDisplayX1, anchorDisplayY1);
-         
-         if (bodies.length >= 1)
-         {
-            proxyBody1 = bodies [0] as PhysicsProxyBody;
-         }
-         
-         bodies = GetProxyBoiesAtPoint (anchorDisplayX2, anchorDisplayY2);
-         
-         if (bodies.length >= 1)
-         {
-            proxyBody2 = bodies [0] as PhysicsProxyBody;
-            
-            if (proxyBody2 == proxyBody1 && bodies.length >= 2)
-               proxyBody2 = bodies [1] as PhysicsProxyBody;
-         }
+         var object:Object = GetJointConnectedBodies_b (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
+         var proxyBody1:PhysicsProxyBody = object.mProxyBody1;
+         var proxyBody2:PhysicsProxyBody = object.mProxyBody2;
          
          return CreateProxyJointSlider (proxyBody1, proxyBody2, anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
       }
@@ -333,25 +309,9 @@ package player.physics {
       
       public function CreateProxyJointDistanceAuto (anchorDisplayX1:Number, anchorDisplayY1:Number, anchorDisplayX2:Number, anchorDisplayY2:Number, params:Object):PhysicsProxyJointDistance
       {
-         var proxyBody1:PhysicsProxyBody = null;
-         var proxyBody2:PhysicsProxyBody = null;
-         
-         var bodies:Array = GetProxyBoiesAtPoint (anchorDisplayX1, anchorDisplayY1);
-         
-         if (bodies.length >= 1)
-         {
-            proxyBody1 = bodies [0] as PhysicsProxyBody;
-         }
-         
-         bodies = GetProxyBoiesAtPoint (anchorDisplayX2, anchorDisplayY2);
-         
-         if (bodies.length >= 1)
-         {
-            proxyBody2 = bodies [0] as PhysicsProxyBody;
-            
-            if (proxyBody2 == proxyBody1 && bodies.length >= 2)
-               proxyBody2 = bodies [1] as PhysicsProxyBody;
-         }
+         var object:Object = GetJointConnectedBodies_b (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
+         var proxyBody1:PhysicsProxyBody = object.mProxyBody1;
+         var proxyBody2:PhysicsProxyBody = object.mProxyBody2;
          
          return CreateProxyJointDistance (proxyBody1, proxyBody2, anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
       }
@@ -361,7 +321,197 @@ package player.physics {
 //   
 //=================================================================
       
+      private function SortBodiesByTempValues (bodies:Array):void
+      {
+         // sort bodies by temp value
+         var i:int;
+         var params:Array = new Array ();
+         for (i = 0; i < bodies.length; ++ i)
+         {
+            var param:Object = new Object ();
+            param.mTempValue = (bodies [i] as PhysicsProxyBody).GetTempValue ();
+            param.mBody = bodies [i] as PhysicsProxyBody;
+            params.push (param);
+         }
+         
+         params.sortOn("mTempValue", Array.NUMERIC);
+         
+         for (i = 0; i < bodies.length; ++ i)
+            bodies [i] = params[i].mBody;
+      }
       
+      private function GetJointConnectedBodies_a (anchorDisplayX:Number, anchorDisplayY:Number, params:Object):Object
+      {
+         var proxyBody1:PhysicsProxyBody = null;
+         var proxyBody2:PhysicsProxyBody = null;
+         
+         var temp:PhysicsProxyBody;
+         
+         var bodies:Array;
+         
+         if ( params.mWorldDefine != null && params.mWorldDefine.mVersion >= 0x0102)
+         {
+            if (params.mConnectedShape1 != null && params.mConnectedShape1 != this)
+               proxyBody1 = (params.mConnectedShape1 as PhysicsProxyShape).GetProxyBody ();
+            if (params.mConnectedShape2 != null && params.mConnectedShape2 != this)
+               proxyBody2 = (params.mConnectedShape2 as PhysicsProxyShape).GetProxyBody ();
+            
+            var auto1:Boolean = params.mConnectedShape1 != this && proxyBody1 == null;
+            var auto2:Boolean = params.mConnectedShape2 != this && proxyBody2 == null;
+            
+            if (auto1 || auto2)
+            {
+               // sort
+               bodies = GetProxyBoiesAtPoint (anchorDisplayX, anchorDisplayY, true);
+               SortBodiesByTempValues (bodies);
+               
+               var index:int = 0;
+               
+               if (auto1)
+               {
+                  while ( bodies.length > index && proxyBody1 == null )
+                  {
+                     proxyBody1 = bodies [index] as PhysicsProxyBody;
+                     ++ index;
+                     if (proxyBody1 == proxyBody2)
+                        proxyBody1 = null;
+                  }
+               }
+               
+               if (auto2)
+               {
+                  while ( bodies.length > index && proxyBody2 == null )
+                  {
+                     proxyBody2 = bodies [index] as PhysicsProxyBody;
+                     ++ index;
+                     if (proxyBody2 == proxyBody1)
+                        proxyBody2 = null;
+                  }
+                  
+                  // if both auto, try to put proxyBody1 as null (ground)
+                  if (auto1 && proxyBody2 == null && proxyBody1 != null)
+                  {
+                     proxyBody2 = proxyBody1;
+                     proxyBody1 = null;
+                  }
+               }
+            }
+         }
+         else
+         {
+            bodies = GetProxyBoiesAtPoint (anchorDisplayX, anchorDisplayY, true);
+            
+            if (bodies.length >= 2)
+            {
+               proxyBody1 = bodies [0] as PhysicsProxyBody;
+               proxyBody2 = bodies [1] as PhysicsProxyBody;
+               
+               if (proxyBody2.IsStatic () && ! proxyBody1.IsStatic ())
+               {
+                  temp = proxyBody1;
+                  proxyBody1 = proxyBody2;
+                  proxyBody2 = temp;
+               }
+            }
+            else if (bodies.length == 1)
+            {
+               proxyBody2 = bodies [0] as PhysicsProxyBody;
+            }
+            
+            if ( params.mWorldDefine != null && params.mWorldDefine.mVersion >= 0x0101)
+            {
+               if (bodies.length >= 2 && _GetShapeIndex != null)
+               {
+                  var shapeMaxIndex1:int = proxyBody1.GetTempValue ();
+                  var shapeMaxIndex2:int = proxyBody2.GetTempValue ();
+                  
+                  //trace ("shapeMaxIndex1 = " + shapeMaxIndex1);
+                  //trace ("shapeMaxIndex2 = " + shapeMaxIndex2);
+                  
+                  if (shapeMaxIndex1 > shapeMaxIndex2)
+                  {
+                     temp = proxyBody2;
+                     proxyBody2 = proxyBody1;
+                     proxyBody1 = temp;
+                  }
+               }
+            }
+         } 
+         
+         var object:Object = new Object ();
+         object.mProxyBody1= proxyBody1;
+         object.mProxyBody2= proxyBody2;
+         
+         return object;
+      }
+      
+      private function GetJointConnectedBodies_b (anchorDisplayX1:Number, anchorDisplayY1:Number, anchorDisplayX2:Number, anchorDisplayY2:Number, params:Object):Object
+      {
+         var proxyBody1:PhysicsProxyBody = null;
+         var proxyBody2:PhysicsProxyBody = null;
+         
+         var bodies:Array = GetProxyBoiesAtPoint (anchorDisplayX1, anchorDisplayY1);
+         
+         if ( params.mWorldDefine != null && params.mWorldDefine.mVersion >= 0x0102)
+         {
+            SortBodiesByTempValues (bodies);
+            
+            if (params.mConnectedShape1 == this) // ground
+               ;
+            else if (params.mConnectedShape1 != null)
+               proxyBody1 = (params.mConnectedShape1 as PhysicsProxyShape).GetProxyBody ();
+            else // auto
+            {
+               if (bodies.length >= 1)
+                  proxyBody1 = bodies [0] as PhysicsProxyBody;
+            }
+         }
+         else
+         {
+            if (bodies.length >= 1)
+            {
+               proxyBody1 = bodies [0] as PhysicsProxyBody;
+            }
+         }
+         
+         bodies = GetProxyBoiesAtPoint (anchorDisplayX2, anchorDisplayY2);
+         
+         if ( params.mWorldDefine != null && params.mWorldDefine.mVersion >= 0x0102)
+         {
+            SortBodiesByTempValues (bodies);
+            
+            if (params.mConnectedShape2 == this) // ground
+               ;
+            else if (params.mConnectedShape2 != null)
+               proxyBody2 = (params.mConnectedShape2 as PhysicsProxyShape).GetProxyBody ();
+            else // auto
+            {
+               if (bodies.length >= 1)
+               {
+                  proxyBody2 = bodies [0] as PhysicsProxyBody;
+                  
+                  if (proxyBody2 == proxyBody1 && bodies.length >= 2)
+                     proxyBody2 = bodies [1] as PhysicsProxyBody;
+               }
+            }
+         }
+         else
+         {
+            if (bodies.length >= 1)
+            {
+               proxyBody2 = bodies [0] as PhysicsProxyBody;
+               
+               if (proxyBody2 == proxyBody1 && bodies.length >= 2)
+                  proxyBody2 = bodies [1] as PhysicsProxyBody;
+            }
+         }
+         
+         var object:Object = new Object ();
+         object.mProxyBody1= proxyBody1;
+         object.mProxyBody2= proxyBody2;
+         
+         return object;
+      }
       
 //=================================================================
 //   

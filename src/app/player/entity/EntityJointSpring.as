@@ -41,19 +41,9 @@ package player.entity {
          RebuildAppearance ();
       }
       
-      override public function BuildPhysicsProxy (params:Object):void
+      override public function BuildFromParams (params:Object):void
       {
-         // ...
-         /*
-         mWireDiameter = params.mWireDiameter;
-         if (mWireDiameter < 1)
-            mWireDiameter = 1;
-         if (mWireDiameter > 2)
-            mWireDiameter = 2;
-         mDiameter = params.mDiameter;
-         if (mDiameter < 3)
-            mDiameter = 3;
-         */
+         super.BuildFromParams (params);
          
          mSpringType = params.mSpringType;
          

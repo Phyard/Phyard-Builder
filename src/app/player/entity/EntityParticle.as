@@ -39,13 +39,14 @@ package player.entity {
          }
       }
       
-      override public function BuildPhysicsProxy (params:Object):void
+      override public function BuildFromParams (params:Object):void
       {
          var oldValue:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
+         params.mContainsPhysicsShapes = true;
          var paramPosX:Number = params.mPosX;
          var paramPosY:Number = params.mPosY;
          
-         super.BuildPhysicsProxy (params);
+         super.BuildFromParams (params);
          
          // params needed:
          // mPosX
@@ -80,8 +81,10 @@ package player.entity {
             entityDefine.mRadius = 1.0;
             entityDefine.mAppearanceType = Define.CircleAppearanceType_Ball;
             
+            mWorld.SetCollisionCategoryParamsForShapeParams (entityDefine, Define.CollisionCategoryId_HiddenCategory);
+            
             var shapeCircle:EntityShapeCircle = new EntityShapeCircle (mWorld, this);
-            shapeCircle.BuildPhysicsProxy (entityDefine);
+            shapeCircle.BuildFromParams (entityDefine);
             
          // ...cal mass
             this.UpdateMass ();

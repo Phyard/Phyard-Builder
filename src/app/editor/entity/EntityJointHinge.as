@@ -12,6 +12,9 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
+   import common.ValueAdjuster;
+   import common.Config;
+   
    public class EntityJointHinge extends EntityJoint 
    {
       
@@ -44,8 +47,8 @@ package editor.entity {
       
       public function SetLimits (lower:Number, upper:Number):void
       {
-         mLowerAngle = lower;
-         mUpperAngle = upper;
+         mLowerAngle = ValueAdjuster.AdjustSliderTranslation (lower, Config.VersionNumber);
+         mUpperAngle = ValueAdjuster.AdjustSliderTranslation (upper, Config.VersionNumber);
          
          UpdateAppearance ();
       }

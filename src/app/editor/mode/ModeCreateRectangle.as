@@ -88,7 +88,7 @@ package editor.mode {
           if (mRectEntity == null)
          {
             Reset ();
-            return
+            return;
          }
          
          UpdateSession (startX, startY);

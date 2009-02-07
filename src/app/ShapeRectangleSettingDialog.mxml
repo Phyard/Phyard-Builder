@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+    title="Shape Setting" width="500">
+   
+   
+   <mx:XMLList id="IsBulletOptions">
+      <node label="Default"/>
+      <node label="Yes"/>
+      <node label="No"/>
+   </mx:XMLList>
+
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:Box label="Basic" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_IsStatic" label="Is Static"/>
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_IsBullet" label="Is Bullet"/>
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label id="Label_Density" text="Density:" textAlign="right" width="30%"/>
+            <mx:HSlider id="Slider_Denstiy" focusEnabled="false" minimum="0" maximum="10" value="1" width="70%"
+                dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="1"
+                labels="['0', '5.0', '10.0']" allowTrackClick="true" liveDragging="true" />
+         </mx:HBox>
+
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label id="Label_Friction" text="Friction:" textAlign="right" width="30%"/>
+            <mx:HSlider id="Slider_Friction" focusEnabled="false" minimum="0" maximum="1" value="0.1" width="70%"
+                dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
+                labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
+         </mx:HBox>
+
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label id="Label_Restitution" text="Restitution:" textAlign="right" width="30%"/>
+            <mx:HSlider id="Slider_Restitution" focusEnabled="false" minimum="0" maximum="1" value="0.2" width="70%"
+                dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
+                labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
+         </mx:HBox>
+         
+         <mx:Spacer height="10"/>
+      </mx:Box>
+      <mx:Box label="Advanced" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label id="Label_PosX" text="    X:" textAlign="right" width="80"/>
+            <mx:TextInput id="Text_PosX" text="" width="80"/>
+            <mx:Label id="Label_PosY" text="     Y:" textAlign="right" width="50"/>
+            <mx:TextInput id="Text_PosY" text="" width="80"/>
+            <mx:Label id="Label_Angle" text="Angle:" textAlign="right" width="50"/>
+            <mx:TextInput id="Text_Angle" text="" width="80"/>
+         </mx:HBox>
+
+         <mx:Spacer height="6"/>
+         
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label id="Label_Width" text="Width:" textAlign="right" width="80"/>
+            <mx:TextInput id="Text_Width" text="" width="80"/>
+            <mx:Label id="Label_Height" text="Height:" textAlign="right" width="50"/>
+            <mx:TextInput id="Text_Height" text="" width="80"/>
+         </mx:HBox>
+
+         <mx:Spacer height="16"/>
+         
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label id="Label_CollisionCategory" text="Collision Category:" textAlign="right" width="30%"/>
+            <mx:ComboBox id="SelectList_CollisionCategory" />
+         </mx:HBox>
+
+         <mx:Spacer height="1" creationComplete="OnAnvancePageCreationComplete(event)"/>
+      </mx:Box>
+   </mx:TabNavigator>
+
+
+   <mx:Spacer height="20"/>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+            <mx:Spacer width="30"/>
+            <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+            -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   
+   <mx:Script>
+     <![CDATA[       
+         import mx.managers.PopUpManager;
+         
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mInputValues:Object;
+         
+         private var mAdvancePageCreated:Boolean = false;
+         
+         public function SetValues (values:Object):void
+         {
+            mInputValues = values;
+            mAdvancePageCreated = false;
+            
+            CheckBox_IsStatic.selected = values.mIsStatic;
+            CheckBox_IsVisible.selected = values.mIsVisible;
+            CheckBox_IsBullet.selected = values.mIsBullet;
+            
+            Slider_Denstiy.value = values.mDensity;
+            Slider_Friction.value = values.mFriction;
+            Slider_Restitution.value = values.mRestitution;
+            
+            CheckBox_IsVisible.enabled = values.mVisibleEditable;
+            CheckBox_IsStatic.enabled = values.mStaticEditable;
+            
+            CheckBox_DrawBorder.selected = values.mDrawBorder;
+         }
+         
+         private function OnAnvancePageCreationComplete (event:Event):void
+         {
+            Text_PosX.text = "" + mInputValues.mPosX;
+            Text_PosY.text = "" + mInputValues.mPosY;
+            Text_Angle.text = "" + mInputValues.mAngle;
+            Text_Width.text = "" + mInputValues.mWidth;
+            Text_Height.text = "" + mInputValues.mHeight;
+            
+            SelectList_CollisionCategory.dataProvider = mInputValues.mCollisionCategoryListDataProvider;
+            SelectList_CollisionCategory.selectedIndex = mInputValues.mCollisionCategoryListSelectedIndex;
+            
+            mAdvancePageCreated = true;
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             var params:Object = new Object ();
+             
+            params.mIsStatic = CheckBox_IsStatic.selected;
+            params.mIsVisible = CheckBox_IsVisible.selected;
+            params.mIsBullet = CheckBox_IsBullet.selected;
+            
+            params.mDensity = Slider_Denstiy.value;
+            params.mFriction = Slider_Friction.value;
+            params.mRestitution = Slider_Restitution.value;
+             
+            params.mDrawBorder = CheckBox_DrawBorder.selected;
+            
+            if (mAdvancePageCreated)
+            {
+               var valuePosX:Number = parseFloat (Text_PosX.text);
+               if ( ! isNaN (valuePosX) )
+                  params.mPosX = valuePosX;
+               else
+                  params.mPosX = mInputValues.mPosX;
+               
+               var valuePosY:Number = parseFloat (Text_PosY.text);
+               if ( ! isNaN (valuePosY) )
+                  params.mPosY = valuePosY;
+               else
+                  params.mPosY = mInputValues.mPosY;
+               
+               var valueAngle:Number = parseFloat (Text_Angle.text);
+               if ( ! isNaN (valueAngle) )
+                  params.mAngle = valueAngle;
+               else
+                  params.mAngle = mInputValues.mAngle;
+               
+               var valueWidth:Number = parseFloat (Text_Width.text);
+               if ( ! isNaN (valueWidth) )
+                  params.mWidth = valueWidth;
+               else
+                  params.mWidth = mInputValues.mWidth;
+               
+               var valueHeight:Number = parseFloat (Text_Height.text);
+               if ( ! isNaN (valueHeight) )
+                  params.mHeight = valueHeight;
+               else
+                  params.mHeight = mInputValues.mHeight;
+               
+               params.mCollisionCategoryIndex = SelectList_CollisionCategory.selectedItem.data;
+            
+            }
+            else
+            {
+               params.mPosX = mInputValues.mPosX;
+               params.mPosY = mInputValues.mPosY;
+               params.mAngle = mInputValues.mAngle;
+               params.mWidth = mInputValues.mWidth;
+               params.mHeight = mInputValues.mHeight;
+               
+               params.mCollisionCategoryIndex = (mInputValues.mCollisionCategoryListDataProvider as Array) [mInputValues.mCollisionCategoryListSelectedIndex];
+            }
+            
+            if (OnConfirm != null)
+               OnConfirm (params);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         
+         private function OnClickDefaultButton ():void
+         {
+            var values:Object = new Object ();
+            
+            // ...
+            
+            SetValues (values);
+         }
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

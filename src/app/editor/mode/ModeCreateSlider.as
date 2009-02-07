@@ -124,6 +124,12 @@ package editor.mode {
          if (mEntityJointSlider == null)
             return;
          
+         if (mCurrrentStep == 0) // this is caused by dragging mouse from out of world field.
+         {
+            Reset ();
+            return;
+         }
+         
          FinishSession (mouseX, mouseY);
       }
    }

@@ -39,7 +39,11 @@ package player.physics {
             polygonDef.restitution = 0.2;
          }
          
-         //polygonDef.filter.groupIndex = 
+         //>>froomv1.02
+         polygonDef.filter.maskBits  = params.mMaskBits;
+         polygonDef.filter.categoryBits = params.mCategoryBits;
+         polygonDef.filter.groupIndex = params.mGroupIndex;
+         //<<
          
          _b2Shape = mPhysicsProxyBody._b2Body.CreateShape (polygonDef);
          

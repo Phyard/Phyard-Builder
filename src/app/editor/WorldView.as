@@ -34,15 +34,16 @@ package editor {
    
    
    import com.tapirgames.display.FpsCounter;
+   import com.tapirgames.display.TextFieldEx;
+   
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.UrlUtil;
-   import com.tapirgames.display.TextFieldEx;
-   
+   import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.MathUtil;
    
-   import com.tapirgames.display.TextFieldEx;
-   
    import com.tapirgames.util.Logger;
+   
+   //import beziercurves.events.BezierEvent;   //import beziercurves.BezierCurve;
    
    import editor.mode.Mode;
    import editor.mode.ModeCreateRectangle;
@@ -156,7 +157,6 @@ package editor {
          
          addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
          addEventListener(Event.RESIZE, OnResize);
-         
          
          //
          mEditorElementsContainer = new Sprite ();
@@ -900,11 +900,16 @@ package editor {
             // there are some pricision losses in WorldDefine2ByteArray + ByteArray2WorldDefine
             
             var wd1:WorldDefine = DataFormat.EditorWorld2WorldDefine ( mEditorWorld );
-            var ba:ByteArray = DataFormat.WorldDefine2ByteArray ( wd1 );
-            ba.position = 0;
-            var wd2:WorldDefine = DataFormat2.ByteArray2WorldDefine ( ba );
-            
-            playerWorld = DataFormat2.WorldDefine2PlayerWorld (wd2);
+            {
+               //var ba:ByteArray = DataFormat.WorldDefine2ByteArray ( wd1 );
+               //ba.position = 0;
+               //var wd2:WorldDefine = DataFormat2.ByteArray2WorldDefine ( ba );
+               
+               //playerWorld = DataFormat2.WorldDefine2PlayerWorld (wd2);
+            }
+            {
+               playerWorld = DataFormat2.WorldDefine2PlayerWorld (wd1);
+            }
          }
          
          SetPlayerWorld (playerWorld);
@@ -944,7 +949,7 @@ package editor {
       public function SetPlayingSpeed (speed:Number):void
       {
          /*
-         mWorldPlayingSpeedX = Math.floor (speed + speed + 0.5);
+         mWorldPlayingSpeedX = Math.round (speed + speed);
          if (mWorldPlayingSpeedX < 0)
             mWorldPlayingSpeedX = 0;
          if (mWorldPlayingSpeedX > 10)
@@ -1129,6 +1134,8 @@ package editor {
          {
             var hinge:EntityJointHinge = entity.GetMainEntity () as EntityJointHinge;
             
+            values.mIsVisible = hinge.IsVisible ();
+            
             values.mCollideConnected = hinge.mCollideConnected;
             values.mEnableLimit = hinge.IsLimitsEnabled ();
             values.mLowerAngle = hinge.GetLowerLimit ();
@@ -1148,6 +1155,8 @@ package editor {
          else if (entity is SubEntitySliderAnchor)
          {
             var slider:EntityJointSlider = entity.GetMainEntity () as EntityJointSlider;
+            
+            values.mIsVisible = slider.IsVisible ();
             
             values.mCollideConnected = slider.mCollideConnected;
             values.mEnableLimit = slider.IsLimitsEnabled ();
@@ -1170,6 +1179,8 @@ package editor {
          {
             var spring:EntityJointSpring = entity.GetMainEntity () as EntityJointSpring;
             
+            values.mIsVisible = spring.IsVisible ();
+            
             values.mCollideConnected = spring.mCollideConnected;
             values.mStaticLengthRatio = spring.GetStaticLengthRatio ();
             //values.mFrequencyHz = spring.GetFrequencyHz ();
@@ -1188,6 +1199,8 @@ package editor {
          else if (entity is SubEntityDistanceAnchor)
          {
             var distance:EntityJointDistance = entity.GetMainEntity () as EntityJointDistance;
+            
+            values.mIsVisible = distance.IsVisible ();
             
             values.mCollideConnected = distance.mCollideConnected;
             
@@ -1230,12 +1243,22 @@ package editor {
          if (Runtime.HasSettingDialogOpened ())
             return;
          
-         var values:Object = new Object ();
-         
-         values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
-         values.mHexString = DataFormat.WorldDefine2HexString (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
-         
-         ShowWorldSavingDialog (values);
+         try
+         {
+            var values:Object = new Object ();
+            
+            values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+            values.mHexString = DataFormat.WorldDefine2HexString (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+            
+            ShowWorldSavingDialog (values);
+         }
+         catch (error:Error)
+         {
+            Alert.show("Sorry, saving error!", "Error");
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
       }
       
       private function OpenWorldLoadingDialog ():void
@@ -1305,7 +1328,7 @@ package editor {
          var infoWorldX:Number = WorldBorderThinknessLR;
          var infoWorldY:Number = WorldHeight - (WorldBorderThinknessTB + _EntityInfoTextOnStatusBar.height) * 0.5;
          
-         var point:Point = LocalToLocal (mEditorWorld, mForegroundSprite, new Point (infoWorldX, infoWorldY));
+         var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, mForegroundSprite, new Point (infoWorldX, infoWorldY));
          
          _EntityInfoTextOnStatusBar.x = point.x;
          _EntityInfoTextOnStatusBar.y = point.y;
@@ -1383,23 +1406,25 @@ package editor {
 //   coordinates
 //=================================================================================
       
-      public static function LocalToLocal (display1:DisplayObject, display2:DisplayObject, point:Point):Point
-      {
-         //return display2.globalToLocal ( display1.localToGlobal (point) );
-         
-         var matrix:Matrix = display2.transform.concatenatedMatrix.clone();
-         matrix.invert();
-         return matrix.transformPoint (display1.transform.concatenatedMatrix.transformPoint (point));
-      }
+      // use the one in DisplayObjectUtil instead
+      
+      //public static function LocalToLocal (display1:DisplayObject, display2:DisplayObject, point:Point):Point
+      //{
+      //   //return display2.globalToLocal ( display1.localToGlobal (point) );
+      //   
+      //   var matrix:Matrix = display2.transform.concatenatedMatrix.clone();
+      //   matrix.invert();
+      //   return matrix.transformPoint (display1.transform.concatenatedMatrix.transformPoint (point));
+      //}
       
       public function ViewToWorld (point:Point):Point
       {
-         return LocalToLocal (this, mEditorWorld, point);
+         return DisplayObjectUtil.LocalToLocal (this, mEditorWorld, point);
       }
       
       public function WorldToView (point:Point):Point
       {
-         return LocalToLocal (mEditorWorld, this, point);
+         return DisplayObjectUtil.LocalToLocal (mEditorWorld, this, point);
       }
       
       
@@ -1457,7 +1482,7 @@ package editor {
          CheckModifierKeys (event);
          _isZeroMove = true;
          
-         var worldPoint:Point = LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
          
          if (IsCreating ())
          {
@@ -1582,7 +1607,7 @@ package editor {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         var point:Point = LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         var point:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
          var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
          
          if ( ! rect.containsPoint (point) )
@@ -1595,7 +1620,7 @@ package editor {
          
          _isZeroMove = false;
          
-         var viewPoint:Point = LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         var viewPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
          
          if (mCursorCreating.visible)
          {
@@ -1603,7 +1628,7 @@ package editor {
             mCursorCreating.y = viewPoint.y;
          }
          
-         var worldPoint:Point = LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
          
          if (IsCreating ())
          {
@@ -1628,7 +1653,7 @@ package editor {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         var worldPoint:Point = LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
          
          if (IsCreating ())
          {
@@ -1678,7 +1703,7 @@ package editor {
          
          CheckModifierKeys (event);
          
-         var point:Point = LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         var point:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
          var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
          
          var isOut:Boolean = ! rect.containsPoint (point);
@@ -2077,8 +2102,8 @@ package editor {
             _SelectedEntitiesCenterPoint.x = centerX;
             _SelectedEntitiesCenterPoint.y = centerY;
             
-            //var point:Point = LocalToLocal (mEditorWorld, this, _SelectedEntitiesCenterPoint );
-            var point:Point = LocalToLocal (mEditorWorld, mForegroundSprite, _SelectedEntitiesCenterPoint );
+            //var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, _SelectedEntitiesCenterPoint );
+            var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, mForegroundSprite, _SelectedEntitiesCenterPoint );
             mSelectedEntitiesCenterSprite.x = point.x;
             mSelectedEntitiesCenterSprite.y = point.y;
          }
@@ -2193,11 +2218,15 @@ package editor {
       public function MoveSelectedEntitiesToTop ():void
       {
          mEditorWorld.MoveSelectedEntitiesToTop ();
+         
+         UpdateEntityInfoOnStatusBar ();
       }
       
       public function MoveSelectedEntitiesToBottom ():void
       {
          mEditorWorld.MoveSelectedEntitiesToBottom ();
+         
+         UpdateEntityInfoOnStatusBar ();
       }
       
       public function AlignCenterSelectedEntities ():void

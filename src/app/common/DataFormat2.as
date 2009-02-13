@@ -17,6 +17,13 @@ package common {
       
       public static function WorldDefine2PlayerWorld (worldDefine:WorldDefine):player.world.World
       {
+         // from v1,03
+         if (worldDefine.mVersion >= 0x0103)
+         {
+            DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         }
+         
+         //
          var playerWorld:player.world.World = new player.world.World (worldDefine.mVersion);
          
          playerWorld.SetAuthorName (worldDefine.mAuthorName);
@@ -344,8 +351,16 @@ package common {
             var entityDefine:Object = new Object ();
             
             entityDefine.mEntityType = byteArray.readShort ();
-            entityDefine.mPosX = byteArray.readFloat ();
-            entityDefine.mPosY = byteArray.readFloat ();
+            if (worldDefine.mVersion >= 0x0103)
+            {
+               entityDefine.mPosX = byteArray.readDouble ();
+               entityDefine.mPosY = byteArray.readDouble ();
+            }
+            else
+            {
+               entityDefine.mPosX = byteArray.readFloat ();
+               entityDefine.mPosY = byteArray.readFloat ();
+            }
             entityDefine.mRotation = byteArray.readFloat ();
             entityDefine.mIsVisible = byteArray.readByte ();
             
@@ -580,12 +595,16 @@ package common {
          return str;
       }
       
-      
-      
-      
+//====================================================================================
+//   
+//====================================================================================
       
       public static function WorldDefine2Xml (worldDefine:WorldDefine):XML
       {
+         // from v1,03
+         DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         
+         // ...
          var xml:XML = <World />;
          
          xml.@app_id  = "COIN";
@@ -724,7 +743,7 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_ShapeText)
                {
                   element.@text = entityDefine.mText;
-                  element.@autofit_width = entityDefine.mAutofitWidth;
+                  element.@autofit_width = entityDefine.mAutofitWidth ? 1 : 0;
                   
                   element.@half_width = entityDefine.mHalfWidth;
                   element.@half_height = entityDefine.mHalfHeight;
@@ -741,7 +760,7 @@ package common {
          }
          else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
          {
-            element.@collide_connected = entityDefine.mCollideConnected;
+            element.@collide_connected = entityDefine.mCollideConnected ? 1 : 0;
             
             if (worldDefine.mVersion >= 0x0102)
             {
@@ -792,6 +811,100 @@ package common {
          
          return element;
       }
+      
+//====================================================================================
+//   
+//====================================================================================
+      
+      // 
+      public static function AdjustNumberValuesInWorldDefine (worldDefine:WorldDefine):void
+      {
+         if (worldDefine.mVersion >= 0x0102)
+         {
+            var numCategories:int = worldDefine.mCollisionCategoryDefines.length;
+            for (var ccId:int = 0; ccId < numCategories; ++ ccId)
+            {
+               var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
+               
+               ccDefine.mPosX = ValueAdjuster.Number2Precision (ccDefine.mPosX, 6);
+               ccDefine.mPosY = ValueAdjuster.Number2Precision (ccDefine.mPosY, 6);
+            }
+         }
+         
+         // entities
+         
+         var numEntities:int = worldDefine.mEntityDefines.length;
+         
+         var entityId:int;
+         
+         for (entityId = 0; entityId < numEntities; ++ entityId)
+         {
+            var entityDefine:Object = worldDefine.mEntityDefines [entityId];
+            
+            entityDefine.mPosX = ValueAdjuster.Number2Precision (entityDefine.mPosX, 12);
+            entityDefine.mPosY = ValueAdjuster.Number2Precision (entityDefine.mPosY, 12);
+            entityDefine.mRotation = ValueAdjuster.Number2Precision (entityDefine.mRotation, 6);
+            
+            if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            {
+               if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
+               {
+                  entityDefine.mDensity = ValueAdjuster.Number2Precision (entityDefine.mDensity, 6);
+                  entityDefine.mFriction = ValueAdjuster.Number2Precision (entityDefine.mFriction, 6);
+                  entityDefine.mRestitution = ValueAdjuster.Number2Precision (entityDefine.mRestitution, 6);
+                  
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
+                  {
+                     entityDefine.mRadius = ValueAdjuster.Number2Precision (entityDefine.mRadius, 6);
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
+                  {
+                     entityDefine.mHalfWidth = ValueAdjuster.Number2Precision (entityDefine.mHalfWidth, 6);
+                     entityDefine.mHalfHeight = ValueAdjuster.Number2Precision (entityDefine.mHalfHeight, 6);
+                  }
+               }
+               else // not physis shape
+               {
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeText)
+                  {
+                     entityDefine.mHalfWidth = ValueAdjuster.Number2Precision (entityDefine.mHalfWidth, 6);
+                     entityDefine.mHalfHeight = ValueAdjuster.Number2Precision (entityDefine.mHalfHeight, 6);
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
+                  {
+                     entityDefine.mRadius = ValueAdjuster.Number2Precision (entityDefine.mRadius, 6);
+                     
+                     entityDefine.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (entityDefine.mInitialGravityAcceleration, 6);
+                  }
+               }
+            }
+            else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
+            {
+               if (entityDefine.mEntityType == Define.EntityType_JointHinge)
+               {
+                  entityDefine.mLowerAngle = ValueAdjuster.Number2Precision (entityDefine.mLowerAngle, 6);
+                  entityDefine.mUpperAngle = ValueAdjuster.Number2Precision (entityDefine.mUpperAngle, 6);
+                  entityDefine.mMotorSpeed = ValueAdjuster.Number2Precision (entityDefine.mMotorSpeed, 6);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
+               {
+                  entityDefine.mLowerTranslation = ValueAdjuster.Number2Precision (entityDefine.mLowerTranslation, 6);
+                  entityDefine.mUpperTranslation = ValueAdjuster.Number2Precision (entityDefine.mUpperTranslation, 6);
+                  entityDefine.mMotorSpeed = ValueAdjuster.Number2Precision (entityDefine.mMotorSpeed, 6);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
+               {
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
+               {
+                  entityDefine.mStaticLengthRatio = ValueAdjuster.Number2Precision (entityDefine.mStaticLengthRatio, 6);
+                  
+                  entityDefine.mDampingRatio = ValueAdjuster.Number2Precision (entityDefine.mDampingRatio, 6);
+               }
+            }
+         }
+      }
+      
       
       
    }

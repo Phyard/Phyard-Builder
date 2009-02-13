@@ -57,7 +57,8 @@ package player.entity {
          super.BuildFromParams (params);
          
          mIsInteractive = params.mIsInteractive;
-         mGravityAcceleration = ValueAdjuster.AdjustInitialGravityAcceleration (params.mInitialGravityAcceleration);
+         //mGravityAcceleration = ValueAdjuster.AdjustInitialGravityAcceleration (params.mInitialGravityAcceleration);
+         mGravityAcceleration = params.mInitialGravityAcceleration;
          mGravityAngle = params.mInitialGravityAngle * Math.PI / 180.0;
          
          mLastRotation = mGravityAngle + rotation * Math.PI / 180.0;

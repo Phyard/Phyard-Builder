@@ -24,12 +24,55 @@ package player.entity {
       private var mText:String = "";
       private var mAutofitWidth:Boolean = true;
       
-      private var mTextDisplayObject:DisplayObject = null;
       private var mBackground:Shape = null;
+      private var mTextField:TextFieldEx = null;
+      private var mTextBitmap:Bitmap = null;
       
       public function EntityShapeText (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
+      }
+      
+      override public function Update (dt:Number):void
+      {
+         UpdateTextComponent ();
+      }
+      
+      private var _usingBitmap:Boolean = false;
+      private var _textChanged:Boolean = false;
+      private function UpdateTextComponent ():void
+      {
+         var use_bitmap:Boolean = transform.concatenatedMatrix.b != 0
+                               || transform.concatenatedMatrix.c != 0
+                               || transform.concatenatedMatrix.a < 0
+                               ;
+         if ( ! _textChanged && _usingBitmap == use_bitmap )
+            return;
+         
+         _textChanged = false;
+         _usingBitmap = use_bitmap;
+         
+         trace ("_usingBitmap = " + _usingBitmap);
+         
+         while (numChildren > 0)
+            removeChildAt (0);
+         
+         addChild (mBackground);
+         
+         var textDisplayObject:DisplayObject;
+         
+         if (_usingBitmap)
+            textDisplayObject = mTextBitmap;
+         else
+            textDisplayObject = mTextField;
+         
+         if (textDisplayObject != null)
+         {
+            addChild (textDisplayObject);
+            
+            textDisplayObject.x = - textDisplayObject.width * 0.5;
+            textDisplayObject.y = - textDisplayObject.height * 0.5;
+         }
       }
       
       override public function BuildFromParams (params:Object):void
@@ -44,8 +87,7 @@ package player.entity {
       
       override public function RebuildAppearance ():void
       {
-         while (numChildren > 0)
-            removeChildAt (0);
+         _textChanged = true;
          
       // background
          
@@ -53,16 +95,18 @@ package player.entity {
          var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
          var borderSize :int  = IsDrawBorder () ? 1 : 0;
          
-         var background:Shape = new Shape ();
-         background.alpha = 0.5;
-         addChild (background);
+         if (mBackground == null)
+         {
+            mBackground = new Shape ();
+            mBackground.alpha = 0.5;
+         }
          
          if (IsDrawBackground ())
-            GraphicsUtil.ClearAndDrawRect (background, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, filledColor);
+            GraphicsUtil.ClearAndDrawRect (mBackground, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, filledColor);
          else if (IsDrawBorder ())
-            GraphicsUtil.ClearAndDrawRect (background, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false, filledColor);
+            GraphicsUtil.ClearAndDrawRect (mBackground, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false, filledColor);
          else
-            GraphicsUtil.Clear (background);
+            GraphicsUtil.Clear (mBackground);
          
       // text
          
@@ -74,29 +118,16 @@ package player.entity {
          infoText = TextUtil.GetHtmlEscapedText (infoText);
          infoText = TextUtil.ParseWikiString (infoText);
          
-         trace ("infoText = " + infoText);
-         
-         var textDisplayObject:DisplayObject;
-         
-         var textField:TextFieldEx;
+         //trace ("infoText = " + infoText);
          
          if (mAutofitWidth)
-            textField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0, true, mHalfWidth * 2 - 10);
+            mTextField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0, true, mHalfWidth * 2 - 10);
          else
-            textField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0);//, true, mHalfWidth * 2 - 10);
+            mTextField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0);//, true, mHalfWidth * 2 - 10);
          
-         if (GetRotation () == 0)
-            textDisplayObject = textField;
-         else
-         {
-            var textBitmap:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (textField);
-            textDisplayObject = textBitmap;
-         }
+         mTextBitmap = DisplayObjectUtil.CreateCacheDisplayObject (mTextField);
          
-         addChild (textDisplayObject);
-         
-         textDisplayObject.x = - textDisplayObject.width * 0.5;
-         textDisplayObject.y = - textDisplayObject.height * 0.5;
+         UpdateTextComponent ();
       }
       
       public function GetText ():String

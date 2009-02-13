@@ -268,6 +268,10 @@ package common {
       
       public static function WorldDefine2EditorWorld (worldDefine:WorldDefine):editor.world.World
       {
+         // from v1,03
+         DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         
+         //
          var editorWorld:editor.world.World = new editor.world.World ();
          
          editorWorld.SetAuthorName (worldDefine.mAuthorName);
@@ -565,7 +569,8 @@ package common {
                
                if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
                {
-                  brotherIds [entityId] = entityDefine.mNewIndex;
+                  //brotherIds [entityId] = entityDefine.mNewIndex;
+                  brotherIds [entityId] = editorWorld.getChildIndex (entityDefine.mEntity);
                }
             }
             
@@ -705,7 +710,7 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_ShapeText)
                {
                   entityDefine.mText = element.@text;
-                  entityDefine.mAutofitWidth = element.@autofit_width;
+                  entityDefine.mAutofitWidth = parseInt (element.@autofit_width) != 0;
                   
                   entityDefine.mHalfWidth = parseFloat (element.@half_width);
                   entityDefine.mHalfHeight = parseFloat (element.@half_height);
@@ -714,7 +719,7 @@ package common {
                {
                   entityDefine.mRadius = parseFloat (element.@radius);
                   
-                  entityDefine.mIsInteractive = parseFloat (element.@interactive);
+                  entityDefine.mIsInteractive = parseInt (element.@autofit_width) != 0;
                   entityDefine.mInitialGravityAcceleration = parseFloat (element.@initial_gravity_acceleration);
                   entityDefine.mInitialGravityAngle = parseFloat (element.@initial_gravity_angle);
                }
@@ -780,6 +785,13 @@ package common {
       
       public static function WorldDefine2ByteArray (worldDefine:WorldDefine):ByteArray
       {
+         // from v1,03
+         if (worldDefine.mVersion >= 0x0103)
+         {
+            DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         }
+         
+         //
          var byteArray:ByteArray = new ByteArray ();
          
          // COlor INfection
@@ -845,8 +857,16 @@ package common {
             var entityDefine:Object = worldDefine.mEntityDefines [entityId];
             
             byteArray.writeShort (entityDefine.mEntityType);
-            byteArray.writeFloat (entityDefine.mPosX);
-            byteArray.writeFloat (entityDefine.mPosY);
+            if (worldDefine.mVersion >= 0x0103)
+            {
+               byteArray.writeDouble (entityDefine.mPosX);
+               byteArray.writeDouble (entityDefine.mPosY);
+            }
+            else
+            {
+               byteArray.writeFloat (entityDefine.mPosX);
+               byteArray.writeFloat (entityDefine.mPosY);
+            }
             byteArray.writeFloat (entityDefine.mRotation);
             byteArray.writeByte (entityDefine.mIsVisible);
             
@@ -903,7 +923,7 @@ package common {
                   }
                }
             }
-            else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
+            else if (Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
             {
                byteArray.writeByte (entityDefine.mCollideConnected);
                

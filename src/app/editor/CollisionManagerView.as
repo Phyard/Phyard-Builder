@@ -21,6 +21,7 @@ package editor {
    
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
+   import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.runtime.Runtime;
    
@@ -222,8 +223,8 @@ package editor {
             friend1 = friendPairs [i].mCategory1;
             friend2 = friendPairs [i].mCategory2;
             
-            point1 = WorldView.LocalToLocal (mCollisionManager, mFriendLinksSprite, new Point (friend1.x, friend1.y) );
-            point2 = WorldView.LocalToLocal (mCollisionManager, mFriendLinksSprite, new Point (friend2.x, friend2.y) );
+            point1 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksSprite, new Point (friend1.x, friend1.y) );
+            point2 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksSprite, new Point (friend2.x, friend2.y) );
             
             GraphicsUtil.DrawLine (mFriendLinksSprite, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
          }
@@ -442,12 +443,12 @@ package editor {
       
       public function ViewToManager (point:Point):Point
       {
-         return WorldView.LocalToLocal (this, mCollisionManager, point);
+         return DisplayObjectUtil.LocalToLocal (this, mCollisionManager, point);
       }
       
       public function ManagerToView (point:Point):Point
       {
-         return WorldView.LocalToLocal (mCollisionManager, this, point);
+         return DisplayObjectUtil.LocalToLocal (mCollisionManager, this, point);
       }
       
 //==================================================================================
@@ -502,7 +503,7 @@ package editor {
          CheckModifierKeys (event);
          _isZeroMove = true;
          
-         var worldPoint:Point = WorldView.LocalToLocal (event.target as DisplayObject, mCollisionManager, new Point (event.localX, event.localY) );
+         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mCollisionManager, new Point (event.localX, event.localY) );
          
          if (IsCreating ())
          {
@@ -601,7 +602,7 @@ package editor {
          if (mCollisionManager == null)
             return;
          
-         var point:Point = WorldView.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         var point:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
          var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
          
          if ( ! rect.containsPoint (point) )
@@ -613,7 +614,7 @@ package editor {
          
          _isZeroMove = false;
          
-         var worldPoint:Point = WorldView.LocalToLocal (event.target as DisplayObject, mCollisionManager, new Point (event.localX, event.localY) );
+         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mCollisionManager, new Point (event.localX, event.localY) );
          
          if (IsCreating ())
          {
@@ -641,7 +642,7 @@ package editor {
          if (mCollisionManager == null)
             return;
          
-         var worldPoint:Point = WorldView.LocalToLocal (event.target as DisplayObject, mCollisionManager, new Point (event.localX, event.localY) );
+         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mCollisionManager, new Point (event.localX, event.localY) );
          
          if (IsCreating ())
          {
@@ -694,7 +695,7 @@ package editor {
          
          CheckModifierKeys (event);
          
-         var point:Point = WorldView.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         var point:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
          var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
          
          var isOut:Boolean = ! rect.containsPoint (point);

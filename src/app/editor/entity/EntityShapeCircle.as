@@ -126,7 +126,7 @@ package editor.entity {
          if (radius < 0)
             radius = 0;
          
-         //mRadius = Math.floor (radius + 0.5);
+         //mRadius = Math.round (radius);
          //>> from 1.02
          mRadius = radius;
          //<<

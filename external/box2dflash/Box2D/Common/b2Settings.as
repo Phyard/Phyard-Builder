@@ -23,7 +23,11 @@ import Box2D.Common.Math.*;
 	
 	
 public class b2Settings{
-
+   
+   //>> mod
+   public static const k_MinFloatNumber:Number = 1.192092896e-07;
+   //<<
+   
 	static public const USHRT_MAX:int = 0x0000ffff;
 
 	static public const b2_pi:Number = Math.PI;

@@ -106,16 +106,21 @@ package editor.world {
          if (brothers == null)
             return;
          
-         var index:int = brothers.indexOf (entity);
-         
-         if (index < 0)
+         while (true) // mystery: sometimes, an entity will be put in a brother group more than one times
          {
-            Logger.Assert (false, "entity not in brothers");
-            return;
+            var index:int = brothers.indexOf (entity);
+            
+            if (index < 0)
+            {
+               //Logger.Assert (false, "entity not in brothers");
+               //return;
+               
+               break;
+            }
+            
+            brothers.splice (index, 1);
+            entity.SetBrothers (null);
          }
-         
-         brothers.splice (index, 1);
-         entity.SetBrothers (null);
          
          if (brothers.length == 1)
          {

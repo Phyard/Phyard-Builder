@@ -675,7 +675,6 @@ public class b2World
 	
 	// Find TOI contacts and solve them.
 	public function SolveTOI(step:b2TimeStep) : void{
-		
 		var b:b2Body;
 		var s1:b2Shape;
 		var s2:b2Shape;
@@ -778,7 +777,10 @@ public class b2World
 				}
 			}
 			
-			if (minContact == null || 1.0 - 100.0 * Number.MIN_VALUE < minTOI)
+			//>> mod
+			//if (minContact == null || 1.0 - 100.0 * Number.MIN_VALUE < minTOI)
+			if (minContact == null || 1.0 - 100.0 * b2Settings.k_MinFloatNumber < minTOI)
+			//<<
 			{
 				// No more TOI events. Done!
 				break;

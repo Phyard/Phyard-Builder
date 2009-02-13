@@ -217,7 +217,7 @@
                params.mWidth = mInputValues.mWidth;
                params.mHeight = mInputValues.mHeight;
                
-               params.mCollisionCategoryIndex = (mInputValues.mCollisionCategoryListDataProvider as Array) [mInputValues.mCollisionCategoryListSelectedIndex];
+               params.mCollisionCategoryIndex = ((mInputValues.mCollisionCategoryListDataProvider as Array) [mInputValues.mCollisionCategoryListSelectedIndex]).data;
             }
             
             if (OnConfirm != null)

@@ -219,7 +219,7 @@
                
                params.mAppearanceType = mInputValues.mAppearanceType;
                
-               params.mCollisionCategoryIndex = (mInputValues.mCollisionCategoryListDataProvider as Array) [mInputValues.mCollisionCategoryListSelectedIndex];
+               params.mCollisionCategoryIndex = ((mInputValues.mCollisionCategoryListDataProvider as Array) [mInputValues.mCollisionCategoryListSelectedIndex]).data;
             }
             
             PopUpManager.removePopUp(this);

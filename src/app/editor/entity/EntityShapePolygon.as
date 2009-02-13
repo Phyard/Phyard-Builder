@@ -17,14 +17,16 @@ package editor.entity {
    
    import common.Define;
    
-   public class EntityShapeRectangle extends EntityShape 
+   public class EntityShapePolygon extends EntityShape 
    {
    // geom
+      
+      public var mVertexPoint:Array = new Array ();
       
       public var mHalfWidth:Number;
       public var mHalfHeight:Number;
       
-      public function EntityShapeRectangle (world:World)
+      public function EntityShapePolygon (world:World)
       {
          super (world);
          

@@ -55,7 +55,8 @@ package editor.entity {
       
       public function SetInitialGravityAcceleration (ga:Number):void
       {
-         mInitialGravityAcceleration = ValueAdjuster.AdjustInitialGravityAcceleration (ga);
+         //mInitialGravityAcceleration = ValueAdjuster.AdjustInitialGravityAcceleration (ga);
+         mInitialGravityAcceleration = ga;
       }
       
       public function GetInitialGravityAcceleration ():Number

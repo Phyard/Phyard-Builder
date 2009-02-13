@@ -77,8 +77,8 @@ package com.tapirgames.util {
          result = ParseBullets(result); 
          result = ParseLinks(result); 
          
-         trace ("wikiString = " + wikiString);
-         trace ("result = " + result);
+         //trace ("wikiString = " + wikiString);
+         //trace ("result = " + result);
          
          return result; 
       }

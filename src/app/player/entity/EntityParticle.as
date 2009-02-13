@@ -11,7 +11,7 @@ package player.entity {
    
    public class EntityParticle extends ShapeContainer
    {
-      private var mLifeDuration:Number = 1.2; // seconds
+      private var mLifeDuration:Number = 1.2; // default, seconds
       private var mLife:Number = 0;
       
       

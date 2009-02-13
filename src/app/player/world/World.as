@@ -4,6 +4,8 @@ package player.world {
    import flash.geom.Point;
    import flash.events.MouseEvent;
    
+   import com.tapirgames.util.DisplayObjectUtil;
+   
    import player.physics.PhysicsEngine;
    import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
@@ -268,26 +270,60 @@ package player.world {
       public function Update (escapedTime1:Number, speedX:int):void
       {
          //var dt:Number = escapedTime1 * 0.5;
-         var dt:Number = Define.WorldStepTimeInterval * 0.5;
-         if (escapedTime1 == 0)
-            dt = 0;
          
-         for (var k:int = 0; k < speedX; ++ k)
+         var dt:Number = Define.WorldStepTimeInterval * 0.5;
+         
+         if (mVersion >= 0x102)
          {
-            mParticleManager.Update (dt);
-            mPhysicsEngine.Update (dt);
+            if (escapedTime1 == 0)
+               dt = 0;
          }
          
-         dt *= speedX;
+         var k:uint;
+         var i:uint;
+         var displayObject:Object;
          
-         ClearReport ();
+         // from v1.03, to remove the randomness
          
-         for (var i:uint=0; i < numChildren; ++ i)
+         if (mVersion >= 0x103)
          {
-            var displayObject:Object = getChildAt (i);
-            if (displayObject is Entity)
+            for (k = 0; k < speedX; ++ k)
             {
-               (displayObject as Entity).Update (dt);
+               mParticleManager.Update (dt);
+               mPhysicsEngine.Update (dt);
+               
+               if (k == speedX - 1)
+                  ClearReport ();
+               
+               for (i=0; i < numChildren; ++ i)
+               {
+                  displayObject = getChildAt (i);
+                  if (displayObject is Entity)
+                  {
+                     (displayObject as Entity).Update (dt);
+                  }
+               }
+            }
+         }
+         else
+         {
+            for (k = 0; k < speedX; ++ k)
+            {
+               mParticleManager.Update (dt);
+               mPhysicsEngine.Update (dt);
+            }
+            
+            dt *= speedX;
+            
+            ClearReport ();
+            
+            for (i=0; i < numChildren; ++ i)
+            {
+               displayObject = getChildAt (i);
+               if (displayObject is Entity)
+               {
+                  (displayObject as Entity).Update (dt);
+               }
             }
          }
       }
@@ -658,7 +694,8 @@ package player.world {
                   var bombDefine:Object = new Object ();
                   bombDefines.push (bombDefine);
                   
-                  var bombPos:Point = container.GetPosition ().add (shape.GetLocalPosition ());
+                  //var bombPos:Point = container.GetPosition ().add (shape.GetLocalPosition ());
+                  var bombPos:Point = DisplayObjectUtil.LocalToLocal (container, this, shape.GetLocalPosition ());
                   var bombSize:Number = Define.DefaultBombSquareSideLength;
                   
                   if (shape is EntityShapeCircle)

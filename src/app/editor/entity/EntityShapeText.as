@@ -96,7 +96,7 @@ package editor.entity {
          infoText = TextUtil.GetHtmlEscapedText (infoText);
          infoText = TextUtil.ParseWikiString (infoText);
          
-         trace ("infoText = " + infoText);
+         //trace ("infoText = " + infoText);
          
          var textDisplayObject:DisplayObject;
          

@@ -418,23 +418,8 @@ package editor.world {
       }
       
 //=================================================================================
-//   utils
+//  
 //=================================================================================
-      
-      // here, the display1 and display2 are not essentially the children of this world
-      public static function LocalToLocal (display1:DisplayObject, display2:DisplayObject, point:Point):Point
-      {
-         // seems flash will auto postions of displayobjects. so the current implementings of this
-         // function is not very accurate!
-         
-         
-         //
-         var matrix:Matrix = display2.transform.concatenatedMatrix.clone();
-         matrix.invert();
-         return matrix.transformPoint (display1.transform.concatenatedMatrix.transformPoint (point));
-         
-         //return display2.globalToLocal ( display1.localToGlobal (point) );
-      }
       
    }
 }

@@ -16,15 +16,6 @@ package common {
       public static const EditorUrl:String = "http://colorinfection.appspot.com/htmls/editor_page_beta.html";
       
 //===========================================================================
-// number precision
-//===========================================================================
-      
-      // this values are presumed for the max float value is -5000.0 - 5000.0
-      
-      // Fixed Number FractionDigits
-      public static const FractionDigits_General:int = 3;
-      
-//===========================================================================
 // world
 //===========================================================================
       

@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Slider Setting" width="500">
+    title="Slider Setting" width="500" creationComplete="OnInitPanel()">
 
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Spacer width="100%"/>
@@ -48,12 +48,12 @@
 
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Label id="Label_LowerTranslation" text="Lower Translation:" textAlign="right" width="150"/>
-      <mx:NumericStepper id="NumericStepper_LowerTranslation" minimum="-600" maximum="0"
+      <mx:NumericStepper id="NumericStepper_LowerTranslation" maximum="0"
             stepSize="1" width="60" />
       <mx:Label text="px" textAlign="left"/>
       <mx:Spacer width="100%"/>
       <mx:Label id="Label_UpperTranslation" text="Upper Translation:" textAlign="right"/>
-      <mx:NumericStepper id="NumericStepper_UpperTranslation" minimum="0" maximum="600"
+      <mx:NumericStepper id="NumericStepper_UpperTranslation" minimum="0"
             stepSize="1" width="60" />
       <mx:Label text="px" textAlign="left"/>
    </mx:HBox>
@@ -72,10 +72,15 @@
    -->
    
    <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="150"/>
+      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="120"/>
       <mx:NumericStepper id="NumericStepper_MotorSpeed" minimum="-300" maximum="300"
             stepSize="1" width="60" />
       <mx:Label text="px" textAlign="left"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_MaxMotorTorque" text="Max Motor Force:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_MaxMotorForce" minimum="0"
+            stepSize="1" width="90" />
+      <mx:Label text="   " textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
@@ -102,8 +107,21 @@
       <![CDATA[       
          import mx.managers.PopUpManager;
          
+         import common.Define;
+         
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
+         
+         private function OnInitPanel ():void
+         {
+            NumericStepper_LowerTranslation.minimum = - Define.MaxSliderLimitTranslation;
+            NumericStepper_UpperTranslation.maximum =   Define.MaxSliderLimitTranslation;
+            
+            NumericStepper_MotorSpeed.minimum = - Define.MaxSliderMotorSpeed;
+            NumericStepper_MotorSpeed.maximum =   Define.MaxSliderMotorSpeed;
+            
+            NumericStepper_MaxMotorForce.maximum = Define.MaxSliderMotorForce;
+         }
          
          public function SetValues (values:Object):void
          {
@@ -123,6 +141,8 @@
             NumericStepper_MotorSpeed.value = values.mMotorSpeed;
             
             CheckBox_BackAndForth.selected = values.mBackAndForth;
+            
+            NumericStepper_MaxMotorForce.value = values.mMaxMotorForce;
             
             //
             SelectList_ConnectedShape1.dataProvider = values.mShapeListDataProvider;
@@ -163,6 +183,8 @@
              
              params.mBackAndForth = CheckBox_BackAndForth.selected;
              
+             params.mMaxMotorForce = NumericStepper_MaxMotorForce.value;
+            
              //
              params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.data;
              params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.data;

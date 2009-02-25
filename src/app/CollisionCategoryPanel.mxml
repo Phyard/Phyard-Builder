@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box 
+         xmlns:mx="http://www.adobe.com/2006/mxml"
+         xmlns:ed="editor.*"
+         direction="vertical" borderStyle="none" width="100%" height="100%"
+         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+         horizontalGap="0" verticalGap="0"
+         creationComplete="OnInitPanel()">
+   <mx:Box direction="horizontal" borderStyle="solid" height="33" width="100%"
+               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0" verticalAlign="center">
+      <mx:Spacer width="10"/>
+      <mx:Button id="Button_CreateCollisionCategory" toolTip="Create Collision Category" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/create-category-disabled.png')" selectedDisabledIcon="@Embed('res/collision/create-category-disabled.png')" upIcon="@Embed('res/collision/create-category.png')" downIcon="@Embed('res/collision/create-category-sel.png')" overIcon="@Embed('res/collision/create-category.png')" selectedUpIcon="@Embed('res/collision/create-category-sel.png')" selectedOverIcon="@Embed('res/collision/create-category-sel.png')" selectedDownIcon="@Embed('res/collision/create-category.png')"   />
+      <mx:Button id="Button_CreateCollisionCategoryFriendLink" toolTip="Create Friend Link" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/create-link-disabled.png')" upIcon="@Embed('res/collision/create-link.png')" downIcon="@Embed('res/collision/create-link-sel.png')" overIcon="@Embed('res/collision/create-link.png')" selectedUpIcon="@Embed('res/collision/create-link-sel.png')" selectedOverIcon="@Embed('res/collision/create-link-sel.png')" selectedDownIcon="@Embed('res/collision/create-link.png')"   />
+      <mx:Button id="Button_BreakCollisionCategoryFriendLink" toolTip="Break Friend Link" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/break-link-disabled.png')" upIcon="@Embed('res/collision/break-link.png')" downIcon="@Embed('res/collision/break-link-sel.png')" overIcon="@Embed('res/collision/break-link.png')" selectedUpIcon="@Embed('res/collision/break-link-sel.png')" selectedOverIcon="@Embed('res/collision/break-link-sel.png')" selectedDownIcon="@Embed('res/collision/break-link.png')"   />
+      <mx:Spacer width="10"/>
+      <mx:Button id="Button_DeleteCollisionCategory" toolTip="Delete Collision Category" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-delete.png')" disabledIcon="@Embed('res/command/command-delete-disabled.png')" />
+      <mx:Spacer width="10"/>
+      <mx:Label id="Label_CollisionCategoryName" text="Name:" textAlign="right"/>
+      <mx:TextInput id="Text_CollisionCategoryName" text="" width="100%"/>
+      <mx:Spacer width="10"/>
+      <mx:CheckBox id="CheckBox_CollisionCategory_CollideInternally" label="Collide Internally"/>
+      <mx:Spacer width="5"/>
+      <mx:CheckBox id="CheckBox_CollisionCategory_DefaultCategory" label="Default Category"/>
+      <mx:Spacer width="10"/>
+      <mx:Button id="Button_CollisionCategoryHelp" toolTip="Editing Help" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/editor/editor-help.png')" click="OnClickTutorialLink(event)" />
+      <mx:Spacer width="10"/>
+   </mx:Box>
+   <mx:Box direction="vertical" borderStyle="solid" height="100%"  width="100%"
+            paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+            horizontalGap="0" verticalGap="0" borderThickness="0" clipContent="true">
+      <ed:CollisionManagerView id="CollisionManagerView" height="100%" width="100%"/>
+   </mx:Box>
+
+   <mx:Script>
+        <![CDATA[
+            
+            import mx.events.FlexEvent;
+            import editor.runtime.Runtime;
+            import com.tapirgames.util.UrlUtil;
+            import common.Define;
+            
+            private function OnInitPanel ():void
+            {
+               //
+               //MainView.mCollisionManagerView = CollisionManagerView;
+               Runtime.mCollisionCategoryView = CollisionManagerView;
+               
+               //
+               CollisionManagerView.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;
+               CollisionManagerView.mButtonCreateCollisionCategoryFriendLink = Button_CreateCollisionCategoryFriendLink;
+               CollisionManagerView.mButtonBreakCollisionCategoryFriendLink = Button_BreakCollisionCategoryFriendLink;
+               
+               Button_CreateCollisionCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnCreateButtonClick);
+               Button_CreateCollisionCategoryFriendLink.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnCreateButtonClick);
+               Button_BreakCollisionCategoryFriendLink.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnCreateButtonClick);
+               
+               CollisionManagerView.mButtonDelete = Button_DeleteCollisionCategory;
+               CollisionManagerView.mCheckBoxCollideInternally = CheckBox_CollisionCategory_CollideInternally;
+               CollisionManagerView.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
+               
+               Button_DeleteCollisionCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
+               CheckBox_CollisionCategory_CollideInternally.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
+               CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
+               
+               CollisionManagerView.mTextInputName = Text_CollisionCategoryName;
+               
+               Text_CollisionCategoryName.addEventListener (FlexEvent.ENTER, CollisionManagerView.OnTextInputEnter);
+               
+               //
+               CollisionManagerView.SetCollisionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetCollisionManager ());
+            }
+            
+            private function OnClickTutorialLink (event:Event):void
+            {
+               UrlUtil.PopupPage (Define.EditingTutorialUrl);
+            }
+            
+       ]]>
+   </mx:Script>
+   
+</mx:Box>

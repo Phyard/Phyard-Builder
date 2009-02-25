@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    title="Bomb Setting" width="500" creationComplete="OnInitPanel()">
+
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:Box label="Physics" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <ShapePhysicsSettingPanel id="PhysicsSettingPanel" 
+               creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
+      </mx:Box>
+      <mx:Box label="Geometry" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <ShapeGeometrySettingPanel id="GeometrySettingPanel" creationComplete="OnGeometrySettingPanelCreationComplete()"/>
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label id="Label_Radius" text="Radius:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_Radius" stepSize="1" width="80" />
+         </mx:HBox>
+         <mx:Spacer height="100%" />
+      </mx:Box>
+   </mx:TabNavigator>
+
+   <mx:Spacer height="20"/>
+   
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   
+   <mx:Script>
+     <![CDATA[       
+         
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+         
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         private function OnPhysicsSettingPanelCreationComplete ():void
+         {
+            PhysicsSettingPanel.SetValues (mParams);
+            
+            PhysicsSettingPanel.SetMustEnablePhysics ();
+         }
+         
+         private function OnGeometrySettingPanelCreationComplete ():void
+         {
+            GeometrySettingPanel.SetValues (mParams);
+            
+            NumericStepper_Radius.minimum = Define.MinBombRadius;
+            NumericStepper_Radius.maximum = Define.MaxBombRadius;
+            
+            NumericStepper_Radius.value = mParams.mRadius;
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            if (PhysicsSettingPanel != null)
+            {
+               PhysicsSettingPanel.GetValues (mParams);
+            }
+            
+            if (GeometrySettingPanel != null)
+            {
+               GeometrySettingPanel.GetValues (mParams);
+            
+               mParams.mRadius = NumericStepper_Radius.value;
+            }
+            
+            PopUpManager.removePopUp(this);
+            
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

@@ -39,6 +39,7 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
+         var filledColor:uint;
          var borderColor:uint;
          var borderSize :int;
          
@@ -56,12 +57,21 @@ package editor.entity {
             borderSize = 1;
          }
          
+         if (mAiType >= 0)
+         {
+            filledColor = Define.GetShapeFilledColor (mAiType);
+         }
+         else
+         {
+            filledColor = mFilledColor;
+         }
+         
          if (GetFilledColor () == Define.ColorTextBackground)
             alpha = 0.5;
          else
             alpha = 0.7;
          
-         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, mFilledColor);
+         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, filledColor);
          
          if (GetFilledColor () == Define.ColorBombObject)
             GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
@@ -167,6 +177,37 @@ package editor.entity {
       private var mVertexController1:VertexController = null;
       private var mVertexController2:VertexController = null;
       private var mVertexController3:VertexController = null;
+      
+      override public function GetVertexControllerIndex (vertexController:VertexController):int
+      {
+         if (vertexController != null)
+         {
+            if (vertexController == mVertexController0)
+               return 0;
+            if (vertexController == mVertexController1)
+               return 1;
+            if (vertexController == mVertexController2)
+               return 2;
+            if (vertexController == mVertexController3)
+               return 3;
+         }
+         
+         return -1;
+      }
+      
+      override public function GetVertexControllerByIndex (index:int):VertexController
+      {
+         if (index == 0)
+            return mVertexController0;
+         if (index == 1)
+            return mVertexController1;
+         if (index == 2)
+            return mVertexController2;
+         if (index == 3)
+            return mVertexController3;
+         
+         return null;
+      }
       
       override public function SetVertexControllersVisible (visible:Boolean):void
       {
@@ -300,7 +341,7 @@ package editor.entity {
       
       private var _DigonalVertexControllerX:Number = 0;
       private var _DigonalVertexControllerY:Number = 0;
-      public function NotifyBeginMovingVertexController (vertexController:VertexController):void
+      override public function OnBeginMovingVertexController (vertexController:VertexController):void
       {
          var vertexController2:VertexController = GetDigonalVertexController (vertexController);
          

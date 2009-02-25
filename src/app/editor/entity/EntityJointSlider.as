@@ -12,6 +12,8 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
+   import common.Define;
+   
    public class EntityJointSlider extends EntityJoint 
    {
       
@@ -24,6 +26,8 @@ package editor.entity {
       public var mEnableMotor:Boolean = true;
       public var mMotorSpeed:Number = 30;
       public var mBackAndForth:Boolean = true;
+      
+      public var mMaxMotorForce:Number = Define.DefaultSliderMotorForce; // v1.04
       
       private var mRangeBarHalfHeight:Number = 3;
       
@@ -115,8 +119,6 @@ package editor.entity {
          //var dxHalfHeight:Number = - mRangeBarHalfHeight * dy / distance;
          //var dyHalfHeight:Number =   mRangeBarHalfHeight * dx / distance;
          
-         //GraphicsUtil.DrawPolygon (this, );
-         
          if (mVertexControllerLower != null)
          {
             mVertexControllerLower.SetPosition (distance + mLowerTranslation, 0);
@@ -192,6 +194,7 @@ package editor.entity {
          slider.mEnableMotor = mEnableMotor;
          slider.mMotorSpeed = mMotorSpeed;
          slider.mBackAndForth = mBackAndForth;
+         slider.mMaxMotorForce = mMaxMotorForce;
          
          var anchor1:SubEntitySliderAnchor = GetAnchor1 ();
          var anchor2:SubEntitySliderAnchor = GetAnchor2 ();
@@ -222,6 +225,29 @@ package editor.entity {
       
       private var mVertexControllerLower:VertexController = null;
       private var mVertexControllerUpper:VertexController = null;
+      
+      override public function GetVertexControllerIndex (vertexController:VertexController):int
+      {
+         if (vertexController != null)
+         {
+            if (vertexController == mVertexControllerLower)
+               return 0;
+            if (vertexController == mVertexControllerUpper)
+               return 1;
+         }
+         
+         return -1;
+      }
+      
+      override public function GetVertexControllerByIndex (index:int):VertexController
+      {
+         if (index == 0)
+            return mVertexControllerLower;
+         if (index == 1)
+            return mVertexControllerUpper;
+         
+         return null;
+      }
       
       override public function SetVertexControllersVisible (visible:Boolean):void
       {

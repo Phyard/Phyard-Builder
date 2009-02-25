@@ -265,6 +265,20 @@ package player.physics {
          return proxyShapePolygon;
       }
       
+      public function CreateProxyShapeConvexPolygon (proxyBody:PhysicsProxyBody, displayPoints:Array, params:Object = null):PhysicsProxyShapePolygon
+      {
+         params.mIsConcavePotentially = false;
+         
+         return CreateProxyShapePolygon (proxyBody, displayPoints, params);
+      }
+      
+      public function CreateProxyShapeConcavePolygon (proxyBody:PhysicsProxyBody, displayPoints:Array, params:Object = null):PhysicsProxyShapePolygon
+      {
+         params.mIsConcavePotentially = true;
+         
+         return CreateProxyShapePolygon (proxyBody, displayPoints, params);
+      }
+      
       public function CreateProxyJointHinge (proxyBody1:PhysicsProxyBody, proxyBody2:PhysicsProxyBody, anchorDisplayX:Number, anchorDisplayY:Number, params:Object):PhysicsProxyJointHinge
       {
          var point:Point = DisplayPosition2PhysicsPoint (anchorDisplayX, anchorDisplayY);

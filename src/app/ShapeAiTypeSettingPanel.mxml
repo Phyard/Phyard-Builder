@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+      borderStyle="solid" borderThickness="0"
+      paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+      width="100%" height="100%"
+      creationComplete="OnInitPanel()"
+      >
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="10%"/>
+      <mx:CheckBox id="CheckBox_IsVisible" label="Visible" width="30%"/>
+      <mx:Label text="Transparency:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_Transparency" stepSize="0.01" minimum="0" maximum="1" value="1" width="80" />
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="10%"/>
+      <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="30%"/>
+      <mx:Label text="Filled Color:" textAlign="right"/>
+      <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xFFFFFF"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="10%"/>
+      <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border" width="30%"/>
+      <mx:Label text="Border Color:" textAlign="right"/>
+      <mx:ColorPicker id="ColorPicker_BorderColor" showTextField="true" selectedColor="0x000000"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="10%"/>
+      <mx:Spacer width="30%"/>
+      <mx:Label text="Border Thickness:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_BorderThickness" stepSize="1" minimum="0" maximum="5" value="1" width="80" />
+   </mx:HBox>
+
+   <mx:Script>
+      <![CDATA[       
+         
+         import common.Define;
+         
+         private var mInputValues:Object;
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         public function SetValues (inputValues:Object):void
+         {
+            mInputValues = inputValues;
+            
+            CheckBox_IsVisible.selected = inputValues.mIsVisible;
+            NumericStepper_Transparency.value = inputValues.mTransparency;
+            CheckBox_DrawBorder.selected = inputValues.mDrawBorder;
+            ColorPicker_BorderColor.selectedColor = inputValues.mBorderColor;
+            NumericStepper_BorderThickness.value = inputValues.mBorderThickness;
+            CheckBox_DrawBackground.selected = inputValues.mDrawBackground;
+            ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;
+         }
+         
+         public function GetValues (returnValues:Object):void
+         {
+            returnValues.mIsVisible = CheckBox_IsVisible.selected;
+            returnValues.mTransparency = NumericStepper_Transparency.value;
+            returnValues.mDrawBorder = CheckBox_DrawBorder.selected;
+             returnValues.mBorderColor = ColorPicker_BorderColor.selectedColor;
+            returnValues.mBorderThickness = NumericStepper_BorderThickness.value;
+            returnValues.mDrawBackground = CheckBox_DrawBackground.selected;
+            returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
+         }
+         
+     ]]>
+   </mx:Script>
+
+</mx:VBox>

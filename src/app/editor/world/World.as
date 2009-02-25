@@ -14,6 +14,7 @@ package editor.world {
    import editor.entity.EntityShape;
    import editor.entity.EntityShapeCircle;
    import editor.entity.EntityShapeRectangle;
+   import editor.entity.EntityShapePolygon;
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeGravityController;
    
@@ -44,6 +45,18 @@ package editor.world {
       private var mShareSourceCode:Boolean = false;
       private var mPermitPublishing:Boolean = false;
       
+      private var mWorldLeft:int = 0;
+      private var mWorldTop:int = 0;
+      private var mWorldWidth:int = Define.DefaultWorldWidth;
+      private var mWorldHeight:int = Define.DefaultWorldHeight;
+      
+      private var mCameraCenterX:int = mWorldLeft + mWorldWidth * 0.5;
+      private var mCameraCenterY:int = mWorldTop  + mWorldHeight * 0.5;
+      
+      private var mBackgroundColor:uint = 0xDDDDA0;
+      private var mBuildBorder:Boolean = true;
+      private var mBorderColor:uint = Define.ColorStaticObject;
+      
       public function World ()
       {
       //
@@ -53,7 +66,7 @@ package editor.world {
       }
       
 //=================================================================================
-//   author
+//   settings
 //=================================================================================
       
       public function SetAuthorName (name:String):void
@@ -94,6 +107,106 @@ package editor.world {
       public function IsPermitPublishing ():Boolean
       {
          return mPermitPublishing;
+      }
+      
+      public function SetWorldLeft (left:int):void
+      {
+         mWorldLeft = left;
+      }
+      
+      public function GetWorldLeft ():int
+      {
+         return mWorldLeft;
+      }
+      
+      public function SetWorldTop (top:int):void
+      {
+         mWorldTop = top;
+      }
+      
+      public function GetWorldTop ():int
+      {
+         return mWorldTop;
+      }
+      
+      public function SetWorldWidth (ww:int):void
+      {
+         mWorldWidth = ww;
+      }
+      
+      public function GetWorldWidth ():int
+      {
+         return mWorldWidth;
+      }
+      
+      public function SetWorldHeight (wh:int):void
+      {
+         mWorldHeight = wh;
+      }
+      
+      public function GetWorldHeight ():int
+      {
+         return mWorldHeight;
+      }
+      
+      public function GetWorldRight ():int
+      {
+         return mWorldLeft + mWorldWidth;
+      }
+      
+      public function GetWorldBottom ():int
+      {
+         return mWorldTop + mWorldHeight;
+      }
+      
+      public function SetCameraCenterX (centerX:int):void
+      {
+         mCameraCenterX = centerX;
+      }
+      
+      public function GetCameraCenterX ():int
+      {
+         return mCameraCenterX;
+      }
+      
+      public function SetCameraCenterY (centerY:int):void
+      {
+         mCameraCenterY = centerY;
+      }
+      
+      public function GetCameraCenterY ():int
+      {
+         return mCameraCenterY;
+      }
+      
+      public function SetBackgroundColor (bgColor:uint):void
+      {
+         mBackgroundColor = bgColor;
+      }
+      
+      public function GetBackgroundColor ():uint
+      {
+         return mBackgroundColor;
+      }
+      
+      public function SetBorderColor (bgColor:uint):void
+      {
+         mBorderColor = bgColor;
+      }
+      
+      public function GetBorderColor ():uint
+      {
+         return mBorderColor;
+      }
+      
+      public function SetBuildBorder (buildBorder:Boolean):void
+      {
+         mBuildBorder = buildBorder;
+      }
+      
+      public function IsBuildBorder ():Boolean
+      {
+         return mBuildBorder;
       }
       
 //=================================================================================
@@ -145,6 +258,19 @@ package editor.world {
          rect.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
          
          return rect;
+      }
+      
+      public function CreateEntityShapePolygon ():EntityShapePolygon
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
+         var polygon:EntityShapePolygon = new EntityShapePolygon (this);
+         addChild (polygon);
+         
+         polygon.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
+         
+         return polygon;
       }
       
       public function CreateEntityJointDistance ():EntityJointDistance
@@ -230,7 +356,7 @@ package editor.world {
             if (child is EntityShape)
             {
                shape = child as EntityShape;
-               if (shape.IsPhysicsEntity ())
+               if (shape.IsBasicShapeEntity () && shape.IsPhysicsEnabled ())
                {
                   var item:Object = new Object ();
                   item.mEntityIndex = i;
@@ -404,6 +530,11 @@ package editor.world {
       public function GetCollisionManager ():CollisionManager
       {
          return mCollisionManager;
+      }
+      
+      public function SetCollisionManager (cm:CollisionManager):void
+      {
+         mCollisionManager = cm;
       }
       
       public function GetCollisionCategoryIndex (category:EntityCollisionCategory):int

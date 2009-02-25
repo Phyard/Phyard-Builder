@@ -37,7 +37,7 @@ package com.tapirgames.util {
          return cachedBitmap;
       }
       
-      // here, the display1 and display2 are not essentially the children of this world
+      // here, the display1 and display2 must be add in stage
       public static function LocalToLocal (display1:DisplayObject, display2:DisplayObject, point:Point):Point
       {
          // seems flash will auto postions of displayobjects. so the current implementings of this
@@ -50,6 +50,19 @@ package com.tapirgames.util {
          return matrix.transformPoint (display1.transform.concatenatedMatrix.transformPoint (point));
          
          //return display2.globalToLocal ( display1.localToGlobal (point) );
+      }
+      
+      // here, the display1 and display2 must be add in stage
+      public static function LocalVectorToLocalVector (display1:DisplayObject, display2:DisplayObject, vector:Point):Point
+      {
+         // seems flash will auto postions of displayobjects. so the current implementings of this
+         // function is not very accurate!
+         
+         
+         var point1:Point = LocalToLocal (display1, display2, new Point (0, 0));
+         var point2:Point = LocalToLocal (display1, display2, vector);
+         
+         return new Point (point2.x - point1.x, point2.y - point1.y);
       }
       
       

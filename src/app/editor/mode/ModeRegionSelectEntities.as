@@ -69,9 +69,9 @@ package editor.mode {
          mEndY = endY;
          
          var point1:Point = mMainView.WorldToView ( new Point (left, top) );
-         var point2:Point = mMainView.WorldToView ( new Point (top, bottom) );
+         var point2:Point = mMainView.WorldToView ( new Point (right, bottom) );
          
-         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, w, h);
+         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, point2.x - point1.x, point2.y - point1.y);
          
          mMainView.RegionSelectEntities (left, top, right, bottom);
       }

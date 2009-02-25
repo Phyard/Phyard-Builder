@@ -125,23 +125,41 @@ package com.tapirgames.util {
          shape.graphics.lineTo(x2, y2);
       }
       
-      public static function DrawPolygon (shape:Object, vertices:Array, borderColor:uint = 0x0, borderSize:uint = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
+      public static function ClearAndDrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:uint = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
       {
-         if (vertices == null)
+         shape.graphics.clear ();
+         
+         if (points == null)
             return;
          
-         var vertexCount:uint = vertices.length / 2;
+         var vertexCount:uint = points.length;
          if (vertexCount <= 2)
             return;
          
-         shape.graphics.clear ();
          if (filled) shape.graphics.beginFill(fillColor);
          shape.graphics.lineStyle(borderSize, borderColor);
-         shape.graphics.moveTo( vertices [vertexCount * 2 - 2], vertices [vertexCount * 2 - 1] );
+         shape.graphics.moveTo( points [0].x, points [0].y );
          for (var i:uint = 0; i < vertexCount; ++ i)
-         {
-            shape.graphics.lineTo (vertices[i + i], vertices[i + i + 1]);
-         }
+            shape.graphics.lineTo (points[i].x, points[i].y);
+         shape.graphics.lineTo( points [0].x, points [0].y );
+         if (filled) shape.graphics.endFill();
+      }
+      
+      public static function DrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:uint = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
+      {
+         if (points == null)
+            return;
+         
+         var vertexCount:uint = points.length;
+         if (vertexCount <= 2)
+            return;
+         
+         if (filled) shape.graphics.beginFill(fillColor);
+         shape.graphics.lineStyle(borderSize, borderColor);
+         shape.graphics.moveTo( points [0].x, points [0].y );
+         for (var i:uint = 0; i < vertexCount; ++ i)
+            shape.graphics.lineTo (points[i].x, points[i].y);
+         shape.graphics.lineTo( points [0].x, points [0].y );
          if (filled) shape.graphics.endFill();
       }
       

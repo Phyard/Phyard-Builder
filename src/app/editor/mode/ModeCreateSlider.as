@@ -82,7 +82,7 @@ package editor.mode {
          
          mEntityJointSlider.UpdateAppearance ();
          
-         mMainView.UpdateEntityInfoOnStatusBar ();
+         mMainView.UpdateSelectedEntityInfo ();
       }
       
       protected function FinishSession (endX:Number, endY:Number):void
@@ -93,6 +93,8 @@ package editor.mode {
          mEntityJointSlider.GetAnchor2 ().UpdateSelectionProxy ();
          
          ResetSession (false);
+         
+         mMainView.CreateUndoPoint ();
          
          mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);

@@ -4,16 +4,22 @@ package editor.mode {
    
    import com.tapirgames.util.GraphicsUtil;
    
+   import editor.entity.VertexController;
+   
    import editor.WorldView;
    import editor.setting.EditorSetting;
    
    public class ModeMoveSelectedVertexControllers extends Mode
    {
       
-      public function ModeMoveSelectedVertexControllers (mainView:WorldView)
+      public function ModeMoveSelectedVertexControllers (mainView:WorldView, vertexController:VertexController)
       {
          super (mainView);
+         
+         mVertexController = vertexController;
       }
+      
+      private var mVertexController:VertexController;
       
       private var mStartX:Number;
       private var mStartY:Number;
@@ -21,7 +27,6 @@ package editor.mode {
       private var mEndY:Number;
       
       private var mIsStarted:Boolean = false;
-      
       
       override public function Reset ():void
       {
@@ -32,6 +37,9 @@ package editor.mode {
       
       protected function ResetSession ():void
       {
+         if (mIsStarted)
+            mVertexController.GetOwnerEntity ().OnEndMovingVertexController (mVertexController);
+         
          mIsStarted = false;
       }
       
@@ -43,6 +51,8 @@ package editor.mode {
          mStartY = startY;
          
          mIsStarted = true;
+         
+         mVertexController.GetOwnerEntity ().OnBeginMovingVertexController (mVertexController);
       }
       
       private function UpdateSession (endX:Number, endY:Number):void
@@ -61,6 +71,8 @@ package editor.mode {
          UpdateSession (endX, endY);
          
          ResetSession ();
+         
+         mMainView.CreateUndoPoint ();
          
          mMainView.SetCurrentEditMode (null);
       }

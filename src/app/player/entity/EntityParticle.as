@@ -83,6 +83,19 @@ package player.entity {
             
             mWorld.SetCollisionCategoryParamsForShapeParams (entityDefine, Define.CollisionCategoryId_HiddenCategory);
             
+            entityDefine.mDrawBorder = false;
+            entityDefine.mDrawBackground = true;
+            
+            entityDefine.mBorderColor = 0x0;
+            entityDefine.mBorderThickness = 1;
+            entityDefine.mBackgroundColor = 0x0;
+            entityDefine.mTransparency = 100;
+            
+            entityDefine.mIsPhysicsEnabled = true;
+            entityDefine.mIsSensor = false;
+            
+        // 
+            
             var shapeCircle:EntityShapeCircle = new EntityShapeCircle (mWorld, this);
             shapeCircle.BuildFromParams (entityDefine);
             

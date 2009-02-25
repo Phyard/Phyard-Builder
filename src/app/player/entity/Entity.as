@@ -72,6 +72,7 @@ package player.entity {
          mEntityId = params.mEntityId;
          // <<
          
+         visible = params.mIsVisible;
       }
       
       public function DestroyPhysicsProxy ():void

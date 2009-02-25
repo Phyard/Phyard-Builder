@@ -11,7 +11,7 @@ package editor.entity {
    import editor.world.World;
    
    import editor.selection.SelectionEngine;
-   import editor.selection.SelectionProxyRectangle;
+   import editor.selection.SelectionProxyPolygon;
    
    import editor.setting.EditorSetting;
    
@@ -21,26 +21,29 @@ package editor.entity {
    {
    // geom
       
-      public var mVertexPoint:Array = new Array ();
+      public var mVertexPoints:Array = new Array (); // in world coordinate
       
-      public var mHalfWidth:Number;
-      public var mHalfHeight:Number;
+      public var mLocalPoints:Array = new Array (); // in local coordinate
+      
+      private var mIsValid:Boolean = true;
+      private var mMinX:Number;
+      private var mMaxX:Number;
+      private var mMinY:Number;
+      private var mMaxY:Number;
       
       public function EntityShapePolygon (world:World)
       {
          super (world);
-         
-         SetHalfWidth (0);
-         SetHalfHeight (0);
       }
       
       override public function GetTypeName ():String
       {
-         return "Rectangle";
+         return "Polygon";
       }
       
       override public function UpdateAppearance ():void
       {
+         var filledColor:uint;
          var borderColor:uint;
          var borderSize :int;
          
@@ -58,87 +61,247 @@ package editor.entity {
             borderSize = 1;
          }
          
-         if (GetFilledColor () == Define.ColorTextBackground)
-            alpha = 0.5;
+         if (mAiType >= 0)
+         {
+            filledColor = Define.GetShapeFilledColor (mAiType);
+         }
          else
-            alpha = 0.7;
+         {
+            filledColor = mFilledColor;
+         }
          
-         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, mFilledColor);
+         alpha = 0.7;
          
-         if (GetFilledColor () == Define.ColorBombObject)
-            GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
+         if (GetVertexPointsCount () == 1)
+         {
+            GraphicsUtil.Clear (this);
+         }
+         else if (GetVertexPointsCount () == 2)
+         {
+            GraphicsUtil.ClearAndDrawLine (this, mLocalPoints[0].x, mLocalPoints[0].y, mLocalPoints[1].x, mLocalPoints[1].y, borderColor, borderSize);
+         }
+         else if (GetVertexPointsCount () > 2)
+         {
+            GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, borderSize, true, filledColor);
+         }
+         
+         if (!mIsValid)
+         {
+             GraphicsUtil.DrawRect (this, mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY, 0xFF8080, IsSelected () ? 3 : 2, false);
+         }
       }
       
       override public function UpdateSelectionProxy ():void
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
+            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyPolygon ();
             mSelectionProxy.SetUserData (this);
             
             SetVertexControllersVisible (AreVertexControlPointsVisible ());
          }
          
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), GetHalfWidth (), GetHalfHeight () );
-      }
-      
-      
-      public function SetHalfWidth (halfWidth:Number, validate:Boolean = true):void
-      {
-         if (validate)
+         (mSelectionProxy as SelectionProxyPolygon).RebuildConcavePolygon ( GetRotation (), GetPositionX (), GetPositionY (), mLocalPoints );
+         
+         if ((mSelectionProxy as SelectionProxyPolygon).GetProxyShapesCount () == 0)
          {
-            var minHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
-            var maxHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
-            
-            if (halfWidth * mHalfHeight * 4 > EditorSetting.MaxRectArea)
-               halfWidth = EditorSetting.MaxRectArea / (mHalfHeight * 4);
-            
-            if (halfWidth > maxHalfWidth)
-               halfWidth = maxHalfWidth;
-            if (halfWidth < minHalfWidth)
-               halfWidth = minHalfWidth;
+            mIsValid = false;
+            (mSelectionProxy as SelectionProxyPolygon).RebuildConvexPolygon ( GetRotation (), GetPositionX (), GetPositionY (), 
+                  [new Point (mMinX, mMinY), new Point (mMaxX, mMinY), new Point (mMaxX, mMaxY), new Point (mMinX, mMaxY)] );
+         }
+         else
+         {
+            mIsValid = true;
          }
          
-         mHalfWidth = halfWidth;
+         UpdateAppearance ();
       }
       
-      public function SetHalfHeight (halfHeight:Number, validate:Boolean = true):void
+      
+      
+//====================================================================
+//   vertex
+//====================================================================
+      
+      public function GetVertexPointsCount ():int
       {
-         if (validate)
+         return mVertexPoints.length;
+      }
+      
+      public function GetVertexPointAt (index:uint):Point
+      {
+         if (index >= mVertexPoints.length)
+            return null;
+         
+         return new Point (mVertexPoints[index].x, mVertexPoints[index].y);
+      }
+      
+      public function AddVertexPoint (pointX:Number, pointY:Number, synchronize:Boolean = true):void
+      {
+         AddVertexPointAt (pointX, pointY, mVertexPoints.length, synchronize);
+      }
+      
+      public function AddVertexPointAt (pointX:Number, pointY:Number, beforeIndex:uint, synchronize:Boolean = true):void
+      {
+         mVertexPoints.splice (beforeIndex, 0, new Point (pointX, pointY));
+         
+         mLocalPoints.push (new Point ());
+         
+         if (synchronize)
+            SynchronizeWithWorldPoints ();
+      }
+      
+      public function UpdateVertexPointAt (pointX:Number, pointY:Number, index:uint):void
+      {
+         if (index >= mVertexPoints.length)
+            return;
+         
+         mVertexPoints [index].x = pointX;
+         mVertexPoints [index].y = pointY;
+         
+         SynchronizeWithWorldPoints ();
+      }
+      
+      public function RemoveVertexPointAt (index:uint):void
+      {
+         mVertexPoints.splice (index, 1);
+         
+         mLocalPoints.pop ();
+         
+         SynchronizeWithWorldPoints ();
+      }
+      
+      public function GetLocalVertexPointAt (index:uint):Point
+      {
+         if (index >= mLocalPoints.length)
+            return null;
+         
+         return new Point (mLocalPoints[index].x, mLocalPoints[index].y);
+      }
+      
+      public function GetLocalVertexPoints ():Array
+      {
+         var points:Array = new Array (mLocalPoints.length);
+         
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
          {
-            var minHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
-            var maxHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
-            
-            if (halfHeight * mHalfWidth * 4 > EditorSetting.MaxRectArea)
-               halfHeight = EditorSetting.MaxRectArea / (mHalfWidth * 4);
-            
-            if (halfHeight > maxHalfWidth)
-               halfHeight = maxHalfWidth;
-            if (halfHeight < minHalfWidth)
-               halfHeight = minHalfWidth;
+            points [i] = new Point (mLocalPoints[i].x, mLocalPoints[i].y);
          }
          
-         mHalfHeight = halfHeight;
+         return points;
       }
       
-      public function GetHalfWidth ():Number
+      public function SetLocalVertexPoints (points:Array):void
       {
-         return mHalfWidth;
-      }
-      
-      public function GetHalfHeight ():Number
-      {
-         return mHalfHeight;
-      }
-      
-      override public function Destroy ():void
-      {
-         SetVertexControllersVisible (false);
+         if (mLocalPoints.length != points.length)
+         {
+            mLocalPoints = new Array (points.length);
+            for (i = 0; i < mLocalPoints.length; ++ i)
+               mLocalPoints [i] = new Point ();
+         }
          
-         super.Destroy ();
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         {
+            mLocalPoints [i].x =  points [i].x;
+            mLocalPoints [i].y =  points [i].y;
+         }
+         
+         SynchronizeWithLocalPoints ();
       }
       
+      public function SynchronizeWithWorldPoints ():void
+      {
+         var centerX:Number = 0;
+         var centerY:Number = 0;
+         
+         var point:Point;
+         var i:int;
+         for (i = 0; i < mVertexPoints.length; ++ i)
+         {
+            point = mVertexPoints [i] as Point;
+            centerX += point.x;
+            centerY += point.y;
+         }
+         
+         if (mVertexPoints.length > 0)
+         {
+            centerX /= mVertexPoints.length;
+            centerY /= mVertexPoints.length;
+         }
+         
+         if (mLocalPoints.length != mVertexPoints.length)
+         {
+            mLocalPoints = new Array (mVertexPoints.length);
+            for (i = 0; i < mLocalPoints.length; ++ i)
+               mLocalPoints [i] = new Point ();
+         }
+         
+         var radians:Number = - GetRotation ();
+         var cos:Number = Math.cos (radians);
+         var sin:Number = Math.sin (radians);
+         var dx:Number;
+         var dy:Number;
+         for (i = 0; i < mLocalPoints.length; ++ i)
+         {
+            point = mVertexPoints [i] as Point;
+            dx = point.x - centerX;
+            dy = point.y - centerY;
+            mLocalPoints [i].x =  dx * cos - dy * sin;
+            mLocalPoints [i].y =  dx * sin + dy * cos;
+         }
+         
+         SetPosition (centerX, centerY);
+         
+         UpdateLocalBoundingBox ();
+      }
       
+      private function SynchronizeWithLocalPoints ():void
+      {
+         var centerX:Number = GetPositionX ();
+         var centerY:Number = GetPositionY ();
+         
+         if (mVertexPoints.length != mLocalPoints.length)
+         {
+            mVertexPoints = new Array (mLocalPoints.length);
+            for (i = 0; i < mVertexPoints.length; ++ i)
+               mVertexPoints [i] = new Point ();
+         }
+         
+         var point:Point;
+         var i:int;
+         var radians:Number = GetRotation ();
+         var cos:Number = Math.cos (radians);
+         var sin:Number = Math.sin (radians);
+         var dx:Number;
+         var dy:Number;
+         for (i = 0; i < mVertexPoints.length; ++ i)
+         {
+            point = mLocalPoints [i] as Point;
+            dx = point.x - 0;
+            dy = point.y - 0;
+            mVertexPoints [i].x = centerX + dx * cos - dy * sin;
+            mVertexPoints [i].y = centerY + dx * sin + dy * cos;
+         }
+         
+         UpdateLocalBoundingBox ();
+      }
+      
+      private function UpdateLocalBoundingBox ():void
+      {
+         mMinX = mMinY = mMaxX = mMaxY = 0;
+         
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         {
+            if (mMinX > mLocalPoints [i].x)
+               mMinX = mLocalPoints [i].x;
+            if (mMaxX < mLocalPoints [i].x)
+               mMaxX = mLocalPoints [i].x;
+            if (mMinY > mLocalPoints [i].y)
+               mMinY = mLocalPoints [i].y;
+            if (mMaxY < mLocalPoints [i].y)
+               mMaxY = mLocalPoints [i].y;
+         }
+      }
       
 //====================================================================
 //   clone
@@ -146,18 +309,24 @@ package editor.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityShapeRectangle (mWorld);
+         return new EntityShapePolygon (mWorld);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
       {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
-         var rect:EntityShapeRectangle = entity as EntityShapeRectangle;
-         rect.SetHalfWidth ( GetHalfWidth () );
-         rect.SetHalfHeight ( GetHalfHeight () );
-         rect.UpdateAppearance ();
-         rect.UpdateSelectionProxy ();
+         var polygon:EntityShapePolygon = entity as EntityShapePolygon;
+         
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         {
+            polygon.mLocalPoints.push (new Point (mLocalPoints [i].x, mLocalPoints[i].y));
+         }
+         
+         polygon.SynchronizeWithLocalPoints ();
+         
+         polygon.UpdateAppearance ();
+         polygon.UpdateSelectionProxy ();
       }
       
       
@@ -165,10 +334,33 @@ package editor.entity {
 // vertex controllers
 //========================================================================
       
-      private var mVertexController0:VertexController = null;
-      private var mVertexController1:VertexController = null;
-      private var mVertexController2:VertexController = null;
-      private var mVertexController3:VertexController = null;
+      private var mVertexControllers:Array = null;
+      
+      override public function GetVertexControllerIndex (vertexController:VertexController):int
+      {
+         if (mVertexControllers != null)
+         {
+            for (var i:int = 0; i < mVertexPoints.length; ++ i)
+            {
+               if (mVertexControllers [i] == vertexController)
+               {
+                  return i;
+               }
+            }
+         }
+         
+         return -1;
+      }
+      
+      override public function GetVertexControllerByIndex (index:int):VertexController
+      {
+         if (mVertexControllers != null && index >= 0 && index < mVertexControllers.length)
+         {
+            return mVertexControllers [index];
+         }
+         
+         return null;
+      }
       
       override public function SetVertexControllersVisible (visible:Boolean):void
       {
@@ -180,233 +372,166 @@ package editor.entity {
          
       // create / destroy controllers
          
+         var i:int;
+         var vertexController:VertexController;
+         
          if ( AreVertexControlPointsVisible () )
          {
             SetVertexControllersVisible (false);
             super.SetVertexControllersVisible (true);
             
-            if (mVertexController0 == null)
-            {
-               mVertexController0 = new VertexController (mWorld, this);
-               addChild (mVertexController0);
-            }
+            mVertexControllers = new Array (mVertexPoints.length);
             
-            if (mVertexController1 == null)
+            for (i = 0; i < mVertexPoints.length; ++ i)
             {
-               mVertexController1 = new VertexController (mWorld, this);
-               addChild (mVertexController1);
-            }
-            
-            if (mVertexController2 == null)
-            {
-               mVertexController2 = new VertexController (mWorld, this);
-               addChild (mVertexController2);
-            }
-            
-            if (mVertexController3 == null)
-            {
-               mVertexController3 = new VertexController (mWorld, this);
-               addChild (mVertexController3);
+               vertexController = new VertexController (mWorld, this);
+               mVertexControllers [i] = vertexController;
+               addChild (vertexController);
             }
             
             UpdateVertexControllers (true);
          }
          else
          {
-            if (mVertexController0 != null)
+            if (mVertexControllers != null)
             {
-               mVertexController0.Destroy ();
-               if (contains (mVertexController0))
-                  removeChild (mVertexController0);
-               
-               mVertexController0 = null;
+               for (i = 0; i < mVertexControllers.length; ++ i)
+               {
+                  vertexController = mVertexControllers [i] as VertexController;
+                  vertexController.Destroy ();
+                  if (contains (vertexController))
+                     removeChild (vertexController);
+                  
+                  mVertexControllers [i] = null;
+               }
             }
             
-            if (mVertexController1 != null)
-            {
-               mVertexController1.Destroy ();
-               if (contains (mVertexController1))
-                  removeChild (mVertexController1);
-               
-               mVertexController1 = null;
-            }
-            
-            if (mVertexController2 != null)
-            {
-               mVertexController2.Destroy ();
-               if (contains (mVertexController2))
-                  removeChild (mVertexController2);
-               
-               mVertexController2 = null;
-            }
-            
-            if (mVertexController3 != null)
-            {
-               mVertexController3.Destroy ();
-               if (contains (mVertexController3))
-                  removeChild (mVertexController3);
-               
-               mVertexController3 = null;
-            }
+            mVertexControllers = null;
          }
       }
       
       public function UpdateVertexControllers (updateSelectionProxy:Boolean):void
       {
-         if (mVertexController0 != null)
+         if (mVertexControllers != null)
          {
-            mVertexController0.SetPosition (- GetHalfWidth (), - GetHalfHeight ());
+            var i:int;
+            var vertexController:VertexController;
             
-            if (updateSelectionProxy)
-               mVertexController0.UpdateSelectionProxy ();
-         }
-         
-         if (mVertexController1 != null)
-         {
-            mVertexController1.SetPosition ( GetHalfWidth (), - GetHalfHeight ());
-            
-            if (updateSelectionProxy)
-               mVertexController1.UpdateSelectionProxy ();
-         }
-         
-         if (mVertexController2 != null)
-         {
-            mVertexController2.SetPosition ( GetHalfWidth (), GetHalfHeight ());
-            
-            if (updateSelectionProxy)
-               mVertexController2.UpdateSelectionProxy ();
-         }
-         
-         if (mVertexController3 != null)
-         {
-            mVertexController3.SetPosition (- GetHalfWidth (), GetHalfHeight ());
-            
-            if (updateSelectionProxy)
-               mVertexController3.UpdateSelectionProxy ();
+            for (i = 0; i < mVertexPoints.length; ++ i)
+            {
+               vertexController = mVertexControllers [i] as VertexController;
+               
+               if (vertexController != null)
+               {
+                  vertexController.SetPosition (mLocalPoints [i].x, mLocalPoints [i].y);
+                  
+                  if (updateSelectionProxy)
+                     vertexController.UpdateSelectionProxy ();
+               }
+            }
          }
       }
       
-      public function GetDigonalVertexController (vertexController:VertexController):VertexController
+      private var _MovingVertexIndex:int = -1;
+      override public function OnBeginMovingVertexController (movingVertexController:VertexController):void
       {
-         if (vertexController == mVertexController0)
-            return mVertexController2;
-         if (vertexController == mVertexController1)
-            return mVertexController3;
-         if (vertexController == mVertexController2)
-            return mVertexController0;
-         if (vertexController == mVertexController3)
-            return mVertexController1;
-         
-         return null;
+         _MovingVertexIndex = GetVertexControllerIndex (movingVertexController);
       }
       
-      private var _DigonalVertexControllerX:Number = 0;
-      private var _DigonalVertexControllerY:Number = 0;
-      public function NotifyBeginMovingVertexController (vertexController:VertexController):void
+      override public function OnEndMovingVertexController (movingVertexController:VertexController):void
       {
-         var vertexController2:VertexController = GetDigonalVertexController (vertexController);
-         
-         if (vertexController2 == null)
-            return;
-         
-         var worldVertex2Pos:Point = DisplayObjectUtil.LocalToLocal (this, mWorld, new Point ( vertexController2.GetPositionX (), vertexController2.GetPositionY () ) );
-         
-         _DigonalVertexControllerX = worldVertex2Pos.x;
-         _DigonalVertexControllerY = worldVertex2Pos.y;
+         _MovingVertexIndex = -1;
       }
       
-      override public function OnMovingVertexController (vertexController:VertexController, localOffsetX:Number, localOffsetY:Number):void
+      override public function OnMovingVertexController (movingVertexController:VertexController, localOffsetX:Number, localOffsetY:Number):void
       {
       // ...
-         var vertexController2:VertexController = GetDigonalVertexController (vertexController);
-         
-         if (vertexController2 == null)
+         if (mVertexControllers == null || _MovingVertexIndex < 0 || mVertexControllers [_MovingVertexIndex] != movingVertexController)
             return;
-      
-         var x1:Number;
-         var y1:Number;
-         var x2:Number;
-         var y2:Number;
          
-         if (vertexController.GetPositionX () < vertexController2.GetPositionX ())
+         if (_MovingVertexIndex < mLocalPoints.length)
          {
-            x1 = vertexController.GetPositionX () + localOffsetX;
-            x2 = vertexController2.GetPositionX ();
-         }
-         else
-         {
-            x1 = vertexController2.GetPositionX ();
-            x2 = vertexController.GetPositionX () + localOffsetX;
-         }
-         if (vertexController.GetPositionY () < vertexController2.GetPositionY ())
-         {
-            y1 = vertexController.GetPositionY () + localOffsetY;
-            y2 = vertexController2.GetPositionY ();
-         }
-         else
-         {
-            y1 = vertexController2.GetPositionY ();
-            y2 = vertexController.GetPositionY () + localOffsetY;
+            mLocalPoints [_MovingVertexIndex].x += localOffsetX;
+            mLocalPoints [_MovingVertexIndex].y += localOffsetY;
          }
          
-         var halfWidth:Number  = (x2 - x1);// * 0.5;
-         var halfHeight:Number = (y2 - y1);// * 0.5;
-      
-         if (halfWidth < EditorSetting.MinRectSideLength)
-            return;
-         if (halfWidth > EditorSetting.MaxRectSideLength)
-            return;
-         
-         if (halfHeight < EditorSetting.MinRectSideLength)
-            return;
-         if (halfHeight > EditorSetting.MaxRectSideLength)
-            return;
-         
-         if (halfWidth * halfHeight > EditorSetting.MaxRectArea)
-            return;
-         
-         if (GetFilledColor () == Define.ColorBombObject)
-         {
-            if (halfHeight > halfWidth)
-               halfWidth = halfHeight;
-            else
-               halfHeight = halfWidth;
-            
-            if (halfHeight < EditorSetting.MinBombSquareSideLength)
-               return;
-            if (halfHeight > EditorSetting.MaxBombSquareSideLength)
-               return;
-         }
-         
-         halfWidth  *= 0.5;
-         halfHeight *= 0.5;
-         
-         var worldCenterPos:Point = DisplayObjectUtil.LocalToLocal (this, mWorld, new Point ( (x2 + x1) * 0.5, (y2 + y1) * 0.5 ) );
-         
-         SetPosition (worldCenterPos.x, worldCenterPos.y);
-         
-         // seems, in SetPosition, flash will slightly adjust the values provided.
-         // to make the postion of vertex controller2 uncahnged ...
-         
-         var localVertex2Pos:Point = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (_DigonalVertexControllerX, _DigonalVertexControllerY) );
-         
-         halfWidth  = localVertex2Pos.x;
-         halfHeight = localVertex2Pos.y;
-         if (halfWidth  < 0) halfWidth  = - halfWidth;
-         if (halfHeight < 0) halfHeight = - halfHeight;
-         
-         SetHalfWidth  (halfWidth);
-         SetHalfHeight (halfHeight);
-         
-         
-         
-         
-         
-      // ...
+         SynchronizeWithLocalPoints ();
+         SynchronizeWithWorldPoints ();
          
          UpdateAppearance ();
          UpdateSelectionProxy ();
          UpdateVertexControllers (true);
+      }
+      
+      override public function OnVertexControllerSelectedChanged (selectedVertexController:VertexController, selected:Boolean):void
+      {
+         var index:int = GetVertexControllerIndex (selectedVertexController);
+         
+         if (index >= 0)
+         {
+            var prevVertexController:VertexController = mVertexControllers [(index + mVertexControllers.length - 1) % mVertexControllers.length];
+            prevVertexController.NotifySelectedSecondarilyChanged (selected);
+         }
+      }
+      
+      override public function RemoveVertexController(vertexController:VertexController):VertexController
+      {
+         var index:int = GetVertexControllerIndex (vertexController);
+         
+         if (index >= 0)
+         {
+            var vcVisible:Boolean = AreVertexControlPointsVisible (); // should be true
+            SetVertexControllersVisible (false);
+            
+            if (mVertexPoints.length <= 3)
+            {
+               mWorld.DestroyEntity (this);
+            }
+            else
+            {
+               mVertexPoints.splice (index, 1);
+               SynchronizeWithWorldPoints ();
+               
+               UpdateAppearance ();
+               UpdateSelectionProxy ();
+               
+               SetVertexControllersVisible (vcVisible);
+            }
+            
+            return null;
+         }
+         
+         return vertexController;
+      }
+      
+      override public function InsertVertexController(beforeVertexController:VertexController):VertexController
+      {
+         var index:int = GetVertexControllerIndex (beforeVertexController);
+         
+         if (index >= 0)
+         {
+            var vcVisible:Boolean = AreVertexControlPointsVisible (); // should be true
+            SetVertexControllersVisible (false);
+            var beforeIsSelected:Boolean = beforeVertexController.IsSelected (); // should be true
+            
+            var prevIndex:int = (index - 1) % mVertexPoints.length;
+            
+            var centerX:Number = (mVertexPoints [index].x +  mVertexPoints [prevIndex].x) * 0.5;
+            var centerY:Number = (mVertexPoints [index].y +  mVertexPoints [prevIndex].y) * 0.5;
+            
+            mVertexPoints.splice (index, 0, new Point (centerX, centerY));
+            
+            SynchronizeWithWorldPoints ();
+            
+            UpdateAppearance ();
+            UpdateSelectionProxy ();
+            
+            SetVertexControllersVisible (vcVisible);
+            beforeVertexController = mVertexControllers [index + 1];
+            beforeVertexController.NotifySelectedChanged (beforeIsSelected);
+         }
+         
+         return beforeVertexController;
       }
       
 //====================================================================
@@ -415,47 +540,66 @@ package editor.entity {
       
       override public function Move (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean = true):void
       {
-         super.Move (offsetX, offsetY, updateSelectionProxy);
+         super.Move (offsetX, offsetY, false);
+         
+         SynchronizeWithLocalPoints ();
+         
+         if (updateSelectionProxy)
+            UpdateSelectionProxy ();
          
          UpdateVertexControllers (updateSelectionProxy);
       }
       
       override public function Rotate (centerX:Number, centerY:Number, dRadians:Number, updateSelectionProxy:Boolean = true):void
       {
-         super.Rotate (centerX, centerY, dRadians, updateSelectionProxy);
+         super.Rotate (centerX, centerY, dRadians, false);
+         
+         SynchronizeWithLocalPoints ();
+         
+         if (updateSelectionProxy)
+            UpdateSelectionProxy ();
          
          UpdateVertexControllers (updateSelectionProxy);
       }
       
       override public function Scale (centerX:Number, centerY:Number, ratio:Number, updateSelectionProxy:Boolean = true):void
       {
-         super.Scale (centerX, centerY, ratio, updateSelectionProxy);
+         super.Scale (centerX, centerY, ratio, false);
+         
+         SynchronizeWithLocalPoints ();
+         
+         if (updateSelectionProxy)
+            UpdateSelectionProxy ();
          
          UpdateVertexControllers (updateSelectionProxy);
       }
       
       override public function ScaleSelf (ratio:Number):void
       {
-         var halfWidth:Number  = mHalfWidth * ratio;
-         var halfHeight:Number = mHalfHeight * ratio;
+         super.ScaleSelf (ratio);
          
-         //if (halfWidth < EditorSetting.MinRectSideLength)
-         //   halfWidth =  EditorSetting.MinRectSideLength;
-         //if (halfWidth > EditorSetting.MaxRectSideLength)
-         //   halfWidth =  EditorSetting.MaxRectSideLength;
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         {
+            mLocalPoints [i].x = ratio * mLocalPoints [i].x;
+            mLocalPoints [i].y = ratio * mLocalPoints [i].y;
+         }
          
-         //if (halfHeight < EditorSetting.MinRectSideLength)
-         //   halfHeight =  EditorSetting.MinRectSideLength;
-         //if (halfHeight > EditorSetting.MaxRectSideLength)
-         //   halfHeight =  EditorSetting.MaxRectSideLength;
-         
-         SetHalfWidth (halfWidth);
-         SetHalfHeight (halfHeight);
+         //SynchronizeWithLocalPoints (); 
       }
       
       override public function FlipHorizontally (mirrorX:Number):void
       {
          super.FlipHorizontally (mirrorX);
+         
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         {
+            mVertexPoints [i].x = mirrorX + mirrorX - mVertexPoints [i].x;
+         }
+         
+         SynchronizeWithWorldPoints ();
+         
+         UpdateSelectionProxy ();
+         UpdateAppearance ();
          
          UpdateVertexControllers (true);
       }
@@ -463,6 +607,16 @@ package editor.entity {
       override public function FlipVertically (mirrorY:Number):void
       {
          super.FlipVertically (mirrorY);
+         
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         {
+            mVertexPoints [i].y = mirrorY + mirrorY - mVertexPoints [i].y;
+         }
+         
+         SynchronizeWithWorldPoints ();
+         
+         UpdateSelectionProxy ();
+         UpdateAppearance ();
          
          UpdateVertexControllers (true);
       }

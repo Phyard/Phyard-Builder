@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+      backgroundColor="0xDDDDA0" borderColor="0x606060" borderStyle="solid" borderThickness="10"
+      width="100%" height="100%"
+      creationComplete="OnInitPanel()"
+      >
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%" />
+      <mx:VBox width="500">
+         <mx:Spacer height="10" />
+
+         <mx:HBox width="100%">
+            <!--
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_PermitPublishing" label="Permit Other Websites to Publish"/>
+            <mx:Spacer width="100%"/>
+            -->
+            <mx:Spacer width="30%"/>
+            <mx:CheckBox id="CheckBox_ShareSourceCode" label="Share Source Code"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label text="Your Name:" textAlign="right" width="30%"/>
+            <mx:TextInput id="Text_AuthorName" width="200" />
+         </mx:HBox>
+
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label text="Your Homepage:" textAlign="right" width="30%"/>
+            <mx:TextInput id="Text_AuthorHomePage" width="70%" />
+         </mx:HBox>
+
+         <mx:Spacer height="20" />
+
+         <mx:HBox width="100%">
+            <mx:Label width="30%" text="Scene Size:" textAlign="right"/>
+            <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnSceneSizeChanged(event);"/>
+            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_NormalSize" value="normal"
+                label="Normal (left:0, top:0, right:600, bottom:600)" />
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_LargeSize" value="large"
+                label="Large (left:-6000, top:-6000, right:6000, bottom:6000)"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Label text="Background Color:" textAlign="right" width="30%"/>
+            <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xDDDDA0"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:CheckBox id="CheckBox_BuildBorder" label="Build Scene Border"/>
+            <mx:Label text="(Only for 600x600 scene)" color="0x0000FF"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Label text="Scene Border Color:" textAlign="right" width="30%"/>
+            <mx:ColorPicker id="ColorPicker_BorderColor" showTextField="true" selectedColor="0x606060"/>
+            <mx:Label text="(Only for 600x600 scene)" color="0x0000FF"/>
+         </mx:HBox>
+      </mx:VBox>
+
+      <mx:Spacer width="100%" />
+   </mx:HBox>
+
+   <mx:Script>
+        <![CDATA[
+            
+            import mx.events.FlexEvent;
+            import editor.runtime.Runtime;
+            import editor.world.World;
+            import common.Define;
+            
+            private function OnInitPanel ():void
+            {
+               Runtime.mSynchronizeWorldSettingPanelWithWorld = SynchronizeWorldSettingPanelWithWorld;
+               Runtime.mSynchronizeWorldWithWorldSettingPanel = SynchronizeWorldWithWorldSettingPanel;
+               
+               SynchronizeWorldSettingPanelWithWorld (Runtime.mEditorWorldView.GetEditorWorld ());
+            }
+            
+            private function SynchronizeWorldSettingPanelWithWorld (world:World):void
+            {
+               Text_AuthorName.text = world.GetAuthorName ();
+               Text_AuthorHomePage.text = world.GetAuthorHomepage ();
+               
+               CheckBox_ShareSourceCode.selected = world.IsShareSourceCode ();
+               
+               var sceneLeft  :int = world.GetWorldLeft ();
+               var sceneTop   :int = world.GetWorldTop ();
+               var sceneWidth :int = world.GetWorldWidth ();
+               var sceneHeight:int = world.GetWorldHeight ();
+               
+               if (Define.IsNormalScene (sceneLeft, sceneTop, sceneWidth, sceneHeight))
+               {
+                  RadioButton_NormalSize.selected = true;
+                  RadioButton_LargeSize.selected = false;
+               }
+               else if (Define.IsLargeScene (sceneLeft, sceneTop, sceneWidth, sceneHeight))
+               {
+                  RadioButton_NormalSize.selected = false;
+                  RadioButton_LargeSize.selected = true;
+               }
+               
+               ColorPicker_BackgroundColor.selectedColor = world.GetBackgroundColor ();
+               
+               CheckBox_BuildBorder.selected = world.IsBuildBorder ();
+               ColorPicker_BorderColor.selectedColor = world.GetBorderColor ();
+            }
+            
+            private function SynchronizeWorldWithWorldSettingPanel (world:World):void
+            {
+            // author name
+            
+               var name:String = Text_AuthorName.text;
+               if (name.length > 30)
+                  name = name.substr (0, 30);
+               
+               world.SetAuthorName (name);
+               
+            // home page
+            
+               var url:String = Text_AuthorHomePage.text.toLowerCase();
+               if (url.indexOf ("http") != 0)
+                  url = "http://" + url;
+               if (url.length > 100)
+                  url = url.substr (0, 100);
+               if (url.length < 8)
+                  url = "";
+               
+               world.SetAuthorHomepage (url);
+               
+            // sharing
+               
+               world.SetShareSourceCode (CheckBox_ShareSourceCode.selected);
+               
+            //.scene size, background color, build border
+            
+               UpdateSceneSize (world);
+               world.SetBackgroundColor (ColorPicker_BackgroundColor.selectedColor);
+               world.SetBuildBorder (CheckBox_BuildBorder.selected);
+               world.SetBorderColor (ColorPicker_BorderColor.selectedColor);
+            }
+            
+            private function OnSceneSizeChanged (event:Event):void
+            {
+               UpdateSceneSize (Runtime.mEditorWorldView.GetEditorWorld ());
+            }
+            
+//==========================================================================================
+//
+//==========================================================================================
+            
+            private function UpdateSceneSize (world:World):void
+            {
+               if (RadioButton_NormalSize.selected)
+               {
+                  world.SetWorldLeft (0);
+                  world.SetWorldTop (0);
+                  world.SetWorldWidth (Define.DefaultWorldWidth);
+                  world.SetWorldHeight (Define.DefaultWorldHeight);
+               }
+               else if (RadioButton_LargeSize.selected)
+               {
+                  world.SetWorldLeft (- 0.5 * Define.LargeWorldHalfWidth);
+                  world.SetWorldTop  (- 0.5 * Define.LargeWorldHalfHeight);
+                  world.SetWorldWidth  (Define.LargeWorldHalfWidth);
+                  world.SetWorldHeight (Define.LargeWorldHalfHeight);
+               }
+            }
+            
+       ]]>
+   </mx:Script>
+   
+</mx:VBox>

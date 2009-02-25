@@ -16,18 +16,30 @@ package editor.entity {
    {
       protected var mWorld:World;
       
-   // visual
-      protected var mBorderColor:uint = EditorSetting.BorderColorUnselectedObject;
+   // C.I.
       
-      protected var mFilledColor:uint = 0xFFFFFF;
+      protected var mAiType:int = Define.ShapeAiType_Unknown;
+      
+   // appearance
+   
       protected var mDrawBorder:Boolean = true;
       protected var mDrawBackground:Boolean = true;
       
+      protected var mBorderColor:uint = EditorSetting.BorderColorUnselectedObject;
+      protected var mBorderThickness:uint = 1; // from v1.04
+      
+      protected var mFilledColor:uint = 0xFFFFFF;
+      
+      protected var mTransparency:uint = 100; // from v1.04
       
    // physics
       
-      protected var mIsStatic:Boolean = false;
+      //>> form v1.04
+      protected var mPhysicsEnabled:Boolean = true;
+      public var mIsSensor:Boolean = false;
+      //<<
       
+      protected var mIsStatic:Boolean = false;
       public var mIsBullet:Boolean = false;
       
       public var mDensity:Number = 1.0;
@@ -58,6 +70,11 @@ package editor.entity {
          return "Shape";
       }
       
+      public function IsBasicShapeEntity ():Boolean
+      {
+         return true;
+      }
+      
 //====================================================================
 //   clone
 //====================================================================
@@ -74,38 +91,48 @@ package editor.entity {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
          var shape:EntityShape = entity as EntityShape;
+         
+         shape.SetAiType (mAiType);
+         
          shape.SetFilledColor ( GetFilledColor () );
          shape.SetBorderColor ( GetBorderColor () );
          shape.SetDrawBorder ( IsDrawBorder () );
          shape.SetDrawBackground ( IsDrawBackground () );
          shape.SetStatic ( IsStatic () );
+         shape.SetBorderThickness (mBorderThickness);
+         shape.SetTransparency (mTransparency);
          
          shape.mIsBullet = mIsBullet;
          shape.mDensity = mDensity;
          shape.mFriction = mFriction;
          shape.mRestitution = mRestitution;
+         shape.mIsSensor = mIsSensor;
+         shape.SetPhysicsEnabled (mPhysicsEnabled);
          
          shape.SetCollisionCategoryIndex ( GetCollisionCategoryIndex () );
       }
       
+//======================================================
+// C.I. special
+//======================================================
+      
+      public function GetAiType ():int
+      {
+         return mAiType;
+      }
+      
+      public function SetAiType (aiType:int):void
+      {
+         mAiType = aiType;
+      }
       
 //======================================================
 // appearance
 //======================================================
       
-      public function GetFilledColor ():uint
+      public function SetDrawBackground (draw:Boolean):void
       {
-         return mFilledColor;
-      }
-      
-      public function GetBorderColor ():uint
-      {
-         return mBorderColor;
-      }
-      
-      public function IsDrawBorder ():Boolean
-      {
-         return mDrawBorder;
+         mDrawBackground = draw;
       }
       
       public function IsDrawBackground ():Boolean
@@ -118,9 +145,9 @@ package editor.entity {
          mFilledColor = color;
       }
       
-      public function SetBorderColor (color:uint):void
+      public function GetFilledColor ():uint
       {
-         mBorderColor = color;
+         return mFilledColor;
       }
       
       public function SetDrawBorder (draw:Boolean):void
@@ -133,14 +160,54 @@ package editor.entity {
          //   UpdateAppearance ();
       }
       
-      public function SetDrawBackground (draw:Boolean):void
+      public function IsDrawBorder ():Boolean
       {
-         mDrawBackground = draw;
+         return mDrawBorder;
+      }
+      
+      public function SetBorderColor (color:uint):void
+      {
+         mBorderColor = color;
+      }
+      
+      public function GetBorderColor ():uint
+      {
+         return mBorderColor;
+      }
+      
+      public function SetBorderThickness (thinkness:uint):void
+      {
+         mBorderThickness = thinkness;
+      }
+      
+      public function GetBorderThickness ():uint
+      {
+         return mBorderThickness;
+      }
+      
+      public function SetTransparency (transparency:uint):void
+      {
+         mTransparency = transparency;
+      }
+      
+      public function GetTransparency ():uint
+      {
+         return mTransparency;
       }
       
 //======================================================
 // physics
 //======================================================
+      
+      public function SetPhysicsEnabled (enabled:Boolean):void
+      {
+         mPhysicsEnabled = enabled;
+      }
+      
+      public function IsPhysicsEnabled ():Boolean
+      {
+         return mPhysicsEnabled;
+      }
       
       public function SetStatic (isStatic:Boolean):void
       {

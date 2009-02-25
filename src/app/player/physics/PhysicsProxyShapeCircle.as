@@ -1,7 +1,7 @@
 
 package player.physics {
    
-   
+   import Box2D.Collision.Shapes.b2Shape;
    import Box2D.Collision.Shapes.b2CircleDef;
    import Box2D.Common.Math.b2Vec2;
    
@@ -23,6 +23,7 @@ package player.physics {
             circleDef.density = params.mDensity;
             circleDef.friction = params.mFriction;
             circleDef.restitution = params.mRestitution;
+            circleDef.isSensor = params.mIsSensor;
          }
          else
          {
@@ -37,9 +38,12 @@ package player.physics {
          circleDef.filter.groupIndex = params.mGroupIndex;
          //<<
          
-         _b2Shape = mPhysicsProxyBody._b2Body.CreateShape (circleDef);
+         //_b2Shape = mPhysicsProxyBody._b2Body.CreateShape (circleDef);
+         //_b2Shape.SetUserData (this);
+         var b2shape:b2Shape = mPhysicsProxyBody._b2Body.CreateShape (circleDef);
+         b2shape.SetUserData (this);
          
-         _b2Shape.SetUserData (this);
+         _b2Shapes.push (b2shape);
       }
       
       

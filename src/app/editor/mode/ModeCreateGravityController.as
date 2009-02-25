@@ -96,6 +96,8 @@ package editor.mode {
             return;
          }
          
+         mMainView.CreateUndoPoint ();
+         
          mGravityControllerEntity.UpdateSelectionProxy ();
          ResetSession (false);
          

@@ -103,7 +103,8 @@
          
          private function OnClickOkButton():void 
          {
-            var params:Object = new Object ();
+            //var params:Object = new Object ();
+            var params:Object = mInputValues;
             
             params.mDrawBackground = CheckBox_DrawBackground.selected;
             params.mAutofitWidth = CheckBox_AutofitWidth.selected;

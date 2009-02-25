@@ -4,7 +4,7 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Hinge Setting" width="500">
+    title="Hinge Setting" width="500" creationComplete="OnInitPanel()">
    
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Spacer width="100%"/>
@@ -47,7 +47,7 @@
    -->
    
    <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_LowerAngle" text="Lower Angle:" textAlign="right" width="120"/>
+      <mx:Label id="Label_LowerAngle" text="Lower Angle:" textAlign="right" width="100"/>
       <mx:NumericStepper id="NumericStepper_LowerAngle" minimum="-36000" maximum="0"
             stepSize="1" width="80" />
       <mx:Label text="deg" textAlign="left"/>
@@ -70,12 +70,20 @@
           labels="['-360', '0', '360']" allowTrackClick="true" liveDragging="true" />
    </mx:HBox>
    -->
-   
+
    <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="120"/>
+      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="100"/>
       <mx:NumericStepper id="NumericStepper_MotorSpeed" minimum="-360" maximum="360"
-            stepSize="0.1" width="80" />
+            stepSize="0.1" width="70" />
       <mx:Label text="deg" textAlign="left"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_MaxMotorTorque" text="Max Motor Torque:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_MaxMotorTorque" minimum="0"
+            stepSize="1" width="90" />
+      <mx:Label text="   " textAlign="left"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="bottom">
@@ -102,8 +110,21 @@
          import mx.managers.PopUpManager;
          import mx.events.MenuEvent;
          
+         import common.Define;
+         
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
+         
+         private function OnInitPanel ():void
+         {
+            NumericStepper_LowerAngle.minimum = - Define.MaxHingeLimitAngle;
+            NumericStepper_UpperAngle.maximum =   Define.MaxHingeLimitAngle;
+            
+            NumericStepper_MotorSpeed.minimum = - Define.MaxHingeMotorSpeed;
+            NumericStepper_MotorSpeed.maximum =   Define.MaxHingeMotorSpeed;
+            
+            NumericStepper_MaxMotorTorque.maximum = Define.MaxHingeMotorTorque;
+         }
          
          public function SetValues (values:Object):void
          {
@@ -122,6 +143,8 @@
             NumericStepper_MotorSpeed.value = values.mMotorSpeed;
             
             CheckBox_BackAndForth.selected = values.mBackAndForth;
+            
+            NumericStepper_MaxMotorTorque.value = values.mMaxMotorTorque;
             
             //
             SelectList_ConnectedShape1.dataProvider = values.mShapeListDataProvider;
@@ -159,6 +182,8 @@
              
              params.mBackAndForth = CheckBox_BackAndForth.selected;
              
+             params.mMaxMotorTorque = NumericStepper_MaxMotorTorque.value;
+            
              //
              params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.data;
              params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.data;

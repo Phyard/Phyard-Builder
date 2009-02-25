@@ -107,6 +107,8 @@ package editor.mode {
          mTextEntity.UpdateSelectionProxy ();
          ResetSession (false);
          
+         mMainView.CreateUndoPoint ();
+         
          mMainView.SetCurrentCreateMode (null);
       }
       

@@ -35,14 +35,16 @@ package player.entity {
       {
          super.BuildFromParams (params);
          
-         if ( params.mWorldDefine != null && params.mWorldDefine.mVersion >= 0x0102)
-         {
-            mRadius = ValueAdjuster.AdjustCircleRadius (params.mRadius, params.mWorldDefine.mVersion);
-         }
-         else
-         {
+         // this "if" is put in AdjustNumberValuesInWorldDefine now
+         // 
+         //if ( params.mWorldDefine != null && params.mWorldDefine.mVersion >= 0x0102)
+         //{
+         //   mRadius = ValueAdjuster.AdjustCircleRadius (params.mRadius, params.mWorldDefine.mVersion);
+         //}
+         //else
+         //{
             mRadius = params.mRadius;
-         }
+         //}
          
          mAppearanceType = params.mAppearanceType;
          
@@ -72,15 +74,18 @@ package player.entity {
       
       override public function RebuildAppearance ():void
       {
-         var filledColor:uint = Define.GetShapeFilledColor (mAiType);
+         //var filledColor:uint = Define.GetShapeFilledColor (mAiType);
+         var filledColor:uint = mAiType >= 0 ? Define.GetShapeFilledColor (mAiType) : mFilledColor;
+         
          var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
          //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
          //var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
+         //var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
+         var borderColor:uint = IsDrawBorder () ? mBorderColor : filledColor;
          
          GraphicsUtil.ClearAndDrawEllipse (this, 
                                           - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, 
-                                          borderColor, 1, true, filledColor);
+                                          borderColor, 1, mDrawBackground, filledColor);
          
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
          {

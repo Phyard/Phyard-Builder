@@ -35,7 +35,12 @@ package player.physics {
          
          hingeJointDef.enableMotor = params.mEnableMotor;
          hingeJointDef.motorSpeed = params.mMotorSpeed;
-         hingeJointDef.maxMotorTorque = 10000000;
+         if (params.mMaxMotorTorque < 0)
+            hingeJointDef.maxMotorTorque = 0;
+         else if (params.mMaxMotorTorque < 0x7FFFFFFF)
+            hingeJointDef.maxMotorTorque = int(params.mMaxMotorTorque); // to be compatible with earlier versions ( version < v1.04 )
+         else
+            hingeJointDef.maxMotorTorque = params.mMaxMotorTorque;
          
          _b2Joint = mPhysicsEngine._b2World.CreateJoint(hingeJointDef) as b2RevoluteJoint;
          

@@ -25,11 +25,6 @@ package editor.entity {
          mEntityContainer = container;
       }
       
-      public function IsPhysicsEntity ():Boolean
-      {
-         return true;
-      }
-      
       public function Destroy ():void
       {
          if (mSelectionProxy != null)
@@ -297,6 +292,16 @@ package editor.entity {
       
       private var mVertexControllersVisible:Boolean = false;
       
+      public function GetVertexControllerIndex (vertexController:VertexController):int
+      {
+         return -1;
+      }
+      
+      public function GetVertexControllerByIndex (index:int):VertexController
+      {
+         return null;
+      }
+      
       public function SetVertexControllersVisible (visible:Boolean):void
       {
          mVertexControllersVisible = visible;
@@ -307,23 +312,33 @@ package editor.entity {
          return mVertexControllersVisible;
       }
       
-      public function OnMovingVertexController (vertexController:VertexController, offsetX:Number, offsetY:Number):void
+      public function OnBeginMovingVertexController (movingVertexController:VertexController):void
       {
-         
       }
       
-      public function DestroyVertexController (vertexController:VertexController):void
+      public function OnMovingVertexController (movingVertexController:VertexController, offsetX:Number, offsetY:Number):void
       {
-      // selected
+      }
       
-      //   mSelectionListManager.RemoveSelectedEntity (entity);
-         
-      // ...
-         
-         vertexController.Destroy ();
-         
-         if ( contains (vertexController) )
-            removeChild (vertexController);
+      public function OnEndMovingVertexController (movingVertexController:VertexController):void
+      {
+      }
+      
+      public function OnVertexControllerSelectedChanged (movingVertexController:VertexController, selected:Boolean):void
+      {
+      }
+      
+      // if the vertext is not deleted, return it, otherwise, return null
+      public function RemoveVertexController(vertexController:VertexController):VertexController
+      {
+         return vertexController;
+      }
+      
+      
+      // the returned VertexController is not the inserted one but the new one for beforeVertexController
+      public function InsertVertexController(beforeVertexController:VertexController):VertexController
+      {
+         return beforeVertexController;
       }
       
 //====================================================================

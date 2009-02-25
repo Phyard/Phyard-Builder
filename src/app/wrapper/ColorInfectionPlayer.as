@@ -175,13 +175,13 @@ package wrapper {
                // ...
                
                var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Fail to parse play code."));
-               errorText.x = (Define.WorldWidth  - errorText.width ) * 0.5;
-               errorText.y = (Define.WorldHeight - errorText.height) * 0.5;
+               errorText.x = (Define.DefaultWorldWidth  - errorText.width ) * 0.5;
+               errorText.y = (Define.DefaultWorldHeight - errorText.height) * 0.5;
                mWorldLayer.addChild (errorText);
                
                var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='10' color='#0000ff'><u><a href='http://www.colorinfection.com' target='_blank'>ColorInfection.com</a></u></font>"));
-               linkText.x = (Define.WorldWidth  - linkText.width ) * 0.5;
-               linkText.y = Define.WorldHeight - linkText.height - 20;
+               linkText.x = (Define.DefaultWorldWidth  - linkText.width ) * 0.5;
+               linkText.y = Define.DefaultWorldHeight - linkText.height - 20;
                mWorldLayer.addChild (linkText);
                ChangeState (StateId_None);
                return;
@@ -217,8 +217,8 @@ package wrapper {
          {
             case StateId_Load:
                var initText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Initializing ..."));
-               initText.x = (Define.WorldWidth  - initText.width ) * 0.5;
-               initText.y = (Define.WorldHeight - initText.height) * 0.5;
+               initText.x = (Define.DefaultWorldWidth  - initText.width ) * 0.5;
+               initText.y = (Define.DefaultWorldHeight - initText.height) * 0.5;
                mWorldLayer.addChild (initText);
                break;
             case StateId_Play:
@@ -320,6 +320,14 @@ package wrapper {
       
       private function CreateBottomBar ():void
       {
+         mBottomBarLayer.x = Define.DefaultWorldWidth * 0.5;
+         mBottomBarLayer.y = Define.DefaultWorldHeight - Define.WorldBorderThinknessTB;
+         
+         mBottomBarLayer.graphics.clear ();
+         mBottomBarLayer.graphics.beginFill(0x606060);
+         mBottomBarLayer.graphics.drawRect ( - Define.DefaultWorldWidth * 0.5, 0, Define.DefaultWorldWidth, Define.WorldBorderThinknessTB);
+         mBottomBarLayer.graphics.endFill ();
+         
          if (mWorldLayer != null)
          {
             var authorName:String = mPlayerWorld.GetAuthorName ();
@@ -361,11 +369,12 @@ package wrapper {
                   infoText = infoText + " (<u><font color='#0000ff'><a href='" + anthorUrl + "' target='_blank' >" + anthorUrlShort + "</a></font></u>)";
                }
                
-               mBottomBarLayer.addChild ( TextFieldEx.CreateTextField (infoText, true, 0xDDDDDD));
+               var textField:TextFieldEx = TextFieldEx.CreateTextField (infoText, true, 0xDDDDDD);
+               mBottomBarLayer.addChild (textField);
+               
+               textField.x = - textField.width * 0.5;
+               textField.y = 2;
             }
-            
-            mBottomBarLayer.x = (Define.WorldWidth - mBottomBarLayer.width) * 0.5;
-            mBottomBarLayer.y = Define.WorldHeight - mBottomBarLayer.height - 2;
          }
       }
       
@@ -409,9 +418,9 @@ package wrapper {
                var authorInfoText:String;
                
                if (anthorUrl == null)
-                  infoText = infoText + "<font face='Verdana' size='15'>This puzzle in created by <b><i>" + authorName + "</i></b></font>.";
+                  infoText = infoText + "<font face='Verdana' size='15'>This puzzle is created by <b><i>" + authorName + "</i></b></font>.";
                else
-                  infoText = infoText + "<font face='Verdana' size='15'>This puzzle in created by <font color='#0000FF'><b><i><u><a href='" + anthorUrl + "' target='_blank' >" + authorName + "</a></u></i></b></font>.</font>";
+                  infoText = infoText + "<font face='Verdana' size='15'>This puzzle is created by <font color='#0000FF'><b><i><u><a href='" + anthorUrl + "' target='_blank' >" + authorName + "</a></u></i></b></font>.</font>";
             }
          }
          
@@ -484,11 +493,17 @@ package wrapper {
       
       private function CreateUI ():void
       {
+         mTopBarLayer.x= Define.DefaultWorldWidth * 0.5;
+         
+         mTopBarLayer.graphics.clear ();
+         mTopBarLayer.graphics.beginFill(0x606060);
+         mTopBarLayer.graphics.drawRect ( - Define.DefaultWorldWidth * 0.5, 0, Define.DefaultWorldWidth, Define.WorldBorderThinknessTB);
+         mTopBarLayer.graphics.endFill ();
+         
          mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, OnSpeed, OnHelp);
          mTopBarLayer.addChild (mPlayControlBar); 
-         
-         mTopBarLayer.x= (Define.WorldWidth - mTopBarLayer.width) * 0.5;
-         mTopBarLayer.y = 2;
+         mPlayControlBar.x = - mPlayControlBar.width * 0.5;
+         mPlayControlBar.y = 2;
       }
       
       private function IsPlaying ():Boolean

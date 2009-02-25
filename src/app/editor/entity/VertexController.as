@@ -58,16 +58,25 @@ package editor.entity {
          var borderColor:uint;
          var borderSize :int;
          var filledColor:uint = 0xFFFFFF;
+         var halfSize:int;
          
          if ( IsSelected () )
          {
-            borderColor = 0x008080; // EditorSetting.BorderColorSelectedObject;
+            borderColor = EditorSetting.BorderColorSelectedObject;
             borderSize  = 3;
+            halfSize = mHalfSize - 1;
+         }
+         else if ( mSelectedSecondarily )
+         {
+            borderColor = 0x008000;
+            borderSize  = 3;
+            halfSize = mHalfSize - 1;
          }
          else
          {
             borderColor = 0x0;
             borderSize  = 1;
+            halfSize = mHalfSize;
          }
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfSize, - mHalfSize, mHalfSize + mHalfSize, mHalfSize + mHalfSize, borderColor, borderSize, true, filledColor);
@@ -159,15 +168,24 @@ package editor.entity {
       {
          mSelected = selected;
          
+         mOwnerEntity.OnVertexControllerSelectedChanged (this, mSelected);
+         
          UpdateAppearance ();
       }
       
-      protected function IsSelected ():Boolean
+      public function IsSelected ():Boolean
       {
          return mSelected;
       }
       
+      private var mSelectedSecondarily:Boolean = false;
       
+      public function NotifySelectedSecondarilyChanged (selected:Boolean):void
+      {
+         mSelectedSecondarily = selected;
+         
+         UpdateAppearance ();
+      }
       
    }
 }

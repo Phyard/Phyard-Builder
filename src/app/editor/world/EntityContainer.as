@@ -173,6 +173,55 @@ package editor.world {
       
       
 //=================================================================================
+//   vertex controller
+//=================================================================================
+      
+      private var mTheSelectedVertexController:VertexController = null; // currently, only one VertexController can be selected
+      
+      public function SetSelectedVertexController (vertexController:VertexController):void
+      {
+         if (mTheSelectedVertexController != null)
+            mTheSelectedVertexController.NotifySelectedChanged (false);
+         
+         mTheSelectedVertexController = vertexController;
+         
+         if (mTheSelectedVertexController != null)
+            mTheSelectedVertexController.NotifySelectedChanged (true);
+      }
+      
+      public function GetSelectedVertexControllers ():Array
+      {
+         if (mTheSelectedVertexController == null)
+            return [];
+         
+         return [mTheSelectedVertexController];
+      }
+      
+      public function MoveSelectedVertexControllers (offsetX:Number, offsetY:Number):void
+      {
+         if (mTheSelectedVertexController != null)
+         {
+            mTheSelectedVertexController.Move (offsetX, offsetY);
+         }
+      }
+      
+      public function DeleteSelectedVertexControllers ():void
+      {
+         if (mTheSelectedVertexController != null)
+         {
+            mTheSelectedVertexController = mTheSelectedVertexController.GetOwnerEntity ().RemoveVertexController (mTheSelectedVertexController);
+         }
+      }
+      
+      public function InsertVertexControllerBeforeSelectedVertexControllers ():void
+      {
+         if (mTheSelectedVertexController != null)
+         {
+            mTheSelectedVertexController = mTheSelectedVertexController.GetOwnerEntity ().InsertVertexController (mTheSelectedVertexController)
+         }
+      }
+      
+//=================================================================================
 //   select
 //=================================================================================
       
@@ -270,6 +319,9 @@ package editor.world {
       
       public function ScaleSelectedEntities (centerX:Number, centerY:Number, ratio:Number, updateSelectionProxy:Boolean):void
       {
+         if (ratio <= 0)
+            return;
+         
          var entityArray:Array = GetSelectedEntities ();
          
          var entity:Entity;

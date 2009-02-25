@@ -66,7 +66,7 @@ package player.entity {
             
             if (IsPhysicsEntity () && mPhysicsProxy == null)
             {
-               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapePolygon (
+               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeConvexPolygon (
                                        mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
                
                mPhysicsProxy.SetUserData (this);
@@ -83,15 +83,18 @@ package player.entity {
       
       override public function RebuildAppearance ():void
       {
-         var filledColor:uint = Define.GetShapeFilledColor (mAiType);
+         //var filledColor:uint = Define.GetShapeFilledColor (mAiType);
+         var filledColor:uint = mAiType >= 0 ? Define.GetShapeFilledColor (mAiType) : mFilledColor;
+         
          var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
          //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
          //var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
+         //var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
+         var borderColor:uint = IsDrawBorder () ? mBorderColor : filledColor;
          
          GraphicsUtil.ClearAndDrawRect (this, 
                                           - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
-                                          borderColor, 1, true, filledColor);
+                                          borderColor, 1, mDrawBackground, filledColor);
          
          if (Define.IsBombShape (GetShapeAiType ()))
          {

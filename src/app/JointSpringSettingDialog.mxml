@@ -33,7 +33,7 @@
           dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
           labels="['0', '1.0', '2.0', '3.0']" allowTrackClick="true" liveDragging="true" />
       -->
-      <mx:NumericStepper id="NumericStepper_StaticLengthRatio" minimum="0" maximum="3.0"
+      <mx:NumericStepper id="NumericStepper_StaticLengthRatio" minimum="0.01" maximum="3.0"
             stepSize="0.01" width="60" />
    </mx:HBox>
    
@@ -103,7 +103,7 @@
          public function SetValues (values:Object):void
          {
             CheckBox_IsVisible.selected = values.mIsVisible;
-            CheckBox_IsVisible.enabled = false;
+            CheckBox_IsVisible.enabled = true;
             CheckBox_CollideConnected.selected = values.mCollideConnected;
             
             //Slider_StaticLengthRatio.value = values.mStaticLengthRatio;

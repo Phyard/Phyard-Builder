@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+      borderStyle="solid" borderThickness="0"
+      width="100%" height="100%"
+      creationComplete="OnInitPanel()"
+      >
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_EnablePhysics" label="Enable Physics" click="OnEnablePhysicsCheckBoxClick()"/>
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_IsStatic" label="Is Static"/>
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_IsBullet" label="Is Bullet"/>
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_IsSensor" label="Is Sensor"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_Denstiy" text="Density:" textAlign="right" width="30%"/>
+      <mx:HSlider id="Slider_Denstiy" focusEnabled="false" minimum="0" maximum="10" value="1" width="70%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="1"
+          labels="['0', '5.0', '10.0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_Friction" text="Friction:" textAlign="right" width="30%"/>
+      <mx:HSlider id="Slider_Friction" focusEnabled="false" minimum="0" maximum="1" value="0.1" width="70%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
+          labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_Restitution" text="Restitution:" textAlign="right" width="30%"/>
+      <mx:HSlider id="Slider_Restitution" focusEnabled="false" minimum="0" maximum="1" value="0.2" width="70%"
+          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
+          labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
+   </mx:HBox>
+   
+   <mx:Spacer height="10" />
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label id="Label_CollisionCategory" text="Collision Category:" textAlign="right" width="30%"/>
+      <mx:ComboBox id="SelectList_CollisionCategory" />
+   </mx:HBox>
+   
+   <mx:Spacer height="10" />
+   
+   <mx:Script>
+      <![CDATA[       
+         
+         import common.Define;
+         
+         private var mInputValues:Object;
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         private function OnEnablePhysicsCheckBoxClick ():void
+         {
+            if (CheckBox_EnablePhysics.selected)
+            {
+               CheckBox_IsStatic.enabled = true;
+               CheckBox_IsBullet.enabled = true;
+               CheckBox_IsSensor.enabled = true;
+               
+               Label_Denstiy.enabled = true;
+               Label_Friction.enabled = true;
+               Label_Restitution.enabled = true;
+               
+               Slider_Denstiy.enabled = true;
+               Slider_Friction.enabled = true;
+               Slider_Restitution.enabled = true;
+               
+               Label_CollisionCategory.enabled = true;
+               SelectList_CollisionCategory.enabled = true;
+            }
+            else
+            {
+               CheckBox_IsStatic.enabled = false;
+               CheckBox_IsBullet.enabled = false;
+               CheckBox_IsSensor.enabled = false;
+               
+               Label_Denstiy.enabled = false;
+               Label_Friction.enabled = false;
+               Label_Restitution.enabled = false;
+               
+               Slider_Denstiy.enabled = false;
+               Slider_Friction.enabled = false;
+               Slider_Restitution.enabled = false;
+               
+               Label_CollisionCategory.enabled = false;
+               SelectList_CollisionCategory.enabled = false;
+            }
+         }
+         
+         public function SetValues (inputValues:Object):void
+         {
+            mInputValues = inputValues;
+            
+            CheckBox_EnablePhysics.selected = inputValues.mIsPhysicsEnabled;
+            CheckBox_IsStatic.selected = inputValues.mIsStatic;
+            CheckBox_IsBullet.selected = inputValues.mIsBullet;
+            CheckBox_IsSensor.selected = inputValues.mIsSensor;
+            
+            Slider_Denstiy.value = inputValues.mDensity;
+            Slider_Friction.value = inputValues.mFriction;
+            Slider_Restitution.value = inputValues.mRestitution;
+            
+            SelectList_CollisionCategory.dataProvider = mInputValues.mCollisionCategoryListDataProvider;
+            SelectList_CollisionCategory.selectedIndex = mInputValues.mCollisionCategoryListSelectedIndex;
+         }
+         
+         public function GetValues (returnValues:Object):void
+         {
+            returnValues.mIsPhysicsEnabled = CheckBox_EnablePhysics.selected;
+            returnValues.mIsStatic = CheckBox_IsStatic.selected;
+            returnValues.mIsBullet = CheckBox_IsBullet.selected;
+            returnValues.mIsSensor = CheckBox_IsSensor.selected;
+            
+            returnValues.mDensity = Slider_Denstiy.value;
+            returnValues.mFriction = Slider_Friction.value;
+            returnValues.mRestitution = Slider_Restitution.value;
+            
+            returnValues.mCollisionCategoryIndex = SelectList_CollisionCategory.selectedItem.data;
+         }
+         
+         // a temp function for bombsetting
+         public function SetMustEnablePhysics ():void
+         {
+            CheckBox_EnablePhysics.enabled = false;
+         }
+         
+     ]]>
+   </mx:Script>
+
+</mx:VBox>

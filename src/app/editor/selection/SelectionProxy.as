@@ -67,6 +67,14 @@ package editor.selection {
          _b2Body.SetUserData (this);
       }
       
+      public function GetProxyShapesCount ():int
+      {
+         if (_b2Body == null)
+            return 0;
+         else
+            return _b2Body.m_shapeCount;
+      }
+      
       public function Destroy ():void
       {
          if (_b2Body != null);

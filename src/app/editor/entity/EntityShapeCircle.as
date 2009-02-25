@@ -45,6 +45,7 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
+         var filledColor:uint;
          var borderColor:uint;
          var borderSize :int;
          
@@ -62,9 +63,18 @@ package editor.entity {
             borderSize = 1;
          }
          
+         if (mAiType >= 0)
+         {
+            filledColor = Define.GetShapeFilledColor (mAiType);
+         }
+         else
+         {
+            filledColor = mFilledColor;
+         }
+         
          alpha = 0.7;
          
-         GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, mFilledColor);
+         GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, filledColor);
          
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
          {
@@ -85,7 +95,7 @@ package editor.entity {
          else if (mAppearanceType == Define.CircleAppearanceType_Column)
          {
             var radius2:Number = mRadius * 0.5;
-            GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, mFilledColor);
+            GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
             if (GetFilledColor () == Define.ColorBombObject)
                GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, 0x808080, 1);
             else
@@ -114,8 +124,9 @@ package editor.entity {
       {
          if (validate)
          {
-            var minRadius:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength : EditorSetting.MinCircleRadium;
-            var maxRadius:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength : EditorSetting.MaxCircleRadium;
+            var minRadius:Number = GetFilledColor () == Define.ColorBombObject ? Define.MinBombRadius : EditorSetting.MinCircleRadium;
+            //var maxRadius:Number = GetFilledColor () == Define.ColorBombObject ? Define.MaxBombRadius : EditorSetting.MaxCircleRadium;
+            var maxRadius:Number = GetFilledColor () == Define.ColorBombObject ? Define.MaxBombRadius : Define.MaxCircleRadium;
             
             if (radius > maxRadius)
                radius =  maxRadius;

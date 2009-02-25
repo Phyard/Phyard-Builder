@@ -8,25 +8,23 @@ package editor.mode {
    import editor.WorldView;
    import editor.setting.EditorSetting;
    
-   import editor.entity.EntityShapeRectangle;
+   import editor.entity.EntityShapePolygon;
    
    import common.Define;
    
-   public class ModeCreateRectangle extends ModeCreateShape
+   public class ModeCreatePolygon extends ModeCreateShape
    {
       
-      public function ModeCreateRectangle (mainView:WorldView, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = EditorSetting.MinRectSideLength, maxSideLength:Number = EditorSetting.MaxRectSideLength)
+      public function ModeCreatePolygon (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = EditorSetting.MinRectSideLength) //, maxSideLength:Number = EditorSetting.MaxRectSideLength)
       {
-         super (mainView, filledColor, isStatic);
+         super (mainView, ciAiType, filledColor, isStatic);
          
-         if (maxSideLength < minSideLength)
-         {
-            var temp:Number = maxSideLength;
-            maxSideLength = minSideLength;
-            minSideLength = temp;
-         }
-         
-         mIsSquare = isSquare;
+         //if (maxSideLength < minSideLength)
+         //{
+         //   var temp:Number = maxSideLength;
+         //   maxSideLength = minSideLength;
+         //   minSideLength = temp;
+         //}
          
          if (minSideLength < EditorSetting.MinRectSideLength)
             mMinSideLength = EditorSetting.MinRectSideLength;
@@ -35,24 +33,28 @@ package editor.mode {
          else
             mMinSideLength = minSideLength;
          
-         if (maxSideLength < EditorSetting.MinRectSideLength)
-            mMaxSideLength = EditorSetting.MinRectSideLength;
-         else if (maxSideLength > EditorSetting.MaxRectSideLength)
-            mMaxSideLength = EditorSetting.MaxRectSideLength;
-         else
-            mMaxSideLength = maxSideLength;
+         //if (maxSideLength < EditorSetting.MinRectSideLength)
+         //   mMaxSideLength = EditorSetting.MinRectSideLength;
+         //else if (maxSideLength > EditorSetting.MaxRectSideLength)
+         //   mMaxSideLength = EditorSetting.MaxRectSideLength;
+         //else
+         //   mMaxSideLength = maxSideLength;
       }
       
-      private var mStartX:Number;
-      private var mStartY:Number;
-      private var mEndX:Number;
-      private var mEndY:Number;
-      
-      private var mIsSquare:Boolean;
       private var mMinSideLength:Number;
-      private var mMaxSideLength:Number;
+      //private var mMaxSideLength:Number;
       
-      private var mRectEntity:EntityShapeRectangle = null;
+      private var mPolygonEntity:EntityShapePolygon = null;
+      
+      private var mStartVertexPointX:Number;
+      private var mStartVertexPointY:Number;
+      private var mLastVertexPointX:Number;
+      private var mLastVertexPointY:Number;
+      
+      override public function Initialize ():void
+      {
+         StartSession ();
+      }
       
       override public function Reset ():void
       {
@@ -65,88 +67,106 @@ package editor.mode {
       {
          if (isCancelled)
          {
-            if (mRectEntity != null)
-               mMainView.DestroyEntity (mRectEntity);
+            if (mPolygonEntity != null)
+               mMainView.DestroyEntity (mPolygonEntity);
          }
          else
          {
-            if (mRectEntity != null)
-                mMainView.SetTheOnlySelectedEntity (mRectEntity);
+            if (mPolygonEntity != null)
+                mMainView.SetTheOnlySelectedEntity (mPolygonEntity);
          }
          
-         mRectEntity = null;
+         mPolygonEntity = null;
       }
       
-      protected function StartSession (startX:Number, startY:Number):void
+      protected function StartSession ():void
       {
          ResetSession (true);
          
-         mStartX = startX;
-         mStartY = startY;
-         
-         mRectEntity = mMainView.CreateRectangle (mStartX, mStartY, mStartX, mStartY, mFilledColor, mIsStatic);
-          if (mRectEntity == null)
+         mPolygonEntity = mMainView.CreatePolygon (mFilledColor, mIsStatic);
+         mPolygonEntity.SetAiType (mCiAiType);
+         if (mPolygonEntity == null)
          {
             Reset ();
             return;
          }
-         
-         UpdateSession (startX, startY);
       }
       
-      private function UpdateSession (endX:Number, endY:Number):void
+      private function CreateVertexPoint (pointX:Number, pointY:Number):void
       {
-         var startPoint:Point = new Point (mStartX, mStartY);
-         var endPoint  :Point = new Point (endX, endY);
+         if (mPolygonEntity == null)
+            return;
          
-         var w:Number = startPoint.x - endPoint.x; if (w < 0) w = - w;
-         var h:Number = startPoint.y - endPoint.y; if (h < 0) h = - h;
-         
-         if (w <= mMaxSideLength && h <= mMaxSideLength && w * h <= EditorSetting.MaxRectArea)
+         if (mPolygonEntity.GetVertexPointsCount () != 0)
          {
-            mEndX = endPoint.x;
-            mEndY = endPoint.y;
+            // check validity
+            
+            var dx1:Number = pointX - mLastVertexPointX;
+            var dy1:Number = pointY - mLastVertexPointY;
+            var ds1:Number = Math.sqrt (dx1 * dx1 + dy1 * dy1);
+            
+            var point:Point = mPolygonEntity.GetVertexPointAt (0);
+            var dx2:Number = pointX - point.x;
+            var dy2:Number = pointY - point.y;
+            var ds2:Number = Math.sqrt (dx2 * dx2 + dy2 * dy2);
+            
+            if (ds1 < mMinSideLength || ds2 < mMinSideLength)
+            {
+               if (mPolygonEntity.GetVertexPointsCount () < 4)
+               {
+                  ResetSession (true);
+               }
+               else
+               {
+                  FinishSession ();
+               }
+               
+               return;
+            }
          }
          else
          {
-            if (w * h <= EditorSetting.MaxRectArea)
-            {
-               if (w <= mMaxSideLength)
-                  mEndX = endPoint.x;
-               if (h <= mMaxSideLength)
-                  mEndY = endPoint.y;
-            }
-            
-            endPoint = new Point (mEndX, mEndY);
+            mStartVertexPointX = pointX;
+            mStartVertexPointY = pointY;
+            mPolygonEntity.AddVertexPoint (pointX, pointY);
          }
          
-         w = startPoint.x - endPoint.x; if (w < 0) w = - w;
-         h = startPoint.y - endPoint.y; if (h < 0) h = - h;
+         mPolygonEntity.AddVertexPoint (pointX, pointY);
          
-         var centerX:Number = (startPoint.x + endPoint.x) * 0.5;
-         var centerY:Number = (startPoint.y + endPoint.y) * 0.5;
+         mLastVertexPointX = pointX;
+         mLastVertexPointY = pointY;
          
-         mRectEntity.SetPosition (centerX, centerY);
-         mRectEntity.SetHalfWidth  (w * 0.5, false);
-         mRectEntity.SetHalfHeight (h * 0.5, false);
-         mRectEntity.UpdateAppearance ();
+         mPolygonEntity.UpdateVertexPointAt (pointX, pointY, mPolygonEntity.GetVertexPointsCount () - 2);
+         
+         mPolygonEntity.UpdateAppearance ();
+         
+         //UpdateSession (pointX, pointY);
       }
       
-      protected function FinishSession (endX:Number, endY:Number):void
+      protected function UpdateSession (pointX:Number, pointY:Number):void
       {
-         UpdateSession (endX, endY);
-         
-         var w:Number = mEndX - mStartX; if (w < 0) w = -w;
-         var h:Number = mEndY - mStartY; if (h < 0) h = -h;
-         
-         if (w < mMinSideLength || h < mMinSideLength)
-         {
-            ResetSession (true);
-            
+         if (mPolygonEntity == null)
             return;
-         }
          
-         mRectEntity.UpdateSelectionProxy ();
+         if (mPolygonEntity.GetVertexPointsCount () == 0)
+            return;
+         
+         mPolygonEntity.UpdateVertexPointAt (pointX, pointY, mPolygonEntity.GetVertexPointsCount () - 1);
+         
+         mPolygonEntity.UpdateAppearance ();
+         
+         mMainView.CalSelectedEntitiesCenterPoint ();
+      }
+      
+      protected function FinishSession ():void
+      {
+         mPolygonEntity.RemoveVertexPointAt (mPolygonEntity.GetVertexPointsCount () - 1);
+         
+         mPolygonEntity.UpdateAppearance ();
+         mPolygonEntity.UpdateSelectionProxy ();
+         
+         mMainView.CreateUndoPoint ();
+         
          ResetSession (false);
          
          mMainView.SetCurrentCreateMode (null);
@@ -159,12 +179,11 @@ package editor.mode {
       
       override public function OnMouseDown (mouseX:Number, mouseY:Number):void
       {
-         StartSession (mouseX, mouseY);
       }
       
       override public function OnMouseMove (mouseX:Number, mouseY:Number):void
       {
-         if (mRectEntity == null)
+         if (mPolygonEntity == null)
             return;
          
          UpdateSession (mouseX, mouseY);
@@ -172,10 +191,10 @@ package editor.mode {
       
       override public function OnMouseUp (mouseX:Number, mouseY:Number):void
       {
-         if (mRectEntity == null)
+         if (mPolygonEntity == null)
             return;
          
-         FinishSession (mouseX, mouseY);
+         CreateVertexPoint (mouseX, mouseY);
       }
    }
    

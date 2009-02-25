@@ -36,8 +36,13 @@ package player.physics {
          
          prismaticJointDef.enableMotor   = params.mEnableMotor;
          prismaticJointDef.motorSpeed    = params.mMotorSpeed;
-         prismaticJointDef.maxMotorForce = 100000000;
-         
+         if (params.mMaxMotorForce < 0)
+            prismaticJointDef.maxMotorForce = 0;
+         else if (params.mMaxMotorForce < 0x7FFFFFFF)
+            prismaticJointDef.maxMotorForce = int(params.mMaxMotorForce); // to be compatible with earlier versions ( version < v1.04 )
+         else
+            prismaticJointDef.maxMotorForce = params.mMaxMotorForce;
+            
          _b2Joint = mPhysicsEngine._b2World.CreateJoint(prismaticJointDef) as b2PrismaticJoint;
          
          _b2Joint.SetUserData (this);

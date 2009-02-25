@@ -33,7 +33,7 @@ package editor.entity {
          super (world);
       }
       
-      override public function IsPhysicsEntity ():Boolean
+      override public function IsBasicShapeEntity ():Boolean
       {
          return false;
       }

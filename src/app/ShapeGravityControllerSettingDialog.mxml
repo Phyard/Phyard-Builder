@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Gravity Controller Setting" width="500">
+    title="Gravity Controller Setting" width="500" creationComplete="OnInitPanel()">
 
    <mx:Spacer height="10"/>
 
@@ -42,7 +42,7 @@
       -->
       <mx:Spacer width="100%"/>
       <mx:Label id="Label_Radius" text="Radius:" textAlign="right" />
-      <mx:NumericStepper id="NumericStepper_Radius" minimum="10" maximum="100"
+      <mx:NumericStepper id="NumericStepper_Radius"
          stepSize="1" width="100" />
       <mx:Spacer width="100%"/>
    </mx:HBox>
@@ -73,6 +73,12 @@
          
          private var mAdvancePageCreated:Boolean = false;
          
+         private function OnInitPanel ():void
+         {
+            NumericStepper_Radius.minimum =   Define.MinGravityControllerRadium;
+            NumericStepper_Radius.maximum =   Define.MaxGravityControllerRadium;
+         }
+         
          public function SetValues (values:Object):void
          {
             mInputValues = values;
@@ -102,7 +108,8 @@
          
          private function OnClickOkButton():void 
          {
-            var params:Object = new Object ();
+            //var params:Object = new Object ();
+            var params:Object = mInputValues;
             
             //params.mIsVisible = CheckBox_IsVisible.selected;
             params.mIsInteractive = CheckBox_Interactive.selected;

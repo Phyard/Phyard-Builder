@@ -12,25 +12,38 @@ package player.entity {
    
    import common.Define;
    
-   public class EntityShapeRectangle extends EntityShape
+   public class EntityShapePolygon extends EntityShape
    {
       
-      protected var mHalfWidth:Number = 0;
-      protected var mHalfHeight:Number = 0;
+      protected var mLocalPoints:Array = null;
       
-      public function EntityShapeRectangle (world:World, shapeContainer:ShapeContainer)
+      public function EntityShapePolygon (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
       }
       
-      public function GetWidth ():Number
+      public function GetVertexPointsCount ():int
       {
-         return mHalfWidth * 2.0;
+         if (mLocalPoints == null)
+            return 0;
+         else
+            return mLocalPoints.length;
       }
       
-      public function GetHeight ():Number
+      public function SetLocalVertexPoints (points:Array):void
       {
-         return mHalfHeight * 2.0;
+         if (mLocalPoints == null || mLocalPoints.length != points.length)
+         {
+            mLocalPoints = new Array (points.length);
+            for (i = 0; i < mLocalPoints.length; ++ i)
+               mLocalPoints [i] = new Point ();
+         }
+         
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         {
+            mLocalPoints [i].x =  points [i].x;
+            mLocalPoints [i].y =  points [i].y;
+         }
       }
       
       override public function BuildFromParams (params:Object):void
@@ -39,8 +52,7 @@ package player.entity {
          
          //
          
-         mHalfWidth = params.mHalfWidth;
-         mHalfHeight = params.mHalfHeight;
+         SetLocalVertexPoints (params.mLocalPoints);
          
          var displayX:Number = params.mPosX;
          var displayY:Number = params.mPosY;
@@ -50,23 +62,24 @@ package player.entity {
          displayX -= containerPosition.x;
          displayY -= containerPosition.y;
          
-         if (IsPhysicsEntity ())
+         if (IsPhysicsEntity () && mLocalPoints != null)
          {
             var cos:Number = Math.cos (rot);
             var sin:Number = Math.sin (rot);
             
-            var displayPoints:Array = new Array ();
+            var displayPoints:Array = new Array (mLocalPoints.length);
             var tx:Number;
             var ty:Number;
-            
-            tx = - mHalfWidth; ty = - mHalfHeight; displayPoints [0] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx =   mHalfWidth; ty = - mHalfHeight; displayPoints [1] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx =   mHalfWidth; ty =   mHalfHeight; displayPoints [2] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx = - mHalfWidth; ty =   mHalfHeight; displayPoints [3] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            for (var i:int = 0; i < displayPoints.length; ++ i)
+            {
+               tx = mLocalPoints [i].x;
+               ty = mLocalPoints [i].y;
+               displayPoints [i] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            }
             
             if (IsPhysicsEntity () && mPhysicsProxy == null)
             {
-               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapePolygon (
+               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeConcavePolygon (
                                        mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
                
                mPhysicsProxy.SetUserData (this);
@@ -83,19 +96,26 @@ package player.entity {
       
       override public function RebuildAppearance ():void
       {
-         var filledColor:uint = Define.GetShapeFilledColor (mAiType);
+         //var filledColor:uint = Define.GetShapeFilledColor (mAiType);
+         var filledColor:uint = mAiType >= 0 ? Define.GetShapeFilledColor (mAiType) : mFilledColor;
+         
          var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
          //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
          //var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
+         //var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
+         var borderColor:uint = IsDrawBorder () ? mBorderColor : filledColor;
          
-         GraphicsUtil.ClearAndDrawRect (this, 
-                                          - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
-                                          borderColor, 1, true, filledColor);
-         
-         if (Define.IsBombShape (GetShapeAiType ()))
+         if (GetVertexPointsCount () == 1)
          {
-            GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
+            GraphicsUtil.Clear (this);
+         }
+         else if (GetVertexPointsCount () == 2)
+         {
+            GraphicsUtil.ClearAndDrawLine (this, mLocalPoints[0].x, mLocalPoints[0].y, mLocalPoints[1].x, mLocalPoints[1].y, borderColor, 1);
+         }
+         else if (GetVertexPointsCount () > 2)
+         {
+            GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, 1, mDrawBackground, filledColor);
          }
       }
 

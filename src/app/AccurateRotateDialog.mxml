@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+    title="Rotate ..." width="300">
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Label text="Rotation:" textAlign="right" width="60"/>
+      <mx:TextInput id="TextInput_RotationAngle" width="80" text="100"/>
+      <mx:Label text="deg. (0-360)" textAlign="left" />
+   </mx:HBox>
+
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[       
+         import mx.managers.PopUpManager;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            PopUpManager.removePopUp(this);
+            
+            var params:Object = new Object ();
+            
+            var angle:Number = parseFloat (TextInput_RotationAngle.text);
+            if ( isNaN (angle) )
+               params.mRotationAngle = 0;
+            else
+               params.mRotationAngle = angle;
+            
+           if (OnConfirm != null)
+              OnConfirm (params);
+             
+           if (OnClose != null)
+              OnClose ();
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

@@ -52,7 +52,7 @@ package player.entity {
          _textChanged = false;
          _usingBitmap = use_bitmap;
          
-         trace ("_usingBitmap = " + _usingBitmap);
+         //trace ("_usingBitmap = " + _usingBitmap);
          
          while (numChildren > 0)
             removeChildAt (0);

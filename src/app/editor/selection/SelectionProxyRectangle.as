@@ -17,16 +17,5 @@ package editor.selection {
       {
          super (selEngine);
       }
-      
-      
-      public function RebuildRectangle (rotation:Number, centerX:Number, centerY:Number, halfWidth:Number, halfHeight:Number):void
-      {
-         var p1:Point = new Point (centerX - halfWidth, centerY - halfHeight);
-         var p2:Point = new Point (centerX + halfWidth, centerY - halfHeight);
-         var p3:Point = new Point (centerX + halfWidth, centerY + halfHeight);
-         var p4:Point = new Point (centerX - halfWidth, centerY + halfHeight);
-         
-         RebuildPolygon (rotation, [p1, p2, p3, p4]);
-      }
    }
 }

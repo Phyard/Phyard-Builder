@@ -5,8 +5,8 @@
    <property name="dir.secureswf"        value="D:/softs/secureSWF/secureSWF_v3standard_win" />
    <property name="dir.webhost"        value="F:/__WebApps/_homepage/colorinfection_test" />
    
-   <property name="editor-width" value="688" />
-   <property name="editor-height" value="700" />
+   <property name="editor-width" value="685" />
+   <property name="editor-height" value="699" />
    
    <property name="player-width" value="600" />
    <property name="player-height" value="600" />
@@ -83,6 +83,9 @@
             <exclude name="**/.svn/**"/>
          </fileset>
          <fileset dir="${dir.external}/box2dflash">
+            <exclude name="**/.svn/**"/>
+         </fileset>
+         <fileset dir="${dir.external}/concave_polygon_decomposition">
             <exclude name="**/.svn/**"/>
          </fileset>
          <fileset dir="${dir.external}/beziercurves">

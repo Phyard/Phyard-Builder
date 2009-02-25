@@ -3,90 +3,41 @@
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
      
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Circle Setting" width="500">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    title="Circle Setting" width="500" creationComplete="OnInitPanel()">
 
    <mx:TabNavigator width="100%" height="100%">
-      <mx:Box label="Basic" direction="vertical" borderStyle="solid" height="100%" width="100%"
-               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+      <mx:Box label="Physics" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
-         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_IsStatic" label="Is Static"/>
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_IsBullet" label="Is Bullet"/>
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border"/>
-            <mx:Spacer width="100%"/>
-         </mx:HBox>
-         
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label id="Label_Density" text="Density:" textAlign="right" width="30%"/>
-            <mx:HSlider id="Slider_Denstiy" focusEnabled="false" minimum="0" maximum="10" value="1" width="70%"
-                dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="1"
-                labels="['0', '5.0', '10.0']" allowTrackClick="true" liveDragging="true" />
-         </mx:HBox>
-         
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label id="Label_Friction" text="Friction:" textAlign="right" width="30%"/>
-            <mx:HSlider id="Slider_Friction" focusEnabled="false" minimum="0" maximum="1" value="0.1" width="70%"
-                dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
-                labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
-         </mx:HBox>
-         
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label id="Label_Restitution" text="Restitution:" textAlign="right" width="30%"/>
-            <mx:HSlider id="Slider_Restitution" focusEnabled="false" minimum="0" maximum="1" value="0.2" width="70%"
-                dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
-                labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
-         </mx:HBox>
-
-         <mx:Spacer height="10"/>
-         
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label id="Label_Radius" text="Radius:" textAlign="right" width="30%"/>
-            <!--
-            <mx:HSlider id="Slider_Radius" focusEnabled="false" minimum="2" maximum="100" value="10" width="70%"
-                dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="20"
-                labels="['2', '100']" allowTrackClick="true" liveDragging="true" />
-            -->
-            <mx:NumericStepper id="NumericStepper_Radius" minimum="2" maximum="100"
-               stepSize="1" width="100" />
-         </mx:HBox>
-         <mx:Spacer height="6"/>
+         <ShapePhysicsSettingPanel id="PhysicsSettingPanel" 
+               creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
       </mx:Box>
-      <mx:Box label="Advanced" direction="vertical" borderStyle="solid" height="100%" width="100%"
-               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+      <mx:Box label="Appearance" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
-
+         <ShapeAppearanceSettingPanel id="AppearanceSettingPanel"
+               creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
          <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label id="Label_PosX" text="    X:" textAlign="right" width="80"/>
-            <mx:TextInput id="Text_PosX" text="" width="80"/>
-            <mx:Label id="Label_PosY" text="     Y:" textAlign="right" width="50"/>
-            <mx:TextInput id="Text_PosY" text="" width="80"/>
-            <mx:Label id="Label_Angle" text="Angle:" textAlign="right" width="50"/>
-            <mx:TextInput id="Text_Angle" text="" width="80"/>
+            <mx:Spacer width="30"/>
+            <mx:Label text="Appearance Type:" textAlign="right" width="30%"/>
+            <mx:ComboBox id="SelectList_AppearanceType" creationComplete="OnAppearanceTypeSelectListCreationComplete()"/>
          </mx:HBox>
-
-         <mx:Spacer height="16"/>
-
+         <mx:Spacer height="100%" />
+      </mx:Box>
+      <mx:Box label="Geometry" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <ShapeGeometrySettingPanel id="GeometrySettingPanel" creationComplete="OnGeometrySettingPanelCreationComplete()"/>
          <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label id="Label_CollisionCategory" text="Collision Category:" textAlign="right" width="30%"/>
-            <mx:ComboBox id="SelectList_CollisionCategory" />
+            <mx:Label id="Label_Radius" text="Radius:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_Radius" stepSize="1" width="80" />
          </mx:HBox>
-
-         <mx:Spacer height="6"/>
-
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label id="Label_Appearance" text="Appearance:" textAlign="right" width="30%"/>
-            <mx:ComboBox id="SelectList_Appearance" width="10%" />
-         </mx:HBox>
-
-         <mx:Spacer height="1" creationComplete="OnAnvancePageCreationComplete(event)"/>
+         <mx:Spacer height="100%" />
       </mx:Box>
    </mx:TabNavigator>
 
@@ -117,47 +68,46 @@
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          
-         private var mInputValues:Object;
+         private var mParams:Object;
          
-         private var mAdvancePageCreated:Boolean = false;
-         
-         public function SetValues (values:Object):void
+         public function SetValues (initialValues:Object):void
          {
-            mInputValues = values;
-            mAdvancePageCreated = false;
-            
-            CheckBox_IsStatic.selected = values.mIsStatic;
-            CheckBox_IsVisible.selected = values.mIsVisible;
-            CheckBox_IsBullet.selected = values.mIsBullet;
-            
-            Slider_Denstiy.value = values.mDensity;
-            Slider_Friction.value = values.mFriction;
-            Slider_Restitution.value = values.mRestitution;
-            //Slider_Radius.value = values.mRadius;
-            NumericStepper_Radius.value = values.mRadius;
-            
-            CheckBox_IsVisible.enabled = values.mVisibleEditable;
-            CheckBox_IsStatic.enabled = values.mStaticEditable;
-            
-            CheckBox_DrawBorder.selected = mInputValues.mDrawBorder;
+            mParams = initialValues;
          }
          
-         private function OnAnvancePageCreationComplete (event:Event):void
+         private function OnInitPanel ():void
          {
-            Text_PosX.text = "" + mInputValues.mPosX;
-            Text_PosY.text = "" + mInputValues.mPosY;
-            Text_Angle.text = "" + mInputValues.mAngle;
+         }
+         
+         private function OnPhysicsSettingPanelCreationComplete ():void
+         {
+            PhysicsSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnAppearanceSettingPanelCreationComplete ():void
+         {
+            AppearanceSettingPanel.SetValues (mParams);
             
+            SelectList_AppearanceType.selectedIndex = mParams.mAppearanceTypeListSelectedIndex;
+         }
+         
+         private function OnAppearanceTypeSelectListCreationComplete():void
+         {
             var dp:Array = new Array ();
-            dp.push({label:"Ball", data:null});
-            dp.push({label:"Column", data:null});
-            SelectList_Appearance.dataProvider = dp;
-            SelectList_Appearance.selectedIndex = mInputValues.mAppearanceType;
+            dp.push({label:"Ball", data:Define.CircleAppearanceType_Ball});
+            dp.push({label:"Column", data:Define.CircleAppearanceType_Column});
+            dp.push({label:"Circle", data:Define.CircleAppearanceType_Circle});
+            SelectList_AppearanceType.dataProvider = dp;
+         }
+         
+         private function OnGeometrySettingPanelCreationComplete ():void
+         {
+            GeometrySettingPanel.SetValues (mParams);
             
-            SelectList_CollisionCategory.dataProvider = mInputValues.mCollisionCategoryListDataProvider;
-            SelectList_CollisionCategory.selectedIndex = mInputValues.mCollisionCategoryListSelectedIndex;
+            NumericStepper_Radius.minimum = Define.MinCircleRadium;
+            NumericStepper_Radius.maximum = Define.MaxCircleRadium;
             
-            mAdvancePageCreated = true;
+            NumericStepper_Radius.value = mParams.mRadius;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -172,60 +122,29 @@
          
          private function OnClickOkButton():void 
          {
-            var params:Object = new Object ();
-             
-            params.mIsStatic = CheckBox_IsStatic.selected;
-            params.mIsVisible = CheckBox_IsVisible.selected;
-            params.mIsBullet = CheckBox_IsBullet.selected;
-            
-            params.mDensity = Slider_Denstiy.value;
-            params.mFriction = Slider_Friction.value;
-            params.mRestitution = Slider_Restitution.value;
-            
-            //params.mRadius = Slider_Radius.value;
-            params.mRadius = NumericStepper_Radius.value;
-            
-            params.mDrawBorder = CheckBox_DrawBorder.selected;
-               
-            if (mAdvancePageCreated)
+            if (PhysicsSettingPanel != null)
             {
-               var valuePosX:Number = parseFloat (Text_PosX.text);
-               if ( ! isNaN (valuePosX) )
-                  params.mPosX = valuePosX;
-               else
-                  params.mPosX = mInputValues.mPosX;
-               
-               var valuePosY:Number = parseFloat (Text_PosY.text);
-               if ( ! isNaN (valuePosY) )
-                  params.mPosY = valuePosY;
-               else
-                  params.mPosY = mInputValues.mPosY;
-               
-               var valueAngle:Number = parseFloat (Text_Angle.text);
-               if ( ! isNaN (valueAngle) )
-                  params.mAngle = valueAngle;
-               else
-                  params.mAngle = mInputValues.mAngle;
-               
-               params.mAppearanceType = SelectList_Appearance.selectedIndex;
-               
-               params.mCollisionCategoryIndex = SelectList_CollisionCategory.selectedItem.data;
+               PhysicsSettingPanel.GetValues (mParams);
             }
-            else
+            
+            if (AppearanceSettingPanel != null)
             {
-               params.mPosX = mInputValues.mPosX;
-               params.mPosY = mInputValues.mPosY;
-               params.mAngle = mInputValues.mAngle;
+               AppearanceSettingPanel.GetValues (mParams);
                
-               params.mAppearanceType = mInputValues.mAppearanceType;
-               
-               params.mCollisionCategoryIndex = ((mInputValues.mCollisionCategoryListDataProvider as Array) [mInputValues.mCollisionCategoryListSelectedIndex]).data;
+               mParams.mAppearanceType = SelectList_AppearanceType.selectedItem.data;
+            }
+            
+            if (GeometrySettingPanel != null)
+            {
+               GeometrySettingPanel.GetValues (mParams);
+            
+               mParams.mRadius = NumericStepper_Radius.value;
             }
             
             PopUpManager.removePopUp(this);
             
             if (OnConfirm != null)
-               OnConfirm (params);
+               OnConfirm (mParams);
              
              if (OnClose != null)
                OnClose ();
@@ -238,17 +157,6 @@
              if (OnClose != null)
                OnClose ();
          }
-         
-         
-         private function OnClickDefaultButton ():void
-         {
-            var values:Object = new Object ();
-            
-            // ...
-            
-            SetValues (values);
-         }
-         
          
      ]]>
    </mx:Script>

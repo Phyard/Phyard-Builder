@@ -5,6 +5,8 @@ package com.tapirgames.util {
    
    public class MathUtil {
       
+      
+      
       public static function GetClipValue (value:Number, min:Number, max:Number):Number
       {
          if (value < min)

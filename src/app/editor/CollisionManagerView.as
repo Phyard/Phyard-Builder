@@ -45,11 +45,11 @@ package editor {
    public class CollisionManagerView extends UIComponent 
    {
       public static const ViewWidth:int = Define.CategoryViewWidth;
-      public static const ViewHeight:int = Define.WorldHeight;
+      public static const ViewHeight:int = Define.CategoryViewHeight;
       public static const ViewBorderThinknessLR:int = Define.WorldBorderThinknessLR;
       public static const ViewBorderThinknessTB:int = Define.WorldBorderThinknessTB;
       
-      
+      public var mViewBackgroundSprite:Sprite = null;
       
       public var mBackgroundSprite:Sprite;
       public var mFriendLinksSprite:Sprite;
@@ -64,6 +64,10 @@ package editor {
          
          addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
          addEventListener(Event.RESIZE, OnResize);
+         
+         //
+         mViewBackgroundSprite = new Sprite ();
+         addChild (mViewBackgroundSprite);
          
          //
          mBackgroundSprite = new Sprite ();
@@ -114,7 +118,11 @@ package editor {
          mCollisionManager = cm;
          
          if (mCollisionManager != null)
+         {
             addChildAt (mCollisionManager, getChildIndex (mForegroundSprite));
+            
+            mask = mContentMaskSprite;
+         }
          
          UpdateFriendLinkLines ();
          
@@ -144,6 +152,11 @@ package editor {
       {
          var parentWidth :Number = parent.width;
          var parentHeight:Number = parent.height;
+         
+         mViewBackgroundSprite.graphics.clear ();
+         mViewBackgroundSprite.graphics.beginFill(0xFFFFFF);
+         mViewBackgroundSprite.graphics.drawRect (0, 0, parentWidth, parentHeight);
+         mViewBackgroundSprite.graphics.endFill ();
          
          // mask
          {
@@ -452,14 +465,6 @@ package editor {
       }
       
 //==================================================================================
-// key modifiers
-//==================================================================================
-      
-      public var mButtonKeyShift:Button;
-      public var mButtonKeyCtrl:Button;
-      public var mButtonKeyAlt:Button;
-      
-//==================================================================================
 // mouse and key events
 //==================================================================================
       
@@ -471,9 +476,9 @@ package editor {
       
       private function CheckModifierKeys (event:MouseEvent):void
       {
-         _mouseEventCtrlDown   = event.ctrlKey || (mButtonKeyCtrl != null && mButtonKeyCtrl.selected);
-         _mouseEventShiftDown = event.shiftKey || (mButtonKeyShift != null && mButtonKeyShift.selected);
-         _mouseEventAltDown     = event.altKey || (mButtonKeyAlt != null && mButtonKeyAlt.selected);
+         _mouseEventCtrlDown   = event.ctrlKey;
+         _mouseEventShiftDown = event.shiftKey;
+         _mouseEventAltDown     = event.altKey;
       }
       
 //==================================================================================
@@ -854,8 +859,8 @@ package editor {
          var entityArray1:Array = mCollisionManager.GetEntitiesAtPoint (posX1, posY1);
          var entityArray2:Array = mCollisionManager.GetEntitiesAtPoint (posX2, posY2);
          
-         trace ("entityArray1.length = " + entityArray1.length);
-         trace ("entityArray2.length = " + entityArray2.length);
+         //trace ("entityArray1.length = " + entityArray1.length);
+         //trace ("entityArray2.length = " + entityArray2.length);
          
          var category1:EntityCollisionCategory;
          var category2:EntityCollisionCategory;

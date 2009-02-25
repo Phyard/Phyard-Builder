@@ -32,7 +32,7 @@ package player.ui {
                         + "- click a <font color='#000000'><b>BOMB</b></font> object to explode it."
                         + "</font>";
          
-         mTextTutorial = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, Define.WorldWidth / 2);
+         mTextTutorial = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, Define.DefaultWorldWidth / 2);
          
          var box2dText:String =  "<font size='10' face='Verdana' color='#000000'>(This player is based on Box2d physics engine (AS3).)</font>";
          mBox2dText = TextFieldEx.CreateTextField (box2dText);

@@ -25,34 +25,14 @@ package editor.world {
          if (brothers.length <= 1)
             return;
          
-         mBrotherGroupArray.unshift (brothers);
+         //mBrotherGroupArray.unshift (brothers); // when loading, will makethe order of groups inversed
+         mBrotherGroupArray.push (brothers);
          
          var i:int;
-         var hasBreakables:Boolean = false;
          for (i = 0; i < brothers.length; ++ i)
          {
             (brothers [i] as Entity).SetBrothers (brothers);
-            
-            if (brothers [i] is EntityShape)
-            {
-               if ( Define.IsBreakableShape ( Define.GetShapeAiType ( (brothers [i] as EntityShape).GetFilledColor () ) ) )
-                  hasBreakables = true;
-            }
          }
-         
-         /*
-         if (hasBreakables)
-         {
-            for (i = 0; i < brothers.length; ++ i)
-            {
-               if (brothers [i] is EntityShape)
-               {
-                  (brothers [i] as EntityShape).SetFilledColor (Define.GetShapeFilledColor (Define.ShapeAiType_Breakable));
-                  (brothers [i] as EntityShape).UpdateAppearance ();
-               }
-            }
-         }
-         */
       }
       
       public function BreakApartBrothers (entityArray:Array):void

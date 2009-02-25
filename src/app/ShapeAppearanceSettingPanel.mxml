@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+      borderStyle="solid" borderThickness="0"
+      width="100%" height="100%"
+      creationComplete="OnInitPanel()"
+      >
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="30"/>
+      <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="30%" click="OnAiTypeSelectListClick()"/>
+      <mx:Label id="Label_AiType" text="C.I. Shape Type:" textAlign="right"/>
+      <mx:ComboBox id="SelectList_AiType" rowCount="10"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="30"/>
+      <mx:CheckBox id="CheckBox_IsVisible" label="Visible" width="30%"/>
+      <mx:Label text="Transparency:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_Transparency" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="30"/>
+      <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="30%"/>
+      <mx:Label id="Label_DrawBackground" text="Filled Color:" textAlign="right"/>
+      <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xFFFFFF"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="30"/>
+      <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border" width="30%"/>
+      <mx:Label id="Label_DrawBorder" text="Border Color:" textAlign="right"/>
+      <mx:ColorPicker id="ColorPicker_BorderColor" showTextField="true" selectedColor="0x000000"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="30"/>
+      <mx:Label id="Label_BorderThickness" text="Border Thickness:" textAlign="right" width="30%"/>
+      <mx:NumericStepper id="NumericStepper_BorderThickness" stepSize="1" minimum="0" maximum="5" value="1" width="80" />
+      <mx:Label text="(Must be 1 now)" color="0x0000FF"/>
+   </mx:HBox>
+
+   <mx:Script>
+      <![CDATA[       
+         
+         import common.Define;
+         
+         private var mInputValues:Object;
+         
+         private function OnInitPanel ():void
+         {
+            var dp:Array = new Array ();
+            dp.push({label:"Static", data:Define.ShapeAiType_Static});
+            dp.push({label:"Movable", data:Define.ShapeAiType_Movable});
+            dp.push({label:"Breakable", data:Define.ShapeAiType_Breakable});
+            dp.push({label:"Infected", data:Define.ShapeAiType_Infected});
+            dp.push({label:"Uninfected", data:Define.ShapeAiType_Uninfected});
+            dp.push({label:"DontInfect", data:Define.ShapeAiType_DontInfect});
+            SelectList_AiType.dataProvider = dp;
+         }
+         
+         private function OnAiTypeSelectListClick ():void
+         {
+            if (CheckBox_IsCiShape.selected)
+            {
+               SelectList_AiType.enabled = true;
+               Label_AiType.enabled = true;
+               
+               CheckBox_DrawBorder.enabled = false;
+               ColorPicker_BorderColor.enabled = false;
+               CheckBox_DrawBackground.enabled = false;
+               ColorPicker_BackgroundColor.enabled = false;
+               NumericStepper_BorderThickness.enabled = false;
+               
+               Label_DrawBackground.enabled = false;
+               Label_DrawBorder.enabled = false;
+               Label_BorderThickness.enabled = false;
+            }
+            else
+            {
+               SelectList_AiType.enabled = false;
+               Label_AiType.enabled = false;
+               
+               CheckBox_DrawBorder.enabled = true;
+               ColorPicker_BorderColor.enabled = true;
+               CheckBox_DrawBackground.enabled = true;
+               ColorPicker_BackgroundColor.enabled = true;
+               NumericStepper_BorderThickness.enabled = false;
+               
+               Label_DrawBackground.enabled = true;
+               Label_DrawBorder.enabled = true;
+               Label_BorderThickness.enabled = false;
+            }
+         }
+         
+         public function SetValues (inputValues:Object):void
+         {
+            mInputValues = inputValues;
+            
+            CheckBox_IsCiShape.selected = inputValues.mAiType >= 0;
+            SelectList_AiType.selectedIndex = inputValues.mAiType;
+            
+            CheckBox_IsVisible.selected = inputValues.mIsVisible;
+            NumericStepper_Transparency.value = inputValues.mTransparency;
+            CheckBox_DrawBorder.selected = inputValues.mDrawBorder;
+            ColorPicker_BorderColor.selectedColor = inputValues.mBorderColor;
+            NumericStepper_BorderThickness.value = inputValues.mBorderThickness;
+            CheckBox_DrawBackground.selected = inputValues.mDrawBackground;
+            ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;
+            
+            OnAiTypeSelectListClick ();
+         }
+         
+         public function GetValues (returnValues:Object):void
+         {
+            returnValues.mAiType = CheckBox_IsCiShape.selected ? SelectList_AiType.selectedItem.data : Define.ShapeAiType_Unknown;
+            
+            returnValues.mIsVisible = CheckBox_IsVisible.selected;
+            returnValues.mTransparency = NumericStepper_Transparency.value;
+            returnValues.mDrawBorder = CheckBox_DrawBorder.selected;
+            returnValues.mBorderColor = ColorPicker_BorderColor.selectedColor;
+            returnValues.mBorderThickness = NumericStepper_BorderThickness.value;
+            returnValues.mDrawBackground = CheckBox_DrawBackground.selected;
+            returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
+         }
+         
+     ]]>
+   </mx:Script>
+
+</mx:VBox>

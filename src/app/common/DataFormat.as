@@ -2,21 +2,21 @@
 package common {
    
    import flash.utils.ByteArray;
+   import flash.geom.Point;
    
    import editor.world.World;
    import editor.entity.Entity;
    import editor.entity.EntityShape
    import editor.entity.EntityShapeCircle;
    import editor.entity.EntityShapeRectangle;
+   import editor.entity.EntityShapePolygon;
    import editor.entity.EntityShapeText;
+   import editor.entity.EntityShapeGravityController;
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointHinge;
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointDistance;
    import editor.entity.SubEntityJointAnchor;
-   
-   import player.world.World;
-   import player.entity.ShapeContainer;
    
    public class DataFormat
    {
@@ -36,15 +36,33 @@ package common {
             return null;
          
          var worldDefine:WorldDefine = new WorldDefine ();
-         worldDefine.mVersion = Config.VersionNumber;
          
-         worldDefine.mAuthorName = editorWorld.GetAuthorName ();
-         worldDefine.mAuthorHomepage = editorWorld.GetAuthorHomepage ();
+         // basic
+         {
+            worldDefine.mVersion = Config.VersionNumber;
+            
+            worldDefine.mAuthorName = editorWorld.GetAuthorName ();
+            worldDefine.mAuthorHomepage = editorWorld.GetAuthorHomepage ();
+            
+            //>>from v1.02
+            worldDefine.mShareSourceCode = editorWorld.IsShareSourceCode ();
+            worldDefine.mPermitPublishing = editorWorld.IsPermitPublishing ();
+         }
          
-         //>>from v1.02
-         worldDefine.mShareSourceCode = editorWorld.IsShareSourceCode ();
-         worldDefine.mPermitPublishing = editorWorld.IsPermitPublishing ();
-         //<<
+         // settings
+         {
+            //>>from v1.04
+            worldDefine.mSettings.mCameraCenterX = editorWorld.GetCameraCenterX ();
+            worldDefine.mSettings.mCameraCenterY = editorWorld.GetCameraCenterY ();
+            worldDefine.mSettings.mWorldLeft = editorWorld.GetWorldLeft ();
+            worldDefine.mSettings.mWorldTop = editorWorld.GetWorldTop ();
+            worldDefine.mSettings.mWorldWidth = editorWorld.GetWorldWidth ();
+            worldDefine.mSettings.mWorldHeight = editorWorld.GetWorldHeight ();
+            worldDefine.mSettings.mBackgroundColor = editorWorld.GetBackgroundColor ();
+            worldDefine.mSettings.mBuildBorder = editorWorld.IsBuildBorder ();
+            worldDefine.mSettings.mBorderColor = editorWorld.GetBorderColor ();
+            //<<
+         }
          
          var entityId:int;
          var editorEntity:editor.entity.Entity;
@@ -69,19 +87,40 @@ package common {
                entityDefine.mDrawBackground = shape.IsDrawBackground ();
                //<<
                
-               if (shape.IsPhysicsEntity ())
-               {
-                  //>>from v1.02
-                  entityDefine.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-                  //<<
+               //>>from v1.04
+               entityDefine.mBorderColor = shape.GetBorderColor ();
+               entityDefine.mBorderThickness = shape.GetBorderThickness ();
+               entityDefine.mBackgroundColor =shape.GetFilledColor ();
+               entityDefine.mTransparency = shape.GetTransparency ();
+               //<<
                
-                  entityDefine.mAiType = Define.GetShapeAiType ( shape.GetFilledColor ());
+               if (shape.IsBasicShapeEntity ())
+               {
+                  //>> move up from v1.04
+                  entityDefine.mAiType = shape.GetAiType ();
+                  //<<
                   
-                  entityDefine.mIsStatic = shape.IsStatic ();
-                  entityDefine.mIsBullet = shape.mIsBullet;
-                  entityDefine.mDensity = shape.mDensity;
-                  entityDefine.mFriction = shape.mFriction;
-                  entityDefine.mRestitution = shape.mRestitution;
+                  //>>from v1.04
+                  entityDefine.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
+                  entityDefine.mIsSensor = shape.mIsSensor;
+                  //<<
+                  
+                  if (entityDefine.mIsPhysicsEnabled)  // always true before v1.04
+                  {
+                     //>>from v1.02
+                     entityDefine.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
+                     //<<
+                     
+                     //>> removed here, move up from v1.04
+                     //entityDefine.mAiType = Define.GetShapeAiType ( shape.GetFilledColor ()); // move up from v1.04
+                     //<<
+                     
+                     entityDefine.mIsStatic = shape.IsStatic ();
+                     entityDefine.mIsBullet = shape.mIsBullet;
+                     entityDefine.mDensity = shape.mDensity;
+                     entityDefine.mFriction = shape.mFriction;
+                     entityDefine.mRestitution = shape.mRestitution;
+                  }
                   
                   if (child is editor.entity.EntityShapeCircle)
                   {
@@ -98,6 +137,14 @@ package common {
                      entityDefine.mHalfWidth = (shape as editor.entity.EntityShapeRectangle).GetHalfWidth ();
                      entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
                   }
+                  //>>from v1.04
+                  else if (child is editor.entity.EntityShapePolygon)
+                  {
+                     entityDefine.mEntityType = Define.EntityType_ShapePolygon;
+                     
+                     entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolygon).GetLocalVertexPoints ();
+                  }
+                  //<<
                }
                else // not physics entity
                {
@@ -149,6 +196,10 @@ package common {
                   entityDefine.mEnableMotor = hinge.mEnableMotor;
                   entityDefine.mMotorSpeed = hinge.mMotorSpeed;
                   entityDefine.mBackAndForth = hinge.mBackAndForth;
+                  
+                  //>>from v1.04
+                  entityDefine.mMaxMotorTorque = hinge.mMaxMotorTorque;
+                  //<<
                }
                else if (child is editor.entity.EntityJointSlider)
                {
@@ -164,6 +215,10 @@ package common {
                   entityDefine.mEnableMotor = slider.mEnableMotor;
                   entityDefine.mMotorSpeed = slider.mMotorSpeed;
                   entityDefine.mBackAndForth = slider.mBackAndForth;
+                  
+                  //>>from v1.04
+                  entityDefine.mMaxMotorForce = slider.mMaxMotorForce;
+                  //<<
                }
                else if (child is editor.entity.EntityJointDistance)
                {
@@ -266,25 +321,39 @@ package common {
          return worldDefine;
       }
       
-      public static function WorldDefine2EditorWorld (worldDefine:WorldDefine):editor.world.World
+      public static function WorldDefine2EditorWorld (worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, editorWorld:editor.world.World = null):editor.world.World
       {
          // from v1,03
-         DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
+         DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
+         if (adjustPrecisionsInWorldDefine)
+            DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
          
          //
-         var editorWorld:editor.world.World = new editor.world.World ();
+         if (editorWorld == null)
+            editorWorld = new editor.world.World ();
          
-         editorWorld.SetAuthorName (worldDefine.mAuthorName);
-         editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
-         
-         if (worldDefine.mVersion >= 0x0102)
+         // basic
          {
+            editorWorld.SetAuthorName (worldDefine.mAuthorName);
+            editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
+            
             editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
             editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
          }
-         else
+         
+         // settins
          {
-            // default
+            //>> from v1.04
+            editorWorld.SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
+            editorWorld.SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
+            editorWorld.SetWorldLeft (worldDefine.mSettings.mWorldLeft);
+            editorWorld.SetWorldTop (worldDefine.mSettings.mWorldTop);
+            editorWorld.SetWorldWidth (worldDefine.mSettings.mWorldWidth);
+            editorWorld.SetWorldHeight (worldDefine.mSettings.mWorldHeight);
+            editorWorld.SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
+            editorWorld.SetBuildBorder (worldDefine.mSettings.mBuildBorder);
+            editorWorld.SetBorderColor (worldDefine.mSettings.mBorderColor);
+            //<<
          }
          
          // collision category
@@ -337,12 +406,11 @@ package common {
             {
                shape = null;
                
-               if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
+               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
                {
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
                      var circle:editor.entity.EntityShapeCircle = editorWorld.CreateEntityShapeCircle ();
-                     circle.SetFilledColor (Define.GetShapeFilledColor (entityDefine.mAiType));
                      circle.SetAppearanceType (entityDefine.mAppearanceType);
                      circle.SetRadius (entityDefine.mRadius);
                      
@@ -351,26 +419,44 @@ package common {
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
                      var rect:editor.entity.EntityShapeRectangle = editorWorld.CreateEntityShapeRectangle ();
-                     rect.SetFilledColor (Define.GetShapeFilledColor (entityDefine.mAiType));
                      rect.SetHalfWidth (entityDefine.mHalfWidth);
                      rect.SetHalfHeight (entityDefine.mHalfHeight);
                      
                      entity = shape = rect;
                   }
-                  
-                  shape.SetStatic (entityDefine.mIsStatic);
-                  shape.mIsBullet = entityDefine.IsBullet;
-                  shape.mDensity = entityDefine.mDensity;
-                  shape.mFriction = entityDefine.mFriction;
-                  shape.mRestitution = entityDefine.mRestitution;
-                  
-                  if (worldDefine.mVersion >= 0x0102)
+                  //>> from v1.04
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
-                     shape.SetCollisionCategoryIndex (entityDefine.mCollisionCategoryIndex);
+                     var polygon:editor.entity.EntityShapePolygon = editorWorld.CreateEntityShapePolygon ();
+                        polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY);
+                        polygon.SetRotation (entityDefine.mRotation);
+                     polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
+                     
+                     entity = shape = polygon;
                   }
-                  else
+                  //<<
+                  
+                  if (shape != null)
                   {
-                     shape.SetCollisionCategoryIndex (Define.CollisionCategoryId_HiddenCategory);
+                     shape.SetAiType (entityDefine.mAiType);
+                     
+                     //>>from v1.04
+                     shape.SetPhysicsEnabled (entityDefine.mIsPhysicsEnabled);
+                     shape.mIsSensor = entityDefine.mIsSensor;
+                     //<<
+                     
+                     if (entityDefine.mIsPhysicsEnabled) // always true before v1.04
+                     {
+                        //>>from v1.02
+                        shape.SetCollisionCategoryIndex (entityDefine.mCollisionCategoryIndex);
+                        //<<
+                        
+                        shape.SetStatic (entityDefine.mIsStatic);
+                        shape.mIsBullet = entityDefine.mIsBullet;
+                        shape.mDensity = entityDefine.mDensity;
+                        shape.mFriction = entityDefine.mFriction;
+                        shape.mRestitution = entityDefine.mRestitution;
+                     }
                   }
                }
                else // not physics shape
@@ -402,15 +488,19 @@ package common {
                   //<<
                }
                
-               if (worldDefine.mVersion >= 0x0102)
+               if (shape != null)
                {
+                  //>>v1.02
                   shape.SetDrawBorder (entityDefine.mDrawBorder);
                   shape.SetDrawBackground (entityDefine.mDrawBackground);
-               }
-               else
-               {
-                  shape.SetDrawBorder ( (! entityDefine.mIsStatic) || Define.IsBreakableShape (entityDefine.mAiType) );
-                  shape.SetDrawBackground (true);
+                  //<<
+                  
+                  //>>from v1.04
+                  shape.SetBorderColor (entityDefine.mIsSensor);
+                  shape.SetBorderThickness (entityDefine.mBorderThickness);
+                  shape.SetFilledColor (entityDefine.mBackgroundColor);
+                  shape.SetTransparency (entityDefine.mTransparency);
+                  //<<
                }
             }
             else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
@@ -431,6 +521,10 @@ package common {
                   hinge.mMotorSpeed = entityDefine.mMotorSpeed;
                   hinge.mBackAndForth = entityDefine.mBackAndForth;
                   
+                  //>>v1.04
+                  hinge.mMaxMotorTorque = entityDefine.mMaxMotorTorque;
+                  //<<
+                  
                   entity = joint = hinge;
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
@@ -449,6 +543,10 @@ package common {
                   slider.mEnableMotor = entityDefine.mEnableMotor;
                   slider.mMotorSpeed = entityDefine.mMotorSpeed;
                   slider.mBackAndForth = entityDefine.mBackAndForth;
+                  
+                  //>>v1.04
+                  slider.mMaxMotorForce = entityDefine.mMaxMotorForce;
+                  //<<
                   
                   entity = joint = slider;
                }
@@ -543,15 +641,10 @@ package common {
             {
                joint = entityDefine.mEntity as editor.entity.EntityJoint;
                
-               if (worldDefine.mVersion >= 0x0102)
-               {
-                  joint.SetConnectedShape1Index (entityDefine.mConnectedShape1Index);
-                  joint.SetConnectedShape2Index (entityDefine.mConnectedShape2Index);
-               }
-               else
-               {
-                  // default
-               }
+               // from v1.02
+               joint.SetConnectedShape1Index (entityDefine.mConnectedShape1Index);
+               joint.SetConnectedShape2Index (entityDefine.mConnectedShape2Index);
+               //<<
             }
          }
          
@@ -584,21 +677,52 @@ package common {
       {
          var worldDefine:WorldDefine = new WorldDefine ();
          
-         worldDefine.mVersion = parseInt (worldXml.@version, 16);
-         worldDefine.mAuthorName = worldXml.@author_name;
-         worldDefine.mAuthorHomepage = worldXml.@author_homepage;
-         
-         if (worldDefine.mVersion >= 0x0102)
+         // basic
          {
-            worldDefine.mShareSourceCode = parseInt (worldXml.@share_source_code) != 0;
-            worldDefine.mPermitPublishing = parseInt (worldXml.@permit_publishing) != 0;
-         }
-         else
-         {
-            // ...
+            worldDefine.mVersion = parseInt (worldXml.@version, 16);
+            worldDefine.mAuthorName = worldXml.@author_name;
+            worldDefine.mAuthorHomepage = worldXml.@author_homepage;
+            
+            if (worldDefine.mVersion >= 0x0102)
+            {
+               worldDefine.mShareSourceCode = parseInt (worldXml.@share_source_code) != 0;
+               worldDefine.mPermitPublishing = parseInt (worldXml.@permit_publishing) != 0;
+            }
+            else
+            {
+               // ...
+            }
          }
          
-        var element:XML;
+         var element:XML;
+         
+         // settings
+         if (worldDefine.mVersion >= 0x0104)
+         {
+            for each (element in worldXml.Settings.Setting)
+            {
+               if (element.@name == "camera_center_x")
+                  worldDefine.mSettings.mCameraCenterX = parseInt (element.@value);
+               else if (element.@name == "camera_center_y")
+                  worldDefine.mSettings.mCameraCenterY = parseInt (element.@value);
+               else if (element.@name == "world_left")
+                  worldDefine.mSettings.mWorldLeft = parseInt (element.@value);
+               else if (element.@name == "world_top")
+                  worldDefine.mSettings.mWorldTop  = parseInt (element.@value);
+               else if (element.@name == "world_width")
+                  worldDefine.mSettings.mWorldWidth  = parseInt (element.@value);
+               else if (element.@name == "world_height")
+                  worldDefine.mSettings.mWorldHeight = parseInt (element.@value);
+               else if (element.@name == "background_color")
+                  worldDefine.mSettings.mBackgroundColor  = parseInt ( (element.@value).substr (2), 16);
+               else if (element.@name == "build_border")
+                  worldDefine.mSettings.mBuildBorder  = parseInt (element.@value) != 0;
+               else if (element.@name == "border_color")
+                  worldDefine.mSettings.mBorderColor = parseInt ( (element.@value).substr (2), 16);
+               else
+                  trace ("Unkown setting: " + element.@name);
+            }
+         }
          
          var entityId:int;
          
@@ -663,6 +787,8 @@ package common {
       
       public static function XmlElement2EntityDefine (element:XML, worldDefine:WorldDefine):Object
       {
+         var elementLocalVertex:XML;
+         
          var entityDefine:Object = new Object ();
          
          entityDefine.mEntityType = parseInt (element.@entity_type);
@@ -679,20 +805,42 @@ package common {
                entityDefine.mDrawBackground = parseInt (element.@draw_background) != 0;
             }
             
-            if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
+            if (worldDefine.mVersion >= 0x0104)
             {
-               if (worldDefine.mVersion >= 0x0102)
-               {
-                  entityDefine.mCollisionCategoryIndex = element.@collision_category_index;
-               }
-               
+               entityDefine.mBorderColor = parseInt ( (element.@border_color).substr (2), 16);
+               entityDefine.mBorderThickness = parseInt (element.@border_thickness);
+               entityDefine.mBackgroundColor = parseInt ( (element.@background_color).substr (2), 16);
+               entityDefine.mTransparency = parseInt (element.@transparency);
+            }
+            
+            if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+            {
                entityDefine.mAiType = parseInt (element.@ai_type);
                
-               entityDefine.mIsStatic = parseInt (element.@is_static) != 0;
-               entityDefine.mIsBullet = parseInt (element.@is_bullet) != 0;
-               entityDefine.mDensity = parseFloat (element.@density);
-               entityDefine.mFriction = parseFloat (element.@friction);
-               entityDefine.mRestitution = parseFloat (element.@restitution);
+               if (worldDefine.mVersion >= 0x0104)
+               {
+                  entityDefine.mIsPhysicsEnabled = parseInt (element.@enable_physics) != 0;
+                  entityDefine.mIsSensor = parseInt (element.@is_sensor) != 0;
+               }
+               else
+               {
+                  entityDefine.mIsPhysicsEnabled = true; // always true before v1.04
+                  // entityDefine.mIsSensor will be filled in FillMissedFieldsInWorldDefine
+               }
+               
+               if (entityDefine.mIsPhysicsEnabled)
+               {
+                  if (worldDefine.mVersion >= 0x0102)
+                  {
+                     entityDefine.mCollisionCategoryIndex = element.@collision_category_index;
+                  }
+                  
+                  entityDefine.mIsStatic = parseInt (element.@is_static) != 0;
+                  entityDefine.mIsBullet = parseInt (element.@is_bullet) != 0;
+                  entityDefine.mDensity = parseFloat (element.@density);
+                  entityDefine.mFriction = parseFloat (element.@friction);
+                  entityDefine.mRestitution = parseFloat (element.@restitution);
+               }
                
                if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                {
@@ -703,6 +851,14 @@ package common {
                {
                   entityDefine.mHalfWidth = parseFloat (element.@half_width);
                   entityDefine.mHalfHeight = parseFloat (element.@half_height);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
+               {
+                  entityDefine.mLocalPoints = new Array ();
+                  for each (elementLocalVertex in element.LocalVertices.Vertex)
+                  {
+                     entityDefine.mLocalPoints.push (new Point (parseFloat (elementLocalVertex.@x), parseFloat (elementLocalVertex.@y)));
+                  }
                }
             }
             else
@@ -749,6 +905,9 @@ package common {
                entityDefine.mEnableMotor = parseInt (element.@enable_motor) != 0;
                entityDefine.mMotorSpeed = parseFloat (element.@motor_speed);
                entityDefine.mBackAndForth = parseInt (element.@back_and_forth) != 0;
+               
+               if (worldDefine.mVersion >= 0x0104)
+                  entityDefine.mMaxMotorTorque = parseFloat (element.@max_motor_torque);
             }
             else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
             {
@@ -761,6 +920,9 @@ package common {
                entityDefine.mEnableMotor = parseInt (element.@enable_motor) != 0;
                entityDefine.mMotorSpeed = parseFloat (element.@motor_speed);
                entityDefine.mBackAndForth = parseInt (element.@back_and_forth) != 0;
+               
+               if (worldDefine.mVersion >= 0x0104)
+                  entityDefine.mMaxMotorForce = parseFloat (element.@max_motor_force);
             }
             else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
             {
@@ -786,6 +948,7 @@ package common {
       public static function WorldDefine2ByteArray (worldDefine:WorldDefine):ByteArray
       {
          // from v1,03
+         DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
          if (worldDefine.mVersion >= 0x0103)
          {
             DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
@@ -800,24 +963,43 @@ package common {
          byteArray.writeByte ("I".charCodeAt (0));
          byteArray.writeByte ("N".charCodeAt (0));
          
-         // version, author
-         byteArray.writeShort (worldDefine.mVersion);
-         byteArray.writeUTF (worldDefine.mAuthorName);
-         byteArray.writeUTF (worldDefine.mAuthorHomepage);
-         
-         if (worldDefine.mVersion >= 0x0102)
+         // basic
          {
-            byteArray.writeByte (worldDefine.mShareSourceCode ? 1 : 0);
-            byteArray.writeByte (worldDefine.mPermitPublishing ? 1 : 0);
+            // version, author
+            byteArray.writeShort (worldDefine.mVersion);
+            byteArray.writeUTF (worldDefine.mAuthorName);
+            byteArray.writeUTF (worldDefine.mAuthorHomepage);
+            
+            // removed since v1.02
+            if (worldDefine.mVersion < 0x0102)
+            {
+               // hex
+               byteArray.writeByte ("H".charCodeAt (0));
+               byteArray.writeByte ("E".charCodeAt (0));
+               byteArray.writeByte ("X".charCodeAt (0));
+            }
+            
+            if (worldDefine.mVersion >= 0x0102)
+            {
+               byteArray.writeByte (worldDefine.mShareSourceCode ? 1 : 0);
+               byteArray.writeByte (worldDefine.mPermitPublishing ? 1 : 0);
+            }
          }
          
-         // removed since v1.02
-         if (worldDefine.mVersion < 0x0102)
+         // settings
          {
-            // hex
-            byteArray.writeByte ("H".charCodeAt (0));
-            byteArray.writeByte ("E".charCodeAt (0));
-            byteArray.writeByte ("X".charCodeAt (0));
+            if (worldDefine.mVersion >= 0x0104)
+            {
+               byteArray.writeInt (worldDefine.mSettings.mCameraCenterX);
+               byteArray.writeInt (worldDefine.mSettings.mCameraCenterY);
+               byteArray.writeInt (worldDefine.mSettings.mWorldLeft);
+               byteArray.writeInt (worldDefine.mSettings.mWorldTop);
+               byteArray.writeInt (worldDefine.mSettings.mWorldWidth);
+               byteArray.writeInt (worldDefine.mSettings.mWorldHeight);
+               byteArray.writeUnsignedInt (worldDefine.mSettings.mBackgroundColor);
+               byteArray.writeByte (worldDefine.mSettings.mBuildBorder ? 1 : 0);
+               byteArray.writeUnsignedInt (worldDefine.mSettings.mBorderColor);
+            }
          }
          
          // collision category
@@ -849,6 +1031,7 @@ package common {
          
          // entities
          var entityId:int;
+         var vertexId:int;
          
          byteArray.writeShort (worldDefine.mEntityDefines.length);
          
@@ -878,19 +1061,46 @@ package common {
                   byteArray.writeByte (entityDefine.mDrawBackground);
                }
                
-               if ( Define.IsPhysicsShapeEntity (entityDefine.mEntityType) )
+               if (worldDefine.mVersion >= 0x0104)
                {
-                  if (worldDefine.mVersion >= 0x0102)
+                  byteArray.writeUnsignedInt (entityDefine.mBorderColor);
+                  byteArray.writeByte (entityDefine.mBorderThickness);
+                  byteArray.writeUnsignedInt (entityDefine.mBackgroundColor);
+                  byteArray.writeByte (entityDefine.mTransparency);
+               }
+               
+               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               {
+                  if (worldDefine.mVersion >= 0x0104) 
                   {
+                     // changed the order of mAiType and mCollisionCategoryIndex, 
+                     // add mIsPhysicsEnabled and mIsSensor
+                     
+                     byteArray.writeByte (entityDefine.mAiType);
                      byteArray.writeShort (entityDefine.mCollisionCategoryIndex);
+                     byteArray.writeByte (entityDefine.mIsPhysicsEnabled);
+                     byteArray.writeByte (entityDefine.mIsSensor)
+                  }
+                  else
+                  {
+                     if (worldDefine.mVersion >= 0x0102)
+                     {
+                        byteArray.writeShort (entityDefine.mCollisionCategoryIndex);
+                     }
+                     
+                     byteArray.writeByte (entityDefine.mAiType);
+                     
+                     //entityDefine.mIsPhysicsEnabled = true; // already set in FillMissedFieldsInWorldDefine
                   }
                   
-                  byteArray.writeByte (entityDefine.mAiType);
-                  byteArray.writeByte (entityDefine.mIsStatic);
-                  byteArray.writeByte (entityDefine.mIsBullet);
-                  byteArray.writeFloat (entityDefine.mDensity);
-                  byteArray.writeFloat (entityDefine.mFriction);
-                  byteArray.writeFloat (entityDefine.mRestitution);
+                  if (entityDefine.mIsPhysicsEnabled)
+                  {
+                     byteArray.writeByte (entityDefine.mIsStatic);
+                     byteArray.writeByte (entityDefine.mIsBullet);
+                     byteArray.writeFloat (entityDefine.mDensity);
+                     byteArray.writeFloat (entityDefine.mFriction);
+                     byteArray.writeFloat (entityDefine.mRestitution);
+                  }
                   
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
@@ -901,6 +1111,15 @@ package common {
                   {
                      byteArray.writeFloat (entityDefine.mHalfWidth);
                      byteArray.writeFloat (entityDefine.mHalfHeight);
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
+                  {
+                     byteArray.writeShort (entityDefine.mLocalPoints.length);
+                     for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
+                     {
+                        byteArray.writeFloat (entityDefine.mLocalPoints [vertexId].x);
+                        byteArray.writeFloat (entityDefine.mLocalPoints [vertexId].y);
+                     }
                   }
                }
                else // not physics entity
@@ -927,7 +1146,12 @@ package common {
             {
                byteArray.writeByte (entityDefine.mCollideConnected);
                
-               if (worldDefine.mVersion >= 0x0102)
+               if (worldDefine.mVersion >= 0x0104)
+               {
+                  byteArray.writeShort (entityDefine.mConnectedShape1Index);
+                  byteArray.writeShort (entityDefine.mConnectedShape2Index);
+               }
+               else if (worldDefine.mVersion >= 0x0102) // ??!! why bytes
                {
                   byteArray.writeByte (entityDefine.mConnectedShape1Index);
                   byteArray.writeByte (entityDefine.mConnectedShape2Index);
@@ -944,6 +1168,10 @@ package common {
                   byteArray.writeFloat (entityDefine.mMotorSpeed);
                   byteArray.writeByte (entityDefine.mBackAndForth);
                   
+                  if (worldDefine.mVersion >= 0x0104)
+                  {
+                     byteArray.writeFloat (entityDefine.mMaxMotorTorque);
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
                {
@@ -956,6 +1184,11 @@ package common {
                   byteArray.writeByte (entityDefine.mEnableMotor);
                   byteArray.writeFloat (entityDefine.mMotorSpeed);
                   byteArray.writeByte (entityDefine.mBackAndForth);
+                  
+                  if (worldDefine.mVersion >= 0x0104)
+                  {
+                     byteArray.writeFloat (entityDefine.mMaxMotorForce);
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
                {

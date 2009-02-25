@@ -82,7 +82,7 @@ package editor.mode {
          
          mEntityJointSpring.UpdateAppearance ();
          
-         mMainView.UpdateEntityInfoOnStatusBar ();
+         mMainView.UpdateSelectedEntityInfo ();
       }
       
       protected function FinishSession (endX:Number, endY:Number):void
@@ -92,8 +92,9 @@ package editor.mode {
          mEntityJointSpring.GetAnchor1 ().UpdateSelectionProxy ();
          mEntityJointSpring.GetAnchor2 ().UpdateSelectionProxy ();
          
-         
          ResetSession (false);
+         
+         mMainView.CreateUndoPoint ();
          
          mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);

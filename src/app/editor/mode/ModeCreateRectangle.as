@@ -15,9 +15,9 @@ package editor.mode {
    public class ModeCreateRectangle extends ModeCreateShape
    {
       
-      public function ModeCreateRectangle (mainView:WorldView, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = EditorSetting.MinRectSideLength, maxSideLength:Number = EditorSetting.MaxRectSideLength)
+      public function ModeCreateRectangle (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = EditorSetting.MinRectSideLength, maxSideLength:Number = EditorSetting.MaxRectSideLength)
       {
-         super (mainView, filledColor, isStatic);
+         super (mainView, ciAiType, filledColor, isStatic);
          
          if (maxSideLength < minSideLength)
          {
@@ -85,6 +85,7 @@ package editor.mode {
          mStartY = startY;
          
          mRectEntity = mMainView.CreateRectangle (mStartX, mStartY, mStartX, mStartY, mFilledColor, mIsStatic);
+         mRectEntity.SetAiType (mCiAiType);
           if (mRectEntity == null)
          {
             Reset ();
@@ -145,6 +146,8 @@ package editor.mode {
             
             return;
          }
+         
+         mMainView.CreateUndoPoint ();
          
          mRectEntity.UpdateSelectionProxy ();
          ResetSession (false);

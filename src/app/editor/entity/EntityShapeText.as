@@ -40,7 +40,7 @@ package editor.entity {
          addChild (mElementsContainer);
       }
       
-      override public function IsPhysicsEntity ():Boolean
+      override public function IsBasicShapeEntity ():Boolean
       {
          return false;
       }

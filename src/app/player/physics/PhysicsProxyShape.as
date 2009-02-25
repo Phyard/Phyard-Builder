@@ -9,7 +9,8 @@ package player.physics {
    
    public class PhysicsProxyShape extends PhysicsProxy
    {
-      protected var _b2Shape:b2Shape = null;
+      //protected var _b2Shape:b2Shape = null;
+      protected var _b2Shapes:Array = new Array; // for concave polygon, there may be mroe than one b2Shapes
             
       protected var mPhysicsProxyBody:PhysicsProxyBody;
       
@@ -24,13 +25,21 @@ package player.physics {
       
       override public function Destroy ():void
       {
-         if (_b2Shape != null)
-            mPhysicsProxyBody._b2Body.DestroyShape(_b2Shape);
+         //if (_b2Shape != null)
+         //   mPhysicsProxyBody._b2Body.DestroyShape(_b2Shape);
+         for (var i:int = 0; i < _b2Shapes.length; ++ i)
+         {
+            mPhysicsProxyBody._b2Body.DestroyShape(_b2Shapes [i] as b2Shape);
+         }
+         
+         _b2Shapes.splice (0, _b2Shapes.length);
       }
       
       public function NotifyDestroyed ():void
       {
-         _b2Shape = null;
+         //_b2Shape = null;
+         
+         _b2Shapes.splice (0, _b2Shapes.length);
       }
       
       public function GetProxyBody ():PhysicsProxyBody

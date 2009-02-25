@@ -1,8 +1,14 @@
 package player.world {
    
    import flash.display.Sprite;
+   import flash.display.DisplayObject;
    import flash.geom.Point;
+   
+   import flash.events.Event;
    import flash.events.MouseEvent;
+   import flash.events.KeyboardEvent;
+   import flash.ui.Keyboard;
+   import flash.events.EventPhase;
    
    import com.tapirgames.util.DisplayObjectUtil;
    
@@ -17,6 +23,7 @@ package player.world {
    import player.entity.EntityShape;
    import player.entity.EntityShapeCircle;
    import player.entity.EntityShapeRectangle;
+   import player.entity.EntityShapePolygon;
    import player.entity.EntityShapeText;
    import player.entity.EntityShapeGravityController;
    import player.entity.EntityJoint;
@@ -27,12 +34,15 @@ package player.world {
    
    import player.entity.EntityParticle;
    
+   import player.mode.Mode;
+   import player.mode.ModeMoveWorldScene;
+   
    import common.Define;
    
    public class World extends Sprite
    {
-      public static const WorldWidth:int = Define.WorldWidth; 
-      public static const WorldHeight:int = Define.WorldHeight;
+      public static const DefaultWorldWidth :int = Define.DefaultWorldWidth; 
+      public static const DefaultWorldHeight:int = Define.DefaultWorldHeight;
       public static const WorldBorderThinknessLR:int = Define.WorldBorderThinknessLR;
       public static const WorldBorderThinknessTB:int = Define.WorldBorderThinknessTB;
       
@@ -56,17 +66,81 @@ package player.world {
       private var mDefaultCollisionCategories:Object = null;
       private var mCollisionCategories:Array = new Array ();
       
-      public function World (version:int)
+      private var mWorldLeft:int = 0;
+      private var mWorldTop:int = 0;
+      private var mWorldWidth:int = Define.DefaultWorldWidth;
+      private var mWorldHeight:int = Define.DefaultWorldHeight;
+      
+      private var mBackgroundColor:uint = 0xDDDDA0;
+      private var mBuildBorder:Boolean = true;
+      private var mBorderColor:uint = Define.ColorStaticObject;
+      
+      // the values for camera will not be scaled 
+      private var mCameraWidth:Number = Define.DefaultWorldWidth;
+      private var mCameraHeight:Number = Define.DefaultWorldHeight;
+      private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
+      private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
+      
+      public function World (worldDefine:Object)
       {
-         mVersion = version;
+      // basic
+         mVersion = worldDefine.mVersion;
+         
+         SetAuthorName (worldDefine.mAuthorName);
+         SetAuthorHomepage (worldDefine.mAuthorHomepage);
+         
+         if (mVersion >= 0x0102)
+         {
+            SetShareSourceCode (worldDefine.mShareSourceCode);
+            SetPermitPublishing (worldDefine.mPermitPublishing);
+         }
+         else
+         {
+            // default
+         }
+         
+      // settings
+         if (mVersion >= 0x0104)
+         {
+            SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
+            SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
+            SetWorldLeft  (worldDefine.mSettings.mWorldLeft);
+            SetWorldTop (worldDefine.mSettings.mWorldTop);
+            SetWorldWidth  (worldDefine.mSettings.mWorldWidth);
+            SetWorldHeight (worldDefine.mSettings.mWorldHeight);
+            SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
+            SetBuildBorder (worldDefine.mSettings.mBuildBorder);
+            SetBorderColor (worldDefine.mSettings.mBorderColor);
+         }
+         else
+         {
+            // default
+         }
+         
+      // building
          
          // the aabb setting will affect some queries in box2d
-         if (mVersion >= 0x101)
+         if (mVersion >= 0x104)
+         {
+            var marginX:int = mWorldWidth * 0.5;
+            var marginY:int = mWorldHeight * 0.5;
+            if (marginX > 1000)
+               marginX = 1000;
+            if (marginY > 1000)
+               marginY = 1000;
+            
+            mPhysicsEngine = new PhysicsEngine (
+                  new Point (0, Define.DefaultGravityAcceleration), 
+                  new Point (mWorldLeft - marginX, mWorldTop - marginY), 
+                  new Point (mWorldLeft + mWorldWidth + marginX, mWorldTop + mWorldHeight + marginY), 
+                  false);
+         }
+         else if (mVersion >= 0x101)
          {
             mPhysicsEngine = new PhysicsEngine (
                   new Point (0, Define.DefaultGravityAcceleration), 
-                  new Point (-WorldWidth * 0.5, -WorldHeight * 0.5), 
-                  new Point (WorldWidth * 1.5, WorldHeight * 1.5), 
+                  new Point (-DefaultWorldWidth * 0.5, -DefaultWorldHeight * 0.5), 
+                  new Point (DefaultWorldWidth * 1.5, DefaultWorldHeight * 1.5), 
                   false);
          }
          else
@@ -93,9 +167,13 @@ package player.world {
          
          CreateBackgroundAndBorders ();
          
-      // 
-         addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+      //
+         addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
       }
+      
+//=============================================================
+//    
+//=============================================================
       
       public function GetVersion ():int
       {
@@ -142,6 +220,110 @@ package player.world {
          return mPermitPublishing;
       }
       
+      public function SetWorldLeft (left:int):void
+      {
+         mWorldLeft = left;
+      }
+      
+      public function GetWorldLeft ():int
+      {
+         return mWorldLeft;
+      }
+      
+      public function SetWorldTop (top:int):void
+      {
+         mWorldTop = top;
+      }
+      
+      public function GetWorldTop ():int
+      {
+         return mWorldTop;
+      }
+      
+      public function SetWorldWidth (ww:int):void
+      {
+         mWorldWidth = ww;
+      }
+      
+      public function GetWorldWidth ():int
+      {
+         return mWorldWidth;
+      }
+      
+      public function SetWorldHeight (wh:int):void
+      {
+         mWorldHeight = wh;
+      }
+      
+      public function GetWorldHeight ():int
+      {
+         return mWorldHeight;
+      }
+      
+      public function SetCameraCenterX (centerX:Number):void
+      {
+         mCameraCenterX = centerX;
+      }
+      
+      public function GetCameraCenterX ():Number
+      {
+         return mCameraCenterX;
+      }
+      
+      public function SetCameraCenterY (centerY:Number):void
+      {
+         mCameraCenterY = centerY;
+      }
+      
+      public function GetCameraCenterY ():Number
+      {
+         return mCameraCenterY;
+      }
+      
+      public function SetCameraWidth (cw:Number):void
+      {
+         mCameraWidth = cw;
+      }
+      
+      public function SetCameraHeight (ch:Number):void
+      {
+         mCameraHeight = ch;
+      }
+      
+      public function SetBackgroundColor (bgColor:uint):void
+      {
+         mBackgroundColor = bgColor;
+      }
+      
+      public function GetBackgroundColor ():uint
+      {
+         return mBackgroundColor;
+      }
+      
+      public function SetBorderColor (bgColor:uint):void
+      {
+         mBorderColor = bgColor;
+      }
+      
+      public function GetBorderColor ():uint
+      {
+         return mBorderColor;
+      }
+      
+      public function SetBuildBorder (buildBorder:Boolean):void
+      {
+         mBuildBorder = buildBorder;
+      }
+      
+      public function IsBuildBorder ():Boolean
+      {
+         return mBuildBorder;
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
       public function GetPhysicsEngine ():PhysicsEngine
       {
          return mPhysicsEngine;
@@ -159,22 +341,24 @@ package player.world {
       {
          var bgSprite:Sprite = new Sprite ();
          bgSprite.graphics.clear ();
-         bgSprite.graphics.beginFill(0xDDDDA0);
-         bgSprite.graphics.drawRect (0, 0, WorldWidth, WorldHeight);
+         bgSprite.graphics.beginFill(mBackgroundColor);
+         bgSprite.graphics.drawRect (mWorldLeft, mWorldTop, mWorldWidth, mWorldHeight);
          bgSprite.graphics.endFill ();
          addChild (bgSprite);
          
-         
-         var borderContainerParams:Object = new Object ();
-         borderContainerParams.mContainsPhysicsShapes = true;
-         borderContainerParams.mPosX = WorldWidth * 0.5;
-         borderContainerParams.mPosY = WorldHeight * 0.5;
-         
-         var borderContainer:ShapeContainer = CreateShapeContainer (borderContainerParams, true);
-         CreateBorder (borderContainer, WorldWidth * 0.5, WorldBorderThinknessTB * 0.5 - 0.5, WorldWidth, WorldBorderThinknessTB);
-         CreateBorder (borderContainer, WorldWidth * 0.5, WorldHeight - WorldBorderThinknessTB * 0.5, WorldWidth, WorldBorderThinknessTB);
-         CreateBorder (borderContainer, WorldBorderThinknessLR * 0.5 - 0.5, WorldHeight * 0.5, WorldBorderThinknessLR, WorldWidth);
-         CreateBorder (borderContainer, WorldWidth - WorldBorderThinknessLR * 0.5, WorldHeight * 0.5, WorldBorderThinknessLR, WorldWidth);
+         if (mBuildBorder)
+         {
+            var borderContainerParams:Object = new Object ();
+            borderContainerParams.mContainsPhysicsShapes = true;
+            borderContainerParams.mPosX = mWorldLeft + mWorldWidth * 0.5;
+            borderContainerParams.mPosY = mWorldTop + mWorldHeight * 0.5;
+            
+            var borderContainer:ShapeContainer = CreateShapeContainer (borderContainerParams, true);
+            CreateBorder (borderContainer, mWorldLeft + mWorldWidth * 0.5, mWorldTop + WorldBorderThinknessTB * 0.5 - 0.5, mWorldWidth, WorldBorderThinknessTB);
+            CreateBorder (borderContainer, mWorldLeft + mWorldWidth * 0.5, mWorldTop + mWorldHeight - WorldBorderThinknessTB * 0.5, mWorldWidth, WorldBorderThinknessTB);
+            CreateBorder (borderContainer, mWorldLeft + WorldBorderThinknessLR * 0.5 - 0.5, mWorldTop + mWorldHeight * 0.5, WorldBorderThinknessLR, mWorldWidth);
+            CreateBorder (borderContainer, mWorldLeft + mWorldWidth - WorldBorderThinknessLR * 0.5, mWorldTop + mWorldHeight * 0.5, WorldBorderThinknessLR, mWorldWidth);
+         }
       }
       
       private function CreateBorder (borderContainer:ShapeContainer, posX:Number, posY:Number, rectW:Number, rectH:Number):void
@@ -186,7 +370,7 @@ package player.world {
          shapeParams.mPosX = posX;
          shapeParams.mPosY = posY;
          shapeParams.mRotation = 0;
-         shapeParams.mAiType = Define.ShapeAiType_Static;
+         shapeParams.mAiType = Define.ShapeAiType_Unknown;
          shapeParams.mIsStatic = true;
          shapeParams.mIsVisible = true;
          shapeParams.mIsBullet = true;
@@ -195,6 +379,17 @@ package player.world {
          shapeParams.mRestitution = 0.2;
          
          SetCollisionCategoryParamsForShapeParams (shapeParams, Define.CollisionCategoryId_HiddenCategory);
+         
+         shapeParams.mDrawBorder = false;
+         shapeParams.mDrawBackground = true;
+         
+         shapeParams.mBorderColor = Define.ColorStaticObject;
+         shapeParams.mBorderThickness = 1;
+         shapeParams.mBackgroundColor = Define.ColorStaticObject;
+         shapeParams.mTransparency = 100;
+         
+         shapeParams.mIsPhysicsEnabled = true;
+         shapeParams.mIsSensor = false;
          
          CreateEntityShapeRectangle (borderContainer, shapeParams);
       }
@@ -486,6 +681,16 @@ package player.world {
          return shapeRect;
       }
       
+      public function CreateEntityShapePolygon (shapeContainer:ShapeContainer, params:Object):EntityShapePolygon
+      {
+         SetCollisionCategoryParamsForShapeParams (params, params.mCollisionCategoryIndex);
+         
+         var shapePolygon:EntityShapePolygon = new EntityShapePolygon (this, shapeContainer);
+         shapePolygon.BuildFromParams (params);
+         
+         return shapePolygon;
+      }
+      
       public function CreateEntityShapeText (shapeContainer:ShapeContainer, params:Object):EntityShapeText
       {
          var shapeText:EntityShapeText = new EntityShapeText (this, shapeContainer);
@@ -646,7 +851,7 @@ package player.world {
          }
       }
       
-      protected function OnMouseUp (event:MouseEvent):void
+      protected function CheckRemovableEntities (event:MouseEvent):void
       {
          var levelPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
          
@@ -747,7 +952,136 @@ package player.world {
          }
       }
       
+//=============================================================
+//   
+//=============================================================
       
+      public function MoveWorldScene (dx:Number, dy:Number):void
+      {
+         // assume no scales and rotation for world
+         
+         var leftInParent:Number;
+         var topInParent:Number;
+         
+         if (mWorldWidth < mCameraWidth)
+         {
+            mCameraCenterX = mWorldWidth * 0.5;
+            leftInParent = (mCameraWidth - mWorldWidth) * 0.5;
+         }
+         else
+         {
+            mCameraCenterX -= dx;
+            leftInParent = mWorldLeft - mCameraCenterX + mCameraWidth * 0.5;
+            
+            if (leftInParent > 0)
+               leftInParent = 0;
+            if (leftInParent + mWorldWidth < mCameraWidth)
+               leftInParent = mCameraWidth - mWorldWidth;
+            
+            mCameraCenterX = mWorldLeft + mCameraWidth * 0.5 - leftInParent;
+         }
+         
+         if (mWorldHeight < mCameraHeight)
+         {
+            mCameraCenterX = mWorldWidth * 0.5;
+            topInParent = (mCameraHeight - mWorldHeight) * 0.5;
+         }
+         else
+         {
+            mCameraCenterY -= dy;
+            topInParent = mWorldTop - mCameraCenterY + mCameraHeight * 0.5;
+            
+            if (topInParent > 0)
+               topInParent = 0;
+            if (topInParent + mWorldHeight < mCameraHeight)
+               topInParent = mCameraHeight - mWorldHeight;
+            
+            mCameraCenterY = mWorldTop + mCameraHeight * 0.5 - topInParent;
+         }
+         
+         x = leftInParent - mWorldLeft;
+         y = topInParent - mWorldTop;
+      }
       
+//=============================================================
+//   
+//=============================================================
+      
+      private var mCurrentMode:Mode = null;
+      
+      public function SetCurrentMode (mode:Mode):void
+      {
+         if (mCurrentMode != null)
+            mCurrentMode.Destroy ();
+         
+         mCurrentMode = mode;
+         
+         if (mCurrentMode != null)
+            mCurrentMode.Initialize ();
+      }
+      
+      private function OnAddedToStage (event:Event):void 
+      {
+         addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
+         addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
+         addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+         addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
+         addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
+         
+         // ...
+         stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+         
+         //
+         MoveWorldScene (0, 0);
+      }
+      
+      public function OnMouseDown (event:MouseEvent):void
+      {
+         //if (event.eventPhase != EventPhase.BUBBLING_PHASE)
+         //   return;
+         
+         SetCurrentMode (new ModeMoveWorldScene (this));
+         
+         if (mCurrentMode != null)
+            mCurrentMode.OnMouseDown (event.stageX, event.stageY);
+      }
+      
+      public function OnMouseMove (event:MouseEvent):void
+      {
+         //if (event.eventPhase != EventPhase.BUBBLING_PHASE)
+         //   return;
+         
+         if (mCurrentMode != null)
+            mCurrentMode.OnMouseMove (event.stageX, event.stageY);
+      }
+      
+      public function OnMouseUp (event:MouseEvent):void
+      {
+         //if (event.eventPhase != EventPhase.BUBBLING_PHASE)
+         //   return;
+         
+         if (mCurrentMode != null)
+            mCurrentMode.OnMouseUp (event.stageX, event.stageY);
+         
+         CheckRemovableEntities (event);
+      }
+      
+      public function OnMouseOut (event:MouseEvent):void
+      {
+         //if (event.eventPhase != EventPhase.BUBBLING_PHASE)
+         //   return;
+         
+         SetCurrentMode (null);
+      }
+      
+      public function OnMouseWheel (event:MouseEvent):void
+      {
+         if (event.eventPhase != EventPhase.BUBBLING_PHASE)
+            return;
+      }
+      
+      public function OnKeyDown (event:KeyboardEvent):void
+      {
+      }
    }
 }

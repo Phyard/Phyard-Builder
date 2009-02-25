@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+      borderStyle="solid" borderThickness="0"
+      width="100%" height="100%"
+      creationComplete="OnInitPanel()"
+      >
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_PosX" text="    X:" textAlign="right" width="50"/>
+      <mx:TextInput id="Text_PosX" text="" width="80"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_PosY" text="     Y:" textAlign="right" width="50"/>
+      <mx:TextInput id="Text_PosY" text="" width="80"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_Angle" text="Angle:" textAlign="right" width="50"/>
+      <mx:TextInput id="Text_Angle" text="" width="80"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   <mx:Script>
+     <![CDATA[       
+         
+         import common.Define;
+         
+         private var mInputValues:Object;
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         public function SetValues (inputValues:Object):void
+         {
+            mInputValues = inputValues;
+            
+            Text_PosX.text = "" + inputValues.mPosX;
+            Text_PosY.text = "" + inputValues.mPosY;
+            Text_Angle.text = "" + inputValues.mAngle;
+         }
+         
+         public function GetValues (returnValues:Object):void
+         {
+            var valuePosX:Number = parseFloat (Text_PosX.text);
+            if ( ! isNaN (valuePosX) )
+               returnValues.mPosX = valuePosX;
+            else
+               returnValues.mPosX = mInputValues.mPosX;
+            
+            var valuePosY:Number = parseFloat (Text_PosY.text);
+            if ( ! isNaN (valuePosY) )
+               returnValues.mPosY = valuePosY;
+            else
+               returnValues.mPosY = mInputValues.mPosY;
+            
+            var valueAngle:Number = parseFloat (Text_Angle.text);
+            if ( ! isNaN (valueAngle) )
+               returnValues.mAngle = valueAngle;
+            else
+               returnValues.mAngle = mInputValues.mAngle;
+         }
+         
+     ]]>
+   </mx:Script>
+   
+</mx:VBox>

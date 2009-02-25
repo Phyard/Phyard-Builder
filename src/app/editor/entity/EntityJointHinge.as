@@ -12,6 +12,7 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
+   import common.Define;
    import common.ValueAdjuster;
    import common.Config;
    
@@ -26,6 +27,8 @@ package editor.entity {
       public var mEnableMotor:Boolean = false;
       public var mMotorSpeed:Number = 0;
       public var mBackAndForth:Boolean = false;
+      
+      public var mMaxMotorTorque:Number = Define.DefaultHingeMotorTorque; // v1.04
       
       public function EntityJointHinge (world:World)
       {
@@ -121,6 +124,7 @@ package editor.entity {
          hinge.mEnableMotor = mEnableMotor;
          hinge.mMotorSpeed = mMotorSpeed;
          hinge.mBackAndForth = mBackAndForth;
+         hinge.mMaxMotorTorque = mMaxMotorTorque;
          
          var anchor:SubEntityHingeAnchor = GetAnchor ();
          var newAnchor:SubEntityHingeAnchor = hinge.GetAnchor ();

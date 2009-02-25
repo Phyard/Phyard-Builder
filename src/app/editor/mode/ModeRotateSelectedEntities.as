@@ -66,6 +66,8 @@ package editor.mode {
          
          ResetSession ();
          
+         mMainView.CreateUndoPoint ();
+         
          mMainView.SetCurrentEditMode (null);
       }
       

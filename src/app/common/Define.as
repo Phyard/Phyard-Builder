@@ -21,16 +21,29 @@ package common {
       
       public static const MaxEntitiesCount:int = 512;
       
-      public static const WorldWidth:int = 600; 
-      public static const WorldHeight:int = 600; 
+      public static const DefaultWorldWidth:int = 600; 
+      public static const DefaultWorldHeight:int = 600; 
       public static const WorldBorderThinknessLR:int = 10; 
       public static const WorldBorderThinknessTB:int = 20; 
       
+      public static const LargeWorldHalfWidth:int = 12000; 
+      public static const LargeWorldHalfHeight:int = 12000; 
+      
       public static const CategoryViewWidth:int = 680; 
+      public static const CategoryViewHeight:int = 630; 
       
       public static const WorldStepTimeInterval:Number = 1.0 / 30;
       
       public static const DefaultGravityAcceleration:Number = 9.8;
+      
+      public static function IsNormalScene (sceneLeft:int, sceneTop:int, sceneWidth:int, sceneHeight:int):Boolean
+      {
+         return sceneLeft == 0 && sceneTop == 0 && sceneWidth == DefaultWorldWidth && sceneHeight == DefaultWorldHeight;
+      }
+      public static function IsLargeScene (sceneLeft:int, sceneTop:int, sceneWidth:int, sceneHeight:int):Boolean
+      {
+         return sceneLeft == - LargeWorldHalfWidth / 2 && sceneTop == - LargeWorldHalfHeight / 2 && sceneWidth == LargeWorldHalfWidth && sceneHeight == LargeWorldHalfHeight;
+      }
       
 //===========================================================================
 // joint connected shape index
@@ -58,23 +71,45 @@ package common {
 //===========================================================================
       
       public static const MinRectSideLength:uint = 4;
-      public static const MaxRectSideLength:uint = 600;
-      public static const MaxRectArea:uint = 600 * 200;
+      public static const MaxRectSideLength:uint = int.MAX_VALUE; //600;
+      public static const MaxRectArea:uint = int.MAX_VALUE; // 600 * 200;
       
 //===========================================================================
 // circle
 //===========================================================================
       
       public static const MinCircleRadium:uint = MinRectSideLength * 0.5; // don't change
-      public static const MaxCircleRadium:uint = 100;
+      public static const MaxCircleRadium:uint = int.MAX_VALUE; //100;
       
 //===========================================================================
 // bomb
 //===========================================================================
       
-      public static const MinBombSquareSideLength:uint = MinRectSideLength; // don't change
-      public static const MaxBombSquareSideLength:uint = 32;
+      public static const MinBombRadius:uint = 2; // don't change
+      public static const MaxBombRadius:uint = 16;
+      public static const MinBombSquareSideLength:uint = MinBombRadius * 2; // don't change
+      public static const MaxBombSquareSideLength:uint = MaxBombRadius * 2;
       public static const DefaultBombSquareSideLength:uint = 16;
+      
+//===========================================================================
+// hinge
+//===========================================================================
+      
+      public static const MaxHingeLimitAngle:int = 36000; // degree
+      public static const MaxHingeMotorSpeed:int = 360; // degree
+      public static const MaxHingeMotorTorque:Number = Number.MAX_VALUE; 
+      
+      public static const DefaultHingeMotorTorque:Number = 10000000;
+      
+//===========================================================================
+// slider
+//===========================================================================
+      
+      public static const MaxSliderLimitTranslation:int = 36000; // degree
+      public static const MaxSliderMotorSpeed:int = 300; // degree
+      public static const MaxSliderMotorForce:Number = Number.MAX_VALUE; 
+      
+      public static const DefaultSliderMotorForce:Number = 100000000;
       
 //===========================================================================
 // spring
@@ -102,10 +137,10 @@ package common {
 //===========================================================================
       
       public static const MinGravityControllerRadium:uint = 10;
-      public static const MaxGravityControllerRadium:uint = 100;
+      public static const MaxGravityControllerRadium:uint = 200;
       
       public static const GravityControllerZeroRegionRadius:int = 5;
-      public static const GravityControllerOneRegionThinkness:int = 5;
+      public static const GravityControllerOneRegionThinkness:int = 7;
       
 //===========================================================================
 // colors
@@ -117,7 +152,7 @@ package common {
       public static const ColorStaticObject:uint = 0xFF606060;
       public static const ColorMovableObject:uint = 0xFFA0A0FF;
       
-      public static const ColorBreakableObject:uint = 0xFFFF00FF;
+      public static const ColorBreakableObject:uint = 0xFFFF00FF; // 0xFF6600; // 
       
       public static const ColorInfectedObject:uint = 0xFF804000;;
       public static const ColorUninfectedObject:uint = 0xFFFFFF00;
@@ -136,6 +171,7 @@ package common {
       
       public static const CircleAppearanceType_Ball:int = 0;
       public static const CircleAppearanceType_Column:int = 1;
+      public static const CircleAppearanceType_Circle:int = 2;
       
 //===========================================================================
 // entity types
@@ -144,6 +180,7 @@ package common {
       public static const EntityType_Unkonwn:int = -1;
       public static const EntityType_ShapeCircle:int = 10;
       public static const EntityType_ShapeRectangle:int = 11;
+      public static const EntityType_ShapePolygon:int = 12;
       
       public static const EntityType_ShapeText:int = 31; // from v1.02
       public static const EntityType_ShapeGravityController:int = 32; // from v1.02
@@ -155,16 +192,19 @@ package common {
       
       public static const SubEntityType_JointAnchor:int = 100;
       
-      public static function IsPhysicsShapeEntity (entityType:int):Boolean
+      public static function IsBasicShapeEntity (entityType:int):Boolean
       {
          return   entityType == EntityType_ShapeCircle 
-               || entityType == EntityType_ShapeRectangle;
+               || entityType == EntityType_ShapeRectangle
+               || entityType == EntityType_ShapePolygon
+               ;
       }
       
       public static function IsShapeEntity (entityType:int):Boolean
       {
          return   entityType == EntityType_ShapeCircle 
                || entityType == EntityType_ShapeRectangle 
+               || entityType == EntityType_ShapePolygon 
                || entityType == EntityType_ShapeText
                || entityType == EntityType_ShapeGravityController
                ;
@@ -186,7 +226,7 @@ package common {
 // shape ai types
 //===========================================================================
       
-      public static const ShapeAiType_Unkown:int = -1;
+      public static const ShapeAiType_Unknown:int = -1;
       public static const ShapeAiType_Static:int = 0;
       public static const ShapeAiType_Movable:int = 1;
       public static const ShapeAiType_Breakable:int = 2;
@@ -194,7 +234,7 @@ package common {
       public static const ShapeAiType_Uninfected:int = 4;
       public static const ShapeAiType_DontInfect:int = 5;
       
-      // v2.0
+      // v1.02
       public static const ShapeAiType_Bomb:int = 6;
       public static const ShapeAiType_BombParticle:int = 100;
       
@@ -238,7 +278,7 @@ package common {
             case ColorBombObject:
                return ShapeAiType_Bomb;
             default:
-               return ShapeAiType_Unkown;
+               return ShapeAiType_Unknown;
          }
       }
       

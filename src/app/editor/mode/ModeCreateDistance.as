@@ -82,7 +82,7 @@ package editor.mode {
          
          mEntityJointDistance.UpdateAppearance ();
          
-         mMainView.UpdateEntityInfoOnStatusBar ();
+         mMainView.UpdateSelectedEntityInfo ();
       }
       
       protected function FinishSession (endX:Number, endY:Number):void
@@ -94,6 +94,8 @@ package editor.mode {
          
          
          ResetSession (false);
+         
+         mMainView.CreateUndoPoint ();
          
          mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);

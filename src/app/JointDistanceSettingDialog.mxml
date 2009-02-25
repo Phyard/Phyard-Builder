@@ -49,7 +49,7 @@
          public function SetValues (values:Object):void
          {
             CheckBox_IsVisible.selected = values.mIsVisible;
-            CheckBox_IsVisible.enabled = false;
+            CheckBox_IsVisible.enabled = true;
             CheckBox_CollideConnected.selected = values.mCollideConnected;
             
             //

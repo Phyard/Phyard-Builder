@@ -34,6 +34,18 @@ package player.ui {
       [Embed(source="../../res/player/player-speed-selected.png")]
       private static var IconSpeedSelected:Class;
       
+      [Embed(source="../../res/player/player-mainmenu.png")]
+      private static var IconMainMenu:Class;
+      
+      [Embed(source="../../res/player/player-zoom-in.png")]
+      private static var IconZoomIn:Class;
+      [Embed(source="../../res/player/player-zoom-in-disabled.png")]
+      private static var IconZoomInDisabled:Class;
+      [Embed(source="../../res/player/player-zoom-out.png")]
+      private static var IconZoomOut:Class;
+      [Embed(source="../../res/player/player-zoom-out-disabled.png")]
+      private static var IconZoomOutDisabled:Class;
+      
       private var mBitmapDataRetart:BitmapData = new IconRestart ().bitmapData;
       private var mBitmapDataRetartDisabled:BitmapData = new IconRestartDisabled ().bitmapData;
       private var mBitmapDataStart:BitmapData = new IconStart ().bitmapData;
@@ -44,6 +56,12 @@ package player.ui {
       private var mBitmapDataSpeed:BitmapData  = new IconSpeed ().bitmapData;
       private var mBitmapDataSpeedSelected:BitmapData  = new IconSpeedSelected ().bitmapData;
       
+      private var mBitmapDataMainMenu:BitmapData  = new IconMainMenu ().bitmapData;
+      
+      private var mBitmapDataZoomIn:BitmapData  = new IconZoomIn ().bitmapData;
+      private var mBitmapDataZoomInDisabled:BitmapData  = new IconZoomInDisabled ().bitmapData;
+      private var mBitmapDataZoomOut:BitmapData  = new IconZoomOut ().bitmapData;
+      private var mBitmapDataZoomOutDisabled:BitmapData  = new IconZoomOutDisabled ().bitmapData;
       
 //======================================================================
 //
@@ -56,8 +74,14 @@ package player.ui {
       private var _OnSpeed:Function;
       private var _OnHelp:Function;
       
+      private var _OnMainMenu:Function = null;
+      
+      private var _OnZoom:Function;
+      
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
+      
+      private var mZoomScale:Number = 1.0;
       
       private var mButtonRestart:ImageButton;
       private var mButtonStartPause:ImageButton;
@@ -65,10 +89,15 @@ package player.ui {
       private var mButtonHelp:ImageButton;
       private var mButtonSpeeds:Array;
       
+      private var mButtonMainMenu:ImageButton;
+      
+      private var mButtonZoomIn:ImageButton;
+      private var mButtonZoomOut:ImageButton;
+      
       private static const NumButtonSpeed:int = 5;
       private static const ButtonMargin:int = 8;
       
-      public function PlayControlBar (onRestart:Function, onStart:Function, onPause:Function, onStop:Function, onSpeed:Function, onHelp:Function)
+      public function PlayControlBar (onRestart:Function, onStart:Function, onPause:Function, onStop:Function, onSpeed:Function, onHelp:Function, onMainMenu:Function = null, onZoom:Function = null)
       {
          _OnRestart = onRestart;
          _OnStart = onStart;
@@ -77,6 +106,9 @@ package player.ui {
          _OnSpeed = onSpeed;
          _OnHelp = onHelp;
          
+         _OnMainMenu = onMainMenu;
+         _OnZoom = onZoom;
+         
          mIsPlaying = false;
          
          var bar:Sprite = new Sprite ();
@@ -84,13 +116,29 @@ package player.ui {
          var i:int;
          var buttonX:Number = 0;
          
-         mButtonRestart = new ImageButton (null, mBitmapDataRetartDisabled);
+      // main menu
+         
+         if (_OnMainMenu != null)
+         {
+            mButtonMainMenu = new ImageButton (mBitmapDataMainMenu);
+            mButtonMainMenu.SetClickEventHandler (_OnMainMenu);
+            addChild (mButtonMainMenu);
+         
+            mButtonMainMenu.x = buttonX;
+            buttonX += mButtonMainMenu.width;
+            buttonX += ButtonMargin;
+         }
+         
+      // restart start/pause, stop
+         
+         mButtonRestart = new ImageButton (mBitmapDataRetartDisabled);
          addChild (mButtonRestart);
          
          mButtonRestart.x = buttonX; 
          buttonX += mButtonRestart.width;
          
-         mButtonStartPause = new ImageButton (OnClickStart, mBitmapDataStart);
+         mButtonStartPause = new ImageButton (mBitmapDataStart);
+         mButtonStartPause.SetClickEventHandler (OnClickStart);
          addChild (mButtonStartPause);
          
          mButtonStartPause.x = buttonX; 
@@ -98,30 +146,57 @@ package player.ui {
          
          if (onStop != null)
          {
-            mButtonStop = new ImageButton (null, mBitmapDataStopDisabled);
+            mButtonStop = new ImageButton (mBitmapDataStopDisabled);
             addChild (mButtonStop);
             
             mButtonStop.x = buttonX; 
             buttonX += mButtonStop.width;
          }
          
-         buttonX += ButtonMargin - 1;
+         buttonX += ButtonMargin;
+         
+      // speed
          
          mButtonSpeeds = new Array (5);
          for (i = 0; i < NumButtonSpeed; ++ i)
          {
-            mButtonSpeeds [i] = new ImageButton (OnClickSpeed, mBitmapDataSpeed, i);
+            mButtonSpeeds [i] = new ImageButton (mBitmapDataSpeed, i);
+            mButtonSpeeds [i].SetClickEventHandler (OnClickSpeed);
             addChild (mButtonSpeeds[i]);
             
             mButtonSpeeds[i].x = buttonX; 
             buttonX += mButtonSpeeds[i].width - 1;
          }
          
-         mButtonHelp = new ImageButton (OnClickHelp, mBitmapDataHelp);
+         buttonX += ButtonMargin;
+         
+      // zoom
+         
+         mButtonZoomIn = new ImageButton (mBitmapDataZoomIn);
+         mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
+         addChild (mButtonZoomIn);
+         
+         mButtonZoomOut = new ImageButton (mBitmapDataZoomOut);
+         mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
+         addChild (mButtonZoomOut);
+         
+         mButtonZoomIn.x = buttonX;
+         buttonX += mButtonZoomIn.width;
+         mButtonZoomOut.x = buttonX;
+         buttonX += mButtonZoomOut.width;
+         buttonX += ButtonMargin;
+         
+      // help
+         
+         mButtonHelp = new ImageButton (mBitmapDataHelp);
+         mButtonHelp.SetClickEventHandler (OnClickHelp);
          addChild (mButtonHelp);
          
-         buttonX += ButtonMargin;
          mButtonHelp.x = buttonX;
+         buttonX += mButtonHelp.width;
+         buttonX += ButtonMargin;
+         
+      // 
          
          OnClickSpeed (1);
       }
@@ -145,6 +220,44 @@ package player.ui {
       public function GetPlayingSpeedX ():int
       {
          return mPlayingSpeedX;
+      }
+      
+      public function GetZoomScale ():Number
+      {
+         return mZoomScale;
+      }
+      
+      public function SetZoomScale (zoomScale:Number):void
+      {
+         var oldScale:Number = mZoomScale;
+         
+         mZoomScale = zoomScale;
+         
+         if ( mZoomScale <= Define.MinWorldZoomScale)
+         {
+            mZoomScale = Define.MinWorldZoomScale;
+            
+            mButtonZoomOut.SetBitmapData (mBitmapDataZoomOutDisabled);
+            mButtonZoomOut.SetClickEventHandler (null);
+         }
+         else if (oldScale <= Define.MinWorldZoomScale)
+         {
+            mButtonZoomOut.SetBitmapData (mBitmapDataZoomOut);
+            mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
+         }
+         
+         if ( mZoomScale >= Define.MaxWorldZoomScale)
+         {
+            mZoomScale = Define.MaxWorldZoomScale;
+            
+            mButtonZoomIn.SetBitmapData (mBitmapDataZoomInDisabled);
+            mButtonZoomIn.SetClickEventHandler (null);
+         }
+         else if (oldScale >= Define.MaxWorldZoomScale)
+         {
+            mButtonZoomIn.SetBitmapData (mBitmapDataZoomIn);
+            mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
+         }
       }
       
 //======================================================================
@@ -239,6 +352,22 @@ package player.ui {
          
          if (_OnSpeed != null)
             _OnSpeed ();
+      }
+      
+      private function OnClickZoomIn (data:Object):void
+      {
+         SetZoomScale (mZoomScale * 2.0);
+         
+         if (_OnZoom != null)
+            _OnZoom ();
+      }
+      
+      private function OnClickZoomOut (data:Object):void
+      {
+         SetZoomScale (mZoomScale * 0.5);
+         
+         if (_OnZoom != null)
+            _OnZoom ();
       }
       
       private function OnClickHelp (data:Object):void

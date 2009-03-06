@@ -424,7 +424,7 @@ package editor {
                onlySelected = selecteds [0] as EntityCollisionCategory;
          }
          
-         mButtonCreateCollisionCategory.enabled = notNull && numCategories < Define.MaxCollisionCategoriesCount;
+         mButtonCreateCollisionCategory.enabled = notNull && numCategories < Define.MaxCollisionCategoriesCount - 1;
          mButtonCreateCollisionCategoryFriendLink.enabled = numCategories >= 2;
          mButtonBreakCollisionCategoryFriendLink.enabled = numCategories >= 2;
          

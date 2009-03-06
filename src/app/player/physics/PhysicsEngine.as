@@ -7,6 +7,7 @@ package player.physics {
    import Box2D.Dynamics.b2Body;
    import Box2D.Common.Math.b2Vec2;
    import Box2D.Collision.b2AABB;
+   import Box2D.Dynamics.b2ContactFilter;
    
    public class PhysicsEngine
    {
@@ -22,8 +23,11 @@ package player.physics {
       private var _GetBodyIndex:Function = null; // (proxyBody:PhysicsProxyBody):int
       private var _GetShapeIndex:Function = null; // (proxyBody:PhysicsProxyShape):int
       
+      private var mDefaultCollisionCategories:Object = null;
+      private var mCollisionCategories:Array = new Array ();
+      private var mContactFilter:_ContactFilter = null;
       
-      public function PhysicsEngine (initialBravity:Point, lowerDisplayPoint:Point, upperDisplayPoint:Point, version100:Boolean):void
+      public function PhysicsEngine (initialGravity:Point, lowerDisplayPoint:Point, upperDisplayPoint:Point, numCollisionCategories:uint, version100:Boolean):void
       {
          if (! version100)
          {
@@ -35,13 +39,128 @@ package player.physics {
          worldAABB.lowerBound.Set(lowerDisplayPoint.x, lowerDisplayPoint.y);
          worldAABB.upperBound.Set(upperDisplayPoint.x, upperDisplayPoint.y);
          
-         var gravity:b2Vec2 = new b2Vec2 (initialBravity.x * GlobalGravityScale, initialBravity.y * GlobalGravityScale);
+         var gravity:b2Vec2 = new b2Vec2 (initialGravity.x * GlobalGravityScale, initialGravity.y * GlobalGravityScale);
          var doSleep:Boolean = true;
          
          _b2World = new b2World(worldAABB, gravity, doSleep);
          
          _b2World.SetContactListener(new _ContactListener (this));
          _b2World.SetDestructionListener(new _DestructionListener (this));
+         
+         RebuildContactFilter (numCollisionCategories);
+      }
+      
+//=================================================================
+//   
+//=================================================================
+      
+      public function RebuildContactFilter (numCollisitionCategories:uint):void
+      {
+         if (numCollisitionCategories > 16)
+         {
+            mContactFilter = new _ContactFilter (this, numCollisitionCategories);
+            _b2World.SetContactFilter (mContactFilter);
+         }
+         else
+         {
+            mContactFilter = null;
+            _b2World.SetContactFilter (b2ContactFilter.b2_defaultFilter);
+         }
+         
+         CreateDefaultCollisionCategory ();
+      }
+      
+      public function CreateDefaultCollisionCategory ():void
+      {
+         if (mDefaultCollisionCategories == null)
+         {
+            mDefaultCollisionCategories = new Object ();
+            
+            mDefaultCollisionCategories.mGroupIndex = 0;
+            
+            if (mContactFilter == null)
+            {
+               mDefaultCollisionCategories.mMaskBits = 0xFFFF;
+               mDefaultCollisionCategories.mCategoryBits = 0x1;
+            }
+            else
+            {
+               mDefaultCollisionCategories.mMaskBits = 0;
+               mDefaultCollisionCategories.mCategoryBits = 0;
+            }
+         }
+      }
+      
+      public function GetDefaultCollisionCategory ():Object
+      {
+         return mDefaultCollisionCategories;
+      }
+      
+      public function CreateCollisionCategory (ccDefine:Object):void
+      {
+         var numCategories:int = mCollisionCategories.length; // with out the default one
+         
+         var categoryIndex:int = numCategories + 1;
+         
+         var category:Object = new Object ();
+         
+         category.mGroupIndex = ccDefine.mCollideInternally ? categoryIndex : - categoryIndex;
+         
+         if (mContactFilter == null)
+         {
+            category.mMaskBits = 0xFFFF;
+            category.mCategoryBits = 0x1 << categoryIndex;
+         }
+         else
+         {
+            category.mMaskBits = 0;
+            category.mCategoryBits = 0;
+         }
+         
+         mCollisionCategories.push (category);
+      }
+      
+      public function GetCollisioonCategory (index:int):Object
+      {
+         if (index < 0 || index >= mCollisionCategories.length)
+            return mDefaultCollisionCategories;
+         
+         return mCollisionCategories [index];
+      }
+      
+      // here category1Index and category2Index are custom CC id
+      public function CreateCollisionCategoryFriendLink (category1Index:int, category2Index:int):void
+      {
+         var category1:Object = GetCollisioonCategory (category1Index);
+         var category2:Object = GetCollisioonCategory (category2Index);
+         
+         if (mContactFilter == null)
+         {
+            category1.mMaskBits &= ~category2.mCategoryBits;
+            category2.mMaskBits &= ~category1.mCategoryBits;
+         }
+         else
+         {
+            mContactFilter.CreateCollisionCategoryFriendLink (category1.mGroupIndex, category2.mGroupIndex);
+         }
+      }
+      
+      public function SetCollisionCategoryParamsForShapeParams (shapeParams:Object, shapeCCid:int):void
+      {
+         var category:Object = GetCollisioonCategory (shapeCCid);
+         
+         shapeParams.mGroupIndex = category.mGroupIndex;
+         
+         if (mContactFilter == null)
+         {
+            shapeParams.mMaskBits = category.mMaskBits;
+            shapeParams.mCategoryBits = category.mCategoryBits;
+         }
+         else
+         {
+            shapeParams.mMaskBits = 0;
+            shapeParams.mCategoryBits = 0;
+         }
       }
       
 //=================================================================
@@ -238,6 +357,9 @@ package player.physics {
          if (proxyBody == null)
             return null;
          
+         if (params != null)
+            SetCollisionCategoryParamsForShapeParams (params, params.mCollisionCategoryIndex);
+         
          var point:Point = DisplayPosition2PhysicsPoint (displayX, displayY);
          
          var physicsRadius:Number = DisplayLength2PhysicsLength (displayRadius);
@@ -252,6 +374,9 @@ package player.physics {
       {
          if (proxyBody == null)
             return null;
+         
+         if (params != null)
+            SetCollisionCategoryParamsForShapeParams (params, params.mCollisionCategoryIndex);
          
          var vertexCount:int = displayPoints.length;
          var worldPhysicsPoints:Array = new Array (vertexCount);

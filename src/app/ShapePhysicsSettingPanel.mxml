@@ -115,6 +115,8 @@
             
             SelectList_CollisionCategory.dataProvider = mInputValues.mCollisionCategoryListDataProvider;
             SelectList_CollisionCategory.selectedIndex = mInputValues.mCollisionCategoryListSelectedIndex;
+            
+            OnEnablePhysicsCheckBoxClick ();
          }
          
          public function GetValues (returnValues:Object):void

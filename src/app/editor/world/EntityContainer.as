@@ -110,7 +110,7 @@ package editor.world {
          
          for (var i:uint = 0; i < entityArray.length; ++ i)
          {
-            if (entityArray[i] is Entity)
+            if (entityArray[i] != null && entityArray[i] is Entity)
             {
                mSelectionListManager.AddSelectedEntity (entityArray[i]);
             }
@@ -348,33 +348,119 @@ package editor.world {
          }
       }
       
-      public function CloneSelectedEntities (offsetX:Number, offsetY:Number):void
+      public function CloneSelectedEntities (offsetX:Number, offsetY:Number, cloningInfo:Array = null):void
       {
-         var entityArray:Array = mSelectionListManager.GetSelectedMainEntities ();
-         
+         var selectedEntities:Array = GetSelectedEntities ();
+         var mainEntities:Array = new Array ();
+         //var cloningInfo:Array = new Array ();
+         var mainEntity:Entity;
          var i:uint;
-         for (i = 0; i < entityArray.length; ++ i)
+         var index:int;
+         var info:Object;
+         var params:Object;
+         
+         for (i = 0; i < selectedEntities.length; ++ i)
          {
-            var params:Object = new Object ();
-            params.mEntity = entityArray [i];
-            params.mEntityIndex = contains (entityArray [i]) ? getChildIndex (entityArray [i]) : -1;
-            entityArray [i] = params;
+            mainEntity = (selectedEntities [i] as Entity).GetMainEntity ();
+            
+            index = mainEntities.indexOf (mainEntity);
+            if (index < 0)
+            {
+               index = mainEntities.length;
+               mainEntities.push (mainEntity);
+            }
+            
+            if (cloningInfo != null)
+            {
+               info = new Object ();
+               info.mMainEntity = mainEntity;
+               info.mMainEntityOldArrayIndex = index;
+               cloningInfo.push (info);
+            }
          }
          
-         entityArray.sortOn("mEntityIndex", Array.NUMERIC);
-         
-         for (i = 0; i < entityArray.length; ++ i)
+         for (i = 0; i < mainEntities.length; ++ i)
          {
-            entityArray [i] = entityArray [i].mEntity;
+            params = new Object ();
+            params.mOldArrayIndex = i;
+            params.mEntityIndex = contains (mainEntities [i]) ? getChildIndex (mainEntities [i]) : -1;
+            params.mMainEntity = mainEntities [i];
+            mainEntities [i] = params;
          }
          
-         var entity:Entity;
+         mainEntities.sortOn("mEntityIndex", Array.NUMERIC);
          
          mSelectionListManager.ClearSelectedEntities ();
          
-         for (i = 0; i < entityArray.length; ++ i)
+         var oldIndex2NewIndex:Array = new Array (mainEntities.length);
+         var newEntity:Entity;
+         
+         for (i = 0; i < mainEntities.length; ++ i)
          {
-            entity = entityArray [i] as Entity;
+            params = mainEntities [i];
+            oldIndex2NewIndex [params.mOldArrayIndex] = i;
+            
+            mainEntity = params.mMainEntity;
+            
+            if (numChildren >= Define.MaxEntitiesCount)
+               newEntity = null;
+            else
+               newEntity = mainEntity.Clone (offsetX, offsetY);
+            
+            params.mClonedEntity = newEntity;
+            
+            if (newEntity != null)
+            {
+               addChild (newEntity);
+               
+               SelectEntities (newEntity.GetSubEntities ());
+            }
+         }
+         
+         if (cloningInfo != null)
+         {
+            for (i = 0; i < selectedEntities.length; ++ i)
+            {
+               info = cloningInfo [i];
+               
+               //trace ("info.mMainEntityOldArrayIndex = " + info.mMainEntityOldArrayIndex);
+               //trace ("oldIndex2NewIndex = " + oldIndex2NewIndex);
+               //trace ("oldIndex2NewIndex[info.mMainEntityOldArrayIndex] = " + oldIndex2NewIndex[info.mMainEntityOldArrayIndex]);
+               //trace ("mainEntities [ oldIndex2NewIndex[info.mMainEntityOldArrayIndex] ] = " + mainEntities [ oldIndex2NewIndex[info.mMainEntityOldArrayIndex] ]);
+               //trace ("mainEntities [ oldIndex2NewIndex[info.mMainEntityOldArrayIndex] ].mClonedEntity = " + mainEntities [ oldIndex2NewIndex[info.mMainEntityOldArrayIndex] ].mClonedEntity);
+               
+               info.mClonedMainEntity = mainEntities [ oldIndex2NewIndex[info.mMainEntityOldArrayIndex] ].mClonedEntity;
+            }
+         }
+         
+         /*
+         var mainEntityArray:Array = mSelectionListManager.GetSelectedMainEntities ();
+         
+         var i:uint;
+         for (i = 0; i < mainEntityArray.length; ++ i)
+         {
+            var params:Object = new Object ();
+            params.mEntity = mainEntityArray [i];
+            params.mEntityIndex = contains (mainEntityArray [i]) ? getChildIndex (mainEntityArray [i]) : -1;
+            mainEntityArray [i] = params;
+         }
+         
+         mainEntityArray.sortOn("mEntityIndex", Array.NUMERIC);
+         
+         for (i = 0; i < mainEntityArray.length; ++ i)
+         {
+            mainEntityArray [i] = mainEntityArray [i].mEntity;
+         }
+         
+         var entity:Entity;
+         var clonedEntities:Array = new Array ();
+         var clonePair:Object;
+         
+         mSelectionListManager.ClearSelectedEntities ();
+         
+         for (i = 0; i < mainEntityArray.length; ++ i)
+         {
+            entity = mainEntityArray [i] as Entity;
             
             if (entity != null)
             {
@@ -388,9 +474,15 @@ package editor.world {
                   addChild (newEntity);
                   
                   SelectEntities (newEntity.GetSubEntities ());
+                  
+                  clonePair = new Object ();
+                  clonePair.mMainEntity = entity;
+                  clonePair.mClonedEntity = newEntity;
+                  clonedEntities.push (clonePair);
                }
             }
          }
+         */
       }
       
       public function FlipSelectedEntitiesHorizontally (mirrorX:Number):void

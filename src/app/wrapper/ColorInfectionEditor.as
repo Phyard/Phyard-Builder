@@ -10,7 +10,6 @@ package wrapper {
       [Embed(source="CIEditor.swf")]
       [Bindable]
       public var CIEditor:Class;
-
       
       public function ColorInfectionEditor ()
       {

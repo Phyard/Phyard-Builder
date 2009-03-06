@@ -2,21 +2,26 @@
 <!-- Simple custom MXML TitleWindow component.
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
-
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Scale ..." width="300">
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+    title="Import" width="500">
 
    <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label text="Scale Ratio:" textAlign="right" width="80"/>
-      <mx:TextInput id="TextInput_ScaleRatio" width="80" text="100"/>
-      <mx:Label text="% (> 0)" textAlign="left" />
+      <mx:Label id="Label_SourceCode" text="Please paste the XML source code in the text area:"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%" verticalAlign="top">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="250" editable="true">
+         <mx:text>
+         </mx:text>
+      </mx:TextArea>
    </mx:HBox>
 
    <mx:Spacer height="10"/>
 
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Spacer width="100%"/>
-      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Button label="Import" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
       <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
       <!--
@@ -25,10 +30,10 @@
       -->
       <mx:Spacer width="100%"/>
    </mx:HBox>
-
-
+   
+   
    <mx:Script>
-      <![CDATA[       
+     <![CDATA[       
          import mx.managers.PopUpManager;
          
          private var OnConfirm:Function = null;
@@ -50,11 +55,7 @@
             
             var params:Object = new Object ();
             
-            var ratio:Number = parseFloat (TextInput_ScaleRatio.text);
-            if ( isNaN (ratio) )
-               params.mScaleRatio = 0;
-            else
-               params.mScaleRatio = ratio * 0.01;
+           params.mXmlString = TextArea_SourceCode.text;
             
            if (OnConfirm != null)
               OnConfirm (params);
@@ -74,7 +75,7 @@
          
      ]]>
    </mx:Script>
-
-
+   
+   
 
 </mx:TitleWindow>

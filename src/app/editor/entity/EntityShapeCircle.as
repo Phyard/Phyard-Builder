@@ -45,64 +45,48 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
-         var filledColor:uint;
-         var borderColor:uint;
-         var borderSize :int;
+         var filledColor:uint = GetFilledColor ();
+         var borderColor:uint = GetBorderColor ();
+         var drawBg:Boolean = IsDrawBackground ();
+         var drawBorder:Boolean = IsDrawBorder ();
+         var borderThickness:Number = GetBorderThickness ();
+         
+         borderThickness = 1;
+         
+         if ( ! drawBorder || borderThickness < 1)
+            drawBg = true;
          
          if ( IsSelected () )
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
-            borderSize  = 3;
-         }
-         else
-         {
-            //borderColor = IsDrawBorder () ? mBorderColor : mFilledColor;
-            //borderSize  = IsDrawBorder () ? 1 : 0;
-            
-            borderColor = mBorderColor;
-            borderSize = 1;
+            borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
-         if (mAiType >= 0)
-         {
-            filledColor = Define.GetShapeFilledColor (mAiType);
-         }
-         else
-         {
-            filledColor = mFilledColor;
-         }
+         alpha = 0.3 + GetTransparency () * 0.01 * 0.4;
          
-         alpha = 0.7;
-         
-         GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, filledColor);
+         GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, 
+                                                            borderThickness, drawBg, filledColor);
          
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
          {
             var pos:Number;
-            if (GetFilledColor () == Define.ColorBombObject)
-            {
-               pos = mRadius * 0.75 * 0.707;
-               if (pos < 0) pos = 0;
-               GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, 0xFFFFFF, 1, true, 0xFFFFFF);
-            }
+            if (Define.IsBombShape (GetAiType ()))
+               pos = mRadius * 0.75;// * 0.707;
             else
-            {
-               pos = (mRadius * 0.66) * 0.707 - 1;
-               if (pos < 0) pos = 0;
-               GraphicsUtil.DrawEllipse (this, pos, pos, 1, 1, borderColor, 1, true, borderColor);
-            }
+               pos = (mRadius * 0.66) - 1;// * 0.707 - 1;
+            if (pos < 0) pos = 0;
+            
+            var invertFilledColor:uint = GraphicsUtil.GetInvertColor_b (filledColor);
+            GraphicsUtil.DrawEllipse (this, pos, 0, 1, 1, invertFilledColor, 1, true, invertFilledColor);
          }
          else if (mAppearanceType == Define.CircleAppearanceType_Column)
          {
             var radius2:Number = mRadius * 0.5;
             GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
-            if (GetFilledColor () == Define.ColorBombObject)
-               GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, 0x808080, 1);
-            else
-               GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
+            GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
          }
          
-         if (GetFilledColor () == Define.ColorBombObject)
+         if (Define.IsBombShape (GetAiType ()))
          {
             GraphicsUtil.DrawEllipse (this, - mRadius * 0.5, - mRadius * 0.5, mRadius, mRadius, 0x808080, 0, true, 0x808080);
          }

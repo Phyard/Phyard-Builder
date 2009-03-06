@@ -6,6 +6,7 @@ package editor {
    import flash.events.KeyboardEvent;
    import flash.ui.Keyboard;
    import flash.events.EventPhase;
+   import flash.utils.Dictionary;
    
    import flash.utils.ByteArray;
    
@@ -140,6 +141,8 @@ package editor {
          
       private var mUiContainer:Sprite;
          
+         private var mUiTopBar:Shape = null;
+         private var mUiBottomBar:Shape = null;
          private var mPlayControlBar:PlayControlBar = null;
          private var mHelpDialog:Sprite = null;
          private var mSelectedEntityInfoText:TextFieldEx = null;
@@ -154,12 +157,18 @@ package editor {
       
          private var mViewCenterWorldX:Number = DefaultWorldWidth * 0.5;
          private var mViewCenterWorldY:Number = DefaultWorldHeight * 0.5;
+         private var mEditorWorldZoomScale:Number = 1.0;
+         private var mEditorWorldZoomScaleChangedSpeed:Number = 0.0;
+         
          private var mViewWidth:Number        = DefaultWorldWidth;
          private var mViewHeight:Number       = DefaultWorldHeight;
       
       private var mWorldHistoryManager:WorldHistoryManager;
       
       private var mPlayerWorld:player.world.World = null;
+         
+         private var mPlayerWorldZoomScale:Number = 1.0;
+         private var mPlayerWorldZoomScaleChangedSpeed:Number = 0.0;
       
       //private var mWorldPlayingSpeedX:int = 2;
       
@@ -309,13 +318,74 @@ package editor {
          if ( ! Runtime.HasSettingDialogOpened () && mActive)
             stage.focus = stage;
          
+         var newScale:Number;
+         
          if ( IsPlaying () )
          {
-            if (mPlayerWorld != null && ! IsPlayingPaused () && ! mHelpDialog.visible )
-               mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+            if (mPlayerWorld != null)
+            {
+               if (mPlayerWorld.GetZoomScale () != mPlayerWorldZoomScale)
+               {
+                  if (mPlayerWorld.GetZoomScale () < mPlayerWorldZoomScale)
+                  {
+                     if (mPlayerWorldZoomScaleChangedSpeed < 0)
+                        mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
+                     
+                     newScale = mPlayerWorld.scaleX + mPlayerWorldZoomScaleChangedSpeed;
+                     
+                     if (newScale >= mPlayerWorldZoomScale)
+                        mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
+                     else
+                        mPlayerWorld.SetZoomScale (newScale);
+                  }
+                  else
+                  {
+                     if (mPlayerWorldZoomScaleChangedSpeed > 0)
+                        mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
+                     
+                     newScale = mPlayerWorld.scaleX + mPlayerWorldZoomScaleChangedSpeed;
+                     
+                     if (newScale <= mPlayerWorldZoomScale)
+                        mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
+                     else
+                        mPlayerWorld.SetZoomScale (newScale);
+                  }
+               }
+               
+               if ( ! IsPlayingPaused () && ! mHelpDialog.visible )
+                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+            }
          }
          else
          {
+            if (mEditorWorld.GetZoomScale () != mEditorWorldZoomScale)
+            {
+               if (mEditorWorld.GetZoomScale () < mEditorWorldZoomScale)
+               {
+                  if (mEditorWorldZoomScaleChangedSpeed < 0)
+                     mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
+                  
+                  newScale = mEditorWorld.scaleX + mEditorWorldZoomScaleChangedSpeed;
+                  mEditorWorld.scaleY = mEditorWorld.scaleX = newScale;
+                  
+                  if (mEditorWorld.scaleX >= mEditorWorldZoomScale)
+                     mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
+               }
+               else
+               {
+                  if (mEditorWorldZoomScaleChangedSpeed > 0)
+                     mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
+                  
+                  newScale = mEditorWorld.scaleX + mEditorWorldZoomScaleChangedSpeed;
+                  mEditorWorld.scaleY = mEditorWorld.scaleX = newScale;
+                  
+                  if (mEditorWorld.scaleX <= mEditorWorldZoomScale)
+                     mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
+               }
+               
+               UpdateBackgroundAndWorldPosition ();
+            }
+            
             mEditorWorld.Update (mStepTimeSpan.GetLastSpan ());
          }
          
@@ -367,6 +437,8 @@ package editor {
          
          mEditorWorld.SetCameraCenterX (mViewCenterWorldX);
          mEditorWorld.SetCameraCenterY (mViewCenterWorldY);
+         
+         //mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
          
          var worldOriginViewX:Number = (0 - mViewCenterWorldX) * mEditorWorld.scaleX + mViewWidth  * 0.5;
          var worldOriginViewY:Number = (0 - mViewCenterWorldY) * mEditorWorld.scaleY + mViewHeight * 0.5;
@@ -428,7 +500,7 @@ package editor {
          }
          mEditorBackgroundSprite.graphics.lineStyle ();
          
-         if (drawBorder && Define.IsNormalScene (sceneLeft, sceneTop, sceneWidth, sceneHeight))
+         if (drawBorder)
          {
             var borderThinknessLR:Number = WorldBorderThinknessLR * mEditorWorld.scaleX;
             var borderThinknessTB:Number = WorldBorderThinknessTB * mEditorWorld.scaleY;
@@ -452,7 +524,13 @@ package editor {
             mUiContainer = new Sprite ();
             addChild (mUiContainer);
             
-            mPlayControlBar = new PlayControlBar (_OnRestartPlaying, _OnStartPlaying, _OnPausePlaying, _OnStopPlaying, _OnSetPlayingSpeed, _OnOpenPlayHelpDialog);
+            mUiTopBar = new Shape ();
+            mUiContainer.addChild (mUiTopBar);
+            
+            mUiBottomBar = new Shape ();
+            mUiContainer.addChild (mUiBottomBar);
+            
+            mPlayControlBar = new PlayControlBar (_OnRestartPlaying, _OnStartPlaying, _OnPausePlaying, _OnStopPlaying, _OnSetPlayingSpeed, _OnOpenPlayHelpDialog, null, _OnZoomWorld);
             mUiContainer.addChild (mPlayControlBar);
             
             mHelpDialog = new PlayHelpDialog (_OnClosePlayHelpDialog);
@@ -460,15 +538,15 @@ package editor {
             mHelpDialog.visible = false;
          }
          
-         mUiContainer.graphics.clear ();
+         mUiTopBar.graphics.clear ();
+         mUiTopBar.graphics.beginFill(0x606060);
+         mUiTopBar.graphics.drawRect (0, 0, mViewWidth, WorldBorderThinknessTB);
+         mUiTopBar.graphics.endFill ();
          
-         mUiContainer.graphics.beginFill(0x606060);
-         mUiContainer.graphics.drawRect (0, 0, mViewWidth, WorldBorderThinknessTB);
-         mUiContainer.graphics.endFill ();
-         
-         mUiContainer.graphics.beginFill(0x606060);
-         mUiContainer.graphics.drawRect (0, mViewHeight - WorldBorderThinknessTB, mViewWidth, WorldBorderThinknessTB);
-         mUiContainer.graphics.endFill ();
+         mUiBottomBar.graphics.clear ();
+         mUiBottomBar.graphics.beginFill(0x606060);
+         mUiBottomBar.graphics.drawRect (0, mViewHeight - WorldBorderThinknessTB, mViewWidth, WorldBorderThinknessTB);
+         mUiBottomBar.graphics.endFill ();
          
          mPlayControlBar.x = (mViewWidth - mPlayControlBar.width) * 0.5;
          mPlayControlBar.y = 2;
@@ -480,7 +558,7 @@ package editor {
          {
             mSelectedEntityInfoText = TextFieldEx.CreateTextField ("", false, 0xFFFF00, 0x0);
             
-            mUiContainer.addChild (mSelectedEntityInfoText);
+            addChild (mSelectedEntityInfoText);
          }
          
          mSelectedEntityInfoText.visible = false;
@@ -517,8 +595,10 @@ package editor {
          {
             mPlayerWorld.x = mEditorWorld.x;
             mPlayerWorld.y = mEditorWorld.y;
-            mPlayerWorld.scaleX = mEditorWorld.scaleX;
-            mPlayerWorld.scaleY = mEditorWorld.scaleY;
+            
+            mPlayerWorldZoomScale = mEditorWorldZoomScale;
+            mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
+            mPlayerWorld.MoveWorldScene (0, 0);
          }
          
          if (mHelpDialog != null)
@@ -916,12 +996,9 @@ package editor {
          }
       }
       
-      //private var mMenuItemAuthorInfo:ContextMenuItem;
-      //private var mMenuItemSaveWorld:ContextMenuItem;
-      //private var mMenuItemLoadWorld:ContextMenuItem;
-      
-      // ---
       private var mMenuItemAbout:ContextMenuItem;
+      private var mMenuItemExportSelectedsToSystemMemory:ContextMenuItem;
+      private var mMenuItemImport:ContextMenuItem;
       
       private function BuildContextMenu ():void
       {
@@ -929,6 +1006,7 @@ package editor {
          theContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
          defaultItems.print = true;
+         contextMenu = theContextMenu;
          
          // need flash 10
          //theContextMenu.clipboardMenu = true;
@@ -939,41 +1017,30 @@ package editor {
          //clipboardItems.paste = true;
          //clipboardItems.selectAll = false;
             
-            
-            /*
-            mMenuItemAuthorInfo = new ContextMenuItem ("Author Setting ...", true);
-            theContextMenu.customItems.push (mMenuItemAuthorInfo);
-            mMenuItemAuthorInfo.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-            
-            mMenuItemSaveWorld = new ContextMenuItem ("Save World ...");
-            theContextMenu.customItems.push (mMenuItemSaveWorld);
-            mMenuItemSaveWorld.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-            
-            mMenuItemLoadWorld = new ContextMenuItem ("Load World ...");
-            theContextMenu.customItems.push (mMenuItemLoadWorld);
-            mMenuItemLoadWorld.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-            */
-            
-            mMenuItemAbout = new ContextMenuItem("About This Editor", false);
-            theContextMenu.customItems.push (mMenuItemAbout);
-            mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         contextMenu = theContextMenu;
+         mMenuItemAbout = new ContextMenuItem("About This Editor", false);
+         theContextMenu.customItems.push (mMenuItemAbout);
+         mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         
+         mMenuItemExportSelectedsToSystemMemory = new ContextMenuItem ("Export Selected(s) to System Memory", true);
+         theContextMenu.customItems.push (mMenuItemExportSelectedsToSystemMemory);
+         mMenuItemExportSelectedsToSystemMemory.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         
+         mMenuItemImport = new ContextMenuItem ("Import ...", false);
+         theContextMenu.customItems.push (mMenuItemImport);
+         mMenuItemImport.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
       }
       
       private function OnContextMenuEvent (event:ContextMenuEvent):void
       {
          switch (event.target)
          {
-            /*
-            case mMenuItemAuthorInfo:
-               OpenWorldSettingDialog ();
+            case mMenuItemExportSelectedsToSystemMemory:
+               ExportSelectedsToSystemMemory ();
                break;
-            case mMenuItemSaveWorld:
+            case mMenuItemImport:
+               OpenImportSourceCodeDialog ();
                break;
-            case mMenuItemLoadWorld:
-               break;
-            */
             case mMenuItemAbout:
                OpenAboutLink ();
                break;
@@ -1021,35 +1088,32 @@ package editor {
       
       private function SetPlayerWorld (newPlayerWorld:player.world.World):void
       {
+         DestroyPlayerWorld ();
+         
+         mPlayerWorld = newPlayerWorld;
+         
          if (mPlayerWorld == null)
          {
-            mPlayerWorld = newPlayerWorld;
-            mPlayerElementsContainer.addChild (mPlayerWorld);
+            return;
          }
-         else
-         {
-            mPlayerElementsContainer.removeChild (mPlayerWorld);
-            
-            if (newPlayerWorld == null)
-               return;
-               
-            mPlayerWorld = newPlayerWorld;
-         }
+         
+         mPlayerElementsContainer.addChild (mPlayerWorld);
          
          mPlayerWorld.SetCameraWidth (mViewWidth);
          mPlayerWorld.SetCameraHeight (mViewHeight);
          
          SynchrinizePlayerWorldWithEditorWorld ();
          mPlayerWorld.Update (0, 1);
-         mPlayerElementsContainer.addChild (mPlayerWorld);
       }
       
       private function DestroyPlayerWorld ():void
       {
-         if ( mPlayerWorld != null && mPlayerElementsContainer.contains (mPlayerWorld) )
+         if ( mPlayerWorld != null)
          {
             mPlayerWorld.Destroy ();
-            mPlayerElementsContainer.removeChild (mPlayerWorld);
+            
+            if ( mPlayerElementsContainer.contains (mPlayerWorld) )
+               mPlayerElementsContainer.removeChild (mPlayerWorld);
          }
          
          mPlayerWorld = null;
@@ -1076,6 +1140,8 @@ package editor {
                playerWorld = null;
             }
          }
+         
+         System.gc ();
          
          if (playerWorld == null)
          {
@@ -1117,8 +1183,9 @@ package editor {
       {
          mOuterWorldHexString = null;
          
-         DestroyPlayerWorld ();
+         mPlayControlBar.SetZoomScale (mEditorWorldZoomScale);
          
+         DestroyPlayerWorld ();
          
          mIsPlaying = false;
          
@@ -1189,7 +1256,27 @@ package editor {
          if (mHelpDialog != null)
             mHelpDialog.visible = false;
       }
-
+      
+      private function _OnZoomWorld (data:Object = null):void
+      {
+         if (IsPlaying ())
+         {
+            if (mPlayerWorld != null)
+            {
+               mPlayerWorldZoomScale = mPlayControlBar.GetZoomScale ();
+               mPlayerWorldZoomScaleChangedSpeed = (mPlayerWorldZoomScale - mPlayerWorld.scaleX) * 0.03;
+            }
+            
+            //UpdateBackgroundAndWorldPosition ();
+         }
+         else
+         {
+            mEditorWorldZoomScale = mPlayControlBar.GetZoomScale ();
+            mEditorWorldZoomScaleChangedSpeed = (mEditorWorldZoomScale - mEditorWorld.scaleX) * 0.03;
+            
+            //UpdateBackgroundAndWorldPosition ();
+         }
+      }
       
 //============================================================================
 //    
@@ -1208,6 +1295,7 @@ package editor {
       public var ShowWorldSettingDialog:Function = null;
       public var ShowWorldSavingDialog:Function = null;
       public var ShowWorldLoadingDialog:Function = null;
+      public var ShowImportSourceCodeDialog:Function = null;
       
       public var ShowCollisionGroupManageDialog:Function = null;
       
@@ -1498,6 +1586,17 @@ package editor {
             return;
          
          ShowPlayCodeLoadingDialog (LoadPlayerWorldFromHexString);
+      }
+      
+      private function  OpenImportSourceCodeDialog ():void
+      {
+         if (! IsEditing ())
+            return;
+         
+         if (Runtime.HasSettingDialogOpened ())
+            return;
+         
+         ShowImportSourceCodeDialog (ImportFromXmlString);
       }
       
 //=================================================================================
@@ -1978,8 +2077,10 @@ package editor {
          
          CheckModifierKeys (event);
          
-         var point:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
-         var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
+         //var point:Point = DisplayObjectUtil.LocalToLocal ( (event.target as DisplayObject).parent, this, new Point (event.localX, event.localY) );
+         var point:Point = globalToLocal ( new Point (event.stageX, event.stageY) );
+         //var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
+         var rect:Rectangle = new Rectangle (0, 0, width, height);
          
          var isOut:Boolean = ! rect.containsPoint (point);
          
@@ -2130,6 +2231,8 @@ package editor {
       public function DestroyEntity (entity:Entity):void
       {
          mEditorWorld.DestroyEntity (entity);
+         
+         CalSelectedEntitiesCenterPoint ();
       }
       
       public function CreateCircle (centerX:Number, centerY:Number, radius:Number, filledColor:uint, isStatic:Boolean):EntityShapeCircle
@@ -2519,7 +2622,7 @@ package editor {
          
          CreateUndoPoint ();
          
-         //CalSelectedEntitiesCenterPoint ();
+         CalSelectedEntitiesCenterPoint ();
       }
       
       public function FlipSelectedEntitiesVertically ():void
@@ -2528,7 +2631,7 @@ package editor {
          
          CreateUndoPoint ();
          
-         //CalSelectedEntitiesCenterPoint ();
+         CalSelectedEntitiesCenterPoint ();
       }
       
       public function GlueSelectedEntities ():void
@@ -2746,12 +2849,6 @@ package editor {
             shape.SetBorderThickness (params.mBorderThickness);
             shape.SetDrawBackground (params.mDrawBackground);
             shape.SetFilledColor (params.mBackgroundColor);
-            
-            trace ("params.mIsVisible = " + params.mIsVisible);
-            trace ("params.mDrawBorder = " + params.mDrawBorder);
-            trace ("params.mBorderColor = " + params.mBorderColor);
-            trace ("params.mDrawBackground = " + params.mDrawBackground);
-            trace ("params.mBackgroundColor = " + params.mBackgroundColor);
             
             if (shape.IsBasicShapeEntity ())
             {
@@ -2984,6 +3081,141 @@ package editor {
          }
       }
       
+      public function ExportSelectedsToSystemMemory ():void
+      {
+         try
+         {
+            var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mEditorWorld);
+            var newWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (worldDefine);
+            
+            var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+            
+            if (selectedEntities.length == 0)
+               return;
+            
+            var i:int;
+            var index:int;
+            var entity:Entity;
+            for (i = 0; i < selectedEntities.length; ++ i)
+            {
+               index = mEditorWorld.getChildIndex (selectedEntities[i]);
+               entity = newWorld.getChildAt (index) as Entity;
+               entity = entity.GetMainEntity ();
+               newWorld.SelectEntity (entity);
+               newWorld.SelectEntities (entity.GetSubEntities ());
+            }
+            
+            i = 0;
+            while (i < newWorld.numChildren)
+            {
+               entity = newWorld.getChildAt (i) as Entity;
+               if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+               {
+                  ++ i;
+               }
+               else
+               {
+                  newWorld.DestroyEntity (entity);
+               }
+            }
+            
+            var cm:CollisionManager = newWorld.GetCollisionManager ();
+            var ccId:int;
+            
+            for (i = 0; i < newWorld.numChildren; ++ i)
+            {
+               entity = newWorld.getChildAt (i) as Entity;
+               if (entity is EntityShape)
+               {
+                  ccId = (entity as EntityShape).GetCollisionCategoryIndex ();
+                  if (ccId >= 0)
+                     cm.SelectEntity (cm.GetCollisionCategoryByIndex (ccId));
+               }
+            }
+            
+            i = 0;
+            while (i < cm.numChildren)
+            {
+               entity = cm.getChildAt (i) as Entity;
+               if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
+               {
+                  ++ i;
+               }
+               else
+               {
+                  cm.DestroyEntity (entity);
+               }
+            }
+            
+            System.setClipboard(DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (newWorld)));
+         }
+         catch (error:Error)
+         {
+            Alert.show("Sorry, export  error!", "Error");
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
+      }
+      
+      public function ImportFromXmlString (params:Object):void
+      {
+         var xmlString:String = params.mXmlString;
+         
+         var xml:XML = new XML (xmlString);
+         
+         try
+         {
+            var oldCount:int = mEditorWorld.numChildren;
+            
+            DataFormat.WorldDefine2EditorWorld (DataFormat.Xml2WorldDefine (xml), true, mEditorWorld);
+            
+            if (oldCount == mEditorWorld.numChildren)
+               return;
+            
+            mEditorWorld.ClearSelectedEntities ();
+            
+            var i:int;
+            var j:int;
+            var entity:Entity;
+            var entities:Array;
+            var centerX:Number = 0;
+            var centerY:Number = 0;
+            var numSelecteds:int = 0;
+            
+            for (i = oldCount; i < mEditorWorld.numChildren; ++ i)
+            {
+               entities = (mEditorWorld.getChildAt (i) as Entity).GetSubEntities ();
+               mEditorWorld.SelectEntities (entities);
+               
+               for (j = 0; j < entities.length; ++ j)
+               {
+                  entity = entities [j] as Entity;
+                  centerX += entity.GetPositionX ();
+                  centerY += entity.GetPositionY ();
+                  ++ numSelecteds;
+               }
+            }
+            
+            if (numSelecteds > 0)
+            {
+               centerX /= numSelecteds;
+               centerY /= numSelecteds;
+               
+               MoveSelectedEntities (mViewCenterWorldX - centerX, mViewCenterWorldY - centerY, true, false);
+            }
+            
+            CreateUndoPoint ();
+         }
+         catch (error:Error)
+         {
+            Alert.show("Sorry, import error!", "Error");
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
+      }
+      
 //=================================================================================
 //   move scene
 //=================================================================================
@@ -3024,6 +3256,7 @@ package editor {
          object.mSelectedVertexControllerId = -1;
          object.mViewCenterWorldX = mViewCenterWorldX;
          object.mViewCenterWorldY = mViewCenterWorldY;
+         object.mEditorWorldZoomScale = mEditorWorldZoomScale;
          
          for (var i:int = 0; i < entityArray.length; ++ i)
          {
@@ -3047,7 +3280,10 @@ package editor {
          if (worldState == null)
             return;
          
-          var object:Object = worldState.mUserData;
+         mLastSelectedEntity = null;
+         mLastSelectedEntities = null;
+         
+         var object:Object = worldState.mUserData;
           
          //var cm:CollisionManager = mEditorWorld.GetCollisionManager ();
          mEditorWorld.DestroyAllEntities ();
@@ -3056,6 +3292,9 @@ package editor {
          
          mViewCenterWorldX = object.mViewCenterWorldX;
          mViewCenterWorldY = object.mViewCenterWorldY;
+         
+         mEditorWorldZoomScale = object.mEditorWorldZoomScale;
+         mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
          
          SetEditorWorld (mEditorWorld);
          
@@ -3074,6 +3313,7 @@ package editor {
                if (entityId == object.mMainSelectedEntityId)
                {
                   entity.SetVertexControllersVisible (true);
+                  mLastSelectedEntity = entity;
                   
                   if (object.mSelectedVertexControllerId >= 0)
                   {
@@ -3085,8 +3325,7 @@ package editor {
             }
          }
          
-         mLastSelectedEntity = null;
-         mLastSelectedEntities = null;
+         UpdateChildComponents ();
       }
       
       public function Undo ():void

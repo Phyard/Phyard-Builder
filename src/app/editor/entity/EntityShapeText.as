@@ -67,6 +67,8 @@ package editor.entity {
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
             borderSize  = 3;
+            
+            borderSize /= mWorld.GetZoomScale ();
          }
          else
          {

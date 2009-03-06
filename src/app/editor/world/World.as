@@ -5,6 +5,7 @@ package editor.world {
    import flash.display.DisplayObject;
    import flash.geom.Point;
    import flash.geom.Matrix;
+   import flash.utils.Dictionary;
    
    import com.tapirgames.util.Logger;
    
@@ -24,7 +25,7 @@ package editor.world {
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointSpring;
    
-   import editor.entity.SubEntitySliderAnchor;
+   import editor.entity.SubEntityJointAnchor;
    
    import editor.entity.VertexController;
    
@@ -56,6 +57,8 @@ package editor.world {
       private var mBackgroundColor:uint = 0xDDDDA0;
       private var mBuildBorder:Boolean = true;
       private var mBorderColor:uint = Define.ColorStaticObject;
+      
+      private var mZoomScale:Number = 1.0;
       
       public function World ()
       {
@@ -207,6 +210,178 @@ package editor.world {
       public function IsBuildBorder ():Boolean
       {
          return mBuildBorder;
+      }
+      
+      public function GetZoomScale ():Number
+      {
+         return mZoomScale;
+      }
+      
+      public function SetZoomScale (zoomScale:Number):void
+      {
+         mZoomScale = zoomScale;
+         
+         scaleX = zoomScale;
+         scaleY = zoomScale;
+         
+         var selectedEntities:Array = GetSelectedEntities ();
+         var entity:Entity;
+         for (var entityId:int = 0; entityId < selectedEntities.length; ++ entityId)
+         {
+            entity = selectedEntities [entityId] as Entity;
+            if (entity.AreVertexControlPointsVisible ())
+            {
+               entity.SetVertexControllersVisible (false);
+               entity.SetVertexControllersVisible (true);
+            }
+         }
+      }
+      
+//=================================================================================
+//   clone
+//=================================================================================
+      
+      override public function CloneSelectedEntities (offsetX:Number, offsetY:Number, cloningInfo:Array = null):void
+      {
+         var selectedEntities:Array = GetSelectedEntities ();
+         var cloningInfoArray:Array = new Array ();
+         
+         super.CloneSelectedEntities (offsetX, offsetY, cloningInfoArray);
+         
+      // keep glued relation, shape index
+         
+         if (selectedEntities.length != cloningInfoArray.length)
+            return;
+         
+         var i:int;
+         var j:int;
+         var index:int;
+         var info:Object;
+         var selectedEntity:Entity;
+         var mainEntity:Entity;
+         var clonedMainEntity:Entity;
+         var subEntities:Array;
+         var clonedSubEntities:Array;
+         
+         var jointEntity:EntityJoint;
+         var shapeIndex1:int;
+         var shapeIndex2:int;
+         var newJointEntity:EntityJoint;
+         var shapeEntity:EntityShape;
+         var newShapeEntity:EntityShape;
+         
+         var count:int = selectedEntities.length;
+         var clonedEntities:Array = new Array (count);
+         
+         for (i = 0; i < count; ++ i)
+         {
+            info = cloningInfoArray [i];
+            
+            mainEntity = info.mMainEntity;
+            clonedMainEntity = info.mClonedMainEntity;
+            
+            if (clonedMainEntity == null)
+               continue;
+            
+            if (mainEntity is EntityJoint)
+            {
+               if (info.mChecked != null && info.mChecked)
+                  continue;
+               
+            ////////////////////////////////////////////////////////
+            // auto set shape indexes for joints
+            ///////////////////////////////////////////////////////
+               
+               jointEntity = mainEntity as EntityJoint;
+               newJointEntity = clonedMainEntity as EntityJoint;
+               
+               shapeIndex1 = jointEntity.GetConnectedShape1Index ();
+               shapeIndex2 = jointEntity.GetConnectedShape2Index ();
+               
+               if (shapeIndex1 >= 0)
+               {
+                  shapeEntity = getChildAt (shapeIndex1) as EntityShape;
+                  index = selectedEntities.indexOf (shapeEntity);
+                  if (index >= 0)
+                  {
+                     newShapeEntity = cloningInfoArray [index].mClonedMainEntity;
+                     newJointEntity.SetConnectedShape1Index (getChildIndex (newShapeEntity));
+                  }
+               }
+               
+               if (shapeIndex2 >= 0)
+               {
+                  shapeEntity = getChildAt (shapeIndex2) as EntityShape;
+                  index = selectedEntities.indexOf (shapeEntity);
+                  if (index >= 0)
+                  {
+                     newShapeEntity = cloningInfoArray [index].mClonedMainEntity;
+                     newJointEntity.SetConnectedShape2Index (getChildIndex (newShapeEntity));
+                  }
+               }
+           //<<
+           ///////////////////////////////////////////////////////
+               
+               subEntities = mainEntity.GetSubEntities ();
+               clonedSubEntities = clonedMainEntity.GetSubEntities ();
+               
+               for (j = 0; j < subEntities.length; ++ j)
+               {
+                  index = selectedEntities.indexOf (subEntities [j]);
+                  if (index < 0)
+                  {
+                     index = selectedEntities.length;
+                     selectedEntities.push (subEntities [j]);
+                     cloningInfoArray.push (info);
+                  }
+                  
+                  clonedEntities [index] = clonedSubEntities [j];
+                  
+                  cloningInfoArray [index].mChecked = true;
+               }
+            } // if (mainEntity is EntityJoint)
+            else
+            {
+               clonedEntities [i] = clonedMainEntity;
+            }
+         }
+         
+         var botherGroupDict:Dictionary = new Dictionary ();
+         var newBotherGroupArray:Array = new Array ();
+         var oldBrotherGroup:Array;
+         var newBrotherGroup:Array;
+         
+         for (i = 0; i < selectedEntities.length; ++ i)
+         {
+            selectedEntity = selectedEntities [i];
+            
+            oldBrotherGroup = selectedEntity.GetBrothers ();
+            
+            if (oldBrotherGroup == null)
+               continue;
+            
+            newBrotherGroup = botherGroupDict [oldBrotherGroup];
+            if (newBrotherGroup == null)
+            {
+               newBrotherGroup = new Array ();
+               botherGroupDict [oldBrotherGroup] = newBrotherGroup;
+               
+               newBotherGroupArray.push (newBrotherGroup);
+            }
+            
+            if (clonedEntities [i] != null)
+               newBrotherGroup.push (clonedEntities [i]);
+         }
+         
+         for (i = 0; i < newBotherGroupArray.length; ++ i)
+         {
+            newBrotherGroup = newBotherGroupArray [i];
+            
+            if (newBrotherGroup.length <= 1)
+               return;
+            
+            GlueEntities (newBrotherGroup);
+         }
       }
       
 //=================================================================================
@@ -526,6 +701,11 @@ package editor.world {
 //=================================================================================
 //   collision categories
 //=================================================================================
+      
+      public function GetNumCollisionCategories ():int
+      {
+         return mCollisionManager.numChildren;
+      }
       
       public function GetCollisionManager ():CollisionManager
       {

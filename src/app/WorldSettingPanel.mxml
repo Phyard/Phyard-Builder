@@ -33,7 +33,7 @@
 
          <mx:HBox width="100%">
             <mx:Label width="30%" text="Scene Size:" textAlign="right"/>
-            <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnSceneSizeChanged(event);"/>
+            <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnCustomSizeRationClick ()"/>
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_NormalSize" value="normal"
                 label="Normal (left:0, top:0, right:600, bottom:600)" />
          </mx:HBox>
@@ -43,18 +43,34 @@
                 label="Large (left:-6000, top:-6000, right:6000, bottom:6000)"/>
          </mx:HBox>
          <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_CustomSize" value="custom"
+                label="Custom:"/>
+            <mx:Label text=" (Minimum size: 600x600)" color="0x0000FF"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:Label id="Label_CustomLeft" text="Left:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomLeft" stepSize="1" width="80" />
+            <mx:Label id="Label_CustomRight" text="Right:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomRight" stepSize="1" width="80" />
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:Label id="Label_CustomTop" text="Top:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomTop" stepSize="1" width="80" />
+            <mx:Label id="Label_CustomBottom" text="Bottom:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomBottom" stepSize="1" width="80" />
+         </mx:HBox>
+         <mx:HBox width="100%">
             <mx:Label text="Background Color:" textAlign="right" width="30%"/>
             <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xDDDDA0"/>
          </mx:HBox>
          <mx:HBox width="100%">
-            <mx:Spacer width="30%"/>
-            <mx:CheckBox id="CheckBox_BuildBorder" label="Build Scene Border"/>
-            <mx:Label text="(Only for 600x600 scene)" color="0x0000FF"/>
-         </mx:HBox>
-         <mx:HBox width="100%">
-            <mx:Label text="Scene Border Color:" textAlign="right" width="30%"/>
+            <mx:Label text="Scene Border Color:" textAlign="right" width="31%"/>
             <mx:ColorPicker id="ColorPicker_BorderColor" showTextField="true" selectedColor="0x606060"/>
-            <mx:Label text="(Only for 600x600 scene)" color="0x0000FF"/>
+            <mx:Spacer width="20"/>
+            <mx:CheckBox id="CheckBox_BuildBorder" label="Build Scene Border"/>
          </mx:HBox>
       </mx:VBox>
 
@@ -73,6 +89,15 @@
             {
                Runtime.mSynchronizeWorldSettingPanelWithWorld = SynchronizeWorldSettingPanelWithWorld;
                Runtime.mSynchronizeWorldWithWorldSettingPanel = SynchronizeWorldWithWorldSettingPanel;
+               
+               NumericStepper_CustomLeft.minimum = - 0.5 * Define.LargeWorldHalfWidth;
+               NumericStepper_CustomLeft.maximum = 0;
+               NumericStepper_CustomRight.minimum = 0;
+               NumericStepper_CustomRight.maximum = 0.5 * Define.LargeWorldHalfWidth;
+               NumericStepper_CustomTop.minimum = - 0.5 * Define.LargeWorldHalfWidth;
+               NumericStepper_CustomTop.maximum = 0;
+               NumericStepper_CustomBottom.minimum = 0;
+               NumericStepper_CustomBottom.maximum = 0.5 * Define.LargeWorldHalfWidth;
                
                SynchronizeWorldSettingPanelWithWorld (Runtime.mEditorWorldView.GetEditorWorld ());
             }
@@ -93,12 +118,27 @@
                {
                   RadioButton_NormalSize.selected = true;
                   RadioButton_LargeSize.selected = false;
+                  RadioButton_CustomSize.selected = false;
                }
                else if (Define.IsLargeScene (sceneLeft, sceneTop, sceneWidth, sceneHeight))
                {
                   RadioButton_NormalSize.selected = false;
                   RadioButton_LargeSize.selected = true;
+                  RadioButton_CustomSize.selected = false;
                }
+               else
+               {
+                  RadioButton_NormalSize.selected = false;
+                  RadioButton_LargeSize.selected = false;
+                  RadioButton_CustomSize.selected = true;
+               }
+               
+               OnCustomSizeRationClick ();
+               
+               NumericStepper_CustomLeft.value = sceneLeft;
+               NumericStepper_CustomTop.value = sceneTop;
+               NumericStepper_CustomRight.value = sceneLeft + sceneWidth;
+               NumericStepper_CustomBottom.value = sceneTop + sceneHeight;
                
                ColorPicker_BackgroundColor.selectedColor = world.GetBackgroundColor ();
                
@@ -135,14 +175,28 @@
             //.scene size, background color, build border
             
                UpdateSceneSize (world);
+               
                world.SetBackgroundColor (ColorPicker_BackgroundColor.selectedColor);
                world.SetBuildBorder (CheckBox_BuildBorder.selected);
                world.SetBorderColor (ColorPicker_BorderColor.selectedColor);
             }
             
-            private function OnSceneSizeChanged (event:Event):void
+            private function OnCustomSizeRationClick ():void
             {
-               UpdateSceneSize (Runtime.mEditorWorldView.GetEditorWorld ());
+               if (RadioButton_CustomSize.selected)
+               {
+                  NumericStepper_CustomLeft.enabled = true;
+                  NumericStepper_CustomRight.enabled = true;
+                  NumericStepper_CustomTop.enabled = true;
+                  NumericStepper_CustomBottom.enabled = true;
+               }
+               else
+               {
+                  NumericStepper_CustomLeft.enabled = false;
+                  NumericStepper_CustomRight.enabled = false;
+                  NumericStepper_CustomTop.enabled = false;
+                  NumericStepper_CustomBottom.enabled = false;
+               }
             }
             
 //==========================================================================================
@@ -164,6 +218,32 @@
                   world.SetWorldTop  (- 0.5 * Define.LargeWorldHalfHeight);
                   world.SetWorldWidth  (Define.LargeWorldHalfWidth);
                   world.SetWorldHeight (Define.LargeWorldHalfHeight);
+               }
+               else if (RadioButton_CustomSize.selected)
+               {
+                  var sceneLeft  :int = NumericStepper_CustomLeft.value;
+                  var sceneTop   :int = NumericStepper_CustomTop.value;
+                  var sceneRight :int = NumericStepper_CustomRight.value;
+                  var sceneBottom:int = NumericStepper_CustomBottom.value;
+                  
+                  var sceneWidth  :int = sceneRight  - sceneLeft;
+                  var sceneHeight :int = sceneBottom - sceneTop;
+                  
+                  if (sceneWidth < Define.DefaultWorldWidth)
+                     sceneWidth = Define.DefaultWorldWidth;
+                  
+                  if (sceneHeight < Define.DefaultWorldHeight)
+                     sceneHeight = Define.DefaultWorldHeight;
+                  
+                  NumericStepper_CustomLeft.value = sceneLeft;
+                  NumericStepper_CustomTop.value = sceneTop;
+                  NumericStepper_CustomRight.value = sceneLeft + sceneWidth;
+                  NumericStepper_CustomBottom.value = sceneTop + sceneHeight;
+                  
+                  world.SetWorldLeft (sceneLeft);
+                  world.SetWorldTop (sceneTop);
+                  world.SetWorldWidth (sceneWidth);
+                  world.SetWorldHeight (sceneHeight);
                }
             }
             

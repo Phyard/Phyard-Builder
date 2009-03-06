@@ -330,33 +330,37 @@ package common {
          
          //
          if (editorWorld == null)
+         {
             editorWorld = new editor.world.World ();
-         
-         // basic
-         {
-            editorWorld.SetAuthorName (worldDefine.mAuthorName);
-            editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
             
-            editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
-            editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
-         }
-         
-         // settins
-         {
-            //>> from v1.04
-            editorWorld.SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
-            editorWorld.SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
-            editorWorld.SetWorldLeft (worldDefine.mSettings.mWorldLeft);
-            editorWorld.SetWorldTop (worldDefine.mSettings.mWorldTop);
-            editorWorld.SetWorldWidth (worldDefine.mSettings.mWorldWidth);
-            editorWorld.SetWorldHeight (worldDefine.mSettings.mWorldHeight);
-            editorWorld.SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
-            editorWorld.SetBuildBorder (worldDefine.mSettings.mBuildBorder);
-            editorWorld.SetBorderColor (worldDefine.mSettings.mBorderColor);
-            //<<
+            // basic
+            {
+               editorWorld.SetAuthorName (worldDefine.mAuthorName);
+               editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
+               
+               editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
+               editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
+            }
+            
+            // settins
+            {
+               //>> from v1.04
+               editorWorld.SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
+               editorWorld.SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
+               editorWorld.SetWorldLeft (worldDefine.mSettings.mWorldLeft);
+               editorWorld.SetWorldTop (worldDefine.mSettings.mWorldTop);
+               editorWorld.SetWorldWidth (worldDefine.mSettings.mWorldWidth);
+               editorWorld.SetWorldHeight (worldDefine.mSettings.mWorldHeight);
+               editorWorld.SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
+               editorWorld.SetBuildBorder (worldDefine.mSettings.mBuildBorder);
+               editorWorld.SetBorderColor (worldDefine.mSettings.mBorderColor);
+               //<<
+            }
          }
          
          // collision category
+         
+         var beginningCollisionCategoryIndex:int = editorWorld.GetNumCollisionCategories ();
          
          if (worldDefine.mVersion >= 0x0102)
          {
@@ -383,11 +387,15 @@ package common {
             {
                var pairDefine:Object = worldDefine.mCollisionCategoryFriendLinkDefines [pairId];
                
-               editorWorld.CreateEntityCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
+               //editorWorld.CreateEntityCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
+               editorWorld.CreateEntityCollisionCategoryFriendLink (beginningCollisionCategoryIndex + pairDefine.mCollisionCategory1Index, 
+                                                                    beginningCollisionCategoryIndex + pairDefine.mCollisionCategory2Index);
             }
          }
          
          // entities
+         
+         var beginningEntityIndex:int = editorWorld.numChildren;
          
          var entityId:int;
          var entityDefine:Object;
@@ -448,7 +456,10 @@ package common {
                      if (entityDefine.mIsPhysicsEnabled) // always true before v1.04
                      {
                         //>>from v1.02
-                        shape.SetCollisionCategoryIndex (entityDefine.mCollisionCategoryIndex);
+                        if (entityDefine.mCollisionCategoryIndex >= 0)
+                           shape.SetCollisionCategoryIndex ( int(entityDefine.mCollisionCategoryIndex) + beginningCollisionCategoryIndex);
+                        else
+                           shape.SetCollisionCategoryIndex (entityDefine.mCollisionCategoryIndex);
                         //<<
                         
                         shape.SetStatic (entityDefine.mIsStatic);
@@ -605,9 +616,9 @@ package common {
             }
          }
          
-         // re add child
-         while (editorWorld.numChildren > 0)
-            editorWorld.removeChildAt (0);
+         // re add child, to make the order correct
+         while (editorWorld.numChildren > beginningEntityIndex)
+            editorWorld.removeChildAt (beginningEntityIndex);
          
          for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
          {
@@ -642,8 +653,15 @@ package common {
                joint = entityDefine.mEntity as editor.entity.EntityJoint;
                
                // from v1.02
-               joint.SetConnectedShape1Index (entityDefine.mConnectedShape1Index);
-               joint.SetConnectedShape2Index (entityDefine.mConnectedShape2Index);
+               if (entityDefine.mConnectedShape1Index >= 0)
+                  joint.SetConnectedShape1Index (int(entityDefine.mConnectedShape1Index) + beginningEntityIndex);
+               else
+                  joint.SetConnectedShape1Index (entityDefine.mConnectedShape1Index);
+               
+               if (entityDefine.mConnectedShape2Index >= 0)
+                  joint.SetConnectedShape2Index (int(entityDefine.mConnectedShape2Index) + beginningEntityIndex);
+               else
+                  joint.SetConnectedShape2Index (entityDefine.mConnectedShape2Index);
                //<<
             }
          }
@@ -660,10 +678,14 @@ package common {
             {
                entityDefine = worldDefine.mEntityDefines [brotherIds [entityId]];
                
-               if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
+               //if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
+               //{
+               //   //brotherIds [entityId] = entityDefine.mNewIndex;
+               //   brotherIds [entityId] = editorWorld.getChildIndex (entityDefine.mEntity);
+               //}
+               //else
                {
-                  //brotherIds [entityId] = entityDefine.mNewIndex;
-                  brotherIds [entityId] = editorWorld.getChildIndex (entityDefine.mEntity);
+                  brotherIds [entityId] = brotherIds [entityId] + beginningEntityIndex;
                }
             }
             

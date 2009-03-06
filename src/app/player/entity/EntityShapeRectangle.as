@@ -83,18 +83,20 @@ package player.entity {
       
       override public function RebuildAppearance ():void
       {
-         //var filledColor:uint = Define.GetShapeFilledColor (mAiType);
-         var filledColor:uint = mAiType >= 0 ? Define.GetShapeFilledColor (mAiType) : mFilledColor;
+         var filledColor:uint = GetFilledColor ();
+         var borderColor:uint = GetBorderColor ();
+         var drawBg:Boolean = IsDrawBackground ();
+         var drawBorder:Boolean = IsDrawBorder ();
+         var borderThickness:Number = GetBorderThickness ();
          
-         var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
-         //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         //var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         //var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
-         var borderColor:uint = IsDrawBorder () ? mBorderColor : filledColor;
+         borderThickness = 1;
          
-         GraphicsUtil.ClearAndDrawRect (this, 
+         alpha = GetTransparency () * 0.01;
+         
+         if (drawBg || drawBorder)
+            GraphicsUtil.ClearAndDrawRect (this, 
                                           - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
-                                          borderColor, 1, mDrawBackground, filledColor);
+                                          borderColor, borderThickness, drawBg, filledColor);
          
          if (Define.IsBombShape (GetShapeAiType ()))
          {

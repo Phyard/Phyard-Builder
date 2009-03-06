@@ -8,10 +8,8 @@ package com.tapirgames.display {
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    
+   import flash.events.Event;
    import flash.events.MouseEvent;
-
-   
-
    
    public class ImageButton extends SimpleButton 
    {
@@ -19,15 +17,28 @@ package com.tapirgames.display {
       private var mOnClikFunc:Function;
       private var mUserData:Object;
       
-      public function ImageButton (onClick:Function, bitmapData:BitmapData, userData:Object = null)
+      public function ImageButton (bitmapData:BitmapData, userData:Object = null)
       {
-         addEventListener( MouseEvent.CLICK, OnButtonClick );
-         
-         SetClickEventHandler (onClick);
+         SetClickEventHandler (null);
          
          SetBitmapData (bitmapData);
          
          SetUserData (userData);
+         
+         addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+      }
+      
+      private function OnAddedToStage (event:Event):void 
+      {
+         addEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
+         addEventListener( MouseEvent.CLICK, OnButtonClick );
+      }
+      
+      private function OnRemovedFromStage (event:Event):void 
+      {
+         removeEventListener( MouseEvent.CLICK, OnButtonClick );
+         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         removeEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
       }
       
       public function SetClickEventHandler (onClick:Function):void

@@ -8,11 +8,15 @@ package editor.entity {
    {
       protected var mMainEntity:Entity;
       
-      public function SubEntity (container:EntityContainer, mainEntity:Entity = null)
+      protected var mSubIndex:int = -1;
+      
+      public function SubEntity (container:EntityContainer, mainEntity:Entity = null, subIndex:int = -1)
       {
          super (container);
          
          mMainEntity = mainEntity;
+         
+         mSubIndex = subIndex;
       }
       
 //====================================================================
@@ -24,6 +28,9 @@ package editor.entity {
          return mMainEntity == null ? this : mMainEntity;
       }
       
-      
+      override public function GetSubIndex ():int
+      {
+         return mSubIndex;
+      }
    }
 }

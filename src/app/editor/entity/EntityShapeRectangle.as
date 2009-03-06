@@ -39,39 +39,26 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
-         var filledColor:uint;
-         var borderColor:uint;
-         var borderSize :int;
+         var filledColor:uint = GetFilledColor ();
+         var borderColor:uint = GetBorderColor ();
+         var drawBg:Boolean = IsDrawBackground ();
+         var drawBorder:Boolean = IsDrawBorder ();
+         var borderThickness:Number = GetBorderThickness ();
+         
+         borderThickness = 1;
+         
+         if ( ! drawBorder || borderThickness < 1)
+            drawBg = true;
          
          if ( IsSelected () )
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
-            borderSize  = 3;
-         }
-         else
-         {
-            //borderColor = IsDrawBorder () ? mBorderColor : mFilledColor;
-            //borderSize  = IsDrawBorder () ? 1 : 0;
-            
-            borderColor = mBorderColor;
-            borderSize = 1;
+            borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
-         if (mAiType >= 0)
-         {
-            filledColor = Define.GetShapeFilledColor (mAiType);
-         }
-         else
-         {
-            filledColor = mFilledColor;
-         }
+         alpha = 0.3 + GetTransparency () * 0.01 * 0.4;
          
-         if (GetFilledColor () == Define.ColorTextBackground)
-            alpha = 0.5;
-         else
-            alpha = 0.7;
-         
-         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, filledColor);
+         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderThickness, drawBg, filledColor);
          
          if (GetFilledColor () == Define.ColorBombObject)
             GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
@@ -492,16 +479,16 @@ package editor.entity {
          SetHalfHeight (halfHeight);
       }
       
-      override public function FlipHorizontally (mirrorX:Number):void
+      override public function FlipSelfHorizontally ():void
       {
-         super.FlipHorizontally (mirrorX);
+         super.FlipSelfHorizontally ();
          
          UpdateVertexControllers (true);
       }
       
-      override public function FlipVertically (mirrorY:Number):void
+      override public function FlipSelfVertically ():void
       {
-         super.FlipVertically (mirrorY);
+         super.FlipSelfVertically ();
          
          UpdateVertexControllers (true);
       }

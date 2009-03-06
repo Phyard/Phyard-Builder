@@ -101,20 +101,24 @@ package editor.mode {
          {
             // check validity
             
-            var dx1:Number = pointX - mLastVertexPointX;
-            var dy1:Number = pointY - mLastVertexPointY;
+            var point1:Point = mMainView.WorldToView (new Point (pointX, pointY));
+            var point2:Point = mMainView.WorldToView (new Point (mLastVertexPointX, mLastVertexPointY));
+            
+            var dx1:Number = point1.x - point2.x;
+            var dy1:Number = point1.y - point2.y;
             var ds1:Number = Math.sqrt (dx1 * dx1 + dy1 * dy1);
             
             var point:Point = mPolygonEntity.GetVertexPointAt (0);
-            var dx2:Number = pointX - point.x;
-            var dy2:Number = pointY - point.y;
+            point2 = mMainView.WorldToView (point);
+            var dx2:Number = point1.x - point2.x;
+            var dy2:Number = point1.y - point2.y;
             var ds2:Number = Math.sqrt (dx2 * dx2 + dy2 * dy2);
             
             if (ds1 < mMinSideLength || ds2 < mMinSideLength)
             {
                if (mPolygonEntity.GetVertexPointsCount () < 4)
                {
-                  ResetSession (true);
+                  Reset ();
                }
                else
                {

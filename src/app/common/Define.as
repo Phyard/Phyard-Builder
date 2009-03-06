@@ -19,7 +19,8 @@ package common {
 // world
 //===========================================================================
       
-      public static const MaxEntitiesCount:int = 512;
+      //public static const MaxEntitiesCount:int = 512;
+      public static const MaxEntitiesCount:int = 1024;
       
       public static const DefaultWorldWidth:int = 600; 
       public static const DefaultWorldHeight:int = 600; 
@@ -45,6 +46,9 @@ package common {
          return sceneLeft == - LargeWorldHalfWidth / 2 && sceneTop == - LargeWorldHalfHeight / 2 && sceneWidth == LargeWorldHalfWidth && sceneHeight == LargeWorldHalfHeight;
       }
       
+      public static const MaxWorldZoomScale:Number = 4.0;
+      public static const MinWorldZoomScale:Number = 1.0 / 16.0;
+      
 //===========================================================================
 // joint connected shape index
 //===========================================================================
@@ -57,7 +61,7 @@ package common {
 // collsion category
 //===========================================================================
       
-      public static const MaxCollisionCategoriesCount:int = 15;
+      public static const MaxCollisionCategoriesCount:int = 64; // must be less than 128
       
       public static const CategoryDefaultName:String = "Category";
       public static const MinCollisionCategoryNameLength:int = 1;

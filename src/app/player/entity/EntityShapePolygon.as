@@ -96,14 +96,15 @@ package player.entity {
       
       override public function RebuildAppearance ():void
       {
-         //var filledColor:uint = Define.GetShapeFilledColor (mAiType);
-         var filledColor:uint = mAiType >= 0 ? Define.GetShapeFilledColor (mAiType) : mFilledColor;
+         var filledColor:uint = GetFilledColor ();
+         var borderColor:uint = GetBorderColor ();
+         var drawBg:Boolean = IsDrawBackground ();
+         var drawBorder:Boolean = IsDrawBorder ();
+         var borderThickness:Number = GetBorderThickness ();
          
-         var isBreakable:Boolean = Define.IsBreakableShape (mAiType);
-         //var borderColor:uint = mIsStatic && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         //var borderColor:uint = filledColor == Define.ColorStaticObject && ! isBreakable ? filledColor : Define.ColorObjectBorder;
-         //var borderColor:uint = IsDrawBorder () ? Define.ColorObjectBorder : filledColor;
-         var borderColor:uint = IsDrawBorder () ? mBorderColor : filledColor;
+         borderThickness = 1;
+         
+         alpha = GetTransparency () * 0.01;
          
          if (GetVertexPointsCount () == 1)
          {
@@ -111,11 +112,13 @@ package player.entity {
          }
          else if (GetVertexPointsCount () == 2)
          {
-            GraphicsUtil.ClearAndDrawLine (this, mLocalPoints[0].x, mLocalPoints[0].y, mLocalPoints[1].x, mLocalPoints[1].y, borderColor, 1);
+            if (drawBg || drawBorder)
+               GraphicsUtil.ClearAndDrawLine (this, mLocalPoints[0].x, mLocalPoints[0].y, mLocalPoints[1].x, mLocalPoints[1].y, borderColor, borderThickness);
          }
          else if (GetVertexPointsCount () > 2)
          {
-            GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, 1, mDrawBackground, filledColor);
+            if (drawBg || drawBorder)
+               GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, borderThickness, drawBg, filledColor);
          }
       }
 

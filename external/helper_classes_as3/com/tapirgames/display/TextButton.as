@@ -24,14 +24,19 @@ package com.tapirgames.display {
       private var mDisableState:DisplayObject;
       
       private var mSelected:Boolean;
-
       
-      public function TextButton (text:String = "", onClick:Function = null)
+      private var mUpBgColor:uint = 0xFFFFCC;
+      private var mDownBgColor:uint = 0xCCFFCC;
+      
+      public function TextButton (text:String = "", onClick:Function = null, upBgColor:uint = 0xFFFFCC, downBgColor:uint = 0xCCFFCC)
       {
          useHandCursor = false;
          
          mText = text;
          mOnClikFunc = onClick;
+         
+         mUpBgColor = upBgColor;
+         mDownBgColor = downBgColor;
          
          Build ();
          
@@ -103,9 +108,9 @@ package com.tapirgames.display {
          var w:Number = upTextFieldEx.width + marginX + marginX;
          var h:Number = upTextFieldEx.height + marginY + marginY;
          
-         mUpState = CreateStateSprite   (w, h, /*0xddddff*/ 0xFFFFCC, upTextFieldEx, marginX, marginY);
-         mOverState = CreateStateSprite (w, h, /*0xaaaaff*/ 0xCCFFCC, overTextFieldEx, marginX, marginY);
-         mDownState = CreateStateSprite (w, h, /*0xaaaaff*/ 0xCCFFCC, downTextFieldEx, marginX, marginY + 1);
+         mUpState = CreateStateSprite   (w, h, /*0xddddff*/ mUpBgColor, upTextFieldEx, marginX, marginY);
+         mOverState = CreateStateSprite (w, h, /*0xaaaaff*/ mDownBgColor, overTextFieldEx, marginX, marginY);
+         mDownState = CreateStateSprite (w, h, /*0xaaaaff*/ mDownBgColor, downTextFieldEx, marginX, marginY + 1);
          mDisableState = CreateStateSprite (w, h, /*0xddddff*/ 0xFFFFCC, disableTextFieldEx, marginX, marginY);
       }
       

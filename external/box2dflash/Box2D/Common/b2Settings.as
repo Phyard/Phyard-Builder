@@ -37,7 +37,7 @@ public class b2Settings{
 	// Collision
 	static public const b2_maxManifoldPoints:int = 2;
 	static public const b2_maxPolygonVertices:int = 8;
-	static public const b2_maxProxies:int = 512 * 2;				// this must be a power of two
+	static public const b2_maxProxies:int = 1024 * 2;				// this must be a power of two
 	static public const b2_maxPairs:int = 8 * b2_maxProxies * 16;	// this must be a power of two
 
 

@@ -36,7 +36,7 @@ package player.mode {
          
       }
       
-      public function OnMouseMove (mouseX:Number, mouseY:Number):void
+      public function OnMouseMove (mouseX:Number, mouseY:Number, buttonDown:Boolean = true):void
       {
       }
       

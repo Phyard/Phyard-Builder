@@ -56,30 +56,30 @@ package editor.entity {
       public function UpdateAppearance ():void
       {
          var borderColor:uint;
-         var borderSize :int;
+         var borderSize :Number;
          var filledColor:uint = 0xFFFFFF;
-         var halfSize:int;
+         var halfSize:Number = mHalfSize;
          
          if ( IsSelected () )
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
             borderSize  = 3;
-            halfSize = mHalfSize - 1;
          }
          else if ( mSelectedSecondarily )
          {
             borderColor = 0x008000;
             borderSize  = 3;
-            halfSize = mHalfSize - 1;
          }
          else
          {
             borderColor = 0x0;
             borderSize  = 1;
-            halfSize = mHalfSize;
          }
          
-         GraphicsUtil.ClearAndDrawRect (this, - mHalfSize, - mHalfSize, mHalfSize + mHalfSize, mHalfSize + mHalfSize, borderColor, borderSize, true, filledColor);
+         halfSize /= mWorld.GetZoomScale ();
+         borderSize /= mWorld.GetZoomScale ();
+         
+         GraphicsUtil.ClearAndDrawRect (this, - halfSize, - halfSize, halfSize + halfSize, halfSize + halfSize, borderColor, borderSize, true, filledColor);
       }
       
 //======================================================
@@ -115,8 +115,10 @@ package editor.entity {
          }
          
          var worldPos:Point = GetWorldPosition ();
+         var halfSize:Number = mHalfSize;
+         halfSize /= mWorld.GetZoomScale ();
          
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetWorldRotation (), worldPos.x, worldPos.y, mHalfSize, mHalfSize );
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetWorldRotation (), worldPos.x, worldPos.y, halfSize, halfSize );
       }
       
       public function ContainsPoint (pointX:Number, pointY:Number):Boolean

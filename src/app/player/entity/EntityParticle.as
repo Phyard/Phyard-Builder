@@ -81,7 +81,7 @@ package player.entity {
             entityDefine.mRadius = 1.0;
             entityDefine.mAppearanceType = Define.CircleAppearanceType_Ball;
             
-            mWorld.SetCollisionCategoryParamsForShapeParams (entityDefine, Define.CollisionCategoryId_HiddenCategory);
+            entityDefine.mCollisionCategoryIndex = Define.CollisionCategoryId_HiddenCategory;
             
             entityDefine.mDrawBorder = false;
             entityDefine.mDrawBackground = true;

@@ -137,6 +137,9 @@ package editor.entity {
       
       public function IsDrawBackground ():Boolean
       {
+         if (mAiType >= 0)
+            return true;
+         
          return mDrawBackground;
       }
       
@@ -147,6 +150,9 @@ package editor.entity {
       
       public function GetFilledColor ():uint
       {
+         if (mAiType >= 0)
+            return Define.GetShapeFilledColor (mAiType);
+         
          return mFilledColor;
       }
       
@@ -162,6 +168,10 @@ package editor.entity {
       
       public function IsDrawBorder ():Boolean
       {
+         // for compability
+         //if (mAiType >= 0)
+         //   return true;
+         
          return mDrawBorder;
       }
       
@@ -172,6 +182,13 @@ package editor.entity {
       
       public function GetBorderColor ():uint
       {
+         // for compability
+         if (! mDrawBorder)
+            return GetFilledColor ();
+         
+         if (mAiType >= 0)
+            return Define.ColorObjectBorder;
+         
          return mBorderColor;
       }
       
@@ -180,8 +197,11 @@ package editor.entity {
          mBorderThickness = thinkness;
       }
       
-      public function GetBorderThickness ():uint
+      public function GetBorderThickness ():Number
       {
+         if (mAiType >= 0)
+            return 1;
+         
          return mBorderThickness;
       }
       

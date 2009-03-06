@@ -100,16 +100,6 @@ package player.entity {
          return mIsBullet;
       }
       
-      public function SetDrawBorder (drawBorder:Boolean):void
-      {
-         mDrawBorder = drawBorder;
-      }
-      
-      public function IsDrawBorder ():Boolean
-      {
-         return mDrawBorder;
-      }
-      
       public function SetDrawBackground (draw:Boolean):void
       {
          mDrawBackground = draw;
@@ -117,6 +107,9 @@ package player.entity {
       
       public function IsDrawBackground ():Boolean
       {
+         if (mAiType >= 0)
+            return true;
+         
          return mDrawBackground;
       }
       
@@ -127,7 +120,24 @@ package player.entity {
       
       public function GetFilledColor ():uint
       {
+         if (mAiType >= 0)
+            return Define.GetShapeFilledColor (mAiType);
+         
          return mFilledColor;
+      }
+      
+      public function SetDrawBorder (drawBorder:Boolean):void
+      {
+         mDrawBorder = drawBorder;
+      }
+      
+      public function IsDrawBorder ():Boolean
+      {
+         // for compability
+         //if (mAiType >= 0)
+         //   return true;
+         
+         return mDrawBorder;
       }
       
       public function SetBorderColor (color:uint):void
@@ -137,16 +147,26 @@ package player.entity {
       
       public function GetBorderColor ():uint
       {
+         // for compability
+         if (! mDrawBorder)
+            return GetFilledColor ();
+         
+         if (mAiType >= 0)
+            return Define.ColorObjectBorder;
+         
          return mBorderColor;
       }
       
-      public function SetBorderThickness (thinkness:uint):void
+      public function SetBorderThickness (thinkness:Number):void
       {
          mBorderThickness = thinkness;
       }
       
-      public function GetBorderThickness ():uint
+      public function GetBorderThickness ():Number
       {
+         if (mAiType >= 0)
+            return 1;
+         
          return mBorderThickness;
       }
       
@@ -159,6 +179,9 @@ package player.entity {
       
       public function GetTransparency ():uint
       {
+         if (mAiType >= 0)
+            return 100;
+         
          return mTransparency;
       }
       

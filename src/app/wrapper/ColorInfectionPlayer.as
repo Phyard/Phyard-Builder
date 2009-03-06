@@ -43,53 +43,37 @@ package wrapper {
    public dynamic class ColorInfectionPlayer extends Sprite 
    {
       
-      
-      [Embed(source="../../res/player/player-restart.png")]
-      private static var IconRestart:Class;
-      [Embed(source="../../res/player/player-restart-disabled.png")]
-      private static var IconRestartDisabled:Class;
-      [Embed(source="../../res/player/player-start.png")]
-      private static var IconStart:Class;
-      [Embed(source="../../res/player/player-pause.png")]
-      private static var IconPause:Class;
-      
-      [Embed(source="../../res/player/player-help.png")]
-      private static var IconHelp:Class;
-      
-      [Embed(source="../../res/player/player-speed.png")]
-      private static var IconSpeed:Class;
-      [Embed(source="../../res/player/player-speed-selected.png")]
-      private static var IconSpeedSelected:Class;
-      
-      private var mBitmapDataRetart:BitmapData = new IconRestart ().bitmapData;
-      private var mBitmapDataRetartDisabled:BitmapData = new IconRestartDisabled ().bitmapData;
-      private var mBitmapDataStart:BitmapData = new IconStart ().bitmapData;
-      private var mBitmapDataPause:BitmapData = new IconPause ().bitmapData;
-      private var mBitmapDataHelp:BitmapData  = new IconHelp ().bitmapData;
-      private var mBitmapDataSpeed:BitmapData  = new IconSpeed ().bitmapData;
-      private var mBitmapDataSpeedSelected:BitmapData  = new IconSpeedSelected ().bitmapData;
-      
 //======================================================================
 //
 //======================================================================
       
+      private var mWorldPlayCode:String = null;
+      private var mWorldSourceCode:String = null;
+      
+      private var mBuildContextMenu:Boolean = true;
+      private var mMainMenuCallback:Function = null;
+      
+      private var mPlayerWorld:World = null;
+      private var mIsPlaying:Boolean = false;
+      private var mPlayingSpeedX:int = 2;
+      
+      private var mPlayerWorldZoomScale:Number = 1.0;
+      private var mPlayerWorldZoomScaleChangedSpeed:Number = 0.0;
+      
       private var mWorldLayer:Sprite = new Sprite ();
       private var mTopBarLayer:Sprite = new Sprite ();
       private var mBottomBarLayer:Sprite = new Sprite ();
+      private var mErrorMessageLayer:Sprite = new Sprite ();
       private var mFinishedTextLayer:Sprite = new Sprite ();
       private var mDialogLayer:Sprite = new Sprite ();
-      
-      private var mWorldPlayCode:String = null;
-      //private var mWorldDefine:WorldDefine = null;
-      private var mPlayerWorld:World = null;
-      private var mWorldSourceCode:String = null;
-      
-      private var mIsPlaying:Boolean = false;
-      private var mPlayingSpeedX:int = 2;
       
       //
       //private var mAnalyticsDurations:Array = [0.20, 0.30, 1, 1.5, 2, 3, 5];
       //private var mAnalytics:Analytics;
+      
+//======================================================================
+//
+//======================================================================
       
       public function ColorInfectionPlayer ()
       {
@@ -98,8 +82,22 @@ package wrapper {
          addChild (mWorldLayer);
          addChild (mTopBarLayer);
          addChild (mBottomBarLayer);
+         addChild (mErrorMessageLayer);
          addChild (mFinishedTextLayer);
          addChild (mDialogLayer);
+      }
+      
+      public function SetOptions (options:Object = null):void
+      {
+         if (options != null)
+         {
+            if (options.mWorldPlayCode != null)
+               mWorldPlayCode = options.mWorldPlayCode;
+            if (options.mBuildContextMenu != null)
+               mBuildContextMenu = options.mBuildContextMenu;
+            if (options.mMainMenuCallback != null)
+               mMainMenuCallback = options.mMainMenuCallback;
+         }
       }
       
       private function OnAddedToStage (e:Event):void
@@ -121,150 +119,11 @@ package wrapper {
          //mAnalytics.TrackTime (Config.VirtualPageName_PlayerTimePrefix);
       }
       
-      
-      private static const StateId_None:int = -1;
-      private static const StateId_Load:int = 0;
-      private static const StateId_Play:int = 1;
-      
-      private var mStateId:int = StateId_None;
-      
-      private var mFpsCounter:FpsCounter;
-      private var mStepTimeSpan:TimeSpan = new TimeSpan ();
-      
-      
-      private var _temp:int = 0;
-      
-      public function Update ():void
-      {
-      // ...
-         mStepTimeSpan.End ();
-         mStepTimeSpan.Start ();
-         
-      // ...
-         if (mStateId == StateId_None)
-         {
-         }
-         else if (mStateId == StateId_Load)
-         {
-            //trace ("root.parent");
-            //   ParseParams (LoaderInfo(root.parent.loaderInfo));
-            //trace ("stage");
-            //   ParseParams (LoaderInfo(stage.loaderInfo));
-            //trace ("stage.root");
-            //   ParseParams (LoaderInfo(stage.root.loaderInfo));
-            //trace ("root");
-               ParseParams (LoaderInfo(root.loaderInfo));
-            
-            while (mWorldLayer.numChildren > 0)
-               mWorldLayer.removeChildAt (0);
-            
-            if (mWorldPlayCode != null)
-            {
-               CreateUI ();
-               
-               OnRestart (null);
-               
-               BuildContextMenu ();
-            }
-            
-            //if (mWorldDefine == null)
-            if (mWorldPlayCode == null || mPlayerWorld == null)
-            {
-               mTopBarLayer.visible = false;
-               
-               // ...
-               
-               var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Fail to parse play code."));
-               errorText.x = (Define.DefaultWorldWidth  - errorText.width ) * 0.5;
-               errorText.y = (Define.DefaultWorldHeight - errorText.height) * 0.5;
-               mWorldLayer.addChild (errorText);
-               
-               var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='10' color='#0000ff'><u><a href='http://www.colorinfection.com' target='_blank'>ColorInfection.com</a></u></font>"));
-               linkText.x = (Define.DefaultWorldWidth  - linkText.width ) * 0.5;
-               linkText.y = Define.DefaultWorldHeight - linkText.height - 20;
-               mWorldLayer.addChild (linkText);
-               ChangeState (StateId_None);
-               return;
-            }
-            
-            
-            OnPause (null);
-            
-            CreateHelpDialog ();
-            //OpenHelpDialog ();
-            
-            CreateFinishedDialog ();
-            
-            CreateBottomBar ();
-            
-            ChangeState (StateId_Play);
-         }
-         else if (mStateId == StateId_Play)
-         {
-            if ( mPlayerWorld != null && IsPlaying () && mHelpDialog.visible == false )
-               mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
-            
-            if ( mPlayerWorld.IsPuzzleSolved () )
-               OpenFinishedDialog ();
-            else
-               CloseFinishedDialog ();
-         }
-      }
-      
-      public function ChangeState (newStateId:int):void
-      {
-         switch (newStateId)
-         {
-            case StateId_Load:
-               var initText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Initializing ..."));
-               initText.x = (Define.DefaultWorldWidth  - initText.width ) * 0.5;
-               initText.y = (Define.DefaultWorldHeight - initText.height) * 0.5;
-               mWorldLayer.addChild (initText);
-               break;
-            case StateId_Play:
-               
-               
-               
-               break;
-            default:
-               break;
-         }
-         
-         mStateId = newStateId;
-      }
-      
-      private function ParseParams (loadInfo:LoaderInfo):void
-      {
-         try 
-         {
-            var flashVars:Object = loaderInfo.parameters;
-            
-            if (flashVars != null)
-            {
-               var keyStr:String;
-               var valueStr:String;
-               for (keyStr in flashVars) 
-               {
-                  valueStr = String(flashVars[keyStr]);
-                  
-                  //trace (keyStr + "=" + valueStr);
-                  
-                  if (keyStr == "playcode")
-                  {
-                     mWorldPlayCode = valueStr; 
-                     //mWorldDefine = DataFormat2.HexString2WorldDefine (valueStr);
-                  }
-               }
-            }
-         } 
-         catch (error:Error) 
-         {
-             trace ("flash vars error." + error);
-         }
-      }
-      
       private function BuildContextMenu ():void
       {
+         if (! mBuildContextMenu)
+            return;
+         
          var theContextMenu:ContextMenu = new ContextMenu ();
          theContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
@@ -277,9 +136,9 @@ package wrapper {
             
             if (mWorldSourceCode != null)
             {
-               var copySourceCodeItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", false);
-               theContextMenu.customItems.push (copySourceCodeItem);
-               copySourceCodeItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
+               var copySourceCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", false);
+               theContextMenu.customItems.push (copySourceCodeMenuItem);
+               copySourceCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
                
                addSeperaor = true;
             }
@@ -287,9 +146,9 @@ package wrapper {
          
          if (Compile::Is_Debugging || mWorldPlayCode != null &&  mPlayerWorld != null && mPlayerWorld.IsPermitPublishing ())
          {
-            var copyPlayCodeItem:ContextMenuItem = new ContextMenuItem("Copy Play Code", false);
-            theContextMenu.customItems.push (copyPlayCodeItem);
-            copyPlayCodeItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyPlayCode);
+            var copyPlayCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Play Code", false);
+            theContextMenu.customItems.push (copyPlayCodeMenuItem);
+            copyPlayCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyPlayCode);
             
             addSeperaor = true;
          }
@@ -300,6 +159,155 @@ package wrapper {
          
          contextMenu = theContextMenu;
       }
+      
+//======================================================================
+//
+//======================================================================
+      
+      private static const StateId_None:int = -1;
+      private static const StateId_Load:int = 0;
+      private static const StateId_LoadFailed:int = 1;
+      private static const StateId_Play:int = 2;
+      
+      private var mStateId:int = StateId_None;
+      
+      private var mFpsCounter:FpsCounter;
+      private var mStepTimeSpan:TimeSpan = new TimeSpan ();
+      
+      public function Update ():void
+      {
+      // ...
+         mStepTimeSpan.End ();
+         mStepTimeSpan.Start ();
+         
+      // ...
+         
+         switch (mStateId)
+         {
+            case StateId_None:
+               break;
+            case StateId_Load:
+            {
+               RebuildPlayerWorld ();
+               
+               if (mPlayerWorld == null)
+               {
+                  ChangeState (StateId_LoadFailed);
+               }
+               else
+               {
+                  ChangeState (StateId_Play);
+               }
+               
+               break;
+            }
+            case StateId_LoadFailed:
+               break;
+            case StateId_Play:
+            {
+               if (mPlayerWorld != null && mPlayerWorld.GetZoomScale () != mPlayerWorldZoomScale)
+               {
+                  var newScale:Number;
+                  
+                  if (mPlayerWorld.GetZoomScale () < mPlayerWorldZoomScale)
+                  {
+                     if (mPlayerWorldZoomScaleChangedSpeed < 0)
+                        mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
+                     
+                     newScale = mPlayerWorld.scaleX + mPlayerWorldZoomScaleChangedSpeed;
+                     
+                     if (newScale >= mPlayerWorldZoomScale)
+                        mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
+                     else
+                        mPlayerWorld.SetZoomScale (newScale);
+                  }
+                  else
+                  {
+                     if (mPlayerWorldZoomScaleChangedSpeed > 0)
+                        mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
+                     
+                     newScale = mPlayerWorld.scaleX + mPlayerWorldZoomScaleChangedSpeed;
+                     
+                     if (newScale <= mPlayerWorldZoomScale)
+                        mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
+                     else
+                        mPlayerWorld.SetZoomScale (newScale);
+                  }
+               }
+               
+               if ( mPlayerWorld != null && IsPlaying () && mHelpDialog.visible == false )
+               {
+                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+               }
+               
+               if ( mPlayerWorld.IsPuzzleSolved () )
+                  OpenFinishedDialog ();
+               else
+                  CloseFinishedDialog ();
+               break;
+            }
+            default:
+               break;
+         }
+      }
+      
+      public function ChangeState (newStateId:int):void
+      {
+         switch (newStateId)
+         {
+            case StateId_Load:
+               while (mErrorMessageLayer.numChildren > 0)
+                  mErrorMessageLayer.removeChildAt (0);
+               
+               var initText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Initializing ..."));
+               initText.x = (Define.DefaultWorldWidth  - initText.width ) * 0.5;
+               initText.y = (Define.DefaultWorldHeight - initText.height) * 0.5;
+               mErrorMessageLayer.addChild (initText);
+               
+               break;
+            case StateId_LoadFailed:
+               while (mErrorMessageLayer.numChildren > 0)
+                  mErrorMessageLayer.removeChildAt (0);
+               
+               var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Fail to parse play code."));
+               errorText.x = (Define.DefaultWorldWidth  - errorText.width ) * 0.5;
+               errorText.y = (Define.DefaultWorldHeight - errorText.height) * 0.5;
+               mErrorMessageLayer.addChild (errorText);
+               
+               var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='10' color='#0000ff'><u><a href='http://forum.colorinfection.com' target='_blank'>ColorInfection.com</a></u></font>"));
+               linkText.x = (Define.DefaultWorldWidth  - linkText.width ) * 0.5;
+               linkText.y = Define.DefaultWorldHeight - linkText.height - 20;
+               mErrorMessageLayer.addChild (linkText);
+               
+               break;
+            case StateId_Play:
+               while (mErrorMessageLayer.numChildren > 0)
+                  mErrorMessageLayer.removeChildAt (0);
+               
+               BuildContextMenu ();
+               
+               CreateUI ();
+               
+               OnPause (null);
+               
+               CreateHelpDialog ();
+               //OpenHelpDialog ();
+               
+               CreateFinishedDialog ();
+               
+               CreateBottomBar ();
+               
+               break;
+            default:
+               break;
+         }
+         
+         mStateId = newStateId;
+      }
+      
+//======================================================================
+//
+//======================================================================
       
       private function OnCopySourceCode (event:ContextMenuEvent):void
       {
@@ -318,6 +326,78 @@ package wrapper {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
       
+//======================================================================
+//
+//======================================================================
+      
+      private function RebuildPlayerWorld ():void
+      {
+         if (mPlayerWorld != null && mWorldLayer.contains (mPlayerWorld))
+            mWorldLayer.removeChild (mPlayerWorld);
+         
+         mPlayerWorld = null;
+         
+         if (mWorldPlayCode == null)
+         {
+            try
+            {
+               var flashVars:Object = loaderInfo.parameters;
+               
+               if (flashVars != null)
+               {
+                  var keyStr:String;
+                  var valueStr:String;
+                  for (keyStr in flashVars) 
+                  {
+                     valueStr = String(flashVars[keyStr]);
+                     
+                     //trace (keyStr + "=" + valueStr);
+                     
+                     if (keyStr == "playcode")
+                     {
+                        mWorldPlayCode = valueStr; 
+                        //mWorldDefine = DataFormat2.HexString2WorldDefine (valueStr);
+                     }
+                  }
+               }
+            } 
+            catch (error:Error) 
+            {
+               trace ("flash vars error." + error);
+            }
+         }
+         
+         if (mWorldPlayCode == null)
+            trace ("mWorldPlayCode == null !");
+         else
+         {
+            try
+            {
+               mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
+            }
+            catch (error:Error)
+            {
+               trace ("create world error." + error);
+            }
+         }
+         
+         if (mPlayerWorld != null)
+         {
+            mPlayerWorld.Update (0, 1);
+            
+            mWorldLayer.addChild (mPlayerWorld);
+            
+            mEverFinished = false;
+         }
+         
+         CloseFinishedDialog ();
+         CloseHelpDialog ();
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
       private function CreateBottomBar ():void
       {
          mBottomBarLayer.x = Define.DefaultWorldWidth * 0.5;
@@ -328,7 +408,10 @@ package wrapper {
          mBottomBarLayer.graphics.drawRect ( - Define.DefaultWorldWidth * 0.5, 0, Define.DefaultWorldWidth, Define.WorldBorderThinknessTB);
          mBottomBarLayer.graphics.endFill ();
          
-         if (mWorldLayer != null)
+         while (mBottomBarLayer.numChildren > 0)
+            mBottomBarLayer.removeChildAt (0);
+         
+         if (mPlayerWorld != null)
          {
             var authorName:String = mPlayerWorld.GetAuthorName ();
             var anthorUrl:String = mPlayerWorld.GetAuthorHomepage ().toLowerCase();
@@ -436,11 +519,15 @@ package wrapper {
          mFinishedDialog.visible = false;
          mFinishedDialog.alpha = 0.9;
          
+         // 
          mFinishedTextLayer.addChild (mFinishedDialog);
       }
       
       private function OpenFinishedDialog ():void
       {
+         if (mFinishedDialog == null)
+            return;
+         
          if (mFinishedDialog != null && ! mEverFinished)
          {
             mEverFinished = true;
@@ -500,11 +587,15 @@ package wrapper {
          mTopBarLayer.graphics.drawRect ( - Define.DefaultWorldWidth * 0.5, 0, Define.DefaultWorldWidth, Define.WorldBorderThinknessTB);
          mTopBarLayer.graphics.endFill ();
          
-         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, OnSpeed, OnHelp);
+         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, OnSpeed, OnHelp, mMainMenuCallback, OnZoom);
          mTopBarLayer.addChild (mPlayControlBar); 
          mPlayControlBar.x = - mPlayControlBar.width * 0.5;
          mPlayControlBar.y = 2;
       }
+      
+//======================================================================
+//
+//======================================================================
       
       private function IsPlaying ():Boolean
       {
@@ -524,29 +615,11 @@ package wrapper {
       
       private function OnRestart (data:Object = null):void
       {
-         try
-         {
-            if (mPlayerWorld != null && mWorldLayer.contains (mPlayerWorld))
-               mWorldLayer.removeChild (mPlayerWorld);
-            
-            mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
-            
-            if (mPlayerWorld != null)
-            {
-               mPlayerWorld.Update (0, 1);
-               
-               mWorldLayer.addChild (mPlayerWorld);
-               
-               mEverFinished = false;
-            }
-         }
-         catch (error:Error)
-         {
-            mPlayerWorld = null;
-         }
+         RebuildPlayerWorld ();
          
-         CloseFinishedDialog ();
-         CloseHelpDialog ();
+         mPlayerWorldZoomScale = mPlayerWorld.GetZoomScale ();
+         if (mPlayControlBar != null)
+            mPlayControlBar.SetZoomScale (mPlayerWorldZoomScale);
       }
       
       public function OnStart (data:Object = null):void
@@ -559,6 +632,19 @@ package wrapper {
       
       private function OnSpeed (data:Object = null):void
       {
+      }
+      
+      private function OnZoom (data:Object = null):void
+      {
+         if (mPlayControlBar == null)
+            return;
+         
+         mPlayerWorldZoomScale = mPlayControlBar.GetZoomScale ();
+         
+         if (mPlayerWorld == null)
+            return;
+         
+         mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mPlayerWorld.GetZoomScale () ) * 0.03;
       }
       
       private function OnHelp(data:Object = null):void

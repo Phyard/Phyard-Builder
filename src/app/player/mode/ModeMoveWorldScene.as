@@ -42,7 +42,6 @@ package player.mode {
          mIsStarted = true;
       }
       
-         
       private function UpdateSession (endX:Number, endY:Number):void
       {
          var startWorldPoint:Point = mWorld.globalToLocal (new Point (mStartX, mStartY));
@@ -71,17 +70,30 @@ package player.mode {
          
       }
       
+      private var _lastMouseX:Number;
+      private var _lastMouseY:Number;
+      
       override public function OnMouseDown (mouseX:Number, mouseY:Number):void
       {
+         _lastMouseX = mouseX;
+         _lastMouseY = mouseY;
+         
          StartSession (mouseX, mouseY);
       }
       
-      override public function OnMouseMove (mouseX:Number, mouseY:Number):void
+      override public function OnMouseMove (mouseX:Number, mouseY:Number, buttonDown:Boolean = true):void
       {
          if (! mIsStarted)
             return;
          
-         UpdateSession (mouseX, mouseY);
+         if (buttonDown)
+            UpdateSession (mouseX, mouseY);
+         else
+            FinishSession (_lastMouseX, _lastMouseY);
+         
+         _lastMouseX = mouseX;
+         _lastMouseY = mouseY;
+         
       }
       
       override public function OnMouseUp (mouseX:Number, mouseY:Number):void

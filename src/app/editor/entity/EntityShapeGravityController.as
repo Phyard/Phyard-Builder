@@ -97,6 +97,8 @@ package editor.entity {
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
             borderSize  = 3;
+            
+            borderSize /= mWorld.GetZoomScale ();
          }
          else
          {
@@ -164,6 +166,21 @@ package editor.entity {
       override protected function CreateCloneShell ():Entity
       {
          return null;
+      }
+      
+//====================================================================
+//   flip
+//====================================================================
+      
+      override public function FlipSelfHorizontally ():void
+      {
+         //SetRotation (Math.PI + Math.PI - GetRotation () );
+         SetRotation (Math.PI - (GetRotation () - Math.PI * 0.5) + Math.PI * 0.5 );
+      }
+      
+      override public function FlipSelfVertically ():void
+      {
+         SetRotation (Math.PI + Math.PI - (GetRotation () - Math.PI * 0.5) + Math.PI * 0.5 );
       }
       
 //====================================================================

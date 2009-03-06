@@ -98,13 +98,16 @@ package editor.world {
          {
             entity = (mSelectedEntities [i] as Entity).GetMainEntity ();
             
-            for (k = 0; k < newArray.length; ++ k)
-            {
-               if (newArray[k] == entity)
-                  break;
-            }
+            //for (k = 0; k < newArray.length; ++ k)
+            //{
+            //   if (newArray[k] == entity)
+            //      break;
+            //}
+            //
+            //if (k == newArray.length)
+            //   newArray.unshift (entity);
             
-            if (k == newArray.length)
+            if (newArray.indexOf (entity) < 0)
                newArray.unshift (entity);
          }
          

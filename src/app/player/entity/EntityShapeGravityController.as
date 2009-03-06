@@ -38,6 +38,18 @@ package player.entity {
          
       }
       
+      override public function Destroy ():void
+      {
+         super.Destroy ();
+         
+         if (mIsInteractive)
+         {
+            removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseMove);
+            removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
+            removeEventListener (MouseEvent.MOUSE_UP, OnMouseMove);
+         }
+      }
+      
       override public function Update (dt:Number):void
       {
          super.Update (dt);

@@ -103,8 +103,8 @@ package editor.entity {
          
          joint.mCollideConnected = mCollideConnected;
          
-         joint.SetConnectedShape1Index ( GetConnectedShape1Index () );
-         joint.SetConnectedShape2Index ( GetConnectedShape2Index () );
+         //joint.SetConnectedShape1Index ( GetConnectedShape1Index () );
+         //joint.SetConnectedShape2Index ( GetConnectedShape2Index () );
       }
       
    }

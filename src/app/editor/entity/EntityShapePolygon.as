@@ -43,34 +43,24 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
-         var filledColor:uint;
-         var borderColor:uint;
-         var borderSize :int;
+         var filledColor:uint = GetFilledColor ();
+         var borderColor:uint = GetBorderColor ();
+         var drawBg:Boolean = IsDrawBackground ();
+         var drawBorder:Boolean = IsDrawBorder ();
+         var borderThickness:Number = GetBorderThickness ();
+         
+         borderThickness = 1;
+         
+         if ( ! drawBorder || borderThickness < 1)
+            drawBg = true;
          
          if ( IsSelected () )
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
-            borderSize  = 3;
-         }
-         else
-         {
-            //borderColor = IsDrawBorder () ? mBorderColor : mFilledColor;
-            //borderSize  = IsDrawBorder () ? 1 : 0;
-            
-            borderColor = mBorderColor;
-            borderSize = 1;
+            borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
-         if (mAiType >= 0)
-         {
-            filledColor = Define.GetShapeFilledColor (mAiType);
-         }
-         else
-         {
-            filledColor = mFilledColor;
-         }
-         
-         alpha = 0.7;
+         alpha = 0.3 + GetTransparency () * 0.01 * 0.4;
          
          if (GetVertexPointsCount () == 1)
          {
@@ -78,11 +68,11 @@ package editor.entity {
          }
          else if (GetVertexPointsCount () == 2)
          {
-            GraphicsUtil.ClearAndDrawLine (this, mLocalPoints[0].x, mLocalPoints[0].y, mLocalPoints[1].x, mLocalPoints[1].y, borderColor, borderSize);
+            GraphicsUtil.ClearAndDrawLine (this, mLocalPoints[0].x, mLocalPoints[0].y, mLocalPoints[1].x, mLocalPoints[1].y, borderColor, borderThickness);
          }
          else if (GetVertexPointsCount () > 2)
          {
-            GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, borderSize, true, filledColor);
+            GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, borderThickness, drawBg, filledColor);
          }
          
          if (!mIsValid)
@@ -113,8 +103,6 @@ package editor.entity {
          {
             mIsValid = true;
          }
-         
-         UpdateAppearance ();
       }
       
       
@@ -325,8 +313,8 @@ package editor.entity {
          
          polygon.SynchronizeWithLocalPoints ();
          
-         polygon.UpdateAppearance ();
          polygon.UpdateSelectionProxy ();
+         polygon.UpdateAppearance ();
       }
       
       
@@ -441,6 +429,10 @@ package editor.entity {
       override public function OnEndMovingVertexController (movingVertexController:VertexController):void
       {
          _MovingVertexIndex = -1;
+         
+         UpdateSelectionProxy ();
+         UpdateVertexControllers (true);
+         UpdateAppearance ();
       }
       
       override public function OnMovingVertexController (movingVertexController:VertexController, localOffsetX:Number, localOffsetY:Number):void
@@ -458,9 +450,10 @@ package editor.entity {
          SynchronizeWithLocalPoints ();
          SynchronizeWithWorldPoints ();
          
+         //UpdateSelectionProxy ();
          UpdateAppearance ();
-         UpdateSelectionProxy ();
-         UpdateVertexControllers (true);
+         //UpdateVertexControllers (true);
+         UpdateVertexControllers (false);
       }
       
       override public function OnVertexControllerSelectedChanged (selectedVertexController:VertexController, selected:Boolean):void
@@ -492,8 +485,8 @@ package editor.entity {
                mVertexPoints.splice (index, 1);
                SynchronizeWithWorldPoints ();
                
-               UpdateAppearance ();
                UpdateSelectionProxy ();
+               UpdateAppearance ();
                
                SetVertexControllersVisible (vcVisible);
             }
@@ -523,8 +516,8 @@ package editor.entity {
             
             SynchronizeWithWorldPoints ();
             
-            UpdateAppearance ();
             UpdateSelectionProxy ();
+            UpdateAppearance ();
             
             SetVertexControllersVisible (vcVisible);
             beforeVertexController = mVertexControllers [index + 1];
@@ -587,16 +580,23 @@ package editor.entity {
          //SynchronizeWithLocalPoints (); 
       }
       
-      override public function FlipHorizontally (mirrorX:Number):void
+      override public function FlipSelfHorizontally ():void
       {
-         super.FlipHorizontally (mirrorX);
+         //super.FlipSelfHorizontally ();
+         
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   mVertexPoints [i].x = mirrorX + mirrorX - mVertexPoints [i].x;
+         //}
+         //
+         //SynchronizeWithWorldPoints ();
          
          for (var i:int = 0; i < mLocalPoints.length; ++ i)
          {
-            mVertexPoints [i].x = mirrorX + mirrorX - mVertexPoints [i].x;
+            mLocalPoints [i].x = - mLocalPoints [i].x;
          }
          
-         SynchronizeWithWorldPoints ();
+         SynchronizeWithLocalPoints ();
          
          UpdateSelectionProxy ();
          UpdateAppearance ();
@@ -604,16 +604,23 @@ package editor.entity {
          UpdateVertexControllers (true);
       }
       
-      override public function FlipVertically (mirrorY:Number):void
+      override public function FlipSelfVertically ():void
       {
-         super.FlipVertically (mirrorY);
+         //super.FlipSelfVertically ();
+         
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   mVertexPoints [i].y = mirrorY + mirrorY - mVertexPoints [i].y;
+         //}
+         //
+         //SynchronizeWithWorldPoints ();
          
          for (var i:int = 0; i < mLocalPoints.length; ++ i)
          {
-            mVertexPoints [i].y = mirrorY + mirrorY - mVertexPoints [i].y;
+            mLocalPoints [i].y = - mLocalPoints [i].y;
          }
          
-         SynchronizeWithWorldPoints ();
+         SynchronizeWithLocalPoints ();
          
          UpdateSelectionProxy ();
          UpdateAppearance ();

@@ -19,7 +19,7 @@
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:CheckBox id="CheckBox_IsVisible" label="Visible" width="30%"/>
-      <mx:Label text="Transparency:" textAlign="right"/>
+      <mx:Label id="Label_Transparency" text="Transparency:" textAlign="right"/>
       <mx:NumericStepper id="NumericStepper_Transparency" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
    </mx:HBox>
 
@@ -70,7 +70,9 @@
                SelectList_AiType.enabled = true;
                Label_AiType.enabled = true;
                
-               CheckBox_DrawBorder.enabled = false;
+               Label_Transparency.enabled = false;
+               NumericStepper_Transparency.enabled = false;
+               CheckBox_DrawBorder.enabled = true;
                ColorPicker_BorderColor.enabled = false;
                CheckBox_DrawBackground.enabled = false;
                ColorPicker_BackgroundColor.enabled = false;
@@ -85,6 +87,8 @@
                SelectList_AiType.enabled = false;
                Label_AiType.enabled = false;
                
+               Label_Transparency.enabled = true;
+               NumericStepper_Transparency.enabled = true;
                CheckBox_DrawBorder.enabled = true;
                ColorPicker_BorderColor.enabled = true;
                CheckBox_DrawBackground.enabled = true;
@@ -117,7 +121,7 @@
          
          public function GetValues (returnValues:Object):void
          {
-            returnValues.mAiType = CheckBox_IsCiShape.selected ? SelectList_AiType.selectedItem.data : Define.ShapeAiType_Unknown;
+            returnValues.mAiType = CheckBox_IsCiShape.selected && SelectList_AiType.selectedItem != null ? SelectList_AiType.selectedItem.data : Define.ShapeAiType_Unknown;
             
             returnValues.mIsVisible = CheckBox_IsVisible.selected;
             returnValues.mTransparency = NumericStepper_Transparency.value;

@@ -98,7 +98,7 @@ package editor.world {
       
       public function CreateEntityCollisionCategory (ccName:String = null):EntityCollisionCategory
       {
-         if (numChildren >= Define.MaxCollisionCategoriesCount)
+         if (numChildren >= Define.MaxCollisionCategoriesCount - 1)
             return null;
          
          if (ccName == null)

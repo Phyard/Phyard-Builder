@@ -222,22 +222,44 @@ package editor.entity {
          SetPosition (centerX + dx * ratio, centerY + dy * ratio);
       }
       
-      public function FlipHorizontally (mirrorX:Number):void
+      public function FlipHorizontally (mirrorX:Number, updateSelectionProxy:Boolean = true):void
+      {
+         FlipPositionHorizontally (mirrorX);
+         FlipSelfHorizontally ();
+         
+         if (updateSelectionProxy)
+            UpdateSelectionProxy ();
+      }
+      
+      public function FlipSelfHorizontally ():void
+      {
+         //SetRotation (Math.PI + Math.PI - GetRotation () );
+         SetRotation (Math.PI - GetRotation () );
+      }
+      
+      public function FlipPositionHorizontally (mirrorX:Number):void
       {
          SetPosition (mirrorX + mirrorX - GetPositionX (), GetPositionY ());
-         SetRotation (Math.PI + Math.PI - GetRotation () );
-         
-         UpdateSelectionProxy ();
       }
       
-      public function FlipVertically (mirrorY:Number):void
+      public function FlipVertically (mirrorY:Number, updateSelectionProxy:Boolean = true):void
+      {
+         FlipPositionVertically (mirrorY);
+         FlipSelfVertically ();
+         
+         if (updateSelectionProxy)
+            UpdateSelectionProxy ();
+      }
+      
+      public function FlipSelfVertically ():void
+      {
+         SetRotation (Math.PI + Math.PI - GetRotation () );
+      }
+      
+      public function FlipPositionVertically (mirrorY:Number):void
       {
          SetPosition (GetPositionX (), mirrorY + mirrorY - GetPositionY ());
-         SetRotation (Math.PI + Math.PI - GetRotation () );
-         
-         UpdateSelectionProxy ();
       }
-      
       
 //====================================================================
 //   when clone and delete, we need the main entity.
@@ -252,6 +274,11 @@ package editor.entity {
       public function GetSubEntities ():Array
       {
          return [this];
+      }
+      
+      public function GetSubIndex ():int
+      {
+         return 0;
       }
       
 //====================================================================
@@ -333,7 +360,6 @@ package editor.entity {
       {
          return vertexController;
       }
-      
       
       // the returned VertexController is not the inserted one but the new one for beforeVertexController
       public function InsertVertexController(beforeVertexController:VertexController):VertexController

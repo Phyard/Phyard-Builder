@@ -83,21 +83,21 @@ package editor.entity {
 //   flip
 //====================================================================
       
-      override public function FlipHorizontally (mirrorX:Number):void
+      override public function FlipSelfHorizontally ():void
       {
-         FlipOtherParams ();
+         //super.FlipSelfHorizontally ();
          
-         super.FlipHorizontally (mirrorX);
+         FlipParams ();
       }
       
-      override public function FlipVertically (mirrorY:Number):void
+      override public function FlipSelfVertically ():void
       {
-         FlipOtherParams ();
+         //super.FlipSelfVertically ();
          
-         super.FlipVertically (mirrorY);
+         FlipParams ();
       }
       
-      private function FlipOtherParams ():void
+      private function FlipParams ():void
       {
          SetLimits (- mUpperAngle, - mLowerAngle);
          

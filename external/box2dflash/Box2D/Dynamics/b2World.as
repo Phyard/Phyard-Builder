@@ -67,9 +67,34 @@ public class b2World
 		var bd:b2BodyDef = new b2BodyDef();
 		m_groundBody = CreateBody(bd);
 	}
-
+	
 	/// Destruct the world. All physics entities are destroyed and all heap memory is released.
 	//~b2World();
+	
+	//added by LX
+	public function Destroy ():void
+	{
+		while (m_bodyList != m_groundBody)
+		{
+			DestroyBody (m_bodyList);
+		}
+		
+		while (m_jointList != null)
+		{
+			DestroyJoint (m_jointList);
+		}
+	}
+	
+	public function Reset (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean):void
+	{
+		Destroy ();
+		
+		m_gravity.SetV (gravity);
+		m_allowSleep = doSleep;
+		
+		m_broadPhase.Reset (worldAABB);
+	}
+	//
 
 	/// Register a destruction listener.
 	public function SetDestructionListener(listener:b2DestructionListener) : void{
@@ -1289,7 +1314,7 @@ public class b2World
 	
 	
 	
-	//>>
+	//>>LX
 	public function WakeUpAllBodies ():void
 	{
 	   var b:b2Body = m_bodyList;

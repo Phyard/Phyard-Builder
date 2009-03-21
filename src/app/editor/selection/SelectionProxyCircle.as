@@ -18,15 +18,9 @@ package editor.selection {
       
       public function RebuildCircle (rotation:Number, centerX:Number, centerY:Number, radius:Number):void
       {
-      //
-         Rebuild_b2Body (rotation, centerX, centerY);
+         Rebuild (rotation, centerX, centerY);
          
-      //
-         var circleDef:b2CircleDef = new b2CircleDef ();
-         circleDef.localPosition.Set(0, 0);
-         circleDef.radius = radius;
-         circleDef.filter.groupIndex = IsSelectable () ? 0 : -1;
-         _b2Body.CreateShape (circleDef);
+         CreateCircleZone (0, 0, radius);
       }
    }
 }

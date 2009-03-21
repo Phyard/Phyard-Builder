@@ -9,9 +9,58 @@ package player.physics {
    import Box2D.Collision.b2AABB;
    import Box2D.Dynamics.b2ContactFilter;
    
+   import Box2D.Dynamics.b2ContactFilter;
+   import Box2D.Dynamics.b2ContactListener;
+   import Box2D.Dynamics.b2DestructionListener;
+   
+   import Box2D.b2WorldPool;
+   
    public class PhysicsEngine
    {
+      /*
+      private static var s_b2World:b2World;
+      private static var s_b2ContactListener_old:b2ContactListener;
+      private static var s_b2DestructionListener_old:b2DestructionListener;
+      private static var s_b2ContactFilter_old:b2ContactFilter;
       
+      private static function CreateB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean):b2World
+      {
+         if (s_b2World == null)
+         {
+            s_b2World = new b2World(worldAABB, gravity, doSleep);
+            
+            s_b2ContactListener_old = s_b2World.m_contactListener;
+            s_b2DestructionListener_old = s_b2World.m_destructionListener;
+            s_b2ContactFilter_old = s_b2World.m_contactFilter;
+         }
+         else
+         {
+            DestroyB2World ();
+            
+            s_b2World.Reset (worldAABB, gravity, doSleep);
+         }
+         
+         return s_b2World;
+      }
+      
+      private static function DestroyB2World ():void
+      {
+         if (s_b2World != null)
+         {
+            s_b2World.Destroy ();
+            
+            // here is bug prone.when 2 PhysicsEngines are created crossingly (½»²æµØ).
+            
+            s_b2World.SetContactListener (s_b2ContactListener_old);
+            s_b2World.SetDestructionListener (s_b2DestructionListener_old);
+            s_b2World.SetContactFilter (s_b2ContactFilter_old);
+         }
+      }
+      */
+      
+//=================================================================
+//   
+//=================================================================
       
       public var _b2World:b2World; // used within package
       
@@ -42,12 +91,22 @@ package player.physics {
          var gravity:b2Vec2 = new b2Vec2 (initialGravity.x * GlobalGravityScale, initialGravity.y * GlobalGravityScale);
          var doSleep:Boolean = true;
          
-         _b2World = new b2World(worldAABB, gravity, doSleep);
+         //_b2World = new b2World(worldAABB, gravity, doSleep);
+         //_b2World = CreateB2World (worldAABB, gravity, doSleep);
+         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity, doSleep);
          
          _b2World.SetContactListener(new _ContactListener (this));
          _b2World.SetDestructionListener(new _DestructionListener (this));
          
          RebuildContactFilter (numCollisionCategories);
+      }
+      
+      public function Destroy ():void
+      {
+         //DestroyB2World ();
+         b2WorldPool.ReleaseB2World (_b2World);
+         
+         _b2World = null;
       }
       
 //=================================================================
@@ -189,6 +248,30 @@ package player.physics {
          _b2World.SetGravity (gravity);
          
           _b2World.WakeUpAllBodies ();
+      }
+      
+//=================================================================
+//   
+//=================================================================
+      
+      public function GetActiveMovableBodiesCount (excludeBodiesConnectedWithJoints:Boolean = false):uint
+      {
+         var count:int = 0;
+         for (var b:b2Body = _b2World.m_bodyList; b != null; b = b.m_next)
+         {
+            if ( b.IsStatic () )
+               continue;
+            
+            if (excludeBodiesConnectedWithJoints && b.m_jointList != null)
+               continue;
+            
+            if ( b.IsSleeping () )
+               continue;
+            
+            ++ count;
+         }
+         
+         return count;
       }
       
 //=================================================================
@@ -350,6 +433,74 @@ package player.physics {
          var proxyBody:PhysicsProxyBody = new PhysicsProxyBody (this, point.x, point.y, rotation, static, params);
          
          return proxyBody;
+      }
+      
+      public function CreateProxyShape (proxyBody:PhysicsProxyBody):PhysicsProxyShape
+      {
+         if (proxyBody == null)
+            return null;
+         
+         var proxyShape:PhysicsProxyShape = new PhysicsProxyShape (this, proxyBody);
+         
+         return proxyShape;
+      }
+      
+      public function AddCircleToProxyShape (proxyShape:PhysicsProxyShape, displayX:Number, displayY:Number, displayRadius:Number, params:Object):void
+      {
+         SetCollisionCategoryParamsForShapeParams (params, params.mCollisionCategoryIndex);
+         
+         var point:Point = DisplayPosition2PhysicsPoint (displayX, displayY);
+         
+         var physicsRadius:Number = DisplayLength2PhysicsLength (displayRadius);
+         
+         proxyShape.AddCircleShape (point.x, point.y, physicsRadius, params);
+      }
+      
+      private function AddPolygonToProxyShape (proxyShape:PhysicsProxyShape, displayPoints:Array, params:Object):void
+      {
+         SetCollisionCategoryParamsForShapeParams (params, params.mCollisionCategoryIndex);
+         
+         var vertexCount:int = displayPoints.length;
+         var worldPhysicsPoints:Array = new Array (vertexCount);
+         for (var vertexId:int = 0; vertexId < vertexCount; ++ vertexId)
+         {
+            worldPhysicsPoints [vertexId] = DisplayPoint2PhysicsPoint (displayPoints [vertexId] as Point);
+         }
+         
+         proxyShape.AddPolygonShape (worldPhysicsPoints, params);
+      }
+      
+      public function AddConvexPolygonToProxyShape (proxyShape:PhysicsProxyShape, displayPoints:Array, params:Object):void
+      {
+         params.mIsConcavePotentially = false;
+         
+         AddPolygonToProxyShape (proxyShape, displayPoints, params);
+      }
+      
+      public function AddConcavePolygonToProxyShape (proxyShape:PhysicsProxyShape, displayPoints:Array, params:Object):void
+      {
+         params.mIsConcavePotentially = true;
+         
+         AddPolygonToProxyShape (proxyShape, displayPoints, params);
+      }
+      
+      public function AddLineSegmentToProxyShape (proxyShape:PhysicsProxyShape, displayX1:Number, displayY1:Number, displayX2:Number, displayY2:Number, thinkness:Number, params:Object):void
+      {
+         var dx:Number = displayX2 - displayX1;
+         var dy:Number = displayY2 - displayY1;
+         var rot:Number = Math.atan2 (dy, dx);
+         rot += Math.PI * 0.5;
+         
+         thinkness *= 0.5;
+         dx = thinkness * Math.cos (rot);
+         dy = thinkness * Math.sin (rot);
+         
+         var p1:Point = new Point (displayX1 + dx, displayY1 + dy);
+         var p2:Point = new Point (displayX1 - dx, displayY1 - dy);
+         var p3:Point = new Point (displayX2 - dx, displayY2 - dy);
+         var p4:Point = new Point (displayX2 + dx, displayY2 + dy);
+         
+         AddConvexPolygonToProxyShape (proxyShape, [p1, p2, p3, p4], params);
       }
       
       public function CreateProxyShapeCircle (proxyBody:PhysicsProxyBody, displayX:Number, displayY:Number, displayRadius:Number, params:Object = null):PhysicsProxyShapeCircle

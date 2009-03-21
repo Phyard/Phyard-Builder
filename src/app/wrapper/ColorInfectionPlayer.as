@@ -332,8 +332,13 @@ package wrapper {
       
       private function RebuildPlayerWorld ():void
       {
-         if (mPlayerWorld != null && mWorldLayer.contains (mPlayerWorld))
-            mWorldLayer.removeChild (mPlayerWorld);
+         if (mPlayerWorld != null)
+         {
+            mPlayerWorld.Destroy ();
+            
+            if (mWorldLayer.contains (mPlayerWorld))
+               mWorldLayer.removeChild (mPlayerWorld);
+         }
          
          mPlayerWorld = null;
          

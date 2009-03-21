@@ -12,10 +12,8 @@ package editor.entity {
    
    import common.Define;
    
-   public class EntityShape extends Entity 
+   public class EntityShape extends WorldEntity 
    {
-      protected var mWorld:World;
-      
    // C.I.
       
       protected var mAiType:int = Define.ShapeAiType_Unknown;
@@ -27,6 +25,7 @@ package editor.entity {
       
       protected var mBorderColor:uint = EditorSetting.BorderColorUnselectedObject;
       protected var mBorderThickness:uint = 1; // from v1.04
+      protected var mBorderTransparency:uint = 100; // from v1.05
       
       protected var mFilledColor:uint = 0xFFFFFF;
       
@@ -37,6 +36,10 @@ package editor.entity {
       //>> form v1.04
       protected var mPhysicsEnabled:Boolean = true;
       public var mIsSensor:Boolean = false;
+      //<<
+      
+      //>> form v1.05
+      protected var mIsHollow:Boolean = false;
       //<<
       
       protected var mIsStatic:Boolean = false;
@@ -61,8 +64,6 @@ package editor.entity {
       public function EntityShape (world:World)
       {
          super (world);
-         
-         mWorld = world;
       }
       
       override public function GetTypeName ():String
@@ -98,18 +99,21 @@ package editor.entity {
          shape.SetBorderColor ( GetBorderColor () );
          shape.SetDrawBorder ( IsDrawBorder () );
          shape.SetDrawBackground ( IsDrawBackground () );
-         shape.SetStatic ( IsStatic () );
          shape.SetBorderThickness (mBorderThickness);
          shape.SetTransparency (mTransparency);
+         shape.SetBorderTransparency (GetBorderTransparency ());
          
+         shape.SetPhysicsEnabled (mPhysicsEnabled);
+         shape.SetStatic ( IsStatic () );
          shape.mIsBullet = mIsBullet;
          shape.mDensity = mDensity;
          shape.mFriction = mFriction;
          shape.mRestitution = mRestitution;
          shape.mIsSensor = mIsSensor;
-         shape.SetPhysicsEnabled (mPhysicsEnabled);
          
          shape.SetCollisionCategoryIndex ( GetCollisionCategoryIndex () );
+         
+         shape.SetHollow (IsHollow ());
       }
       
 //======================================================
@@ -137,9 +141,6 @@ package editor.entity {
       
       public function IsDrawBackground ():Boolean
       {
-         if (mAiType >= 0)
-            return true;
-         
          return mDrawBackground;
       }
       
@@ -150,9 +151,6 @@ package editor.entity {
       
       public function GetFilledColor ():uint
       {
-         if (mAiType >= 0)
-            return Define.GetShapeFilledColor (mAiType);
-         
          return mFilledColor;
       }
       
@@ -168,10 +166,6 @@ package editor.entity {
       
       public function IsDrawBorder ():Boolean
       {
-         // for compability
-         //if (mAiType >= 0)
-         //   return true;
-         
          return mDrawBorder;
       }
       
@@ -182,13 +176,6 @@ package editor.entity {
       
       public function GetBorderColor ():uint
       {
-         // for compability
-         if (! mDrawBorder)
-            return GetFilledColor ();
-         
-         if (mAiType >= 0)
-            return Define.ColorObjectBorder;
-         
          return mBorderColor;
       }
       
@@ -199,8 +186,8 @@ package editor.entity {
       
       public function GetBorderThickness ():Number
       {
-         if (mAiType >= 0)
-            return 1;
+         if (mBorderThickness < 0)
+            return 0;
          
          return mBorderThickness;
       }
@@ -215,6 +202,16 @@ package editor.entity {
          return mTransparency;
       }
       
+      public function SetBorderTransparency (transparency:uint):void
+      {
+         mBorderTransparency = transparency;
+      }
+      
+      public function GetBorderTransparency ():uint
+      {
+         return mBorderTransparency;
+      }
+      
 //======================================================
 // physics
 //======================================================
@@ -227,6 +224,16 @@ package editor.entity {
       public function IsPhysicsEnabled ():Boolean
       {
          return mPhysicsEnabled;
+      }
+      
+      public function SetHollow (hollow:Boolean):void
+      {
+         mIsHollow = hollow;
+      }
+      
+      public function IsHollow ():Boolean
+      {
+         return mIsHollow;
       }
       
       public function SetStatic (isStatic:Boolean):void

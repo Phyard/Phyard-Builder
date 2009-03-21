@@ -2,6 +2,9 @@ package com.tapirgames.util {
    
    import flash.display.Shape;
    import flash.display.Graphics;
+   import flash.display.LineScaleMode;
+   import flash.display.CapsStyle;
+   import flash.display.JointStyle;
    
    import flash.geom.Point;
    
@@ -57,6 +60,7 @@ package com.tapirgames.util {
          if (filled) rect.graphics.beginFill(fillColor);
          rect.graphics.lineStyle(borderSize, borderColor);
          rect.graphics.drawRect(x, y, w, h);
+         if (borderSize >= 0) rect.graphics.lineStyle();
          if (filled) rect.graphics.endFill();
          
          return rect;
@@ -66,8 +70,9 @@ package com.tapirgames.util {
       {
          var rect:Shape = new Shape();
          if (filled) rect.graphics.beginFill(fillColor);
-         rect.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) rect.graphics.lineStyle(borderSize, borderColor);
          rect.graphics.drawEllipse(x, y, w, h);
+         if (borderSize >= 0) rect.graphics.lineStyle();
          if (filled) rect.graphics.endFill();
          
          return rect;
@@ -82,16 +87,18 @@ package com.tapirgames.util {
       {
          shape.graphics.clear ();
          if (filled) shape.graphics.beginFill(fillColor);
-         shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, CapsStyle.SQUARE, JointStyle.MITER, 255);
          shape.graphics.drawRect(x, y, w, h);
+         if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       
       public static function DrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
       {
          if (filled) shape.graphics.beginFill(fillColor);
-         shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, CapsStyle.SQUARE, JointStyle.MITER, 255);
          shape.graphics.drawRect(x, y, w, h);
+         if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       
@@ -99,16 +106,18 @@ package com.tapirgames.util {
       {
          shape.graphics.clear ();
          if (filled) shape.graphics.beginFill(fillColor);
-         shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
          shape.graphics.drawEllipse(x, y, w, h);
+         if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       
       public static function DrawEllipse (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
       {
          if (filled) shape.graphics.beginFill(fillColor);
-         shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
          shape.graphics.drawEllipse(x, y, w, h);
+         if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       
@@ -116,16 +125,18 @@ package com.tapirgames.util {
       {
          shape.graphics.clear ();
          if (filled) shape.graphics.beginFill(fillColor);
-         shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
          shape.graphics.drawCircle(x, y, radius);
+         if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       
       public static function DrawCircle (shape:Object, x:Number, y:Number, radius:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
       {
          if (filled) shape.graphics.beginFill(fillColor);
-         shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
          shape.graphics.drawCircle(x, y, radius);
+         if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       
@@ -135,6 +146,7 @@ package com.tapirgames.util {
          shape.graphics.lineStyle(thickness, color);
          shape.graphics.moveTo(x1, y1);
          shape.graphics.lineTo(x2, y2);
+         shape.graphics.lineStyle();
       }
       
       public static function DrawLine (shape:Object, x1:Number, y1:Number, x2:Number, y2:Number, color:uint = 0x0, thickness:Number = 1):void
@@ -144,6 +156,7 @@ package com.tapirgames.util {
          shape.graphics.lineStyle(thickness, color);
          shape.graphics.moveTo(x1, y1);
          shape.graphics.lineTo(x2, y2);
+         shape.graphics.lineStyle();
       }
       
       public static function ClearAndDrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
@@ -158,11 +171,12 @@ package com.tapirgames.util {
             return;
          
          if (filled) shape.graphics.beginFill(fillColor);
-         shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
          shape.graphics.moveTo( points [0].x, points [0].y );
          for (var i:uint = 0; i < vertexCount; ++ i)
             shape.graphics.lineTo (points[i].x, points[i].y);
          shape.graphics.lineTo( points [0].x, points [0].y );
+         if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       
@@ -176,11 +190,12 @@ package com.tapirgames.util {
             return;
          
          if (filled) shape.graphics.beginFill(fillColor);
-         shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
          shape.graphics.moveTo( points [0].x, points [0].y );
          for (var i:uint = 0; i < vertexCount; ++ i)
             shape.graphics.lineTo (points[i].x, points[i].y);
          shape.graphics.lineTo( points [0].x, points [0].y );
+         if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       

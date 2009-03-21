@@ -72,7 +72,14 @@ package player.entity {
          mEntityId = params.mEntityId;
          // <<
          
-         visible = params.mIsVisible;
+         if (Compile::Is_Debugging)
+         {
+            visible = true;
+         }
+         else
+         {
+            visible = params.mIsVisible;
+         }
       }
       
       public function DestroyPhysicsProxy ():void

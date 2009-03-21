@@ -1,7 +1,7 @@
 
 package player.entity {
    
-   import flash.display.Sprite;
+   import flash.display.Shape;
    import flash.geom.Point;
    
    
@@ -10,7 +10,7 @@ package player.entity {
    import player.world.World;
    
    import player.physics.PhysicsProxyBody;
-   import player.physics.PhysicsProxyShapeCircle;
+   import player.physics.PhysicsProxyShape;
    
    import common.Define;
    import common.ValueAdjuster;
@@ -21,14 +21,35 @@ package player.entity {
       protected var mRadius:Number = 0;
       protected var mAppearanceType:int = Define.CircleAppearanceType_Ball;
       
+      protected var mBackgroundShape:Shape = null;
+      protected var mBorderShape:Shape = null;
+      
       public function EntityShapeCircle (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
+         
+         mBackgroundShape = new Shape ();
+         mBorderShape = new Shape ();
+         addChild (mBackgroundShape);
+         addChild (mBorderShape);
       }
       
       public function GetRadius ():Number
       {
          return mRadius;
+      }
+      
+      public function GetPhysicsRadius ():Number
+      {
+         //if (mWorld.GetVersion () < 0x0105)
+         //   return mRadius;
+         
+         var borderThickness:uint = GetBorderThickness ();
+         
+         if (borderThickness == 0)
+            return mRadius;
+         else
+            return mRadius + borderThickness * 0.5 - 0.5;
       }
       
       override public function BuildFromParams (params:Object):void
@@ -58,8 +79,12 @@ package player.entity {
          
          if (IsPhysicsEntity () && mPhysicsProxy == null)
          {
-            mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeCircle (
-                                    mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayX, displayY, mRadius, params);
+            mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShape (mShapeContainer.mPhysicsProxy as PhysicsProxyBody);
+            mWorld.mPhysicsEngine.AddCircleToProxyShape ((mPhysicsProxy as PhysicsProxyShape), displayX, displayY, GetPhysicsRadius (), params);
+            
+            //mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeCircle (
+            //                        mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayX, displayY, 
+            //                        GetPhysicsRadius (), params);
             
             mPhysicsProxy.SetUserData (this);
          }
@@ -80,14 +105,26 @@ package player.entity {
          var drawBorder:Boolean = IsDrawBorder ();
          var borderThickness:Number = GetBorderThickness ();
          
-         borderThickness = 1;
+         GraphicsUtil.Clear (this);
+         alpha = 1.0;
          
-         alpha = GetTransparency () * 0.01;
-         
-         if (drawBg || drawBorder)
-            GraphicsUtil.ClearAndDrawEllipse (this, 
+         GraphicsUtil.Clear (mBackgroundShape);
+         mBackgroundShape.alpha = GetTransparency () * 0.01;
+         if (drawBg)
+         {
+            GraphicsUtil.DrawEllipse (mBackgroundShape, 
                                           - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, 
-                                          borderColor, borderThickness, drawBg, filledColor);
+                                          borderColor, -1, drawBg, filledColor);
+         }
+         
+         GraphicsUtil.Clear (mBorderShape);
+         mBorderShape.alpha = GetBorderTransparency () * 0.01;
+         if (drawBorder)
+         {
+            GraphicsUtil.DrawEllipse (mBorderShape, 
+                                          - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, 
+                                          borderColor, borderThickness, false, filledColor);
+         }
          
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
          {
@@ -102,18 +139,18 @@ package player.entity {
             if (! drawBg)
                invertFilledColor = borderColor;
             
-            GraphicsUtil.DrawEllipse (this, pos, 0, 1, 1, invertFilledColor, 1, true, invertFilledColor);
+            GraphicsUtil.DrawEllipse (mBackgroundShape, pos, 0, 1, 1, invertFilledColor, 1, true, invertFilledColor);
          }
          else if (mAppearanceType == Define.CircleAppearanceType_Column)
          {
             var radius2:Number = mRadius * 0.5;
-            GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
-            GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
+            GraphicsUtil.DrawEllipse (mBackgroundShape, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
+            GraphicsUtil.DrawLine (mBackgroundShape, radius2, 0, mRadius, 0, borderColor, 1);
          }
          
          if (Define.IsBombShape (GetShapeAiType ()))
          {
-            GraphicsUtil.DrawEllipse (this, - mRadius * 0.5, - mRadius * 0.5, mRadius, mRadius, 0x808080, 0, true, 0x808080);
+            GraphicsUtil.DrawEllipse (mBackgroundShape, - mRadius * 0.5, - mRadius * 0.5, mRadius, mRadius, 0x808080, 0, true, 0x808080);
          }
       }
    }

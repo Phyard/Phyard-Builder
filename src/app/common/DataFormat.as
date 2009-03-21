@@ -10,13 +10,17 @@ package common {
    import editor.entity.EntityShapeCircle;
    import editor.entity.EntityShapeRectangle;
    import editor.entity.EntityShapePolygon;
+   import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeGravityController;
+   import editor.entity.EntityUtilityCamera;
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointHinge;
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointDistance;
    import editor.entity.SubEntityJointAnchor;
+   import editor.entity.EntityUtility;
+   import editor.entity.EntityUtilityCamera;
    
    public class DataFormat
    {
@@ -70,17 +74,29 @@ package common {
          for (entityId = 0; entityId < editorWorld.numChildren; ++ entityId)
          {
             var child:Object = editorWorld.getChildAt (entityId);
+            editorEntity = child as Entity;
             
             var entityDefine:Object = new Object ();
             
-            entityDefine.mPosX = (child as Entity).GetPositionX ();
-            entityDefine.mPosY = (child as Entity).GetPositionY ();
-            entityDefine.mRotation = (child as Entity).GetRotation ();
-            entityDefine.mIsVisible = (child as Entity).IsVisible ();
+            entityDefine.mEntityType = Define.EntityType_Unkonwn; // default
             
-            if (child is editor.entity.EntityShape)
+            entityDefine.mPosX = editorEntity.GetPositionX ();
+            entityDefine.mPosY = editorEntity.GetPositionY ();
+            entityDefine.mRotation = editorEntity.GetRotation ();
+            entityDefine.mIsVisible = editorEntity.IsVisible ();
+            
+            if (editorEntity is editor.entity.EntityUtility)
             {
-               var shape:editor.entity.EntityShape = child as editor.entity.EntityShape;
+               //>>from v1.05
+                if (editorEntity is editor.entity.EntityUtilityCamera)
+               {
+                  entityDefine.mEntityType = Define.EntityType_UtilityCamera;
+               }
+               //<<
+            }
+            else if (editorEntity is editor.entity.EntityShape)
+            {
+               var shape:editor.entity.EntityShape = editorEntity as editor.entity.EntityShape;
                
                //>>from v1.02
                entityDefine.mDrawBorder = shape.IsDrawBorder ();
@@ -94,6 +110,10 @@ package common {
                entityDefine.mTransparency = shape.GetTransparency ();
                //<<
                
+               //>>from v1.05
+               entityDefine.mBorderTransparency = shape.GetBorderTransparency ();
+               //<<
+               
                if (shape.IsBasicShapeEntity ())
                {
                   //>> move up from v1.04
@@ -102,17 +122,17 @@ package common {
                   
                   //>>from v1.04
                   entityDefine.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
-                  entityDefine.mIsSensor = shape.mIsSensor;
+                  /////entityDefine.mIsSensor = shape.mIsSensor; // move down from v1.05
                   //<<
                   
-                  if (entityDefine.mIsPhysicsEnabled)  // always true before v1.04
+                  //if (entityDefine.mIsPhysicsEnabled)  // always true before v1.04
                   {
                      //>>from v1.02
                      entityDefine.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
                      //<<
                      
                      //>> removed here, move up from v1.04
-                     //entityDefine.mAiType = Define.GetShapeAiType ( shape.GetFilledColor ()); // move up from v1.04
+                     /////entityDefine.mAiType = Define.GetShapeAiType ( shape.GetFilledColor ()); // move up from v1.04
                      //<<
                      
                      entityDefine.mIsStatic = shape.IsStatic ();
@@ -120,6 +140,13 @@ package common {
                      entityDefine.mDensity = shape.mDensity;
                      entityDefine.mFriction = shape.mFriction;
                      entityDefine.mRestitution = shape.mRestitution;
+                     
+                     // add in v1,04, move here from above from v1.05
+                     entityDefine.mIsSensor = shape.mIsSensor;
+                     
+                     //>>from v1.05
+                     entityDefine.mIsHollow = shape.IsHollow ();
+                     //<<
                   }
                   
                   if (child is editor.entity.EntityShapeCircle)
@@ -145,6 +172,16 @@ package common {
                      entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolygon).GetLocalVertexPoints ();
                   }
                   //<<
+                  //>>from v1.05
+                  else if (child is editor.entity.EntityShapePolyline)
+                  {
+                     entityDefine.mEntityType = Define.EntityType_ShapePolyline;
+                     
+                     entityDefine.mCurveThickness = (shape as editor.entity.EntityShapePolyline).GetCurveThickness ();
+                     
+                     entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolyline).GetLocalVertexPoints ();
+                  }
+                  //<<
                }
                else // not physics entity
                {
@@ -165,16 +202,23 @@ package common {
                      
                      entityDefine.mRadius = (shape as editor.entity.EntityShapeCircle).GetRadius ();
                      
-                     entityDefine.mIsInteractive = (shape as editor.entity.EntityShapeGravityController).IsInteractive ();
+                     // removed from v1.05
+                     /////entityDefine.mIsInteractive = (shape as editor.entity.EntityShapeGravityController).IsInteractive ();
+                     
+                     // added in v1,05
+                     entityDefine.mInteractiveZones = (shape as editor.entity.EntityShapeGravityController).GetInteractiveZones ();
+                     entityDefine.mInteractiveConditions = (shape as editor.entity.EntityShapeGravityController).mInteractiveConditions;
+                     
+                     // ...
                      entityDefine.mInitialGravityAcceleration = (shape as editor.entity.EntityShapeGravityController).GetInitialGravityAcceleration ();
                      entityDefine.mInitialGravityAngle = (shape as editor.entity.EntityShapeGravityController).GetInitialGravityAngle ();
                   }
                   //<<
                }
             }
-            else if (child is editor.entity.EntityJoint)
+            else if (editorEntity is editor.entity.EntityJoint)
             {
-               var joint:editor.entity.EntityJoint = (child as editor.entity.EntityJoint);
+               var joint:editor.entity.EntityJoint = (editorEntity as editor.entity.EntityJoint);
                
                entityDefine.mCollideConnected = joint.mCollideConnected;
                
@@ -242,13 +286,9 @@ package common {
                   entityDefine.mDampingRatio = spring.mDampingRatio;
                }
             }
-            else if (child is editor.entity.SubEntityJointAnchor)
+            else if (editorEntity is editor.entity.SubEntityJointAnchor)
             {
                entityDefine.mEntityType = Define.SubEntityType_JointAnchor;
-            }
-            else
-            {
-               entityDefine.mEntityType = Define.EntityType_Unkonwn;
             }
             
             worldDefine.mEntityDefines.push (entityDefine);
@@ -403,6 +443,7 @@ package common {
          var shape:editor.entity.EntityShape;
          var anchorDefine:Object;
          var joint:editor.entity.EntityJoint;
+         var utility:editor.entity.EntityUtility;
          
          for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
          {
@@ -410,7 +451,20 @@ package common {
             
             entity = null;
             
-            if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            if ( Define.IsUtilityEntity (entityDefine.mEntityType) )
+            {
+               utility = null;
+               
+               //>>from v1.05
+               if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
+               {
+                  var camera:editor.entity.EntityUtilityCamera = editorWorld.CreateEntityUtilityCamera ();
+                  
+                  entity = utility = camera;
+               }
+               //<<
+            }
+            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
                shape = null;
                
@@ -443,6 +497,19 @@ package common {
                      entity = shape = polygon;
                   }
                   //<<
+                  //>>from v1.05
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
+                  {
+                     var polyline:editor.entity.EntityShapePolyline = editorWorld.CreateEntityShapePolyline ();
+                        polyline.SetPosition (entityDefine.mPosX, entityDefine.mPosY);
+                        polyline.SetRotation (entityDefine.mRotation);
+                     polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
+                     
+                     polyline.SetCurveThickness (entityDefine.mCurveThickness);
+                     
+                     entity = shape = polyline;
+                  }
+                  //<<
                   
                   if (shape != null)
                   {
@@ -450,7 +517,7 @@ package common {
                      
                      //>>from v1.04
                      shape.SetPhysicsEnabled (entityDefine.mIsPhysicsEnabled);
-                     shape.mIsSensor = entityDefine.mIsSensor;
+                     /////shape.mIsSensor = entityDefine.mIsSensor; // move down from v1.05
                      //<<
                      
                      if (entityDefine.mIsPhysicsEnabled) // always true before v1.04
@@ -467,6 +534,13 @@ package common {
                         shape.mDensity = entityDefine.mDensity;
                         shape.mFriction = entityDefine.mFriction;
                         shape.mRestitution = entityDefine.mRestitution;
+                        
+                        // add in v1,04, move here from above from v1.05
+                        shape.mIsSensor = entityDefine.mIsSensor;
+                        
+                        //>>from v1.05
+                        shape.SetHollow (entityDefine.mIsHollow);
+                        //<<
                      }
                   }
                }
@@ -490,7 +564,14 @@ package common {
                      
                      gController.SetRadius (entityDefine.mRadius)
                      
-                     gController.SetInteractive (entityDefine.mIsInteractive)
+                     // removed from v1.05
+                     /////gController.SetInteractive (entityDefine.mIsInteractive)
+                     
+                     // added in v1.05
+                     gController.SetInteractiveZones (entityDefine.mInteractiveZones);
+                     gController.mInteractiveConditions = entityDefine.mInteractiveConditions
+                     
+                     // ...
                      gController.SetInitialGravityAcceleration (entityDefine.mInitialGravityAcceleration)
                      gController.SetInitialGravityAngle (entityDefine.mInitialGravityAngle)
                      
@@ -507,10 +588,14 @@ package common {
                   //<<
                   
                   //>>from v1.04
-                  shape.SetBorderColor (entityDefine.mIsSensor);
+                  shape.SetBorderColor (entityDefine.mBorderColor);
                   shape.SetBorderThickness (entityDefine.mBorderThickness);
                   shape.SetFilledColor (entityDefine.mBackgroundColor);
                   shape.SetTransparency (entityDefine.mTransparency);
+                  //<<
+                  
+                  //>>from v1.05
+                  shape.SetBorderTransparency (entityDefine.mBorderTransparency);
                   //<<
                }
             }
@@ -819,7 +904,13 @@ package common {
          entityDefine.mRotation = parseFloat (element.@r);
          entityDefine.mIsVisible = parseInt (element.@visible) != 0;
          
-         if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+         if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
+         {
+            if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
+            {
+            }
+         }
+         else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
          {
             if (worldDefine.mVersion >= 0x0102)
             {
@@ -835,6 +926,11 @@ package common {
                entityDefine.mTransparency = parseInt (element.@transparency);
             }
             
+            if (worldDefine.mVersion >= 0x0105)
+            {
+               entityDefine.mBorderTransparency = parseInt (element.@border_transparency);
+            }
+            
             if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
             {
                entityDefine.mAiType = parseInt (element.@ai_type);
@@ -842,7 +938,9 @@ package common {
                if (worldDefine.mVersion >= 0x0104)
                {
                   entityDefine.mIsPhysicsEnabled = parseInt (element.@enable_physics) != 0;
-                  entityDefine.mIsSensor = parseInt (element.@is_sensor) != 0;
+                  
+                  // move down from v1.05
+                  /////entityDefine.mIsSensor = parseInt (element.@is_sensor) != 0; 
                }
                else
                {
@@ -862,6 +960,17 @@ package common {
                   entityDefine.mDensity = parseFloat (element.@density);
                   entityDefine.mFriction = parseFloat (element.@friction);
                   entityDefine.mRestitution = parseFloat (element.@restitution);
+                  
+                  if (worldDefine.mVersion >= 0x0104)
+                  {
+                     // add in v1,04, move here from above from v1.05
+                     entityDefine.mIsSensor = parseInt (element.@is_sensor) != 0
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0105)
+                  {
+                     entityDefine.mIsHollow = parseInt (element.@is_hollow) != 0;
+                  }
                }
                
                if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
@@ -882,6 +991,17 @@ package common {
                      entityDefine.mLocalPoints.push (new Point (parseFloat (elementLocalVertex.@x), parseFloat (elementLocalVertex.@y)));
                   }
                }
+               else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
+               {
+                  entityDefine.mCurveThickness = parseInt (element.@curve_thickness);
+                  
+                  entityDefine.mLocalPoints = new Array ();
+                  
+                  for each (elementLocalVertex in element.LocalVertices.Vertex)
+                  {
+                     entityDefine.mLocalPoints.push (new Point (parseFloat (elementLocalVertex.@x), parseFloat (elementLocalVertex.@y)));
+                  }
+               }
             }
             else
             {
@@ -897,7 +1017,19 @@ package common {
                {
                   entityDefine.mRadius = parseFloat (element.@radius);
                   
-                  entityDefine.mIsInteractive = parseInt (element.@autofit_width) != 0;
+                  if (worldDefine.mVersion >= 0x0105)
+                  {
+                     entityDefine.mInteractiveZones = parseInt (element.@interactive_zones, 2);
+                     
+                     entityDefine.mInteractiveConditions = parseInt (element.@interactive_conditions, 2);
+                  }
+                  else
+                  {
+                     // mIsInteractive is removed from v1.05.
+                     // in FillMissedFieldsInWorldDefine (), mIsInteractive will be converted to mInteractiveZones
+                     entityDefine.mIsInteractive = parseInt (element.@is_interactive) != 0;
+                  }
+                  
                   entityDefine.mInitialGravityAcceleration = parseFloat (element.@initial_gravity_acceleration);
                   entityDefine.mInitialGravityAngle = parseFloat (element.@initial_gravity_angle);
                }
@@ -1075,7 +1207,13 @@ package common {
             byteArray.writeFloat (entityDefine.mRotation);
             byteArray.writeByte (entityDefine.mIsVisible);
             
-            if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
+            {
+               if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
+               {
+               }
+            }
+            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
                if (worldDefine.mVersion >= 0x0102)
                {
@@ -1091,9 +1229,23 @@ package common {
                   byteArray.writeByte (entityDefine.mTransparency);
                }
                
+               if (worldDefine.mVersion >= 0x0105)
+               {
+                  byteArray.writeByte (entityDefine.mBorderTransparency);
+               }
+               
                if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
                {
-                  if (worldDefine.mVersion >= 0x0104) 
+                  if (worldDefine.mVersion >= 0x0105) 
+                  {
+                     byteArray.writeByte (entityDefine.mAiType);
+                     byteArray.writeByte (entityDefine.mIsPhysicsEnabled);
+                     
+                     // the 2 lines are added in v1,04, and moved down from v1.05
+                     /////byteArray.writeShort (entityDefine.mCollisionCategoryIndex);
+                     /////byteArray.writeByte (entityDefine.mIsSensor)
+                  }
+                  else if (worldDefine.mVersion >= 0x0104)
                   {
                      // changed the order of mAiType and mCollisionCategoryIndex, 
                      // add mIsPhysicsEnabled and mIsSensor
@@ -1103,7 +1255,7 @@ package common {
                      byteArray.writeByte (entityDefine.mIsPhysicsEnabled);
                      byteArray.writeByte (entityDefine.mIsSensor)
                   }
-                  else
+                  else 
                   {
                      if (worldDefine.mVersion >= 0x0102)
                      {
@@ -1115,13 +1267,23 @@ package common {
                      //entityDefine.mIsPhysicsEnabled = true; // already set in FillMissedFieldsInWorldDefine
                   }
                   
-                  if (entityDefine.mIsPhysicsEnabled)
+                  if (entityDefine.mIsPhysicsEnabled) // always true before v1.05
                   {
                      byteArray.writeByte (entityDefine.mIsStatic);
                      byteArray.writeByte (entityDefine.mIsBullet);
                      byteArray.writeFloat (entityDefine.mDensity);
                      byteArray.writeFloat (entityDefine.mFriction);
                      byteArray.writeFloat (entityDefine.mRestitution);
+                     
+                     if (worldDefine.mVersion >= 0x0105)
+                     {
+                        // the 2 lines are added in v1,04, and moved here from above from v1.05
+                        byteArray.writeShort (entityDefine.mCollisionCategoryIndex);
+                        byteArray.writeByte (entityDefine.mIsSensor)
+                        
+                        // ...
+                        byteArray.writeByte (entityDefine.mIsHollow);
+                     }
                   }
                   
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
@@ -1136,6 +1298,17 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
+                     byteArray.writeShort (entityDefine.mLocalPoints.length);
+                     for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
+                     {
+                        byteArray.writeFloat (entityDefine.mLocalPoints [vertexId].x);
+                        byteArray.writeFloat (entityDefine.mLocalPoints [vertexId].y);
+                     }
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
+                  {
+                     byteArray.writeByte (entityDefine.mCurveThickness);
+                     
                      byteArray.writeShort (entityDefine.mLocalPoints.length);
                      for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
                      {
@@ -1158,7 +1331,16 @@ package common {
                   {
                      byteArray.writeFloat (entityDefine.mRadius);
                      
-                     byteArray.writeByte (entityDefine.mIsInteractive);
+                     if (worldDefine.mVersion >= 0x0105)
+                     {
+                        byteArray.writeByte (entityDefine.mInteractiveZones);
+                        byteArray.writeShort (entityDefine.mInteractiveConditions);
+                     }
+                     else
+                     {
+                        byteArray.writeByte (entityDefine.mIsInteractive);
+                     }
+                     
                      byteArray.writeFloat (entityDefine.mInitialGravityAcceleration);
                      byteArray.writeShort (entityDefine.mInitialGravityAngle);
                   }

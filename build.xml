@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="SolitaireOp" basedir="." default="release-editor">
+<project name="CIEditor" basedir="." default="release-editor">
    
    <property name="dir.flexsdk"        value="D:/sdks/flex_sdk_3" />
    <property name="dir.secureswf"        value="D:/softs/secureSWF/secureSWF_v3standard_win" />
@@ -91,6 +91,9 @@
             <exclude name="**/.svn/**"/>
          </fileset>
          <fileset dir="${dir.external}/beziercurves">
+            <exclude name="**/.svn/**"/>
+         </fileset>
+         <fileset dir="${dir.external}/box2dpool">
             <exclude name="**/.svn/**"/>
          </fileset>
          

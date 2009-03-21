@@ -7,9 +7,11 @@ package editor.entity {
    {
       protected var mWorld:World;
       
-      public function Entity (world:World)
+      public function WorldEntity (world:World)
       {
          super (world);
+         
+         mWorld = world;
       }
       
    }

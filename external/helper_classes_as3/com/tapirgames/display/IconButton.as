@@ -21,13 +21,26 @@ package com.tapirgames.display {
       
       public function IconButton (onClick:Function, icon:Bitmap, overIcon:Bitmap = null, userData:Object = null)
       {
-         addEventListener( MouseEvent.CLICK, OnButtonClick );
-         
          mOnClikFunc = onClick;
          
          SetIcons (icon, overIcon);
          
          SetUserData (userData);
+         
+         addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+      }
+      
+      private function OnAddedToStage (event:Event):void 
+      {
+         addEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
+         addEventListener( MouseEvent.CLICK, OnButtonClick );
+      }
+      
+      private function OnRemovedFromStage (event:Event):void 
+      {
+         removeEventListener( MouseEvent.CLICK, OnButtonClick );
+         removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
+         removeEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
       }
       
       public function SetIcons (icon:Bitmap, overIcon:Bitmap = null):void

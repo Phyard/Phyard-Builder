@@ -7,11 +7,8 @@ package player.entity {
    
    import common.Define;
    
-   public class EntityShape extends Entity
+   public class EntityShape extends EntityContainerChild
    {
-      
-      protected var mShapeContainer:ShapeContainer;
-      
       protected var mOriginalAiType:int = Define.ShapeAiType_Unknown;
       protected var mAiType:int = Define.ShapeAiType_Unknown;
       
@@ -30,17 +27,21 @@ package player.entity {
       protected var mTransparency:uint = 100;
       //<<
       
+      //>> form v1.05
+      protected var mBorderTransparency:uint = 100;
+      //<<
+      
       //>> form v1.04
       protected var mPhysicsEnabled:Boolean = true;
       //<<
       
+      //>> form v1.05
+      protected var mIsHollow:Boolean = false;
+      //<<
+      
       public function EntityShape (world:World, shapeContainer:ShapeContainer)
       {
-         super (world);
-         
-         mShapeContainer = shapeContainer;
-         
-         mShapeContainer.addChild (this);
+         super (world, shapeContainer);
       }
       
       override public function IsPhysicsEntity ():Boolean
@@ -78,6 +79,16 @@ package player.entity {
       public function IsPhysicsEnabled ():Boolean
       {
          return mPhysicsEnabled;
+      }
+      
+      public function SetHollow (hollow:Boolean):void
+      {
+         mIsHollow = hollow;
+      }
+      
+      public function IsHollow ():Boolean
+      {
+         return mIsHollow;
       }
       
       public function SetStatic (static:Boolean):void
@@ -133,10 +144,6 @@ package player.entity {
       
       public function IsDrawBorder ():Boolean
       {
-         // for compability
-         //if (mAiType >= 0)
-         //   return true;
-         
          return mDrawBorder;
       }
       
@@ -147,25 +154,29 @@ package player.entity {
       
       public function GetBorderColor ():uint
       {
-         // for compability
-         if (! mDrawBorder)
-            return GetFilledColor ();
-         
          if (mAiType >= 0)
             return Define.ColorObjectBorder;
+         
+         if (mWorld.GetVersion () < 0x0105)
+         {
+            if (! mDrawBorder)
+               return GetFilledColor ();
+         }
          
          return mBorderColor;
       }
       
-      public function SetBorderThickness (thinkness:Number):void
+      public function SetBorderThickness (thinkness:uint):void
       {
          mBorderThickness = thinkness;
       }
       
-      public function GetBorderThickness ():Number
+      public function GetBorderThickness ():uint
       {
-         if (mAiType >= 0)
+         if (mWorld.GetVersion () < 0x0105)
+         {
             return 1;
+         }
          
          return mBorderThickness;
       }
@@ -183,6 +194,16 @@ package player.entity {
             return 100;
          
          return mTransparency;
+      }
+      
+      public function SetBorderTransparency (transparency:uint):void
+      {
+         mBorderTransparency = transparency;
+      }
+      
+      public function GetBorderTransparency ():uint
+      {
+         return mBorderTransparency;
       }
       
 //==============================================================================
@@ -216,6 +237,11 @@ package player.entity {
          SetBorderThickness (params.mBorderThickness);
          SetFilledColor (params.mBackgroundColor);
          SetTransparency (params.mTransparency);
+         //<<
+         
+         // >> from v1.05
+         SetBorderTransparency (params.mBorderTransparency);
+         SetHollow (params.mIsHollow);
          //<<
       }
       

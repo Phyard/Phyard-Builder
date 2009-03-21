@@ -69,6 +69,7 @@
          
          private function OnPhysicsSettingPanelCreationComplete ():void
          {
+            mParams.mDisableHollowEditing = false;
             PhysicsSettingPanel.SetValues (mParams);
          }
          

@@ -10,22 +10,82 @@ package editor.selection {
    import Box2D.Collision.Shapes.*;
    import Box2D.Common.Math.*;
    
+   import Box2D.b2WorldPool;
    
    public class SelectionEngine 
    {
+      /*
+      private static var s_b2World:b2World;
+      private static var s_b2ContactListener_old:b2ContactListener;
+      private static var s_b2DestructionListener_old:b2DestructionListener;
+      private static var s_b2ContactFilter_old:b2ContactFilter;
+      
+      private static function CreateB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean):b2World
+      {
+         if (s_b2World == null)
+         {
+            s_b2World = new b2World(worldAABB, gravity, doSleep);
+            
+            s_b2ContactListener_old = s_b2World.m_contactListener;
+            s_b2DestructionListener_old = s_b2World.m_destructionListener;
+            s_b2ContactFilter_old = s_b2World.m_contactFilter;
+         }
+         else
+         {
+            DestroyB2World ();
+            
+            s_b2World.Reset (worldAABB, gravity, doSleep);
+         }
+         
+         return s_b2World;
+      }
+      
+      private static function DestroyB2World ():void
+      {
+         if (s_b2World != null)
+         {
+            s_b2World.Destroy ();
+            
+            // here is bug prone.when 2 PhysicsEngines are created crossingly (½»²æµØ).
+            
+            s_b2World.SetContactListener (s_b2ContactListener_old);
+            s_b2World.SetDestructionListener (s_b2DestructionListener_old);
+            s_b2World.SetContactFilter (s_b2ContactFilter_old);
+         }
+      }
+      */
+      
+//=================================================================
+//   
+//=================================================================
       
       public var _b2World:b2World; // used within package
       
-      public function SelectionEngine ():void
+      public function SelectionEngine (lowerPoint:Point, upperPoint:Point):void
       {
          var worldAABB:b2AABB = new b2AABB();
-         worldAABB.lowerBound.Set(-10000.0, -10000.0);
-         worldAABB.upperBound.Set(10000.0, 10000.0);
+         worldAABB.lowerBound.Set(lowerPoint.x, lowerPoint.y);
+         worldAABB.upperBound.Set(upperPoint.x, upperPoint.y);
          
          var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
          var doSleep:Boolean = true;
          
-         _b2World = new b2World(worldAABB, gravity, doSleep);
+         //_b2World = new b2World(worldAABB, gravity, doSleep);
+         //_b2World = CreateB2World (worldAABB, gravity, doSleep);
+         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity, doSleep);
+      }
+      
+      public function Destroy ():void
+      {
+         //DestroyB2World ();
+         b2WorldPool.ReleaseB2World (_b2World);
+         
+         _b2World = null;
+      }
+      
+      public function CreateProxyGeneral ():SelectionProxy 
+      {
+         return new SelectionProxy (this);
       }
       
       public function CreateProxyCircle ():SelectionProxyCircle 
@@ -86,10 +146,12 @@ package editor.selection {
          aabb.lowerBound.Set (pointX - windowSize, pointY - windowSize);
          aabb.upperBound.Set (pointX + windowSize, pointY + windowSize);
          
-         var maxCount:uint = 16;
+         var maxCount:uint = 128;//16;
          var shapes:Array = new Array (maxCount); 
          
          var count:int = _b2World.Query(aabb, shapes, maxCount);
+         
+         //trace ("count = " + count);
          
          var vertex:b2Vec2 = new b2Vec2 ();
          vertex.Set(pointX, pointY);

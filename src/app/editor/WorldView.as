@@ -41,6 +41,7 @@ package editor {
    import com.tapirgames.util.UrlUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.MathUtil;
+   import com.tapirgames.util.SystemUtil;
    
    import com.tapirgames.util.Logger;
    
@@ -51,6 +52,7 @@ package editor {
    import editor.mode.ModeCreateRectangle;
    import editor.mode.ModeCreateCircle;
    import editor.mode.ModeCreatePolygon;
+   import editor.mode.ModeCreatePolyline;
    
    import editor.mode.ModeCreateHinge;
    import editor.mode.ModeCreateDistance;
@@ -59,6 +61,8 @@ package editor {
    
    import editor.mode.ModeCreateText;
    import editor.mode.ModeCreateGravityController;
+   
+   import editor.mode.ModePlaceCreateEntitiy;
    
    import editor.mode.ModeRegionSelectEntities;
    import editor.mode.ModeMoveSelectedEntities;
@@ -80,8 +84,10 @@ package editor {
    import editor.entity.EntityShapeCircle;
    import editor.entity.EntityShapeRectangle;
    import editor.entity.EntityShapePolygon;
+   import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeGravityController;
+   import editor.entity.EntityUtilityCamera;
    
    import editor.entity.EntityJointDistance;
    import editor.entity.EntityJointHinge;
@@ -358,9 +364,9 @@ package editor {
          }
          else
          {
-            if (mEditorWorld.GetZoomScale () != mEditorWorldZoomScale)
+            if (mEditorWorld.scaleX != mEditorWorldZoomScale)
             {
-               if (mEditorWorld.GetZoomScale () < mEditorWorldZoomScale)
+               if (mEditorWorld.scaleX < mEditorWorldZoomScale)
                {
                   if (mEditorWorldZoomScaleChangedSpeed < 0)
                      mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
@@ -759,6 +765,8 @@ package editor {
       public var mButtonCreateText:Button;
       public var mButtonCreateCravityController:Button;
       public var mButtonCreatePolygon:Button;
+      public var mButtonCreatePolyline:Button;
+      public var mButtonCreateCamera:Button;
       
       public function OnCreateButtonClick (event:MouseEvent):void
       {
@@ -818,10 +826,13 @@ package editor {
                SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Bomb, EditorSetting.ColorBombObject, false, EditorSetting.MinCircleRadium, EditorSetting.MaxBombSquareSideLength * 0.5 ) );
                break;
                
-          // polygons
+          // polygons, polyline
                
             case mButtonCreatePolygon:
                SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Unknown, 0xFFFFFF, true ) );
+               break;
+            case mButtonCreatePolyline:
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Unknown, EditorSetting.ColorStaticObject, true ) );
                break;
                
          // joints
@@ -849,6 +860,9 @@ package editor {
                SetCurrentCreateMode ( new ModeCreateGravityController (this) );
                break;
             
+            case mButtonCreateCamera:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityCamera) );
+               break;
          // ...
             default:
                SetCurrentCreateMode (null);
@@ -917,6 +931,7 @@ package editor {
       // creat ...
          
          mButtonCreateCravityController.enabled = mEditorWorld.GetGravityControyList ().length == 0;
+         mButtonCreateCamera.enabled = mEditorWorld.GetCameraList ().length == 0;
          
       // file ...
          
@@ -1069,8 +1084,16 @@ package editor {
          
          mContentContainer.removeChild (mEditorWorld);
          
+         SystemUtil.TraceMemory ("before mEditorWorld = null", true);
+         
+         mEditorWorld = null;
+         
+         SystemUtil.TraceMemory ("after mEditorWorld = null", true);
+         
          mEditorWorld = newEditorWorld;
          mContentContainer.addChild (mEditorWorld);
+         
+         SystemUtil.TraceMemory ("after mEditorWorld = newEditorWorld", true);
          
          if (Runtime.mCollisionCategoryView != null)
             Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
@@ -1093,9 +1116,7 @@ package editor {
          mPlayerWorld = newPlayerWorld;
          
          if (mPlayerWorld == null)
-         {
             return;
-         }
          
          mPlayerElementsContainer.addChild (mPlayerWorld);
          
@@ -1108,6 +1129,8 @@ package editor {
       
       private function DestroyPlayerWorld ():void
       {
+         SystemUtil.TraceMemory ("before DestroyPlayerWorld", true);
+         
          if ( mPlayerWorld != null)
          {
             mPlayerWorld.Destroy ();
@@ -1117,6 +1140,8 @@ package editor {
          }
          
          mPlayerWorld = null;
+         
+         SystemUtil.TraceMemory ("after DestroyPlayerWorld", true);
       }
       
       public function OnPlayRunRestart (keepPauseStatus:Boolean = false):void
@@ -1140,8 +1165,6 @@ package editor {
                playerWorld = null;
             }
          }
-         
-         System.gc ();
          
          if (playerWorld == null)
          {
@@ -1285,6 +1308,7 @@ package editor {
       public var ShowShapeRectangleSettingDialog:Function = null;
       public var ShowShapeCircleSettingDialog:Function = null;
       public var ShowShapePolygonSettingDialog:Function = null;
+      public var ShowShapePolylineSettingDialog:Function = null;
       public var ShowHingeSettingDialog:Function = null;
       public var ShowSliderSettingDialog:Function = null;
       public var ShowSpringSettingDialog:Function = null;
@@ -1344,6 +1368,7 @@ package editor {
             values.mBorderThickness = shape.GetBorderThickness ();
             values.mBackgroundColor =shape.GetFilledColor ();
             values.mTransparency = shape.GetTransparency ();
+            values.mBorderTransparency = shape.GetBorderTransparency ();
             
             if (shape.IsBasicShapeEntity ())
             {
@@ -1360,6 +1385,7 @@ package editor {
                values.mDensity = shape.mDensity;
                values.mFriction = shape.mFriction;
                values.mRestitution = shape.mRestitution;
+               values.mIsHollow = shape.IsHollow ();
                
                //values.mVisibleEditable = true; //shape.GetFilledColor () == Define.ColorStaticObject;
                //values.mStaticEditable = true; //shape.GetFilledColor () == Define.ColorBreakableObject
@@ -1386,6 +1412,12 @@ package editor {
                {
                   ShowShapePolygonSettingDialog (values, SetShapePropertities);
                }
+               else if (entity is EntityShapePolyline)
+               {
+                  values.mCurveThickness = (shape as EntityShapePolyline).GetCurveThickness ();
+                  
+                  ShowShapePolylineSettingDialog (values, SetShapePropertities);
+               }
             }
             else // no physics entity
             {
@@ -1400,7 +1432,13 @@ package editor {
                else if (entity is EntityShapeGravityController)
                {
                   values.mRadius = ValueAdjuster.AdjustCircleRadius ((entity as EntityShapeCircle).GetRadius(), Config.VersionNumber);
-                  values.mIsInteractive = (shape as EntityShapeGravityController).IsInteractive ();
+                  
+                  // removed from v1.05
+                  /////values.mIsInteractive = (shape as EntityShapeGravityController).IsInteractive ();
+                  values.mInteractiveZones = (shape as EntityShapeGravityController).GetInteractiveZones ();
+                  
+                  values.mInteractiveConditions = (shape as EntityShapeGravityController).mInteractiveConditions;
+                  
                   values.mInitialGravityAcceleration = (shape as EntityShapeGravityController).GetInitialGravityAcceleration ();
                   values.mInitialGravityAngle = (shape as EntityShapeGravityController).GetInitialGravityAngle ();
                   
@@ -2301,6 +2339,21 @@ package editor {
          return polygon;
       }
       
+      public function CreatePolyline (filledColor:uint, isStatic:Boolean):EntityShapePolyline
+      {
+         var polyline:EntityShapePolyline = mEditorWorld.CreateEntityShapePolyline ();
+         if (polyline == null)
+            return null;
+         
+         polyline.SetFilledColor (filledColor);
+         polyline.SetStatic (isStatic);
+         polyline.SetDrawBorder (filledColor != Define.ColorStaticObject);
+         
+         SetTheOnlySelectedEntity (polyline);
+         
+         return polyline;
+      }
+      
       public function CreateHinge (posX:Number, posY:Number):EntityJointHinge
       {
          var hinge:EntityJointHinge = mEditorWorld.CreateEntityJointHinge ();
@@ -2392,7 +2445,7 @@ package editor {
          
          var gController:EntityShapeGravityController = mEditorWorld.CreateEntityShapeGravityController ();
          if (gController == null)
-            return gController;
+            return null;
          
          gController.SetPosition (centerX, centerY);
          gController.SetRadius (radius);
@@ -2404,10 +2457,18 @@ package editor {
          return gController;
       }
       
+      public function CreateEntityUtilityCamera (options:Object = null):EntityUtilityCamera
+      {
+         var camera:EntityUtilityCamera = mEditorWorld.CreateEntityUtilityCamera ();
+         if (camera == null)
+            return null;
+         
+         return camera;
+      }
+      
 //============================================================================
 //    
 //============================================================================
-      
       
       private var mLastSelectedEntity:Entity = null;
       private var mLastSelectedEntities:Array = null;
@@ -2849,6 +2910,7 @@ package editor {
             shape.SetBorderThickness (params.mBorderThickness);
             shape.SetDrawBackground (params.mDrawBackground);
             shape.SetFilledColor (params.mBackgroundColor);
+            shape.SetBorderTransparency (params.mBorderTransparency);
             
             if (shape.IsBasicShapeEntity ())
             {
@@ -2862,6 +2924,7 @@ package editor {
                shape.mDensity = params.mDensity;
                shape.mFriction = params.mFriction;
                shape.mRestitution = params.mRestitution;
+               shape.SetHollow (params.mIsHollow);
                
                if (shape is EntityShapeCircle)
                {
@@ -2876,6 +2939,10 @@ package editor {
                else if (shape is EntityShapePolygon)
                {
                }
+               else if (shape is EntityShapePolyline)
+               {
+                  (shape as EntityShapePolyline).SetCurveThickness (params.mCurveThickness);
+               }
             }
             else // not physics entity
             {
@@ -2889,7 +2956,11 @@ package editor {
                {
                   (shape as EntityShapeCircle).SetRadius (params.mRadius);
                   
-                  (shape as EntityShapeGravityController).SetInteractive (params.mIsInteractive);
+                  //(shape as EntityShapeGravityController).SetInteractive (params.mIsInteractive);
+                  (shape as EntityShapeGravityController).SetInteractiveZones (params.mInteractiveZones);
+                  
+                  (shape as EntityShapeGravityController).mInteractiveConditions = params.mInteractiveConditions;
+                  
                   (shape as EntityShapeGravityController).SetInitialGravityAcceleration (params.mInitialGravityAcceleration);
                   (shape as EntityShapeGravityController).SetInitialGravityAngle (params.mInitialGravityAngle);
                }
@@ -3045,9 +3116,13 @@ package editor {
          
          try
          {
-            mWorldHistoryManager.ClearHistories ();
+            var oldEditorWorld:editor.world.World = mEditorWorld;
             
             var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (DataFormat.Xml2WorldDefine (xml));
+            
+            oldEditorWorld.Destroy ();
+            
+            mWorldHistoryManager.ClearHistories ();
             
             SetEditorWorld (newEditorWorld);
             
@@ -3098,6 +3173,9 @@ package editor {
             var entity:Entity;
             for (i = 0; i < selectedEntities.length; ++ i)
             {
+               //trace ("selectedEntities[i] = " + selectedEntities[i]);
+               //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
+               
                index = mEditorWorld.getChildIndex (selectedEntities[i]);
                entity = newWorld.getChildAt (index) as Entity;
                entity = entity.GetMainEntity ();
@@ -3166,11 +3244,20 @@ package editor {
          
          try
          {
-            var oldCount:int = mEditorWorld.numChildren;
+            var oldEntitiesCount:int = mEditorWorld.numChildren;
+            var oldCategoriesCount:int = mEditorWorld.GetNumCollisionCategories ();
             
-            DataFormat.WorldDefine2EditorWorld (DataFormat.Xml2WorldDefine (xml), true, mEditorWorld);
+            var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
             
-            if (oldCount == mEditorWorld.numChildren)
+            if (oldEntitiesCount + worldDefine.mEntityDefines.length > Define.MaxEntitiesCount)
+               return;
+            
+            if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCollisionCategoriesCount)
+               return;
+            
+            DataFormat.WorldDefine2EditorWorld (worldDefine, true, mEditorWorld);
+            
+            if (oldEntitiesCount == mEditorWorld.numChildren)
                return;
             
             mEditorWorld.ClearSelectedEntities ();
@@ -3183,7 +3270,7 @@ package editor {
             var centerY:Number = 0;
             var numSelecteds:int = 0;
             
-            for (i = oldCount; i < mEditorWorld.numChildren; ++ i)
+            for (i = oldEntitiesCount; i < mEditorWorld.numChildren; ++ i)
             {
                entities = (mEditorWorld.getChildAt (i) as Entity).GetSubEntities ();
                mEditorWorld.SelectEntities (entities);

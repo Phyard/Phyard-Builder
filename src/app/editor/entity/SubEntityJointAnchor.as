@@ -12,19 +12,11 @@ package editor.entity {
    
    import editor.setting.EditorSetting;
    
-   public class SubEntityJointAnchor extends SubEntity 
+   public class SubEntityJointAnchor extends WorldSubEntity 
    {
-      protected var mWorld:World;
-      
-      //private var mAnchorIndex:int;
-      
       public function SubEntityJointAnchor (world:World, mainEntity:Entity, anchorIndex:int)
       {
          super (world, mainEntity, anchorIndex);
-         
-         mWorld = world;
-         
-         //mAnchorIndex = anchorIndex;
       }
       
       public function GetAnchorIndex ():int

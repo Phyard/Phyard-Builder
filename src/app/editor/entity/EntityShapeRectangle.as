@@ -24,6 +24,8 @@ package editor.entity {
       public var mHalfWidth:Number;
       public var mHalfHeight:Number;
       
+      protected var mEnableVertexControllers:Boolean = true;
+      
       public function EntityShapeRectangle (world:World)
       {
          super (world);
@@ -45,18 +47,27 @@ package editor.entity {
          var drawBorder:Boolean = IsDrawBorder ();
          var borderThickness:Number = GetBorderThickness ();
          
-         borderThickness = 1;
-         
-         if ( ! drawBorder || borderThickness < 1)
+         if (mAiType >= 0)
+         {
+            filledColor =  Define.GetShapeFilledColor (mAiType);
+            borderColor = Define.ColorObjectBorder;
             drawBg = true;
+         }
+         
+         if ( ! drawBorder)
+         {
+            drawBg = true;
+            borderThickness = -1;
+         }
          
          if ( IsSelected () )
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
-            borderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (borderThickness * mWorld.GetZoomScale () < 3)
+               borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
-         alpha = 0.3 + GetTransparency () * 0.01 * 0.4;
+         alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderThickness, drawBg, filledColor);
          
@@ -74,7 +85,11 @@ package editor.entity {
             SetVertexControllersVisible (AreVertexControlPointsVisible ());
          }
          
-         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), GetHalfWidth (), GetHalfHeight () );
+         var borderThickness:Number = GetBorderThickness ();
+         if ( ! IsDrawBorder () )
+            borderThickness = 0;
+         
+         (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), GetHalfWidth () + borderThickness * 0.5 , GetHalfHeight () + borderThickness * 0.5 );
       }
       
       
@@ -198,6 +213,9 @@ package editor.entity {
       
       override public function SetVertexControllersVisible (visible:Boolean):void
       {
+         if (! mEnableVertexControllers)
+            return;
+         
          // mVertexControlPointsVisible = visible;
          super.SetVertexControllersVisible (visible);
          

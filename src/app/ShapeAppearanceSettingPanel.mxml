@@ -26,22 +26,29 @@
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="30%"/>
-      <mx:Label id="Label_DrawBackground" text="Filled Color:" textAlign="right"/>
+      <mx:Label id="Label_BackgroundColor" text="Filled Color:" textAlign="right"/>
       <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xFFFFFF"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border" width="30%"/>
-      <mx:Label id="Label_DrawBorder" text="Border Color:" textAlign="right"/>
+      <mx:Label id="Label_BorderColor" text="Border Color:" textAlign="right"/>
       <mx:ColorPicker id="ColorPicker_BorderColor" showTextField="true" selectedColor="0x000000"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
-      <mx:Label id="Label_BorderThickness" text="Border Thickness:" textAlign="right" width="30%"/>
-      <mx:NumericStepper id="NumericStepper_BorderThickness" stepSize="1" minimum="0" maximum="5" value="1" width="80" />
-      <mx:Label text="(Must be 1 now)" color="0x0000FF"/>
+      <mx:Spacer width="30%"/>
+      <mx:Label id="Label_BorderThickness" text="Border Thickness:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_BorderThickness" stepSize="1" minimum="0" maximum="255" value="1" width="80" />
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="30"/>
+      <mx:Spacer width="30%"/>
+      <mx:Label id="Label_BorderTransparency" text="Border Transparency:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_BorderTransparency" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
    </mx:HBox>
 
    <mx:Script>
@@ -70,34 +77,52 @@
                SelectList_AiType.enabled = true;
                Label_AiType.enabled = true;
                
+               CheckBox_IsVisible.selected = true;
+               
                Label_Transparency.enabled = false;
                NumericStepper_Transparency.enabled = false;
+               
                CheckBox_DrawBorder.enabled = true;
+               
+               Label_BorderColor.enabled = false;
                ColorPicker_BorderColor.enabled = false;
+               
                CheckBox_DrawBackground.enabled = false;
+               
+               Label_BackgroundColor.enabled = false;
                ColorPicker_BackgroundColor.enabled = false;
+               
+               Label_BorderThickness.enabled = false;
                NumericStepper_BorderThickness.enabled = false;
                
-               Label_DrawBackground.enabled = false;
-               Label_DrawBorder.enabled = false;
-               Label_BorderThickness.enabled = false;
+               Label_BorderTransparency.enabled = false;
+               NumericStepper_BorderTransparency.enabled = false;
             }
             else
             {
                SelectList_AiType.enabled = false;
                Label_AiType.enabled = false;
                
+               CheckBox_IsVisible.selected = true;
+               
                Label_Transparency.enabled = true;
                NumericStepper_Transparency.enabled = true;
-               CheckBox_DrawBorder.enabled = true;
-               ColorPicker_BorderColor.enabled = true;
-               CheckBox_DrawBackground.enabled = true;
-               ColorPicker_BackgroundColor.enabled = true;
-               NumericStepper_BorderThickness.enabled = false;
                
-               Label_DrawBackground.enabled = true;
-               Label_DrawBorder.enabled = true;
-               Label_BorderThickness.enabled = false;
+               CheckBox_DrawBorder.enabled = true;
+               
+               Label_BorderColor.enabled = true;
+               ColorPicker_BorderColor.enabled = true;
+               
+               CheckBox_DrawBackground.enabled = true;
+               
+               Label_BackgroundColor.enabled = true;
+               ColorPicker_BackgroundColor.enabled = true;
+               
+               Label_BorderThickness.enabled = true;
+               NumericStepper_BorderThickness.enabled = true;
+               
+               Label_BorderTransparency.enabled = true;
+               NumericStepper_BorderTransparency.enabled = true;
             }
          }
          
@@ -115,6 +140,7 @@
             NumericStepper_BorderThickness.value = inputValues.mBorderThickness;
             CheckBox_DrawBackground.selected = inputValues.mDrawBackground;
             ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;
+            NumericStepper_BorderTransparency.value = inputValues.mBorderTransparency;
             
             OnAiTypeSelectListClick ();
          }
@@ -130,6 +156,7 @@
             returnValues.mBorderThickness = NumericStepper_BorderThickness.value;
             returnValues.mDrawBackground = CheckBox_DrawBackground.selected;
             returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
+            returnValues.mBorderTransparency = NumericStepper_BorderTransparency.value;
          }
          
      ]]>

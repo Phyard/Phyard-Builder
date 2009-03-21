@@ -1,6 +1,7 @@
 
 package player.entity {
    
+   import flash.display.Shape;
    import flash.geom.Point;
    
    import com.tapirgames.util.GraphicsUtil;
@@ -18,9 +19,17 @@ package player.entity {
       protected var mHalfWidth:Number = 0;
       protected var mHalfHeight:Number = 0;
       
+      protected var mBackgroundShape:Shape = null;
+      protected var mBorderShape:Shape = null;
+      
       public function EntityShapeRectangle (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
+         
+         mBackgroundShape = new Shape ();
+         mBorderShape = new Shape ();
+         addChild (mBackgroundShape);
+         addChild (mBorderShape);
       }
       
       public function GetWidth ():Number
@@ -31,6 +40,32 @@ package player.entity {
       public function GetHeight ():Number
       {
          return mHalfHeight * 2.0;
+      }
+      
+      public function GetPhysicsWidth ():Number
+      {
+         //if (mWorld.GetVersion () < 0x0105)
+         //   return mHalfWidth * 2.0;
+         
+         var borderThickness:uint = GetBorderThickness ();
+         
+         if (borderThickness == 0)
+            return mHalfWidth * 2.0;
+         else
+            return mHalfWidth * 2.0 + borderThickness - 1.0;
+      }
+      
+      public function GetPhysicsHeight ():Number
+      {
+         //if (mWorld.GetVersion () < 0x0105)
+         //   return mHalfHeight * 2.0;
+         
+         var borderThickness:uint = GetBorderThickness ();
+         
+         if (borderThickness == 0)
+            return mHalfHeight * 2.0;
+         else
+            return mHalfHeight * 2.0 + borderThickness - 1.0;
       }
       
       override public function BuildFromParams (params:Object):void
@@ -59,10 +94,13 @@ package player.entity {
             var tx:Number;
             var ty:Number;
             
-            tx = - mHalfWidth; ty = - mHalfHeight; displayPoints [0] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx =   mHalfWidth; ty = - mHalfHeight; displayPoints [1] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx =   mHalfWidth; ty =   mHalfHeight; displayPoints [2] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx = - mHalfWidth; ty =   mHalfHeight; displayPoints [3] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            var halfWidth:Number = GetPhysicsWidth () * 0.5;
+            var halfHeight:Number = GetPhysicsHeight () * 0.5;
+            
+            tx = - halfWidth; ty = - halfHeight; displayPoints [0] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            tx =   halfWidth; ty = - halfHeight; displayPoints [1] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            tx =   halfWidth; ty =   halfHeight; displayPoints [2] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
+            tx = - halfWidth; ty =   halfHeight; displayPoints [3] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
             
             if (IsPhysicsEntity () && mPhysicsProxy == null)
             {
@@ -89,21 +127,33 @@ package player.entity {
          var drawBorder:Boolean = IsDrawBorder ();
          var borderThickness:Number = GetBorderThickness ();
          
-         borderThickness = 1;
+         GraphicsUtil.Clear (this);
+         alpha = 1.0;
          
-         alpha = GetTransparency () * 0.01;
+         GraphicsUtil.Clear (mBackgroundShape);
+         mBackgroundShape.alpha = GetTransparency () * 0.01;
+         if (drawBg)
+         {
+            GraphicsUtil.DrawRect (mBackgroundShape, 
+                                    - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
+                                    borderColor, -1, drawBg, filledColor);
+         }
          
-         if (drawBg || drawBorder)
-            GraphicsUtil.ClearAndDrawRect (this, 
-                                          - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
-                                          borderColor, borderThickness, drawBg, filledColor);
+         GraphicsUtil.Clear (mBorderShape);
+         mBorderShape.alpha = GetBorderTransparency () * 0.01;
+         if (drawBorder)
+         {
+            GraphicsUtil.DrawRect (mBorderShape, 
+                                       - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
+                                       borderColor, borderThickness, false, filledColor);
+         }
          
          if (Define.IsBombShape (GetShapeAiType ()))
          {
-            GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
+            GraphicsUtil.DrawRect (mBackgroundShape, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
          }
       }
-
+      
       
       
    }

@@ -51,20 +51,29 @@ package editor.entity {
          var drawBorder:Boolean = IsDrawBorder ();
          var borderThickness:Number = GetBorderThickness ();
          
-         borderThickness = 1;
-         
-         if ( ! drawBorder || borderThickness < 1)
+         if (mAiType >= 0)
+         {
+            filledColor =  Define.GetShapeFilledColor (mAiType);
+            borderColor = Define.ColorObjectBorder;
             drawBg = true;
+         }
+         
+         if ( ! drawBorder)
+         {
+            drawBg = true;
+            borderThickness = -1;
+         }
          
          if ( IsSelected () )
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
-            borderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (borderThickness * mWorld.GetZoomScale () < 3)
+               borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
-         alpha = 0.3 + GetTransparency () * 0.01 * 0.4;
+         alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
          
-         GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, 
+         GraphicsUtil.ClearAndDrawCircle (this, 0, 0, mRadius, borderColor, 
                                                             borderThickness, drawBg, filledColor);
          
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
@@ -100,7 +109,11 @@ package editor.entity {
             mSelectionProxy.SetUserData (this);
          }
          
-         (mSelectionProxy as SelectionProxyCircle).RebuildCircle ( GetRotation (), GetPositionX (), GetPositionY (), GetRadius () );
+         var borderThickness:Number = GetBorderThickness ();
+         if ( ! IsDrawBorder () )
+            borderThickness = 0;
+         
+         (mSelectionProxy as SelectionProxyCircle).RebuildCircle ( GetRotation (), GetPositionX (), GetPositionY (), GetRadius () + borderThickness * 0.5 );
       }
       
       

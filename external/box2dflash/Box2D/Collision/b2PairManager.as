@@ -47,6 +47,8 @@ public class b2PairManager
 			m_pairBuffer[i] = new b2BufferedPair();
 		}
 		
+		m_freePair = 0;
+		
 		var pair:b2Pair;
 		m_pairs = new Array(b2Settings.b2_maxPairs);
 		for (i = 0; i < b2Settings.b2_maxPairs; ++i)
@@ -73,6 +75,34 @@ public class b2PairManager
 		m_pairBufferCount = 0;
 	}
 	//~b2PairManager();
+	
+	//>>add by LX
+	public function Reset ():void
+	{
+	   var i:uint;
+	   
+		for (i = 0; i < b2Pair.b2_tableCapacity; ++i)
+		{
+			m_hashTable[i] = b2Pair.b2_nullPair;
+		}
+		
+		m_freePair = 0;
+		var pair:b2Pair;
+		
+		for (i = 0; i < b2Settings.b2_maxPairs; ++i)
+		{
+			pair = m_pairs[i];
+			pair.proxyId1 = b2Pair.b2_nullProxy;
+			pair.proxyId2 = b2Pair.b2_nullProxy;
+			pair.userData = null;
+			pair.status = 0;
+			pair.next = (i + 1);
+		}
+		m_pairs[int(b2Settings.b2_maxPairs-1)].next = b2Pair.b2_nullPair;
+		m_pairCount = 0;
+		m_pairBufferCount = 0;
+	}
+	//<<
 	
 	public function Initialize(broadPhase:b2BroadPhase, callback:b2PairCallback) : void{
 		m_broadPhase = broadPhase;
@@ -269,6 +299,8 @@ public class b2PairManager
 		
 		++m_pairCount;
 		
+		//trace ("m_pairCount = " + m_pairCount + ", m_freePair = " + m_freePair);
+		
 		return pair;
 	}
 
@@ -317,6 +349,9 @@ public class b2PairManager
 				
 				m_freePair = index;
 				--m_pairCount;
+		
+		//trace ("---- m_pairCount = " + m_pairCount + ", m_freePair = " + m_freePair);
+		
 				return userData;
 			}
 			else
@@ -330,7 +365,7 @@ public class b2PairManager
 		//b2Settings.b2Assert(false);
 		return null;
 	}
-
+	
 	private function Find(proxyId1:uint, proxyId2:uint):b2Pair{
 		
 		if (proxyId1 > proxyId2){
@@ -344,16 +379,23 @@ public class b2PairManager
 		
 		return FindHash(proxyId1, proxyId2, hash);
 	}
+	
 	private function FindHash(proxyId1:uint, proxyId2:uint, hash:uint):b2Pair{
 		var pair:b2Pair;
 		var index:uint = m_hashTable[hash];
+		
+		//var loops:int = 0;
 		
 		pair = m_pairs[index];
 		while( index != b2Pair.b2_nullPair && Equals(pair, proxyId1, proxyId2) == false)
 		{
 			index = pair.next;
 			pair = m_pairs[index];
+			
+			//++ loops;
 		}
+		
+		//trace ("loops = " + loops);
 		
 		if ( index == b2Pair.b2_nullPair )
 		{

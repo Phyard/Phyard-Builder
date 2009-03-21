@@ -20,7 +20,8 @@ package common {
 //===========================================================================
       
       //public static const MaxEntitiesCount:int = 512;
-      public static const MaxEntitiesCount:int = 1024;
+      //public static const MaxEntitiesCount:int = 1024;
+      public static const MaxEntitiesCount:int = 1024 * 3;
       
       public static const DefaultWorldWidth:int = 600; 
       public static const DefaultWorldHeight:int = 600; 
@@ -143,8 +144,16 @@ package common {
       public static const MinGravityControllerRadium:uint = 10;
       public static const MaxGravityControllerRadium:uint = 200;
       
-      public static const GravityControllerZeroRegionRadius:int = 5;
-      public static const GravityControllerOneRegionThinkness:int = 7;
+      public static const GravityControllerZeroRegionRadius:int = 7;
+      public static const GravityControllerOneRegionThinkness:int = 10;
+      
+      public static const GravityController_InteractiveZone_AllArea:uint = 0;
+      public static const GravityController_InteractiveZone_Up:uint = 1;
+      public static const GravityController_InteractiveZone_Down:uint = 2;
+      public static const GravityController_InteractiveZone_Left:uint = 3;
+      public static const GravityController_InteractiveZone_Right:uint = 4;
+      public static const GravityController_InteractiveZone_Center:uint = 5;
+      public static const GravityController_InteractiveZonesCount:uint = 6;
       
 //===========================================================================
 // colors
@@ -185,6 +194,7 @@ package common {
       public static const EntityType_ShapeCircle:int = 10;
       public static const EntityType_ShapeRectangle:int = 11;
       public static const EntityType_ShapePolygon:int = 12;
+      public static const EntityType_ShapePolyline:int = 13;
       
       public static const EntityType_ShapeText:int = 31; // from v1.02
       public static const EntityType_ShapeGravityController:int = 32; // from v1.02
@@ -196,11 +206,14 @@ package common {
       
       public static const SubEntityType_JointAnchor:int = 100;
       
+      public static const EntityType_UtilityCamera:int = 110;
+      
       public static function IsBasicShapeEntity (entityType:int):Boolean
       {
-         return   entityType == EntityType_ShapeCircle 
+         return   entityType == EntityType_ShapeCircle
                || entityType == EntityType_ShapeRectangle
                || entityType == EntityType_ShapePolygon
+               || entityType == EntityType_ShapePolyline
                ;
       }
       
@@ -209,6 +222,7 @@ package common {
          return   entityType == EntityType_ShapeCircle 
                || entityType == EntityType_ShapeRectangle 
                || entityType == EntityType_ShapePolygon 
+               || entityType == EntityType_ShapePolyline
                || entityType == EntityType_ShapeText
                || entityType == EntityType_ShapeGravityController
                ;
@@ -216,14 +230,21 @@ package common {
       
       public static function IsPhysicsJointEntity (entityType:int):Boolean
       {
-         return entityType == EntityType_JointHinge || entityType == EntityType_JointSlider || entityType == EntityType_JointDistance
-                              || entityType == EntityType_JointSpring // v2.0
-                              ;
+         return   entityType == EntityType_JointHinge 
+               || entityType == EntityType_JointSlider 
+               || entityType == EntityType_JointDistance
+               || entityType == EntityType_JointSpring // v2.0
+               ;
       }
       
       public static function IsJointAnchorEntity (entityType:int):Boolean
       {
          return entityType == SubEntityType_JointAnchor;
+      }
+      
+      public static function IsUtilityEntity (entityType:int):Boolean
+      {
+         return entityType == EntityType_UtilityCamera;
       }
       
 //===========================================================================

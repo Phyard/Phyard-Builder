@@ -71,6 +71,18 @@ package player.entity {
             entityDefine.mRotation = 0;
             entityDefine.mIsVisible = true;
             
+            entityDefine.mRadius = 1.0;
+            entityDefine.mAppearanceType = Define.CircleAppearanceType_Circle;
+            
+            entityDefine.mDrawBorder = false;
+            entityDefine.mBorderColor = 0x0;
+            entityDefine.mBorderThickness = 1;
+            entityDefine.mBorderTransparency = 100;
+            
+            entityDefine.mDrawBackground = true;
+            entityDefine.mBackgroundColor = 0x0;
+            entityDefine.mTransparency = 100;
+            
             entityDefine.mAiType = Define.ShapeAiType_BombParticle;
             entityDefine.mIsStatic = false;
             entityDefine.mIsBullet = true;
@@ -78,21 +90,11 @@ package player.entity {
             entityDefine.mFriction = 0;
             entityDefine.mRestitution = 0.8;
             
-            entityDefine.mRadius = 1.0;
-            entityDefine.mAppearanceType = Define.CircleAppearanceType_Ball;
-            
             entityDefine.mCollisionCategoryIndex = Define.CollisionCategoryId_HiddenCategory;
-            
-            entityDefine.mDrawBorder = false;
-            entityDefine.mDrawBackground = true;
-            
-            entityDefine.mBorderColor = 0x0;
-            entityDefine.mBorderThickness = 1;
-            entityDefine.mBackgroundColor = 0x0;
-            entityDefine.mTransparency = 100;
             
             entityDefine.mIsPhysicsEnabled = true;
             entityDefine.mIsSensor = false;
+            entityDefine.mIsHollow = false;
             
         // 
             

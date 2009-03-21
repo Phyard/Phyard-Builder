@@ -42,11 +42,21 @@ package editor.world {
       public function EntityContainer ()
       {
       //
-         mSelectionEngine = new SelectionEngine ();
+         // it is best to set the aabb runtimely when user change the playfield size
+         
+         var largestHalfSideWidth :int = Define.LargeWorldHalfWidth + 1000 
+         var largestHalfSideHeight:int = Define.LargeWorldHalfHeight + 1000;
+         mSelectionEngine = new SelectionEngine (new Point (-largestHalfSideWidth, -largestHalfSideHeight), new Point (largestHalfSideWidth, largestHalfSideHeight));
          
          mSelectionListManager = new SelectionListManager ();
       }
       
+      public function Destroy ():void
+      {
+         DestroyAllEntities ();
+         
+         mSelectionEngine.Destroy ();
+      }
       
       public function Update (escapedTime:Number):void
       {

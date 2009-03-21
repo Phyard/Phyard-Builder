@@ -20,13 +20,18 @@ package editor.entity {
    
    public class EntityShapeGravityController extends EntityShapeCircle 
    {
-      private var mIsInteractive:Boolean = true;
       private var mInitialGravityAcceleration:Number = Define.DefaultGravityAcceleration;
       private var mInitialGravityAngle:int = 90; // not float, for byteArray.writeArray has precision problems
       
+      //private var mIsInteractive:Boolean = true;
       
+      private var mInteractiveZones:int = 1 << Define.GravityController_InteractiveZone_AllArea;
+      
+      public var mInteractiveConditions:int = 0; // currently, only one condition: "when all independent bodies are stopped"
       
       private var mTextG:Bitmap = null;
+      
+      private var mInteractiveZonesParams:Array = null;
       
       public function EntityShapeGravityController (world:World)
       {
@@ -43,14 +48,31 @@ package editor.entity {
          return "Gravity Controller";
       }
       
-      public function SetInteractive (interactive:Boolean):void
+      //public function SetInteractive (interactive:Boolean):void
+      //{
+      //   mIsInteractive = interactive;
+      //}
+      //
+      //public function IsInteractive ():Boolean
+      //{
+      //   return mIsInteractive;
+      //}
+      
+      public function SetInteractiveZones (zoneFlags:uint):void
       {
-         mIsInteractive = interactive;
+         mInteractiveZones = zoneFlags;
+         
+         UpdateInteractiveZonesParams ();
       }
       
-      public function IsInteractive ():Boolean
+      public function GetInteractiveZones ():uint
       {
-         return mIsInteractive;
+         return mInteractiveZones;
+      }
+      
+      public function IsZoneInteractive (zoneId:uint):Boolean
+      {
+         return (mInteractiveZones & (1 << zoneId)) != 0;
       }
       
       public function SetInitialGravityAcceleration (ga:Number):void
@@ -109,7 +131,7 @@ package editor.entity {
             borderSize = 1;
          }
          
-         var bandColor:uint = IsInteractive () ? Define.ColorMovableObject : Define.ColorStaticObject;
+         var bandColor:uint = IsZoneInteractive (Define.GravityController_InteractiveZone_AllArea) ? Define.ColorMovableObject : Define.ColorStaticObject;
          
          alpha = 0.7;
          
@@ -127,6 +149,23 @@ package editor.entity {
          GraphicsUtil.DrawCircle (this, 0, 0, radius_1b, borderColor, borderSize, true, bandColor);
          GraphicsUtil.DrawCircle (this, 0, 0, radius_1a, mBorderColor, 1, true, mFilledColor);
          GraphicsUtil.DrawCircle (this, 0, 0, radius_0b, mBorderColor, 1, true, mFilledColor);
+         
+         var params:Array;
+         if (mInteractiveZonesParams == null)
+            UpdateInteractiveZonesParams ();
+         
+         var outerRadius:Number = mRadius - Define.GravityControllerZeroRegionRadius;
+         if (outerRadius < Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius)
+            outerRadius = Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius;
+         
+         for (var i:int = Define.GravityController_InteractiveZone_Up; i <= Define.GravityController_InteractiveZone_Right; ++ i)
+         {
+            params = mInteractiveZonesParams [i];
+            if (IsZoneInteractive (i))
+            {
+               GraphicsUtil.DrawCircle (this, params [0] * outerRadius, params[1] * outerRadius, params [2], mBorderColor, 1, true, mFilledColor);
+            }
+         }
          
          var direction:Number = mInitialGravityAngle * Math.PI / 180.0;;
          var acceleration:Number;
@@ -151,6 +190,28 @@ package editor.entity {
             gy1 = acceleration * Math.sin (direction);
          }
          GraphicsUtil.DrawLine (this, gx0, gy0, gx1, gy1);
+         
+         if ( IsZoneInteractive (Define.GravityController_InteractiveZone_Up) )
+         {
+         }
+      }
+      
+      private function UpdateInteractiveZonesParams ():void
+      {
+         if (mInteractiveZonesParams == null)
+            mInteractiveZonesParams = new Array (Define.GravityController_InteractiveZonesCount);
+            
+         var outerRadius:Number = mRadius - Define.GravityControllerZeroRegionRadius;
+         if (outerRadius < Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius)
+            outerRadius = Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius;
+         
+         // isEnabled?, centerX, centerY, radius
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_AllArea] = [0, 0, 0];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Up]      = [0, -1, Define.GravityControllerZeroRegionRadius];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Down]    = [0, 1, Define.GravityControllerZeroRegionRadius];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Left]    = [- 1, 0, Define.GravityControllerZeroRegionRadius];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Right]   = [  1, 0, Define.GravityControllerZeroRegionRadius];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Center]  = [0, 0, Define.GravityControllerZeroRegionRadius];
       }
       
 //====================================================================

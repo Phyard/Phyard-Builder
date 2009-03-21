@@ -81,6 +81,7 @@
                         <mx:Spacer height="10"/>
                         <mx:Button id="Button_CreateBox_Bomb" toolTip="Create Bomb Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_bomb.png')" downIcon="@Embed('res/create/box-sel_bomb.png')" overIcon="@Embed('res/create/box_bomb.png')" selectedUpIcon="@Embed('res/create/box-sel_bomb.png')" selectedOverIcon="@Embed('res/create/box-sel_bomb.png')" selectedDownIcon="@Embed('res/create/box_bomb.png')"   />
                         <mx:Button id="Button_CreateText" toolTip="Create Text" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/text.png')" downIcon="@Embed('res/create/text-sel.png')" overIcon="@Embed('res/create/text.png')" selectedUpIcon="@Embed('res/create/text-sel.png')" selectedOverIcon="@Embed('res/create/text-sel.png')" selectedDownIcon="@Embed('res/create/text.png')"   />
+                        <mx:Button id="Button_CreateCamera" toolTip="Create Camera" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/create/camera-disabled.png')"  upIcon="@Embed('res/create/camera.png')" downIcon="@Embed('res/create/camera-sel.png')" overIcon="@Embed('res/create/camera.png')" selectedUpIcon="@Embed('res/create/camera-sel.png')" selectedOverIcon="@Embed('res/create/camera-sel.png')" selectedDownIcon="@Embed('res/create/camera.png')"   />
                         <mx:Spacer height="10"/>
                         <mx:Button id="Button_CreatePolygon" toolTip="Create Polygon" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/polygon.png')" downIcon="@Embed('res/create/polygon-sel.png')" overIcon="@Embed('res/create/polygon.png')" selectedUpIcon="@Embed('res/create/polygon-sel.png')" selectedOverIcon="@Embed('res/create/polygon-sel.png')" selectedDownIcon="@Embed('res/create/polygon.png')"   />
                         <mx:Spacer height="10"/>
@@ -100,6 +101,9 @@
                         <mx:Spacer height="10"/>
                         <mx:Button id="Button_CreateBall_Bomb" toolTip="Create Bomb Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_bomb.png')" downIcon="@Embed('res/create/ball-sel_bomb.png')" overIcon="@Embed('res/create/ball_bomb.png')" selectedUpIcon="@Embed('res/create/ball-sel_bomb.png')" selectedOverIcon="@Embed('res/create/ball-sel_bomb.png')" selectedDownIcon="@Embed('res/create/ball_bomb.png')"   />
                         <mx:Button id="Button_CreateGravityController" toolTip="Create Cravity Controller" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/create/gravity-controller-disabled.png')" selectedDisabledIcon="@Embed('res/create/gravity-controller-disabled.png')" upIcon="@Embed('res/create/gravity-controller.png')" downIcon="@Embed('res/create/gravity-controller-sel.png')" overIcon="@Embed('res/create/gravity-controller.png')" selectedUpIcon="@Embed('res/create/gravity-controller-sel.png')" selectedOverIcon="@Embed('res/create/gravity-controller-sel.png')" selectedDownIcon="@Embed('res/create/gravity-controller.png')"   />
+                        <mx:Spacer height="36"/>
+                        <mx:Spacer height="10"/>
+                        <mx:Button id="Button_CreatePolyline" toolTip="Create Polyline" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/polyline.png')" downIcon="@Embed('res/create/polyline-sel.png')" overIcon="@Embed('res/create/polyline.png')" selectedUpIcon="@Embed('res/create/polyline-sel.png')" selectedOverIcon="@Embed('res/create/polyline-sel.png')" selectedDownIcon="@Embed('res/create/polyline.png')"   />
                         <mx:Spacer height="10"/>
                      </mx:Box>
                   </mx:Box>
@@ -210,6 +214,8 @@
                MainView.mButtonCreateText = Button_CreateText;
                MainView.mButtonCreateCravityController = Button_CreateGravityController;
                MainView.mButtonCreatePolygon = Button_CreatePolygon;
+               MainView.mButtonCreatePolyline = Button_CreatePolyline;
+               MainView.mButtonCreateCamera = Button_CreateCamera;
                
                Button_CreateBox_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBox_Movable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -239,6 +245,8 @@
                Button_CreateText.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateGravityController.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreatePolygon.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreatePolyline.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateCamera.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                MainView.mButtonClone = Button_Clone;
                MainView.mButtonDelete = Button_Delete;
@@ -291,6 +299,8 @@
                MainView.ShowShapeRectangleSettingDialog = ShowShapeRectangleSettingDialog;
                MainView.ShowShapeCircleSettingDialog = ShowShapeCircleSettingDialog;
                MainView.ShowShapePolygonSettingDialog = ShowShapePolygonSettingDialog;
+               MainView.ShowShapePolylineSettingDialog = ShowShapePolylineSettingDialog;
+               
                MainView.ShowShapeTextSettingDialog = ShowShapeTextSettingDialog;
                MainView.ShowShapeGravityControllerSettingDialog = ShowShapeGravityControllerSettingDialog;
                
@@ -480,6 +490,18 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:ShapePolygonSettingDialog = new ShapePolygonSettingDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowShapePolylineSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:ShapePolylineSettingDialog = new ShapePolylineSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (OnCloseDialog);

@@ -55,8 +55,9 @@ package player.physics {
             mFriendTable [i] = 0;
       }
       
-      public function CreateCollisionCategoryFriendLink (groupIndex1:uint, groupIndex2:uint):void
+      public function CreateCollisionCategoryFriendLink (groupIndex1:int, groupIndex2:int):void
       {
+      trace ("groupIndex1 = " + groupIndex1 + ", groupIndex2 = " + groupIndex2 + ", mNumberGroups = " + mNumberGroups);
          if (groupIndex1 < 0)
             groupIndex1 = - groupIndex1;
          if (groupIndex2 < 0)

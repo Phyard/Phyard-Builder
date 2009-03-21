@@ -16,8 +16,10 @@ package editor.world {
    import editor.entity.EntityShapeCircle;
    import editor.entity.EntityShapeRectangle;
    import editor.entity.EntityShapePolygon;
+   import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeGravityController;
+   import editor.entity.EntityUtilityCamera;
    
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointDistance;
@@ -41,6 +43,76 @@ package editor.world {
       
       public var mCollisionManager:CollisionManager;
       
+      public var mSelectionEngineForVertexes:SelectionEngine; // used within package
+      
+      // temp the 2 is not used
+      // somewhere need to be modified to use the 2 
+      public var mNumGravityControllers:int = 0;
+      public var mNumCameraEntities:int = 0;
+      
+      public function World ()
+      {
+      //
+         mBrothersManager = new BrothersManager ();
+         
+         mCollisionManager = new CollisionManager ();
+         
+         var largestHalfSideWidth :int = Define.LargeWorldHalfWidth + 1000 
+         var largestHalfSideHeight:int = Define.LargeWorldHalfHeight + 1000;
+         //mSelectionEngineForVertexes = new SelectionEngine (new Point (-largestHalfSideWidth, -largestHalfSideHeight), new Point (largestHalfSideWidth, largestHalfSideHeight));
+         mSelectionEngineForVertexes = mSelectionEngine;
+      }
+      
+      override public function Destroy ():void
+      {
+         mCollisionManager.Destroy ();
+         
+         super.Destroy ();
+         
+         if (mSelectionEngineForVertexes != mSelectionEngine)
+            mSelectionEngineForVertexes.Destroy ();
+      }
+      
+      override public function DestroyAllEntities ():void
+      {
+         mCollisionManager.DestroyAllEntities ();
+         
+         super.DestroyAllEntities ();
+      }
+      
+      override public function DestroyEntity (entity:Entity):void
+      {
+      // friends
+         
+         
+         
+      // brothers
+         
+         mBrothersManager.OnDestroyEntity (entity);
+         
+      // ...
+         
+         super.DestroyEntity (entity);
+      }
+      
+      override public function GetVertexControllersAtPoint (displayX:Number, displayY:Number):Array
+      {
+         var objectArray:Array = mSelectionEngineForVertexes.GetObjectsAtPoint (displayX, displayY);
+         var vertexControllerArray:Array = new Array ();
+         
+         for (var i:uint = 0; i < objectArray.length; ++ i)
+         {
+            if (objectArray [i] is VertexController)
+               vertexControllerArray.push (objectArray [i]);
+         }
+         
+         return vertexControllerArray;
+      }
+      
+//=================================================================================
+//   settings 
+//=================================================================================
+      
       private var mAuthorName:String = "";
       private var mAuthorHomepage:String = "";
       private var mShareSourceCode:Boolean = false;
@@ -59,18 +131,6 @@ package editor.world {
       private var mBorderColor:uint = Define.ColorStaticObject;
       
       private var mZoomScale:Number = 1.0;
-      
-      public function World ()
-      {
-      //
-         mBrothersManager = new BrothersManager ();
-         
-         mCollisionManager = new CollisionManager ();
-      }
-      
-//=================================================================================
-//   settings
-//=================================================================================
       
       public function SetAuthorName (name:String):void
       {
@@ -224,6 +284,7 @@ package editor.world {
          scaleX = zoomScale;
          scaleY = zoomScale;
          
+         /*
          var selectedEntities:Array = GetSelectedEntities ();
          var entity:Entity;
          for (var entityId:int = 0; entityId < selectedEntities.length; ++ entityId)
@@ -234,6 +295,14 @@ package editor.world {
                entity.SetVertexControllersVisible (false);
                entity.SetVertexControllersVisible (true);
             }
+         }
+         */
+         
+         var entity:Entity;
+         for (var entityId:int = 0; entityId < numChildren; ++ entityId)
+         {
+            entity = getChildAt (entityId) as Entity;
+            entity.OnWorldZoomScaleChanged ();
          }
       }
       
@@ -388,27 +457,6 @@ package editor.world {
 //   create and destroy entities
 //=================================================================================
       
-      override public function DestroyAllEntities ():void
-      {
-         super.DestroyAllEntities ();
-         mCollisionManager.DestroyAllEntities ();
-      }
-      
-      override public function DestroyEntity (entity:Entity):void
-      {
-      // friends
-         
-         
-         
-      // brothers
-         
-         mBrothersManager.OnDestroyEntity (entity);
-         
-      // ...
-         
-         super.DestroyEntity (entity);
-      }
-      
       public function CreateEntityShapeCircle ():EntityShapeCircle
       {
          if (numChildren >= Define.MaxEntitiesCount)
@@ -446,6 +494,19 @@ package editor.world {
          polygon.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
          
          return polygon;
+      }
+      
+      public function CreateEntityShapePolyline ():EntityShapePolyline
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
+         var polyline:EntityShapePolyline = new EntityShapePolyline (this);
+         addChild (polyline);
+         
+         polyline.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
+         
+         return polyline;
       }
       
       public function CreateEntityJointDistance ():EntityJointDistance
@@ -507,11 +568,22 @@ package editor.world {
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
-            
+         
          var gController:EntityShapeGravityController = new EntityShapeGravityController(this);
          addChild (gController);
          
          return gController;
+      }
+      
+      public function CreateEntityUtilityCamera ():EntityUtilityCamera
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var camera:EntityUtilityCamera = new EntityUtilityCamera(this);
+         addChild (camera);
+         
+         return camera;
       }
       
 //=================================================================================
@@ -585,6 +657,30 @@ package editor.world {
                var item:Object = new Object ();
                item.mEntityIndex = i;
                item.mGravityController = gController;
+               list.push (item);
+            }
+         }
+         
+         return list;
+      }
+      
+      public function GetCameraList ():Array
+      {
+         var list:Array = new Array ();
+         
+         var child:Object;
+         var camera:EntityUtilityCamera;
+         
+         for (var i:int = 0; i < numChildren; ++ i)
+         {
+            child = getChildAt (i);
+            if (child is EntityUtilityCamera)
+            {
+               camera = child as EntityUtilityCamera;
+               
+               var item:Object = new Object ();
+               item.mEntityIndex = i;
+               item.mCamera = camera;
                list.push (item);
             }
          }

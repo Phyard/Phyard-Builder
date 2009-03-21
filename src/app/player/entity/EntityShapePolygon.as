@@ -1,6 +1,7 @@
 
 package player.entity {
    
+   import flash.display.Shape;
    import flash.geom.Point;
    
    import com.tapirgames.util.GraphicsUtil;
@@ -8,7 +9,7 @@ package player.entity {
    import player.world.World;
    
    import player.physics.PhysicsProxyBody;
-   import player.physics.PhysicsProxyShapePolygon;
+   import player.physics.PhysicsProxyShape;
    
    import common.Define;
    
@@ -17,9 +18,17 @@ package player.entity {
       
       protected var mLocalPoints:Array = null;
       
+      protected var mBackgroundShape:Shape = null;
+      protected var mBorderShape:Shape = null;
+      
       public function EntityShapePolygon (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
+         
+         mBackgroundShape = new Shape ();
+         mBorderShape = new Shape ();
+         addChild (mBackgroundShape);
+         addChild (mBorderShape);
       }
       
       public function GetVertexPointsCount ():int
@@ -67,22 +76,45 @@ package player.entity {
             var cos:Number = Math.cos (rot);
             var sin:Number = Math.sin (rot);
             
+            var i:int;
             var displayPoints:Array = new Array (mLocalPoints.length);
             var tx:Number;
             var ty:Number;
-            for (var i:int = 0; i < displayPoints.length; ++ i)
+            for (i = 0; i < displayPoints.length; ++ i)
             {
                tx = mLocalPoints [i].x;
                ty = mLocalPoints [i].y;
                displayPoints [i] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
             }
             
-            if (IsPhysicsEntity () && mPhysicsProxy == null)
+            if (mPhysicsProxy == null)
             {
-               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeConcavePolygon (
-                                       mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
+               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShape (mShapeContainer.mPhysicsProxy as PhysicsProxyBody);
                
                mPhysicsProxy.SetUserData (this);
+               
+               if ( ! IsHollow () )
+                  mWorld.mPhysicsEngine.AddConcavePolygonToProxyShape ((mPhysicsProxy as PhysicsProxyShape), displayPoints, params);
+               
+            // border
+               
+               var borderThickness:uint = GetBorderThickness ();
+               
+               if (borderThickness > 1)
+               {
+                  borderThickness = borderThickness - 1.0;
+                  var halfThickness:Number = borderThickness * 0.5;
+                  
+                  if (GetVertexPointsCount () > 0)
+                     mWorld.mPhysicsEngine.AddCircleToProxyShape ((mPhysicsProxy as PhysicsProxyShape), displayPoints [0].x, displayPoints [0].y, halfThickness, params);
+                  for (i = 1; i < mLocalPoints.length; ++ i)
+                  {
+                     mWorld.mPhysicsEngine.AddLineSegmentToProxyShape ((mPhysicsProxy as PhysicsProxyShape), displayPoints [i - 1].x, displayPoints [i - 1].y, displayPoints [i].x, displayPoints [i].y, borderThickness, params);
+                     mWorld.mPhysicsEngine.AddCircleToProxyShape ((mPhysicsProxy as PhysicsProxyShape), displayPoints [i].x, displayPoints [i].y, halfThickness, params);
+                  }
+                  if (GetVertexPointsCount () > 2)
+                     mWorld.mPhysicsEngine.AddLineSegmentToProxyShape ((mPhysicsProxy as PhysicsProxyShape), displayPoints [displayPoints.length - 1].x, displayPoints [displayPoints.length - 1].y, displayPoints [0].x, displayPoints [0].y, borderThickness, params);
+               }
             }
          }
          
@@ -102,27 +134,30 @@ package player.entity {
          var drawBorder:Boolean = IsDrawBorder ();
          var borderThickness:Number = GetBorderThickness ();
          
-         borderThickness = 1;
+         GraphicsUtil.Clear (this);
+         alpha = 1.0;
          
-         alpha = GetTransparency () * 0.01;
+         GraphicsUtil.Clear (mBackgroundShape);
+         mBackgroundShape.alpha = GetTransparency () * 0.01;
+         if (drawBg)
+         {
+            GraphicsUtil.DrawPolygon (mBackgroundShape, mLocalPoints, borderColor, -1, drawBg, filledColor);
+         }
          
-         if (GetVertexPointsCount () == 1)
+         GraphicsUtil.Clear (mBorderShape);
+         mBorderShape.alpha = GetBorderTransparency () * 0.01;
+         if (drawBorder)
          {
-            GraphicsUtil.Clear (this);
-         }
-         else if (GetVertexPointsCount () == 2)
-         {
-            if (drawBg || drawBorder)
-               GraphicsUtil.ClearAndDrawLine (this, mLocalPoints[0].x, mLocalPoints[0].y, mLocalPoints[1].x, mLocalPoints[1].y, borderColor, borderThickness);
-         }
-         else if (GetVertexPointsCount () > 2)
-         {
-            if (drawBg || drawBorder)
-               GraphicsUtil.ClearAndDrawPolygon (this, mLocalPoints, borderColor, borderThickness, drawBg, filledColor);
+            if (GetVertexPointsCount () == 2)
+            {
+               GraphicsUtil.DrawLine (mBorderShape, mLocalPoints[0].x, mLocalPoints[0].y, mLocalPoints[1].x, mLocalPoints[1].y, borderColor, borderThickness);
+            }
+            else
+            {
+               GraphicsUtil.DrawPolygon (mBorderShape, mLocalPoints, borderColor, borderThickness, false, filledColor);
+            }
          }
       }
-
-      
       
    }
    

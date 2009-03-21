@@ -14,10 +14,8 @@ package editor.entity {
    
    import common.Define;
    
-   public class EntityJoint extends Entity 
+   public class EntityJoint extends WorldEntity 
    {
-      protected var mWorld:World;
-      
       public var mCollideConnected:Boolean = false;
       
       private var mConnectedShape1:Sprite = null; //EntityShape = null; // also can be mWorld
@@ -26,8 +24,6 @@ package editor.entity {
       public function EntityJoint (world:World)
       {
          super (world);
-         
-         mWorld = world;
       }
       
       public function SetConnectedShape1Index (index:int):void

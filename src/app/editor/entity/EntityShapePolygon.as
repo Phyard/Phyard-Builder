@@ -49,18 +49,27 @@ package editor.entity {
          var drawBorder:Boolean = IsDrawBorder ();
          var borderThickness:Number = GetBorderThickness ();
          
-         borderThickness = 1;
-         
-         if ( ! drawBorder || borderThickness < 1)
+         if (mAiType >= 0)
+         {
+            filledColor =  Define.GetShapeFilledColor (mAiType);
+            borderColor = Define.ColorObjectBorder;
             drawBg = true;
+         }
+         
+         if ( ! drawBorder)
+         {
+            drawBg = true;
+            borderThickness = -1;
+         }
          
          if ( IsSelected () )
          {
             borderColor = EditorSetting.BorderColorSelectedObject;
-            borderThickness  = 3.0 / mWorld.GetZoomScale ();
+            if (borderThickness * mWorld.GetZoomScale () < 3)
+               borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
-         alpha = 0.3 + GetTransparency () * 0.01 * 0.4;
+         alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
          
          if (GetVertexPointsCount () == 1)
          {
@@ -102,6 +111,22 @@ package editor.entity {
          else
          {
             mIsValid = true;
+         }
+         
+         var borderThickness:Number = GetBorderThickness ();
+         var halfThickness:Number = borderThickness * 0.5;
+         
+         if (halfThickness > 2)
+         {
+            if (GetVertexPointsCount () > 0)
+               (mSelectionProxy as SelectionProxyPolygon).CreateCircleZone (mLocalPoints [0].x, mLocalPoints [0].y, halfThickness);
+            for (var i:int = 1; i < mLocalPoints.length; ++ i)
+            {
+               (mSelectionProxy as SelectionProxyPolygon).CreateLineSegmentZone (mLocalPoints [i - 1].x, mLocalPoints [i - 1].y, mLocalPoints [i].x, mLocalPoints [i].y, borderThickness);
+               (mSelectionProxy as SelectionProxyPolygon).CreateCircleZone (mLocalPoints [i].x, mLocalPoints [i].y, halfThickness);
+            }
+            if (GetVertexPointsCount () > 2)
+               (mSelectionProxy as SelectionProxyPolygon).CreateLineSegmentZone (mLocalPoints [mLocalPoints.length - 1].x, mLocalPoints [mLocalPoints.length - 1].y, mLocalPoints [0].x, mLocalPoints [0].y, borderThickness);
          }
       }
       
@@ -507,7 +532,7 @@ package editor.entity {
             SetVertexControllersVisible (false);
             var beforeIsSelected:Boolean = beforeVertexController.IsSelected (); // should be true
             
-            var prevIndex:int = (index - 1) % mVertexPoints.length;
+            var prevIndex:int = (index - 1 + mVertexPoints.length) % mVertexPoints.length;
             
             var centerX:Number = (mVertexPoints [index].x +  mVertexPoints [prevIndex].x) * 0.5;
             var centerY:Number = (mVertexPoints [index].y +  mVertexPoints [prevIndex].y) * 0.5;

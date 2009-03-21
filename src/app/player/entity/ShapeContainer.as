@@ -9,6 +9,7 @@ package player.entity {
    
    import common.Define;
    
+   // to rename to ElementContainer
    public class ShapeContainer extends Entity
    {
       private var mIsBullet:Boolean = false;

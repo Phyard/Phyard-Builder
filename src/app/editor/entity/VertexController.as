@@ -110,7 +110,9 @@ package editor.entity {
       {
          if (mSelectionProxy == null)
          {
-            mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
+            //mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
+            mSelectionProxy = mWorld.mSelectionEngineForVertexes.CreateProxyRectangle ();
+            
             mSelectionProxy.SetUserData (this);
          }
          

@@ -29,6 +29,9 @@ public class b2Settings{
    //<<
    
 	static public const USHRT_MAX:int = 0x0000ffff;
+	
+	//static public const B2BROADPHASE_MAX:int = USHRT_MAX;
+	static public const B2BROADPHASE_MAX:int = 0x000fffff;
 
 	static public const b2_pi:Number = Math.PI;
 
@@ -37,8 +40,12 @@ public class b2Settings{
 	// Collision
 	static public const b2_maxManifoldPoints:int = 2;
 	static public const b2_maxPolygonVertices:int = 8;
-	static public const b2_maxProxies:int = 1024 * 2;				// this must be a power of two
-	static public const b2_maxPairs:int = 8 * b2_maxProxies * 16;	// this must be a power of two
+	//static public const b2_maxProxies:int = 256;				// this must be a power of two
+	//static public const b2_maxProxies:int = 512;				// this must be a power of two
+	//static public const b2_maxProxies:int = 1024 * 2;				// this must be a power of two
+	static public const b2_maxProxies:int = 1024 * 2 * 2;				// this must be a power of two
+	static public const b2_maxPairs:int = 8 * b2_maxProxies * 16;	// this must be a power of two, must be less than B2BROADPHASE_MAX
+	//static public const b2_maxPairs:int = 8 * b2_maxProxies * 2;	// this must be a power of two
 
 
 

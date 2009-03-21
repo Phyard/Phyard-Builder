@@ -25,6 +25,7 @@ package player.world {
    import player.entity.EntityShapeCircle;
    import player.entity.EntityShapeRectangle;
    import player.entity.EntityShapePolygon;
+   import player.entity.EntityShapePolyline;
    import player.entity.EntityShapeText;
    import player.entity.EntityShapeGravityController;
    import player.entity.EntityJoint;
@@ -32,6 +33,7 @@ package player.world {
    import player.entity.EntityJointSlider;
    import player.entity.EntityJointDistance;
    import player.entity.EntityJointSpring;
+   import player.entity.EntityUtilityCamera;
    
    import player.entity.EntityParticle;
    
@@ -358,6 +360,8 @@ package player.world {
       
       public function Destroy ():void
       {
+         if (mPhysicsEngine != null)
+            mPhysicsEngine.Destroy ();
       }
       
 //=============================================================
@@ -417,6 +421,7 @@ package player.world {
          
          shapeParams.mIsPhysicsEnabled = true;
          shapeParams.mIsSensor = false;
+         shapeParams.mIsHollow = false;
          
          CreateEntityShapeRectangle (borderContainer, shapeParams);
       }
@@ -668,6 +673,16 @@ package player.world {
          return shapePolygon;
       }
       
+      public function CreateEntityShapePolyline (shapeContainer:ShapeContainer, params:Object):EntityShapePolyline
+      {
+         //SetCollisionCategoryParamsForShapeParams (params, params.mCollisionCategoryIndex);
+         
+         var shapePolyline:EntityShapePolyline = new EntityShapePolyline (this, shapeContainer);
+         shapePolyline.BuildFromParams (params);
+         
+         return shapePolyline;
+      }
+      
       public function CreateEntityShapeText (shapeContainer:ShapeContainer, params:Object):EntityShapeText
       {
          var shapeText:EntityShapeText = new EntityShapeText (this, shapeContainer);
@@ -742,6 +757,14 @@ package player.world {
             addChildAt (jointSpring, index + 1);
          
          return jointSpring;
+      }
+      
+      public function CreateUtilityCamera (shapeContainer:ShapeContainer, params:Object):EntityUtilityCamera
+      {
+         var utilityCamera:EntityUtilityCamera = new EntityUtilityCamera (this, shapeContainer);
+         utilityCamera.BuildFromParams (params);
+         
+         return utilityCamera;
       }
       
 //=============================================================
@@ -828,7 +851,7 @@ package player.world {
          }
       }
       
-      protected function CheckRemovableEntities (event:MouseEvent):void
+      protected function CheckRemovableEntities (event:MouseEvent):Boolean
       {
          var levelPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
          
@@ -898,6 +921,8 @@ package player.world {
             }
          }
          
+         var hasEntityBeenRemoved:Boolean = (breakableShapes.length > 0);
+         
          while (breakableShapes.length > 0)
          {
             shape = breakableShapes[0] as EntityShape;
@@ -927,11 +952,18 @@ package player.world {
                                       bombDefine.mRadius
                                       );
          }
+         
+         return hasEntityBeenRemoved;
       }
       
 //=============================================================
 //   
 //=============================================================
+      
+      public function MoveWorldSceneTo (wx:Number, wy:Number):void
+      {
+         MoveWorldScene (mCameraCenterX - wx, mCameraCenterY - wy);
+      }
       
       public function MoveWorldScene (dx:Number, dy:Number):void
       {
@@ -1011,7 +1043,7 @@ package player.world {
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
          // ...
-         stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+         //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
          
          //
          MoveWorldScene (0, 0);
@@ -1030,7 +1062,7 @@ package player.world {
          removeEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
          removeEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
-         stage.removeEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+         //stage.removeEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
       }
       
       public function OnMouseDown (event:MouseEvent):void

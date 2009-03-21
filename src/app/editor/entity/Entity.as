@@ -25,6 +25,15 @@ package editor.entity {
          mEntityContainer = container;
       }
       
+      public function IsUtilityEntity ():Boolean
+      {
+         return false;
+      }
+      
+//======================================================
+// 
+//======================================================
+      
       public function Destroy ():void
       {
          if (mSelectionProxy != null)
@@ -365,6 +374,22 @@ package editor.entity {
       public function InsertVertexController(beforeVertexController:VertexController):VertexController
       {
          return beforeVertexController;
+      }
+      
+//====================================================================
+//   selected
+//====================================================================
+      
+      public function OnWorldZoomScaleChanged ():void
+      {
+         if (IsSelected ())
+         {
+            if (AreVertexControlPointsVisible ())
+            {
+               SetVertexControllersVisible (false);
+               SetVertexControllersVisible (true);
+            }
+         }
       }
       
 //====================================================================

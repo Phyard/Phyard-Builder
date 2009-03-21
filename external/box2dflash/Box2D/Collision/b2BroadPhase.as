@@ -75,8 +75,8 @@ public class b2BroadPhase
 		var dX:Number = worldAABB.upperBound.x - worldAABB.lowerBound.x;;
 		var dY:Number = worldAABB.upperBound.y - worldAABB.lowerBound.y;
 		
-		m_quantizationFactor.x = b2Settings.USHRT_MAX / dX;
-		m_quantizationFactor.y = b2Settings.USHRT_MAX / dY;
+		m_quantizationFactor.x = b2Settings.B2BROADPHASE_MAX / dX;
+		m_quantizationFactor.y = b2Settings.B2BROADPHASE_MAX / dY;
 		
 		var tProxy:b2Proxy;
 		for (i = 0; i < b2Settings.b2_maxProxies - 1; ++i)
@@ -100,6 +100,50 @@ public class b2BroadPhase
 		m_queryResultCount = 0;
 	}
 	//~b2BroadPhase();
+	
+	//>>added by LX
+	public function Reset (worldAABB:b2AABB):void
+	{
+		m_pairManager.Reset ();
+		
+		m_worldAABB = worldAABB;
+		
+		m_proxyCount = 0;
+		
+		var i:int;
+		
+		// query results
+		for (i = 0; i < b2Settings.b2_maxProxies; i++){
+			m_queryResults[i] = 0;
+		}
+		
+		//b2Vec2 d = worldAABB.upperBound - worldAABB.lowerBound;
+		var dX:Number = worldAABB.upperBound.x - worldAABB.lowerBound.x;;
+		var dY:Number = worldAABB.upperBound.y - worldAABB.lowerBound.y;
+		
+		m_quantizationFactor.x = b2Settings.B2BROADPHASE_MAX / dX;
+		m_quantizationFactor.y = b2Settings.B2BROADPHASE_MAX / dY;
+		
+		var tProxy:b2Proxy;
+		for (i = 0; i < b2Settings.b2_maxProxies - 1; ++i)
+		{
+			tProxy = m_proxyPool[i];
+			tProxy.SetNext(i + 1);
+			tProxy.timeStamp = 0;
+			tProxy.overlapCount = b2_invalid;
+			tProxy.userData = null;
+		}
+		tProxy = m_proxyPool[int(b2Settings.b2_maxProxies-1)];
+		tProxy.SetNext(b2Pair.b2_nullProxy);
+		tProxy.timeStamp = 0;
+		tProxy.overlapCount = b2_invalid;
+		tProxy.userData = null;
+		m_freeProxy = 0;
+		
+		m_timeStamp = 1;
+		m_queryResultCount = 0;
+	}
+	//<<
 	
 	// Use this to see if your proxy is in range. If it is not in range,
 	// it should be destroyed. Otherwise you may get O(m^2) pairs, where m
@@ -448,9 +492,9 @@ public class b2BroadPhase
 		// Return the proxy to the pool.
 		proxy.userData = null;
 		proxy.overlapCount = b2_invalid;
+		proxy.upperBounds[0] = b2_invalid;
 		proxy.lowerBounds[0] = b2_invalid;
 		proxy.lowerBounds[1] = b2_invalid;
-		proxy.upperBounds[0] = b2_invalid;
 		proxy.upperBounds[1] = b2_invalid;
 		
 		proxy.SetNext(m_freeProxy);
@@ -851,11 +895,11 @@ public class b2BroadPhase
 		// Bump lower bounds downs and upper bounds up. This ensures correct sorting of
 		// lower/upper bounds that would have equal values.
 		// TODO_ERIN implement fast float to uint16 conversion.
-		lowerValues[0] = uint(m_quantizationFactor.x * (minVertexX - m_worldAABB.lowerBound.x)) & (b2Settings.USHRT_MAX - 1);
-		upperValues[0] = (uint(m_quantizationFactor.x * (maxVertexX - m_worldAABB.lowerBound.x))& 0x0000ffff) | 1;
+		lowerValues[0] =  uint(m_quantizationFactor.x * (minVertexX - m_worldAABB.lowerBound.x)) & (b2Settings.B2BROADPHASE_MAX - 1);
+		upperValues[0] = (uint(m_quantizationFactor.x * (maxVertexX - m_worldAABB.lowerBound.x)) & b2Settings.B2BROADPHASE_MAX) | 1;
 		
-		lowerValues[1] = uint(m_quantizationFactor.y * (minVertexY - m_worldAABB.lowerBound.y)) & (b2Settings.USHRT_MAX - 1);
-		upperValues[1] = (uint(m_quantizationFactor.y * (maxVertexY - m_worldAABB.lowerBound.y))& 0x0000ffff) | 1;
+		lowerValues[1] =  uint(m_quantizationFactor.y * (minVertexY - m_worldAABB.lowerBound.y)) & (b2Settings.B2BROADPHASE_MAX - 1);
+		upperValues[1] = (uint(m_quantizationFactor.y * (maxVertexY - m_worldAABB.lowerBound.y)) & b2Settings.B2BROADPHASE_MAX) | 1;
 	}
 
 	// This one is only used for validation.
@@ -969,7 +1013,7 @@ public class b2BroadPhase
 		}
 	}
 	private function IncrementTimeStamp() : void{
-		if (m_timeStamp == b2Settings.USHRT_MAX)
+		if (m_timeStamp == b2Settings.B2BROADPHASE_MAX)
 		{
 			for (var i:uint = 0; i < b2Settings.b2_maxProxies; ++i)
 			{
@@ -1001,8 +1045,8 @@ public class b2BroadPhase
 
 	static public var s_validate:Boolean = false;
 	
-	static public const b2_invalid:uint = b2Settings.USHRT_MAX;
-	static public const b2_nullEdge:uint = b2Settings.USHRT_MAX;
+	static public const b2_invalid:uint = b2Settings.B2BROADPHASE_MAX;
+	static public const b2_nullEdge:uint = b2Settings.B2BROADPHASE_MAX;
 
 
 	static public function BinarySearch(bounds:Array, count:int, value:uint):uint

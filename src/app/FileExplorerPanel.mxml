@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+      backgroundColor="0xDDDDA0" borderColor="0x606060" borderStyle="solid" borderThickness="10"
+      width="100%" height="100%"
+      creationComplete="OnInitPanel()"
+      >
+   <mx:HBox width="100%">
+   </mx:HBox>
+
+   <mx:Script>        <![CDATA[
+         
+         import mx.events.FlexEvent;
+         import editor.runtime.Runtime;
+         import editor.world.World;
+         import common.Define;
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+       ]]>
+   </mx:Script>
+   
+</mx:VBox>

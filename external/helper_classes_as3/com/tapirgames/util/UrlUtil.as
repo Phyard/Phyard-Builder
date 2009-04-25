@@ -89,6 +89,25 @@ package com.tapirgames.util {
          return false;
       }
       
+      public static function GetRootUrl (url:String):String
+      {
+         if (url == null)
+            return null;
+         
+         url = url.toLowerCase ();
+         
+         var urlStart:int = url.indexOf("://") + 3;
+         
+         if (urlStart < 0)
+            return null;
+         
+         var urlEnd:int = url.indexOf("/", urlStart);
+         if (urlEnd < 0)
+            return url + "/"
+         else
+            return url.substring(0, urlEnd + 1);
+      }
+      
 //==============================================================================
 //
 //==============================================================================

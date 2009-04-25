@@ -77,7 +77,7 @@
                SelectList_AiType.enabled = true;
                Label_AiType.enabled = true;
                
-               CheckBox_IsVisible.selected = true;
+               CheckBox_IsVisible.enabled = true;
                
                Label_Transparency.enabled = false;
                NumericStepper_Transparency.enabled = false;
@@ -103,7 +103,7 @@
                SelectList_AiType.enabled = false;
                Label_AiType.enabled = false;
                
-               CheckBox_IsVisible.selected = true;
+               CheckBox_IsVisible.enabled = true;
                
                Label_Transparency.enabled = true;
                NumericStepper_Transparency.enabled = true;

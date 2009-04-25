@@ -1,6 +1,8 @@
 
 package wrapper {
 
+   import flash.utils.ByteArray;
+   
    import flash.display.DisplayObject;
    import flash.display.Sprite;
    import flash.display.Bitmap;
@@ -18,6 +20,12 @@ package wrapper {
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
    import flash.events.ContextMenuEvent;
+   
+   import flash.net.URLRequest;
+   import flash.net.URLLoader;
+   import flash.net.URLRequestMethod;
+   import flash.net.URLLoaderDataFormat;
+   import flash.net.navigateToURL;
    
    import com.tapirgames.display.FpsCounter;
    import com.tapirgames.util.TimeSpan;
@@ -48,6 +56,7 @@ package wrapper {
 //======================================================================
       
       private var mWorldPlayCode:String = null;
+      private var mWorldDataForPlaying:ByteArray = null;
       private var mWorldSourceCode:String = null;
       
       private var mBuildContextMenu:Boolean = true;
@@ -92,7 +101,10 @@ package wrapper {
          if (options != null)
          {
             if (options.mWorldPlayCode != null)
+            {
                mWorldPlayCode = options.mWorldPlayCode;
+               mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
+            }
             if (options.mBuildContextMenu != null)
                mBuildContextMenu = options.mBuildContextMenu;
             if (options.mMainMenuCallback != null)
@@ -130,27 +142,37 @@ package wrapper {
          defaultItems.print = true;
          
          var addSeperaor:Boolean = false;
-         if (Compile::Is_Debugging || mWorldPlayCode != null && mPlayerWorld != null && mPlayerWorld.IsShareSourceCode ())
+         if (Compile::Is_Debugging || mPlayerWorld != null && mPlayerWorld.IsShareSourceCode ())
          {
-            mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
-            
-            if (mWorldSourceCode != null)
+            //if (mWorldPlayCode != null)
+            if (mWorldDataForPlaying != null)
             {
-               var copySourceCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", false);
-               theContextMenu.customItems.push (copySourceCodeMenuItem);
-               copySourceCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
+               //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
                
-               addSeperaor = true;
+               mWorldDataForPlaying.position = 0;
+               mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.ByteArray2WorldDefine (mWorldDataForPlaying));
+               
+               if (mWorldSourceCode != null)
+               {
+                  var copySourceCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", false);
+                  theContextMenu.customItems.push (copySourceCodeMenuItem);
+                  copySourceCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
+                  
+                  addSeperaor = true;
+               }
             }
          }
          
-         if (Compile::Is_Debugging || mWorldPlayCode != null &&  mPlayerWorld != null && mPlayerWorld.IsPermitPublishing ())
+         if (Compile::Is_Debugging || mPlayerWorld != null && mPlayerWorld.IsPermitPublishing ())
          {
-            var copyPlayCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Play Code", false);
-            theContextMenu.customItems.push (copyPlayCodeMenuItem);
-            copyPlayCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyPlayCode);
-            
-            addSeperaor = true;
+            if (mWorldPlayCode != null)
+            {
+               var copyPlayCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Play Code", false);
+               theContextMenu.customItems.push (copyPlayCodeMenuItem);
+               copyPlayCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyPlayCode);
+               
+               addSeperaor = true;
+            }
          }
          
          var aboutItem:ContextMenuItem = new ContextMenuItem("About Color Infection Player", addSeperaor);
@@ -168,6 +190,7 @@ package wrapper {
       private static const StateId_Load:int = 0;
       private static const StateId_LoadFailed:int = 1;
       private static const StateId_Play:int = 2;
+      private static const StateId_OnlineLoad:int = 3;
       
       private var mStateId:int = StateId_None;
       
@@ -188,19 +211,33 @@ package wrapper {
                break;
             case StateId_Load:
             {
-               RebuildPlayerWorld ();
+               var params:Object = GetFlashParams ();
                
-               if (mPlayerWorld == null)
+               if (params.mWorldPlayCode != null)
                {
-                  ChangeState (StateId_LoadFailed);
+                  mWorldPlayCode = params.mWorldPlayCode;
+                  mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
+                  
+                  RebuildPlayerWorld ();
+                  
+                  if (mPlayerWorld == null)
+                  {
+                     ChangeState (StateId_LoadFailed);
+                  }
+                  else
+                  {
+                     ChangeState (StateId_Play);
+                  }
                }
                else
                {
-                  ChangeState (StateId_Play);
+                  TryToStartOnlineLoading (params)
                }
                
                break;
             }
+            case StateId_OnlineLoad:
+               break;
             case StateId_LoadFailed:
                break;
             case StateId_Play:
@@ -263,6 +300,16 @@ package wrapper {
                initText.x = (Define.DefaultWorldWidth  - initText.width ) * 0.5;
                initText.y = (Define.DefaultWorldHeight - initText.height) * 0.5;
                mErrorMessageLayer.addChild (initText);
+               
+               break;
+            case StateId_OnlineLoad:
+               while (mErrorMessageLayer.numChildren > 0)
+                  mErrorMessageLayer.removeChildAt (0);
+               
+               var loadingText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Loading ..."));
+               loadingText.x = (Define.DefaultWorldWidth  - loadingText.width ) * 0.5;
+               loadingText.y = (Define.DefaultWorldHeight - loadingText.height) * 0.5;
+               mErrorMessageLayer.addChild (loadingText);
                
                break;
             case StateId_LoadFailed:
@@ -330,6 +377,130 @@ package wrapper {
 //
 //======================================================================
       
+      public static const k_ReturnCode_UnknowError:int = 0;
+      public static const k_ReturnCode_Successed:int = 1;
+      public static const k_ReturnCode_NotLoggedIn:int = 2;
+      public static const k_ReturnCode_SlotIdOutOfRange:int = 3;
+      public static const k_ReturnCode_DesignNotCreatedYet:int = 4;
+      public static const k_ReturnCode_DesignAlreadyRemoved:int = 5;
+      public static const k_ReturnCode_DesignCannotBeCreated:int = 6;
+      public static const k_ReturnCode_ProfileNameNotCreatedYet:int = 7;
+      public static const k_ReturnCode_NoEnoughRightsToProcess:int = 8;
+
+      public function GetFlashParams ():Object
+      {
+         try 
+         {
+            var loadInfo:LoaderInfo = LoaderInfo(root.loaderInfo);
+             
+            var params:Object = new Object ();
+            
+            params.mRootUrl = UrlUtil.GetRootUrl (loaderInfo.url);
+            
+            var flashVars:Object = loaderInfo.parameters;
+            if (flashVars != null)
+            {
+               if (flashVars.playcode != null)
+                  params.mWorldPlayCode = flashVars.playcode;
+               if (flashVars.action != null)
+                  params.mAction = flashVars.action;
+               if (flashVars.author != null)
+                  params.mAuthorName = flashVars.author;
+               if (flashVars.slot != null)
+                  params.mSlotID = flashVars.slot;
+               if (flashVars.revision != null)
+                  params.mRevisionID = flashVars.revision;
+            }
+            
+            return params;
+         } 
+         catch (error:Error) 
+         {
+             trace ("Parse flash vars error." + error);
+         }
+         
+         return null;
+      }
+      
+      private function TryToStartOnlineLoading (params:Object):void
+      {
+         if (params == null || params.mRootUrl == null || params.mAction == null || params.mAuthorName == null || params.mSlotID == null)
+         {
+            ChangeState (StateId_LoadFailed);
+            return;
+         }
+         
+         ChangeState (StateId_OnlineLoad);
+         
+         var designLoadUrl:String;
+         
+         if (params.mAction == "play")
+            designLoadUrl = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/loadpc";
+         else // "view"
+         {
+            if (params.mRevisionID == null)
+               params.mRevisionID = "lastest";
+            
+            designLoadUrl = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/revision/" + params.mRevisionID + "/loadvc";
+         }
+         
+         var request:URLRequest = new URLRequest (designLoadUrl);
+         request.method = URLRequestMethod.GET;
+         
+         var loader:URLLoader = new URLLoader ();
+         loader.dataFormat = URLLoaderDataFormat.BINARY;
+         
+         loader.addEventListener(Event.COMPLETE, OnOnlineLoadCompleted);
+         
+         loader.load ( request );
+      }
+      
+      private function OnOnlineLoadCompleted(event:Event):void 
+      {
+         var loader:URLLoader = URLLoader(event.target);
+         
+         try
+         {
+            var data:ByteArray = ByteArray (loader.data);
+            
+            var returnCode:int = data.readByte ();
+            
+            if (returnCode == k_ReturnCode_Successed)
+            {
+               var designDataForPlaying:ByteArray = new ByteArray ();
+               data.readBytes (designDataForPlaying);
+               designDataForPlaying.uncompress ();
+               
+               mWorldDataForPlaying = designDataForPlaying;
+               
+               //
+               {
+                  RebuildPlayerWorld ();
+                  
+                  if (mPlayerWorld == null)
+                  {
+                     ChangeState (StateId_LoadFailed);
+                  }
+                  else
+                  {
+                     ChangeState (StateId_Play);
+                  }
+               }
+            }
+            else
+            {
+               ChangeState (StateId_LoadFailed);
+            }
+         }
+         catch (error:Error)
+         {
+            ChangeState (StateId_LoadFailed);
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
+      }
+      
       private function RebuildPlayerWorld ():void
       {
          if (mPlayerWorld != null)
@@ -342,43 +513,14 @@ package wrapper {
          
          mPlayerWorld = null;
          
-         if (mWorldPlayCode == null)
-         {
-            try
-            {
-               var flashVars:Object = loaderInfo.parameters;
-               
-               if (flashVars != null)
-               {
-                  var keyStr:String;
-                  var valueStr:String;
-                  for (keyStr in flashVars) 
-                  {
-                     valueStr = String(flashVars[keyStr]);
-                     
-                     //trace (keyStr + "=" + valueStr);
-                     
-                     if (keyStr == "playcode")
-                     {
-                        mWorldPlayCode = valueStr; 
-                        //mWorldDefine = DataFormat2.HexString2WorldDefine (valueStr);
-                     }
-                  }
-               }
-            } 
-            catch (error:Error) 
-            {
-               trace ("flash vars error." + error);
-            }
-         }
-         
-         if (mWorldPlayCode == null)
-            trace ("mWorldPlayCode == null !");
+         if (mWorldDataForPlaying == null)
+            trace ("mWorldDataForPlaying == null !");
          else
          {
             try
             {
-               mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
+               mWorldDataForPlaying.position = 0;
+               mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.ByteArray2WorldDefine (mWorldDataForPlaying));
             }
             catch (error:Error)
             {

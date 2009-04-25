@@ -700,8 +700,10 @@ package editor {
          
          CheckModifierKeys (event);
          
-         var point:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
-         var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
+         //var point:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         //var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
+         var point:Point = globalToLocal ( new Point (event.stageX, event.stageY) );
+         var rect:Rectangle = new Rectangle (0, 0, width, height);
          
          var isOut:Boolean = ! rect.containsPoint (point);
          

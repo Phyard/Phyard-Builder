@@ -72,7 +72,7 @@ public class b2BroadPhase
 		}
 		
 		//b2Vec2 d = worldAABB.upperBound - worldAABB.lowerBound;
-		var dX:Number = worldAABB.upperBound.x - worldAABB.lowerBound.x;;
+		var dX:Number = worldAABB.upperBound.x - worldAABB.lowerBound.x;
 		var dY:Number = worldAABB.upperBound.y - worldAABB.lowerBound.y;
 		
 		m_quantizationFactor.x = b2Settings.B2BROADPHASE_MAX / dX;

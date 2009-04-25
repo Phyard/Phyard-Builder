@@ -4,6 +4,7 @@
    <property name="dir.flexsdk"        value="D:/sdks/flex_sdk_3" />
    <property name="dir.secureswf"        value="D:/softs/secureSWF/secureSWF_v3standard_win" />
    <property name="dir.webhost"        value="F:/__WebApps/_homepage/colorinfection_test" />
+   <property name="dir.phyard"        value="D:/projects/PhysicsEditor/googleapp/phyards/trunk/src/__statics/swfs" />
    
    <property name="editor-width" value="685" />
    <property name="editor-height" value="699" />
@@ -149,8 +150,8 @@
 
       </exec>
       
-      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release.editor}/editor_unsecure.swf"  overwrite="true" verbose="true">
-      </copy>
+      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release.editor}/editor_unsecure.swf"  overwrite="true" verbose="true" />
+      <copy tofile="${dir.phyard}/editor.swf" file="${dir.release.editor}/editor_unsecure.swf"  overwrite="true" verbose="true" />
    </target>
    
    
@@ -195,8 +196,8 @@
       
       <move file="${dir.release}/editor_unsecure.swf" tofile="${dir.release}/editor.swf"/>
 
-      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true">
-      </copy>
+      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true" />
+      <copy tofile="${dir.phyard}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true" />
    </target>
    
    <target name="--compile-player">
@@ -246,8 +247,8 @@
 
       </exec>
       
-      <copy tofile="${dir.webhost}/player.swf" file="${dir.release.player}/player_unsecure.swf"  overwrite="true" verbose="true">
-      </copy>
+      <copy tofile="${dir.webhost}/player.swf" file="${dir.release.player}/player_unsecure.swf"  overwrite="true" verbose="true" />
+      <copy tofile="${dir.phyard}/player.swf" file="${dir.release.player}/player_unsecure.swf"  overwrite="true" verbose="true" />
    </target>
 
    <target name="debug-player">
@@ -283,8 +284,8 @@
       
       <move file="${dir.release}/player_unsecure.swf" tofile="${dir.release}/player.swf"/>
 
-      <copy tofile="${dir.webhost}/player.swf" file="${dir.release}/player.swf"  overwrite="true" verbose="true">
-      </copy>
+      <copy tofile="${dir.webhost}/player.swf" file="${dir.release}/player.swf"  overwrite="true" verbose="true" />
+      <copy tofile="${dir.phyard}/player.swf" file="${dir.release}/player.swf"  overwrite="true" verbose="true" />
    </target>   
    
    

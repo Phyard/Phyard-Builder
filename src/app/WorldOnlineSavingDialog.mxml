@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+    title="Save World Online" width="500" creationComplete="OnInitPanel()">
+
+   <mx:Spacer height="5"/>
+   
+   <mx:HBox width="100%">
+      <mx:Label id="Label_RevisionComment" text="Revision Comment:" fontWeight="bold"/>
+      <mx:TextInput id="Text_RevisionComment" text="" width="100%" change="OnCommentTextChanged (event)"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_IsImportant" label="Is Important" click="UpdateSaveButton ()"/>
+      <mx:Label text="(Comment can't be blank if revision is important)" textAlign="left" color="#0000FF"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+  <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Button id="Button_Save" label="Save" click="OnClickSaveButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCloseButton ();"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   
+   <mx:Script>
+     <![CDATA[       
+         
+         import flash.events.TextEvent;
+         
+         import flash.system.System;
+         
+         import mx.managers.PopUpManager;
+         
+         import com.tapirgames.util.UrlUtil;
+         
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         public function SetValues (values:Object):void
+         {
+         }
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         private function OnCommentTextChanged (event:Event):void
+         {
+            UpdateSaveButton ();
+         }
+         
+         private function UpdateSaveButton ():void
+         {
+            Button_Save.enabled = (! CheckBox_IsImportant.selected) || Text_RevisionComment.text.length > 0;
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         private function OnClickSaveButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+             
+             var params:Object = new Object ();
+             params.mIsImportant = CheckBox_IsImportant.selected;
+             params.mRevisionComment = Text_RevisionComment.text;
+             
+             if (OnConfirm != null)
+               OnConfirm (params);
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickCloseButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

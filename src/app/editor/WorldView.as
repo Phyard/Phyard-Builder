@@ -10,6 +10,8 @@ package editor {
    
    import flash.utils.ByteArray;
    
+   import flash.display.LoaderInfo;
+   
    import flash.display.Sprite;
    import flash.display.Shape;
    import flash.display.Graphics;
@@ -27,6 +29,12 @@ package editor {
    import flash.ui.ContextMenuBuiltInItems;
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
+   
+   import flash.net.URLRequest;
+   import flash.net.URLLoader;
+   import flash.net.URLRequestMethod;
+   import flash.net.URLLoaderDataFormat;
+   import flash.net.navigateToURL;
    
    import mx.core.UIComponent;
    import mx.controls.Button;
@@ -275,6 +283,9 @@ package editor {
          //
          mAnalytics = new Analytics (this, mAnalyticsDurations);
          mAnalytics.TrackPageview (Config.VirtualPageName_EditorJustLoaded);
+         
+         //
+         OnlineLoad (true);
       }
       
       private var mContentMaskSprite:Shape = null;
@@ -2160,6 +2171,13 @@ package editor {
          if (Runtime.HasSettingDialogOpened ())
             return;
          
+         // temp code
+         if (event.keyCode == Keyboard.ESCAPE)
+         {
+            if (Runtime.mCollisionCategoryView != null)
+               Runtime.mCollisionCategoryView.CancelCurrentCreatingMode ();
+         }
+         
          if (! mActive) // in other tab panels
             return;
          
@@ -3435,7 +3453,231 @@ package editor {
          RestoreWorld (worldState);
       }
       
+//============================================================================
+// online save / open 
+//============================================================================
       
+      public static const k_ReturnCode_UnknowError:int = 0;
+      public static const k_ReturnCode_Successed:int = 1;
+      public static const k_ReturnCode_NotLoggedIn:int = 2;
+      public static const k_ReturnCode_SlotIdOutOfRange:int = 3;
+      public static const k_ReturnCode_DesignNotCreatedYet:int = 4;
+      public static const k_ReturnCode_DesignAlreadyRemoved:int = 5;
+      public static const k_ReturnCode_DesignCannotBeCreated:int = 6;
+      public static const k_ReturnCode_ProfileNameNotCreatedYet:int = 7;
+      public static const k_ReturnCode_NoEnoughRightsToProcess:int = 8;
+
+      public function GetFlashParams ():Object
+      {
+         try 
+         {
+            var loadInfo:LoaderInfo = LoaderInfo(stage.root.loaderInfo);
+            
+            var params:Object = new Object ();
+            
+            params.mRootUrl = UrlUtil.GetRootUrl (loaderInfo.url);
+            
+            var flashVars:Object = loaderInfo.parameters;
+            if (flashVars != null)
+            {
+               if (flashVars.action != null)
+                  params.mAction = flashVars.action;
+               if (flashVars.author != null)
+                  params.mAuthorName = flashVars.author;
+               if (flashVars.slot != null)
+                  params.mSlotID = flashVars.slot;
+               if (flashVars.revision != null)
+                  params.mRevisionID = flashVars.revision;
+            }
+            
+            return params;
+         } 
+         catch (error:Error) 
+         {
+             Logger.Trace ("Parse flash vars error." + error);
+         }
+         
+         return null;
+      }
       
+      public function OnlineSave (options:Object = null):void
+      {
+         //
+         var isImportant:Boolean = false;
+         var revisionComment:String = "";
+         if (options != null)
+         {
+            isImportant = options.mIsImportant;
+            revisionComment = options.mRevisionComment.substr (0, 100);
+         }
+         var designDataRevisionComment:ByteArray = new ByteArray ();
+         designDataRevisionComment.writeMultiByte (revisionComment, "utf-8");
+         designDataRevisionComment.position = 0;
+         
+         //
+         var params:Object = GetFlashParams ();
+         
+         //trace ("params.mRootUrl = " + params.mRootUrl)
+         //trace ("params.mSlotID = " + params.mSlotID)
+         
+         if (params.mRootUrl == null || params.mAuthorName == null || params.mSlotID == null)
+            return;
+         
+         var designDataForEditing:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         designDataForEditing.compress ();
+         designDataForEditing.position = 0;
+         
+         var designDataForPlaying:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+         designDataForPlaying.compress ();
+         designDataForPlaying.position = 0;
+         
+         var designDataAll:ByteArray = new ByteArray ();
+         
+         designDataAll.writeInt (Config.VersionNumber);
+         
+         designDataAll.writeByte (isImportant ? 1 : 0);
+         
+         designDataAll.writeInt (designDataRevisionComment.length);
+         designDataAll.writeInt (designDataForEditing.length);
+         designDataAll.writeInt (designDataForPlaying.length);
+         
+         designDataAll.writeBytes (designDataRevisionComment);
+         designDataAll.writeBytes (designDataForEditing);
+         designDataAll.writeBytes (designDataForPlaying);
+         
+         //trace ("designDataForEditing.length = " + designDataForEditing.length)
+         //trace ("designDataForPlaying.length = " + designDataForPlaying.length)
+         
+         var designSaveUrl:String = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/save";
+         var request:URLRequest = new URLRequest (designSaveUrl);
+         request.contentType = "application/octet-stream";
+         request.method = URLRequestMethod.POST;
+         request.data = designDataAll;
+         
+         //trace ("designSaveUrl = " + designSaveUrl)
+         
+         var loader:URLLoader = new URLLoader ();
+         loader.dataFormat = URLLoaderDataFormat.BINARY;
+            
+            //loader.addEventListener (Event.OPEN, openHandler);
+            //loader.addEventListener (ProgressEvent.PROGRESS, progressHandler);
+            //loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+            //loader.addEventListener (HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+            //loader.addEventListener (IOErrorEvent.IO_ERROR, ioErrorHandler);
+         
+         loader.addEventListener(Event.COMPLETE, OnOnlineSaveCompleted);
+         
+         loader.load ( request );
+         //navigateToURL ( request )
+      }
+      
+      private function OnOnlineSaveCompleted(event:Event):void 
+      {
+         var loader:URLLoader = URLLoader(event.target);
+         
+         try
+         {
+            var data:ByteArray = ByteArray (loader.data);
+            
+            var returnCode:int = data.readByte ();
+            var returnMessage:String = null;
+            if (data.length > data.position)
+            {
+               var length:int = data.readInt ();
+               returnMessage = data.readUTFBytes (length);
+            }
+            
+            if (returnCode == k_ReturnCode_Successed)
+               Alert.show("Saving Scuessed!", "Scuessed");
+            else
+               Alert.show("Some errors in saving! returnCode = " + returnCode + ", returnMessage = " + returnMessage, "Error");
+         }
+         catch (error:Error)
+         {
+            Alert.show("Sorry, online saving error! " + loader.data + " " + error, "Error");
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
+      }
+      
+      public function OnlineLoad (isFirstTime:Boolean = false):void
+      {
+         var params:Object = GetFlashParams ();
+         
+         //trace ("params.mRootUrl = " + params.mRootUrl)
+         //trace ("params.mSlotID = " + params.mSlotID)
+         
+         if (params.mRootUrl == null || params.mAction == null || params.mAuthorName == null || params.mSlotID == null || params.mRevisionID == null)
+            return;
+         
+         if (isFirstTime && params.mAction == "create")
+            return;
+         
+         var designLoadUrl:String = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/revision/" + params.mRevisionID + "/loadsc";
+         var request:URLRequest = new URLRequest (designLoadUrl);
+         request.method = URLRequestMethod.GET;
+         
+         trace ("designLoadUrl = " + designLoadUrl);
+         
+         var loader:URLLoader = new URLLoader ();
+         loader.dataFormat = URLLoaderDataFormat.BINARY;
+         
+         loader.addEventListener(Event.COMPLETE, OnOnlineLoadCompleted);
+         
+         loader.load ( request );
+      }
+      
+      private function OnOnlineLoadCompleted(event:Event):void 
+      {
+         var loader:URLLoader = URLLoader(event.target);
+         
+         try
+         {
+            var data:ByteArray = ByteArray (loader.data);
+            
+            var returnCode:int = data.readByte ();
+            
+            if (returnCode == k_ReturnCode_Successed)
+            {
+               var oldEditorWorld:editor.world.World = mEditorWorld;
+               
+               var designDataForEditing:ByteArray = new ByteArray ();
+               
+               var newEditorWorld:editor.world.World;
+               
+               if (data.length > data.position)
+               {
+                  data.readBytes (designDataForEditing);
+                  designDataForEditing.uncompress ();
+                  
+                  newEditorWorld = DataFormat.WorldDefine2EditorWorld (DataFormat2.ByteArray2WorldDefine (designDataForEditing));
+               }
+               else
+               {
+                  newEditorWorld = new editor.world.World ();
+               }
+               
+               oldEditorWorld.Destroy ();
+               
+               mWorldHistoryManager.ClearHistories ();
+               
+               SetEditorWorld (newEditorWorld);
+               
+               CreateUndoPoint ();
+               
+               Alert.show("Loading Scuessed!", "Scuessed");
+            }
+            else
+               Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
+         }
+         catch (error:Error)
+         {
+            Alert.show("Sorry, online loading error!", "Error");
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
+      }
    }
 }

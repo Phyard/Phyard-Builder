@@ -140,6 +140,7 @@ package player.physics {
                newPolygonDef.density = polygonDef.density;
                newPolygonDef.friction = polygonDef.friction;
                newPolygonDef.restitution = polygonDef.restitution;
+               newPolygonDef.isSensor = polygonDef.isSensor;
                
                newPolygonDef.filter.maskBits = polygonDef.filter.maskBits;
                newPolygonDef.filter.categoryBits = polygonDef.filter.categoryBits;

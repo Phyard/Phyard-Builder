@@ -591,25 +591,53 @@ package editor.entity {
          //SynchronizeWithLocalPoints (); 
       }
       
-      override public function FlipSelfHorizontally ():void
+      override public function FlipHorizontally (mirrorX:Number, updateSelectionProxy:Boolean = true):void
       {
-         //super.FlipSelfHorizontally ();
+         for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         {
+            mVertexPoints [i].x = mirrorX + mirrorX - mVertexPoints [i].x;
+         }
+         
+         SynchronizeWithWorldPoints ();
          
          //for (var i:int = 0; i < mLocalPoints.length; ++ i)
          //{
-         //   mVertexPoints [i].x = mirrorX + mirrorX - mVertexPoints [i].x;
+         //   mLocalPoints [i].x = - mLocalPoints [i].x;
          //}
          //
-         //SynchronizeWithWorldPoints ();
+         //SynchronizeWithLocalPoints ();
          
+         if (updateSelectionProxy)
+            UpdateSelectionProxy ();
+         
+         UpdateAppearance ();
+         
+         UpdateVertexControllers (true);
+      }
+      
+      override public function FlipSelfHorizontally ():void
+      {
+      }
+      
+      override public function FlipVertically (mirrorY:Number, updateSelectionProxy:Boolean = true):void
+      {
          for (var i:int = 0; i < mLocalPoints.length; ++ i)
          {
-            mLocalPoints [i].x = - mLocalPoints [i].x;
+            mVertexPoints [i].y = mirrorY + mirrorY - mVertexPoints [i].y;
          }
          
-         SynchronizeWithLocalPoints ();
+         SynchronizeWithWorldPoints ();
          
-         UpdateSelectionProxy ();
+         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
+         //{
+         //   mLocalPoints [i].y = - mLocalPoints [i].y;
+         //}
+         //
+         //SynchronizeWithLocalPoints ();
+         
+         if (updateSelectionProxy)
+            UpdateSelectionProxy ();
+         
          UpdateAppearance ();
          
          UpdateVertexControllers (true);
@@ -617,28 +645,7 @@ package editor.entity {
       
       override public function FlipSelfVertically ():void
       {
-         //super.FlipSelfVertically ();
-         
-         //for (var i:int = 0; i < mLocalPoints.length; ++ i)
-         //{
-         //   mVertexPoints [i].y = mirrorY + mirrorY - mVertexPoints [i].y;
-         //}
-         //
-         //SynchronizeWithWorldPoints ();
-         
-         for (var i:int = 0; i < mLocalPoints.length; ++ i)
-         {
-            mLocalPoints [i].y = - mLocalPoints [i].y;
-         }
-         
-         SynchronizeWithLocalPoints ();
-         
-         UpdateSelectionProxy ();
-         UpdateAppearance ();
-         
-         UpdateVertexControllers (true);
       }
       
-
    }
 }

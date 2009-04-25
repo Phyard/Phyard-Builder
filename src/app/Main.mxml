@@ -328,6 +328,12 @@
                AppendContextMenuItem (Button_MouseScale, "Scale Accurately ...", ShowDialog_ScaleSelectedEntitiesAccurately);
                
                AppendContextMenuItem (Button_MouseMoveScene, "Move Scene Accurately ...", ShowDialog_MoveSceneAccurately);
+               
+            //===================================================================================================
+               
+               AppendContextMenuItem (Button_OpenDesign, "Load Lastest Version Online ...", OnLoadSourceCodeOnline);
+               
+               AppendContextMenuItem (Button_SaveDesign, "Save Online ...", ShowWorldOnlineSavingDialog);
             }
             
             private function AppendContextMenuItem (sprite:InteractiveObject, caption:String, selectedListener:Function):void
@@ -705,6 +711,27 @@
             private function OnMoveSceneAccurately (params:Object):void
             {
                MainView.MoveWorldScene (params.mOffsetX, params.mOffsetY);
+            }
+            
+            private function ShowWorldOnlineSavingDialog (event:ContextMenuEvent):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var dialog:WorldOnlineSavingDialog = new WorldOnlineSavingDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (MainView.OnlineSave);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            //private function OnSaveSourceCodeOnline (event:ContextMenuEvent):void
+            //{
+            //   MainView.OnlineSave ();
+            //}
+            
+            private function OnLoadSourceCodeOnline (event:ContextMenuEvent):void
+            {
+               MainView.OnlineLoad ();
             }
             
         ]]>

@@ -36,6 +36,7 @@ package editor.world {
    import editor.selection.SelectionEngine;
    
    import common.Define;
+   import common.ValueAdjuster;
    
    public class World extends EntityContainer 
    {
@@ -131,6 +132,9 @@ package editor.world {
       private var mBorderColor:uint = Define.ColorStaticObject;
       
       private var mZoomScale:Number = 1.0;
+      
+      private var mPhysicsShapesPotentialMaxCount:int = 1024;
+      private var mPhysicsShapesPopulationDensityLevel:int = 8;
       
       public function SetAuthorName (name:String):void
       {
@@ -304,6 +308,46 @@ package editor.world {
             entity = getChildAt (entityId) as Entity;
             entity.OnWorldZoomScaleChanged ();
          }
+      }
+      
+      public function StatisticsPhysicsShapes ():void
+      {
+         var entity:Entity;
+         
+         var shapes_count:int = 0;
+         var bombs_count:int = 0;
+         
+         for (var i:int = 0; i < numChildren; ++ i)
+         {
+            entity = getChildAt (i) as Entity;
+            if (entity != null)
+               shapes_count += entity.GetPhysicsShapesCount ()
+            
+            if (entity is EntityShape)
+            {
+               bombs_count += Define.IsBombShape ((entity as EntityShape).GetAiType ()) ? 1 : 0;
+            }
+         }
+         
+         shapes_count *= 1.1; // safety factor
+         shapes_count += 4; // border
+         
+         if (bombs_count > 0)
+            shapes_count += Define.MaxCoexistParticles;
+         
+         mPhysicsShapesPotentialMaxCount = shapes_count; //ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (shapes_count);
+         
+         mPhysicsShapesPopulationDensityLevel = bombs_count > 0 && mPhysicsShapesPotentialMaxCount <= 2048 ? 8 : 4; // ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel 
+      }
+      
+      public function GetPhysicsShapesPotentialMaxCount ():uint
+      {
+         return mPhysicsShapesPotentialMaxCount;
+      }
+      
+      public function GetPhysicsShapesPopulationDensityLevel ():uint
+      {
+         return mPhysicsShapesPopulationDensityLevel;
       }
       
 //=================================================================================

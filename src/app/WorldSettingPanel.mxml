@@ -72,6 +72,36 @@
             <mx:Spacer width="20"/>
             <mx:CheckBox id="CheckBox_BuildBorder" label="Build Scene Border"/>
          </mx:HBox>
+         <!--
+         <mx:HBox width="100%">
+            <mx:Spacer width="5%"/>
+            <mx:Label text="Potential Max Count of Physics Shapes:" textAlign="left"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10%"/>
+            <mx:RadioButtonGroup id="RadioButtonGroup_MaxShapesCount" />
+            <mx:RadioButton groupName="RadioButtonGroup_MaxShapesCount" id="RadioButton_MaxShapesCount_Auto" value="0" label="Auto Statistics" />
+            <mx:RadioButton groupName="RadioButtonGroup_MaxShapesCount" id="RadioButton_MaxShapesCount_256" value="256" label="256" />
+            <mx:RadioButton groupName="RadioButtonGroup_MaxShapesCount" id="RadioButton_MaxShapesCount_512" value="512" label="512" />
+            <mx:RadioButton groupName="RadioButtonGroup_MaxShapesCount" id="RadioButton_MaxShapesCount_1024" value="1024" label="1024" />
+            <mx:RadioButton groupName="RadioButtonGroup_MaxShapesCount" id="RadioButton_MaxShapesCount_2048" value="2048" label="2048" />
+            <mx:RadioButton groupName="RadioButtonGroup_MaxShapesCount" id="RadioButton_MaxShapesCount_4096" value="4096" label="4096" />
+         </mx:HBox>
+         -->
+         <!--
+         <mx:HBox width="100%">
+            <mx:Spacer width="5%"/>
+            <mx:Label text="Population Density Level of Physics Shapes:" textAlign="left"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10%"/>
+            <mx:RadioButtonGroup id="RadioButtonGroup_ShapesDensityLevel" />
+            <mx:RadioButton groupName="RadioButtonGroup_ShapesDensityLevel" id="RadioButton_ShapesDensityLevel_Auto" value="0" label="Auto Assign" />
+            <mx:RadioButton groupName="RadioButtonGroup_ShapesDensityLevel" id="RadioButton_ShapesDensityLevel_4" value="4" label="4" />
+            <mx:RadioButton groupName="RadioButtonGroup_ShapesDensityLevel" id="RadioButton_ShapesDensityLevel_8" value="8" label="8" />
+            <mx:RadioButton groupName="RadioButtonGroup_ShapesDensityLevel" id="RadioButton_ShapesDensityLevel_16" value="16" label="16" />
+         </mx:HBox>
+         -->
       </mx:VBox>
 
       <mx:Spacer width="100%" />
@@ -84,6 +114,7 @@
             import editor.runtime.Runtime;
             import editor.world.World;
             import common.Define;
+            import common.ValueAdjuster;
             
             private function OnInitPanel ():void
             {
@@ -144,6 +175,24 @@
                
                CheckBox_BuildBorder.selected = world.IsBuildBorder ();
                ColorPicker_BorderColor.selectedColor = world.GetBorderColor ();
+               
+               /*
+               //var shapes_count:int = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (world.GetPhysicsShapesPotentialMaxCount (), true);
+               
+               var density_level:int = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (world.GetPhysicsShapesPopulationDensityLevel (), true);
+               RadioButton_ShapesDensityLevel_Auto.selected = false;
+               RadioButton_ShapesDensityLevel_4.selected = false;
+               RadioButton_ShapesDensityLevel_8.selected = false;
+               RadioButton_ShapesDensityLevel_16.selected = false;
+               if (density_level == 0)
+                  RadioButton_ShapesDensityLevel_Auto.selected = true;
+               else if (density_level == 4)
+                  RadioButton_ShapesDensityLevel_4.selected = true;
+               else if (density_level == 8)
+                  RadioButton_ShapesDensityLevel_8.selected = true;
+               else
+                  RadioButton_ShapesDensityLevel_16.selected = true;
+               */
             }
             
             private function SynchronizeWorldWithWorldSettingPanel (world:World):void
@@ -179,6 +228,20 @@
                world.SetBackgroundColor (ColorPicker_BackgroundColor.selectedColor);
                world.SetBuildBorder (CheckBox_BuildBorder.selected);
                world.SetBorderColor (ColorPicker_BorderColor.selectedColor);
+               
+            // ...
+               /*
+               var density_level:int;
+               if (RadioButton_ShapesDensityLevel_16.selected.selected)
+                  density_level = 16;
+               else if (RadioButton_ShapesDensityLevel_8.selected.selected)
+                  density_level = 8;
+               else if (RadioButton_ShapesDensityLevel_16.selected.selected)
+                  density_level = 4;
+               else
+                  density_level = 0;
+               world.SetPhysicsShapesPopulationDensityLevel (ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (density_level, true));
+               */
             }
             
             private function OnCustomSizeRationClick ():void

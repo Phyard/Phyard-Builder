@@ -14,21 +14,30 @@ package player.world {
       private var mWorld:World;
       
       private var mBombs:Array = new Array ();
-      private var nNumBombs:int;
+      private var mNumBombs:int;
+      
+      private var mParticlesToCreate:int;
       
       public function ParticleManager (world:World)
       {
          mWorld = world;
          
-         nNumBombs = 0;
+         mNumBombs = 0;
       }
       
       public function AddBomb (posX:Number, posY:Number, radius:Number):void
       {
-         var bomb:Object = new Object ();
-         mBombs [nNumBombs ++] = bomb;
-         
          var numParticles:int = 32 * ( 0.5 + radius * 2.0 * radius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength) );
+         
+         if (mParticlesToCreate + numParticles > Define.MaxCoexistParticles)
+         {
+            trace ("Too many particles to create");
+            return;
+         }
+         
+         var bomb:Object = new Object ();
+         mBombs [mNumBombs ++] = bomb;
+         
          var particleSpeed:Number = 8.0 * ( 0.25 + 1.0 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
          var particleDensity:Number = 5.0;
          var particleLifeTime:Number = Define.WorldStepTimeInterval * 18 * ( 0.5 + 1.5 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
@@ -52,11 +61,13 @@ package player.world {
          bomb.mLastTimeStamp = 0;
          bomb.mNumCreateParticles = 0;
          bomb.mParticleStartId = 0;
+         
+         mParticlesToCreate += bomb.mNumParticles;
       }
       
       public function Update (dt:Number):void
       {
-         for (var bombId:int = 0; bombId < nNumBombs; ++ bombId)
+         for (var bombId:int = 0; bombId < mNumBombs; ++ bombId)
          {
             var bomb:Object = mBombs [bombId];
             
@@ -81,6 +92,8 @@ package player.world {
                count = NumParticlesToCreatedEachStep;
             var idInterval:int = int (bomb.mParticleIdCreateInterval * NumParticlesToCreatedEachStep / count + 0.5);
             
+            mParticlesToCreate -= count;
+            
             for (var i:int = 0; i < count; ++ i)
             {
                var params:Object = new Object ();
@@ -100,8 +113,15 @@ package player.world {
             
             if (bomb.mNumCreateParticles >= bomb.mNumParticles)
             {
-               mBombs [bombId --] = mBombs [-- nNumBombs];
-               mBombs [nNumBombs] = null;
+               mBombs [bombId --] = mBombs [-- mNumBombs];
+               if (mNumBombs <= 0)
+               {
+                  mNumBombs = 0;
+                  //trace ("mParticlesToCreate = " + mParticlesToCreate);
+                  mParticlesToCreate = 0; // remove this line when new particle type objects are intruduced in later versions
+               }
+               
+               mBombs [mNumBombs] = null;
             }
          }
       }

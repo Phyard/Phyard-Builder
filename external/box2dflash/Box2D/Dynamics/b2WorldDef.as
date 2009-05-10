@@ -6,13 +6,34 @@ package Box2D.Dynamics {
    {
       // there is a bug in flex sdk: sometimes, the compiler can recognise the vondy input params
       //public function b2WorldDef (maxProxies:uint = b2Settings.Default_b2_maxProxies, maxPairs:uint = b2Settings.Default_b2_maxPairs)
-      public function b2WorldDef (maxProxies:uint = 1024 * 2 * 2, maxPairs:uint = 1024 * 2 * 2 * 8)
+      public function b2WorldDef (maxProxies:uint = 1024 * 2 * 2, ratioOfPairs2Proxies:uint = 8)
+      //public function b2WorldDef (maxProxies:uint = 1024, ratioOfPairs2Proxies:uint = 8)
       {
          //@todo: adjust input values, make them 2^n
          
          b2_maxProxies = maxProxies;
-         b2_maxPairs = maxPairs;
+         b2_maxPairs = b2_maxProxies * ratioOfPairs2Proxies;
          
+         CalOtherValues ();
+      }
+      
+      public function CopyFrom (worldDef:b2WorldDef):void
+      {
+         b2_maxProxies = worldDef.b2_maxProxies;
+         b2_maxPairs   = worldDef.b2_maxPairs;
+         
+         CalOtherValues ();
+      }
+      
+      public function EqualsWith (worldDef:b2WorldDef):Boolean
+      {
+         return b2_maxProxies == worldDef.b2_maxProxies
+             && b2_maxPairs   == worldDef.b2_maxPairs
+                 ;
+      }
+      
+      private function CalOtherValues ():void
+      {
          //
          b2_tableCapacity = b2_maxPairs;
          b2_tableMask = b2_tableCapacity - 1;

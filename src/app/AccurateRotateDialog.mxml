@@ -55,12 +55,12 @@
                params.mRotationAngle = 0;
             else
                params.mRotationAngle = angle;
-            
-           if (OnConfirm != null)
-              OnConfirm (params);
              
            if (OnClose != null)
               OnClose ();
+            
+           if (OnConfirm != null)
+              OnConfirm (params);
          }
          
          private function OnClickCancelButton():void 

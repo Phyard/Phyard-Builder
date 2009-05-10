@@ -4,6 +4,7 @@ package player.physics {
    import flash.geom.Point;
    
    import Box2D.Dynamics.b2World;
+   import Box2D.Dynamics.b2WorldDef;
    import Box2D.Dynamics.b2Body;
    import Box2D.Common.Math.b2Vec2;
    import Box2D.Collision.b2AABB;
@@ -17,46 +18,6 @@ package player.physics {
    
    public class PhysicsEngine
    {
-      /*
-      private static var s_b2World:b2World;
-      private static var s_b2ContactListener_old:b2ContactListener;
-      private static var s_b2DestructionListener_old:b2DestructionListener;
-      private static var s_b2ContactFilter_old:b2ContactFilter;
-      
-      private static function CreateB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean):b2World
-      {
-         if (s_b2World == null)
-         {
-            s_b2World = new b2World(worldAABB, gravity, doSleep);
-            
-            s_b2ContactListener_old = s_b2World.m_contactListener;
-            s_b2DestructionListener_old = s_b2World.m_destructionListener;
-            s_b2ContactFilter_old = s_b2World.m_contactFilter;
-         }
-         else
-         {
-            DestroyB2World ();
-            
-            s_b2World.Reset (worldAABB, gravity, doSleep);
-         }
-         
-         return s_b2World;
-      }
-      
-      private static function DestroyB2World ():void
-      {
-         if (s_b2World != null)
-         {
-            s_b2World.Destroy ();
-            
-            // here is bug prone.when 2 PhysicsEngines are created crossingly (½»²æµØ).
-            
-            s_b2World.SetContactListener (s_b2ContactListener_old);
-            s_b2World.SetDestructionListener (s_b2DestructionListener_old);
-            s_b2World.SetContactFilter (s_b2ContactFilter_old);
-         }
-      }
-      */
       
 //=================================================================
 //   
@@ -76,7 +37,7 @@ package player.physics {
       private var mCollisionCategories:Array = new Array ();
       private var mContactFilter:_ContactFilter = null;
       
-      public function PhysicsEngine (initialGravity:Point, lowerDisplayPoint:Point, upperDisplayPoint:Point, numCollisionCategories:uint, version100:Boolean):void
+      public function PhysicsEngine (initialGravity:Point, lowerDisplayPoint:Point, upperDisplayPoint:Point, numCollisionCategories:uint, version100:Boolean, world_hints:Object):void
       {
          if (! version100)
          {
@@ -91,9 +52,11 @@ package player.physics {
          var gravity:b2Vec2 = new b2Vec2 (initialGravity.x * GlobalGravityScale, initialGravity.y * GlobalGravityScale);
          var doSleep:Boolean = true;
          
+         var world_def:b2WorldDef = new b2WorldDef (world_hints.mPhysicsShapesPotentialMaxCount, world_hints.mPhysicsShapesPopulationDensityLevel);
+         
          //_b2World = new b2World(worldAABB, gravity, doSleep);
          //_b2World = CreateB2World (worldAABB, gravity, doSleep);
-         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity, doSleep);
+         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity, doSleep, world_def);
          
          _b2World.SetContactListener(new _ContactListener (this));
          _b2World.SetDestructionListener(new _DestructionListener (this));

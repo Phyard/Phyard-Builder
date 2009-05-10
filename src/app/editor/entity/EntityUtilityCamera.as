@@ -46,6 +46,11 @@ package editor.entity {
          return "Camera";
       }
       
+      override public function GetPhysicsShapesCount ():uint
+      {
+         return 0;
+      }
+      
       override public function UpdateAppearance ():void
       {
          mCameraBitmap.alpha = 0.7;

@@ -6,7 +6,55 @@ package common {
    {
       
 //===========================================================================
-// number precisions
+// 
+//===========================================================================
+      
+      // only for player
+      public static function AdjustPhysicsShapesPotentialMaxCount (count:uint, keepZero:Boolean = false):uint
+      {
+         if (count == 0 && keepZero)
+            return 0;
+         
+         if (count <= 256)
+            return 256;
+         
+         if (count <= 512)
+            return 512;
+         
+         if (count <= 1024)
+            return 1024;
+         
+         if (count <= 2048)
+            return 2048;
+         
+         if (count <= 2048)
+            return 2048;
+         
+         return 4096;
+      }
+      
+      public static function AdjustPhysicsShapesPopulationDensityLevel (level:uint, keepZero:Boolean = false):uint
+      {
+         if (level == 0 && keepZero)
+            return 0;
+         
+         if (level <= 1)
+            return 1;
+         
+         if (level <= 2)
+            return 2;
+         
+         if (level <= 4)
+            return 4;
+         
+         if (level <= 8)
+            return 8;
+         
+         return 16;
+      }
+      
+//===========================================================================
+// 
 //===========================================================================
       
       // for positions, 14 precisions digits, and witeDouble in bytearray
@@ -30,7 +78,7 @@ package common {
       }
       
 //===========================================================================
-// number precision
+// 
 //===========================================================================
       
       // for both editor and player

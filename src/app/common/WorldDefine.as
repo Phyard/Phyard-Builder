@@ -3,6 +3,11 @@ package common {
    
    public class WorldDefine
    {
+   // ...
+      
+      public var mPlayerWorldHints:Object;
+      
+   // ...
       public var mVersion:int;
       
       public var mAuthorName:String = "";

@@ -11,6 +11,7 @@ package editor.world {
    import editor.entity.EntityCollisionCategory;
    
    import common.Define;
+   import common.ValueAdjuster;
    
    public class CollisionManager extends EntityContainer
    {
@@ -26,6 +27,15 @@ package editor.world {
       
       public function CollisionManager ()
       {
+      }
+      
+      override public function GetWorldHints ():Object
+      {
+         var world_hints:Object = new Object ();
+         world_hints.mPhysicsShapesPotentialMaxCount = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (256);
+         world_hints.mPhysicsShapesPopulationDensityLevel = ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel (8);
+         
+         return world_hints;
       }
       
       public function GetDefaultCollisionCategory ():EntityCollisionCategory

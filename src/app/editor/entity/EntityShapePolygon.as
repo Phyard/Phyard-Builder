@@ -41,6 +41,22 @@ package editor.entity {
          return "Polygon";
       }
       
+      override public function GetPhysicsShapesCount ():uint
+      {
+         if ( ! IsPhysicsEnabled () )
+            return 0;
+         
+         var count:uint = 0;
+         
+         if ( ! IsHollow () && mSelectionProxy != null && mIsValid)
+            count += (mSelectionProxy as SelectionProxyPolygon).GetProxyShapesCount ();
+         
+         if (GetBorderThickness () > 1)
+            count += mLocalPoints.length * 2;
+         
+         return count;
+      }
+      
       override public function UpdateAppearance ():void
       {
          var filledColor:uint = GetFilledColor ();

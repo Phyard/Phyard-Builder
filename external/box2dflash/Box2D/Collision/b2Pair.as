@@ -48,10 +48,14 @@ public class b2Pair
 	public var status:uint;
 	
 	// STATIC
-	static public var b2_nullPair:uint = b2Settings.USHRT_MAX;
-	static public var b2_nullProxy:uint = b2Settings.USHRT_MAX;
-	static public var b2_tableCapacity:int = b2Settings.b2_maxPairs;	// must be a power of two
-	static public var b2_tableMask:int = b2_tableCapacity - 1;
+	//static public var b2_nullPair:uint = b2Settings.USHRT_MAX;
+	//static public var b2_nullProxy:uint = b2Settings.USHRT_MAX; // not large enough now
+	//static public var b2_nullPair:uint = 0xFFFFFFF;
+	//static public var b2_nullProxy:uint = 0xFFFFFFFF;
+	static public var b2_nullPair:uint = 0x7FFFFFFF;
+	static public var b2_nullProxy:uint = 0x7FFFFFFF;
+//	static public var b2_tableCapacity:int = b2Settings.b2_maxPairs;	// must be a power of two
+//	static public var b2_tableMask:int = b2_tableCapacity - 1;
 	
 	// enum
 	static public var e_pairBuffered:uint = 0x0001;

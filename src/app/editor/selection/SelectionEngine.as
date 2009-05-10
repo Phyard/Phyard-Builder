@@ -14,46 +14,6 @@ package editor.selection {
    
    public class SelectionEngine 
    {
-      /*
-      private static var s_b2World:b2World;
-      private static var s_b2ContactListener_old:b2ContactListener;
-      private static var s_b2DestructionListener_old:b2DestructionListener;
-      private static var s_b2ContactFilter_old:b2ContactFilter;
-      
-      private static function CreateB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean):b2World
-      {
-         if (s_b2World == null)
-         {
-            s_b2World = new b2World(worldAABB, gravity, doSleep);
-            
-            s_b2ContactListener_old = s_b2World.m_contactListener;
-            s_b2DestructionListener_old = s_b2World.m_destructionListener;
-            s_b2ContactFilter_old = s_b2World.m_contactFilter;
-         }
-         else
-         {
-            DestroyB2World ();
-            
-            s_b2World.Reset (worldAABB, gravity, doSleep);
-         }
-         
-         return s_b2World;
-      }
-      
-      private static function DestroyB2World ():void
-      {
-         if (s_b2World != null)
-         {
-            s_b2World.Destroy ();
-            
-            // here is bug prone.when 2 PhysicsEngines are created crossingly (½»²æµØ).
-            
-            s_b2World.SetContactListener (s_b2ContactListener_old);
-            s_b2World.SetDestructionListener (s_b2DestructionListener_old);
-            s_b2World.SetContactFilter (s_b2ContactFilter_old);
-         }
-      }
-      */
       
 //=================================================================
 //   
@@ -61,7 +21,7 @@ package editor.selection {
       
       public var _b2World:b2World; // used within package
       
-      public function SelectionEngine (lowerPoint:Point, upperPoint:Point):void
+      public function SelectionEngine (lowerPoint:Point, upperPoint:Point, world_hints:Object):void
       {
          var worldAABB:b2AABB = new b2AABB();
          worldAABB.lowerBound.Set(lowerPoint.x, lowerPoint.y);
@@ -70,9 +30,11 @@ package editor.selection {
          var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
          var doSleep:Boolean = true;
          
+         var world_def:b2WorldDef = new b2WorldDef (world_hints.mPhysicsShapesPotentialMaxCount, world_hints.mPhysicsShapesPopulationDensityLevel);
+         
          //_b2World = new b2World(worldAABB, gravity, doSleep);
          //_b2World = CreateB2World (worldAABB, gravity, doSleep);
-         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity, doSleep);
+         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity, doSleep, world_def);
       }
       
       public function Destroy ():void

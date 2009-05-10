@@ -64,6 +64,11 @@ package editor.entity {
          return "x: " + mPosX + ", y = " + mPosY + ", angle = " + (mRotation * 180.0 / Math.PI);
       }
       
+      public function GetPhysicsShapesCount ():uint
+      {
+         return 0;
+      }
+      
 //======================================================
 // visible
 //======================================================

@@ -48,6 +48,11 @@ package editor.entity {
          return "Gravity Controller";
       }
       
+      override public function GetPhysicsShapesCount ():uint
+      {
+         return 0;
+      }
+      
       //public function SetInteractive (interactive:Boolean):void
       //{
       //   mIsInteractive = interactive;

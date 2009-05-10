@@ -41,6 +41,7 @@ package player.world {
    import player.mode.ModeMoveWorldScene;
    
    import common.Define;
+   import common.ValueAdjuster;
    
    public class World extends Sprite
    {
@@ -95,19 +96,19 @@ package player.world {
          SetAuthorName (worldDefine.mAuthorName);
          SetAuthorHomepage (worldDefine.mAuthorHomepage);
          
-         if (mVersion >= 0x0102)
-         {
+         //if (mVersion >= 0x0102)
+         //{
             SetShareSourceCode (worldDefine.mShareSourceCode);
             SetPermitPublishing (worldDefine.mPermitPublishing);
-         }
-         else
-         {
-            // default
-         }
+         //}
+         //else
+         //{
+         //   // default
+         //}
          
       // settings
-         if (mVersion >= 0x0104)
-         {
+         //if (mVersion >= 0x0104)
+         //{
             SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
             SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
             SetWorldLeft  (worldDefine.mSettings.mWorldLeft);
@@ -117,11 +118,18 @@ package player.world {
             SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
             SetBuildBorder (worldDefine.mSettings.mBuildBorder);
             SetBorderColor (worldDefine.mSettings.mBorderColor);
-         }
-         else
-         {
-            // default
-         }
+         //}
+         //else
+         //{
+         //   // default
+         //}
+         
+         //from v0106
+         var world_hints:Object = new Object ();
+         world_hints.mPhysicsShapesPotentialMaxCount = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (worldDefine.mSettings.mPhysicsShapesPotentialMaxCount);
+         world_hints.mPhysicsShapesPopulationDensityLevel = ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel (worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
+         
+         
          
       // building
          
@@ -140,7 +148,8 @@ package player.world {
                   new Point (mWorldLeft - marginX, mWorldTop - marginY), 
                   new Point (mWorldLeft + mWorldWidth + marginX, mWorldTop + mWorldHeight + marginY), 
                   worldDefine.mCollisionCategoryDefines.length + 1, 
-                  false);
+                  false,
+                  world_hints);
          }
          else if (mVersion >= 0x101)
          {
@@ -149,7 +158,8 @@ package player.world {
                   new Point (-DefaultWorldWidth * 0.5, -DefaultWorldHeight * 0.5), 
                   new Point (DefaultWorldWidth * 1.5, DefaultWorldHeight * 1.5), 
                   worldDefine.mCollisionCategoryDefines.length + 1, 
-                  false);
+                  false,
+                  world_hints);
          }
          else
          {
@@ -158,7 +168,8 @@ package player.world {
                   new Point (-100000.0, -100000.0), 
                   new Point (100000.0, 100000.0), 
                   0, 
-                  true);
+                  true,
+                  world_hints);
          }
          
          mPhysicsEngine.SetJointRemovedListener (OnJointRemoved);

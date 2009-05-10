@@ -42,6 +42,17 @@ package editor.entity {
          return "Polyline";
       }
       
+      override public function GetPhysicsShapesCount ():uint
+      {
+         if ( ! IsPhysicsEnabled () )
+            return 0;
+         
+         if (GetCurveThickness () <= 1)
+            return 0;
+         
+         return mLocalPoints.length * 2 - 1;
+      }
+      
       override public function UpdateAppearance ():void
       {
          var bgColor:uint = GetFilledColor ();

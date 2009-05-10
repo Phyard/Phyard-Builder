@@ -31,6 +31,7 @@ package editor.world {
    import editor.selection.SelectionEngine;
    
    import common.Define;
+   import common.ValueAdjuster;
    
    public class EntityContainer extends Sprite 
    {
@@ -46,7 +47,7 @@ package editor.world {
          
          var largestHalfSideWidth :int = Define.LargeWorldHalfWidth + 1000 
          var largestHalfSideHeight:int = Define.LargeWorldHalfHeight + 1000;
-         mSelectionEngine = new SelectionEngine (new Point (-largestHalfSideWidth, -largestHalfSideHeight), new Point (largestHalfSideWidth, largestHalfSideHeight));
+         mSelectionEngine = new SelectionEngine (new Point (-largestHalfSideWidth, -largestHalfSideHeight), new Point (largestHalfSideWidth, largestHalfSideHeight), GetWorldHints ());
          
          mSelectionListManager = new SelectionListManager ();
       }
@@ -56,6 +57,15 @@ package editor.world {
          DestroyAllEntities ();
          
          mSelectionEngine.Destroy ();
+      }
+      
+      public function GetWorldHints ():Object
+      {
+         var world_hints:Object = new Object ();
+         world_hints.mPhysicsShapesPotentialMaxCount = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (4096);
+         world_hints.mPhysicsShapesPopulationDensityLevel = ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel (4);
+         
+         return world_hints;
       }
       
       public function Update (escapedTime:Number):void

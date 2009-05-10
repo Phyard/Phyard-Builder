@@ -112,12 +112,12 @@
             }
             
             PopUpManager.removePopUp(this);
+             
+            if (OnClose != null)
+              OnClose ();
             
             if (OnConfirm != null)
                OnConfirm (mParams);
-             
-             if (OnClose != null)
-               OnClose ();
          }
          
          private function OnClickCancelButton():void 

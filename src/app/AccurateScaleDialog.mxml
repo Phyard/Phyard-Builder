@@ -55,12 +55,12 @@
                params.mScaleRatio = 0;
             else
                params.mScaleRatio = ratio * 0.01;
-            
-           if (OnConfirm != null)
-              OnConfirm (params);
              
            if (OnClose != null)
               OnClose ();
+            
+           if (OnConfirm != null)
+              OnConfirm (params);
          }
          
          private function OnClickCancelButton():void 

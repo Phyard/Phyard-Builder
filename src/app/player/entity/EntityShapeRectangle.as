@@ -107,6 +107,8 @@ package player.entity {
                mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeConvexPolygon (
                                        mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
                
+               // if create hollow border, editor.rectangle.GetPhysicsShapesCount () should be modified
+               
                mPhysicsProxy.SetUserData (this);
             }
          }

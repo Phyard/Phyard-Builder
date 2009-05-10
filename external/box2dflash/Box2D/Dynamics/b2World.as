@@ -33,7 +33,14 @@ public class b2World
 	/// @param worldAABB a bounding box that completely encompasses all your shapes.
 	/// @param gravity the world gravity vector.
 	/// @param doSleep improve performance by not simulating inactive bodies.
-	public function b2World(worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean){
+	public function b2World(worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean, worldDef:b2WorldDef = null){
+		
+		//>>LX
+		m_worldDef = new b2WorldDef ();
+		
+		if (worldDef != null)
+		   m_worldDef.CopyFrom (worldDef);
+		//<<
 		
 		m_destructionListener = null;
 		m_boundaryListener = null;
@@ -62,7 +69,7 @@ public class b2World
 		
 		m_contactManager.m_world = this;
 		//void* mem = b2Alloc(sizeof(b2BroadPhase));
-		m_broadPhase = new b2BroadPhase(worldAABB, m_contactManager);
+		m_broadPhase = new b2BroadPhase(this, worldAABB, m_contactManager);
 		
 		var bd:b2BodyDef = new b2BodyDef();
 		m_groundBody = CreateBody(bd);
@@ -1139,7 +1146,8 @@ public class b2World
 			//b2Color color(0.9f, 0.9f, 0.3f);
 			color.Set(0.9, 0.9, 0.3);
 			
-			for (i = 0; i < b2Pair.b2_tableCapacity; ++i)
+			//for (i = 0; i < b2Pair.b2_tableCapacity; ++i)
+			for (i = 0; i < m_worldDef.b2_tableCapacity; ++i)
 			{
 				var index:uint = bp.m_pairManager.m_hashTable[i];
 				while (index != b2Pair.b2_nullPair)
@@ -1182,7 +1190,8 @@ public class b2World
 			invQ.Set(1.0 / bp.m_quantizationFactor.x, 1.0 / bp.m_quantizationFactor.y);
 			//b2Color color(0.9f, 0.3f, 0.9f);
 			color.Set(0.9, 0.3, 0.9);
-			for (i = 0; i < b2Settings.b2_maxProxies; ++i)
+			//for (i = 0; i < b2Settings.b2_maxProxies; ++i)
+			for (i = 0; i < m_worldDef.b2_maxProxies; ++i)
 			{
 				var p:b2Proxy = bp.m_proxyPool[ i];
 				if (p.IsValid() == false)
@@ -1312,7 +1321,9 @@ public class b2World
 	// This is for debugging the solver.
 	static public var m_continuousPhysics:Boolean;
 	
-	
+	//>>LX
+	public var m_worldDef:b2WorldDef = null;
+	//<<
 	
 	//>>LX
 	public function WakeUpAllBodies ():void

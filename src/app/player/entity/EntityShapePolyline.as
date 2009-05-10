@@ -98,7 +98,7 @@ package player.entity {
                
                var thickness:Number = GetCurveThickness ();
                
-               if (thickness > 1)
+               if (thickness > 1) // if this condition changes, editor.polyline.GetPhysicsShapesCount () should be modified
                {
                   thickness = thickness - 1.0;
                   var halfThickness:Number = thickness * 0.5;

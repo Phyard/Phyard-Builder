@@ -50,6 +50,11 @@ package editor.entity {
          return "Text";
       }
       
+      override public function GetPhysicsShapesCount ():uint
+      {
+         return 0;
+      }
+      
       override public function UpdateAppearance ():void
       {
          if (mElementsContainer == null)

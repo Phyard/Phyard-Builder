@@ -333,6 +333,12 @@ package common {
                worldDefine.mSettings.mBuildBorder  = byteArray.readByte () != 0;
                worldDefine.mSettings.mBorderColor = byteArray.readUnsignedInt ();
             }
+            
+            if (worldDefine.mVersion >= 0x0106)
+            {
+               worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = byteArray.readInt ();
+               worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = byteArray.readShort ();
+            }
          }
          
          // collision category
@@ -788,6 +794,15 @@ package common {
             xml.Settings.appendChild (element);
             
             element = IntSetting2XmlElement ("border_color", worldDefine.mSettings.mBorderColor, true);
+            xml.Settings.appendChild (element);
+         }
+         
+         if (worldDefine.mVersion >= 0x0106)
+         {
+            element = IntSetting2XmlElement ("physics_shapes_potential_max_count", worldDefine.mSettings.mPhysicsShapesPotentialMaxCount);
+            xml.Settings.appendChild (element);
+            
+            element = IntSetting2XmlElement ("physics_shapes_population_density_level", worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
             xml.Settings.appendChild (element);
          }
          
@@ -1282,6 +1297,27 @@ package common {
             worldDefine.mSettings.mBackgroundColor = 0xDDDDA0;
             worldDefine.mSettings.mBuildBorder = true;
             worldDefine.mSettings.mBorderColor = Define.ColorStaticObject;
+         }
+         
+         if (worldDefine.mVersion < 0x0101)
+         {
+            worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = 512;
+            worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = 8;
+         }
+         else if (worldDefine.mVersion < 0x0104)
+         {
+            worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = 1024;
+            worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = 8;
+         }
+         else if (worldDefine.mVersion < 0x0105)
+         {
+            worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = 2048;
+            worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = 8;
+         }
+         else if (worldDefine.mVersion < 0x0106)
+         {
+            worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = 4096;
+            worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = 4;
          }
          
          // collision category

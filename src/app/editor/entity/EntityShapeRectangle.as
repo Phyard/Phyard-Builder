@@ -39,6 +39,11 @@ package editor.entity {
          return "Rectangle";
       }
       
+      override public function GetPhysicsShapesCount ():uint
+      {
+         return IsPhysicsEnabled () ? 1 : 0;
+      }
+      
       override public function UpdateAppearance ():void
       {
          var filledColor:uint = GetFilledColor ();

@@ -66,6 +66,12 @@ package common {
             worldDefine.mSettings.mBuildBorder = editorWorld.IsBuildBorder ();
             worldDefine.mSettings.mBorderColor = editorWorld.GetBorderColor ();
             //<<
+            
+            //>>from v1.06
+            editorWorld.StatisticsPhysicsShapes ();
+            worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = editorWorld.GetPhysicsShapesPotentialMaxCount ();
+            worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = editorWorld.GetPhysicsShapesPopulationDensityLevel ();
+            //<<
          }
          
          var entityId:int;
@@ -363,6 +369,9 @@ package common {
       
       public static function WorldDefine2EditorWorld (worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, editorWorld:editor.world.World = null):editor.world.World
       {
+         if (worldDefine == null)
+            return editorWorld;
+            
          // from v1,03
          DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
          if (adjustPrecisionsInWorldDefine)
@@ -371,31 +380,51 @@ package common {
          //
          if (editorWorld == null)
          {
-            editorWorld = new editor.world.World ();
-            
-            // basic
-            {
-               editorWorld.SetAuthorName (worldDefine.mAuthorName);
-               editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
+            //try
+            //{
+               editorWorld = new editor.world.World ();
                
-               editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
-               editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
-            }
+               // basic
+               {
+                  editorWorld.SetAuthorName (worldDefine.mAuthorName);
+                  editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
+                  
+                  editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
+                  editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
+               }
+               
+               // settings
+               {
+                  //>> from v1.04
+                  editorWorld.SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
+                  editorWorld.SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
+                  editorWorld.SetWorldLeft (worldDefine.mSettings.mWorldLeft);
+                  editorWorld.SetWorldTop (worldDefine.mSettings.mWorldTop);
+                  editorWorld.SetWorldWidth (worldDefine.mSettings.mWorldWidth);
+                  editorWorld.SetWorldHeight (worldDefine.mSettings.mWorldHeight);
+                  editorWorld.SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
+                  editorWorld.SetBuildBorder (worldDefine.mSettings.mBuildBorder);
+                  editorWorld.SetBorderColor (worldDefine.mSettings.mBorderColor);
+                  //<<
+                  
+                  
+                  //>>from v1.06
+                  //worldDefine.mSettings.mPhysicsShapesPotentialMaxCount;
+                  //worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel;
+                  //<<
+               }
             
-            // settins
-            {
-               //>> from v1.04
-               editorWorld.SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
-               editorWorld.SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
-               editorWorld.SetWorldLeft (worldDefine.mSettings.mWorldLeft);
-               editorWorld.SetWorldTop (worldDefine.mSettings.mWorldTop);
-               editorWorld.SetWorldWidth (worldDefine.mSettings.mWorldWidth);
-               editorWorld.SetWorldHeight (worldDefine.mSettings.mWorldHeight);
-               editorWorld.SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
-               editorWorld.SetBuildBorder (worldDefine.mSettings.mBuildBorder);
-               editorWorld.SetBorderColor (worldDefine.mSettings.mBorderColor);
-               //<<
-            }
+               return WorldDefine2EditorWorld (worldDefine, adjustPrecisionsInWorldDefine, editorWorld);
+               
+               // comment off the try-catch for bug of secureSWF. This will make memory leaks possible!!!
+            //}
+           // catch (error:Error)
+            //{
+            //   if (editorWorld != null)
+            //      editorWorld.Destroy (); // tell b2WorldPool to release the alloced b2Worlds
+            //   
+            //   throw error;
+            //}
          }
          
          // collision category
@@ -782,6 +811,9 @@ package common {
       
       public static function Xml2WorldDefine (worldXml:XML):WorldDefine
       {
+         if (worldXml == null || worldXml.localName() != "World")
+            return null;
+         
          var worldDefine:WorldDefine = new WorldDefine ();
          
          // basic
@@ -826,6 +858,14 @@ package common {
                   worldDefine.mSettings.mBuildBorder  = parseInt (element.@value) != 0;
                else if (element.@name == "border_color")
                   worldDefine.mSettings.mBorderColor = parseInt ( (element.@value).substr (2), 16);
+               
+               //>>from v1.06
+               else if (element.@name == "physics_shapes_potential_max_count")
+                  worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = parseInt (element.@value);
+               else if (element.@name == "physics_shapes_population_density_level")
+                  worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = parseInt (element.@value);
+               //<<
+               
                else
                   trace ("Unkown setting: " + element.@name);
             }
@@ -1153,6 +1193,12 @@ package common {
                byteArray.writeUnsignedInt (worldDefine.mSettings.mBackgroundColor);
                byteArray.writeByte (worldDefine.mSettings.mBuildBorder ? 1 : 0);
                byteArray.writeUnsignedInt (worldDefine.mSettings.mBorderColor);
+            }
+            
+            if (worldDefine.mVersion >= 0x0106)
+            {
+               byteArray.writeInt (worldDefine.mSettings.mPhysicsShapesPotentialMaxCount);
+               byteArray.writeShort (worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
             }
          }
          

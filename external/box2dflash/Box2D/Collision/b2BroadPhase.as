@@ -23,6 +23,7 @@ import Box2D.Common.*;
 import Box2D.Collision.*;
 import Box2D.Common.Math.*;
 
+import Box2D.Dynamics.b2World;
 
 /*
 This broad phase uses the Sweep and Prune algorithm as described in:
@@ -47,9 +48,17 @@ Bullet (http:/www.bulletphysics.com).
 public class b2BroadPhase
 {
 //public:
-	public function b2BroadPhase(worldAABB:b2AABB, callback:b2PairCallback){
+	public function b2BroadPhase(world:b2World, worldAABB:b2AABB, callback:b2PairCallback){
 		//b2Settings.b2Assert(worldAABB.IsValid());
 		var i:int;
+		
+		//>>LX
+		m_b2World = world;
+		m_pairManager = new b2PairManager(m_b2World);
+		m_proxyPool = new Array (m_b2World.m_worldDef.b2_maxProxies);
+		m_queryResults = new Array (m_b2World.m_worldDef.b2_maxProxies);
+		m_proxyCountEverMax = 0;
+		//<<
 		
 		m_pairManager.Initialize(this, callback);
 		
@@ -58,15 +67,18 @@ public class b2BroadPhase
 		m_proxyCount = 0;
 		
 		// query results
-		for (i = 0; i < b2Settings.b2_maxProxies; i++){
+		//for (i = 0; i < b2Settings.b2_maxProxies; i++){
+		for (i = 0; i < m_b2World.m_worldDef.b2_maxProxies; i++){
 			m_queryResults[i] = 0;
 		}
 		
 		// bounds array
 		m_bounds = new Array(2);
 		for (i = 0; i < 2; i++){
-			m_bounds[i] = new Array(2*b2Settings.b2_maxProxies);
-			for (var j:int = 0; j < 2*b2Settings.b2_maxProxies; j++){
+			//m_bounds[i] = new Array(2*b2Settings.b2_maxProxies);
+			m_bounds[i] = new Array (2*m_b2World.m_worldDef.b2_maxProxies);
+			//for (var j:int = 0; j < 2*b2Settings.b2_maxProxies; j++){
+			for (var j:int = 0; j < 2*m_b2World.m_worldDef.b2_maxProxies; j++){
 				m_bounds[i][j] = new b2Bound();
 			}
 		}
@@ -79,7 +91,8 @@ public class b2BroadPhase
 		m_quantizationFactor.y = b2Settings.B2BROADPHASE_MAX / dY;
 		
 		var tProxy:b2Proxy;
-		for (i = 0; i < b2Settings.b2_maxProxies - 1; ++i)
+		//for (i = 0; i < b2Settings.b2_maxProxies - 1; ++i)
+		for (i = 0; i < m_b2World.m_worldDef.b2_maxProxies - 1; ++i)
 		{
 			tProxy = new b2Proxy();
 			m_proxyPool[i] = tProxy;
@@ -89,7 +102,8 @@ public class b2BroadPhase
 			tProxy.userData = null;
 		}
 		tProxy = new b2Proxy();
-		m_proxyPool[int(b2Settings.b2_maxProxies-1)] = tProxy;
+		//m_proxyPool[int(b2Settings.b2_maxProxies-1)] = tProxy;
+		m_proxyPool[int(m_b2World.m_worldDef.b2_maxProxies-1)] = tProxy;
 		tProxy.SetNext(b2Pair.b2_nullProxy);
 		tProxy.timeStamp = 0;
 		tProxy.overlapCount = b2_invalid;
@@ -104,6 +118,10 @@ public class b2BroadPhase
 	//>>added by LX
 	public function Reset (worldAABB:b2AABB):void
 	{
+		//>>LX
+		m_proxyCountEverMax = 0;
+		//<<
+		
 		m_pairManager.Reset ();
 		
 		m_worldAABB = worldAABB;
@@ -113,7 +131,8 @@ public class b2BroadPhase
 		var i:int;
 		
 		// query results
-		for (i = 0; i < b2Settings.b2_maxProxies; i++){
+		//for (i = 0; i < b2Settings.b2_maxProxies; i++){
+		for (i = 0; i < m_b2World.m_worldDef.b2_maxProxies; i++){
 			m_queryResults[i] = 0;
 		}
 		
@@ -125,7 +144,8 @@ public class b2BroadPhase
 		m_quantizationFactor.y = b2Settings.B2BROADPHASE_MAX / dY;
 		
 		var tProxy:b2Proxy;
-		for (i = 0; i < b2Settings.b2_maxProxies - 1; ++i)
+		//for (i = 0; i < b2Settings.b2_maxProxies - 1; ++i)
+		for (i = 0; i < m_b2World.m_worldDef.b2_maxProxies - 1; ++i)
 		{
 			tProxy = m_proxyPool[i];
 			tProxy.SetNext(i + 1);
@@ -133,7 +153,8 @@ public class b2BroadPhase
 			tProxy.overlapCount = b2_invalid;
 			tProxy.userData = null;
 		}
-		tProxy = m_proxyPool[int(b2Settings.b2_maxProxies-1)];
+		//m_proxyPool[int(b2Settings.b2_maxProxies-1)] = tProxy;
+		m_proxyPool[int(m_b2World.m_worldDef.b2_maxProxies-1)] = tProxy;
 		tProxy.SetNext(b2Pair.b2_nullProxy);
 		tProxy.timeStamp = 0;
 		tProxy.overlapCount = b2_invalid;
@@ -355,6 +376,12 @@ public class b2BroadPhase
 		
 		++m_proxyCount;
 		
+		if (m_proxyCount > m_proxyCountEverMax)
+		{
+		   m_proxyCountEverMax = m_proxyCount;
+		   //trace (">> m_proxyCountEverMax = " + m_proxyCountEverMax);
+		}
+		
 		//b2Settings.b2Assert(m_queryResultCount < b2Settings.b2_maxProxies);
 		
 		for (var i:int = 0; i < m_queryResultCount; ++i)
@@ -517,7 +544,8 @@ public class b2BroadPhase
 		var nextProxyId:uint;
 		var nextProxy:b2Proxy;
 		
-		if (proxyId == b2Pair.b2_nullProxy || b2Settings.b2_maxProxies <= proxyId)
+		//if (proxyId == b2Pair.b2_nullProxy || b2Settings.b2_maxProxies <= proxyId)
+		if (proxyId == b2Pair.b2_nullProxy || m_b2World.m_worldDef.b2_maxProxies <= proxyId)
 		{
 			//b2Settings.b2Assert(false);
 			return;
@@ -1015,7 +1043,8 @@ public class b2BroadPhase
 	private function IncrementTimeStamp() : void{
 		if (m_timeStamp == b2Settings.B2BROADPHASE_MAX)
 		{
-			for (var i:uint = 0; i < b2Settings.b2_maxProxies; ++i)
+			//for (var i:uint = 0; i < b2Settings.b2_maxProxies; ++i)
+			for (var i:uint = 0; i < m_b2World.m_worldDef.b2_maxProxies; ++i)
 			{
 				(m_proxyPool[i] as b2Proxy).timeStamp = 0;
 			}
@@ -1028,14 +1057,14 @@ public class b2BroadPhase
 	}
 
 //public:
-	public var m_pairManager:b2PairManager = new b2PairManager();
+	public var m_pairManager:b2PairManager;// = new b2PairManager();
 
-	public var m_proxyPool:Array = new Array(b2Settings.b2_maxPairs);
+	public var m_proxyPool:Array;// = new Array(b2Settings.b2_maxPairs); // ? b2_maxPairs, bug?
 	public var m_freeProxy:uint;
 
-	public var m_bounds:Array = new Array(2*b2Settings.b2_maxProxies);
+	public var m_bounds:Array;// = new Array(2*b2Settings.b2_maxProxies);
 
-	public var m_queryResults:Array = new Array(b2Settings.b2_maxProxies);
+	public var m_queryResults:Array;// = new Array(b2Settings.b2_maxProxies);
 	public var m_queryResultCount:int;
 
 	public var m_worldAABB:b2AABB;
@@ -1075,5 +1104,10 @@ public class b2BroadPhase
 	}
 	
 	
+	
+	//>>LX
+	public var m_b2World:b2World;
+	public var m_proxyCountEverMax:int;
+	//<<
 };
 }

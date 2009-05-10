@@ -243,7 +243,7 @@ package editor {
          //
          
          mWorldHistoryManager = new WorldHistoryManager ();
-         SetEditorWorld (new editor.world.World ());
+         SetEditorWorld (new editor.world.World (), true);
          CreateUndoPoint ();
          
          //
@@ -1075,49 +1075,45 @@ package editor {
          }
       }
       
-      private function SetEditorWorld (newEditorWorld:editor.world.World):void
+      private function SetEditorWorld (newEditorWorld:editor.world.World, firstTime:Boolean = false):void
       {
-         if (newEditorWorld == null)
+         if (newEditorWorld == null || newEditorWorld == mEditorWorld)
             return;
          
-         if (mEditorWorld == null)
-         {
-            mEditorWorld = newEditorWorld;
-            mContentContainer.addChild (mEditorWorld);
-            
-            return;
-         }
-         
-         newEditorWorld.x = mEditorWorld.x;
-         newEditorWorld.y = mEditorWorld.y;
-         newEditorWorld.scaleX = mEditorWorld.scaleX;
-         newEditorWorld.scaleY = mEditorWorld.scaleY;
-         
-         mContentContainer.removeChild (mEditorWorld);
-         
-         SystemUtil.TraceMemory ("before mEditorWorld = null", true);
-         
-         mEditorWorld = null;
-         
-         SystemUtil.TraceMemory ("after mEditorWorld = null", true);
+         DestroyEditorWorld ();
          
          mEditorWorld = newEditorWorld;
-         mContentContainer.addChild (mEditorWorld);
          
-         SystemUtil.TraceMemory ("after mEditorWorld = newEditorWorld", true);
+         mContentContainer.addChild (mEditorWorld);
          
          if (Runtime.mCollisionCategoryView != null)
             Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
          if (Runtime.mSynchronizeWorldSettingPanelWithWorld != null)
             Runtime.mSynchronizeWorldSettingPanelWithWorld (mEditorWorld);
          
-         //
-         mLastSelectedEntity = null;
-         mLastSelectedEntities = null;
+         if (! firstTime)
+         {
+            //
+            mLastSelectedEntity = null;
+            mLastSelectedEntities = null;
+            
+            CalSelectedEntitiesCenterPoint ();
+            
+            UpdateBackgroundAndWorldPosition ();
+         }
+      }
+      
+      private function DestroyEditorWorld ():void
+      {
+         if ( mEditorWorld != null)
+         {
+            mEditorWorld.Destroy ();
+            
+            if ( mContentContainer.contains (mEditorWorld) )
+               mContentContainer.removeChild (mEditorWorld);
+         }
          
-         CalSelectedEntitiesCenterPoint ();
-         
-         UpdateBackgroundAndWorldPosition ();
+         mEditorWorld = null;
       }
       
       private function SetPlayerWorld (newPlayerWorld:player.world.World):void
@@ -3128,26 +3124,31 @@ package editor {
       
       public function LoadEditorWorldFromXmlString (params:Object):void
       {
-         var xmlString:String = params.mXmlString;
+         var newWorld:editor.world.World = null;
          
-         var xml:XML = new XML (xmlString);
+         DestroyEditorWorld ();
          
          try
          {
-            var oldEditorWorld:editor.world.World = mEditorWorld;
+            var xmlString:String = params.mXmlString;
             
-            var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (DataFormat.Xml2WorldDefine (xml));
+            var xml:XML = new XML (xmlString);
             
-            oldEditorWorld.Destroy ();
+            var newWorldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
+            if (newWorldDefine == null)
+               throw new Error ("newWorldDefine == null !!!");
+            
+            newWorld = DataFormat.WorldDefine2EditorWorld (newWorldDefine);
+            
+            SetEditorWorld (newWorld);
             
             mWorldHistoryManager.ClearHistories ();
-            
-            SetEditorWorld (newEditorWorld);
-            
             CreateUndoPoint ();
          }
          catch (error:Error)
          {
+            SetEditorWorld (new editor.world.World ());
+            
             Alert.show("Sorry, loading error!", "Error");
             
             if (Compile::Is_Debugging)
@@ -3176,10 +3177,12 @@ package editor {
       
       public function ExportSelectedsToSystemMemory ():void
       {
+         var newWorld:editor.world.World = null;
+         
          try
          {
             var worldDefine:WorldDefine = DataFormat.EditorWorld2WorldDefine (mEditorWorld);
-            var newWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (worldDefine);
+            newWorld = DataFormat.WorldDefine2EditorWorld (worldDefine);
             
             var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
             
@@ -3244,6 +3247,7 @@ package editor {
             }
             
             System.setClipboard(DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (newWorld)));
+            
          }
          catch (error:Error)
          {
@@ -3251,6 +3255,11 @@ package editor {
             
             if (Compile::Is_Debugging)
                throw error;
+         }
+         //finally // comment off for bug of secureSWF 
+         {
+            if (newWorld != null)
+               newWorld.Destroy ();
          }
       }
       
@@ -3618,7 +3627,7 @@ package editor {
          var request:URLRequest = new URLRequest (designLoadUrl);
          request.method = URLRequestMethod.GET;
          
-         trace ("designLoadUrl = " + designLoadUrl);
+         //trace ("designLoadUrl = " + designLoadUrl);
          
          var loader:URLLoader = new URLLoader ();
          loader.dataFormat = URLLoaderDataFormat.BINARY;
@@ -3632,15 +3641,17 @@ package editor {
       {
          var loader:URLLoader = URLLoader(event.target);
          
+         var returnCode:int = k_ReturnCode_UnknowError;
+         
          try
          {
             var data:ByteArray = ByteArray (loader.data);
             
-            var returnCode:int = data.readByte ();
+            returnCode = data.readByte ();
             
             if (returnCode == k_ReturnCode_Successed)
             {
-               var oldEditorWorld:editor.world.World = mEditorWorld;
+               DestroyEditorWorld ();
                
                var designDataForEditing:ByteArray = new ByteArray ();
                
@@ -3658,8 +3669,6 @@ package editor {
                   newEditorWorld = new editor.world.World ();
                }
                
-               oldEditorWorld.Destroy ();
-               
                mWorldHistoryManager.ClearHistories ();
                
                SetEditorWorld (newEditorWorld);
@@ -3673,6 +3682,9 @@ package editor {
          }
          catch (error:Error)
          {
+            if (returnCode == k_ReturnCode_Successed)
+               SetEditorWorld (new editor.world.World ());
+            
             Alert.show("Sorry, online loading error!", "Error");
             
             if (Compile::Is_Debugging)

@@ -1,8 +1,27 @@
 
 package common {
    
+   import Box2D.Dynamics.b2WorldDef;
+   
    public class Setting
    {
+   
+//================================================================================
+// b2WorldDef
+//================================================================================
+   
+   public static const b2WorldDef_EditorScene:b2WorldDef = new b2WorldDef ();
+   public static const b2WorldDef_CategoryManager:b2WorldDef = new b2WorldDef (256, 256);
+   
+   public static function GetB2WorldDefForPlayer (version:uint):b2WorldDef
+   {
+      return null;
+   }
+   
+//================================================================================
+// spring 
+//================================================================================
+      
       /*
       private static const SpringHalfWidth:Array = [2, 2, 3, 3, 4, 4, 5, 5];
       private static const SpringWireWidth:Array = [1, 2, 1, 2, 1, 2, 1, 2];

@@ -27,22 +27,34 @@ import Box2D.Common.*;
 import Box2D.Common.Math.*;
 import Box2D.Collision.*;
 
+import Box2D.Dynamics.b2World;
 
 public class b2PairManager
 {
 //public:
-	public function b2PairManager(){
+	public function b2PairManager(world:b2World){
 		var i:uint;
+		
+		//>>LX
+		m_b2World = world;
+		m_pairCountEverMax = 0;
+		m_pairBufferCountEverMax = 0;
+		//<<
+		
 		//b2Settings.b2Assert(b2Math.b2IsPowerOfTwo(b2Pair.b2_tableCapacity) == true);
 		//b2Settings.b2Assert(b2Pair.b2_tableCapacity >= b2Settings.b2_maxPairs);
-		m_hashTable = new Array(b2Pair.b2_tableCapacity);
-		for (i = 0; i < b2Pair.b2_tableCapacity; ++i)
+		//m_hashTable = new Array(b2Pair.b2_tableCapacity);
+		m_hashTable = new Array(m_b2World.m_worldDef.b2_tableCapacity);
+		//for (i = 0; i < b2Pair.b2_tableCapacity; ++i)
+		for (i = 0; i < m_b2World.m_worldDef.b2_tableCapacity; ++i)
 		{
 			m_hashTable[i] = b2Pair.b2_nullPair;
 		}
 		
-		m_pairBuffer = new Array(b2Settings.b2_maxPairs);
-		for (i = 0; i < b2Settings.b2_maxPairs; ++i)
+		//m_pairBuffer = new Array(b2Settings.b2_maxPairs);
+		m_pairBuffer = new Array(m_b2World.m_worldDef.b2_maxPairs);
+		//for (i = 0; i < b2Settings.b2_maxPairs; ++i)
+		for (i = 0; i < m_b2World.m_worldDef.b2_maxPairs; ++i)
 		{
 			m_pairBuffer[i] = new b2BufferedPair();
 		}
@@ -50,8 +62,10 @@ public class b2PairManager
 		m_freePair = 0;
 		
 		var pair:b2Pair;
-		m_pairs = new Array(b2Settings.b2_maxPairs);
-		for (i = 0; i < b2Settings.b2_maxPairs; ++i)
+		//m_pairs = new Array(b2Settings.b2_maxPairs);
+		m_pairs = new Array(m_b2World.m_worldDef.b2_maxPairs);
+		//for (i = 0; i < b2Settings.b2_maxPairs; ++i)
+		for (i = 0; i < m_b2World.m_worldDef.b2_maxPairs; ++i)
 		{
 		//	m_pairs[i] = new b2Pair();
 			m_pairs[i] = pair = new b2Pair();
@@ -70,7 +84,8 @@ public class b2PairManager
 			pair.status = 0;
 			pair.next = (i + 1);
 		}
-		m_pairs[int(b2Settings.b2_maxPairs-1)].next = b2Pair.b2_nullPair;
+		//m_pairs[int(b2Settings.b2_maxPairs-1)].next = b2Pair.b2_nullPair;
+		m_pairs[int(m_b2World.m_worldDef.b2_maxPairs-1)].next = b2Pair.b2_nullPair;
 		m_pairCount = 0;
 		m_pairBufferCount = 0;
 	}
@@ -80,8 +95,14 @@ public class b2PairManager
 	public function Reset ():void
 	{
 	   var i:uint;
+		
+		//>>LX
+		m_pairCountEverMax = 0;
+		m_pairBufferCountEverMax = 0;
+		//<<
 	   
-		for (i = 0; i < b2Pair.b2_tableCapacity; ++i)
+		//for (i = 0; i < b2Pair.b2_tableCapacity; ++i)
+		for (i = 0; i < m_b2World.m_worldDef.b2_tableCapacity; ++i)
 		{
 			m_hashTable[i] = b2Pair.b2_nullPair;
 		}
@@ -89,7 +110,8 @@ public class b2PairManager
 		m_freePair = 0;
 		var pair:b2Pair;
 		
-		for (i = 0; i < b2Settings.b2_maxPairs; ++i)
+		//for (i = 0; i < b2Settings.b2_maxPairs; ++i)
+		for (i = 0; i < m_b2World.m_worldDef.b2_maxPairs; ++i)
 		{
 			pair = m_pairs[i];
 			pair.proxyId1 = b2Pair.b2_nullProxy;
@@ -98,7 +120,8 @@ public class b2PairManager
 			pair.status = 0;
 			pair.next = (i + 1);
 		}
-		m_pairs[int(b2Settings.b2_maxPairs-1)].next = b2Pair.b2_nullPair;
+		//m_pairs[int(b2Settings.b2_maxPairs-1)].next = b2Pair.b2_nullPair;
+		m_pairs[int(m_b2World.m_worldDef.b2_maxPairs-1)].next = b2Pair.b2_nullPair;
 		m_pairCount = 0;
 		m_pairBufferCount = 0;
 	}
@@ -144,6 +167,12 @@ public class b2PairManager
 			bufferedPair.proxyId1 = pair.proxyId1;
 			bufferedPair.proxyId2 = pair.proxyId2;
 			++m_pairBufferCount;
+			
+			if (m_pairBufferCount > m_pairBufferCountEverMax)
+			{
+			   m_pairBufferCountEverMax = m_pairBufferCount;
+			   //trace ("m_pairBufferCountEverMax = " + m_pairBufferCountEverMax);
+			}
 			
 			//b2Settings.b2Assert(m_pairBufferCount <= m_pairCount);
 		}
@@ -273,7 +302,8 @@ public class b2PairManager
 			//b2Math.b2Swap(p1, p2);
 		}
 		
-		var hash:uint = Hash(proxyId1, proxyId2) & b2Pair.b2_tableMask;
+		//var hash:uint = Hash(proxyId1, proxyId2) & b2Pair.b2_tableMask;
+		var hash:uint = Hash(proxyId1, proxyId2) & m_b2World.m_worldDef.b2_tableMask;
 		
 		//var pairIndex:int = FindHash(proxyId1, proxyId2, hash);
 		var pair:b2Pair = pair = FindHash(proxyId1, proxyId2, hash);
@@ -284,6 +314,11 @@ public class b2PairManager
 		}
 		
 		//b2Settings.b2Assert(m_pairCount < b2Settings.b2_maxPairs && m_freePair != b2_nullPair);
+		
+		if (m_freePair >= m_pairs.length)
+		{
+		   trace (">> error: " + m_freePair + ", m_pairCountEverMax = " + m_pairCountEverMax);
+		}
 		
 		var pIndex:uint = m_freePair;
 		pair = m_pairs[pIndex];
@@ -298,6 +333,12 @@ public class b2PairManager
 		m_hashTable[hash] = pIndex;
 		
 		++m_pairCount;
+		
+		if (m_pairCount > m_pairCountEverMax)
+		{
+		   m_pairCountEverMax = m_pairCount;
+		   //trace ("m_pairCountEverMax = " + m_pairCountEverMax);
+		}
 		
 		//trace ("m_pairCount = " + m_pairCount + ", m_freePair = " + m_freePair);
 		
@@ -317,7 +358,8 @@ public class b2PairManager
 			//b2Math.b2Swap(proxyId1, proxyId2);
 		}
 		
-		var hash:uint = Hash(proxyId1, proxyId2) & b2Pair.b2_tableMask;
+		//var hash:uint = Hash(proxyId1, proxyId2) & b2Pair.b2_tableMask;
+		var hash:uint = Hash(proxyId1, proxyId2) & m_b2World.m_worldDef.b2_tableMask;
 		
 		var node:uint = m_hashTable[hash];
 		var pNode:b2Pair = null;
@@ -375,7 +417,8 @@ public class b2PairManager
 			//b2Math.b2Swap(proxyId1, proxyId2);
 		}
 		
-		var hash:uint = Hash(proxyId1, proxyId2) & b2Pair.b2_tableMask;
+		//var hash:uint = Hash(proxyId1, proxyId2) & b2Pair.b2_tableMask;
+		var hash:uint = Hash(proxyId1, proxyId2) & m_b2World.m_worldDef.b2_tableMask;
 		
 		return FindHash(proxyId1, proxyId2, hash);
 	}
@@ -427,6 +470,13 @@ public class b2PairManager
 
 	public var m_hashTable:Array;
 	
+	
+	
+	//>>LX
+	public var m_b2World:b2World;
+	public var m_pairCountEverMax:int;
+	public var m_pairBufferCountEverMax:int;
+	//<<
 	
 // static
 	// Thomas Wang's hash, see: http://www.concentric.net/~Ttwang/tech/inthash.htm

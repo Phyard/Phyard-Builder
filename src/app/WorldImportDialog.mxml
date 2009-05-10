@@ -56,12 +56,12 @@
             var params:Object = new Object ();
             
            params.mXmlString = TextArea_SourceCode.text;
-            
-           if (OnConfirm != null)
-              OnConfirm (params);
              
            if (OnClose != null)
               OnClose ();
+            
+           if (OnConfirm != null)
+              OnConfirm (params);
          }
          
          private function OnClickCancelButton():void 

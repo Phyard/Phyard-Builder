@@ -14,6 +14,8 @@ package player.physics {
    import Box2D.Dynamics.b2ContactListener;
    import Box2D.Dynamics.b2DestructionListener;
    
+   import Box2D.Common.b2Settings;
+   
    import Box2D.b2WorldPool;
    
    public class PhysicsEngine
@@ -451,6 +453,10 @@ package player.physics {
       {
          var dx:Number = displayX2 - displayX1;
          var dy:Number = displayY2 - displayY1;
+         
+         if (dx < b2Settings.k_MinFloatNumber && dy < b2Settings.k_MinFloatNumber) // will cause strange behaviour
+            return; 
+         
          var rot:Number = Math.atan2 (dy, dx);
          rot += Math.PI * 0.5;
          

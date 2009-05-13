@@ -57,9 +57,9 @@ package player.entity {
          }
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          //
          
@@ -119,7 +119,8 @@ package player.entity {
          y = displayY;
          SetRotation (rot);
          
-         RebuildAppearance ();
+         if (updateAppearance)
+            RebuildAppearance ();
       }
       
       override public function RebuildAppearance ():void

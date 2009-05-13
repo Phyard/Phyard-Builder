@@ -525,6 +525,9 @@ package wrapper {
             catch (error:Error)
             {
                trace ("create world error." + error);
+               
+               if (Compile::Is_Debugging)
+                  throw error;
             }
          }
          

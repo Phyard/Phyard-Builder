@@ -185,7 +185,7 @@ package editor.selection {
          var dx:Number = localX2 - localX1;
          var dy:Number = localY2 - localY1;
          
-         if (dx < b2Settings.k_MinFloatNumber && dy < b2Settings.k_MinFloatNumber) // will cause strange behaviour
+         if (Math.abs (dx) < b2Settings.k_MinFloatNumber && Math.abs (dy) < b2Settings.k_MinFloatNumber) // will cause strange behaviour
             return;
          
          var rot:Number = Math.atan2 (dy, dx);

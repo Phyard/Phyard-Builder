@@ -42,9 +42,9 @@ package player.entity {
          }
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          var anchorParams:Object = params.mAnchorParams;
          
@@ -68,7 +68,8 @@ package player.entity {
          mBackAndForth = params.mBackAndForth;
          visible = params.mIsVisible;
          
-         RebuildAppearance ();
+         if (updateAppearance)
+            RebuildAppearance ();
       }
       
       override public function RebuildAppearance ():void

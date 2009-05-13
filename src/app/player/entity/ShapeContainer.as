@@ -54,7 +54,7 @@ package player.entity {
          return mContainsPhysicsShapes;
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
          mContainsPhysicsShapes = params.mContainsPhysicsShapes;
          

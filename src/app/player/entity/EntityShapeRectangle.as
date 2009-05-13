@@ -68,9 +68,9 @@ package player.entity {
             return mHalfHeight * 2.0 + borderThickness - 1.0;
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          //
          
@@ -118,7 +118,8 @@ package player.entity {
          y = displayY;
          SetRotation (rot);
          
-         RebuildAppearance ();
+         if (updateAppearance)
+            RebuildAppearance ();
       }
       
       override public function RebuildAppearance ():void

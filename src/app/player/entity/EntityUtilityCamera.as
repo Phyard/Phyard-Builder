@@ -36,9 +36,9 @@ package player.entity {
          mWorld.MoveWorldSceneTo (worldPoint.x, worldPoint.y);
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
       }
       
    }

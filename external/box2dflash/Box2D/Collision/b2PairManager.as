@@ -337,7 +337,12 @@ public class b2PairManager
 		if (m_pairCount > m_pairCountEverMax)
 		{
 		   m_pairCountEverMax = m_pairCount;
-		   //trace ("m_pairCountEverMax = " + m_pairCountEverMax);
+		   
+		   if (Compile::Is_Debugging)
+		   {
+		      if ( (m_pairCountEverMax & 31) == 0 )
+		         trace ("m_pairCountEverMax = " + m_pairCountEverMax);
+		   }
 		}
 		
 		//trace ("m_pairCount = " + m_pairCount + ", m_freePair = " + m_freePair);

@@ -39,6 +39,10 @@ package player.entity {
       protected var mIsHollow:Boolean = false;
       //<<
       
+      //>>from v1.07
+      protected var mIsField:Boolean = false;
+      //<<
+      
       public function EntityShape (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
@@ -215,9 +219,9 @@ package player.entity {
          return mShapeContainer;
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          mPhysicsEnabled = params.mIsPhysicsEnabled;
          

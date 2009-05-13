@@ -96,10 +96,16 @@ public class b2World
 	{
 		Destroy ();
 		
+		m_inv_dt0 = 0.0;
+		
 		m_gravity.SetV (gravity);
 		m_allowSleep = doSleep;
 		
 		m_broadPhase.Reset (worldAABB);
+		
+		//trace ("m_bodyCount = " + m_bodyCount);
+		//trace ("m_contactCount = " + m_contactCount);
+		//trace ("m_jointCount = " + m_jointCount);
 	}
 	//
 
@@ -450,6 +456,8 @@ public class b2World
 	/// @param timeStep the amount of time to simulate, this should not vary.
 	/// @param iterations the number of iterations to be used by the constraint solver.
 	public function Step(dt:Number, iterations:int) : void{
+		
+		//trace ("------- m_contactCount = " + m_contactCount);
 		
 		m_lock = true;
 		

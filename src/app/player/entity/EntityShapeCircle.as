@@ -52,9 +52,9 @@ package player.entity {
             return mRadius + borderThickness * 0.5 - 0.5;
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          // this "if" is put in AdjustNumberValuesInWorldDefine now
          // 
@@ -94,7 +94,8 @@ package player.entity {
          y = displayY;
          SetRotation (rot);
          
-         RebuildAppearance ();
+         if (updateAppearance)
+            RebuildAppearance ();
       }
       
       override public function RebuildAppearance ():void

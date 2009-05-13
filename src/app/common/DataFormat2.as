@@ -18,6 +18,8 @@ package common {
       
       public static function WorldDefine2PlayerWorld (worldDefine:WorldDefine):player.world.World
       {
+         //trace ("WorldDefine2PlayerWorld");
+         
          // from v1,03
          FillMissedFieldsInWorldDefine (worldDefine);
          if (worldDefine.mVersion >= 0x0103)
@@ -114,6 +116,8 @@ package common {
             entityDefine.mWorldDefine = worldDefine;
             entityDefine.mEntityId = entityId;
             // <<
+            
+            //trace ("entityId = " + entityId + ", mEntityType = " + entityDefine.mEntityType);
             
             if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
             {
@@ -289,6 +293,8 @@ package common {
       
       public static function ByteArray2WorldDefine (byteArray:ByteArray):WorldDefine
       {
+         //trace ("ByteArray2WorldDefine");
+         
          var worldDefine:WorldDefine = new WorldDefine ();
          
          // COlor INfection
@@ -383,6 +389,9 @@ package common {
             var entityDefine:Object = new Object ();
             
             entityDefine.mEntityType = byteArray.readShort ();
+            
+            //trace ("entityId = " + entityId + ", mEntityType = " + entityDefine.mEntityType);
+            
             if (worldDefine.mVersion >= 0x0103)
             {
                entityDefine.mPosX = byteArray.readDouble ();

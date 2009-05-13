@@ -41,9 +41,9 @@ package player.entity {
          RebuildAppearance ();
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          mSpringType = params.mSpringType;
          
@@ -79,7 +79,8 @@ package player.entity {
          //mSpriteAnchor2.y = anchorDisplayY2;
          
          //
-         RebuildAppearance ();
+         if (updateAppearance)
+            RebuildAppearance ();
       }
       
       override public function RebuildAppearance ():void

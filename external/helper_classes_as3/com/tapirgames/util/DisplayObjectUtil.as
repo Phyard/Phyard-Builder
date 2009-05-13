@@ -26,8 +26,22 @@ package com.tapirgames.util {
          
          if (displayObject != null)
          {
-            var bitmapData:BitmapData = new BitmapData (displayObject.width, displayObject.height, true, 0x00FFFFFF);
-            bitmapData.draw (displayObject);
+            //trace ("displayObject.width = " + displayObject.width + ", displayObject.height = "  + displayObject.height);
+            
+            var bitmapData:BitmapData;
+            
+            try
+            {
+               bitmapData = new BitmapData (displayObject.width, displayObject.height, true, 0x00FFFFFF);
+               bitmapData.draw (displayObject);
+            }
+            catch (error:Error)
+            {
+               bitmapData = new BitmapData (1, 1);
+               
+               //if (Compile::Is_Debugging)
+               //   throw error;
+            }
             
             cachedBitmap.bitmapData = bitmapData;
             cachedBitmap.smoothing = true;

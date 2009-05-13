@@ -16,10 +16,29 @@ package player.physics {
          mPhysicsEngine = phyEngine;
       }
       
+      private var mNumPoints:int = 0;
+      private var mNumPoints_Add:int;
+      private var mNumPoints_Persist:int;
+      private var mNumPoints_Remove:int;
+      public function Reset ():void
+      {
+         //trace ("------------ mNumPoints = " + mNumPoints + " | " + (mNumPoints_Persist + mNumPoints_Add - mNumPoints_Remove));
+         //trace ("mNumPoints_Add = " + mNumPoints_Add);
+         //trace ("mNumPoints_Persist = " + mNumPoints_Persist);
+         //trace ("mNumPoints_Remove = " + mNumPoints_Remove);
+         
+         mNumPoints_Add = 0;
+         mNumPoints_Persist = 0;
+         mNumPoints_Remove = 0;
+      }
+      
       /// Called when a contact point is added. This includes the geometry
       /// and the forces.
       override public function Add(point:b2ContactPoint) : void
       {
+         mNumPoints_Add ++;
+         mNumPoints ++;
+         
          var shape1:b2Shape = point.shape1;
          var shape2:b2Shape = point.shape2;
          var userdata1:Object = shape1.GetUserData ();
@@ -32,6 +51,10 @@ package player.physics {
       /// and the forces.
       override public function Persist(point:b2ContactPoint) : void
       {
+         mNumPoints_Persist ++;
+         mNumPoints --;
+         mNumPoints_Add --;
+         
          Add (point);
       }
       
@@ -39,6 +62,8 @@ package player.physics {
       /// computed geometry and forces.
       override public function Remove(point:b2ContactPoint) : void
       {
+         mNumPoints_Remove ++;
+         mNumPoints --;
       }
       
       /// Called after a contact point is solved.

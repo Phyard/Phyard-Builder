@@ -75,14 +75,15 @@ package player.entity {
          }
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          SetText (params.mText);
          mAutofitWidth = params.mAutofitWidth;
          
-         RebuildAppearance ();
+         if (updateAppearance)
+            RebuildAppearance ();
       }
       
       override public function RebuildAppearance ():void
@@ -118,14 +119,24 @@ package player.entity {
          infoText = TextUtil.GetHtmlEscapedText (infoText);
          infoText = TextUtil.ParseWikiString (infoText);
          
-         //trace ("infoText = " + infoText);
+         //if (Compile::Is_Debugging)
+         //{
+         //   trace ("mAutofitWidth = " + mAutofitWidth + ", mText = " + mText + ", mText.length = " + mText.length + ",infoText = " + infoText + ", infoText.length = " + infoText.length);
+         //}
          
-         if (mAutofitWidth)
-            mTextField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0, true, mHalfWidth * 2 - 10);
+         if (infoText == null || infoText.length == 0)
+         {
+            mTextBitmap = new Bitmap();
+         }
          else
-            mTextField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0);//, true, mHalfWidth * 2 - 10);
-         
-         mTextBitmap = DisplayObjectUtil.CreateCacheDisplayObject (mTextField);
+         {
+            if (mAutofitWidth)
+               mTextField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0, true, mHalfWidth * 2 - 10);
+            else
+               mTextField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0);//, true, mHalfWidth * 2 - 10);
+            
+            mTextBitmap = DisplayObjectUtil.CreateCacheDisplayObject (mTextField);
+         }
          
          UpdateTextComponent ();
       }

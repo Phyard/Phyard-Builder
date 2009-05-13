@@ -27,7 +27,6 @@ package player.physics {
       
       public var _b2World:b2World; // used within package
       
-      
       private var _OnJointRemoved:Function = null; // (proxyJoint:PhysicsProxyJoint):void
       private var _OnShapeRemoved:Function = null; //  (proxyShape:PhysicsProxyShape):void
       private var _OnShapeCollision:Function = null; //  (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
@@ -245,6 +244,7 @@ package player.physics {
       
       public function Update (escapedTime:Number):void
       {
+         (_b2World.m_contactListener as _ContactListener).Reset ();
          _b2World.Step (escapedTime, 30);
       }
       
@@ -454,8 +454,11 @@ package player.physics {
          var dx:Number = displayX2 - displayX1;
          var dy:Number = displayY2 - displayY1;
          
-         if (dx < b2Settings.k_MinFloatNumber && dy < b2Settings.k_MinFloatNumber) // will cause strange behaviour
+         
+         if (Math.abs (dx) < b2Settings.k_MinFloatNumber && Math.abs (dy) < b2Settings.k_MinFloatNumber) // will cause strange behaviour
+         {
             return; 
+         }
          
          var rot:Number = Math.atan2 (dy, dx);
          rot += Math.PI * 0.5;

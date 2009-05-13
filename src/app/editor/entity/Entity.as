@@ -312,6 +312,8 @@ package editor.entity {
       
       public function NotifySelectedChanged (selected:Boolean):void
       {
+         var changed:Boolean =  mSelected != selected;
+         
          mSelected = selected;
          
          if (! mSelected)
@@ -319,7 +321,8 @@ package editor.entity {
             SetVertexControllersVisible (false);
          }
          
-         UpdateAppearance ();
+         if (changed)
+            UpdateAppearance ();
       }
       
       public function IsSelected ():Boolean // used internally, for external, use world.IsEntitySelected instead

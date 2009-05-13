@@ -112,9 +112,9 @@ package player.entity {
          mInteractiveZonesParams [Define.GravityController_InteractiveZone_Center] = [IsZoneInteractive (Define.GravityController_InteractiveZone_Center), 0, 0, Define.GravityControllerZeroRegionRadius, 0, Math.PI * 0.5];
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          // remved from v1.05
          /////mIsInteractive = params.mIsInteractive;
@@ -141,7 +141,9 @@ package player.entity {
          mInteractive = false;
          
          UpdateInteractiveZonesParams ();
-         RebuildAppearance ();
+         
+         if (updateAppearance)
+            RebuildAppearance ();
       }
       
       override public function RebuildAppearance ():void

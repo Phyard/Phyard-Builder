@@ -45,9 +45,9 @@ package player.entity {
          RebuildAppearance ();
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          var anchor1Params:Object = params.mAnchor1Params;
          var anchor2Params:Object = params.mAnchor2Params;
@@ -70,7 +70,8 @@ package player.entity {
          mSpriteAnchor2.y = anchorDisplayY2;
          
          //
-         RebuildAppearance ();
+         if (updateAppearance)
+            RebuildAppearance ();
       }
       
       override public function RebuildAppearance ():void

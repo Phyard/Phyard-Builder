@@ -64,7 +64,7 @@ package player.entity {
          return true;
       }
       
-      public function BuildFromParams (params:Object):void
+      public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
          mEntityType = params.mEntityType;
          

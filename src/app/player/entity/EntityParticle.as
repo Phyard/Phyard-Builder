@@ -39,14 +39,14 @@ package player.entity {
          }
       }
       
-      override public function BuildFromParams (params:Object):void
+      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
          var oldValue:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
          params.mContainsPhysicsShapes = true;
          var paramPosX:Number = params.mPosX;
          var paramPosY:Number = params.mPosY;
          
-         super.BuildFromParams (params);
+         super.BuildFromParams (params, false);
          
          // params needed:
          // mPosX

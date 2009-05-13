@@ -190,6 +190,7 @@ package editor.entity {
          
          var text:EntityShapeText = entity as EntityShapeText;
          text.SetText ( GetText () );
+         text.SetAutofitWidth (IsAutofitWidth ());
       }
       
    }

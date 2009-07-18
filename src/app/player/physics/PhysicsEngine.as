@@ -27,9 +27,13 @@ package player.physics {
       
       public var _b2World:b2World; // used within package
       
-      private var _OnJointRemoved:Function = null; // (proxyJoint:PhysicsProxyJoint):void
-      private var _OnShapeRemoved:Function = null; //  (proxyShape:PhysicsProxyShape):void
-      private var _OnShapeCollision:Function = null; //  (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      public var _OnJointRemoved:Function = null; // (proxyJoint:PhysicsProxyJoint):void
+      public var _OnShapeRemoved:Function = null; //  (proxyShape:PhysicsProxyShape):void
+      
+      public var _OnShapeContactStarted:Function = null; //  (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      public var _OnShapeContactContinued:Function = null; //  (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      public var _OnShapeContactFinished:Function = null; //  (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      public var _OnShapeContactResult:Function = null; //
       
       private var _GetBodyIndex:Function = null; // (proxyBody:PhysicsProxyBody):int
       private var _GetShapeIndex:Function = null; // (proxyBody:PhysicsProxyShape):int
@@ -244,23 +248,26 @@ package player.physics {
       
       public function Update (escapedTime:Number):void
       {
-         (_b2World.m_contactListener as _ContactListener).Reset ();
+         //(_b2World.m_contactListener as _ContactListener).Reset ();
          _b2World.Step (escapedTime, 30);
       }
       
-      public function SetJointRemovedListener (func:Function):void
+      public function SetJointRemovedCallback (func:Function):void
       {
          _OnJointRemoved = func;
       }
       
-      public function SetShapeRemovedListener (func:Function):void
+      public function SetShapeRemovedCallback (func:Function):void
       {
          _OnShapeRemoved = func;
       }
       
-      public function SetShapeCollisionListener (func:Function):void
+      public function SetShapeContaceCallbacks (funcStarted:Function, funcContinued:Function, funcFinished:Function, funcResult:Function):void
       {
-         _OnShapeCollision = func;
+         _OnShapeContactStarted = funcStarted;
+         _OnShapeContactContinued = funcContinued;
+         _OnShapeContactFinished = funcFinished;
+         _OnShapeContactResult = funcResult;
       }
       
       public function SetGetBodyIndexCallback (func:Function):void
@@ -271,34 +278,6 @@ package player.physics {
       public function SetGetShapeIndexCallback (func:Function):void
       {
          _GetShapeIndex = func;
-      }
-      
-//=================================================================
-//   
-//=================================================================
-      
-      public function OnJointRemoved (proxyJoint:PhysicsProxyJoint):void
-      {
-         // ...
-         
-         if (_OnJointRemoved != null)
-            _OnJointRemoved (proxyJoint);
-      }
-      
-      public function OnShapeRemoved (proxyShape:PhysicsProxyShape):void
-      {
-         // ...
-         
-         if (_OnShapeRemoved != null)
-            _OnShapeRemoved (proxyShape);
-      }
-      
-      public function OnShapeCollision (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
-      {
-         // ...
-         
-         if (_OnShapeCollision != null)
-            _OnShapeCollision (proxyShape1, proxyShape2);
       }
       
 //=================================================================
@@ -822,6 +801,35 @@ package player.physics {
          pp.y = pp.y * mPhysics2DisplayScale + mDisplay2PhysicsOffsetY;
       }
       
+      public function _PhysicsVector2DisplayVector (pp:Point):void
+      {
+         //var x0:Number = 0 * mPhysics2DisplayScale + mDisplay2PhysicsOffsetX;
+         //var y0:Number = 0 * mPhysics2DisplayScale + mDisplay2PhysicsOffsetY;
+         //
+         //pp.x = pp.x * mPhysics2DisplayScale + mDisplay2PhysicsOffsetX;
+         //pp.y = pp.y * mPhysics2DisplayScale + mDisplay2PhysicsOffsetY;
+         //
+         //pp.x -= x0;
+         //pp.y -= y0;
+         
+         pp.x = pp.x * mPhysics2DisplayScale;
+         pp.y = pp.y * mPhysics2DisplayScale;
+      }
+      
+      public function _DisplayVector2PhysicsVector (dp:Point):void
+      {
+         //var x0:Number = (0 - mDisplay2PhysicsOffsetX) * mDisplay2PhysicsScale;;
+         //var y0:Number = (0 - mDisplay2PhysicsOffsetY) * mDisplay2PhysicsScale;
+         //
+         //dp.x = (dp.x - mDisplay2PhysicsOffsetX) * mDisplay2PhysicsScale;
+         //dp.y = (dp.y - mDisplay2PhysicsOffsetY) * mDisplay2PhysicsScale;
+         //
+         //dp.x -= x0;
+         //dp.y -= y0;
+         
+         dp.x = dp.x * mDisplay2PhysicsScale;
+         dp.y = dp.y * mDisplay2PhysicsScale;
+      }
       
       public function DisplayPoint2PhysicsPoint (dp:Point):Point
       {

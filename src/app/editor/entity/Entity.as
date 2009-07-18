@@ -11,6 +11,7 @@ package editor.entity {
    public class Entity extends Sprite 
    {
       protected var mEntityContainer:EntityContainer;
+      protected var mEntityIndex:int = -1;
       
       protected var mSelectionProxy:SelectionProxy = null;
       
@@ -25,6 +26,18 @@ package editor.entity {
          mEntityContainer = container;
       }
       
+      public function SetEntityIndex (index:int):void
+      {
+         mEntityIndex = index;
+      }
+      
+      public function GetEntityIndex ():int
+      {
+         mEntityContainer.CorrectEntityIndices ();
+         
+         return mEntityIndex;
+      }
+      
       public function IsUtilityEntity ():Boolean
       {
          return false;
@@ -36,6 +49,8 @@ package editor.entity {
       
       public function Destroy ():void
       {
+         SetInternalComponentsVisible (false);
+         
          if (mSelectionProxy != null)
             mSelectionProxy.Destroy ();
       }
@@ -318,7 +333,7 @@ package editor.entity {
          
          if (! mSelected)
          {
-            SetVertexControllersVisible (false);
+            SetInternalComponentsVisible (false);
          }
          
          if (changed)
@@ -346,12 +361,12 @@ package editor.entity {
          return null;
       }
       
-      public function SetVertexControllersVisible (visible:Boolean):void
+      public function SetInternalComponentsVisible (visible:Boolean):void
       {
          mVertexControllersVisible = visible;
       }
       
-      public function AreVertexControlPointsVisible ():Boolean
+      public function AreInternalComponentsVisible ():Boolean
       {
          return mVertexControllersVisible;
       }
@@ -392,10 +407,10 @@ package editor.entity {
       {
          if (IsSelected ())
          {
-            if (AreVertexControlPointsVisible ())
+            if (AreInternalComponentsVisible ())
             {
-               SetVertexControllersVisible (false);
-               SetVertexControllersVisible (true);
+               SetInternalComponentsVisible (false);
+               SetInternalComponentsVisible (true);
             }
          }
       }
@@ -414,6 +429,15 @@ package editor.entity {
       public function SetBrothers (brothers:Array):void // used only by BorthersManager
       {
          mBrothers = brothers;
+      }
+      
+//====================================================================
+//   entity links
+//====================================================================
+      
+      public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      {
+         
       }
       
    }

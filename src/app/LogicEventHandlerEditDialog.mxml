@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    title="Event Handler Setting" width="500">
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Label text="Event Handler:" textAlign="right" />
+      <mx:Label id="Lavel_EventHandlerName" text=""/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:TabNavigator id="NavigatorPanel" width="100%" height="100%"  creationPolicy="all">
+      <mx:HBox label="Prerequisites" width="100%" height="100%">
+         <mx:Spacer width="0"/>
+         <mx:VBox height="100%">
+            <mx:Spacer height="0"/>
+            <CommandListEditPanel id="theConditionListEditPanel" />
+            <mx:Spacer height="0"/>
+         </mx:VBox>
+         <mx:Spacer width="0"/>
+      </mx:HBox>
+      <mx:HBox label="Commands" width="100%" height="100%">
+         <mx:Spacer width="0"/>
+         <mx:VBox height="100%">
+            <mx:Spacer height="0"/>
+            <CommandListEditPanel id="theCommandListEditPanel" />
+            <mx:Spacer height="0"/>
+         </mx:VBox>
+         <mx:Spacer width="0"/>
+      </mx:HBox>
+      <mx:VBox label="Basic" width="100%" height="100%">
+         <mx:HBox width="100%" >
+            <mx:VBox width="36%">
+            </mx:VBox>
+            <mx:VBox>
+               <mx:CheckBox id="CheckBox_Enabled" label="Enabled Initially"/>
+            </mx:VBox>
+         </mx:HBox>
+         <mx:Spacer height="8"/>
+         <mx:HBox width="100%" >
+            <mx:VBox width="36%">
+               <mx:Label text="Shape Pairing Type:" textAlign="right" width="100%"/>
+            </mx:VBox>
+            <mx:VBox>
+               <mx:RadioButtonGroup id="Radio_PairingType"/>
+               <mx:RadioButton groupName="Radio_PairingType" value="0" label="One to One"/>
+               <mx:RadioButton groupName="Radio_PairingType" value="1" label="Many to Many"/>
+               <mx:RadioButton groupName="Radio_PairingType" value="2" label="Many to Any"/>
+               <mx:RadioButton groupName="Radio_PairingType" value="2" label="Any to Many"/>
+               <mx:RadioButton groupName="Radio_PairingType" value="2" label="Either One in Many"/>
+               <mx:RadioButton groupName="Radio_PairingType" value="2" label="Both Two in Many"/>
+               <mx:RadioButton groupName="Radio_PairingType" value="2" label="(Any Two) Any to Any"/>
+            </mx:VBox>
+         </mx:HBox>
+      </mx:VBox>
+   </mx:TabNavigator>
+
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[       
+         
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+         
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+            
+         // ...
+            Lavel_EventHandlerName.text = mParams.mActionCommandListDefinition.GetName ();
+            
+            theConditionListEditPanel.SetCommandListDefinition (mParams.mConditionCommandListDefinition, true);
+            theCommandListEditPanel.SetCommandListDefinition (mParams.mActionCommandListDefinition, false);
+         }
+         
+         public function GetValues (returnValues:Object):void
+         {
+            mParams.mReturnConditionFunctionCallings = theConditionListEditPanel.GetFunctionCallings ();
+            mParams.mReturnCommandFunctionCallings = theCommandListEditPanel.GetFunctionCallings ();
+         }
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            GetValues (mParams);
+            
+            PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

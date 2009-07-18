@@ -2,6 +2,7 @@ package editor.runtime {
    
    import editor.CollisionManagerView;
    import editor.WorldView;
+   import editor.world.World;
    
    public class Runtime
    {
@@ -27,6 +28,14 @@ package editor.runtime {
       
       public static var mEditorWorldView:WorldView = null;
       public static var mCollisionCategoryView:CollisionManagerView = null;
+      
+      public static function GetCurrentWorld ():World
+      {
+         if (mEditorWorldView == null)
+            return null;
+         
+         return mEditorWorldView.GetEditorWorld ();
+      }
       
 //=====================================================================
 //

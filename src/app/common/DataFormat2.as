@@ -303,7 +303,7 @@ package common {
          byteArray.readByte (); // "I".charCodeAt (0);
          byteArray.readByte (); // "N".charCodeAt (0);
          
-         // basic
+         // basic settings
          {
             worldDefine.mVersion = byteArray.readShort ();
             worldDefine.mAuthorName = byteArray.readUTF ();
@@ -325,7 +325,7 @@ package common {
             }
          }
          
-         // settings
+         // more settings
          {
             if (worldDefine.mVersion >= 0x0104)
             {
@@ -352,6 +352,9 @@ package common {
          if (worldDefine.mVersion >= 0x0102)
          {
             var numCategories:int = byteArray.readShort ();
+            
+            //trace ("numCategories = " + numCategories);
+            
             for (var ccId:int = 0; ccId < numCategories; ++ ccId)
             {
                var ccDefine:Object = new Object ();
@@ -366,7 +369,12 @@ package common {
             
             worldDefine.mDefaultCollisionCategoryIndex = byteArray.readShort ();
             
+            //trace ("worldDefine.mDefaultCollisionCategoryIndex = " + worldDefine.mDefaultCollisionCategoryIndex);
+            
             var numPairs:int = byteArray.readShort ();
+            
+            //trace ("numPairs = " + numPairs);
+            
             for (var pairId:int = 0; pairId < numPairs; ++ pairId)
             {
                var pairDefine:Object = new Object ();
@@ -380,6 +388,8 @@ package common {
          // entities
          
          var numEntities:int = byteArray.readShort ();
+         
+         //trace ("numEntities = " + numEntities);
          
          var entityId:int;
          var vertexId:int;

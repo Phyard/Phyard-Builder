@@ -25,7 +25,7 @@ package editor.entity {
       
       override public function GetTypeName ():String
       {
-         return "Hinge Joint Anchor";
+         return "Hinge Anchor";
       }
       
       override public function GetInfoText ():String

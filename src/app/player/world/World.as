@@ -172,9 +172,9 @@ package player.world {
                   world_hints);
          }
          
-         mPhysicsEngine.SetJointRemovedListener (OnJointRemoved);
-         mPhysicsEngine.SetShapeRemovedListener (OnShapeRemoved);
-         mPhysicsEngine.SetShapeCollisionListener (OnShapeCollision);
+         mPhysicsEngine.SetJointRemovedCallback (OnJointRemoved);
+         mPhysicsEngine.SetShapeRemovedCallback (OnShapeRemoved);
+         mPhysicsEngine.SetShapeContaceCallbacks (OnShapeContactStarted, OnShapeContactContinued, OnShapeContactFinished, OnShapeContactResult);
          mPhysicsEngine.SetGetBodyIndexCallback (GetBodyIndex);
          mPhysicsEngine.SetGetShapeIndexCallback (GetShapeIndex);
          
@@ -838,7 +838,68 @@ package player.world {
       {
       }
       
-      private function OnShapeCollision (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      {
+         InfectShapes (proxyShape1, proxyShape2);
+         
+         RegisterFieldShape (proxyShape1, proxyShape2);
+      }
+      
+      private function OnShapeContactContinued (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      {
+         InfectShapes (proxyShape1, proxyShape2);
+      }
+      
+      private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      {
+         UnregisterFieldShape (proxyShape1, proxyShape2);
+      }
+      
+      private function OnShapeContactResult (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      {
+      }
+      
+  //--------------------
+      
+      private function RegisterFieldShape (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      {
+         //var shape1:EntityShape = proxyShape1.GetUserData () as EntityShape;
+         //var shape2:EntityShape = proxyShape2.GetUserData () as EntityShape;
+         //
+         //var isField1:Boolean = shape1.IsField ();
+         //var isField2:Boolean = shape2.IsField ();
+         //
+         //if (isField1 && ! isField2)
+         //{
+         //   shape1.RegisterInFieldShape (shape2)
+         //}
+         //
+         //if (isField2 && ! isField1)
+         //{
+         //   shape2.RegisterInFieldShape (shape1)
+         //}
+      }
+      
+      private function UnregisterFieldShape (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      {
+         //var shape1:EntityShape = proxyShape1.GetUserData () as EntityShape;
+         //var shape2:EntityShape = proxyShape2.GetUserData () as EntityShape;
+         //
+         //var isField1:Boolean = shape1.IsField ();
+         //var isField2:Boolean = shape2.IsField ();
+         //
+         //if (isField1 && ! isField2)
+         //{
+         //   shape1.UnregisterInFieldShape (shape2)
+         //}
+         //
+         //if (isField2 && ! isField1)
+         //{
+         //   shape2.UnregisterInFieldShape (shape1)
+         //}
+      }
+      
+      private function InfectShapes (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
       {
          var shape1:EntityShape = proxyShape1.GetUserData () as EntityShape;
          var shape2:EntityShape = proxyShape2.GetUserData () as EntityShape;
@@ -862,7 +923,7 @@ package player.world {
          }
       }
       
-      protected function CheckRemovableEntities (event:MouseEvent):Boolean
+      protected function RemoveBombsAndRemovableShapes (event:MouseEvent):Boolean
       {
          var levelPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
          
@@ -1104,7 +1165,7 @@ package player.world {
          if (mCurrentMode != null)
             mCurrentMode.OnMouseUp (event.stageX, event.stageY);
          
-         CheckRemovableEntities (event);
+         RemoveBombsAndRemovableShapes (event);
       }
       
       public function OnMouseOut (event:MouseEvent):void

@@ -14,5 +14,9 @@ package editor.entity {
          mWorld = world;
       }
       
+      public function GetWorld ():World
+      {
+         return mWorld;
+      }
    }
 }

@@ -52,6 +52,10 @@ package player.physics {
          return mPhysicsProxyBody;
       }
       
+//========================================================================
+// 
+//========================================================================
+      
       public function AddCircleShape (worldPhysicsX:Number, worldPhysicsY:Number, physicsRadius:Number, params:Object = null):void
       {
          var circleDef:b2CircleDef = new b2CircleDef ();
@@ -176,6 +180,30 @@ package player.physics {
             _b2Shapes.push (b2shape);
          }
       }
+      
+//==============================================================================
+// commands
+//==============================================================================
+      
+      public function SetAsSensor (isSensor:Boolean):void
+      {
+         if (_b2Shapes == null)
+            return;
+         
+         var i:int;
+         for (i = 0; i < _b2Shapes.length; ++ i)
+            (_b2Shapes [i] as b2Shape).m_isSensor = isSensor;
+      }
+      
+      public function SetBodyLinearVelocity (vx:Number, vy:Number):void
+      {
+         mPhysicsProxyBody.SetLinearVelocity (vx, vy);
+      }
+      
+      public function SetBodyAngularVelocity (omega:Number):void
+      {
+         mPhysicsProxyBody.SetAngularVelocity (omega);
+      }
+      
    }
-   
 }

@@ -30,6 +30,8 @@ package editor.world {
    
    import editor.selection.SelectionEngine;
    
+   import editor.trigger.entity.Linkable;
+   
    import common.Define;
    import common.ValueAdjuster;
    
@@ -302,6 +304,23 @@ package editor.world {
          }
          
          return entityArray;
+      }
+      
+      public function GetFirstLinkablesAtPoint (displayX:Number, displayY:Number):Linkable
+      {
+         var objectArray:Array = mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
+         var linkable:Linkable = null;
+         for (var i:uint = 0; i < objectArray.length; ++ i)
+         {
+            if (objectArray [i] is Linkable && objectArray [i] is DisplayObject)
+            {
+               linkable = objectArray [i] as Linkable;
+               if (linkable.CanStartCreatingLink (displayX, displayY))
+                  return linkable;
+            }
+         }
+         
+         return null;
       }
       
 //=================================================================================
@@ -582,8 +601,103 @@ package editor.world {
       }
       
 //=================================================================================
-//  
+//   collision categories
 //=================================================================================
+      
+      public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      {
+         var entity:Entity;
+         var i:int;
+         for (i = 0; i < numChildren; ++ i)
+         {
+            entity = getChildAt (i) as Entity;
+            if (entity != null)
+            {
+               entity.DrawEntityLinkLines (canvasSprite);
+            }
+         }
+      }
+      
+//=================================================================================
+// 
+//=================================================================================
+      
+      protected var mNeedToCorrectEntityIndices:Boolean = false;
+      
+      override public function addChild(child:DisplayObject):DisplayObject
+      {
+         mNeedToCorrectEntityIndices = true;
+         
+         return super.addChild(child);
+      }
+      
+      override public function addChildAt(child:DisplayObject, index:int):DisplayObject
+      {
+         mNeedToCorrectEntityIndices = true;
+         
+         return super.addChildAt(child, index);
+      }
+      
+      override public function removeChild(child:DisplayObject):DisplayObject
+      {
+         mNeedToCorrectEntityIndices = true;
+         
+         var entity:Entity = child as Entity;
+         if (entity != null)
+            entity.SetEntityIndex (-1);
+         
+         return super.removeChild(child);
+      }
+      
+      override public function removeChildAt(index:int):DisplayObject
+      {
+         mNeedToCorrectEntityIndices = true;
+         
+         var child:DisplayObject = super.removeChildAt(index);
+         var entity:Entity = child as Entity;
+         if (entity != null)
+            entity.SetEntityIndex (-1);
+         
+         return child
+      }
+      
+      override public function setChildIndex(child:DisplayObject, index:int):void
+      {
+         mNeedToCorrectEntityIndices = true;
+         
+         super.setChildIndex(child, index);
+      }
+      
+      override public function swapChildren(child1:DisplayObject, child2:DisplayObject):void
+      {
+         mNeedToCorrectEntityIndices = true;
+         
+         super.swapChildren(child1, child2);
+      }
+      
+      override public function swapChildrenAt(index1:int, index2:int):void
+      {
+         mNeedToCorrectEntityIndices = true;
+         
+         super.swapChildrenAt(index1, index2);
+      }
+      
+      public function CorrectEntityIndices ():void
+      {
+         if (! mNeedToCorrectEntityIndices)
+            return;
+         
+         var entity:Entity;
+         var i:int = 0;
+         for (i = 0; i < numChildren; ++ i)
+         {
+            entity = getChildAt (i) as Entity;
+            if (entity != null)
+               entity.SetEntityIndex (i);
+         }
+         
+         mNeedToCorrectEntityIndices = false;
+      }
       
    }
 }

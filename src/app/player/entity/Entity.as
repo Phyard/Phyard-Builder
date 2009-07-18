@@ -93,5 +93,32 @@ package player.entity {
          return mPhysicsProxy;
       }
       
+//==============================================================================
+// command initerface
+//==============================================================================
+      
+      public function ExecuteCommand (commandName:String, params:Object):Boolean
+      {
+         switch (commandName)
+         {
+            case "SetVisible":
+               SetVisible (params.visible);
+               break;
+            default:
+               return false;
+         }
+         
+         return true;
+      }
+      
+//==============================================================================
+// commands
+//==============================================================================
+      
+      public function SetVisible (visible:Boolean):void
+      {
+         visible = visible;
+      }
+      
    }
 }

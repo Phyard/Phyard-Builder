@@ -33,15 +33,6 @@ package editor.entity {
       
    // physics
       
-      //>> form v1.04
-      protected var mPhysicsEnabled:Boolean = true;
-      public var mIsSensor:Boolean = false;
-      //<<
-      
-      //>> form v1.05
-      protected var mIsHollow:Boolean = false;
-      //<<
-      
       protected var mIsStatic:Boolean = false;
       public var mIsBullet:Boolean = false;
       
@@ -56,10 +47,26 @@ package editor.entity {
       // allow sleep
       // is sleeping
       
-      // isSensor
-      
       // collision category
       private var mCollisionCategory:EntityCollisionCategory = null;
+      
+      //>> form v1.04
+      protected var mPhysicsEnabled:Boolean = true;
+      public var mIsSensor:Boolean = false;
+      //<<
+      
+      //>> form v1.05
+      protected var mIsHollow:Boolean = false;
+      //<<
+      
+      //>> from v1.07
+      // protected var mIsField:Boolean = false; // canceled
+      // protected var mEventActions:Array = new Array (); // canceled
+      //<<
+      
+//====================================================================
+//   
+//====================================================================
       
       public function EntityShape (world:World)
       {
@@ -260,6 +267,73 @@ package editor.entity {
          return mIsStatic;
       }
       
+      //public function SetAsField (field:Boolean):void
+      //{
+      //   mIsField = field;
+      //   
+      //   if (mIsField)
+      //   {
+      //      SetPhysicsEnabled (true);
+      //      SetAsBullet (true);
+      //      SetAsSensor (true);
+      //   }
+      //}
+      //
+      //public function IsField ():Boolean
+      //{
+      //   return mIsField;
+      //}
+      
+      public function SetAsSensor (sensor:Boolean):void
+      {
+         mIsSensor = sensor;
+      }
+      
+      public function IsSensor ():Boolean
+      {
+         return mIsSensor;
+      }
+      
+      public function SetAsBullet (bullet:Boolean):void
+      {
+         mIsBullet = bullet;
+      }
+      
+      public function IsBullet ():Boolean
+      {
+         return mIsBullet;
+      }
+      
+      public function SetDensity (density:Number):void
+      {
+         mDensity = density;
+      }
+      
+      public function GetDensity ():Number
+      {
+         return mDensity;
+      }
+      
+      public function SetFriction (friction:Number):void
+      {
+         mFriction = friction;
+      }
+      
+      public function GetFriction ():Number
+      {
+         return mFriction;
+      }
+      
+      public function SetRestitution (restitution:Number):void
+      {
+         mRestitution = restitution;
+      }
+      
+      public function GetRestitution ():Number
+      {
+         return mRestitution;
+      }
+      
 //======================================================
 // collision category
 //======================================================
@@ -279,7 +353,16 @@ package editor.entity {
          mCollisionCategory = mWorld.mCollisionManager.GetCollisionCategoryByIndex (index);
       }
       
+//======================================================
+// event actions
+//======================================================
       
+      //public function GetNumEventActions ():int
+      //{
+      //   return mEventActions.length;
+      //}
+      //
+      //public function GetEventAction 
       
    }
 }

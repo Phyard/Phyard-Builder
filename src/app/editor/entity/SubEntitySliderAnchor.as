@@ -25,7 +25,7 @@ package editor.entity {
       
       override public function GetTypeName ():String
       {
-         return "Slider Joint Anchor";
+         return "Slider Anchor";
       }
       
       override public function GetInfoText ():String
@@ -73,11 +73,11 @@ package editor.entity {
          super.NotifySelectedChanged (selected);
       }
       
-      override public function SetVertexControllersVisible (visible:Boolean):void
+      override public function SetInternalComponentsVisible (visible:Boolean):void
       {
-         super.SetVertexControllersVisible (visible);
+         super.SetInternalComponentsVisible (visible);
          
-         GetMainEntity ().SetVertexControllersVisible (visible);
+         GetMainEntity ().SetInternalComponentsVisible (visible);
       }
       
    }

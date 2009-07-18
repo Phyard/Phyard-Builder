@@ -38,6 +38,12 @@ package editor.setting {
       public static const ColorBombObject:uint = Define.ColorBombObject;
       public static const ColorTextBackground:uint = Define.ColorTextBackground;
       
+//====================================================================
+//
+//====================================================================
+      
+      
+      
    }
    
 }

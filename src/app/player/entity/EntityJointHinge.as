@@ -78,6 +78,18 @@ package player.entity {
          GraphicsUtil.DrawEllipse (this, - 1, - 1, 1 + 1, 1 + 1);
       }
       
+//==============================================================================
+// commands
+//==============================================================================
+      
+      public function SetMotorEnabled (enabled:Boolean):void
+      {
+      }
+      
+      public function SetMotorSpeed (speed:Number):void
+      {
+      }
+      
       
       
    }

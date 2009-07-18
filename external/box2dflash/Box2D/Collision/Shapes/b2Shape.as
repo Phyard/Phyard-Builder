@@ -33,6 +33,7 @@ import Box2D.Collision.*;
 /// @warning you cannot reuse shapes.
 public class b2Shape
 {
+   
 	/// Get the type of this shape. You can use this to down cast to the concrete shape.
 	/// @return the shape type.
 	public function GetType() : int{

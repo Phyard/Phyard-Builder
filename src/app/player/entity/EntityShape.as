@@ -5,6 +5,8 @@ package player.entity {
    
    import player.world.World;
    
+   import player.physics.PhysicsProxyShape;
+   
    import common.Define;
    
    public class EntityShape extends EntityContainerChild
@@ -40,7 +42,7 @@ package player.entity {
       //<<
       
       //>>from v1.07
-      protected var mIsField:Boolean = false;
+      //protected var mIsField:Boolean = false;
       //<<
       
       public function EntityShape (world:World, shapeContainer:ShapeContainer)
@@ -56,6 +58,7 @@ package player.entity {
       override public function Update (dt:Number):void
       {
          mWorld.ReportShapeStatus (mOriginalAiType, mAiType);
+         
       }
       
 //==============================================================================
@@ -210,6 +213,16 @@ package player.entity {
          return mBorderTransparency;
       }
       
+      //public function SetField (field:Boolean):void
+      //{
+      //   mIsField = field;
+      //}
+      //
+      //public function IsField ():Boolean
+      //{
+      //   return mIsField;
+      //}
+      
 //==============================================================================
 //
 //==============================================================================
@@ -247,6 +260,11 @@ package player.entity {
          SetBorderTransparency (params.mBorderTransparency);
          SetHollow (params.mIsHollow);
          //<<
+         
+         //>> from v1.07
+         //SetField (params.mIsField);
+         //SetField (params.mIsSensor);
+         //<<
       }
       
       // maybe change later
@@ -257,6 +275,88 @@ package player.entity {
       
       
       
+//==============================================================================
+// as a field
+//==============================================================================
+      
+      private var mInFieldShapes:Array = null;
+      
+      public function RegisterInFieldShape (shape:EntityShape):void
+      {
+         //if (! mIsField)
+         //   return;
+         
+         if (mInFieldShapes == null)
+            mInFieldShapes = new Array ();
+         
+         mInFieldShapes.push (shape);
+      }
+      
+      public function UnregisterInFieldShape (shape:EntityShape):void
+      {
+         if (mInFieldShapes == null)
+            return;
+         
+         var index:int = mInFieldShapes.indexOf (shape);
+         if (index >= 0)
+            mInFieldShapes.splice (index, 1);
+      }
+      
+      protected function InfluenceInFieldShapes ():void
+      {
+         if (mInFieldShapes == null)
+            return;
+         
+         var shape:EntityShape;
+         for (var i:int = 0; i < mInFieldShapes.length; ++ i)
+         {
+            shape = mInFieldShapes [i] as EntityShape;
+            
+            shape.SetAsSensor (true); // not safe, paires are not removed!
+         }
+      }
+      
+//==============================================================================
+// command initerface
+//==============================================================================
+      
+      override public function ExecuteCommand (commandName:String, params:Object):Boolean
+      {
+         switch (commandName)
+         {
+            case "SetAsSensor":
+               SetAsSensor (params.is_sensor);
+               break;
+            default:
+               return super.ExecuteCommand (commandName, params);
+         }
+         
+         return true;
+      }
+      
+//==============================================================================
+// commands
+//==============================================================================
+      
+      public function SetAsSensor (is_sensor:Boolean):void
+      {
+         if (mPhysicsProxy == null)
+            return;
+         
+         (mPhysicsProxy as PhysicsProxyShape).SetAsSensor (is_sensor);
+      }
+      
+      public function SetCollisionCategory (ccId:int):void
+      {
+      }
+      
+      public function SetVelocity (speed:Number, angle:Number):void
+      {
+         if (speed < 0)
+            return;
+         
+         
+      }
    }
    
 }

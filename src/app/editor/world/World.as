@@ -29,11 +29,22 @@ package editor.world {
    
    import editor.entity.SubEntityJointAnchor;
    
+   import editor.trigger.entity.EntityAction;
+   import editor.trigger.entity.EntityEventHandler;
+   //import editor.trigger.entity.EntityTrigger;
+   import editor.trigger.entity.EntityBasicCondition;
+   import editor.trigger.entity.EntityConditionDoor;
+   import editor.trigger.entity.EntityTask;
+   import editor.trigger.entity.EntityInputEntityAssigner;
+   import editor.trigger.entity.EntityInputEntityPairAssigner;
+   
    import editor.entity.VertexController;
    
    import editor.entity.EntityCollisionCategory;
    
    import editor.selection.SelectionEngine;
+   
+   import editor.trigger.TriggerEngine;
    
    import common.Define;
    import common.ValueAdjuster;
@@ -45,6 +56,8 @@ package editor.world {
       public var mCollisionManager:CollisionManager;
       
       public var mSelectionEngineForVertexes:SelectionEngine; // used within package
+      
+      public var mTiggerEngine:TriggerEngine;
       
       // temp the 2 is not used
       // somewhere need to be modified to use the 2 
@@ -62,6 +75,8 @@ package editor.world {
          var largestHalfSideHeight:int = Define.LargeWorldHalfHeight + 1000;
          //mSelectionEngineForVertexes = new SelectionEngine (new Point (-largestHalfSideWidth, -largestHalfSideHeight), new Point (largestHalfSideWidth, largestHalfSideHeight));
          mSelectionEngineForVertexes = mSelectionEngine;
+         
+         mTiggerEngine = new TriggerEngine ();
       }
       
       override public function Destroy ():void
@@ -294,10 +309,10 @@ package editor.world {
          for (var entityId:int = 0; entityId < selectedEntities.length; ++ entityId)
          {
             entity = selectedEntities [entityId] as Entity;
-            if (entity.AreVertexControlPointsVisible ())
+            if (entity.AreInternalComponentsVisible ())
             {
-               entity.SetVertexControllersVisible (false);
-               entity.SetVertexControllersVisible (true);
+               entity.SetInternalComponentsVisible (false);
+               entity.SetInternalComponentsVisible (true);
             }
          }
          */
@@ -630,6 +645,94 @@ package editor.world {
          return camera;
       }
       
+      public function CreateEntityAction ():EntityAction
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var action:EntityAction = new EntityAction(this);
+         addChild (action);
+         
+         return action;
+      }
+      
+      public function CreateEntityEventHandler (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var handler:EntityEventHandler = new EntityEventHandler (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         return handler;
+      }
+      
+      //public function CreateEntityTrigger ():EntityTrigger
+      //{
+      //   if (numChildren >= Define.MaxEntitiesCount)
+      //      return null;
+      //   
+      //   var trigger:EntityTrigger = new EntityTrigger(this);
+      //   addChild (trigger);
+      //   
+      //   return trigger;
+      //}
+      
+      public function CreateEntityCondition ():EntityBasicCondition
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var condition:EntityBasicCondition = new EntityBasicCondition(this);
+         addChild (condition);
+         
+         return condition;
+      }
+      
+      public function CreateEntityConditionDoor ():EntityConditionDoor
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var condition_door:EntityConditionDoor = new EntityConditionDoor(this);
+         addChild (condition_door);
+         
+         return condition_door;
+      }
+      
+      public function CreateEntityTask ():EntityTask
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var task:EntityTask = new EntityTask(this);
+         addChild (task);
+         
+         return task;
+      }
+      
+      public function CreateEntityInputEntityAssigner ():EntityInputEntityAssigner
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var entity_assigner:EntityInputEntityAssigner = new EntityInputEntityAssigner(this);
+         addChild (entity_assigner);
+         
+         return entity_assigner;
+      }
+      
+      public function CreateEntityInputEntityPairAssigner ():EntityInputEntityPairAssigner
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var entity_pair_assigner:EntityInputEntityPairAssigner = new EntityInputEntityPairAssigner(this);
+         addChild (entity_pair_assigner);
+         
+         return entity_pair_assigner;
+      }
+      
 //=================================================================================
 //   queries
 //=================================================================================
@@ -684,7 +787,7 @@ package editor.world {
          return list;
       }
       
-      public function GetGravityControyList ():Array
+      public function GetGravityControllerList ():Array
       {
          var list:Array = new Array ();
          
@@ -725,6 +828,60 @@ package editor.world {
                var item:Object = new Object ();
                item.mEntityIndex = i;
                item.mCamera = camera;
+               list.push (item);
+            }
+         }
+         
+         return list;
+      }
+      
+   // the common one
+      
+      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null):Array
+      {
+         var list:Array = new Array ();
+         
+         var child:Object;
+         var entity:Entity;
+         
+         for (var i:int = 0; i < numChildren; ++ i)
+         {
+            child = getChildAt (i);
+            if (child is Entity)
+            {
+               entity = child as Entity;
+               if ( filterFunc == null || filterFunc (entity) )
+               {
+                  var item:Object = new Object ();
+                  item.label = i + ": " + entity.GetTypeName ();
+                  item.mEntityIndex = entity.GetEntityIndex ();
+                  list.push (item);
+               }
+            }
+         }
+         
+         return list;
+      }
+      
+      public function GetCollisionCategoryListDataProvider ():Array
+      {
+         var list:Array = new Array ();
+         
+         list.push ({label:"{Hidden Category}", mCategoryIndex:Define.CollisionCategoryId_HiddenCategory});
+         
+         var child:Object;
+         var category:EntityCollisionCategory;
+         
+         for (var i:int = 0; i < mCollisionManager.numChildren; ++ i)
+         {
+            child = mCollisionManager.getChildAt (i);
+            if (child is EntityCollisionCategory)
+            {
+               category = child as EntityCollisionCategory;
+               
+               var item:Object = new Object ();
+               item.label = category.GetCategoryName ();
+               item.mCategoryIndex = category.GetEntityIndex ();
                list.push (item);
             }
          }
@@ -837,7 +994,6 @@ package editor.world {
          
       }
       
-      
 //=================================================================================
 //   collision categories
 //=================================================================================
@@ -890,8 +1046,6 @@ package editor.world {
       {
          return mCollisionManager.CreateEntityCollisionCategory (ccName);
       }
-      
-
       
    }
 }

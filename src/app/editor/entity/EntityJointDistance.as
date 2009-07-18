@@ -30,6 +30,11 @@ package editor.entity {
          mCollideConnected = true;
       }
       
+      override public function GetTypeName ():String
+      {
+         return "Distance Joint";
+      }
+      
       override public function Destroy ():void
       {
          mWorld.DestroyEntity (mAnchor1);

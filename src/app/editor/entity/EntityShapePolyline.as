@@ -82,7 +82,7 @@ package editor.entity {
             mSelectionProxy = mWorld.mSelectionEngine.CreateProxyGeneral ();
             mSelectionProxy.SetUserData (this);
             
-            SetVertexControllersVisible (AreVertexControlPointsVisible ());
+            SetInternalComponentsVisible (AreInternalComponentsVisible ());
          }
          
          (mSelectionProxy as SelectionProxy).Rebuild ( GetRotation (), GetPositionX (), GetPositionY ());
@@ -371,10 +371,10 @@ package editor.entity {
          return null;
       }
       
-      override public function SetVertexControllersVisible (visible:Boolean):void
+      override public function SetInternalComponentsVisible (visible:Boolean):void
       {
          // mVertexControlPointsVisible = visible;
-         super.SetVertexControllersVisible (visible);
+         super.SetInternalComponentsVisible (visible);
          
          if (mSelectionProxy == null)
             return;
@@ -384,10 +384,10 @@ package editor.entity {
          var i:int;
          var vertexController:VertexController;
          
-         if ( AreVertexControlPointsVisible () )
+         if ( AreInternalComponentsVisible () )
          {
-            SetVertexControllersVisible (false);
-            super.SetVertexControllersVisible (true);
+            SetInternalComponentsVisible (false);
+            super.SetInternalComponentsVisible (true);
             
             mVertexControllers = new Array (mVertexPoints.length);
             
@@ -494,8 +494,8 @@ package editor.entity {
          
          if (index >= 0)
          {
-            var vcVisible:Boolean = AreVertexControlPointsVisible (); // should be true
-            SetVertexControllersVisible (false);
+            var vcVisible:Boolean = AreInternalComponentsVisible (); // should be true
+            SetInternalComponentsVisible (false);
             
             if (mVertexPoints.length <= 3)
             {
@@ -509,7 +509,7 @@ package editor.entity {
                UpdateSelectionProxy ();
                UpdateAppearance ();
                
-               SetVertexControllersVisible (vcVisible);
+               SetInternalComponentsVisible (vcVisible);
             }
             
             return null;
@@ -525,8 +525,8 @@ package editor.entity {
          //if (index >= 0)
          if (index > 0)
          {
-            var vcVisible:Boolean = AreVertexControlPointsVisible (); // should be true
-            SetVertexControllersVisible (false);
+            var vcVisible:Boolean = AreInternalComponentsVisible (); // should be true
+            SetInternalComponentsVisible (false);
             var beforeIsSelected:Boolean = beforeVertexController.IsSelected (); // should be true
             
             var prevIndex:int = (index - 1) % mVertexPoints.length;
@@ -541,7 +541,7 @@ package editor.entity {
             UpdateSelectionProxy ();
             UpdateAppearance ();
             
-            SetVertexControllersVisible (vcVisible);
+            SetInternalComponentsVisible (vcVisible);
             beforeVertexController = mVertexControllers [index + 1];
             beforeVertexController.NotifySelectedChanged (beforeIsSelected);
          }

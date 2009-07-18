@@ -21,6 +21,13 @@ package common {
    import editor.entity.SubEntityJointAnchor;
    import editor.entity.EntityUtility;
    import editor.entity.EntityUtilityCamera;
+   import editor.trigger.entity.EntityTask;
+   import editor.trigger.entity.EntityBasicCondition;
+   import editor.trigger.entity.EntityConditionDoor;
+   import editor.trigger.entity.EntityAction;
+   import editor.trigger.entity.EntityInputEntityAssigner;
+   import editor.trigger.entity.EntityInputEntityPairAssigner;
+   import editor.trigger.entity.EntityEventHandler;
    
    public class DataFormat
    {
@@ -99,6 +106,75 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_UtilityCamera;
                }
                //<<
+            }
+            else if (editorEntity is editor.trigger.entity.EntityLogic)
+            {
+               var entityArray:Array;
+               if (child is editor.trigger.entity.EntityTask)
+               {
+                  var task:editor.trigger.entity.EntityTask = child as editor.trigger.entity.EntityTask;
+                  entityArray = task.GetEntityAssigners ();
+                  
+                  entityDefine.mNumAssigners = entityArray.length;
+                  entityDefine.mInputAssigners = entityArray;
+               }
+               else if (child is editor.trigger.entity.EntityBasicCondition)
+               {
+                  var basicCondition:editor.trigger.entity.EntityBasicCondition = child as editor.trigger.entity.EntityBasicCondition;
+                  entityDefine.mName = basicCondition.GetName ();
+                  entityDefine.mConditionCommandListDefinition = basicCondition.GetConditionCommandListDefinition ();
+               }
+               else if (child is editor.trigger.entity.EntityConditionDoor)
+               {
+                  var conditionDoor:editor.trigger.entity.EntityConditionDoor = child as editor.trigger.entity.EntityConditionDoor;
+                  entityDefine.mIsAnd = conditionDoor.IsAnd ();
+                  entityDefine.mIsNot = conditionDoor.IsNot ();
+                  entityDefine.mInputConditions = conditionDoor.GetInputConditions ();
+               }
+               else if (child is editor.trigger.entity.EntityAction)
+               {
+                  var action:editor.trigger.entity.EntityAction = child as editor.trigger.entity.EntityAction;
+                  entityDefine.mName = action.GetName ();
+                  entityDefine.mActionCommandListDefinition = action.GetActionCommandListDefinition ();
+               }
+               else if (child is editor.trigger.entity.EntityInputEntityAssigner)
+               {
+                  var entityAssigner:editor.trigger.entity.EntityInputEntityAssigner = child as editor.trigger.entity.EntityInputEntityAssigner;
+                  entityArray = entityAssigner.GetInputEntities ();
+                  
+                  entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
+                  entityDefine.mNumEntities = entityArray == null ? 0 : entityArray.length;
+                  entityDefine.mEntities = entityArray;
+               }
+               else if (child is editor.trigger.entity.EntityInputEntityPairAssigner)
+               {
+                  var pairAssigner:editor.trigger.entity.EntityInputEntityPairAssigner = child as editor.trigger.entity.EntityInputEntityPairAssigner;
+                  
+                  entityDefine.mPairingType = pairAssigner.GetPairingType ();
+                  
+                  entityArray = pairAssigner.GetInputEntities1 ();
+                  
+                  entityDefine.mNumEntities1 = entityArray == null ? 0 : entityArray.length;
+                  entityDefine.mEntities1 = entityArray;
+                  
+                  entityArray = pairAssigner.GetInputEntities2 ();
+                  
+                  entityDefine.mNumEntities2 = entityArray == null ? 0 : entityArray.length;
+                  entityDefine.mEntities2 = entityArray;
+               }
+               else if (child is editor.trigger.entity.EntityEventHandler)
+               {
+                  var eventHandler:editor.trigger.entity.EntityEventHandler = child as editor.trigger.entity.EntityEventHandler;
+                  entityArray = eventHandler.GetEntityAssigners ();
+                  
+                  entityDefine.mNumAssigners = entityArray.length;
+                  entityDefine.mInputAssigners = entityArray;
+                  entityDefine.mConditionCommandListDefinition = eventHandler.GetConditionCommandListDefinition ();
+                  entityDefine.mActionCommandListDefinition = eventHandler.GetActionCommandListDefinition ();
+                  entityDefine.mInputConditionEntity = eventHandler.GetInputConditionEntity ();
+                  entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionEntity ();
+                  entityDefine.mPostActionEntity = eventHandler.GetPostActionEntity ();
+               }
             }
             else if (editorEntity is editor.entity.EntityShape)
             {

@@ -21,7 +21,7 @@
          <ShapeAppearanceSettingPanel id="AppearanceSettingPanel"
                creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
       </mx:Box>
-      <mx:Box label="Geometry" direction="vertical" borderStyle="solid" height="100%" width="100%"
+      <mx:Box label="Basic" direction="vertical" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
@@ -34,6 +34,30 @@
          </mx:HBox>
          <mx:Spacer height="100%"/>
       </mx:Box>
+      <!--
+      <mx:Box label="Events" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label text="When:"/>
+            <mx:Label text="this.OnContactWith (shape)" fontWeight="bold"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HBox width="100%" verticalAlign="bottom">
+            <mx:Label text="Then:"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <ActionEditPanel/>
+      </mx:Box>
+      -->
+      <!--
+      <mx:Box label="Custom Properties" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+      </mx:Box>
+      -->
    </mx:TabNavigator>
 
    <mx:Spacer height="20"/>

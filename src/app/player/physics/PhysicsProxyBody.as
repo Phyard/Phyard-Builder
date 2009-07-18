@@ -86,13 +86,20 @@ package player.physics {
          }
       }
       
-      public function SetLinearVelocity (vel:Point):void
+      public function SetLinearVelocity (vx:Number, vy:Number):void
       {
-         if (_b2Body != null)
-         {
-            var vec2:b2Vec2 = new b2Vec2 (vel.x, vel.y);
-            _b2Body.SetLinearVelocity (vec2);
-         }
+         if (_b2Body == null)
+            return;
+         
+         _b2Body.SetLinearVelocity (new b2Vec2 (vx, vy));
+      }
+      
+      public function SetAngularVelocity (omega:Number):void
+      {
+         if (_b2Body == null)
+            return;
+         
+         _b2Body.SetAngularVelocity (omega);
       }
       
       public function ApplyBodyForce (force:Point):void
@@ -122,6 +129,7 @@ package player.physics {
       {
          return _tempValue;
       }
+      
    }
    
 }

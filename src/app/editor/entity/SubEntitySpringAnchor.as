@@ -25,7 +25,7 @@ package editor.entity {
       
       override public function GetTypeName ():String
       {
-         return "Spring Joint Anchor";
+         return "Spring Anchor";
       }
       
       override public function GetInfoText ():String

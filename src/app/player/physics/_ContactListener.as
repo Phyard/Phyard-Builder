@@ -20,6 +20,7 @@ package player.physics {
       private var mNumPoints_Add:int;
       private var mNumPoints_Persist:int;
       private var mNumPoints_Remove:int;
+      
       public function Reset ():void
       {
          //trace ("------------ mNumPoints = " + mNumPoints + " | " + (mNumPoints_Persist + mNumPoints_Add - mNumPoints_Remove));
@@ -36,39 +37,39 @@ package player.physics {
       /// and the forces.
       override public function Add(point:b2ContactPoint) : void
       {
-         mNumPoints_Add ++;
-         mNumPoints ++;
+         //mNumPoints_Add ++;
+         //mNumPoints ++;
          
-         var shape1:b2Shape = point.shape1;
-         var shape2:b2Shape = point.shape2;
-         var userdata1:Object = shape1.GetUserData ();
-         var userdata2:Object = shape2.GetUserData ();
-         
-         mPhysicsEngine.OnShapeCollision (userdata1 as PhysicsProxyShape, userdata2 as PhysicsProxyShape);
+         if (mPhysicsEngine._OnShapeContactStarted != null)
+            mPhysicsEngine._OnShapeContactStarted (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
       }
       
       /// Called when a contact point persists. This includes the geometry
       /// and the forces.
       override public function Persist(point:b2ContactPoint) : void
       {
-         mNumPoints_Persist ++;
-         mNumPoints --;
-         mNumPoints_Add --;
+         //mNumPoints_Persist ++;
          
-         Add (point);
+         if (mPhysicsEngine._OnShapeContactContinued != null)
+            mPhysicsEngine._OnShapeContactContinued (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
       }
       
       /// Called when a contact point is removed. This includes the last
       /// computed geometry and forces.
       override public function Remove(point:b2ContactPoint) : void
       {
-         mNumPoints_Remove ++;
-         mNumPoints --;
+         //mNumPoints_Remove ++;
+         //mNumPoints --;
+         
+         if (mPhysicsEngine._OnShapeContactFinished == null)
+            mPhysicsEngine._OnShapeContactFinished (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
       }
       
       /// Called after a contact point is solved.
       override public function Result(point:b2ContactResult) : void
       {
+         if (mPhysicsEngine._OnShapeContactResult == null)
+            mPhysicsEngine._OnShapeContactResult (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
       }
    }
  }

@@ -87,7 +87,7 @@ package editor.entity {
             mSelectionProxy = mWorld.mSelectionEngine.CreateProxyRectangle ();
             mSelectionProxy.SetUserData (this);
             
-            SetVertexControllersVisible (AreVertexControlPointsVisible ());
+            SetInternalComponentsVisible (AreInternalComponentsVisible ());
          }
          
          var borderThickness:Number = GetBorderThickness ();
@@ -148,7 +148,7 @@ package editor.entity {
       
       override public function Destroy ():void
       {
-         SetVertexControllersVisible (false);
+         SetInternalComponentsVisible (false);
          
          super.Destroy ();
       }
@@ -216,23 +216,23 @@ package editor.entity {
          return null;
       }
       
-      override public function SetVertexControllersVisible (visible:Boolean):void
+      override public function SetInternalComponentsVisible (visible:Boolean):void
       {
          if (! mEnableVertexControllers)
             return;
          
          // mVertexControlPointsVisible = visible;
-         super.SetVertexControllersVisible (visible);
+         super.SetInternalComponentsVisible (visible);
          
          if (mSelectionProxy == null)
             return;
          
       // create / destroy controllers
          
-         if ( AreVertexControlPointsVisible () )
+         if ( AreInternalComponentsVisible () )
          {
-            SetVertexControllersVisible (false);
-            super.SetVertexControllersVisible (true);
+            SetInternalComponentsVisible (false);
+            super.SetInternalComponentsVisible (true);
             
             if (mVertexController0 == null)
             {

@@ -25,7 +25,7 @@ package editor.entity {
       
       override public function GetTypeName ():String
       {
-         return "Distance Joint Anchor";
+         return "Distance Anchor";
       }
       
       override public function GetInfoText ():String

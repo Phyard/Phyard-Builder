@@ -43,6 +43,11 @@ package editor.entity {
          SetVisible (false);
       }
       
+      override public function GetTypeName ():String
+      {
+         return "Slider Joint";
+      }
+      
       public function IsLimitsEnabled ():Boolean
       {
          return mEnableLimits;
@@ -74,7 +79,7 @@ package editor.entity {
       
       override public function Destroy ():void
       {
-         SetVertexControllersVisible (false);
+         SetInternalComponentsVisible (false);
          
          mWorld.DestroyEntity (mAnchor1);
          mWorld.DestroyEntity (mAnchor2);
@@ -249,14 +254,14 @@ package editor.entity {
          return null;
       }
       
-      override public function SetVertexControllersVisible (visible:Boolean):void
+      override public function SetInternalComponentsVisible (visible:Boolean):void
       {
          // mVertexControlPointsVisible = visible;
-         super.SetVertexControllersVisible (visible);
+         super.SetInternalComponentsVisible (visible);
          
       // create / destroy controllers
          
-         if ( AreVertexControlPointsVisible () )
+         if ( AreInternalComponentsVisible () )
          {
             if (mVertexControllerLower == null)
             {

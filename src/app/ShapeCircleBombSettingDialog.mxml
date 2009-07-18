@@ -14,7 +14,7 @@
          <ShapePhysicsSettingPanel id="PhysicsSettingPanel" 
                creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
       </mx:Box>
-      <mx:Box label="Geometry" direction="vertical" borderStyle="solid" height="100%" width="100%"
+      <mx:Box label="Basic" direction="vertical" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">

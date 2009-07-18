@@ -11,13 +11,13 @@
 
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_EnablePhysics" label="Enable Physics" click="OnEnablePhysicsCheckBoxClick()"/>
+      <mx:CheckBox id="CheckBox_EnablePhysics" label="Enable Physics" click="OnUpdateComponents()"/>
       <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_IsStatic" label="Static"/>
       <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_IsBullet" label="Bullet"/>
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_IsSensor" label="Sensor"/>
+      <mx:CheckBox id="CheckBox_IsSensor" label="Sensor" click="OnUpdateComponents()"/>
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
@@ -68,8 +68,30 @@
          {
          }
          
-         private function OnEnablePhysicsCheckBoxClick ():void
+         private function OnUpdateComponents ():void
          {
+            //if (mInputValues != null && mInputValues.mIsField)
+            //{
+            //   CheckBox_EnablePhysics.enabled = false;
+            //   
+            //   CheckBox_IsStatic.enabled = true;
+            //   CheckBox_IsBullet.enabled = false;
+            //   CheckBox_IsSensor.enabled = false;
+            //   
+            //   Label_Denstiy.enabled = false;
+            //   Label_Friction.enabled = false;
+            //   Label_Restitution.enabled = false;
+            //   
+            //   Slider_Denstiy.enabled = false;
+            //   Slider_Friction.enabled = false;
+            //   Slider_Restitution.enabled = false;
+            //   
+            //   Label_CollisionCategory.enabled = true;
+            //   SelectList_CollisionCategory.enabled = true;
+            //   
+            //   CheckBox_Hollow.enabled = false;
+            //}
+            //else 
             if (CheckBox_EnablePhysics.selected)
             {
                CheckBox_IsStatic.enabled = true;
@@ -108,6 +130,30 @@
                
                CheckBox_Hollow.enabled = false;
             }
+            
+            if (CheckBox_IsSensor.enabled)
+            {
+               if (CheckBox_IsSensor.selected)
+               {
+                  Label_Denstiy.enabled = false;
+                  Label_Friction.enabled = false;
+                  Label_Restitution.enabled = false;
+                  
+                  Slider_Denstiy.enabled = false;
+                  Slider_Friction.enabled = false;
+                  Slider_Restitution.enabled = false;
+               }
+               else
+               {
+                  Label_Denstiy.enabled = true;
+                  Label_Friction.enabled = true;
+                  Label_Restitution.enabled = true;
+                  
+                  Slider_Denstiy.enabled = true;
+                  Slider_Friction.enabled = true;
+                  Slider_Restitution.enabled = true;
+               }
+            }
          }
          
          public function SetValues (inputValues:Object):void
@@ -127,7 +173,7 @@
             SelectList_CollisionCategory.dataProvider = mInputValues.mCollisionCategoryListDataProvider;
             SelectList_CollisionCategory.selectedIndex = mInputValues.mCollisionCategoryListSelectedIndex;
             
-            OnEnablePhysicsCheckBoxClick ();
+            OnUpdateComponents ();
          }
          
          public function GetValues (returnValues:Object):void

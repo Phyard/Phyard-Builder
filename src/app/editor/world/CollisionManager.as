@@ -81,10 +81,15 @@ package editor.world {
       
       public function GetCollisionCategoryIndex (category:EntityCollisionCategory):int
       {
-         if (category == null || ! contains (category))
+         //if (category == null || ! contains (category))
+         //   return Define.CollisionCategoryId_HiddenCategory;
+         //
+         //return getChildIndex (category);
+         
+         if (category == null)
             return Define.CollisionCategoryId_HiddenCategory;
          
-         return getChildIndex (category);
+         return category.GetEntityIndex ();
       }
       
       public function GetCollisionCategoryByIndex (index:int):EntityCollisionCategory

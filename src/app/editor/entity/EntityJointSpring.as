@@ -43,6 +43,11 @@ package editor.entity {
          mCollideConnected = true;
       }
       
+      override public function GetTypeName ():String
+      {
+         return "Spring Joint";
+      }
+      
       override public function Destroy ():void
       {
          mWorld.DestroyEntity (mAnchor1);

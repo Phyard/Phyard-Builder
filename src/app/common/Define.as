@@ -158,6 +158,32 @@ package common {
       public static const GravityController_InteractiveZonesCount:uint = 6;
       
 //===========================================================================
+// Logic
+//===========================================================================
+      
+      public static const MaxLogicComponentNameLength:int = 32;
+      public static const TriggerComponentRadius:int = 10;
+      
+      public static const EntitySelectorType_Any:int = 0;
+      public static const EntitySelectorType_Single:int = 1;
+      public static const EntitySelectorType_Many:int = 2;
+      
+      public static const EntityAssignerType_Any:int = 0;
+      public static const EntityAssignerType_Single:int = 1;
+      public static const EntityAssignerType_Many:int = 2;
+      
+      public static const EntityPairAssignerType_OneToOne:int = 0;
+      public static const EntityPairAssignerType_ManyToMany:int = 1;
+      public static const EntityPairAssignerType_ManyToAny:int = 2;
+      public static const EntityPairAssignerType_AnyToMany:int = 3;
+      public static const EntityPairAssignerType_AnyToAny:int = 4;
+      public static const EntityPairAssignerType_EitherInMany:int = 5;
+      public static const EntityPairAssignerType_BothInMany:int = 6;
+      
+      public static const MaxEntitiesCountEachAssigner:int = 20; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
+      public static const MaxEntityPairesCountEachOneToOnePairAssigner:int = 10; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
+      
+//===========================================================================
 // colors
 //===========================================================================
       
@@ -165,7 +191,8 @@ package common {
       
       
       public static const ColorStaticObject:uint = 0xFF606060;
-      public static const ColorMovableObject:uint = 0xFFA0A0FF;
+      //public static const ColorMovableObject:uint = 0xFFA0A0FF;
+      public static const ColorMovableObject:uint = 0x5555FF; // from v1.07
       
       public static const ColorBreakableObject:uint = 0xFFFF00FF; // 0xFF6600; // 
       

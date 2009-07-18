@@ -38,6 +38,11 @@ package editor.entity {
          world.addChild (mAnchor);
       }
       
+      override public function GetTypeName ():String
+      {
+         return "Hinge Joint";
+      }
+      
       public function IsLimitsEnabled ():Boolean
       {
          return mEnableLimits;

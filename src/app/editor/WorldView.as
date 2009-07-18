@@ -38,9 +38,10 @@ package editor {
    
    import mx.core.UIComponent;
    import mx.controls.Button;
+   import mx.controls.Label;
    import mx.controls.Alert;
    import mx.events.CloseEvent;
-   
+   //import mx.events.FlexEvent;
    
    import com.tapirgames.display.FpsCounter;
    import com.tapirgames.display.TextFieldEx;
@@ -82,6 +83,8 @@ package editor {
    
    import editor.mode.ModeMoveWorldScene;
    
+   import editor.mode.ModeCreateEntityLink;
+   
    import editor.setting.EditorSetting;
    import editor.runtime.Runtime;
    
@@ -108,14 +111,30 @@ package editor {
    import editor.entity.SubEntityDistanceAnchor;
    import editor.entity.SubEntitySpringAnchor;
    
+   import editor.trigger.entity.EntityLogic;
+   import editor.trigger.entity.EntityAction;
+   import editor.trigger.entity.EntityEventHandler;
+   //import editor.trigger.entity.EntityTrigger;
+   import editor.trigger.entity.EntityBasicCondition;
+   import editor.trigger.entity.EntityConditionDoor;
+   import editor.trigger.entity.EntityTask;
+   import editor.trigger.entity.EntityInputEntityAssigner;
+   import editor.trigger.entity.EntityInputEntityPairAssigner;
+   
    import editor.entity.VertexController;
    
+   import editor.trigger.entity.InputEntitySelector;
+   
    import editor.entity.EntityCollisionCategory;
+   
+   import editor.trigger.CommandListDefinition;
    
    import editor.world.World;
    import editor.world.CollisionManager;
    import editor.undo.WorldHistoryManager;
    import editor.undo.WorldState;
+   
+   import editor.trigger.entity.Linkable;
    
    import player.world.World;
    import player.ui.PlayHelpDialog;
@@ -127,6 +146,8 @@ package editor {
    import common.Define;   
    import common.Config;
    import common.ValueAdjuster;
+   
+   import common.trigger.PlayerEventIds;
    
    import misc.Analytics;
    
@@ -144,6 +165,7 @@ package editor {
       private var mEditorElementsContainer:Sprite;
       
          public var mEditorBackgroundSprite:Sprite = null;
+            public var mEntityLinksSprite:Sprite = null;
          public var mContentContainer:Sprite;
          public var mForegroundSprite:Sprite;
          public var mCursorLayer:Sprite;
@@ -251,6 +273,9 @@ package editor {
          
          //
          BuildContextMenu ();
+         
+         //
+         RegisterNotifyFunctions ();
       }
       
       public function GetEditorWorld ():editor.world.World
@@ -295,8 +320,8 @@ package editor {
          mViewWidth  = parent.width;
          mViewHeight = parent.height;
          
-         //trace ("mViewWidth = " + mViewWidth);
-         //trace ("mViewHeight = " + mViewHeight);
+         trace ("mViewWidth = " + mViewWidth);
+         trace ("mViewHeight = " + mViewHeight);
          
          mViewBackgroundSprite.graphics.clear ();
          mViewBackgroundSprite.graphics.beginFill(0xFFFFFF);
@@ -403,6 +428,15 @@ package editor {
                UpdateBackgroundAndWorldPosition ();
             }
             
+            if (mEntityLinksSprite.scaleX != mEditorWorld.scaleX)
+               mEntityLinksSprite.scaleX = mEditorWorld.scaleX;
+            if (mEntityLinksSprite.scaleY != mEditorWorld.scaleY)
+               mEntityLinksSprite.scaleY = mEditorWorld.scaleY;
+            if (mEntityLinksSprite.x != mEditorWorld.x)
+               mEntityLinksSprite.x = mEditorWorld.x;
+            if (mEntityLinksSprite.y != mEditorWorld.y)
+               mEntityLinksSprite.y = mEditorWorld.y;
+            
             mEditorWorld.Update (mStepTimeSpan.GetLastSpan ());
          }
          
@@ -433,6 +467,9 @@ package editor {
          {
             mEditorBackgroundSprite = new Sprite ();
             mEditorElementsContainer.addChildAt (mEditorBackgroundSprite, 0);
+            
+            mEntityLinksSprite = new Sprite ();
+            mEditorBackgroundSprite.addChild (mEntityLinksSprite);
          }
          
          var sceneLeft  :int = mEditorWorld.GetWorldLeft ();
@@ -468,6 +505,21 @@ package editor {
          
          mEditorWorld.x = worldOriginViewX;
          mEditorWorld.y = worldOriginViewY;
+         
+         //>>
+         var adjustDx:Number = Math.round (worldOriginViewX) - worldOriginViewX;
+         var adjustDy:Number = Math.round (worldOriginViewY) - worldOriginViewY;
+         
+         worldOriginViewX += adjustDx;
+         worldOriginViewY += adjustDy;
+         worldViewLeft += adjustDx;
+         worldViewTop += adjustDy;
+         worldViewRight += adjustDx;
+         worldViewBottom += adjustDy;
+         
+         mEditorWorld.x += adjustDx;
+         mEditorWorld.y += adjustDy;
+         //<<
          
          //SynchrinizePlayerWorldWithEditorWorld ();
          UpdateSelectedEntitiesCenterSprite ();
@@ -596,6 +648,11 @@ package editor {
          
          mSelectedEntityInfoText.x = WorldBorderThinknessLR;
          mSelectedEntityInfoText.y = mViewHeight - (WorldBorderThinknessTB + mSelectedEntityInfoText.height) * 0.5;
+         
+         /*
+         mSelectedEntityInfoText.visible = false;
+         mStatusMessageBar.text = "[" + mEditorWorld.getChildIndex (mLastSelectedEntity) + "] " + mLastSelectedEntity.GetTypeName () + ": " + mLastSelectedEntity.GetInfoText () ;
+         */
       }
       
       private function UpdateSelectedEntitiesCenterSprite ():void
@@ -623,6 +680,27 @@ package editor {
             mHelpDialog.x = (mViewWidth - mHelpDialog.width) * 0.5;
             mHelpDialog.y = (mViewHeight - mHelpDialog.height) * 0.5;
          }
+      }
+      
+      public function RepaintEntityLinks ():void
+      {
+         mEntityLinksSprite.graphics.clear ();
+         
+         mEditorWorld.DrawEntityLinkLines (mEntityLinksSprite);
+      }
+      
+//==================================================================================
+// reponse to some world modififactions
+//==================================================================================
+      
+      private function RegisterNotifyFunctions ():void
+      {
+         InputEntitySelector.sNotifyEntityLinksModified = NotifyEntityLinksModified;
+      }
+      
+      private function NotifyEntityLinksModified ():void
+      {
+         RepaintEntityLinks ();
       }
       
 //==================================================================================
@@ -748,8 +826,11 @@ package editor {
       
       
 //==================================================================================
-// interfaces exposed to right panel
+// outer components
 //==================================================================================
+      
+      //public var mStatusMessageBar:Label;
+      
       
       
       public var mButtonCreateBoxMovable:Button;
@@ -768,6 +849,20 @@ package editor {
       public var mButtonCreateBallDontInfect:Button;
       public var mButtonCreateBallBomb:Button;
       
+      public var mButtonCreatePolygonStatic:Button;
+      public var mButtonCreatePolygonMovable:Button;
+      public var mButtonCreatePolygonBreakable:Button;
+      public var mButtonCreatePolygonInfected:Button;
+      public var mButtonCreatePolygonUninfected:Button;
+      public var mButtonCreatePolygonDontinfect:Button;
+      
+      public var mButtonCreatePolylineStatic:Button;
+      public var mButtonCreatePolylineMovable:Button;
+      public var mButtonCreatePolylineBreakable:Button;
+      public var mButtonCreatePolylineInfected:Button;
+      public var mButtonCreatePolylineUninfected:Button;
+      public var mButtonCreatePolylineDontinfect:Button;
+      
       public var mButtonCreateJointHinge:Button;
       public var mButtonCreateJointSlider:Button;
       public var mButtonCreateJointDistance:Button;
@@ -775,9 +870,24 @@ package editor {
       
       public var mButtonCreateText:Button;
       public var mButtonCreateCravityController:Button;
+      public var mButtonCreateBox:Button;
+      public var mButtonCreateBall:Button;
       public var mButtonCreatePolygon:Button;
       public var mButtonCreatePolyline:Button;
       public var mButtonCreateCamera:Button;
+      //public var mButtonCreateField:Button;
+      
+      public var mButton_CreateCondition:Button;
+      public var mButton_CreateConditionDoor:Button;
+      public var mButton_CreateTask:Button;
+      public var mButton_CreateEntityAssigner:Button;
+      public var mButton_CreateEntityPairAssigner:Button;
+      public var mButton_CreateAction:Button;
+      //public var mButton_CreateTrigger:Button;
+      public var mButton_CreateEventHandler0:Button;
+      public var mButton_CreateEventHandler1:Button;
+      public var mButton_CreateEventHandler2:Button;
+      public var mButton_CreateEventHandler3:Button;
       
       public function OnCreateButtonClick (event:MouseEvent):void
       {
@@ -789,7 +899,7 @@ package editor {
          
          switch (event.target)
          {
-         // boxes
+         // CI boxes
             
             case mButtonCreateBoxMovable:
                SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Movable, EditorSetting.ColorMovableObject, false ) );
@@ -813,7 +923,7 @@ package editor {
                SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Bomb, EditorSetting.ColorBombObject, false, true, EditorSetting.MinBombSquareSideLength, EditorSetting.MaxBombSquareSideLength ) );
                break;
                
-         // balls
+         // CI balls
             
             case mButtonCreateBallMovable:
                SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Movable, EditorSetting.ColorMovableObject, false ) );
@@ -837,8 +947,56 @@ package editor {
                SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Bomb, EditorSetting.ColorBombObject, false, EditorSetting.MinCircleRadium, EditorSetting.MaxBombSquareSideLength * 0.5 ) );
                break;
                
-          // polygons, polyline
-               
+         // CI polygons
+            
+            case mButtonCreatePolygonMovable:
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Movable, EditorSetting.ColorMovableObject, false ) );
+               break;
+            case mButtonCreatePolygonStatic:
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Static, EditorSetting.ColorStaticObject, true ) );
+               break;
+            case mButtonCreatePolygonBreakable:
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Breakable, EditorSetting.ColorBreakableObject, true ) );
+               break;
+            case mButtonCreatePolygonInfected:
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Infected, EditorSetting.ColorInfectedObject, false ) );
+               break;
+            case mButtonCreatePolygonUninfected:
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Uninfected, EditorSetting.ColorUninfectedObject, false ) );
+               break;
+            case mButtonCreatePolygonDontinfect:
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_DontInfect, EditorSetting.ColorDontInfectObject, false ) );
+               break;
+            
+         // CI polylines
+            
+            case mButtonCreatePolylineMovable:
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Movable, EditorSetting.ColorMovableObject, false ) );
+               break;
+            case mButtonCreatePolylineStatic:
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Static, EditorSetting.ColorStaticObject, true ) );
+               break
+            case mButtonCreatePolylineBreakable:
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Breakable, EditorSetting.ColorBreakableObject, true ) );
+               break;
+            case mButtonCreatePolylineInfected:
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Infected, EditorSetting.ColorInfectedObject, true ) );
+               break;
+            case mButtonCreatePolylineUninfected:
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Uninfected, EditorSetting.ColorUninfectedObject, true ) );
+               break;
+            case mButtonCreatePolylineDontinfect:
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_DontInfect, EditorSetting.ColorDontInfectObject, true ) );
+               break;
+            
+          // general box, ball, polygons, polyline
+            
+            case mButtonCreateBox:
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Unknown, EditorSetting.ColorStaticObject, true ) );
+               break;
+            case mButtonCreateBall:
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Unknown, EditorSetting.ColorMovableObject, false ) );
+               break;
             case mButtonCreatePolygon:
                SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Unknown, 0xFFFFFF, true ) );
                break;
@@ -874,6 +1032,43 @@ package editor {
             case mButtonCreateCamera:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityCamera) );
                break;
+            
+          // logic
+          
+            case mButton_CreateCondition:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityCondition) );
+               break;
+            case mButton_CreateConditionDoor:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityConditionDoor) );
+               break;
+            case mButton_CreateTask:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTask) );
+               break;
+            case mButton_CreateEntityAssigner:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityAssigner) );
+               break;
+            case mButton_CreateEntityPairAssigner:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityPairAssigner) );
+               break;
+            case mButton_CreateAction:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityAction) );
+               break;
+            //case mButton_CreateTrigger:
+            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTrigger) );
+            //   break;
+            case mButton_CreateEventHandler0:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:PlayerEventIds.ID_OnShapeContainingShape, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler1:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:PlayerEventIds.ID_OnShapeBeginsContactingShape, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler2:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:PlayerEventIds.ID_OnShapeEndsContactingShape, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler3:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:PlayerEventIds.ID_OnTrigger, mPotientialEventIds:null}) );
+               break;
+            
          // ...
             default:
                SetCurrentCreateMode (null);
@@ -941,7 +1136,7 @@ package editor {
          
       // creat ...
          
-         mButtonCreateCravityController.enabled = mEditorWorld.GetGravityControyList ().length == 0;
+         mButtonCreateCravityController.enabled = mEditorWorld.GetGravityControllerList ().length == 0;
          mButtonCreateCamera.enabled = mEditorWorld.GetCameraList ().length == 0;
          
       // file ...
@@ -1044,10 +1239,6 @@ package editor {
          //clipboardItems.selectAll = false;
             
          
-         mMenuItemAbout = new ContextMenuItem("About This Editor", false);
-         theContextMenu.customItems.push (mMenuItemAbout);
-         mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         
          mMenuItemExportSelectedsToSystemMemory = new ContextMenuItem ("Export Selected(s) to System Memory", true);
          theContextMenu.customItems.push (mMenuItemExportSelectedsToSystemMemory);
          mMenuItemExportSelectedsToSystemMemory.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
@@ -1055,6 +1246,10 @@ package editor {
          mMenuItemImport = new ContextMenuItem ("Import ...", false);
          theContextMenu.customItems.push (mMenuItemImport);
          mMenuItemImport.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         
+         mMenuItemAbout = new ContextMenuItem("About This Editor", true);
+         theContextMenu.customItems.push (mMenuItemAbout);
+         mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
       }
       
       private function OnContextMenuEvent (event:ContextMenuEvent):void
@@ -1332,6 +1527,13 @@ package editor {
       
       public var ShowPlayCodeLoadingDialog:Function = null;
       
+      public var ShowEditorCustomCommandSettingDialog:Function = null;
+      
+      public var ShowActionSettingDialog:Function = null;
+      public var ShowEventHandlerSettingDialog:Function = null;
+      public var ShowConditionSettingDialog:Function = null;
+      public var ShowTriggerSettingDialog:Function = null;
+      
       public function IsEntitySettingable (entity:Entity):Boolean
       {
          if (entity == null)
@@ -1340,6 +1542,10 @@ package editor {
          return entity is EntityShape || entity is SubEntityHingeAnchor || entity is SubEntitySliderAnchor
                 || entity is SubEntitySpringAnchor // v1.01
                 || entity is SubEntityDistanceAnchor // v1.02
+                || entity is EntityAction // v1.07
+                || entity is EntityEventHandler // v1.07
+                //|| entity is EntityTrigger // v1.07
+                || entity is EntityBasicCondition // v1.07
                 ;
       }
       
@@ -1376,6 +1582,8 @@ package editor {
             values.mBackgroundColor =shape.GetFilledColor ();
             values.mTransparency = shape.GetTransparency ();
             values.mBorderTransparency = shape.GetBorderTransparency ();
+            
+            //values.mIsField = shape.IsField ();
             
             if (shape.IsBasicShapeEntity ())
             {
@@ -1453,96 +1661,129 @@ package editor {
                }
             }
          }
-         else if (entity is SubEntityHingeAnchor)
+         else if (entity is SubEntityJointAnchor)
          {
-            var hinge:EntityJointHinge = entity.GetMainEntity () as EntityJointHinge;
-            
-            values.mIsVisible = hinge.IsVisible ();
-            
-            values.mCollideConnected = hinge.mCollideConnected;
-            values.mEnableLimit = hinge.IsLimitsEnabled ();
-            values.mLowerAngle = hinge.GetLowerLimit ();
-            values.mUpperAngle = hinge.GetUpperLimit ();
-            values.mEnableMotor = hinge.mEnableMotor;
-            values.mMotorSpeed = hinge.mMotorSpeed;
-            values.mBackAndForth = hinge.mBackAndForth;
-            
-            //>>from v1.04
-            values.mMaxMotorTorque = hinge.mMaxMotorTorque;
-            //<<
-            
-            //>>from v1.02
-            values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
-            values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (hinge.GetConnectedShape1Index (), values.mShapeListDataProvider);
-            values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (hinge.GetConnectedShape2Index (), values.mShapeListDataProvider);
-            //<<
-            
-            ShowHingeSettingDialog (values, SetHingePropertities);
+            if (entity is SubEntityHingeAnchor)
+            {
+               var hinge:EntityJointHinge = entity.GetMainEntity () as EntityJointHinge;
+               
+               values.mIsVisible = hinge.IsVisible ();
+               
+               values.mCollideConnected = hinge.mCollideConnected;
+               values.mEnableLimit = hinge.IsLimitsEnabled ();
+               values.mLowerAngle = hinge.GetLowerLimit ();
+               values.mUpperAngle = hinge.GetUpperLimit ();
+               values.mEnableMotor = hinge.mEnableMotor;
+               values.mMotorSpeed = hinge.mMotorSpeed;
+               values.mBackAndForth = hinge.mBackAndForth;
+               
+               //>>from v1.04
+               values.mMaxMotorTorque = hinge.mMaxMotorTorque;
+               //<<
+               
+               //>>from v1.02
+               values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
+               values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (hinge.GetConnectedShape1Index (), values.mShapeListDataProvider);
+               values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (hinge.GetConnectedShape2Index (), values.mShapeListDataProvider);
+               //<<
+               
+               ShowHingeSettingDialog (values, SetHingePropertities);
+            }
+            else if (entity is SubEntitySliderAnchor)
+            {
+               var slider:EntityJointSlider = entity.GetMainEntity () as EntityJointSlider;
+               
+               values.mIsVisible = slider.IsVisible ();
+               
+               values.mCollideConnected = slider.mCollideConnected;
+               values.mEnableLimit = slider.IsLimitsEnabled ();
+               values.mLowerTranslation = slider.GetLowerLimit ();
+               values.mUpperTranslation = slider.GetUpperLimit ();
+               values.mEnableMotor = slider.mEnableMotor;
+               values.mMotorSpeed = slider.mMotorSpeed;
+               values.mBackAndForth = slider.mBackAndForth;
+               
+               //>>from v1.04
+               values.mMaxMotorForce = slider.mMaxMotorForce;
+               //<<
+               
+               //>>from v1.02
+               values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
+               values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (slider.GetConnectedShape1Index (), values.mShapeListDataProvider);
+               values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (slider.GetConnectedShape2Index (), values.mShapeListDataProvider);
+               values.mAnchorIndex = (entity as SubEntitySliderAnchor).GetAnchorIndex ();
+               //<<
+               
+               ShowSliderSettingDialog (values, SetSliderPropertities);
+            }
+            else if (entity is SubEntitySpringAnchor)
+            {
+               var spring:EntityJointSpring = entity.GetMainEntity () as EntityJointSpring;
+               
+               values.mIsVisible = spring.IsVisible ();
+               
+               values.mCollideConnected = spring.mCollideConnected;
+               values.mStaticLengthRatio = spring.GetStaticLengthRatio ();
+               //values.mFrequencyHz = spring.GetFrequencyHz ();
+               values.mSpringType = spring.GetSpringType ();
+               values.mDampingRatio = spring.mDampingRatio;
+               
+               //>>from v1.02
+               values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
+               values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (spring.GetConnectedShape1Index (), values.mShapeListDataProvider);
+               values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (spring.GetConnectedShape2Index (), values.mShapeListDataProvider);
+               values.mAnchorIndex = (entity as SubEntitySpringAnchor).GetAnchorIndex ();
+               //<<
+               
+               ShowSpringSettingDialog (values, SetSpringPropertities);
+            }
+            else if (entity is SubEntityDistanceAnchor)
+            {
+               var distance:EntityJointDistance = entity.GetMainEntity () as EntityJointDistance;
+               
+               values.mIsVisible = distance.IsVisible ();
+               
+               values.mCollideConnected = distance.mCollideConnected;
+               
+               //>>from v1.02
+               values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
+               values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (distance.GetConnectedShape1Index (), values.mShapeListDataProvider);
+               values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (distance.GetConnectedShape2Index (), values.mShapeListDataProvider);
+               values.mAnchorIndex = (entity as SubEntityDistanceAnchor).GetAnchorIndex ();
+               //<<
+               
+               ShowDistanceSettingDialog (values, SetDistancePropertities);
+            }
          }
-         else if (entity is SubEntitySliderAnchor)
+         else if (entity is EntityLogic)
          {
-            var slider:EntityJointSlider = entity.GetMainEntity () as EntityJointSlider;
-            
-            values.mIsVisible = slider.IsVisible ();
-            
-            values.mCollideConnected = slider.mCollideConnected;
-            values.mEnableLimit = slider.IsLimitsEnabled ();
-            values.mLowerTranslation = slider.GetLowerLimit ();
-            values.mUpperTranslation = slider.GetUpperLimit ();
-            values.mEnableMotor = slider.mEnableMotor;
-            values.mMotorSpeed = slider.mMotorSpeed;
-            values.mBackAndForth = slider.mBackAndForth;
-            
-            //>>from v1.04
-            values.mMaxMotorForce = slider.mMaxMotorForce;
-            //<<
-            
-            //>>from v1.02
-            values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
-            values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (slider.GetConnectedShape1Index (), values.mShapeListDataProvider);
-            values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (slider.GetConnectedShape2Index (), values.mShapeListDataProvider);
-            values.mAnchorIndex = (entity as SubEntitySliderAnchor).GetAnchorIndex ();
-            //<<
-            
-            ShowSliderSettingDialog (values, SetSliderPropertities);
-         }
-         else if (entity is SubEntitySpringAnchor)
-         {
-            var spring:EntityJointSpring = entity.GetMainEntity () as EntityJointSpring;
-            
-            values.mIsVisible = spring.IsVisible ();
-            
-            values.mCollideConnected = spring.mCollideConnected;
-            values.mStaticLengthRatio = spring.GetStaticLengthRatio ();
-            //values.mFrequencyHz = spring.GetFrequencyHz ();
-            values.mSpringType = spring.GetSpringType ();
-            values.mDampingRatio = spring.mDampingRatio;
-            
-            //>>from v1.02
-            values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
-            values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (spring.GetConnectedShape1Index (), values.mShapeListDataProvider);
-            values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (spring.GetConnectedShape2Index (), values.mShapeListDataProvider);
-            values.mAnchorIndex = (entity as SubEntitySpringAnchor).GetAnchorIndex ();
-            //<<
-            
-            ShowSpringSettingDialog (values, SetSpringPropertities);
-         }
-         else if (entity is SubEntityDistanceAnchor)
-         {
-            var distance:EntityJointDistance = entity.GetMainEntity () as EntityJointDistance;
-            
-            values.mIsVisible = distance.IsVisible ();
-            
-            values.mCollideConnected = distance.mCollideConnected;
-            
-            //>>from v1.02
-            values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
-            values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (distance.GetConnectedShape1Index (), values.mShapeListDataProvider);
-            values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (distance.GetConnectedShape2Index (), values.mShapeListDataProvider);
-            values.mAnchorIndex = (entity as SubEntityDistanceAnchor).GetAnchorIndex ();
-            //<<
-            
-            ShowDistanceSettingDialog (values, SetDistancePropertities);
+            if (entity is EntityBasicCondition)
+            {
+               var condition:EntityBasicCondition = entity as EntityBasicCondition;
+               
+               values.mName = condition.GetName ();
+               values.mConditionCommandListDefinition  = condition.GetConditionCommandListDefinition ();
+               
+               ShowConditionSettingDialog (values, SetConditionProperties);
+            }
+            else if (entity is EntityAction)
+            {
+               var action:EntityAction = entity as EntityAction;
+               
+               values.mName = action.GetName ();
+               values.mActionCommandListDefinition = action.GetActionCommandListDefinition ();
+               
+               ShowActionSettingDialog (values, SetActionProperties);
+            }
+            else if (entity is EntityEventHandler)
+            {
+               var event_handler:EntityEventHandler = entity as EntityEventHandler;
+               
+               values.mConditionCommandListDefinition  = event_handler.GetConditionCommandListDefinition ();
+               values.mActionCommandListDefinition  = event_handler.GetActionCommandListDefinition ();
+               
+               ShowEventHandlerSettingDialog (values, SetEventHandlerProperties);
+            }
          }
       }
       
@@ -1644,11 +1885,70 @@ package editor {
          ShowImportSourceCodeDialog (ImportFromXmlString);
       }
       
+//==================================================================================
+// trigger setting
+//==================================================================================
+      
+      //public var mStatusMessageBar:Label;
+      
+      public var mCustomTriggerButtons:Array;
+      
+      public function SetCustomTriggerButtons (buttons:Array):void
+      {
+         mCustomTriggerButtons = buttons;
+         
+         var button:Button;
+         for (var i:int = 0; i < mCustomTriggerButtons.length; ++ i)
+         {
+            button = mCustomTriggerButtons [i] as Button;
+            button.maxWidth = button.width;
+            button.percentWidth = NaN;
+            
+            button.label = "" + ( (i + 1) % 10);
+            button.width = button.maxWidth;
+            
+            button.addEventListener (MouseEvent.CLICK, OnCustomTriggerButtonClick);
+         }
+      }
+      
+      private function GetCustomTriggerIdByEventTarget (object:Object):int
+      {
+         if (mCustomTriggerButtons == null)
+            return -1;
+         
+         return mCustomTriggerButtons.indexOf (object);
+      }
+      
+      private function OnCustomTriggerButtonClick (event:Event):void
+      {
+         var index:int = GetCustomTriggerIdByEventTarget (event.target);
+         if (index < 0)
+            return;
+         
+         Alert.show("Alert", "Button #" + index + " is clicked.");
+         
+         if (mLastSelectedEntity != null)
+         {
+            var func:Function = (mLastSelectedEntity as EntityShape).SetDensity;
+            
+            func.apply (mLastSelectedEntity, [5.0]);
+         }
+      }
+      
+      public function OnClickEditorCustomCommand (event:ContextMenuEvent):void
+      {
+         var index:int = GetCustomTriggerIdByEventTarget (event.contextMenuOwner);
+         if (index < 0)
+            return;
+         
+         ShowEditorCustomCommandSettingDialog (null);
+      }
+      
 //=================================================================================
 //   
 //=================================================================================
       
-      private function ShapeList2SelectListDataProvider (shapeList:Array):Array
+      public static function ShapeList2SelectListDataProvider (shapeList:Array):Array
       {
          var provider:Array = new Array ();
          
@@ -1669,7 +1969,7 @@ package editor {
          return provider;
       }
       
-      private function EntityIndex2SelectListSelectedIndex (entityIndex:int, dataProvider:Array):int
+      public static function EntityIndex2SelectListSelectedIndex (entityIndex:int, dataProvider:Array):int
       {
          for (var i:int = 0; i < dataProvider.length; ++ i)
          {
@@ -1680,7 +1980,7 @@ package editor {
          return EntityIndex2SelectListSelectedIndex (Define.EntityId_None, dataProvider);
       }
       
-      private function CollisionCategoryList2SelectListDataProvider (ccList:Array):Array
+      public static function CollisionCategoryList2SelectListDataProvider (ccList:Array):Array
       {
          var provider:Array = new Array ();
          
@@ -1698,7 +1998,7 @@ package editor {
          return provider;
       }
       
-      private function CollisionCategoryIndex2SelectListSelectedIndex (categoryIndex:int, dataProvider:Array):int
+      public static function CollisionCategoryIndex2SelectListSelectedIndex (categoryIndex:int, dataProvider:Array):int
       {
          for (var i:int = 0; i < dataProvider.length; ++ i)
          {
@@ -1900,7 +2200,8 @@ package editor {
          CheckModifierKeys (event);
          _isZeroMove = true;
          
-         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         var worldPoint:Point = mEditorWorld.globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
          
          if (IsCreating ())
          {
@@ -1933,15 +2234,24 @@ package editor {
             if (vertexControllers.length > 0)
             {
                mEditorWorld.SetSelectedVertexController (vertexControllers[0]);
-               
                SetCurrentEditMode (new ModeMoveSelectedVertexControllers (this, vertexControllers[0]));
-               
                mCurrentEditMode.OnMouseDown (worldPoint.x, worldPoint.y);
                
                return;
             }
             
             mEditorWorld.SetSelectedVertexController (null);
+            
+         // create / break logic link
+            
+            var linkable:Linkable = mEditorWorld.GetFirstLinkablesAtPoint (worldPoint.x, worldPoint.y);
+            if (linkable != null && linkable.CanStartCreatingLink (worldPoint.x, worldPoint.y))
+            {
+               SetCurrentEditMode (new ModeCreateEntityLink (this, linkable));
+               mCurrentEditMode.OnMouseDown (worldPoint.x, worldPoint.y);
+               
+               return;
+            }
             
          // entities
             
@@ -2033,7 +2343,8 @@ package editor {
             mCursorCreating.y = viewPoint.y;
          }
          
-         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         var worldPoint:Point = mEditorWorld.globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
          
          if (IsCreating ())
          {
@@ -2058,7 +2369,8 @@ package editor {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, mEditorWorld, new Point (event.localX, event.localY) );
+         var worldPoint:Point = mEditorWorld.globalToLocal (new Point (Math.round(event.stageX), Math.round (event.stageY)));
          
          if (IsCreating ())
          {
@@ -2108,7 +2420,7 @@ package editor {
                mCurrentEditMode.OnMouseUp (worldPoint.x, worldPoint.y);
             }
             
-            if ( _isZeroMove && mCurrentMouseMode == MouseMode_SelectSingle && (! _mouseEventCtrlDown) )
+            if ( _isZeroMove && (! _mouseEventCtrlDown) && mCurrentMouseMode == MouseMode_SelectSingle )
             {
                mEditorWorld.ClearSelectedEntities ();
             }
@@ -2477,8 +2789,101 @@ package editor {
          if (camera == null)
             return null;
          
+         SetTheOnlySelectedEntity (camera);
+         
          return camera;
       }
+      
+      public function CreateEntityAction (options:Object = null):EntityAction
+      {
+         var action:EntityAction = mEditorWorld.CreateEntityAction ();
+         if (action == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (action);
+         
+         return action;
+      }
+      
+      public function CreateEntityEventHandler (options:Object = null):EntityEventHandler
+      {
+         var handler:EntityEventHandler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
+         if (handler == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (handler);
+         
+         return handler;
+      }
+      
+      //public function CreateEntityTrigger (options:Object = null):EntityTrigger
+      //{
+      //   var trigger:EntityTrigger = mEditorWorld.CreateEntityTrigger ();
+      //   if (trigger == null)
+      //      return null;
+      //   
+      //   SetTheOnlySelectedEntity (trigger);
+      //   
+      //   return trigger;
+      //}
+      
+      public function CreateEntityCondition (options:Object = null):EntityBasicCondition
+      {
+         var condition:EntityBasicCondition = mEditorWorld.CreateEntityCondition ();
+         if (condition == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (condition);
+         
+         return condition;
+      }
+      
+      
+      public function CreateEntityConditionDoor (options:Object = null):EntityConditionDoor
+      {
+         var condition_door:EntityConditionDoor = mEditorWorld.CreateEntityConditionDoor ();
+         if (condition_door == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (condition_door);
+         
+         return condition_door;
+      }
+      
+      public function CreateEntityTask (options:Object = null):EntityTask
+      {
+         var task:EntityTask = mEditorWorld.CreateEntityTask ();
+         if (task == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (task);
+         
+         return task;
+      }
+      
+      public function CreateEntityInputEntityAssigner (options:Object = null):EntityInputEntityAssigner
+      {
+         var entity_assigner:EntityInputEntityAssigner = mEditorWorld.CreateEntityInputEntityAssigner ();
+         if (entity_assigner == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (entity_assigner);
+         
+         return entity_assigner;
+      }
+      
+      public function CreateEntityInputEntityPairAssigner (options:Object = null):EntityInputEntityPairAssigner
+      {
+         var entity_pair_assigner:EntityInputEntityPairAssigner = mEditorWorld.CreateEntityInputEntityPairAssigner ();
+         if (entity_pair_assigner == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (entity_pair_assigner);
+         
+         return entity_pair_assigner;
+      }
+      
+      
       
 //============================================================================
 //    
@@ -2505,10 +2910,11 @@ package editor {
          
          mLastSelectedEntity = entity;
          
-         entity.SetVertexControllersVisible (true);
+         entity.SetInternalComponentsVisible (true);
          UpdateSelectedEntityInfo ();
          
-         mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
+         if (mCurrentMouseMode == MouseMode_SelectGlued)
+            mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
          
          CalSelectedEntitiesCenterPoint ();
       }
@@ -2520,9 +2926,9 @@ package editor {
          if (mEditorWorld.IsEntitySelected (entity))
          {
             if (mLastSelectedEntity != null)
-               mLastSelectedEntity.SetVertexControllersVisible (false);
+               mLastSelectedEntity.SetInternalComponentsVisible (false);
             
-            entity.SetVertexControllersVisible (true);
+            entity.SetInternalComponentsVisible (true);
          }
          
          mLastSelectedEntity = entity;
@@ -2557,7 +2963,8 @@ package editor {
          else
             mEditorWorld.SelectEntities (entities);
          
-         mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
+         if (mCurrentMouseMode == MouseMode_SelectGlued)
+            mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
          
          CalSelectedEntitiesCenterPoint ();
          
@@ -2626,6 +3033,8 @@ package editor {
          UpdateUiButtonsEnabledStatus ();
          
          UpdateSelectedEntityInfo ();
+         
+         RepaintEntityLinks ();
       }
       
       public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean, byMouse:Boolean = true):void
@@ -2932,12 +3341,12 @@ package editor {
                shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
                
                shape.SetPhysicsEnabled (params.mIsPhysicsEnabled);
-               shape.mIsSensor = params.mIsSensor;
+               shape.SetAsSensor (params.mIsSensor);
                shape.SetStatic (params.mIsStatic);
-               shape.mIsBullet = params.mIsBullet;
-               shape.mDensity = params.mDensity;
-               shape.mFriction = params.mFriction;
-               shape.mRestitution = params.mRestitution;
+               shape.SetAsBullet (params.mIsBullet);
+               shape.SetDensity (params.mDensity);
+               shape.SetFriction (params.mFriction);
+               shape.SetRestitution (params.mRestitution);
                shape.SetHollow (params.mIsHollow);
                
                if (shape is EntityShapeCircle)
@@ -3110,17 +3519,78 @@ package editor {
          }
       }
       
-      //public function SetWorldProperties (params:Object):void
+      public function SetConditionProperties (params:Object):void
+      {
+         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         if (selectedEntities == null || selectedEntities.length != 1)
+            return;
+         
+         var entity:Entity = selectedEntities [0] as Entity;
+         
+         if (entity is EntityBasicCondition)
+         {
+            var condition:EntityBasicCondition = entity as EntityBasicCondition;
+            condition.SetName (params.mName);
+            
+            var condition_def:CommandListDefinition = condition.GetConditionCommandListDefinition ();
+            condition_def.SetCommands (params.mReturnConditionFunctionCallings);
+            
+            condition.UpdateAppearance ();
+            condition.UpdateSelectionProxy ();
+         }
+      }
+      
+      public function SetActionProperties (params:Object):void
+      {
+         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         if (selectedEntities == null || selectedEntities.length != 1)
+            return;
+         
+         var entity:Entity = selectedEntities [0] as Entity;
+         
+         if (entity is EntityAction)
+         {
+            var action:EntityAction = entity as EntityAction;
+            action.SetName (params.mName);
+            
+            var action_def:CommandListDefinition = action.GetActionCommandListDefinition ();
+            action_def.SetCommands (params.mReturnActionFunctionCallings);
+            
+            action.UpdateAppearance ();
+            action.UpdateSelectionProxy ();
+         }
+      }
+      
+      public function SetEventHandlerProperties (params:Object):void
+      {
+         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         if (selectedEntities == null || selectedEntities.length != 1)
+            return;
+         
+         var entity:Entity = selectedEntities [0] as Entity;
+         
+         if (entity is EntityEventHandler)
+         {
+            var event_handler:EntityEventHandler = entity as EntityEventHandler;
+            
+            var conditionlist_def:CommandListDefinition = event_handler.GetConditionCommandListDefinition ()
+            conditionlist_def.SetCommands (params.mReturnConditionFunctionCallings);
+            
+            var cmdlist_def:CommandListDefinition = event_handler.GetActionCommandListDefinition ()
+            cmdlist_def.SetCommands (params.mReturnCommandFunctionCallings);
+            
+            //event_handler.UpdateAppearance ();
+            //event_handler.UpdateSelectionProxy ();
+         }
+      }
+      
+      //public function SetTriggerProperties (params:Object):void
       //{
-      //   mEditorWorld.SetAuthorName (params.mAuthorName);
-      //   mEditorWorld.SetAuthorHomepage (params.mAuthorHomepage);
-      //   
-      //   //>>from v1.02
-      //   mEditorWorld.SetShareSourceCode (params.mShareSourceCode);
-      //   //<<
-      //   
-      //   CreateUndoPoint ();
       //}
+      
+//=================================================================================
+//   IO
+//=================================================================================
       
       public function LoadEditorWorldFromXmlString (params:Object):void
       {
@@ -3376,7 +3846,7 @@ package editor {
          {
             var entity:Entity = entityArray [i] as Entity;
             object.mSelectedEntityIds [i] = mEditorWorld.getChildIndex (entity);
-            if (entity.AreVertexControlPointsVisible ())
+            if (entity.AreInternalComponentsVisible ())
             {
                object.mMainSelectedEntityId = object.mSelectedEntityIds [i];
                
@@ -3426,7 +3896,7 @@ package editor {
                
                if (entityId == object.mMainSelectedEntityId)
                {
-                  entity.SetVertexControllersVisible (true);
+                  entity.SetInternalComponentsVisible (true);
                   mLastSelectedEntity = entity;
                   
                   if (object.mSelectedVertexControllerId >= 0)

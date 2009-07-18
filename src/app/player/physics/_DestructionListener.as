@@ -23,7 +23,8 @@ package player.physics {
       {
          var userdata:Object = joint.GetUserData ();
          
-         mPhysicsEngine.OnJointRemoved (userdata as PhysicsProxyJoint);
+         if (mPhysicsEngine._OnJointRemoved != null)
+            mPhysicsEngine._OnJointRemoved (userdata as PhysicsProxyJoint);
       }
       
       /// Called when any shape is about to be destroyed due
@@ -32,7 +33,8 @@ package player.physics {
       {
          var userdata:Object = shape.GetUserData ();
          
-         mPhysicsEngine.OnShapeRemoved (userdata as PhysicsProxyShape);
+         if (mPhysicsEngine._OnShapeRemoved != null)
+            mPhysicsEngine._OnShapeRemoved (userdata as PhysicsProxyShape);
       }
       
    }

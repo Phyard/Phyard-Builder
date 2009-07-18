@@ -85,6 +85,11 @@ package editor.mode {
          
          mPolylineEntity = mMainView.CreatePolyline (mFilledColor, mIsStatic);
          mPolylineEntity.SetAiType (mCiAiType);
+         if (mCiAiType != Define.ShapeAiType_Unknown)
+            mPolylineEntity.SetCurveThickness (2);
+         else
+            mPolylineEntity.SetCurveThickness (1);
+         
          if (mPolylineEntity == null)
          {
             Reset ();

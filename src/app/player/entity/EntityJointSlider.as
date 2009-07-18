@@ -78,6 +78,18 @@ package player.entity {
       {
       }
       
+//==============================================================================
+// commands
+//==============================================================================
+      
+      public function SetMotorEnabled (enabled:Boolean):void
+      {
+      }
+      
+      public function SetMotorSpeed (speed:Number):void
+      {
+      }
+      
       
       
    }

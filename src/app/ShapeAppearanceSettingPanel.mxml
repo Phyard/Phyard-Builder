@@ -72,6 +72,35 @@
          
          private function OnAiTypeSelectListClick ():void
          {
+            //if (mInputValues != null && mInputValues.mIsField)
+            //{
+            //   CheckBox_IsCiShape.selected = false;
+            //   CheckBox_IsCiShape.enabled = false;
+            //   SelectList_AiType.enabled = false;
+            //   Label_AiType.enabled = false;
+            //   
+            //   CheckBox_IsVisible.enabled = true;
+            //   
+            //   Label_Transparency.enabled = true;
+            //   NumericStepper_Transparency.enabled = true;
+            //   
+            //   CheckBox_DrawBorder.enabled = true;
+            //   
+            //   Label_BorderColor.enabled = true;
+            //   ColorPicker_BorderColor.enabled = true;
+            //   
+            //   CheckBox_DrawBackground.enabled = true;
+            //   
+            //   Label_BackgroundColor.enabled = true;
+            //   ColorPicker_BackgroundColor.enabled = true;
+            //   
+            //   Label_BorderThickness.enabled = true;
+            //   NumericStepper_BorderThickness.enabled = true;
+            //   
+            //   Label_BorderTransparency.enabled = true;
+            //   NumericStepper_BorderTransparency.enabled = true;
+            //}
+            //else 
             if (CheckBox_IsCiShape.selected)
             {
                SelectList_AiType.enabled = true;

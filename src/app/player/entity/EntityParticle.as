@@ -106,9 +106,9 @@ package player.entity {
             
          // ...set velocity
             var linearVel:Point = new Point (params.mSpeed * Math.cos (params.mAngle), params.mSpeed * Math.sin (params.mAngle));
-            mWorld.mPhysicsEngine.._PhysicsPoint2DisplayPoint (linearVel);
+            mWorld.mPhysicsEngine.._PhysicsVector2DisplayVector (linearVel);
             
-            (mPhysicsProxy as PhysicsProxyBody).SetLinearVelocity (linearVel);
+            (mPhysicsProxy as PhysicsProxyBody).SetLinearVelocity (linearVel.x, linearVel.y);
          }
       }
       

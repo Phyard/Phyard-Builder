@@ -40,12 +40,12 @@ package editor.trigger {
 // 
 //==============================================================================
       
-      public function CreateControlForVariableValueSource (valueSourceVariable:VariableValueSourceVariable, variableSpace:VariableSpace):ComboBox
+      public function CreateControlForValueSource (valueSourceVariable:ValueSourceVariable, variableSpace:VariableSpace):ComboBox
       {
          return null;
       }
       
-      public function RetrieveVariableValueSourceFromControl (valueSourceVariable:VariableValueSourceVariable, control:ComboBox):void
+      public function RetrieveValueSourceFromControl (valueSourceVariable:ValueSourceVariable, control:ComboBox):void
       {
       }
       
@@ -53,21 +53,21 @@ package editor.trigger {
 // to override
 //==============================================================================
       
-      public function GetDefaultDirectValueSource ():VariableValueSourceDirect
+      public function GetDefaultDirectValueSource ():ValueSourceDirect
       {
          return null;
       }
       
-      public function ValidateDirectValueSource (valueSourceDirect:VariableValueSourceDirect):void
+      public function ValidateDirectValueSource (valueSourceDirect:ValueSourceDirect):void
       {
       }
       
-      public function CreateControlForDirectValueSource (valueSourceDirect:VariableValueSourceDirect):UIComponent
+      public function CreateControlForDirectValueSource (valueSourceDirect:ValueSourceDirect):UIComponent
       {
          return null;
       }
       
-      public function RetrieveDirectValueSourceFromControl (valueSourceDirect:VariableValueSourceDirect, control:UIComponent):void
+      public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSourceDirect, control:UIComponent):void
       {
       }
       

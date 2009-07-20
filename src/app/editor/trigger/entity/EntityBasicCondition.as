@@ -20,8 +20,8 @@ package editor.trigger.entity {
    
    import editor.setting.EditorSetting;
    
-   import editor.trigger.CommandListDefinition;
-   import editor.trigger.CommandListWithNameDefinition;
+   import editor.trigger.ConditionListDefinition;
+   import editor.trigger.ConditionListWithNameDefinition;
    
    import common.Define;
    
@@ -29,7 +29,7 @@ package editor.trigger.entity {
    
    public class EntityBasicCondition extends EntityCondition 
    {
-      private var mCommandListWithNameDefinition:CommandListWithNameDefinition;
+      private var mConditionListWithNameDefinition:ConditionListWithNameDefinition;
       
    //
       public var mHalfWidth:Number;
@@ -42,27 +42,27 @@ package editor.trigger.entity {
       {
          super (world);
          
-         mCommandListWithNameDefinition = new CommandListWithNameDefinition ("Condition");
+         mConditionListWithNameDefinition = new ConditionListWithNameDefinition ("Condition");
       }
       
       public function GetName ():String
       {
-         return mCommandListWithNameDefinition.GetName ();
+         return mConditionListWithNameDefinition.GetName ();
       }
       
       public function SetName (name:String):void
       {
-         mCommandListWithNameDefinition.SetName (name);
+         mConditionListWithNameDefinition.SetName (name);
       }
       
-      public function GetConditionCommandListDefinition ():CommandListDefinition
+      public function GetConditionListDefinition ():ConditionListDefinition
       {
-         return mCommandListWithNameDefinition;
+         return mConditionListWithNameDefinition;
       }
       
       public function ValidateEntityLinks ():void
       {
-         mCommandListWithNameDefinition.ValidateValueSources ();
+         mConditionListWithNameDefinition.ValidateValueSources ();
       }
       
       override public function GetTypeName ():String
@@ -77,7 +77,7 @@ package editor.trigger.entity {
          
       // text
          
-         var text:String = mCommandListWithNameDefinition.GetName ();
+         var text:String = mConditionListWithNameDefinition.GetName ();
          if (text.length == 0)
             text = "Condition";
          

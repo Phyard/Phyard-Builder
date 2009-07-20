@@ -699,6 +699,57 @@ package editor.world {
          mNeedToCorrectEntityIndices = false;
       }
       
+//============================================================================
+// utils
+//============================================================================
+      
+      public function GetEntityIndex (entity:Entity):int
+      {
+         if (entity == null)
+            return -1;
+         
+         // for speed, commented off
+         //if (entity.GetContainer () != this)
+         //   return -1;
+         
+         return entity.GetEntityIndex ();
+      }
+      
+      public function GetEntityAt (index:int):Entity
+      {
+         if (isNaN (index) || index < 0 || index >= numChildren)
+            return null;
+         
+         return getChildAt (index) as Entity;
+      }
+      
+      public function EntitiyArray2EntityIndexArray (entities:Array):Array
+      {
+         if (entities == null)
+            return null;
+         
+         var ids:Array = new Array (entities.length);
+         for (var i:int = 0; i < entities.length; ++ i)
+         {
+            ids [i] = GetEntityIndex (entities [i] as Entity);
+         }
+         
+         return ids;
+      }
+      
+      public function EntityIndexArray2EntityArray (ids:Array):Array
+      {
+         if (ids == null)
+            return null;
+         
+         var entities:Array = new Array (ids.length);
+         for (var i:int = 0; i < ids.length; ++ i)
+         {
+            entities [i] = GetEntityAt ( int (ids [i]) );
+         }
+         
+         return entities;
+      }
    }
 }
 

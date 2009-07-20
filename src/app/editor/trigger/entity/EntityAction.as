@@ -53,7 +53,7 @@ package editor.trigger.entity {
          mCommandListWithNameDefinition.SetName (name);
       }
       
-      public function GetActionCommandListDefinition ():CommandListDefinition
+      public function GetCommandListDefinition ():CommandListDefinition
       {
          return mCommandListWithNameDefinition;
       }

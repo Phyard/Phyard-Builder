@@ -59,14 +59,14 @@
             
             TextInput_Name.text = mParams.mName;
             
-            theCommandListEditPanel.SetCommandListDefinition (mParams.mActionCommandListDefinition, false);
+            theCommandListEditPanel.SetCommandListDefinition (mParams.mCommandListDefinition);
          }
          
          public function GetValues (returnValues:Object):void
          {
             returnValues.mName = TextInput_Name.text;
             
-            mParams.mReturnActionFunctionCallings = theCommandListEditPanel.GetFunctionCallings ();
+            theCommandListEditPanel.GetValues (returnValues);
          }
          
          private function OnInitPanel ():void

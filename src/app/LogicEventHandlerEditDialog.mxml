@@ -18,7 +18,7 @@
          <mx:Spacer width="0"/>
          <mx:VBox height="100%">
             <mx:Spacer height="0"/>
-            <CommandListEditPanel id="theConditionListEditPanel" />
+            <ConditionListEditPanel id="theConditionListEditPanel" />
             <mx:Spacer height="0"/>
          </mx:VBox>
          <mx:Spacer width="0"/>
@@ -41,21 +41,6 @@
             </mx:VBox>
          </mx:HBox>
          <mx:Spacer height="8"/>
-         <mx:HBox width="100%" >
-            <mx:VBox width="36%">
-               <mx:Label text="Shape Pairing Type:" textAlign="right" width="100%"/>
-            </mx:VBox>
-            <mx:VBox>
-               <mx:RadioButtonGroup id="Radio_PairingType"/>
-               <mx:RadioButton groupName="Radio_PairingType" value="0" label="One to One"/>
-               <mx:RadioButton groupName="Radio_PairingType" value="1" label="Many to Many"/>
-               <mx:RadioButton groupName="Radio_PairingType" value="2" label="Many to Any"/>
-               <mx:RadioButton groupName="Radio_PairingType" value="2" label="Any to Many"/>
-               <mx:RadioButton groupName="Radio_PairingType" value="2" label="Either One in Many"/>
-               <mx:RadioButton groupName="Radio_PairingType" value="2" label="Both Two in Many"/>
-               <mx:RadioButton groupName="Radio_PairingType" value="2" label="(Any Two) Any to Any"/>
-            </mx:VBox>
-         </mx:HBox>
       </mx:VBox>
    </mx:TabNavigator>
 
@@ -91,16 +76,16 @@
             mParams = initialValues;
             
          // ...
-            Lavel_EventHandlerName.text = mParams.mActionCommandListDefinition.GetName ();
+            Lavel_EventHandlerName.text = mParams.mName;
             
-            theConditionListEditPanel.SetCommandListDefinition (mParams.mConditionCommandListDefinition, true);
-            theCommandListEditPanel.SetCommandListDefinition (mParams.mActionCommandListDefinition, false);
+            theConditionListEditPanel.SetConditionListDefinition (mParams.mConditionListDefinition);
+            theCommandListEditPanel.SetCommandListDefinition (mParams.mCommandListDefinition);
          }
          
          public function GetValues (returnValues:Object):void
          {
-            mParams.mReturnConditionFunctionCallings = theConditionListEditPanel.GetFunctionCallings ();
-            mParams.mReturnCommandFunctionCallings = theCommandListEditPanel.GetFunctionCallings ();
+            theConditionListEditPanel.GetValues (returnValues);
+            theCommandListEditPanel.GetValues (returnValues);
          }
          
          private function OnInitPanel ():void

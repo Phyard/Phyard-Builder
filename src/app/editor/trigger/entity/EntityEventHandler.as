@@ -25,6 +25,7 @@ package editor.trigger.entity {
    import editor.trigger.VariableDefinition;
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.CommandListDefinition;
+   import editor.trigger.ConditionListDefinition;
    
    import editor.setting.EditorSetting;
    
@@ -48,8 +49,9 @@ package editor.trigger.entity {
       public var mBorderThickness:Number = 1;
       
       //
+      private var mEventId:int;
       
-      protected var mConditionListDefinition:CommandListDefinition;
+      protected var mConditionListDefinition:ConditionListDefinition;
       protected var mCommandListDefinition:CommandListDefinition;
       
       protected var mExternalCondition:ConditionAndTargetValue = new ConditionAndTargetValue (null, ValueDefine.BoolValue_True);
@@ -65,8 +67,10 @@ package editor.trigger.entity {
          doubleClickEnabled = true;
          addEventListener(MouseEvent.DOUBLE_CLICK, OnMouseDoubleClick);
          
-         var event_decl:EventDeclaration = TriggerEngine.GetEventDeclarationById (defaultEventId);
-         mConditionListDefinition = new CommandListDefinition (event_decl);
+         mEventId = defaultEventId;
+         
+         var event_decl:EventDeclaration = TriggerEngine.GetEventDeclarationById (mEventId);
+         mConditionListDefinition = new ConditionListDefinition (event_decl);
          mCommandListDefinition = new CommandListDefinition (event_decl);
          
          var i:int;
@@ -90,6 +94,17 @@ package editor.trigger.entity {
          }
       }
       
+      public function GetName ():String
+      {
+         var event_decl:EventDeclaration = TriggerEngine.GetEventDeclarationById (mEventId);
+         return event_decl.GetName ();
+      }
+      
+      public function GetEventId ():int
+      {
+         return mEventId;
+      }
+      
       public function GetEntityAssigners ():Array
       {
          return mEntityAssignerList; //.slice ();
@@ -110,12 +125,12 @@ package editor.trigger.entity {
          return mExternalAction;
       }
       
-      public function GetConditionCommandListDefinition ():CommandListDefinition
+      public function GetConditionListDefinition ():ConditionListDefinition
       {
          return mConditionListDefinition;
       }
       
-      public function GetActionCommandListDefinition ():CommandListDefinition
+      public function GetCommandListDefinition ():CommandListDefinition
       {
          return mCommandListDefinition;
       }

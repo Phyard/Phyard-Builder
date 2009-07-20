@@ -40,7 +40,7 @@ package editor.trigger {
       private function RearrangeVariableInstanceIDs ():void
       {
          for (var i:int = 0; i < mVariableInstances.length; ++ i)
-            (mVariableInstances [i] as VariableInstance).SetID (i);
+            (mVariableInstances [i] as VariableInstance).SetIndex (i);
       }
       
       public function DestroyVariableInstance (variableId:int):void

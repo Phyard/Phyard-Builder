@@ -3,8 +3,9 @@ package editor.trigger {
    import mx.core.UIComponent;
    
    import common.trigger.ValueSourceTypeDefine;
+   import common.trigger.ValueSpaceTypeDefine;
    
-   public class VariableValueSourceVariable extends VariableValueSource
+   public class ValueSourceVariable extends ValueSource
    {
    //========================================================================================================
    //
@@ -12,7 +13,7 @@ package editor.trigger {
       
       private var mVariableInstance:VariableInstance;
       
-      public function VariableValueSourceVariable (variableInstacne:VariableInstance = null)
+      public function ValueSourceVariable (variableInstacne:VariableInstance = null)
       {
          SetVariableInstance (variableInstacne);
       }
@@ -20,6 +21,22 @@ package editor.trigger {
       public function SetVariableInstance (variableInstacne:VariableInstance):void
       {
          mVariableInstance = variableInstacne;
+      }
+      
+      public function GetVariableSpaceType ():int
+      {
+         if (mVariableInstance == null)
+            return ValueSpaceTypeDefine.ValueSpace_Global;
+         
+         return mVariableInstance.GetSpaceType ();
+      }
+      
+      public function GetVariableIndex ():int
+      {
+         if (mVariableInstance == null)
+            return -1;
+         
+         return mVariableInstance.GetIndex ();
       }
       
       override public function GetValueSourceType ():int
@@ -35,9 +52,9 @@ package editor.trigger {
          return mVariableInstance.GetValueObject ();
       }
       
-      override public function Clone ():VariableValueSource
+      override public function Clone ():ValueSource
       {
-         return new VariableValueSourceVariable (mVariableInstance);
+         return new ValueSourceVariable (mVariableInstance);
       }
       
       override public function Validate ():void

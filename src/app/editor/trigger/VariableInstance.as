@@ -4,14 +4,14 @@ package editor.trigger {
    
    import common.trigger.ValueSourceTypeDefine;
    
-   public class VariableInstance extends VariableValueSource
+   public class VariableInstance extends ValueSource
    {
    //========================================================================================================
    //
    //========================================================================================================
       
       private var mVariableSpace:VariableSpace;
-      private var mID:int = -1; // index in space
+      private var mIndex:int = -1; // index in space
       
       private var mVariableDefinition:VariableDefinition;
       
@@ -21,7 +21,7 @@ package editor.trigger {
       public function VariableInstance (variableSpace:VariableSpace, id:int, variableDefinition:VariableDefinition)
       {
          mVariableSpace = variableSpace;
-         SetID (id);
+         SetIndex (mIndex);
          mVariableDefinition = variableDefinition;
          
          AssignValue (mVariableDefinition.GetDefaultDirectValueSource ());
@@ -38,14 +38,14 @@ package editor.trigger {
       }
       
       // only for mVariableSpace to arrange the id
-      public function SetID (id:int):void
+      public function SetIndex (id:int):void
       {
-         mID = id;
+         mIndex = id;
       }
       
-      public function GetID ():int
+      public function GetIndex ():int
       {
-         return mID;
+         return mIndex;
       }
       
       public function GetName ():String
@@ -58,16 +58,16 @@ package editor.trigger {
          return mVariableDefinition.GetValueType ();
       }
       
-      public function AssignValue (source:VariableValueSource):void
+      public function AssignValue (source:ValueSource):void
       {
          mValueObject = source.GetValueObject ();
       }
       
 //=========================================================================================
-// as a VariableValueSource
+// as a ValueSource
 //=========================================================================================
       
-      override public function GetSourceType ():int
+      override public function GetValueSourceType ():int
       {
          return ValueSourceTypeDefine.ValueSource_Direct;
       }

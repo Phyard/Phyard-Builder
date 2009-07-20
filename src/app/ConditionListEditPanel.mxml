@@ -18,6 +18,13 @@
             <mx:Button id="Button_MoveDownCommmand" click="OnMoveDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_movedown.png')" disabledIcon="@Embed('res/action/command_movedown-disabled.png')" />
          </mx:HBox>
          <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
+         <mx:HBox width="100%">
+            <mx:RadioButtonGroup id="RadioButtonGroup_ConditionOp"/>
+            <mx:RadioButton groupName="RadioButtonGroup_ConditionOp" id="RadioButton_IsAnd" value="1" label="And"/>
+            <mx:RadioButton groupName="RadioButtonGroup_ConditionOp" id="RadioButton_IsOr" value="0" label="Or"/>
+            <mx:Spacer width="100%" />
+            <mx:CheckBox id="CheckBox_IsNot" label="Not"/>
+         </mx:HBox>
       </mx:VBox>
       <mx:Spacer width="1" />
       <mx:VBox id="Box_Params" width="100%">
@@ -44,6 +51,8 @@
          import mx.events.ListEvent;
          import mx.controls.Alert;
          
+         import mx.controls.Spacer;
+         import mx.controls.CheckBox;
          import mx.controls.Label;
          import mx.core.UIComponent;
          import mx.containers.HBox;
@@ -54,7 +63,7 @@
          import editor.trigger.FunctionDeclaration;
          import editor.trigger.FunctionDefinition
          import editor.trigger.VariableDefinition;
-         import editor.trigger.CommandListDefinition;
+         import editor.trigger.ConditionListDefinition;
          import editor.trigger.FunctionCalling;
          import editor.trigger.ValueSource;
          import editor.trigger.ValueSourceDirect;
@@ -62,7 +71,7 @@
          
          private var mInputValues:Object;
          
-         private var mCommandListDefinition:CommandListDefinition = null;
+         private var mConditionListDefinition:ConditionListDefinition = null;
          
          private var mCurrentEditingItem:Object = null;
          
@@ -73,31 +82,40 @@
          {
          }
          
-         public function SetCommandListDefinition (listDef:CommandListDefinition):void
+         public function SetConditionListDefinition (listDef:ConditionListDefinition):void
          {
-            mCommandListDefinition = listDef;
+            mConditionListDefinition = listDef;
+            
             Initialize ();
          }
          
          public function GetValues (params:Object):void
          {
-            params.mReturnCommandFunctionCallings = GetFunctionCallings ();
+            GetFunctionCallingsAndInverteds (params);
+            params.mIsAnd = (RadioButtonGroup_ConditionOp.selectedValue == 1);
+            params.mIsNot = CheckBox_IsNot.selected;
          }
          
          private function Initialize ():void
          {
-            if (mCommandListDefinition == null)
+            if (mConditionListDefinition == null)
                return;
+            
+            CheckBox_IsNot.selected = mConditionListDefinition.IsNot ();
+            RadioButtonGroup_ConditionOp.selectedValue = mConditionListDefinition.IsAnd () ? 1 : 0;
             
             var i:int;
             var j:int;
             var func_calling:FunctionCalling;
             var func_declaration:FunctionDeclaration;
             var value_source:ValueSource;
-            for (i = 0; i < mCommandListDefinition.GetNumCommnads (); ++ i)
+            var invert_result:Boolean;
+            for (i = 0; i < mConditionListDefinition.GetNumConditions (); ++ i)
             {
-               func_calling = mCommandListDefinition.GetCommandAt (i);
+               func_calling = mConditionListDefinition.GetConditionAt (i);
                func_declaration = func_calling.GetFunctionDeclaration ();
+               
+               invert_result = mConditionListDefinition.IsConditionInverted (i);
                
                var func_name:String = func_declaration.GetName ();
                var func_id:int = func_declaration.GetID ();
@@ -112,10 +130,10 @@
                   currentValueSources.push (value_source.Clone ());
                }
                
-               List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources}, i);
+               List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, mInitialIsInverted:invert_result, mCurrentIsInverted:invert_result}, i);
             }
             
-            if (mCommandListDefinition.GetNumCommnads () > 0)
+            if (mConditionListDefinition.GetNumConditions () > 0)
             {
                List_Commands.selectedIndex = 0;
                OnCurrentCommandChanged ();
@@ -124,11 +142,15 @@
             UpdateInterface ();
          }
          
-         public function GetFunctionCallings ():Array
+         private function GetFunctionCallingsAndInverteds (params:Object):Array
          {
             RetrieveCurrentCommandValueSourcesFromControls ();
             
             var func_calling_list:Array = new Array ();
+            var func_calling_inverteds:Array = new Array ();
+            
+            params.mReturnConditionFunctionCallings = func_calling_list;
+            params.mReturnConditionInverteds = func_calling_inverteds;
             
             var i:int;
             var j:int;
@@ -143,18 +165,18 @@
                func_calling.SetParamValueSources (item.mCurrentValueSources)
                
                func_calling_list.push (func_calling);
+               func_calling_inverteds.push (mCurrentEditingItem.mCurrentIsInverted);
             }
             
             return func_calling_list;
          }
          
-         
          private function OnNew ():void
          {
             var myMenuData:XML;
             
-            myMenuData = TriggerEngine.GetPlayerCommandFunctionsMenuItemXML ();
-               
+            myMenuData = TriggerEngine.GetPlayerConditionFunctionsMenuItemXML ();
+            
             //trace ("myMenuData = " + myMenuData);
             var myMenu:Menu= Menu.createMenu(Button_AddCommmand, myMenuData, false);
             myMenu.labelField="@name"
@@ -192,7 +214,7 @@
             
             var insert_index:int = List_Commands.selectedIndex + 1;
             
-            List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources}, insert_index);
+            List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, mInitialIsInverted:false, mCurrentIsInverted:false}, insert_index);
             
             List_Commands.selectedIndex = insert_index;
             
@@ -281,6 +303,30 @@
             var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
             
+         // invert check box
+            
+            var hbox:HBox = new HBox ();
+            hbox.percentWidth = 100;
+            hbox.horizontalScrollPolicy = "off";
+            Box_Params.addChild (hbox);
+            
+            var spacer:Spacer = new Spacer ();
+            spacer.percentWidth = 100;
+            hbox.addChild (spacer);
+            
+            var check_box:CheckBox = new CheckBox ();
+            check_box.label = "Invert Result";
+            hbox.addChild (check_box);
+            
+            spacer = new Spacer ();
+            spacer.percentWidth = 100;
+            hbox.addChild (spacer);
+            
+            mCurrentEditingItem.mInvertCheckBox = check_box;
+            check_box.selected = mCurrentEditingItem.mCurrentIsInverted;
+            
+         // value controls...
+            
             var value_controls:Array = new Array ();
             mCurrentEditingItem.mValueControls = value_controls;
             
@@ -293,7 +339,7 @@
                
                variable_def = func_declaration.GetParamDefinitionAt (j);
                
-               var hbox:HBox = new HBox ();
+               hbox = new HBox ();
                hbox.percentWidth = 100;
                hbox.horizontalScrollPolicy = "off";
                Box_Params.addChild (hbox);
@@ -372,8 +418,11 @@
             var func_id:int = mCurrentEditingItem.mID;
             var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
             var value_controls:Array = mCurrentEditingItem.mValueControls;
+            var invert_check_box:CheckBox = mCurrentEditingItem.mInvertCheckBox;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+            
+            mCurrentEditingItem.mCurrentIsInverted = invert_check_box.selected;
             
             var variable_def:VariableDefinition;
             var value_source:ValueSource;

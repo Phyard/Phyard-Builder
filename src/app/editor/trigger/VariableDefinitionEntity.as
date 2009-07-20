@@ -44,12 +44,12 @@ package editor.trigger {
 // to override
 //==============================================================================
       
-      override public function GetDefaultDirectValueSource ():VariableValueSourceDirect
+      override public function GetDefaultDirectValueSource ():ValueSourceDirect
       {
-         return new VariableValueSourceDirect (null);
+         return new ValueSourceDirect (null);
       }
       
-      override public function ValidateDirectValueSource (valueSourceDirect:VariableValueSourceDirect):void
+      override public function ValidateDirectValueSource (valueSourceDirect:ValueSourceDirect):void
       {
          //if (valueSourceDirect == null)
          //   return;
@@ -63,7 +63,7 @@ package editor.trigger {
          valueSourceDirect.SetValueObject (entity)
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:VariableValueSourceDirect):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSourceDirect):UIComponent
       {
          var world:World = Runtime.GetCurrentWorld ();
          var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (mFilterFunction);
@@ -87,7 +87,7 @@ package editor.trigger {
          return combo_box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:VariableValueSourceDirect, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSourceDirect, control:UIComponent):void
       {
          if (control is ComboBox)
          {

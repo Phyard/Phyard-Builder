@@ -128,6 +128,7 @@ package editor {
    import editor.entity.EntityCollisionCategory;
    
    import editor.trigger.CommandListDefinition;
+   import editor.trigger.ConditionListDefinition;
    
    import editor.world.World;
    import editor.world.CollisionManager;
@@ -1375,11 +1376,11 @@ package editor {
             
             var wd1:WorldDefine = DataFormat.EditorWorld2WorldDefine ( mEditorWorld );
             //{
-               //var ba:ByteArray = DataFormat.WorldDefine2ByteArray ( wd1 );
-               //ba.position = 0;
-               //var wd2:WorldDefine = DataFormat2.ByteArray2WorldDefine ( ba );
-               
-               //playerWorld = DataFormat2.WorldDefine2PlayerWorld (wd2);
+            //   var ba:ByteArray = DataFormat.WorldDefine2ByteArray ( wd1 );
+            //   ba.position = 0;
+            //   var wd2:WorldDefine = DataFormat2.ByteArray2WorldDefine ( ba );
+            //   
+            //   playerWorld = DataFormat2.WorldDefine2PlayerWorld (wd2);
             //}
             //{
                playerWorld = DataFormat2.WorldDefine2PlayerWorld (wd1);
@@ -1762,7 +1763,7 @@ package editor {
                var condition:EntityBasicCondition = entity as EntityBasicCondition;
                
                values.mName = condition.GetName ();
-               values.mConditionCommandListDefinition  = condition.GetConditionCommandListDefinition ();
+               values.mConditionListDefinition  = condition.GetConditionListDefinition ();
                
                ShowConditionSettingDialog (values, SetConditionProperties);
             }
@@ -1771,7 +1772,7 @@ package editor {
                var action:EntityAction = entity as EntityAction;
                
                values.mName = action.GetName ();
-               values.mActionCommandListDefinition = action.GetActionCommandListDefinition ();
+               values.mCommandListDefinition = action.GetCommandListDefinition ();
                
                ShowActionSettingDialog (values, SetActionProperties);
             }
@@ -1779,8 +1780,9 @@ package editor {
             {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
                
-               values.mConditionCommandListDefinition  = event_handler.GetConditionCommandListDefinition ();
-               values.mActionCommandListDefinition  = event_handler.GetActionCommandListDefinition ();
+               values.mName = event_handler.GetName ();
+               values.mConditionListDefinition  = event_handler.GetConditionListDefinition ();
+               values.mCommandListDefinition  = event_handler.GetCommandListDefinition ();
                
                ShowEventHandlerSettingDialog (values, SetEventHandlerProperties);
             }
@@ -3532,8 +3534,10 @@ package editor {
             var condition:EntityBasicCondition = entity as EntityBasicCondition;
             condition.SetName (params.mName);
             
-            var condition_def:CommandListDefinition = condition.GetConditionCommandListDefinition ();
-            condition_def.SetCommands (params.mReturnConditionFunctionCallings);
+            var conditionlist_def:ConditionListDefinition = condition.GetConditionListDefinition ();
+            conditionlist_def.SetConditions (params.mReturnConditionFunctionCallings, params.mReturnConditionInverteds);
+            conditionlist_def.SetAsAnd (params.mIsAnd);
+            conditionlist_def.SetAsNot (params.mIsNot);
             
             condition.UpdateAppearance ();
             condition.UpdateSelectionProxy ();
@@ -3553,8 +3557,8 @@ package editor {
             var action:EntityAction = entity as EntityAction;
             action.SetName (params.mName);
             
-            var action_def:CommandListDefinition = action.GetActionCommandListDefinition ();
-            action_def.SetCommands (params.mReturnActionFunctionCallings);
+            var cmdlist_def:CommandListDefinition = action.GetCommandListDefinition ();
+            cmdlist_def.SetCommands (params.mReturnCommandFunctionCallings);
             
             action.UpdateAppearance ();
             action.UpdateSelectionProxy ();
@@ -3573,10 +3577,12 @@ package editor {
          {
             var event_handler:EntityEventHandler = entity as EntityEventHandler;
             
-            var conditionlist_def:CommandListDefinition = event_handler.GetConditionCommandListDefinition ()
-            conditionlist_def.SetCommands (params.mReturnConditionFunctionCallings);
+            var conditionlist_def:ConditionListDefinition = event_handler.GetConditionListDefinition ()
+            conditionlist_def.SetConditions (params.mReturnConditionFunctionCallings, params.mReturnConditionInverteds);
+            conditionlist_def.SetAsAnd (params.mIsAnd);
+            conditionlist_def.SetAsNot (params.mIsNot);
             
-            var cmdlist_def:CommandListDefinition = event_handler.GetActionCommandListDefinition ()
+            var cmdlist_def:CommandListDefinition = event_handler.GetCommandListDefinition ()
             cmdlist_def.SetCommands (params.mReturnCommandFunctionCallings);
             
             //event_handler.UpdateAppearance ();

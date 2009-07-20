@@ -4,9 +4,9 @@ package editor.trigger {
    
    import common.trigger.ValueSourceTypeDefine;
    
-   public class VariableValueSource
+   public class ValueSource
    {
-      public function GetSourceType ():int
+      public function GetValueSourceType ():int
       {
          return ValueSourceTypeDefine.ValueSource_Undetermined;
       }
@@ -16,13 +16,8 @@ package editor.trigger {
          return null;
       }
       
-      public function GetValueSourceType ():int
-      {
-         return -1;
-      }
-      
       // to override
-      public function Clone ():VariableValueSource
+      public function Clone ():ValueSource
       {
          return null;
       }

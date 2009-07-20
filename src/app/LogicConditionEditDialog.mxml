@@ -18,7 +18,7 @@
          <mx:Spacer width="0"/>
          <mx:VBox height="100%">
             <mx:Spacer height="0"/>
-            <CommandListEditPanel id="theConditionListEditPanel" />
+            <ConditionListEditPanel id="theConditionListEditPanel" />
             <mx:Spacer height="0"/>
          </mx:VBox>
          <mx:Spacer width="0"/>
@@ -58,14 +58,14 @@
             
             TextInput_Name.text = mParams.mName;
             
-            theConditionListEditPanel.SetCommandListDefinition (mParams.mConditionCommandListDefinition, true);
+            theConditionListEditPanel.SetConditionListDefinition (mParams.mConditionListDefinition);
          }
          
          public function GetValues (returnValues:Object):void
          {
             returnValues.mName = TextInput_Name.text;
             
-            mParams.mReturnConditionFunctionCallings = theConditionListEditPanel.GetFunctionCallings ();
+            theConditionListEditPanel.GetValues (returnValues);
          }
          
          private function OnInitPanel ():void

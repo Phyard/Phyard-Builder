@@ -6,6 +6,7 @@ package common {
    
    import editor.world.World;
    import editor.entity.Entity;
+   
    import editor.entity.EntityShape
    import editor.entity.EntityShapeCircle;
    import editor.entity.EntityShapeRectangle;
@@ -13,14 +14,16 @@ package common {
    import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeGravityController;
-   import editor.entity.EntityUtilityCamera;
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointHinge;
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointDistance;
+   
    import editor.entity.SubEntityJointAnchor;
+   
    import editor.entity.EntityUtility;
    import editor.entity.EntityUtilityCamera;
+   
    import editor.trigger.entity.EntityTask;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
@@ -35,7 +38,7 @@ package common {
       
       
 //===========================================================================
-// 
+//   
 //===========================================================================
       
       // create a world define from a editor world.
@@ -109,42 +112,44 @@ package common {
             }
             else if (editorEntity is editor.trigger.entity.EntityLogic)
             {
-               var entityArray:Array;
+               var entityIndexArray:Array;
                if (child is editor.trigger.entity.EntityTask)
                {
                   var task:editor.trigger.entity.EntityTask = child as editor.trigger.entity.EntityTask;
-                  entityArray = task.GetEntityAssigners ();
+                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (task.GetEntityAssigners ());
                   
-                  entityDefine.mNumAssigners = entityArray.length;
-                  entityDefine.mInputAssigners = entityArray;
+                  entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
+                  entityDefine.mInputAssignerIndexes = entityIndexArray;
                }
                else if (child is editor.trigger.entity.EntityBasicCondition)
                {
                   var basicCondition:editor.trigger.entity.EntityBasicCondition = child as editor.trigger.entity.EntityBasicCondition;
+                  
                   entityDefine.mName = basicCondition.GetName ();
-                  entityDefine.mConditionCommandListDefinition = basicCondition.GetConditionCommandListDefinition ();
+                  entityDefine.mConditionListDefine = TriggerFormatHelper.ConditionListDefinition2Define (editorWorld, basicCondition.GetConditionListDefinition ());
                }
                else if (child is editor.trigger.entity.EntityConditionDoor)
                {
                   var conditionDoor:editor.trigger.entity.EntityConditionDoor = child as editor.trigger.entity.EntityConditionDoor;
+                  
                   entityDefine.mIsAnd = conditionDoor.IsAnd ();
                   entityDefine.mIsNot = conditionDoor.IsNot ();
-                  entityDefine.mInputConditions = conditionDoor.GetInputConditions ();
+                  TriggerFormatHelper.ConditionAndTargetValueArray2EntityDefineProperties (editorWorld, conditionDoor.GetInputConditions (), entityDefine);
                }
                else if (child is editor.trigger.entity.EntityAction)
                {
                   var action:editor.trigger.entity.EntityAction = child as editor.trigger.entity.EntityAction;
                   entityDefine.mName = action.GetName ();
-                  entityDefine.mActionCommandListDefinition = action.GetActionCommandListDefinition ();
+                  entityDefine.mCommandListDefine = TriggerFormatHelper.CommandListDefinition2Define (editorWorld, action.GetCommandListDefinition ());
                }
                else if (child is editor.trigger.entity.EntityInputEntityAssigner)
                {
                   var entityAssigner:editor.trigger.entity.EntityInputEntityAssigner = child as editor.trigger.entity.EntityInputEntityAssigner;
-                  entityArray = entityAssigner.GetInputEntities ();
+                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (entityAssigner.GetInputEntities ());
                   
                   entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
-                  entityDefine.mNumEntities = entityArray == null ? 0 : entityArray.length;
-                  entityDefine.mEntities = entityArray;
+                  entityDefine.mNumEntities = entityIndexArray == null ? 0 : entityIndexArray.length;
+                  entityDefine.mEntityIndexes = entityIndexArray;
                }
                else if (child is editor.trigger.entity.EntityInputEntityPairAssigner)
                {
@@ -152,28 +157,33 @@ package common {
                   
                   entityDefine.mPairingType = pairAssigner.GetPairingType ();
                   
-                  entityArray = pairAssigner.GetInputEntities1 ();
+                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (pairAssigner.GetInputEntities1 ());
                   
-                  entityDefine.mNumEntities1 = entityArray == null ? 0 : entityArray.length;
-                  entityDefine.mEntities1 = entityArray;
+                  entityDefine.mNumEntities1 = entityIndexArray == null ? 0 : entityIndexArray.length;
+                  entityDefine.mEntityIndexes1 = entityIndexArray;
                   
-                  entityArray = pairAssigner.GetInputEntities2 ();
+                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (pairAssigner.GetInputEntities2 ());
                   
-                  entityDefine.mNumEntities2 = entityArray == null ? 0 : entityArray.length;
-                  entityDefine.mEntities2 = entityArray;
+                  entityDefine.mNumEntities2 = entityIndexArray == null ? 0 : entityIndexArray.length;
+                  entityDefine.mEntityIndexes2 = entityIndexArray;
                }
                else if (child is editor.trigger.entity.EntityEventHandler)
                {
                   var eventHandler:editor.trigger.entity.EntityEventHandler = child as editor.trigger.entity.EntityEventHandler;
-                  entityArray = eventHandler.GetEntityAssigners ();
+                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (eventHandler.GetEntityAssigners ());
                   
-                  entityDefine.mNumAssigners = entityArray.length;
-                  entityDefine.mInputAssigners = entityArray;
-                  entityDefine.mConditionCommandListDefinition = eventHandler.GetConditionCommandListDefinition ();
-                  entityDefine.mActionCommandListDefinition = eventHandler.GetActionCommandListDefinition ();
-                  entityDefine.mInputConditionEntity = eventHandler.GetInputConditionEntity ();
-                  entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionEntity ();
-                  entityDefine.mPostActionEntity = eventHandler.GetPostActionEntity ();
+                  entityDefine.mEventId = eventHandler.GetEventId ();
+                  
+                  entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
+                  entityDefine.mInputAssignerIndexes = entityIndexArray;
+                  
+                  entityDefine.mConditionListDefine = TriggerFormatHelper.ConditionListDefinition2Define (editorWorld, eventHandler.GetConditionListDefinition ());
+                  entityDefine.mCommandListDefine = TriggerFormatHelper.CommandListDefinition2Define (editorWorld, eventHandler.GetCommandListDefinition ());
+                  
+                  entityDefine.mInputConditionEntityIndex = editorWorld.GetEntityIndex (eventHandler.GetInputConditionEntity ());
+                  entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionTargetValue ();
+                  
+                  entityDefine.mPostActionEntityIndex = editorWorld.GetEntityIndex (eventHandler.GetPostActionEntity ());
                }
             }
             else if (editorEntity is editor.entity.EntityShape)

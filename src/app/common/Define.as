@@ -237,6 +237,14 @@ package common {
       
       public static const EntityType_UtilityCamera:int = 110;
       
+      public static const EntityType_LogicCondition:int = 210;
+      public static const EntityType_LogicTask:int = 211;
+      public static const EntityType_LogicConditionDoor:int = 212;
+      public static const EntityType_LogicAction:int = 212;
+      public static const EntityType_LogicEventHandler:int = 214;
+      public static const EntityType_LogicEntityAssigner:int = 215;
+      public static const EntityType_LogicEntityPairAssigner:int = 216;
+      
       public static function IsBasicShapeEntity (entityType:int):Boolean
       {
          return   entityType == EntityType_ShapeCircle
@@ -262,7 +270,7 @@ package common {
          return   entityType == EntityType_JointHinge 
                || entityType == EntityType_JointSlider 
                || entityType == EntityType_JointDistance
-               || entityType == EntityType_JointSpring // v2.0
+               || entityType == EntityType_JointSpring 
                ;
       }
       
@@ -274,6 +282,18 @@ package common {
       public static function IsUtilityEntity (entityType:int):Boolean
       {
          return entityType == EntityType_UtilityCamera;
+      }
+      
+      public static function IsLogicEntity (entityType:int):Boolean
+      {
+         return   entityType == EntityType_LogicCondition 
+               || entityType == EntityType_LogicTask 
+               || entityType == EntityType_LogicConditionDoor 
+               || entityType == EntityType_LogicAction 
+               || entityType == EntityType_LogicEventHandler 
+               || entityType == EntityType_LogicEntityAssigner 
+               || entityType == EntityType_LogicEntityPairAssigner 
+               ;
       }
       
 //===========================================================================

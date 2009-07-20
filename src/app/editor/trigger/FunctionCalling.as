@@ -5,7 +5,7 @@ package editor.trigger {
    public class FunctionCalling
    {
       public var mFunctionDeclaration:FunctionDeclaration;
-      public var mInputVariableValueSources:Array;
+      public var mInputValueSources:Array;
       
       public function FunctionCalling (functionDeclatation:FunctionDeclaration)
       {
@@ -13,11 +13,11 @@ package editor.trigger {
          
          var variable_def:VariableDefinition;
          var num_params:int = mFunctionDeclaration.GetNumParameters ();
-         mInputVariableValueSources = new Array (num_params);
+         mInputValueSources = new Array (num_params);
          for (var i:int = 0; i < num_params; ++ i)
          {
             variable_def = mFunctionDeclaration.GetParamDefinitionAt (i);
-            mInputVariableValueSources [i] = variable_def.GetDefaultDirectValueSource ();
+            mInputValueSources [i] = variable_def.GetDefaultDirectValueSource ();
          }
       }
       
@@ -26,52 +26,62 @@ package editor.trigger {
          return mFunctionDeclaration;
       }
       
-      public function SetParamValueSources (valueSources:Array):void
+      public function GetFunctionDeclarationId ():int
       {
-         mInputVariableValueSources = valueSources;
+         return mFunctionDeclaration.GetID ();
       }
       
-      public function GetParamValueSource (paramId:int):VariableValueSource
+      public function GetNumParameters ():int
       {
-         return mInputVariableValueSources [paramId];
+         return mFunctionDeclaration.GetNumParameters ();
+      }
+      
+      public function SetParamValueSources (valueSources:Array):void
+      {
+         mInputValueSources = valueSources;
+      }
+      
+      public function GetParamValueSource (paramId:int):ValueSource
+      {
+         return mInputValueSources [paramId];
       }
       
       public function SetParamValueSourceDirect (paramId:int, valueObject:Object):void
       {
-         var value_source:VariableValueSource = mInputVariableValueSources [paramId];
+         var value_source:ValueSource = mInputValueSources [paramId];
          
          if (value_source.GetValueSourceType () != ValueSourceTypeDefine.ValueSource_Direct)
          {
-            value_source = new VariableValueSourceDirect (valueObject);
-            mInputVariableValueSources [paramId] = value_source;
+            value_source = new ValueSourceDirect (valueObject);
+            mInputValueSources [paramId] = value_source;
          }
          else
          {
-            (value_source as VariableValueSourceDirect).SetValueObject (valueObject);
+            (value_source as ValueSourceDirect).SetValueObject (valueObject);
          }
       }
       
       public function SetParamValueSourceVariable (paramId:int, variableInstance:VariableInstance):void
       {
-         var value_source:VariableValueSource = mInputVariableValueSources [paramId];
+         var value_source:ValueSource = mInputValueSources [paramId];
          
          if (value_source.GetValueSourceType ()!= ValueSourceTypeDefine.ValueSource_Variable)
          {
-            value_source = new VariableValueSourceVariable (variableInstance);
-            mInputVariableValueSources [paramId] = value_source;
+            value_source = new ValueSourceVariable (variableInstance);
+            mInputValueSources [paramId] = value_source;
          }
          else
          {
-            (value_source as VariableValueSourceVariable).SetVariableInstance (variableInstance);
+            (value_source as ValueSourceVariable).SetVariableInstance (variableInstance);
          }
       }
       
       public function ValidateValueSources ():void
       {
-         var value_source:VariableValueSource;
-         for (var i:int = 0; i < mInputVariableValueSources.length; ++ i)
+         var value_source:ValueSource;
+         for (var i:int = 0; i < mInputValueSources.length; ++ i)
          {
-            value_source = mInputVariableValueSources [i] as VariableValueSource;
+            value_source = mInputValueSources [i] as ValueSource;
             
             value_source.Validate ();
          }

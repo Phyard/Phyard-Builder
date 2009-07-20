@@ -274,36 +274,33 @@ package editor.trigger.entity {
             var zone_id1:int;
             var zone_id2:int;
             var target_value:int;
+            
+            point2 = DisplayObjectUtil.LocalToLocal (mWorld, condition, new Point (toWorldDisplayX, toWorldDisplayY));
+            zone_id2 = condition.GetLinkZoneId (point2.x, point2.y, false, true);
+            target_value = condition.GetTargetValueByLinkZoneId (zone_id2);
+            
             if (condition is EntityConditionDoor)
             {
                point1 = DisplayObjectUtil.LocalToLocal (mWorld, this, new Point (fromWorldDisplayX, fromWorldDisplayY));
-               point2 = DisplayObjectUtil.LocalToLocal (mWorld, condition, new Point (toWorldDisplayX, toWorldDisplayY));
                zone_id1 = GetLinkZoneId (point1.x, point1.y, true, false);
-               zone_id2 = condition.GetLinkZoneId (point2.x, point2.y, false, true);
                
                if (zone_id1 == ZoneId_In && zone_id2 == ZoneId_Out)
                {
-                  if (HasDirectInput (toEntity as EntityCondition, true))
+                  if (HasDirectInput (toEntity as EntityCondition, target_value, true))
                      return true;
                   
                   if (! IsInputOf (condition as EntityConditionDoor) )
                   {
-                     target_value = condition.GetTargetValueByLinkZoneId (zone_id2);
-                     
                      mInputConditions.push (new ConditionAndTargetValue (condition, target_value));
                      
                      return true;
                   }
                }
             }
-            else
+            else // basic condition
             {
-               if (HasDirectInput (toEntity as EntityCondition, true))
+               if (HasDirectInput (toEntity as EntityCondition, target_value, true))
                   return true;
-               
-               point2 = DisplayObjectUtil.LocalToLocal (mWorld, condition, new Point (toWorldDisplayX, toWorldDisplayY));
-               zone_id2 = condition.GetLinkZoneId (point2.x, point2.y, false, true);
-               target_value = condition.GetTargetValueByLinkZoneId (zone_id2);
                
                mInputConditions.push (new ConditionAndTargetValue (condition, target_value));
                
@@ -314,7 +311,7 @@ package editor.trigger.entity {
          return false;
       }
       
-      private function HasDirectInput (condition:EntityCondition, removeInputIfTrue:Boolean=false):Boolean
+      private function HasDirectInput (condition:EntityCondition, targetValue:int, removeInputIfTrue:Boolean=false):Boolean
       {
          var condition_and_target:ConditionAndTargetValue;
          var input_conditions:Array = GetInputConditions ();
@@ -327,7 +324,10 @@ package editor.trigger.entity {
                if (removeInputIfTrue)
                   input_conditions.splice (i, 1);
                
-               return true;
+               if (condition_and_target.mTargetValue == targetValue)
+                  return true;
+               else
+                  return false;
             }
          }
          

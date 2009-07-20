@@ -26,6 +26,11 @@ package editor.entity {
          mEntityContainer = container;
       }
       
+      public function GetContainer ():EntityContainer
+      {
+         return mEntityContainer;
+      }
+      
       public function SetEntityIndex (index:int):void
       {
          mEntityIndex = index;

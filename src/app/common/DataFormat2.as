@@ -60,6 +60,7 @@ package common {
          var params:Object;
          var entity:player.entity.Entity;
          var shape:player.entity.EntityShape;
+         //var logic:
          
       // crete shape containers
          
@@ -126,6 +127,30 @@ package common {
                   shapeContainer = GetShapeContainer (playerWorld, worldDefine, entityDefine);
                   
                   entity = playerWorld.CreateUtilityCamera (shapeContainer, entityDefine);
+               }
+            }
+            else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
+            {
+               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               {
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+               {
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
+               {
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEntityAssigner)
+               {
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEntityPairAssigner)
+               {
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )

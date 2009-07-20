@@ -5,15 +5,15 @@ package editor.trigger {
    
    import common.Define;
    
-   public class CommandListWithNameDefinition extends CommandListDefinition
+   public class ConditionListWithNameDefinition extends ConditionListDefinition
    {
       protected var mName:String;
       
-      public function CommandListWithNameDefinition (name:String, functionDeclatation:FunctionDeclaration = null)
+      public function ConditionListWithNameDefinition (name:String, functionDeclatation:FunctionDeclaration = null)
       {
          super (functionDeclatation);
          
-         SetName (name);
+         mName = name;
       }
       
       public function SetName (newName:String):void

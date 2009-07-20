@@ -25,6 +25,14 @@ package editor.trigger {
          return mFunctionDeclaration;
       }
       
+      public function GetFunctionDeclarationId ():int
+      {
+         if(mFunctionDeclaration == null)
+            return -1;
+         
+         return mFunctionDeclaration.GetID ();
+      }
+      
       public function GetInputVariableSpace ():VariableSpaceInput
       {
          return mInputVariableSpace;

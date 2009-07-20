@@ -4,15 +4,16 @@ package editor.trigger {
    
    import editor.entity.Entity;
    
-   public class VariableValueSourceDirect extends VariableValueSource
+   public class ValueSourceDirect extends ValueSource
    {
+      
    //========================================================================================================
-   //
+   // 
    //========================================================================================================
       
       public var mValueObject:Object;
       
-      public function VariableValueSourceDirect (valueObject:Object)
+      public function ValueSourceDirect (valueObject:Object)
       {
          SetValueObject (valueObject);
       }
@@ -32,9 +33,9 @@ package editor.trigger {
          return mValueObject;
       }
       
-      override public function Clone ():VariableValueSource
+      override public function Clone ():ValueSource
       {
-         return new VariableValueSourceDirect (mValueObject);
+         return new ValueSourceDirect (mValueObject);
       }
       
       override public function Validate ():void

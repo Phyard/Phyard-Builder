@@ -18,6 +18,16 @@ package editor.trigger {
          return ValueSpaceTypeDefine.ValueSpace_Global;
       }
       
+      override public function GetSpaceName ():String
+      {
+         return "Global Variable Space";
+      }
+      
+      override public function GetSpaceShortName ():String
+      {
+         return "Global";
+      }
+      
    }
 }
 

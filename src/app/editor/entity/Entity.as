@@ -8,7 +8,7 @@ package editor.entity {
    
    import editor.selection.SelectionProxy;
    
-   public class Entity extends Sprite 
+   public class Entity extends Sprite
    {
       protected var mEntityContainer:EntityContainer;
       protected var mEntityIndex:int = -1;
@@ -445,5 +445,17 @@ package editor.entity {
          
       }
       
+//====================================================================
+//   properties
+//====================================================================
+      
+      public function GetPropertyValue (propertyId:int):Object
+      {
+         return null;
+      }
+      
+      public function SetPropertyValue (propertyId:int, value:Object):void
+      {
+      }
    }
 }

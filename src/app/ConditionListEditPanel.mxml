@@ -3,43 +3,29 @@
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
 
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
       borderStyle="solid" borderThickness="0"
       width="100%" height="100%"
       creationComplete="OnInitPanel()"
       >
 
-   <mx:HBox width="100%">
-      <mx:VBox id="Box_Commands" width="186">
-         <mx:HBox width="100%">
-            <mx:Button id="Button_AddCommmand" click="OnNew ()" toolTip="Add Command" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_add.png')" disabledIcon="@Embed('res/action/command_add-disabled.png')" />
-            <mx:Button id="Button_DeleteCommmand" click="OnDelete ()" toolTip="Delete Command" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_delete.png')" disabledIcon="@Embed('res/action/command_delete-disabled.png')" />
-            <mx:Button id="Button_MoveUpCommmand" click="OnMoveUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_moveup.png')" disabledIcon="@Embed('res/action/command_moveup-disabled.png')" />
-            <mx:Button id="Button_MoveDownCommmand" click="OnMoveDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_movedown.png')" disabledIcon="@Embed('res/action/command_movedown-disabled.png')" />
-         </mx:HBox>
-         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
-         <mx:HBox width="100%">
+   <mx:VBox width="100%">
+      <CommandListEditPanel id="theCommandListEditPanel" width="100%" />
+      <mx:HBox width="100%">
+         <mx:HBox width="186">
             <mx:RadioButtonGroup id="RadioButtonGroup_ConditionOp"/>
             <mx:RadioButton groupName="RadioButtonGroup_ConditionOp" id="RadioButton_IsAnd" value="1" label="And"/>
             <mx:RadioButton groupName="RadioButtonGroup_ConditionOp" id="RadioButton_IsOr" value="0" label="Or"/>
             <mx:Spacer width="100%" />
             <mx:CheckBox id="CheckBox_IsNot" label="Not"/>
          </mx:HBox>
-      </mx:VBox>
-      <mx:Spacer width="1" />
-      <mx:VBox id="Box_Params" width="100%">
-      </mx:VBox>
-      <!--
-      <mx:HBox id="Box_Params" width="100%">
-         <mx:VBox id="Box_ParamNames" width="200">
-
-         </mx:VBox>
-         <mx:VBox id="Box_ParamValues" width="200">
-
-         </mx:VBox>
+         <mx:Spacer width="50" />
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%" />
+            <mx:CheckBox id="CheckBox_IsCallingResultInverted" label="Invert"/>
+         </mx:HBox>
       </mx:HBox>
-      -->
-   </mx:HBox>
+   </mx:VBox>
 
    <mx:Script>
       <![CDATA[       
@@ -51,32 +37,13 @@
          import mx.events.ListEvent;
          import mx.controls.Alert;
          
-         import mx.controls.Spacer;
-         import mx.controls.CheckBox;
-         import mx.controls.Label;
-         import mx.core.UIComponent;
-         import mx.containers.HBox;
+         import editor.trigger.ConditionListDefinition;
          
          import common.Define;
-         
-         import editor.trigger.TriggerEngine;
-         import editor.trigger.FunctionDeclaration;
-         import editor.trigger.FunctionDefinition
-         import editor.trigger.VariableDefinition;
-         import editor.trigger.ConditionListDefinition;
-         import editor.trigger.FunctionCalling;
-         import editor.trigger.ValueSource;
-         import editor.trigger.ValueSourceDirect;
-         import editor.trigger.ValueSourceVariable;
          
          private var mInputValues:Object;
          
          private var mConditionListDefinition:ConditionListDefinition = null;
-         
-         private var mCurrentEditingItem:Object = null;
-         
-         [Bindable]
-         private var mCommandListDataProvider:Object = [];
          
          private function OnInitPanel ():void
          {
@@ -86,362 +53,38 @@
          {
             mConditionListDefinition = listDef;
             
-            Initialize ();
+            CheckBox_IsNot.selected = mConditionListDefinition.IsNot ();
+            RadioButtonGroup_ConditionOp.selectedValue = mConditionListDefinition.IsAnd () ? 1 : 0;
+            
+            theCommandListEditPanel.SetInvertCallingResultCheckBoxVisible = SetInvertCallingResultCheckBoxVisible;
+            theCommandListEditPanel.SetInvertCallingResultCheckBoxSelected = SetInvertCallingResultCheckBoxSelected;
+            theCommandListEditPanel.IsInvertCallingResultCheckBoxSelected = IsInvertCallingResultCheckBoxSelected;
+            
+            theCommandListEditPanel.SetConditionListDefinition (listDef);
          }
          
          public function GetValues (params:Object):void
          {
-            GetFunctionCallingsAndInverteds (params);
+            theCommandListEditPanel.GetValues (params);
+            
             params.mIsAnd = (RadioButtonGroup_ConditionOp.selectedValue == 1);
             params.mIsNot = CheckBox_IsNot.selected;
          }
          
-         private function Initialize ():void
+         private function SetInvertCallingResultCheckBoxVisible (visible:Boolean):void
          {
-            if (mConditionListDefinition == null)
-               return;
-            
-            CheckBox_IsNot.selected = mConditionListDefinition.IsNot ();
-            RadioButtonGroup_ConditionOp.selectedValue = mConditionListDefinition.IsAnd () ? 1 : 0;
-            
-            var i:int;
-            var j:int;
-            var func_calling:FunctionCalling;
-            var func_declaration:FunctionDeclaration;
-            var value_source:ValueSource;
-            var invert_result:Boolean;
-            for (i = 0; i < mConditionListDefinition.GetNumConditions (); ++ i)
-            {
-               func_calling = mConditionListDefinition.GetConditionAt (i);
-               func_declaration = func_calling.GetFunctionDeclaration ();
-               
-               invert_result = mConditionListDefinition.IsConditionInverted (i);
-               
-               var func_name:String = func_declaration.GetName ();
-               var func_id:int = func_declaration.GetID ();
-               var initialValueSources:Array = new Array ();
-               var currentValueSources:Array = new Array ();
-               
-               for (j = 0; j < func_declaration.GetNumParameters (); ++ j)
-               {
-                  value_source = func_calling.GetParamValueSource (j);
-                  
-                  initialValueSources.push (value_source.Clone ());
-                  currentValueSources.push (value_source.Clone ());
-               }
-               
-               List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, mInitialIsInverted:invert_result, mCurrentIsInverted:invert_result}, i);
-            }
-            
-            if (mConditionListDefinition.GetNumConditions () > 0)
-            {
-               List_Commands.selectedIndex = 0;
-               OnCurrentCommandChanged ();
-            }
-            
-            UpdateInterface ();
+            CheckBox_IsCallingResultInverted.visible = visible;
          }
          
-         private function GetFunctionCallingsAndInverteds (params:Object):Array
+         private function SetInvertCallingResultCheckBoxSelected (selected:Boolean):void
          {
-            RetrieveCurrentCommandValueSourcesFromControls ();
-            
-            var func_calling_list:Array = new Array ();
-            var func_calling_inverteds:Array = new Array ();
-            
-            params.mReturnConditionFunctionCallings = func_calling_list;
-            params.mReturnConditionInverteds = func_calling_inverteds;
-            
-            var i:int;
-            var j:int;
-            var item_array:Array = List_Commands.dataProvider.toArray ();
-            for (i = 0; i < item_array.length; ++ i)
-            {
-               var item:Object = item_array [i];
-               
-               var func_id:int = item.mID;
-               var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
-               var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
-               func_calling.SetParamValueSources (item.mCurrentValueSources)
-               
-               func_calling_list.push (func_calling);
-               func_calling_inverteds.push (mCurrentEditingItem.mCurrentIsInverted);
-            }
-            
-            return func_calling_list;
+            CheckBox_IsCallingResultInverted.selected = selected;
          }
          
-         private function OnNew ():void
+         private function IsInvertCallingResultCheckBoxSelected ():Boolean
          {
-            var myMenuData:XML;
-            
-            myMenuData = TriggerEngine.GetPlayerConditionFunctionsMenuItemXML ();
-            
-            //trace ("myMenuData = " + myMenuData);
-            var myMenu:Menu= Menu.createMenu(Button_AddCommmand, myMenuData, false);
-            myMenu.labelField="@name"
-            myMenu.addEventListener("itemClick", OnNewCommandMenuItemClicked);
-
-            // Calculate position of Menu in Application's coordinates. 
-            var point:Point = new Point (0, Button_AddCommmand.height);
-            point=Button_AddCommmand.localToGlobal(point);
-            
-            myMenu.show(point.x, point.y);
+            return CheckBox_IsCallingResultInverted.visible && CheckBox_IsCallingResultInverted.selected;
          }
-         
-         private function OnNewCommandMenuItemClicked(event:MenuEvent):void
-         {
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (event.item.@id);
-            
-            if (func_declaration == null)
-               return;
-            
-            var func_id:int = func_declaration.GetID ();
-            var func_name:String = func_declaration.GetName ();
-            var initialValueSources:Array = new Array ();
-            var currentValueSources:Array = new Array ();
-            
-            var variable_def:VariableDefinition;
-            var value_source:ValueSource;
-            var j:int;
-            for (j = 0; j < func_declaration.GetNumParameters (); ++ j)
-            {
-               variable_def = func_declaration.GetParamDefinitionAt (j);
-               value_source = variable_def.GetDefaultDirectValueSource ();
-               initialValueSources.push (value_source.Clone ());
-               currentValueSources.push (value_source.Clone ());
-            }
-            
-            var insert_index:int = List_Commands.selectedIndex + 1;
-            
-            List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, mInitialIsInverted:false, mCurrentIsInverted:false}, insert_index);
-            
-            List_Commands.selectedIndex = insert_index;
-            
-            OnCurrentCommandChanged ();
-            
-            UpdateInterface ();
-         }
-         
-         private function OnDelete ():void
-         {
-            if (List_Commands.selectedIndex >= 0)
-            {
-               var index:int = List_Commands.selectedIndex;
-               
-               List_Commands.dataProvider.removeItemAt (index);
-               mCurrentEditingItem = null;
-               
-               if (index >= List_Commands.dataProvider.length)
-                  -- index;
-               
-               if (index >= 0)
-                  List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index);
-               
-               OnCurrentCommandChanged ();
-               
-               UpdateInterface ();
-            }
-         }
-         
-         private function OnMoveUp ():void
-         {
-            if (List_Commands.selectedIndex >= 1)
-            {
-               var index:int = List_Commands.selectedIndex;
-               
-               var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index - 1);
-               List_Commands.dataProvider.setItemAt (item, index);
-               
-               List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index - 1);
-               
-               UpdateInterface ();
-            }
-         }
-         
-         private function OnMoveDown ():void
-         {
-            if (List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1)
-            {
-               var index:int = List_Commands.selectedIndex;
-               
-               var item:Object = List_Commands.dataProvider.setItemAt (List_Commands.dataProvider.getItemAt (index), index + 1);
-               List_Commands.dataProvider.setItemAt (item, index);
-               
-               List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index + 1);
-               
-               UpdateInterface ();
-            }
-         }
-         
-         private function UpdateInterface ():void
-         {
-            Button_DeleteCommmand.enabled = List_Commands.selectedIndex >= 0;
-            Button_MoveUpCommmand.enabled = List_Commands.selectedIndex >= 1;
-            Button_MoveDownCommmand.enabled = List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1;
-         }
-         
-         private function OnCurrentCommandChanged ():void
-         {
-            UpdateInterface ();
-            
-            RetrieveCurrentCommandValueSourcesFromControls ();
-            mCurrentEditingItem = null;
-            
-            while (Box_Params.numChildren > 0)
-               Box_Params.removeChildAt (0);
-            //while (Box_ParamNames.numChildren > 0)
-            //   Box_ParamNames.removeChildAt (0);
-            //while (Box_ParamValues.numChildren > 0)
-            //   Box_ParamValues.removeChildAt (0);
-            
-            if (List_Commands.selectedItem == null)
-               return;
-            
-            mCurrentEditingItem = List_Commands.selectedItem;
-            var func_id:int = mCurrentEditingItem.mID;
-            var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
-            
-         // invert check box
-            
-            var hbox:HBox = new HBox ();
-            hbox.percentWidth = 100;
-            hbox.horizontalScrollPolicy = "off";
-            Box_Params.addChild (hbox);
-            
-            var spacer:Spacer = new Spacer ();
-            spacer.percentWidth = 100;
-            hbox.addChild (spacer);
-            
-            var check_box:CheckBox = new CheckBox ();
-            check_box.label = "Invert Result";
-            hbox.addChild (check_box);
-            
-            spacer = new Spacer ();
-            spacer.percentWidth = 100;
-            hbox.addChild (spacer);
-            
-            mCurrentEditingItem.mInvertCheckBox = check_box;
-            check_box.selected = mCurrentEditingItem.mCurrentIsInverted;
-            
-         // value controls...
-            
-            var value_controls:Array = new Array ();
-            mCurrentEditingItem.mValueControls = value_controls;
-            
-            var variable_def:VariableDefinition;
-            var value_source:ValueSource;
-            var j:int;
-            for (j; j < func_declaration.GetNumParameters (); ++ j)
-            {
-               value_source = currentValueSources [j];
-               
-               variable_def = func_declaration.GetParamDefinitionAt (j);
-               
-               hbox = new HBox ();
-               hbox.percentWidth = 100;
-               hbox.horizontalScrollPolicy = "off";
-               Box_Params.addChild (hbox);
-               
-               var label:Label = new Label ();
-               label.percentWidth = 100;
-               label.maxWidth = 125;
-               label.text = variable_def.GetName () + ":";
-               //label.toolTip = "hi hi";
-               hbox.addChild (label);
-               
-               label.addEventListener (MouseEvent.CLICK, OnParamLabelClick);
-               
-               var value_control:UIComponent = null;
-               if (value_source is ValueSourceDirect)
-                  value_control = variable_def.CreateControlForDirectValueSource (value_source as ValueSourceDirect);
-               if (value_control != null)
-               {
-                  //value_control.percentWidth = 100;
-                  value_control.maxWidth = 125;
-                  value_control.width = 125;
-                  hbox.addChild (value_control);
-               }
-               
-               value_controls.push (value_control);
-            }
-         }
-         
-         private function OnParamLabelClick (event:MouseEvent):void
-         {
-         OnNew ();
-            var label:Label = event.currentTarget as Label;
-            
-            var data_provider:Object = [{label:"Reset"}, {label:"Default"}, {type:"separator"}, {label:"Direct Value"}, {label:"Entity Property"}, {label:"World Property"}, {label:"Input Variable"}];
-            
-            var myMenu:Menu= Menu.createMenu(Button_AddCommmand, data_provider, false);
-            myMenu.labelField="label"
-            myMenu.addEventListener("itemClick", OnParamLabelMenuItemClicked);
-            
-            trace ("myMenu size: " + myMenu.width + ", " + myMenu.height);
-            
-            myMenu.show(event.stageX, event.stageY);
-            
-            trace ("myMenu size: " + myMenu.width + ", " + myMenu.height);
-            
-            myMenu.x -= myMenu.width;
-         }
-         
-         private function OnParamLabelMenuItemClicked (event:MenuEvent):void
-         {
-            //var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (event.item.@id);
-            
-         /*
-         trace ("aaa " + e.currentTarget);
-            var label:Label = e.currentTarget as Label;
-         trace ("bbbb");
-            var index:int = label.parent.getChildIndex (label) + 1;
-         trace ("cccc");
-            var uic:UIComponent = label.parent.getChildAt (index) as UIComponent;
-         trace ("ddd");
-            uic.height = 60;
-            var label2:Label = new Label ();
-            label2.text = "new";
-            label.parent.removeChild (uic);
-            label.parent.addChild (label2);
-            label2.height = 60;
-         trace ("eee");
-         */
-         }
-         
-         private function RetrieveCurrentCommandValueSourcesFromControls ():void
-         {
-            if (mCurrentEditingItem == null)
-               return;
-            
-            var func_id:int = mCurrentEditingItem.mID;
-            var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
-            var value_controls:Array = mCurrentEditingItem.mValueControls;
-            var invert_check_box:CheckBox = mCurrentEditingItem.mInvertCheckBox;
-            
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
-            
-            mCurrentEditingItem.mCurrentIsInverted = invert_check_box.selected;
-            
-            var variable_def:VariableDefinition;
-            var value_source:ValueSource;
-            var value_control:UIComponent;
-            var j:int;
-            for (j; j < func_declaration.GetNumParameters (); ++ j)
-            {
-               value_source = currentValueSources [j];
-               value_control = value_controls [j];
-               variable_def = func_declaration.GetParamDefinitionAt (j);
-               
-               // temp only for direct source
-               variable_def.RetrieveDirectValueSourceFromControl (value_source as ValueSourceDirect, value_control);
-            }
-         }
-         
-   //=========================================================================================
-   // 
-   //=========================================================================================
          
      ]]>
    </mx:Script>

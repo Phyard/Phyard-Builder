@@ -67,9 +67,9 @@ package editor.trigger.entity {
       
       protected var mTheSingleEntity:Entity = null;
       
-      public function InputEntitySelector_Single (world:World, ownerEntity:Entity, paramdId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
+      public function InputEntitySelector_Single (world:World, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
       {
-         super (world, ownerEntity, paramdId, selectorId, onSelectEntity, onClearEntities);
+         super (world, ownerEntity, inputId, selectorId, onSelectEntity, onClearEntities);
       }
       
       override public function UpdateAppearance ():void

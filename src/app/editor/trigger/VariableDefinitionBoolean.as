@@ -28,22 +28,21 @@ package editor.trigger {
 // to override
 //==============================================================================
       
-      override public function GetDefaultDirectValueSource ():ValueSourceDirect
+      override public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         return new ValueSourceDirect (mDefaultValue);
+         return Boolean (valueObject);
       }
       
-      override public function ValidateDirectValueSource (valueSourceDirect:ValueSourceDirect):void
+//==============================================================================
+// to override
+//==============================================================================
+      
+      override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         //if (valueSourceDirect == null)
-         //   return;
-         
-         var bValue:Boolean = Boolean (valueSourceDirect.GetValueObject ());
-         
-         valueSourceDirect.SetValueObject (bValue)
+         return new ValueSource_Direct (mDefaultValue);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSourceDirect):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
       {
          var box:HBox = new HBox ();
          
@@ -67,7 +66,7 @@ package editor.trigger {
          return box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSourceDirect, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
       {
          if (control is HBox)
          {

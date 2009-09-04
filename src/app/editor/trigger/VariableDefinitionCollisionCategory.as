@@ -38,26 +38,21 @@ package editor.trigger {
 // to override
 //==============================================================================
       
-      override public function GetDefaultDirectValueSource ():ValueSourceDirect
+      override public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         return new ValueSourceDirect (null);
+         return ValidateValueObject_CollisiontCategory (valueObject);
       }
       
-      override public function ValidateDirectValueSource (valueSourceDirect:ValueSourceDirect):void
+//==============================================================================
+// to override
+//==============================================================================
+      
+      override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         //if (valueSourceDirect == null)
-         //   return;
-         
-         var world:World = Runtime.GetCurrentWorld ();
-         
-         var category:EntityCollisionCategory = valueSourceDirect.GetValueObject () as EntityCollisionCategory;
-         if (category != null && category.GetEntityIndex () < 0)
-            category = null;
-         
-         valueSourceDirect.SetValueObject (category)
+         return new ValueSource_Direct (null);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSourceDirect):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
       {
          var world:World = Runtime.GetCurrentWorld ();
          var category_list:Array = world.GetCollisionCategoryListDataProvider ();
@@ -76,7 +71,7 @@ package editor.trigger {
          return combo_box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSourceDirect, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
       {
          if (control is ComboBox)
          {

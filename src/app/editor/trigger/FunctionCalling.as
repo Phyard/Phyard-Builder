@@ -6,18 +6,31 @@ package editor.trigger {
    {
       public var mFunctionDeclaration:FunctionDeclaration;
       public var mInputValueSources:Array;
+      public var mReturnValueTargets:Array;
       
       public function FunctionCalling (functionDeclatation:FunctionDeclaration)
       {
          mFunctionDeclaration = functionDeclatation;
          
          var variable_def:VariableDefinition;
-         var num_params:int = mFunctionDeclaration.GetNumParameters ();
-         mInputValueSources = new Array (num_params);
-         for (var i:int = 0; i < num_params; ++ i)
+         var i:int;
+         
+         var num_inputs:int = mFunctionDeclaration.GetNumInputs ();
+         mInputValueSources = new Array (num_inputs);
+         
+         for (i = 0; i < num_inputs; ++ i)
          {
             variable_def = mFunctionDeclaration.GetParamDefinitionAt (i);
-            mInputValueSources [i] = variable_def.GetDefaultDirectValueSource ();
+            mInputValueSources [i] = variable_def.GetDefaultValueSource ();
+         }
+         
+         var num_returns:int = mFunctionDeclaration.GetNumReturns ();
+         mReturnValueTargets = new Array (num_returns);
+         
+         for (i = 0; i < num_returns; ++ i)
+         {
+            variable_def = mFunctionDeclaration.GetReturnDefinitionAt (i);
+            mReturnValueTargets [i] = variable_def.GetDefaultValueTarget ();
          }
       }
       
@@ -31,48 +44,63 @@ package editor.trigger {
          return mFunctionDeclaration.GetID ();
       }
       
-      public function GetNumParameters ():int
+      public function GetNumInputs ():int
       {
-         return mFunctionDeclaration.GetNumParameters ();
+         return mFunctionDeclaration.GetNumInputs ();
       }
       
-      public function SetParamValueSources (valueSources:Array):void
+      public function SetInputValueSources (valueSources:Array):void
       {
-         mInputValueSources = valueSources;
+         mInputValueSources = valueSources; // best to clone
       }
       
-      public function GetParamValueSource (paramId:int):ValueSource
+      public function GetInputValueSource (inputId:int):ValueSource
       {
-         return mInputValueSources [paramId];
+         return mInputValueSources [inputId];
       }
       
-      public function SetParamValueSourceDirect (paramId:int, valueObject:Object):void
+      public function GetNumReturns ():int
       {
-         var value_source:ValueSource = mInputValueSources [paramId];
+         return mFunctionDeclaration.GetNumReturns ();
+      }
+      
+      public function SetReturnValueTargets (valueTargets:Array):void
+      {
+         mReturnValueTargets = valueTargets; // best to clone
+      }
+      
+      public function GetReturnValueTarget (returnId:int):ValueTarget
+      {
+         return mReturnValueTargets [returnId];
+      }
+      
+      public function SetParamValueSourceDirect (inputId:int, valueObject:Object):void
+      {
+         var value_source:ValueSource = mInputValueSources [inputId];
          
          if (value_source.GetValueSourceType () != ValueSourceTypeDefine.ValueSource_Direct)
          {
-            value_source = new ValueSourceDirect (valueObject);
-            mInputValueSources [paramId] = value_source;
+            value_source = new ValueSource_Direct (valueObject);
+            mInputValueSources [inputId] = value_source;
          }
          else
          {
-            (value_source as ValueSourceDirect).SetValueObject (valueObject);
+            (value_source as ValueSource_Direct).SetValueObject (valueObject);
          }
       }
       
-      public function SetParamValueSourceVariable (paramId:int, variableInstance:VariableInstance):void
+      public function SetParamValueSourceVariable (inputId:int, variableInstance:VariableInstance):void
       {
-         var value_source:ValueSource = mInputValueSources [paramId];
+         var value_source:ValueSource = mInputValueSources [inputId];
          
          if (value_source.GetValueSourceType ()!= ValueSourceTypeDefine.ValueSource_Variable)
          {
-            value_source = new ValueSourceVariable (variableInstance);
-            mInputValueSources [paramId] = value_source;
+            value_source = new ValueSource_Variable (variableInstance);
+            mInputValueSources [inputId] = value_source;
          }
          else
          {
-            (value_source as ValueSourceVariable).SetVariableInstance (variableInstance);
+            (value_source as ValueSource_Variable).SetVariableInstance (variableInstance);
          }
       }
       
@@ -83,7 +111,7 @@ package editor.trigger {
          {
             value_source = mInputValueSources [i] as ValueSource;
             
-            value_source.Validate ();
+            value_source.ValidateSource ();
          }
       }
       

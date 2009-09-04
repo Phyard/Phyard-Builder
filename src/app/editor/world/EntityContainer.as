@@ -750,6 +750,19 @@ package editor.world {
          
          return entities;
       }
+      
+//====================================================================
+//   properties
+//====================================================================
+      
+      public function GetPropertyValue (propertyId:int):Object
+      {
+         return null;
+      }
+      
+      public function SetPropertyValue (propertyId:int, value:Object):void
+      {
+      }
    }
 }
 

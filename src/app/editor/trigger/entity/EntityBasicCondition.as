@@ -22,6 +22,7 @@ package editor.trigger.entity {
    
    import editor.trigger.ConditionListDefinition;
    import editor.trigger.ConditionListWithNameDefinition;
+   import editor.trigger.FunctionDefinition;
    
    import common.Define;
    
@@ -42,7 +43,7 @@ package editor.trigger.entity {
       {
          super (world);
          
-         mConditionListWithNameDefinition = new ConditionListWithNameDefinition ("Condition");
+         mConditionListWithNameDefinition = new ConditionListWithNameDefinition ("Condition", new FunctionDefinition ());
       }
       
       public function GetName ():String

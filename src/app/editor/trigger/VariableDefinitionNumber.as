@@ -43,24 +43,21 @@ package editor.trigger {
 // to override
 //==============================================================================
       
-      override public function GetDefaultDirectValueSource ():ValueSourceDirect
+      override public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         return new ValueSourceDirect (mDefaultValue);
+         return Number (valueObject);
       }
       
-      override public function ValidateDirectValueSource (valueSourceDirect:ValueSourceDirect):void
+//==============================================================================
+// to override
+//==============================================================================
+      
+      override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         //if (valueSourceDirect == null)
-         //   return;
-         
-         var value:Number = Number (valueSourceDirect.GetValueObject ());
-         
-         value = ValidateValue (value);
-         
-         valueSourceDirect.SetValueObject (value)
+         return new ValueSource_Direct (mDefaultValue);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSourceDirect):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
       {
          var text_input:TextInput = new TextInput ()
          
@@ -69,7 +66,7 @@ package editor.trigger {
          return text_input;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSourceDirect, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
       {
          if (control is TextInput)
          {

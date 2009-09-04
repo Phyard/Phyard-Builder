@@ -2,7 +2,7 @@
 package editor.trigger {
    
    import common.trigger.ValueTypeDefine;
-   import common.trigger.PlayerEventIds;
+   import common.trigger.CoreEventIds;
    
    public class PlayerEventDefinesForEditing
    {
@@ -16,27 +16,27 @@ package editor.trigger {
       {
       // functions
          
-         RegisterEventDeclatation (PlayerEventIds.ID_OnTrigger, "Trigger", "Trigger",
+         RegisterEventDeclatation (CoreEventIds.ID_OnTrigger, "Trigger", "Trigger",
                     null
                     );
-         RegisterEventDeclatation (PlayerEventIds.ID_OnShapeContainingShape, "OnShapeContainingShape", "When shape 1 containing the center of shape 2",
+         RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape, "OnSensorContainsPhysicsShape", "When shape 1 containing the center of shape 2",
                     [
                        new VariableDefinitionEntity ("Shape 1"), 
                        new VariableDefinitionEntity ("Shape 2"), 
                        new VariableDefinitionNumber ("Seconds") 
                     ]);
-         RegisterEventDeclatation (PlayerEventIds.ID_OnShapeBeginsContactingShape, "OnShapeBeginsContactingShape", "When 2 physics shapes start contacting",
+         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, "OnTwoPhysicsShapesBeginContacting", "When 2 physics shapes start contacting",
                     [
                        new VariableDefinitionEntity ("Shape 1"), 
                        new VariableDefinitionEntity ("Shape 2")
                     ]);
-         RegisterEventDeclatation (PlayerEventIds.ID_OnShapeContactingShape, "OnShapeContactingShape", "When 2 physics shapes are contacting with each other",
+         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, "OnTwoPhysicsShapesKeepContacting", "When 2 physics shapes are contacting with each other",
                     [
                        new VariableDefinitionEntity ("Shape 1"), 
                        new VariableDefinitionEntity ("Shape 2"), 
                        new VariableDefinitionNumber ("Seconds") 
                     ]);
-         RegisterEventDeclatation (PlayerEventIds.ID_OnShapeEndsContactingShape, "OnShapeEndsContactingShape", "When 2 physics shapes end contacting",
+         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, "OnTwoPhysicsShapesEndContacting", "When 2 physics shapes end contacting",
                     [
                        new VariableDefinitionEntity ("Shape 1"), 
                        new VariableDefinitionEntity ("Shape 2")
@@ -61,10 +61,10 @@ package editor.trigger {
          if (event_id < 0)
             return;
          
-         sEventDeclarations [event_id] = new EventDeclaration (event_id, event_name, param_definitions, event_description);
+         sEventDeclarations [event_id] = new FunctionDeclaration_EventHandler (event_id, event_name, param_definitions, event_description);
       }
       
-      public static function GetEventDeclarationById (event_id:int):EventDeclaration
+      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler
       {
          if (event_id < 0 || event_id >= sEventDeclarations.length)
             return null;
@@ -72,7 +72,7 @@ package editor.trigger {
          return sEventDeclarations [event_id];
       }
       
-      public static function GetEventSettingById (event_id:int):EventDeclaration
+      public static function GetEventSettingById (event_id:int):FunctionDeclaration_EventHandler
       {
          if (event_id < 0 || event_id >= sEventDeclarations.length)
             return null;

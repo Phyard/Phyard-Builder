@@ -58,7 +58,7 @@ package editor.trigger.entity {
       protected var mOnSelectEntity:Function = null;
       protected var mOnClearEntities:Function = null;
       
-      public function InputEntitySelector (world:World, ownerEntity:Entity, paramdId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
+      public function InputEntitySelector (world:World, ownerEntity:Entity, inputId:int = 0, selectorId:int = 0, onSelectEntity:Function = null, onClearEntities:Function = null)
       {
          mWorld = world;
          
@@ -67,7 +67,7 @@ package editor.trigger.entity {
          mOnSelectEntity = onSelectEntity;
          mOnClearEntities = onClearEntities;
          
-         mParamId = paramdId;
+         mParamId = inputId;
          mSelectorId = selectorId;
          
          BuildContextMenu ();

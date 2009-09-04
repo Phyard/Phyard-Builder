@@ -216,6 +216,15 @@
                   horizontalGap="0" verticalGap="0" borderThickness="0">
             <CollisionCategoryPanel />
          </mx:Box>
+         <!--
+         <mx:Box label="Global Variables" direction="horizontal" borderStyle="solid" height="100%" width="100%"
+                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                  horizontalGap="0" verticalGap="0" borderThickness="0"
+                  >
+            <GlobalVariablesPanel height="100%" width="100%"/>
+         </mx:Box>
+         -->
          <mx:Box label="Settings" direction="horizontal" borderStyle="solid" height="100%" width="100%"
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
@@ -224,12 +233,6 @@
             <WorldSettingPanel />
          </mx:Box>
          <!--
-         <mx:Box label="Variables" direction="horizontal" borderStyle="solid" height="100%" width="100%"
-                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
-                  horizontalGap="0" verticalGap="0" borderThickness="0"
-             >
-         </mx:Box>
          <mx:Box label="Functions" direction="horizontal" borderStyle="solid" height="100%" width="100%"
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
@@ -268,7 +271,7 @@
             
             private function OnTabPanelChanged (event:IndexChangedEvent):void
             {
-               if (event.oldIndex == 2) // setting page
+               if (event.oldIndex == 3) // setting page
                {
                   Runtime.mSynchronizeWorldWithWorldSettingPanel (Runtime.mEditorWorldView.GetEditorWorld ());
                   

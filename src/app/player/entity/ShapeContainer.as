@@ -128,7 +128,7 @@ package player.entity {
          }
       }
       
-      public function GetMaxChildEntityId ():int
+      public function GetMaxChildEntityIdInEditor ():int
       {
          var maxEntityId:int = -1;
          for (var j:int = 0; j < numChildren; ++ j)
@@ -136,7 +136,7 @@ package player.entity {
             var shape:EntityShape = getChildAt (j) as EntityShape;
             if (shape != null)
             {
-               var shapeLayerId:int = shape.GetEntityId ();
+               var shapeLayerId:int = shape.GetEntityIndexInEditor ();
                
                if (shapeLayerId > maxEntityId)
                   maxEntityId = shapeLayerId;

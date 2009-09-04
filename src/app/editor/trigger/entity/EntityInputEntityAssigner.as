@@ -163,7 +163,7 @@ package editor.trigger.entity {
 //   entity links
 //====================================================================
       
-      private function OnSelectEntity (entity:Entity, paramId:int, selectorId:int):Boolean
+      private function OnSelectEntity (entity:Entity, inputId:int, selectorId:int):Boolean
       {
          ValidateEntityLinks ();
          
@@ -185,7 +185,7 @@ package editor.trigger.entity {
          return false;
       }
       
-      private function OnClearEntities (paramId:int, selectorId:int):Boolean
+      private function OnClearEntities (inputId:int, selectorId:int):Boolean
       {
          if (mInputEntities.length > 0)
          {

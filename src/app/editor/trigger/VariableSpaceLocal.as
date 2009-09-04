@@ -18,5 +18,15 @@ package editor.trigger {
          return ValueSpaceTypeDefine.ValueSpace_Local;
       }
       
+      override public function GetSpaceName ():String
+      {
+         return "Local Variable Space";
+      }
+      
+      override public function GetSpaceShortName ():String
+      {
+         return "Local";
+      }
+      
    }
 }

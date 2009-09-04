@@ -21,7 +21,8 @@ package editor.trigger.entity {
    import editor.selection.SelectionProxyRectangle;
    
    import editor.trigger.TriggerEngine;
-   import editor.trigger.EventDeclaration;
+   import editor.trigger.FunctionDeclaration_EventHandler;
+   import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.CommandListDefinition;
@@ -49,6 +50,7 @@ package editor.trigger.entity {
       public var mBorderThickness:Number = 1;
       
       //
+      private var mEventHandlerDefinition:FunctionDefinition;
       private var mEventId:int;
       
       protected var mConditionListDefinition:ConditionListDefinition;
@@ -69,15 +71,16 @@ package editor.trigger.entity {
          
          mEventId = defaultEventId;
          
-         var event_decl:EventDeclaration = TriggerEngine.GetEventDeclarationById (mEventId);
-         mConditionListDefinition = new ConditionListDefinition (event_decl);
-         mCommandListDefinition = new CommandListDefinition (event_decl);
+         mEventHandlerDefinition = new FunctionDefinition (TriggerEngine.GetEventDeclarationById (mEventId));
+         
+         mConditionListDefinition = new ConditionListDefinition (mEventHandlerDefinition);
+         mCommandListDefinition = new CommandListDefinition (mEventHandlerDefinition);
          
          var i:int;
          mNumEntityParams = 0;
-         for (i = 0; i < event_decl.GetNumParameters (); ++ i)
+         for (i = 0; i < mEventHandlerDefinition.GetNumInputs (); ++ i)
          {
-            var variable_def:VariableDefinition = event_decl.GetParamDefinitionAt (i);
+            var variable_def:VariableDefinition = mEventHandlerDefinition.GetParamDefinitionAt (i);
             if (variable_def is VariableDefinitionEntity)
                ++ mNumEntityParams;
          }
@@ -96,8 +99,7 @@ package editor.trigger.entity {
       
       public function GetName ():String
       {
-         var event_decl:EventDeclaration = TriggerEngine.GetEventDeclarationById (mEventId);
-         return event_decl.GetName ();
+         return mEventHandlerDefinition.GetName ();
       }
       
       public function GetEventId ():int
@@ -169,7 +171,7 @@ package editor.trigger.entity {
          
          // text
          
-         var text:String = mCommandListDefinition.GetName ();
+         var text:String = GetName ();
          
          var text_field:TextFieldEx;
          text_field = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + text + "</font>", false, 0xFFFFFF, 0x0);

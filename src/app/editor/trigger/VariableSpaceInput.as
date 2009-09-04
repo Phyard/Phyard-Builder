@@ -18,6 +18,16 @@ package editor.trigger {
          return ValueSpaceTypeDefine.ValueSpace_Input;
       }
       
+      override public function GetSpaceName ():String
+      {
+         return "Input Variable Space";
+      }
+      
+      override public function GetSpaceShortName ():String
+      {
+         return "Input";
+      }
+      
    }
 }
 

@@ -9,9 +9,9 @@ package editor.trigger {
    {
       protected var mName:String;
       
-      public function ConditionListWithNameDefinition (name:String, functionDeclatation:FunctionDeclaration = null)
+      public function ConditionListWithNameDefinition (name:String, ownerFunctionDefinition:FunctionDefinition = null)
       {
-         super (functionDeclatation);
+         super (ownerFunctionDefinition);
          
          mName = name;
       }
@@ -27,7 +27,7 @@ package editor.trigger {
          mName = newName;
       }
       
-      override public function GetName ():String
+      public function GetName ():String
       {
          return mName;
       }

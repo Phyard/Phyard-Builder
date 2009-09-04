@@ -9,7 +9,8 @@ package common.trigger.define
       public var mNumConditions:int;
       
       public var mFunctionCallingDefines:Array;
-      public var mConditionInverteds:Array;
+      public var mIsConditionCallings:Array;
+      public var mConditionResultInverted:Array;
    }
    
 }

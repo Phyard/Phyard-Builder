@@ -96,6 +96,8 @@ package player.entity {
             entityDefine.mIsSensor = false;
             entityDefine.mIsHollow = false;
             
+            entityDefine.mEntityIndexInEditor = -1;
+         
         // 
             
             var shapeCircle:EntityShapeCircle = new EntityShapeCircle (mWorld, this);

@@ -448,12 +448,12 @@ package editor.trigger.entity {
 //   entity links
 //====================================================================
       
-      private function OnSelectEntity (entity:Entity, paramId:int, selectorId:int):Boolean
+      private function OnSelectEntity (entity:Entity, inputId:int, selectorId:int):Boolean
       {
          //ValidateEntityLinks (); // can't do this here, do this in DrawLinks
          
          var index:int;
-         if (paramId == 0)
+         if (inputId == 0)
          {
             if (mInputEntities1 != null)
             {
@@ -486,7 +486,7 @@ package editor.trigger.entity {
                }
             }
          }
-         else if (paramId == 1)
+         else if (inputId == 1)
          {
             if (mInputEntities2 != null)
             {
@@ -523,9 +523,9 @@ package editor.trigger.entity {
          return false;
       }
       
-      private function OnClearEntities (paramId:int, selectorId:int):Boolean
+      private function OnClearEntities (inputId:int, selectorId:int):Boolean
       {
-         if (paramId == 0)
+         if (inputId == 0)
          {
             if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
             {
@@ -543,7 +543,7 @@ package editor.trigger.entity {
                return true;
             }
          }
-         else if (paramId == 1)
+         else if (inputId == 1)
          {
             if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
             {

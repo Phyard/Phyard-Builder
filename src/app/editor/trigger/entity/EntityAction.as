@@ -20,6 +20,7 @@ package editor.trigger.entity {
    
    import editor.trigger.CommandListDefinition;
    import editor.trigger.CommandListWithNameDefinition;
+   import editor.trigger.FunctionDefinition;
    
    import editor.setting.EditorSetting;
    
@@ -40,7 +41,7 @@ package editor.trigger.entity {
       {
          super (world);
          
-         mCommandListWithNameDefinition = new CommandListWithNameDefinition ("Action");
+         mCommandListWithNameDefinition = new CommandListWithNameDefinition ("Action", new FunctionDefinition ());
       }
       
       public function GetName ():String

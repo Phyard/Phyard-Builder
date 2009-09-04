@@ -50,8 +50,8 @@ package player.physics {
       {
          //mNumPoints_Persist ++;
          
-         if (mPhysicsEngine._OnShapeContactContinued != null)
-            mPhysicsEngine._OnShapeContactContinued (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
+      //   if (mPhysicsEngine._OnShapeContactContinued != null)
+      //      mPhysicsEngine._OnShapeContactContinued (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
       }
       
       /// Called when a contact point is removed. This includes the last
@@ -61,15 +61,13 @@ package player.physics {
          //mNumPoints_Remove ++;
          //mNumPoints --;
          
-         if (mPhysicsEngine._OnShapeContactFinished == null)
+         if (mPhysicsEngine._OnShapeContactFinished != null)
             mPhysicsEngine._OnShapeContactFinished (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
       }
       
       /// Called after a contact point is solved.
       override public function Result(point:b2ContactResult) : void
       {
-         if (mPhysicsEngine._OnShapeContactResult == null)
-            mPhysicsEngine._OnShapeContactResult (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
       }
    }
  }

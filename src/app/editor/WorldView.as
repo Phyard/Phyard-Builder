@@ -148,7 +148,7 @@ package editor {
    import common.Config;
    import common.ValueAdjuster;
    
-   import common.trigger.PlayerEventIds;
+   import common.trigger.CoreEventIds;
    
    import misc.Analytics;
    
@@ -724,6 +724,7 @@ package editor {
       {
          if (mCurrentCreatMode != null)
             mCurrentCreatMode.Destroy ();
+         //CancelCurrentCreatingMode ();
          
          if (Runtime.HasSettingDialogOpened ())
          {
@@ -1058,16 +1059,16 @@ package editor {
             //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTrigger) );
             //   break;
             case mButton_CreateEventHandler0:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:PlayerEventIds.ID_OnShapeContainingShape, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnSensorContainsPhysicsShape, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler1:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:PlayerEventIds.ID_OnShapeBeginsContactingShape, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler2:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:PlayerEventIds.ID_OnShapeEndsContactingShape, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler3:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:PlayerEventIds.ID_OnTrigger, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTrigger, mPotientialEventIds:null}) );
                break;
             
          // ...
@@ -1781,6 +1782,7 @@ package editor {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
                
                values.mName = event_handler.GetName ();
+               values.mEventId = event_handler.GetEventId ();
                values.mConditionListDefinition  = event_handler.GetConditionListDefinition ();
                values.mCommandListDefinition  = event_handler.GetCommandListDefinition ();
                
@@ -3535,7 +3537,10 @@ package editor {
             condition.SetName (params.mName);
             
             var conditionlist_def:ConditionListDefinition = condition.GetConditionListDefinition ();
-            conditionlist_def.SetConditions (params.mReturnConditionFunctionCallings, params.mReturnConditionInverteds);
+            
+            conditionlist_def.AssignFunctionCallings (params.mReturnFunctionCallings_ConditionList);
+            
+            conditionlist_def.AssignFunctionCallingProperties (params.mReturnIsConditionCallings, params.mReturnConditionResultInverteds);
             conditionlist_def.SetAsAnd (params.mIsAnd);
             conditionlist_def.SetAsNot (params.mIsNot);
             
@@ -3558,7 +3563,7 @@ package editor {
             action.SetName (params.mName);
             
             var cmdlist_def:CommandListDefinition = action.GetCommandListDefinition ();
-            cmdlist_def.SetCommands (params.mReturnCommandFunctionCallings);
+            cmdlist_def.AssignFunctionCallings (params.mReturnFunctionCallings_CommandList);
             
             action.UpdateAppearance ();
             action.UpdateSelectionProxy ();
@@ -3578,12 +3583,13 @@ package editor {
             var event_handler:EntityEventHandler = entity as EntityEventHandler;
             
             var conditionlist_def:ConditionListDefinition = event_handler.GetConditionListDefinition ()
-            conditionlist_def.SetConditions (params.mReturnConditionFunctionCallings, params.mReturnConditionInverteds);
+            conditionlist_def.AssignFunctionCallings (params.mReturnFunctionCallings_ConditionList);
+            conditionlist_def.AssignFunctionCallingProperties (params.mReturnIsConditionCallings, params.mReturnConditionResultInverteds);
             conditionlist_def.SetAsAnd (params.mIsAnd);
             conditionlist_def.SetAsNot (params.mIsNot);
             
-            var cmdlist_def:CommandListDefinition = event_handler.GetCommandListDefinition ()
-            cmdlist_def.SetCommands (params.mReturnCommandFunctionCallings);
+            var cmdlist_def:CommandListDefinition = event_handler.GetCommandListDefinition ();
+            cmdlist_def.AssignFunctionCallings (params.mReturnFunctionCallings_CommandList);
             
             //event_handler.UpdateAppearance ();
             //event_handler.UpdateSelectionProxy ();

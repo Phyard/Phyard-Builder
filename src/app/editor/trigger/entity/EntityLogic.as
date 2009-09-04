@@ -17,6 +17,9 @@ package editor.trigger.entity {
    {
       public static function ValidateLinkedEntities (entities:Array):void
       {
+         if (entities == null)
+            return;
+         
          var entity:Entity;
          var i:int = 0;
          while (i < entities.length)

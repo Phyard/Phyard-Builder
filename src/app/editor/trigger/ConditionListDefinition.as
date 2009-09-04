@@ -5,17 +5,17 @@ package editor.trigger {
    
    import common.Define;
    
-   public class ConditionListDefinition extends FunctionDefinition
+   public class ConditionListDefinition extends CodeSnippet
    {
       protected var mIsAnd:Boolean = true;
       protected var mIsNot:Boolean = false;
       
-      protected var mFunctionCallings:Array = new Array ();
-      protected var mConditionInverteds:Array = new Array ();
+      protected var mIsConditionCallings:Array = new Array ();
+      protected var mIsConditionResultInverteds:Array = new Array ();
       
-      public function ConditionListDefinition (functionDeclatation:FunctionDeclaration = null)
+      public function ConditionListDefinition (ownerFunctionDefinition:FunctionDefinition = null)
       {
-         super (functionDeclatation);
+         super (ownerFunctionDefinition);
       }
       
       public function SetAsAnd (isAnd:Boolean):void
@@ -38,79 +38,77 @@ package editor.trigger {
          return mIsNot;
       }
       
-      public function ClearConditions ():void
+      override public function ClearFunctionCallings ():void
       {
-         mFunctionCallings.splice (0, mFunctionCallings.length);
-         
-         mConditionInverteds.splice (0, mConditionInverteds.length);
-      }
-      
-      public function SetConditions (funcCallings:Array, conditionInverteds:Array):void
-      {
-         mFunctionCallings = funcCallings;
-         
-         mConditionInverteds = conditionInverteds;
+         super.ClearFunctionCallings ();
          
          ValidateArrayLenthes ();
       }
       
-      public function AddCondition (funcCalling:FunctionCalling, contitionInverted:Boolean):void
+      public function AssignFunctionCallingProperties (isConditionCallings:Array, resultInverteds:Array):void
       {
+         if (isConditionCallings == null)
+            isConditionCallings = new Array ();
+         if (resultInverteds == null)
+            resultInverteds = new Array ();
+         
+         mIsConditionCallings = isConditionCallings;
+         mIsConditionResultInverteds = resultInverteds;
+         
          ValidateArrayLenthes ();
-         
-         mFunctionCallings.push (funcCalling);
-         
-         mConditionInverteds.push (contitionInverted);
       }
       
-      public function GetNumConditions ():int
+      public function IsConditionCalling (index:int):Boolean
       {
-         ValidateArrayLenthes ();
-         
-         return mFunctionCallings.length;
-      }
-      
-      public function GetConditionAt (index:int):FunctionCalling
-      {
-         if (index < 0 || index >= mFunctionCallings.length)
-            return null;
-         
-         return mFunctionCallings [index];
-      }
-      
-      public function IsConditionInverted (index:int):Boolean
-      {
-         if (index < 0 || index >= mConditionInverteds.length)
+         if (index < 0 || index >= mIsConditionCallings.length)
             return false;
          
-         return mConditionInverteds [index];
+         return mIsConditionCallings [index];
+      }
+      
+      public function IsConditionResultInverted (index:int):Boolean
+      {
+         if (index < 0 || index >= mIsConditionResultInverteds.length)
+            return false;
+         
+         return mIsConditionResultInverteds [index];
       }
       
       override public function ValidateValueSources ():void
       {
          ValidateArrayLenthes ();
          
-         var func_calling:FunctionCalling;
-         for (var i:int = 0; i < mFunctionCallings.length; ++ i)
-         {
-            func_calling = mFunctionCallings [i] as FunctionCalling;
-            if (func_calling != null)
-               func_calling.ValidateValueSources ();
-         }
+         super.ValidateValueSources ();
       }
       
       private function ValidateArrayLenthes ():void
       {
-         var old_len:int = mConditionInverteds.length;
+         var old_len:int;
+         var i:int;
+         
+         old_len = mIsConditionCallings.length;
          
          if (old_len != mFunctionCallings.length)
          {
-            mConditionInverteds.length = mFunctionCallings.length;
+            mIsConditionCallings.length = mFunctionCallings.length;
          
-            if (mConditionInverteds.length > old_len)
+            if (mIsConditionCallings.length > old_len)
             {
-               for (var i:int = old_len; i < mConditionInverteds.length; ++ i)
-                  mConditionInverteds [i] = false;
+               for (i = old_len; i < mIsConditionCallings.length; ++ i)
+                  mIsConditionCallings [i] = false;
+            }
+         }
+         
+         old_len = mIsConditionResultInverteds.length;
+         
+         if (old_len != mFunctionCallings.length)
+         {
+            mIsConditionResultInverteds.length = mFunctionCallings.length;
+         
+            if (mIsConditionResultInverteds.length > old_len)
+            {
+               for (i = old_len; i < mIsConditionResultInverteds.length; ++ i)
+                  mIsConditionResultInverteds [i] = false;
             }
          }
       }

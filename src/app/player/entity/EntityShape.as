@@ -35,6 +35,7 @@ package player.entity {
       
       //>> form v1.04
       protected var mPhysicsEnabled:Boolean = true;
+      protected var mIsSensor:Boolean = false;
       //<<
       
       //>> form v1.05
@@ -213,6 +214,11 @@ package player.entity {
          return mBorderTransparency;
       }
       
+      public function IsSensor ():Boolean
+      {
+         return mIsSensor;
+      }
+      
       //public function SetField (field:Boolean):void
       //{
       //   mIsField = field;
@@ -247,6 +253,8 @@ package player.entity {
          // >> from v1.02
          SetDrawBorder (params.mDrawBorder);
          SetDrawBackground (params.mDrawBackground);
+         
+         mIsSensor = params.mIsSensor;
          //<<
          
          // >> from v1.04
@@ -344,6 +352,8 @@ package player.entity {
             return;
          
          (mPhysicsProxy as PhysicsProxyShape).SetAsSensor (is_sensor);
+         
+         mIsSensor = is_sensor;
       }
       
       public function SetCollisionCategory (ccId:int):void

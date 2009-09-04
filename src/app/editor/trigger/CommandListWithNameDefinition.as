@@ -9,9 +9,9 @@ package editor.trigger {
    {
       protected var mName:String;
       
-      public function CommandListWithNameDefinition (name:String, functionDeclatation:FunctionDeclaration = null)
+      public function CommandListWithNameDefinition (name:String, ownerFunctionDefinition:FunctionDefinition = null)
       {
-         super (functionDeclatation);
+         super (ownerFunctionDefinition);
          
          SetName (name);
       }
@@ -27,7 +27,7 @@ package editor.trigger {
          mName = newName;
       }
       
-      override public function GetName ():String
+      public function GetName ():String
       {
          return mName;
       }

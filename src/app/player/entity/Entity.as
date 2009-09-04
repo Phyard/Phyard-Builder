@@ -7,12 +7,14 @@ package player.entity {
    
    import player.physics.PhysicsProxy;
    
+   import player.trigger.IPropertyOwner;
+   
    import common.Define;
    
-   public class Entity extends Sprite
+   public class Entity extends Sprite implements IPropertyOwner
    {
+      public var mEntityIndexInEditor:int = -1;
       protected var mEntityType:int = Define.EntityType_Unkonwn;
-      protected var mEntityId:int = -1;
       
       protected var mWorld:World;
       
@@ -23,9 +25,9 @@ package player.entity {
          mWorld = world;
       }
       
-      public function GetEntityId ():int
+      public function GetEntityIndexInEditor ():int
       {
-         return mEntityId;
+         return mEntityIndexInEditor;
       }
       
       public function Update (dt:Number):void
@@ -69,7 +71,7 @@ package player.entity {
          mEntityType = params.mEntityType;
          
          // >> from version 1.01
-         mEntityId = params.mEntityId;
+         mEntityIndexInEditor = params.mEntityIndexInEditor;
          // <<
          
          if (Compile::Is_Debugging)
@@ -118,6 +120,19 @@ package player.entity {
       public function SetVisible (visible:Boolean):void
       {
          visible = visible;
+      }
+      
+//==============================================================================
+// properties
+//==============================================================================
+      
+      public function GetPropertyValue (propertyId:int):Object
+      {
+         return null;
+      }
+      
+      public function SetPropertyValue (propertyId:int, value:Object):void
+      {
       }
       
    }

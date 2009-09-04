@@ -4,11 +4,21 @@ package editor.trigger {
    
    import common.trigger.ValueSourceTypeDefine;
    
-   public class ValueSource
+   public interface ValueSource
    {
+      function GetValueSourceType ():int;
+      
+      function GetValueObject ():Object;
+      
+      // to override
+      function CloneSource ():ValueSource;
+      
+      function ValidateSource ():void;
+      
+      /*
       public function GetValueSourceType ():int
       {
-         return ValueSourceTypeDefine.ValueSource_Undetermined;
+         return ValueSourceTypeDefine.ValueSource_Null;
       }
       
       public function GetValueObject ():Object
@@ -25,6 +35,7 @@ package editor.trigger {
       public function Validate ():void
       {
       }
+      */
    }
 }
 

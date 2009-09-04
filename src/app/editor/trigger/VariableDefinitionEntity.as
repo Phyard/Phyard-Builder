@@ -44,32 +44,27 @@ package editor.trigger {
 // to override
 //==============================================================================
       
-      override public function GetDefaultDirectValueSource ():ValueSourceDirect
+      override public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         return new ValueSourceDirect (null);
+         return ValidateValueObject_Entity (valueObject);
       }
       
-      override public function ValidateDirectValueSource (valueSourceDirect:ValueSourceDirect):void
+//==============================================================================
+// to override
+//==============================================================================
+      
+      override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         //if (valueSourceDirect == null)
-         //   return;
-         
-         var world:World = Runtime.GetCurrentWorld ();
-         
-         var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
-         if (entity != null && (entity.GetWorld () != world || entity.GetEntityIndex () < 0))
-            entity = null;
-         
-         valueSourceDirect.SetValueObject (entity)
+         return new ValueSource_Direct (null);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSourceDirect):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
       {
          var world:World = Runtime.GetCurrentWorld ();
          var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (mFilterFunction);
          
          if (mNullValueEnabled)
-            entity_list.unshift ({label: "-1: null", mEntityIndex: -1});
+            entity_list.unshift ({label: "-1: (null)", mEntityIndex: -1});
          
          var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
          var sel_index:int = -1;
@@ -87,7 +82,7 @@ package editor.trigger {
          return combo_box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSourceDirect, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
       {
          if (control is ComboBox)
          {

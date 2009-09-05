@@ -409,8 +409,16 @@
 			
 			b2Settings.b2Assert(nVertices <= b2Settings.b2_maxPolygonVertices);
 			
+			var offset:int = 0;
 			for (var i : int = 0; i < nVertices; ++i) 
 			{
+				//Omit identical neighbors (including wraparound)
+				var ind:int = i - offset;
+				if (vecs[i].x==vecs[remainder(i+1,nVertices)].x &&
+					vecs[i].y==vecs[remainder(i+1,nVertices)].y){
+						offset++;
+						continue;
+				}
 				pd.vertices[i] = vecs[i];
 			}
 			
@@ -580,11 +588,13 @@
 						else {
 							var poly : b2Polygon = new b2Polygon(triangulated[currTri].x, triangulated[currTri].y, 3);
 							covered[currTri] = 1;
-							for (i = 0; i < triangulatedLength; i++) {
-								if (covered[i]) {
+							var index:int = 0;
+							for (i = 0; i < 2 * triangulatedLength; ++i, ++ index) {
+								while (index >= triangulatedLength) index -= triangulatedLength;
+								if (covered[index]) {
 									continue;
 								}
-								var newP : b2Polygon = poly.Add(triangulated[i]);
+								var newP : b2Polygon = poly.Add(triangulated[index]);
 								if (!newP) {
 									continue;
 								}
@@ -595,13 +605,13 @@
 								if (newP.IsConvex()) {
 									poly.Set(newP);							
 									newP = null;
-									covered[i] = 1;
+									covered[index] = 1;
 								} else {							
 									newP = null;
 								}
 							}
 							if (polyIndex < polysLength){
-								poly.MergeParallelEdges(FLT_EPSILON);
+								poly.MergeParallelEdges(b2Settings.b2_angularSlop);
 								//If identical points are present, a triangle gets
 								//borked by the MergeParallelEdges function, hence
 								//the vertex number check
@@ -785,8 +795,13 @@
 		}		
 		*/
 		
-		
-		
+		public static function remainder(x:int, modulus:int):int{
+			var rem:int = x % modulus;
+			while (rem < 0){
+				rem += modulus;
+			}
+			return rem;
+		}
 		
 	}
 	

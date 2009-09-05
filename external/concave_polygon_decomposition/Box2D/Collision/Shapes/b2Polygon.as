@@ -43,12 +43,14 @@
 		public function intersect(a0:b2Vec2, a1:b2Vec2, b0:b2Vec2, b1:b2Vec2) : b2Vec2
 		{
 
-			var intersectionPoint : b2Vec2 = new b2Vec2();
-			
 			var x1 : Number = a0.x; var y1 : Number = a0.y;
 			var x2 : Number = a1.x; var y2 : Number = a1.y;
 			var x3 : Number = b0.x; var y3 : Number = b0.y;
 			var x4 : Number = b1.x; var y4 : Number = b1.y;
+			
+			//AABB early exit
+			if (Math.max(x1,x2) < Math.min(x3,x4) || Math.max(x3,x4) < Math.min(x1,x2) ) return null;
+			if (Math.max(y1,y2) < Math.min(y3,y4) || Math.max(y3,y4) < Math.min(y1,y2) ) return null;
 			
 			var ua : Number = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3));
 			var ub : Number  = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3));
@@ -65,6 +67,8 @@
 			
 			if ((0 < ua) && (ua < 1) && (0 < ub) && (ub < 1)) 
 			{
+				var intersectionPoint : b2Vec2 = new b2Vec2();
+				
 				//if (intersectionPoint){
 					intersectionPoint.x = (x1 + ua * (x2 - x1));
 					intersectionPoint.y = (y1 + ua * (y2 - y1));
@@ -137,7 +141,8 @@
 		
 		public function GetArea() : Number
 		{
-			if (areaIsSet) return area;
+			// TODO: fix up the areaIsSet caching so that it can be used
+			//if (areaIsSet) return area;
 			area = 0.0;
 			
 			//First do wraparound
@@ -172,7 +177,7 @@
 				var dy1 : Number  = y[upper] - y[middle];
 				var norm0 : Number  = Math.sqrt(dx0*dx0+dy0*dy0);
 				var norm1 : Number  = Math.sqrt(dx1*dx1+dy1*dy1);
-				if ( !(norm0 > 0.0 && norm1 > 0.0) ) {
+				if ( (!(norm0 > 0.0 && norm1 > 0.0) && newNVertices > 3) ) {
 					//Merge identical points
 					mergeMe[i] = true;
 					--newNVertices;
@@ -180,7 +185,8 @@
 				dx0 /= norm0; dy0 /= norm0;
 				dx1 /= norm1; dy1 /= norm1;
 				var cross : Number = dx0 * dy1 - dx1 * dy0;
-				if (Math.abs(cross) < tolerance) {
+				var dot : Number = dx0 * dx1 + dy0 * dy1;
+				if (Math.abs(cross) < tolerance && dot > 0 && newNVertices > 3) {
 					mergeMe[i] = true;
 					--newNVertices;
 				} else {
@@ -196,7 +202,7 @@
 			
 			for (i = 0; i < nVertices; ++i) 
 			{
-				if (mergeMe[i] || newNVertices == 0) continue;
+				if (mergeMe[i] || newNVertices == 0 || currIndex == newNVertices) continue;
 				b2Settings.b2Assert(currIndex < newNVertices);
 				newx[currIndex] = x[i];
 				newy[currIndex] = y[i];
@@ -265,6 +271,41 @@
 			return true;
 		}
 		
+		/*
+		* Pulled from b2Shape.cpp, assertions removed
+		*/
+		public static function PolyCentroid(vs:Array, count:int):b2Vec2
+		{
+			var c:b2Vec2 = new b2Vec2 (0, 0);
+			var area : Number = 0.0;
+
+			var inv3 : Number = 1.0 / 3.0;
+			var pRef:b2Vec2 = new b2Vec2(0.0, 0.0);
+			for (var i:int = 0; i < count; ++i)
+			{
+				// Triangle vertices.
+				var p1:b2Vec2 = pRef;
+				var p2:b2Vec2 = vs[i];
+				var p3:b2Vec2 = i + 1 < count ? vs[i+1] : vs[0];
+
+				var e1:b2Vec2 = new b2Vec2 (p2.x - p1.x, p2.y - p1.y);
+				var e2:b2Vec2 = new b2Vec2 (p3.x - p1.x, p3.y - p1.y);
+
+				var D : Number = e1.x * e2.y - e1.y * e2.x; //b2Cross(e1, e2);
+
+				var triangleArea : Number = 0.5 * D;
+				area += triangleArea;
+
+				// Area weighted centroid
+				c.x += triangleArea * inv3 * (p1.x + p2.x + p3.x);
+				c.y += triangleArea * inv3 * (p1.y + p2.y + p3.y);
+			}
+
+			// Centroid
+			c.x *= 1.0 / area;
+			c.y *= 1.0 / area;
+			return c;
+		}
 		
 		/*
 		 * Tries to add a triangle to the polygon. Returns null if it can't connect

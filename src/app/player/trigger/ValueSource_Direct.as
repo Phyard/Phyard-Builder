@@ -2,7 +2,7 @@ package player.trigger
 {
    public class ValueSource_Direct extends ValueSource
    {
-      protected var mValueObject:Object;
+      public var mValueObject:Object;
       
       public function ValueSource_Direct (valueObject:Object)
       {

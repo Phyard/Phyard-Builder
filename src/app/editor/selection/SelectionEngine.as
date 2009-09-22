@@ -8,9 +8,11 @@ package editor.selection {
    import Box2D.Dynamics.Joints.*;
    import Box2D.Collision.*;
    import Box2D.Collision.Shapes.*;
-   import Box2D.Common.Math.*;
+   import Box2D.Common.*;
    
    import Box2D.b2WorldPool;
+   
+   import Box2dEx.Helper.b2eWorldAABBQueryCallback;
    
    public class SelectionEngine 
    {
@@ -27,7 +29,8 @@ package editor.selection {
          worldAABB.lowerBound.Set(lowerPoint.x, lowerPoint.y);
          worldAABB.upperBound.Set(upperPoint.x, upperPoint.y);
          
-         var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
+         //var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
+         var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0.0, 9.8 * 2);
          var doSleep:Boolean = true;
          
          var world_def:b2WorldDef = new b2WorldDef (world_hints.mPhysicsShapesPotentialMaxCount, world_hints.mPhysicsShapesPopulationDensityLevel);
@@ -77,13 +80,13 @@ package editor.selection {
          var halfHeight:Number = (y2 - y1) * 0.5; if (halfHeight < 0) halfHeight = - halfHeight;
          
        // ...
-         var oldContactListener:b2ContactListener = _b2World.m_contactListener;
+         var oldContactListener:b2ContactListener = _b2World.GetContactListener ();
          
          var selProxyRect:_SelectionProxyRectangleForRegionSelection = new _SelectionProxyRectangleForRegionSelection (this);
          selProxyRect.RebuildRectangle (0, centerX, centerY, halfWidth, halfHeight);
          var tempContactListener:_ContactListenerForRegionSelection = new _ContactListenerForRegionSelection (selProxyRect._b2Body);
          _b2World.SetContactListener (tempContactListener);
-         _b2World.Step (0, 1);
+         _b2World.Step (0, 1, 1);
          selProxyRect.Destroy ();
          
          _b2World.SetContactListener (oldContactListener);
@@ -102,30 +105,20 @@ package editor.selection {
       
       public function GetObjectsAtPoint (pointX:Number, pointY:Number):Array
       {
-         var windowSize:Number = 3.0;
-         
-         var aabb:b2AABB = new b2AABB ();
-         aabb.lowerBound.Set (pointX - windowSize, pointY - windowSize);
-         aabb.upperBound.Set (pointX + windowSize, pointY + windowSize);
-         
-         var maxCount:uint = 128;//16;
-         var shapes:Array = new Array (maxCount); 
-         
-         var count:int = _b2World.Query(aabb, shapes, maxCount);
-         
-         //trace ("count = " + count);
-         
-         var vertex:b2Vec2 = new b2Vec2 ();
-         vertex.Set(pointX, pointY);
+         var fixtures:Array = b2eWorldAABBQueryCallback.GetFixturesContainPoint (_b2World, b2Vec2.b2Vec2_From2Numbers (pointX, pointY));
+         var num_fixtures:int = fixtures.length;
+         var fixture:b2Fixture;
+         var body:b2Body;
          
          var objectArray:Array = new Array ();
          
-         for (var i:int = 0; i < count; ++ i)
+         for (var i:int = 0; i < num_fixtures; ++ i)
          {
-            var body:b2Body = shapes[i].GetBody();
+            fixture = fixtures [i]
+            body = fixture.GetBody();
             var selProxy:SelectionProxy = body.GetUserData () as SelectionProxy;
             
-            if (selProxy.IsSelectable () && shapes[i].TestPoint(body.GetXForm(), vertex))
+            if (selProxy.IsSelectable ())
             {
                objectArray.push (selProxy.mUserData);
             }

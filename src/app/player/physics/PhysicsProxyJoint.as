@@ -3,7 +3,7 @@ package player.physics {
    
    import flash.geom.Point;
    
-   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Common.b2Vec2;
    import Box2D.Dynamics.Joints.b2Joint;
    
    

@@ -8,7 +8,7 @@ package editor.selection {
    import Box2D.Dynamics.Joints.*;
    import Box2D.Collision.*;
    import Box2D.Collision.Shapes.*;
-   import Box2D.Common.Math.*;
+   import Box2D.Common.*;
    
    
    public class SelectionProxy 
@@ -39,13 +39,13 @@ package editor.selection {
             return;
          
       //
-         var shape:b2Shape = _b2Body.m_shapeList;
+         var fixture:b2Fixture = _b2Body.m_fixtureList;
          
-         while (shape != null)
+         while (fixture != null)
          {
-            shape.m_filter.groupIndex = mSelectable ? 0 : -1;
+            fixture.m_filter.groupIndex = mSelectable ? 0 : -1;
             
-            shape = shape.m_next;
+            fixture = fixture.m_next;
          }
       }
       
@@ -74,7 +74,7 @@ package editor.selection {
          if (_b2Body == null)
             return 0;
          else
-            return _b2Body.m_shapeCount;
+            return _b2Body.m_fixtureCount;
       }
       
       public function Destroy ():void
@@ -89,14 +89,20 @@ package editor.selection {
             return false;
          
       //
-         var shape:b2Shape = _b2Body.m_shapeList;
+         var fixture:b2Fixture = _b2Body.m_fixtureList;
+         var shape:b2Shape;
+         var point:b2Vec2 = new b2Vec2 ();
+         point.Set (pointX, pointY);
          
-         while (shape != null)
+         while (fixture != null)
          {
-            if ( shape.TestPoint(_b2Body.GetXForm(), new b2Vec2 (pointX, pointY)) )
+            shape = fixture.GetShape ();
+            
+            
+            if ( shape.TestPoint(_b2Body.GetTransform(), point) )
                return true;
             
-            shape = shape.m_next;
+            fixture = fixture.m_next;
          }
          
          return false;
@@ -116,31 +122,38 @@ package editor.selection {
       {
       //trace ("------------------- circle");
       //
-         var circleDef:b2CircleDef = new b2CircleDef ();
-         circleDef.localPosition.Set(localX, localY);
-         circleDef.radius = radius;
-         circleDef.filter.groupIndex = IsSelectable () ? 0 : -1;
-         _b2Body.CreateShape (circleDef);
+         var circle_shape:b2CircleShape = new b2CircleShape ();
+         circle_shape.m_radius = radius;
+         circle_shape.m_p.Set(localX, localY);
+         
+         var fixture_def:b2FixtureDef = new b2FixtureDef ();
+         fixture_def.shape = circle_shape;
+         fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
+         
+         _b2Body.CreateFixture (fixture_def);
       }
       
       public function CreateConvexPolygonZone (localPoints:Array):void
       {
       //trace ("------------------- rect");
       //
-         var vertexCount:uint = localPoints.length;
-         if (vertexCount > b2Settings.b2_maxPolygonVertices)
-            vertexCount = b2Settings.b2_maxPolygonVertices;
+         var localVertices:Array = new Array (localPoints.length);
+         var point:Point;
          
-      //
-         var polygonDef:b2PolygonDef = new b2PolygonDef ();
-         polygonDef.vertexCount = vertexCount;
-         polygonDef.filter.groupIndex = IsSelectable () ? 0 : -1;
-         for (var i:int = 0; i < vertexCount; ++ i)
+         for (var i:int = 0; i < localPoints.length; ++ i)
          {
-            polygonDef.vertices [i].Set (localPoints [i].x, localPoints [i].y);
+            point = localPoints [i];
+            localVertices [i] = b2Vec2.b2Vec2_From2Numbers (point.x, point.y);
          }
          
-         _b2Body.CreateShape (polygonDef);
+         var polygon_shape:b2PolygonShape = new b2PolygonShape ();
+         polygon_shape.Set (localPoints, localPoints.length);
+         
+         var fixture_def:b2FixtureDef = new b2FixtureDef ();
+         fixture_def.shape = polygon_shape;
+         fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
+         
+         _b2Body.CreateFixture (fixture_def);
       }
       
       public function CreateConcavePolygonZone (localPoints:Array):void
@@ -155,11 +168,13 @@ package editor.selection {
          var yPositions:Array = new Array (vertexCount);
          
          var i:int;
+         var point:Point;
          
          for (i = 0; i < localPoints.length; ++ i) 
          {
-            xPositions[i] = localPoints[i].x;
-            yPositions[i] = localPoints[i].y;
+            point = localPoints [i];
+            xPositions[i] = point.x;
+            yPositions[i] = point.y;
          }
          
          // Create the initial poly
@@ -170,13 +185,16 @@ package editor.selection {
          
          for (i = 0; i < numDecomposedPolygons; ++ i) 
          {
-            var polygonDef:b2PolygonDef = new b2PolygonDef();
+            var localVertices:Array = (decomposedPolygons[i] as b2Polygon).GetQuanlifiedVertices ();
             
-            polygonDef.filter.groupIndex = IsSelectable () ? 0 : -1;
+            var polygon_shape:b2PolygonShape = new b2PolygonShape ();
+            polygon_shape.Set (localVertices, localVertices.length);
             
-            decomposedPolygons[i].AddTo(polygonDef);
+            var fixture_def:b2FixtureDef = new b2FixtureDef ();
+            fixture_def.shape = polygon_shape;
+            fixture_def.filter.groupIndex =  IsSelectable () ? 0 : -1;
             
-            _b2Body.CreateShape (polygonDef);
+            _b2Body.CreateFixture (fixture_def);
          }
       }
       
@@ -185,7 +203,7 @@ package editor.selection {
          var dx:Number = localX2 - localX1;
          var dy:Number = localY2 - localY1;
          
-         if (Math.abs (dx) < b2Settings.k_MinFloatNumber && Math.abs (dy) < b2Settings.k_MinFloatNumber) // will cause strange behaviour
+         if (Math.abs (dx) < b2Settings.B2_FLT_EPSILON && Math.abs (dy) < b2Settings.B2_FLT_EPSILON) // will cause strange behaviour
             return;
          
          var rot:Number = Math.atan2 (dy, dx);

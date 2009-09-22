@@ -6,7 +6,7 @@ package editor.selection {
    import Box2D.Dynamics.Joints.*;
    import Box2D.Collision.*;
    import Box2D.Collision.Shapes.*;
-   import Box2D.Common.Math.*;
+   import Box2D.Common.*;
    
    
    public class SelectionProxyCircle extends SelectionProxy  

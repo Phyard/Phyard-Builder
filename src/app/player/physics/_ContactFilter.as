@@ -2,12 +2,14 @@
 package player.physics {
    import flash.utils.ByteArray;
 
-   import Box2D.Collision.b2ContactPoint;
-   import Box2D.Collision.Shapes.b2Shape;
-   import Box2D.Dynamics.Contacts.b2ContactResult;
-   import Box2D.Collision.Shapes.b2FilterData;
+   //import Box2D.Collision.b2ContactPoint;
+   //import Box2D.Collision.Shapes.b2Shape;
+   //import Box2D.Dynamics.Contacts.b2ContactResult;
+   //import Box2D.Collision.Shapes.b2FilterData;
    
    import Box2D.Dynamics.b2ContactFilter;
+   import Box2D.Dynamics.b2Fixture;
+   import Box2D.Dynamics.b2Filter;
    
    public class _ContactFilter extends b2ContactFilter
    {
@@ -67,7 +69,11 @@ package player.physics {
          mFriendTable [ (groupIndex2 << mTableRowShift) + groupIndex1 ] = 1;
       }
       
-	   /// Return true if contact calculations should be performed between these two shapes.
+//==========================================================
+// v2.01
+//==========================================================
+      /*
+      /// Return true if contact calculations should be performed between these two shapes.
       /// @warning for performance reasons this is only called when the AABBs begin to overlap.
       override public virtual function ShouldCollide(shape1:b2Shape, shape2:b2Shape) : Boolean
       {
@@ -90,6 +96,34 @@ package player.physics {
          
          return mFriendTable [ (groupIndex1 << mTableRowShift) + groupIndex2 ] == 0;
       }
+      */
+//==========================================================
+// v2.10
+//==========================================================
+      
+		/// Return true if contact calculations should be performed between these two shapes.
+		/// @warning for performance reasons this is only called when the AABBs begin to overlap.
+		override public function ShouldCollide(fixtureA:b2Fixture, fixtureB:b2Fixture):Boolean
+		{
+         var filter1:b2Filter = fixtureA.GetFilterData();
+         var filter2:b2Filter = fixtureB.GetFilterData();
+         
+         var groupIndex1:int = filter1.groupIndex;
+         var groupIndex2:int = filter2.groupIndex;
+         
+         if (groupIndex1 == 0 || groupIndex2 == 0)
+            return true;
+         
+         if (groupIndex1 == groupIndex2)
+            return groupIndex1 > 0;
+         
+         if (groupIndex1 < 0)
+            groupIndex1 = - groupIndex1;
+         if (groupIndex2 < 0)
+            groupIndex2 = - groupIndex2;
+         
+         return mFriendTable [ (groupIndex1 << mTableRowShift) + groupIndex2 ] == 0;
+		}
    }
  }
 

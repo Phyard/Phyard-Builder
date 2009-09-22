@@ -4,21 +4,23 @@ package player.physics {
    import flash.geom.Point;
    
    import Box2D.Collision.Shapes.b2Shape;
-   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Common.b2Vec2;
    import Box2D.Common.b2Settings;
    
-   import Box2D.Collision.Shapes.b2CircleDef;
-   import Box2D.Collision.Shapes.b2PolygonDef;
+   //import Box2D.Collision.Shapes.b2CircleDef;
+   //import Box2D.Collision.Shapes.b2PolygonDef;
+   import Box2D.Collision.Shapes.b2CircleShape;
+   import Box2D.Collision.Shapes.b2PolygonShape;
    
-   
+   import Box2D.Dynamics.b2Fixture;
+   import Box2D.Dynamics.b2FixtureDef;
    
    import Box2D.Collision.Shapes.b2Polygon;
    
    public class PhysicsProxyShape extends PhysicsProxy
    {
-      //protected var _b2Shape:b2Shape = null;
-      protected var _b2Shapes:Array = new Array; // for concave polygon, there may be mroe than one b2Shapes
-            
+      protected var _b2Fixtures:Array = new Array () // for concave polygon, there may be mroe than one shapes
+      
       protected var mPhysicsProxyBody:PhysicsProxyBody;
       
       public function PhysicsProxyShape (phyEngine:PhysicsEngine, proxyBody:PhysicsProxyBody):void
@@ -30,21 +32,17 @@ package player.physics {
       
       override public function Destroy ():void
       {
-         //if (_b2Shape != null)
-         //   mPhysicsProxyBody._b2Body.DestroyShape(_b2Shape);
-         for (var i:int = 0; i < _b2Shapes.length; ++ i)
+         for (var i:int = 0; i < _b2Fixtures.length; ++ i)
          {
-            mPhysicsProxyBody._b2Body.DestroyShape(_b2Shapes [i] as b2Shape);
+            mPhysicsProxyBody._b2Body.DestroyFixture(_b2Fixtures [i] as b2Fixture);
          }
          
-         _b2Shapes.splice (0, _b2Shapes.length);
+         _b2Fixtures.splice (0, _b2Fixtures.length);
       }
       
       public function NotifyDestroyed ():void
       {
-         //_b2Shape = null;
-         
-         _b2Shapes.splice (0, _b2Shapes.length);
+         _b2Fixtures.splice (0, _b2Fixtures.length);
       }
       
       public function GetProxyBody ():PhysicsProxyBody
@@ -58,64 +56,74 @@ package player.physics {
       
       public function AddCircleShape (worldPhysicsX:Number, worldPhysicsY:Number, physicsRadius:Number, params:Object = null):void
       {
-         var circleDef:b2CircleDef = new b2CircleDef ();
-         circleDef.localPosition.SetV(mPhysicsProxyBody._b2Body.GetLocalVector (new b2Vec2 (worldPhysicsX, worldPhysicsY)));
-         circleDef.radius = physicsRadius;
+         // ...
+         var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
          if (params != null)
          {
-            circleDef.density = params.mDensity;
-            circleDef.friction = params.mFriction;
-            circleDef.restitution = params.mRestitution;
-            circleDef.isSensor = params.mIsSensor;
+            fixture_def.density = params.mDensity;
+            fixture_def.friction = params.mFriction;
+            fixture_def.restitution = params.mRestitution;
+            fixture_def.isSensor = params.mIsSensor;
          }
          else
          {
-            circleDef.density = 1.0;
-            circleDef.friction = 0.1;
-            circleDef.restitution = 0.2;
+            fixture_def.density = 1.0;
+            fixture_def.friction = 0.1;
+            fixture_def.restitution = 0.2;
          }
          
-         //>>froomv1.02
-         circleDef.filter.maskBits  = params.mMaskBits;
-         circleDef.filter.categoryBits = params.mCategoryBits;
-         circleDef.filter.groupIndex = params.mGroupIndex;
-         //<<
+         fixture_def.filter.maskBits  = params.mMaskBits;
+         fixture_def.filter.categoryBits = params.mCategoryBits;
+         fixture_def.filter.groupIndex = params.mGroupIndex;
          
-         //_b2Shape = mPhysicsProxyBody._b2Body.CreateShape (circleDef);
-         //_b2Shape.SetUserData (this);
-         var b2shape:b2Shape = mPhysicsProxyBody._b2Body.CreateShape (circleDef);
-         b2shape.SetUserData (this);
+         fixture_def.userData = this;
          
-         _b2Shapes.push (b2shape);
+         var circle_shape:b2CircleShape = new b2CircleShape ();
+         circle_shape.m_radius = physicsRadius;
+         //circle_shape.m_p.CopyFrom (mPhysicsProxyBody._b2Body.GetLocalVector (new b2Vec2 (worldPhysicsX, worldPhysicsY)));
+         circle_shape.m_p.Set (worldPhysicsX, worldPhysicsY);
+         
+         fixture_def.shape = circle_shape;
+         
+         var b2fixture:b2Fixture = mPhysicsProxyBody._b2Body.CreateFixture (fixture_def);
+         _b2Fixtures.push (b2fixture);
       }
       
       public function AddPolygonShape (worldPhysicsPoints:Array, params:Object = null):void
       {
-         var polygonDef:b2PolygonDef = new b2PolygonDef ();
+         var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
          if (params != null)
          {
-            polygonDef.density = params.mDensity;
-            polygonDef.friction = params.mFriction;
-            polygonDef.restitution = params.mRestitution;
-            polygonDef.isSensor = params.mIsSensor;
+            fixture_def.density = params.mDensity;
+            fixture_def.friction = params.mFriction;
+            fixture_def.restitution = params.mRestitution;
+            fixture_def.isSensor = params.mIsSensor;
          }
          else
          {
-            polygonDef.density = 1.0;
-            polygonDef.friction = 0.1;
-            polygonDef.restitution = 0.2;
+            fixture_def.density = 1.0;
+            fixture_def.friction = 0.1;
+            fixture_def.restitution = 0.2;
          }
          
          //>>froomv1.02
-         polygonDef.filter.maskBits  = params.mMaskBits;
-         polygonDef.filter.categoryBits = params.mCategoryBits;
-         polygonDef.filter.groupIndex = params.mGroupIndex;
+         fixture_def.filter.maskBits  = params.mMaskBits;
+         fixture_def.filter.categoryBits = params.mCategoryBits;
+         fixture_def.filter.groupIndex = params.mGroupIndex;
          //<<
          
+         fixture_def.userData = this;
+         
+         //...
+         var polygon_shape:b2PolygonShape;
+         var local_vertices:Array;
+         
+         var i:int;
+         var point:Point;
          var vertexId:int;
-         var b2shape:b2Shape;
+         var b2fixture:b2Fixture;
          
          //>>from v1.04
          if (params != null && params.mIsConcavePotentially)
@@ -127,8 +135,9 @@ package player.physics {
             
             for (vertexId = 0; vertexId < vertexCount; ++ vertexId) 
             {
-               xPositions[vertexId] = worldPhysicsPoints[vertexId].x;
-               yPositions[vertexId] = worldPhysicsPoints[vertexId].y;
+               point = worldPhysicsPoints [vertexId] as Point;
+               xPositions[vertexId] = point.x;
+               yPositions[vertexId] = point.y;
             }
             
             // Create the initial poly
@@ -137,47 +146,41 @@ package player.physics {
             var decomposedPolygons:Array = new Array ();
             var numDecomposedPolygons:int = b2Polygon.DecomposeConvex(polygon, decomposedPolygons, vertexCount - 2);
             
-            for (var i:int = 0; i < numDecomposedPolygons; ++ i) 
+            for (i = 0; i < numDecomposedPolygons; ++ i) 
             {
-               var newPolygonDef:b2PolygonDef = new b2PolygonDef();
+               local_vertices = (decomposedPolygons[i] as b2Polygon).GetQuanlifiedVertices ();
                
-               newPolygonDef.density = polygonDef.density;
-               newPolygonDef.friction = polygonDef.friction;
-               newPolygonDef.restitution = polygonDef.restitution;
-               newPolygonDef.isSensor = polygonDef.isSensor;
+               polygon_shape = new b2PolygonShape ();
+               polygon_shape.Set (local_vertices, local_vertices.length);
                
-               newPolygonDef.filter.maskBits = polygonDef.filter.maskBits;
-               newPolygonDef.filter.categoryBits = polygonDef.filter.categoryBits;
-               newPolygonDef.filter.groupIndex = polygonDef.filter.groupIndex;
+               fixture_def.shape = polygon_shape;
                
-               decomposedPolygons[i].AddTo(newPolygonDef);
-               
-               b2shape = mPhysicsProxyBody._b2Body.CreateShape (newPolygonDef);
-               b2shape.SetUserData (this);
-               
-               _b2Shapes.push (b2shape);
+               b2fixture = mPhysicsProxyBody._b2Body.CreateFixture (fixture_def);
+               _b2Fixtures.push (b2fixture);
             }
          }
          //<<
          else
          {
-            polygonDef.vertexCount = worldPhysicsPoints.length;
-            if (polygonDef.vertexCount > b2Settings.b2_maxPolygonVertices)
-               polygonDef.vertexCount = b2Settings.b2_maxPolygonVertices;
+            var vertice_count:int = worldPhysicsPoints.length <  b2Settings.b2_maxPolygonVertices 
+                                    ? 
+                                    worldPhysicsPoints.length :  b2Settings.b2_maxPolygonVertices;
             
-            for (vertexId = 0; vertexId < polygonDef.vertexCount; ++ vertexId)
+            local_vertices = new Array (vertice_count);
+            for (vertexId = 0; vertexId < vertice_count; ++ vertexId)
             {
-               var point:Point = worldPhysicsPoints [vertexId] as Point;
-               var vertex:b2Vec2 = new b2Vec2 (point.x, point.y);
-               polygonDef.vertices [vertexId].SetV ( mPhysicsProxyBody._b2Body.GetLocalVector (vertex) );
+               point = worldPhysicsPoints [vertexId] as Point;
+               //local_vertices [vertexId] =  mPhysicsProxyBody._b2Body.GetLocalVector (new b2Vec2 (point.x, point.y));
+               local_vertices [vertexId] =  b2Vec2.b2Vec2_From2Numbers (point.x, point.y);
             }
             
-            //_b2Shape = mPhysicsProxyBody._b2Body.CreateShape (polygonDef);
-            //_b2Shape.SetUserData (this);
-            b2shape = mPhysicsProxyBody._b2Body.CreateShape (polygonDef);
-            b2shape.SetUserData (this);
+            polygon_shape = new b2PolygonShape ();
+            polygon_shape.Set (local_vertices, local_vertices.length);
+               
+            fixture_def.shape = polygon_shape;
             
-            _b2Shapes.push (b2shape);
+            b2fixture = mPhysicsProxyBody._b2Body.CreateFixture (fixture_def);
+            _b2Fixtures.push (b2fixture);
          }
       }
       
@@ -187,12 +190,12 @@ package player.physics {
       
       public function SetAsSensor (isSensor:Boolean):void
       {
-         if (_b2Shapes == null)
+         if (_b2Fixtures == null)
             return;
          
          var i:int;
-         for (i = 0; i < _b2Shapes.length; ++ i)
-            (_b2Shapes [i] as b2Shape).m_isSensor = isSensor;
+         for (i = 0; i < _b2Fixtures.length; ++ i)
+            (_b2Fixtures [i] as b2Fixture).SetSensor (isSensor);
       }
       
       public function SetBodyLinearVelocity (vx:Number, vy:Number):void

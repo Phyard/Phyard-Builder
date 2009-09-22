@@ -6,7 +6,7 @@ package player.physics {
    import Box2D.Dynamics.Joints.b2PrismaticJoint;
    import Box2D.Dynamics.Joints.b2PrismaticJointDef;
    import Box2D.Dynamics.b2Body;
-   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Common.b2Vec2;
    
    
    public class PhysicsProxyJointSlider extends PhysicsProxyJoint
@@ -20,13 +20,13 @@ package player.physics {
          
          var prismaticJointDef:b2PrismaticJointDef = new b2PrismaticJointDef ();
          
-         var body1:b2Body = proxyBody1 == null ? mPhysicsEngine._b2World.GetGroundBody () : proxyBody1._b2Body;
-         var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.GetGroundBody () : proxyBody2._b2Body;
+         var body1:b2Body = proxyBody1 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody1._b2Body;
+         var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody2._b2Body;
          
-         var axis:b2Vec2 = new b2Vec2 (anchorPhysicsPosX2 - anchorPhysicsPosX1, anchorPhysicsPosY2 - anchorPhysicsPosY1);
+         var axis:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX2 - anchorPhysicsPosX1, anchorPhysicsPosY2 - anchorPhysicsPosY1);
          axis.Normalize ();
          
-         prismaticJointDef.Initialize(body1, body2, new b2Vec2 (anchorPhysicsPosX1, anchorPhysicsPosY1), axis);
+         prismaticJointDef.Initialize(body1, body2, b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX1, anchorPhysicsPosY1), axis);
          
          prismaticJointDef.collideConnected = params.mCollideConnected;
          

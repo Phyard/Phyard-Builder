@@ -85,10 +85,23 @@
          <fileset dir="${dir.external}/suit2d_loader_as3">
             <exclude name="**/.svn/**"/>
          </fileset>
+         <!--
          <fileset dir="${dir.external}/box2dflash">
             <exclude name="**/.svn/**"/>
          </fileset>
+         -->
+         <fileset dir="${dir.external}/box2d_as3_v210">
+            <exclude name="**/.svn/**"/>
+         </fileset>
+         <!--
          <fileset dir="${dir.external}/concave_polygon_decomposition">
+            <exclude name="**/.svn/**"/>
+         </fileset>
+         -->
+         <fileset dir="${dir.external}/concave_polygon_decomposition_as3_v210">
+            <exclude name="**/.svn/**"/>
+         </fileset>
+         <fileset dir="${dir.external}/box2dex">
             <exclude name="**/.svn/**"/>
          </fileset>
          <fileset dir="${dir.external}/beziercurves">

@@ -3,12 +3,13 @@ package player.physics {
    
    import flash.geom.Point;
    
+   import Box2D.Common.b2Vec2;
+   import Box2D.Collision.b2AABB;
    import Box2D.Dynamics.b2World;
    import Box2D.Dynamics.b2WorldDef;
    import Box2D.Dynamics.b2Body;
-   import Box2D.Common.Math.b2Vec2;
-   import Box2D.Collision.b2AABB;
-   import Box2D.Dynamics.b2ContactFilter;
+   import Box2D.Dynamics.b2Fixture;
+   import Box2D.Dynamics.b2ContactManager;
    
    import Box2D.Dynamics.b2ContactFilter;
    import Box2D.Dynamics.b2ContactListener;
@@ -17,6 +18,9 @@ package player.physics {
    import Box2D.Common.b2Settings;
    
    import Box2D.b2WorldPool;
+   
+   import Box2dEx.Helper.b2eWorldAABBQueryCallback;
+   import Box2dEx.Helper.b2eWorldHelper;
    
    public class PhysicsEngine
    {
@@ -54,7 +58,7 @@ package player.physics {
          worldAABB.lowerBound.Set(lowerDisplayPoint.x, lowerDisplayPoint.y);
          worldAABB.upperBound.Set(upperDisplayPoint.x, upperDisplayPoint.y);
          
-         var gravity:b2Vec2 = new b2Vec2 (initialGravity.x * GlobalGravityScale, initialGravity.y * GlobalGravityScale);
+         var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (initialGravity.x * GlobalGravityScale, initialGravity.y * GlobalGravityScale);
          var doSleep:Boolean = true;
          
          var world_def:b2WorldDef = new b2WorldDef (world_hints.mPhysicsShapesPotentialMaxCount, world_hints.mPhysicsShapesPopulationDensityLevel);
@@ -91,7 +95,7 @@ package player.physics {
          else
          {
             mContactFilter = null;
-            _b2World.SetContactFilter (b2ContactFilter.b2_defaultFilter);
+            _b2World.SetContactFilter (b2ContactManager.b2_defaultFilter);
          }
          
          CreateDefaultCollisionCategory ();
@@ -201,21 +205,21 @@ package player.physics {
          //
          ga *= GlobalGravityScale;
          
-         var gravity:b2Vec2 = new b2Vec2 (ga * Math.cos (angle), ga * Math.sin (angle));
+         var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (ga * Math.cos (angle), ga * Math.sin (angle));
          
          _b2World.SetGravity (gravity);
          
-          _b2World.WakeUpAllBodies ();
+          b2eWorldHelper.WakeUpAllBodies (_b2World);
       }
       
       public function SetGravityByVector (gx:Number, gy:Number):void
       {
          //
-         var gravity:b2Vec2 = new b2Vec2 (gx * GlobalGravityScale, gy * GlobalGravityScale);
+         var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (gx * GlobalGravityScale, gy * GlobalGravityScale);
          
          _b2World.SetGravity (gravity);
          
-          _b2World.WakeUpAllBodies ();
+          b2eWorldHelper.WakeUpAllBodies (_b2World);
       }
       
 //=================================================================
@@ -249,7 +253,8 @@ package player.physics {
       public function Update (escapedTime:Number):void
       {
          //(_b2World.m_contactListener as _ContactListener).Reset ();
-         _b2World.Step (escapedTime, 30);
+         //_b2World.Step (escapedTime, 30); // v2.01
+         _b2World.Step (escapedTime, 8, 3); // v2.10
       }
       
       public function SetJointRemovedCallback (func:Function):void
@@ -297,68 +302,46 @@ package player.physics {
       // isGettingBody - false means to get shapes
       private function GetProxiesAtPoint (displayX:Number, displayY:Number, isGettingBody:Boolean, setMaxShapeIndex:Boolean = false):Array
       {
-         var windowSize:Number = 3.0;
-         var lowerPoint:Point = DisplayPosition2PhysicsPoint (displayX - windowSize, displayY - windowSize);
-         var upperPoint:Point = DisplayPosition2PhysicsPoint (displayX + windowSize, displayY + windowSize);
+         // v2.10
          var point:Point = DisplayPosition2PhysicsPoint (displayX, displayY);
+         var vertex:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (point.x, point.y);
          
-         // 
-         
-         var aabb:b2AABB = new b2AABB ();
-         aabb.lowerBound.Set (lowerPoint.x, lowerPoint.y);
-         aabb.upperBound.Set (upperPoint.x, upperPoint.y);
-         
-         var maxCount:uint = 128;
-         var shapes:Array;
-         
-         var count:int = maxCount;
-         
-         while (count == maxCount)
-         {
-            maxCount *= 2;
-            shapes = new Array (maxCount);
-            
-            count = _b2World.Query(aabb, shapes, maxCount);
-         }
-         
-         var vertex:b2Vec2 = new b2Vec2 ();
-         vertex.Set(point.x, point.y);
+         var fixtures:Array = b2eWorldAABBQueryCallback.GetFixturesContainPoint (_b2World, vertex);
+         var num_fixtures:int = fixtures.length;
+         var fixture:b2Fixture;
          
          var objectArray:Array = new Array ();
          
-         for (var i:int = 0; i < count; ++ i)
+         for (var i:int = 0; i < num_fixtures; ++ i)
          {
-            var body:b2Body = shapes[i].GetBody();
+            fixture = fixtures [i];
             
-            if (shapes[i].TestPoint(body.GetXForm(), vertex))
+            if (isGettingBody)
             {
-               if (isGettingBody)
+               var proxyBody:PhysicsProxyBody = fixture.GetBody ().GetUserData () as PhysicsProxyBody;
+               
+               var shapeIndex:Number = _GetShapeIndex (fixture.GetUserData () as PhysicsProxyShape);
+               
+               if (objectArray.indexOf (proxyBody) < 0)
                {
-                  var proxyBody:PhysicsProxyBody = body.GetUserData () as PhysicsProxyBody;
-                  
-                  var shapeIndex:Number = _GetShapeIndex (shapes[i].GetUserData () as PhysicsProxyShape);
-                  
-                  if (objectArray.indexOf (proxyBody) < 0)
-                  {
-                     objectArray.push (proxyBody);
-                     proxyBody.SetTempValue (shapeIndex);
-                  }
-                  else if (setMaxShapeIndex && (_GetShapeIndex != null) )
-                  {
-                     var oldShapeIndex:Number = proxyBody.GetTempValue ();
-                     
-                     if (oldShapeIndex < shapeIndex)
-                        proxyBody.SetTempValue (shapeIndex);
-                  }
+                  objectArray.push (proxyBody);
+                  proxyBody.SetTempValue (shapeIndex);
                }
-               else
+               else if (setMaxShapeIndex)
                {
-                  var proxyShape:PhysicsProxyShape = shapes[i].GetUserData () as PhysicsProxyShape;
+                  var oldShapeIndex:Number = proxyBody.GetTempValue ();
                   
-                  if (objectArray.indexOf (proxyShape) < 0)
-                  {
-                     objectArray.push (proxyShape);
-                  }
+                  if (oldShapeIndex < shapeIndex)
+                     proxyBody.SetTempValue (shapeIndex);
+               }
+            }
+            else
+            {
+               var proxyShape:PhysicsProxyShape = fixture.GetUserData () as PhysicsProxyShape;
+               
+               if (objectArray.indexOf (proxyShape) < 0)
+               {
+                  objectArray.push (proxyShape);
                }
             }
          }
@@ -434,7 +417,7 @@ package player.physics {
          var dy:Number = displayY2 - displayY1;
          
          
-         if (Math.abs (dx) < b2Settings.k_MinFloatNumber && Math.abs (dy) < b2Settings.k_MinFloatNumber) // will cause strange behaviour
+         if (Math.abs (dx) < b2Settings.B2_FLT_EPSILON && Math.abs (dy) < b2Settings.B2_FLT_EPSILON) // will cause strange behaviour
          {
             return; 
          }

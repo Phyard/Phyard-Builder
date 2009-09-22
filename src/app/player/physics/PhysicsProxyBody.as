@@ -5,7 +5,7 @@ package player.physics {
    
    import Box2D.Dynamics.b2Body;
    import Box2D.Dynamics.b2BodyDef;
-   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Common.b2Vec2;
    
    public class PhysicsProxyBody extends PhysicsProxy
    {
@@ -91,7 +91,7 @@ package player.physics {
          if (_b2Body == null)
             return;
          
-         _b2Body.SetLinearVelocity (new b2Vec2 (vx, vy));
+         _b2Body.SetLinearVelocity (b2Vec2.b2Vec2_From2Numbers (vx, vy));
       }
       
       public function SetAngularVelocity (omega:Number):void

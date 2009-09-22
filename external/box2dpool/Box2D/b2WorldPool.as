@@ -7,10 +7,11 @@ package Box2D {
    import Box2D.Dynamics.Joints.*;
    import Box2D.Collision.*;
    import Box2D.Collision.Shapes.*;
-   import Box2D.Common.Math.*;
+   import Box2D.Common.*;
    
    public class b2WorldPool 
    {
+      /*
       private static var s_b2WorldInfoArray:Array = new Array ();
       private static var s_NumUsedB2Worlds:int = 0;
       
@@ -129,6 +130,18 @@ package Box2D {
             b2world.SetDestructionListener (object.mB2DestructionListener_old);
             b2world.SetContactFilter       (object.mB2ContactFilter_old);
          }
+      }
+      */
+      
+      public static function AllocB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean, worldDef:b2WorldDef):b2World
+      {
+         var b2world:b2World = new b2World( gravity, doSleep);
+         
+         return b2world;
+      }
+      
+      public static function ReleaseB2World (b2world:b2World):void
+      {
       }
       
    }

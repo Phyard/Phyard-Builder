@@ -1,13 +1,13 @@
 
 package player.physics {
 
-   import Box2D.Collision.b2ContactPoint;
-   import Box2D.Collision.Shapes.b2Shape;
-   import Box2D.Dynamics.Contacts.b2ContactResult;
-
-   import Box2D.Dynamics.b2ContactListener;
+   import Box2D.Collision.*;
+   import Box2D.Collision.Shapes.*;
+   import Box2D.Dynamics.Contacts.*;
+   import Box2D.Dynamics.*;
+   import Box2D.Common.*;
    
-   public class _ContactListener extends b2ContactListener
+   public class _ContactListener implements b2ContactListener
    {
       private var mPhysicsEngine:PhysicsEngine;
       
@@ -33,42 +33,49 @@ package player.physics {
          mNumPoints_Remove = 0;
       }
       
-      /// Called when a contact point is added. This includes the geometry
-      /// and the forces.
-      override public function Add(point:b2ContactPoint) : void
+//=======================================================
+// v.2.10
+//
+//=======================================================
+
+      /// Called when two fixtures begin to touch.
+      public function BeginContact(contact:b2Contact):void 
       {
-         //mNumPoints_Add ++;
-         //mNumPoints ++;
-         
          if (mPhysicsEngine._OnShapeContactStarted != null)
-            mPhysicsEngine._OnShapeContactStarted (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
+            mPhysicsEngine._OnShapeContactStarted (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
       }
-      
-      /// Called when a contact point persists. This includes the geometry
-      /// and the forces.
-      override public function Persist(point:b2ContactPoint) : void
+
+      /// Called when two fixtures cease to touch.
+      public function EndContact(contact:b2Contact):void 
       {
-         //mNumPoints_Persist ++;
-         
-      //   if (mPhysicsEngine._OnShapeContactContinued != null)
-      //      mPhysicsEngine._OnShapeContactContinued (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
-      }
-      
-      /// Called when a contact point is removed. This includes the last
-      /// computed geometry and forces.
-      override public function Remove(point:b2ContactPoint) : void
-      {
-         //mNumPoints_Remove ++;
-         //mNumPoints --;
-         
          if (mPhysicsEngine._OnShapeContactFinished != null)
-            mPhysicsEngine._OnShapeContactFinished (point.shape1.GetUserData () as PhysicsProxyShape, point.shape2.GetUserData () as PhysicsProxyShape);
+            mPhysicsEngine._OnShapeContactFinished (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
       }
-      
-      /// Called after a contact point is solved.
-      override public function Result(point:b2ContactResult) : void
+
+      /// This is called after a contact is updated. This allows you to inspect a
+      /// contact before it goes to the solver. If you are careful, you can modify the
+      /// contact manifold (e.g. disable contact).
+      /// A copy of the old manifold is provided so that you can detect changes.
+      /// Note: this is called only for awake bodies.
+      /// Note: this is called even when the number of contact points is zero.
+      /// Note: this is not called for sensors.
+      /// Note: if you set the number of contact points to zero, you will not
+      /// get an EndContact callback. However, you may get a BeginContact callback
+      /// the next step.
+      public function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void 
       {
       }
+
+      /// This lets you inspect a contact after the solver is finished. This is useful
+      /// for inspecting impulses.
+      /// Note: the contact manifold does not include time of impact impulses, which can be
+      /// arbitrarily large if the sub-step is small. Hence the impulse is provided explicitly
+      /// in a separate data structure.
+      /// Note: this is only called for contacts that are touching, solid, and awake.
+      public function PostSolve(contact:b2Contact, impulseb:b2ContactImpulse):void 
+      {
+      }
+
    }
  }
 

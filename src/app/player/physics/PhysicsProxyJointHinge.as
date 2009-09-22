@@ -6,7 +6,7 @@ package player.physics {
    import Box2D.Dynamics.Joints.b2RevoluteJoint;
    import Box2D.Dynamics.Joints.b2RevoluteJointDef;
    import Box2D.Dynamics.b2Body;
-   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Common.b2Vec2;
    
    import Box2D.Dynamics.Joints.b2DistanceJointDef;
    
@@ -22,10 +22,10 @@ package player.physics {
          
          var hingeJointDef:b2RevoluteJointDef = new b2RevoluteJointDef ();
          
-         var body1:b2Body = proxyBody1 == null ? mPhysicsEngine._b2World.GetGroundBody () : proxyBody1._b2Body;
-         var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.GetGroundBody () : proxyBody2._b2Body;
+         var body1:b2Body = proxyBody1 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody1._b2Body;
+         var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody2._b2Body;
          
-         hingeJointDef.Initialize(body1, body2, new b2Vec2 (anchorPhysicsPosX, anchorPhysicsPosY));
+         hingeJointDef.Initialize(body1, body2, b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX, anchorPhysicsPosY));
          
          hingeJointDef.collideConnected = params.mCollideConnected;
          
@@ -50,7 +50,7 @@ package player.physics {
          
          //var distanceJointDef:b2DistanceJointDef = new b2DistanceJointDef ();
          //
-         //distanceJointDef.Initialize(body1, body2, new b2Vec2 (anchorPhysicsPosX, anchorPhysicsPosY), new b2Vec2 (anchorPhysicsPosX, anchorPhysicsPosY));
+         //distanceJointDef.Initialize(body1, body2, b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX, anchorPhysicsPosY), b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX, anchorPhysicsPosY));
          //
          //distanceJointDef.collideConnected = params.mCollideConnected;
          //

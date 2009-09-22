@@ -190,6 +190,7 @@ package Box2D.Collision
 
 			// Reset pair buffer
 			m_pairCount = 0;
+			m_pairBuffer = new Array (); // !!! different with c++ version
 
 			// Perform tree queries for all moving proxies.
 			for (i = 0; i < m_moveCount; ++i)

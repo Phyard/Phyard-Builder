@@ -34,7 +34,7 @@ public function b2BroadPhase()
 	//{
 	//	m_pairBuffer [i] = new b2Pair ();
 	//}
-	m_pairBuffer = new Array ();
+	m_pairBuffer = new Array (); // if roll back to the c++ version, pls remember to rmove the "m_pairBuffer.= new Array ();" in UpdatePaires ()
 
 	m_moveCapacity = 16;
 	m_moveCount = 0;

@@ -26,7 +26,10 @@ package Box2D.Dynamics.Contacts
 
 	//class b2BlockAllocator;
 	import Box2D.Common.b2BlockAllocator;
+	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2Fixture;
+	import Box2D.Collision.b2Collision;
+	import Box2D.Collision.Shapes.b2CircleShape;
 
 	public class b2CircleContact extends b2Contact
 	{

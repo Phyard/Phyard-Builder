@@ -23,10 +23,12 @@ package Box2D.Dynamics
 {
 
 	//#include <Box2D/Collision/b2BroadPhase.h>
+	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Collision.b2BroadPhase;
 	import Box2D.Dynamics.Contacts.b2Contact;
+	import Box2D.Dynamics.Contacts.b2ContactEdge;
 
-	// Delegate of b2World.
+	// Delegate of b2World
 	public class b2ContactManager
 	{
 		include "b2ContactManager.cpp";
@@ -48,8 +50,7 @@ package Box2D.Dynamics
 		public var m_contactCount:int;
 		public var m_contactFilter:b2ContactFilter;
 		public var m_contactListener:b2ContactListener;
-		//b2BlockAllocator* m_allocator;
+		public var m_allocator:b2BlockAllocator;
 	} // class
 } // pacakge
-
 //#endif

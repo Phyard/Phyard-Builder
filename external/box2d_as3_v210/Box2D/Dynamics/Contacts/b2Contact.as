@@ -28,11 +28,22 @@ package Box2D.Dynamics.Contacts
 	//#include <Box2D/Dynamics/Contacts/b2Contact.h>
 	//#include <Box2D/Dynamics/b2Fixture.h>
 	
+	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Transform;
+	import Box2D.Common.b2Sweep;
+	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Collision.b2Collision;
-	import Box2D.Collision.b2Shape;
-	import Box2D.Dynamics.b2Contact;
+	import Box2D.Collision.b2ContactID;
+	import Box2D.Collision.b2Manifold;
+	import Box2D.Collision.b2ManifoldPoint;
+	import Box2D.Collision.b2WorldManifold;
+	import Box2D.Collision.b2TimeOfImpact;
+	import Box2D.Collision.b2TOIInput;
+	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Dynamics.b2Fixture;
+	import Box2D.Dynamics.b2Body;
+	import Box2D.Dynamics.b2ContactListener;
 
 	//class b2Body;
 	//class b2Contact;
@@ -147,6 +158,7 @@ package Box2D.Dynamics.Contacts
 
 		//void Update(b2ContactListener* listener);
 		//virtual void Evaluate() = 0;
+		public function Evaluate():void {}
 
 		//float32 ComputeTOI(const b2Sweep& sweepA, const b2Sweep& sweepB) const;
 

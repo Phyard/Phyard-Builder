@@ -289,7 +289,7 @@ static public function DistanceGeneric(x1:b2Vec2, x2:b2Vec2,
 		var wY:Number = w2.y - w1.y;
 		//float32 vw = b2Dot(v, w);
 		var vw:Number = (vX*wX + vY*wY);
-		//if (vSqr - b2Dot(v, w) <= 0.01f * vSqr) // or w in points
+		//if (vSqr - b2Math.b2Dot2(v, w) <= 0.01f * vSqr) // or w in points
 		if (vSqr - (vX * wX + vY * wY) <= 0.01 * vSqr) // or w in points
 		{
 			if (pointCount == 0)

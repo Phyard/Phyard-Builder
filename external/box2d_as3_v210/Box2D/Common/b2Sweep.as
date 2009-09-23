@@ -1,5 +1,5 @@
 
-package Box2d.Common
+package Box2D.Common
 {
 	/// This describes the motion of a body/shape for TOI computation.
 	/// Shapes are defined with respect to the body origin, which may
@@ -11,13 +11,13 @@ package Box2d.Common
 		// this function doesn't exist in the c++ version
 		public function Clone ():b2Sweep
 		{
-			var sweep:b2Sweep = new  b2Sweep ();
-			swep.CopyFrom (this);
+			var sweep:b2Sweep = new b2Sweep ();
+			sweep.CopyFrom (this);
 			return sweep;
 		}
 		
 		// this function doesn't exist in the c++ version
-		public function CopyFrom (another:b2Sweep)
+		public function CopyFrom (another:b2Sweep):void
 		{
 			localCenter.x = another.localCenter.x;
 			localCenter.y = another.localCenter.y;
@@ -49,7 +49,7 @@ package Box2d.Common
 		/// @param t the new initial time.
 		public function Advance(t:Number):void
 		{
-			if (t0 < t && 1.0 - t0 > b2Setting.B2_FLT_EPSILON)
+			if (t0 < t && 1.0 - t0 > b2Settings.B2_FLT_EPSILON)
 			{
 				var alpha:Number = (t - t0) / (1.0 - t0);
 				var _alpha:Number = 1.0 - alpha;

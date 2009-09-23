@@ -30,7 +30,7 @@ public static function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:
 	//void* mem = allocator->Allocate(sizeof(b2PolygonAndCircleContact));
 	//return new (mem) b2PolygonAndCircleContact(fixtureA, fixtureB);
 	
-	return b2PolygonAndCircleContact(fixtureA, fixtureB);
+	return new b2PolygonAndCircleContact(fixtureA, fixtureB);
 }
 
 public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = null):void
@@ -48,12 +48,14 @@ public function b2PolygonAndCircleContact(fixtureA:b2Fixture, fixtureB:b2Fixture
 	//b2Assert(m_fixtureB->GetType() == b2Shape::e_circle);
 }
 
-public function Evaluate():void
+override public function Evaluate():void
 {
 	var bodyA:b2Body = m_fixtureA.GetBody();
 	var bodyB:b2Body = m_fixtureB.GetBody();
 
-	b2CollidePolygonAndCircle(	m_manifold,
+	b2Collision.b2CollidePolygonAndCircle(	m_manifold,
 								(m_fixtureA.GetShape() as b2PolygonShape), bodyA.GetTransform(),
 								(m_fixtureB.GetShape() as b2CircleShape), bodyB.GetTransform());
 }
+
+

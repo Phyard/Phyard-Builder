@@ -22,13 +22,14 @@
 package Box2D.Dynamics.Contacts
 {
 	//#include <Box2D/Dynamics/Contacts/b2Contact.h>
+	import Box2D.Common.b2Sweep;
 
 	public class b2NullContact extends b2Contact
 	{
 	//public:
-		public function b2NullContact() {}
-		public function Evaluate():void {}
-		public function ComputeTOI(sweepA:b2Sweep, sweepB:b2Sweep):Number
+		public function b2NullContact() {super (null, null);}
+		override public function Evaluate():void {}
+		override public function ComputeTOI(sweepA:b2Sweep, sweepB:b2Sweep):Number
 		{
 			//B2_NOT_USED(sweepA);
 			//B2_NOT_USED(sweepB);

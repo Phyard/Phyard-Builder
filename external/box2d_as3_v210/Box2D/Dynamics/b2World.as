@@ -28,14 +28,22 @@ package Box2D.Dynamics
 	//#include <Box2D/Dynamics/b2ContactManager.h>
 	//#include <Box2D/Dynamics/b2WorldCallbacks.h>
 	
+	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2Transform;
+	import Box2D.Common.b2Sweep;
 	import Box2D.Common.b2BlockAllocator;
+	import Box2D.Common.b2StackAllocator;
 	import Box2D.Dynamics.Joints.b2JointDef;
 	import Box2D.Dynamics.Joints.b2Joint;
+	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Contacts.b2Contact;
+	import Box2D.Dynamics.Contacts.b2ContactEdge;
 	import Box2D.Collision.b2AABB;
+	import Box2D.Collision.b2RayCastInput;
+	
+	import Box2D.Dynamics.b2Body;
 	
 	//struct b2AABB;
 	//struct b2BodyDef;
@@ -201,7 +209,7 @@ package Box2D.Dynamics
 		public var m_groundBody:b2Body
 
 		public var m_destructionListener:b2DestructionListener;
-		//b2DebugDraw* m_debugDraw;
+		public var m_debugDraw:b2DebugDraw;
 
 		// This is used to compute the time step ratio to
 		// support a variable time step.

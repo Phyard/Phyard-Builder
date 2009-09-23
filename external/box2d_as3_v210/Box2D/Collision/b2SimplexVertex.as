@@ -1,6 +1,8 @@
 
 package Box2D.Collision
 {
+	import Box2D.Common.b2Vec2;
+	
 	public class b2SimplexVertex
 	{
 		public var wA:b2Vec2 = new b2Vec2 ();		// support point in proxyA

@@ -1,7 +1,12 @@
 package Box2D.Collision
 {
+	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Transform;
+	import Box2D.Common.b2Vec2;
+	
 	/// This is used to compute the current state of a contact manifold.
-	struct b2WorldManifold
+	public class b2WorldManifold
 	{
 		/// Evaluate the manifold with supplied transforms. This assumes
 		/// modest motion from the original state. This does not change the
@@ -25,12 +30,14 @@ package Box2D.Collision
 		
 		public function Initialize(manifold:b2Manifold,
 								  xfA:b2Transform, radiusA:Number,
-								  xfB:b2Transform, radiusB:Number)
+								  xfB:b2Transform, radiusB:Number):void
 		{
 			if (manifold.m_pointCount == 0)
 			{
 				return;
 			}
+			
+			var tempV:b2Vec2 = new b2Vec2 ();
 			
 			var i:int;
 			var normal:b2Vec2;
@@ -51,7 +58,7 @@ package Box2D.Collision
 					var pointA:b2Vec2 = b2Math.b2Mul_TransformAndVector2(xfA, manifold.m_localPoint);
 					var pointB:b2Vec2 = b2Math.b2Mul_TransformAndVector2(xfB, manifold.m_points[0].m_localPoint);
 					normal = b2Vec2.b2Vec2_From2Numbers (1.0, 0.0);
-					if (b2Math.b2DistanceSquared(pointA, pointB) > B2_FLT_EPSILON * B2_FLT_EPSILON)
+					if (b2Math.b2DistanceSquared(pointA, pointB) > b2Settings.B2_FLT_EPSILON * b2Settings.B2_FLT_EPSILON)
 					{
 						//normal = pointB - pointA;
 						normal.x = pointB.x - pointA.x;
@@ -88,11 +95,13 @@ package Box2D.Collision
 					for (i = 0; i < manifold.m_pointCount; ++i)
 					{
 						//b2Vec2 clipPoint = b2Mul(xfB, manifold->m_points[i].m_localPoint);
-						//b2Vec2 cA = clipPoint + (radiusA - b2Dot(clipPoint - planePoint, normal)) * normal;
+						//b2Vec2 cA = clipPoint + (radiusA - b2Math.b2Dot2(clipPoint - planePoint, normal)) * normal;
 						//b2Vec2 cB = clipPoint - radiusB * normal;
 						//m_points[i] = 0.5f * (cA + cB);
 						clipPoint = b2Math.b2Mul_TransformAndVector2(xfB, manifold.m_points[i].m_localPoint);
-						temp = (radiusA - b2Dot(clipPoint - planePoint, normal));
+						tempV.x = clipPoint.x - planePoint.x;
+						tempV.y = clipPoint.y - planePoint.y;
+						temp = (radiusA - b2Math.b2Dot2(tempV, normal));
 						cAx = clipPoint.x + temp * normal.x;
 						cAy = clipPoint.y + temp * normal.y;
 						cBx = clipPoint.x - radiusB * normal.x;
@@ -117,12 +126,14 @@ package Box2D.Collision
 					{
 						//b2Vec2 clipPoint = b2Mul(xfA, manifold->m_points[i].m_localPoint);
 						//b2Vec2 cA = clipPoint - radiusA * normal;
-						//b2Vec2 cB = clipPoint + (radiusB - b2Dot(clipPoint - planePoint, normal)) * normal;
+						//b2Vec2 cB = clipPoint + (radiusB - b2Math.b2Dot2(clipPoint - planePoint, normal)) * normal;
 						//m_points[i] = 0.5f * (cA + cB);
 						clipPoint = b2Math.b2Mul_TransformAndVector2(xfA, manifold.m_points[i].m_localPoint);
 						cAx = clipPoint.x - radiusA * normal.x;
 						cAy = clipPoint.y - radiusA * normal.y;
-						temp = (radiusB - b2Dot(clipPoint - planePoint, normal));
+						tempV.x = clipPoint.x - planePoint.x;
+						tempV.y = clipPoint.y - planePoint.y;
+						temp = (radiusB - b2Math.b2Dot2(tempV, normal));
 						cBx = clipPoint.x + temp * normal.x;
 						cBy = clipPoint.y + temp * normal.y;
 						m_points[i].x = 0.5 * (cAx + cBx);

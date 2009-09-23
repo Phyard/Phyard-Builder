@@ -23,7 +23,7 @@
 //#include <Box2D/Dynamics/Contacts/b2Contact.h>
 
 public static var b2_defaultFilter:b2ContactFilter = new b2ContactFilter ();
-public static var b2_defaultListener:b2ContactListener = new b2ContactListener ();
+public static var b2_defaultListener:b2ContactListener = new b2ContactListenerDefault ();
 
 public function b2ContactManager()
 {
@@ -125,27 +125,27 @@ public function Collide():void
 			// Are both bodies static?
 			if (bodyA.IsStatic() && bodyB.IsStatic())
 			{
-				var cNuke:b2Contact = c;
-				c = cNuke.GetNext();
-				Destroy(cNuke);
+				var cNuke1:b2Contact = c;
+				c = cNuke1.GetNext();
+				Destroy(cNuke1);
 				continue;
 			}
 
 			// Does a joint override collision?
 			if (bodyB.IsConnected(bodyA))
 			{
-				var cNuke:b2Contact = c;
-				c = cNuke.GetNext();
-				Destroy(cNuke);
+				var cNuke2:b2Contact = c;
+				c = cNuke2.GetNext();
+				Destroy(cNuke2);
 				continue;
 			}
 
 			// Check user filtering.
 			if (m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
 			{
-				var cNuke:b2Contact = c;
-				c = cNuke.GetNext();
-				Destroy(cNuke);
+				var cNuke3:b2Contact = c;
+				c = cNuke3.GetNext();
+				Destroy(cNuke3);
 				continue;
 			}
 
@@ -160,9 +160,9 @@ public function Collide():void
 		// Here we destroy contacts that cease to overlap in the broad-phase.
 		if (overlap == false)
 		{
-			var cNuke:b2Contact = c;
-			c = cNuke.GetNext();
-			Destroy(cNuke);
+			var cNuke5:b2Contact = c;
+			c = cNuke5.GetNext();
+			Destroy(cNuke5);
 			continue;
 		}
 

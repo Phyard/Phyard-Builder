@@ -48,7 +48,7 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 	//m_xf.position = bd.position;
 	m_xf.position.x = bd.position.x;
 	m_xf.position.y = bd.position.y;
-	m_xf.R.Set(bd.angle);
+	m_xf.R.SetFromAngle(bd.angle);
 
 	//m_sweep.localCenter = bd.massData.center;
 	m_sweep.localCenter.x = bd.massData.center.x;
@@ -56,7 +56,7 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 	m_sweep.t0 = 1.0;
 	m_sweep.a0 = m_sweep.a = bd.angle;
 	//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
-	b2Math.b2Mul_Matrix22AndVector2_Output (m_xf, m_sweep.localCenter, m_sweep.c);
+	b2Math.b2Mul_TransformAndVector2_Output (m_xf, m_sweep.localCenter, m_sweep.c);
 	m_sweep.c0.x = m_sweep.c.x;
 	m_sweep.c0.y = m_sweep.c.y;
 
@@ -155,7 +155,7 @@ public function CreateFixture_FromShape (shape:b2Shape, density:Number = 0.0):b2
 	//b2Assert(m_world.IsLocked() == false);
 	if (m_world.IsLocked() == true)
 	{
-		return NULL;
+		return null;
 	}
 
 	//b2BlockAllocator* allocator = &m_world->m_blockAllocator;
@@ -234,17 +234,17 @@ public function DestroyFixture(fixture:b2Fixture):void
 	var broadPhase:b2BroadPhase = m_world.m_contactManager.m_broadPhase;
 
 	fixture.Destroy(null, broadPhase);
-	fixture.m_body = NULL;
-	fixture.m_next = NULL;
+	fixture.m_body = null;
+	fixture.m_next = null;
 	//fixture->~b2Fixture();
-	fixture.Destructor ();
+	fixture._b2Fixture ();
 	//allocator->Free(fixture, sizeof(b2Fixture));
 
 	--m_fixtureCount;
 }
 
 // TODO_ERIN adjust linear velocity and torque to account for movement of center.
-public function SetMassData(data:b2MassData):void
+public function SetMassData(massData:b2MassData):void
 {
 	//b2Assert(m_world->IsLocked() == false);
 	if (m_world.IsLocked() == true)
@@ -271,11 +271,11 @@ public function SetMassData(data:b2MassData):void
 	}
 
 	// Move center of mass.
-	//m_sweep.localCenter = center;
-	m_sweep.localCenter.x = center.x;
-	m_sweep.localCenter.y = center.y;
+	//m_sweep.localCenter = massData.center;
+	m_sweep.localCenter.x = massData.center.x;
+	m_sweep.localCenter.y = massData.center.y;
 	//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
-	b2Math.b2Mul_Matrix22AndVector2_Output(m_xf, m_sweep.localCenter, m_sweep.c);
+	b2Math.b2Mul_TransformAndVector2_Output(m_xf, m_sweep.localCenter, m_sweep.c);
 	m_sweep.c0.x = m_sweep.c.x;
 	m_sweep.c0.y = m_sweep.c.y;
 
@@ -314,13 +314,15 @@ public function SetMassFromShapes():void
 	m_I = 0.0;
 	m_invI = 0.0;
 
-   var center:b2Vec2 = b2Vec2_zero.Clone ();
-   for (var f:b2Fixture = m_fixtureList; f; f = f.m_next)
+	var center:b2Vec2 = b2Math.b2Vec2_zero.Clone ();
+	for (var f:b2Fixture = m_fixtureList; f; f = f.m_next)
 	{
-      var massData:b2MassData = new b2MassData ();
+		var massData:b2MassData = new b2MassData ();
 		f.ComputeMass(massData);
 		m_mass += massData.mass;
-		center += massData.mass * massData.center;
+		//center += massData.mass * massData.center;
+		center.x += massData.mass * massData.center.x;
+		center.y += massData.mass * massData.center.y;
 		m_I += massData.I;
 	}
 
@@ -328,13 +330,14 @@ public function SetMassFromShapes():void
 	if (m_mass > 0.0)
 	{
 		m_invMass = 1.0 / m_mass;
-		center *= m_invMass;
+		center.x *= m_invMass;
+		center.y *= m_invMass;
 	}
 
 	if (m_I > 0.0 && (m_flags & e_fixedRotationFlag) == 0)
 	{
 		// Center the inertia about the center of mass.
-		m_I -= m_mass * b2Dot(center, center);
+		m_I -= m_mass * b2Math.b2Dot2 (center, center);
 		//b2Assert(m_I > 0.0f);
 		m_invI = 1.0 / m_I;
 	}
@@ -349,7 +352,7 @@ public function SetMassFromShapes():void
 	m_sweep.localCenter.x = center.x;
 	m_sweep.localCenter.y = center.y;
 	//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
-	b2Math.b2Mul_Matrix22AndVector2_Output(m_xf, m_sweep.localCenter, m_sweep.c);
+	b2Math.b2Mul_TransformAndVector2_Output(m_xf, m_sweep.localCenter, m_sweep.c);
 	m_sweep.c0.x = m_sweep.c.x;
 	m_sweep.c0.y = m_sweep.c.y;
 
@@ -394,13 +397,13 @@ public function SetTransform(position:b2Vec2, angle:Number):void
 		return;
 	}
 
-	m_xf.R.Set(angle);
+	m_xf.R.SetFromAngle (angle);
 	//m_xf.position = position;
 	m_xf.position.x = position.x;
 	m_xf.position.y = position.y;
 
 	//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
-	b2Math.b2Mul_Matrix22AndVector2_Output(m_xf, m_sweep.localCenter, m_sweep.c);
+	b2Math.b2Mul_TransformAndVector2_Output(m_xf, m_sweep.localCenter, m_sweep.c);
 	m_sweep.c0.x = m_sweep.c.x;
 	m_sweep.c0.y = m_sweep.c.y;
 	m_sweep.a0 = m_sweep.a = angle;
@@ -414,10 +417,10 @@ public function SetTransform(position:b2Vec2, angle:Number):void
 	m_world.m_contactManager.FindNewContacts();
 }
 
-public function SynchronizeFixtures()
+public function SynchronizeFixtures():void
 {
 	var xf1:b2Transform = new b2Transform ();
-	xf1.R.Set(m_sweep.a0);
+	xf1.R.SetFromAngle (m_sweep.a0);
 	//xf1.position = m_sweep.c0 - b2Mul(xf1.R, m_sweep.localCenter);
 	var temp:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf1.R, m_sweep.localCenter);
 	xf1.position.x = m_sweep.c0.x - temp.x;

@@ -1,8 +1,13 @@
 package Box2D.Dynamics.Contacts
 {
+	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Vec2;
+	import Box2D.Collision.b2Manifold;
+	
 	public class b2PositionSolverManifold
 	{
-		public function Initialize(cc:b2ContactConstraint)
+		public function Initialize(cc:b2ContactConstraint):void
 		{
 			var i:int;
 			
@@ -16,8 +21,8 @@ package Box2D.Dynamics.Contacts
 			case b2Manifold.e_circles:
 				{
 					var pointA:b2Vec2 = cc.bodyA.GetWorldPoint(cc.localPoint);
-					var pointB:b2Vec2 = cc。bodyB。GetWorldPoint( (cc.points[0] as b2ContactConstraintPoint).localPoint);
-					if (b2Math.b2DistanceSquared(pointA, pointB) > B2_FLT_EPSILON * B2_FLT_EPSILON)
+					var pointB:b2Vec2 = cc.bodyB.GetWorldPoint( (cc.points[0] as b2ContactConstraintPoint).localPoint);
+					if (b2Math.b2DistanceSquared(pointA, pointB) > b2Settings.B2_FLT_EPSILON * b2Settings.B2_FLT_EPSILON)
 					{
 						//m_normal = pointB - pointA;
 						m_normal.x = pointB.x - pointA.x;
@@ -37,7 +42,7 @@ package Box2D.Dynamics.Contacts
 				}
 				break;
 
-			case b2Manifold::e_faceA:
+			case b2Manifold.e_faceA:
 				{
 					m_normal.CopyFrom (cc.bodyA.GetWorldVector (cc.localPlaneNormal)); // in fact, can direct reference
 					planePoint = cc.bodyA.GetWorldPoint (cc.localPoint);
@@ -55,7 +60,7 @@ package Box2D.Dynamics.Contacts
 				}
 				break;
 
-			case b2Manifold::e_faceB:
+			case b2Manifold.e_faceB:
 				{
 					m_normal.CopyFrom (cc.bodyB.GetWorldVector(cc.localPlaneNormal)); // in fact, can direct reference
 					planePoint = cc.bodyB.GetWorldPoint(cc.localPoint);

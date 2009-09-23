@@ -26,6 +26,11 @@ package Box2D.Collision
 	//#include <Box2D/Common/b2Math.h>
 	//#include <climits>
 
+	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Transform;
+	import Box2D.Common.b2Vec2;
+
 	//class b2Shape;
 
 	/// A distance proxy is used by the GJK algorithm.
@@ -58,7 +63,7 @@ package Box2D.Collision
 
 	public class b2Distance
 	{
-		include "b2Distance.cpp":
+		include "b2Distance.cpp";
 		
 		/// Compute the closest points between two shapes. Supports any combination of:
 		/// b2CircleShape, b2PolygonShape, b2EdgeShape. The simplex cache is input/output.

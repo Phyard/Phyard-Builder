@@ -1,6 +1,8 @@
 
 package Box2D.Collision
 {
+	import Box2D.Common.b2Transform;
+	
 	/// Input for b2Distance.
 	/// You have to option to use the shape radii
 	/// in the computation. Even 

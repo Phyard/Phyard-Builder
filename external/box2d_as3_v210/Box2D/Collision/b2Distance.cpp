@@ -78,14 +78,14 @@ public static var b2_gjkCalls:int, b2_gjkIters:int, b2_gjkMaxIters:int;
 	//@see b2Simplex.as
 //}
 
-public static function b2Distance(output:b2DistanceOutput,
-				cacheb2SimplexCache,
-				input:b2DistanceInput)
+public static function _b2Distance(output:b2DistanceOutput,
+				cache:b2SimplexCache,
+				input:b2DistanceInput):void
 {
 	++b2_gjkCalls;
 
-	proxyA:b2DistanceProxy = input.proxyA;
-	proxyB：b2DistanceProxy = input.proxyB;
+	const proxyA:b2DistanceProxy = input.proxyA; // .Clone ()
+	const proxyB:b2DistanceProxy = input.proxyB; // .Clone (0
 
 	var transformA:b2Transform = input.transformA.Clone ();
 	var transformB:b2Transform = input.transformB.Clone ();
@@ -101,7 +101,7 @@ public static function b2Distance(output:b2DistanceOutput,
 	// These store the vertices of the last simplex so that we
 	// can check for duplicates and prevent cycling.
 	//int32 saveA[3], saveB[3];
-	var saveA = [0, 0, 0];, saveB = [0, 0, 0];
+	var saveA:Array = [0, 0, 0], saveB:Array = [0, 0, 0];
 	var saveCount:int = 0;
 
 	var closestPoint:b2Vec2 = simplex.GetClosestPoint().Clone ();
@@ -160,7 +160,7 @@ public static function b2Distance(output:b2DistanceOutput,
 		var d:b2Vec2 = simplex.GetSearchDirection().Clone ();
 
 		// Ensure the search direction is numerically fit.
-		if (d.LengthSquared() < b2Settings.B2_FLT_EPSILON * B2_FLT_EPSILON)
+		if (d.LengthSquared() < b2Settings.B2_FLT_EPSILON * b2Settings.B2_FLT_EPSILON)
 		{
 			// The origin is probably contained by a line segment
 			// or triangle. Thus the shapes are overlapped.
@@ -181,7 +181,7 @@ public static function b2Distance(output:b2DistanceOutput,
 		//vertex->w = vertex->wB - vertex->wA;
 
 		var vertex:b2SimplexVertex = simplex.GetSimplexVertex (simplex.m_count);
-		vertex.indexA = proxyA.GetSupport(b2Math.b2MulTrans_Matrix22AndVector2(transformA.R, -d));
+		vertex.indexA = proxyA.GetSupport(b2Math.b2MulTrans_Matrix22AndVector2(transformA.R, d.GetNegative ()));
 		b2Math.b2Mul_TransformAndVector2_Output (transformA, proxyA.GetVertex(vertex.indexA), vertex.wA);
 		vertex.indexB = proxyB.GetSupport(b2Math.b2MulTrans_Matrix22AndVector2(transformB.R, d));
 		b2Math.b2Mul_TransformAndVector2_Output (transformB, proxyB.GetVertex(vertex.indexB), vertex.wB);
@@ -196,7 +196,7 @@ public static function b2Distance(output:b2DistanceOutput,
 		var duplicate:Boolean = false;
 		for (i = 0; i < saveCount; ++i)
 		{
-			if (vertex->indexA == saveA[i] && vertex->indexB == saveB[i])
+			if (vertex.indexA == saveA[i] && vertex.indexB == saveB[i])
 			{
 				duplicate = true;
 				break;
@@ -217,7 +217,7 @@ public static function b2Distance(output:b2DistanceOutput,
 
 	// Prepare output.
 	simplex.GetWitnessPoints(output.pointA, output.pointB);
-	output.distance = b2Distance(output.pointA, output.pointB);
+	output.distance = b2Math.b2Distance(output.pointA, output.pointB);
 	output.iterations = iter;
 
 	// Cache the simplex.
@@ -229,12 +229,12 @@ public static function b2Distance(output:b2DistanceOutput,
 		var rA:Number = proxyA.m_radius;
 		var rB :Number= proxyB.m_radius;
 
-		if (output.distance > rA + rB && output.distance > B2_FLT_EPSILON)
+		if (output.distance > rA + rB && output.distance > b2Settings.B2_FLT_EPSILON)
 		{
 			// Shapes are still no overlapped.
 			// Move the witness points to the outer surface.
 			output.distance -= rA + rB;
-			var normal:b2Vec2 = b2Vec2_b2Vec2From2Number (output.pointB.x - output.pointA.x, output.pointB.y - output.pointA.y);
+			var normal:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (output.pointB.x - output.pointA.x, output.pointB.y - output.pointA.y);
 			normal.Normalize();
 			//output->pointA += rA * normal;
 			output.pointA.x += rA * normal.x;

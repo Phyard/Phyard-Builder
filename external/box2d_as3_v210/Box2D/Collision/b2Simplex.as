@@ -1,10 +1,15 @@
 
 package Box2D.Collision
 {
+	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Transform;
+	import Box2D.Common.b2Vec2;
+	
 	public class b2Simplex
 	{
 		//this function doesn't exist in the c++ version
-		public function GetSimplexVertex (countint):b2SimplexVertex
+		public function GetSimplexVertex (id:int):b2SimplexVertex
 		{
 			switch (id)
 			{
@@ -17,29 +22,29 @@ package Box2D.Collision
 
 		public function ReadCache(	cache:b2SimplexCache,
 						proxyA:b2DistanceProxy, transformA:b2Transform,
-						proxyB:b2DistanceProxy, transformB:b2Transform)
+						proxyB:b2DistanceProxy, transformB:b2Transform):void
 		{
 			//b2Assert(0 <= cache->count && cache->count <= 3);
 			
 			// Copy data from cache.
-			m_count = cache->count;
+			m_count = cache.count;
 			//b2SimplexVertex* vertices = &m_v1;
 			for (var i:int = 0; i < m_count; ++i)
 			{
 				//b2SimplexVertex* v = vertices + i;
-				var v:b2SimplexVertex = GetSimplexVertex (i);
-				v.indexA = cache.indexA[i];
-				v.indexB = cache.indexB[i];
-				var wALocal:b2Vec2 = proxyA.GetVertex(v.indexA);//.Clone ()
-				var wBLocal:b2Vec2 = proxyB.GetVertex(v.indexB);//.Clone ()
-				//v->wA = b2Mul(transformA, wALocal);
-				//v->wB = b2Mul(transformB, wBLocal);
+				var v1:b2SimplexVertex = GetSimplexVertex (i);
+				v1.indexA = cache.indexA[i];
+				v1.indexB = cache.indexB[i];
+				var wALocal1:b2Vec2 = proxyA.GetVertex(v1.indexA);//.Clone ()
+				var wBLocal1:b2Vec2 = proxyB.GetVertex(v1.indexB);//.Clone ()
+				//v->wA = b2Mul(transformA, wALocal1);
+				//v->wB = b2Mul(transformB, wBLocal1);
 				//v->w = v->wB - v->wA;
-				b2Math.b2Mul_TransformAndVector2_Output (transformA, wALocal, v.wA);
-				b2Math.b2Mul_TransformAndVector2_Output (transformB, wBLocal, v.wB);
-				v.w.x = v.wB.x - v.wA.x;
-				v.w.y = v.wB.y - v.wA.y;
-				v.a = 0.0;
+				b2Math.b2Mul_TransformAndVector2_Output (transformA, wALocal1, v1.wA);
+				b2Math.b2Mul_TransformAndVector2_Output (transformB, wBLocal1, v1.wB);
+				v1.w.x = v1.wB.x - v1.wA.x;
+				v1.w.y = v1.wB.y - v1.wA.y;
+				v1.a = 0.0;
 			}
 
 			// Compute the new simplex metric, if it is substantially different than
@@ -59,23 +64,23 @@ package Box2D.Collision
 			if (m_count == 0)
 			{
 				//b2SimplexVertex* v = vertices + 0;
-				var v:b2SimplexVertex = m_v1;
-				v.indexA = 0;
-				v.indexB = 0;
-				var wALocal:b2Vec2 = proxyA.GetVertex(0); // Clone ()
-				var wBLocal:b2Vec2 = proxyB.GetVertex(0); // Clone ()
-				//v->wA = b2Mul(transformA, wALocal);
-				//v->wB = b2Mul(transformB, wBLocal);
+				var v2:b2SimplexVertex = m_v1;
+				v2.indexA = 0;
+				v2.indexB = 0;
+				var wALocal2:b2Vec2 = proxyA.GetVertex(0); // Clone ()
+				var wBLocal2:b2Vec2 = proxyB.GetVertex(0); // Clone ()
+				//v->wA = b2Mul(transformA, wALocal2);
+				//v->wB = b2Mul(transformB, wBLocal2);
 				//v->w = v->wB - v->wA;
-				b2Math.b2Mul_TransformAndVector2_Output (transformA, wALocal, v.wA);
-				b2Math.b2Mul_TransformAndVector2_Output (transformB, wBLocal, v.wB);
-				v.w.x = v.wB.x - v.wA.x;
-				v.w.y = v.wB.y - v.wA.y;
+				b2Math.b2Mul_TransformAndVector2_Output (transformA, wALocal2, v2.wA);
+				b2Math.b2Mul_TransformAndVector2_Output (transformB, wBLocal2, v2.wB);
+				v2.w.x = v2.wB.x - v2.wA.x;
+				v2.w.y = v2.wB.y - v2.wA.y;
 				m_count = 1;
 			}
 		}
 
-		public function WriteCache (cache:b2SimplexCache) const
+		public function WriteCache (cache:b2SimplexCache):void
 		{
 			cache.metric = GetMetric();
 			//cache->count = uint16(m_count);
@@ -86,8 +91,8 @@ package Box2D.Collision
 				//cache->indexA[i] = uint8(vertices[i].indexA);
 				//cache->indexB[i] = uint8(vertices[i].indexB);
 				var v:b2SimplexVertex = GetSimplexVertex (i);
-				cache->indexA[i] = uint(v.indexA);
-				cache->indexB[i] = uint(v.indexB);
+				cache.indexA[i] = uint(v.indexA);
+				cache.indexB[i] = uint(v.indexB);
 			}
 		}
 
@@ -119,7 +124,7 @@ package Box2D.Collision
 
 			default:
 				//b2Assert(false);
-				return b2Vec2_zero;
+				return b2Math.b2Vec2_zero.Clone ();
 			}
 		}
 
@@ -129,7 +134,7 @@ package Box2D.Collision
 			{
 			case 0:
 				//b2Assert(false);
-				return b2Vec2_zero;
+				return b2Math.b2Vec2_zero.Clone ();
 
 			case 1:
 				return m_v1.w;
@@ -139,15 +144,15 @@ package Box2D.Collision
 				return b2Vec2.b2Vec2_From2Numbers (m_v1.a * m_v1.w.x + m_v2.a * m_v2.w.x, m_v1.a * m_v1.w.y + m_v2.a * m_v2.w.y);
 
 			case 3:
-				return b2Vec2_zero;
+				return b2Math.b2Vec2_zero.Clone ();
 
 			default:
 				//b2Assert(false);
-				return b2Vec2_zero;
+				return b2Math.b2Vec2_zero.Clone ();
 			}
 		}
 
-		public function GetWitnessPoints(pA:b2Vec2, pB:b2Vec2) void
+		public function GetWitnessPoints(pA:b2Vec2, pB:b2Vec2):void
 		{
 			switch (m_count)
 			{
@@ -179,7 +184,7 @@ package Box2D.Collision
 				pA.x = m_v1.a * m_v1.wA.x + m_v2.a * m_v2.wA.x + m_v3.a * m_v3.wA.x;
 				pA.y = m_v1.a * m_v1.wA.y + m_v2.a * m_v2.wA.y + m_v3.a * m_v3.wA.y;
 				pB.x = pA.x;
-				pB,y = pA.y;
+				pB.y = pA.y;
 				break;
 
 			default:
@@ -200,7 +205,7 @@ package Box2D.Collision
 				return 0.0;
 
 			case 2:
-				return b2Distance(m_v1.w, m_v2.w);
+				return b2Math.b2Distance (m_v1.w, m_v2.w);
 
 			case 3:
 				//return b2Math.b2Cross2(m_v2.w - m_v1.w, m_v3.w - m_v1.w);

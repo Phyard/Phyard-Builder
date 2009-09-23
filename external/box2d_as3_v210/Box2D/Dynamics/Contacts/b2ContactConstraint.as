@@ -1,8 +1,15 @@
 package Box2D.Dynamics.Contacts
 {
+	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Vec2;
+	import Box2D.Common.b2Mat22;
+	import Box2D.Dynamics.b2Body;
+	import Box2D.Collision.b2Manifold;
+	
 	public class b2ContactConstraint
 	{
-		public function ()
+		public function b2ContactConstraint ()
 		{
 			for (var i:int = 0; i < b2Settings.b2_maxManifoldPoints; ++ i)
 			{

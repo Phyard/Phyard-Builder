@@ -33,7 +33,7 @@ public static var b2_toiRootIters:int, b2_toiMaxRootIters:int;
 //};
 
 // CCD via the secant method.
-public static function b2TimeOfImpact(const b2TOIInput* input):Number
+public static function _b2TimeOfImpact(input:b2TOIInput):Number
 {
 	++b2_toiCalls;
 
@@ -73,7 +73,7 @@ public static function b2TimeOfImpact(const b2TOIInput* input):Number
 		distanceInput.transformA.CopyFrom (xfA);
 		distanceInput.transformB.CopyFrom (xfB);
 		var distanceOutput:b2DistanceOutput = new b2DistanceOutput ();
-		b2Distance(distanceOutput, cache, distanceInput);
+		b2Distance._b2Distance (distanceOutput, cache, distanceInput);
 
 		if (distanceOutput.distance <= 0.0)
 		{
@@ -210,11 +210,11 @@ public static function b2TimeOfImpact(const b2TOIInput* input):Number
 				}
 			}
 
-			b2_toiMaxRootIters = b2Max(b2_toiMaxRootIters, rootIterCount);
+			b2_toiMaxRootIters = b2Math.b2Max_int (b2_toiMaxRootIters, rootIterCount);
 //		}
 
 		// Ensure significant advancement.
-		if (newAlpha < (1.0 + 100.0 * B2_FLT_EPSILON) * alpha)
+		if (newAlpha < (1.0 + 100.0 * b2Settings.B2_FLT_EPSILON) * alpha)
 		{
 			break;
 		}

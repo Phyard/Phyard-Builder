@@ -143,19 +143,19 @@ This might be faster than computing sin+cos.
 However, we can compute sin+cos of the same angle fast.
 */
 
-public static const linTolSqr:Number = b2_linearSleepTolerance * b2_linearSleepTolerance;
-public static const angTolSqr:Number = b2_angularSleepTolerance * b2_angularSleepTolerance;
+public static const linTolSqr:Number = b2Settings.b2_linearSleepTolerance * b2Settings.b2_linearSleepTolerance;
+public static const angTolSqr:Number = b2Settings.b2_angularSleepTolerance * b2Settings.b2_angularSleepTolerance;
 
 public static const k_toiBaumgarte:Number = 0.75;
 
 
 
 public function b2Island(
-	var bodyCapacity:int,
-	var contactCapacity:int,
-	var jointCapacity:int,
-	var allocator:b2StackAllocator,
-	var listener:b2ContactListener)
+	bodyCapacity:int,
+	contactCapacity:int,
+	jointCapacity:int,
+	allocator:b2StackAllocator,
+	listener:b2ContactListener)
 {
 	m_bodyCapacity = bodyCapacity;
 	m_contactCapacity = contactCapacity;
@@ -197,19 +197,21 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 {
 	var i:int;
 	var j:int;
+	var b:b2Body;
+	var temp:Number;
 	
 	// Integrate velocities and apply damping.
 	for (i = 0; i < m_bodyCount; ++i)
 	{
-		var b:b2Body = m_bodies[i];
+		b = m_bodies[i];
 
 		if (b.IsStatic())
 			continue;
 
 		// Integrate velocities.
 		//b.m_linearVelocity += step.dt * (gravity + b->m_invMass * b->m_force);
-		b.m_linearVelocity.x += step.dt * (gravity.x + b->m_invMass * b->m_force.x);
-		b.m_linearVelocity.y += step.dt * (gravity.y + b->m_invMass * b->m_force.y);
+		b.m_linearVelocity.x += step.dt * (gravity.x + b.m_invMass * b.m_force.x);
+		b.m_linearVelocity.y += step.dt * (gravity.y + b.m_invMass * b.m_force.y);
 		b.m_angularVelocity += step.dt * b.m_invI * b.m_torque;
 
 		// Reset forces.
@@ -224,10 +226,10 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		// Taylor expansion:
 		// v2 = (1.0f - c * dt) * v1
 		//b->m_linearVelocity *= b2Clamp(1.0f - step.dt * b->m_linearDamping, 0.0f, 1.0f);
-		var temp:Number = b2Math.b2Clamp_Number (1.0 - step.dt * b->m_linearDamping, 0.0, 1.0);
+		temp = b2Math.b2Clamp_Number (1.0 - step.dt * b.m_linearDamping, 0.0, 1.0);
 		b.m_linearVelocity.x *= temp;
 		b.m_linearVelocity.y *= temp;
-		b.m_angularVelocity *= b2Math.b2Clamp_Number (1.0 - step.dt * b->m_angularDamping, 0.0, 1.0);
+		b.m_angularVelocity *= b2Math.b2Clamp_Number (1.0 - step.dt * b.m_angularDamping, 0.0, 1.0);
 	}
 
 	var contactSolver:b2ContactSolver = new (step, m_contacts, m_contactCount, m_allocator);
@@ -255,36 +257,36 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	contactSolver.FinalizeVelocityConstraints();
 
 	// Integrate positions.
-	for (var i:int = 0; i < m_bodyCount; ++i)
+	for (i = 0; i < m_bodyCount; ++i)
 	{
-		var b:b2Body = m_bodies[i];
+		b = m_bodies[i];
 
 		if (b.IsStatic())
 			continue;
 
 		// Check for large velocities.
 		//b2Vec2 translation = step.dt * b->m_linearVelocity;
-		var translation:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (step.dt * b->m_linearVelocity.x, step.dt * b->m_linearVelocity.y);
+		var translation:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (step.dt * b.m_linearVelocity.x, step.dt * b.m_linearVelocity.y);
 		
-		if (b2Math.b2Dot2(translation, translation) > b2_maxTranslationSquared)
+		if (b2Math.b2Dot2(translation, translation) > b2Settings.b2_maxTranslationSquared)
 		{
 			translation.Normalize();
 			//b.m_linearVelocity = (b2_maxTranslation * step.inv_dt) * translation;
-			var temp:Number = b2_maxTranslation * step.inv_dt;
+			temp = b2Settings.b2_maxTranslation * step.inv_dt;
 			b.m_linearVelocity.x = temp * translation.x;
 			b.m_linearVelocity.y = temp * translation.y;
 		}
 
 		var rotation:Number = step.dt * b.m_angularVelocity;
-		if (rotation * rotation > b2_maxRotationSquared)
+		if (rotation * rotation > b2Settings.b2_maxRotationSquared)
 		{
 			if (rotation < 0.0)
 			{
-				b.m_angularVelocity = -step.inv_dt * b2_maxRotation;
+				b.m_angularVelocity = -step.inv_dt * b2Settings.b2_maxRotation;
 			}
 			else
 			{
-				b.m_angularVelocity = step.inv_dt * b2_maxRotation;
+				b.m_angularVelocity = step.inv_dt * b2Settings.b2_maxRotation;
 			}
 		}
 
@@ -309,13 +311,13 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	// Iterate over constraints.
 	for (i = 0; i < step.positionIterations; ++i)
 	{
-		var contactsOkay:Boolean = contactSolver.SolvePositionConstraints(b2_contactBaumgarte);
+		var contactsOkay:Boolean = contactSolver.SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
 
 		var jointsOkay:Boolean = true;
 		//for (int32 i = 0; i < m_jointCount; ++i)
 		for (j = 0; j < m_jointCount; ++j)
 		{
-			var jointOkay:Boolean = m_joints[j].SolvePositionConstraints(b2_contactBaumgarte);
+			var jointOkay:Boolean = m_joints[j].SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
 			jointsOkay = jointsOkay && jointOkay;
 		}
 
@@ -330,7 +332,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 
 	if (allowSleep)
 	{
-		float32 minSleepTime = b2Settings.B2_FLT_MAX;
+		var minSleepTime:Number = b2Settings.B2_FLT_MAX;
 
 		// the 2 const is move to the top ofthe file
 //#ifndef TARGET_FLOAT32_IS_FIXED
@@ -340,7 +342,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 
 		for (i = 0; i < m_bodyCount; ++i)
 		{
-			var b:b2Body = m_bodies[i];
+			b = m_bodies[i];
 			if (b.m_invMass == 0.0)
 			{
 				continue;
@@ -372,21 +374,21 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 			}
 		}
 
-		if (minSleepTime >= b2_timeToSleep)
+		if (minSleepTime >= b2Settings.b2_timeToSleep)
 		{
 			for (i = 0; i < m_bodyCount; ++i)
 			{
-				var b:b2Body = m_bodies[i];
+				b = m_bodies[i];
 				b.m_flags |= b2Body.e_sleepFlag;
 				//b->m_linearVelocity = b2Vec2_zero;
 				b.m_linearVelocity.SetZero ();
-				b.m_angularVelocity = 0.0f;
+				b.m_angularVelocity = 0.0;
 			}
 		}
 	}
 }
 
-public function SolveTOI(b2TimeStep& subStep):void
+public function SolveTOI(subStep:b2TimeStep):void
 {
 	var i:int;
 	var j:int;
@@ -426,26 +428,26 @@ public function SolveTOI(b2TimeStep& subStep):void
 
 		// Check for large velocities.
 		//b2Vec2 translation = subStep.dt * b->m_linearVelocity;
-		var translation:b2Vec2 = b2Mul_ScalarAndVector2 (subStep.dt, b.m_linearVelocity);
-		if (b2Math.b2Dot2(translation, translation) > b2_maxTranslationSquared)
+		var translation:b2Vec2 = b2Math.b2Mul_ScalarAndVector2 (subStep.dt, b.m_linearVelocity);
+		if (b2Math.b2Dot2(translation, translation) > b2Settings.b2_maxTranslationSquared)
 		{
 			translation.Normalize();
 			//b->m_linearVelocity = (b2_maxTranslation * subStep.inv_dt) * translation;
-			var temp:Number = b2_maxTranslation * subStep.inv_dt;
+			var temp:Number = b2Settings.b2_maxTranslation * subStep.inv_dt;
 			b.m_linearVelocity.x = temp * translation.x;
 			b.m_linearVelocity.y = temp * translation.y;
 		}
 
 		var rotation:Number = subStep.dt * b.m_angularVelocity;
-		if (rotation * rotation > b2_maxRotationSquared)
+		if (rotation * rotation > b2Settings.b2_maxRotationSquared)
 		{
 			if (rotation < 0.0)
 			{
-				b.m_angularVelocity = -subStep.inv_dt * b2_maxRotation;
+				b.m_angularVelocity = -subStep.inv_dt * b2Settings.b2_maxRotation;
 			}
 			else
 			{
-				b.m_angularVelocity = subStep.inv_dt * b2_maxRotation;
+				b.m_angularVelocity = subStep.inv_dt * b2Settings.b2_maxRotation;
 			}
 		}
 
@@ -508,12 +510,13 @@ public function SolveTOI(b2TimeStep& subStep):void
 			break;
 		}
 	}
-#endif
+//#endif
 
 	Report(contactSolver.m_constraints);
 }
 
-public function Report(constraints:b2ContactConstraint):void
+//void b2Island::Report(const b2ContactConstraint* constraints)
+public function Report(constraints:Array):void
 {
 	if (m_listener == null)
 	{
@@ -537,6 +540,6 @@ public function Report(constraints:b2ContactConstraint):void
 			impulse.tangentImpulses[j] = cc.points[j].tangentImpulse;
 		}
 
-		m_listener.PostSolve(c, &impulse);
+		m_listener.PostSolve(c, impulse);
 	}
 }

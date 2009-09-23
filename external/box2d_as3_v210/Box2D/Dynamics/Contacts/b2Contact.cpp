@@ -30,20 +30,20 @@
 //#include <Box2D/Dynamics/b2Fixture.h>
 //#include <Box2D/Dynamics/b2World.h>
 
-public static var s_registers:Array = new Array (e_typeCount);
+public static var s_registers:Array = new Array (b2Shape.e_typeCount);
 public static var s_initialized:Boolean = false;
 
 public static function InitializeRegisters():void
 {
 	// this for-clause doesn't exist in the c++ version
-	for (var i:int = 0; i < e_typeCount; ++ i)
+	for (var i:int = 0; i < b2Shape.e_typeCount; ++ i)
 	{
-		s_registers = new Array (e_typeCount);
+		s_registers [i] = new Array (b2Shape.e_typeCount);
 	}
 	
-	AddType(b2CircleContact::Create, b2CircleContact::Destroy, b2Shape::e_circle, b2Shape::e_circle);
-	AddType(b2PolygonAndCircleContact::Create, b2PolygonAndCircleContact::Destroy, b2Shape::e_polygon, b2Shape::e_circle);
-	AddType(b2PolygonContact::Create, b2PolygonContact::Destroy, b2Shape::e_polygon, b2Shape::e_polygon);
+	AddType(b2CircleContact.Create, b2CircleContact.Destroy, b2Shape.e_circle, b2Shape.e_circle);
+	AddType(b2PolygonAndCircleContact.Create, b2PolygonAndCircleContact.Destroy, b2Shape.e_polygon, b2Shape.e_circle);
+	AddType(b2PolygonContact.Create, b2PolygonContact.Destroy, b2Shape.e_polygon, b2Shape.e_polygon);
 }
 
 public static function AddType(createFcn:Function, destoryFcn:Function,
@@ -64,7 +64,7 @@ public static function AddType(createFcn:Function, destoryFcn:Function,
 	}
 }
 
-public function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:b2BlockAllocator):void
+public static function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:b2BlockAllocator = null):b2Contact
 {
 	if (s_initialized == false)
 	{
@@ -79,7 +79,7 @@ public function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:b2Block
 	//b2Assert(b2Shape::e_unknown < type2 && type2 < b2Shape::e_typeCount);
 	
 	var createFcn:Function = s_registers[type1][type2].createFcn;
-	if (createFcn)
+	if (createFcn != null)
 	{
 		if (s_registers[type1][type2].primary)
 		{
@@ -96,7 +96,7 @@ public function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:b2Block
 	}
 }
 
-public function Destroy(contact:b2Contact, allocator:b2BlockAllocator):void
+public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = null):void
 {
 	//b2Assert(s_initialized == true);
 
@@ -118,6 +118,11 @@ public function Destroy(contact:b2Contact, allocator:b2BlockAllocator):void
 
 public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 {
+	if (fA == null || fB == null)
+	{
+		return
+	}
+
 	m_flags = 0;
 
 	if (fA.IsSensor() || fB.IsSensor())
@@ -251,7 +256,7 @@ public function ComputeTOI(sweepA:b2Sweep, sweepB:b2Sweep):Number
 	input.proxyB.Set(m_fixtureB.GetShape());
 	input.sweepA.CopyFrom (sweepA);
 	input.sweepB.CopyFrom (sweepB);
-	input.tolerance = b2_linearSlop;
+	input.tolerance = b2Settings.b2_linearSlop;
 
-	return b2TimeOfImpact(input);
+	return b2TimeOfImpact._b2TimeOfImpact (input);
 }

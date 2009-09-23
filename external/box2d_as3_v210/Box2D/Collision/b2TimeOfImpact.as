@@ -22,9 +22,14 @@
 package Box2D.Collision
 {
 
-	#include <Box2D/Common/b2Math.h>
-	#include <Box2D/Collision/b2Distance.h>
-	#include <climits>
+	//#include <Box2D/Common/b2Math.h>
+	//#include <Box2D/Collision/b2Distance.h>
+	//#include <climits>
+	
+	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Transform;
+	import Box2D.Common.b2Sweep;
 
 	/// Input parameters for b2TimeOfImpact
 	//struct b2TOIInput
@@ -32,9 +37,9 @@ package Box2D.Collision
 		//@see b2TOIInput.as
 	//};
 	
-	public class b2TiimeOfImpact
+	public class b2TimeOfImpact
 	{
-		include "b2TiimeOfImpact.cpp";
+		include "b2TimeOfImpact.cpp";
 		
 		/// Compute the time when two shapes begin to touch or touch at a closer distance.
 		/// TOI considers the shape radii. It attempts to have the radii overlap by the tolerance.

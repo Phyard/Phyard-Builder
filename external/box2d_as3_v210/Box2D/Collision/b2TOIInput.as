@@ -1,5 +1,7 @@
 package Box2D.Collision
 {
+	import Box2D.Common.b2Sweep;
+	
 	/// Input parameters for b2TimeOfImpact
 	public class b2TOIInput
 	{

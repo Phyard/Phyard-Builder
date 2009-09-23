@@ -47,12 +47,12 @@ public function b2CircleContact(fixtureA:b2Fixture, fixtureB:b2Fixture)
 	//b2Assert(m_fixtureB->GetType() == b2Shape::e_circle);
 }
 
-public function Evaluate():void
+override public function Evaluate():void
 {
 	var bodyA:b2Body = m_fixtureA.GetBody();
 	var bodyB:b2Body = m_fixtureB.GetBody();
 
-	b2CollideCircles(	m_manifold,
+	b2Collision.b2CollideCircles(	m_manifold,
 						(m_fixtureA.GetShape() as b2CircleShape), bodyA.GetTransform(),
 						(m_fixtureB.GetShape() as b2CircleShape), bodyB.GetTransform());
 }

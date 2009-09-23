@@ -25,6 +25,18 @@ package Box2D.Dynamics.Contacts
 	//#include <Box2D/Collision/b2Collision.h>
 	//#include <Box2D/Dynamics/b2Island.h>
 
+	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Vec2;
+	import Box2D.Common.b2StackAllocator;
+	import Box2D.Dynamics.b2TimeStep;
+	import Box2D.Dynamics.b2Body;
+	import Box2D.Dynamics.b2Fixture;
+	import Box2D.Collision.Shapes.b2Shape;
+	import Box2D.Collision.b2Manifold;
+	import Box2D.Collision.b2WorldManifold;
+	import Box2D.Collision.b2ManifoldPoint;
+
 	//class b2Contact;
 	//class b2Body;
 	//class b2Island;
@@ -56,7 +68,8 @@ package Box2D.Dynamics.Contacts
 
 		public var m_step:b2TimeStep = new b2TimeStep ();
 		public var m_allocator:b2StackAllocator;
-		public var m_constraints:b2ContactConstraint;
+		//b2ContactConstraint* m_constraints;
+		public var m_constraints:Array;
 		public var m_constraintCount:int;
 	} // class
 } // package

@@ -1,5 +1,7 @@
 package Box2D.Dynamics.Contacts
 {
+	import Box2D.Common.b2Vec2;
+
 	public class b2ContactConstraintPoint
 	{
 		public var localPoint:b2Vec2 = new b2Vec2 ();

@@ -26,7 +26,7 @@
 //#define B2_DEBUG_SOLVER 0
 
 //b2ContactSolver::b2ContactSolver(const b2TimeStep& step, b2Contact** contacts, int32 contactCount, b2StackAllocator* allocator)
-public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:int, allocator:b2StackAllocator)
+public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:int, allocator:b2StackAllocator = null)
 {
 	var i:int;
 	var j:int;
@@ -54,12 +54,12 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 		var shapeB:b2Shape = fixtureB.GetShape();
 		var radiusA:Number = shapeA.m_radius;
 		var radiusB:Number = shapeB.m_radius;
-		var bodyA:b2Shape = fixtureA.GetBody();
+		var bodyA:b2Body = fixtureA.GetBody();
 		var bodyB:b2Body = fixtureB.GetBody();
 		var manifold:b2Manifold = contact.GetManifold();
 
-		var friction:Number = b2Setting.b2MixFriction (fixtureA.GetFriction(), fixtureB.GetFriction());
-		var restitution:Number = b2Setting.b2MixRestitution(fixtureA.GetRestitution(), fixtureB.GetRestitution());
+		var friction:Number = b2Settings.b2MixFriction (fixtureA.GetFriction(), fixtureB.GetFriction());
+		var restitution:Number = b2Settings.b2MixRestitution(fixtureA.GetRestitution(), fixtureB.GetRestitution());
 
 		var vA:b2Vec2 = bodyA.m_linearVelocity; // .Clone ()
 		var vB:b2Vec2 = bodyB.m_linearVelocity; // .Clone ()
@@ -117,7 +117,7 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 			//b2Assert(kEqualized > B2_FLT_EPSILON);
 			ccp.equalizedMass = 1.0 / kEqualized;
 
-			var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (cc.normal, 1.0f);
+			var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (cc.normal, 1.0);
 
 			var rtA:Number = b2Math.b2Cross2 (ccp.rA, tangent);
 			var rtB:Number = b2Math.b2Cross2 (ccp.rB, tangent);
@@ -136,7 +136,7 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 			b2Math.b2Cross_ScalarAndVector2_Output (wA, ccp.rA, tempVa); 
 			tempV.Set (vB.x + tempVb.x - vA.x - tempVa.x, vB.y + tempVb.y - vA.y - tempVa.y);
 			var vRel:Number = b2Math.b2Dot2 (cc.normal, tempV);
-			if (vRel < -b2_velocityThreshold)
+			if (vRel < -b2Settings.b2_velocityThreshold)
 			{
 				ccp.velocityBias = -cc.restitution * vRel;
 			}
@@ -207,13 +207,15 @@ public function InitVelocityConstraints(step:b2TimeStep):void
 		var invMassB:Number = bodyB.m_invMass;
 		var invIB:Number = bodyB.m_invI;
 		var normal:b2Vec2 = c.normal; // .Clone ()
-		var tangent:b2Vec2 = b2Math.b2Cross2(normal, 1.0); // .Clone ()
+		var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (normal, 1.0); // .Clone ()
+
+		var ccp:b2ContactConstraintPoint;
 
 		if (step.warmStarting)
 		{
 			for (j = 0; j < c.pointCount; ++j)
 			{
-				var ccp:b2ContactConstraintPoint = c.points [j];
+				ccp = c.points [j];
 				ccp.normalImpulse *= step.dtRatio;
 				ccp.tangentImpulse *= step.dtRatio;
 				//b2Vec2 P = ccp->normalImpulse * normal + ccp->tangentImpulse * tangent;
@@ -233,7 +235,7 @@ public function InitVelocityConstraints(step:b2TimeStep):void
 		{
 			for (j = 0; j < c.pointCount; ++j)
 			{
-				var ccp:b2ContactConstraintPoint = c.points [j];
+				ccp = c.points [j];
 				ccp.normalImpulse = 0.0;
 				ccp.tangentImpulse = 0.0;
 			}
@@ -271,21 +273,25 @@ public function SolveVelocityConstraints():void
 		//b2Vec2 vA = bodyA->m_linearVelocity;
 		//b2Vec2 vB = bodyB->m_linearVelocity;
 		vA.CopyFrom (bodyA.m_linearVelocity);
-		vB.CopyFrom ( = bodyB.m_linearVelocity);
+		vB.CopyFrom (bodyB.m_linearVelocity);
 		var invMassA:Number = bodyA.m_invMass;
 		var invIA:Number = bodyA.m_invI;
 		var invMassB:Number = bodyB.m_invMass;
 		var invIB:Number = bodyB.m_invI;
 		var normal:b2Vec2 = c.normal; // .Clone ()
-		var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (normal, 1.0f); 
+		var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (normal, 1.0); 
 		var friction:Number = c.friction;
 
 		//b2Assert(c->pointCount == 1 || c->pointCount == 2);
 
+		var ccp:b2ContactConstraintPoint;
+		var lambda:Number;
+		var newImpulse:Number;
+
 		// Solve tangent constraints
 		for (j = 0; j < c.pointCount; ++j)
 		{
-			var ccp:b2ContactConstraintPoint = c.points [j];
+			ccp = c.points [j];
 
 			// Relative velocity at contact
 			//b2Vec2 dv = vB + b2Math.b2Cross2(wB, ccp->rB) - vA - b2Math.b2Cross2(wA, ccp->rA);
@@ -295,11 +301,11 @@ public function SolveVelocityConstraints():void
 
 			// Compute tangent force
 			var vt:Number = b2Math.b2Dot2 (dv, tangent);
-			var lambda:Number = ccp.tangentMass * (-vt);
+			lambda = ccp.tangentMass * (-vt);
 
 			// b2Clamp the accumulated force
 			var maxFriction:Number = friction * ccp.normalImpulse;
-			var newImpulse:Number = b2Math.b2Clamp_Number (ccp.tangentImpulse + lambda, -maxFriction, maxFriction);
+			newImpulse = b2Math.b2Clamp_Number (ccp.tangentImpulse + lambda, -maxFriction, maxFriction);
 			lambda = newImpulse - ccp.tangentImpulse;
 
 			// Apply contact impulse
@@ -322,7 +328,7 @@ public function SolveVelocityConstraints():void
 		// Solve normal constraints
 		if (c.pointCount == 1)
 		{
-			var ccp:b2ContactConstraintPoint = c.points [0];
+			ccp = c.points [0];
 
 			// Relative velocity at contact
 			//b2Vec2 dv = vB + b2Math.b2Cross2(wB, ccp->rB) - vA - b2Math.b2Cross2(wA, ccp->rA);
@@ -332,10 +338,10 @@ public function SolveVelocityConstraints():void
 
 			// Compute normal impulse
 			var vn:Number = b2Math.b2Dot2 (dv, normal);
-			var lambda:Number = -ccp.normalMass * (vn - ccp.velocityBias);
+			lambda = -ccp.normalMass * (vn - ccp.velocityBias);
 
 			// b2Clamp the accumulated impulse
-			var newImpulse:Number = Math.max (ccp->normalImpulse + lambda, 0.0);
+			newImpulse = Math.max (ccp.normalImpulse + lambda, 0.0);
 			lambda = newImpulse - ccp.normalImpulse;
 
 			// Apply contact impulse
@@ -400,8 +406,8 @@ public function SolveVelocityConstraints():void
 			dv2.Set (vB.x + tempVb.x - vA.x - tempVa.x, vB.y + tempVb.y - vA.y - tempVa.y);
 
 			// Compute normal velocity
-			var vn1:float32 = b2Math.b2Dot2 (dv1, normal);
-			var vn2:float32 = b2Math.b2Dot2 (dv2, normal);
+			var vn1:Number = b2Math.b2Dot2 (dv1, normal);
+			var vn2:Number = b2Math.b2Dot2 (dv2, normal);
 
 			//b2Vec2 b;
 			//b.x = vn1 - cp1->velocityBias;
@@ -426,7 +432,7 @@ public function SolveVelocityConstraints():void
 				// x' = - inv(A) * b'
 				//
 				//b2Vec2 x = - b2Mul(c->normalMass, b);
-				b2Math.b2Mul_Matrix22AndVector2_Output (c->normalMass, b, x);
+				b2Math.b2Mul_Matrix22AndVector2_Output (c.normalMass, b, x);
 				x.x = -x.x;
 				x.y = -x.y;
 
@@ -532,8 +538,8 @@ public function SolveVelocityConstraints():void
 				//   0 = a21 * 0 + a22 * x2' + b2'
 				//
 				x.x = 0.0;
-				x.y = - cp2->normalMass * b.y;
-				vn1 = c->K.col2.x * x.y + b.x;
+				x.y = - cp2.normalMass * b.y;
+				vn1 = c.K.col2.x * x.y + b.x;
 				vn2 = 0.0;
 
 				if (x.y >= 0.0 && vn1 >= 0.0)
@@ -634,7 +640,7 @@ public function FinalizeVelocityConstraints():void
 	var i:int;
 	var j:int;
 	var mp:b2ManifoldPoint;
-	var ccp:b2ManifoldPoint;
+	var ccp:b2ContactConstraintPoint;
 	var c:b2ContactConstraint;
 	var m:b2Manifold;
 	
@@ -768,7 +774,7 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 			minSeparation = Math.min (minSeparation, separation);
 
 			// Prevent large corrections and allow slop.
-			var C:Number = baumgarte * b2Clamp_Number (separation + b2Settings.b2_linearSlop, - b2Settings.b2_maxLinearCorrection, 0.0);
+			var C:Number = baumgarte * b2Math.b2Clamp_Number (separation + b2Settings.b2_linearSlop, - b2Settings.b2_maxLinearCorrection, 0.0);
 
 			// Compute normal impulse
 			var impulse:Number = -ccp.equalizedMass * C;

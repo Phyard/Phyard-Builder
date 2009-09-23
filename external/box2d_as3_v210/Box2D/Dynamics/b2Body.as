@@ -29,8 +29,12 @@ package Box2D.Dynamics
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2Transform;
+	import Box2D.Common.b2Sweep;
+	import Box2D.Common.b2BlockAllocator;
+	import Box2D.Collision.b2BroadPhase;
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.Shapes.b2MassData;
+	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Contacts.b2ContactEdge;
 	import Box2D.Dynamics.Joints.b2JointEdge;
 
@@ -389,7 +393,7 @@ package Box2D.Dynamics
 		public function GetWorldPoint(localPoint:b2Vec2):b2Vec2
 		{
 			//return b2Mul(m_xf, localPoint);
-			return b2Math.b2Mul_Matrix22AndVector2(m_xf, localPoint);
+			return b2Math.b2Mul_TransformAndVector2(m_xf, localPoint);
 		}
 
 		public function GetWorldVector(localVector:b2Vec2):b2Vec2
@@ -401,7 +405,7 @@ package Box2D.Dynamics
 		public function GetLocalPoint(worldPoint:b2Vec2):b2Vec2
 		{
 			//return b2MulT(m_xf, worldPoint);
-			return b2Math.b2MulTrans_Matrix22AndVector2(m_xf, worldPoint);
+			return b2Math.b2MulTrans_TransformAndVector2(m_xf, worldPoint);
 		}
 
 		public function GetLocalVector(worldVector:b2Vec2):b2Vec2
@@ -588,7 +592,7 @@ package Box2D.Dynamics
 
 		public function SynchronizeTransform():void
 		{
-			m_xf.R.Set(m_sweep.a);
+			m_xf.R.SetFromAngle (m_sweep.a);
 			//m_xf.position = m_sweep.c - b2Mul(m_xf.R, m_sweep.localCenter);
 			var temp:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2(m_xf.R, m_sweep.localCenter);
 			m_xf.position.x = m_sweep.c.x - temp.x;

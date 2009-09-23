@@ -70,7 +70,7 @@ public function GetDestructionListener():b2DestructionListener
 	return m_destructionListener;
 }
 
-public function SetContactFilter(filte:b2ContactFilter):void
+public function SetContactFilter(filter:b2ContactFilter):void
 {
 	m_contactManager.m_contactFilter = filter;
 }
@@ -138,7 +138,7 @@ public function DestroyBody(b:b2Body):void
 
 		if (m_destructionListener != null)
 		{
-			m_destructionListener.SayGoodbye(je0.joint);
+			m_destructionListener.SayGoodbye_Joint (je0.joint);
 		}
 
 		DestroyJoint(je0.joint);
@@ -164,7 +164,7 @@ public function DestroyBody(b:b2Body):void
 
 		if (m_destructionListener)
 		{
-			m_destructionListener.SayGoodbye(f0);
+			m_destructionListener.SayGoodbye_Fixture (f0);
 		}
 
 		f0.Destroy(m_blockAllocator, m_contactManager.m_broadPhase);
@@ -422,7 +422,7 @@ public function Solve(step:b2TimeStep):void
 		{
 			// Grab the next body off the stack and add it to the island.
 			b = stack[--stackCount];
-			island.Add(b);
+			island.AddBody (b);
 
 			// Make sure the body is awake.
 			b.m_flags &= ~b2Body.e_sleepFlag;
@@ -449,20 +449,20 @@ public function Solve(step:b2TimeStep):void
 					continue;
 				}
 
-				island.Add(ce.contact);
+				island.AddContact (ce.contact);
 				ce.contact.m_flags |= b2Contact.e_islandFlag;
 
-				var other:b2Body = ce.other;
+				var other1:b2Body = ce.other;
 
 				// Was the other body already added to this island?
-				if (other.m_flags & b2Body.e_islandFlag)
+				if (other1.m_flags & b2Body.e_islandFlag)
 				{
 					continue;
 				}
 
 				//b2Assert(stackCount < stackSize);
-				stack[stackCount++] = other;
-				other.m_flags |= b2Body.e_islandFlag;
+				stack[stackCount++] = other1;
+				other1.m_flags |= b2Body.e_islandFlag;
 			}
 
 			// Search all joints connect to this body.
@@ -473,18 +473,18 @@ public function Solve(step:b2TimeStep):void
 					continue;
 				}
 
-				island.Add(je.joint);
+				island.AddJoint (je.joint);
 				je.joint.m_islandFlag = true;
 
-				var other:b2Body = je.other;
-				if (other.m_flags & b2Body.e_islandFlag)
+				var other2:b2Body = je.other;
+				if (other2.m_flags & b2Body.e_islandFlag)
 				{
 					continue;
 				}
 
 				//b2Assert(stackCount < stackSize);
-				stack[stackCount++] = other;
-				other.m_flags |= b2Body.e_islandFlag;
+				stack[stackCount++] = other2;
+				other2.m_flags |= b2Body.e_islandFlag;
 			}
 		}
 
@@ -494,10 +494,10 @@ public function Solve(step:b2TimeStep):void
 		for (i = 0; i < island.m_bodyCount; ++i)
 		{
 			// Allow static bodies to participate in other islands.
-			var b:b2Body = island.m_bodies[i];
-			if (b.IsStatic())
+			var b2:b2Body = island.m_bodies[i];
+			if (b2.IsStatic())
 			{
-				b.m_flags &= ~b2Body.e_islandFlag;
+				b2.m_flags &= ~b2Body.e_islandFlag;
 			}
 		}
 	}
@@ -541,8 +541,8 @@ public function SolveTOI(step:b2TimeStep):void
 	
 	// Reserve an island and a queue for TOI island solution.
 	var island:b2Island = new b2Island (m_bodyCount,
-										b2_maxTOIContactsPerIsland,
-										b2_maxTOIJointsPerIsland,
+										b2Settings.b2_maxTOIContactsPerIsland,
+										b2Settings.b2_maxTOIJointsPerIsland,
 										m_stackAllocator,
 										m_contactManager.m_contactListener);
 
@@ -556,7 +556,7 @@ public function SolveTOI(step:b2TimeStep):void
 	//  --queueSize;
 	var queueCapacity:int = m_bodyCount;
 	//b2Body** queue = (b2Body**)m_stackAllocator.Allocate(queueCapacity* sizeof(b2Body*));
-	var quene:Array = new Array (queueCapacity);
+	var queue:Array = new Array (queueCapacity);
 
 	for (b = m_bodyList; b != null; b = b.m_next)
 	{
@@ -644,7 +644,7 @@ public function SolveTOI(step:b2TimeStep):void
 				c.m_flags |= b2Contact.e_toiFlag;
 			}
 
-			if (B2_FLT_EPSILON < toi && toi < minTOI)
+			if (b2Settings.B2_FLT_EPSILON < toi && toi < minTOI)
 			{
 				// This is the minimum TOI found so far.
 				minContact = c;
@@ -652,7 +652,7 @@ public function SolveTOI(step:b2TimeStep):void
 			}
 		}
 
-		if (minContact == null || 1.0 - 100.0 * B2_FLT_EPSILON < minTOI)
+		if (minContact == null || 1.0 - 100.0 * b2Settings.B2_FLT_EPSILON < minTOI)
 		{
 			// No more TOI events. Done!
 			break;
@@ -716,7 +716,7 @@ public function SolveTOI(step:b2TimeStep):void
 			b = queue[queueStart++];
 			--queueSize;
 
-			island.Add(b);
+			island.AddBody (b);
 
 			// Make sure the body is awake.
 			b.m_flags &= ~b2Body.e_sleepFlag;
@@ -749,29 +749,29 @@ public function SolveTOI(step:b2TimeStep):void
 					continue;
 				}
 
-				island.Add(cEdge.contact);
+				island.AddContact (cEdge.contact);
 				cEdge.contact.m_flags |= b2Contact.e_islandFlag;
 
 				// Update other body.
-				var other:b2Body = cEdge.other;
+				var other1:b2Body = cEdge.other;
 
 				// Was the other body already added to this island?
-				if (other.m_flags & b2Body.e_islandFlag)
+				if (other1.m_flags & b2Body.e_islandFlag)
 				{
 					continue;
 				}
 
 				// March forward, this can do no harm since this is the min TOI.
-				if (other.IsStatic() == false)
+				if (other1.IsStatic() == false)
 				{
-					other.Advance(minTOI);
-					other.WakeUp();
+					other1.Advance(minTOI);
+					other1.WakeUp();
 				}
 
 				//b2Assert(queueStart + queueSize < queueCapacity);
-				queue[queueStart + queueSize] = other;
+				queue[queueStart + queueSize] = other1;
 				++queueSize;
-				other.m_flags |= b2Body.e_islandFlag;
+				other1.m_flags |= b2Body.e_islandFlag;
 			}
 
 			for (var jEdge:b2JointEdge = b.m_jointList; jEdge != null; jEdge = jEdge.next)
@@ -786,27 +786,27 @@ public function SolveTOI(step:b2TimeStep):void
 					continue;
 				}
 
-				island.Add(jEdge.joint);
+				island.AddJoint (jEdge.joint);
 
 				jEdge.joint.m_islandFlag = true;
 
-				var other:b2Body = jEdge.other;
+				var other2:b2Body = jEdge.other;
 
-				if (other.m_flags & b2Body.e_islandFlag)
+				if (other2.m_flags & b2Body.e_islandFlag)
 				{
 					continue;
 				}
 
-				if (!other.IsStatic())
+				if (!other2.IsStatic())
 				{
-					other.Advance(minTOI);
-					other.WakeUp();
+					other2.Advance(minTOI);
+					other2.WakeUp();
 				}
 
 				//b2Assert(queueStart + queueSize < queueCapacity);
-				queue[queueStart + queueSize] = other;
+				queue[queueStart + queueSize] = other2;
 				++queueSize;
-				other.m_flags |= b2Body.e_islandFlag;
+				other2.m_flags |= b2Body.e_islandFlag;
 			}
 		}
 
@@ -867,7 +867,7 @@ public function SolveTOI(step:b2TimeStep):void
 		m_contactManager.FindNewContacts();
 	}
 
-	m_stackAllocator.Free(queue);
+	//m_stackAllocator.Free(queue);
 }
 
 public function Step(dt:Number, velocityIterations:int, positionIterations:int):void

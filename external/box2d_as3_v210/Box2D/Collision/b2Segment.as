@@ -1,5 +1,9 @@
 package Box2D.Collision
 {
+	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Vec2;
+
 	/// A line segment.
 	public class b2Segment
 	{
@@ -10,7 +14,7 @@ package Box2D.Collision
 		public var p2:b2Vec2 = new b2Vec2 ();	///< the ending point
 		
 		//const float32 k_slop = 100.0f * B2_FLT_EPSILON;
-		public static const k_slop:Number = 100.0 * B2_FLT_EPSILON;
+		public static const k_slop:Number = 100.0 * b2Settings.B2_FLT_EPSILON;
 		
 		//bool TestSegment(float32* lambda, b2Vec2* normal, const b2Segment& segment, float32 maxLambda) const;
 		public function TestSegment(segment:b2Segment, maxLambda:Number):b2TestSegmentOutput
@@ -21,8 +25,8 @@ package Box2D.Collision
 			//b2Vec2 n = b2Math.b2Cross2(d, 1.0f);
 			var sx:Number = segment.p1.x;
 			var sy:Number = segment.p1.y;
-			var rx:Number = segment.p2.x - s.x;
-			var ry:Number = segment.p2.y - s.y;
+			var rx:Number = segment.p2.x - sx;
+			var ry:Number = segment.p2.y - sy;
 			var dx:Number = p2.x - p1.x;
 			var dy:Number = p2.y - p1.y;
 			var nx:Number =   dy;
@@ -51,7 +55,7 @@ package Box2D.Collision
 					{
 						a /= denom;
 						//n.Normalize();
-						var invLength:Number = 1.0 / b2Math.b2Sqrt(nx * nx + ny * ny);
+						var invLength:Number = 1.0 // b2Math.b2Sqrt(nx * nx + ny * ny);
 						
 						var result:b2TestSegmentOutput = new b2TestSegmentOutput ();
 						result.lambda = a;

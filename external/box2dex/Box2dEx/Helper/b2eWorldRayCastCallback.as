@@ -15,13 +15,13 @@ package Box2dEx.Helper {
          
          var hits:Array = GetHits ();
          
-         var intersect_fixtures:Array = new Array (hits.length);
+         var intersected_fixtures:Array = new Array (hits.length);
          for (var i:int = 0; i < hits.length; ++ i)
          {
-            intersect_fixtures [i] = hits [i][0];
+            intersected_fixtures [i] = hits [i][0];
          }
          
-         return intersect_fixtures;
+         return intersected_fixtures;
       }
 
 //=================================================================

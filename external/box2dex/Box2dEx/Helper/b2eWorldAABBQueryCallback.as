@@ -21,7 +21,7 @@ package Box2dEx.Helper {
 
       public static function GetFixturesContainPoint (world:b2World, point:b2Vec2, maxHits:int = 0):Array
       {
-         const kWindowSize:Number = 3.0;
+         const kWindowSize:Number = 0.0; // 3.0
          var aabb:b2AABB = new b2AABB ();
          aabb.lowerBound.Set (point.x - kWindowSize, point.y - kWindowSize);
          aabb.upperBound.Set (point.x + kWindowSize, point.y + kWindowSize);

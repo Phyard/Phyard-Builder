@@ -37,7 +37,7 @@ public static function b2EdgeSeparation(poly1:b2PolygonShape, xf1:b2Transform, e
 
 	// Convert normal from poly1's frame into poly2's frame.
 	var normal1World:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf1.R, normals1[edge1]);
-	var normal1:b2Vec2 = b2Math.b2MulTrans_Matrix22AndVector2 (xf2.R, normal1World);
+	var normal1:b2Vec2 = b2Math.b2MulT_Matrix22AndVector2 (xf2.R, normal1World);
 
 	// Find support vertex on poly2 for -normal.
 	var index:int = 0;
@@ -80,7 +80,7 @@ public static function b2FindMaxSeparation(maxSeparation:b2Separation, //int32* 
 	var d:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf2, poly2.m_centroid);
 	var dLocal1:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf1, poly1.m_centroid);
 	d.SubtractWith (dLocal1);
-	b2Math.b2MulTrans_Matrix22AndVector2_Output (xf1.R, d, dLocal1);
+	b2Math.b2MulT_Matrix22AndVector2_Output (xf1.R, d, dLocal1);
 
 	// Find edge normal on poly1 that has the largest projection onto d.
 	var edge:int = 0;
@@ -182,7 +182,7 @@ public static function b2FindIncidentEdge(c:b2ClipVertexSegment, //b2ClipVertex 
 
 	// Get the normal of the reference edge in poly2's frame.
 	//b2Vec2 normal1 = b2MulT(xf2.R, b2Mul(xf1.R, normals1[edge1]));
-	var normal1:b2Vec2 = b2Math.b2MulTrans_Matrix22AndVector2 (xf2.R, b2Math.b2Mul_Matrix22AndVector2 (xf1.R, normals1[edge1]));
+	var normal1:b2Vec2 = b2Math.b2MulT_Matrix22AndVector2 (xf2.R, b2Math.b2Mul_Matrix22AndVector2 (xf1.R, normals1[edge1]));
 
 	// Find the incident edge on poly2.
 	var index:int = 0;
@@ -357,7 +357,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 			//cp->m_id = clipPoints2[i].id;
 			//cp->m_id.features.flip = flip;
 			var cp:b2ManifoldPoint = manifold.m_points [pointCount];
-			b2Math.b2MulTrans_TransformAndVector2_Output (xf2, clipPoints2.GetClipVertexById(i).v, cp.m_localPoint)
+			b2Math.b2MulT_TransformAndVector2_Output (xf2, clipPoints2.GetClipVertexById(i).v, cp.m_localPoint)
 			cp.m_id.CopyFrom (clipPoints2.GetClipVertexById (i).id);
 			cp.m_id.SetFlip (flip);
 			++pointCount;

@@ -35,7 +35,7 @@ public function b2MouseJoint(def:b2MouseJointDef)
 	
 	m_target.CopyFrom (def.target);
 	//m_localAnchor = b2MulT(m_bodyB->GetTransform(), m_target);
-	b2Math.b2MulTrans_TransformAndVector2_Output (m_bodyB.GetTransform(), m_target, m_localAnchor);
+	b2Math.b2MulT_TransformAndVector2_Output (m_bodyB.GetTransform(), m_target, m_localAnchor);
 
 	m_maxForce = def.maxForce;
 	m_impulse.SetZero();

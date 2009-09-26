@@ -30,7 +30,7 @@ package Box2D.Common
 		{
 			var transform:b2Transform = new b2Transform ();
 			transform.position.CopyFrom (position_);
-			transform.R.SetFromMatrix (R_)
+			transform.R.CopyFrom (R_)
 			
 			return transform;
 		}

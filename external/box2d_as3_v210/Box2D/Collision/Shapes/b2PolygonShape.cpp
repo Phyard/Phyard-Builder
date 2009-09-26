@@ -259,7 +259,7 @@ override public function TestPoint(xf:b2Transform, p:b2Vec2):Boolean
 	//b2Vec2 pLocal = b2MulT(xf.R, p - xf.position);
 	tempV.x = p.x - xf.position.x;
 	tempV.y = p.y - xf.position.y;
-	b2Math.b2MulTrans_Matrix22AndVector2_Output (xf.R, tempV, pLocal);
+	b2Math.b2MulT_Matrix22AndVector2_Output (xf.R, tempV, pLocal);
 
 	for (var i:int = 0; i < m_vertexCount; ++i)
 	{
@@ -290,11 +290,11 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 	//b2Vec2 p1 = b2MulT(xf.R, input.p1 - xf.position);
 	tempV.x = input.p1.x - xf.position.x;
 	tempV.y = input.p1.y - xf.position.y;
-	b2Math.b2MulTrans_Matrix22AndVector2_Output (xf.R, tempV, p1);
+	b2Math.b2MulT_Matrix22AndVector2_Output (xf.R, tempV, p1);
 	//b2Vec2 p2 = b2MulT(xf.R, input.p2 - xf.position);
 	tempV.x = input.p2.x - xf.position.x;
 	tempV.y = input.p2.y - xf.position.y;
-	b2Math.b2MulTrans_Matrix22AndVector2_Output (xf.R, tempV, p2);
+	b2Math.b2MulT_Matrix22AndVector2_Output (xf.R, tempV, p2);
 	//b2Vec2 d = p2 - p1;
 	d.x = p2.x - p1.x;
 	d.y = p2.y - p1.y;

@@ -183,9 +183,9 @@ public static function b2Distance_(output:b2DistanceOutput,
 		//vertex->w = vertex->wB - vertex->wA;
 
 		var vertex:b2SimplexVertex = simplex.GetSimplexVertex (simplex.m_count);
-		vertex.indexA = proxyA.GetSupport(b2Math.b2MulTrans_Matrix22AndVector2(transformA.R, d.GetNegative ()));
+		vertex.indexA = proxyA.GetSupport(b2Math.b2MulT_Matrix22AndVector2(transformA.R, d.GetNegative ()));
 		b2Math.b2Mul_TransformAndVector2_Output (transformA, proxyA.GetVertex(vertex.indexA), vertex.wA);
-		vertex.indexB = proxyB.GetSupport(b2Math.b2MulTrans_Matrix22AndVector2(transformB.R, d));
+		vertex.indexB = proxyB.GetSupport(b2Math.b2MulT_Matrix22AndVector2(transformB.R, d));
 		b2Math.b2Mul_TransformAndVector2_Output (transformB, proxyB.GetVertex(vertex.indexB), vertex.wB);
 		vertex.w.x = vertex.wB.x - vertex.wA.x;
 		vertex.w.y = vertex.wB.y - vertex.wA.y;
@@ -219,7 +219,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 
 	// Prepare output.
 	simplex.GetWitnessPoints(output.pointA, output.pointB);
-	output.distance = b2Math.b2Distance(output.pointA, output.pointB);
+	output.distance = b2Math.b2Distance2 (output.pointA, output.pointB);
 	output.iterations = iter;
 
 	// Cache the simplex.

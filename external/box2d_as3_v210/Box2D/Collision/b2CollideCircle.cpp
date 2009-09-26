@@ -56,7 +56,7 @@ circle:b2CircleShape, xf2:b2Transform):void
 
 	// Compute circle position in the frame of the polygon.
 	var c:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf2, circle.m_p);
-	var cLocal:b2Vec2 = b2Math.b2MulTrans_TransformAndVector2 (xf1, c);
+	var cLocal:b2Vec2 = b2Math.b2MulT_TransformAndVector2 (xf1, c);
 
 	// Find the min separating edge.
 	var normalIndex:int = 0;

@@ -77,12 +77,6 @@ package Box2D.Common
 			col1.y = s; col2.y = c;
 		}
 		
-		// this function doesn't exist in the c++ version
-		public function SetFromMatrix (mat22:b2Mat22):void
-		{
-			Set (mat22.col1, mat22.col2);
-		}
-
 		/// Set this to the identity matrix.
 		public function SetIdentity():void
 		{

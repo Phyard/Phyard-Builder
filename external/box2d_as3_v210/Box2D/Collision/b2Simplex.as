@@ -205,7 +205,7 @@ package Box2D.Collision
 				return 0.0;
 
 			case 2:
-				return b2Math.b2Distance (m_v1.w, m_v2.w);
+				return b2Math.b2Distance2 (m_v1.w, m_v2.w);
 
 			case 3:
 				//return b2Math.b2Cross2(m_v2.w - m_v1.w, m_v3.w - m_v1.w);

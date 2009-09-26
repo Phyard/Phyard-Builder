@@ -245,8 +245,8 @@ package Box2D.Collision
 					//b2Vec2 pointB = b2Mul(transformB, localPointB);
 					//float32 separation = b2Math.b2Dot2(pointB - pointA, m_axis);
 					
-					b2Math.b2MulTrans_Matrix22AndVector2_Output (transformA.R,  m_axis, axisA);
-					b2Math.b2MulTrans_Matrix22AndVector2_Output (transformB.R,  m_axis.GetNegative (), axisB);
+					b2Math.b2MulT_Matrix22AndVector2_Output (transformA.R,  m_axis, axisA);
+					b2Math.b2MulT_Matrix22AndVector2_Output (transformB.R,  m_axis.GetNegative (), axisB);
 					b2Math.b2Mul_TransformAndVector2_Output (transformA, m_proxyA.GetSupportVertex(axisA), pointA);
 					b2Math.b2Mul_TransformAndVector2_Output (transformB, m_proxyB.GetSupportVertex(axisB), pointB);
 					tempV.x = pointB.x - pointA.x;
@@ -271,7 +271,7 @@ package Box2D.Collision
 					b2Math.b2Mul_TransformAndVector2_Output (transformA, m_localPoint, pointA);
 					
 					_normal = normal.GetNegative ();
-					b2Math.b2MulTrans_Matrix22AndVector2_Output (transformB.R, _normal, axisB);
+					b2Math.b2MulT_Matrix22AndVector2_Output (transformB.R, _normal, axisB);
 
 					b2Math.b2Mul_TransformAndVector2_Output (transformB, m_proxyB.GetSupportVertex(axisB), pointB);
 
@@ -298,7 +298,7 @@ package Box2D.Collision
 					b2Math.b2Mul_TransformAndVector2_Output(transformB, m_localPoint, pointB);
 					
 					_normal = normal.GetNegative ();
-					b2Math.b2MulTrans_Matrix22AndVector2_Output (transformA.R, _normal, axisA);
+					b2Math.b2MulT_Matrix22AndVector2_Output (transformA.R, _normal, axisA);
 					
 					b2Math.b2Mul_TransformAndVector2_Output(transformA, m_proxyA.GetSupportVertex(axisA), pointA);
 

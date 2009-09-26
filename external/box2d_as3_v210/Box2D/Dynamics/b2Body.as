@@ -405,13 +405,13 @@ package Box2D.Dynamics
 		public function GetLocalPoint(worldPoint:b2Vec2):b2Vec2
 		{
 			//return b2MulT(m_xf, worldPoint);
-			return b2Math.b2MulTrans_TransformAndVector2(m_xf, worldPoint);
+			return b2Math.b2MulT_TransformAndVector2(m_xf, worldPoint);
 		}
 
 		public function GetLocalVector(worldVector:b2Vec2):b2Vec2
 		{
 			//return b2MulT(m_xf.R, worldVector);
-			return b2Math.b2MulTrans_Matrix22AndVector2(m_xf.R, worldVector);
+			return b2Math.b2MulT_Matrix22AndVector2(m_xf.R, worldVector);
 		}
 
 		public function GetLinearVelocityFromWorldPoint(worldPoint:b2Vec2):b2Vec2

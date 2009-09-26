@@ -189,12 +189,12 @@ package Box2D.Common
 		/// Multiply a matrix transpose times a vector. If a rotation matrix is provided,
 		/// then this transforms the vector from one frame to another (inverse transform).
 		//inline b2Vec2 b2MulT(const b2Mat22& A, const b2Vec2& v)
-		public static function b2MulTrans_Matrix22AndVector2 (A:b2Mat22, v:b2Vec2):b2Vec2
+		public static function b2MulT_Matrix22AndVector2 (A:b2Mat22, v:b2Vec2):b2Vec2
 		{
 			return b2Vec2.b2Vec2_From2Numbers (v.x * A.col1.x + v.y * A.col1.y, v.x * A.col2.x + v.y * A.col2.y);
 		}
 
-		public static function b2MulTrans_Matrix22AndVector2_Output (A:b2Mat22, v:b2Vec2, output:b2Vec2):void
+		public static function b2MulT_Matrix22AndVector2_Output (A:b2Mat22, v:b2Vec2, output:b2Vec2):void
 		{
 			//return b2Vec2.b2Vec2_From2Numbers (v.x * A.col1.x + v.y * A.col1.y, v.x * A.col2.x + v.y * A.col2.y);
 			
@@ -203,12 +203,12 @@ package Box2D.Common
 		}
 
 		// this function doesn't exist in the c++ version
-		public static function b2MulTrans_Matrix22AndTwoNumbers (A:b2Mat22, vx:Number, vy:Number):b2Vec2
+		public static function b2MulT_Matrix22AndTwoNumbers (A:b2Mat22, vx:Number, vy:Number):b2Vec2
 		{
 			return b2Vec2.b2Vec2_From2Numbers (vx * A.col1.x + vy * A.col1.y, vx * A.col2.x + vy * A.col2.y);
 		}
 
-		public static function b2MulTrans_Matrix22AndTwoNumbers_Output (A:b2Mat22, vx:Number, vy:Number, output:b2Vec2):void
+		public static function b2MulT_Matrix22AndTwoNumbers_Output (A:b2Mat22, vx:Number, vy:Number, output:b2Vec2):void
 		{
 			//return b2Vec2.b2Vec2_From2Numbers (vx * A.col1.x + vy * A.col1.y, vx * A.col2.x + vy * A.col2.y);
 			
@@ -274,7 +274,7 @@ package Box2D.Common
 		//	return a.x == b.x && a.y == b.y;
 		//}
 
-		public static function b2Distance(a:b2Vec2, b:b2Vec2):Number
+		public static function b2Distance2 (a:b2Vec2, b:b2Vec2):Number
 		{
 			var c:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (a.x - b.x, a.y - b.y);
 			return c.Length();
@@ -403,7 +403,7 @@ package Box2D.Common
 
 		// A^T * B
 		//inline b2Mat22 b2MulT(const b2Mat22& A, const b2Mat22& B)
-		public static function b2MulTrans_Matrix22AndMatrix22(A:b2Mat22, B:b2Mat22):b2Mat22
+		public static function b2MulT_Matrix22AndMatrix22(A:b2Mat22, B:b2Mat22):b2Mat22
 		{
 			//b2Vec2 c1(b2Dot(A.col1, B.col1), b2Math.b2Dot2(A.col2, B.col1));
 			//b2Vec2 c2(b2Dot(A.col1, B.col2), b2Math.b2Dot2(A.col2, B.col2));
@@ -414,7 +414,7 @@ package Box2D.Common
 												 );
 		}
 		
-		public static function b2MulTrans_Matrix22AndMatrix22_Output (A:b2Mat22, B:b2Mat22, output:b2Mat22):void
+		public static function b2MulT_Matrix22AndMatrix22_Output (A:b2Mat22, B:b2Mat22, output:b2Mat22):void
 		{
 			//b2Vec2 c1(b2Dot(A.col1, B.col1), b2Math.b2Dot2(A.col2, B.col1));
 			//b2Vec2 c2(b2Dot(A.col1, B.col2), b2Math.b2Dot2(A.col2, B.col2));
@@ -477,7 +477,7 @@ package Box2D.Common
 		}
 
 		//inline b2Vec2 b2MulT_TransformAndVector2 (const b2Transform& T, const b2Vec2& v)
-		public static function b2MulTrans_TransformAndVector2 (T:b2Transform, v:b2Vec2):b2Vec2
+		public static function b2MulT_TransformAndVector2 (T:b2Transform, v:b2Vec2):b2Vec2
 		{
 			//return b2MulT(T.R, v - T.position);
 			
@@ -491,7 +491,7 @@ package Box2D.Common
 			return b2Vec2.b2Vec2_From2Numbers (vx * col1.x + vy * col1.y, vx * col2.x + vy * col2.y);
 		}
 
-		public static function b2MulTrans_TransformAndVector2_Output (T:b2Transform, v:b2Vec2, output:b2Vec2):void
+		public static function b2MulT_TransformAndVector2_Output (T:b2Transform, v:b2Vec2, output:b2Vec2):void
 		{
 			//return b2MulT(T.R, v - T.position);
 			

@@ -15,7 +15,7 @@ package Box2D.Collision
 		public function GetClipVertexById (id:int):b2ClipVertex
 		{
 			if (id == 0) return cv1;
-			if (id == 0) return cv2;
+			if (id == 1) return cv2;
 			return null;
 		}
 		

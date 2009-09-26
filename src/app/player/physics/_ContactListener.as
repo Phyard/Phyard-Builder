@@ -41,6 +41,7 @@ package player.physics {
       /// Called when two fixtures begin to touch.
       public function BeginContact(contact:b2Contact):void 
       {
+      //trace ("BeginContact");
          if (mPhysicsEngine._OnShapeContactStarted != null)
             mPhysicsEngine._OnShapeContactStarted (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
       }
@@ -48,6 +49,7 @@ package player.physics {
       /// Called when two fixtures cease to touch.
       public function EndContact(contact:b2Contact):void 
       {
+      //trace ("EndContact");
          if (mPhysicsEngine._OnShapeContactFinished != null)
             mPhysicsEngine._OnShapeContactFinished (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
       }

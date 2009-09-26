@@ -168,6 +168,7 @@ package editor {
          public var mEditorBackgroundSprite:Sprite = null;
             public var mEntityLinksSprite:Sprite = null;
          public var mContentContainer:Sprite;
+         public var mWorldDebugInfoSprite:Sprite;
          public var mForegroundSprite:Sprite;
          public var mCursorLayer:Sprite;
          
@@ -234,6 +235,9 @@ package editor {
          //
          mContentContainer = new Sprite ();
          mEditorElementsContainer.addChild (mContentContainer);
+         
+         mWorldDebugInfoSprite = new Sprite ();
+         mEditorElementsContainer.addChild (mWorldDebugInfoSprite);
          
          mForegroundSprite = new Sprite ();
          mEditorElementsContainer.addChild (mForegroundSprite);
@@ -688,6 +692,22 @@ package editor {
          mEntityLinksSprite.graphics.clear ();
          
          mEditorWorld.DrawEntityLinkLines (mEntityLinksSprite);
+      }
+      
+      public function RepaintWorldDebugInfo ():void
+      {
+         if (Compile::Is_Debugging)// && false)
+         {
+            mWorldDebugInfoSprite.x = mEditorWorld.x;
+            mWorldDebugInfoSprite.y = mEditorWorld.y;
+            mWorldDebugInfoSprite.scaleX = mEditorWorld.scaleX;
+            mWorldDebugInfoSprite.scaleY = mEditorWorld.scaleY;
+            
+            while (mWorldDebugInfoSprite.numChildren > 0)
+               mWorldDebugInfoSprite.removeChildAt (0);
+            
+            mEditorWorld.RepaintContactsInLastRegionSelecting (mWorldDebugInfoSprite);
+         }
       }
       
 //==================================================================================

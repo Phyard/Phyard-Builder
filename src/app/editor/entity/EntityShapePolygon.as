@@ -144,6 +144,19 @@ package editor.entity {
             if (GetVertexPointsCount () > 2)
                (mSelectionProxy as SelectionProxyPolygon).CreateLineSegmentZone (mLocalPoints [mLocalPoints.length - 1].x, mLocalPoints [mLocalPoints.length - 1].y, mLocalPoints [0].x, mLocalPoints [0].y, borderThickness);
          }
+         
+         if (Compile::Is_Debugging)// && false)
+         {
+            if (mPhysicsShapesLayer == null)
+            {
+               mPhysicsShapesLayer = new Sprite ();
+               addChild (mPhysicsShapesLayer);
+            }
+            while (mPhysicsShapesLayer.numChildren > 0)
+               mPhysicsShapesLayer.removeChildAt (0);
+            
+            mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
+         }
       }
       
       

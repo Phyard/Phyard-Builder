@@ -7,6 +7,7 @@ package Box2dEx.Helper {
    import Box2D.Dynamics.b2World;
    import Box2D.Dynamics.b2Body;
    import Box2D.Dynamics.b2Fixture;
+   import Box2D.Dynamics.b2BodyDef;
    
    public class b2eWorldHelper
    {
@@ -20,16 +21,11 @@ package Box2dEx.Helper {
             b = b.m_next;
          }
       }
-
-      public static function GetFixturesContainPoint (world:b2World, displayX:Number, displayY:Number, setMaxShapeIndex:Boolean = false):Array
+      
+      public static function CreateGroundBody (world:b2World):void
       {
-         return null;
+         var bd:b2BodyDef = new b2BodyDef();
+         world.m_groundBody = world.CreateBody(bd);
       }
-
-      public static function GetFixturesIntersectWithAABB (world:b2World, displayX:Number, displayY:Number):Array
-      {
-         return null;
-      }
-
    }
 }

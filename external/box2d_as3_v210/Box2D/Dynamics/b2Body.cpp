@@ -195,22 +195,34 @@ public function DestroyFixture(fixture:b2Fixture):void
 
 	// Remove the fixture from this body's singly linked list.
 	//b2Assert(m_fixtureCount > 0);
-	var node:b2Fixture = m_fixtureList; //@notice: in c++ version, the node variable is a pointer of pointer, why?
+	
+	var prev:b2Fixture = null; 
+	var node:b2Fixture = m_fixtureList; 
 	var found:Boolean = false;
 	while (node != null)
 	{
 		if (node == fixture)
 		{
-			node = fixture.m_next;
+			//@notice: in c++ version, it is more elgent than the as version here
+			if (prev == null)
+			{
+				m_fixtureList = fixture.m_next;
+			}
+			else
+			{
+				prev.m_next = fixture.m_next;
+			}
 			found = true;
 			break;
 		}
 
+		prev = node;
 		node = node.m_next;
 	}
 
 	// You tried to remove a shape that is not attached to this body.
 	//b2Assert(found);
+	if (!found) return; // no this line in c++ version
 
 	// Destroy any contacts associated with the fixture.
 	var edge:b2ContactEdge = m_contactList;
@@ -232,7 +244,6 @@ public function DestroyFixture(fixture:b2Fixture):void
 
 	var allocator:b2BlockAllocator = m_world.m_blockAllocator;
 	var broadPhase:b2BroadPhase = m_world.m_contactManager.m_broadPhase;
-
 	fixture.Destroy(null, broadPhase);
 	fixture.m_body = null;
 	fixture.m_next = null;

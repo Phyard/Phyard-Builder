@@ -216,8 +216,9 @@ package Box2D.Collision
 			// Sort the pair buffer to expose duplicates.
 			//std::sort(m_pairBuffer, m_pairBuffer + m_pairCount, b2PairLessThan);
 			m_pairBuffer.sort (b2PairLessThan);
-
+			
 			// Send the pairs back to the client.
+			i = 0;
 			while (i < m_pairCount)
 			{
 				//b2Pair* primaryPair = m_pairBuffer + i;

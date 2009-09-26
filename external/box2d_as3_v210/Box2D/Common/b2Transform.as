@@ -29,7 +29,7 @@ package Box2D.Common
 		public static function b2Transform_FromTranslateAndRotationMatrix(position_:b2Vec2, R_:b2Mat22):b2Transform
 		{
 			var transform:b2Transform = new b2Transform ();
-			transform.position.Set_FromVector(position_);
+			transform.position.CopyFrom (position_);
 			transform.R.SetFromMatrix (R_)
 			
 			return transform;
@@ -45,7 +45,7 @@ package Box2D.Common
 		/// Set this based on the position and angle.
 		public function Set(p:b2Vec2, angle:Number):void
 		{
-			position.Set_FromVector (p);
+			position.CopyFrom (p);
 			R.SetFromAngle(angle);
 		}
 

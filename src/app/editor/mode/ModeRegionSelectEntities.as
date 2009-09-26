@@ -83,6 +83,9 @@ package editor.mode {
          ResetSession ();
          
          mMainView.SetCurrentEditMode (null);
+         
+         // for debug
+         mMainView.RepaintWorldDebugInfo ();
       }
       
       override public function Update (escapedTime:Number):void

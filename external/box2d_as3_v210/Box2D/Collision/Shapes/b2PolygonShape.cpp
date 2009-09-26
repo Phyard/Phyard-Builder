@@ -215,7 +215,7 @@ public function Set(vertices:Array, count:int):void
 		b2Math.b2Subtract_Vector2_Output (m_vertices[i2] as b2Vec2, m_vertices[i1] as b2Vec2, edge);
 		//b2Assert(edge.LengthSquared() > B2_FLT_EPSILON * B2_FLT_EPSILON);
 		//m_normals[i] = b2Math.b2Cross2(edge, 1.0f);
-		b2Math.b2Cross_Vector2AndScalar_Output (edge, 1.0, tempV);
+		b2Math.b2Cross_Vector2AndScalar_Output (edge, 1.0, m_normals[i]);
 		m_normals[i].Normalize();
 	}
 
@@ -264,9 +264,9 @@ override public function TestPoint(xf:b2Transform, p:b2Vec2):Boolean
 	for (var i:int = 0; i < m_vertexCount; ++i)
 	{
 		//float32 dot = b2Math.b2Dot2(m_normals[i], pLocal - m_vertices[i]);
-		tempV = m_vertices[i] as b2Vec2;
-		tempV.x = pLocal.x - tempV.x;
-		tempV.y = pLocal.y - tempV.y;
+		var vertex:b2Vec2 = m_vertices[i] as b2Vec2;
+		tempV.x = pLocal.x - vertex.x;
+		tempV.y = pLocal.y - vertex.y;
 		var dot:Number = b2Math.b2Dot2 (m_normals[i] as b2Vec2, tempV);
 		if (dot > 0.0)
 		{

@@ -33,7 +33,7 @@ public static var b2_toiRootIters:int, b2_toiMaxRootIters:int;
 //};
 
 // CCD via the secant method.
-public static function _b2TimeOfImpact(input:b2TOIInput):Number
+public static function b2TimeOfImpact_(input:b2TOIInput):Number
 {
 	++b2_toiCalls;
 
@@ -73,7 +73,7 @@ public static function _b2TimeOfImpact(input:b2TOIInput):Number
 		distanceInput.transformA.CopyFrom (xfA);
 		distanceInput.transformB.CopyFrom (xfB);
 		var distanceOutput:b2DistanceOutput = new b2DistanceOutput ();
-		b2Distance._b2Distance (distanceOutput, cache, distanceInput);
+		b2Distance.b2Distance_ (distanceOutput, cache, distanceInput);
 
 		if (distanceOutput.distance <= 0.0)
 		{

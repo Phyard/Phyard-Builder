@@ -203,7 +203,7 @@ package Box2D.Dynamics
 		public var m_bodyCount:int;
 		public var m_jointCount:int;
 
-		public var m_gravity:b2Vec2;
+		public var m_gravity:b2Vec2 = new b2Vec2 ();
 		public var m_allowSleep:Boolean;
 
 		public var m_groundBody:b2Body

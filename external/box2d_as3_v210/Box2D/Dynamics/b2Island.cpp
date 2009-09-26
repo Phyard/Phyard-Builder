@@ -232,7 +232,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		b.m_angularVelocity *= b2Math.b2Clamp_Number (1.0 - step.dt * b.m_angularDamping, 0.0, 1.0);
 	}
 
-	var contactSolver:b2ContactSolver = new (step, m_contacts, m_contactCount, m_allocator);
+	var contactSolver:b2ContactSolver = new b2ContactSolver (step, m_contacts, m_contactCount, m_allocator);
 
 	// Initialize velocity constraints.
 	contactSolver.InitVelocityConstraints(step);

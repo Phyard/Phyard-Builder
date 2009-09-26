@@ -103,6 +103,19 @@ package editor.entity {
                (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [i].x, mLocalPoints [i].y, halfThickness);
             }
          }
+         
+         if (Compile::Is_Debugging)// && false)
+         {
+            if (mPhysicsShapesLayer == null)
+            {
+               mPhysicsShapesLayer = new Sprite ();
+               addChild (mPhysicsShapesLayer);
+            }
+            while (mPhysicsShapesLayer.numChildren > 0)
+               mPhysicsShapesLayer.removeChildAt (0);
+            
+            mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
+         }
       }
       
       override public function OnWorldZoomScaleChanged ():void

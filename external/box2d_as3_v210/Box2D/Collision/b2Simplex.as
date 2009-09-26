@@ -35,8 +35,8 @@ package Box2D.Collision
 				var v1:b2SimplexVertex = GetSimplexVertex (i);
 				v1.indexA = cache.indexA[i];
 				v1.indexB = cache.indexB[i];
-				var wALocal1:b2Vec2 = proxyA.GetVertex(v1.indexA);//.Clone ()
-				var wBLocal1:b2Vec2 = proxyB.GetVertex(v1.indexB);//.Clone ()
+				var wALocal1:b2Vec2 = proxyA.GetVertex(v1.indexA);//.Clone ();
+				var wBLocal1:b2Vec2 = proxyB.GetVertex(v1.indexB);//.Clone ();
 				//v->wA = b2Mul(transformA, wALocal1);
 				//v->wB = b2Mul(transformB, wBLocal1);
 				//v->w = v->wB - v->wA;
@@ -137,7 +137,7 @@ package Box2D.Collision
 				return b2Math.b2Vec2_zero.Clone ();
 
 			case 1:
-				return m_v1.w;
+				return m_v1.w.Clone ();
 
 			case 2:
 				//return m_v1.a * m_v1.w + m_v2.a * m_v2.w;
@@ -270,7 +270,7 @@ package Box2D.Collision
 				// a1 <= 0, so we clamp it to 0
 				m_v2.a = 1.0;
 				m_count = 1;
-				m_v1 = m_v2;
+				m_v1.CopyFrom (m_v2);
 				return;
 			}
 
@@ -357,7 +357,7 @@ package Box2D.Collision
 				m_v1.a = d13_1 * inv_d13;
 				m_v3.a = d13_2 * inv_d13;
 				m_count = 2;
-				m_v2 = m_v3;
+				m_v2.CopyFrom (m_v3);
 				return;
 			}
 
@@ -366,7 +366,7 @@ package Box2D.Collision
 			{
 				m_v2.a = 1.0;
 				m_count = 1;
-				m_v1 = m_v2;
+				m_v1.CopyFrom (m_v2);
 				return;
 			}
 
@@ -375,7 +375,7 @@ package Box2D.Collision
 			{
 				m_v3.a = 1.0;
 				m_count = 1;
-				m_v1 = m_v3;
+				m_v1.CopyFrom (m_v3);
 				return;
 			}
 
@@ -386,7 +386,7 @@ package Box2D.Collision
 				m_v2.a = d23_1 * inv_d23;
 				m_v3.a = d23_2 * inv_d23;
 				m_count = 2;
-				m_v1 = m_v3;
+				m_v1.CopyFrom (m_v3);
 				return;
 			}
 

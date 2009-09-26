@@ -78,7 +78,7 @@ public static var b2_gjkCalls:int, b2_gjkIters:int, b2_gjkMaxIters:int;
 	//@see b2Simplex.as
 //}
 
-public static function _b2Distance(output:b2DistanceOutput,
+public static function b2Distance_(output:b2DistanceOutput,
 				cache:b2SimplexCache,
 				input:b2DistanceInput):void
 {
@@ -95,7 +95,7 @@ public static function _b2Distance(output:b2DistanceOutput,
 	simplex.ReadCache(cache, proxyA, transformA, proxyB, transformB);
 
 	// Get simplex vertices as an array.
-	var vertices:b2SimplexVertex = simplex.m_v1;
+	//var vertices:b2SimplexVertex = simplex.m_v1; // use simplex.GetSimplexVertex (index) instead
 	const k_maxIters:int = 20;
 
 	// These store the vertices of the last simplex so that we
@@ -117,8 +117,10 @@ public static function _b2Distance(output:b2DistanceOutput,
 		saveCount = simplex.m_count;
 		for (i = 0; i < saveCount; ++i)
 		{
-			saveA[i] = vertices[i].indexA;
-			saveB[i] = vertices[i].indexB;
+			//saveA[i] = vertices[i].indexA;
+			//saveB[i] = vertices[i].indexB;
+			saveA[i] = simplex.GetSimplexVertex (i).indexA;
+			saveA[i] = simplex.GetSimplexVertex (i).indexB;
 		}
 
 		switch (simplex.m_count)

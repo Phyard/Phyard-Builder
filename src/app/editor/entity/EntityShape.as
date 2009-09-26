@@ -31,6 +31,9 @@ package editor.entity {
       
       protected var mTransparency:uint = 100; // from v1.04
       
+      //for debug
+      protected var mPhysicsShapesLayer:Sprite = null;
+      
    // physics
       
       protected var mIsStatic:Boolean = false;

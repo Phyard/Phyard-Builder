@@ -30,15 +30,20 @@
 //#include <Box2D/Dynamics/b2Fixture.h>
 //#include <Box2D/Dynamics/b2World.h>
 
-public static var s_registers:Array = new Array (b2Shape.e_typeCount);
+public static var s_registers:Array = null;
 public static var s_initialized:Boolean = false;
 
 public static function InitializeRegisters():void
 {
 	// this for-clause doesn't exist in the c++ version
+	s_registers = new Array (b2Shape.e_typeCount);
 	for (var i:int = 0; i < b2Shape.e_typeCount; ++ i)
 	{
 		s_registers [i] = new Array (b2Shape.e_typeCount);
+		for (var j:int = 0; j < b2Shape.e_typeCount; ++ j)
+		{
+			s_registers [i][j] = new b2ContactRegister ();
+		}
 	}
 	
 	AddType(b2CircleContact.Create, b2CircleContact.Destroy, b2Shape.e_circle, b2Shape.e_circle);
@@ -258,5 +263,5 @@ public function ComputeTOI(sweepA:b2Sweep, sweepB:b2Sweep):Number
 	input.sweepB.CopyFrom (sweepB);
 	input.tolerance = b2Settings.b2_linearSlop;
 
-	return b2TimeOfImpact._b2TimeOfImpact (input);
+	return b2TimeOfImpact.b2TimeOfImpact_ (input);
 }

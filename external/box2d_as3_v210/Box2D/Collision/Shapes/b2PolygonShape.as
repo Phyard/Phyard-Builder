@@ -26,6 +26,7 @@ package Box2D.Collision.Shapes
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Mat22;
 	import Box2D.Common.b2Transform;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Collision.b2AABB;

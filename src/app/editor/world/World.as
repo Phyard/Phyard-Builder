@@ -1047,6 +1047,14 @@ package editor.world {
          return mCollisionManager.CreateEntityCollisionCategory (ccName);
       }
       
+//=================================================================================
+//   debug info
+//=================================================================================
+      
+      public function RepaintContactsInLastRegionSelecting (container:Sprite):void
+      {
+         mSelectionEngine.RepaintContactsInLastRegionSelecting (container);
+      }
    }
 }
 

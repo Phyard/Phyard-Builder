@@ -14,6 +14,9 @@ package editor.selection {
       
       private var mCollideWithBody:b2Body;
       
+      // for debug
+      public var mContacts:Array = new Array ();
+      
       public function _ContactListenerForRegionSelection (b2body:b2Body)
       {
          mCollideWithBody = b2body;
@@ -70,6 +73,13 @@ package editor.selection {
       /// Called when two fixtures begin to touch.
       public function BeginContact(contact:b2Contact):void 
       {
+         //trace (new Error ("------------------- BeginContact").getStackTrace ());
+         
+         if (Compile::Is_Debugging)// && false)
+         {
+            mContacts.push (contact);
+         }
+         
           var body1:b2Body = contact.m_fixtureA.GetBody();
           var body2:b2Body = contact.m_fixtureB.GetBody();
          

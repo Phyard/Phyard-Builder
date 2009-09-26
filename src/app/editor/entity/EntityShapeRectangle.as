@@ -95,6 +95,19 @@ package editor.entity {
             borderThickness = 0;
          
          (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), GetHalfWidth () + borderThickness * 0.5 , GetHalfHeight () + borderThickness * 0.5 );
+         
+         if (Compile::Is_Debugging)// && false)
+         {
+            if (mPhysicsShapesLayer == null)
+            {
+               mPhysicsShapesLayer = new Sprite ();
+               addChild (mPhysicsShapesLayer);
+            }
+            while (mPhysicsShapesLayer.numChildren > 0)
+               mPhysicsShapesLayer.removeChildAt (0);
+            
+            mSelectionProxy.AddPhysicsShapes (mPhysicsShapesLayer);
+         }
       }
       
       

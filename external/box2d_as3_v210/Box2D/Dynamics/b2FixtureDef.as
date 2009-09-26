@@ -42,7 +42,7 @@ package Box2D.Dynamics
 		public var isSensor:Boolean;
 
 		/// Contact filtering data.
-		public var filter:b2Filter;
+		public var filter:b2Filter = new b2Filter ();
 		
 	} // class
 } // package

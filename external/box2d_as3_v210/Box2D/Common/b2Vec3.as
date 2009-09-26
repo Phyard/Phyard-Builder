@@ -53,7 +53,7 @@ package Box2D.Common
 		//{
 		//	x += v.x; y += v.y; z += v.z;
 		//}
-		public function Add (v:b2Vec3):void
+		public function AddWith (v:b2Vec3):void
 		{
 			x += v.x; y += v.y; z += v.z;
 		}
@@ -63,7 +63,7 @@ package Box2D.Common
 		//{
 		//	x -= v.x; y -= v.y; z -= v.z;
 		//}
-		public function Subtract (v:b2Vec3):void
+		public function SubtractWith (v:b2Vec3):void
 		{
 			x -= v.x; y -= v.y; z -= v.z;
 		}
@@ -73,7 +73,7 @@ package Box2D.Common
 		//{
 		//	x *= s; y *= s; z *= s;
 		//}
-		public function Multiply (s:Number):void
+		public function Scale (s:Number):void
 		{
 			x *= s; y *= s; z *= s;
 		}

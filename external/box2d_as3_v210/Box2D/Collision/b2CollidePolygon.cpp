@@ -56,13 +56,17 @@ public static function b2EdgeSeparation(poly1:b2PolygonShape, xf1:b2Transform, e
 	var v1:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf1, vertices1[edge1]);
 	var v2:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf2, vertices2[index]);
 	//var separation:Number = b2Math.b2Dot2(v2 - v1, normal1World);
-	v2.Subtract (v1);
+	v2.SubtractWith (v1);
 	var separation:Number = b2Math.b2Dot2(v2, normal1World);
+
 	return separation;
 }
 
 // Find the max separation between poly1 and poly2 using edge normals from poly1.
-public static function b2FindMaxSeparation(output:b2FindMaxSeparationOutput, //int32* edgeIndex,
+//static float32 b2FindMaxSeparation(int32* edgeIndex,
+//								 const b2PolygonShape* poly1, const b2Transform& xf1,
+//								 const b2PolygonShape* poly2, const b2Transform& xf2)
+public static function b2FindMaxSeparation(maxSeparation:b2Separation, //int32* edgeIndex,
 								 poly1:b2PolygonShape, xf1:b2Transform,
 								 poly2:b2PolygonShape, xf2:b2Transform):void
 {
@@ -75,7 +79,7 @@ public static function b2FindMaxSeparation(output:b2FindMaxSeparationOutput, //i
 	//b2Vec2 dLocal1 = b2MulT(xf1.R, d);
 	var d:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf2, poly2.m_centroid);
 	var dLocal1:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf1, poly1.m_centroid);
-	d.Subtract (dLocal1);
+	d.SubtractWith (dLocal1);
 	b2Math.b2MulTrans_Matrix22AndVector2_Output (xf1.R, d, dLocal1);
 
 	// Find edge normal on poly1 that has the largest projection onto d.
@@ -123,10 +127,11 @@ public static function b2FindMaxSeparation(output:b2FindMaxSeparationOutput, //i
 		//*edgeIndex = edge;
 		//return s;
 		
-		output.bestEdge = edge;
-		output.bestSeparation = s;
+		maxSeparation.edge = edge;
+		maxSeparation.separation = s;
 		
 		//return output;
+		return;
 	}
 
 	// Perform a local search for the best edge normal.
@@ -153,8 +158,8 @@ public static function b2FindMaxSeparation(output:b2FindMaxSeparationOutput, //i
 	//*edgeIndex = bestEdge;
 	//return bestSeparation;
 
-	output.bestEdge = bestEdge;
-	output.bestSeparation = bestSeparation;
+	maxSeparation.edge = bestEdge;
+	maxSeparation.separation = bestSeparation;
 	
 	//return output;
 }
@@ -227,23 +232,22 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	manifold.m_pointCount = 0;
 	var totalRadius:Number = polyA.m_radius + polyB.m_radius;
 
-	var maxOutput:b2FindMaxSeparationOutput = new b2FindMaxSeparationOutput ();
-	
-	var edgeA:int = 0;
+	//var edgeA:int = 0;
+	var maxSeparation:b2Separation = new b2Separation ();
 	//var separationA:Number = b2FindMaxSeparation(&edgeA, polyA, xfA, polyB, xfB);
-	b2FindMaxSeparation(maxOutput/*&edgeA*/, polyA, xfA, polyB, xfB);
-	var separationA:Number = maxOutput.bestSeparation;
+	b2FindMaxSeparation(maxSeparation/*&edgeA*/, polyA, xfA, polyB, xfB);
+	var separationA:Number = maxSeparation.separation;
 	if (separationA > totalRadius)
 		return;
-	edgeA = maxOutput.bestEdge;
+	var edgeA:int = maxSeparation.edge;
 
-	var edgeB:int = 0;
+	//var edgeB:int = 0;
 	//float32 separationB = b2FindMaxSeparation(&edgeB, polyB, xfB, polyA, xfA);
-	b2FindMaxSeparation(maxOutput /*&edgeB*/, polyB, xfB, polyA, xfA);
-	var separationB:Number = maxOutput.bestSeparation;
+	b2FindMaxSeparation(maxSeparation /*&edgeB*/, polyB, xfB, polyA, xfA);
+	var separationB:Number = maxSeparation.separation;
 	if (separationB > totalRadius)
 		return;
-	edgeB = maxOutput.bestEdge;
+	var edgeB:int = maxSeparation.edge;
 
 	var poly1:b2PolygonShape;	// reference polygon
 	var poly2:b2PolygonShape;	// incident polygon
@@ -325,13 +329,11 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	// Clip to box side 1
 	//np = b2ClipSegmentToLine (clipPoints1, incidentEdge, -tangent, sideOffset1);
 	np = b2ClipSegmentToLine (clipPoints1, incidentEdge, tangent.GetNegative (), sideOffset1);
-
 	if (np < 2)
 		return;
 
 	// Clip to negative box side 1
 	np = b2ClipSegmentToLine(clipPoints2, clipPoints1,  tangent, sideOffset2);
-
 	if (np < 2)
 	{
 		return;
@@ -355,7 +357,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 			//cp->m_id = clipPoints2[i].id;
 			//cp->m_id.features.flip = flip;
 			var cp:b2ManifoldPoint = manifold.m_points [pointCount];
-			cp.m_localPoint.CopyFrom (b2Math.b2MulTrans_TransformAndVector2 (xf2, clipPoints2.GetClipVertexById(i).v));
+			b2Math.b2MulTrans_TransformAndVector2_Output (xf2, clipPoints2.GetClipVertexById(i).v, cp.m_localPoint)
 			cp.m_id.CopyFrom (clipPoints2.GetClipVertexById (i).id);
 			cp.m_id.SetFlip (flip);
 			++pointCount;

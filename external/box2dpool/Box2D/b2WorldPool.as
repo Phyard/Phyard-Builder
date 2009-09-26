@@ -9,6 +9,8 @@ package Box2D {
    import Box2D.Collision.Shapes.*;
    import Box2D.Common.*;
    
+   import Box2dEx.Helper.b2eWorldHelper;
+   
    public class b2WorldPool 
    {
       /*
@@ -136,6 +138,8 @@ package Box2D {
       public static function AllocB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean, worldDef:b2WorldDef):b2World
       {
          var b2world:b2World = new b2World( gravity, doSleep);
+         
+         b2eWorldHelper.CreateGroundBody (b2world);
          
          return b2world;
       }

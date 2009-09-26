@@ -166,7 +166,6 @@ public function DestroyBody(b:b2Body):void
 		{
 			m_destructionListener.SayGoodbye_Fixture (f0);
 		}
-
 		f0.Destroy(m_blockAllocator, m_contactManager.m_broadPhase);
 		//f0->~b2Fixture();
 		f0._b2Fixture ();
@@ -205,7 +204,7 @@ public function CreateJoint(def:b2JointDef):b2Joint
 		return null;
 	}
 
-	var j:b2Joint = b2Joint::Create(def, m_blockAllocator);
+	var j:b2Joint = b2Joint.Create(def, m_blockAllocator);
 
 	// Connect to the world list.
 	j.m_prev = null;

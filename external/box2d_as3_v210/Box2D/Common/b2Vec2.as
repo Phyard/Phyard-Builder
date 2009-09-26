@@ -40,7 +40,7 @@ package Box2D.Common
 		public function Set(x_:Number, y_:Number):void { x = x_; y = y_; }
 		
 		// this function doesn't exist in the c++ version
-		public function Set_FromVector(vec2:b2Vec2):void { x = vec2.x; y = vec2.y; }
+		//public function Set_FromVector(vec2:b2Vec2):void { x = vec2.x; y = vec2.y; }
 
 		/// Negate this vector.
 		//b2Vec2 operator -() const { b2Vec2 v; v.Set(-x, -y); return v; }
@@ -66,7 +66,7 @@ package Box2D.Common
 		//{
 		//	x += v.x; y += v.y;
 		//}
-		public function Add (v:b2Vec2):void
+		public function AddWith (v:b2Vec2):void
 		{
 			x += v.x; y += v.y;
 		}
@@ -76,7 +76,7 @@ package Box2D.Common
 		//{
 		//	x -= v.x; y -= v.y;
 		//}
-		public function Subtract (v:b2Vec2):void
+		public function SubtractWith (v:b2Vec2):void
 		{
 			x -= v.x; y -= v.y;
 		}
@@ -86,7 +86,7 @@ package Box2D.Common
 		//{
 		//	x *= a; y *= a;
 		//}
-		public function Multiply (a:Number):void
+		public function Scale (a:Number):void
 		{
 			x *= a; y *= a;
 		}

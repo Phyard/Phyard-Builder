@@ -574,6 +574,8 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	}
 	else
 	{
+		impulse = new b2Vec3 ();
+		
 		m1 = m_invMass1, m2 = m_invMass2;
 		i1 = m_invI1,    i2 = m_invI2;
 

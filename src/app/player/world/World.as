@@ -1412,7 +1412,7 @@ package player.world {
       public function RegisterEntityByIndexInEditor (index:int, entity:Entity):void
       {
          mEditorEntityArray [index] = entity;
-      trace ("mEditorEntityArray [" + index + "] = " + mEditorEntityArray [index]);
+      //trace ("mEditorEntityArray [" + index + "] = " + mEditorEntityArray [index]);
       }
       
       public function GetEntityByIndexInEditor (index:int):Entity

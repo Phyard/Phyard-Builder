@@ -220,7 +220,7 @@ public function InitVelocityConstraints(step:b2TimeStep):void
 				ccp.tangentImpulse *= step.dtRatio;
 				//b2Vec2 P = ccp->normalImpulse * normal + ccp->tangentImpulse * tangent;
 				P.Set (	ccp.normalImpulse * normal.x + ccp.tangentImpulse * tangent.x, 
-						ccp.normalImpulse * normal.y + ccp.tangentImpulse * tangent.y);
+							ccp.normalImpulse * normal.y + ccp.tangentImpulse * tangent.y);
 				bodyA.m_angularVelocity -= invIA * b2Math.b2Cross2 (ccp.rA, P);
 				//bodyA->m_linearVelocity -= invMassA * P;
 				bodyA.m_linearVelocity.x -= invMassA * P.x;
@@ -790,8 +790,8 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 
 			//bodyB->m_sweep.c += invMassB * P;
 			rC = bodyB.m_sweep.c;
-			rC.x -= invMassB * P.x;
-			rC.y -= invMassB * P.y;			
+			rC.x += invMassB * P.x;
+			rC.y += invMassB * P.y;			
 			bodyB.m_sweep.a += invIB * b2Math.b2Cross2 (rB, P);
 			bodyB.SynchronizeTransform ();
 		}

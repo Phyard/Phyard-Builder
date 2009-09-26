@@ -2,6 +2,8 @@
 package editor.selection {
    
    import flash.geom.Point;
+   import flash.display.Sprite;
+   import flash.display.Shape;
    
    import Box2D.Common.*;
    import Box2D.Dynamics.*;
@@ -10,6 +12,7 @@ package editor.selection {
    import Box2D.Collision.Shapes.*;
    import Box2D.Common.*;
    
+   import com.tapirgames.util.GraphicsUtil;
    
    public class SelectionProxy 
    {
@@ -77,6 +80,8 @@ package editor.selection {
             return _b2Body.m_fixtureCount;
       }
       
+      
+      
       public function Destroy ():void
       {
          if (_b2Body != null);
@@ -90,22 +95,66 @@ package editor.selection {
          
       //
          var fixture:b2Fixture = _b2Body.m_fixtureList;
-         var shape:b2Shape;
          var point:b2Vec2 = new b2Vec2 ();
          point.Set (pointX, pointY);
          
          while (fixture != null)
          {
-            shape = fixture.GetShape ();
-            
-            
-            if ( shape.TestPoint(_b2Body.GetTransform(), point) )
+            if (fixture.TestPoint (point))
                return true;
             
             fixture = fixture.m_next;
          }
          
          return false;
+      }
+      
+      // for debug
+      public function AddPhysicsShapes (container:Sprite):void
+      {
+         var fixture:b2Fixture = _b2Body.m_fixtureList;
+         var physicsShape:b2Shape;
+         
+         while (fixture != null)
+         {
+            physicsShape = fixture.GetShape ();
+            
+            var visualShape:Shape = new Shape ();
+            container.addChild (visualShape);
+            
+            if (physicsShape is b2CircleShape)
+            {
+               var circlePhysicsShape:b2CircleShape = physicsShape as b2CircleShape;
+               visualShape.x = circlePhysicsShape.m_p.x;
+               visualShape.y = circlePhysicsShape.m_p.y;
+               var radius:Number = circlePhysicsShape.m_radius;
+               GraphicsUtil.DrawEllipse (visualShape, - radius, - radius, radius + radius, radius + radius, 0x0, 1, false);
+            }
+            else if (physicsShape is b2PolygonShape)
+            {
+               var polygonPhysicsShape:b2PolygonShape = physicsShape as b2PolygonShape;
+               var localPoints:Array = new Array (polygonPhysicsShape.m_vertexCount);
+               for (var i:int = 0; i < polygonPhysicsShape.m_vertexCount; ++ i)
+               {
+                  var vertex:b2Vec2 = polygonPhysicsShape.m_vertices [i] as b2Vec2;
+                  localPoints [i] = new Point (vertex.x, vertex.y);
+                  
+                  var i2:int = i + 1;
+                  if (i2 >= polygonPhysicsShape.m_vertexCount) i2 = 0;
+                  var vertex2:b2Vec2 = polygonPhysicsShape.m_vertices [i2] as b2Vec2;
+                  var cx:Number = 0.5 * (vertex.x + vertex2.x);
+                  var cy:Number = 0.5 * (vertex.y + vertex2.y);
+                  var normal:b2Vec2 = polygonPhysicsShape.m_normals [i] as b2Vec2;
+                  var nx:Number = normal.x * 10;
+                  var ny:Number = normal.y * 10;
+                  
+                  GraphicsUtil.DrawLine (visualShape, cx, cy, cx + nx, cy + ny);
+               }
+               GraphicsUtil.DrawPolygon (visualShape, localPoints, 0x0, 1, false);
+            }
+            
+            fixture = fixture.m_next;
+         }
       }
       
 //==========================================================================
@@ -147,7 +196,7 @@ package editor.selection {
          }
          
          var polygon_shape:b2PolygonShape = new b2PolygonShape ();
-         polygon_shape.Set (localPoints, localPoints.length);
+         polygon_shape.Set (localVertices, localVertices.length);
          
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          fixture_def.shape = polygon_shape;

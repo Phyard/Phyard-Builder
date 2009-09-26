@@ -146,7 +146,7 @@ package Box2D.Collision
 
 			var count:int = 0;
 			stack[count++] = m_root;
-
+			
 			while (count > 0)
 			{
 				var nodeId:int = stack[--count];
@@ -155,8 +155,9 @@ package Box2D.Collision
 					continue;
 				}
 
-				const node:b2DynamicTreeNode = m_nodes + nodeId;
-
+				//const b2DynamicTreeNode* node = m_nodes + nodeId;
+				const node:b2DynamicTreeNode = m_nodes [nodeId];
+				
 				if (b2Collision.b2TestOverlap(node.aabb, aabb))
 				{
 					if (node.IsLeaf())

@@ -146,6 +146,8 @@ package player.physics {
             var decomposedPolygons:Array = new Array ();
             var numDecomposedPolygons:int = b2Polygon.DecomposeConvex(polygon, decomposedPolygons, vertexCount - 2);
             
+            //trace ("numDecomposedPolygons = " + numDecomposedPolygons);
+            
             for (i = 0; i < numDecomposedPolygons; ++ i) 
             {
                local_vertices = (decomposedPolygons[i] as b2Polygon).GetQuanlifiedVertices ();

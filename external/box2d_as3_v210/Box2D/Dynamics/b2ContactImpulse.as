@@ -9,8 +9,8 @@ package Box2D.Dynamics
 	public class b2ContactImpulse
 	{
 		//@todo for flash player 10, use Vector.<Number> instead
-		public var normalImpulses:Array = new Array [b2Settings.b2_maxManifoldPoints]; // float32
-		public var tangentImpulses:Array = new Array[b2Settings.b2_maxManifoldPoints]; // float32
+		public var normalImpulses:Array = new Array (b2Settings.b2_maxManifoldPoints); // float32
+		public var tangentImpulses:Array = new Array (b2Settings.b2_maxManifoldPoints); // float32
 		
 	} // class
 } // package

@@ -17,7 +17,6 @@ package player.trigger
          
          while (calling != null)
          {
-            trace ("calling.Call");
             calling.Call ();
             calling = calling.mNextFunctionCalling;
          }

@@ -87,9 +87,7 @@ package player.trigger {
       
       public static function SetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-      trace ("SetShapeFilledColor");
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-      trace ("shape = " + shape);
          if (shape == null)
             return;
          

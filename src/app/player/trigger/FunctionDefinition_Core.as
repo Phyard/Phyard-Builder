@@ -19,7 +19,6 @@ package player.trigger
       
       override public function DoCall (inputValueSourceList:ValueSource, returnValueTargetList:ValueTarget):void
       {
-         trace ("DoCall mCoreFunction = " + mCoreFunction);
          mCoreFunction (inputValueSourceList, returnValueTargetList);
       }
    }

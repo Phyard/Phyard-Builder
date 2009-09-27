@@ -89,47 +89,35 @@ package player.trigger.entity
          {
             case Define.EntityPairAssignerType_OneToOne:
                
-trace ("---------- a1");
                if (mEntitiesIndexes1 == null || mEntitiesIndexes2 == null)
                   return ContainingResult_False;
                
-trace ("entityIndex1 = " +entityIndex1 + ", mEntitiesIndexes1 = " + mEntitiesIndexes1);
-trace ("entityIndex2 = " +entityIndex2 + ", mEntitiesIndexes2 = " + mEntitiesIndexes2);
-               
-trace ("---------- a2");
                p1 = mEntitiesIndexes1.indexOf (entityIndex1);
                if (p1 < 0)
                {
-trace ("---------- a3");
                   if (ignorePairOrder)
                   {
-trace ("---------- a4");
                      p1 = mEntitiesIndexes2.indexOf (entityIndex1);
                      
                      if (p1 < 0)
                         return ContainingResult_False;
                      
-trace ("---------- a5");
                      return p1 == mEntitiesIndexes1.indexOf (entityIndex2) ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
                   }
                   else return ContainingResult_False;
                }
                else
                {
-trace ("---------- a6");
                   if (p1 == mEntitiesIndexes2.indexOf (entityIndex2))
                      return ContainingResult_True;
                   
-trace ("---------- a7");
                   if (ignorePairOrder)
                   {
                      p1 = mEntitiesIndexes2.indexOf (entityIndex1);
                      
-trace ("---------- a8");
                      if (p1 < 0)
                         return ContainingResult_False;
                      
-trace ("---------- a9");
                      return p1 == mEntitiesIndexes1.indexOf (entityIndex2) ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
                   }
                   else return ContainingResult_False;
@@ -235,9 +223,6 @@ trace ("---------- a9");
          while (list_element != null)
          {
             result = list_element.mInputEntityAssigner.ContainsEntityPair (entityId1, entityId2, ignorePairOrder);
-            
-         trace (">>> list_element.mInputEntityAssigner = " + list_element.mInputEntityAssigner);
-         trace (">>> result = " + result);
             
             if (result != ContainingResult_False)
                return result;

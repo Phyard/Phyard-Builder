@@ -9,8 +9,11 @@ package player.trigger.data
       
       public var mContactId:int;
       
-      public var mBeginContactingFrame:int;
-      public var mIsEnd:Boolean;
+      public var mBeginContactingFrame:int;       // for the first contact of the pair
+      public var mNewestBeginContactingFrame:int; // for any contacts of the pair
+      
+      public var mContactStartTimesInLastStep:int;
+      public var mContactFinisheTimesInLastStep:int;
       
       public var mEntityId1:int;
       public var mEntityId2:int;
@@ -18,7 +21,8 @@ package player.trigger.data
       public var mEntityShape1:EntityShape;
       public var mEntityShape2:EntityShape;
       
-      public var mNumContactPoints:int;
+      public var mNumContactPoints:int; // it is still possible more than one contacts exist simutaniously.
+                                        // this value of 0 means the contact is finished
       
       //public var mBeginPointX:Number;
       //public var mBeginPointY:Number;

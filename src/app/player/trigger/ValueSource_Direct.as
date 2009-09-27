@@ -4,8 +4,10 @@ package player.trigger
    {
       public var mValueObject:Object;
       
-      public function ValueSource_Direct (valueObject:Object)
+      public function ValueSource_Direct (valueObject:Object, next:ValueSource = null)
       {
+         super (next);
+         
          mValueObject = valueObject;
       }
       

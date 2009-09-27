@@ -176,6 +176,7 @@ package editor {
          private var mStatusBarEntityInfoSprite:Sprite;
          
       private var mPlayerElementsContainer:Sprite;
+      private var mTopLayerContainer:Sprite;
          
       private var mUiContainer:Sprite;
          
@@ -267,6 +268,10 @@ package editor {
          mPlayerElementsContainer.visible = false;
          addChild (mPlayerElementsContainer);
          
+         mTopLayerContainer = new Sprite ();
+         mTopLayerContainer.visible = true;
+         addChild (mTopLayerContainer);
+         
          //
          
          mWorldHistoryManager = new WorldHistoryManager ();
@@ -351,13 +356,24 @@ package editor {
          UpdateChildComponents ();
       }
       
-      private var mFpsCounter:FpsCounter;
+      private var mFpsCounter:FpsCounter = null;
       private var mStepTimeSpan:TimeSpan = new TimeSpan ();
       
       public var mActive:Boolean = true;
       
       private function OnEnterFrame (event:Event):void 
       {
+         //
+         if (mFpsCounter == null)
+         {
+            mFpsCounter = new FpsCounter ();
+            mFpsCounter.x = 20;
+            mFpsCounter.y = 30;
+            mTopLayerContainer.addChild (mFpsCounter);
+         }
+         
+         mFpsCounter.Update (mStepTimeSpan.GetLastSpan ());
+         
          //
          mStepTimeSpan.End ();
          mStepTimeSpan.Start ();

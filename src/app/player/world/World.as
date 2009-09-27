@@ -53,6 +53,9 @@ package player.world {
    import player.trigger.data.ShapeContactInfo;
    import player.trigger.data.ListElement_EventHandler;
    
+   import player.trigger.ValueSource;
+   import player.trigger.ValueSource_Direct;
+   
    import common.trigger.CoreEventIds;
    
    import common.Define;
@@ -962,12 +965,10 @@ package player.world {
          var list_head:ListElement_EventHandler;
          var list_element:ListElement_EventHandler;
          
-      trace ("111");
          while (event_handler != null)
          {
-      trace ("event_handler.mFirstEntityAssigner = " + event_handler.mFirstEntityAssigner);
             result = EntityInputEntityAssigner.GetContainingEntityPairResult (event_handler.mFirstEntityAssigner, entityId1, entityId2, ignorePairOrder);
-      trace ("result = " + result);
+            
             if (result != EntityInputEntityAssigner.ContainingResult_False)
             {
                list_element = new ListElement_EventHandler (event_handler);
@@ -980,7 +981,6 @@ package player.world {
             event_handler = event_handler.mNextEntityEventHandlerOfTheSameType;
          }
          
-      trace ("list_head = " + list_head);
          return list_head;
       }
       
@@ -997,11 +997,11 @@ package player.world {
             return;
          
          var id1:int = shape1.mEntityIndexInEditor;
-         if (id1 < 0 || id1 > 0x7F)
+         if (id1 < 0 || id1 > 0x7FFF)
             return;
          
          var id2:int = shape2.mEntityIndexInEditor;
-         if (id2 < 0 || id2 > 0x7F)
+         if (id2 < 0 || id2 > 0x7FFF)
             return;
          
          var contact_id:int = id1 > id2 ? (id2 << 16) | (id1) : (id1 << 16) | (id2);
@@ -1013,11 +1013,17 @@ package player.world {
          
          if (contact_info != null)
          {
+            // if contact_info.mNumContactPoints is zero, it means there is "out-and-in" happens.
+            // now the "out-and-in" <=> nothing happend
+            
+            // if contact_info.mNumContactPoints >= 1, it means more than one contacts are created for the shape pair
+            
             ++ contact_info.mNumContactPoints;
          }
          else
          {
             contact_info = new ShapeContactInfo ();
+            contact_info.mContactId = contact_id;
             contact_info.mEntityId1 = id1;
             contact_info.mEntityId2 = id2;
             contact_info.mEntityShape1 = shape1;
@@ -1046,11 +1052,6 @@ package player.world {
          }
          
          //trace ("contact_info#" + contact_id + "'s.mNumContactPoints = " + contact_info.mNumContactPoints);
-      }
-      
-      private function OnShapeContactContinued (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
-      {
-         //InfectShapes (proxyShape1.GetUserData () as EntityShape, proxyShape2.GetUserData () as EntityShape);
       }
       
       private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
@@ -1090,25 +1091,19 @@ package player.world {
          
          if (contact_info.mNumContactPoints <= 0)
          {
-            if (mFirstShapeContactInfo == contact_info)
-               mFirstShapeContactInfo = mFirstShapeContactInfo.mNextContactInfo;
-            
-            if (contact_info.mPrevContactInfo != null)
-               contact_info.mPrevContactInfo.mNextContactInfo = contact_info.mNextContactInfo;
-            if (contact_info.mNextContactInfo != null)
-               contact_info.mNextContactInfo.mPrevContactInfo = contact_info.mPrevContactInfo;
-            
-            delete mShapeContactInfoHashtable [contact_id];
-            
-            -- mNumContactInfos;
-            //trace (" --- mNumContactInfos = " + mNumContactInfos);
+            // lazy destroy, this lien is moved to HandleShapeContactEvents
+            // RemoveContactFromContactList (contact_info);
          }
+      }
+      
+      private function OnShapeContactContinued (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
+      {
+         //InfectShapes (proxyShape1.GetUserData () as EntityShape, proxyShape2.GetUserData () as EntityShape);
       }
       
       private function OnShapeContactResult (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
       {
       }
-      
   //--------------------
       
       private function InfectShapes (shape1:EntityShape, shape2:EntityShape):void
@@ -1459,30 +1454,81 @@ package player.world {
          
       }
       
+      private var mContactEventHandlerValueSource3:ValueSource_Direct = new ValueSource_Direct (null);
+      private var mContactEventHandlerValueSource2:ValueSource_Direct = new ValueSource_Direct (null, mContactEventHandlerValueSource3);
+      private var mContactEventHandlerValueSource1:ValueSource_Direct = new ValueSource_Direct (null, mContactEventHandlerValueSource2);
+      private var mContactEventHandlerValueSourceList:ValueSource = mContactEventHandlerValueSource1;
+      
       private function HandleShapeContactEvents ():void
       {
          var list_element:ListElement_EventHandler;
-         
+         var isContactContinued:Boolean;
          var contact_info:ShapeContactInfo = mFirstShapeContactInfo;
          
          while (contact_info != null)
          {
-            //InfectShapes (contact_info.mEntityShape1, contact_info.mEntityShape2);
+            mContactEventHandlerValueSource1.mValueObject = contact_info.mEntityShape1;
+            mContactEventHandlerValueSource2.mValueObject = contact_info.mEntityShape2;
+            mContactEventHandlerValueSource3.mValueObject = mNumSimulatdFrames - contact_info.mBeginContactingFrame;
+            
+            isContactContinued = true;
             
             if (contact_info.mBeginContactingFrame == mNumSimulatdFrames)
             {
+               //InfectShapes (contact_info.mEntityShape1, contact_info.mEntityShape2);
+               
+               //
                list_element = contact_info.mFirstBeginContactingHandler;
                
-               if (list_element != null)
+               while (list_element != null)
                {
-                  //TriggerEngine.PushInputVariables ()
-                  while (list_element != null)
-                  {
-                     list_element.mEventHandler.mEventHandlerDefinition.HandleEvent (null);
-                     
-                     list_element = list_element.mNextListElement;
-                  }
-                  //TriggerEngine.PopInputVariables ()
+                  list_element.mEventHandler.mEventHandlerDefinition.HandleEvent (mContactEventHandlerValueSourceList);
+                  
+                  list_element = list_element.mNextListElement;
+               }
+            }
+            else isContactContinued = false;
+            
+            if (contact_info.mNumContactPoints <= 0)
+            {
+               list_element = contact_info.mFirstEndContactingHandler;
+               
+               while (list_element != null)
+               {
+                  list_element.mEventHandler.mEventHandlerDefinition.HandleEvent (mContactEventHandlerValueSourceList);
+                  
+                  list_element = list_element.mNextListElement;
+               }
+               
+               // remove
+               
+               if (contact_info.mPrevContactInfo != null)
+                  contact_info.mPrevContactInfo.mNextContactInfo = contact_info.mNextContactInfo;
+               else //if (mFirstShapeContactInfo == contact_info)
+                  mFirstShapeContactInfo = mFirstShapeContactInfo.mNextContactInfo;
+               
+               if (contact_info.mNextContactInfo != null)
+                  contact_info.mNextContactInfo.mPrevContactInfo = contact_info.mPrevContactInfo;
+               
+               delete mShapeContactInfoHashtable [contact_info.mContactId];
+               
+               -- mNumContactInfos;
+               //trace (" --- mNumContactInfos = " + mNumContactInfos);
+            }
+            else isContactContinued = false;
+            
+            if (isContactContinued)
+            {
+               //InfectShapes (contact_info.mEntityShape1, contact_info.mEntityShape2);
+               
+               //
+               list_element = contact_info.mFirstKeepContactingHandler;
+               
+               while (list_element != null)
+               {
+                  list_element.mEventHandler.mEventHandlerDefinition.HandleEvent (mContactEventHandlerValueSourceList);
+                  
+                  list_element = list_element.mNextListElement;
                }
             }
             

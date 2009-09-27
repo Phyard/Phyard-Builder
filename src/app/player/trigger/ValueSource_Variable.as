@@ -4,8 +4,10 @@ package player.trigger
    {
       protected var mVariableInstance:VariableInstance;
       
-      public function ValueSource_Variable (vi:VariableInstance)
+      public function ValueSource_Variable (vi:VariableInstance, next:ValueSource = null)
       {
+         super (next);
+         
          mVariableInstance = vi;
       }
       

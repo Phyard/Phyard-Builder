@@ -31,6 +31,7 @@ package Box2D.Dynamics
 	import Box2D.Common.b2StackAllocator;
 	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Contacts.b2ContactConstraint;
+	import Box2D.Dynamics.Contacts.b2ContactConstraintPoint;
 	import Box2D.Dynamics.Contacts.b2ContactSolver;
 	import Box2D.Dynamics.Joints.b2Joint;
 

@@ -239,7 +239,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 
 	for (i = 0; i < m_jointCount; ++i)
 	{
-		m_joints[i].InitVelocityConstraints(step);
+		(m_joints[i] as b2Joint).InitVelocityConstraints(step);
 	}
 
 	// Solve velocity constraints.
@@ -247,7 +247,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	{
 		for (j = 0; j < m_jointCount; ++j)
 		{
-			m_joints[j].SolveVelocityConstraints(step);
+			(m_joints[j] as b2Joint).SolveVelocityConstraints(step);
 		}
 
 		contactSolver.SolveVelocityConstraints();
@@ -317,7 +317,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		//for (int32 i = 0; i < m_jointCount; ++i)
 		for (j = 0; j < m_jointCount; ++j)
 		{
-			var jointOkay:Boolean = m_joints[j].SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
+			var jointOkay:Boolean = (m_joints[j] as b2Joint).SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
 			jointsOkay = jointsOkay && jointOkay;
 		}
 
@@ -402,7 +402,7 @@ public function SolveTOI(subStep:b2TimeStep):void
 	// call this function to compute Jacobians.
 	for (i = 0; i < m_jointCount; ++i)
 	{
-		m_joints[i].InitVelocityConstraints(subStep);
+		(m_joints[i] as b2Joint).InitVelocityConstraints(subStep);
 	}
 
 	// Solve velocity constraints.
@@ -411,7 +411,7 @@ public function SolveTOI(subStep:b2TimeStep):void
 		contactSolver.SolveVelocityConstraints();
 		for (j = 0; j < m_jointCount; ++j)
 		{
-			m_joints[j].SolveVelocityConstraints(subStep);
+			(m_joints[j] as b2Joint).SolveVelocityConstraints(subStep);
 		}
 	}
 
@@ -501,7 +501,7 @@ public function SolveTOI(subStep:b2TimeStep):void
 		var jointsOkay:Boolean = true;
 		for (j = 0; j < m_jointCount; ++j)
 		{
-			var jointOkay:Boolean = m_joints[j].SolvePositionConstraints(k_toiBaumgarte);
+			var jointOkay:Boolean = (m_joints[j] as b2Joint).SolvePositionConstraints(k_toiBaumgarte);
 			jointsOkay = jointsOkay && jointOkay;
 		}
 		
@@ -536,8 +536,8 @@ public function Report(constraints:Array):void
 		var impulse:b2ContactImpulse = new b2ContactImpulse ();
 		for (j = 0; j < cc.pointCount; ++j)
 		{
-			impulse.normalImpulses[j] = cc.points[j].normalImpulse;
-			impulse.tangentImpulses[j] = cc.points[j].tangentImpulse;
+			impulse.normalImpulses[j] = (cc.points[j] as b2ContactConstraintPoint).normalImpulse;
+			impulse.tangentImpulses[j] = (cc.points[j] as b2ContactConstraintPoint).tangentImpulse;
 		}
 
 		m_listener.PostSolve(c, impulse);

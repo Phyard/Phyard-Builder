@@ -83,10 +83,11 @@ public static function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:
 	//b2Assert(b2Shape::e_unknown < type1 && type1 < b2Shape::e_typeCount);
 	//b2Assert(b2Shape::e_unknown < type2 && type2 < b2Shape::e_typeCount);
 	
-	var createFcn:Function = s_registers[type1][type2].createFcn;
+	var cr:b2ContactRegister = s_registers[type1][type2] as b2ContactRegister;
+	var createFcn:Function = cr.createFcn;
 	if (createFcn != null)
 	{
-		if (s_registers[type1][type2].primary)
+		if (cr.primary)
 		{
 			return createFcn(fixtureA, fixtureB, allocator);
 		}
@@ -117,7 +118,7 @@ public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = n
 	//b2Assert(b2Shape::e_unknown < typeA && typeB < b2Shape::e_typeCount);
 	//b2Assert(b2Shape::e_unknown < typeA && typeB < b2Shape::e_typeCount);
 
-	var destroyFcn:Function = s_registers[typeA][typeB].destroyFcn;
+	var destroyFcn:Function = (s_registers[typeA][typeB] as b2ContactRegister).destroyFcn;
 	destroyFcn(contact, allocator);
 }
 

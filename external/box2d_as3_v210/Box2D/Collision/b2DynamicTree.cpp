@@ -38,9 +38,9 @@ public function b2DynamicTree()
 	// Build a linked list for the free list.
 	for (i = 0; i < m_nodeCapacity - 1; ++i)
 	{
-		m_nodes[i].next = i + 1;
+		(m_nodes[i] as b2DynamicTreeNode).next = i + 1;
 	}
-	m_nodes[m_nodeCapacity-1].next = b2_nullNode;
+	(m_nodes[m_nodeCapacity-1] as b2DynamicTreeNode).next = b2_nullNode;
 	m_freeList = 0;
 
 	m_path = 0;
@@ -82,15 +82,15 @@ public function AllocateNode():int
 		// pointer becomes the "next" pointer.
 		for (i = m_nodeCount; i < m_nodeCapacity - 1; ++i)
 		{
-			m_nodes[i].next = i + 1;
+			(m_nodes[i] as b2DynamicTreeNode).next = i + 1;
 		}
-		m_nodes[m_nodeCapacity-1].next = b2_nullNode;
+		(m_nodes[m_nodeCapacity-1] as b2DynamicTreeNode).next = b2_nullNode;
 		m_freeList = m_nodeCount;
 	}
 
 	// Peel a node off the free list.
 	var nodeId:int = m_freeList;
-	m_freeList = m_nodes[nodeId].next;
+	m_freeList = (m_nodes[nodeId] as b2DynamicTreeNode).next;
 	var node:b2DynamicTreeNode = m_nodes[nodeId] as b2DynamicTreeNode;
 	node.parent = b2_nullNode;
 	node.child1 = b2_nullNode;
@@ -148,7 +148,7 @@ public function MoveProxy(proxyId:int, aabb:b2AABB, displacement:b2Vec2):Boolean
 
 	//b2Assert(m_nodes[proxyId].IsLeaf());
 
-	if (m_nodes[proxyId].aabb.Contains(aabb))
+	if ((m_nodes[proxyId] as b2DynamicTreeNode).aabb.Contains(aabb))
 	{
 		return false;
 	}
@@ -211,9 +211,9 @@ public function InsertLeaf(leaf:int):void
 	var node:b2DynamicTreeNode;
 
 	// Find the best sibling for this node.
-	var center:b2Vec2 = m_nodes[leaf].aabb.GetCenter();
+	var center:b2Vec2 = (m_nodes[leaf] as b2DynamicTreeNode).aabb.GetCenter();
 	var sibling:int = m_root;
-	if (m_nodes[sibling].IsLeaf() == false)
+	if ((m_nodes[sibling] as b2DynamicTreeNode).IsLeaf() == false)
 	{
 		var delta1:b2Vec2 = new b2Vec2 ();
 		var delta2:b2Vec2 = new b2Vec2 ();
@@ -247,7 +247,7 @@ public function InsertLeaf(leaf:int):void
 	}
 
 	// Create a parent for the siblings.
-	var node1:int = m_nodes[sibling].parent;
+	var node1:int = (m_nodes[sibling] as b2DynamicTreeNode).parent;
 	var node2:int = AllocateNode();
 	node = m_nodes[node2] as b2DynamicTreeNode;
 	node.parent = node1;
@@ -344,7 +344,7 @@ public function RemoveLeaf(leaf:int):void
 		{
 			node = m_nodes[node1] as b2DynamicTreeNode;
 			
-			oldAABB.CopyFrom (m_nodes[node1].aabb);
+			oldAABB.CopyFrom ((m_nodes[node1] as b2DynamicTreeNode).aabb);
 			node.aabb.Combine((m_nodes[node.child1] as b2DynamicTreeNode).aabb, (m_nodes[node.child2] as b2DynamicTreeNode).aabb);
 
 			if (oldAABB.Contains(node.aabb))

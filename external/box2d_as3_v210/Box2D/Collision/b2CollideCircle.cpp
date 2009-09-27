@@ -43,8 +43,8 @@ circle2:b2CircleShape, xf2:b2Transform):void
 	manifold.m_localPlaneNormal.SetZero();
 	manifold.m_pointCount = 1;
 
-	manifold.m_points[0].m_localPoint.CopyFrom ( circle2.m_p);
-	manifold.m_points[0].m_id.key = 0;
+	(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom ( circle2.m_p);
+	(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
 }
 
 public static function b2CollidePolygonAndCircle(
@@ -100,8 +100,8 @@ circle:b2CircleShape, xf2:b2Transform):void
 		//manifold.m_localPoint = 0.5 * (v1 + v2);
 		manifold.m_localPoint.x = 0.5 * (v1.x + v2.x);
 		manifold.m_localPoint.y = 0.5 * (v1.y + v2.y);
-		manifold.m_points[0].m_localPoint.CopyFrom (circle.m_p);
-		manifold.m_points[0].m_id.key = 0;
+		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
+		(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
 		return;
 	}
 
@@ -130,8 +130,8 @@ circle:b2CircleShape, xf2:b2Transform):void
 		manifold.m_localPlaneNormal.Set (cLocal.x - v1.x, cLocal.y - v1.y)
 		manifold.m_localPlaneNormal.Normalize();
 		manifold.m_localPoint.CopyFrom (v1);
-		manifold.m_points[0].m_localPoint.CopyFrom (circle.m_p);
-		manifold.m_points[0].m_id.key = 0;
+		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
+		(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
 	}
 	else if (u2 <= 0.0)
 	{
@@ -145,8 +145,8 @@ circle:b2CircleShape, xf2:b2Transform):void
 		manifold.m_localPlaneNormal.Set (cLocal.x - v2.x, cLocal.y - v2.y);
 		manifold.m_localPlaneNormal.Normalize();
 		manifold.m_localPoint.CopyFrom (v2);
-		manifold.m_points[0].m_localPoint.CopyFrom (circle.m_p);
-		manifold.m_points[0].m_id.key = 0;
+		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
+		(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
 	}
 	else
 	{
@@ -167,7 +167,7 @@ circle:b2CircleShape, xf2:b2Transform):void
 		manifold.m_type = b2Manifold.e_faceA;
 		manifold.m_localPlaneNormal.CopyFrom (normals[vertIndex1]);
 		manifold.m_localPoint.CopyFrom (faceCenter);
-		manifold.m_points[0].m_localPoint.CopyFrom (circle.m_p);
-		manifold.m_points[0].m_id.key = 0;
+		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
+		(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
 	}
 }

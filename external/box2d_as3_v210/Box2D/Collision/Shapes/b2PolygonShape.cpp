@@ -216,7 +216,7 @@ public function Set(vertices:Array, count:int):void
 		//b2Assert(edge.LengthSquared() > B2_FLT_EPSILON * B2_FLT_EPSILON);
 		//m_normals[i] = b2Math.b2Cross2(edge, 1.0f);
 		b2Math.b2Cross_Vector2AndScalar_Output (edge, 1.0, m_normals[i]);
-		m_normals[i].Normalize();
+		(m_normals[i] as b2Vec2).Normalize();
 	}
 
 //#ifdef _DEBUG

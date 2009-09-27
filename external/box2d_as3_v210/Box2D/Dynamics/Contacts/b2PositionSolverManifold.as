@@ -49,7 +49,7 @@ package Box2D.Dynamics.Contacts
 
 					for (i = 0; i < cc.pointCount; ++i)
 					{
-						clipPoint = cc.bodyB.GetWorldPoint (cc.points[i].localPoint);
+						clipPoint = cc.bodyB.GetWorldPoint ( (cc.points[i] as b2ContactConstraintPoint).localPoint);
 						//m_separations[i] = b2Math.b2Dot2(clipPoint - planePoint, m_normal) - cc->radius;
 						//m_points[i] = clipPoint;
 						(m_points[i] as b2Vec2).CopyFrom (clipPoint);
@@ -67,7 +67,7 @@ package Box2D.Dynamics.Contacts
 
 					for (i = 0; i < cc.pointCount; ++i)
 					{
-						clipPoint = cc.bodyA.GetWorldPoint (cc.points[i].localPoint);
+						clipPoint = cc.bodyA.GetWorldPoint ((cc.points[i] as b2ContactConstraintPoint).localPoint);
 						//m_separations[i] = b2Math.b2Dot2(clipPoint - planePoint, m_normal) - cc->radius;
 						//m_points[i] = clipPoint;
 						(m_points[i] as b2Vec2).CopyFrom (clipPoint);

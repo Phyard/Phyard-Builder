@@ -125,13 +125,13 @@ package Box2D.Collision
 		public function GetUserData(proxyId:int):Object
 		{
 			//b2Assert(0 <= proxyId && proxyId < m_nodeCapacity);
-			return m_nodes[proxyId].userData;
+			return (m_nodes[proxyId] as b2DynamicTreeNode).userData;
 		}
 
 		public function GetFatAABB(proxyId:int):b2AABB
 		{
 			//b2Assert(0 <= proxyId && proxyId < m_nodeCapacity);
-			return m_nodes[proxyId].aabb;
+			return (m_nodes[proxyId] as b2DynamicTreeNode).aabb;
 		}
 
 		//template <typename T>

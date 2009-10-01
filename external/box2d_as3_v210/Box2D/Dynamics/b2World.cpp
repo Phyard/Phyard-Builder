@@ -29,8 +29,14 @@
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 //#include <new>
 
-public function b2World(gravity:b2Vec2, doSleep:Boolean)
+//public function b2World(gravity:b2Vec2, doSleep:Boolean)
+public function b2World(worldDef:b2WorldDef = null)
 {
+	if (worldDef == null)
+	{
+		worldDef = new b2WorldDef ();
+	}
+
 	m_destructionListener = null;
 	m_debugDraw = null;
 
@@ -43,15 +49,16 @@ public function b2World(gravity:b2Vec2, doSleep:Boolean)
 	m_warmStarting = true;
 	m_continuousPhysics = true;
 
-	m_allowSleep = doSleep;
+	m_allowSleep = worldDef.doSleep;
 	//m_gravity = gravity;
-	m_gravity.x = gravity.x;
-	m_gravity.y = gravity.y;
+	m_gravity.x = worldDef.gravity.x;
+	m_gravity.y = worldDef.gravity.y;
 
 	m_flags = 0;
 
 	m_inv_dt0 = 0.0;
 
+	m_contactManager = new b2ContactManager (worldDef.collisionBroadPhase);
 	m_contactManager.m_allocator = m_blockAllocator;
 }
 
@@ -900,8 +907,14 @@ public function Step(dt:Number, velocityIterations:int, positionIterations:int):
 
 	step.warmStarting = m_warmStarting;
 
+//var t1:Number = getTimer ();
+
 	// Update contacts. This is where some contacts are destroyed.
 	m_contactManager.Collide();
+
+//var t2:Number = getTimer ();
+//trace ("dt Collide = " + (t2 - t1));
+//t1 = getTimer ();
 
 	// Integrate velocities, solve velocity constraints, and integrate positions.
 	if (step.dt > 0.0)
@@ -909,11 +922,19 @@ public function Step(dt:Number, velocityIterations:int, positionIterations:int):
 		Solve(step);
 	}
 
+//t2 = getTimer ();
+//trace ("dt Solve = " + (t2 - t1));
+//t1 = getTimer ();
+
 	// Handle TOI events.
 	if (m_continuousPhysics && step.dt > 0.0)
 	{
 		SolveTOI(step);
 	}
+
+//t2 = getTimer ();
+//trace ("dt Solve toi = " + (t2 - t1));
+//t1 = getTimer ();
 
 	if (step.dt > 0.0)
 	{

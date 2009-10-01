@@ -51,7 +51,7 @@ package player.physics {
       {
       //trace ("EndContact");
          //if (mPhysicsEngine._OnShapeContactFinished != null)
-            //mPhysicsEngine._OnShapeContactFinished (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
+           // mPhysicsEngine._OnShapeContactFinished (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
       }
 
       /// This is called after a contact is updated. This allows you to inspect a

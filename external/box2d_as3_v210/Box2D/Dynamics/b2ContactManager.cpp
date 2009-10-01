@@ -25,13 +25,21 @@
 public static var b2_defaultFilter:b2ContactFilter = new b2ContactFilter ();
 public static var b2_defaultListener:b2ContactListener = new b2ContactListenerDefault ();
 
-public function b2ContactManager()
+public function b2ContactManager(broadPhase:b2BroadPhase)
 {
 	m_contactList = null;
 	m_contactCount = 0;
 	m_contactFilter = b2_defaultFilter;
 	m_contactListener = b2_defaultListener;
 	m_allocator = null;
+
+	if (broadPhase == null)
+	{
+		broadPhase = new b2BroadPhase_DynamicTree ();
+	}
+	m_broadPhase = broadPhase;
+
+	trace ("m_broadPhase: " + m_broadPhase);
 }
 
 public function Destroy(c:b2Contact):void

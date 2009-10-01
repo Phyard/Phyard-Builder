@@ -10,6 +10,7 @@ package Box2D {
    import Box2D.Common.*;
    
    import Box2dEx.Helper.b2eWorldHelper;
+   import Box2dEx.BroadPhase.SweepAndPrune.b2eBroadPhase_SweepAndPrune;
    
    public class b2WorldPool 
    {
@@ -17,7 +18,7 @@ package Box2D {
       private static var s_b2WorldInfoArray:Array = new Array ();
       private static var s_NumUsedB2Worlds:int = 0;
       
-      public static function AllocB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean, worldDef:b2WorldDef):b2World
+      public static function AllocB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean, worldDef:b2eWorldDef):b2World
       {
          var object:Object = null;
          var b2world:b2World = null;
@@ -135,9 +136,13 @@ package Box2D {
       }
       */
       
-      public static function AllocB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean, worldDef:b2WorldDef):b2World
+      public static function AllocB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean, _worldDef:b2eWorldDef):b2World
       {
-         var b2world:b2World = new b2World( gravity, doSleep);
+         var worldDef:b2WorldDef = new b2WorldDef ();
+         worldDef.gravity.CopyFrom (gravity);
+         worldDef.doSleep = doSleep;
+         worldDef.collisionBroadPhase = new b2eBroadPhase_SweepAndPrune ();
+         var b2world:b2World = new b2World(null);
          
          b2eWorldHelper.CreateGroundBody (b2world);
          

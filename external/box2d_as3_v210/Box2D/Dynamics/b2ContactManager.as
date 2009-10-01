@@ -25,6 +25,7 @@ package Box2D.Dynamics
 	//#include <Box2D/Collision/b2BroadPhase.h>
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Collision.b2BroadPhase;
+	import Box2D.Collision.b2BroadPhase_DynamicTree;
 	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Contacts.b2ContactEdge;
 	
@@ -47,7 +48,8 @@ package Box2D.Dynamics
 
 		//void Collide();
 				
-		public var m_broadPhase:b2BroadPhase = new b2BroadPhase ();
+		public var m_broadPhase:b2BroadPhase;// = new b2BroadPhase_DynamicTree ();
+		//public var m_broadPhase:b2BroadPhase = new b2eBroadPhase_SweepAndPrune ();
 		public var m_contactList:b2Contact;
 		public var m_contactCount:int;
 		public var m_contactFilter:b2ContactFilter;

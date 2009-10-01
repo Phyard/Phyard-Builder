@@ -37,9 +37,9 @@ package Box2D.Collision
 	/// The broad-phase is used for computing pairs and performing volume queries and ray casts.
 	/// This broad-phase does not persist pairs. Instead, this reports potentially new pairs.
 	/// It is up to the client to consume the new pairs and to track subsequent overlap.
-	public class b2BroadPhase // implements b2QueryCallbackOwner
+	public class b2BroadPhase_DynamicTree extends b2BroadPhase implements b2QueryCallbackOwner
 	{
-		include "b2BroadPhase.cpp"
+		include "b2BroadPhase_DynamicTree.cpp"
 		
 	//public:
 
@@ -105,51 +105,156 @@ package Box2D.Collision
 
 		//void QueryCallback(int32 proxyId);
 
+		private var m_tree:b2DynamicTree = new b2DynamicTree ();
+
+		private var m_proxyCount:int;
+
+		//int32* m_moveBuffer;
+		private var m_moveBuffer:Array;
+		private var m_moveCapacity:int;
+		private var m_moveCount:int;
+
+		//b2Pair* m_pairBuffer;
+		private var m_pairBuffer:Array;
+		private var m_pairCapacity:int;
+		private var m_pairCount:int;
+
+		private var m_queryProxyId:int;
+
 	//incline
 
-		public function GetUserData(proxyId:int):Object
+		/// This is used to sort pairs.
+		//inline bool b2PairLessThan(const b2Pair& pair1, const b2Pair& pair2)
+		public static function b2PairLessThan(pair1:b2Pair, pair2:b2Pair):int
 		{
-			return null;
+			//if (pair1.proxyIdA < pair2.proxyIdA)
+			//{
+			//	return true;
+			//}
+			//
+			//if (pair1.proxyIdA == pair2.proxyIdA)
+			//{
+			//	return pair1.proxyIdB < pair2.proxyIdB;
+			//}
+			//
+			//return false;
+
+			if (pair1.proxyIdA < pair2.proxyIdA)
+			{
+				return -1;
+			}
+
+			if (pair1.proxyIdA == pair2.proxyIdA)
+			{
+				return pair1.proxyIdB < pair2.proxyIdB ? -1 : 1;
+			}
+
+			return 1;
 		}
 
-		public function TestOverlap(proxyIdA:int, proxyIdB:int):Boolean
+		override public function GetUserData(proxyId:int):Object
 		{
-			return false;
+			return m_tree.GetUserData(proxyId);
+		}
+
+		override public function TestOverlap(proxyIdA:int, proxyIdB:int):Boolean
+		{
+			var aabbA:b2AABB = m_tree.GetFatAABB(proxyIdA);
+			var aabbB:b2AABB = m_tree.GetFatAABB(proxyIdB);
+			return b2Collision.b2TestOverlap(aabbA, aabbB);
 		}
 
 		//inline const b2AABB& b2BroadPhase::GetFatAABB(int32 proxyId) const
-		public function GetFatAABB(proxyId:int):b2AABB
+		override public function GetFatAABB(proxyId:int):b2AABB
 		{
-			return null;
+			return m_tree.GetFatAABB(proxyId);
 		}
 
-		public function GetProxyCount():int
+		override public function GetProxyCount():int
 		{
-			return 0;
+			return m_proxyCount;
 		}
 
-		public function ComputeHeight():int
+		override public function ComputeHeight():int
 		{
-			return 0;
+			//return m_tree.ComputeHeight();
+			return m_tree.ComputeTreeHeight ();
 		}
 
 		//template <typename T>
 		//void b2BroadPhase::UpdatePairs(T* callback)
-		public function UpdatePairs(callback:b2BroadPhaseMonitor):void
+		override public function UpdatePairs(callback:b2BroadPhaseMonitor):void
 		{
+			var i:int = 0;
+
+			// Reset pair buffer
+			m_pairCount = 0;
+			m_pairBuffer = new Array (); // !!! different with c++ version
+
+			// Perform tree queries for all moving proxies.
+			for (i = 0; i < m_moveCount; ++i)
+			{
+				m_queryProxyId = m_moveBuffer[i];
+				if (m_queryProxyId == e_nullProxy)
+				{
+					continue;
+				}
+
+				// We have to query the tree with the fat AABB so that
+				// we don't fail to create a pair that may touch later.
+				//const b2AABB& fatAABB = m_tree.GetFatAABB(m_queryProxyId);
+				var fatAABB:b2AABB = m_tree.GetFatAABB(m_queryProxyId);
+
+				// Query tree, create pairs and add them pair buffer.
+				m_tree.Query(this, fatAABB);
+			}
+
+			// Reset move buffer
+			m_moveCount = 0;
+
+			// Sort the pair buffer to expose duplicates.
+			//std::sort(m_pairBuffer, m_pairBuffer + m_pairCount, b2PairLessThan);
+			m_pairBuffer.sort (b2PairLessThan);
+			
+			// Send the pairs back to the client.
+			i = 0;
+			while (i < m_pairCount)
+			{
+				//b2Pair* primaryPair = m_pairBuffer + i;
+				var primaryPair:b2Pair = m_pairBuffer [i];
+				var userDataA:Object = m_tree.GetUserData(primaryPair.proxyIdA);
+				var userDataB:Object = m_tree.GetUserData(primaryPair.proxyIdB);
+
+				callback.AddPair(userDataA, userDataB);
+				++i;
+
+				// Skip any duplicate pairs.
+				while (i < m_pairCount)
+				{
+					//b2Pair* pair = m_pairBuffer + i;
+					var pair:b2Pair = m_pairBuffer [i];
+					if (pair.proxyIdA != primaryPair.proxyIdA || pair.proxyIdB != primaryPair.proxyIdB)
+					{
+						break;
+					}
+					++i;
+				}
+			}
 		}
 
 		//template <typename T>
 		//inline void b2BroadPhase::Query(T* callback, const b2AABB& aabb) const
 		//@notice: best to add a new class QueryCallback
-		public function Query(callback:b2QueryCallbackOwner, aabb:b2AABB):void
+		override public function Query(callback:b2QueryCallbackOwner, aabb:b2AABB):void
 		{
+			m_tree.Query(callback, aabb);
 		}
 
 		//template <typename T>
 		//inline void b2BroadPhase::RayCast(T* callback, const b2RayCastInput& input) const
-		public function RayCast(callback:b2RayCastCallbackOwner, input:b2RayCastInput):void
+		override public function RayCast(callback:b2RayCastCallbackOwner, input:b2RayCastInput):void
 		{
+			m_tree.RayCast(callback, input);
 		}
 	} // class
 } // package

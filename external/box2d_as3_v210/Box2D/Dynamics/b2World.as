@@ -28,6 +28,8 @@ package Box2D.Dynamics
 	//#include <Box2D/Dynamics/b2ContactManager.h>
 	//#include <Box2D/Dynamics/b2WorldCallbacks.h>
 	
+	import flash.utils.getTimer;
+	
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
@@ -195,7 +197,7 @@ package Box2D.Dynamics
 
 		public var m_flags:int;
 
-		public var m_contactManager:b2ContactManager = new b2ContactManager ();
+		public var m_contactManager:b2ContactManager; // = new b2ContactManager ();
 
 		public var m_bodyList:b2Body;
 		public var m_jointList:b2Joint;

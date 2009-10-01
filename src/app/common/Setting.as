@@ -1,7 +1,7 @@
 
 package common {
    
-   import Box2D.Dynamics.b2WorldDef;
+   import Box2D.Dynamics.b2eWorldDef;
    
    public class Setting
    {
@@ -10,10 +10,10 @@ package common {
 // b2WorldDef
 //================================================================================
    
-   public static const b2WorldDef_EditorScene:b2WorldDef = new b2WorldDef ();
-   public static const b2WorldDef_CategoryManager:b2WorldDef = new b2WorldDef (256, 256);
+   public static const b2WorldDef_EditorScene:b2eWorldDef = new b2eWorldDef ();
+   public static const b2WorldDef_CategoryManager:b2eWorldDef = new b2eWorldDef (256, 256);
    
-   public static function GetB2WorldDefForPlayer (version:uint):b2WorldDef
+   public static function GetB2WorldDefForPlayer (version:uint):b2eWorldDef
    {
       return null;
    }

@@ -136,13 +136,13 @@ package Box2D {
       }
       */
       
-      public static function AllocB2World (worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean, _worldDef:b2eWorldDef):b2World
+      public static function AllocB2World (worldAABB:b2AABB, gravity:b2Vec2):b2World
       {
          var worldDef:b2WorldDef = new b2WorldDef ();
          worldDef.gravity.CopyFrom (gravity);
-         worldDef.doSleep = doSleep;
+         worldDef.doSleep = true;
          worldDef.collisionBroadPhase = new b2eBroadPhase_SweepAndPrune ();
-         var b2world:b2World = new b2World(null);
+         var b2world:b2World = new b2World(worldDef);
          
          b2eWorldHelper.CreateGroundBody (b2world);
          

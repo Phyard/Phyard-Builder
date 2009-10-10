@@ -24,25 +24,27 @@ package player.physics {
 // v2.10
 //=====================================================================
 
-		/// Called when any joint is about to be destroyed due
-		/// to the destruction of one of its attached bodies.
-		public function SayGoodbye_Joint (joint:b2Joint):void 
-		{
-         var userdata:Object = joint.GetUserData ();
+      /// Called when any joint is about to be destroyed due
+      /// to the destruction of one of its attached bodies.
+      public function SayGoodbye_Joint (joint:b2Joint):void 
+      {
+         var proxyJoint:PhysicsProxyJoint = joint.GetUserData () as PhysicsProxyJoint;
          
-         if (mPhysicsEngine._OnJointRemoved != null)
-            mPhysicsEngine._OnJointRemoved (userdata as PhysicsProxyJoint);
-		}
+         if (proxyJoint != null)
+         {
+         }
+      }
 
-		/// Called when any fixture is about to be destroyed due
-		/// to the destruction of its parent body.
-		public function SayGoodbye_Fixture (fixture:b2Fixture):void 
-		{
-         var userdata:Object = fixture.GetUserData ();
+      /// Called when any fixture is about to be destroyed due
+      /// to the destruction of its parent body.
+      public function SayGoodbye_Fixture (fixture:b2Fixture):void 
+      {
+         var proxyShape:PhysicsProxyShape = fixture.GetUserData () as PhysicsProxyShape;
          
-         if (mPhysicsEngine._OnShapeRemoved != null)
-            mPhysicsEngine._OnShapeRemoved (userdata as PhysicsProxyShape);
-		}
+         if (proxyShape != null)
+         {
+         }
+      }
    }
  }
 

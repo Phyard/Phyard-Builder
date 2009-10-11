@@ -19,7 +19,7 @@ package player.physics {
    
    public class PhysicsProxyShape extends PhysicsProxy
    {
-      protected var _b2Fixtures:Array = new Array () // for concave polygon, there may be mroe than one shapes
+      internal var _b2Fixtures:Array = new Array () // for concave polygon, there may be mroe than one shapes
       
       protected var mPhysicsProxyBody:PhysicsProxyBody;
       
@@ -40,9 +40,13 @@ package player.physics {
          _b2Fixtures.splice (0, _b2Fixtures.length);
       }
       
-      public function NotifyDestroyed ():void
+      public function NotifyDestroyed (object:Object):void
       {
-         _b2Fixtures.splice (0, _b2Fixtures.length);
+         var index:int = _b2Fixtures.indexOf (object);
+         if (index >= 0)
+         {
+            _b2Fixtures.splice (index, 1);
+         }
       }
       
       public function GetProxyBody ():PhysicsProxyBody

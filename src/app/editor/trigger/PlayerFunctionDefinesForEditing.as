@@ -55,9 +55,9 @@ package editor.trigger {
                        ],
                        null
                        );
-         RegisterFunctionDeclaration (world_package, CoreFunctionIds.ID_SetWorldCameraFocusEntity, "SetWorldCameraFocusEntity", 
+         RegisterFunctionDeclaration (world_package, CoreFunctionIds.ID_AttachWorldCameraToShape, "AttachWorldCameraToShape", 
                        [
-                          new VariableDefinitionEntity ("Focus Entity"), 
+                          new VariableDefinitionEntity ("Entity to Attach"), 
                        ],
                        null
                        );

@@ -10,7 +10,7 @@ package player.physics {
    public class PhysicsProxyBody extends PhysicsProxy
    {
       
-      public var _b2Body:b2Body = null; // used internally
+      internal var _b2Body:b2Body = null; // used internally
       
       public function PhysicsProxyBody (phyEngine:PhysicsEngine, physicsX:Number = 0, physicsY:Number = 0, rotation:Number = 0, static:Boolean = true, params:Object = null):void
       {
@@ -32,9 +32,12 @@ package player.physics {
             mPhysicsEngine._b2World.DestroyBody (_b2Body);
       }
       
-      public function NotifyDestroyed ():void
+      public function NotifyDestroyed (object:Object):void
       {
-         _b2Body = null;
+         if (_b2Body == object)
+         {
+            _b2Body = null;
+         }
       }
       
       public function UpdateMass ():void

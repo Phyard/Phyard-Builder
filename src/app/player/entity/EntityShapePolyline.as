@@ -70,11 +70,11 @@ package player.entity {
          var displayY:Number = params.mPosY;
          var rot:Number = params.mRotation;
          
-         var containerPosition:Point = mShapeContainer.GetPosition ();
+         var containerPosition:Point = GetParentContainer ().GetPosition ();
          displayX -= containerPosition.x;
          displayY -= containerPosition.y;
          
-         if (IsPhysicsEntity () && mLocalPoints != null)
+         if (IsPhysicsShapeEntity () && mLocalPoints != null)
          {
             var cos:Number = Math.cos (rot);
             var sin:Number = Math.sin (rot);
@@ -92,7 +92,7 @@ package player.entity {
             
             if (mPhysicsProxy == null)
             {
-               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShape (mShapeContainer.mPhysicsProxy as PhysicsProxyBody);
+               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShape (GetParentContainer ().mPhysicsProxy as PhysicsProxyBody);
                
                mPhysicsProxy.SetUserData (this);
                

@@ -81,11 +81,11 @@ package player.entity {
          var displayY:Number = params.mPosY;
          var rot:Number = params.mRotation;
          
-         var containerPosition:Point = mShapeContainer.GetPosition ();
+         var containerPosition:Point = GetParentContainer ().GetPosition ();
          displayX -= containerPosition.x;
          displayY -= containerPosition.y;
          
-         if (IsPhysicsEntity ())
+         if (IsPhysicsShapeEntity ())
          {
             var cos:Number = Math.cos (rot);
             var sin:Number = Math.sin (rot);
@@ -102,10 +102,10 @@ package player.entity {
             tx =   halfWidth; ty =   halfHeight; displayPoints [2] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
             tx = - halfWidth; ty =   halfHeight; displayPoints [3] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
             
-            if (IsPhysicsEntity () && mPhysicsProxy == null)
+            if (IsPhysicsShapeEntity () && mPhysicsProxy == null)
             {
                mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeConvexPolygon (
-                                       mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
+                                       GetParentContainer ().mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
                
                // if create hollow border, editor.rectangle.GetPhysicsShapesCount () should be modified
                

@@ -43,8 +43,8 @@ override public function TestPoint(transform:b2Transform, p:b2Vec2):Boolean
 	
 	var tempV:b2Vec2 = new b2Vec2 ();
 	b2Math.b2Mul_Matrix22AndVector2_Output (transform.R, m_p, tempV);
-	tempV.x += p.x - transform.position.x - tempV.x;
-	tempV.y += p.y - transform.position.y - tempV.y;
+	tempV.x = p.x - transform.position.x - tempV.x;
+	tempV.y = p.y - transform.position.y - tempV.y;
 	
 	return b2Math.b2Dot2 (tempV, tempV) <= m_radius * m_radius;
 }

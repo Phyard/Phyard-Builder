@@ -11,7 +11,22 @@ package common.trigger {
       {
       // functions
          
-         RegisterEventDeclatation (CoreEventIds.ID_OnTrigger,
+         RegisterEventDeclatation (CoreEventIds.ID_OnLevelBeginInitialize,
+                    null
+                    );
+         RegisterEventDeclatation (CoreEventIds.ID_OnLevelEndInitialize,
+                    null
+                    );
+         RegisterEventDeclatation (CoreEventIds.ID_OnLevelBeginUpdate,
+                    null
+                    );
+         RegisterEventDeclatation (CoreEventIds.ID_OnLevelEndUpdate,
+                    null
+                    );
+         RegisterEventDeclatation (CoreEventIds.ID_OnLevelFinished,
+                    null
+                    );
+         RegisterEventDeclatation (CoreEventIds.ID_OnLevelFailed,
                     null
                     );
          RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape,
@@ -34,6 +49,33 @@ package common.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting,
                     [
                         ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnTimer,
+                    null
+                    );
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityUpdated,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityDestroyed,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit,
+                    [
                         ValueTypeDefine.ValueType_Entity, 
                     ]);
       }

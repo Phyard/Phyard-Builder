@@ -58,7 +58,20 @@ package editor.trigger.entity {
       
       public function GetInputEntities ():Array
       {
-         return mInputEntities;
+         //return mInputEntities;
+         
+         var entities:Array = new Array ();
+         var main_entity:Entity;
+         for (var i:int = 0; i < mInputEntities.length; ++ i)
+         {
+            main_entity = (mInputEntities [i] as Entity).GetMainEntity ();
+            if (main_entity != null && entities.indexOf (main_entity) < 0)
+            {
+               entities.push (main_entity);
+            }
+         }
+         
+         return entities;
       }
       
       public function ValidateEntityLinks ():void

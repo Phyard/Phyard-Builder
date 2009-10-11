@@ -8,16 +8,22 @@ package player.entity {
    
    public class EntityContainerChild extends Entity
    {
-      protected var mShapeContainer:ShapeContainer;
+      //protected var mShapeContainer:ShapeContainer;
       
       public function EntityContainerChild (world:World, shapeContainer:ShapeContainer)
       {
          super (world);
          
-         mShapeContainer = shapeContainer;
+         //mShapeContainer = shapeContainer;
          
-         mShapeContainer.addChild (this);
+         shapeContainer.addChild (this);
       }
+      
+      public function GetParentContainer ():ShapeContainer
+      {
+         return parent as ShapeContainer;
+      }
+      
    }
    
 }

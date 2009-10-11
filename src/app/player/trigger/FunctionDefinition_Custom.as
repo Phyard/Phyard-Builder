@@ -24,17 +24,17 @@ package player.trigger
             BuildNewFunctionInstance ();
          
          
-         var funcc_instance:FunctionInstance = mFreeFunctionInstance;
+         var func_instance:FunctionInstance = mFreeFunctionInstance;
          mFreeFunctionInstance = mFreeFunctionInstance.mNextFreeFunctionInstance;
          
          funcc_instance.mInputVariableSpace.GetValuesFrom (mInputValueSourceList);
          
          // call ...
          
-         funcc_instance.mReturnValueTargetList.SetValuesTo (mReturnValueTargetList);
+         func_instance.mReturnValueTargetList.SetValuesTo (mReturnValueTargetList);
          
-         funcc_instance.mNextFreeFunctionInstance = mFreeFunctionInstance;
-         mFreeFunctionInstance = funcc_instance;
+         func_instance.mNextFreeFunctionInstance = mFreeFunctionInstance;
+         mFreeFunctionInstance = func_instance;
       }
       
       protected function BuildNewFunctionInstance (localVariableDefines:Array):void

@@ -202,9 +202,47 @@ package player.trigger.entity
          }
       }
       
+      // as input of a task entity
       public function UpdateEntityTaskStatus ():int
       {
          return ValueDefine.TaskStatus_Undetermined;
+      }
+      
+      // as input of an event handler
+      public function RegisterEntityEventHandler (eventId:int, eventHandler:EntityEventHandler):void
+      {
+         if (mIsPairAssigner)
+            return;
+         
+         var i:int;
+         var count:int;
+         switch (mAssignerType)
+         {
+            case Define.EntitySelectorType_Single:
+            case Define.EntitySelectorType_Many:
+               trace ("mEntitiesIndexes1 = " + mEntitiesIndexes1);
+               if (mEntitiesIndexes1 != null)
+               {
+                  count = mEntitiesIndexes1.length;
+                  
+                  trace ("count = " + count);
+                  
+                  for (i = 0; i < count; ++ i)
+                  {
+                     mWorld.GetEntityByIndexInEditor (mEntitiesIndexes1 [i]).RegisterEventHandler (eventId, eventHandler);
+                  }
+               }
+               break;
+            case Define.EntitySelectorType_Any:
+               count = mWorld.GetNumEntitiesInEditor ();
+               for (i = 0; i < count; ++ i)
+               {
+                  mWorld.GetEntityByIndexInEditor (i).RegisterEventHandler (eventId, eventHandler);
+               }
+               break;
+            default:
+               break;
+         }
       }
       
 //==========================================================================================================

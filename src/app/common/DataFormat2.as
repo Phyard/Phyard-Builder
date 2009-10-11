@@ -171,6 +171,8 @@ package common {
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
                   entity = logic = playerWorld.CreateEntityTask (entityDefine);
+                  
+                  (entity as EntityTask).SetEntityAssigners (entityDefine.mInputAssignerIndexes);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
                {
@@ -180,17 +182,22 @@ package common {
                {
                   entity = logic = playerWorld.CreateEntityAction (entityDefine);
                }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
-               {
-                  entity = logic = playerWorld.CreateEntityEventHandler (entityDefine);
-               }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
                {
                   entity = logic = playerWorld.CreateEntityInputEntityAssigner (entityDefine, false);
+                  
+                  (entity as EntityInputEntityAssigner).SetEntityIndexes1 (entityDefine.mEntityIndexes);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
                {
                   entity = logic = playerWorld.CreateEntityInputEntityAssigner (entityDefine, true);
+                  
+                  (entity as EntityInputEntityAssigner).SetEntityIndexes1 (entityDefine.mEntityIndexes1);
+                  (entity as EntityInputEntityAssigner).SetEntityIndexes2 (entityDefine.mEntityIndexes2);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+                  entity = logic = playerWorld.CreateEntityEventHandler (entityDefine);
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -291,24 +298,32 @@ package common {
                //if (worldDefine.mVersion >= 0x0102)
                //{
                   if  (entityDefine.mConnectedShape1Index == Define.EntityId_Ground)
+                  {
                      entityDefine.mConnectedShape1 = playerWorld.GetPhysicsEngine ();
+                  }
                   else if (entityDefine.mConnectedShape1Index >= 0)
                   {
                      shape = worldDefine.mEntityDefines [entityDefine.mConnectedShape1Index].mEntity as player.entity.EntityShape;
                      entityDefine.mConnectedShape1 = shape.GetPhysicsProxy ();
                   }
                   else
+                  {
                      entityDefine.mConnectedShape1 = null;
-                     
+                  }
+                  
                   if  (entityDefine.mConnectedShape2Index == Define.EntityId_Ground)
+                  {
                      entityDefine.mConnectedShape2 = playerWorld.GetPhysicsEngine ();
+                  }
                   else if (entityDefine.mConnectedShape2Index >= 0)
                   {
                      shape = worldDefine.mEntityDefines [entityDefine.mConnectedShape2Index].mEntity as player.entity.EntityShape;
                      entityDefine.mConnectedShape2 = shape.GetPhysicsProxy ();
                   }
                   else
+                  {
                      entityDefine.mConnectedShape2 = null;
+                  }
                //}
                //else
                //{
@@ -380,7 +395,8 @@ package common {
                {
                   var task:EntityTask = entity as EntityTask;
                   
-                  task.SetEntityAssigners (entityDefine.mInputAssignerIndexes);
+                  // moved to the 1st round
+                  //task.SetEntityAssigners (entityDefine.mInputAssignerIndexes);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
                {
@@ -400,14 +416,16 @@ package common {
                {
                   var assigner:EntityInputEntityAssigner = entity as EntityInputEntityAssigner;
                   
-                  assigner.SetEntityIndexes1 (entityDefine.mEntityIndexes);
+                  // moved to the 1st round
+                  //assigner.SetEntityIndexes1 (entityDefine.mEntityIndexes);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
                {
                   var pair_assigner:EntityInputEntityAssigner = entity as EntityInputEntityAssigner;
                   
-                  pair_assigner.SetEntityIndexes1 (entityDefine.mEntityIndexes1);
-                  pair_assigner.SetEntityIndexes2 (entityDefine.mEntityIndexes2);
+                  // moved to the 1st round
+                  //pair_assigner.SetEntityIndexes1 (entityDefine.mEntityIndexes1);
+                  //pair_assigner.SetEntityIndexes2 (entityDefine.mEntityIndexes2);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
@@ -419,7 +437,7 @@ package common {
                   event_handler.SetInternalConditionListDefine (entityDefine.mConditionListDefine);
                   event_handler.SetInternalCommandListDefine (entityDefine.mCommandListDefine);
                   
-                  playerWorld.RegisterEventHandler (entityDefine.mEventId, event_handler);
+                  event_handler.Register ();
                }
             }
          }
@@ -427,6 +445,8 @@ package common {
    //*********************************************************************************************************************************
    // 
    //*********************************************************************************************************************************
+         
+         playerWorld.Initialize ();
          
          return playerWorld;
       }

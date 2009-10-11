@@ -27,19 +27,31 @@ package player.entity {
          //addChild (mSpriteAnchor2);
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
          var slider:PhysicsProxyJointSlider = mPhysicsProxy as PhysicsProxyJointSlider;
          
-         if (mBackAndForth && slider.IsLimitsEnabled () && slider.IsMotorEnabled ())
+         if (slider.IsLimitsEnabled () && slider.IsMotorEnabled ())
          {
             var translation:Number = slider.GetJointTranslation ();
             var speed:Number = slider.GetMotorSpeed ();
-            if ( speed < 0 && translation < slider.GetLowerLimit () 
-              || speed > 0 && translation > slider.GetUpperLimit () 
-            )
+            if ( speed < 0 && translation < slider.GetLowerLimit () )
             {
-               slider.SetMotorSpeed (-speed);
+               OnJointReachLowerLimit ();
+               
+               if (mBackAndForth)
+               {
+                  slider.SetMotorSpeed (-speed);
+               }
+            }
+            else if (speed > 0 && translation > slider.GetUpperLimit () )
+            {
+               OnJointReachUpperLimit ();
+               
+               if (mBackAndForth)
+               {
+                  slider.SetMotorSpeed (-speed);
+               }
             }
          }
       }
@@ -62,9 +74,9 @@ package player.entity {
             params.mUpperTranslation = mWorld.mPhysicsEngine.DisplayLength2PhysicsLength (params.mUpperTranslation);
             params.mMotorSpeed = mWorld.mPhysicsEngine.DisplayLength2PhysicsLength (params.mMotorSpeed);
             
-            mPhysicsProxy  =  mWorld.mPhysicsEngine.CreateProxyJointSliderAuto (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
+            var object:Object = mWorld.mPhysicsEngine.CreateProxyJointSliderAuto (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
             
-            mPhysicsProxy.SetUserData (this);
+            SetJointBasicInfo (object.mProxyJoint as PhysicsProxyJointSlider, object.mProxyShape1 == null ? null : object.mProxyShape1.GetUserData () as EntityShape, object.mProxyShape2 == null ? null : object.mProxyShape2.GetUserData () as EntityShape);
          }
          
          mBackAndForth = params.mBackAndForth;

@@ -26,7 +26,7 @@ package player.entity {
          super (world, shapeContainer);
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
          //var worldPoint:Point = DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (0, 0));
          var worldPoint:Point = mWorld.globalToLocal ( this.localToGlobal (new Point (0, 0) ) );

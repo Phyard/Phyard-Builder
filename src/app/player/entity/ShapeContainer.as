@@ -14,14 +14,12 @@ package player.entity {
    {
       private var mIsBullet:Boolean = false;
       
-      private var mContainsPhysicsShapes:Boolean = false;
-      
       public function ShapeContainer (world:World)
       {
          super (world);
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
          if (mPhysicsProxy != null)
          {
@@ -41,6 +39,24 @@ package player.entity {
          }
       }
       
+      override protected function DestroyInternal ():void
+      {
+         var entity:Entity;
+         
+         while (numChildren > 0)
+         {
+            entity = getChildAt (0) as Entity;
+            if (entity != null)
+            {
+               entity.Destroy ();
+            }
+            
+            removeChildAt (0);
+         }
+         
+         super.DestroyInternal ();
+      }
+      
       public function SetBullet (bullet:Boolean):void
       {
          mIsBullet = bullet;
@@ -49,16 +65,9 @@ package player.entity {
             (mPhysicsProxy as PhysicsProxyBody).SetBullet (mIsBullet);
       }
       
-      override public function IsPhysicsEntity ():Boolean
-      {
-         return mContainsPhysicsShapes;
-      }
-      
       override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
-         mContainsPhysicsShapes = params.mContainsPhysicsShapes;
-         
-         if (mContainsPhysicsShapes && mPhysicsProxy == null)
+         if (params.mContainsPhysicsShapes && mPhysicsProxy == null)
          {
             // 
             mPhysicsProxy = mWorld.mPhysicsEngine.CreateProxyBody (params.mPosX, params.mPosY, 0, params.mIsStatic, params);
@@ -72,13 +81,13 @@ package player.entity {
          y = params.mPosY;
       }
       
-      public function ContainsPhysicsEntities ():Boolean
+      public function ContainsPhysicShapeEntities ():Boolean
       {
          for (var i:int = 0; i < numChildren; ++ i)
          {
             var entity:Entity = getChildAt (i) as Entity;
             
-            if ( entity.IsPhysicsEntity () )
+            if ( entity.IsPhysicsShapeEntity () )
                return true;
          }
          

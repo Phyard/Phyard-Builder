@@ -33,7 +33,7 @@ package player.entity {
          super (world, shapeContainer);
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
          UpdateTextComponent ();
       }

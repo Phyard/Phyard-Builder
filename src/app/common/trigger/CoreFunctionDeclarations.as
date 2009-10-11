@@ -32,7 +32,7 @@ package common.trigger {
                      null,
                      false
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_SetWorldCameraFocusEntity,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_AttachWorldCameraToShape,
                      [
                         ValueTypeDefine.ValueType_Entity, 
                      ],

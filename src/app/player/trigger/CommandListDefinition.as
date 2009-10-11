@@ -13,6 +13,8 @@ package player.trigger
       
       public function Excute ():void
       {
+         trace ("CommandListDefinition.Excute");
+         
          var calling:FunctionCalling = mFirstFunctionCalling;
          
          while (calling != null)

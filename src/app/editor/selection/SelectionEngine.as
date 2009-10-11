@@ -35,13 +35,8 @@ package editor.selection {
          
          //var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
          var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0.0, 9.8 * 2);
-         var doSleep:Boolean = true;
          
-         var world_def:b2eWorldDef = new b2eWorldDef (world_hints.mPhysicsShapesPotentialMaxCount, world_hints.mPhysicsShapesPopulationDensityLevel);
-         
-         //_b2World = new b2World(worldAABB, gravity, doSleep);
-         //_b2World = CreateB2World (worldAABB, gravity, doSleep);
-         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity, doSleep, world_def);
+         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity);
       }
       
       public function Destroy ():void

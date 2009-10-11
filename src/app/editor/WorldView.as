@@ -926,6 +926,22 @@ package editor {
       public var mButton_CreateEventHandler1:Button;
       public var mButton_CreateEventHandler2:Button;
       public var mButton_CreateEventHandler3:Button;
+      public var mButton_CreateEventHandler4:Button;
+      public var mButton_CreateEventHandler5:Button;
+      public var mButton_CreateEventHandler6:Button;
+      public var mButton_CreateEventHandler7:Button;
+      public var mButton_CreateEventHandler8:Button;
+      //public var mButton_CreateEventHandler9:Button;
+      public var mButton_CreateEventHandler10:Button;
+      public var mButton_CreateEventHandler11:Button;
+      public var mButton_CreateEventHandler12:Button;
+      public var mButton_CreateEventHandler13:Button;
+      public var mButton_CreateEventHandler14:Button;
+      public var mButton_CreateEventHandler15:Button;
+      public var mButton_CreateEventHandler16:Button;
+      public var mButton_CreateEventHandler17:Button;
+      //public var mButton_CreateEventHandler18:Button;
+      //public var mButton_CreateEventHandler19:Button;
       
       public function OnCreateButtonClick (event:MouseEvent):void
       {
@@ -1095,16 +1111,55 @@ package editor {
             //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTrigger) );
             //   break;
             case mButton_CreateEventHandler0:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnSensorContainsPhysicsShape, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelBeginInitialize, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler1:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelEndInitialize, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler2:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelBeginUpdate, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler3:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTrigger, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelEndUpdate, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler4:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelFinished, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler5:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelFailed, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler6:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityInitialized, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler7:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityUpdated, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler8:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityDestroyed, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler10:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnSensorContainsPhysicsShape, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler11:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler12:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler13:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler14:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTimer, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler15:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointBroken, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler16:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachLowerLimit, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler17:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachUpperLimit, mPotientialEventIds:null}) );
                break;
             
          // ...

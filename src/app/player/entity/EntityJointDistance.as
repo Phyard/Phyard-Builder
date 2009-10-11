@@ -28,7 +28,7 @@ package player.entity {
          addChild (mSpriteAnchor2);
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
          var point1:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint1 ();
          var point2:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint2 ();
@@ -59,9 +59,9 @@ package player.entity {
          
          if (mPhysicsProxy == null)
          {
-            mPhysicsProxy  =  mWorld.mPhysicsEngine.CreateProxyJointDistanceAuto (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
+            var object:Object = mWorld.mPhysicsEngine.CreateProxyJointDistanceAuto (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
             
-            mPhysicsProxy.SetUserData (this);
+            SetJointBasicInfo (object.mProxyJoint as PhysicsProxyJointDistance, object.mProxyShape1 == null ? null : object.mProxyShape1.GetUserData () as EntityShape, object.mProxyShape2 == null ? null : object.mProxyShape2.GetUserData () as EntityShape);
          }
          
          mSpriteAnchor1.x = anchorDisplayX1;

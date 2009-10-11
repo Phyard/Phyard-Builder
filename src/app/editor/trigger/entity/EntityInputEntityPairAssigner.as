@@ -81,12 +81,38 @@ package editor.trigger.entity {
       
       public function GetInputEntities1 ():Array
       {
-         return mInputEntities1;
+         //return mInputEntities1;
+         
+         var entities:Array = new Array ();
+         var main_entity:Entity;
+         for (var i:int = 0; i < mInputEntities1.length; ++ i)
+         {
+            main_entity = (mInputEntities1 [i] as Entity).GetMainEntity ();
+            if (main_entity != null && entities.indexOf (main_entity) < 0)
+            {
+               entities.push (main_entity);
+            }
+         }
+         
+         return entities;
       }
       
       public function GetInputEntities2 ():Array
       {
-         return mInputEntities2;
+         //return mInputEntities2;
+         
+         var entities:Array = new Array ();
+         var main_entity:Entity;
+         for (var i:int = 0; i < mInputEntities2.length; ++ i)
+         {
+            main_entity = (mInputEntities2 [i] as Entity).GetMainEntity ();
+            if (main_entity != null && entities.indexOf (main_entity) < 0)
+            {
+               entities.push (main_entity);
+            }
+         }
+         
+         return entities;
       }
       
       public function ValidateEntityLinks ():void
@@ -506,7 +532,7 @@ package editor.trigger.entity {
                {
                   index = mInputEntities2.indexOf (entity);
                   
-                  if (index < 0)
+                  if (index >= 0)
                   {
                      mInputEntities2.splice (index, 1);
                      return true;

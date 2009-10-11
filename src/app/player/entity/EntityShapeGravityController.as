@@ -48,9 +48,9 @@ package player.entity {
          
       }
       
-      override public function Destroy ():void
+      override protected function DestroyInternal ():void
       {
-         super.Destroy ();
+         super.DestroyInternal ();
          
          if (mInteractiveZones != 0)
          {
@@ -75,9 +75,9 @@ package player.entity {
          return (mInteractiveZones & (1 << zoneId)) != 0;
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
-         super.Update (dt);
+         super.UpdateInternal (dt);
          
          // parent is a ShapeContainer, which is a child of mWorld
          var nowRotation:Number = mGravityAngle + (rotation + parent.rotation) * Math.PI / 180.0;

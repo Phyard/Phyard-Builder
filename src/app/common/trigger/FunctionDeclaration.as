@@ -18,6 +18,11 @@ package common.trigger
          mCanBeCalledInConditionList = canBeCalledInConditionList;
       }
       
+      public function GetID ():int
+      {
+         return mId;
+      }
+      
       public function GetNumInputs ():int
       {
          if (mInputValueTypes == null)

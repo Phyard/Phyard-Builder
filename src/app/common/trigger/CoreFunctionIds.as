@@ -5,9 +5,30 @@ package common.trigger {
    {
       public static const ID_Void:int                    = -1; // 
       
+   // math
+      
+      //add
+      //subtract
+      //multiply
+      //divide
+      // %
+      //(more math)
+      
+   // bool
+      
+      
+      
+   // bit
+      
+   // string
+      
+   // system
+      
+   // game
+   
       public static const ID_ForDebug:int                    = 0; // global
       public static const ID_SetWorldGravityAcceleration:int = 1; // world
-      public static const ID_SetWorldCameraFocusEntity:int   = 2; // world
+      public static const ID_AttachWorldCameraToShape:int    = 2; // world
       public static const ID_SetShapeDensity:int             = 3; // entity.shape
       public static const ID_IsEntityVisible:int             = 4; // entity 
       public static const ID_IsPhysicsShape:int              = 5; // entity.shape

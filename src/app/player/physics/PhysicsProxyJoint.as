@@ -10,7 +10,7 @@ package player.physics {
    public class PhysicsProxyJoint extends PhysicsProxy
    {
       
-      protected var _b2Joint:b2Joint = null;
+      internal var _b2Joint:b2Joint = null;
       
       protected var mPhysicsProxyBody1:PhysicsProxyBody;
       protected var mPhysicsProxyBody2:PhysicsProxyBody;
@@ -30,9 +30,12 @@ package player.physics {
             mPhysicsEngine._b2World.DestroyJoint (_b2Joint);
       }
       
-      public function NotifyDestroyed ():void
+      public function NotifyDestroyed (object:Object):void
       {
-         _b2Joint = null;
+         if (_b2Joint == object)
+         {
+            _b2Joint = null;
+         }
       }
       
       public function GetBody1 ():PhysicsProxyBody

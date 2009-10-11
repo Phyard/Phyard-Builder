@@ -1,8 +1,14 @@
 
 package player.trigger {
+   import player.global.Global;
+   
+   import player.world.World;
    
    import player.entity.Entity;
    import player.entity.EntityShape;
+   import player.entity.EntityUtilityCamera;
+   
+   import player.physics.PhysicsEngine;
    
    import player.trigger.FunctionDefinition_Core;
    import player.trigger.ValueSource;
@@ -19,9 +25,12 @@ package player.trigger {
       public static function Initialize ():void
       {
          if (Compile::Is_Debugging)
+         {
             RegisterCoreFunction (CoreFunctionIds.ID_ForDebug,                     ForDebug);
+         }
+         
          RegisterCoreFunction (CoreFunctionIds.ID_SetWorldGravityAcceleration,     SetWorldGravityAcceleration);
-         RegisterCoreFunction (CoreFunctionIds.ID_SetWorldCameraFocusEntity,       SetWorldCameraFocusEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_AttachWorldCameraToShape,        AttachWorldCameraToShape);
          RegisterCoreFunction (CoreFunctionIds.ID_SetShapeDensity,                 SetShapeDensity);
          RegisterCoreFunction (CoreFunctionIds.ID_IsEntityVisible,                 IsEntityVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_IsPhysicsShape,                  IsPhysicsShape);
@@ -30,10 +39,6 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_IsFalse,                         IsFalse);
          RegisterCoreFunction (CoreFunctionIds.ID_SetShapeFilledColor,             SetShapeFilledColor);
       }
-      
-//===========================================================
-// util functions
-//===========================================================
       
       private static function RegisterCoreFunction (functionId:int, callback:Function):void
       {
@@ -46,19 +51,46 @@ package player.trigger {
       }
       
 //===========================================================
-// core function defines
+// core function definitions
 //===========================================================
+      
+   // for debug
       
       public static function ForDebug (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
       }
       
-      public static function SetWorldGravityAcceleration (valueSource:ValueSource, valueTarget:ValueTarget):void
+   // math
+      
+      public static function AddTwoFloats (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
+         //var 
       }
       
-      public static function SetWorldCameraFocusEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AddTwoIntegers (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
+         //var 
+      }
+      
+      
+   // game
+      
+      public static function SetWorldGravityAcceleration (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var magnitude:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var angle:Number = (valueSource.EvalateValueObject () as Number) * Math.PI / 180.0;
+         
+         var physics_engine:PhysicsEngine = Global.GetCurrentWorld ().GetPhysicsEngine ();
+         physics_engine.SetGravity (magnitude, angle);
+      }
+      
+      public static function AttachWorldCameraToShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         Global.GetCurrentWorld ().AttatchCurrentCameraToEntity (shape);
       }
       
       public static function SetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void

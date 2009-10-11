@@ -172,7 +172,7 @@ package wrapper {
             var levelData:Object = new Object ();
             levelData.mPlayCode = levelPlayCode;
             levelData.mIsFinished = false;
-            levelData.mIsLocked = false;
+            levelData.mIsLevelLocked = false;
             mLevelsData [levelId] = levelData;
          }
          
@@ -242,8 +242,8 @@ package wrapper {
             {
                var levelData:Object = mLevelsData [levelID];
                
-               var menuItem:MainMenuLevelItem = new MainMenuLevelItem (levelID + 1, levelData.mIsFinished, levelData.mIsLocked, blockWidth, blockHeight);
-               if ( ! levelData.mIsLocked )
+               var menuItem:MainMenuLevelItem = new MainMenuLevelItem (levelID + 1, levelData.mIsFinished, levelData.mIsLevelLocked, blockWidth, blockHeight);
+               if ( ! levelData.mIsLevelLocked )
                   menuItem.addEventListener( MouseEvent.CLICK, OnClickLevelMenuItem);
                
                menuItem.x = bx;

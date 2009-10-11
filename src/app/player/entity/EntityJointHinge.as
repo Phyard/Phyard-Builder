@@ -17,7 +17,7 @@ package player.entity {
          super (world);
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
          var point1:Point = (mPhysicsProxy as PhysicsProxyJointHinge).GetAnchorPoint1 ();
          var point2:Point = (mPhysicsProxy as PhysicsProxyJointHinge).GetAnchorPoint2 ();
@@ -29,15 +29,27 @@ package player.entity {
          
          var hinge:PhysicsProxyJointHinge = mPhysicsProxy as PhysicsProxyJointHinge;
          
-         if (mBackAndForth && hinge.IsLimitsEnabled () && hinge.IsMotorEnabled ())
+         if (hinge.IsLimitsEnabled () && hinge.IsMotorEnabled ())
          {
             var angle:Number = hinge.GetJointAngle ();
             var speed:Number = hinge.GetMotorSpeed ();
-            if ( speed < 0 && angle < hinge.GetLowerLimit () 
-              || speed > 0 && angle > hinge.GetUpperLimit () 
-            )
+            if ( speed < 0 && angle < hinge.GetLowerLimit () )
             {
-               hinge.SetMotorSpeed (-speed);
+               OnJointReachLowerLimit ();
+               
+               if (mBackAndForth)
+               {
+                  hinge.SetMotorSpeed (-speed);
+               }
+            }
+            else if (speed > 0 && angle > hinge.GetUpperLimit () )
+            {
+               OnJointReachUpperLimit ();
+               
+               if (mBackAndForth)
+               {
+                  hinge.SetMotorSpeed (-speed);
+               }
             }
          }
       }
@@ -57,9 +69,9 @@ package player.entity {
             params.mUpperAngle = params.mUpperAngle * Math.PI / 180.0;
             params.mMotorSpeed = mWorld.mPhysicsEngine.DisplayLength2PhysicsLength (params.mMotorSpeed);
             
-            mPhysicsProxy  =  mWorld.mPhysicsEngine.CreateProxyJointHingeAuto (anchorDisplayX, anchorDisplayY, params);
+            var object:Object = mWorld.mPhysicsEngine.CreateProxyJointHingeAuto (anchorDisplayX, anchorDisplayY, params);
             
-            mPhysicsProxy.SetUserData (this);
+            SetJointBasicInfo (object.mProxyJoint as PhysicsProxyJointHinge, object.mProxyShape1 == null ? null : object.mProxyShape1.GetUserData () as EntityShape, object.mProxyShape2 == null ? null : object.mProxyShape2.GetUserData () as EntityShape);
          }
          
          x = anchorDisplayX;

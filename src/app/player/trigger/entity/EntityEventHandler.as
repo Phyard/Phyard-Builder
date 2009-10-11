@@ -4,11 +4,14 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Logic;
+   import player.trigger.ValueSource;
    
    import player.trigger.data.ListElement_InputEntityAssigner;
    
    import common.trigger.define.ConditionListDefine;
    import common.trigger.define.CommandListDefine;
+   
+   import common.trigger.CoreEventIds;
    
    public class EntityEventHandler extends EntityLogic
    {
@@ -35,7 +38,11 @@ package player.trigger.entity
       
       public function SetExternalCondition (conditionEntityIndex:int, targetValue:int):void
       {
-         mExternalCondition =  new ConditionAndTargetValue (mWorld.GetEntityByIndexInEditor (conditionEntityIndex) as EntityCondition, targetValue);
+         var conditionEntity:EntityCondition = mWorld.GetEntityByIndexInEditor (conditionEntityIndex) as EntityCondition;
+         if (conditionEntity != null)
+         {
+            mExternalCondition =  new ConditionAndTargetValue (conditionEntity, targetValue);
+         }
       }
       
       public function SetExternalPostActionEntity (actionEntityIndex:int):void
@@ -70,6 +77,45 @@ package player.trigger.entity
             mEventHandlerDefinition.SetCommandListDefine (commandListDefine);
       }
       
-      // IsExternalConditionSatisfied () {if (mEnabled) ...}
+      public function HandleEvent (valueSourceList:ValueSource):void
+      {
+         trace ("mExternalCondition = " + mExternalCondition);
+         
+         if (mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
+            return;
+         
+         mEventHandlerDefinition.DoCall (valueSourceList, null);
+      }
+      
+//======================================================================================================
+//
+//======================================================================================================
+      
+      public function Register ():void
+      {
+         var eventId:int = mEventHandlerDefinition.GetFunctionDeclaration ().GetID ();
+         
+         mWorld.RegisterEventHandler (eventId, this);
+         
+         switch (eventId)
+         {
+            case CoreEventIds.ID_OnEntityInitialized:
+            case CoreEventIds.ID_OnEntityUpdated:
+            case CoreEventIds.ID_OnEntityDestroyed:
+            case CoreEventIds.ID_OnJointBroken:
+            case CoreEventIds.ID_OnJointReachLowerLimit:
+            case CoreEventIds.ID_OnJointReachUpperLimit:
+               var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
+               while (list_element != null)
+               {
+                  list_element.mInputEntityAssigner.RegisterEntityEventHandler (eventId, this);
+                  
+                  list_element = list_element.mNextListElement;
+               }
+               break;
+            default:
+               break;
+         }
+      }
    }
 }

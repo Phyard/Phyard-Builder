@@ -430,7 +430,7 @@ package Box2D.Common
 		
 		/// Multiply a matrix times a vector.
 		//inline b2Vec3 b2Mul (const b2Mat33& A, const b2Vec3& v)
-		public static function b2Mul_Matrix33AndVector33 (A:b2Mat33, v:b2Vec3):b2Vec3
+		public static function b2Mul_Matrix33AndVector3 (A:b2Mat33, v:b2Vec3):b2Vec3
 		{
 			//return v.x * A.col1 + v.y * A.col2 + v.z * A.col3;
 			
@@ -443,7 +443,7 @@ package Box2D.Common
 											   );
 		}
 
-		public static function b2Mul_Matrix33AndVector33_Output (A:b2Mat33, v:b2Vec3, output:b2Vec3):void
+		public static function b2Mul_Matrix33AndVector3_Output (A:b2Mat33, v:b2Vec3, output:b2Vec3):void
 		{
 			//return v.x * A.col1 + v.y * A.col2 + v.z * A.col3;
 			

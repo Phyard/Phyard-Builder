@@ -23,6 +23,8 @@ package player.trigger
       
       public function Call ():void
       {
+         trace ("FunctionCalling.Call");
+         
          mFunctionDefinition.DoCall (mInputValueSourceList, mReturnValueTargetList);
       }
       

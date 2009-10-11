@@ -20,9 +20,9 @@ package player.entity {
          super (world);
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
-         super.Update (dt);
+         super.UpdateInternal (dt);
          
          mLife += dt;
          

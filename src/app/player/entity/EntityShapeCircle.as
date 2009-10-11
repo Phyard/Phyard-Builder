@@ -73,17 +73,17 @@ package player.entity {
          var displayY:Number = params.mPosY;
          var rot:Number = params.mRotation;
          
-         var containerPosition:Point = mShapeContainer.GetPosition ();
+         var containerPosition:Point = GetParentContainer ().GetPosition ();
          displayX -= containerPosition.x;
          displayY -= containerPosition.y;
          
-         if (IsPhysicsEntity () && mPhysicsProxy == null)
+         if (IsPhysicsShapeEntity () && mPhysicsProxy == null)
          {
-            mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShape (mShapeContainer.mPhysicsProxy as PhysicsProxyBody);
+            mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShape (GetParentContainer ().mPhysicsProxy as PhysicsProxyBody);
             mWorld.mPhysicsEngine.AddCircleToProxyShape ((mPhysicsProxy as PhysicsProxyShape), displayX, displayY, GetPhysicsRadius (), params);
             
             //mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeCircle (
-            //                        mShapeContainer.mPhysicsProxy as PhysicsProxyBody, displayX, displayY, 
+            //                        GetParentContainer ().mPhysicsProxy as PhysicsProxyBody, displayX, displayY, 
             //                        GetPhysicsRadius (), params);
             
             mPhysicsProxy.SetUserData (this);

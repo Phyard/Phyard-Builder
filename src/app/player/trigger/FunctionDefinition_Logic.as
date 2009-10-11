@@ -38,17 +38,6 @@ package player.trigger
          mCommandListDefinition = TriggerFormatHelper2.CommandListDefine2Definition (mLogicFunctionInstance, Global.GetCurrentWorld (), commandListDefine);
       }
       
-      // as event handler
-      public function HandleEvent (valueSourceList:ValueSource):void
-      {
-         mLogicFunctionInstance.mInputVariableSpace.GetValuesFrom (valueSourceList);
-         
-         if (mConditionListDefinition.Evaluate ())
-            mCommandListDefinition.Excute ();
-         
-         //mLogicFunctionInstance.mReturnValueTargetList.SetValuesTo (...);
-      }
-      
       // as condition
       public function EvaluateCondition ():Boolean
       {
@@ -67,10 +56,15 @@ package player.trigger
          mCommandListDefinition.Excute ();
       }
       
-      // 
+      // as event handler
       override public function DoCall (inputValueSources:ValueSource, returnValueTarget:ValueTarget):void
       {
-         // this function will not be called
+         mLogicFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
+         
+         if (mConditionListDefinition.Evaluate ())
+            mCommandListDefinition.Excute ();
+         
+         //mLogicFunctionInstance.mReturnValueTargetList.SetValuesTo (...);
       }
       
       protected function BuildNewFunctionInstance (localVariableDefines:Array):void

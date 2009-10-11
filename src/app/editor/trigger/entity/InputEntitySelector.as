@@ -18,6 +18,7 @@ package editor.trigger.entity {
    import editor.world.World;
    import editor.entity.Entity;
    import editor.entity.WorldEntity;
+   import editor.entity.WorldSubEntity;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
@@ -273,7 +274,7 @@ package editor.trigger.entity {
       
       public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
       {
-         if ( (toEntity is WorldEntity) && ! (toEntity is EntityLogic) )
+         if ( (toEntity is WorldEntity || toEntity is WorldSubEntity) && ! (toEntity is EntityLogic) )
          {
             if (mOnSelectEntity != null)
             {

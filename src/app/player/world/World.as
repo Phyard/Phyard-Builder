@@ -2,6 +2,7 @@ package player.world {
    
    import flash.display.Sprite;
    import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    
@@ -125,6 +126,9 @@ package player.world {
       private var mShapeContactInfoHashtable:Dictionary = null;
       private var mFirstShapeContactInfo:ShapeContactInfo = null;
       
+   //
+      private var mCurrentCamera:EntityUtilityCamera = null;
+      
 //============================================================================
 // 
 //============================================================================
@@ -171,7 +175,7 @@ package player.world {
          world_hints.mPhysicsShapesPopulationDensityLevel = ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel (worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
          
       /// ...
-         mEditorEntityArray = new Array (worldDefine.mEntityDefines);
+         mEditorEntityArray = new Array (worldDefine.mEntityDefines.length);
          
       // building
          
@@ -214,9 +218,9 @@ package player.world {
                   world_hints);
          }
          
-         mPhysicsEngine.SetJointRemovedCallback (OnJointRemoved);
-         mPhysicsEngine.SetShapeRemovedCallback (OnShapeRemoved);
-         mPhysicsEngine.SetShapeContaceCallbacks (OnShapeContactStarted, OnShapeContactContinued, OnShapeContactFinished, OnShapeContactResult);
+         //mPhysicsEngine.SetJointRemovedCallback (OnJointRemoved);
+         //mPhysicsEngine.SetShapeRemovedCallback (OnShapeRemoved);
+         mPhysicsEngine.SetShapeContaceCallbacks (OnShapeContactStarted, null, OnShapeContactFinished, null);
          mPhysicsEngine.SetGetBodyIndexCallback (GetBodyIndex);
          mPhysicsEngine.SetGetShapeIndexCallback (GetShapeIndex);
          
@@ -232,8 +236,6 @@ package player.world {
          addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
          
        // ...
-         
-         Initialize ();
       }
       
 //=============================================================
@@ -505,11 +507,28 @@ package player.world {
       
       public function Initialize ():void
       {
-         mNumSimulatdFrames = 0;
-         
          mNumContactInfos = 0;
          mShapeContactInfoHashtable = new Dictionary ();
          mFirstShapeContactInfo = null;
+         
+         mNumSimulatdFrames = 0;
+         
+         SetPhysicsLocked (false);
+         
+         HandleEvent (CoreEventIds.ID_OnLevelBeginInitialize);
+         
+         var entity:Entity;
+         for (var i:int = 0; i < mEditorEntityArray.length; ++ i)
+         {
+            entity = mEditorEntityArray [i];
+            
+            if (entity != null)
+            {
+               entity.Initialize ();
+            }
+         }
+         
+         HandleEvent (CoreEventIds.ID_OnLevelEndInitialize);
       }
       
 //=============================================================
@@ -518,8 +537,6 @@ package player.world {
       
       public function Update (escapedTime1:Number, speedX:int):void
       {
-         ++ mNumSimulatdFrames;
-         
          //var dt:Number = escapedTime1 * 0.5;
          
          var dt:Number = Define.WorldStepTimeInterval * 0.5;
@@ -540,10 +557,19 @@ package player.world {
          {
             for (k = 0; k < speedX; ++ k)
             {
-               mParticleManager.Update (dt);
-               mPhysicsEngine.Update (dt);
+               ++ mNumSimulatdFrames;
                
-               if (k == speedX - 1)
+               HandleEvent (CoreEventIds.ID_OnLevelBeginUpdate);
+               
+               mParticleManager.Update (dt);
+               
+               SetPhysicsLocked (true)
+               mPhysicsEngine.Update (dt);
+               SetPhysicsLocked (false);
+               
+               HandleShapeContactEvents ();
+               
+               //if (k == speedX - 1)
                   ClearReport ();
                
                for (i=0; i < numChildren; ++ i)
@@ -554,12 +580,19 @@ package player.world {
                      (displayObject as Entity).Update (dt);
                   }
                }
+               
+               DestroyBufferedEntities ();
+               RemoveBufferedChildren ();
+               
+               HandleEvent (CoreEventIds.ID_OnLevelEndUpdate);
             }
          }
          else
          {
             for (k = 0; k < speedX; ++ k)
             {
+               ++ mNumSimulatdFrames;
+               
                mParticleManager.Update (dt);
                mPhysicsEngine.Update (dt);
             }
@@ -577,8 +610,6 @@ package player.world {
                }
             }
          }
-         
-         HandleEvents ();
       }
       
       private var mPuzzleSolved:Boolean = false;
@@ -696,10 +727,8 @@ package player.world {
       }
       
 //=============================================================
-//   shapes & joints
+//   create entities
 //=============================================================
-      
-      private var mWorldEntities:Array = new Array ();
       
       public function CreateVoidEntity ():EntityVoid
       {
@@ -831,6 +860,8 @@ package player.world {
          var utilityCamera:EntityUtilityCamera = new EntityUtilityCamera (this, shapeContainer);
          utilityCamera.BuildFromParams (params);
          
+         mCurrentCamera = utilityCamera;
+         
          return utilityCamera;
       }
       
@@ -940,49 +971,74 @@ package player.world {
          return shape.GetEntityIndexInEditor ();
       }
       
-      private function OnJointRemoved (proxyJoint:PhysicsProxyJoint):void
+//=============================================================
+//   world lock / destroy buffers / removeChild buffer
+//=============================================================
+      
+      // when world is locked, the physics proxy of an entity.can't be destroyed.
+      // 
+      
+      private var mIsPhysicsLocked:Boolean = false;
+      
+      private function SetPhysicsLocked (locked:Boolean):void
       {
-         var joint:EntityJoint = proxyJoint.GetUserData () as EntityJoint;
-         
-         removeChild (joint);
-         
-         // !!! b2Joint has already been destroyed before entering this function
-         //joint.Destroy ();
+         mIsPhysicsLocked = locked;
       }
       
-      private function OnShapeRemoved (proxyShape:PhysicsProxyShape):void
+      public function IsPhysicsLocked ():Boolean
       {
+         return mIsPhysicsLocked;
       }
       
-  //--------------------
+      private var mNumBufferedEntities:int = 0;
+      private var mBufferedEntities:Array = new Array ();
       
-      private function FindEventHandlerForEntityPair (eventId:int, entityId1:int, entityId2:int, ignorePairOrder:Boolean):ListElement_EventHandler
+      public function BufferEntityToDestroyPhysicsProxy (entity:Entity):void
       {
-         // assume all params are valid
-         
-         var event_handler:EntityEventHandler = mEventHandlers [eventId];
-         var result:int;
-         var list_head:ListElement_EventHandler;
-         var list_element:ListElement_EventHandler;
-         
-         while (event_handler != null)
+         mBufferedEntities [mNumBufferedEntities ++] = entity;
+      }
+      
+      private function DestroyBufferedEntities ():void
+      {
+         for (var i:int = 0; i < mNumBufferedEntities; ++ i)
          {
-            result = EntityInputEntityAssigner.GetContainingEntityPairResult (event_handler.mFirstEntityAssigner, entityId1, entityId2, ignorePairOrder);
-            
-            if (result != EntityInputEntityAssigner.ContainingResult_False)
-            {
-               list_element = new ListElement_EventHandler (event_handler);
-               list_element.mNeedExchangePairOrder = result == EntityInputEntityAssigner.ContainingResult_TrueButNeedExchangePairOrder;
-               
-               list_element.mNextListElement = list_head;
-               list_head = list_element;
-            }
-            
-            event_handler = event_handler.mNextEntityEventHandlerOfTheSameType;
+            (mBufferedEntities [i] as Entity).DestroyPhysicsProxy ();
+            mBufferedEntities [i] = null;
          }
          
-         return list_head;
+         mNumBufferedEntities = 0;
       }
+      
+      // can't remove child in loops of world.InitializeEntities (), world.UpdateEntities ()
+      
+      private var mNumChildrenToRemove:int = 0;
+      private var mChildrenToRemove:Array = new Array ();
+      
+      public function BufferChildToRemove (child:DisplayObject):void
+      {
+         mChildrenToRemove [mNumChildrenToRemove ++] = child;
+      }
+      
+      private function RemoveBufferedChildren ():void
+      {
+         var child:DisplayObject;
+         for (var i:int = 0; i <mNumChildrenToRemove; ++ i)
+         {
+            child = mChildrenToRemove [i];
+            if (child != null && child.parent != null)
+            {
+               child.parent.removeChild (child);
+            }
+            
+            mChildrenToRemove [i] = null;
+         }
+         
+         mNumChildrenToRemove = 0;
+      }
+      
+//=============================================================
+//   contacts
+//=============================================================
       
       private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
       {
@@ -1096,15 +1152,9 @@ package player.world {
          }
       }
       
-      private function OnShapeContactContinued (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
-      {
-         //InfectShapes (proxyShape1.GetUserData () as EntityShape, proxyShape2.GetUserData () as EntityShape);
-      }
-      
-      private function OnShapeContactResult (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
-      {
-      }
-  //--------------------
+//=============================================================
+//   C.I. rules
+//=============================================================
       
       private function InfectShapes (shape1:EntityShape, shape2:EntityShape):void
       {
@@ -1127,7 +1177,7 @@ package player.world {
          }
       }
       
-      protected function RemoveBombsAndRemovableShapes (event:MouseEvent):Boolean
+      protected function RemoveBombsAndRemovableShapes (event:MouseEvent):void
       {
          var levelPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
          
@@ -1139,7 +1189,7 @@ package player.world {
          
          var breakableShapes:Array = new Array ();
          
-         var bombDefines:Array = new Array ();
+         //var bombDefines:Array = new Array ();
          
          for (shapeId = 0; shapeId < shapeArray.length; ++ shapeId)
          {
@@ -1157,14 +1207,16 @@ package player.world {
                   if ( child != null && Define.IsBreakableShape (child.GetShapeAiType ()) )
                   {
                      if ( breakableShapes.indexOf (child) < 0 )
+                     {
                         breakableShapes.push (child);
+                     }
                   }
                }
             }
             
             if ( Define.IsBombShape (shape.GetShapeAiType ()) )
             {
-               if ( breakableShapes.indexOf (shape) < 0 )
+               if (breakableShapes.indexOf (shape) < 0)
                {
                   breakableShapes.push (shape);
                   
@@ -1172,8 +1224,8 @@ package player.world {
                   
                   container = shape.GetParentContainer ();
                   
-                  var bombDefine:Object = new Object ();
-                  bombDefines.push (bombDefine);
+                  //var bombDefine:Object = new Object ();
+                  //bombDefines.push (bombDefine);
                   
                   //var bombPos:Point = container.GetPosition ().add (shape.GetLocalPosition ());
                   var bombPos:Point = DisplayObjectUtil.LocalToLocal (container, this, shape.GetLocalPosition ());
@@ -1190,14 +1242,24 @@ package player.world {
                         bombSize = (shape as EntityShapeRectangle).GetHeight ();
                   }
                   
-                  bombDefine.mPosX = bombPos.x;
-                  bombDefine.mPosY = bombPos.y;
-                  bombDefine.mRadius = bombSize * 0.5;
+                  //if (mVersion >= 0x107)
+                  //{
+                     mParticleManager.AddBomb (bombPos.x,
+                                               bombPos.y,
+                                               bombSize * 0.5
+                                               );
+                  //}
+                  //else
+                  //{
+                  //   bombDefine.mPosX = bombPos.x;
+                  //   bombDefine.mPosY = bombPos.y;
+                  //   bombDefine.mRadius = bombSize * 0.5;
+                  //}
                }
             }
          }
          
-         var hasEntityBeenRemoved:Boolean = (breakableShapes.length > 0);
+         //var hasEntityBeenRemoved:Boolean = (breakableShapes.length > 0);
          
          while (breakableShapes.length > 0)
          {
@@ -1213,23 +1275,26 @@ package player.world {
             {
                container.Destroy ();
             }
-            else if (! container.ContainsPhysicsEntities ())
+            else if (! container.ContainsPhysicShapeEntities ())
             {
-               container.DestroyPhysicsProxy ();
+               container.DestroyPhysicsProxy (); // destroy body proxy
             }
          }
          
-         for (var bombId:int = 0; bombId < bombDefines.length; ++ bombId)
-         {
-            bombDefine = bombDefines [bombId];
-            
-            mParticleManager.AddBomb (bombDefine.mPosX,
-                                      bombDefine.mPosY,
-                                      bombDefine.mRadius
-                                      );
-         }
+         //if (mVersion < 0x107)
+         //{
+         //   for (var bombId:int = 0; bombId < bombDefines.length; ++ bombId)
+         //   {
+         //      bombDefine = bombDefines [bombId];
+         //      
+         //      mParticleManager.AddBomb (bombDefine.mPosX,
+         //                                bombDefine.mPosY,
+         //                                bombDefine.mRadius
+         //                                );
+         //   }
+         //}
          
-         return hasEntityBeenRemoved;
+         //return hasEntityBeenRemoved;
       }
       
 //=============================================================
@@ -1292,7 +1357,7 @@ package player.world {
       }
       
 //=============================================================
-//   
+//   system events
 //=============================================================
       
       private var mCurrentMode:Mode = null;
@@ -1407,7 +1472,11 @@ package player.world {
       public function RegisterEntityByIndexInEditor (index:int, entity:Entity):void
       {
          mEditorEntityArray [index] = entity;
-      //trace ("mEditorEntityArray [" + index + "] = " + mEditorEntityArray [index]);
+      }
+      
+      public function GetNumEntitiesInEditor ():int
+      {
+         return mEditorEntityArray == null ? 0 : mEditorEntityArray.length;
       }
       
       public function GetEntityByIndexInEditor (index:int):Entity
@@ -1441,23 +1510,22 @@ package player.world {
          mEventHandlers [eventId] = eventHandler;
       }
       
-//==============================================================================
-// handle events
-//==============================================================================
-      
-      public function HandleEvents ():void
+      public function HandleEvent (eventId:int, valueSourceList:ValueSource = null):void
       {
-         if (mEventHandlers == null)
-            return;
+         var event_handler:EntityEventHandler = mEventHandlers [eventId];
          
-         HandleShapeContactEvents ();
-         
+         while (event_handler != null)
+         {
+            event_handler.HandleEvent (valueSourceList);
+            
+            event_handler = event_handler.mNextEntityEventHandlerOfTheSameType;
+         }
       }
       
-      private var mContactEventHandlerValueSource3:ValueSource_Direct = new ValueSource_Direct (null);
-      private var mContactEventHandlerValueSource2:ValueSource_Direct = new ValueSource_Direct (null, mContactEventHandlerValueSource3);
+      private var mContactEventHandlerValueSource2:ValueSource_Direct = new ValueSource_Direct (null);
       private var mContactEventHandlerValueSource1:ValueSource_Direct = new ValueSource_Direct (null, mContactEventHandlerValueSource2);
-      private var mContactEventHandlerValueSourceList:ValueSource = mContactEventHandlerValueSource1;
+      private var mContactEventHandlerValueSource0:ValueSource_Direct = new ValueSource_Direct (null, mContactEventHandlerValueSource1);
+      private var mContactEventHandlerValueSourceList:ValueSource = mContactEventHandlerValueSource0;
       
       private function HandleShapeContactEvents ():void
       {
@@ -1467,22 +1535,22 @@ package player.world {
          
          while (contact_info != null)
          {
-            mContactEventHandlerValueSource1.mValueObject = contact_info.mEntityShape1;
-            mContactEventHandlerValueSource2.mValueObject = contact_info.mEntityShape2;
-            mContactEventHandlerValueSource3.mValueObject = mNumSimulatdFrames - contact_info.mBeginContactingFrame;
+            mContactEventHandlerValueSource0.mValueObject = contact_info.mEntityShape1;
+            mContactEventHandlerValueSource1.mValueObject = contact_info.mEntityShape2;
+            mContactEventHandlerValueSource2.mValueObject = mNumSimulatdFrames - contact_info.mBeginContactingFrame;
             
             isContactContinued = true;
             
             if (contact_info.mBeginContactingFrame == mNumSimulatdFrames)
             {
-               //InfectShapes (contact_info.mEntityShape1, contact_info.mEntityShape2);
+               InfectShapes (contact_info.mEntityShape1, contact_info.mEntityShape2);
                
                //
                list_element = contact_info.mFirstBeginContactingHandler;
                
                while (list_element != null)
                {
-                  list_element.mEventHandler.mEventHandlerDefinition.HandleEvent (mContactEventHandlerValueSourceList);
+                  list_element.mEventHandler.HandleEvent (mContactEventHandlerValueSourceList);
                   
                   list_element = list_element.mNextListElement;
                }
@@ -1495,7 +1563,7 @@ package player.world {
                
                while (list_element != null)
                {
-                  list_element.mEventHandler.mEventHandlerDefinition.HandleEvent (mContactEventHandlerValueSourceList);
+                  list_element.mEventHandler.HandleEvent (mContactEventHandlerValueSourceList);
                   
                   list_element = list_element.mNextListElement;
                }
@@ -1519,14 +1587,14 @@ package player.world {
             
             if (isContactContinued)
             {
-               //InfectShapes (contact_info.mEntityShape1, contact_info.mEntityShape2);
+               InfectShapes (contact_info.mEntityShape1, contact_info.mEntityShape2);
                
                //
                list_element = contact_info.mFirstKeepContactingHandler;
                
                while (list_element != null)
                {
-                  list_element.mEventHandler.mEventHandlerDefinition.HandleEvent (mContactEventHandlerValueSourceList);
+                  list_element.mEventHandler.HandleEvent (mContactEventHandlerValueSourceList);
                   
                   list_element = list_element.mNextListElement;
                }
@@ -1536,5 +1604,86 @@ package player.world {
          }
       }
       
+      private function FindEventHandlerForEntityPair (eventId:int, entityId1:int, entityId2:int, ignorePairOrder:Boolean):ListElement_EventHandler
+      {
+         // assume all params are valid
+         
+         var event_handler:EntityEventHandler = mEventHandlers [eventId];
+         var result:int;
+         var list_head:ListElement_EventHandler;
+         var list_element:ListElement_EventHandler;
+         
+         while (event_handler != null)
+         {
+            result = EntityInputEntityAssigner.GetContainingEntityPairResult (event_handler.mFirstEntityAssigner, entityId1, entityId2, ignorePairOrder);
+            
+            if (result != EntityInputEntityAssigner.ContainingResult_False)
+            {
+               list_element = new ListElement_EventHandler (event_handler);
+               list_element.mNeedExchangePairOrder = result == EntityInputEntityAssigner.ContainingResult_TrueButNeedExchangePairOrder;
+               
+               list_element.mNextListElement = list_head;
+               list_head = list_element;
+            }
+            
+            event_handler = event_handler.mNextEntityEventHandlerOfTheSameType;
+         }
+         
+         return list_head;
+      }
+      
+//==============================================================================
+// some API functions
+//==============================================================================
+      
+      public function GetCurrentCamera ():EntityUtilityCamera
+      {
+         return mCurrentCamera;
+      }
+      
+      public function AttatchCurrentCameraToEntity (shape:EntityShape):void
+      {
+         if (mCurrentCamera == null)
+         {
+            if (shape == null)
+               return;
+            
+            var params:Object = new Object ();
+            params.mEntityType = Define.EntityType_UtilityCamera;
+            params.visible = true;
+            params.mEntityIndexInEditor = -1;
+            
+            mCurrentCamera = new EntityUtilityCamera (this, shape.GetParentContainer ());
+            mCurrentCamera.BuildFromParams (params, false);
+            mCurrentCamera.x = shape.x;
+            mCurrentCamera.y = shape.y;
+         }
+         else
+         {
+            var old_pos:Point = mCurrentCamera.localToGlobal (new Point (0, 0));
+            var container:ShapeContainer = mCurrentCamera.GetParentContainer ();
+            container.removeChild (mCurrentCamera);
+            if (container.numChildren == 0)
+            {
+               container.Destroy ();
+            }
+            
+            if (shape == null)
+            {
+               container = new ShapeContainer (this);
+               addChild (container);
+               container.addChild (mCurrentCamera);
+               var local_pos:Point = container.globalToLocal (old_pos)
+               mCurrentCamera.x = local_pos.x;
+               mCurrentCamera.y = local_pos.y;
+            }
+            else
+            {
+               shape.GetParentContainer ().addChild (mCurrentCamera)
+               mCurrentCamera.x = shape.x;
+               mCurrentCamera.y = shape.y;
+            }
+         }
+      }
    }
 }

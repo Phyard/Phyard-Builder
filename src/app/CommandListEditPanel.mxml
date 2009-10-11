@@ -492,7 +492,7 @@
                title_box.setStyle ("backgroundColor", 0x7FCEFF);
                
                block_title = new Label ();
-               block_title.text = func_declaration.GetNumInputs () == 1 ? "Parameter:" : "Parameters:";
+               block_title.text = func_declaration.GetNumInputs () == 1 ? "Parameter (Input):" : "Parameters (Inputs):";
                block_title.setStyle ("fontWeight", "bold");
                
                title_box.addChild (block_title);
@@ -536,7 +536,7 @@
                title_box.setStyle ("backgroundColor", 0x7FCEFF);
                
                block_title = new Label ();
-               block_title.text = func_declaration.GetNumReturns () == 1 ? "Return:" : "Returns:";
+               block_title.text = func_declaration.GetNumReturns () == 1 ? "Return (Output):" : "Returns (Outputs):";
                block_title.setStyle ("fontWeight", "bold");
                
                title_box.addChild (block_title);

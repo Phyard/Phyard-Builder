@@ -5,12 +5,18 @@ package player.entity {
    
    import player.world.World;
    
+   import player.entity.JointNode;
+   
    import player.physics.PhysicsProxyShape;
    
    import common.Define;
    
    public class EntityShape extends EntityContainerChild
    {
+      internal var mJointNodeListHead:JointNode = null;
+      
+      //=========
+      
       protected var mOriginalAiType:int = Define.ShapeAiType_Unknown;
       protected var mAiType:int = Define.ShapeAiType_Unknown;
       
@@ -51,15 +57,25 @@ package player.entity {
          super (world, shapeContainer);
       }
       
-      override public function IsPhysicsEntity ():Boolean
+      override public function IsPhysicsShapeEntity ():Boolean
       {
          return Define.IsBasicShapeEntity (mEntityType) && IsPhysicsEnabled ();
       }
       
-      override public function Update (dt:Number):void
+      override protected function UpdateInternal (dt:Number):void
       {
          mWorld.ReportShapeStatus (mOriginalAiType, mAiType);
          
+      }
+      
+      override protected function DestroyInternal ():void
+      {
+         while (mJointNodeListHead != null)
+         {
+            mJointNodeListHead.mJoint.Destroy ();
+         }
+         
+         super.DestroyInternal ();
       }
       
 //==============================================================================
@@ -233,11 +249,6 @@ package player.entity {
 //
 //==============================================================================
       
-      public function GetParentContainer ():ShapeContainer
-      {
-         return mShapeContainer;
-      }
-      
       override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
          super.BuildFromParams (params, false);
@@ -245,7 +256,7 @@ package player.entity {
          mPhysicsEnabled = params.mIsPhysicsEnabled;
          
          SetBullet (params.mIsBullet);
-         mShapeContainer.SetBullet (IsBullet ());
+         GetParentContainer ().SetBullet (IsBullet ());
          
          SetStatic (params.mIsStatic);
          SetShapeAiType (params.mAiType);
@@ -322,24 +333,6 @@ package player.entity {
             
             shape.SetAsSensor (true); // not safe, paires are not removed!
          }
-      }
-      
-//==============================================================================
-// command initerface
-//==============================================================================
-      
-      override public function ExecuteCommand (commandName:String, params:Object):Boolean
-      {
-         switch (commandName)
-         {
-            case "SetAsSensor":
-               SetAsSensor (params.is_sensor);
-               break;
-            default:
-               return super.ExecuteCommand (commandName, params);
-         }
-         
-         return true;
       }
       
 //==============================================================================

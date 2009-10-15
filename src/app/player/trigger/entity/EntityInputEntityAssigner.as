@@ -1,5 +1,7 @@
 package player.trigger.entity
 {
+   import flash.utils.Dictionary;
+   
    import player.world.World;
    import player.entity.Entity;
    
@@ -19,6 +21,9 @@ package player.trigger.entity
       // the indexes are indexes in editor
       protected var mEntitiesIndexes1:Array = null;
       protected var mEntitiesIndexes2:Array = null;
+      
+      // for optimizing
+      protected var mPairHasntable:Dictionary = null;
       
       public function EntityInputEntityAssigner (world:World, isPairAssigner:Boolean)
       {

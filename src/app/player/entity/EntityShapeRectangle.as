@@ -131,13 +131,12 @@ package player.entity {
          var borderThickness:Number = GetBorderThickness ();
          
          GraphicsUtil.Clear (this);
-         alpha = 1.0;
          
          GraphicsUtil.Clear (mBackgroundShape);
          mBackgroundShape.alpha = GetTransparency () * 0.01;
          if (drawBg)
          {
-            GraphicsUtil.DrawRect (mBackgroundShape, 
+            GraphicsUtil.DrawRect ( mBackgroundShape, 
                                     - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
                                     borderColor, -1, drawBg, filledColor);
          }
@@ -146,9 +145,9 @@ package player.entity {
          mBorderShape.alpha = GetBorderTransparency () * 0.01;
          if (drawBorder)
          {
-            GraphicsUtil.DrawRect (mBorderShape, 
-                                       - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
-                                       borderColor, borderThickness, false, filledColor);
+            GraphicsUtil.DrawRect ( mBorderShape, 
+                                    - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
+                                    borderColor, borderThickness, false, filledColor);
          }
          
          if (Define.IsBombShape (GetShapeAiType ()))

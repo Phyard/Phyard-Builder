@@ -13,7 +13,7 @@ package editor.trigger {
          super (id, name, inputDefinitions, description, returnDefinitions);
          
          if ( ! CheckConsistent (TriggerEngine.GetCoreFunctionDeclaration (id) ) )
-            throw new Error ("not consistent!");
+            throw new Error ("not consistent! id = " + id);
       }
       
       override public function GetType ():int 

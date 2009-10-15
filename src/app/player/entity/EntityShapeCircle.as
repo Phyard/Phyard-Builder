@@ -107,7 +107,6 @@ package player.entity {
          var borderThickness:Number = GetBorderThickness ();
          
          GraphicsUtil.Clear (this);
-         alpha = 1.0;
          
          GraphicsUtil.Clear (mBackgroundShape);
          mBackgroundShape.alpha = GetTransparency () * 0.01;

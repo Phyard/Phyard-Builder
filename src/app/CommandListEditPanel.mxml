@@ -917,7 +917,7 @@
             AppendContextMenuItem (sprite, "to Nothing", OnSelectValueTarget_Null, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
             
             if (inputVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "to Input Variable", OnSelectValueTarget_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+               AppendContextMenuItem (sprite, "to Input Variable (as a Local Variable)", OnSelectValueTarget_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
             
             if (returnVariableSpae.HasVariablesWithValueType (value_type))
                AppendContextMenuItem (sprite, "to Return Variable", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);

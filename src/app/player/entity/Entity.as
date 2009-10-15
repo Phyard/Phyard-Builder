@@ -110,6 +110,8 @@ package player.entity {
       {
          UpdateInternal (dt);
          
+         // 
+         
          // external updaters
          
          var  list_element:ListElement_EventHandler = mUpdateEventHandlerList;
@@ -168,22 +170,6 @@ package player.entity {
       {
       }
       
-      public function DestroyPhysicsProxy ():void
-      {
-         if (mPhysicsProxy != null)
-         {
-            if (mWorld.IsPhysicsLocked ())
-            {
-               mWorld.BufferEntityToDestroyPhysicsProxy (this);
-            }
-            else
-            {
-               mPhysicsProxy.Destroy ();
-               mPhysicsProxy = null;
-            }
-         }
-      }
-      
 //=============================================================
 //   build
 //=============================================================
@@ -210,9 +196,45 @@ package player.entity {
          }
       }
       
+      public function GetPhysicsProxy ():PhysicsProxy
+      {
+         return mPhysicsProxy;
+      }
+      
+      public function DestroyPhysicsProxy ():void
+      {
+         if (mPhysicsProxy != null)
+         {
+            if (mWorld.IsPhysicsLocked ())
+            {
+               mWorld.BufferEntityToDestroyPhysicsProxy (this);
+            }
+            else
+            {
+               mPhysicsProxy.Destroy ();
+               mPhysicsProxy = null;
+            }
+         }
+      }
+      
+      public function IsPhysicsShapeEntity ():Boolean
+      {
+         return false;
+      }
+      
 //=============================================================
 //   
 //=============================================================
+      
+      public function GetPositionX ():Number
+      {
+         return x;
+      }
+      
+      public function GetPositionY ():Number
+      {
+         return y;
+      }
       
       public function SetRotation (rot:Number):void
       {
@@ -222,16 +244,6 @@ package player.entity {
       public function GetRotation ():Number
       {
          return rotation;
-      }
-      
-      public function IsPhysicsShapeEntity ():Boolean
-      {
-         return false;
-      }
-      
-      public function GetPhysicsProxy ():PhysicsProxy
-      {
-         return mPhysicsProxy;
       }
       
       public function SetVisible (visible:Boolean):void

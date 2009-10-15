@@ -79,8 +79,10 @@ package player.entity {
       {
          super.BuildFromParams (params, false);
          
-         SetText (params.mText);
          mAutofitWidth = params.mAutofitWidth;
+         
+         SetText (params.mText);
+         RebuildAppearance ();
          
          if (updateAppearance)
             RebuildAppearance ();
@@ -153,7 +155,7 @@ package player.entity {
          
          mText = text;
          
-         RebuildAppearance ();
+         //RebuildAppearance ();
       }
       
    }

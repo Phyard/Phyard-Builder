@@ -1,6 +1,7 @@
 
 package player.entity {
    
+   import flash.display.Shape;
    import flash.geom.Point;
    
    import com.tapirgames.util.GraphicsUtil;
@@ -18,9 +19,14 @@ package player.entity {
       protected var mLocalPoints:Array = null;
       protected var mCurveThickness:uint = 1;
       
+      protected var mLineShape:Shape = null;
+      
       public function EntityShapePolyline (world:World, shapeContainer:ShapeContainer)
       {
          super (world, shapeContainer);
+         
+         mLineShape = new Shape ();
+         addChild (mLineShape);
       }
       
       public function SetCurveThickness (thickness:uint):void
@@ -134,11 +140,13 @@ package player.entity {
          var curveThickness:Number = GetCurveThickness ();
          
          GraphicsUtil.Clear (this);
-         alpha = GetTransparency () * 0.01;
+         
+         GraphicsUtil.Clear (mLineShape);
+         mLineShape.alpha = GetTransparency () * 0.01;
          
          for (var i:int = 1; i < GetVertexPointsCount (); ++ i)
          {
-            GraphicsUtil.DrawLine (this, mLocalPoints [i - 1].x, mLocalPoints [i - 1].y, mLocalPoints [i].x, mLocalPoints [i].y, filledColor, curveThickness);
+            GraphicsUtil.DrawLine (mLineShape, mLocalPoints [i - 1].x, mLocalPoints [i - 1].y, mLocalPoints [i].x, mLocalPoints [i].y, filledColor, curveThickness);
          }
       }
 

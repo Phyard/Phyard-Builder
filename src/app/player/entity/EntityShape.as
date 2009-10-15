@@ -208,8 +208,6 @@ package player.entity {
       public function SetTransparency (transparency:uint):void
       {
          mTransparency = transparency;
-         
-         alpha = 0.01 * mTransparency;
       }
       
       public function GetTransparency ():uint

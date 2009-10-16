@@ -15,8 +15,7 @@ package editor.trigger {
       private static var sFunctionDeclarations:Array = new Array (128);
       
       public static var sTopFuntionPackage:FunctionPackage = new FunctionPackage ("");
-      public static var sCommandFunctionsMenuItemXML:XML = null;
-      public static var sConditionFunctionsMenuItemXML:XML = null;
+      public static var sCoreApiMenuItemXML:XML = null;
       
       public static function Initialize ():void
       {
@@ -26,10 +25,10 @@ package editor.trigger {
       //================================================
          
          var system_package:FunctionPackage = new FunctionPackage ("system", sTopFuntionPackage);
-         var string_package:FunctionPackage = new FunctionPackage ("string", sTopFuntionPackage);
-         var bool_package:FunctionPackage = new FunctionPackage ("bool", sTopFuntionPackage);
+         var string_package:FunctionPackage = new FunctionPackage ("string (Text)", sTopFuntionPackage);
+         var bool_package:FunctionPackage = new FunctionPackage ("logic (Boolean)", sTopFuntionPackage);
          var bitwise_package:FunctionPackage = new FunctionPackage ("bitwise", sTopFuntionPackage);
-         var math_package:FunctionPackage = new FunctionPackage ("math", sTopFuntionPackage);
+         var math_package:FunctionPackage = new FunctionPackage ("math (Number)", sTopFuntionPackage);
             var trigonometry_package:FunctionPackage = new FunctionPackage ("trigonometry", math_package);
             var random_package:FunctionPackage = new FunctionPackage ("random", math_package);
          
@@ -38,6 +37,8 @@ package editor.trigger {
             var entity_is_package:FunctionPackage = new FunctionPackage ("Is a Subtype?", entity_package);
             var entity_shape_package:FunctionPackage = new FunctionPackage ("shape", entity_package);
             var entity_text_package:FunctionPackage = new FunctionPackage ("text", entity_package);
+         
+         var cat_package:FunctionPackage = new FunctionPackage ("cat (Collision Category)", sTopFuntionPackage);
          
       //================================================
       // functions
@@ -706,8 +707,7 @@ package editor.trigger {
          
       // ...
          
-         sCommandFunctionsMenuItemXML = AddPackageToXML (sTopFuntionPackage, null, false);
-         sConditionFunctionsMenuItemXML = AddPackageToXML (sTopFuntionPackage, null, true);
+         sCoreApiMenuItemXML = AddPackageToXML (sTopFuntionPackage, null, false);
       }
       
 //===========================================================

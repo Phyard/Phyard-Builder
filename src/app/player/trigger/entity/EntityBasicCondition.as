@@ -5,12 +5,12 @@ package player.trigger.entity
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Logic;
    
-   import common.trigger.define.ConditionListDefine;
+   import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
    public class EntityBasicCondition extends EntityCondition
    {
-      public var mConditionFunctionDefinition:FunctionDefinition_Logic;
+      public var mConditionDefinition:FunctionDefinition_Logic;
       
       public function EntityBasicCondition (world:World)
       {
@@ -21,19 +21,19 @@ package player.trigger.entity
       {
          super.BuildFromParams (params, false);
          
-          mConditionFunctionDefinition = new FunctionDefinition_Logic (TriggerEngine.GetVoidFunctionDeclaration  ());
+          mConditionDefinition = new FunctionDefinition_Logic (TriggerEngine.GetVoidFunctionDeclaration  ());
       }
       
-      public function SetConditionListDefine (conditionListDefine:ConditionListDefine):void
+      public function SetCommandListDefine (codeSnippetDefine:CodeSnippetDefine):void
       {
-         if (mConditionFunctionDefinition != null) // should not be null
-            mConditionFunctionDefinition.SetConditionListDefine (conditionListDefine);
+         if (mConditionDefinition != null) // should not be null
+            mConditionDefinition.SetCodeSnippetDefine (codeSnippetDefine);
       }
       
       override public function Evaluate ():void
       {
          // if (mConditionListDefinition != null) // should not be null
-            mEvaluatedValue = mConditionFunctionDefinition.EvaluateCondition () ? ValueDefine.BoolValue_True : ValueDefine.BoolValue_False;
+            mEvaluatedValue = mConditionDefinition.EvaluateCondition () ? ValueDefine.BoolValue_True : ValueDefine.BoolValue_False;
       }
       
    }

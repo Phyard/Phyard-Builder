@@ -2,19 +2,17 @@ package player.trigger
 {
    import common.trigger.ValueTypeDefine;
    
-   public class CommandListDefinition
+   public class CodeSnippet
    {
       protected var mFirstFunctionCalling:FunctionCalling = null;
       
-      public function CommandListDefinition (firstCalling:FunctionCalling)
+      public function CodeSnippet (firstCalling:FunctionCalling)
       {
          mFirstFunctionCalling = firstCalling;
       }
       
       public function Excute ():void
       {
-         trace ("CommandListDefinition.Excute");
-         
          var calling:FunctionCalling = mFirstFunctionCalling;
          
          while (calling != null)

@@ -183,7 +183,7 @@ package common {
       public static const MaxEntitiesCountEachAssigner:int = 20; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
       public static const MaxEntityPairesCountEachOneToOnePairAssigner:int = 10; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
       
-      public static const NumRegistersPerType:int = 8;
+      public static const NumRegistersPerType:int = 16;
       
 //===========================================================================
 // colors
@@ -242,10 +242,9 @@ package common {
       public static const EntityType_LogicCondition:int = 210;
       public static const EntityType_LogicTask:int = 211;
       public static const EntityType_LogicConditionDoor:int = 212;
-      public static const EntityType_LogicAction:int = 212;
-      public static const EntityType_LogicEventHandler:int = 214;
-      public static const EntityType_LogicInputEntityAssigner:int = 215;
-      public static const EntityType_LogicInputEntityPairAssigner:int = 216;
+      public static const EntityType_LogicEventHandler:int = 213;
+      public static const EntityType_LogicInputEntityAssigner:int = 214;
+      public static const EntityType_LogicInputEntityPairAssigner:int = 215;
       
       public static function IsBasicShapeEntity (entityType:int):Boolean
       {
@@ -291,7 +290,6 @@ package common {
          return   entityType == EntityType_LogicCondition 
                || entityType == EntityType_LogicTask 
                || entityType == EntityType_LogicConditionDoor 
-               || entityType == EntityType_LogicAction 
                || entityType == EntityType_LogicEventHandler 
                || entityType == EntityType_LogicInputEntityAssigner 
                || entityType == EntityType_LogicInputEntityPairAssigner 

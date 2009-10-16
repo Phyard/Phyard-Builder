@@ -3,9 +3,14 @@ package editor.trigger {
    import flash.utils.ByteArray;
    //import flash.utils.Dictionary;
    
+   import common.Define;
+   
    public class CodeSnippet
    {
       protected var mOwnerFunctionDefinition:FunctionDefinition = null;
+      
+      protected var mName:String = "";
+      
       protected var mFunctionCallings:Array = new Array ();
       
       public function CodeSnippet (ownerFunctionDefinition:FunctionDefinition = null)
@@ -16,6 +21,22 @@ package editor.trigger {
       public function GetOwnerFunctionDefinition ():FunctionDefinition
       {
          return mOwnerFunctionDefinition;
+      }
+      
+      public function SetName (newName:String):void
+      {
+         if (newName == null)
+            newName = "";
+         
+         if (newName.length > Define.MaxLogicComponentNameLength)
+            newName = newName.substr (0, Define.MaxLogicComponentNameLength);
+         
+         mName = newName;
+      }
+      
+      public function GetName ():String
+      {
+         return mName;
       }
       
       public function ClearFunctionCallings ():void

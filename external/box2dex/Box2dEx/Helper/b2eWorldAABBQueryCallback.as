@@ -69,7 +69,6 @@ package Box2dEx.Helper {
             return true;
          }
          
-      trace ("333");
          mHits.push (fixture);
          ++ mNumHits;
          

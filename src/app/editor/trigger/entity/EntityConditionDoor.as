@@ -30,7 +30,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityConditionDoor extends EntityCondition 
+   public class EntityConditionDoor extends EntityLogic implements EntityCondition 
    {
       public static const kHalfWidth:Number = 12;
       public static const kHalfHeight:Number = 12;
@@ -92,7 +92,7 @@ package editor.trigger.entity {
          while (i < mInputConditions.length)
          {
             var condition_target:ConditionAndTargetValue = mInputConditions [i] as ConditionAndTargetValue;
-            if (condition_target.mConditionEntity == null || condition_target.mConditionEntity.GetEntityIndex () < 0)
+            if (condition_target.mConditionEntity == null || (condition_target.mConditionEntity as Entity).GetEntityIndex () < 0)
                mInputConditions.splice (i, 1);
             else
                ++ i;
@@ -275,8 +275,8 @@ package editor.trigger.entity {
             var zone_id2:int;
             var target_value:int;
             
-            point2 = DisplayObjectUtil.LocalToLocal (mWorld, condition, new Point (toWorldDisplayX, toWorldDisplayY));
-            zone_id2 = condition.GetLinkZoneId (point2.x, point2.y, false, true);
+            point2 = DisplayObjectUtil.LocalToLocal (mWorld, (condition as Entity), new Point (toWorldDisplayX, toWorldDisplayY));
+            zone_id2 = (condition as EntityLogic).GetLinkZoneId (point2.x, point2.y, false, true);
             target_value = condition.GetTargetValueByLinkZoneId (zone_id2);
             
             if (condition is EntityConditionDoor)
@@ -385,15 +385,15 @@ package editor.trigger.entity {
       }
       
 //====================================================================
-//   storer
+//   as EntityCondition
 //====================================================================
       
-      override public function GetTargetValueByLinkZoneId (zoneId:int):int
+      public function GetTargetValueByLinkZoneId (zoneId:int):int
       {
          return ValueDefine.BoolValue_True;
       }
       
-      override public function GetTargetValueZoneWorldCenter (targetValue:int):Point
+      public function GetTargetValueZoneWorldCenter (targetValue:int):Point
       {
          return DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (kHalfWidth, 0));
       }

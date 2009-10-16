@@ -29,9 +29,7 @@ package editor.world {
    
    import editor.entity.SubEntityJointAnchor;
    
-   import editor.trigger.entity.EntityAction;
    import editor.trigger.entity.EntityEventHandler;
-   //import editor.trigger.entity.EntityTrigger;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
@@ -643,17 +641,6 @@ package editor.world {
          addChild (camera);
          
          return camera;
-      }
-      
-      public function CreateEntityAction ():EntityAction
-      {
-         if (numChildren >= Define.MaxEntitiesCount)
-            return null;
-         
-         var action:EntityAction = new EntityAction(this);
-         addChild (action);
-         
-         return action;
       }
       
       public function CreateEntityEventHandler (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler

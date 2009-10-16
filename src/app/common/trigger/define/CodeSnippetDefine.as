@@ -1,9 +1,9 @@
 package common.trigger.define
 {
    
-   public class CommandListDefine
+   public class CodeSnippetDefine
    {
-      public var mNumCommands:int;
+      public var mNumCallings:int;
       
       public var mFunctionCallingDefines:Array;
    }

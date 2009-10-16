@@ -25,8 +25,7 @@ package editor.trigger.entity {
    import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
    import editor.trigger.VariableDefinitionEntity;
-   import editor.trigger.CommandListDefinition;
-   import editor.trigger.ConditionListDefinition;
+   import editor.trigger.CodeSnippet;
    
    import editor.setting.EditorSetting;
    
@@ -34,7 +33,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityEventHandler extends EntityLogic 
+   public class EntityEventHandler extends EntityCodeSnippetHolder 
    {
       private var mNumEntityParams:int = 0;
       
@@ -43,22 +42,10 @@ package editor.trigger.entity {
       //private var 
       
       //
-      public var mHalfWidth:Number;
-      public var mHalfHeight:Number;
-      public var mTextFieldHalfWidth:Number;
-      public var mTextFieldHalfHeight:Number;
-      public var mBorderThickness:Number = 1;
-      
-      //
       private var mEventHandlerDefinition:FunctionDefinition;
       private var mEventId:int;
       
-      protected var mConditionListDefinition:ConditionListDefinition;
-      protected var mCommandListDefinition:CommandListDefinition;
-      
       protected var mExternalCondition:ConditionAndTargetValue = new ConditionAndTargetValue (null, ValueDefine.BoolValue_True);
-      
-      protected var mExternalAction:EntityAction = null;
       
       protected var mEntityAssignerList:Array = new Array ();
       
@@ -73,8 +60,7 @@ package editor.trigger.entity {
          
          mEventHandlerDefinition = new FunctionDefinition (TriggerEngine.GetEventDeclarationById (mEventId));
          
-         mConditionListDefinition = new ConditionListDefinition (mEventHandlerDefinition);
-         mCommandListDefinition = new CommandListDefinition (mEventHandlerDefinition);
+         mCodeSnippet = new CodeSnippet (mEventHandlerDefinition);
          
          var i:int;
          mNumEntityParams = 0;
@@ -97,7 +83,7 @@ package editor.trigger.entity {
          }
       }
       
-      public function GetName ():String
+      public function GetEventName ():String
       {
          return mEventHandlerDefinition.GetName ();
       }
@@ -122,32 +108,14 @@ package editor.trigger.entity {
          return mExternalCondition.mTargetValue;
       }
       
-      public function GetPostActionEntity ():EntityAction
+      override public function ValidateEntityLinks ():void
       {
-         return mExternalAction;
-      }
-      
-      public function GetConditionListDefinition ():ConditionListDefinition
-      {
-         return mConditionListDefinition;
-      }
-      
-      public function GetCommandListDefinition ():CommandListDefinition
-      {
-         return mCommandListDefinition;
-      }
-      
-      public function ValidateEntityLinks ():void
-      {
-         mConditionListDefinition.ValidateValueSources ();
-         mCommandListDefinition.ValidateValueSources ();
+         //mCodeSnippet.ValidateValueSources ();
+         super.ValidateEntityLinks ();
          
          EntityLogic.ValidateLinkedEntities (mEntityAssignerList);
          
-         if (mExternalAction != null && mExternalAction.GetEntityIndex () < 0)
-            mExternalAction = null;
-         
-         if (mExternalCondition.mConditionEntity != null && mExternalCondition.mConditionEntity.GetEntityIndex () < 0)
+         if (mExternalCondition.mConditionEntity != null && (mExternalCondition.mConditionEntity as Entity).GetEntityIndex () < 0)
          {
             mExternalCondition.mConditionEntity = null;
             mExternalCondition.mTargetValue = ValueDefine.BoolValue_True;
@@ -171,7 +139,7 @@ package editor.trigger.entity {
          
          // text
          
-         var text:String = GetName ();
+         var text:String = GetEventName ();
          
          var text_field:TextFieldEx;
          text_field = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + text + "</font>", false, 0xFFFFFF, 0x0);
@@ -263,19 +231,10 @@ package editor.trigger.entity {
       {
          ValidateEntityLinks ();
          
-         if (toEntity is EntityAction)
+         if (toEntity is EntityCondition)
          {
-            if (mExternalAction == toEntity)
-               mExternalAction = null;
-            else
-               mExternalAction = toEntity as EntityAction;
-            
-            return true;
-         }
-         else if (toEntity is EntityCondition)
-         {
-            var point:Point = DisplayObjectUtil.LocalToLocal (mWorld, toEntity as EntityCondition, new Point (toWorldDisplayX, toWorldDisplayY));
-            var zone_id:int = (toEntity as EntityCondition).GetLinkZoneId (point.x, point.y);
+            var point:Point = DisplayObjectUtil.LocalToLocal (mWorld, toEntity as Entity, new Point (toWorldDisplayX, toWorldDisplayY));
+            var zone_id:int = (toEntity as EntityLogic).GetLinkZoneId (point.x, point.y);
             var target_value:int = (toEntity as EntityCondition).GetTargetValueByLinkZoneId (zone_id);
             
             var to_remove:Boolean =  mExternalCondition.mConditionEntity == toEntity && ( (!(toEntity is EntityTask)) || (target_value ==  mExternalCondition.mTargetValue) );
@@ -326,11 +285,6 @@ package editor.trigger.entity {
       override public function DrawEntityLinkLines (canvasSprite:Sprite):void
       {
          ValidateEntityLinks ();
-         
-         if (mExternalAction != null)
-         {
-            GraphicsUtil.DrawLine (canvasSprite, GetPositionX () + mHalfWidth, GetPositionY (), mExternalAction.GetPositionX (), mExternalAction.GetPositionY ());
-         }
          
          if (mExternalCondition.mConditionEntity != null)
          {

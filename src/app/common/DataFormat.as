@@ -27,7 +27,6 @@ package common {
    import editor.trigger.entity.EntityTask;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
-   import editor.trigger.entity.EntityAction;
    import editor.trigger.entity.EntityInputEntityAssigner;
    import editor.trigger.entity.EntityInputEntityPairAssigner;
    import editor.trigger.entity.EntityEventHandler;
@@ -121,7 +120,7 @@ package common {
                   var basicCondition:editor.trigger.entity.EntityBasicCondition = child as editor.trigger.entity.EntityBasicCondition;
                   
                   entityDefine.mName = basicCondition.GetName ();
-                  entityDefine.mConditionListDefine = TriggerFormatHelper.ConditionListDefinition2Define (editorWorld, basicCondition.GetConditionListDefinition ());
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CreateCodeSnippetDefine (editorWorld, basicCondition.GetCodeSnippet ());
                }
                else if (child is editor.trigger.entity.EntityTask)
                {
@@ -142,15 +141,6 @@ package common {
                   entityDefine.mIsAnd = conditionDoor.IsAnd ();
                   entityDefine.mIsNot = conditionDoor.IsNot ();
                   TriggerFormatHelper.ConditionAndTargetValueArray2EntityDefineProperties (editorWorld, conditionDoor.GetInputConditions (), entityDefine);
-               }
-               else if (child is editor.trigger.entity.EntityAction)
-               {
-                  entityDefine.mEntityType = Define.EntityType_LogicAction;
-                  
-                  var action:editor.trigger.entity.EntityAction = child as editor.trigger.entity.EntityAction;
-                  
-                  entityDefine.mName = action.GetName ();
-                  entityDefine.mCommandListDefine = TriggerFormatHelper.CommandListDefinition2Define (editorWorld, action.GetCommandListDefinition ());
                }
                else if (child is editor.trigger.entity.EntityInputEntityAssigner)
                {
@@ -190,16 +180,13 @@ package common {
                   
                   entityDefine.mEventId = eventHandler.GetEventId ();
                   
-                  entityDefine.mInputConditionEntityIndex = editorWorld.GetEntityIndex (eventHandler.GetInputConditionEntity ());
+                  entityDefine.mInputConditionEntityIndex = editorWorld.GetEntityIndex (eventHandler.GetInputConditionEntity () as Entity);
                   entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionTargetValue ();
-                  
-                  entityDefine.mPostActionEntityIndex = editorWorld.GetEntityIndex (eventHandler.GetPostActionEntity ());
                   
                   entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mInputAssignerIndexes = entityIndexArray;
                   
-                  entityDefine.mConditionListDefine = TriggerFormatHelper.ConditionListDefinition2Define (editorWorld, eventHandler.GetConditionListDefinition ());
-                  entityDefine.mCommandListDefine = TriggerFormatHelper.CommandListDefinition2Define (editorWorld, eventHandler.GetCommandListDefinition ());
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CreateCodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet ());
                }
             }
             else if (editorEntity is editor.entity.EntityShape)

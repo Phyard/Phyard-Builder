@@ -13,17 +13,7 @@
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
-   <mx:TabNavigator id="NavigatorPanel" width="100%" height="100%"  creationPolicy="all">
-      <mx:HBox label="Conditions Setting" width="100%" height="100%">
-         <mx:Spacer width="0"/>
-         <mx:VBox height="100%">
-            <mx:Spacer height="0"/>
-            <ConditionListEditPanel id="theConditionListEditPanel" width="100%" />
-            <mx:Spacer height="0"/>
-         </mx:VBox>
-         <mx:Spacer width="0"/>
-      </mx:HBox>
-   </mx:TabNavigator>
+   <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
 
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Spacer width="100%"/>
@@ -58,14 +48,14 @@
             
             TextInput_Name.text = mParams.mName;
             
-            theConditionListEditPanel.SetConditionListDefinition (mParams.mConditionListDefinition);
+            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
          }
          
          public function GetValues (returnValues:Object):void
          {
             returnValues.mName = TextInput_Name.text;
             
-            theConditionListEditPanel.GetValues (returnValues);
+            returnValues.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
          }
          
          private function OnInitPanel ():void

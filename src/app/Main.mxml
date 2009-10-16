@@ -532,7 +532,6 @@
                
                MainView.ShowEditorCustomCommandSettingDialog = ShowEditorCustomCommandSettingDialog;
                
-               MainView.ShowActionSettingDialog = ShowActionSettingDialog;
                MainView.ShowEventHandlerSettingDialog = ShowEventHandlerSettingDialog;
                MainView.ShowConditionSettingDialog = ShowConditionSettingDialog;
                //MainView.ShowTriggerSettingDialog = ShowTriggerSettingDialog;
@@ -821,18 +820,6 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:JointDistanceSettingDialog = new JointDistanceSettingDialog ();
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
-               settingDialog.SetValues (initialValues);
-               settingDialog.SetConfirmFunc (onConfirmFunc);
-               settingDialog.SetCloseFunc (OnCloseDialog);
-            }
-            
-            private function ShowActionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            {
-               Runtime.SetHasSettingDialogOpened (true);
-               
-               var settingDialog:LogicActionEditDialog = new LogicActionEditDialog ();
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
                settingDialog.SetValues (initialValues);

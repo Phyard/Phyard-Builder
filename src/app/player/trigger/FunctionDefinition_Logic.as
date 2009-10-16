@@ -2,8 +2,7 @@ package player.trigger
 {
    import player.global.Global;
    
-   import common.trigger.define.ConditionListDefine;
-   import common.trigger.define.CommandListDefine;
+   import common.trigger.define.CodeSnippetDefine;
    import common.trigger.FunctionDeclaration;
    import common.trigger.ValueTypeDefine;
    import common.TriggerFormatHelper2;
@@ -16,8 +15,7 @@ package player.trigger
    
    public class FunctionDefinition_Logic extends FunctionDefinition
    {
-      protected var mConditionListDefinition:ConditionListDefinition;
-      protected var mCommandListDefinition:CommandListDefinition;
+      protected var mCodeSnippet:CodeSnippet;
       
       protected var mLogicFunctionInstance:FunctionInstance = null;
       
@@ -28,43 +26,47 @@ package player.trigger
          BuildNewFunctionInstance (localVariableDefines);
       }
       
-      public function SetConditionListDefine (conditionListDefine:ConditionListDefine):void
+      public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
       {
-         mConditionListDefinition = TriggerFormatHelper2.ConditionListDefine2Definition (mLogicFunctionInstance, Global.GetCurrentWorld (), conditionListDefine);
+         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (mLogicFunctionInstance, Global.GetCurrentWorld (), codeSnippetDefine);
       }
       
-      public function SetCommandListDefine (commandListDefine:CommandListDefine):void
-      {
-         mCommandListDefinition = TriggerFormatHelper2.CommandListDefine2Definition (mLogicFunctionInstance, Global.GetCurrentWorld (), commandListDefine);
-      }
-      
-      // as condition
-      public function EvaluateCondition ():Boolean
-      {
-         //if (mConditionListDefinition == null)
-         //   return false;
-         
-         return mConditionListDefinition.Evaluate ();
-      }
-      
-      // as action
-      public function ExcuteAction ():void
-      {
-         //if (mCommandListDefinition == null)
-         //   return;
-         
-         mCommandListDefinition.Excute ();
-      }
-      
-      // as event handler
+      // as normal function, this function will not be called
       override public function DoCall (inputValueSources:ValueSource, returnValueTarget:ValueTarget):void
       {
          mLogicFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
          
-         if (mConditionListDefinition.Evaluate ())
-            mCommandListDefinition.Excute ();
+         mCodeSnippet.Excute ();
          
-         //mLogicFunctionInstance.mReturnValueTargetList.SetValuesTo (...);
+         // no return
+         mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
+      }
+      
+      // as condition component, no inputs, return value must be put in mRegisterBooleanVariableSpace_0
+      public function EvaluateCondition ():Boolean
+      {
+         // no inputs
+         //mLogicFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
+         
+         Global.mRegisterBooleanVariableSpace_0.mValueObject = false;
+         
+         mCodeSnippet.Excute ();
+         
+         return Global.mRegisterBooleanVariableSpace_0.mValueObject;
+         
+         // no returns
+         mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
+      }
+      
+      // as event handler, no returns
+      public function ExcuteEventHandler (inputValueSources:ValueSource):void
+      {
+         mLogicFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
+         
+         mCodeSnippet.Excute ();
+         
+         // no returns
+         //mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
       }
       
       protected function BuildNewFunctionInstance (localVariableDefines:Array):void

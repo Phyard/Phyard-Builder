@@ -25,7 +25,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityTask extends EntityCondition 
+   public class EntityTask extends EntityLogic implements EntityCondition 
    {
       public static var kRadius:Number = 16;
       public static var kRadius1:Number = 6;
@@ -187,10 +187,10 @@ package editor.trigger.entity {
       }
       
 //====================================================================
-//   storer
+//   as EntityCondition
 //====================================================================
       
-      override public function GetTargetValueByLinkZoneId (zoneId:int):int
+      public function GetTargetValueByLinkZoneId (zoneId:int):int
       {
          if (zoneId == 0)
             return ValueDefine.TaskStatus_Failed;
@@ -201,7 +201,7 @@ package editor.trigger.entity {
          return ValueDefine.TaskStatus_Successed;
       }
       
-      override public function GetTargetValueZoneWorldCenter (targetValue:int):Point
+      public function GetTargetValueZoneWorldCenter (targetValue:int):Point
       {
          if (targetValue == ValueDefine.TaskStatus_Failed)
             return DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (mStatusCirclePositionXb [0], mStatusCirclePositionYb [0]));

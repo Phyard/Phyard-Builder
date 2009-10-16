@@ -9,8 +9,7 @@ package common {
    
    import editor.trigger.entity.ConditionAndTargetValue;
    
-   import editor.trigger.ConditionListDefinition;
-   import editor.trigger.CommandListDefinition;
+   import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.FunctionCalling;
    import editor.trigger.VariableDefinition;
@@ -33,8 +32,7 @@ package common {
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.ValueTypeDefine;
    
-   import common.trigger.define.ConditionListDefine;
-   import common.trigger.define.CommandListDefine;
+   import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionCallingDefine;
    import common.trigger.define.ValueSourceDefine;
    import common.trigger.define.ValueSourceDefine_Null;
@@ -74,7 +72,7 @@ package common {
             {
                conditionAndValue = conditionAndTargetValueArray [i] as ConditionAndTargetValue;
                
-               indexes [i] = editorWorld.GetEntityIndex (conditionAndValue.mConditionEntity);
+               indexes [i] = editorWorld.GetEntityIndex (conditionAndValue.mConditionEntity as Entity);
                values [i] = conditionAndValue.mTargetValue;
             }
             
@@ -84,47 +82,20 @@ package common {
          }
       }
       
-      public static function ConditionListDefinition2Define (editorWorld:World, conditionListDefinition:ConditionListDefinition):ConditionListDefine
+      public static function CreateCodeSnippetDefine (editorWorld:World, codeSnippet:CodeSnippet):CodeSnippetDefine
       {
-         var num:int = conditionListDefinition.GetNumFunctionCallings ();;
-         var func_calling_defines:Array = new Array (num);
-         var is_conditions:Array = new Array (num);
-         var result_inverteds:Array = new Array (num);
-         
-         for (var i:int = 0; i < num; ++ i)
-         {
-            func_calling_defines [i] = FunctionCalling2FunctionCallingDefine (editorWorld, conditionListDefinition.GetFunctionCallingAt (i));
-            is_conditions [i] = conditionListDefinition.IsConditionCalling (i);
-            result_inverteds [i] = conditionListDefinition.IsConditionResultInverted (i);
-         }
-         
-         var condition_list_define:ConditionListDefine = new ConditionListDefine ();
-         
-         condition_list_define.mNumConditions = num;
-         condition_list_define.mFunctionCallingDefines = func_calling_defines;
-         condition_list_define.mIsConditionCallings = is_conditions;
-         condition_list_define.mConditionResultInverted = result_inverteds;
-         
-         condition_list_define.mIsAnd = conditionListDefinition.IsAnd ();
-         condition_list_define.mIsNot = conditionListDefinition.IsNot ();
-         
-         return condition_list_define;
-      }
-      
-      public static function CommandListDefinition2Define (editorWorld:World, commandListDefinition:CommandListDefinition):CommandListDefine
-      {
-         var num:int = commandListDefinition.GetNumFunctionCallings ();;
+         var num:int = codeSnippet.GetNumFunctionCallings ();;
          var func_calling_defines:Array = new Array (num);
          
          for (var i:int = 0; i < num; ++ i)
-            func_calling_defines [i] = FunctionCalling2FunctionCallingDefine (editorWorld, commandListDefinition.GetFunctionCallingAt (i));
+            func_calling_defines [i] = FunctionCalling2FunctionCallingDefine (editorWorld, codeSnippet.GetFunctionCallingAt (i));
          
-         var command_list_define:CommandListDefine = new CommandListDefine ();
+         var code_snippet_define:CodeSnippetDefine = new CodeSnippetDefine ();
          
-         command_list_define.mNumCommands = num;
-         command_list_define.mFunctionCallingDefines = func_calling_defines;
+         code_snippet_define.mNumCallings = num;
+         code_snippet_define.mFunctionCallingDefines = func_calling_defines;
          
-         return command_list_define;
+         return code_snippet_define;
       }
       
       public static function FunctionCalling2FunctionCallingDefine (editorWorld:World, funcCalling:FunctionCalling):FunctionCallingDefine
@@ -231,12 +202,7 @@ package common {
 // define -> definition (editor)
 //==============================================================================================
       
-      public static function ConditionListDefine2Definition (conditionListDefine:ConditionListDefine):ConditionListDefinition
-      {
-         return null;
-      }
-      
-      public static function CommandListDefine2Definition (commandListDefine:CommandListDefine):CommandListDefinition
+      public static function CommandListDefine2Definition (codeSnippetDefine:CodeSnippetDefine):CodeSnippet
       {
          return null;
       }
@@ -255,12 +221,7 @@ package common {
 // define -> byte array
 //==============================================================================================
       
-      public static function ConditionListDefine2ByteArray (conditionListDefine:ConditionListDefine):ByteArray
-      {
-         return null;
-      }
-      
-      public static function CommandListDefine2ByteArray (commandListDefine:CommandListDefine):ByteArray
+      public static function CommandListDefine2ByteArray (codeSnippetDefine:CodeSnippetDefine):ByteArray
       {
          return null;
       }
@@ -279,12 +240,7 @@ package common {
 // xml -> define
 //==============================================================================================
       
-      public static function ConditionListElement2Xml (conditionListElement:XML):ConditionListDefine
-      {
-         return null;
-      }
-      
-      public static function CommandListElement2Xml (commandListElement:XML):CommandListDefine
+      public static function CommandListElement2Xml (commandListElement:XML):CodeSnippetDefine
       {
          return null;
       }

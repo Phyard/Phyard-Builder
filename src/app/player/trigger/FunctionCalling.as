@@ -4,9 +4,6 @@ package player.trigger
    {
       public var mNextFunctionCalling:FunctionCalling = null;
       
-      public var mIsConditionCalling:Boolean = true; // special for condition list definition, useless for command callings
-      public var mTargetBoolValue:Boolean = false; // special for condition list definition, useless for command callings
-      
    // .........
       
       protected var mFunctionDefinition:FunctionDefinition;
@@ -23,7 +20,7 @@ package player.trigger
       
       public function Call ():void
       {
-         trace ("FunctionCalling.Call");
+         //trace ("FunctionCalling.Call");
          
          mFunctionDefinition.DoCall (mInputValueSourceList, mReturnValueTargetList);
       }

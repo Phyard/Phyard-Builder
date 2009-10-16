@@ -18,107 +18,57 @@ package editor.trigger.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.trigger.CommandListDefinition;
-   import editor.trigger.CommandListWithNameDefinition;
    import editor.trigger.FunctionDefinition;
+   import editor.trigger.CodeSnippet;
    
    import editor.setting.EditorSetting;
    
    import common.Define;
    
-   public class EntityAction extends EntityLogic 
+   public class EntityCodeSnippetHolder extends EntityLogic 
    {
-      private var mCommandListWithNameDefinition:CommandListWithNameDefinition;
+      protected var mCodeSnippet:CodeSnippet;
       
       //
-      public var mHalfWidth:Number;
-      public var mHalfHeight:Number;
-      public var mTextFieldHalfWidth:Number;
-      public var mTextFieldHalfHeight:Number;
-      public var mBorderThickness:Number = 1;
+      protected var mHalfWidth:Number;
+      protected var mHalfHeight:Number;
+      protected var mTextFieldHalfWidth:Number;
+      protected var mTextFieldHalfHeight:Number;
       
-      public function EntityAction (world:World)
+      //
+      protected var mBorderThickness:Number = 1;
+      
+      public function EntityCodeSnippetHolder (world:World)
       {
          super (world);
          
-         mCommandListWithNameDefinition = new CommandListWithNameDefinition ("Action", new FunctionDefinition ());
+         // child class must create a valid CodeSnippet
+         //mCodeSnippet = new CodeSnippet (new FunctionDefinition ());
       }
       
       public function GetName ():String
       {
-         return mCommandListWithNameDefinition.GetName ();
+         return mCodeSnippet.GetName ();
       }
       
       public function SetName (name:String):void
       {
-         mCommandListWithNameDefinition.SetName (name);
+         mCodeSnippet.SetName (name);
       }
       
-      public function GetCommandListDefinition ():CommandListDefinition
+      public function GetCodeSnippet ():CodeSnippet
       {
-         return mCommandListWithNameDefinition;
+         return mCodeSnippet;
       }
       
       public function ValidateEntityLinks ():void
       {
-         mCommandListWithNameDefinition.ValidateValueSources ();
-      }
-      
-      override public function GetTypeName ():String
-      {
-         return "Action";
+         mCodeSnippet.ValidateValueSources ();
       }
       
       override public function UpdateAppearance ():void
       {
-         while (numChildren > 0)
-            removeChildAt (0);
-         
-         // text
-         
-         var text:String = mCommandListWithNameDefinition.GetName ();
-         if (text.length == 0)
-            text = "Action";
-         
-         var text_field:TextFieldEx;
-         text_field = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + text + "</font>", false, 0xFFFFFF, 0x0);
-         
-         var tw:int = text_field.width;
-         var th:int = text_field.height;
-         
-         mHalfWidth  = (tw + 20) * 0.5;
-         mHalfHeight = (th + 6) * 0.5;
-         
-         mTextFieldHalfWidth = tw * 0.5;
-         mTextFieldHalfHeight = th * 0.5;
-         
-         // background
-         
-         var borderColor:int = 0x0;
-         mBorderThickness = 1;
-         if ( IsSelected () )
-         {
-            borderColor = EditorSetting.BorderColorSelectedObject;
-            if (mBorderThickness * mWorld.GetZoomScale () < 3)
-               mBorderThickness  = 3.0 / mWorld.GetZoomScale ();
-         }
-         
-         var background:Shape = new Shape ();
-         GraphicsUtil.ClearAndDrawRect (background, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, mBorderThickness, true, 0xFFC0C0);
-         var background2:Shape = new Shape ();
-         GraphicsUtil.ClearAndDrawRect (background2, - tw * 0.5, - th * 0.5, tw, th, 0x0, 1, true, 0xFFFFFF);
-         
-      // children
-         
-         background.alpha = 0.90;
-         background2.alpha = 1.0;
-         text_field.alpha = 1.0;
-         
-         addChild (background);
-         addChild (background2);
-         addChild (text_field); 
-         text_field.x = - 0.5 * text_field.width;
-         text_field.y = - 0.5 * text_field.height;
+         // to be overrided
       }
       
       override public function UpdateSelectionProxy ():void

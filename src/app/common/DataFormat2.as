@@ -11,7 +11,6 @@ package common {
    import player.trigger.entity.EntityBasicCondition;
    import player.trigger.entity.EntityTask;
    import player.trigger.entity.EntityConditionDoor;
-   import player.trigger.entity.EntityAction;
    import player.trigger.entity.EntityInputEntityAssigner;
    import player.trigger.entity.EntityEventHandler;
    
@@ -177,10 +176,6 @@ package common {
                else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
                {
                   entity = logic = playerWorld.CreateEntityConditionDoor (entityDefine);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
-               {
-                  entity = logic = playerWorld.CreateEntityAction (entityDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
                {
@@ -389,7 +384,7 @@ package common {
                {
                   var condition:EntityBasicCondition = entity as EntityBasicCondition;
                   
-                  condition.SetConditionListDefine (entityDefine.mConditionListDefine);
+                  condition.SetCommandListDefine (entityDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -405,12 +400,6 @@ package common {
                   condition_door.SetInputConditions (entityDefine.mInputConditionEntityIndexes, entityDefine.mInputConditionTargetValues);
                   condition_door.SetAnd (entityDefine.mIsAnd);
                   condition_door.SetNot (entityDefine.mIsNot);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
-               {
-                  var action:EntityAction = entity as EntityAction;
-                  
-                  action.SetCommandListDefine (entityDefine.mCommandListDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
                {
@@ -432,10 +421,8 @@ package common {
                   var event_handler:EntityEventHandler = entity as EntityEventHandler;
                   
                   event_handler.SetExternalCondition (entityDefine.mInputConditionEntityIndex, entityDefine.mInputConditionTargetValue);
-                  event_handler.SetExternalPostActionEntity (entityDefine.mPostActionEntityIndex);
                   event_handler.SetEntityAssigners (entityDefine.mInputAssignerIndexes);
-                  event_handler.SetInternalConditionListDefine (entityDefine.mConditionListDefine);
-                  event_handler.SetInternalCommandListDefine (entityDefine.mCommandListDefine);
+                  event_handler.SetInternalCommandListDefine (entityDefine.mCodeSnippetDefine);
                   
                   event_handler.Register ();
                }

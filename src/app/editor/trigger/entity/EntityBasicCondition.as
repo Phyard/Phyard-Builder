@@ -20,50 +20,26 @@ package editor.trigger.entity {
    
    import editor.setting.EditorSetting;
    
-   import editor.trigger.ConditionListDefinition;
-   import editor.trigger.ConditionListWithNameDefinition;
    import editor.trigger.FunctionDefinition;
+   import editor.trigger.CodeSnippet;
    
    import common.Define;
    
    import common.trigger.ValueDefine;
    
-   public class EntityBasicCondition extends EntityCondition 
+   public class EntityBasicCondition extends EntityCodeSnippetHolder implements EntityCondition 
    {
-      private var mConditionListWithNameDefinition:ConditionListWithNameDefinition;
-      
-   //
-      public var mHalfWidth:Number;
-      public var mHalfHeight:Number;
-      public var mTextFieldHalfWidth:Number;
-      public var mTextFieldHalfHeight:Number;
-      public var mBorderThickness:Number = 1;
-      
       public function EntityBasicCondition (world:World)
       {
          super (world);
          
-         mConditionListWithNameDefinition = new ConditionListWithNameDefinition ("Condition", new FunctionDefinition ());
+         mCodeSnippet = new CodeSnippet (new FunctionDefinition ());
       }
       
-      public function GetName ():String
+      override public function ValidateEntityLinks ():void
       {
-         return mConditionListWithNameDefinition.GetName ();
-      }
-      
-      public function SetName (name:String):void
-      {
-         mConditionListWithNameDefinition.SetName (name);
-      }
-      
-      public function GetConditionListDefinition ():ConditionListDefinition
-      {
-         return mConditionListWithNameDefinition;
-      }
-      
-      public function ValidateEntityLinks ():void
-      {
-         mConditionListWithNameDefinition.ValidateValueSources ();
+         //mCodeSnippet.ValidateValueSources ();
+         super.ValidateEntityLinks ();
       }
       
       override public function GetTypeName ():String
@@ -78,9 +54,7 @@ package editor.trigger.entity {
          
       // text
          
-         var text:String = mConditionListWithNameDefinition.GetName ();
-         if (text.length == 0)
-            text = "Condition";
+         var text:String = "Condition"; //mCodeSnippet.GetName ();
          
          var text_field:TextFieldEx;
          text_field = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + text + "</font>", false, 0xFFFFFF, 0x0);
@@ -163,12 +137,17 @@ package editor.trigger.entity {
       }
       
 //====================================================================
-//   storer
+//   as EntityCondition
 //====================================================================
       
-      override public function GetTargetValueByLinkZoneId (zoneId:int):int
+      public function GetTargetValueByLinkZoneId (zoneId:int):int
       {
          return ValueDefine.BoolValue_True;
+      }
+      
+      public function GetTargetValueZoneWorldCenter (targetValue:int):Point
+      {
+         return new Point (GetPositionX (), GetPositionY ());
       }
       
    }

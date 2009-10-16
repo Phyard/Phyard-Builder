@@ -39,7 +39,6 @@ package player.world {
    import player.entity.EntityUtilityCamera;
    import player.trigger.entity.EntityBasicCondition;
    import player.trigger.entity.EntityTask;
-   import player.trigger.entity.EntityAction;
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.entity.EntityConditionDoor;
    import player.trigger.entity.EntityInputEntityAssigner;
@@ -893,16 +892,6 @@ package player.world {
          addChild (condition_door);
          
          return condition_door;
-      }
-      
-      public function CreateEntityAction (params:Object):EntityAction
-      {
-         var action:EntityAction = new EntityAction (this);
-         action.BuildFromParams (params);
-         
-         addChild (action);
-         
-         return action;
       }
       
       public function CreateEntityEventHandler (params:Object):EntityEventHandler

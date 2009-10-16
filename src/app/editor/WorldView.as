@@ -112,23 +112,20 @@ package editor {
    import editor.entity.SubEntitySpringAnchor;
    
    import editor.trigger.entity.EntityLogic;
-   import editor.trigger.entity.EntityAction;
    import editor.trigger.entity.EntityEventHandler;
-   //import editor.trigger.entity.EntityTrigger;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
    import editor.trigger.entity.EntityInputEntityAssigner;
    import editor.trigger.entity.EntityInputEntityPairAssigner;
    
-   import editor.entity.VertexController;
-   
    import editor.trigger.entity.InputEntitySelector;
    
-   import editor.entity.EntityCollisionCategory;
+   import editor.trigger.CodeSnippet;
    
-   import editor.trigger.CommandListDefinition;
-   import editor.trigger.ConditionListDefinition;
+   import editor.entity.VertexController;
+   
+   import editor.entity.EntityCollisionCategory;
    
    import editor.world.World;
    import editor.world.CollisionManager;
@@ -1104,12 +1101,6 @@ package editor {
             case mButton_CreateEntityPairAssigner:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityPairAssigner) );
                break;
-            case mButton_CreateAction:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityAction) );
-               break;
-            //case mButton_CreateTrigger:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTrigger) );
-            //   break;
             case mButton_CreateEventHandler0:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelBeginInitialize, mPotientialEventIds:null}) );
                break;
@@ -1635,10 +1626,8 @@ package editor {
          return entity is EntityShape || entity is SubEntityHingeAnchor || entity is SubEntitySliderAnchor
                 || entity is SubEntitySpringAnchor // v1.01
                 || entity is SubEntityDistanceAnchor // v1.02
-                || entity is EntityAction // v1.07
-                || entity is EntityEventHandler // v1.07
-                //|| entity is EntityTrigger // v1.07
                 || entity is EntityBasicCondition // v1.07
+                || entity is EntityEventHandler // v1.07
                 ;
       }
       
@@ -1855,18 +1844,9 @@ package editor {
                var condition:EntityBasicCondition = entity as EntityBasicCondition;
                
                values.mName = condition.GetName ();
-               values.mConditionListDefinition  = condition.GetConditionListDefinition ();
+               values.mCodeSnippet  = condition.GetCodeSnippet ();
                
                ShowConditionSettingDialog (values, SetConditionProperties);
-            }
-            else if (entity is EntityAction)
-            {
-               var action:EntityAction = entity as EntityAction;
-               
-               values.mName = action.GetName ();
-               values.mCommandListDefinition = action.GetCommandListDefinition ();
-               
-               ShowActionSettingDialog (values, SetActionProperties);
             }
             else if (entity is EntityEventHandler)
             {
@@ -1874,8 +1854,7 @@ package editor {
                
                values.mName = event_handler.GetName ();
                values.mEventId = event_handler.GetEventId ();
-               values.mConditionListDefinition  = event_handler.GetConditionListDefinition ();
-               values.mCommandListDefinition  = event_handler.GetCommandListDefinition ();
+               values.mCodeSnippet  = event_handler.GetCodeSnippet ();
                
                ShowEventHandlerSettingDialog (values, SetEventHandlerProperties);
             }
@@ -2889,17 +2868,6 @@ package editor {
          return camera;
       }
       
-      public function CreateEntityAction (options:Object = null):EntityAction
-      {
-         var action:EntityAction = mEditorWorld.CreateEntityAction ();
-         if (action == null)
-            return null;
-         
-         SetTheOnlySelectedEntity (action);
-         
-         return action;
-      }
-      
       public function CreateEntityEventHandler (options:Object = null):EntityEventHandler
       {
          var handler:EntityEventHandler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
@@ -2910,17 +2878,6 @@ package editor {
          
          return handler;
       }
-      
-      //public function CreateEntityTrigger (options:Object = null):EntityTrigger
-      //{
-      //   var trigger:EntityTrigger = mEditorWorld.CreateEntityTrigger ();
-      //   if (trigger == null)
-      //      return null;
-      //   
-      //   SetTheOnlySelectedEntity (trigger);
-      //   
-      //   return trigger;
-      //}
       
       public function CreateEntityCondition (options:Object = null):EntityBasicCondition
       {
@@ -3627,37 +3584,11 @@ package editor {
             var condition:EntityBasicCondition = entity as EntityBasicCondition;
             condition.SetName (params.mName);
             
-            var conditionlist_def:ConditionListDefinition = condition.GetConditionListDefinition ();
-            
-            conditionlist_def.AssignFunctionCallings (params.mReturnFunctionCallings_ConditionList);
-            
-            conditionlist_def.AssignFunctionCallingProperties (params.mReturnIsConditionCallings, params.mReturnConditionResultInverteds);
-            conditionlist_def.SetAsAnd (params.mIsAnd);
-            conditionlist_def.SetAsNot (params.mIsNot);
+            var code_snippet:CodeSnippet = condition.GetCodeSnippet ();
+            code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
             
             condition.UpdateAppearance ();
             condition.UpdateSelectionProxy ();
-         }
-      }
-      
-      public function SetActionProperties (params:Object):void
-      {
-         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         if (selectedEntities == null || selectedEntities.length != 1)
-            return;
-         
-         var entity:Entity = selectedEntities [0] as Entity;
-         
-         if (entity is EntityAction)
-         {
-            var action:EntityAction = entity as EntityAction;
-            action.SetName (params.mName);
-            
-            var cmdlist_def:CommandListDefinition = action.GetCommandListDefinition ();
-            cmdlist_def.AssignFunctionCallings (params.mReturnFunctionCallings_CommandList);
-            
-            action.UpdateAppearance ();
-            action.UpdateSelectionProxy ();
          }
       }
       
@@ -3673,14 +3604,8 @@ package editor {
          {
             var event_handler:EntityEventHandler = entity as EntityEventHandler;
             
-            var conditionlist_def:ConditionListDefinition = event_handler.GetConditionListDefinition ()
-            conditionlist_def.AssignFunctionCallings (params.mReturnFunctionCallings_ConditionList);
-            conditionlist_def.AssignFunctionCallingProperties (params.mReturnIsConditionCallings, params.mReturnConditionResultInverteds);
-            conditionlist_def.SetAsAnd (params.mIsAnd);
-            conditionlist_def.SetAsNot (params.mIsNot);
-            
-            var cmdlist_def:CommandListDefinition = event_handler.GetCommandListDefinition ();
-            cmdlist_def.AssignFunctionCallings (params.mReturnFunctionCallings_CommandList);
+            var code_snippet:CodeSnippet = event_handler.GetCodeSnippet ();
+            code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
             
             //event_handler.UpdateAppearance ();
             //event_handler.UpdateSelectionProxy ();

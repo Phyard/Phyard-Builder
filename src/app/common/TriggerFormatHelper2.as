@@ -13,8 +13,7 @@ package common {
    import player.trigger.FunctionDefinition_Core;
    import player.trigger.FunctionDefinition_Logic;
    import player.trigger.FunctionInstance;
-   import player.trigger.CommandListDefinition;
-   import player.trigger.ConditionListDefinition;
+   import player.trigger.CodeSnippet;
    import player.trigger.FunctionCalling;
    import player.trigger.ValueSource;
    import player.trigger.ValueSource_Null;
@@ -32,8 +31,7 @@ package common {
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.ValueTypeDefine;
    
-   import common.trigger.define.ConditionListDefine;
-   import common.trigger.define.CommandListDefine;
+   import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionCallingDefine;
    import common.trigger.define.ValueSourceDefine;
    import common.trigger.define.ValueSourceDefine_Null;
@@ -54,42 +52,22 @@ package common {
 // define -> definition (player)
 //==============================================================================================
       
-      public static function ConditionListDefine2Definition (parentFunctionInstance:FunctionInstance, playerWorld:World, conditionListDefine:ConditionListDefine):ConditionListDefinition
+      public static function CreateCodeSnippet (parentFunctionInstance:FunctionInstance, playerWorld:World, codeSnippetDefine:CodeSnippetDefine):CodeSnippet
       {
          var calling_list_head:FunctionCalling = null;
          var calling:FunctionCalling = null;
          
-         for (var i:int = conditionListDefine.mNumConditions - 1; i >= 0; -- i)
+         for (var i:int = codeSnippetDefine.mNumCallings - 1; i >= 0; -- i)
          {
-            calling = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, conditionListDefine.mFunctionCallingDefines [i]);
-            calling.mIsConditionCalling = conditionListDefine.mIsConditionCallings [i];
-            calling.mTargetBoolValue = ! conditionListDefine.mConditionResultInverted [i];
+            calling = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, codeSnippetDefine.mFunctionCallingDefines [i]);
             
             calling.mNextFunctionCalling = calling_list_head;
             calling_list_head = calling;
          }
          
-         var condition_list:ConditionListDefinition = new ConditionListDefinition (calling_list_head, conditionListDefine.mIsAnd, conditionListDefine.mIsNot);
+         var code_snippet:CodeSnippet = new CodeSnippet (calling_list_head);
          
-         return condition_list;
-      }
-      
-      public static function CommandListDefine2Definition (parentFunctionInstance:FunctionInstance, playerWorld:World, commandListDefine:CommandListDefine):CommandListDefinition
-      {
-         var calling_list_head:FunctionCalling = null;
-         var calling:FunctionCalling = null;
-         
-         for (var i:int = commandListDefine.mNumCommands - 1; i >= 0; -- i)
-         {
-            calling = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, commandListDefine.mFunctionCallingDefines [i]);
-            
-            calling.mNextFunctionCalling = calling_list_head;
-            calling_list_head = calling;
-         }
-         
-         var common_list:CommandListDefinition = new CommandListDefinition (calling_list_head);
-         
-         return common_list;
+         return code_snippet;
       }
       
       public static function FunctionCallingDefine2FunctionCalling (parentFunctionInstance:FunctionInstance, playerWorld:World, funcCallingDefine:FunctionCallingDefine):FunctionCalling
@@ -246,12 +224,7 @@ package common {
 // byte array -> define
 //==============================================================================================
       
-      public static function ByteArray2ConditionListDefine (byteArray:ByteArray):ConditionListDefine
-      {
-         return null;
-      }
-      
-      public static function ByteArray2CommandListDefine (byteArray:ByteArray):CommandListDefine
+      public static function ByteArray2CommandListDefine (byteArray:ByteArray):CodeSnippetDefine
       {
          return null;
       }
@@ -270,12 +243,7 @@ package common {
 // define -> xml
 //==============================================================================================
       
-      public static function ConditionListDefine2Xml (conditionListDefine:ConditionListDefine):XML
-      {
-         return null;
-      }
-      
-      public static function CommandListDefine2Xml (commandListDefine:CommandListDefine):XML
+      public static function CommandListDefine2Xml (codeSnippetDefine:CodeSnippetDefine):XML
       {
          return null;
       }

@@ -29,7 +29,7 @@ package player.trigger
          
          funcc_instance.mInputVariableSpace.GetValuesFrom (mInputValueSourceList);
          
-         // call ...
+         // todo: call ...
          
          func_instance.mReturnValueTargetList.SetValuesTo (mReturnValueTargetList);
          

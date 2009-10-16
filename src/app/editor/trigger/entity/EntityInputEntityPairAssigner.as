@@ -84,13 +84,17 @@ package editor.trigger.entity {
          //return mInputEntities1;
          
          var entities:Array = new Array ();
-         var main_entity:Entity;
-         for (var i:int = 0; i < mInputEntities1.length; ++ i)
+         
+         if (mInputEntities1 != null)
          {
-            main_entity = (mInputEntities1 [i] as Entity).GetMainEntity ();
-            if (main_entity != null && entities.indexOf (main_entity) < 0)
+            var main_entity:Entity;
+            for (var i:int = 0; i < mInputEntities1.length; ++ i)
             {
-               entities.push (main_entity);
+               main_entity = (mInputEntities1 [i] as Entity).GetMainEntity ();
+               if (main_entity != null && entities.indexOf (main_entity) < 0)
+               {
+                  entities.push (main_entity);
+               }
             }
          }
          
@@ -102,13 +106,17 @@ package editor.trigger.entity {
          //return mInputEntities2;
          
          var entities:Array = new Array ();
-         var main_entity:Entity;
-         for (var i:int = 0; i < mInputEntities2.length; ++ i)
+         
+         if (mInputEntities2 != null)
          {
-            main_entity = (mInputEntities2 [i] as Entity).GetMainEntity ();
-            if (main_entity != null && entities.indexOf (main_entity) < 0)
+            var main_entity:Entity;
+            for (var i:int = 0; i < mInputEntities2.length; ++ i)
             {
-               entities.push (main_entity);
+               main_entity = (mInputEntities2 [i] as Entity).GetMainEntity ();
+               if (main_entity != null && entities.indexOf (main_entity) < 0)
+               {
+                  entities.push (main_entity);
+               }
             }
          }
          

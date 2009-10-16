@@ -105,14 +105,9 @@ package editor.trigger {
          return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (func_id);
       }
       
-      public static function GetPlayerCommandFunctionsMenuItemXML ():XML
+      public static function GetCoreApiFunctionsMenuItemXML ():XML
       {
-         return PlayerFunctionDefinesForEditing.sCommandFunctionsMenuItemXML;
-      }
-      
-      public static function GetPlayerConditionFunctionsMenuItemXML ():XML
-      {
-         return PlayerFunctionDefinesForEditing.sConditionFunctionsMenuItemXML;
+         return PlayerFunctionDefinesForEditing.sCoreApiMenuItemXML;
       }
       
       public static function GetCoreFunctionDeclaration (functionId:int):common.trigger.FunctionDeclaration

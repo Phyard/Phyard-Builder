@@ -22,27 +22,24 @@ package editor.trigger.entity {
    
    import common.Define;
    
-   public class EntityCondition extends EntityLogic 
+   public interface EntityCondition
    {
       
-      public function EntityCondition (world:World)
-      {
-         super (world);
-      }
-      
 //====================================================================
-//   storer
+//   EntityCondition
 //====================================================================
       
-      public function GetTargetValueByLinkZoneId (zoneId:int):int
-      {
-         return zoneId;
-      }
+      //public 
+      function GetTargetValueByLinkZoneId (zoneId:int):int;
+      //{
+      //   return zoneId;
+      //}
       
-      public function GetTargetValueZoneWorldCenter (targetValue:int):Point
-      {
-         return new Point (GetPositionX (), GetPositionY ());
-      }
+      //public 
+      function GetTargetValueZoneWorldCenter (targetValue:int):Point;
+      //{
+      //   return new Point (GetPositionX (), GetPositionY ());
+      //}
       
    }
 }

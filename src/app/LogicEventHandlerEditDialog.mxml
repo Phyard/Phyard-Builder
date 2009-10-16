@@ -13,36 +13,13 @@
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
-   <mx:TabNavigator id="NavigatorPanel" width="100%" height="100%"  creationPolicy="all">
-      <mx:HBox label="Prerequisites" width="100%" height="100%">
-         <mx:Spacer width="0"/>
-         <mx:VBox height="100%" >
-            <mx:Spacer height="0"/>
-            <ConditionListEditPanel id="theConditionListEditPanel" width="100%" />
-            <mx:Spacer height="0"/>
-         </mx:VBox>
-         <mx:Spacer width="0"/>
-      </mx:HBox>
-      <mx:HBox label="Commands" width="100%" height="100%">
-         <mx:Spacer width="0"/>
-         <mx:VBox height="100%">
-            <mx:Spacer height="0"/>
-            <CommandListEditPanel id="theCommandListEditPanel" width="100%" />
-            <mx:Spacer height="0"/>
-         </mx:VBox>
-         <mx:Spacer width="0"/>
-      </mx:HBox>
-      <mx:VBox label="Basic" width="100%" height="100%">
-         <mx:HBox width="100%" >
-            <mx:VBox width="36%">
-            </mx:VBox>
-            <mx:VBox>
-               <mx:CheckBox id="CheckBox_Enabled" label="Enabled Initially"/>
-            </mx:VBox>
-         </mx:HBox>
-         <mx:Spacer height="8"/>
-      </mx:VBox>
-   </mx:TabNavigator>
+   <mx:HBox width="100%" verticalAlign="bottom">
+      <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_Enabled" label="Enabled Initially"/>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
 
    <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Spacer width="100%"/>
@@ -78,14 +55,12 @@
          // ...
             Lavel_EventHandlerName.text = mParams.mName;
             
-            theConditionListEditPanel.SetConditionListDefinition (mParams.mConditionListDefinition);
-            theCommandListEditPanel.SetCommandListDefinition (mParams.mCommandListDefinition);
+            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
          }
          
          public function GetValues (returnValues:Object):void
          {
-            theConditionListEditPanel.GetValues (returnValues);
-            theCommandListEditPanel.GetValues (returnValues);
+            returnValues.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
          }
          
          private function OnInitPanel ():void

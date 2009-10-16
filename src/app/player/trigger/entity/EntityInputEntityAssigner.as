@@ -82,8 +82,6 @@ package player.trigger.entity
       
       public function ContainsEntityPair (entityIndex1:int, entityIndex2:int, ignorePairOrder:Boolean):int
       {
-      trace ("mIsPairAssigner = " + mIsPairAssigner + ", mAssignerType = " + mAssignerType);
-      
          if ( ! mIsPairAssigner)
             return ContainingResult_False;
          

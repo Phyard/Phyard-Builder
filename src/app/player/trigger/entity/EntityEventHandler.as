@@ -8,8 +8,7 @@ package player.trigger.entity
    
    import player.trigger.data.ListElement_InputEntityAssigner;
    
-   import common.trigger.define.ConditionListDefine;
-   import common.trigger.define.CommandListDefine;
+   import common.trigger.define.CodeSnippetDefine;
    
    import common.trigger.CoreEventIds;
    
@@ -17,10 +16,9 @@ package player.trigger.entity
    {
       public var mNextEntityEventHandlerOfTheSameType:EntityEventHandler = null;
       
-      public var mFirstEntityAssigner:ListElement_InputEntityAssigner = null;
-      
       public var mExternalCondition:ConditionAndTargetValue = null;
-      public var mExternalPostActionEntity:EntityAction = null;
+      
+      public var mFirstEntityAssigner:ListElement_InputEntityAssigner = null;
       
       public var mEventHandlerDefinition:FunctionDefinition_Logic;
       
@@ -45,11 +43,6 @@ package player.trigger.entity
          }
       }
       
-      public function SetExternalPostActionEntity (actionEntityIndex:int):void
-      {
-         mExternalPostActionEntity = mWorld.GetEntityByIndexInEditor (actionEntityIndex) as EntityAction;
-      }
-      
       public function SetEntityAssigners (assignerEntityIndexes:Array):void
       {
          if (assignerEntityIndexes == null)
@@ -65,26 +58,21 @@ package player.trigger.entity
          }
       }
       
-      public function SetInternalConditionListDefine (conditionListDefine:ConditionListDefine):void
+      public function SetInternalCommandListDefine (codeSnippetDefine:CodeSnippetDefine):void
       {
          if (mEventHandlerDefinition != null) // should not be null
-            mEventHandlerDefinition.SetConditionListDefine (conditionListDefine);
-      }
-      
-      public function SetInternalCommandListDefine (commandListDefine:CommandListDefine):void
-      {
-         if (mEventHandlerDefinition != null) // should not be null
-            mEventHandlerDefinition.SetCommandListDefine (commandListDefine);
+            mEventHandlerDefinition.SetCodeSnippetDefine (codeSnippetDefine);
       }
       
       public function HandleEvent (valueSourceList:ValueSource):void
       {
-         trace ("mExternalCondition = " + mExternalCondition);
+         //trace ("mExternalCondition = " + mExternalCondition);
          
          if (mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
             return;
          
-         mEventHandlerDefinition.DoCall (valueSourceList, null);
+         //mEventHandlerDefinition.DoCall (valueSourceList, null);
+         mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
       }
       
 //======================================================================================================

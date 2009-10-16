@@ -9,21 +9,24 @@
       creationComplete="OnInitPanel()"
       >
 
-   <mx:HBox width="100%">
-      <mx:VBox id="Box_Commands" width="186">
-         <mx:HBox width="100%">
+   <mx:VBox width="100%">
+      <mx:HBox id="Box_Commands" height="156" width="100%">
+         <mx:VBox>
             <mx:Button id="Button_AddCommmand" click="OnNewCalling ()" toolTip="Add Command" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_add.png')" disabledIcon="@Embed('res/action/command_add-disabled.png')" />
             <mx:Button id="Button_DeleteCommmand" click="OnDeleteCalling ()" toolTip="Delete Command" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_delete.png')" disabledIcon="@Embed('res/action/command_delete-disabled.png')" />
             <mx:Button id="Button_MoveUpCommmand" click="OnMoveCallingUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_moveup.png')" disabledIcon="@Embed('res/action/command_moveup-disabled.png')" />
             <mx:Button id="Button_MoveDownCommmand" click="OnMoveCallingDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_movedown.png')" disabledIcon="@Embed('res/action/command_movedown-disabled.png')" />
-            <mx:Button id="Button_ToggleIsCondition" click="OnToggleIsCondition ()" toolTip="Toggle Condition" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/condition_toogle.png')" disabledIcon="@Embed('res/action/condition_toogle-disabled.png')" />
-         </mx:HBox>
-         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
-      </mx:VBox>
-      <mx:ViewStack borderStyle="solid" width="309" height="100%">
-         <mx:Form label="Parameters" id="Box_ParamsAndReturns" width="100%" horizontalScrollPolicy="off" autoLayout="true" labelWidth="118">
-         </mx:Form>
-      </mx:ViewStack>
+         </mx:VBox>
+         <mx:VBox width="100%" height="100%">
+            <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
+         </mx:VBox>
+      </mx:HBox>
+      <mx:HBox height="186" width="100%">
+         <mx:ViewStack borderStyle="solid" width="100%" height="100%">
+            <mx:Form label="Parameters" id="Box_ParamsAndReturns" width="100%" height="100%" horizontalScrollPolicy="off" autoLayout="true" labelWidth="200">
+            </mx:Form>
+         </mx:ViewStack>
+      </mx:HBox>
       <!--
       <mx:HBox id="Box_ParamsAndReturns" width="100%">
          <mx:VBox id="Box_ParamNames" width="200">
@@ -34,7 +37,7 @@
          </mx:VBox>
       </mx:HBox>
       -->
-   </mx:HBox>
+   </mx:VBox>
 
    <mx:Script>
       <![CDATA[       
@@ -70,8 +73,6 @@
          import editor.trigger.FunctionDefinition
          import editor.trigger.VariableDefinition;
          import editor.trigger.CodeSnippet;
-         import editor.trigger.CommandListDefinition;
-         import editor.trigger.ConditionListDefinition;
          import editor.trigger.FunctionCalling;
          import editor.trigger.ValueSource;
          import editor.trigger.ValueSource_Direct;
@@ -91,14 +92,8 @@
          private var mInputValues:Object;
          
          private var mCodeSnippet:CodeSnippet = null;
-         private var mCommandListDefinition:CommandListDefinition = null;
-         private var mConditionListDefinition:ConditionListDefinition = null;
          
          private var mCurrentEditingItem:Object = null;
-         
-         public var SetInvertCallingResultCheckBoxVisible:Function = null;
-         public var SetInvertCallingResultCheckBoxSelected:Function = null;
-         public var IsInvertCallingResultCheckBoxSelected:Function = null;
          
          [Bindable]
          private var mCommandListDataProvider:Object = [];
@@ -107,25 +102,16 @@
          {
          }
          
-         public function SetCommandListDefinition (listDef:CommandListDefinition):void
+         public function SetCodeSnippet (codeSnippet:CodeSnippet):void
          {
-            mCodeSnippet = listDef;
-            mCommandListDefinition = listDef;
-            Button_ToggleIsCondition.visible = false;
-            Initialize ();
-         }
-         
-         public function SetConditionListDefinition (listDef:ConditionListDefinition):void
-         {
-            mCodeSnippet = listDef;
-            mConditionListDefinition = listDef;
+            mCodeSnippet = codeSnippet;
             
             Initialize ();
          }
          
-         public function GetValues (params:Object):void
+         public function GetCommandListDefinition ():Array
          {
-            GetFunctionCallingsAndTheirProperties (params);
+            return GetFunctionCallings ();
          }
          
          private function Initialize ():void
@@ -168,27 +154,11 @@
                   currentReturnTargets.push (value_target.CloneTarget ());
                }
                
-               if (mConditionListDefinition != null)
-               {
-                  var is_condition:Boolean = mConditionListDefinition.IsConditionCalling (i); // temp, if is bool function
-                  if (! is_condition)
-                     func_name = "   " + func_name;
-                  var result_inverted:Boolean = mConditionListDefinition.IsConditionResultInverted (i);
-                  List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
-                                                         mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, 
-                                                         mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets, 
-                                                         mConditionResultInverted:result_inverted, mIsConditionCalling:is_condition
-                                                         },
-                                                         i);
-               }
-               else
-               {
-                  List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
-                                                         mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources,
-                                                         mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
-                                                         },
-                                                         i);
-               }
+               List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
+                                                      mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources,
+                                                      mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
+                                                      },
+                                                      i);
             }
             
             if (mCodeSnippet.GetNumFunctionCallings () > 0)
@@ -200,7 +170,7 @@
             UpdateInterface ();
          }
          
-         public function GetFunctionCallingsAndTheirProperties (params:Object):void
+         public function GetFunctionCallings ():Array
          {
             RetrieveCurrentCommandValueSourcesFromControls ();
             
@@ -223,35 +193,15 @@
                func_calling.SetReturnValueTargets (item.mCurrentValueTargets)
                
                func_calling_list.push (func_calling);
-               
-               if (mConditionListDefinition != null)
-               {
-                  is_conditions.push (item.mIsConditionCalling);
-                  result_inverteds.push (item.mConditionResultInverted);
-               }
             }
             
-            if (mConditionListDefinition != null)
-            {
-               params.mReturnFunctionCallings_ConditionList = func_calling_list;
-               params.mReturnIsConditionCallings = is_conditions;
-               params.mReturnConditionResultInverteds = result_inverteds;
-            }
-            else
-            {
-               params.mReturnFunctionCallings_CommandList = func_calling_list;
-            }
+            return func_calling_list;
          }
          
          private function OnNewCalling ():void
          {
-            var myMenuData:XML;
+            var myMenuData:XML = TriggerEngine.GetCoreApiFunctionsMenuItemXML ();
             
-            if (mConditionListDefinition != null)
-               myMenuData = TriggerEngine.GetPlayerConditionFunctionsMenuItemXML ();
-            else
-               myMenuData = TriggerEngine.GetPlayerCommandFunctionsMenuItemXML ();
-               
             var myMenu:Menu= Menu.createMenu(Button_AddCommmand, myMenuData, false);
             myMenu.labelField="@name"
             myMenu.addEventListener("itemClick", OnNewCommandMenuItemClicked);
@@ -302,26 +252,11 @@
             
             var insert_index:int = List_Commands.selectedIndex + 1;
             
-            if (mConditionListDefinition != null)
-            {
-               var is_condition:Boolean = func_declaration.GetNumReturns () == 1 && func_declaration.GetReturnValueType (0) == ValueTypeDefine.ValueType_Boolean;
-               if (!is_condition)
-                  func_name = "   " + func_name;
-               List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
-                                                      mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, 
-                                                      mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets, 
-                                                      mConditionResultInverted:false, mIsConditionCalling:is_condition
-                                                      }, 
-                                                      insert_index);
-            }
-            else
-            {
-               List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
-                                                      mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, 
-                                                      mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
-                                                      }, 
-                                                      insert_index);
-            }
+            List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
+                                                   mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, 
+                                                   mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
+                                                   }, 
+                                                   insert_index);
             
             List_Commands.selectedIndex = insert_index;
             
@@ -381,69 +316,11 @@
             }
          }
          
-         private function OnToggleIsCondition ():void
-         {
-            if (mConditionListDefinition != null && mCurrentEditingItem != null)
-            {
-               if (true) // if is bool function
-               {
-                  mCurrentEditingItem.mIsConditionCalling = ! mCurrentEditingItem.mIsConditionCalling;
-                  
-                  var old_func_name:String = List_Commands.dataProvider.getItemAt (List_Commands.selectedIndex).mName;
-                  
-                  var new_func_name:String = TextUtil.TrimString (old_func_name);;
-                  if (! mCurrentEditingItem.mIsConditionCalling)
-                     new_func_name = "   " + new_func_name;
-                  
-                  List_Commands.dataProvider.getItemAt (List_Commands.selectedIndex).mName = new_func_name;
-                  
-                  List_Commands.dataProvider.itemUpdated ( List_Commands.dataProvider.getItemAt (List_Commands.selectedIndex), "mName");//, old_func_name, new_func_name);
-                  
-                  UpdateInterface2 ();
-               }
-            }
-            
-         }
-         
-         private function UpdateInterface2 ():void
-         {
-            if (mConditionListDefinition != null)
-            {
-               if (mCurrentEditingItem == null)
-               {
-                  SetInvertCallingResultCheckBoxVisible (false);
-                  SetInvertCallingResultCheckBoxSelected (false);
-               }
-               else
-               {
-                  if (mCurrentEditingItem.mIsConditionCalling)
-                  {
-                     SetInvertCallingResultCheckBoxVisible (true);
-                     SetInvertCallingResultCheckBoxSelected (mCurrentEditingItem.mConditionResultInverted);
-                  }
-                  else
-                  {
-                     SetInvertCallingResultCheckBoxVisible (false);
-                     SetInvertCallingResultCheckBoxSelected (false);
-                  }
-                  
-                  var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-                  Button_ToggleIsCondition.enabled = func_declaration.GetNumReturns () == 1 && func_declaration.GetReturnValueType (0) == ValueTypeDefine.ValueType_Boolean;
-               }
-            }
-            else
-            {
-               Button_ToggleIsCondition.enabled = false;
-            }
-         }
-         
          private function UpdateInterface ():void
          {
             Button_DeleteCommmand.enabled = List_Commands.selectedIndex >= 0;
             Button_MoveUpCommmand.enabled = List_Commands.selectedIndex >= 1;
             Button_MoveDownCommmand.enabled = List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1;
-            
-            UpdateInterface2 ();
          }
          
          private function OnCurrentCommandChanged ():void
@@ -512,9 +389,9 @@
                variable_def = func_declaration.GetParamDefinitionAt (j);
                
                form_item = new FormItem ();
-               //form_item.percentWidth = 100;
-               form_item.width = 266;
-               form_item.maxWidth = 266;
+               form_item.percentWidth = 100;
+               //form_item.width = 266;
+               //form_item.maxWidth = 266;
                form_item.horizontalScrollPolicy = "off";
                form_item.label = variable_def.GetName () + ":";
                form_item.toolTip = "hi hi";
@@ -551,9 +428,9 @@
                variable_def = func_declaration.GetReturnDefinitionAt (j);
                
                form_item = new FormItem ();
-               //form_item.percentWidth = 100;
-               form_item.width = 266;
-               form_item.maxWidth = 266;
+               form_item.percentWidth = 100;
+               //form_item.width = 490;
+               //form_item.maxWidth = 490;
                form_item.horizontalScrollPolicy = "off";
                form_item.label = variable_def.GetName () + ":";
                form_item.toolTip = "hi hi";
@@ -592,9 +469,9 @@
             
             if (value_control != null)
             {
-               //value_control.percentWidth = 100;
-               value_control.width = 133;
-               value_control.maxWidth = 133;
+               value_control.percentWidth = 100;
+               //value_control.width = 133;
+               //value_control.maxWidth = 133;
                
                valueControls [inputId] = value_control;
                
@@ -627,9 +504,9 @@
             
             if (value_control != null)
             {
-               //value_control.percentWidth = 100;
-               value_control.width = 133;
-               value_control.maxWidth = 133;
+               value_control.percentWidth = 100;
+               //value_control.width = 133;
+               //value_control.maxWidth = 133;
                
                valueControls [returnId] = value_control;
                
@@ -643,12 +520,6 @@
          {
             if (mCurrentEditingItem == null)
                return;
-            
-            if (mConditionListDefinition != null)
-            {
-               mCurrentEditingItem.mConditionResultInverted = IsInvertCallingResultCheckBoxSelected ();
-               //mCurrentEditingItem.mIsConditionCalling
-            }
             
             var func_id:int = mCurrentEditingItem.mID;
             var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
@@ -1041,91 +912,6 @@
             CreateValueTargetControl (return_index, form_item, mCurrentEditingItem.mValueTargetControls);
             BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
          }
-         
-         /*
-         private function OnParamLabelClick (event:MouseEvent):void
-         {
-            if (!event.ctrlKey && !event.shiftKey)
-               return;
-             
-            var form_item:FormItem = event.currentTarget as FormItem;
-            if (form_item == null)
-               return;
-            
-            var param_id:int = mCurrentEditingItem.mValueSourceParentControls.indexOf (form_item);
-            if (param_id < 0)
-               return;
-            
-            var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
-            
-            var func_id:int = mCurrentEditingItem.mID;
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
-            
-            var value_source:ValueSource = mCurrentEditingItem.mCurrentValueSources [param_id] as ValueSource;
-            
-            // create value source type select menu
-            
-            var data_provider:Array = new Array ();
-            
-            data_provider.push ({id:0, mParamId:param_id, label:"Reset"});
-            data_provider.push ({id:1, mParamId:param_id, label:"Default"});
-            data_provider.push (       {type:"separator"}          );
-            data_provider.push ({id:2, mParamId:param_id, label:"Direct Value",   enabled:! (value_source is ValueSource_Direct)});
-            data_provider.push ({id:3, mParamId:param_id, label:"Variable Value", enabled:! (value_source is ValueSource_Variable)});
-            data_provider.push ({id:4, mParamId:param_id, label:"Property Value",  enabled:! (value_source is ValueSource_Property)});
-            
-            var myMenu:Menu= Menu.createMenu(Button_AddCommmand, data_provider, false);
-            myMenu.labelField="label"
-            myMenu.addEventListener("itemClick", OnParamLabelMenuItemClicked);
-            
-            myMenu.show(event.stageX, event.stageY);
-            
-            if (event.stageY + myMenu.height > stage.stageHeight)
-               myMenu.y = stage.stageHeight - myMenu.height;
-            if (event.stageX + myMenu.width > stage.stageWidth)
-               myMenu.x = stage.stageWidth - myMenu.width;
-         }
-         
-         private function OnSelectNewValueSource (event:MenuEvent):void
-         {
-            var id:int = event.item.id;
-            var param_id:int = event.item.mParamId;
-            
-            switch (id)
-            {
-               case 0:
-                  break;
-               case 1:
-                  break;
-               case 2:
-                  break;
-               case 3:
-                  break;
-               case 4:
-                  break;
-               default:
-                  break;
-            }
-            
-            //var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (event.item.@id);
-            
-         
-         trace ("aaa " + e.currentTarget);
-            var label:Label = e.currentTarget as Label;
-         trace ("bbbb");
-            var index:int = label.parent.getChildIndex (label) + 1;
-         trace ("cccc");
-            var uic:UIComponent = label.parent.getChildAt (index) as UIComponent;
-         trace ("ddd");
-            uic.height = 60;
-            var label2:Label = new Label ();
-            label2.text = "new";
-            label.parent.removeChild (uic);
-            label.parent.addChild (label2);
-            label2.height = 60;
-         trace ("eee");
-         }
-         */
          
    //=========================================================================================
    // 

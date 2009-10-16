@@ -5,6 +5,7 @@ package player.global
    import player.trigger.TriggerEngine;
    import player.trigger.IPropertyOwner;
    import player.trigger.VariableSpace;
+   import player.trigger.VariableInstance;
    
    import common.trigger.ValueTypeDefine;
    import common.Define;
@@ -22,6 +23,9 @@ package player.global
       public static var mRegisterVariableSpace_Number:VariableSpace;
       public static var mRegisterVariableSpace_Entity:VariableSpace;
       public static var mRegisterVariableSpace_CollisionCategory:VariableSpace;
+      
+      // for conditin component to store evaluation result
+      public static var mRegisterBooleanVariableSpace_0:VariableInstance = null;
       
 //==============================================================================
 // static values
@@ -41,6 +45,9 @@ package player.global
          mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (false);
          mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (false);
          mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (false);
+         
+         //
+         mRegisterBooleanVariableSpace_0 = mRegisterVariableSpace_Boolean.GetVariableAt (0);
       }
       
       public static function SetCurrentWorld (world:World):void

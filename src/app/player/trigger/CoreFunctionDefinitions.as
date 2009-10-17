@@ -32,6 +32,13 @@ package player.trigger {
             RegisterCoreFunction (CoreFunctionIds.ID_ForDebug,                     ForDebug);
          }
          
+      // global
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Return,                           ReturnVoid);
+         RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfTrue,                     ReturnIfTrue);
+         RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfFalse,                    ReturnIfFalse);
+         RegisterCoreFunction (CoreFunctionIds.ID_AssignBoolenRegister0,            ID_AssignBoolenRegister0);
+         
       // system / time
          
          RegisterCoreFunction (CoreFunctionIds.ID_GetProgramMilliseconds,           GetProgramMilliseconds);
@@ -40,13 +47,17 @@ package player.trigger {
          
       // bool
          
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Assign,            AssignBoolean);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Invert,            BooleanInvert);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsTrue,            IsTrue);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsFalse,           IsFalse);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Larger,            LargerThan);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Less,              LessThan);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsNumber,      EqualsWith_Numbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsBoolean,     EqualsWith_Booleans);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsEntity,      EqualsWith_Entities);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Larger,            LargerThan);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Less,              LessThan);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_And,               BoolAnd);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Or,                BoolOr);
@@ -66,15 +77,17 @@ package player.trigger {
          
       // string
          
+         RegisterCoreFunction (CoreFunctionIds.ID_String_Assign,                      AssignString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_Add,                         AddTwoStrings);
+         
          RegisterCoreFunction (CoreFunctionIds.ID_String_NumberToString,              NumberToString);
          RegisterCoreFunction (CoreFunctionIds.ID_String_BooleanToString,             BooleanToString);
          RegisterCoreFunction (CoreFunctionIds.ID_String_EntityToString,              EntityToString);
          RegisterCoreFunction (CoreFunctionIds.ID_String_CollisionCategoryToString,   CollisionCategoryToString);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_String_Add,                         AddTwoStrings);
-         
       // math
          
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Assign,                     AssignNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Add,                        AddTwoNumbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Subtract,                   SubtractTwoNumbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Multiply,                   MultiplyTwoNumbers);
@@ -114,7 +127,13 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_AttachCameraToShape,                AttachWorldCameraToShape);
          
-      // game /entity
+      // game / collision category
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Cat_Assign,                         AssignCollisionCategory);
+         
+      // game / entity
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Assign,                      AssignEntity);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsVisible,                   IsEntityVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetVisible,                  SetEntityVisible);
@@ -171,6 +190,33 @@ package player.trigger {
       }
       
    //*******************************************************************
+   // global
+   //*******************************************************************
+         
+      public static function ReturnVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         // do nothing, shouldn't run into here
+      }
+      public static function ReturnIfTrue (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
+         
+         valueTarget.AssignValueObject (value);
+      }
+      public static function ReturnIfFalse (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
+         
+         valueTarget.AssignValueObject (! value);
+      }
+      public static function ID_AssignBoolenRegister0 (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueTarget.AssignValueObject (value);
+      }
+      
+   //*******************************************************************
    // system / time
    //*******************************************************************
       
@@ -222,9 +268,74 @@ package player.trigger {
          valueTarget.AssignValueObject (Number (millseconds));
       }
       
+   //*******************************************************************
+   // string
+   //*******************************************************************
+      
+      public static function AssignString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:String = valueSource.EvalateValueObject () as String;
+         
+         valueTarget.AssignValueObject (value);
+      }
+      
+      public static function AddTwoStrings (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:String = valueSource.EvalateValueObject () as String;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:String = valueSource.EvalateValueObject () as String;
+         
+         valueTarget.AssignValueObject (value1 + value2);
+      }
+      
+      public static function NumberToString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject ("" + value);
+         
+         //throw new Error ();
+      }
+      
+      public static function BooleanToString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueTarget.AssignValueObject (String (value));
+      }
+      
+      public static function EntityToString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (value == null ? "null" : "Entity#" + value.GetEntityIndexInEditor ());
+      }
+      
+      public static function CollisionCategoryToString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject ("CollisionCategory#" + value);
+      }
+      
    //************************************************
    // bool
    //************************************************
+      
+      public static function AssignBoolean (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueTarget.AssignValueObject (value);
+      }
+      
+      public static function BooleanInvert (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueTarget.AssignValueObject (! value);
+      }
       
       public static function IsTrue (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -238,6 +349,38 @@ package player.trigger {
          var value:Boolean = valueSource.EvalateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (! value);
+      }
+      
+      public static function EqualsWith_Numbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:Number = valueSource.EvalateValueObject () as Number;
+         
+         var dv:Number = value1 - value2;
+         
+         valueTarget.AssignValueObject (- Number.MIN_VALUE < dv && dv < Number.MIN_VALUE);
+      }
+      
+      public static function EqualsWith_Booleans (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueTarget.AssignValueObject (value1 == value2);
+      }
+      
+      public static function EqualsWith_Entities (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (value1 == value2);
       }
       
       public static function LargerThan (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -262,28 +405,6 @@ package player.trigger {
          var dv:Number = value1 - value2;
          
          valueTarget.AssignValueObject (dv <= - Number.MIN_VALUE);
-      }
-      
-      public static function EqualsWith_Numbers (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
-         
-         var dv:Number = value1 - value2;
-         
-         valueTarget.AssignValueObject (- Number.MIN_VALUE < dv && dv < Number.MIN_VALUE);
-      }
-      
-      public static function EqualsWith_Booleans (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value1:Boolean = valueSource.EvalateValueObject () as Boolean;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Boolean = valueSource.EvalateValueObject () as Boolean;
-         
-         valueTarget.AssignValueObject (value1 == value2);
       }
       
       public static function BoolAnd (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -324,126 +445,15 @@ package player.trigger {
       }
       
    //************************************************
-   // bitwise
-   //************************************************
-      
-      public static function ShiftLeft (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
-         
-         value <<= numBitsToShift;
-         valueTarget.AssignValueObject (value);
-      }
-      
-      public static function ShiftRight (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
-         
-         value >>= numBitsToShift;
-         valueTarget.AssignValueObject (value);
-      }
-      
-      public static function ShiftRightUnsigned (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
-         
-         value >>>= numBitsToShift;
-         valueTarget.AssignValueObject (value);
-      }
-      
-      public static function BitwiseAnd (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueTarget.AssignValueObject (Number(value1 & value2));
-      }
-      
-      public static function BitwiseOr (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueTarget.AssignValueObject (Number(value1 | value2));
-      }
-      
-      public static function BitwiseNot (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueTarget.AssignValueObject (Number(~value));
-      }
-      
-      public static function BitwiseXor (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueTarget.AssignValueObject (Number(value1 ^ value2));
-      }
-      
-   //*******************************************************************
-   // string
-   //*******************************************************************
-      
-      public static function NumberToString (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueTarget.AssignValueObject ("" + value);
-         
-         //throw new Error ();
-      }
-      
-      public static function BooleanToString (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
-         
-         valueTarget.AssignValueObject (String (value));
-      }
-      
-      public static function EntityToString (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Entity = valueSource.EvalateValueObject () as Entity;
-         
-         valueTarget.AssignValueObject (value == null ? "null" : "Entity#" + value.GetEntityIndexInEditor ());
-      }
-      
-      public static function CollisionCategoryToString (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueTarget.AssignValueObject ("CollisionCategory#" + value);
-      }
-      
-      public static function AddTwoStrings (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value1:String = valueSource.EvalateValueObject () as String;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:String = valueSource.EvalateValueObject () as String;
-         
-         valueTarget.AssignValueObject (value1 + value2);
-      }
-      
-   //************************************************
    // math
    //************************************************
+      
+      public static function AssignNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (value);
+      }
       
       // + - * /
       
@@ -681,6 +691,78 @@ package player.trigger {
          valueTarget.AssignValueObject (Math.atan2 (value1, value2));
       }
       
+      // bitwise
+      
+      public static function ShiftLeft (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
+         
+         value <<= numBitsToShift;
+         valueTarget.AssignValueObject (value);
+      }
+      
+      public static function ShiftRight (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
+         
+         value >>= numBitsToShift;
+         valueTarget.AssignValueObject (value);
+      }
+      
+      public static function ShiftRightUnsigned (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
+         
+         value >>>= numBitsToShift;
+         valueTarget.AssignValueObject (value);
+      }
+      
+      public static function BitwiseAnd (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (Number(value1 & value2));
+      }
+      
+      public static function BitwiseOr (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (Number(value1 | value2));
+      }
+      
+      public static function BitwiseNot (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (Number(~value));
+      }
+      
+      public static function BitwiseXor (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (Number(value1 ^ value2));
+      }
+      
    //*******************************************************************
    // game world
    //*******************************************************************
@@ -719,9 +801,29 @@ package player.trigger {
          Global.GetCurrentWorld ().AttatchCurrentCameraToEntity (shape);
       }
       
+      // game / collision category
+         
+   //*******************************************************************
+   // game collision category
+   //*******************************************************************
+      
+      public static function AssignCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var cat_id:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (cat_id);
+      }
+      
    //*******************************************************************
    // game entity
    //*******************************************************************
+      
+      public static function AssignEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (entity);
+      }
       
       public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
       {

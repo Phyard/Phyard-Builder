@@ -42,20 +42,20 @@ package player.trigger
          mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
       }
       
-      // as condition component, no inputs, return value must be put in mRegisterBooleanVariableSpace_0
+      // as condition component, no inputs, no returns, the evaluation result must be put in mRegisterBooleanVariableSpace_0
       public function EvaluateCondition ():Boolean
       {
          // no inputs
          //mLogicFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
          
-         Global.mRegisterBooleanVariableSpace_0.mValueObject = false;
+         Global.mBooleanRegister_0.mValueObject = false;
          
          mCodeSnippet.Excute ();
          
-         return Global.mRegisterBooleanVariableSpace_0.mValueObject;
+         return Global.mBooleanRegister_0.mValueObject;
          
          // no returns
-         mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
+         //mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
       }
       
       // as event handler, no returns

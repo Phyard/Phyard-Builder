@@ -2,7 +2,7 @@ package player.trigger
 {
    public class FunctionCalling
    {
-      public var mNextFunctionCalling:FunctionCalling = null;
+      internal var mNextFunctionCalling:FunctionCalling = null;
       
    // .........
       
@@ -16,6 +16,11 @@ package player.trigger
          
          mInputValueSourceList = valueSourceList;
          mReturnValueTargetList = valueTargetList;
+      }
+      
+      public function SetNextCalling (nextCalling:FunctionCalling):void
+      {
+         mNextFunctionCalling = nextCalling;
       }
       
       public function Call ():void

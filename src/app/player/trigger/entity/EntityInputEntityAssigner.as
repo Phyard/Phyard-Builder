@@ -22,9 +22,11 @@ package player.trigger.entity
       protected var mEntitiesIndexes1:Array = null;
       protected var mEntitiesIndexes2:Array = null;
       
-      // for optimizing
-      protected var mPairHasntable:Dictionary = null;
+      // for 1-1 optimizing
+      protected var mPairHashtable:Dictionary = null;
+      protected var mPairHashtable_IgnorePairOrder:Dictionary = null;
       
+      // 
       public function EntityInputEntityAssigner (world:World, isPairAssigner:Boolean)
       {
          super (world);
@@ -42,18 +44,49 @@ package player.trigger.entity
             mAssignerType = params.mSelectorType;
       }
       
-      public function SetEntityIndexes1 (entityIndexes:Array):void
+      public function SetEntityIndexes (entityIndexes:Array):void
       {
          mEntitiesIndexes1 = entityIndexes;
          
-         // sort by entityIdInEditor
+         // to optimize: sort by entityIdInEditor
       }
       
-      public function SetEntityIndexes2 (entityIndexes:Array):void
+      public function SetEntityPairIndexes (entityIndexes1:Array, entityIndexes2:Array):void
       {
-         mEntitiesIndexes2 = entityIndexes;
+         mEntitiesIndexes1 = entityIndexes1;
+         mEntitiesIndexes2 = entityIndexes2;
          
-         // sort by entityIdInEditor
+         // to optimize: sort by entityIdInEditor
+         
+         // for 1-1
+         if (mAssignerType == Define.EntityPairAssignerType_OneToOne && entityIndexes1 != null && entityIndexes2 != null)
+         {
+            mPairHashtable = new Dictionary ();
+            mPairHashtable_IgnorePairOrder = new Dictionary ();
+            
+            var length:int = entityIndexes1.length;
+            if (length > entityIndexes2.length)
+            {
+               length = entityIndexes2.length;
+            }
+            
+            var id:int;
+            var id1:int;
+            var id2:int;
+            for (var i:int = 0; i < length; ++ i)
+            {
+               id1 = entityIndexes1 [i];
+               id2 = entityIndexes2 [i];
+               id = ((id1 & 0xFFFF) << 16) | (id2 & 0xFFFF);
+               
+               mPairHashtable [id] = 1;
+               mPairHashtable_IgnorePairOrder [id] = 1;
+               
+               id = ((id2 & 0xFFFF) << 16) | (id1 & 0xFFFF);
+               
+               mPairHashtable_IgnorePairOrder [id] = 1;
+            }
+         }
       }
       
       public function ContainsEntity (entityIndex:int):Boolean
@@ -92,39 +125,20 @@ package player.trigger.entity
          {
             case Define.EntityPairAssignerType_OneToOne:
                
-               if (mEntitiesIndexes1 == null || mEntitiesIndexes2 == null)
-                  return ContainingResult_False;
+               var id:int = ((entityIndex1 & 0xFFFF) << 16) | (entityIndex2 & 0xFFFF);
                
-               p1 = mEntitiesIndexes1.indexOf (entityIndex1);
-               if (p1 < 0)
+               if (mPairHashtable [id] != null)
+                  return ContainingResult_True;
+               
+               if (ignorePairOrder)
                {
-                  if (ignorePairOrder)
-                  {
-                     p1 = mEntitiesIndexes2.indexOf (entityIndex1);
-                     
-                     if (p1 < 0)
-                        return ContainingResult_False;
-                     
-                     return p1 == mEntitiesIndexes1.indexOf (entityIndex2) ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
-                  }
-                  else return ContainingResult_False;
-               }
-               else
-               {
-                  if (p1 == mEntitiesIndexes2.indexOf (entityIndex2))
-                     return ContainingResult_True;
+                  id = ((entityIndex2 & 0xFFFF) << 16) | (entityIndex1 & 0xFFFF);
                   
-                  if (ignorePairOrder)
-                  {
-                     p1 = mEntitiesIndexes2.indexOf (entityIndex1);
-                     
-                     if (p1 < 0)
-                        return ContainingResult_False;
-                     
-                     return p1 == mEntitiesIndexes1.indexOf (entityIndex2) ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
-                  }
-                  else return ContainingResult_False;
+                  return mPairHashtable_IgnorePairOrder [id] != null ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
                }
+               
+               return ContainingResult_False;
+               
             case Define.EntityPairAssignerType_ManyToMany:
                
                if (mEntitiesIndexes1 == null || mEntitiesIndexes2 == null)

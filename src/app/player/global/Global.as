@@ -16,16 +16,16 @@ package player.global
       
       public static var mCurrentWorld:World = null;
       
-      //public static var mGlobalVarialbeSpace:VariableSpace;
+      // these variables are static, which mmeans there can only be one player instance running at the same time.
       
       public static var mRegisterVariableSpace_Boolean:VariableSpace;
-      public static var mRegisterVariableSpace_String:VariableSpace;
-      public static var mRegisterVariableSpace_Number:VariableSpace;
-      public static var mRegisterVariableSpace_Entity:VariableSpace;
+      public static var mRegisterVariableSpace_String :VariableSpace;
+      public static var mRegisterVariableSpace_Number :VariableSpace;
+      public static var mRegisterVariableSpace_Entity :VariableSpace;
       public static var mRegisterVariableSpace_CollisionCategory:VariableSpace;
       
-      // for conditin component to store evaluation result
-      public static var mRegisterBooleanVariableSpace_0:VariableInstance = null;
+      // for condition evaluation result storing
+      public static var mBooleanRegister_0:VariableInstance = null;
       
 //==============================================================================
 // static values
@@ -47,7 +47,7 @@ package player.global
          mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (false);
          
          //
-         mRegisterBooleanVariableSpace_0 = mRegisterVariableSpace_Boolean.GetVariableAt (0);
+         mBooleanRegister_0 = mRegisterVariableSpace_Boolean.GetVariableAt (0);
       }
       
       public static function SetCurrentWorld (world:World):void

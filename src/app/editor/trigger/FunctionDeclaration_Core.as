@@ -8,7 +8,7 @@ package editor.trigger {
    
    public class FunctionDeclaration_Core extends FunctionDeclaration
    {
-      public function FunctionDeclaration_Core (id:int, name:String, inputDefinitions:Array = null, returnDefinitions:Array = null, description:String = null) //ValueTypeDefine.ValueType_Void)
+      public function FunctionDeclaration_Core (id:int, name:String, inputDefinitions:Array = null, returnDefinitions:Array = null, description:String = null)
       {
          super (id, name, inputDefinitions, description, returnDefinitions);
          
@@ -20,12 +20,6 @@ package editor.trigger {
       {
          return FunctionTypeDefine.FunctionType_Core;
       }
-      
-      override public function CanBeCalledInConditionList ():Boolean
-      {
-         return TriggerEngine.GetCoreFunctionDeclaration (mId).mCanBeCalledInConditionList;
-      }
-      
    }
 }
 

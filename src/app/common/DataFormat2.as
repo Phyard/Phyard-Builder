@@ -181,14 +181,13 @@ package common {
                {
                   entity = logic = playerWorld.CreateEntityInputEntityAssigner (entityDefine, false);
                   
-                  (entity as EntityInputEntityAssigner).SetEntityIndexes1 (entityDefine.mEntityIndexes);
+                  (entity as EntityInputEntityAssigner).SetEntityIndexes (entityDefine.mEntityIndexes);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
                {
                   entity = logic = playerWorld.CreateEntityInputEntityAssigner (entityDefine, true);
                   
-                  (entity as EntityInputEntityAssigner).SetEntityIndexes1 (entityDefine.mEntityIndexes1);
-                  (entity as EntityInputEntityAssigner).SetEntityIndexes2 (entityDefine.mEntityIndexes2);
+                  (entity as EntityInputEntityAssigner).SetEntityPairIndexes (entityDefine.mEntityIndexes1, entityDefine.mEntityIndexes2);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {

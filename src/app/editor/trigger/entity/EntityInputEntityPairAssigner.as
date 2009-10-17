@@ -87,13 +87,24 @@ package editor.trigger.entity {
          
          if (mInputEntities1 != null)
          {
+            var entity:Entity;
             var main_entity:Entity;
             for (var i:int = 0; i < mInputEntities1.length; ++ i)
             {
-               main_entity = (mInputEntities1 [i] as Entity).GetMainEntity ();
-               if (main_entity != null && entities.indexOf (main_entity) < 0)
+               entity = mInputEntities1 [i] as Entity;
+               
+               if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
                {
+                  main_entity = entity == null ? null : entity.GetMainEntity ();
                   entities.push (main_entity);
+               }
+               else if (entity != null)
+               {
+                  main_entity = entity.GetMainEntity ();
+                  if (entities.indexOf (main_entity) < 0)
+                  {
+                     entities.push (main_entity);
+                  }
                }
             }
          }
@@ -109,13 +120,24 @@ package editor.trigger.entity {
          
          if (mInputEntities2 != null)
          {
+            var entity:Entity;
             var main_entity:Entity;
             for (var i:int = 0; i < mInputEntities2.length; ++ i)
             {
-               main_entity = (mInputEntities2 [i] as Entity).GetMainEntity ();
-               if (main_entity != null && entities.indexOf (main_entity) < 0)
+               entity = mInputEntities2 [i] as Entity;
+               
+               if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
                {
+                  main_entity = entity == null ? null : entity.GetMainEntity ();
                   entities.push (main_entity);
+               }
+               else if (entity != null)
+               {
+                  main_entity = entity.GetMainEntity ();
+                  if (entities.indexOf (main_entity) < 0)
+                  {
+                     entities.push (main_entity);
+                  }
                }
             }
          }

@@ -4,18 +4,13 @@ package common.trigger
    {
       public var mId:int;
       public var mInputValueTypes:Array;
-      //public var mReturnValueType:int = ValueTypeDefine.ValueType_Void;
       public var mReturnValueTypes:Array;
-      public var mCanBeCalledInConditionList:Boolean = false;
       
-      public function FunctionDeclaration (id:int, inputValueTypes:Array, returnValueTypes:Array = null, canBeCalledInConditionList:Boolean = false) //returnValueType:int=0) //ValueTypeDefine.ValueType_Void)
+      public function FunctionDeclaration (id:int, inputValueTypes:Array, returnValueTypes:Array = null)
       {
          mId = id;
          mInputValueTypes = inputValueTypes;
-         //mReturnValueType = returnValueType;
          mReturnValueTypes = returnValueTypes;
-         
-         mCanBeCalledInConditionList = canBeCalledInConditionList;
       }
       
       public function GetID ():int

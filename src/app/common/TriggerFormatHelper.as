@@ -17,11 +17,6 @@ package common {
    import editor.trigger.ValueSource_Null;
    import editor.trigger.ValueSource_Direct;
    import editor.trigger.ValueSource_Variable;
-   //import editor.trigger.ValueSource_Property;
-   //import editor.trigger.ValueSource_Property_Global;
-   //import editor.trigger.ValueSource_Property_World;
-   //import editor.trigger.ValueSource_Property_Entity;
-   //import editor.trigger.ValueSource_Property_OwnerVariable;
    import editor.trigger.ValueTarget;
    import editor.trigger.ValueTarget_Null;
    import editor.trigger.ValueTarget_Variable;

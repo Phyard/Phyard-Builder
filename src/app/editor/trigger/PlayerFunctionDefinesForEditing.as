@@ -24,21 +24,21 @@ package editor.trigger {
       // packages
       //================================================
          
+         var global_package:FunctionPackage = new FunctionPackage ("global", sTopFuntionPackage);
          var system_package:FunctionPackage = new FunctionPackage ("system", sTopFuntionPackage);
          var string_package:FunctionPackage = new FunctionPackage ("string (Text)", sTopFuntionPackage);
-         var bool_package:FunctionPackage = new FunctionPackage ("logic (Boolean)", sTopFuntionPackage);
-         var bitwise_package:FunctionPackage = new FunctionPackage ("bitwise", sTopFuntionPackage);
-         var math_package:FunctionPackage = new FunctionPackage ("math (Number)", sTopFuntionPackage);
+         var bool_package:FunctionPackage   = new FunctionPackage ("logic (Boolean)", sTopFuntionPackage);
+         var math_package:FunctionPackage   = new FunctionPackage ("math (Number)", sTopFuntionPackage);
             var trigonometry_package:FunctionPackage = new FunctionPackage ("trigonometry", math_package);
-            var random_package:FunctionPackage = new FunctionPackage ("random", math_package);
+            var random_package:FunctionPackage       = new FunctionPackage ("random", math_package);
+            var bitwise_package:FunctionPackage      = new FunctionPackage ("bitwise", math_package);
          
-         var world_package:FunctionPackage = new FunctionPackage ("world", sTopFuntionPackage);
-         var entity_package:FunctionPackage = new FunctionPackage ("entity", sTopFuntionPackage);
-            var entity_is_package:FunctionPackage = new FunctionPackage ("Is a Subtype?", entity_package);
+         var world_package:FunctionPackage  = new FunctionPackage ("world", sTopFuntionPackage);
+         var cat_package:FunctionPackage    = new FunctionPackage ("ccat (Collision Category)", sTopFuntionPackage);
+         var entity_package:FunctionPackage = new FunctionPackage ("entity (Shape, Joint, Text, ...)", sTopFuntionPackage);
+            var entity_is_package:FunctionPackage    = new FunctionPackage ("Is a Subtype?", entity_package);
             var entity_shape_package:FunctionPackage = new FunctionPackage ("shape", entity_package);
-            var entity_text_package:FunctionPackage = new FunctionPackage ("text", entity_package);
-         
-         var cat_package:FunctionPackage = new FunctionPackage ("cat (Collision Category)", sTopFuntionPackage);
+            var entity_text_package:FunctionPackage  = new FunctionPackage ("text", entity_package);
          
       //================================================
       // functions
@@ -46,7 +46,7 @@ package editor.trigger {
          
          if (Compile::Is_Debugging)
          {
-            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, system_package, "ForDevDebug", 
+            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, global_package, "ForDevDebug", 
                           [
                              new VariableDefinitionEntity ("Shape"), 
                              new VariableDefinitionNumber ("Gravity Angle"), 
@@ -63,6 +63,31 @@ package editor.trigger {
                           ]
                        );
          }
+         
+      // global
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Return, global_package, "Return", 
+                     null,
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfTrue, global_package, "ReturnIfTrue", 
+                     [
+                             new VariableDefinitionBoolean ("Bool Value"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfFalse, global_package, "ReturnIfFalse", 
+                     [
+                             new VariableDefinitionBoolean ("Bool Value"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_AssignBoolenRegister0, global_package, "Assign Value to BoolenRegister_0", 
+                     [
+                             new VariableDefinitionBoolean ("Bool Value"), 
+                     ],
+                     null
+                  );
          
       // system / time
          
@@ -95,8 +120,76 @@ package editor.trigger {
                      ]
                   );
          
+      // string
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", 
+                     [
+                             new VariableDefinitionString ("Source String"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Target String"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Add, string_package, "String + String", 
+                     [
+                             new VariableDefinitionString ("Source String"), 
+                             new VariableDefinitionString ("Source String"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Target String"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_NumberToString, string_package, "Number -> String", 
+                     [
+                             new VariableDefinitionNumber ("The Number"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_BooleanToString, string_package, "Bool -> String", 
+                     [
+                             new VariableDefinitionBoolean ("The Bool"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_EntityToString, string_package, "Entity -> String", 
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_CollisionCategoryToString, string_package, "CCat -> String", 
+                     [
+                             new VariableDefinitionCollisionCategory ("The CCat"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Result"), 
+                     ]
+                  );
+         
        // bool
           
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Assign, bool_package, "= (Assign Boolean)", 
+                     [
+                             new VariableDefinitionBoolean ("Source Boolean"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Target Boolean"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Invert, bool_package, "! (Invert)", 
+                     [
+                             new VariableDefinitionBoolean ("Source Boolean"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Source Boolean"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsTrue, bool_package, "IsTrue", 
                      [
                              new VariableDefinitionBoolean ("Input Bool Value"), 
@@ -113,7 +206,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Larger, bool_package, "LargerThan", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsNumber, bool_package, "Equals (Number == Number?)", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -122,28 +215,37 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Less, bool_package, "LessThan", 
-                     [
-                             new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2"), 
-                     ],
-                     [
-                             new VariableDefinitionBoolean ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsNumber, bool_package, "EqualsWith_Numbers", 
-                     [
-                             new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2"), 
-                     ],
-                     [
-                             new VariableDefinitionBoolean ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "EqualsWith_Bools", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Equals (Boolean == Boolean?)", 
                      [
                              new VariableDefinitionBoolean ("Bool 1"), 
                              new VariableDefinitionBoolean ("Bool 2"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsEntity, bool_package, "Equals (Entity == Entity?)", 
+                     [
+                             new VariableDefinitionEntity ("Entity 1"), 
+                             new VariableDefinitionEntity ("Entity 2"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Larger, bool_package, "LargerThan (Number > Number?)", 
+                     [
+                             new VariableDefinitionNumber ("Number 1"), 
+                             new VariableDefinitionNumber ("Number 2"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Less, bool_package, "LessThan (Number < Number?)", 
+                     [
+                             new VariableDefinitionNumber ("Number 1"), 
+                             new VariableDefinitionNumber ("Number 2"), 
                      ],
                      [
                              new VariableDefinitionBoolean ("Result"), 
@@ -185,117 +287,16 @@ package editor.trigger {
                      ]
                   );
           
-      // bitwise
-         
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft, bitwise_package, "ShiftLeft", 
-                     [
-                             new VariableDefinitionNumber ("Number to Shift"), 
-                             new VariableDefinitionNumber ("Shift Bits Count"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight, bitwise_package, "ShiftRight", 
-                     [
-                             new VariableDefinitionNumber ("Number to Shift"), 
-                             new VariableDefinitionNumber ("Shift Bits Count"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned, bitwise_package, "ShiftRightUnsignedly", 
-                     [
-                             new VariableDefinitionNumber ("Number to Shift"), 
-                             new VariableDefinitionNumber ("Shift Bits Count"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_And, bitwise_package, "Bitwise And", 
-                     [
-                             new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Or, bitwise_package, "Bitwise Or", 
-                     [
-                             new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Not, bitwise_package, "Bitwise Not", 
-                     [
-                             new VariableDefinitionNumber ("Inout Number"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Xor, bitwise_package, "Bitwise Xor", 
-                     [
-                             new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
-                     ]
-                  );
-         
-      // string
-         
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_NumberToString, string_package, "Number -> String", 
-                     [
-                             new VariableDefinitionNumber ("The Number"), 
-                     ],
-                     [
-                             new VariableDefinitionString ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_BooleanToString, string_package, "Bool -> String", 
-                     [
-                             new VariableDefinitionBoolean ("The Bool"), 
-                     ],
-                     [
-                             new VariableDefinitionString ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_EntityToString, string_package, "Entity -> String", 
-                     [
-                             new VariableDefinitionEntity ("The Entity"), 
-                     ],
-                     [
-                             new VariableDefinitionString ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_CollisionCategoryToString, string_package, "Cat -> String", 
-                     [
-                             new VariableDefinitionCollisionCategory ("The Cat"), 
-                     ],
-                     [
-                             new VariableDefinitionString ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Add, string_package, "String + String", 
-                     [
-                             new VariableDefinitionString ("String 1"), 
-                             new VariableDefinitionString ("String 2"), 
-                     ],
-                     [
-                             new VariableDefinitionString ("Result"), 
-                     ]
-                  );
-         
        // math
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Assign, math_package, "= (Assign Number)", 
+                     [
+                             new VariableDefinitionNumber ("Source"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Target"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Add, math_package, "Number + Number", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
@@ -455,6 +456,9 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
+         
+      // 
+         
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_DegreesToRadians, math_package, "Degrees -> Radians", 
                      [
                              new VariableDefinitionNumber ("Degrees"), 
@@ -529,6 +533,71 @@ package editor.trigger {
                      ]
                   );
          
+      // math / bitwise
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft, bitwise_package, "ShiftLeft", 
+                     [
+                             new VariableDefinitionNumber ("Number to Shift"), 
+                             new VariableDefinitionNumber ("Shift Bits Count"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight, bitwise_package, "ShiftRight", 
+                     [
+                             new VariableDefinitionNumber ("Number to Shift"), 
+                             new VariableDefinitionNumber ("Shift Bits Count"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned, bitwise_package, "ShiftRightUnsignedly", 
+                     [
+                             new VariableDefinitionNumber ("Number to Shift"), 
+                             new VariableDefinitionNumber ("Shift Bits Count"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_And, bitwise_package, "Bitwise And", 
+                     [
+                             new VariableDefinitionNumber ("Number 1"), 
+                             new VariableDefinitionNumber ("Number 2"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Or, bitwise_package, "Bitwise Or", 
+                     [
+                             new VariableDefinitionNumber ("Number 1"), 
+                             new VariableDefinitionNumber ("Number 2"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Not, bitwise_package, "Bitwise Not", 
+                     [
+                             new VariableDefinitionNumber ("Inout Number"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Xor, bitwise_package, "Bitwise Xor", 
+                     [
+                             new VariableDefinitionNumber ("Number 1"), 
+                             new VariableDefinitionNumber ("Number 2"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
+         
       // game / world
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_package, "SetGravityAcceleration_ByRadians", 
@@ -552,8 +621,27 @@ package editor.trigger {
                      null
                   );
          
+     // game / collision category
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Cat_Assign, cat_package, "= (Assign CCat)", 
+                     [
+                             new VariableDefinitionCollisionCategory ("Source Collision Category"), 
+                     ],
+                     [
+                             new VariableDefinitionCollisionCategory ("Target Collision Category"), 
+                     ]
+                  );
+         
      // game /entity
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Assign, entity_package, "= (Assign Entity)", 
+                     [
+                             new VariableDefinitionEntity ("Source Entity"), 
+                     ],
+                     [
+                             new VariableDefinitionEntity ("Terget Entity"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity, entity_is_package, "IsShape", 
                      [
                              new VariableDefinitionEntity ("The Entity"), 
@@ -707,7 +795,7 @@ package editor.trigger {
          
       // ...
          
-         sCoreApiMenuItemXML = AddPackageToXML (sTopFuntionPackage, null, false);
+         sCoreApiMenuItemXML = AddPackageToXML (sTopFuntionPackage, null);
       }
       
 //===========================================================
@@ -732,7 +820,7 @@ package editor.trigger {
          return sFunctionDeclarations [function_id];
       }
       
-      private static function AddPackageToXML (functionPackage:FunctionPackage, xml:XML, forConditionList:Boolean):XML
+      private static function AddPackageToXML (functionPackage:FunctionPackage, xml:XML):XML
       {
          var package_element:XML;
          
@@ -753,7 +841,7 @@ package editor.trigger {
          var child_packages:Array = functionPackage.GetChildPackages ();
          for (var i:int = 0; i < child_packages.length; ++ i)
          {
-            AddPackageToXML (child_packages [i] as FunctionPackage, package_element, forConditionList);
+            AddPackageToXML (child_packages [i] as FunctionPackage, package_element);
             
             ++ num_items;
          }
@@ -764,9 +852,6 @@ package editor.trigger {
          for (var j:int = 0; j < declarations.length; ++ j)
          {
             declaration = declarations [j] as FunctionDeclaration_Core;
-            
-            if (forConditionList && ! declaration.CanBeCalledInConditionList ())
-               continue;
             
             function_element = <menuitem />;
             function_element.@name = declaration.GetName ();

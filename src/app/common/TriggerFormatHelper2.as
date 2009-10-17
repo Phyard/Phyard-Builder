@@ -8,6 +8,7 @@ package common {
    import player.entity.Entity;
    import player.trigger.IPropertyOwner;
    
+   import common.trigger.CoreFunctionIds;
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition;
    import player.trigger.FunctionDefinition_Core;
@@ -15,6 +16,7 @@ package common {
    import player.trigger.FunctionInstance;
    import player.trigger.CodeSnippet;
    import player.trigger.FunctionCalling;
+   import player.trigger.FunctionCalling_Return;
    import player.trigger.ValueSource;
    import player.trigger.ValueSource_Null;
    import player.trigger.ValueSource_Direct;
@@ -37,10 +39,6 @@ package common {
    import common.trigger.define.ValueSourceDefine_Null;
    import common.trigger.define.ValueSourceDefine_Direct;
    import common.trigger.define.ValueSourceDefine_Variable;
-   //import common.trigger.define.ValueSourceDefine_Property_Global;
-   //import common.trigger.define.ValueSourceDefine_Property_World;
-   //import common.trigger.define.ValueSourceDefine_Property_Entity;
-   //import common.trigger.define.ValueSourceDefine_Property_OwnerVariable;
    import common.trigger.define.ValueTargetDefine;
    import common.trigger.define.ValueTargetDefine_Null;
    import common.trigger.define.ValueTargetDefine_Variable;
@@ -61,7 +59,7 @@ package common {
          {
             calling = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, codeSnippetDefine.mFunctionCallingDefines [i]);
             
-            calling.mNextFunctionCalling = calling_list_head;
+            calling.SetNextCalling (calling_list_head);
             calling_list_head = calling;
          }
          
@@ -74,7 +72,8 @@ package common {
       {
          if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
-            var core_func_definition:FunctionDefinition_Core = TriggerEngine.GetCoreFunctionDefinition (funcCallingDefine.mFunctionId);
+            var function_id:int = funcCallingDefine.mFunctionId;
+            var core_func_definition:FunctionDefinition_Core = TriggerEngine.GetCoreFunctionDefinition (function_id);
             var core_func_declaration:FunctionDeclaration = core_func_definition.GetFunctionDeclaration ();
             
             var value_source_list:ValueSource = null;
@@ -96,7 +95,15 @@ package common {
                value_target_list = value_target;
             }
             
-            var calling:FunctionCalling = new FunctionCalling (core_func_definition, value_source_list, value_target_list);
+            var calling:FunctionCalling;
+            if (CoreFunctionIds.IsReturnCalling (function_id))
+            {
+               calling = new FunctionCalling_Return (core_func_definition, value_source_list, value_target_list, function_id);
+            }
+            else
+            {
+               calling = new FunctionCalling (core_func_definition, value_source_list, value_target_list);
+            }
             
             return calling;
          }

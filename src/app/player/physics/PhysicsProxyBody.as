@@ -42,8 +42,8 @@ package player.physics {
       
       public function UpdateMass (isStatic:Boolean):void
       {
-         //if (_b2Body != null)
-         //   _b2Body.ResetMass(isStatic);
+         if (_b2Body != null)
+            _b2Body.ResetMass(isStatic);
       }
       
       public function GetPosition ():Point

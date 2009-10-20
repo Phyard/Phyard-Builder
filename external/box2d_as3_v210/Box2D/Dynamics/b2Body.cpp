@@ -224,7 +224,7 @@ public function DestroyFixture(fixture:b2Fixture):void
 
 
 //public function ResetMass():void
-public function ResetMass(forceStatic:Boolean = false):void // "forceStatic:Boolean = false" is hacking
+public function ResetMass(setStatic:Boolean = false):void // "forceStatic:Boolean = false" is hacking
 {
 	// Compute mass data from shapes. Each shape has its own density.
 	m_mass = 0.0;
@@ -233,7 +233,7 @@ public function ResetMass(forceStatic:Boolean = false):void // "forceStatic:Bool
 	m_invI = 0.0;
 
 	var center:b2Vec2 = b2Math.b2Vec2_zero.Clone ();
-	if (! forceStatic)
+	if (! setStatic)
 	{
 		for (var f:b2Fixture = m_fixtureList; f != null; f = f.m_next)
 		{

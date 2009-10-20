@@ -143,6 +143,7 @@ package player.entity {
       
       final public function Destroy ():void
       {
+      trace ("Destroy " + this + ", mAlreadyDestroyed = " + mAlreadyDestroyed);
          if (mAlreadyDestroyed)
             return;
          
@@ -163,11 +164,17 @@ package player.entity {
             list_element = list_element.mNextListElement;
          }
          
-         //if (parent != null)
-         //{
-         //   parent.removeChild (this);
-         //}
-         mWorld.BufferChildToRemove (this);
+         if (mWorld.IsPhysicsLocked ())
+         {
+            mWorld.BufferChildToRemove (this);
+         }
+         else
+         {
+            if (parent != null)
+            {
+               parent.removeChild (this);
+            }
+         }
       }
       
       //!!! DestroyInternal shouldn't destroy anything related with physics
@@ -217,6 +224,7 @@ package player.entity {
       
       public function DestroyPhysicsProxy ():void
       {
+      trace ("DestroyPhysicsProxy " + this + ", mWorld.IsPhysicsLocked () = " + mWorld.IsPhysicsLocked ());
          if (mPhysicsProxy != null)
          {
             if (mWorld.IsPhysicsLocked ())

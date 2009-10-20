@@ -70,6 +70,7 @@ package player.entity {
       
       override protected function DestroyInternal ():void
       {
+      trace ("shape DestroyInternal");
          while (mJointNodeListHead != null)
          {
             mJointNodeListHead.mJoint.Destroy ();

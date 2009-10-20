@@ -561,13 +561,12 @@ package player.world {
             {
                ++ mNumSimulatdFrames;
                
+               SetPhysicsLocked (true);
                HandleEvent (CoreEventIds.ID_OnLevelBeginUpdate);
                
                mParticleManager.Update (dt);
                
-               SetPhysicsLocked (true)
                mPhysicsEngine.Update (dt);
-               SetPhysicsLocked (false);
                
                HandleShapeContactEvents ();
                
@@ -583,10 +582,12 @@ package player.world {
                   }
                }
                
+               HandleEvent (CoreEventIds.ID_OnLevelEndUpdate);
+               
+               SetPhysicsLocked (false);
+               
                DestroyBufferedEntities ();
                RemoveBufferedChildren ();
-               
-               HandleEvent (CoreEventIds.ID_OnLevelEndUpdate);
                
                DelayRebuildEntityPhysicsProxies ();
             }
@@ -1026,6 +1027,7 @@ package player.world {
       private function SetPhysicsLocked (locked:Boolean):void
       {
          mIsPhysicsLocked = locked;
+         trace ("------------------------------------- mIsPhysicsLocked = " + mIsPhysicsLocked);
       }
       
       public function IsPhysicsLocked ():Boolean
@@ -1045,6 +1047,7 @@ package player.world {
       {
          for (var i:int = 0; i < mNumBufferedEntities; ++ i)
          {
+         trace ("i = " + i + ", DestroyBufferedEntities" + mBufferedEntities [i]);
             (mBufferedEntities [i] as Entity).DestroyPhysicsProxy ();
             mBufferedEntities [i] = null;
          }
@@ -1070,6 +1073,7 @@ package player.world {
             child = mChildrenToRemove [i];
             if (child != null && child.parent != null)
             {
+            trace ("i = " + i + " , RemoveBufferedChildren child = " + child);
                child.parent.removeChild (child);
             }
             
@@ -1586,6 +1590,8 @@ package player.world {
             
             if (contact_info.mBeginContactingFrame == mNumSimulatdFrames)
             {
+               isContactContinued = false;
+               
                InfectShapes (contact_info.mEntityShape1, contact_info.mEntityShape2);
                
                //
@@ -1598,10 +1604,11 @@ package player.world {
                   list_element = list_element.mNextListElement;
                }
             }
-            else isContactContinued = false;
             
             if (contact_info.mNumContactPoints <= 0)
             {
+               isContactContinued = false;
+               
                list_element = contact_info.mFirstEndContactingHandler;
                
                while (list_element != null)
@@ -1626,7 +1633,9 @@ package player.world {
                -- mNumContactInfos;
                //trace (" --- mNumContactInfos = " + mNumContactInfos);
             }
-            else isContactContinued = false;
+            
+         trace ("isContactContinued = " + isContactContinued + ", shape 1 = " + contact_info.mEntityShape1 + ", shape 2 = " + contact_info.mEntityShape2);
+         trace ("contact_info.mBeginContactingFrame = " + contact_info.mBeginContactingFrame + ", mNumSimulatdFrames = " + mNumSimulatdFrames + ", contact_info.mNumContactPoints = " + contact_info.mNumContactPoints);
             
             if (isContactContinued)
             {

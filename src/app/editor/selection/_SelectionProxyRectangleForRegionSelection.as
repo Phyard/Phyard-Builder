@@ -10,6 +10,7 @@ package editor.selection {
    import Box2D.Collision.Shapes.*;
    import Box2D.Common.*;
    
+   import Box2dEx.Helper.b2eFixtureHelper;
    
    public class _SelectionProxyRectangleForRegionSelection extends SelectionProxyRectangle 
    {
@@ -23,8 +24,8 @@ package editor.selection {
       {
          super.RebuildRectangle (rotation, centerX, centerY, halfWidth, halfHeight);
          
-         //_b2Body.m_fixtureList.m_density = 1.0;
-         //_b2Body.SetMassFromShapes();
+         b2eFixtureHelper.SetDensity (_b2Body.m_fixtureList, 1.0);
+         _b2Body.ResetMass ();
       }
    }
 }

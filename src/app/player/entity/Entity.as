@@ -136,6 +136,11 @@ package player.entity {
       
       private var mAlreadyDestroyed:Boolean = false;
       
+      public function IsDestroyedAlready ():Boolean
+      {
+         return mAlreadyDestroyed;
+      }
+      
       final public function Destroy ():void
       {
          if (mAlreadyDestroyed)
@@ -174,10 +179,6 @@ package player.entity {
 //   build
 //=============================================================
       
-      public function RebuildAppearance ():void
-      {
-      }
-      
       public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
       {
          mEntityType = params.mEntityType;
@@ -196,9 +197,22 @@ package player.entity {
          }
       }
       
-      public function GetPhysicsProxy ():PhysicsProxy
+      // defaultly, RebuildAppearance will be delayed. If a RebuildAppearance is really needed to excute, call RebuildAppearanceInternal instead.
+      
+      public var mNextEntityToDelayRebuildAppearance:Entity = null;
+      public var mIsToDelayRebuildAppearance:Boolean = false;
+      
+      final public function RebuildAppearance ():void
       {
-         return mPhysicsProxy;
+         if (! mIsToDelayRebuildAppearance)
+         {
+            mWorld.RegisterEntityToDelayRebuildAppearance (this);
+         }
+      }
+      
+      // to override
+      public function RebuildAppearanceInternal ():void // used internally
+      {
       }
       
       public function DestroyPhysicsProxy ():void
@@ -217,30 +231,46 @@ package player.entity {
          }
       }
       
+      public function GetPhysicsProxy ():PhysicsProxy
+      {
+         return mPhysicsProxy;
+      }
+      
       public function IsPhysicsShapeEntity ():Boolean
       {
-         return false;
+         return false; // to override
       }
       
 //=============================================================
 //   
 //=============================================================
       
+      // physics shape will override this function to do mmore
+      public function SetPosition (posX:Number, posY:Number):void
+      {
+         x = posX;
+         y = posY;
+      }
+      
+      // physics shape will override this function
       public function GetPositionX ():Number
       {
          return x;
       }
       
+      // physics shape will override this function
       public function GetPositionY ():Number
       {
          return y;
       }
       
+      // physics shape will override this function to do mmore
       public function SetRotation (rot:Number):void
       {
          rotation = (rot * 180.0 / Math.PI) % 360;
       }
       
+      // physics shape will override this function
       public function GetRotation ():Number
       {
          return rotation;
@@ -254,6 +284,16 @@ package player.entity {
       public function IsVisible ():Boolean
       {
          return visible;
+      }
+      
+      public function SetAlpha (a:Number):void
+      {
+         alpha = a;
+      }
+      
+      public function GetAlpha ():Number
+      {
+         return alpha;
       }
       
 //==============================================================================

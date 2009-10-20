@@ -251,16 +251,8 @@ package common.trigger {
                      ]
                   );
           
-       // math
+       // math basic op
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Assign,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Add,
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -297,49 +289,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Random,
-                     null,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RandomRange,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RandomIntRange,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Max,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Min,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Inverse,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Assign,
                      [
                         ValueTypeDefine.ValueType_Number, 
                      ],
@@ -355,90 +305,9 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Abs,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Sqrt,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Ceil,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Floor,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Round,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Log,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Exp,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Power,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
          
       // math / trogonomotry
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_DegreesToRadians,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RadiansToDegrees,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_SinRadians,
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -562,6 +431,187 @@ package common.trigger {
                      ]
                   );
          
+      // math / random
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Random,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RandomRange,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RandomIntRange,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         
+      // math / number convert
+         
+          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Degrees2Radians,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Radians2Degrees,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Number2RGB,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RGB2Number,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+        
+      // math / more
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Max,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Min,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Inverse,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Abs,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Sqrt,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Ceil,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Floor,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Round,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Log,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Exp,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Power,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolation,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         
       // game / world
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,
@@ -653,6 +703,14 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ]
                   );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetPosition,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Number, 
+         //               ValueTypeDefine.ValueType_Number, 
+         //            ],
+         //            null
+         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -687,6 +745,26 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     null
+                  );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,
                      [
                         ValueTypeDefine.ValueType_Entity, 

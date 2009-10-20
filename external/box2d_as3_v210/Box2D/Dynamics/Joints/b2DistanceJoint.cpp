@@ -99,8 +99,8 @@ override public function InitVelocityConstraints (step:b2TimeStep):void
 	var cr1u:Number = b2Math.b2Cross2 (r1, m_u);
 	var cr2u:Number = b2Math.b2Cross2 (r2, m_u);
 	var invMass:Number = b1.m_invMass + b1.m_invI * cr1u * cr1u + b2.m_invMass + b2.m_invI * cr2u * cr2u;
-	//b2Assert(invMass > B2_FLT_EPSILON);
-	m_mass = 1.0 / invMass;
+
+	m_mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
 
 	if (m_frequencyHz > 0.0)
 	{
@@ -116,10 +116,12 @@ override public function InitVelocityConstraints (step:b2TimeStep):void
 		var k:Number = m_mass * omega * omega;
 
 		// magic formulas
-		m_gamma = 1.0 / (step.dt * (d + step.dt * k));
+		m_gamma = step.dt * (d + step.dt * k);
+		m_gamma = m_gamma != 0.0 ? 1.0 / m_gamma : 0.0;
 		m_bias = C * step.dt * k * m_gamma;
 
-		m_mass = 1.0 / (invMass + m_gamma);
+		m_mass = invMass + m_gamma;
+		m_mass = m_mass != 0.0 ? 1.0 / m_mass : 0.0;
 	}
 
 	if (step.warmStarting)

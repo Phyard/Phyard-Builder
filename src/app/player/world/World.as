@@ -528,6 +528,9 @@ package player.world {
          }
          
          HandleEvent (CoreEventIds.ID_OnLevelEndInitialize);
+         
+         DelayRebuildEntityPhysicsProxies ();
+         DelayRebuildEntityAppearances ();
       }
       
 //=============================================================
@@ -584,7 +587,11 @@ package player.world {
                RemoveBufferedChildren ();
                
                HandleEvent (CoreEventIds.ID_OnLevelEndUpdate);
+               
+               DelayRebuildEntityPhysicsProxies ();
             }
+            
+            DelayRebuildEntityAppearances ();
          }
          else
          {
@@ -961,7 +968,54 @@ package player.world {
       }
       
 //=============================================================
-//   world lock / destroy buffers / removeChild buffer
+//   optimize: delay RebuildAppearance / RebuildPhysics
+//=============================================================
+      
+      private var mEntityListToDelayRebuildAppearance:Entity = null;
+      
+      public function RegisterEntityToDelayRebuildAppearance (entity:Entity):void
+      {
+         entity.mNextEntityToDelayRebuildAppearance = mEntityListToDelayRebuildAppearance;
+         entity.mIsToDelayRebuildAppearance = true;
+         mEntityListToDelayRebuildAppearance = entity;
+      }
+      
+      private function DelayRebuildEntityAppearances ():void
+      {
+         var prev:Entity;
+         var entity:Entity = mEntityListToDelayRebuildAppearance;
+         mEntityListToDelayRebuildAppearance = null;
+         
+         while (entity != null)
+         {
+            if ( ! entity.IsDestroyedAlready () )
+            {
+               //entity.RebuildAppearance (false);
+               entity.RebuildAppearanceInternal ();
+            }
+            
+            entity.mIsToDelayRebuildAppearance = false;
+            
+            prev = entity;
+            entity = entity.mNextEntityToDelayRebuildAppearance;
+            prev.mNextEntityToDelayRebuildAppearance = null;
+         }
+      }
+      
+      private function DelayRebuildEntityPhysicsProxies ():void
+      {
+         // todo
+         
+         // when implementing this function later, if is best to make the first register entity to update proxy firstly,
+         // to lighten the random effect
+         
+         // possible occasions need DelayRebuildEntityPhysicsProxies
+         // - move physics shape
+         // - rotate physics shape
+      }
+      
+//=============================================================
+//   avoid bugs: world lock / destroy buffers / removeChild buffer - delay destroy
 //=============================================================
       
       // when world is locked, the physics proxy of an entity.can't be destroyed.

@@ -83,7 +83,7 @@ package player.entity {
             RebuildAppearance ();
       }
       
-      override public function RebuildAppearance ():void
+      override public function RebuildAppearanceInternal ():void
       {
          var point1:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint1 ();
          var point2:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint2 ();

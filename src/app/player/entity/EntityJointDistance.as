@@ -74,7 +74,7 @@ package player.entity {
             RebuildAppearance ();
       }
       
-      override public function RebuildAppearance ():void
+      override public function RebuildAppearanceInternal ():void
       {
          GraphicsUtil.ClearAndDrawLine (this, mSpriteAnchor1.x, mSpriteAnchor1.y, mSpriteAnchor2.x, mSpriteAnchor2.y);
       }

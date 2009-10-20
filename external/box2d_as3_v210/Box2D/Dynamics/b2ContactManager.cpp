@@ -206,7 +206,7 @@ public function AddPair(proxyUserDataA:Object, proxyUserDataB:Object):void
 	}
 
 	// Does a contact already exist?
-	var edge:b2ContactEdge = bodyB.GetConactList();
+	var edge:b2ContactEdge = bodyB.GetContactList();
 	while (edge != null)
 	{
 		if (edge.other == bodyA)

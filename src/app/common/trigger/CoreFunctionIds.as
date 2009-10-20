@@ -60,53 +60,66 @@ package common.trigger {
       public static const ID_Bool_Not:int                        = 232; // 
       public static const ID_Bool_Xor:int                        = 233; // 
       
-   // math
+   // math basic op 
       
-      public static const ID_Math_Assign:int                      = 300; // 
-      public static const ID_Math_Add:int                         = 301; // 
-      public static const ID_Math_Subtract:int                    = 302; // 
-      public static const ID_Math_Multiply:int                    = 303; // 
-      public static const ID_Math_Divide:int                      = 304; // 
+      public static const ID_Math_Add:int                         = 300; // 
+      public static const ID_Math_Subtract:int                    = 301; // 
+      public static const ID_Math_Multiply:int                    = 302; // 
+      public static const ID_Math_Divide:int                      = 303; // 
       
-      public static const ID_Math_Random:int                      = 315; // 
-      public static const ID_Math_RandomRange:int                 = 316; // 
-      public static const ID_Math_RandomIntRange:int              = 317; // 
-      
-      public static const ID_Math_Max:int                         = 330; // 
-      public static const ID_Math_Min:int                         = 331; // 
-      
-      public static const ID_Math_Inverse:int                     = 350; // 
-      public static const ID_Math_Negative:int                    = 351; // 
-      public static const ID_Math_Abs:int                         = 352; // 
-      public static const ID_Math_Sqrt:int                        = 353; // 
-      public static const ID_Math_Ceil:int                        = 354; // 
-      public static const ID_Math_Floor:int                       = 355; // 
-      public static const ID_Math_Round:int                       = 356; // 
-      public static const ID_Math_Log:int                         = 357; // 
-      public static const ID_Math_Exp:int                         = 358; // 
-      public static const ID_Math_Power:int                       = 359; // 
-      
-      public static const ID_Math_DegreesToRadians:int            = 380; // 
-      public static const ID_Math_RadiansToDegrees:int            = 381; // 
-      
-      public static const ID_Math_SinRadians:int                  = 390; // 
-      public static const ID_Math_CosRadians:int                  = 391; // 
-      public static const ID_Math_TanRadians:int                  = 392; // 
-      public static const ID_Math_ArcSinRadians:int               = 393; // 
-      public static const ID_Math_ArcCosRadians:int               = 394; // 
-      public static const ID_Math_ArcTanRadians:int               = 395; // 
-      public static const ID_Math_ArcTan2Radians:int              = 396; // 
+      public static const ID_Math_Assign:int                      = 310; // 
+      public static const ID_Math_Negative:int                    = 311; // 
       
    // math / bitwise 
       
-      public static const ID_Bitwise_ShiftLeft :int               = 430; // 
-      public static const ID_Bitwise_ShiftRight :int              = 431; // 
-      public static const ID_Bitwise_ShiftRightUnsigned :int      = 432; // 
-      public static const ID_Bitwise_And :int                     = 433; // 
-      public static const ID_Bitwise_Or :int                      = 434; // 
-      public static const ID_Bitwise_Not :int                     = 435; // 
-      public static const ID_Bitwise_Xor :int                     = 436; // 
+      public static const ID_Bitwise_ShiftLeft :int               = 315; // 
+      public static const ID_Bitwise_ShiftRight :int              = 316; // 
+      public static const ID_Bitwise_ShiftRightUnsigned :int      = 317; // 
+      public static const ID_Bitwise_And :int                     = 318; // 
+      public static const ID_Bitwise_Or :int                      = 319; // 
+      public static const ID_Bitwise_Not :int                     = 320; // 
+      public static const ID_Bitwise_Xor :int                     = 321; // 
       
+  // math / trigonometry
+      
+      public static const ID_Math_SinRadians:int                  = 350; // 
+      public static const ID_Math_CosRadians:int                  = 351; // 
+      public static const ID_Math_TanRadians:int                  = 352; // 
+      public static const ID_Math_ArcSinRadians:int               = 353; // 
+      public static const ID_Math_ArcCosRadians:int               = 354; // 
+      public static const ID_Math_ArcTanRadians:int               = 355; // 
+      public static const ID_Math_ArcTan2Radians:int              = 356; // 
+      
+  // math / random
+      
+      public static const ID_Math_Random:int                      = 380; // 
+      public static const ID_Math_RandomRange:int                 = 381; // 
+      public static const ID_Math_RandomIntRange:int              = 382; // 
+      
+   // math number convert
+      
+      public static const ID_Math_Degrees2Radians:int            = 400; // 
+      public static const ID_Math_Radians2Degrees:int            = 401; // 
+      public static const ID_Math_Number2RGB:int                 = 402; // 
+      public static const ID_Math_RGB2Number:int                 = 403; // 
+      
+   // math more ...
+      
+      public static const ID_Math_Max:int                         = 500; // 
+      public static const ID_Math_Min:int                         = 501; // 
+      
+      public static const ID_Math_Inverse:int                     = 510; // 
+      public static const ID_Math_Abs:int                         = 511; // 
+      public static const ID_Math_Sqrt:int                        = 512; // 
+      public static const ID_Math_Ceil:int                        = 513; // 
+      public static const ID_Math_Floor:int                       = 514; // 
+      public static const ID_Math_Round:int                       = 515; // 
+      public static const ID_Math_Log:int                         = 516; // 
+      public static const ID_Math_Exp:int                         = 517; // 
+      public static const ID_Math_Power:int                       = 518; // 
+      
+      public static const Id_Math_LinearInterpolation:int                  = 530; //
+      public static const Id_Math_LinearInterpolationColor:int             = 531; //
       
    // game / world
       
@@ -129,13 +142,25 @@ package common.trigger {
       public static const ID_Entity_Assign:int                         = 900; // entity.shape
       
       public static const ID_Entity_IsShapeEntity:int                  = 910; // entity.shape
+      public static const ID_Entity_IsCircleShapeEntity:int            = 910; // entity.shape
+      public static const ID_Entity_IsRectangleShapeEntity:int         = 910; // entity.shape
+      public static const ID_Entity_IsPolygonShapeEntity:int           = 910; // entity.shape
+      public static const ID_Entity_IsPolygonLineEntity:int            = 910; // entity.shape
+      
+      public static const ID_Entity_IsJointEntity:int                  = 930; // entity.shape
+      
       
       public static const ID_Entity_IsVisible:int                      = 950; // entity 
       public static const ID_Entity_SetVisible:int                     = 951; // entity 
       public static const ID_Entity_GetAlpha:int                       = 952; // entity 
       public static const ID_Entity_SetAlpha:int                       = 953; // entity 
+      
       public static const ID_Entity_GetPosition:int                    = 954; // entity 
       //public static const ID_Entity_SetPosition:int                  = 955; // entity 
+      public static const ID_Entity_GetPositionInWorld:int                    = 954; // entity 
+      //public static const ID_Entity_SetPositionInWorld:int                  = 955; // entity 
+      public static const ID_Entity_GetPositionInContainer:int                    = 954; // entity 
+      //public static const ID_Entity_SetPositionInContainer:int                  = 955; // entity 
       public static const ID_Entity_GetRotationByRadians:int           = 956; // entity 
       //public static const ID_Entity_SetRotationByRadians:int         = 957; // entity 
       public static const ID_Entity_GetRotationByDegrees:int           = 958; // entity 
@@ -143,14 +168,69 @@ package common.trigger {
       
    // game / entity / shape
       
-      public static const ID_EntityShape_GetFilledColor:int            = 1000; // entity.shape
-      public static const ID_EntityShape_SetFilledColor:int            = 1001; // entity.shape
+      public static const ID_EntityShape_GetShapeCIType:int            = 1000; // entity.shape
+      //public static const ID_EntityShape_SetShapeCIType:int          = 1001; // entity.shape
       
-      public static const ID_EntityShape_IsPhysicsEnabled:int          = 1050; // entity.shape
-      public static const ID_EntityShape_IsSensor:int                  = 1051; // entity.shape
-      public static const ID_EntityShape_SetAsSensor:int               = 1052; // entity.shape
-      public static const ID_EntityShape_GetDensity:int                = 1053; // entity.shape
-      public static const ID_EntityShape_SetDensity:int                = 1054; // entity.shape
+      public static const ID_EntityShape_GetFilledColor:int            = 1010; // entity.shape
+      public static const ID_EntityShape_SetFilledColor:int            = 1011; // entity.shape
+      public static const ID_EntityShape_GetFilledColorRGB:int         = 1012; // entity.shape
+      public static const ID_EntityShape_SetFilledColorRGB:int         = 1013; // entity.shape
+      public static const ID_EntityShape_GetFilledOpacity:int          = 1014; // entity.shape
+      public static const ID_EntityShape_SetFilledOpacity:int          = 1015; // entity.shape
+      public static const ID_EntityShape_IsShowBorder:int              = 1016; // entity.shape
+      public static const ID_EntityShape_SetShowBorder:int             = 1017; // entity.shape
+      public static const ID_EntityShape_GetBorderThickness:int        = 1018; // entity.shape
+      public static const ID_EntityShape_SetBorderThickness:int        = 1019; // entity.shape
+      public static const ID_EntityShape_GetBorderColor:int            = 1020; // entity.shape
+      public static const ID_EntityShape_SetBorderColor:int            = 1021; // entity.shape
+      public static const ID_EntityShape_GetBorderColorRGB:int         = 1022; // entity.shape
+      public static const ID_EntityShape_SetBorderColorRGB:int         = 1023; // entity.shape
+      public static const ID_EntityShape_GetBorderOpacity:int          = 1024; // entity.shape
+      public static const ID_EntityShape_SetBorderOpacity:int          = 1025; // entity.shape
+      
+      public static const ID_EntityShape_IsPhysicsEnabled:int          = 1050; // entity.shape physics
+      //public static const ID_EntityShape_SetPhysicsEnabled:int       = 1051; // entity.shape physics
+      public static const ID_EntityShape_IsStatic:int                  = 1052; // entity.shape physics
+      //public static const ID_EntityShape_SetStatic:int               = 1053; // entity.shape physics
+      public static const ID_EntityShape_IsSensor:int                  = 1054; // entity.shape physics
+      public static const ID_EntityShape_SetAsSensor:int               = 1055; // entity.shape physics
+      public static const ID_EntityShape_IsBullet:int                  = 1056; // entity.shape physics
+      public static const ID_EntityShape_SetAsBullet:int               = 1057; // entity.shape physics
+      
+      public static const ID_EntityShape_GetCollisionCategory:int      = 1070; // entity.shape physics
+      public static const ID_EntityShape_SetCollisionCategory:int      = 1071; // entity.shape physics
+      public static const ID_EntityShape_GetLocalCentroid:int                   = 1072; // entity.shape physics
+      public static const ID_EntityShape_GetWorldCentroid:int                   = 1072; // entity.shape physics
+      public static const ID_EntityShape_AutoSetMassInertia:int            = 1072; // entity.shape physics
+      public static const ID_EntityShape_GetMass:int                   = 1072; // entity.shape physics
+      public static const ID_EntityShape_SetMass:int                   = 1072; // entity.shape physics
+      public static const ID_EntityShape_GetInertia:int                = 1072; // entity.shape physics
+      public static const ID_EntityShape_SetInertia:int                = 1072; // entity.shape physics
+      public static const ID_EntityShape_GetDensity:int                = 1073; // entity.shape physics
+      public static const ID_EntityShape_SetDensity:int                = 1074; // entity.shape physics
+      public static const ID_EntityShape_GetFriction:int               = 1075; // entity.shape physics
+      public static const ID_EntityShape_SetFriction:int               = 1076; // entity.shape physics
+      public static const ID_EntityShape_GetRestitution:int            = 1078; // entity.shape physics
+      public static const ID_EntityShape_SetRestitution:int            = 1079; // entity.shape physics
+      
+      public static const ID_EntityShape_GetLinearVelocity:int         = 1100; // entity.shape physics
+      public static const ID_EntityShape_SetLinearVelocity:int         = 1101; // entity.shape physics
+      public static const ID_EntityShape_GetAngularVelocity:int        = 1102; // entity.shape physics
+      public static const ID_EntityShape_SetAngularVelocity:int        = 1103; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepForce:int            = 1102; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepForceAtPoint:int                      = 1102; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepForceAtLocalPoint:int                 = 1102; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepLocalForce:int                        = 1102; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepLocalForceAtPoint:int                 = 1102; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepLocalForceAtLocalPoint:int            = 1102; // entity.shape physics
+      public static const ID_EntityShape_ApplyPermanentForce:int                   = 1103; // entity.shape physics
+      public static const ID_EntityShape_ApplyPermanentForceAtPoint:int                   = 1103; // entity.shape physics
+      public static const ID_EntityShape_ApplyPermanentForceAtLocalPoint:int                   = 1103; // entity.shape physics
+      public static const ID_EntityShape_ApplyPermanentLocalForce:int                   = 1103; // entity.shape physics
+      public static const ID_EntityShape_ApplyPermanentLocalForceAtPoint:int                   = 1103; // entity.shape physics
+      public static const ID_EntityShape_ApplyPermanentLocalForceAtLocalPoint:int                   = 1103; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepTorque:int            = 1102; // entity.shape physics
+      public static const ID_EntityShape_ApplyPermanentTorque:int                   = 1103; // entity.shape physics
       
    // game /entity / joint
       

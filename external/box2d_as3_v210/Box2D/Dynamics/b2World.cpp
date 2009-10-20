@@ -257,7 +257,7 @@ public function CreateJoint(def:b2JointDef):b2Joint
 			bodyB = temp;
 		}
 
-		var edge:b2ContactEdge = bodyB.GetConactList();
+		var edge:b2ContactEdge = bodyB.GetContactList();
 		while (edge != null)
 		{
 			if (edge.other == bodyA)
@@ -356,7 +356,7 @@ public function DestroyJoint(j:b2Joint):void
 	// If the joint prevents collisions, then flag any contacts for filtering.
 	if (collideConnected == false)
 	{
-		var edge:b2ContactEdge = bodyB.GetConactList();
+		var edge:b2ContactEdge = bodyB.GetContactList();
 		while (edge != null)
 		{
 			if (edge.other == bodyA)
@@ -740,7 +740,7 @@ public function SolveTOI(step:b2TimeStep):void
 				// Does the TOI island still have space for contacts?
 				if (island.m_contactCount == island.m_contactCapacity)
 				{
-					continue;
+					break;
 				}
 
 				// Has this contact already been added to an island?

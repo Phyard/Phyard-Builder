@@ -104,8 +104,10 @@ package Box2D.Common
 			var a:Number = col1.x, b:Number = col2.x, c:Number = col1.y, d:Number = col2.y;
 			var B:b2Mat22 = new b2Mat22 ();
 			var det:Number = a * d - b * c;
-			//b2Assert(det != 0.0f);
-			det = 1.0 / det;
+			if (det != 0.0)
+			{
+				det = 1.0 / det;
+			}
 			B.col1.x =  det * d;	B.col2.x = -det * b;
 			B.col1.y = -det * c;	B.col2.y =  det * a;
 			return B;
@@ -117,8 +119,10 @@ package Box2D.Common
 		{
 			var a11:Number = col1.x, a12:Number = col2.x, a21:Number = col1.y, a22:Number = col2.y;
 			var det:Number = a11 * a22 - a12 * a21;
-			//b2Assert(det != 0.0f);
-			det = 1.0 / det;
+			if (det != 0.0)
+			{
+				det = 1.0 / det;
+			}
 			var x:b2Vec2 = new b2Vec2 ();
 			x.x = det * (a22 * b.x - a12 * b.y);
 			x.y = det * (a11 * b.y - a21 * b.x);

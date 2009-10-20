@@ -172,9 +172,10 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 		m_a2 = b2Math.b2Cross2 (r2, m_axis);
 
 		m_motorMass = m_invMass1 + m_invMass2 + m_invI1 * m_a1 * m_a1 + m_invI2 * m_a2 * m_a2;
-		//b2Assert(m_motorMass > B2_FLT_EPSILON);
-		m_motorMass = 1.0 / m_motorMass;
-	}
+		if (m_motorMass > b2Settings.B2_FLT_EPSILON)
+		{
+			m_motorMass = 1.0 / m_motorMass;
+		}	}
 
 	// Prismatic constraint.
 	{

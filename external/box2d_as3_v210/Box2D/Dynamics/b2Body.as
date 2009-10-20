@@ -26,6 +26,7 @@ package Box2D.Dynamics
 	//#include <Box2D/Collision/Shapes/b2Shape.h>
 	//#include <memory>
 
+	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2Transform;
@@ -47,6 +48,7 @@ package Box2D.Dynamics
 		/// Creates a fixture and attach it to this body. Use this function if you need
 		/// to set some fixture parameters, like friction. Otherwise you can create the
 		/// fixture directly from a shape.
+		/// This function automatically updates the mass of the body.
 		/// @param def the fixture definition.
 		/// @warning This function is locked during callbacks.
 		//b2Fixture* CreateFixture(const b2FixtureDef* def);
@@ -54,6 +56,7 @@ package Box2D.Dynamics
 		/// Creates a fixture from a shape and attach it to this body.
 		/// This is a convenience function. Use b2FixtureDef if you need to set parameters
 		/// like friction, restitution, user data, or filtering.
+		/// This function automatically updates the mass of the body.
 		/// @param shape the shape to be cloned.
 		/// @param density the shape density (set to zero for static bodies).
 		/// @warning This function is locked during callbacks.
@@ -65,18 +68,6 @@ package Box2D.Dynamics
 		/// @param fixture the fixture to be removed.
 		/// @warning This function is locked during callbacks.
 		//void DestroyFixture(b2Fixture* fixture);
-
-		/// Set the mass properties. Note that this changes the center of mass position.
-		/// If you are not sure how to compute mass properties, use SetMassFromShapes.
-		/// The inertia tensor is assumed to be relative to the center of mass.
-		/// You can make the body static by using a zero mass.
-		/// @param massData the mass properties.
-		//void SetMassData(const b2MassData* data);
-
-		/// Compute the mass properties from the attached fixture. You typically call this
-		/// after adding all the fixtures. If you add or remove fixtures later, you may want
-		/// to call this again. Note that this changes the center of mass position.
-		//void SetMassFromShapes();
 
 		/// Set the position of the body's origin and rotation.
 		/// This breaks any contacts and wakes the other bodies.
@@ -146,9 +137,23 @@ package Box2D.Dynamics
 		/// @return the rotational inertia, usually in kg-m^2.
 		//float32 GetInertia() const;
 
-		/// Get the mass data of the body.
+		/// Get the mass data of the body. The rotational inertia is relative
+		/// to the center of mass.
 		/// @return a struct containing the mass, inertia and center of the body.
-		//b2MassData GetMassData() const;
+		//void GetMassData(b2MassData* data) const;
+
+		/// Set the mass properties to override the mass properties of the fixtures.
+		/// Note that this changes the center of mass position. You can make the body
+		/// static by using zero mass.
+		/// Note that creating or destroying fixtures can also alter the mass.
+		/// @warning The supplied rotational inertia is assumed to be relative to the center of mass.
+		/// @param massData the mass properties.
+		//void SetMassData(const b2MassData* data);
+
+		/// This resets the mass properties to the sum of the mass properties of the fixtures.
+		/// This normally does not need to be called unless you called SetMassData to override
+		/// the mass and you later want to reset the mass.
+		//void ResetMass();
 
 		/// Get the world coordinates of a point given the local coordinates.
 		/// @param localPoint a point on the body measured relative the the body's origin.
@@ -232,7 +237,7 @@ package Box2D.Dynamics
 		/// Get the list of all contacts attached to this body.
 		/// @warning this list changes during the time step and you may
 		/// miss some collisions if you don't use b2ContactListener.
-		//b2ContactEdge* GetConactList();
+		//b2ContactEdge* GetContactList();
 
 		/// Get the next body in the world's body list.
 		//b2Body* GetNext();
@@ -379,15 +384,13 @@ package Box2D.Dynamics
 			return m_I;
 		}
 
-		public function GetMassData():b2MassData
+		public function GetMassData(data:b2MassData):void
 		{
-			var massData:b2MassData = new b2MassData ();
-			massData.mass = m_mass;
-			massData.I = m_I;
-			//massData.center = m_sweep.localCenter;
-			massData.center.x = m_sweep.localCenter.x;
-			massData.center.y = m_sweep.localCenter.y;
-			return massData;
+			data.mass = m_mass;
+			data.I = m_I;
+			//data->center = m_sweep.localCenter;
+			data.center.x = m_sweep.localCenter.x;
+			data.center.y = m_sweep.localCenter.y;
 		}
 
 		public function GetWorldPoint(localPoint:b2Vec2):b2Vec2
@@ -530,7 +533,7 @@ package Box2D.Dynamics
 			return m_jointList;
 		}
 
-		public function GetConactList():b2ContactEdge
+		public function GetContactList():b2ContactEdge
 		{
 			return m_contactList;
 		}

@@ -109,12 +109,12 @@ public function UnBufferMove(proxyId:int):void
 }
 
 // This is called from b2DynamicTree::Query when we are gathering pairs.
-public function QueryCallback(proxyId:int):void
+public function QueryCallback(proxyId:int):Boolean
 {
 	// A proxy cannot form a pair with itself.
 	if (proxyId == m_queryProxyId)
 	{
-		return;
+		return true;
 	}
 
 	// Grow the pair buffer as needed.
@@ -142,4 +142,6 @@ public function QueryCallback(proxyId:int):void
 	m_pairBuffer.push (pair);
 
 	++m_pairCount;
+	
+	return true;
 }

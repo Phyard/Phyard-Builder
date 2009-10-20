@@ -163,8 +163,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	}
 
 	// Compute effective mass.
-	//b2Assert(K > 0.0f);
-	m_mass = 1.0 / K;
+	m_mass = K > 0.0 ? 1.0 / K : 0.0;
 
 	if (step.warmStarting)
 	{

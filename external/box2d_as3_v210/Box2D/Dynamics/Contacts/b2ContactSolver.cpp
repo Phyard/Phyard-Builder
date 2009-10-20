@@ -697,7 +697,7 @@ public function FinalizeVelocityConstraints():void
 //			minSeparation = b2Min(minSeparation, separation);
 //
 //			// Prevent large corrections and allow slop.
-//			float32 C = baumgarte * b2Clamp(separation + b2Settings.b2_linearSlop, - b2Settings.b2_maxLinearCorrection, 0.0f);
+//			float32 C = b2Clamp(baumgarte * (separation + b2_linearSlop), -b2_maxLinearCorrection, 0.0f);
 //
 //			// Compute normal impulse
 //			float32 impulse = -ccp->equalizedMass * C;
@@ -774,7 +774,7 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 			minSeparation = Math.min (minSeparation, separation);
 
 			// Prevent large corrections and allow slop.
-			var C:Number = baumgarte * b2Math.b2Clamp_Number (separation + b2Settings.b2_linearSlop, - b2Settings.b2_maxLinearCorrection, 0.0);
+			var C:Number = b2Math.b2Clamp_Number (baumgarte * (separation + b2Settings.b2_linearSlop), - b2Settings.b2_maxLinearCorrection, 0.0);
 
 			// Compute normal impulse
 			var impulse:Number = -ccp.equalizedMass * C;

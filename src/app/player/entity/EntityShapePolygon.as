@@ -127,7 +127,7 @@ package player.entity {
             RebuildAppearance ();
       }
       
-      override public function RebuildAppearance ():void
+      override public function RebuildAppearanceInternal ():void
       {
          var filledColor:uint = GetFilledColor ();
          var borderColor:uint = GetBorderColor ();

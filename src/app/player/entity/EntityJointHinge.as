@@ -84,7 +84,7 @@ package player.entity {
             RebuildAppearance ();
       }
       
-      override public function RebuildAppearance ():void
+      override public function RebuildAppearanceInternal ():void
       {
          GraphicsUtil.ClearAndDrawEllipse (this, - 5, - 5, 5 + 5, 5 + 5, 0x0, 1, true, 0xFFFFFF);
          GraphicsUtil.DrawEllipse (this, - 1, - 1, 1 + 1, 1 + 1);

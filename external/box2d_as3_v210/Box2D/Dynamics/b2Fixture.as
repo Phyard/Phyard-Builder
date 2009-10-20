@@ -102,10 +102,9 @@ package Box2D.Dynamics
 		/// @param input the ray-cast input parameters.
 		//void RayCast(b2RayCastOutput* output, const b2RayCastInput& input) const;
 
-		/// Compute the mass properties of this shape using its dimensions and density.
-		/// The inertia tensor is computed about the local origin, not the centroid.
-		/// @param massData returns the mass data for this shape.
-		//void ComputeMass(b2MassData* massData) const;
+		/// Get the mass data for this fixture. The mass data is based on the density and
+		/// the shape. The rotational inertia is about the shape's origin.
+		//const b2MassData& GetMassData() const;
 
 		/// Get the coefficient of friction.
 		//float32 GetFriction() const;
@@ -118,13 +117,6 @@ package Box2D.Dynamics
 
 		/// Set the coefficient of restitution.
 		//void SetRestitution(float32 restitution);
-
-		/// Get the density.
-		//float32 GetDensity() const;
-
-		/// Set the density.
-		/// @warning this does not automatically update the mass of the parent body.
-		//void SetDensity(float32 density);
 
 	//protected:
 
@@ -140,6 +132,7 @@ package Box2D.Dynamics
 
 		//void Synchronize(b2BroadPhase* broadPhase, const b2Transform& xf1, const b2Transform& xf2);
 
+		public var m_massData:b2MassData = new b2MassData ();
 
 		public var m_aabb:b2AABB = new b2AABB ();
 
@@ -148,7 +141,6 @@ package Box2D.Dynamics
 
 		public var m_shape:b2Shape;
 
-		public var m_density:Number;
 		public var m_friction:Number;
 		public var m_restitution:Number;
 
@@ -226,21 +218,6 @@ package Box2D.Dynamics
 			m_restitution = restitution;
 		}
 
-		public function GetDensity():Number
-		{
-			return m_density;
-		}
-
-		public function SetDensity(density:Number):void
-		{
-			m_density = density;
-		}
-
-		public function ComputeMass(massData:b2MassData):void
-		{
-			m_shape.ComputeMass(massData, m_density);
-		}
-
 		public function TestPoint(p:b2Vec2):Boolean
 		{
 			return m_shape.TestPoint(m_body.GetTransform(), p);
@@ -250,7 +227,11 @@ package Box2D.Dynamics
 		{
 			m_shape.RayCast(output, input, m_body.GetTransform());
 		}
-		
+
+		public function GetMassData():b2MassData // const return in c++ version
+		{
+			return m_massData;
+		}
 	} // class
 } // package
 //#endif

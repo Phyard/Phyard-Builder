@@ -19,7 +19,7 @@ package player.physics {
          var bodyDef:b2BodyDef = new b2BodyDef ();
          bodyDef.position.Set (physicsX, physicsY);
          bodyDef.angle = rotation;
-         if (! static) bodyDef.massData.mass = 1; // temp value, it will be modified
+         //if (! static) bodyDef.massData.mass = 1; // temp value, it will be modified
          _b2Body = mPhysicsEngine._b2World.CreateBody (bodyDef);
          
          _b2Body.SetUserData (this);
@@ -40,10 +40,10 @@ package player.physics {
          }
       }
       
-      public function UpdateMass ():void
+      public function UpdateMass (isStatic:Boolean):void
       {
-         if (_b2Body != null)
-            _b2Body.SetMassFromShapes();
+         //if (_b2Body != null)
+         //   _b2Body.ResetMass(isStatic);
       }
       
       public function GetPosition ():Point

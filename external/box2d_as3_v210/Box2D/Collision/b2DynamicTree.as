@@ -162,7 +162,11 @@ package Box2D.Collision
 				{
 					if (node.IsLeaf())
 					{
-						callback.QueryCallback(nodeId);
+						var proceed:Boolean = callback.QueryCallback(nodeId);
+						if (proceed == false)
+						{
+							return;
+						}
 					}
 					else
 					{

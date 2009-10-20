@@ -86,7 +86,7 @@ package player.entity {
             RebuildAppearance ();
       }
       
-      override public function RebuildAppearance ():void
+      override public function RebuildAppearanceInternal ():void
       {
       }
       

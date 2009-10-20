@@ -46,7 +46,6 @@ public function Create(allocator:b2BlockAllocator, broadPhase:b2BroadPhase, body
 	m_userData = def.userData;
 	m_friction = def.friction;
 	m_restitution = def.restitution;
-	m_density = def.density;
 
 	m_body = body;
 	m_next = null;
@@ -56,6 +55,8 @@ public function Create(allocator:b2BlockAllocator, broadPhase:b2BroadPhase, body
 	m_isSensor = def.isSensor;
 
 	m_shape = def.shape.Clone(allocator);
+
+	m_shape.ComputeMass(m_massData, def.density);
 
 	// Create proxy in the broad-phase.
 	m_shape.ComputeAABB(m_aabb, xf);
@@ -128,7 +129,7 @@ public function SetFilterData(filter:b2Filter):void
 	}
 
 	// Flag associated contacts for filtering.
-	var edge:b2ContactEdge = m_body.GetConactList();
+	var edge:b2ContactEdge = m_body.GetContactList();
 	while (edge != null)
 	{
 		var contact:b2Contact = edge.contact;
@@ -156,7 +157,7 @@ public function SetSensor(sensor:Boolean):void
 	}
 
 	// Flag associated contacts for filtering.
-	var edge:b2ContactEdge = m_body.GetConactList();
+	var edge:b2ContactEdge = m_body.GetContactList();
 	while (edge != null)
 	{
 		var contact:b2Contact = edge.contact;

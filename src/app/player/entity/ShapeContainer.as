@@ -128,13 +128,7 @@ package player.entity {
             }
          }
          
-         if (isStatic)
-         {
-         }
-         else
-         {
-            (mPhysicsProxy as PhysicsProxyBody).UpdateMass ();
-         }
+        (mPhysicsProxy as PhysicsProxyBody).UpdateMass (isStatic);
       }
       
       public function GetMaxChildEntityIdInEditor ():int

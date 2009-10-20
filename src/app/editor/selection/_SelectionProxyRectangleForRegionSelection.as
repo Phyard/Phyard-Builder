@@ -23,8 +23,8 @@ package editor.selection {
       {
          super.RebuildRectangle (rotation, centerX, centerY, halfWidth, halfHeight);
          
-         _b2Body.m_fixtureList.m_density = 1.0;
-         _b2Body.SetMassFromShapes();
+         //_b2Body.m_fixtureList.m_density = 1.0;
+         //_b2Body.SetMassFromShapes();
       }
    }
 }

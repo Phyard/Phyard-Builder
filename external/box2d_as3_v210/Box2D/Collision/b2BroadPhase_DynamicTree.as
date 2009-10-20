@@ -103,7 +103,7 @@ package Box2D.Collision
 		//void BufferMove(int32 proxyId);
 		//void UnBufferMove(int32 proxyId);
 
-		//void QueryCallback(int32 proxyId);
+		//bool QueryCallback(int32 proxyId);
 
 		private var m_tree:b2DynamicTree = new b2DynamicTree ();
 

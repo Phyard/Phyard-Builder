@@ -12,9 +12,6 @@ package Box2D.Dynamics
 		/// This constructor sets the body definition default values.
 		public function b2BodyDef()
 		{
-			massData.center.SetZero();
-			massData.mass = 0.0;
-			massData.I = 0.0;
 			userData = null;
 			position.Set(0.0, 0.0);
 			angle = 0.0;
@@ -27,14 +24,6 @@ package Box2D.Dynamics
 			fixedRotation = false;
 			isBullet = false;
 		}
-
-		/// You can use this to initialized the mass properties of the body.
-		/// If you prefer, you can set the mass properties after the shapes
-		/// have been added using b2Body::SetMassFromShapes.
-		/// By default the mass data is set to zero, meaning the body is seen
-		/// as static. If you intend the body to be dynamic, a small performance
-		/// gain can be had by setting the mass to some positive value.
-		public var massData:b2MassData = new b2MassData ();
 
 		/// Use this to store application specific body data.
 		public var userData:Object;

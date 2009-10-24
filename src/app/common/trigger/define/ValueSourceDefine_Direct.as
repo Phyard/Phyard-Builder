@@ -8,7 +8,7 @@ package common.trigger.define
    
    public class ValueSourceDefine_Direct extends ValueSourceDefine
    {
-      public var mValueType:int;
+      public var mValueType:int; //this value will not packaged
       public var mValueObject:Object;
       
       public function ValueSourceDefine_Direct (valueType:int, valueObject:Object)

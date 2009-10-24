@@ -237,7 +237,6 @@ package player.trigger.entity
          {
             case Define.EntitySelectorType_Single:
             case Define.EntitySelectorType_Many:
-               trace ("mEntitiesIndexes1 = " + mEntitiesIndexes1);
                if (mEntitiesIndexes1 != null)
                {
                   count = mEntitiesIndexes1.length;

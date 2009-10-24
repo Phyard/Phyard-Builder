@@ -21,9 +21,10 @@ package player.world {
    import player.physics.PhysicsProxyShape;
    import player.physics.PhysicsProxyJoint;
    
+   import player.entity.ShapeContainer;
+   
    import player.entity.Entity;
    import player.entity.EntityVoid;
-   import player.entity.ShapeContainer;
    import player.entity.EntityShape;
    import player.entity.EntityShapeCircle;
    import player.entity.EntityShapeRectangle;
@@ -65,6 +66,12 @@ package player.world {
    
    public class World extends Sprite implements IPropertyOwner
    {
+   // includes
+      
+      include "../trigger/CoreFunctionDefinitions_World.as";
+      
+   // 
+      
       public static const DefaultWorldWidth :int = Define.DefaultWorldWidth; 
       public static const DefaultWorldHeight:int = Define.DefaultWorldHeight;
       public static const WorldBorderThinknessLR:int = Define.WorldBorderThinknessLR;
@@ -1027,7 +1034,6 @@ package player.world {
       private function SetPhysicsLocked (locked:Boolean):void
       {
          mIsPhysicsLocked = locked;
-         trace ("------------------------------------- mIsPhysicsLocked = " + mIsPhysicsLocked);
       }
       
       public function IsPhysicsLocked ():Boolean
@@ -1047,7 +1053,6 @@ package player.world {
       {
          for (var i:int = 0; i < mNumBufferedEntities; ++ i)
          {
-         trace ("i = " + i + ", DestroyBufferedEntities" + mBufferedEntities [i]);
             (mBufferedEntities [i] as Entity).DestroyPhysicsProxy ();
             mBufferedEntities [i] = null;
          }
@@ -1073,7 +1078,6 @@ package player.world {
             child = mChildrenToRemove [i];
             if (child != null && child.parent != null)
             {
-            trace ("i = " + i + " , RemoveBufferedChildren child = " + child);
                child.parent.removeChild (child);
             }
             
@@ -1633,9 +1637,6 @@ package player.world {
                -- mNumContactInfos;
                //trace (" --- mNumContactInfos = " + mNumContactInfos);
             }
-            
-         trace ("isContactContinued = " + isContactContinued + ", shape 1 = " + contact_info.mEntityShape1 + ", shape 2 = " + contact_info.mEntityShape2);
-         trace ("contact_info.mBeginContactingFrame = " + contact_info.mBeginContactingFrame + ", mNumSimulatdFrames = " + mNumSimulatdFrames + ", contact_info.mNumContactPoints = " + contact_info.mNumContactPoints);
             
             if (isContactContinued)
             {

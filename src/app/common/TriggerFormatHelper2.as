@@ -24,6 +24,8 @@ package common {
    import player.trigger.ValueTarget;
    import player.trigger.ValueTarget_Null;
    import player.trigger.ValueTarget_Variable;
+   import player.trigger.VariableSpace;
+   import player.trigger.VariableInstance;
    
    import common.trigger.FunctionDeclaration;
    
@@ -123,9 +125,9 @@ package common {
          {
             var direct_source_define:ValueSourceDefine_Direct = valueSourceDefine as ValueSourceDefine_Direct;
             
-            var value_type:int  = direct_source_define.mValueType;
+            //assert (valueType == direct_source_define.mValueType);
             
-            switch (value_type)
+            switch (valueType)
             {
                case ValueTypeDefine.ValueType_Boolean:
                   value_source = new ValueSource_Direct (direct_source_define.mValueObject as Boolean);
@@ -150,33 +152,67 @@ package common {
          {
             var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
             
-            var value_space_type:int     = variable_source_define.mSpaceType;
+            var value_space_type:int = variable_source_define.mSpaceType;
+            var variable_index:int   = variable_source_define.mVariableIndex;
+            var variable_instance:VariableInstance = null;
             
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  value_source = new ValueSource_Variable (Global.GetRegisterVariableSpace (valueType).GetVariableAt (variable_source_define.mVariableIndex));
+                  var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
+                  if (variable_space != null)
+                  {
+                     variable_instance = variable_space.GetVariableAt (variable_index);
+                  }
+                  
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Input:
-                  value_source = new ValueSource_Variable (parentFunctionInstance.GetInputVariableAt (variable_source_define.mVariableIndex));
+                  variable_instance = parentFunctionInstance.GetInputVariableAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Return:
-                  value_source = new ValueSource_Variable (parentFunctionInstance.GetReturnVariableAt (variable_source_define.mVariableIndex));
+                  variable_instance = parentFunctionInstance.GetReturnVariableAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
                   break;
                default:
                   break;
             }
+            
+            if (variable_instance != null)
+            {
+               value_source = new ValueSource_Variable (variable_instance);
+            }
          }
          
          if (value_source == null)
          {
-            value_source = new ValueSource_Null ();
+            //value_source = new ValueSource_Null ();
+            //trace ("Error: source is null");
             
-            trace ("Error: source is null");
+            switch (valueType)
+            {
+               case ValueTypeDefine.ValueType_Boolean:
+                  value_source = new ValueSource_Direct (false);
+                  break;
+               case ValueTypeDefine.ValueType_Number:
+                  value_source = new ValueSource_Direct (0);
+                  break;
+               case ValueTypeDefine.ValueType_String:
+                  value_source = new ValueSource_Direct (null);
+                  break;
+               case ValueTypeDefine.ValueType_Entity:
+                  value_source = new ValueSource_Direct (null);
+                  break;
+               case ValueTypeDefine.ValueType_CollisionCategory:
+                  value_source = new ValueSource_Direct (Define.CollisionCategoryId_HiddenCategory);
+                  break;
+               default:
+                  value_source = new ValueSource_Null ();
+                  trace ("Error: source is null");
+                  break;
+            }
          }
          
          return value_source;
@@ -196,24 +232,37 @@ package common {
          {
             var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
             
-            var value_space_type:int     = variable_target_define.mSpaceType;
+            var value_space_type:int = variable_target_define.mSpaceType;
+            var variable_index:int   = variable_target_define.mVariableIndex;
+            var variable_instance:VariableInstance = null;
             
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  value_target = new ValueTarget_Variable (Global.GetRegisterVariableSpace (valueType).GetVariableAt (variable_target_define.mVariableIndex));
+                  var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
+                  if (variable_space != null)
+                  {
+                     variable_instance = variable_space.GetVariableAt (variable_index);
+                  }
+                  
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Input:
+                  variable_instance = parentFunctionInstance.GetInputVariableAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Return:
-                  value_target = new ValueTarget_Variable (parentFunctionInstance.GetReturnVariableAt (variable_target_define.mVariableIndex));
+                  variable_instance = parentFunctionInstance.GetReturnVariableAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
                   break;
                default:
                   break;
+            }
+            
+            if (variable_instance != null)
+            {
+               value_target = new ValueTarget_Variable (variable_instance);
             }
          }
          
@@ -221,7 +270,7 @@ package common {
          {
             value_target = new ValueTarget_Null ();
             
-            trace ("Error: target is null");
+            //trace ("Error: target is null");
          }
          
          return value_target;

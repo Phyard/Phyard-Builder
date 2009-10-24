@@ -35,6 +35,17 @@ package common {
    // 
    //*********************************************************************************************************************************
          
+         // worldDefine.mVersion >= 0x0107
+         if (worldDefine.mEntityCreationOrder.length != worldDefine.mEntityDefines.length)
+         {
+            throw new Error ("numCreationOrderIds != numEntities !");
+            return null;
+         }
+         
+   //*********************************************************************************************************************************
+   // 
+   //*********************************************************************************************************************************
+         
          //
          Global.InitGlobalData ();
          
@@ -50,6 +61,7 @@ package common {
          var brotherGroupArray:Array = worldDefine.mBrotherGroupDefines;
          var groupId:int;
          var brotherGroup:Array;
+         var createId:int;
          var entityId:int;
          var entityDefine:Object;
          var i:int;
@@ -135,11 +147,14 @@ package common {
          
       // create shapes
          
-         for (entityId = 0; entityId < entityDefineArray.length; ++ entityId)
+         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
          {
+            entityId = worldDefine.mEntityCreationOrder [createId];
+            
             entity = null;
             
             entityDefine = entityDefineArray [entityId];
+            entityDefine.mCreationOrderId = createId;
             
             // >> starts from version 1.01
             entityDefine.mWorldDefine = worldDefine;
@@ -278,8 +293,10 @@ package common {
          
       // create joints
          
-         for (entityId = 0; entityId < entityDefineArray.length; ++ entityId)
+         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
          {
+            entityId = worldDefine.mEntityCreationOrder [createId];
+            
             entityDefine = entityDefineArray [entityId];
             
             entity = null;
@@ -370,8 +387,10 @@ package common {
       // build logics
          
          // here invert the order, to make the fronter event handler registered fronterly
-         for (entityId = entityDefineArray.length - 1; entityId >= 0; -- entityId)
+         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
          {
+            entityId = worldDefine.mEntityCreationOrder [createId];
+            
             entityDefine = entityDefineArray [entityId];
             
          // ...
@@ -796,6 +815,17 @@ package common {
          
          // ...
          
+         if (worldDefine.mVersion >= 0x0107)
+         {
+            var numOrderIds:int = byteArray.readShort (); // should == numEntities
+            for (var createId:int = 0; createId < numOrderIds; ++ createId)
+            {
+               worldDefine.mEntityCreationOrder.push (byteArray.readShort ());
+            }
+         }
+         
+         // ...
+         
          var numGroups:int = byteArray.readShort ();
          var numEntityIds:int;
          
@@ -1001,6 +1031,25 @@ package common {
             element = EntityDefine2XmlElement (entityDefine, worldDefine);
             
             xml.Entities.appendChild (element);
+         }
+         
+         // ...
+         if (worldDefine.mVersion >= 0x0107)
+         {
+            var order_text:String = "";
+            
+            if (worldDefine.mEntityCreationOrder.length > 0)
+            {
+               order_text = order_text + worldDefine.mEntityCreationOrder [0];
+            }
+            
+            for (var createIndex:int = 1; createIndex < worldDefine.mEntityCreationOrder.length; ++ createIndex)
+            {
+               order_text = order_text + "," + worldDefine.mEntityCreationOrder [createIndex];
+            }
+            
+            xml.EntityCreationOrder = <EntityCreationOrder />;
+            xml.EntityCreationOrder.@entity_ids = order_text;
          }
          
          // ...
@@ -1587,6 +1636,15 @@ package common {
                   entityDefine.mConnectedShape1Index = Define.EntityId_None;
                   entityDefine.mConnectedShape2Index = Define.EntityId_None;
                }
+            }
+         }
+         
+         // creation order
+         if (worldDefine.mVersion < 0x0107 || worldDefine.mEntityCreationOrder.length == 0)
+         {
+            for (entityId = 0; entityId < numEntities; ++ entityId)
+            {
+               worldDefine.mEntityCreationOrder.push (entityId);
             }
          }
       }

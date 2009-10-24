@@ -52,6 +52,22 @@ package editor.entity {
 // 
 //======================================================
       
+      protected var mCreationOrderId:int = -1; // to reduce random factors
+      
+      public function SetCreationOrderId (index:int):void
+      {
+         mCreationOrderId = index;
+      }
+      
+      public function GetCreationOrderId ():int
+      {
+         return mCreationOrderId;
+      }
+      
+//======================================================
+// 
+//======================================================
+      
       public function Destroy ():void
       {
          SetInternalComponentsVisible (false);
@@ -174,6 +190,8 @@ package editor.entity {
          if (entity != null)
          {
             SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+            
+            GetContainer ().OnNewEntityCreated (entity);
          }
          
          return entity;

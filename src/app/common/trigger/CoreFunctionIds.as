@@ -166,42 +166,47 @@ package common.trigger {
       public static const ID_Entity_GetRotationByDegrees:int           = 958; // entity 
       //public static const ID_Entity_SetRotationByDegrees:int         = 959; // entity 
       
+      public static const ID_Entity_AttachWithEntity:int               = 1000;
+      public static const ID_Entity_Detach:int                         = 1001;
+      
    // game / entity / shape
       
-      public static const ID_EntityShape_GetShapeCIType:int            = 1000; // entity.shape
-      //public static const ID_EntityShape_SetShapeCIType:int          = 1001; // entity.shape
+      public static const ID_EntityShape_GetShapeCIType:int            = 1100; // entity.shape
+      //public static const ID_EntityShape_SetShapeCIType:int          = 1101; // entity.shape
       
-      public static const ID_EntityShape_GetFilledColor:int            = 1010; // entity.shape
-      public static const ID_EntityShape_SetFilledColor:int            = 1011; // entity.shape
-      public static const ID_EntityShape_GetFilledColorRGB:int         = 1012; // entity.shape
-      public static const ID_EntityShape_SetFilledColorRGB:int         = 1013; // entity.shape
-      public static const ID_EntityShape_GetFilledOpacity:int          = 1014; // entity.shape
-      public static const ID_EntityShape_SetFilledOpacity:int          = 1015; // entity.shape
-      public static const ID_EntityShape_IsShowBorder:int              = 1016; // entity.shape
-      public static const ID_EntityShape_SetShowBorder:int             = 1017; // entity.shape
-      public static const ID_EntityShape_GetBorderThickness:int        = 1018; // entity.shape
-      public static const ID_EntityShape_SetBorderThickness:int        = 1019; // entity.shape
-      public static const ID_EntityShape_GetBorderColor:int            = 1020; // entity.shape
-      public static const ID_EntityShape_SetBorderColor:int            = 1021; // entity.shape
-      public static const ID_EntityShape_GetBorderColorRGB:int         = 1022; // entity.shape
-      public static const ID_EntityShape_SetBorderColorRGB:int         = 1023; // entity.shape
-      public static const ID_EntityShape_GetBorderOpacity:int          = 1024; // entity.shape
-      public static const ID_EntityShape_SetBorderOpacity:int          = 1025; // entity.shape
+      public static const ID_EntityShape_GetFilledColor:int            = 1110; // entity.shape
+      public static const ID_EntityShape_SetFilledColor:int            = 1111; // entity.shape
+      public static const ID_EntityShape_GetFilledColorRGB:int         = 1112; // entity.shape
+      public static const ID_EntityShape_SetFilledColorRGB:int         = 1113; // entity.shape
+      public static const ID_EntityShape_GetFilledOpacity:int          = 1114; // entity.shape
+      public static const ID_EntityShape_SetFilledOpacity:int          = 1115; // entity.shape
+      public static const ID_EntityShape_IsShowBorder:int              = 1116; // entity.shape
+      public static const ID_EntityShape_SetShowBorder:int             = 1117; // entity.shape
+      public static const ID_EntityShape_GetBorderThickness:int        = 1118; // entity.shape
+      public static const ID_EntityShape_SetBorderThickness:int        = 1119; // entity.shape
+      public static const ID_EntityShape_GetBorderColor:int            = 1120; // entity.shape
+      public static const ID_EntityShape_SetBorderColor:int            = 1121; // entity.shape
+      public static const ID_EntityShape_GetBorderColorRGB:int         = 1122; // entity.shape
+      public static const ID_EntityShape_SetBorderColorRGB:int         = 1123; // entity.shape
+      public static const ID_EntityShape_GetBorderOpacity:int          = 1124; // entity.shape
+      public static const ID_EntityShape_SetBorderOpacity:int          = 1125; // entity.shape
       
-      public static const ID_EntityShape_IsPhysicsEnabled:int          = 1050; // entity.shape physics
-      //public static const ID_EntityShape_SetPhysicsEnabled:int       = 1051; // entity.shape physics
-      public static const ID_EntityShape_IsStatic:int                  = 1052; // entity.shape physics
-      //public static const ID_EntityShape_SetStatic:int               = 1053; // entity.shape physics
-      public static const ID_EntityShape_IsSensor:int                  = 1054; // entity.shape physics
-      public static const ID_EntityShape_SetAsSensor:int               = 1055; // entity.shape physics
-      public static const ID_EntityShape_IsBullet:int                  = 1056; // entity.shape physics
-      public static const ID_EntityShape_SetAsBullet:int               = 1057; // entity.shape physics
       
-      public static const ID_EntityShape_GetCollisionCategory:int      = 1070; // entity.shape physics
-      public static const ID_EntityShape_SetCollisionCategory:int      = 1071; // entity.shape physics
-      public static const ID_EntityShape_GetLocalCentroid:int                   = 1072; // entity.shape physics
-      public static const ID_EntityShape_GetWorldCentroid:int                   = 1072; // entity.shape physics
-      public static const ID_EntityShape_AutoSetMassInertia:int            = 1072; // entity.shape physics
+      
+      public static const ID_EntityShape_IsPhysicsEnabled:int          = 1150; // entity.shape physics
+      //public static const ID_EntityShape_SetPhysicsEnabled:int       = 1151; // entity.shape physics
+      public static const ID_EntityShape_IsStatic:int                  = 1152; // entity.shape physics
+      //public static const ID_EntityShape_SetStatic:int               = 1153; // entity.shape physics
+      public static const ID_EntityShape_IsSensor:int                  = 1154; // entity.shape physics
+      public static const ID_EntityShape_SetAsSensor:int               = 1155; // entity.shape physics
+      public static const ID_EntityShape_IsBullet:int                  = 1156; // entity.shape physics
+      public static const ID_EntityShape_SetAsBullet:int               = 1157; // entity.shape physics
+      
+      public static const ID_EntityShape_GetCollisionCategory:int      = 1170; // entity.shape physics
+      public static const ID_EntityShape_SetCollisionCategory:int      = 1171; // entity.shape physics
+      public static const ID_EntityShape_GetLocalCentroid:int          = 1072; // entity.shape physics
+      public static const ID_EntityShape_GetWorldCentroid:int          = 1072; // entity.shape physics
+      public static const ID_EntityShape_AutoSetMassInertia:int        = 1072; // entity.shape physics
       public static const ID_EntityShape_GetMass:int                   = 1072; // entity.shape physics
       public static const ID_EntityShape_SetMass:int                   = 1072; // entity.shape physics
       public static const ID_EntityShape_GetInertia:int                = 1072; // entity.shape physics
@@ -231,21 +236,22 @@ package common.trigger {
       public static const ID_EntityShape_ApplyPermanentLocalForceAtLocalPoint:int                   = 1103; // entity.shape physics
       public static const ID_EntityShape_ApplyStepTorque:int            = 1102; // entity.shape physics
       public static const ID_EntityShape_ApplyPermanentTorque:int                   = 1103; // entity.shape physics
+      //impulse and angular impulse
       
    // game /entity / joint
       
-      // from 1200
+      // from 1300
       
    // game / entity / utils
       
-      public static const ID_EntityText_GetText:int                   = 1300; // entity.text
-      public static const ID_EntityText_SetText:int                   = 1301; // entity.text
-      public static const ID_EntityText_AppendText:int                = 1302; // entity.text
-      public static const ID_EntityText_AppendNewLine:int             = 1303; // entity.text
+      public static const ID_EntityText_GetText:int                   = 1550; // entity.text
+      public static const ID_EntityText_SetText:int                   = 1551; // entity.text
+      public static const ID_EntityText_AppendText:int                = 1552; // entity.text
+      public static const ID_EntityText_AppendNewLine:int             = 1553; // entity.text
       
    // game / entity / field
       
-      // from 1500
+      // from 1800
       
    //=============================================================
       

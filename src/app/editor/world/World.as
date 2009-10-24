@@ -92,6 +92,8 @@ package editor.world {
          mCollisionManager.DestroyAllEntities ();
          
          super.DestroyAllEntities ();
+         
+         mMaxEntityCreationId = 0;
       }
       
       override public function DestroyEntity (entity:Entity):void
@@ -524,6 +526,8 @@ package editor.world {
          
          circle.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
          
+         OnNewEntityCreated (circle);
+         
          return circle;
       }
       
@@ -536,6 +540,8 @@ package editor.world {
          addChild (rect);
          
          rect.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
+         
+         OnNewEntityCreated (rect);
          
          return rect;
       }
@@ -550,6 +556,8 @@ package editor.world {
          
          polygon.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
          
+         OnNewEntityCreated (polygon);
+         
          return polygon;
       }
       
@@ -563,6 +571,8 @@ package editor.world {
          
          polyline.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
          
+         OnNewEntityCreated (polyline);
+         
          return polyline;
       }
       
@@ -573,6 +583,8 @@ package editor.world {
             
          var distaneJoint:EntityJointDistance = new EntityJointDistance (this);
          addChild (distaneJoint);
+         
+         OnNewEntityCreated (distaneJoint);
          
          return distaneJoint;
       }
@@ -585,6 +597,8 @@ package editor.world {
          var hinge:EntityJointHinge = new EntityJointHinge (this);
          addChild (hinge);
          
+         OnNewEntityCreated (hinge);
+         
          return hinge;
       }
       
@@ -595,6 +609,8 @@ package editor.world {
             
          var slider:EntityJointSlider = new EntityJointSlider (this);
          addChild (slider);
+         
+         OnNewEntityCreated (slider);
          
          return slider;
       }
@@ -607,6 +623,8 @@ package editor.world {
          var spring:EntityJointSpring = new EntityJointSpring (this);
          addChild (spring);
          
+         OnNewEntityCreated (spring);
+         
          return spring;
       }
       
@@ -617,6 +635,8 @@ package editor.world {
             
          var text:EntityShapeText = new EntityShapeText(this);
          addChild (text);
+         
+         OnNewEntityCreated (text);
          
          return text;
       }
@@ -629,6 +649,8 @@ package editor.world {
          var gController:EntityShapeGravityController = new EntityShapeGravityController(this);
          addChild (gController);
          
+         OnNewEntityCreated (gController);
+         
          return gController;
       }
       
@@ -639,6 +661,8 @@ package editor.world {
          
          var camera:EntityUtilityCamera = new EntityUtilityCamera(this);
          addChild (camera);
+         
+         OnNewEntityCreated (camera);
          
          return camera;
       }
@@ -651,19 +675,10 @@ package editor.world {
          var handler:EntityEventHandler = new EntityEventHandler (this, defaultEventId, potientialEventIds);
          addChild (handler);
          
+         OnNewEntityCreated (handler);
+         
          return handler;
       }
-      
-      //public function CreateEntityTrigger ():EntityTrigger
-      //{
-      //   if (numChildren >= Define.MaxEntitiesCount)
-      //      return null;
-      //   
-      //   var trigger:EntityTrigger = new EntityTrigger(this);
-      //   addChild (trigger);
-      //   
-      //   return trigger;
-      //}
       
       public function CreateEntityCondition ():EntityBasicCondition
       {
@@ -672,6 +687,8 @@ package editor.world {
          
          var condition:EntityBasicCondition = new EntityBasicCondition(this);
          addChild (condition);
+         
+         OnNewEntityCreated (condition);
          
          return condition;
       }
@@ -684,6 +701,8 @@ package editor.world {
          var condition_door:EntityConditionDoor = new EntityConditionDoor(this);
          addChild (condition_door);
          
+         OnNewEntityCreated (condition_door);
+         
          return condition_door;
       }
       
@@ -694,6 +713,8 @@ package editor.world {
          
          var task:EntityTask = new EntityTask(this);
          addChild (task);
+         
+         OnNewEntityCreated (task);
          
          return task;
       }
@@ -706,6 +727,8 @@ package editor.world {
          var entity_assigner:EntityInputEntityAssigner = new EntityInputEntityAssigner(this);
          addChild (entity_assigner);
          
+         OnNewEntityCreated (entity_assigner);
+         
          return entity_assigner;
       }
       
@@ -716,6 +739,8 @@ package editor.world {
          
          var entity_pair_assigner:EntityInputEntityPairAssigner = new EntityInputEntityPairAssigner(this);
          addChild (entity_pair_assigner);
+         
+         OnNewEntityCreated (entity_pair_assigner);
          
          return entity_pair_assigner;
       }

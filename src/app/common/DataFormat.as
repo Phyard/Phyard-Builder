@@ -85,6 +85,7 @@ package common {
          
          var entityId:int;
          var editorEntity:editor.entity.Entity;
+         var arraySortedByCreationId:Array = new Array ();
          
          for (entityId = 0; entityId < editorWorld.numChildren; ++ entityId)
          {
@@ -387,8 +388,19 @@ package common {
             }
             
             worldDefine.mEntityDefines.push (entityDefine);
+            
+            arraySortedByCreationId.push ({entity:editorEntity, creationId:editorEntity.GetCreationOrderId ()});
          }
          
+         // 
+         arraySortedByCreationId.sortOn ("creationId", Array.NUMERIC);
+         for (var arrayIndex:int = 0; arrayIndex < arraySortedByCreationId.length; ++ arrayIndex)
+         {
+            editorEntity = arraySortedByCreationId [arrayIndex].entity;
+            worldDefine.mEntityCreationOrder.push (editorEntity.GetEntityIndex ());
+         }
+         
+         // 
          var brotherGroupArray:Array = editorWorld.GetBrotherGroups ();
          var groupId:int;
          var brotherGroup:Array;
@@ -469,51 +481,37 @@ package common {
          //
          if (editorWorld == null)
          {
-            //try
-            //{
-               editorWorld = new editor.world.World ();
-               
-               // basic
-               {
-                  editorWorld.SetAuthorName (worldDefine.mAuthorName);
-                  editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
-                  
-                  editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
-                  editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
-               }
-               
-               // settings
-               {
-                  //>> from v1.04
-                  editorWorld.SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
-                  editorWorld.SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
-                  editorWorld.SetWorldLeft (worldDefine.mSettings.mWorldLeft);
-                  editorWorld.SetWorldTop (worldDefine.mSettings.mWorldTop);
-                  editorWorld.SetWorldWidth (worldDefine.mSettings.mWorldWidth);
-                  editorWorld.SetWorldHeight (worldDefine.mSettings.mWorldHeight);
-                  editorWorld.SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
-                  editorWorld.SetBuildBorder (worldDefine.mSettings.mBuildBorder);
-                  editorWorld.SetBorderColor (worldDefine.mSettings.mBorderColor);
-                  //<<
-                  
-                  
-                  //>>from v1.06
-                  //worldDefine.mSettings.mPhysicsShapesPotentialMaxCount;
-                  //worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel;
-                  //<<
-               }
+            editorWorld = new editor.world.World ();
             
-               return WorldDefine2EditorWorld (worldDefine, adjustPrecisionsInWorldDefine, editorWorld);
+            // basic
+            {
+               editorWorld.SetAuthorName (worldDefine.mAuthorName);
+               editorWorld.SetAuthorHomepage (worldDefine.mAuthorHomepage);
                
-               // comment off the try-catch for bug of secureSWF. This will make memory leaks possible!!!
-            //}
-           // catch (error:Error)
-            //{
-            //   if (editorWorld != null)
-            //      editorWorld.Destroy (); // tell b2WorldPool to release the alloced b2Worlds
-            //   
-            //   throw error;
-            //}
+               editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
+               editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
+            }
+            
+            // settings
+            {
+               //>> from v1.04
+               editorWorld.SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
+               editorWorld.SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
+               editorWorld.SetWorldLeft (worldDefine.mSettings.mWorldLeft);
+               editorWorld.SetWorldTop (worldDefine.mSettings.mWorldTop);
+               editorWorld.SetWorldWidth (worldDefine.mSettings.mWorldWidth);
+               editorWorld.SetWorldHeight (worldDefine.mSettings.mWorldHeight);
+               editorWorld.SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
+               editorWorld.SetBuildBorder (worldDefine.mSettings.mBuildBorder);
+               editorWorld.SetBorderColor (worldDefine.mSettings.mBorderColor);
+               //<<
+               
+               
+               //>>from v1.06
+               //worldDefine.mSettings.mPhysicsShapesPotentialMaxCount;
+               //worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel;
+               //<<
+            }
          }
          
          // collision category
@@ -554,6 +552,7 @@ package common {
          // entities
          
          var beginningEntityIndex:int = editorWorld.numChildren;
+         var beginningEntityCreationOrderId:int = editorWorld.GetMaxEntityCreationId ();
          
          var entityId:int;
          var entityDefine:Object;
@@ -819,7 +818,8 @@ package common {
             }
          }
          
-         // re add child, to make the order correct
+         // remove then readd child, to correct entity id
+         //>>>
          while (editorWorld.numChildren > beginningEntityIndex)
             editorWorld.removeChildAt (beginningEntityIndex);
          
@@ -828,6 +828,19 @@ package common {
             entityDefine = worldDefine.mEntityDefines [entityId];
             editorWorld.addChild (entityDefine.mEntity);
          }
+         //<<<
+         
+         //>>> correct the creation order id
+         if (worldDefine.mVersion < 0x0107)
+         {
+            for (var createIndex:int = 0; createIndex < worldDefine.mEntityCreationOrder.length; ++ createIndex)
+            {
+               entityId = worldDefine.mEntityCreationOrder [createIndex] + beginningEntityIndex;
+               entity = editorWorld.GetEntityAt (entityId);
+               entity.SetCreationOrderId (createIndex + beginningEntityCreationOrderId);
+            }
+         }
+         //<<<
          
          // modify
          for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
@@ -967,6 +980,18 @@ package common {
             var entityDefine:Object = XmlElement2EntityDefine (element, worldDefine);
             
             worldDefine.mEntityDefines.push (entityDefine);
+         }
+         
+         // ...
+         // worldDefine.mVersion >= 0x0107
+         if (worldXml.EntityCreationOrder != undefined)
+         {
+            var order_text:String = worldXml.EntityCreationOrder.@entity_ids;
+            var id_strings:Array = order_text.split (",");
+            for (var strId:int = 0; strId < id_strings.length; ++ strId)
+            {
+               worldDefine.mEntityCreationOrder.push (parseInt (id_strings [strId]));
+            }
          }
          
          // ...
@@ -1545,6 +1570,16 @@ package common {
                   
                   byteArray.writeFloat (entityDefine.mDampingRatio);
                }
+            }
+         }
+         
+         // ...
+         if (worldDefine.mVersion >= 0x0107)
+         {
+            byteArray.writeShort (worldDefine.mEntityCreationOrder.length); // should == numEntities
+            for (var createId:int = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
+            {
+               byteArray.writeShort (worldDefine.mEntityCreationOrder [createId]);
             }
          }
          

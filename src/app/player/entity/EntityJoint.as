@@ -66,7 +66,6 @@ package player.entity {
       
       override protected function DestroyInternal ():void
       {
-      trace ("joint DestroyInternal");
          if (mJointNodeA != null)
          {
             mJointNodeA.NotifyBroken ();

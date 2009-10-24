@@ -223,11 +223,13 @@ package common {
       
       public static function FunctionCallingDefine2ByteArray (funcCallingDefine:FunctionCallingDefine):ByteArray
       {
+         // param number will be packed for easey back-compiliabel later
          return null;
       }
       
       public static function ValueSourceDefine2ByteArray (valueSourceDefine:ValueSourceDefine):ByteArray
       {
+         // ValueSourceDefine_Direct.mValueType will not packed
          return null;
       }
       

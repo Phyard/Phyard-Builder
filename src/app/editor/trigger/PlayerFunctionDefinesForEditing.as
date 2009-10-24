@@ -766,6 +766,17 @@ package editor.trigger {
                      ]
                   );
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_AttachWithEntity, entity_package, "GlueEntities", 
+                     [
+                             new VariableDefinitionEntity ("The Entity to Attach With"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Detach, entity_package, "DetachFromGlueds", 
+                     null,
+                     null
+                  );
+         
       // game / entity / shape
          
           RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, entity_shape_package, "GetFilledColor", 

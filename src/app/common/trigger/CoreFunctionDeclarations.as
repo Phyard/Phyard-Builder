@@ -728,6 +728,17 @@ package common.trigger {
                      ]
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_AttachWithEntity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Detach,
+                     null,
+                     null
+                  );
+         
       // game / entity / shape
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor,

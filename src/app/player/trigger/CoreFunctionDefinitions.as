@@ -11,6 +11,8 @@ package player.trigger {
    import player.entity.EntityUtilityCamera;
    import player.entity.EntityShapeText;
    
+   import player.entity.ShapeContainer;
+   
    import player.physics.PhysicsEngine;
    
    import player.trigger.FunctionDefinition_Core;
@@ -151,6 +153,9 @@ package player.trigger {
          //RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetPosition,                 SetEntityPosition);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_AttachWithEntity,          GlueEntities);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Detach,                    DetachFromGlueds);
          
       // game / entity / shape
          
@@ -866,7 +871,7 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          
-         Global.GetCurrentWorld ().AttatchCurrentCameraToEntity (shape);
+         shape.GetWorld ().AttatchCurrentCameraToEntity (shape);
       }
       
       // game / collision category
@@ -1039,6 +1044,33 @@ package player.trigger {
       //   
       //   valueTarget.AssignValueObject (entity.GetRotation ());
       //}
+      
+      public static function GlueEntities (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         //var entity1:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
+         //if (entity1 == null)
+         //   return;
+         //
+         //valueSource = valueSource.mNextValueSourceInList;
+         //var entity2:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
+         //if (entity2 == null)
+         //   return;
+         //
+         //var world:World = entity1.GetWorld ();
+         //if (world != entity2.GetWorld ())
+         //   return;
+         
+         //world.GlueEntities (entity1, entity2);
+      }
+      
+      public static function DetachFromGlueds (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         //var entity:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
+         //if (entity == null)
+         //   return;
+         
+         //entity.GetWorld ().DetachEntity (entity);
+      }
       
    //*******************************************************************
    // entity / shape

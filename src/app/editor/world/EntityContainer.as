@@ -83,9 +83,38 @@ package editor.world {
          }
       }
       
+//=================================================================================
+//   create
+//=================================================================================
+      
+      protected var mMaxEntityCreationId:int = 0;
+      
+      public function GetMaxEntityCreationId ():int
+      {
+         return mMaxEntityCreationId;
+      }
+      
+      public function OnNewEntityCreated (entity:Entity):void // used internally
+      {
+         var sub_entities:Array = entity.GetSubEntities ();
+         if (sub_entities != null && sub_entities.length > 1)
+         {
+            var sub_entity:Entity;
+            for (var i:int = 0; i < sub_entities.length; ++ i)
+            {
+               sub_entity = sub_entities [i];
+               if (sub_entity != entity)
+               {
+                  sub_entity.SetCreationOrderId (mMaxEntityCreationId ++);
+               }
+            }
+         }
+         
+         entity.SetCreationOrderId (mMaxEntityCreationId ++);
+      }
       
 //=================================================================================
-//   create and destroy entities
+//   destroy entities
 //=================================================================================
       
       public function DestroyAllEntities ():void

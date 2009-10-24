@@ -32,6 +32,11 @@ package player.entity {
          mWorld = world;
       }
       
+      public function GetWorld ():World
+      {
+         return mWorld;
+      }
+      
       public function GetEntityIndexInEditor ():int
       {
          return mEntityIndexInEditor;
@@ -90,6 +95,9 @@ package player.entity {
       
       final public function Initialize ():void
       {
+         if (mAlreadyDestroyed)
+            return;
+         
          var  list_element:ListElement_EventHandler = mInitializeEventHandlerList;
          
          mEventHandlerValueSource0.mValueObject = this;
@@ -108,6 +116,9 @@ package player.entity {
       
       final public function Update (dt:Number):void
       {
+         if (mAlreadyDestroyed)
+            return;
+         
          UpdateInternal (dt);
          
          // 
@@ -143,7 +154,6 @@ package player.entity {
       
       final public function Destroy ():void
       {
-      trace ("Destroy " + this + ", mAlreadyDestroyed = " + mAlreadyDestroyed);
          if (mAlreadyDestroyed)
             return;
          
@@ -224,7 +234,6 @@ package player.entity {
       
       public function DestroyPhysicsProxy ():void
       {
-      trace ("DestroyPhysicsProxy " + this + ", mWorld.IsPhysicsLocked () = " + mWorld.IsPhysicsLocked ());
          if (mPhysicsProxy != null)
          {
             if (mWorld.IsPhysicsLocked ())

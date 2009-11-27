@@ -766,17 +766,6 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_AttachWithEntity, entity_package, "GlueEntities", 
-                     [
-                             new VariableDefinitionEntity ("The Entity to Attach With"), 
-                     ],
-                     null
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Detach, entity_package, "DetachFromGlueds", 
-                     null,
-                     null
-                  );
-         
       // game / entity / shape
          
           RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, entity_shape_package, "GetFilledColor", 
@@ -852,6 +841,50 @@ package editor.trigger {
                      ],
                      null
                   );
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Attach, entity_shape_package, "GlueShapes", 
+                     [
+                             new VariableDefinitionEntity ("Shape 1"), 
+                             new VariableDefinitionEntity ("Shape 2"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_package, "DetachShape", 
+                     [
+                             new VariableDefinitionEntity ("The Shape to Be Detached"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Breakup, entity_shape_package, "BreakupGluedShapes", 
+                     [
+                             new VariableDefinitionEntity ("One Shape in Glueds"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Teleport, entity_shape_package, "TeleportShape", 
+                     [
+                             new VariableDefinitionEntity ("The Shape"), 
+                             new VariableDefinitionNumber ("Target PositionX"), 
+                             new VariableDefinitionNumber ("Target PositionY"), 
+                             new VariableDefinitionNumber ("Target Rotation"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movable Shapes?"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Static Shapes?"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, entity_shape_package, "CloneShape", 
+                     [
+                             new VariableDefinitionEntity ("The Shape"), 
+                             new VariableDefinitionNumber ("Target PositionX"), 
+                             new VariableDefinitionNumber ("Target PositionY"), 
+                             new VariableDefinitionNumber ("Target Rotation"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movable Shapes?"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Static Shapes?"), 
+                     ],
+                     null
+                  );
+         
+         
          
       // game / entity / joint
          

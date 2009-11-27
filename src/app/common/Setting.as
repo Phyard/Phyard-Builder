@@ -60,7 +60,7 @@ package common {
       }
       */
       
-      public static function GetSpringParamsByType (type:int, staticLength:Number):Object
+      public static function GetSpringParamsByType (type:int, physicsStaticLength:Number):Object
       {
          var params:Object = new Object ();
          
@@ -90,7 +90,14 @@ package common {
                break;
          }
          
-         params.mFrequencyHz = params.mFrequencyHz * 100 / staticLength;
+         if (physicsStaticLength < Define.kFloatEpsilon)
+         {
+            params.mFrequencyHz = 0;
+         }
+         else
+         {
+            params.mFrequencyHz = params.mFrequencyHz * 10 / physicsStaticLength;
+         }
          
          return params;
       }

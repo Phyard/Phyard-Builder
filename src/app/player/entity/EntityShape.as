@@ -1,27 +1,196 @@
-
 package player.entity {
    
    import flash.geom.Point;
+   import flash.display.Sprite;
+   
+   import flash.events.MouseEvent;
    
    import player.world.World;
+   import player.world.CollisionCategory;
    
-   import player.entity.JointNode;
-   
+   import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
    
    import common.Define;
    
-   public class EntityShape extends EntityContainerChild
+   // The shape class includes many types. Generally, if a entity has position and rotation and can be glued with other entities, then the entity can be viewed as a shape.
+   // Yes, certainly, for many special shapes, many memeber properties are meaningless.
+   
+   public class EntityShape extends Entity
    {
-      internal var mJointNodeListHead:JointNode = null;
+      include "EntityShape_APIs.as";
       
-      //=========
+      public function EntityShape (world:World)
+      {
+         super (world);
+         
+         SetBorderThickness (mWorld.DisplayLength2PhysicsLength (1.0));
+         
+         SetCollisionCategory (Define.CollisionCategoryId_HiddenCategory); // default
+         
+         mPhysicsShapePotentially = false; // to override
+         
+         mWorld.GetEntityLayer ().addChild (mAppearanceObjectsContainer);
+      }
+      
+//=============================================================
+//   create
+//=============================================================
+      
+      override public function Create (createStageId:int, entityDefine:Object):void
+      {
+         super.Create (createStageId, entityDefine);
+         
+         if (createStageId == 0)
+         {
+            // > from 1.02
+            var catId:int;
+            if (entityDefine.mCollisionCategoryIndex != undefined)
+               catId = entityDefine.mCollisionCategoryIndex;
+            else
+               catId = Define.CollisionCategoryId_HiddenCategory;
+            
+            SetCollisionCategory (catId);
+            //<<
+            
+            //>>from v1.07
+            if (entityDefine.mFriendGroupIndex != undefined)
+               mFriendGroupIndex = entityDefine.mFriendGroupIndex;
+            //<<
+            
+            if (entityDefine.mAiType != undefined)
+            {
+               mOriginalAiType = entityDefine.mAiType;
+               SetShapeAiType (entityDefine.mAiType);
+            }
+            
+            if (entityDefine.mIsPhysicsEnabled != undefined)
+               SetPhysicsEnabled (entityDefine.mIsPhysicsEnabled);
+            
+            if (entityDefine.mDensity != undefined)
+               SetDensity (entityDefine.mDensity);
+            if (entityDefine.mFriction != undefined)
+               SetFriction (entityDefine.mFriction);
+            if (entityDefine.mRestitution != undefined)
+               SetRestitution (entityDefine.mRestitution);
+            
+            if (entityDefine.mIsStatic != undefined)
+               SetStatic (entityDefine.mIsStatic);
+            if (entityDefine.mIsBullet != undefined)
+               SetAsBullet (entityDefine.mIsBullet);
+            
+            // >> from v1.02
+            if (entityDefine.mDrawBorder != undefined)
+               SetDrawBorder (entityDefine.mDrawBorder);
+            if (entityDefine.mDrawBackground != undefined)
+               SetDrawBackground (entityDefine.mDrawBackground);
+            
+            if (entityDefine.mIsSensor != undefined)
+               SetAsSensor (entityDefine.mIsSensor);
+            //<<
+            
+            // >> from v1.04
+            if (entityDefine.mBorderColor != undefined)
+               SetBorderColor ( entityDefine.mBorderColor);
+            if (entityDefine.mBorderThickness != undefined)
+               SetBorderThickness (mWorld.DisplayLength2PhysicsLength (entityDefine.mBorderThickness));
+            if (entityDefine.mBackgroundColor != undefined)
+               SetFilledColor (entityDefine.mBackgroundColor);
+            if (entityDefine.mTransparency != undefined)
+               SetTransparency (entityDefine.mTransparency);
+            //<<
+            
+            // >> from v1.05
+            if (entityDefine.mBorderTransparency != undefined)
+               SetBorderTransparency (entityDefine.mBorderTransparency);
+            if (entityDefine.mIsHollow != undefined)
+               SetHollow (entityDefine.mIsHollow);
+            //<<
+            
+            //>> from v1.07
+            if (entityDefine.mBuildBorder != undefined)
+               SetBuildBorder (entityDefine.mBuildBorder)
+            if (entityDefine.mAngularVelocity != undefined)
+               SetAngularVelocity (entityDefine.mAngularVelocity);
+            if (entityDefine.mVelocityX != undefined)
+               SetLinearVelocityX (mWorld.DisplayLength2PhysicsLength (entityDefine.mVelocityX));
+            if (entityDefine.mVelocityY != undefined)
+               SetLinearVelocityY (mWorld.DisplayLength2PhysicsLength (entityDefine.mVelocityY));
+            
+            if (entityDefine.mLinearDamping != undefined)
+               SetLinearDamping (entityDefine.mLinearDamping);
+            if (entityDefine.mAngularDamping != undefined)
+               SetAngularDamping (entityDefine.mAngularDamping);
+            
+            if (entityDefine.mAllowSleeping != undefined)
+               SetAllowSleeping (entityDefine.mIsAllowSleeping);
+            if (entityDefine.mIsRotationFixed != undefined)
+               SetRotationFixed (entityDefine.mIsRotationFixed);
+            //<<
+            
+            if (Define.IsBreakableShape (mAiType) && mAlpha > 0.8)
+            {
+               SetAlpha (0.8);
+            }
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      public var mCollisionCategory:CollisionCategory;
+      public var mFriendGroupIndex:int = -1;
+      
+      public function SetCollisionCategory (catId:int):void
+      {
+         mCollisionCategory = mWorld.GetCollisionCategory (catId);
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      // for the 3 functions, maybe it is not a good idea to override them.
+      // a better design? : 
+      // - entity.SetPositionX (x)
+      // - entity.SetPositionY (y)
+      // - if (entity is EntityShape) (entity as EntityShape).RecalLocalPosition ()
+
+      override public function SetPositionX (x:Number):void
+      {
+         super.SetPositionX (x);
+         
+         RecalLocalPosition ();
+      }
+      
+      override public function SetPositionY (y:Number):void
+      {
+         super.SetPositionY (y);
+         
+         RecalLocalPosition ();
+      }
+      
+      override public function SetRotation (rot:Number):void
+      {
+         mRotation = rot;
+         
+         RecalLocalPosition ();
+      }
+
+//=============================================================
+//   
+//=============================================================
       
       protected var mOriginalAiType:int = Define.ShapeAiType_Unknown;
       protected var mAiType:int = Define.ShapeAiType_Unknown;
       
       protected var mIsStatic:Boolean = false;
-      public var mIsBullet:Boolean = false;
+      protected var mIsBullet:Boolean = false;
+      
+      protected var mDensity:Number = 1.0;
+      protected var mFriction:Number = 0.1;
+      protected var mRestitution:Number = 0.2;
       
       //>>from v1.02
       protected var mDrawBorder:Boolean = true;
@@ -30,8 +199,8 @@ package player.entity {
       
       //>> form v1.04
       protected var mBorderColor:uint = 0x0;
-      protected var mBorderThickness:uint = 1;
-      protected var mFilledColor:uint = 0xFFFFFF;
+      protected var mBorderThickness:Number = 1;
+      protected var mFilledColor:uint = 0xFFFFFFFF;
       protected var mTransparency:uint = 100;
       //<<
       
@@ -40,79 +209,42 @@ package player.entity {
       //<<
       
       //>> form v1.04
-      protected var mPhysicsEnabled:Boolean = true;
+      protected var mPhysicsEnabled:Boolean = false;
       protected var mIsSensor:Boolean = false;
       //<<
       
       //>> form v1.05
-      protected var mIsHollow:Boolean = false;
+      protected var mIsHollow:Boolean = false; // always == ! mBuildInterior
       //<<
       
-      //>>from v1.07
-      //protected var mIsField:Boolean = false;
+      //>> from v1.07
+      protected var mBuildInterior:Boolean = true; // always == ! mIsHollow
+      protected var mBuildBorder:Boolean = true;
+      
+      protected var mLinearVelocityX:Number = 0.0;
+      protected var mLinearVelocityY:Number = 0.0;
+      
+      protected var mAngularVelocity:Number = 0.0;
+      
+      protected var mLinearDamping:Number = 0.0;
+      protected var mAngularDamping:Number = 0.0;
+      
+      protected var mAllowSleeping:Boolean = true;
+      
+      protected var mRotationFixed:Boolean = false;
       //<<
-      
-      public function EntityShape (world:World, shapeContainer:ShapeContainer)
-      {
-         super (world, shapeContainer);
-      }
-      
-      override public function IsPhysicsShapeEntity ():Boolean
-      {
-         return Define.IsBasicShapeEntity (mEntityType) && IsPhysicsEnabled ();
-      }
-      
-      override protected function UpdateInternal (dt:Number):void
-      {
-         mWorld.ReportShapeStatus (mOriginalAiType, mAiType);
-         
-      }
-      
-      override protected function DestroyInternal ():void
-      {
-         while (mJointNodeListHead != null)
-         {
-            mJointNodeListHead.mJoint.Destroy ();
-         }
-         
-         super.DestroyInternal ();
-      }
-      
-//==============================================================================
-//
-//==============================================================================
       
       public function SetShapeAiType (aiType:int):void
       {
-         if (mAiType == Define.ShapeAiType_Unknown)
-            mOriginalAiType = aiType;
-         
          mAiType = aiType;
          
-         if (Define.IsBreakableShape (mAiType))
-            alpha = 0.8;
-         else
-            alpha= 1.0;
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
       }
       
       public function GetShapeAiType ():int
       {
          return mAiType;
-      }
-      
-      public function IsPhysicsEnabled ():Boolean
-      {
-         return mPhysicsEnabled;
-      }
-      
-      public function SetHollow (hollow:Boolean):void
-      {
-         mIsHollow = hollow;
-      }
-      
-      public function IsHollow ():Boolean
-      {
-         return mIsHollow;
       }
       
       public function SetStatic (static:Boolean):void
@@ -125,7 +257,7 @@ package player.entity {
          return mIsStatic;
       }
       
-      public function SetBullet (bullet:Boolean):void
+      public function SetAsBullet (bullet:Boolean):void
       {
          mIsBullet = bullet;
       }
@@ -135,9 +267,74 @@ package player.entity {
          return mIsBullet;
       }
       
+      public function SetHollow (hollow:Boolean):void
+      {
+			if (mIsHollow != hollow)
+			{
+         	mIsHollow = hollow;
+         	mBuildInterior = ! mIsHollow;
+			}
+      }
+      
+      public function IsHollow ():Boolean
+      {
+         return mIsHollow;
+      }
+      
+      public function IsBuildInterior ():Boolean
+      {
+         return mBuildInterior;
+      }
+      
+      public function SetBuildBorder (buildBorder:Boolean):void
+      {
+			if (mBuildBorder != buildBorder)
+			{
+         	mBuildBorder = buildBorder;
+			}
+      }
+      
+      public function IsBulidBorder ():Boolean
+      {
+         return mBuildBorder;
+      }
+      
+      public function SetDensity (density:Number):void
+      {
+			mDensity = density;
+      }
+      
+      public function GetDensity ():Number
+      {
+			return mDensity;
+      }
+      
+      public function SetFriction (friction:Number):void
+      {
+			mFriction = friction;
+      }
+      
+      public function GetFriction ():Number
+      {
+			return mFriction;
+      }
+      
+      public function SetRestitution (restitution:Number):void
+      {
+			mRestitution = restitution;
+      }
+      
+      public function GetRestitution ():Number
+      {
+			return mRestitution;
+      }
+      
       public function SetDrawBackground (draw:Boolean):void
       {
          mDrawBackground = draw;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
       }
       
       public function IsDrawBackground ():Boolean
@@ -151,6 +348,9 @@ package player.entity {
       public function SetFilledColor (color:uint):void
       {
          mFilledColor = color;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance ();
       }
       
       public function GetFilledColor ():uint
@@ -164,6 +364,9 @@ package player.entity {
       public function SetDrawBorder (drawBorder:Boolean):void
       {
          mDrawBorder = drawBorder;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
       }
       
       public function IsDrawBorder ():Boolean
@@ -174,6 +377,9 @@ package player.entity {
       public function SetBorderColor (color:uint):void
       {
          mBorderColor = color;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
       }
       
       public function GetBorderColor ():uint
@@ -181,33 +387,29 @@ package player.entity {
          if (mAiType >= 0)
             return Define.ColorObjectBorder;
          
-         if (mWorld.GetVersion () < 0x0105)
-         {
-            if (! mDrawBorder)
-               return GetFilledColor ();
-         }
-         
          return mBorderColor;
       }
       
-      public function SetBorderThickness (thinkness:uint):void
+      public function SetBorderThickness (thinkness:Number):void
       {
          mBorderThickness = thinkness;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
       }
       
       public function GetBorderThickness ():uint
       {
-         if (mWorld.GetVersion () < 0x0105)
-         {
-            return 1;
-         }
-         
          return mBorderThickness;
       }
       
+      // the background transparency
       public function SetTransparency (transparency:uint):void
       {
          mTransparency = transparency;
+         
+         mNeedUpdateAppearanceProperties = true;
+         DelayUpdateAppearance (); 
       }
       
       public function GetTransparency ():uint
@@ -221,6 +423,9 @@ package player.entity {
       public function SetBorderTransparency (transparency:uint):void
       {
          mBorderTransparency = transparency;
+         
+         mNeedUpdateAppearanceProperties = true;
+         DelayUpdateAppearance (); 
       }
       
       public function GetBorderTransparency ():uint
@@ -228,136 +433,366 @@ package player.entity {
          return mBorderTransparency;
       }
       
+      public function SetAsSensor (sensor:Boolean):void
+      {
+         mIsSensor = sensor;
+      }
+      
       public function IsSensor ():Boolean
       {
          return mIsSensor;
       }
       
-      //public function SetField (field:Boolean):void
-      //{
-      //   mIsField = field;
-      //}
-      //
-      //public function IsField ():Boolean
-      //{
-      //   return mIsField;
-      //}
-      
-//==============================================================================
-//
-//==============================================================================
-      
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
+      public function SetLinearVelocityX (vx:Number):void
       {
-         super.BuildFromParams (params, false);
-         
-         mPhysicsEnabled = params.mIsPhysicsEnabled;
-         
-         SetBullet (params.mIsBullet);
-         GetParentContainer ().SetBullet (IsBullet ());
-         
-         SetStatic (params.mIsStatic);
-         SetShapeAiType (params.mAiType);
-         
-         // >> from v1.02
-         SetDrawBorder (params.mDrawBorder);
-         SetDrawBackground (params.mDrawBackground);
-         
-         mIsSensor = params.mIsSensor;
-         //<<
-         
-         // >> from v1.04
-         SetBorderColor (params.mBorderColor);
-         SetBorderThickness (params.mBorderThickness);
-         SetFilledColor (params.mBackgroundColor);
-         SetTransparency (params.mTransparency);
-         //<<
-         
-         // >> from v1.05
-         SetBorderTransparency (params.mBorderTransparency);
-         SetHollow (params.mIsHollow);
-         //<<
-         
-         //>> from v1.07
-         //SetField (params.mIsField);
-         //SetField (params.mIsSensor);
-         //<<
+         mLinearVelocityX = vx;
       }
       
-      // maybe change later
-      public function GetLocalPosition ():Point
+      public function GetLinearVelocityX ():Number
       {
-         return new Point (x, y);
+         return mLinearVelocityX;
       }
       
-      
-      
-//==============================================================================
-// as a field
-//==============================================================================
-      
-      private var mInFieldShapes:Array = null;
-      
-      public function RegisterInFieldShape (shape:EntityShape):void
+      public function SetLinearVelocityY (vy:Number):void
       {
-         //if (! mIsField)
-         //   return;
-         
-         if (mInFieldShapes == null)
-            mInFieldShapes = new Array ();
-         
-         mInFieldShapes.push (shape);
+         mLinearVelocityY = vy;
       }
       
-      public function UnregisterInFieldShape (shape:EntityShape):void
+      public function GetLinearVelocityY ():Number
       {
-         if (mInFieldShapes == null)
-            return;
-         
-         var index:int = mInFieldShapes.indexOf (shape);
-         if (index >= 0)
-            mInFieldShapes.splice (index, 1);
+         return mLinearVelocityY;
       }
       
-      protected function InfluenceInFieldShapes ():void
+      public function SetAngularVelocity (av:Number):void
       {
-         if (mInFieldShapes == null)
-            return;
+         mAngularVelocity = av;
+      }
+      
+      public function GetAngularVelocity ():Number
+      {
+         return mAngularVelocity;
+      }
+      
+      public function SetLinearDamping (damping:Number):void
+      {
+         mLinearDamping = damping;
+      }
+      
+      public function GetLinearDamping ():Number
+      {
+         return mLinearDamping;
+      }
+      
+      public function SetAngularDamping (damping:Number):void
+      {
+         mAngularDamping = damping;
+      }
+      
+      public function GetAngularDamping ():Number
+      {
+         return mAngularDamping;
+      }
+      
+      public function SetAllowSleeping (allowSleeping:Boolean):void
+      {
+         mAllowSleeping = allowSleeping;
+      }
+      
+      public function IsAllowSleeping ():Boolean
+      {
+         return mAllowSleeping;
+      }
+      
+      public function SetRotationFixed (fixed:Boolean):void
+      {
+         mRotationFixed = fixed;
+      }
+      
+      public function IsRotationFixed ():Boolean
+      {
+         return mRotationFixed;
+      }
+      
+//=============================================================
+//   mouse events
+//=============================================================
+      
+      protected function OnMouseUp (event:MouseEvent):void
+      {
+         trace ("click on this: " + this);
+      }
+
+//=============================================================
+//   initialize
+//=============================================================
+      
+      override protected function InitializeInternal ():void
+      {
+         DelayUpdateAppearance ();
          
-         var shape:EntityShape;
-         for (var i:int = 0; i < mInFieldShapes.length; ++ i)
+         //mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_UP, OnMouseUp, true);
+         //mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_UP, OnMouseUp, false);
+      }
+      
+//=============================================================
+//   destroy
+//=============================================================
+      
+      override protected function DestroyInternal ():void
+      {
+         mWorld.GetEntityLayer ().removeChild (mAppearanceObjectsContainer);
+         
+         //mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp, true);
+         //mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp, false);
+         
+         while (mJointAnchorListHead != null)
          {
-            shape = mInFieldShapes [i] as EntityShape;
-            
-            shape.SetAsSensor (true); // not safe, paires are not removed!
+            mJointAnchorListHead.mJoint.Destroy ();
+         }
+         
+         if (mBody != null)
+         {
+            SetBody (null);
          }
       }
       
-//==============================================================================
-// commands
-//==============================================================================
+//=============================================================
+//   
+//=============================================================
       
-      public function SetAsSensor (is_sensor:Boolean):void
+      override public function SynchronizeWithPhysicsProxy ():void
+      {
+         if (mBody != null)
+         {
+            mPositionX = mBody.GetPositionX () + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
+            mPositionY = mBody.GetPositionY () + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
+            mRotation  = mBody.GetRotation () + mRelativeRotation;
+         }
+         
+         mAppearanceObjectsContainer.x = mWorld.PhysicsX2DisplayX (mPositionX);
+         mAppearanceObjectsContainer.y = mWorld.PhysicsY2DisplayY (mPositionY);
+         mAppearanceObjectsContainer.rotation = mRotation * Define.kRadians2Degrees;
+      }
+      
+//=============================================================
+//   update
+//=============================================================
+      
+      //override protected function UpdateInternal (dt:Number):void
+      //{
+      //}
+      
+//=============================================================
+//   appearance
+//=============================================================
+      
+      protected var mNeedUpdateAppearanceProperties:Boolean = true;
+      protected var mNeedRebuildAppearanceObjects:Boolean = true;
+      
+      protected var mAppearanceObjectsContainer:Sprite = new Sprite ();
+      
+//=============================================================
+//   body
+//=============================================================
+      
+      // for a physics shape, the body must not be null
+      internal var mBody:EntityBody = null;
+      
+      internal var mPrevShapeInBody:EntityShape = null;
+      internal var mNextShapeInBody:EntityShape = null;
+      internal var mPrevPhysicsShapeInBody:EntityShape = null;
+      internal var mNextPhysicsShapeInBody:EntityShape = null;
+      
+      // relative to mBody
+      protected var mLocalPositionX:Number;
+      protected var mLocalPositionY:Number;
+      protected var mRelativeRotation:Number;
+      
+      public function GetBody ():EntityBody
+      {
+         return mBody;
+      }
+      
+      public function SetBody (body:EntityBody):void
+      {
+         if (mBody != body)
+         {
+            if (mBody != null)
+            {
+               DestroyPhysicsProxy ();
+                  
+               mBody.RemoveShape (this);
+            }
+            
+            if (body != null)
+            {
+               body.AddShape (this);
+				}
+            
+            RecalLocalPosition ();   
+         }
+      }
+      
+      internal function RecalLocalPosition ():void
+      {
+         if (mBody != null)
+         {
+            var tempX:Number = (mPositionX - mBody.GetPositionX ());
+            var tempY:Number = (mPositionY - mBody.GetPositionY ());
+            mLocalPositionX =   tempX * mBody.mCosRotation + tempY * mBody.mSinRotation;
+            mLocalPositionY = - tempX * mBody.mSinRotation + tempY * mBody.mCosRotation;
+            mRelativeRotation  = mRotation  - mBody.GetRotation  ();
+         }  
+         else
+         {
+            mLocalPositionX = mPositionX;
+            mLocalPositionY = mPositionY;
+            mRelativeRotation = mRotation;
+         }
+      }
+      
+//=============================================================
+//   connected joints
+//=============================================================
+     
+      internal var mJointAnchorListHead:SubEntityJointAnchor = null;
+      
+      internal function AttachJointAnchor (jointAnchor:SubEntityJointAnchor):void
+      {
+         if (jointAnchor.mShape != null)
+            jointAnchor.mShape.DetachJointAnchor (jointAnchor);
+         
+         jointAnchor.mShape = this;
+         jointAnchor.mRelativeRotation = jointAnchor.mRotation - mRotation;
+         
+         if (mJointAnchorListHead != null)
+            mJointAnchorListHead.mPrevAnchor = jointAnchor;
+         
+         jointAnchor.mNextAnchor = mJointAnchorListHead;
+         mJointAnchorListHead = jointAnchor;
+      }
+      
+      internal function DetachJointAnchor (jointAnchor:SubEntityJointAnchor):void
+      {
+         if (jointAnchor.mShape != this)
+            return;
+         
+         var prev:SubEntityJointAnchor = jointAnchor.mPrevAnchor;
+         var next:SubEntityJointAnchor = jointAnchor.mNextAnchor;
+         
+         if (prev != null)
+         {
+            prev.mNextAnchor = next;
+         }
+         else // (mJointAnchorListHead == jointAnchor)
+         {
+            mJointAnchorListHead = next;
+         }
+         
+         if (next != null)
+         {
+            next.mPrevAnchor = prev;
+         }
+         
+         jointAnchor.mShape = null;
+      }
+      
+//=============================================================
+//   physics proxy
+//=============================================================
+     
+      protected var mPhysicsShapePotentially:Boolean = false;
+      
+      //>> from v1.07
+      protected var mPhysicsValuesValidFlags:int = 0x7FFFFFFF;
+      
+      protected static const kValidFlag_LinearVelocity:int = 1 << 0;
+      protected static const kValidFlag_AngularVelocity:int = 1 << 0;
+      //<<
+      
+      public function IsPhysicsShape ():Boolean
+      {
+         return mPhysicsShapePotentially && mPhysicsEnabled;
+      }
+      
+      public function SetPhysicsEnabled (enabled:Boolean):void
+      {
+         if (mBody == null)
+         {
+				mPhysicsEnabled = enabled;
+         }
+         else
+         {
+				var oldIsPhysics:Boolean = IsPhysicsShape ();
+				mPhysicsEnabled = enabled;
+				var newIsPhysics:Boolean = IsPhysicsShape ();
+				
+				if (newIsPhysics != oldIsPhysics)
+				{
+               mBody.RemoveShape (this);
+               mBody.AddShape (this);
+               
+               // todo, reset mass, if body.isPhysics changes, break/built joints
+				}
+			}
+      }
+      
+      override public function DestroyPhysicsProxy ():void
       {
          if (mPhysicsProxy == null)
             return;
          
-         (mPhysicsProxy as PhysicsProxyShape).SetAsSensor (is_sensor);
+         var anchor:SubEntityJointAnchor = mJointAnchorListHead;
          
-         mIsSensor = is_sensor;
+         while (anchor != null)
+         {
+            anchor.mJoint.DestroyPhysicsProxy ();
+            
+            anchor = anchor.mNextAnchor;
+         }
+         
+         super.DestroyPhysicsProxy ();
       }
       
-      public function SetCollisionCategory (ccId:int):void
+      protected function PrepareRebuildShapePhysics ():PhysicsProxyShape
       {
+         if (mAlreadyDestroyed)
+            return null;
+         
+         DestroyPhysicsProxy ();
+         
+         if (! IsPhysicsShape ())
+            return null;
+         
+         if (mBody == null)
+            return null;
+         
+         if (! mBody.IsPhysicsBuilt ())
+         {
+            mBody.RebuildBodyPhysics ();
+         }
+         
+         var proxyShape:PhysicsProxyShape = mPhysicsProxy as PhysicsProxyShape;
+         
+         if (proxyShape == null)
+         {
+            mPhysicsProxy = proxyShape = new PhysicsProxyShape (mBody.mPhysicsProxy as PhysicsProxyBody, this);
+            //mPhysicsProxy.SetUserData (this);
+         }
+         
+         return proxyShape;
       }
       
-      public function SetVelocity (speed:Number, angle:Number):void
+      public function RebuildShapePhysics ():void
       {
-         if (speed < 0)
-            return;
-         
-         
+         // to override
       }
-   }
+ 
+//=============================================================
+//   some paint function used by subclasses
+//=============================================================
+     
    
+   
+   }
 }

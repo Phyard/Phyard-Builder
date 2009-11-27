@@ -24,7 +24,7 @@
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:Label id="Label_CurveThickness" text="Thickness:" textAlign="right" width="30%"/>
-      <mx:NumericStepper id="NumericStepper_CurveThickness" stepSize="1" minimum="1" maximum="255" value="1" width="80" />
+      <mx:NumericStepper id="NumericStepper_CurveThickness" stepSize="1" minimum="0" maximum="255" value="1" width="80" />
    </mx:HBox>
 
    <mx:HBox width="100%">

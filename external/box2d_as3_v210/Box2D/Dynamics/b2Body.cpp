@@ -121,7 +121,8 @@ public function CreateFixture(def:b2FixtureDef):b2Fixture
 	var needMassUpdate:Boolean = fixture.m_massData.mass > 0.0 || fixture.m_massData.I > 0.0;
 
 	// Adjust mass properties if needed.
-	if (needMassUpdate)
+	//if (needMassUpdate)
+	if (needMassUpdate && mAutoUpdateMass)
 	{
 		ResetMass();
 	}
@@ -216,15 +217,14 @@ public function DestroyFixture(fixture:b2Fixture):void
 	--m_fixtureCount;
 
 	// Adjust mass properties if needed.
-	if (needMassUpdate)
+	if (needMassUpdate && mAutoUpdateMass)
 	{
 		ResetMass();
 	}
 }
 
 
-//public function ResetMass():void
-public function ResetMass(setStatic:Boolean = false):void // "forceStatic:Boolean = false" is hacking
+public function ResetMass():void
 {
 	// Compute mass data from shapes. Each shape has its own density.
 	m_mass = 0.0;
@@ -233,7 +233,8 @@ public function ResetMass(setStatic:Boolean = false):void // "forceStatic:Boolea
 	m_invI = 0.0;
 
 	var center:b2Vec2 = b2Math.b2Vec2_zero.Clone ();
-	if (! setStatic)
+
+	if (! mStaticForcely)
 	{
 		for (var f:b2Fixture = m_fixtureList; f != null; f = f.m_next)
 		{
@@ -393,10 +394,18 @@ public function SetTransform(position:b2Vec2, angle:Number):void
 	}
 
 	m_xf.R.SetFromAngle (angle);
-	//m_xf.position = position;
-	m_xf.position.x = position.x;
-	m_xf.position.y = position.y;
+	if (position != null) // hacking
+	{
+		//m_xf.position = position;
+		m_xf.position.x = position.x;
+		m_xf.position.y = position.y;
+	}
 
+	NotifyTransformChangedManually (angle);
+}
+// some hacking here
+private function NotifyTransformChangedManually (angle:Number):void
+{
 	//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 	b2Math.b2Mul_TransformAndVector2_Output(m_xf, m_sweep.localCenter, m_sweep.c);
 	m_sweep.c0.x = m_sweep.c.x;

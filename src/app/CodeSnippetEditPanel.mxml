@@ -369,8 +369,10 @@
                title_box.setStyle ("backgroundColor", 0x7FCEFF);
                
                block_title = new Label ();
-               block_title.text = func_declaration.GetNumInputs () == 1 ? "Parameter (Input):" : "Parameters (Inputs):";
+               block_title.text = func_declaration.GetNumInputs () == 1 ? "Input Parameter" : "Input Parameters";
                block_title.setStyle ("fontWeight", "bold");
+               block_title.setStyle ("textAlign", "center");
+               block_title.percentWidth = 100;
                
                title_box.addChild (block_title);
                Box_ParamsAndReturns.addChild (title_box);
@@ -413,8 +415,10 @@
                title_box.setStyle ("backgroundColor", 0x7FCEFF);
                
                block_title = new Label ();
-               block_title.text = func_declaration.GetNumReturns () == 1 ? "Return (Output):" : "Returns (Outputs):";
+               block_title.text = func_declaration.GetNumReturns () == 1 ? "Output Parameter" : "Output Parameters";
                block_title.setStyle ("fontWeight", "bold");
+               block_title.setStyle ("textAlign", "center");
+               block_title.percentWidth = 100;
                
                title_box.addChild (block_title);
                Box_ParamsAndReturns.addChild (title_box);
@@ -612,10 +616,10 @@
             AppendContextMenuItem (sprite, "from Direct Value", OnSelectValueSource_Direct, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
             
             if (inputVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "from Input Variable", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+               AppendContextMenuItem (sprite, "from Input Parameter", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
             
             if (returnVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "from Return Variable", OnSelectValueSource_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
+               AppendContextMenuItem (sprite, "from Output Parameter", OnSelectValueSource_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
             
             //AppendContextMenuItem (sprite, "from Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             //AppendContextMenuItem (sprite, "from Global Variable", null, false), space_type != ValueSpaceTypeDefine.ValueSpace_Global;
@@ -788,10 +792,10 @@
             AppendContextMenuItem (sprite, "to Nothing", OnSelectValueTarget_Null, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
             
             if (inputVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "to Input Variable (as a Local Variable)", OnSelectValueTarget_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+               AppendContextMenuItem (sprite, "to Input Parameter", OnSelectValueTarget_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
             
             if (returnVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "to Return Variable", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
+               AppendContextMenuItem (sprite, "to Output Parameter", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
             
             //AppendContextMenuItem (sprite, "to Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             //AppendContextMenuItem (sprite, "to Global Variable", null, false), space_type != ValueSpaceTypeDefine.ValueSpace_Global;

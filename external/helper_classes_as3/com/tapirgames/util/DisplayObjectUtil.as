@@ -24,6 +24,13 @@ package com.tapirgames.util {
       {
          var cachedBitmap:Bitmap = new Bitmap ();
          
+         CreateCacheDisplayObjectInBitmap (displayObject, cachedBitmap);
+         
+         return cachedBitmap;
+      }
+      
+      public static function CreateCacheDisplayObjectInBitmap (displayObject:DisplayObject, bitmap:Bitmap):void
+      {
          if (displayObject != null)
          {
             //trace ("displayObject.width = " + displayObject.width + ", displayObject.height = "  + displayObject.height);
@@ -43,12 +50,14 @@ package com.tapirgames.util {
                //   throw error;
             }
             
-            cachedBitmap.bitmapData = bitmapData;
-            cachedBitmap.smoothing = true;
-            cachedBitmap.pixelSnapping = PixelSnapping.AUTO;
+            bitmap.bitmapData = bitmapData;
+            bitmap.smoothing = true;
+            bitmap.pixelSnapping = PixelSnapping.AUTO;
          }
-         
-         return cachedBitmap;
+         else
+         {
+            bitmap.bitmapData = null;
+         }
       }
       
       // here, the display1 and display2 must be add in stage

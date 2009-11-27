@@ -15,8 +15,7 @@ package player.trigger.entity
    {
       protected var mIsPairAssigner:Boolean = false;
       
-      protected var mAssignerType:int; // if isPair, pair type
-      protected var mPairOrderImportant:Boolean = false; // only for mIsPairAssigner == true
+      protected var mAssignerType:int = Define.EntitySelectorType_Many; // if isPair, pair type, if not pair, selector type
       
       // the indexes are indexes in editor
       protected var mEntitiesIndexes1:Array = null;
@@ -27,67 +26,96 @@ package player.trigger.entity
       protected var mPairHashtable_IgnorePairOrder:Dictionary = null;
       
       // 
-      public function EntityInputEntityAssigner (world:World, isPairAssigner:Boolean)
+      public function EntityInputEntityAssigner (world:World)
       {
          super (world);
-         
-         mIsPairAssigner = isPairAssigner;
       }
       
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
-      {
-         super.BuildFromParams (params, false);
-         
-         if (mIsPairAssigner)
-            mAssignerType = params.mPairingType;
-         else
-            mAssignerType = params.mSelectorType;
-      }
+//=============================================================
+//   create
+//=============================================================
       
-      public function SetEntityIndexes (entityIndexes:Array):void
+      override public function Create (createStageId:int, entityDefine:Object):void
       {
-         mEntitiesIndexes1 = entityIndexes;
+         super.Create (createStageId, entityDefine);
          
-         // to optimize: sort by entityIdInEditor
-      }
-      
-      public function SetEntityPairIndexes (entityIndexes1:Array, entityIndexes2:Array):void
-      {
-         mEntitiesIndexes1 = entityIndexes1;
-         mEntitiesIndexes2 = entityIndexes2;
-         
-         // to optimize: sort by entityIdInEditor
-         
-         // for 1-1
-         if (mAssignerType == Define.EntityPairAssignerType_OneToOne && entityIndexes1 != null && entityIndexes2 != null)
+         if (createStageId == 0)
          {
-            mPairHashtable = new Dictionary ();
-            mPairHashtable_IgnorePairOrder = new Dictionary ();
+            mIsPairAssigner = (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner);
             
-            var length:int = entityIndexes1.length;
-            if (length > entityIndexes2.length)
+            if (mIsPairAssigner)
             {
-               length = entityIndexes2.length;
+               if (entityDefine.mPairingType != undefined)
+                  mAssignerType = entityDefine.mPairingType;
+               else
+                  mAssignerType = Define.EntityPairAssignerType_OneToOne;
+               
+               if (entityDefine.mEntityIndexes1 != undefined)
+                  mEntitiesIndexes1 = entityDefine.mEntityIndexes1;
+               else
+                  mEntitiesIndexes1 = new Array ();
+               
+               if (entityDefine.mEntityIndexes2 != null)
+                  mEntitiesIndexes2 = entityDefine.mEntityIndexes2;
+               else
+                  mEntitiesIndexes2 = new Array ();
+               
+               // to optimize: sort by creation id
+               
+               // special for 1-1
+               if (mAssignerType == Define.EntityPairAssignerType_OneToOne && mEntitiesIndexes1 != null && mEntitiesIndexes2 != null)
+               {
+                  mPairHashtable = new Dictionary ();
+                  mPairHashtable_IgnorePairOrder = new Dictionary ();
+                  
+                  var length:int = mEntitiesIndexes1.length;
+                  if (length > mEntitiesIndexes2.length)
+                  {
+                     length = mEntitiesIndexes2.length;
+                  }
+                  
+                  var id:int;
+                  var id1:int;
+                  var id2:int;
+                  for (var i:int = 0; i < length; ++ i)
+                  {
+                     id1 = mEntitiesIndexes1 [i];
+                     id2 = mEntitiesIndexes2 [i];
+                     id = ((id1 & 0xFFFF) << 16) | (id2 & 0xFFFF);
+                     
+                     mPairHashtable [id] = 1;
+                     mPairHashtable_IgnorePairOrder [id] = 1;
+                     
+                     id = ((id2 & 0xFFFF) << 16) | (id1 & 0xFFFF);
+                     
+                     mPairHashtable_IgnorePairOrder [id] = 1;
+                  }
+               }
             }
-            
-            var id:int;
-            var id1:int;
-            var id2:int;
-            for (var i:int = 0; i < length; ++ i)
+            else // not mIsPairAssigner
             {
-               id1 = entityIndexes1 [i];
-               id2 = entityIndexes2 [i];
-               id = ((id1 & 0xFFFF) << 16) | (id2 & 0xFFFF);
+               if (entityDefine.mSelectorType != undefined)
+                  mAssignerType = entityDefine.mSelectorType;
+               else
+                  mAssignerType = Define.EntitySelectorType_Many;
                
-               mPairHashtable [id] = 1;
-               mPairHashtable_IgnorePairOrder [id] = 1;
-               
-               id = ((id2 & 0xFFFF) << 16) | (id1 & 0xFFFF);
-               
-               mPairHashtable_IgnorePairOrder [id] = 1;
+               if (entityDefine.mEntityIndexes != undefined)
+               {
+                  mEntitiesIndexes1 = entityDefine.mEntityIndexes;
+            
+                  // to optimize: sort by creation id
+               }
+               else
+               {
+                  mEntitiesIndexes1 = new Array ();
+               }
             }
          }
       }
+      
+//==========================================================================================================
+// 
+//==========================================================================================================
       
       public function ContainsEntity (entityIndex:int):Boolean
       {
@@ -219,14 +247,8 @@ package player.trigger.entity
          }
       }
       
-      // as input of a task entity
-      public function UpdateEntityTaskStatus ():int
-      {
-         return ValueDefine.TaskStatus_Undetermined;
-      }
-      
       // as input of an event handler
-      public function RegisterEntityEventHandler (eventId:int, eventHandler:EntityEventHandler):void
+      public function RegisterEventHandlerForEntities (eventId:int, eventHandler:EntityEventHandler):void
       {
          if (mIsPairAssigner)
             return;
@@ -241,11 +263,9 @@ package player.trigger.entity
                {
                   count = mEntitiesIndexes1.length;
                   
-                  trace ("count = " + count);
-                  
                   for (i = 0; i < count; ++ i)
                   {
-                     mWorld.GetEntityByIndexInEditor (mEntitiesIndexes1 [i]).RegisterEventHandler (eventId, eventHandler);
+                     mWorld.GetEntityByCreationId (mEntitiesIndexes1 [i]).RegisterEventHandler (eventId, eventHandler);
                   }
                }
                break;
@@ -253,7 +273,7 @@ package player.trigger.entity
                count = mWorld.GetNumEntitiesInEditor ();
                for (i = 0; i < count; ++ i)
                {
-                  mWorld.GetEntityByIndexInEditor (i).RegisterEventHandler (eventId, eventHandler);
+                  mWorld.GetEntityByCreationId (i).RegisterEventHandler (eventId, eventHandler);
                }
                break;
             default:
@@ -291,5 +311,13 @@ package player.trigger.entity
       {
          return ContainingResult_False;
       }
+      
+      // as input of a task entity
+      public function GetEntityListTaskStatus ():int
+      {
+         // todo
+         return ValueDefine.TaskStatus_Undetermined;
+      }
+      
    }
 }

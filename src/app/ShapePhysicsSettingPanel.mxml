@@ -139,7 +139,7 @@
                   Label_Friction.enabled = false;
                   Label_Restitution.enabled = false;
                   
-                  Slider_Denstiy.enabled = false;
+                  Slider_Denstiy.enabled = true;
                   Slider_Friction.enabled = false;
                   Slider_Restitution.enabled = false;
                }
@@ -188,7 +188,7 @@
             returnValues.mFriction = Slider_Friction.value;
             returnValues.mRestitution = Slider_Restitution.value;
             
-            returnValues.mCollisionCategoryIndex = SelectList_CollisionCategory.selectedItem.data;
+            returnValues.mCollisionCategoryIndex = SelectList_CollisionCategory.selectedItem.mCategoryIndex;
          }
          
          // temp functionsg

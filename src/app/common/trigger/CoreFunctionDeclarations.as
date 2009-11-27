@@ -28,6 +28,14 @@ package common.trigger {
                   
          }
          
+      // specail
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
       // global
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Return,
@@ -728,17 +736,6 @@ package common.trigger {
                      ]
                   );
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_AttachWithEntity,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     null
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Detach,
-                     null,
-                     null
-                  );
-         
       // game / entity / shape
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor,
@@ -814,6 +811,52 @@ package common.trigger {
                      ],
                      null
                   );
+         
+         // ...
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Attach,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Detach,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Breakup,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Teleport,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Clone,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         
+         
          
       // game / entity / joint
          

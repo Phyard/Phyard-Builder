@@ -11,7 +11,8 @@ package editor.entity {
    public class Entity extends Sprite
    {
       protected var mEntityContainer:EntityContainer;
-      protected var mEntityIndex:int = -1;
+      protected var mAppearanceLayerId:int = -1;
+      protected var mCreationOrderId:int = -1; // to reduce random factors
       
       protected var mSelectionProxy:SelectionProxy = null;
       
@@ -24,23 +25,13 @@ package editor.entity {
       public function Entity (container:EntityContainer)
       {
          mEntityContainer = container;
+         
+         mEntityContainer.OnEntityCreated (this);
       }
       
       public function GetContainer ():EntityContainer
       {
          return mEntityContainer;
-      }
-      
-      public function SetEntityIndex (index:int):void
-      {
-         mEntityIndex = index;
-      }
-      
-      public function GetEntityIndex ():int
-      {
-         mEntityContainer.CorrectEntityIndices ();
-         
-         return mEntityIndex;
       }
       
       public function IsUtilityEntity ():Boolean
@@ -52,7 +43,17 @@ package editor.entity {
 // 
 //======================================================
       
-      protected var mCreationOrderId:int = -1; // to reduce random factors
+      public function SetAppearanceLayerId (index:int):void
+      {
+         mAppearanceLayerId = index;
+      }
+      
+      public function GetAppearanceLayerId ():int
+      {
+         mEntityContainer.CorrectEntityAppearanceIds ();
+         
+         return mAppearanceLayerId;
+      }
       
       public function SetCreationOrderId (index:int):void
       {
@@ -61,6 +62,8 @@ package editor.entity {
       
       public function GetCreationOrderId ():int
       {
+         mEntityContainer.CorrectEntityCreationIds ();
+         
          return mCreationOrderId;
       }
       
@@ -74,6 +77,8 @@ package editor.entity {
          
          if (mSelectionProxy != null)
             mSelectionProxy.Destroy ();
+         
+         mEntityContainer.OnEntityDestroyed (this);
       }
       
       public function Update (escapedTime:Number):void
@@ -190,8 +195,6 @@ package editor.entity {
          if (entity != null)
          {
             SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
-            
-            GetContainer ().OnNewEntityCreated (entity);
          }
          
          return entity;
@@ -325,7 +328,8 @@ package editor.entity {
       
       public function GetSubEntities ():Array
       {
-         return [this];
+         return [this]; // maybe be not a good idea
+         //return []; // if use this, be careful! Many need to modify.
       }
       
       public function GetSubIndex ():int

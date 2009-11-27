@@ -615,6 +615,122 @@ package Box2D.Dynamics
 		{
 			return m_world;
 		}
+		
+//******************************************************************************
+// hacking
+//******************************************************************************
+		
+		private var mAutoUpdateMass:Boolean = true;
+		
+		public function SetAutoUpdateMass (auto:Boolean):void
+		{
+			mAutoUpdateMass = auto;
+		}
+		
+		private var mStaticForcely:Boolean = false;
+		
+		// the value of mStaticForcely may be not same as the return value of IsStatic () if it is false.
+		// need to call ResetMass to make effect
+		public function SetStatic (staticForcely:Boolean):void
+		{
+			if (mStaticForcely != staticForcely)
+			{
+				mStaticForcely = staticForcely;
+				
+				if (mAutoUpdateMass)
+					ResetMass ();
+			}
+		}
+		
+		public function CoincideWithCentroid ():void
+		{
+			//b2Assert(m_world->IsLocked() == false);
+			if (m_world.IsLocked() == true)
+			{
+				return;
+			}
+			
+			var dx:Number = - m_sweep.localCenter.x;
+			var dy:Number = - m_sweep.localCenter.y;
+			
+			var abs_dx:Number = Math.abs (dx);
+			var abs_dy:Number = Math.abs (dy);
+			
+			if (abs_dx > Number.MIN_VALUE || abs_dy > Number.MIN_VALUE)
+			{
+				m_xf.position.x = m_sweep.c.x;
+				m_xf.position.y = m_sweep.c.y;
+				
+				m_sweep.localCenter.x = 0.0;
+				m_sweep.localCenter.y = 0.0;
+				
+			// adjust local coordinates for shapes
+				
+				var fixture:b2Fixture = m_fixtureList; 
+				while (fixture != null)
+				{
+					fixture.GetShape ().MoveLocalPosition (dx, dy);
+					
+					fixture = fixture.m_next;
+				}
+			}
+		}
+		
+		// just a minor optimization to SetTransform
+		public function SetPosition (x:Number, y:Number):void
+		{
+			//b2Assert(m_world->IsLocked() == false);
+			if (m_world.IsLocked() == true)
+			{
+				return;
+			}
+
+			//m_xf.R.SetFromAngle (angle);
+			//m_xf.position = position;
+			m_xf.position.x = x;
+			m_xf.position.y = y;
+
+			NotifyTransformChangedManually (m_sweep.a);
+		}
+
+		// need to call ResetMass to make effect
+		public function SetFixRotation (fixRotation:Boolean):void
+		{
+			//b2Assert(m_world->IsLocked() == false);
+			if (m_world.IsLocked() == true)
+			{
+				return;
+			}
+			
+			if (fixRotation)
+			{
+				if ( (m_flags & e_fixedRotationFlag) != 0 )
+					return;
+				
+				m_flags |= e_fixedRotationFlag;
+				
+				if (mAutoUpdateMass)
+					ResetMass ();
+				
+				m_angularVelocity = 0.0;
+			}
+			else
+			{
+				if ( (m_flags & e_fixedRotationFlag) == 0 )
+					return;
+				
+				m_flags &= ~e_fixedRotationFlag;
+				
+				if (mAutoUpdateMass)
+					ResetMass ();
+			}
+		}
+
+		public function IsFixRotation ():Boolean
+		{
+			return m_invI == 0.0;
+		}
+
 	} // class
 } // package
 //#endif

@@ -1,105 +1,217 @@
 package player.entity {
    
-   import com.tapirgames.util.GraphicsUtil;
-   import flash.geom.Point;
-   
    import player.world.World;
-   
+
+   import player.physics.PhysicsProxyShape;
    import player.physics.PhysicsProxyJointHinge;
+   
+   import common.Define;
    
    public class EntityJointHinge extends EntityJoint
    {
-      
-      private var mBackAndForth:Boolean = false;
-      
       public function EntityJointHinge (world:World)
       {
          super (world);
+
+         mCollideConnected = false;
       }
+      
+//=============================================================
+//   create
+//=============================================================
+      
+      override public function Create (createStageId:int, entityDefine:Object):void
+      {
+         super.Create (createStageId, entityDefine);
+         
+         if (createStageId == 0)
+         {
+            if (entityDefine.mEnableLimits != undefined)
+               SetEnableLimits (entityDefine.mEnableLimits);
+            if (entityDefine.mLowerAngle != undefined)
+               SetLowerAngle (entityDefine.mLowerAngle * Define.kDegrees2Radians);
+            if (entityDefine.mUpperAngle != undefined)
+               SetUpperAngle (entityDefine.mUpperAngle * Define.kDegrees2Radians);
+            if (entityDefine.mEnableMotor != undefined)
+               SetEnableMotor (entityDefine.mEnableMotor);
+            if (entityDefine.mMotorSpeed != undefined)
+               SetMotorSpeed (entityDefine.mMotorSpeed * Define.kDegrees2Radians);
+            if (entityDefine.mBackAndForth != undefined)
+               SetBackAndForth (entityDefine.mBackAndForth);
+            if (entityDefine.mMaxMotorTorque != undefined)
+               SetMaxMotorTorque (mWorld.DisplayTorque2PhysicsTorque (entityDefine.mMaxMotorTorque));
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      protected var mLowerAngle:Number = 0.0;
+      protected var mUpperAngle:Number = 0.0;
+      protected var mEnableLimits:Boolean = false;
+      protected var mEnableMotor:Boolean = false;
+      protected var mMotorSpeed:Number = 0.0;
+      protected var mBackAndForth:Boolean = false;
+      protected var mMaxMotorTorque:Number = 10000000;
+      
+      public function SetLowerAngle (angle:Number):void
+      {
+         mLowerAngle = angle;
+      }
+      
+      public function GetLowerAngle ():Number
+      {
+         return mLowerAngle;
+      }
+      
+      public function SetUpperAngle (angle:Number):void
+      {
+         mUpperAngle = angle;
+      }
+      
+      public function GetUpperAngle ():Number
+      {
+         return mUpperAngle;
+      }
+      
+      public function SetEnableLimits (enableLimits:Boolean):void
+      {
+         mEnableLimits = enableLimits;
+      }
+      
+      public function IsLimitsEnabled ():Boolean
+      {
+         return mEnableLimits;
+      }
+      
+      public function SetEnableMotor (enableMotor:Boolean):void
+      {
+         mEnableMotor = enableMotor;
+      }
+      
+      public function IsMotorEnabled ():Boolean
+      {
+         return mEnableMotor;
+      }
+      
+      public function SetMotorSpeed (speed:Number):void
+      {
+         mMotorSpeed = speed;
+      }
+      
+      public function GetMotorSpeed ():Number
+      {
+         return mMotorSpeed;
+      }
+      
+      public function SetMaxMotorTorque (maxTorque:Number):void
+      {
+         mMaxMotorTorque = maxTorque;
+      }
+      
+      public function GetMaxMotorTorque ():Number
+      {
+         return mMaxMotorTorque;
+      }
+      
+      public function SetBackAndForth (backAndForth:Boolean):void
+      {
+         mBackAndForth = backAndForth;
+      }
+      
+      public function IsBackAndForth ():Boolean
+      {
+         return mBackAndForth;
+      }
+      
+//=============================================================
+//   initialize
+//=============================================================
+      
+      override protected function InitializeInternal ():void
+      {
+         DelayUpdateAppearance ();
+      }
+      
+//=============================================================
+//   destroy
+//=============================================================
+      
+      override protected function DestroyInternal ():void
+      {
+         //mWorld.GetEntityLayer ().removeChild (mAnchorShape);
+      }
+      
+//=============================================================
+//   update
+//=============================================================
       
       override protected function UpdateInternal (dt:Number):void
       {
-         var point1:Point = (mPhysicsProxy as PhysicsProxyJointHinge).GetAnchorPoint1 ();
-         var point2:Point = (mPhysicsProxy as PhysicsProxyJointHinge).GetAnchorPoint2 ();
-         mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point1);
-         mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point2);
+         DelayUpdateAppearance ();
          
-         x = (point1.x + point2.x) * 0.5;
-         y = (point1.y + point2.y) * 0.5;
+         var proxyJointHinge:PhysicsProxyJointHinge = mPhysicsProxy as PhysicsProxyJointHinge;
          
-         var hinge:PhysicsProxyJointHinge = mPhysicsProxy as PhysicsProxyJointHinge;
-         
-         if (hinge.IsLimitsEnabled () && hinge.IsMotorEnabled ())
+         if (mEnableLimits && mEnableMotor)
          {
-            var angle:Number = hinge.GetJointAngle ();
-            var speed:Number = hinge.GetMotorSpeed ();
-            if ( speed < 0 && angle < hinge.GetLowerLimit () )
+            var angle:Number = proxyJointHinge.GetJointAngle ();
+            
+            if ( mMotorSpeed < 0 && angle < mLowerAngle )
             {
                OnJointReachLowerLimit ();
                
                if (mBackAndForth)
                {
-                  hinge.SetMotorSpeed (-speed);
+                  mMotorSpeed = - mMotorSpeed;
+                  proxyJointHinge.SetMotorSpeed (mMotorSpeed);
                }
             }
-            else if (speed > 0 && angle > hinge.GetUpperLimit () )
+            else if (mMotorSpeed > 0 && angle > mUpperAngle )
             {
                OnJointReachUpperLimit ();
                
                if (mBackAndForth)
                {
-                  hinge.SetMotorSpeed (-speed);
+                  mMotorSpeed = - mMotorSpeed;
+                  proxyJointHinge.SetMotorSpeed (mMotorSpeed);
                }
             }
          }
       }
       
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
+//=============================================================
+//   appearance
+//=============================================================
+      
+      public function RebuildAppearance ():void
       {
-         super.BuildFromParams (params, false);
-         
-         var anchorParams:Object = params.mAnchorParams;
-         
-         var anchorDisplayX:Number = anchorParams.mPosX;
-         var anchorDisplayY:Number = anchorParams.mPosY;
-         
-         if (mPhysicsProxy == null)
-         {
-            params.mLowerAngle = params.mLowerAngle * Math.PI / 180.0;
-            params.mUpperAngle = params.mUpperAngle * Math.PI / 180.0;
-            params.mMotorSpeed = mWorld.mPhysicsEngine.DisplayLength2PhysicsLength (params.mMotorSpeed);
-            
-            var object:Object = mWorld.mPhysicsEngine.CreateProxyJointHingeAuto (anchorDisplayX, anchorDisplayY, params);
-            
-            SetJointBasicInfo (object.mProxyJoint as PhysicsProxyJointHinge, object.mProxyShape1 == null ? null : object.mProxyShape1.GetUserData () as EntityShape, object.mProxyShape2 == null ? null : object.mProxyShape2.GetUserData () as EntityShape);
-         }
-         
-         x = anchorDisplayX;
-         y = anchorDisplayY;
-         
-         mBackAndForth = params.mBackAndForth;
-         visible = params.mIsVisible;
-         
-         if (updateAppearance)
-            RebuildAppearance ();
+         //
       }
       
-      override public function RebuildAppearanceInternal ():void
+//=============================================================
+//   physics proxy
+//=============================================================
+      
+      override public function ConfirmConnectedShapes ():void
       {
-         GraphicsUtil.ClearAndDrawEllipse (this, - 5, - 5, 5 + 5, 5 + 5, 0x0, 1, true, 0xFFFFFF);
-         GraphicsUtil.DrawEllipse (this, - 1, - 1, 1 + 1, 1 + 1);
+         ConfirmConnectedShapes_Hinge (mAnchor1.GetPositionX (), mAnchor1.GetPositionY ());
       }
-      
-//==============================================================================
-// commands
-//==============================================================================
-      
-      public function SetMotorEnabled (enabled:Boolean):void
+
+      override public function RebuildJointPhysics ():void
       {
-      }
-      
-      public function SetMotorSpeed (speed:Number):void
-      {
+         if (mAlreadyDestroyed)
+            return;
+         
+         DestroyPhysicsProxy ();
+         
+         var proxyJointHinge:PhysicsProxyJointHinge;
+         mPhysicsProxy = proxyJointHinge = new PhysicsProxyJointHinge (mWorld.GetPhysicsEngine ());
+         proxyJointHinge.BuildHinge (
+                  mAnchor1, mAnchor2, mCollideConnected, 
+                  mEnableLimits, mLowerAngle, mUpperAngle,
+                  mEnableMotor, mMotorSpeed, mMaxMotorTorque
+               );
       }
       
       

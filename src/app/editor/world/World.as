@@ -69,9 +69,7 @@ package editor.world {
          
          mCollisionManager = new CollisionManager ();
          
-         var largestHalfSideWidth :int = Define.LargeWorldHalfWidth + 1000 
-         var largestHalfSideHeight:int = Define.LargeWorldHalfHeight + 1000;
-         //mSelectionEngineForVertexes = new SelectionEngine (new Point (-largestHalfSideWidth, -largestHalfSideHeight), new Point (largestHalfSideWidth, largestHalfSideHeight));
+         //mSelectionEngineForVertexes = new SelectionEngine ();
          mSelectionEngineForVertexes = mSelectionEngine;
          
          mTiggerEngine = new TriggerEngine ();
@@ -92,8 +90,6 @@ package editor.world {
          mCollisionManager.DestroyAllEntities ();
          
          super.DestroyAllEntities ();
-         
-         mMaxEntityCreationId = 0;
       }
       
       override public function DestroyEntity (entity:Entity):void
@@ -303,24 +299,12 @@ package editor.world {
          scaleX = zoomScale;
          scaleY = zoomScale;
          
-         /*
-         var selectedEntities:Array = GetSelectedEntities ();
          var entity:Entity;
-         for (var entityId:int = 0; entityId < selectedEntities.length; ++ entityId)
-         {
-            entity = selectedEntities [entityId] as Entity;
-            if (entity.AreInternalComponentsVisible ())
-            {
-               entity.SetInternalComponentsVisible (false);
-               entity.SetInternalComponentsVisible (true);
-            }
-         }
-         */
+         var numEntities:int = mEntitiesSortedByCreationId.length;
          
-         var entity:Entity;
-         for (var entityId:int = 0; entityId < numChildren; ++ entityId)
+         for (var entityId:int = 0; entityId < numEntities; ++ entityId)
          {
-            entity = getChildAt (entityId) as Entity;
+            entity = GetEntityByCreationId (entityId);
             entity.OnWorldZoomScaleChanged ();
          }
       }
@@ -332,9 +316,11 @@ package editor.world {
          var shapes_count:int = 0;
          var bombs_count:int = 0;
          
-         for (var i:int = 0; i < numChildren; ++ i)
+         var numEntities:int = mEntitiesSortedByCreationId.length;
+         
+         for (var i:int = 0; i < numEntities; ++ i)
          {
-            entity = getChildAt (i) as Entity;
+            entity = GetEntityByCreationId (i);
             if (entity != null)
                shapes_count += entity.GetPhysicsShapesCount ()
             
@@ -428,23 +414,23 @@ package editor.world {
                
                if (shapeIndex1 >= 0)
                {
-                  shapeEntity = getChildAt (shapeIndex1) as EntityShape;
+                  shapeEntity = GetEntityByCreationId (shapeIndex1) as EntityShape;
                   index = selectedEntities.indexOf (shapeEntity);
                   if (index >= 0)
                   {
                      newShapeEntity = cloningInfoArray [index].mClonedMainEntity;
-                     newJointEntity.SetConnectedShape1Index (getChildIndex (newShapeEntity));
+                     newJointEntity.SetConnectedShape1Index (GetEntityCreationId (newShapeEntity));
                   }
                }
                
                if (shapeIndex2 >= 0)
                {
-                  shapeEntity = getChildAt (shapeIndex2) as EntityShape;
+                  shapeEntity = GetEntityByCreationId (shapeIndex2) as EntityShape;
                   index = selectedEntities.indexOf (shapeEntity);
                   if (index >= 0)
                   {
                      newShapeEntity = cloningInfoArray [index].mClonedMainEntity;
-                     newJointEntity.SetConnectedShape2Index (getChildIndex (newShapeEntity));
+                     newJointEntity.SetConnectedShape2Index (GetEntityCreationId (newShapeEntity));
                   }
                }
            //<<
@@ -526,8 +512,6 @@ package editor.world {
          
          circle.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
          
-         OnNewEntityCreated (circle);
-         
          return circle;
       }
       
@@ -540,8 +524,6 @@ package editor.world {
          addChild (rect);
          
          rect.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
-         
-         OnNewEntityCreated (rect);
          
          return rect;
       }
@@ -556,8 +538,6 @@ package editor.world {
          
          polygon.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
          
-         OnNewEntityCreated (polygon);
-         
          return polygon;
       }
       
@@ -571,8 +551,6 @@ package editor.world {
          
          polyline.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
          
-         OnNewEntityCreated (polyline);
-         
          return polyline;
       }
       
@@ -583,8 +561,6 @@ package editor.world {
             
          var distaneJoint:EntityJointDistance = new EntityJointDistance (this);
          addChild (distaneJoint);
-         
-         OnNewEntityCreated (distaneJoint);
          
          return distaneJoint;
       }
@@ -597,8 +573,6 @@ package editor.world {
          var hinge:EntityJointHinge = new EntityJointHinge (this);
          addChild (hinge);
          
-         OnNewEntityCreated (hinge);
-         
          return hinge;
       }
       
@@ -609,8 +583,6 @@ package editor.world {
             
          var slider:EntityJointSlider = new EntityJointSlider (this);
          addChild (slider);
-         
-         OnNewEntityCreated (slider);
          
          return slider;
       }
@@ -623,8 +595,6 @@ package editor.world {
          var spring:EntityJointSpring = new EntityJointSpring (this);
          addChild (spring);
          
-         OnNewEntityCreated (spring);
-         
          return spring;
       }
       
@@ -635,8 +605,6 @@ package editor.world {
             
          var text:EntityShapeText = new EntityShapeText(this);
          addChild (text);
-         
-         OnNewEntityCreated (text);
          
          return text;
       }
@@ -649,8 +617,6 @@ package editor.world {
          var gController:EntityShapeGravityController = new EntityShapeGravityController(this);
          addChild (gController);
          
-         OnNewEntityCreated (gController);
-         
          return gController;
       }
       
@@ -661,8 +627,6 @@ package editor.world {
          
          var camera:EntityUtilityCamera = new EntityUtilityCamera(this);
          addChild (camera);
-         
-         OnNewEntityCreated (camera);
          
          return camera;
       }
@@ -675,8 +639,6 @@ package editor.world {
          var handler:EntityEventHandler = new EntityEventHandler (this, defaultEventId, potientialEventIds);
          addChild (handler);
          
-         OnNewEntityCreated (handler);
-         
          return handler;
       }
       
@@ -687,8 +649,6 @@ package editor.world {
          
          var condition:EntityBasicCondition = new EntityBasicCondition(this);
          addChild (condition);
-         
-         OnNewEntityCreated (condition);
          
          return condition;
       }
@@ -701,8 +661,6 @@ package editor.world {
          var condition_door:EntityConditionDoor = new EntityConditionDoor(this);
          addChild (condition_door);
          
-         OnNewEntityCreated (condition_door);
-         
          return condition_door;
       }
       
@@ -713,8 +671,6 @@ package editor.world {
          
          var task:EntityTask = new EntityTask(this);
          addChild (task);
-         
-         OnNewEntityCreated (task);
          
          return task;
       }
@@ -727,8 +683,6 @@ package editor.world {
          var entity_assigner:EntityInputEntityAssigner = new EntityInputEntityAssigner(this);
          addChild (entity_assigner);
          
-         OnNewEntityCreated (entity_assigner);
-         
          return entity_assigner;
       }
       
@@ -740,8 +694,6 @@ package editor.world {
          var entity_pair_assigner:EntityInputEntityPairAssigner = new EntityInputEntityPairAssigner(this);
          addChild (entity_pair_assigner);
          
-         OnNewEntityCreated (entity_pair_assigner);
-         
          return entity_pair_assigner;
       }
       
@@ -749,156 +701,80 @@ package editor.world {
 //   queries
 //=================================================================================
       
-      public function GetPhysicsShapeList ():Array
+      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, nullEntityLable:String = "(null)", includeGround:Boolean = false):Array
       {
          var list:Array = new Array ();
          
-         var child:Object;
-         var shape:EntityShape;
+         if (includeGround)
+            list.push({label:Define.EntityId_Ground + ":{Ground}", mEntityIndex:Define.EntityId_Ground});
          
-         for (var i:int = 0; i < numChildren; ++ i)
-         {
-            child = getChildAt (i);
-            if (child is EntityShape)
-            {
-               shape = child as EntityShape;
-               if (shape.IsBasicShapeEntity () && shape.IsPhysicsEnabled ())
-               {
-                  var item:Object = new Object ();
-                  item.mEntityIndex = i;
-                  item.mShape = shape;
-                  list.push (item);
-               }
-            }
-         }
+         list.push({label:Define.EntityId_None + ":" + nullEntityLable, mEntityIndex:Define.EntityId_None});
          
-         return list;
-      }
-      
-      public function GetCollisionCategoryList ():Array
-      {
-         var list:Array = new Array ();
-         
-         var child:Object;
-         var category:EntityCollisionCategory;
-         
-         for (var i:int = 0; i < mCollisionManager.numChildren; ++ i)
-         {
-            child = mCollisionManager.getChildAt (i);
-            if (child is EntityCollisionCategory)
-            {
-               category = child as EntityCollisionCategory;
-               
-               var item:Object = new Object ();
-               item.mCategoryIndex = i; // mCollisionManager.GetCollisionCategoryIndex (category);
-               item.mCategory = category;
-               list.push (item);
-            }
-         }
-         
-         return list;
-      }
-      
-      public function GetGravityControllerList ():Array
-      {
-         var list:Array = new Array ();
-         
-         var child:Object;
-         var gController:EntityShapeGravityController;
-         
-         for (var i:int = 0; i < numChildren; ++ i)
-         {
-            child = getChildAt (i);
-            if (child is EntityShapeGravityController)
-            {
-               gController = child as EntityShapeGravityController;
-               
-               var item:Object = new Object ();
-               item.mEntityIndex = i;
-               item.mGravityController = gController;
-               list.push (item);
-            }
-         }
-         
-         return list;
-      }
-      
-      public function GetCameraList ():Array
-      {
-         var list:Array = new Array ();
-         
-         var child:Object;
-         var camera:EntityUtilityCamera;
-         
-         for (var i:int = 0; i < numChildren; ++ i)
-         {
-            child = getChildAt (i);
-            if (child is EntityUtilityCamera)
-            {
-               camera = child as EntityUtilityCamera;
-               
-               var item:Object = new Object ();
-               item.mEntityIndex = i;
-               item.mCamera = camera;
-               list.push (item);
-            }
-         }
-         
-         return list;
-      }
-      
-   // the common one
-      
-      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null):Array
-      {
-         var list:Array = new Array ();
-         
-         var child:Object;
          var entity:Entity;
          
-         for (var i:int = 0; i < numChildren; ++ i)
+         var numEntities:int = mEntitiesSortedByCreationId.length;
+         if (numEntities != numChildren)
+            trace ("!!! numEntities != numChildren");
+         
+         for (var i:int = 0; i < numEntities; ++ i)
          {
-            child = getChildAt (i);
-            if (child is Entity)
+            entity = mEntitiesSortedByCreationId [i] as Entity;
+            
+            if ( filterFunc == null || filterFunc (entity) )
             {
-               entity = child as Entity;
-               if ( filterFunc == null || filterFunc (entity) )
-               {
-                  var item:Object = new Object ();
-                  item.label = i + ": " + entity.GetTypeName ();
-                  item.mEntityIndex = entity.GetEntityIndex ();
-                  list.push (item);
-               }
+               var item:Object = new Object ();
+               item.label = i + ": " + entity.GetTypeName ();
+               item.mEntityIndex = entity.GetCreationOrderId ();
+               list.push (item);
             }
          }
          
          return list;
+      }
+      
+      public static function EntityIndex2SelectListSelectedIndex (entityIndex:int, dataProvider:Array):int
+      {
+         for (var i:int = 0; i < dataProvider.length; ++ i)
+         {
+            if (dataProvider[i].mEntityIndex == entityIndex)
+               return i;
+         }
+         
+         return EntityIndex2SelectListSelectedIndex (Define.EntityId_None, dataProvider);
       }
       
       public function GetCollisionCategoryListDataProvider ():Array
       {
          var list:Array = new Array ();
          
-         list.push ({label:"{Hidden Category}", mCategoryIndex:Define.CollisionCategoryId_HiddenCategory});
+         list.push ({label:"-1:{Hidden Category}", mCategoryIndex:Define.CollisionCategoryId_HiddenCategory});
          
          var child:Object;
          var category:EntityCollisionCategory;
+         var numCats:int = mCollisionManager.GetNumCollisionCategories ();
          
-         for (var i:int = 0; i < mCollisionManager.numChildren; ++ i)
+         for (var i:int = 0; i < numCats; ++ i)
          {
-            child = mCollisionManager.getChildAt (i);
-            if (child is EntityCollisionCategory)
-            {
-               category = child as EntityCollisionCategory;
-               
-               var item:Object = new Object ();
-               item.label = category.GetCategoryName ();
-               item.mCategoryIndex = category.GetEntityIndex ();
-               list.push (item);
-            }
+            category = mCollisionManager.GetCollisionCategoryByIndex (i);
+            
+            var item:Object = new Object ();
+            item.label = i + ": " + category.GetCategoryName ();
+            item.mCategoryIndex = category.GetAppearanceLayerId ();
+            list.push (item);
          }
          
          return list;
+      }
+      
+      public static function CollisionCategoryIndex2SelectListSelectedIndex (categoryIndex:int, dataProvider:Array):int
+      {
+         for (var i:int = 0; i < dataProvider.length; ++ i)
+         {
+            if (dataProvider[i].mCategoryIndex == categoryIndex)
+               return i;
+         }
+         
+         return CollisionCategoryIndex2SelectListSelectedIndex (Define.CollisionCategoryId_HiddenCategory, dataProvider);
       }
       
 //=================================================================================
@@ -915,13 +791,13 @@ package editor.world {
          mBrothersManager.MakeBrothers (entities);
       }
       
-      public function GlueEntitiesByIndices (entityIndices:Array):void
+      public function GlueEntitiesByCreationIds (entityIndices:Array):void
       {
          var entities:Array = new Array (entityIndices.length);
          
          for (var i:int = 0; i < entityIndices.length; ++ i)
          {
-            entities [i] = getChildAt (entityIndices [i]);
+            entities [i] = GetEntityByCreationId (entityIndices [i]);
          }
          
          mBrothersManager.MakeBrothers (entities);
@@ -1012,7 +888,7 @@ package editor.world {
       
       public function GetNumCollisionCategories ():int
       {
-         return mCollisionManager.numChildren;
+         return mCollisionManager.GetNumCollisionCategories ();
       }
       
       public function GetCollisionManager ():CollisionManager

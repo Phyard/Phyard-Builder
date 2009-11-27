@@ -92,7 +92,7 @@ package editor.trigger.entity {
          while (i < mInputConditions.length)
          {
             var condition_target:ConditionAndTargetValue = mInputConditions [i] as ConditionAndTargetValue;
-            if (condition_target.mConditionEntity == null || (condition_target.mConditionEntity as Entity).GetEntityIndex () < 0)
+            if (condition_target.mConditionEntity == null || (condition_target.mConditionEntity as Entity).GetCreationOrderId () < 0)
                mInputConditions.splice (i, 1);
             else
                ++ i;

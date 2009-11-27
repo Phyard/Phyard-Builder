@@ -9,29 +9,35 @@ package player.physics {
    
    public class _ContactListener implements b2ContactListener
    {
-      private var mPhysicsEngine:PhysicsEngine;
+      private var _OnShapeContactStarted:Function;
+      private var _OnShapeContactFinished:Function;
       
-      public function _ContactListener (phyEngine:PhysicsEngine)
+      public function _ContactListener ()
       {
-         mPhysicsEngine = phyEngine;
+         SetHandlingFunctions (null, null);
       }
       
-      private var mNumPoints:int = 0;
-      private var mNumPoints_Add:int;
-      private var mNumPoints_Persist:int;
-      private var mNumPoints_Remove:int;
-      
-      public function Reset ():void
+      public function SetHandlingFunctions (onBegin:Function, onEnd:Function):void
       {
-         //trace ("------------ mNumPoints = " + mNumPoints + " | " + (mNumPoints_Persist + mNumPoints_Add - mNumPoints_Remove));
-         //trace ("mNumPoints_Add = " + mNumPoints_Add);
-         //trace ("mNumPoints_Persist = " + mNumPoints_Persist);
-         //trace ("mNumPoints_Remove = " + mNumPoints_Remove);
+         if(onBegin == null)
+            _OnShapeContactStarted = OnBegin_Default;
+         else
+            _OnShapeContactStarted = onBegin;
          
-         mNumPoints_Add = 0;
-         mNumPoints_Persist = 0;
-         mNumPoints_Remove = 0;
+         if (onEnd == null)
+            _OnShapeContactFinished = OnEnd_Default;
+         else
+            _OnShapeContactFinished = onEnd;
       }
+      
+      private function OnBegin_Default (shape1:PhysicsProxyShape, shape2:PhysicsProxyShape):void
+      {
+      }
+      
+      private function OnEnd_Default (shape1:PhysicsProxyShape, shape2:PhysicsProxyShape):void
+      {
+      }
+      
       
 //=======================================================
 // v.2.10
@@ -41,17 +47,13 @@ package player.physics {
       /// Called when two fixtures begin to touch.
       public function BeginContact(contact:b2Contact):void 
       {
-      //trace ("BeginContact");
-         //if (mPhysicsEngine._OnShapeContactStarted != null)
-            mPhysicsEngine._OnShapeContactStarted (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
+         _OnShapeContactStarted (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
       }
 
       /// Called when two fixtures cease to touch.
       public function EndContact(contact:b2Contact):void 
       {
-      //trace ("EndContact");
-         //if (mPhysicsEngine._OnShapeContactFinished != null)
-            mPhysicsEngine._OnShapeContactFinished (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
+         _OnShapeContactFinished (contact.GetFixtureA ().GetUserData () as PhysicsProxyShape, contact.GetFixtureB ().GetUserData () as PhysicsProxyShape);
       }
 
       /// This is called after a contact is updated. This allows you to inspect a

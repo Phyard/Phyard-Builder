@@ -139,7 +139,7 @@ package common {
                   value_source = new ValueSource_Direct (direct_source_define.mValueObject as String);
                   break;
                case ValueTypeDefine.ValueType_Entity:
-                  value_source = new ValueSource_Direct (playerWorld.GetEntityByIndexInEditor (direct_source_define.mValueObject as int));
+                  value_source = new ValueSource_Direct (playerWorld.GetEntityByCreationId (direct_source_define.mValueObject as int));
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
                   value_source = new ValueSource_Direct (direct_source_define.mValueObject as int);

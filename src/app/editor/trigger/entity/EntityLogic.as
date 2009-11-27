@@ -25,7 +25,7 @@ package editor.trigger.entity {
          while (i < entities.length)
          {
             entity = entities [i] as Entity;
-            if (entity == null || entity.GetEntityIndex () < 0)
+            if (entity == null || entity.GetCreationOrderId () < 0)
                entities .splice (i, 1);
             else
                ++ i;

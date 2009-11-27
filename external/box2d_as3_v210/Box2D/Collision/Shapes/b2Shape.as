@@ -101,6 +101,18 @@ package Box2D.Collision.Shapes
 		{
 			return m_type;
 		}
+		
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
+		// call by b2Body
+		// this function should  NOT change the world position
+		public function MoveLocalPosition (dx:Number, dy:Number):void
+		{
+			// to override
+		}
+		
 	} // class
 } // package
 //#endif

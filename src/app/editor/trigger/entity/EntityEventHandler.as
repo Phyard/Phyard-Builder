@@ -115,7 +115,7 @@ package editor.trigger.entity {
          
          EntityLogic.ValidateLinkedEntities (mEntityAssignerList);
          
-         if (mExternalCondition.mConditionEntity != null && (mExternalCondition.mConditionEntity as Entity).GetEntityIndex () < 0)
+         if (mExternalCondition.mConditionEntity != null && (mExternalCondition.mConditionEntity as Entity).GetCreationOrderId () < 0)
          {
             mExternalCondition.mConditionEntity = null;
             mExternalCondition.mTargetValue = ValueDefine.BoolValue_True;

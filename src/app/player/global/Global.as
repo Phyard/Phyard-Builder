@@ -24,9 +24,6 @@ package player.global
       public static var mRegisterVariableSpace_Entity :VariableSpace;
       public static var mRegisterVariableSpace_CollisionCategory:VariableSpace;
       
-      // for condition evaluation result storing
-      public static var mBooleanRegister_0:VariableInstance = null;
-      
 //==============================================================================
 // static values
 //==============================================================================
@@ -45,9 +42,6 @@ package player.global
          mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (false);
          mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (false);
          mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (false);
-         
-         //
-         mBooleanRegister_0 = mRegisterVariableSpace_Boolean.GetVariableAt (0);
       }
       
       public static function SetCurrentWorld (world:World):void

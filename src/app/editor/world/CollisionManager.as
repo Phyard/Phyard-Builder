@@ -38,6 +38,11 @@ package editor.world {
          return world_hints;
       }
       
+      public function GetNumCollisionCategories ():int
+      {
+         return numChildren;
+      }
+      
       public function GetDefaultCollisionCategory ():EntityCollisionCategory
       {
          if( mDefaultCategory != null && ! contains (mDefaultCategory) )
@@ -89,15 +94,12 @@ package editor.world {
          if (category == null)
             return Define.CollisionCategoryId_HiddenCategory;
          
-         return category.GetEntityIndex ();
+         return category.GetAppearanceLayerId ();
       }
       
       public function GetCollisionCategoryByIndex (index:int):EntityCollisionCategory
       {
-         if (index < 0 || index >= numChildren)
-            return null;
-         
-         return getChildAt (index) as EntityCollisionCategory;
+         return GetEntityByAppearanceId (index) as EntityCollisionCategory;
       }
       
       public function CreateEntityCollisionCategoryFriendLink (category1:EntityCollisionCategory, category2:EntityCollisionCategory):void

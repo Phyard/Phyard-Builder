@@ -185,8 +185,8 @@
              params.mMaxMotorTorque = NumericStepper_MaxMotorTorque.value;
             
              //
-             params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.data;
-             params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.data;
+             params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.mEntityIndex;
+             params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.mEntityIndex;
              
              //
              

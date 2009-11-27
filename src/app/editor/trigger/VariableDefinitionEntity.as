@@ -29,17 +29,6 @@ package editor.trigger {
          mMultiValuesEnabled = multiValuesEnabled;
       }
       
-      public static function EntityIndex2SelectListSelectedIndex (entityIndex:int, entitySelectListDataProvider:Array):int
-      {
-         for (var i:int = 0; i < entitySelectListDataProvider.length; ++ i)
-         {
-            if (entitySelectListDataProvider[i].mEntityIndex == entityIndex)
-               return i;
-         }
-         
-         return -1;
-      }
-      
 //==============================================================================
 // to override
 //==============================================================================
@@ -63,15 +52,12 @@ package editor.trigger {
          var world:World = Runtime.GetCurrentWorld ();
          var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (mFilterFunction);
          
-         if (mNullValueEnabled)
-            entity_list.unshift ({label: "-1: (null)", mEntityIndex: -1});
-         
          var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
          var sel_index:int = -1;
          var entity_index:int = -1;
          if (entity != null)
-            entity_index = entity.GetEntityIndex ();
-         sel_index = EntityIndex2SelectListSelectedIndex (entity_index, entity_list);
+            entity_index = entity.GetCreationOrderId ();
+         sel_index = World.EntityIndex2SelectListSelectedIndex (entity_index, entity_list);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = entity_list;
@@ -97,7 +83,7 @@ package editor.trigger {
                if (entity_index < 0)
                   valueSourceDirect.SetValueObject (null);
                else
-                  valueSourceDirect.SetValueObject (world.getChildAt (entity_index));
+                  valueSourceDirect.SetValueObject (world.GetEntityByCreationId (entity_index));
             }
          }
       }

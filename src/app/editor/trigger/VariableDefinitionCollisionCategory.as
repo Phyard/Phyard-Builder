@@ -23,17 +23,6 @@ package editor.trigger {
          super (name, ValueTypeDefine.ValueType_CollisionCategory, description);
       }
       
-      
-      public static function EntityIndex2SelectListSelectedIndex (entityIndex:int, entitySelectListDataProvider:Array):int
-      {
-         for (var i:int = 0; i < entitySelectListDataProvider.length; ++ i)
-         {
-            if (entitySelectListDataProvider[i].mCategoryIndex == entityIndex)
-               return i;
-         }
-         
-         return 0; // hidden category
-      }
 //==============================================================================
 // to override
 //==============================================================================
@@ -61,8 +50,8 @@ package editor.trigger {
          var sel_index:int = -1;
          var category_index:int = -1;
          if (category != null)
-            category_index = category.GetEntityIndex ();
-         sel_index = EntityIndex2SelectListSelectedIndex (category_index, category_list);
+            category_index = category.GetAppearanceLayerId ();
+         sel_index = World.CollisionCategoryIndex2SelectListSelectedIndex (category_index, category_list);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = category_list;

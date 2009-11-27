@@ -83,13 +83,14 @@ package common {
             //<<
          }
          
+         var numEntities:int = editorWorld.GetNumEntities ();
          var entityId:int;
          var editorEntity:editor.entity.Entity;
-         var arraySortedByCreationId:Array = new Array ();
+         //var arraySortedByCreationId:Array = new Array ();
          
-         for (entityId = 0; entityId < editorWorld.numChildren; ++ entityId)
+         for (entityId = 0; entityId < numEntities; ++ entityId)
          {
-            var child:Object = editorWorld.getChildAt (entityId);
+            var child:Object = editorWorld.GetEntityByAppearanceId (entityId);
             editorEntity = child as Entity;
             
             var entityDefine:Object = new Object ();
@@ -128,7 +129,7 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicTask;
                   
                   var task:editor.trigger.entity.EntityTask = child as editor.trigger.entity.EntityTask;
-                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (task.GetEntityAssigners ());
+                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (task.GetEntityAssigners ());
                   
                   entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mInputAssignerIndexes = entityIndexArray;
@@ -148,7 +149,7 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicInputEntityAssigner;
                   
                   var entityAssigner:editor.trigger.entity.EntityInputEntityAssigner = child as editor.trigger.entity.EntityInputEntityAssigner;
-                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (entityAssigner.GetInputEntities ());
+                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (entityAssigner.GetInputEntities ());
                   
                   entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
                   entityDefine.mNumEntities = entityIndexArray == null ? 0 : entityIndexArray.length;
@@ -162,12 +163,12 @@ package common {
                   
                   entityDefine.mPairingType = pairAssigner.GetPairingType ();
                   
-                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (pairAssigner.GetInputEntities1 ());
+                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (pairAssigner.GetInputEntities1 ());
                   
                   entityDefine.mNumEntities1 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityIndexes1 = entityIndexArray;
                   
-                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (pairAssigner.GetInputEntities2 ());
+                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (pairAssigner.GetInputEntities2 ());
                   
                   entityDefine.mNumEntities2 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityIndexes2 = entityIndexArray;
@@ -177,11 +178,11 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicEventHandler;
                   
                   var eventHandler:editor.trigger.entity.EntityEventHandler = child as editor.trigger.entity.EntityEventHandler;
-                  entityIndexArray = editorWorld.EntitiyArray2EntityIndexArray (eventHandler.GetEntityAssigners ());
+                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (eventHandler.GetEntityAssigners ());
                   
                   entityDefine.mEventId = eventHandler.GetEventId ();
                   
-                  entityDefine.mInputConditionEntityIndex = editorWorld.GetEntityIndex (eventHandler.GetInputConditionEntity () as Entity);
+                  entityDefine.mInputConditionEntityIndex = editorWorld.GetEntityCreationId (eventHandler.GetInputConditionEntity () as Entity);
                   entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionTargetValue ();
                   
                   entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
@@ -328,7 +329,7 @@ package common {
                   var hinge:editor.entity.EntityJointHinge = child as editor.entity.EntityJointHinge;
                   
                   entityDefine.mEntityType = Define.EntityType_JointHinge;
-                  entityDefine.mAnchorEntityIndex = editorWorld.getChildIndex ( hinge.GetAnchor () );
+                  entityDefine.mAnchorEntityIndex = editorWorld.GetEntityCreationId ( hinge.GetAnchor () );
                   
                   entityDefine.mEnableLimits = hinge.IsLimitsEnabled ();
                   entityDefine.mLowerAngle = hinge.GetLowerLimit ();
@@ -346,8 +347,8 @@ package common {
                   var slider:editor.entity.EntityJointSlider = child as editor.entity.EntityJointSlider;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSlider;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.getChildIndex ( slider.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.getChildIndex ( slider.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( slider.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityCreationId ( slider.GetAnchor2 () );
                   
                   entityDefine.mEnableLimits = slider.IsLimitsEnabled ();
                   entityDefine.mLowerTranslation = slider.GetLowerLimit ();
@@ -365,16 +366,16 @@ package common {
                   var distanceJoint:editor.entity.EntityJointDistance = child as editor.entity.EntityJointDistance;
                   
                   entityDefine.mEntityType = Define.EntityType_JointDistance;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.getChildIndex ( distanceJoint.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.getChildIndex ( distanceJoint.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( distanceJoint.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityCreationId ( distanceJoint.GetAnchor2 () );
                }
                else if (child is editor.entity.EntityJointSpring)
                {
                   var spring:editor.entity.EntityJointSpring = child as editor.entity.EntityJointSpring;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSpring;
-                  entityDefine.mAnchor1EntityIndex = editorWorld.getChildIndex ( spring.GetAnchor1 () );
-                  entityDefine.mAnchor2EntityIndex = editorWorld.getChildIndex ( spring.GetAnchor2 () );
+                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( spring.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityCreationId ( spring.GetAnchor2 () );
                   
                   entityDefine.mStaticLengthRatio = spring.GetStaticLengthRatio ();
                   //entityDefine.mFrequencyHz = spring.GetFrequencyHz ();
@@ -389,15 +390,22 @@ package common {
             
             worldDefine.mEntityDefines.push (entityDefine);
             
-            arraySortedByCreationId.push ({entity:editorEntity, creationId:editorEntity.GetCreationOrderId ()});
+            //arraySortedByCreationId.push ({entity:editorEntity, creationId:editorEntity.GetCreationOrderId ()});
          }
          
          // 
-         arraySortedByCreationId.sortOn ("creationId", Array.NUMERIC);
-         for (var arrayIndex:int = 0; arrayIndex < arraySortedByCreationId.length; ++ arrayIndex)
+         //arraySortedByCreationId.sortOn ("creationId", Array.NUMERIC);
+         //for (var arrayIndex:int = 0; arrayIndex < arraySortedByCreationId.length; ++ arrayIndex)
+         //{
+         //   editorEntity = arraySortedByCreationId [arrayIndex].entity;
+         //   worldDefine.mEntityCreationOrder.push (editorEntity.GetEntityIndex ());
+         //}
+         
+         var createId:int;
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            editorEntity = arraySortedByCreationId [arrayIndex].entity;
-            worldDefine.mEntityCreationOrder.push (editorEntity.GetEntityIndex ());
+            editorEntity = editorWorld.GetEntityByCreationId (createId);
+            worldDefine.mEntityCreationOrder.push (editorEntity.GetAppearanceLayerId ());
          }
          
          // 
@@ -424,7 +432,7 @@ package common {
             for (entityId = 0; entityId < brotherGroup.length; ++ entityId)
             {
                editorEntity = brotherGroup [entityId] as editor.entity.Entity;
-               brotherIDs [entityId] = editorWorld.getChildIndex (editorEntity);
+               brotherIDs [entityId] = editorWorld.GetEntityCreationId (editorEntity);
             }
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
          }
@@ -432,12 +440,11 @@ package common {
          //>>fromv1.02
          // collision category
          {
-            var ccList:Array = editorWorld.GetCollisionCategoryList ();
-            var ccFriendPairs:Array = editorWorld.GetCollisionCategoryFriendPairs ();
+            var numCats:int = editorWorld.GetNumCollisionCategories ();
             
-            for (var ccId:int = 0; ccId < ccList.length; ++ ccId)
+            for (var ccId:int = 0; ccId < numCats; ++ ccId)
             {
-               var collisionCategory:editor.entity.EntityCollisionCategory = ccList [ccId].mCategory as editor.entity.EntityCollisionCategory;
+               var collisionCategory:editor.entity.EntityCollisionCategory = editorWorld.GetCollisionCategoryByIndex (ccId);
                
                var ccDefine:Object = new Object ();
                
@@ -451,6 +458,7 @@ package common {
             
             worldDefine.mDefaultCollisionCategoryIndex = editorWorld.GetCollisionCategoryIndex (editorWorld.GetDefaultCollisionCategory ());
             
+            var ccFriendPairs:Array = editorWorld.GetCollisionCategoryFriendPairs ();
             for (var pairId:int = 0; pairId < ccFriendPairs.length; ++ pairId)
             {
                var friendPair:Object = ccFriendPairs [pairId];
@@ -551,8 +559,7 @@ package common {
          
          // entities
          
-         var beginningEntityIndex:int = editorWorld.numChildren;
-         var beginningEntityCreationOrderId:int = editorWorld.GetMaxEntityCreationId ();
+         var beginningEntityIndex:int = editorWorld.GetNumEntities ();
          
          var entityId:int;
          var entityDefine:Object;
@@ -561,6 +568,8 @@ package common {
          var anchorDefine:Object;
          var joint:editor.entity.EntityJoint;
          var utility:editor.entity.EntityUtility;
+         
+         editorWorld.SetCreationEntityArrayLocked (true);
          
          for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
          {
@@ -724,7 +733,7 @@ package common {
                {
                   var hinge:editor.entity.EntityJointHinge = editorWorld.CreateEntityJointHinge ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
+                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchorEntityIndex]];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (hinge.GetAnchor ());
                   anchorDefine.mEntity = hinge.GetAnchor ();
                   
@@ -744,10 +753,10 @@ package common {
                {
                   var slider:editor.entity.EntityJointSlider = editorWorld.CreateEntityJointSlider ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor1EntityIndex]];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (slider.GetAnchor1 ());
                   anchorDefine.mEntity = slider.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor2EntityIndex]];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (slider.GetAnchor2 ());
                   anchorDefine.mEntity = slider.GetAnchor2 ();
                   
@@ -767,10 +776,10 @@ package common {
                {
                   var disJoint:editor.entity.EntityJointDistance = editorWorld.CreateEntityJointDistance ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor1EntityIndex]];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (disJoint.GetAnchor1 ());
                   anchorDefine.mEntity = disJoint.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor2EntityIndex]];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (disJoint.GetAnchor2 ());
                   anchorDefine.mEntity = disJoint.GetAnchor2 ();
                   
@@ -780,10 +789,10 @@ package common {
                {
                   var spring:editor.entity.EntityJointSpring = editorWorld.CreateEntityJointSpring ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor1EntityIndex]];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor1 ());
                   anchorDefine.mEntity = spring.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor2EntityIndex]];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor2 ());
                   anchorDefine.mEntity = spring.GetAnchor2 ();
                   
@@ -795,6 +804,11 @@ package common {
                   
                   entity = joint = spring;
                }
+               
+               if (joint != null)
+               {
+                  joint.mCollideConnected = entityDefine.mCollideConnected ;
+               }
             }
             else if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
             {
@@ -804,6 +818,8 @@ package common {
             {
                //entityDefine.mEntityType = Define.EntityType_Unkonwn;
             }
+            
+            trace ("entityDefine.mEntityType = " + entityDefine.mEntityType + ", entity = " + entity);
             
             if (entity != null)
             {
@@ -818,7 +834,7 @@ package common {
             }
          }
          
-         // remove then readd child, to correct entity id
+         // remove entities then readd them by appearance id order
          //>>>
          while (editorWorld.numChildren > beginningEntityIndex)
             editorWorld.removeChildAt (beginningEntityIndex);
@@ -830,15 +846,16 @@ package common {
          }
          //<<<
          
-         //>>> correct the creation order id
-         if (worldDefine.mVersion < 0x0107)
+         editorWorld.SetCreationEntityArrayLocked (false);
+         
+         //>>> add entities by creation id order
+         // from version 0x0107)
+         for (var createIndex:int = 0; createIndex < worldDefine.mEntityCreationOrder.length; ++ createIndex)
          {
-            for (var createIndex:int = 0; createIndex < worldDefine.mEntityCreationOrder.length; ++ createIndex)
-            {
-               entityId = worldDefine.mEntityCreationOrder [createIndex] + beginningEntityIndex;
-               entity = editorWorld.GetEntityAt (entityId);
-               entity.SetCreationOrderId (createIndex + beginningEntityCreationOrderId);
-            }
+            entityId = worldDefine.mEntityCreationOrder [createIndex] + beginningEntityIndex;
+            entity = editorWorld.GetEntityByAppearanceId (entityId);
+            
+            editorWorld.AddEntityToCreationArray (entity);
          }
          //<<<
          
@@ -851,7 +868,6 @@ package common {
             {
                //trace ("entityDefine.mPosX = " + entityDefine.mPosX + ", entityDefine.mPosY = " + entityDefine.mPosY);
                
-               //entity = editorWorld.getChildAt (entityDefine.mNewIndex) as editor.entity.Entity;
                entity = entityDefine.mEntity as editor.entity.Entity;
                entity.SetPosition (entityDefine.mPosX, entityDefine.mPosY);
                entity.SetRotation (entityDefine.mRotation);
@@ -905,7 +921,7 @@ package common {
                }
             }
             
-            editorWorld.GlueEntitiesByIndices (brotherIds);
+            editorWorld.GlueEntitiesByCreationIds (brotherIds);
          }
         
          return editorWorld;

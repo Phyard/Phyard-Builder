@@ -4,6 +4,7 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Logic;
+   import player.trigger.ValueTarget_BooleanReturn;
    
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
@@ -11,29 +12,46 @@ package player.trigger.entity
    public class EntityBasicCondition extends EntityCondition
    {
       public var mConditionDefinition:FunctionDefinition_Logic;
+      public var mName:String = null;
+      
+      protected var mBooleanReturnValueTarget:ValueTarget_BooleanReturn = null;
       
       public function EntityBasicCondition (world:World)
       {
          super (world);
-      }
-      
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
-      {
-         super.BuildFromParams (params, false);
          
-          mConditionDefinition = new FunctionDefinition_Logic (TriggerEngine.GetVoidFunctionDeclaration  ());
+         mConditionDefinition = new FunctionDefinition_Logic (TriggerEngine.GetBoolFunctionDeclaration  ());
+         mBooleanReturnValueTarget = new ValueTarget_BooleanReturn ();
       }
       
-      public function SetCommandListDefine (codeSnippetDefine:CodeSnippetDefine):void
+//=============================================================
+//   create
+//=============================================================
+      
+      override public function Create (createStageId:int, entityDefine:Object):void
       {
-         if (mConditionDefinition != null) // should not be null
-            mConditionDefinition.SetCodeSnippetDefine (codeSnippetDefine);
+         super.Create (createStageId, entityDefine);
+         
+         if (createStageId == 0)
+         {
+            if (entityDefine.mName != undefined)
+               mName = entityDefine.mName;
+            
+            if (entityDefine.mCodeSnippetDefine != undefined)
+               mConditionDefinition.SetCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
+         }
       }
+            
+//=============================================================
+//   as condition
+//=============================================================
       
       override public function Evaluate ():void
       {
          // if (mConditionListDefinition != null) // should not be null
-            mEvaluatedValue = mConditionDefinition.EvaluateCondition () ? ValueDefine.BoolValue_True : ValueDefine.BoolValue_False;
+         mConditionDefinition.EvaluateCondition (mBooleanReturnValueTarget);
+         
+         mEvaluatedValue = mBooleanReturnValueTarget.mBoolValue ? ValueDefine.BoolValue_True : ValueDefine.BoolValue_False;
       }
       
    }

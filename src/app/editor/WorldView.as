@@ -134,6 +134,8 @@ package editor {
    
    import editor.trigger.entity.Linkable;
    
+   import editor.trigger.Filters;
+   
    import player.world.World;
    import player.ui.PlayHelpDialog;
    import player.ui.PlayControlBar;
@@ -662,15 +664,10 @@ package editor {
          var typeName:String = mLastSelectedEntity.GetTypeName ();
          var infoText:String = mLastSelectedEntity.GetInfoText ();
          
-         mSelectedEntityInfoText.htmlText = "<font color='#FFFFFF'><b>" + mEditorWorld.getChildIndex (mLastSelectedEntity) + ": " + typeName + "</b>: " + infoText + "</font>";
+         mSelectedEntityInfoText.htmlText = "<font color='#FFFFFF'><b>" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + ": " + typeName + "</b>: " + infoText + "</font>";
          
          mSelectedEntityInfoText.x = WorldBorderThinknessLR;
          mSelectedEntityInfoText.y = mViewHeight - (WorldBorderThinknessTB + mSelectedEntityInfoText.height) * 0.5;
-         
-         /*
-         mSelectedEntityInfoText.visible = false;
-         mStatusMessageBar.text = "[" + mEditorWorld.getChildIndex (mLastSelectedEntity) + "] " + mLastSelectedEntity.GetTypeName () + ": " + mLastSelectedEntity.GetInfoText () ;
-         */
       }
       
       private function UpdateSelectedEntitiesCenterSprite ():void
@@ -1220,8 +1217,8 @@ package editor {
          
       // creat ...
          
-         mButtonCreateCravityController.enabled = mEditorWorld.GetGravityControllerList ().length == 0;
-         mButtonCreateCamera.enabled = mEditorWorld.GetCameraList ().length == 0;
+         mButtonCreateCravityController.enabled = mEditorWorld.GetNumEntities (Filters.IsGravityControllerEntity) == 0;
+         mButtonCreateCamera           .enabled = mEditorWorld.GetNumEntities (Filters.IsCameraEntity) == 0;
          
       // file ...
          
@@ -1670,8 +1667,8 @@ package editor {
             if (shape.IsBasicShapeEntity ())
             {
                values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-               values.mCollisionCategoryListDataProvider =  CollisionCategoryList2SelectListDataProvider (mEditorWorld.GetCollisionCategoryList ());
-               values.mCollisionCategoryListSelectedIndex = CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
+               values.mCollisionCategoryListDataProvider =  mEditorWorld.GetCollisionCategoryListDataProvider ();
+               values.mCollisionCategoryListSelectedIndex = editor.world.World.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
                
                values.mAiType = shape.GetAiType ();
                
@@ -1764,9 +1761,9 @@ package editor {
                //<<
                
                //>>from v1.02
-               values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
-               values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (hinge.GetConnectedShape1Index (), values.mShapeListDataProvider);
-               values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (hinge.GetConnectedShape2Index (), values.mShapeListDataProvider);
+               values.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, "[Auto Select]", true);
+               values.mShapeList1SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (hinge.GetConnectedShape1Index (), values.mShapeListDataProvider);
+               values.mShapeList2SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (hinge.GetConnectedShape2Index (), values.mShapeListDataProvider);
                //<<
                
                ShowHingeSettingDialog (values, SetHingePropertities);
@@ -1790,9 +1787,9 @@ package editor {
                //<<
                
                //>>from v1.02
-               values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
-               values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (slider.GetConnectedShape1Index (), values.mShapeListDataProvider);
-               values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (slider.GetConnectedShape2Index (), values.mShapeListDataProvider);
+               values.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, "[Auto Select]", true);
+               values.mShapeList1SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (slider.GetConnectedShape1Index (), values.mShapeListDataProvider);
+               values.mShapeList2SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (slider.GetConnectedShape2Index (), values.mShapeListDataProvider);
                values.mAnchorIndex = (entity as SubEntitySliderAnchor).GetAnchorIndex ();
                //<<
                
@@ -1811,9 +1808,9 @@ package editor {
                values.mDampingRatio = spring.mDampingRatio;
                
                //>>from v1.02
-               values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
-               values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (spring.GetConnectedShape1Index (), values.mShapeListDataProvider);
-               values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (spring.GetConnectedShape2Index (), values.mShapeListDataProvider);
+               values.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, "[Auto Select]", true);
+               values.mShapeList1SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (spring.GetConnectedShape1Index (), values.mShapeListDataProvider);
+               values.mShapeList2SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (spring.GetConnectedShape2Index (), values.mShapeListDataProvider);
                values.mAnchorIndex = (entity as SubEntitySpringAnchor).GetAnchorIndex ();
                //<<
                
@@ -1828,9 +1825,9 @@ package editor {
                values.mCollideConnected = distance.mCollideConnected;
                
                //>>from v1.02
-               values.mShapeListDataProvider = ShapeList2SelectListDataProvider (mEditorWorld.GetPhysicsShapeList ());
-               values.mShapeList1SelectedIndex = EntityIndex2SelectListSelectedIndex (distance.GetConnectedShape1Index (), values.mShapeListDataProvider);
-               values.mShapeList2SelectedIndex = EntityIndex2SelectListSelectedIndex (distance.GetConnectedShape2Index (), values.mShapeListDataProvider);
+               values.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, "[Auto Select]", true);
+               values.mShapeList1SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (distance.GetConnectedShape1Index (), values.mShapeListDataProvider);
+               values.mShapeList2SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (distance.GetConnectedShape2Index (), values.mShapeListDataProvider);
                values.mAnchorIndex = (entity as SubEntityDistanceAnchor).GetAnchorIndex ();
                //<<
                
@@ -2016,71 +2013,6 @@ package editor {
             return;
          
          ShowEditorCustomCommandSettingDialog (null);
-      }
-      
-//=================================================================================
-//   
-//=================================================================================
-      
-      public static function ShapeList2SelectListDataProvider (shapeList:Array):Array
-      {
-         var provider:Array = new Array ();
-         
-         provider.push({label:Define.EntityId_Ground + ":{Ground}", data:Define.EntityId_Ground});
-         provider.push({label:Define.EntityId_None + ":[Auto Dectect]", data:Define.EntityId_None});
-         
-         var shape:EntityShape;
-         var shapeType:String;
-         var entityIndex:int;
-         for (var i:int = 0; i < shapeList.length; ++ i)
-         {
-            shape = shapeList[i].mShape as EntityShape;
-            shapeType = shape.GetTypeName ();
-            entityIndex = shapeList[i].mEntityIndex;
-            provider.push({label: entityIndex + ": " + shapeType, data:entityIndex});
-         }
-         
-         return provider;
-      }
-      
-      public static function EntityIndex2SelectListSelectedIndex (entityIndex:int, dataProvider:Array):int
-      {
-         for (var i:int = 0; i < dataProvider.length; ++ i)
-         {
-            if (dataProvider[i].data == entityIndex)
-               return i;
-         }
-         
-         return EntityIndex2SelectListSelectedIndex (Define.EntityId_None, dataProvider);
-      }
-      
-      public static function CollisionCategoryList2SelectListDataProvider (ccList:Array):Array
-      {
-         var provider:Array = new Array ();
-         
-         provider.push ({label:"{Hidden Category}", data:Define.CollisionCategoryId_HiddenCategory});
-         
-         var category:EntityCollisionCategory;
-         
-         for (var i:int = 0; i < ccList.length; ++ i)
-         {
-            category = ccList [i].mCategory as EntityCollisionCategory;
-            
-            provider.push ({label:category.GetCategoryName (), data:ccList [i].mCategoryIndex});
-         }
-         
-         return provider;
-      }
-      
-      public static function CollisionCategoryIndex2SelectListSelectedIndex (categoryIndex:int, dataProvider:Array):int
-      {
-         for (var i:int = 0; i < dataProvider.length; ++ i)
-         {
-            if (dataProvider[i].data == categoryIndex)
-               return i;
-         }
-         
-         return CollisionCategoryIndex2SelectListSelectedIndex (Define.CollisionCategoryId_HiddenCategory, dataProvider);
       }
       
 //=================================================================================
@@ -2302,7 +2234,6 @@ package editor {
             }
             
          // vertex controllers
-            
             var vertexControllers:Array = mEditorWorld.GetVertexControllersAtPoint (worldPoint.x, worldPoint.y);
             
             if (vertexControllers.length > 0)
@@ -3687,25 +3618,28 @@ package editor {
             if (selectedEntities.length == 0)
                return;
             
+            var numEntities:int = selectedEntities.length;
             var i:int;
             var index:int;
             var entity:Entity;
-            for (i = 0; i < selectedEntities.length; ++ i)
+            for (i = 0; i < numEntities; ++ i)
             {
                //trace ("selectedEntities[i] = " + selectedEntities[i]);
                //trace ("selectedEntities[i].parent = " + selectedEntities[i].parent);
                
-               index = mEditorWorld.getChildIndex (selectedEntities[i]);
-               entity = newWorld.getChildAt (index) as Entity;
+               index = mEditorWorld.GetEntityCreationId (selectedEntities[i]);
+               entity = newWorld.GetEntityByCreationId (index);
+               
                entity = entity.GetMainEntity ();
                newWorld.SelectEntity (entity);
                newWorld.SelectEntities (entity.GetSubEntities ());
             }
             
             i = 0;
-            while (i < newWorld.numChildren)
+            //numEntities = newWorld.GetNumEntities (); // this is bug
+            while (i < newWorld.GetNumEntities ()) // numEntities)
             {
-               entity = newWorld.getChildAt (i) as Entity;
+               entity = newWorld.GetEntityByCreationId (i);
                if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
                {
                   ++ i;
@@ -3718,10 +3652,13 @@ package editor {
             
             var cm:CollisionManager = newWorld.GetCollisionManager ();
             var ccId:int;
+            numEntities = newWorld.GetNumEntities ();
             
-            for (i = 0; i < newWorld.numChildren; ++ i)
+            trace ("numEntities = " + numEntities);
+            
+            for (i = 0; i < numEntities; ++ i)
             {
-               entity = newWorld.getChildAt (i) as Entity;
+               entity = newWorld.GetEntityByCreationId (i);
                if (entity is EntityShape)
                {
                   ccId = (entity as EntityShape).GetCollisionCategoryIndex ();
@@ -3730,13 +3667,14 @@ package editor {
                }
             }
             
-            i = 0;
-            while (i < cm.numChildren)
+            ccId = 0;
+            //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
+            while (ccId < cm.GetNumCollisionCategories ()) //numCats)
             {
-               entity = cm.getChildAt (i) as Entity;
+               entity = cm.GetCollisionCategoryByIndex (i);
                if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
                {
-                  ++ i;
+                  ++ ccId;
                }
                else
                {
@@ -3769,7 +3707,7 @@ package editor {
          
          try
          {
-            var oldEntitiesCount:int = mEditorWorld.numChildren;
+            var oldEntitiesCount:int = mEditorWorld.GetNumEntities ();
             var oldCategoriesCount:int = mEditorWorld.GetNumCollisionCategories ();
             
             var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
@@ -3795,9 +3733,11 @@ package editor {
             var centerY:Number = 0;
             var numSelecteds:int = 0;
             
-            for (i = oldEntitiesCount; i < mEditorWorld.numChildren; ++ i)
+            var newEntitiesCount:int = mEditorWorld.GetNumEntities ();
+            
+            for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
             {
-               entities = (mEditorWorld.getChildAt (i) as Entity).GetSubEntities ();
+               entities = (mEditorWorld.GetEntityByCreationId (i) as Entity).GetSubEntities ();
                mEditorWorld.SelectEntities (entities);
                
                for (j = 0; j < entities.length; ++ j)
@@ -3863,7 +3803,7 @@ package editor {
          
          var entityArray:Array = mEditorWorld.GetSelectedEntities ();
          
-         object.mSelectedEntityIds = new Array (entityArray.length);
+         object.mSelectedEntityCreationIds = new Array (entityArray.length);
          object.mMainSelectedEntityId = -1;
          object.mSelectedVertexControllerId = -1;
          object.mViewCenterWorldX = mViewCenterWorldX;
@@ -3873,10 +3813,10 @@ package editor {
          for (var i:int = 0; i < entityArray.length; ++ i)
          {
             var entity:Entity = entityArray [i] as Entity;
-            object.mSelectedEntityIds [i] = mEditorWorld.getChildIndex (entity);
+            object.mSelectedEntityCreationIds [i] = mEditorWorld.GetEntityCreationId (entity);
             if (entity.AreInternalComponentsVisible ())
             {
-               object.mMainSelectedEntityId = object.mSelectedEntityIds [i];
+               object.mMainSelectedEntityId = object.mSelectedEntityCreationIds [i];
                
                var vertexControllerArray:Array = mEditorWorld.GetSelectedVertexControllers ();
                if (vertexControllerArray.length > 0)
@@ -3910,16 +3850,16 @@ package editor {
          
          SetEditorWorld (mEditorWorld);
          
-         var numEntities:int = mEditorWorld.numChildren;
+         var numEntities:int = mEditorWorld.GetNumEntities ();
          var entityId:int;
          var entity:Entity;
          
-         for (var i:int = 0; i < object.mSelectedEntityIds.length; ++ i)
+         for (var i:int = 0; i < object.mSelectedEntityCreationIds.length; ++ i)
          {
-            entityId = object.mSelectedEntityIds [i];
+            entityId = object.mSelectedEntityCreationIds [i];
             if (entityId >= 0 && entityId < numEntities)
             {
-               entity = mEditorWorld.getChildAt (entityId) as Entity;
+               entity = mEditorWorld.GetEntityByCreationId (entityId);
                mEditorWorld.SelectEntity (entity);
                
                if (entityId == object.mMainSelectedEntityId)

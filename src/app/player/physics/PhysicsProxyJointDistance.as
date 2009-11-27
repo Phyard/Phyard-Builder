@@ -3,60 +3,79 @@ package player.physics {
    
    import flash.geom.Point;
    
+   import Box2D.Dynamics.Joints.b2Joint;
    import Box2D.Dynamics.Joints.b2DistanceJoint;
    import Box2D.Dynamics.Joints.b2DistanceJointDef;
    import Box2D.Dynamics.b2Body;
    import Box2D.Common.b2Vec2;
    
+   import player.entity.SubEntityJointAnchor;
    
    public class PhysicsProxyJointDistance extends PhysicsProxyJoint
    {
+      internal var _b2DistanceJoint:b2DistanceJoint = null;
       
-      public function PhysicsProxyJointDistance (phyEngine:PhysicsEngine, proxyBody1:PhysicsProxyBody, proxyBody2:PhysicsProxyBody, 
-                                        anchorPhysicsPosX1:Number, anchorPhysicsPosY1:Number, anchorPhysicsPosX2:Number, anchorPhysicsPosY2:Number, 
-                                        params:Object):void
+      public function PhysicsProxyJointDistance (phyEngine:PhysicsEngine):void
       {
-         super (phyEngine, proxyBody1, proxyBody2);
+         super (phyEngine);
+      }
+      
+      
+      override public function Destroy ():void
+      {
+         if (_b2DistanceJoint != null)
+         {
+            mPhysicsEngine._b2World.DestroyJoint (_b2DistanceJoint);
+            
+            _b2DistanceJoint = null;
+         }
+      }
+      
+      override internal function GetB2joint ():b2Joint
+      {
+         return _b2DistanceJoint;
+      }
+      
+//========================================================================
+//    build
+//========================================================================
+      
+      public function BuildDistance (
+                  anchor1:SubEntityJointAnchor, anchor2:SubEntityJointAnchor, collideConnected:Boolean, 
+                  staticLengthRatio:Number = 1.0, frequencyHz:Number = 0.0, dampingRatio:Number = 0.0
+               ):void
+      {
+         // ..
+         var proxyShape1:PhysicsProxyShape = anchor1.GetShape () == null ? null : anchor1.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
+         var proxyShape2:PhysicsProxyShape = anchor2.GetShape () == null ? null : anchor2.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
          
+         // ...
+         var body1:b2Body = proxyShape1 == null ? mPhysicsEngine._b2GroundBody : proxyShape1.mProxyBody._b2Body;
+         var body2:b2Body = proxyShape2 == null ? mPhysicsEngine._b2GroundBody : proxyShape2.mProxyBody._b2Body;
+         
+         // ...
          var distanceJointDef:b2DistanceJointDef = new b2DistanceJointDef ();
          
-         var body1:b2Body = proxyBody1 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody1._b2Body;
-         var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody2._b2Body;
+         distanceJointDef.body1 = body1;
+         distanceJointDef.body2 = body2;
+         distanceJointDef.localAnchor1 = body1.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ()));
+         distanceJointDef.localAnchor2 = body2.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()));
+         distanceJointDef.length = b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX () - anchor1.GetPositionX (), anchor2.GetPositionY () - anchor1.GetPositionY ()).Length ();
          
-         distanceJointDef.Initialize(body1, body2, b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX1, anchorPhysicsPosY1), b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX2, anchorPhysicsPosY2));
+         distanceJointDef.collideConnected = collideConnected;
          
-         distanceJointDef.collideConnected = params.mCollideConnected;
+         distanceJointDef.length *= staticLengthRatio;
+         distanceJointDef.frequencyHz = frequencyHz;
+         distanceJointDef.dampingRatio = dampingRatio;
          
-         // v2.0
-         {
-            if ( ! isNaN (params.mStaticLengthRatio) )
-            {
-               distanceJointDef.length *= params.mStaticLengthRatio;
-            }
-            if ( ! isNaN (params.mFrequencyHz) )
-            {
-               distanceJointDef.frequencyHz = params.mFrequencyHz;
-            }
-            if ( ! isNaN (params.mDampingRatio) )
-            {
-               distanceJointDef.dampingRatio = params.mDampingRatio;
-            }
-         }
+         _b2DistanceJoint = mPhysicsEngine._b2World.CreateJoint(distanceJointDef) as b2DistanceJoint;
          
-         _b2Joint = mPhysicsEngine._b2World.CreateJoint(distanceJointDef) as b2DistanceJoint;
-         
-         _b2Joint.SetUserData (this);
+         _b2DistanceJoint.SetUserData (this);
       }
       
-      public function GetStaticLength ():Number
-      {
-         return (_b2Joint as b2DistanceJoint).m_length;
-      }
-      
-      public function GetFrequencyHz ():Number
-      {
-         return (_b2Joint as b2DistanceJoint).m_frequencyHz;
-      }
+//========================================================================
+// 
+//========================================================================
       
    }
    

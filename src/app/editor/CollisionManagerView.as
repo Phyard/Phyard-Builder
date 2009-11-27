@@ -415,7 +415,7 @@ package editor {
          var onlySelected:EntityCollisionCategory = null;
          if (notNull)
          {
-            numCategories = mCollisionManager.numChildren;
+            numCategories = mCollisionManager.GetNumCollisionCategories ();
             
             selecteds = mCollisionManager.GetSelectedEntities ();
             numSelecteds = selecteds.length;

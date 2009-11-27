@@ -17,69 +17,71 @@ package player.trigger.entity
       public var mNextEntityEventHandlerOfTheSameType:EntityEventHandler = null;
       
       public var mExternalCondition:ConditionAndTargetValue = null;
-      
       public var mFirstEntityAssigner:ListElement_InputEntityAssigner = null;
-      
-      public var mEventHandlerDefinition:FunctionDefinition_Logic;
+      public var mEventHandlerDefinition:FunctionDefinition_Logic = null;
       
       public function EntityEventHandler (world:World)
       {
          super (world);
       }
       
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
-      {
-         super.BuildFromParams (params, false);
-         
-         mEventHandlerDefinition = new FunctionDefinition_Logic (TriggerEngine.GetCoreEventHandlerDeclarationById (params.mEventId));
-      }
+//=============================================================
+//   create
+//=============================================================
       
-      public function SetExternalCondition (conditionEntityIndex:int, targetValue:int):void
+      override public function Create (createStageId:int, entityDefine:Object):void
       {
-         var conditionEntity:EntityCondition = mWorld.GetEntityByIndexInEditor (conditionEntityIndex) as EntityCondition;
-         if (conditionEntity != null)
+         super.Create (createStageId, entityDefine);
+         
+         if (createStageId == 0)
          {
-            mExternalCondition =  new ConditionAndTargetValue (conditionEntity, targetValue);
+            if (entityDefine.mEventId != undefined)
+            {
+               mEventHandlerDefinition = new FunctionDefinition_Logic (TriggerEngine.GetCoreEventHandlerDeclarationById (entityDefine.mEventId));
+               
+               // code snippets
+               if (entityDefine.mCodeSnippetDefine != undefined)
+                  mEventHandlerDefinition.SetCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
+            }
+            
+            // external condition
+            if (entityDefine.mInputConditionEntityIndex != undefined && entityDefine.mInputConditionTargetValue != undefined)
+            {
+               var conditionEntity:EntityCondition = mWorld.GetEntityByCreationId (entityDefine.mInputConditionEntityIndex) as EntityCondition;
+               if (conditionEntity != null)
+               {
+                  mExternalCondition =  new ConditionAndTargetValue (conditionEntity, entityDefine.mInputConditionTargetValue);
+               }
+            }
+         }
+         else if (createStageId == 1) // somthing to do after all EntityAssigners are created with stageId=0
+         {
+            // entity (pair) assigners
+            if (entityDefine.mNumAssigners != undefined && entityDefine.mInputAssignerIndexes != undefined)
+            {
+               var numAssigners:int = entityDefine.mNumAssigners;
+               
+               var assignerEntityIndexes:Array = entityDefine.mInputAssignerIndexes;
+               var newElement:ListElement_InputEntityAssigner;
+                
+               for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
+               {
+                  newElement = new ListElement_InputEntityAssigner (mWorld.GetEntityByCreationId (int(assignerEntityIndexes [i])) as EntityInputEntityAssigner);
+                  newElement.mNextListElement = mFirstEntityAssigner;
+                  mFirstEntityAssigner = newElement;
+               }
+            }
+            
+            // register self
+            RegisterToEntityEventHandlerLists ();
          }
       }
       
-      public function SetEntityAssigners (assignerEntityIndexes:Array):void
-      {
-         if (assignerEntityIndexes == null)
-            return;
-         
-         var newElement:ListElement_InputEntityAssigner;
-          
-         for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
-         {
-            newElement = new ListElement_InputEntityAssigner (mWorld.GetEntityByIndexInEditor (assignerEntityIndexes [i]) as EntityInputEntityAssigner);
-            newElement.mNextListElement = mFirstEntityAssigner;
-            mFirstEntityAssigner = newElement;
-         }
-      }
+//=============================================================
+//   register to entity
+//=============================================================
       
-      public function SetInternalCommandListDefine (codeSnippetDefine:CodeSnippetDefine):void
-      {
-         if (mEventHandlerDefinition != null) // should not be null
-            mEventHandlerDefinition.SetCodeSnippetDefine (codeSnippetDefine);
-      }
-      
-      public function HandleEvent (valueSourceList:ValueSource):void
-      {
-         //trace ("mExternalCondition = " + mExternalCondition);
-         
-         if (mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
-            return;
-         
-         //mEventHandlerDefinition.DoCall (valueSourceList, null);
-         mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
-      }
-      
-//======================================================================================================
-//
-//======================================================================================================
-      
-      public function Register ():void
+      private function RegisterToEntityEventHandlerLists ():void
       {
          var eventId:int = mEventHandlerDefinition.GetFunctionDeclaration ().GetID ();
          
@@ -96,7 +98,7 @@ package player.trigger.entity
                var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
                while (list_element != null)
                {
-                  list_element.mInputEntityAssigner.RegisterEntityEventHandler (eventId, this);
+                  list_element.mInputEntityAssigner.RegisterEventHandlerForEntities (eventId, this);
                   
                   list_element = list_element.mNextListElement;
                }
@@ -105,5 +107,20 @@ package player.trigger.entity
                break;
          }
       }
+      
+//======================================================================================================
+//
+//======================================================================================================
+      
+      public function HandleEvent (valueSourceList:ValueSource):void
+      {
+         if (mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
+            return;
+         
+         trace ("mEventHandlerDefinition = " + mEventHandlerDefinition);
+         
+         //mEventHandlerDefinition.DoCall (valueSourceList, null);
+         mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
+      }     
    }
 }

@@ -2,110 +2,186 @@ package player.entity {
    
    import player.world.World;
    
-   import player.world.World;
-   
+   import player.physics.PhysicsProxyShape;
    import player.physics.PhysicsProxyJointSlider;
+   
+   import common.Define;
    
    public class EntityJointSlider extends EntityJoint
    {
-      
-      //private var mSpriteAnchor1:Sprite; // 
-      //private var mSpriteAnchor2:Sprite;
-      
-      private var mBackAndForth:Boolean = true;
+      protected var mAnchor:SubEntityJointAnchor = null;
       
       public function EntityJointSlider (world:World)
       {
          super (world);
-         
-         //mSpriteAnchor1 = new Sprite ();
-         //GraphicsUtil.ClearAndDrawLine (mSpriteAnchor1, 0, -3, 0, 3);
-         //addChild (mSpriteAnchor1);
-         //
-         //mSpriteAnchor2 = new Sprite ();
-         //GraphicsUtil.ClearAndDrawLine (mSpriteAnchor2, 0, -3, 0, 3);
-         //addChild (mSpriteAnchor2);
+
+         mCollideConnected = false;
       }
+      
+//=============================================================
+//   create
+//=============================================================
+      
+      override public function Create (createStageId:int, entityDefine:Object):void
+      {
+         super.Create (createStageId, entityDefine);
+         
+         if (createStageId == 0)
+         {
+            if (entityDefine.mEnableLimits != undefined)
+               SetEnableLimits (entityDefine.mEnableLimits);
+            if (entityDefine.mLowerTranslation != undefined)
+               SetLowerTranslation (mWorld.DisplayLength2PhysicsLength (entityDefine.mLowerTranslation));
+            if (entityDefine.mUpperTranslation != undefined)
+               SetUpperTranslation (mWorld.DisplayLength2PhysicsLength (entityDefine.mUpperTranslation));
+            if (entityDefine.mEnableMotor != undefined)
+               SetEnableMotor (entityDefine.mEnableMotor);
+            if (entityDefine.mMotorSpeed != undefined)
+               SetMotorSpeed (mWorld.DisplayLength2PhysicsLength (entityDefine.mMotorSpeed));
+            if (entityDefine.mBackAndForth != undefined)
+               SetBackAndForth (entityDefine.mBackAndForth);
+            if (entityDefine.mMaxMotorForce != undefined)
+               SetMaxMotorForce (mWorld.DisplayForce2PhysicsForce (entityDefine.mMaxMotorForce));
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      protected var mLowerTranslation:Number = 0.0;
+      protected var mUpperTranslation:Number = 0.0;
+      protected var mEnableLimits:Boolean = false;
+      protected var mEnableMotor:Boolean = false;
+      protected var mMotorSpeed:Number = 0.0;
+      protected var mBackAndForth:Boolean = false;
+      protected var mMaxMotorForce:Number = 100000000;
+      
+      public function SetLowerTranslation (translation:Number):void
+      {
+         mLowerTranslation = translation;
+      }
+      
+      public function SetUpperTranslation (translation:Number):void
+      {
+         mUpperTranslation = translation;
+      }
+      
+      public function SetEnableLimits (enableLimits:Boolean):void
+      {
+         mEnableLimits = enableLimits;
+      }
+      
+      public function SetEnableMotor (enableMotor:Boolean):void
+      {
+         mEnableMotor = enableMotor;
+      }
+      
+      public function SetMotorSpeed (speed:Number):void
+      {
+         mMotorSpeed = speed;
+      }
+      
+      public function SetBackAndForth (backAndForth:Boolean):void
+      {
+         mBackAndForth = backAndForth;
+      }
+      
+      public function SetMaxMotorForce (maxForce:Number):void
+      {
+         mMaxMotorForce = maxForce;
+      }
+      
+//=============================================================
+//   initialize
+//=============================================================
+      
+      override protected function InitializeInternal ():void
+      {
+         DelayUpdateAppearance ();
+      }
+      
+//=============================================================
+//   destroy
+//=============================================================
+      
+      override protected function DestroyInternal ():void
+      {
+         //mWorld.GetEntityLayer ().removeChild (mAnchorShape);
+      }
+      
+//=============================================================
+//   update
+//=============================================================
       
       override protected function UpdateInternal (dt:Number):void
       {
-         var slider:PhysicsProxyJointSlider = mPhysicsProxy as PhysicsProxyJointSlider;
+         DelayUpdateAppearance ();
          
-         if (slider.IsLimitsEnabled () && slider.IsMotorEnabled ())
+         var proxyJointSlider:PhysicsProxyJointSlider = mPhysicsProxy as PhysicsProxyJointSlider;
+         
+         if (mEnableLimits && mEnableMotor)
          {
-            var translation:Number = slider.GetJointTranslation ();
-            var speed:Number = slider.GetMotorSpeed ();
-            if ( speed < 0 && translation < slider.GetLowerLimit () )
+            var translation:Number = proxyJointSlider.GetJointTranslation ();
+            
+            if ( mMotorSpeed < 0 && translation < mLowerTranslation )
             {
                OnJointReachLowerLimit ();
                
                if (mBackAndForth)
                {
-                  slider.SetMotorSpeed (-speed);
+                  mMotorSpeed = -mMotorSpeed;
+                  proxyJointSlider.SetMotorSpeed (mMotorSpeed);
                }
             }
-            else if (speed > 0 && translation > slider.GetUpperLimit () )
+            else if (mMotorSpeed > 0 && translation > mUpperTranslation )
             {
                OnJointReachUpperLimit ();
                
                if (mBackAndForth)
                {
-                  slider.SetMotorSpeed (-speed);
+                  mMotorSpeed = -mMotorSpeed;
+                  proxyJointSlider.SetMotorSpeed (mMotorSpeed);
                }
             }
          }
       }
       
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
+//=============================================================
+//   appearance
+//=============================================================
+      
+      public function RebuildAppearance ():void
       {
-         super.BuildFromParams (params, false);
-         
-         var anchor1Params:Object = params.mAnchor1Params;
-         var anchor2Params:Object = params.mAnchor2Params;
-         
-         var anchorDisplayX1:Number = anchor1Params.mPosX;
-         var anchorDisplayY1:Number = anchor1Params.mPosY;
-         var anchorDisplayX2:Number = anchor2Params.mPosX;
-         var anchorDisplayY2:Number = anchor2Params.mPosY;
-         
-         if (mPhysicsProxy == null)
-         {
-            params.mLowerTranslation = mWorld.mPhysicsEngine.DisplayLength2PhysicsLength (params.mLowerTranslation);
-            params.mUpperTranslation = mWorld.mPhysicsEngine.DisplayLength2PhysicsLength (params.mUpperTranslation);
-            params.mMotorSpeed = mWorld.mPhysicsEngine.DisplayLength2PhysicsLength (params.mMotorSpeed);
-            
-            var object:Object = mWorld.mPhysicsEngine.CreateProxyJointSliderAuto (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
-            
-            SetJointBasicInfo (object.mProxyJoint as PhysicsProxyJointSlider, object.mProxyShape1 == null ? null : object.mProxyShape1.GetUserData () as EntityShape, object.mProxyShape2 == null ? null : object.mProxyShape2.GetUserData () as EntityShape);
-         }
-         
-         mBackAndForth = params.mBackAndForth;
-         visible = params.mIsVisible && params.mEnableLimits;
-         
-         if (updateAppearance)
-            RebuildAppearance ();
+         //
       }
       
-      override public function RebuildAppearanceInternal ():void
+//=============================================================
+//   physics proxy
+//=============================================================
+      
+      override public function ConfirmConnectedShapes ():void
       {
+         ConfirmConnectedShapes_NonHinge (mAnchor1.GetPositionX (), mAnchor1.GetPositionY (), mAnchor2.GetPositionX (), mAnchor2.GetPositionY ());
       }
       
-//==============================================================================
-// commands
-//==============================================================================
-      
-      public function SetMotorEnabled (enabled:Boolean):void
+      override public function RebuildJointPhysics ():void
       {
-      }
-      
-      public function SetMotorSpeed (speed:Number):void
-      {
+         if (mAlreadyDestroyed)
+            return;
+         
+         DestroyPhysicsProxy ();
+         
+         var proxyJointSlider:PhysicsProxyJointSlider;
+         mPhysicsProxy = proxyJointSlider = new PhysicsProxyJointSlider (mWorld.GetPhysicsEngine ());
+         proxyJointSlider.BuildSlider (
+                  mAnchor1, mAnchor2, mCollideConnected, 
+                  mEnableLimits, mLowerTranslation, mUpperTranslation,
+                  mEnableMotor, mMotorSpeed, mMaxMotorForce
+               );
       }
       
       
       
    }
 }
-
-
-

@@ -6,9 +6,9 @@ package player.physics {
    public class PhysicsProxy
    {
       
-      protected var mPhysicsEngine:PhysicsEngine;
+      internal var mPhysicsEngine:PhysicsEngine;
       
-      private var mUserData:Object = null;
+      //private var mUserData:Object = null;
       
       public function PhysicsProxy (phyEngine:PhysicsEngine):void
       {
@@ -26,15 +26,15 @@ package player.physics {
       {
       }
       
-      public function SetUserData (userData:Object):void
-      {
-         mUserData = userData;
-      }
-      
-      public function GetUserData ():Object
-      {
-         return mUserData;
-      }
+      //public function SetUserData (userData:Object):void
+      //{
+      //   mUserData = userData;
+      //}
+      //
+      //public function GetUserData ():Object
+      //{
+      //   return mUserData;
+      //}
       
    }
    

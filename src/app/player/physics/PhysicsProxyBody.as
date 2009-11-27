@@ -6,131 +6,138 @@ package player.physics {
    import Box2D.Dynamics.b2Body;
    import Box2D.Dynamics.b2BodyDef;
    import Box2D.Common.b2Vec2;
+   import Box2D.Common.b2Settings;
+   
+   import Box2dEx.Helper.b2eBodyHelper;
+   
+   import player.entity.EntityBody;
    
    public class PhysicsProxyBody extends PhysicsProxy
    {
-      
       internal var _b2Body:b2Body = null; // used internally
       
-      public function PhysicsProxyBody (phyEngine:PhysicsEngine, physicsX:Number = 0, physicsY:Number = 0, rotation:Number = 0, static:Boolean = true, params:Object = null):void
+      internal var mEntityBody:EntityBody;
+      
+      public function PhysicsProxyBody (phyEngine:PhysicsEngine, entityBody:EntityBody):void
       {
          super (phyEngine);
          
          var bodyDef:b2BodyDef = new b2BodyDef ();
-         bodyDef.position.Set (physicsX, physicsY);
-         bodyDef.angle = rotation;
-         //if (! static) bodyDef.massData.mass = 1; // temp value, it will be modified
-         _b2Body = mPhysicsEngine._b2World.CreateBody (bodyDef);
+         bodyDef.position.Set (entityBody.GetPositionX (), entityBody.GetPositionY ());
+         bodyDef.angle = entityBody.GetRotation ();
+         
+         _b2Body = mPhysicsEngine._b2World.CreateBody (bodyDef);b2eBodyHelper;
          
          _b2Body.SetUserData (this);
       }
       
+      public function GetEntityBody ():EntityBody
+      {
+         return mEntityBody;
+      }
       
       override public function Destroy ():void
       {
          if (_b2Body != null)
-            mPhysicsEngine._b2World.DestroyBody (_b2Body);
-      }
-      
-      public function NotifyDestroyed (object:Object):void
-      {
-         if (_b2Body == object)
          {
+            mPhysicsEngine._b2World.DestroyBody (_b2Body);
+            
             _b2Body = null;
          }
       }
       
-      public function UpdateMass (isStatic:Boolean):void
+//======================================================================================================
+// following functions assume _b2Body != null
+//======================================================================================================
+      
+      public function SetAutoUpdateMass (auto:Boolean):void
       {
-         if (_b2Body != null)
-            _b2Body.ResetMass(isStatic);
+         b2eBodyHelper.SetAutoUpdateMass (_b2Body, auto);
       }
       
-      public function GetPosition ():Point
+      public function ResetMass ():void
       {
-         var point:Point = new Point ();
-         
-         if (_b2Body != null)
-         {
-            var vec2:b2Vec2 = _b2Body.GetPosition ();
-            point.x = vec2.x;
-            point.y = vec2.y;
-         }
-         else
-         {
-            point.x = 0;
-            point.y = 0;
-         }
-         
-         return point;
+         _b2Body.ResetMass ();
+      }
+      
+      public function SetDisplayPosition (posX:Number, posY:Number):void
+      {
+         b2eBodyHelper.SetPosition (_b2Body, posX, posY);
+      }
+      
+      public function GetPositionX ():Number
+      {
+        return _b2Body.GetPosition ().x;
+      }
+      
+      public function GetPositionY ():Number
+      {
+         return _b2Body.GetPosition ().y;
+      }
+      
+      internal function get _physicsPos ():b2Vec2
+      {
+         return _b2Body.GetPosition ();
+      }
+      
+      public function CoincideWithCentroid ():void
+      {
+         _b2Body.CoincideWithCentroid ();
+      }
+      
+      public function SetRotation (rotation:Number):void
+      {
+         _b2Body.SetTransform (null, rotation);
       }
       
       public function GetRotation ():Number
       {
-         if (_b2Body != null)
-            return _b2Body.GetAngle ();
-         else
-            return 0;
+         return _b2Body.GetAngle ();
+      }
+      
+      public function SetPositionAndRotation (posX:Number, posY:Number, rotation:Number):void
+      {
+         _b2Body.SetTransform (b2Vec2.b2Vec2_From2Numbers (posX, posY), rotation);
+      }
+      
+      public function SetStatic (setStatic:Boolean):void
+      {
+         b2eBodyHelper.SetStatic (_b2Body, setStatic);
       }
       
       public function IsStatic ():Boolean
       {
-         if (_b2Body != null)
-            return _b2Body.m_mass == 0;
-         else
-            return true;
+         return _b2Body.IsStatic ();
       }
       
-      public function SetBullet (bullet:Boolean):void
+      public function SetAsBullet (bullet:Boolean):void
       {
-         if (_b2Body != null)
-         {
-            _b2Body.SetBullet (bullet);
-         }
+         _b2Body.SetBullet (bullet);
       }
       
-      public function SetLinearVelocity (vx:Number, vy:Number):void
+      public function IsBullet (bullet:Boolean):Boolean
       {
-         if (_b2Body == null)
-            return;
-         
-         _b2Body.SetLinearVelocity (b2Vec2.b2Vec2_From2Numbers (vx, vy));
+         return _b2Body.IsBullet ();
       }
       
-      public function SetAngularVelocity (omega:Number):void
+      public function SetAllowSleeping (allowSleeping:Boolean):void
       {
-         if (_b2Body == null)
-            return;
-         
-         _b2Body.SetAngularVelocity (omega);
+         _b2Body.AllowSleeping (allowSleeping);
       }
       
-      public function ApplyBodyForce (force:Point):void
+      public function IsAllowSleep ():Boolean
       {
-         if (_b2Body != null)
-         {
-            //_b2Body.ApplyForce ( , GetWorldCenter ());
-         }
+         return _b2Body.IsAllowSleeping ();
       }
       
-      public function ApplyPointForce (force:Point, point:Point):void
+      public function SetFixRotation (fixRotation:Boolean):void
       {
+         b2eBodyHelper.SetFixRotation (_b2Body, fixRotation);
       }
       
-//=================================================================
-//    
-//=================================================================
-      
-      private var _tempValue:Number = 0;
-      
-      public function SetTempValue (value:Number):void
+      public function IsFixRotation ():Boolean
       {
-         _tempValue = value;
-      }
-      
-      public function GetTempValue ():Number
-      {
-         return _tempValue;
+         return b2eBodyHelper.IsFixRotation (_b2Body);
       }
       
    }

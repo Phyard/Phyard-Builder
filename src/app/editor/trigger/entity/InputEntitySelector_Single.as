@@ -44,8 +44,8 @@ package editor.trigger.entity {
             entity1 = entities1 [i] as Entity;
             entity2 = entities2 [i] as Entity;
             
-            invalid1 = (entity1 == null || entity1.GetEntityIndex () < 0);
-            invalid2 = (entity2 == null || entity2.GetEntityIndex () < 0);
+            invalid1 = (entity1 == null || entity1.GetCreationOrderId () < 0);
+            invalid2 = (entity2 == null || entity2.GetCreationOrderId () < 0);
             
             if ( invalid1 ) entities1 [i] = null;
             if ( invalid2 ) entities2 [i] = null;

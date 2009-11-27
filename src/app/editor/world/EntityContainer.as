@@ -42,14 +42,11 @@ package editor.world {
       
       public var mSelectionListManager:SelectionListManager;
       
+      protected var mEntitiesSortedByCreationId:Array = new Array ();
+      
       public function EntityContainer ()
       {
-      //
-         // it is best to set the aabb runtimely when user change the playfield size
-         
-         var largestHalfSideWidth :int = Define.LargeWorldHalfWidth + 1000 
-         var largestHalfSideHeight:int = Define.LargeWorldHalfHeight + 1000;
-         mSelectionEngine = new SelectionEngine (new Point (-largestHalfSideWidth, -largestHalfSideHeight), new Point (largestHalfSideWidth, largestHalfSideHeight), GetWorldHints ());
+         mSelectionEngine = new SelectionEngine ();
          
          mSelectionListManager = new SelectionListManager ();
       }
@@ -72,45 +69,17 @@ package editor.world {
       
       public function Update (escapedTime:Number):void
       {
-         for (var i:uint = 0; i < numChildren; ++ i)
-         {
-            var child:Object = getChildAt (i);
-            
-            if (child is Entity)
-            {
-               (child as Entity).Update (escapedTime);
-            }
-         }
-      }
-      
-//=================================================================================
-//   create
-//=================================================================================
-      
-      protected var mMaxEntityCreationId:int = 0;
-      
-      public function GetMaxEntityCreationId ():int
-      {
-         return mMaxEntityCreationId;
-      }
-      
-      public function OnNewEntityCreated (entity:Entity):void // used internally
-      {
-         var sub_entities:Array = entity.GetSubEntities ();
-         if (sub_entities != null && sub_entities.length > 1)
-         {
-            var sub_entity:Entity;
-            for (var i:int = 0; i < sub_entities.length; ++ i)
-            {
-               sub_entity = sub_entities [i];
-               if (sub_entity != entity)
-               {
-                  sub_entity.SetCreationOrderId (mMaxEntityCreationId ++);
-               }
-            }
-         }
+         var numEntities:int = mEntitiesSortedByCreationId.length;
          
-         entity.SetCreationOrderId (mMaxEntityCreationId ++);
+         for (var i:uint = 0; i < numEntities; ++ i)
+         {
+            var entity:Entity = GetEntityByCreationId (i);
+            
+            if (entity != null)
+            {
+               entity.Update (escapedTime);
+            }
+         }
       }
       
 //=================================================================================
@@ -119,9 +88,9 @@ package editor.world {
       
       public function DestroyAllEntities ():void
       {
-         while (numChildren > 0)
+         while (mEntitiesSortedByCreationId.length > 0)
          {
-            var entity:Entity = getChildAt (0) as Entity;
+            var entity:Entity = GetEntityByCreationId (0);
             DestroyEntity (entity.GetMainEntity ());
          }
       }
@@ -451,7 +420,7 @@ package editor.world {
          {
             params = new Object ();
             params.mOldArrayIndex = i;
-            params.mEntityIndex = contains (mainEntities [i]) ? getChildIndex (mainEntities [i]) : -1;
+            params.mEntityIndex = GetEntityCreationId (mainEntities [i]);
             params.mMainEntity = mainEntities [i];
             mainEntities [i] = params;
          }
@@ -462,6 +431,14 @@ package editor.world {
          
          var oldIndex2NewIndex:Array = new Array (mainEntities.length);
          var newEntity:Entity;
+         
+         var oldNumChildren:int = numChildren;
+         var clonedEntities:Array = new Array ();
+         var newEntitiesSortedByLayerId:Array = new Array ();
+         var object:Object;
+         var oldSubEntities:Array;
+         var newSubEntities:Array;
+         var j:int;
          
          for (i = 0; i < mainEntities.length; ++ i)
          {
@@ -479,8 +456,43 @@ package editor.world {
             
             if (newEntity != null)
             {
-               addChild (newEntity);
+               //addChild (newEntity); // entities will be added by appearane layer id
+               //SelectEntities (newEntity.GetSubEntities ());
                
+               oldSubEntities = mainEntity.GetSubEntities ();
+               oldSubEntities.push (mainEntity);
+               
+               newSubEntities = newEntity.GetSubEntities ();
+               newSubEntities.push (newEntity);
+               
+               for (j = 0; j < newSubEntities.length; ++ j)
+               {
+                  if (clonedEntities.indexOf (newSubEntities [j]) < 0)
+                  {
+                     clonedEntities.push (newSubEntities [j]);
+                     
+                     object = new Object ();
+                     object.mClonedEntity = newSubEntities [j];
+                     object.mEntityLayer = GetEntityAppearanceId (oldSubEntities [j]);
+                     
+                     newEntitiesSortedByLayerId.push (object);
+                  }
+               }
+            }
+         }
+         
+         while (numChildren > oldNumChildren)
+            removeChildAt (oldNumChildren); // remvoe then re-add
+         
+         newEntitiesSortedByLayerId.sortOn("mEntityLayer", Array.NUMERIC);
+         for (i = 0; i < newEntitiesSortedByLayerId.length; ++ i)
+         {
+            object = newEntitiesSortedByLayerId [i];
+            newEntity = object.mClonedEntity;
+            
+            if (newEntity != null)
+            {
+               addChild (newEntity);
                SelectEntities (newEntity.GetSubEntities ());
             }
          }
@@ -500,57 +512,6 @@ package editor.world {
                info.mClonedMainEntity = mainEntities [ oldIndex2NewIndex[info.mMainEntityOldArrayIndex] ].mClonedEntity;
             }
          }
-         
-         /*
-         var mainEntityArray:Array = mSelectionListManager.GetSelectedMainEntities ();
-         
-         var i:uint;
-         for (i = 0; i < mainEntityArray.length; ++ i)
-         {
-            var params:Object = new Object ();
-            params.mEntity = mainEntityArray [i];
-            params.mEntityIndex = contains (mainEntityArray [i]) ? getChildIndex (mainEntityArray [i]) : -1;
-            mainEntityArray [i] = params;
-         }
-         
-         mainEntityArray.sortOn("mEntityIndex", Array.NUMERIC);
-         
-         for (i = 0; i < mainEntityArray.length; ++ i)
-         {
-            mainEntityArray [i] = mainEntityArray [i].mEntity;
-         }
-         
-         var entity:Entity;
-         var clonedEntities:Array = new Array ();
-         var clonePair:Object;
-         
-         mSelectionListManager.ClearSelectedEntities ();
-         
-         for (i = 0; i < mainEntityArray.length; ++ i)
-         {
-            entity = mainEntityArray [i] as Entity;
-            
-            if (entity != null)
-            {
-               if (numChildren >= Define.MaxEntitiesCount)
-                  return;
-                  
-               var newEntity:Entity = entity.Clone (offsetX, offsetY);
-               
-               if (newEntity != null)
-               {
-                  addChild (newEntity);
-                  
-                  SelectEntities (newEntity.GetSubEntities ());
-                  
-                  clonePair = new Object ();
-                  clonePair.mMainEntity = entity;
-                  clonePair.mClonedEntity = newEntity;
-                  clonedEntities.push (clonePair);
-               }
-            }
-         }
-         */
       }
       
       public function FlipSelectedEntitiesHorizontally (mirrorX:Number):void
@@ -630,16 +591,17 @@ package editor.world {
       }
       
 //=================================================================================
-//   collision categories
+//   links
 //=================================================================================
       
       public function DrawEntityLinkLines (canvasSprite:Sprite):void
       {
          var entity:Entity;
          var i:int;
-         for (i = 0; i < numChildren; ++ i)
+         var numEntities:int = mEntitiesSortedByCreationId.length;
+         for (i = 0; i < numEntities; ++ i)
          {
-            entity = getChildAt (i) as Entity;
+            entity = GetEntityByCreationId (i);
             if (entity != null)
             {
                entity.DrawEntityLinkLines (canvasSprite);
@@ -651,88 +613,195 @@ package editor.world {
 // 
 //=================================================================================
       
-      protected var mNeedToCorrectEntityIndices:Boolean = false;
-      
       override public function addChild(child:DisplayObject):DisplayObject
       {
-         mNeedToCorrectEntityIndices = true;
+         mNeedToCorrectEntityAppearanceIds = true;
+         mNeedToCorrectEntityCreationIds = true;
          
          return super.addChild(child);
       }
       
       override public function addChildAt(child:DisplayObject, index:int):DisplayObject
       {
-         mNeedToCorrectEntityIndices = true;
+         mNeedToCorrectEntityAppearanceIds = true;
+         mNeedToCorrectEntityCreationIds = true;
          
          return super.addChildAt(child, index);
       }
       
       override public function removeChild(child:DisplayObject):DisplayObject
       {
-         mNeedToCorrectEntityIndices = true;
+         mNeedToCorrectEntityAppearanceIds = true;
+         mNeedToCorrectEntityCreationIds = true;
          
          var entity:Entity = child as Entity;
          if (entity != null)
-            entity.SetEntityIndex (-1);
+         {
+            entity.SetAppearanceLayerId (-1);
+         }
          
          return super.removeChild(child);
       }
       
       override public function removeChildAt(index:int):DisplayObject
       {
-         mNeedToCorrectEntityIndices = true;
+         mNeedToCorrectEntityAppearanceIds = true;
+         mNeedToCorrectEntityCreationIds = true;
          
          var child:DisplayObject = super.removeChildAt(index);
          var entity:Entity = child as Entity;
          if (entity != null)
-            entity.SetEntityIndex (-1);
+         {
+            entity.SetAppearanceLayerId (-1);
+         }
          
-         return child
+         return child;
       }
       
       override public function setChildIndex(child:DisplayObject, index:int):void
       {
-         mNeedToCorrectEntityIndices = true;
+         mNeedToCorrectEntityAppearanceIds = true;
          
          super.setChildIndex(child, index);
       }
       
       override public function swapChildren(child1:DisplayObject, child2:DisplayObject):void
       {
-         mNeedToCorrectEntityIndices = true;
+         mNeedToCorrectEntityAppearanceIds = true;
          
          super.swapChildren(child1, child2);
       }
       
       override public function swapChildrenAt(index1:int, index2:int):void
       {
-         mNeedToCorrectEntityIndices = true;
+         mNeedToCorrectEntityAppearanceIds = true;
          
          super.swapChildrenAt(index1, index2);
       }
       
-      public function CorrectEntityIndices ():void
+      protected var mNeedToCorrectEntityAppearanceIds:Boolean = false;
+      
+      public function CorrectEntityAppearanceIds ():void
       {
-         if (! mNeedToCorrectEntityIndices)
-            return;
-         
-         var entity:Entity;
-         var i:int = 0;
-         for (i = 0; i < numChildren; ++ i)
+         if ( mNeedToCorrectEntityAppearanceIds)
          {
-            entity = getChildAt (i) as Entity;
-            if (entity != null)
-               entity.SetEntityIndex (i);
+            mNeedToCorrectEntityAppearanceIds = false;
+            
+            var entity:Entity;
+            var i:int = 0;
+            for (i = 0; i < numChildren; ++ i)
+            {
+               entity = getChildAt (i) as Entity;
+               if (entity != null)
+                  entity.SetAppearanceLayerId (i);
+            }
          }
+      }
+      
+      public function GetEntityByAppearanceId (appearanceId:int):Entity
+      {
+         CorrectEntityAppearanceIds ();
          
-         mNeedToCorrectEntityIndices = false;
+         if (appearanceId < 0 || appearanceId >= numChildren)
+            return null;
+         
+         return getChildAt (appearanceId) as Entity;
+      }
+      
+//============================================================================
+// 
+//============================================================================
+      
+      public function OnEntityCreated (entity:Entity):void
+      {
+         mNeedToCorrectEntityCreationIds = true;
+         
+         if (mIsCreationArrayOpened)
+         {
+            if (mEntitiesSortedByCreationId.indexOf (entity) < 0)
+               mEntitiesSortedByCreationId.push (entity);
+         }
+      }
+      
+      public function OnEntityDestroyed (entity:Entity):void
+      {
+         mNeedToCorrectEntityCreationIds = true;
+         
+         if (mIsCreationArrayOpened)
+         {
+            var index:int = mEntitiesSortedByCreationId.indexOf (entity);
+            if (index >= 0)
+            {
+               mEntitiesSortedByCreationId.splice (index, 1);
+               entity.SetCreationOrderId (-1);
+            }
+         }
+      }
+      
+      private var mNeedToCorrectEntityCreationIds:Boolean = false;
+      
+      public function CorrectEntityCreationIds ():void
+      {
+         if (mNeedToCorrectEntityCreationIds)
+         {
+            mNeedToCorrectEntityCreationIds = false;
+            
+            var numEntities:int = mEntitiesSortedByCreationId.length;
+            for (var i:int = 0; i < numEntities; ++ i)
+            {
+               (mEntitiesSortedByCreationId [i] as Entity).SetCreationOrderId (i);
+            }
+         }
+      }
+      
+      public function GetEntityByCreationId (creationId:int):Entity
+      {
+         CorrectEntityCreationIds ();
+         
+         if (creationId < 0 || creationId >= mEntitiesSortedByCreationId.length)
+            return null;
+         
+         return mEntitiesSortedByCreationId [creationId];
+      }
+      
+      // for loading into editor
+      private var mIsCreationArrayOpened:Boolean = true;
+      public function SetCreationEntityArrayLocked (locked:Boolean):void
+      {
+         mIsCreationArrayOpened = ! locked;
+      }
+      
+      public function AddEntityToCreationArray (entity:Entity):void
+      {
+         mNeedToCorrectEntityCreationIds = true;
+         
+         if (mIsCreationArrayOpened)
+            mEntitiesSortedByCreationId.push (entity);
       }
       
 //============================================================================
 // utils
 //============================================================================
       
-      public function GetEntityIndex (entity:Entity):int
+      public function GetNumEntities (filterFunc:Function = null):int
+      {
+         var numEntities:int = mEntitiesSortedByCreationId.length;
+         if ( filterFunc == null)
+            return numEntities;
+         
+         var count:int = 0;
+         var entity:Entity;
+         for (var i:int = 0; i < numEntities; ++ i)
+         {
+            entity = GetEntityByCreationId (i);
+            if (filterFunc (entity))
+               ++ count;
+         }
+         
+         return count;
+      }
+      
+      public function GetEntityAppearanceId (entity:Entity):int
       {
          if (entity == null)
             return -1;
@@ -741,18 +810,22 @@ package editor.world {
          //if (entity.GetContainer () != this)
          //   return -1;
          
-         return entity.GetEntityIndex ();
+         return entity.GetAppearanceLayerId ();
       }
       
-      public function GetEntityAt (index:int):Entity
+      public function GetEntityCreationId (entity:Entity):int
       {
-         if (isNaN (index) || index < 0 || index >= numChildren)
-            return null;
+         if (entity == null)
+            return -1;
          
-         return getChildAt (index) as Entity;
+         // for speed, commented off
+         //if (entity.GetContainer () != this)
+         //   return -1;
+         
+         return entity.GetCreationOrderId ();
       }
       
-      public function EntitiyArray2EntityIndexArray (entities:Array):Array
+      public function EntitiyArray2EntityCreationIdArray (entities:Array):Array
       {
          if (entities == null)
             return null;
@@ -760,13 +833,13 @@ package editor.world {
          var ids:Array = new Array (entities.length);
          for (var i:int = 0; i < entities.length; ++ i)
          {
-            ids [i] = GetEntityIndex (entities [i] as Entity);
+            ids [i] = GetEntityCreationId (entities [i] as Entity);
          }
          
          return ids;
       }
       
-      public function EntityIndexArray2EntityArray (ids:Array):Array
+      public function EntityCreationIdArray2EntityArray (ids:Array):Array
       {
          if (ids == null)
             return null;
@@ -774,7 +847,7 @@ package editor.world {
          var entities:Array = new Array (ids.length);
          for (var i:int = 0; i < ids.length; ++ i)
          {
-            entities [i] = GetEntityAt ( int (ids [i]) );
+            entities [i] = GetEntityByCreationId ( int (ids [i]) );
          }
          
          return entities;

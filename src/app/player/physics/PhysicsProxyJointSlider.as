@@ -3,87 +3,111 @@ package player.physics {
    
    import flash.geom.Point;
    
+   import Box2D.Dynamics.Joints.b2Joint;
    import Box2D.Dynamics.Joints.b2PrismaticJoint;
    import Box2D.Dynamics.Joints.b2PrismaticJointDef;
    import Box2D.Dynamics.b2Body;
    import Box2D.Common.b2Vec2;
    
+   import player.entity.SubEntityJointAnchor;
    
    public class PhysicsProxyJointSlider extends PhysicsProxyJoint
    {
+      internal var _b2PrismaticJoint:b2PrismaticJoint = null;
       
-      public function PhysicsProxyJointSlider (phyEngine:PhysicsEngine, proxyBody1:PhysicsProxyBody, proxyBody2:PhysicsProxyBody, 
-                                        anchorPhysicsPosX1:Number, anchorPhysicsPosY1:Number, anchorPhysicsPosX2:Number, anchorPhysicsPosY2:Number, 
-                                        params:Object):void
+      public function PhysicsProxyJointSlider (phyEngine:PhysicsEngine):void
       {
-         super (phyEngine, proxyBody1, proxyBody2);
+         super (phyEngine);
+      }
+      
+      override public function Destroy ():void
+      {
+         if (_b2PrismaticJoint != null)
+         {
+            mPhysicsEngine._b2World.DestroyJoint (_b2PrismaticJoint);
+            
+            _b2PrismaticJoint = null;
+            _localAnchor2InBody2 = null;
+         }
+      }
+      
+      override internal function GetB2joint ():b2Joint
+      {
+         return _b2PrismaticJoint;
+      }
+      
+      private var _localAnchor2InBody2:b2Vec2 = null;
+      /// Get the anchor point on body2 in world coordinates.
+      override public function GetAnchorPoint2():Point
+      {
+         var b2joint:b2Joint = GetB2joint ();
+         var vec:b2Vec2 = _b2PrismaticJoint.GetBody2 ().GetWorldPoint(_localAnchor2InBody2);
+         
+         return new Point (vec.x, vec.y);
+      }
+      
+//========================================================================
+//    build
+//========================================================================
+      
+      public function BuildSlider (
+                  anchor1:SubEntityJointAnchor, anchor2:SubEntityJointAnchor, collideConnected:Boolean, 
+                  enableLimits:Boolean, lowerTranslation:Number, upperTranslation:Number, 
+                  enableMotor:Boolean, motorSpeed:Number, maxMotorForce:Number
+               ):void
+      {
+         // ..
+         var proxyShape1:PhysicsProxyShape = anchor1.GetShape () == null ? null : anchor1.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
+         var proxyShape2:PhysicsProxyShape = anchor2.GetShape () == null ? null : anchor2.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
+         
+         // ...
+         var body1:b2Body = proxyShape1 == null ? mPhysicsEngine._b2GroundBody : proxyShape1.mProxyBody._b2Body;
+         var body2:b2Body = proxyShape2 == null ? mPhysicsEngine._b2GroundBody : proxyShape2.mProxyBody._b2Body;
+         
+         // ...
+         var axis:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX () - anchor1.GetPositionX (), anchor2.GetPositionY () - anchor1.GetPositionY ());
+         axis.Normalize ();
+         var vec2:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ());
+         
+         _localAnchor2InBody2 = body2.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()));
          
          var prismaticJointDef:b2PrismaticJointDef = new b2PrismaticJointDef ();
          
-         var body1:b2Body = proxyBody1 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody1._b2Body;
-         var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody2._b2Body;
+         prismaticJointDef.body1 = body1;
+         prismaticJointDef.body2 = body2;
+         prismaticJointDef.localAnchor1 = body1.GetLocalPoint(vec2);
+         prismaticJointDef.localAnchor2 = body2.GetLocalPoint(vec2);
+         prismaticJointDef.localAxis1 = body1.GetLocalVector(axis);
+         prismaticJointDef.referenceAngle = body2.GetAngle() - body1.GetAngle();
          
-         var axis:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX2 - anchorPhysicsPosX1, anchorPhysicsPosY2 - anchorPhysicsPosY1);
-         axis.Normalize ();
+         prismaticJointDef.collideConnected = collideConnected;
          
-         prismaticJointDef.Initialize(body1, body2, b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX1, anchorPhysicsPosY1), axis);
+         prismaticJointDef.enableLimit = enableLimits;
+         prismaticJointDef.lowerTranslation = lowerTranslation;
+         prismaticJointDef.upperTranslation = upperTranslation;
          
-         prismaticJointDef.collideConnected = params.mCollideConnected;
+         prismaticJointDef.enableMotor = enableMotor;
+         prismaticJointDef.motorSpeed = motorSpeed;
+         prismaticJointDef.maxMotorForce = maxMotorForce;
          
-         prismaticJointDef.enableLimit      = params.mEnableLimits;
-         prismaticJointDef.lowerTranslation = params.mLowerTranslation;
-         prismaticJointDef.upperTranslation = params.mUpperTranslation;
+         _b2PrismaticJoint = mPhysicsEngine._b2World.CreateJoint(prismaticJointDef) as b2PrismaticJoint;
          
-         prismaticJointDef.enableMotor   = params.mEnableMotor;
-         prismaticJointDef.motorSpeed    = params.mMotorSpeed;
-         if (params.mMaxMotorForce < 0)
-            prismaticJointDef.maxMotorForce = 0;
-         else if (params.mMaxMotorForce < 0x7FFFFFFF)
-            prismaticJointDef.maxMotorForce = int(params.mMaxMotorForce); // to be compatible with earlier versions ( version < v1.04 )
-         else
-            prismaticJointDef.maxMotorForce = params.mMaxMotorForce;
-            
-         _b2Joint = mPhysicsEngine._b2World.CreateJoint(prismaticJointDef) as b2PrismaticJoint;
-         
-         _b2Joint.SetUserData (this);
+         _b2PrismaticJoint.SetUserData (this);
       }
       
-      public function IsLimitsEnabled ():Boolean
-      {
-         return (_b2Joint as b2PrismaticJoint).IsLimitEnabled ();
-      }
-      
-      public function GetLowerLimit ():Number
-      {
-         return (_b2Joint as b2PrismaticJoint).GetLowerLimit ();
-      }
-      
-      public function GetUpperLimit ():Number
-      {
-         return (_b2Joint as b2PrismaticJoint).GetUpperLimit ();
-      }
-      
-      public function IsMotorEnabled ():Boolean
-      {
-         return (_b2Joint as b2PrismaticJoint).IsMotorEnabled ();
-      }
-      
-      public function GetMotorSpeed ():Number
-      {
-         return (_b2Joint as b2PrismaticJoint).GetMotorSpeed ();
-      }
-      
-      public function SetMotorSpeed (speed:Number):void
-      {
-         (_b2Joint as b2PrismaticJoint).SetMotorSpeed (speed);
-      }
+//========================================================================
+// 
+//========================================================================
       
       public function GetJointTranslation ():Number
       {
-         return (_b2Joint as b2PrismaticJoint).GetJointTranslation ();
+         return _b2PrismaticJoint.GetJointTranslation ();
       }
-
       
+      public function SetMotorSpeed (morotSpeed:Number):void
+      {
+         _b2PrismaticJoint.SetMotorSpeed (morotSpeed);
+      }
       
    }
 }

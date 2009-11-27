@@ -27,16 +27,11 @@ package editor.selection {
       
       public var _b2World:b2World; // used within package
       
-      public function SelectionEngine (lowerPoint:Point, upperPoint:Point, world_hints:Object):void
+      public function SelectionEngine ():void
       {
-         var worldAABB:b2AABB = new b2AABB();
-         worldAABB.lowerBound.Set(lowerPoint.x, lowerPoint.y);
-         worldAABB.upperBound.Set(upperPoint.x, upperPoint.y);
-         
-         //var gravity:b2Vec2 = new b2Vec2(0.0, 9.8 * 2);
          var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0.0, 9.8 * 2);
          
-         _b2World = b2WorldPool.AllocB2World (worldAABB, gravity);
+         _b2World = b2WorldPool.AllocB2World (gravity);
       }
       
       public function Destroy ():void

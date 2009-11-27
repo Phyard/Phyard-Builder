@@ -1,163 +1,164 @@
-
 package player.entity {
    
    import flash.display.Shape;
-   import flash.geom.Point;
    
    import com.tapirgames.util.GraphicsUtil;
+
+   import player.world.World;   
    
-   import player.world.World;
-   
-   import player.physics.PhysicsProxyBody;
-   import player.physics.PhysicsProxyShapePolygon;
+   import player.physics.PhysicsProxyShape;
    
    import common.Define;
    
    public class EntityShapeRectangle extends EntityShape
    {
-      
-      protected var mHalfWidth:Number = 0;
-      protected var mHalfHeight:Number = 0;
-      
-      protected var mBackgroundShape:Shape = null;
-      protected var mBorderShape:Shape = null;
-      
-      public function EntityShapeRectangle (world:World, shapeContainer:ShapeContainer)
+      public function EntityShapeRectangle (world:World)
       {
-         super (world, shapeContainer);
+         super (world);
          
-         mBackgroundShape = new Shape ();
-         mBorderShape = new Shape ();
-         addChild (mBackgroundShape);
-         addChild (mBorderShape);
+         mPhysicsShapePotentially = true;
+         
+         mAppearanceObjectsContainer.addChild (mBackgroundShape);
+         mAppearanceObjectsContainer.addChild (mBorderShape);
       }
       
-      public function GetWidth ():Number
-      {
-         return mHalfWidth * 2.0;
-      }
+//=============================================================
+//   create
+//=============================================================
       
-      public function GetHeight ():Number
+      override public function Create (createStageId:int, entityDefine:Object):void
       {
-         return mHalfHeight * 2.0;
-      }
-      
-      public function GetPhysicsWidth ():Number
-      {
-         //if (mWorld.GetVersion () < 0x0105)
-         //   return mHalfWidth * 2.0;
+         super.Create (createStageId, entityDefine);
          
-         var borderThickness:uint = GetBorderThickness ();
-         
-         if (borderThickness == 0)
-            return mHalfWidth * 2.0;
-         else
-            return mHalfWidth * 2.0 + borderThickness - 1.0;
-      }
-      
-      public function GetPhysicsHeight ():Number
-      {
-         //if (mWorld.GetVersion () < 0x0105)
-         //   return mHalfHeight * 2.0;
-         
-         var borderThickness:uint = GetBorderThickness ();
-         
-         if (borderThickness == 0)
-            return mHalfHeight * 2.0;
-         else
-            return mHalfHeight * 2.0 + borderThickness - 1.0;
-      }
-      
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
-      {
-         super.BuildFromParams (params, false);
-         
-         //
-         
-         mHalfWidth = params.mHalfWidth;
-         mHalfHeight = params.mHalfHeight;
-         
-         var displayX:Number = params.mPosX;
-         var displayY:Number = params.mPosY;
-         var rot:Number = params.mRotation;
-         
-         var containerPosition:Point = GetParentContainer ().GetPosition ();
-         displayX -= containerPosition.x;
-         displayY -= containerPosition.y;
-         
-         if (IsPhysicsShapeEntity ())
+         if (createStageId == 0)
          {
-            var cos:Number = Math.cos (rot);
-            var sin:Number = Math.sin (rot);
+            if (entityDefine.mHalfWidth != undefined)
+               SetHalfWidth (mWorld.DisplayLength2PhysicsLength (entityDefine.mHalfWidth));
+            if (entityDefine.mHalfHeight != undefined)
+               SetHalfHeight (mWorld.DisplayLength2PhysicsLength (entityDefine.mHalfHeight));
+            if (entityDefine.mIsRoundCorner != undefined)
+               SetRoundCornor (entityDefine.mIsRoundCorner);
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+		protected var mHalfWidth:Number = 0.0;
+		protected var mHalfHeight:Number = 0.0;
+		
+		//>> v1.07
+		protected var mIsRoundCornor:Boolean = false;
+		//<<
+		
+      public function SetHalfWidth (halfWidth:Number):void
+      {
+         if (halfWidth < 0)
+            halfWidth = 0;
+         
+         mHalfWidth = halfWidth;
+      }
+      
+      public function GetHalfWidth ():Number
+      {
+         return mHalfWidth;
+      }
+      
+      public function SetHalfHeight (halfHeight:Number):void
+      {
+         if (halfHeight < 0)
+            halfHeight = 0;
+         
+         mHalfHeight = halfHeight;
+      }
+      
+      public function GetHalfHeight ():Number
+      {
+         return mHalfHeight;
+      }
+      
+      public function SetRoundCornor (roundCorner:Boolean):void
+      {
+			mIsRoundCornor = roundCorner;
+      }
+      
+      public function IsRoundCornor ():Boolean
+      {
+			return mIsRoundCornor;
+      }
+      
+//=============================================================
+//   appearance
+//=============================================================
+      
+      protected var mBackgroundShape:Shape = new Shape ();
+      protected var mBorderShape    :Shape = new Shape ();
+      
+      override public function UpdateAppearance ():void
+      {
+         mAppearanceObjectsContainer.visible = mVisible
+         mAppearanceObjectsContainer.alpha = mAlpha; 
+         
+         if (mNeedRebuildAppearanceObjects)
+         {
+            mNeedRebuildAppearanceObjects = false;
             
-            var displayPoints:Array = new Array ();
-            var tx:Number;
-            var ty:Number;
+            var displayHalfWidth :Number = mWorld.PhysicsLength2DisplayLength (mHalfWidth) + 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+            var displayHalfHeight:Number = mWorld.PhysicsLength2DisplayLength (mHalfHeight) + 0.5;
+            var displayWidth :Number = 2.0 * displayHalfWidth;
+            var displayHeight:Number = 2.0 * displayHalfHeight;
+            var displayBorderThickness:Number = mWorld.PhysicsLength2DisplayLength (mBorderThickness);
+         
+            GraphicsUtil.ClearAndDrawRect (
+                     mBackgroundShape,
+                     - displayHalfWidth,
+                     - displayHalfHeight,
+                     displayWidth,
+                     displayHeight,
+                     mBorderColor,
+                     -1, // not draw border
+                     true, // draw background
+                     GetFilledColor ()
+                  );
             
-            var halfWidth:Number = GetPhysicsWidth () * 0.5;
-            var halfHeight:Number = GetPhysicsHeight () * 0.5;
-            
-            tx = - halfWidth; ty = - halfHeight; displayPoints [0] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx =   halfWidth; ty = - halfHeight; displayPoints [1] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx =   halfWidth; ty =   halfHeight; displayPoints [2] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            tx = - halfWidth; ty =   halfHeight; displayPoints [3] = new Point ( displayX + tx * cos - ty * sin, displayY + tx * sin + ty * cos );
-            
-            if (IsPhysicsShapeEntity () && mPhysicsProxy == null)
-            {
-               mPhysicsProxy  = mWorld.mPhysicsEngine.CreateProxyShapeConvexPolygon (
-                                       GetParentContainer ().mPhysicsProxy as PhysicsProxyBody, displayPoints, params);
-               
-               // if create hollow border, editor.rectangle.GetPhysicsShapesCount () should be modified
-               
-               mPhysicsProxy.SetUserData (this);
-            }
+            GraphicsUtil.ClearAndDrawRect (
+                     mBorderShape,
+                     - displayHalfWidth,
+                     - displayHalfHeight,
+                     displayWidth,
+                     displayHeight,
+                     mBorderColor,
+                     displayBorderThickness, // draw border
+                     false // not draw background
+                  );
          }
          
-         // for the initial pos and rot of shapeContainer are zeroes, so no need to translate to local values
-         x = displayX;
-         y = displayY;
-         SetRotation (rot);
-         
-         if (updateAppearance)
-            RebuildAppearance ();
+         if (mNeedUpdateAppearanceProperties)
+         {
+            mNeedUpdateAppearanceProperties = false;
+            
+            mBackgroundShape.visible = IsDrawBackground ();
+            mBackgroundShape.alpha = GetTransparency () * 0.01;
+            mBorderShape.visible = IsDrawBorder ();
+            mBorderShape.alpha = GetBorderTransparency () * 0.01;
+         }
       }
-      
-      override public function RebuildAppearanceInternal ():void
+     
+//=============================================================
+//   physics proxy
+//=============================================================
+     
+      override public function RebuildShapePhysics ():void
       {
-         var filledColor:uint = GetFilledColor ();
-         var borderColor:uint = GetBorderColor ();
-         var drawBg:Boolean = IsDrawBackground ();
-         var drawBorder:Boolean = IsDrawBorder ();
-         var borderThickness:Number = GetBorderThickness ();
-         
-         GraphicsUtil.Clear (this);
-         
-         GraphicsUtil.Clear (mBackgroundShape);
-         mBackgroundShape.alpha = GetTransparency () * 0.01;
-         if (drawBg)
+         var proxyShape:PhysicsProxyShape = PrepareRebuildShapePhysics ();
+         if (proxyShape != null)
          {
-            GraphicsUtil.DrawRect ( mBackgroundShape, 
-                                    - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
-                                    borderColor, -1, drawBg, filledColor);
-         }
-         
-         GraphicsUtil.Clear (mBorderShape);
-         mBorderShape.alpha = GetBorderTransparency () * 0.01;
-         if (drawBorder)
-         {
-            GraphicsUtil.DrawRect ( mBorderShape, 
-                                    - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, 
-                                    borderColor, borderThickness, false, filledColor);
-         }
-         
-         if (Define.IsBombShape (GetShapeAiType ()))
-         {
-            GraphicsUtil.DrawRect (mBackgroundShape, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
-         }
+            proxyShape.AddRectangle (0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornor);
+			}
       }
       
       
       
    }
-   
 }

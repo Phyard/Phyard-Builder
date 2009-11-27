@@ -35,23 +35,43 @@ package com.tapirgames.util {
       
       public static function GetInvertColor (color:uint):uint
       {
-         var r:uint = (color >> 16) & 0xFF;
-         var g:uint = (color >>  8) & 0xFF;
-         var b:uint = (color >>  0) & 0xFF;
+         var r:int = (color >> 16) & 0xFF;
+         var g:int = (color >>  8) & 0xFF;
+         var b:int = (color >>  0) & 0xFF;
          
          return (color & 0xFF000000) | ((255 - r) << 16) | ((255 - g) << 8) | ((255 - b));
       }
       
+      // return black or white
       public static function GetInvertColor_b (color:uint):uint
       {
-         var r:uint = (color >> 16) & 0xFF;
-         var g:uint = (color >>  8) & 0xFF;
-         var b:uint = (color >>  0) & 0xFF;
+         var r:int = (color >> 16) & 0xFF;
+         var g:int = (color >>  8) & 0xFF;
+         var b:int = (color >>  0) & 0xFF;
          
          if (r + g + b > 100 * 3)
             return (color & 0xFF000000) | 0x0;
          else
             return (color & 0xFF000000) | 0xFFFFFF;
+      }
+      
+      public static function BlendColor (color1:uint, color2:uint, weigth1:Number):uint
+      {
+         var r1:int = (color1 >> 16) & 0xFF;
+         var g1:int = (color1 >>  8) & 0xFF;
+         var b1:int = (color1 >>  0) & 0xFF;
+         
+         var r2:int = (color2 >> 16) & 0xFF;
+         var g2:int = (color2 >>  8) & 0xFF;
+         var b2:int = (color2 >>  0) & 0xFF;
+         
+         var weigth2:Number = 1.0 - weigth1;
+         
+         var r:int = weigth1 * r1 + weigth2 * r2; if (r < 0) r = 0; if (r > 255) r = 255;
+         var g:int = weigth1 * g1 + weigth2 * g2; if (g < 0) g = 0; if (g > 255) g = 255;
+         var b:int = weigth1 * b1 + weigth2 * b2; if (b < 0) b = 0; if (b > 255) b = 255;
+         
+         return (r << 16) | (g << 8) | (b);
       }
       
       public static function CreateRectShape (x:Number, y:Number, w:Number, h:Number, borderColor:uint, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):Shape

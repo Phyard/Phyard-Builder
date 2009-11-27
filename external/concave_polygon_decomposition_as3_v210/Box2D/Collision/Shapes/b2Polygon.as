@@ -11,7 +11,7 @@
 	public class b2Polygon 
 	{
 		public static const maxVerticesPerPolygon : int = b2Settings.b2_maxPolygonVertices;
-		public static const FLT_EPSILON : Number = 0.0000001192092896;
+		public static const FLT_EPSILON : Number = b2Settings.B2_FLT_EPSILON;
 		public var x : Array; //vertex arrays
 		public var y : Array;
 		public var nVertices : int;
@@ -79,7 +79,7 @@
 			
 			return null;
 		}
-      
+
 		public function intersect_b(a0:uint, a1:uint, b0:uint, b1:uint) : b2Vec2
 		{
 

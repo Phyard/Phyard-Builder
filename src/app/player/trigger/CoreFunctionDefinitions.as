@@ -8,10 +8,8 @@ package player.trigger {
    
    import player.entity.Entity;
    import player.entity.EntityShape;
-   import player.entity.EntityUtilityCamera;
-   import player.entity.EntityShapeText;
-   
-   import player.entity.ShapeContainer;
+   import player.entity.EntityShape_Camera;
+   import player.entity.EntityShape_Text;
    
    import player.physics.PhysicsEngine;
    
@@ -154,9 +152,6 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_AttachWithEntity,          GlueEntities);
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Detach,                    DetachFromGlueds);
-         
       // game / entity / shape
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColor,              GetShapeFilledColor);
@@ -169,6 +164,12 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                  GetShapeDensity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                  SetShapeDensity);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Attach,                      AttachShapes);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Breakup,                     BreakupGluedShapes);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                    TeleportShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
          
       // game / entity / joint
          
@@ -323,9 +324,9 @@ package player.trigger {
       
       public static function EntityToString (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var value:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
          
-         valueTarget.AssignValueObject (value == null ? "null" : "Entity#" + value.GetEntityIndexInEditor ());
+         valueTarget.AssignValueObject (entity == null ? "null" : "Entity#" + entity.GetCreationId ());
       }
       
       public static function CollisionCategoryToString (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -871,7 +872,7 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          
-         shape.GetWorld ().AttatchCurrentCameraToEntity (shape);
+         //shape.GetWorld ().AttatchCurrentCameraToEntity (shape);
       }
       
       // game / collision category
@@ -944,7 +945,7 @@ package player.trigger {
          }
          else
          {
-            alpha = entity.alpha;
+            alpha = entity.GetAlpha ();
          }
          
          valueTarget.AssignValueObject (alpha);
@@ -1045,33 +1046,6 @@ package player.trigger {
       //   valueTarget.AssignValueObject (entity.GetRotation ());
       //}
       
-      public static function GlueEntities (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         //var entity1:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
-         //if (entity1 == null)
-         //   return;
-         //
-         //valueSource = valueSource.mNextValueSourceInList;
-         //var entity2:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
-         //if (entity2 == null)
-         //   return;
-         //
-         //var world:World = entity1.GetWorld ();
-         //if (world != entity2.GetWorld ())
-         //   return;
-         
-         //world.GlueEntities (entity1, entity2);
-      }
-      
-      public static function DetachFromGlueds (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         //var entity:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
-         //if (entity == null)
-         //   return;
-         
-         //entity.GetWorld ().DetachEntity (entity);
-      }
-      
    //*******************************************************************
    // entity / shape
    //*******************************************************************
@@ -1093,14 +1067,18 @@ package player.trigger {
       public static function SetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         //trace ("shape = " + shape);
+         
          if (shape == null)
             return;
+         
+         //trace ("creation id = " + shape.GetCreationId ());
          
          valueSource = valueSource.mNextValueSourceInList;
          var color:uint = uint (valueSource.EvalateValueObject ());
          
          shape.SetFilledColor (color);
-         shape.RebuildAppearance ();
       }
       
       public static function GetShapeFilledColorRGB (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1130,6 +1108,7 @@ package player.trigger {
       public static function SetShapeFilledColorRGB (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
          if (shape == null)
             return;
          
@@ -1143,7 +1122,6 @@ package player.trigger {
          var blue:int =  valueSource.EvalateValueObject () as Number;
          
          shape.SetFilledColor ((red << 16) | (green << 8) | (blue));
-         shape.RebuildAppearance ();
       }
       
       public static function IsPhysicsShape (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1155,7 +1133,7 @@ package player.trigger {
          }
          else
          {
-            valueTarget.AssignValueObject (shape.IsPhysicsEnabled ());
+            valueTarget.AssignValueObject (shape.IsPhysicsShape ());
          }
       }
       
@@ -1192,13 +1170,81 @@ package player.trigger {
       {
       }
       
+      public static function AttachShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         //var entity1:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
+         //if (entity1 == null)
+         //   return;
+         //
+         //valueSource = valueSource.mNextValueSourceInList;
+         //var entity2:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
+         //if (entity2 == null)
+         //   return;
+         //
+         //var world:World = entity1.GetWorld ();
+         //if (world != entity2.GetWorld ())
+         //   return;
+         
+         //world.GlueEntities (entity1, entity2);
+      }
+      
+      public static function DetachShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+      }
+      
+      public static function BreakupGluedShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+      }
+      
+      public static function TeleportShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var targetX:Number =  valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var targetY:Number =  valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var targetRotation:int =  valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         
+         shape.Teleport (targetX, targetY, targetRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics);
+      }
+      
+      public static function CloneShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+      }
+      
+      
+      
    //*******************************************************************
-   // entity / shape
+   // entity / shape / text
    //*******************************************************************
       
       public static function GetTextFromTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var entity_text:EntityShapeText = valueSource.EvalateValueObject () as EntityShapeText;
+         var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
          if (entity_text == null)
          {
             valueTarget.AssignValueObject ("");
@@ -1211,7 +1257,7 @@ package player.trigger {
       
       public static function SetTextForTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var entity_text:EntityShapeText = valueSource.EvalateValueObject () as EntityShapeText;
+         var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
          if (entity_text == null)
             return;
          
@@ -1219,12 +1265,11 @@ package player.trigger {
          var text:String = valueSource.EvalateValueObject () as String;
          
          entity_text.SetText (text);
-         entity_text.RebuildAppearance ();
       }
       
       public static function AppendTextToTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var entity_text:EntityShapeText = valueSource.EvalateValueObject () as EntityShapeText;
+         var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
          if (entity_text == null)
             return;
          
@@ -1232,17 +1277,15 @@ package player.trigger {
          var text:String = valueSource.EvalateValueObject () as String;
          
          entity_text.SetText (entity_text.GetText () + text);
-         entity_text.RebuildAppearance ();
       }
       
       public static function AppendNewLineToTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var entity_text:EntityShapeText = valueSource.EvalateValueObject () as EntityShapeText;
+         var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
          if (entity_text == null)
             return;
          
          entity_text.SetText (entity_text.GetText () + "\n");
-         entity_text.RebuildAppearance ();
       }
       
    }

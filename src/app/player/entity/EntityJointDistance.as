@@ -1,82 +1,95 @@
 package player.entity {
    
-   import flash.display.Sprite;
-   import flash.geom.Point;
-   
-   import com.tapirgames.util.GraphicsUtil;
+   import flash.display.Shape;
    
    import player.world.World;
    
+   import com.tapirgames.util.GraphicsUtil;
+   
+   import player.physics.PhysicsProxyShape;
    import player.physics.PhysicsProxyJointDistance;
+   
+   import common.Define;
    
    public class EntityJointDistance extends EntityJoint
    {
-      
-      private var mSpriteAnchor1:Sprite;
-      private var mSpriteAnchor2:Sprite;
-      
       public function EntityJointDistance (world:World)
       {
          super (world);
+
+         mCollideConnected = true;
          
-         mSpriteAnchor1 = new Sprite ();
-         GraphicsUtil.ClearAndDrawEllipse (mSpriteAnchor1, - 2, - 2, 2 + 2, 2 + 2);
-         addChild (mSpriteAnchor1);
-         
-         mSpriteAnchor2 = new Sprite ();
-         GraphicsUtil.ClearAndDrawEllipse (mSpriteAnchor2, - 2, - 2, 2 + 2, 2 + 2);
-         addChild (mSpriteAnchor2);
+         mWorld.GetEntityLayer ().addChild (mLineShape);
       }
+      
+//=============================================================
+//   initialize
+//=============================================================
+      
+      override protected function InitializeInternal ():void
+      {
+         DelayUpdateAppearance ();
+      }
+      
+//=============================================================
+//   destroy
+//=============================================================
+      
+      override protected function DestroyInternal ():void
+      {
+         mWorld.GetEntityLayer ().removeChild (mLineShape);
+      }
+      
+//=============================================================
+//   update
+//=============================================================
       
       override protected function UpdateInternal (dt:Number):void
       {
-         var point1:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint1 ();
-         var point2:Point = (mPhysicsProxy as PhysicsProxyJointDistance).GetAnchorPoint2 ();
-         mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point1);
-         mWorld.mPhysicsEngine._PhysicsPoint2DisplayPoint (point2);
-         
-         
-         
-         mSpriteAnchor1.x = point1.x;
-         mSpriteAnchor1.y = point1.y;
-         mSpriteAnchor2.x = point2.x;
-         mSpriteAnchor2.y = point2.y;
-         
-         RebuildAppearance ();
+         DelayUpdateAppearance ();
       }
       
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
+//=============================================================
+//   appearance
+//=============================================================
+      
+      private var mLineShape:Shape = new Shape ();
+      
+      override public function UpdateAppearance ():void
       {
-         super.BuildFromParams (params, false);
+         GraphicsUtil.ClearAndDrawLine (
+                  mLineShape, 
+                  mWorld.PhysicsX2DisplayX (mAnchor1.GetPositionX ()), 
+                  mWorld.PhysicsY2DisplayY (mAnchor1.GetPositionY ()), 
+                  mWorld.PhysicsX2DisplayX (mAnchor2.GetPositionX ()), 
+                  mWorld.PhysicsY2DisplayY (mAnchor2.GetPositionY ())
+               );
          
-         var anchor1Params:Object = params.mAnchor1Params;
-         var anchor2Params:Object = params.mAnchor2Params;
-         
-         var anchorDisplayX1:Number = anchor1Params.mPosX;
-         var anchorDisplayY1:Number = anchor1Params.mPosY;
-         var anchorDisplayX2:Number = anchor2Params.mPosX;
-         var anchorDisplayY2:Number = anchor2Params.mPosY;
-         
-         if (mPhysicsProxy == null)
-         {
-            var object:Object = mWorld.mPhysicsEngine.CreateProxyJointDistanceAuto (anchorDisplayX1, anchorDisplayY1, anchorDisplayX2, anchorDisplayY2, params);
-            
-            SetJointBasicInfo (object.mProxyJoint as PhysicsProxyJointDistance, object.mProxyShape1 == null ? null : object.mProxyShape1.GetUserData () as EntityShape, object.mProxyShape2 == null ? null : object.mProxyShape2.GetUserData () as EntityShape);
-         }
-         
-         mSpriteAnchor1.x = anchorDisplayX1;
-         mSpriteAnchor1.y = anchorDisplayY1;
-         mSpriteAnchor2.x = anchorDisplayX2;
-         mSpriteAnchor2.y = anchorDisplayY2;
-         
-         //
-         if (updateAppearance)
-            RebuildAppearance ();
+         mLineShape.visible = mVisible;
+         mLineShape.alpha = mAlpha;
       }
       
-      override public function RebuildAppearanceInternal ():void
+//=============================================================
+//   physics proxy
+//=============================================================
+      
+      override public function ConfirmConnectedShapes ():void
       {
-         GraphicsUtil.ClearAndDrawLine (this, mSpriteAnchor1.x, mSpriteAnchor1.y, mSpriteAnchor2.x, mSpriteAnchor2.y);
+         ConfirmConnectedShapes_NonHinge (mAnchor1.GetPositionX (), mAnchor1.GetPositionY (), mAnchor2.GetPositionX (), mAnchor2.GetPositionY ());
+      }
+      
+      override public function RebuildJointPhysics ():void
+      {
+         if (mAlreadyDestroyed)
+            return;
+         
+         DestroyPhysicsProxy ();
+         
+         var proxyJointDistance:PhysicsProxyJointDistance;
+         mPhysicsProxy = proxyJointDistance = new PhysicsProxyJointDistance (mWorld.GetPhysicsEngine ());
+         proxyJointDistance.BuildDistance (
+                  mAnchor1, mAnchor2, mCollideConnected
+               );
       }
       
       

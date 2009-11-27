@@ -3,93 +3,92 @@ package player.physics {
    
    import flash.geom.Point;
    
+   import Box2D.Dynamics.Joints.b2Joint;
    import Box2D.Dynamics.Joints.b2RevoluteJoint;
    import Box2D.Dynamics.Joints.b2RevoluteJointDef;
    import Box2D.Dynamics.b2Body;
    import Box2D.Common.b2Vec2;
    
-   import Box2D.Dynamics.Joints.b2DistanceJointDef;
+   import player.entity.SubEntityJointAnchor;
    
    public class PhysicsProxyJointHinge extends PhysicsProxyJoint
    {
+      internal var _b2RevoluteJoint:b2RevoluteJoint = null;
       
-      public function PhysicsProxyJointHinge (phyEngine:PhysicsEngine, 
-                                        proxyBody1:PhysicsProxyBody, proxyBody2:PhysicsProxyBody, 
-                                        anchorPhysicsPosX:Number, anchorPhysicsPosY:Number, 
-                                        params:Object):void
+      public function PhysicsProxyJointHinge (phyEngine:PhysicsEngine):void
       {
-         super (phyEngine, proxyBody1, proxyBody2);
-         
-         var hingeJointDef:b2RevoluteJointDef = new b2RevoluteJointDef ();
-         
-         var body1:b2Body = proxyBody1 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody1._b2Body;
-         var body2:b2Body = proxyBody2 == null ? mPhysicsEngine._b2World.m_groundBody : proxyBody2._b2Body;
-         
-         hingeJointDef.Initialize(body1, body2, b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX, anchorPhysicsPosY));
-         
-         hingeJointDef.collideConnected = params.mCollideConnected;
-         
-         hingeJointDef.enableLimit = params.mEnableLimits;
-         hingeJointDef.lowerAngle = params.mLowerAngle;
-         hingeJointDef.upperAngle = params.mUpperAngle;
-         
-         hingeJointDef.enableMotor = params.mEnableMotor;
-         hingeJointDef.motorSpeed = params.mMotorSpeed;
-         if (params.mMaxMotorTorque < 0)
-            hingeJointDef.maxMotorTorque = 0;
-         else if (params.mMaxMotorTorque < 0x7FFFFFFF)
-            hingeJointDef.maxMotorTorque = int(params.mMaxMotorTorque); // to be compatible with earlier versions ( version < v1.04 )
-         else
-            hingeJointDef.maxMotorTorque = params.mMaxMotorTorque;
-         
-         _b2Joint = mPhysicsEngine._b2World.CreateJoint(hingeJointDef) as b2RevoluteJoint;
-         
-         _b2Joint.SetUserData (this);
+         super (phyEngine);
+      }
+      
+      override public function Destroy ():void
+      {
+         if (_b2RevoluteJoint != null)
+         {
+            mPhysicsEngine._b2World.DestroyJoint (_b2RevoluteJoint);
+            
+            _b2RevoluteJoint = null;
+         }
+      }
+      
+      override internal function GetB2joint ():b2Joint
+      {
+         return _b2RevoluteJoint;
+      }
+      
+//========================================================================
+//    build
+//========================================================================
+      
+      public function BuildHinge (
+                  anchor1:SubEntityJointAnchor, anchor2:SubEntityJointAnchor, collideConnected:Boolean, 
+                  enableLimits:Boolean, lowerAngle:Number, upperAngle:Number, 
+                  enableMotor:Boolean, motorSpeed:Number, maxMotorTorque:Number
+               ):void
+      {
+         // ..
+         var proxyShape1:PhysicsProxyShape = anchor1.GetShape () == null ? null : anchor1.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
+         var proxyShape2:PhysicsProxyShape = anchor2.GetShape () == null ? null : anchor2.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
          
          // ...
+         var body1:b2Body = proxyShape1 == null ? mPhysicsEngine._b2GroundBody : proxyShape1.mProxyBody._b2Body;
+         var body2:b2Body = proxyShape2 == null ? mPhysicsEngine._b2GroundBody : proxyShape2.mProxyBody._b2Body;
          
-         //var distanceJointDef:b2DistanceJointDef = new b2DistanceJointDef ();
-         //
-         //distanceJointDef.Initialize(body1, body2, b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX, anchorPhysicsPosY), b2Vec2.b2Vec2_From2Numbers (anchorPhysicsPosX, anchorPhysicsPosY));
-         //
-         //distanceJointDef.collideConnected = params.mCollideConnected;
-         //
-         //mPhysicsEngine._b2World.CreateJoint(distanceJointDef);
+         // ...
+         var hingeJointDef:b2RevoluteJointDef = new b2RevoluteJointDef ();
+         
+         hingeJointDef.body1 = body1;
+         hingeJointDef.body2 = body2;
+         hingeJointDef.localAnchor1 = body1.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ()));
+         hingeJointDef.localAnchor2 = body2.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()));
+         hingeJointDef.referenceAngle = body2.GetAngle() - body1.GetAngle();
+         
+         hingeJointDef.collideConnected = collideConnected;
+         
+         hingeJointDef.enableLimit = enableLimits;
+         hingeJointDef.lowerAngle = lowerAngle;
+         hingeJointDef.upperAngle = upperAngle;
+         
+         hingeJointDef.enableMotor = enableMotor;
+         hingeJointDef.motorSpeed = motorSpeed;
+         hingeJointDef.maxMotorTorque = maxMotorTorque;
+         
+         _b2RevoluteJoint = mPhysicsEngine._b2World.CreateJoint(hingeJointDef) as b2RevoluteJoint;
+         
+         _b2RevoluteJoint.SetUserData (this);
       }
       
-      public function IsLimitsEnabled ():Boolean
-      {
-         return (_b2Joint as b2RevoluteJoint).IsLimitEnabled ();
-      }
-      
-      public function GetLowerLimit ():Number
-      {
-         return (_b2Joint as b2RevoluteJoint).GetLowerLimit ();
-      }
-      
-      public function GetUpperLimit ():Number
-      {
-         return (_b2Joint as b2RevoluteJoint).GetUpperLimit ();
-      }
-      
-      public function IsMotorEnabled ():Boolean
-      {
-         return (_b2Joint as b2RevoluteJoint).IsMotorEnabled ();
-      }
-      
-      public function GetMotorSpeed ():Number
-      {
-         return (_b2Joint as b2RevoluteJoint).GetMotorSpeed ();
-      }
-      
-      public function SetMotorSpeed (speed:Number):void
-      {
-         (_b2Joint as b2RevoluteJoint).SetMotorSpeed (speed);
-      }
+//========================================================================
+// 
+//========================================================================
       
       public function GetJointAngle ():Number
       {
-         return (_b2Joint as b2RevoluteJoint).GetJointAngle ();
+         return _b2RevoluteJoint.GetJointAngle ();
+      }
+      
+      public function SetMotorSpeed (motorSpeed:Number):void
+      {
+         _b2RevoluteJoint.SetMotorSpeed (motorSpeed);
       }
    }
    

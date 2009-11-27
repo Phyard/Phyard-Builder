@@ -75,7 +75,7 @@ package Box2dEx.BroadPhase.SweepAndPrune
 		public static const b2_invalid:int = -1;
 		public static const b2_nullProxy:int = -1;
 		
-		public static const b2_maxProxies:int = 8196; //512; // to change to a member variable
+		public static const b2_maxProxies:int = 8196 * 2; // to change to a member variable
 
 	//public:
 		//b2BroadPhase(const b2AABB& worldAABB, b2PairCallback* callback);

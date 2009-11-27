@@ -198,6 +198,15 @@ public function Set(vertices:Array, count:int):void
 	var tempV:b2Vec2 = new b2Vec2 ();
 	
 	//b2Assert(2 <= count && count <= b2Settings.b2_maxPolygonVertices);
+	//>>hacking
+	if (count < 3)
+	{
+		if (count == 2)
+			SetAsEdge (vertices[0], vertices[1]);
+		
+		return;
+	}
+	//<<
 	m_vertexCount = count;
 
 	// Copy vertices.

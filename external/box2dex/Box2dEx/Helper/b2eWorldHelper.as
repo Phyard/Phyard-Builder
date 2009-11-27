@@ -21,11 +21,5 @@ package Box2dEx.Helper {
             b = b.m_next;
          }
       }
-      
-      public static function CreateGroundBody (world:b2World):void
-      {
-         var bd:b2BodyDef = new b2BodyDef();
-         world.m_groundBody = world.CreateBody(bd);
-      }
    }
 }

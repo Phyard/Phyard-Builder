@@ -1,12 +1,9 @@
-
 package player.entity {
    
-   import flash.display.Sprite;
-   
-   import player.world.World;
-   
+   import player.world.World;   
+   import player.world.EntityList;   
    import player.physics.PhysicsProxy;
-   
+
    import player.trigger.IPropertyOwner;
    import player.trigger.ValueSource;
    import player.trigger.ValueSource_Direct;
@@ -18,33 +15,208 @@ package player.entity {
    
    import common.Define;
    
-   public class Entity extends Sprite implements IPropertyOwner
+   public class Entity implements IPropertyOwner
    {
-      public var mEntityIndexInEditor:int = -1;
-      protected var mEntityType:int = Define.EntityType_Unkonwn;
+      protected var mCreationId:int = -1; // will not change once assigned
+      protected var mAppearanceId:int = -1;
       
+      // ...
       protected var mWorld:World;
       
-      public var mPhysicsProxy:PhysicsProxy = null;
+      // an entity can registered into many EntityLists, BUT at the same time it can only stay in one list.
+      // these variables should only be modified by EntityList class
+      public var mEntityList:EntityList = null;
+      public var mPrevEntity:Entity = null;
+      public var mNextEntity:Entity = null;
       
-      public function Entity (world:World)
+      public var mIsToRemove:Boolean = false;
+      public var mEntityListToAddIn:EntityList = null;
+
+      public function Entity (world:World, entityDefine:Object = null)
       {
          mWorld = world;
       }
+      
+//=============================================================
+//   create
+//=============================================================
+      
+      public function Create (createStageId:int, entityDefine:Object):void
+      {
+         if (createStageId == 0)
+         {
+            if (entityDefine.mCreationOrderId != undefined)
+               mCreationId   = entityDefine.mCreationOrderId;
+            if (entityDefine.mAppearanceOrderId != undefined)
+               mAppearanceId = entityDefine.mAppearanceOrderId;
+            
+            if (entityDefine.mPosX != undefined)
+               SetPositionX (mWorld.DisplayX2PhysicsX (entityDefine.mPosX));
+            if (entityDefine.mPosY != undefined)
+               SetPositionY (mWorld.DisplayY2PhysicsY (entityDefine.mPosY));
+            if (entityDefine.mRotation != undefined)
+               SetRotation  (entityDefine.mRotation);
+            if (entityDefine.mIsVisible != undefined)
+               SetVisible   (entityDefine.mIsVisible);
+            if (entityDefine.mAlpha != undefined)
+               SetAlpha     (entityDefine.mAlpha);
+         }
+      }
+      
+//=============================================================
+//   for entities in editor
+//=============================================================
       
       public function GetWorld ():World
       {
          return mWorld;
       }
       
-      public function GetEntityIndexInEditor ():int
+      public function IsDefinedInEditor ():Boolean
       {
-         return mEntityIndexInEditor;
+         return mCreationId >= 0;
+      }
+      
+      public function GetAppearanceId ():int
+      {
+         return mAppearanceId;
+      }
+      
+      public function GetCreationId ():int
+      {
+         return mCreationId;
+      }
+      
+      
+//=============================================================
+//   coordinates convert
+//=============================================================
+      
+
+      
+//=============================================================
+//   
+//=============================================================
+      
+      internal var mPositionX:Number = 0.0;
+      internal var mPositionY:Number = 0.0;
+      internal var mRotation:Number = 0.0;
+      internal var mVisible:Boolean = true;
+      internal var mAlpha:Number = 1.0;
+      
+      public function SetPositionX (x:Number):void
+      {
+         mPositionX = x;
+      }
+      
+      public function GetPositionX ():Number
+      {
+         return mPositionX;
+      }
+      
+      public function SetPositionY (y:Number):void
+      {
+         mPositionY = y;
+      }
+      
+      public function GetPositionY ():Number
+      {
+         return mPositionY;
+      }
+      
+      public function SetRotation (rot:Number):void
+      {
+         mRotation = rot;
+      }
+      
+      public function GetRotation ():Number
+      {
+         return mRotation;
+      }
+      
+      public function SetVisible (visible:Boolean):void
+      {
+         mVisible = visible;
+         
+         DelayUpdateAppearance ();
+      }
+      
+      public function IsVisible ():Boolean
+      {
+         return mVisible;
+      }
+      
+      public function SetAlpha (alpha:Number):void
+      {
+         mAlpha = alpha;
+         
+         DelayUpdateAppearance ();
+      }
+      
+      public function GetAlpha ():Number
+      {
+         return mAlpha;
       }
       
 //=============================================================
-//   event value sources, they are static, so parallel computing is not supported
+//   physics proxy
+//
+//   !!! can't call any function which will change the physics world in mWorld.StepPhysicsWorld
 //=============================================================
+      
+      internal var mPhysicsProxy:PhysicsProxy = null;
+      
+      public function GetPhysicsProxy ():PhysicsProxy
+      {
+         return mPhysicsProxy;
+      }
+      
+      public function DestroyPhysicsProxy ():void
+      {
+         if (mPhysicsProxy != null)
+         {
+            mPhysicsProxy.Destroy ();
+            mPhysicsProxy = null;
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      public function SynchronizeWithPhysicsProxy ():void
+      {
+         // to ovrride
+      }
+      
+//=============================================================
+//   appearance
+//=============================================================
+      
+      // defaultly, DelayRebuildAppearance will be delayed. If a RebuildAppearance is really needed to excute, call RebuildAppearance instead.
+      
+      public var mNextEntityToDelayUpdateAppearance:Entity = null;
+      
+      public var mIsAlreadyInDelayUpdateAppearanceList:Boolean = false;
+      
+      final public function DelayUpdateAppearance ():void
+      {
+         if (! mIsAlreadyInDelayUpdateAppearanceList)
+         {
+            mIsAlreadyInDelayUpdateAppearanceList = true;
+            mWorld.DelayUpdateEntityAppearance (this);
+         }
+      }
+      
+      // to override
+      public function UpdateAppearance ():void // used internally
+      {
+         // to overrride
+      }
+      
+//====================================================================================================
+//   event value sources, they are static, so parallel computing is not supported
+//====================================================================================================
       
       protected static var mEventHandlerValueSource0:ValueSource_Direct = new ValueSource_Direct (null, null);
       protected static var mEventHandlerValueSourceList:ValueSource = mEventHandlerValueSource0;
@@ -93,10 +265,16 @@ package player.entity {
 //   intialize
 //=============================================================
       
+		protected var mAlreadyInitialized:Boolean = false;
+		
       final public function Initialize ():void
       {
-         if (mAlreadyDestroyed)
+         if (mAlreadyDestroyed || mAlreadyInitialized) // if is possible an entity initialized before this entity has made this entity destroyed.
             return;
+         
+         mAlreadyInitialized = true;
+         
+         InitializeInternal ();
          
          var  list_element:ListElement_EventHandler = mInitializeEventHandlerList;
          
@@ -110,6 +288,11 @@ package player.entity {
          }
       }
       
+      protected function InitializeInternal ():void
+      {
+         // to override
+      }
+      
 //=============================================================
 //   update
 //=============================================================
@@ -120,10 +303,6 @@ package player.entity {
             return;
          
          UpdateInternal (dt);
-         
-         // 
-         
-         // external updaters
          
          var  list_element:ListElement_EventHandler = mUpdateEventHandlerList;
          
@@ -139,13 +318,16 @@ package player.entity {
       
       protected function UpdateInternal (dt:Number):void
       {
+         // to override
       }
       
 //=============================================================
 //   destroy
 //=============================================================
       
-      private var mAlreadyDestroyed:Boolean = false;
+      protected var mAlreadyDestroyed:Boolean = false;
+      
+      public var mNextEntityToDelayRemove:Entity = null;
       
       public function IsDestroyedAlready ():Boolean
       {
@@ -174,17 +356,7 @@ package player.entity {
             list_element = list_element.mNextListElement;
          }
          
-         if (mWorld.IsPhysicsLocked ())
-         {
-            mWorld.BufferChildToRemove (this);
-         }
-         else
-         {
-            if (parent != null)
-            {
-               parent.removeChild (this);
-            }
-         }
+         mWorld.UnregisterEntity (this);
       }
       
       //!!! DestroyInternal shouldn't destroy anything related with physics
@@ -192,129 +364,8 @@ package player.entity {
       {
       }
       
-//=============================================================
-//   build
-//=============================================================
-      
-      public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
-      {
-         mEntityType = params.mEntityType;
-         
-         // >> from version 1.01
-         mEntityIndexInEditor = params.mEntityIndexInEditor;
-         // <<
-         
-         if (Compile::Is_Debugging)
-         {
-            visible = true;
-         }
-         else
-         {
-            visible = params.mIsVisible;
-         }
-      }
-      
-      // defaultly, RebuildAppearance will be delayed. If a RebuildAppearance is really needed to excute, call RebuildAppearanceInternal instead.
-      
-      public var mNextEntityToDelayRebuildAppearance:Entity = null;
-      public var mIsToDelayRebuildAppearance:Boolean = false;
-      
-      final public function RebuildAppearance ():void
-      {
-         if (! mIsToDelayRebuildAppearance)
-         {
-            mWorld.RegisterEntityToDelayRebuildAppearance (this);
-         }
-      }
-      
-      // to override
-      public function RebuildAppearanceInternal ():void // used internally
-      {
-      }
-      
-      public function DestroyPhysicsProxy ():void
-      {
-         if (mPhysicsProxy != null)
-         {
-            if (mWorld.IsPhysicsLocked ())
-            {
-               mWorld.BufferEntityToDestroyPhysicsProxy (this);
-            }
-            else
-            {
-               mPhysicsProxy.Destroy ();
-               mPhysicsProxy = null;
-            }
-         }
-      }
-      
-      public function GetPhysicsProxy ():PhysicsProxy
-      {
-         return mPhysicsProxy;
-      }
-      
-      public function IsPhysicsShapeEntity ():Boolean
-      {
-         return false; // to override
-      }
-      
-//=============================================================
-//   
-//=============================================================
-      
-      // physics shape will override this function to do mmore
-      public function SetPosition (posX:Number, posY:Number):void
-      {
-         x = posX;
-         y = posY;
-      }
-      
-      // physics shape will override this function
-      public function GetPositionX ():Number
-      {
-         return x;
-      }
-      
-      // physics shape will override this function
-      public function GetPositionY ():Number
-      {
-         return y;
-      }
-      
-      // physics shape will override this function to do mmore
-      public function SetRotation (rot:Number):void
-      {
-         rotation = (rot * 180.0 / Math.PI) % 360;
-      }
-      
-      // physics shape will override this function
-      public function GetRotation ():Number
-      {
-         return rotation;
-      }
-      
-      public function SetVisible (visible:Boolean):void
-      {
-         visible = visible;
-      }
-      
-      public function IsVisible ():Boolean
-      {
-         return visible;
-      }
-      
-      public function SetAlpha (a:Number):void
-      {
-         alpha = a;
-      }
-      
-      public function GetAlpha ():Number
-      {
-         return alpha;
-      }
-      
 //==============================================================================
-// properties
+// as property owner
 //==============================================================================
       
       public function GetPropertyValue (propertyId:int):Object
@@ -326,5 +377,6 @@ package player.entity {
       {
       }
       
+
    }
 }

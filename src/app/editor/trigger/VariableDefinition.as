@@ -86,7 +86,7 @@ package editor.trigger {
          var world:World = Runtime.GetCurrentWorld ();
          
          var entity:WorldEntity = valueObject as WorldEntity;
-         if (entity != null && (entity.GetWorld () != world || entity.GetEntityIndex () < 0))
+         if (entity != null && (entity.GetWorld () != world || entity.GetCreationOrderId () < 0))
             entity = null;
          
          return entity;
@@ -97,7 +97,7 @@ package editor.trigger {
          var world:World = Runtime.GetCurrentWorld ();
          
          var category:EntityCollisionCategory = valueObject as EntityCollisionCategory;
-         if (category != null && category.GetEntityIndex () < 0)
+         if (category != null && category.GetAppearanceLayerId () < 0)
             category = null;
          
          return category;

@@ -7,6 +7,7 @@ package player.trigger
    import common.trigger.CoreEventIds;
    import common.trigger.CoreFunctionDeclarations;
    import common.trigger.CoreEventDeclarations;
+   import common.trigger.ValueTypeDefine;
    
    public class TriggerEngine
    {
@@ -14,10 +15,6 @@ package player.trigger
 //=============================================================================
 // calling context
 //=============================================================================
-      
-   // return value 
-      
-      public static var sLastBoolReturnValue:Boolean = false;
       
    // variable spaces
       
@@ -30,8 +27,6 @@ package player.trigger
       {
          sCallingLevel = 0;
          sStepStartTime = getTimer ();
-         
-         sLastBoolReturnValue = false;
       }
       
 //=============================================================================
@@ -76,9 +71,14 @@ package player.trigger
          return CoreEventDeclarations.sEventHandlerDeclarations [eventId];
       }
       
-      public static function GetVoidFunctionDeclaration ():FunctionDeclaration
+      //public static function GetVoidFunctionDeclaration ():FunctionDeclaration
+      //{
+      //   return new FunctionDeclaration (CoreFunctionIds.ID_Void, null);
+      //}
+      
+      public static function GetBoolFunctionDeclaration ():FunctionDeclaration
       {
-         return new FunctionDeclaration (CoreFunctionIds.ID_Void, null)
+         return new FunctionDeclaration (CoreFunctionIds.ID_Bool, null, [ValueTypeDefine.ValueType_Boolean]);
       }
    }
 }

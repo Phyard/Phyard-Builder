@@ -13,12 +13,6 @@ package player.trigger.entity
          super (world);
       }
       
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
-      {
-         super.BuildFromParams (params, false);
-         
-      }
-      
       public function Evaluate ():void
       {
       }

@@ -1,19 +1,12 @@
-
 package player.entity {
    
-   import player.world.World;
+   import player.world.World;   
    
    public class EntityVoid extends Entity
    {
-      
-      
-      public function EntityVoid (world:World)
+      public function EntityVoid (world:World, entityDefine:Object)
       {
-         super (world);
+         super (world, entityDefine);
       }
-      
-      
-      
    }
-   
 }

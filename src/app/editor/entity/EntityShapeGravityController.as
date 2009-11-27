@@ -20,7 +20,7 @@ package editor.entity {
    
    public class EntityShapeGravityController extends EntityShapeCircle 
    {
-      private var mInitialGravityAcceleration:Number = Define.DefaultGravityAcceleration;
+      private var mInitialGravityAcceleration:Number = Define.DefaultGravityAccelerationMagnitude;
       private var mInitialGravityAngle:int = 90; // not float, for byteArray.writeArray has precision problems
       
       //private var mIsInteractive:Boolean = true;
@@ -182,7 +182,7 @@ package editor.entity {
          {
             gx0 = radius_0b * Math.cos (direction);
             gy0 = radius_0b * Math.sin (direction);
-            acceleration = radius_0b + (radius_1a - radius_0b) * mInitialGravityAcceleration / Define.DefaultGravityAcceleration;
+            acceleration = radius_0b + (radius_1a - radius_0b) * mInitialGravityAcceleration / Define.DefaultGravityAccelerationMagnitude;
             gx1 = acceleration * Math.cos (direction);
             gy1 = acceleration * Math.sin (direction);
          }
@@ -190,7 +190,7 @@ package editor.entity {
          {
             gx0 = 0;
             gy0 = 0;
-            acceleration = mRadius * mInitialGravityAcceleration / Define.DefaultGravityAcceleration;
+            acceleration = mRadius * mInitialGravityAcceleration / Define.DefaultGravityAccelerationMagnitude;
             gx1 = acceleration * Math.cos (direction);
             gy1 = acceleration * Math.sin (direction);
          }

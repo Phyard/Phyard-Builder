@@ -15,6 +15,11 @@ package common {
       public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/publish-your-puzzles";
       public static const EditorUrl:String = "http://colorinfection.appspot.com/htmls/editor_page_beta.html";
       
+      public static const kRadians2Degrees:Number = 180.0 / Math.PI;
+      public static const kDegrees2Radians:Number = Math.PI / 180.0;
+      
+      public static const kFloatEpsilon:Number = 1.192092896e-07;
+      
 //===========================================================================
 // world
 //===========================================================================
@@ -36,7 +41,7 @@ package common {
       
       public static const WorldStepTimeInterval:Number = 1.0 / 30;
       
-      public static const DefaultGravityAcceleration:Number = 9.8;
+      public static const DefaultGravityAccelerationMagnitude:Number = 9.8;
       
       public static function IsNormalScene (sceneLeft:int, sceneTop:int, sceneWidth:int, sceneHeight:int):Boolean
       {
@@ -221,15 +226,18 @@ package common {
 // entity types
 //===========================================================================
       
+      // basic shapes
       public static const EntityType_Unkonwn:int = -1;
       public static const EntityType_ShapeCircle:int = 10;
       public static const EntityType_ShapeRectangle:int = 11;
       public static const EntityType_ShapePolygon:int = 12;
       public static const EntityType_ShapePolyline:int = 13;
       
+      // preset shapes
       public static const EntityType_ShapeText:int = 31; // from v1.02
       public static const EntityType_ShapeGravityController:int = 32; // from v1.02
       
+      // basic joints
       public static const EntityType_JointHinge:int = 60;
       public static const EntityType_JointSlider:int = 61;
       public static const EntityType_JointDistance:int = 62;
@@ -237,14 +245,19 @@ package common {
       
       public static const SubEntityType_JointAnchor:int = 100;
       
+      // preset shapes, for history reason, the id jumps to here
       public static const EntityType_UtilityCamera:int = 110;
       
+      // logic
       public static const EntityType_LogicCondition:int = 210;
       public static const EntityType_LogicTask:int = 211;
       public static const EntityType_LogicConditionDoor:int = 212;
       public static const EntityType_LogicEventHandler:int = 213;
       public static const EntityType_LogicInputEntityAssigner:int = 214;
       public static const EntityType_LogicInputEntityPairAssigner:int = 215;
+      
+      // from v1.07, folloing functions should only be used in packaging./ loading
+      // they should NOT used in player pacakge, use EntityShape.mPhysicsShapePotentially instead
       
       public static function IsBasicShapeEntity (entityType:int):Boolean
       {

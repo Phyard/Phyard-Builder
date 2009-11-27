@@ -6,8 +6,35 @@ package common {
    
    import player.global.Global;
    import player.world.World;
-   import player.entity.ShapeContainer;
    
+   import player.entity.EntityBody;
+   
+   import player.entity.Entity;
+   
+   import player.entity.EntityVoid;
+   
+   import player.entity.EntityShape;
+   import player.entity.EntityShapeCircle;
+   import player.entity.EntityShapeRectangle;
+   import player.entity.EntityShapePolygon;
+   import player.entity.EntityShapePolyline;
+   
+   import player.entity.EntityJoint;
+   import player.entity.EntityJointHinge;
+   import player.entity.EntityJointSlider;
+   import player.entity.EntityJointDistance;
+   import player.entity.EntityJointSpring;
+   
+   import player.entity.SubEntity;
+   import player.entity.SubEntityJointAnchor;
+   
+   import player.entity.EntityShape_Text;
+   import player.entity.EntityShape_Camera;
+   import player.entity.EntityShape_GravityController;
+   import player.entity.EntityShape_CircleBomb;
+   import player.entity.EntityShape_RectangleBomb;
+   
+   import player.trigger.entity.EntityLogic;
    import player.trigger.entity.EntityBasicCondition;
    import player.trigger.entity.EntityTask;
    import player.trigger.entity.EntityConditionDoor;
@@ -59,391 +86,222 @@ package common {
          
          var entityDefineArray:Array = worldDefine.mEntityDefines;
          var brotherGroupArray:Array = worldDefine.mBrotherGroupDefines;
-         var groupId:int;
-         var brotherGroup:Array;
          var createId:int;
          var entityId:int;
          var entityDefine:Object;
          var i:int;
-         var shapeContainer:player.entity.ShapeContainer;
-         var params:Object;
-         var entity:player.entity.Entity;
-         var shape:player.entity.EntityShape;
-         var joint:player.entity.EntityJoint;
-         var logic:player.trigger.entity.EntityLogic;
+         var entity:Entity;
+         var shape:EntityShape;
+         var joint:EntityJoint;
+         var logic:EntityLogic;
+         
+         var groupId:int;
+         var brotherGroup:Array;
+         var body:EntityBody;
          
    //*********************************************************************************************************************************
-   // 
+   // create entity instances by the visual layer order
    //*********************************************************************************************************************************
          
-         // collision category
+         // for history reason, entities are packaged by children order in editor world.
+         // so the entityId is also the appearance order id
          
-         if (worldDefine.mVersion >= 0x0102)
+         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
          {
-            for (var ccId:int = 0; ccId < worldDefine.mCollisionCategoryDefines.length; ++ ccId)
+            entityId = worldDefine.mEntityCreationOrder [createId];
+            
+            entityDefine = entityDefineArray [entityId];
+            
+            // >> starts from version 1.01
+            entityDefine.mWorldDefine = worldDefine;
+            //entityDefine.mEntityIndexInEditor = entityId; // replaced by creation order id from v1.07
+            // <<
+            
+            //>>from v1.07
+            entityDefine.mAppearanceOrderId = entityId;
+            entityDefine.mCreationOrderId = createId;
+            //<<
+         }
+         
+         // instance entites by appearance layer order, entities can register their visual elements in constructor
+         
+         for (entityId = 0; entityId < entityDefineArray.length; ++ entityId)
+         {
+            entityDefine = entityDefineArray [entityId];
+            
+            entity = null;
+            
+            switch (entityDefine.mEntityType)
             {
-               var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
+            // basic shapes
                
-               playerWorld.CreateCollisionCategory (ccDefine);
+               case Define.EntityType_ShapeCircle:
+                  if (entityDefine.mAiType == Define.ShapeAiType_Bomb)
+                     entity = new EntityShape_CircleBomb (playerWorld);
+                  else
+                     entity = new EntityShapeCircle (playerWorld);
+                  break;
+               case Define.EntityType_ShapeRectangle:
+                  if (entityDefine.mAiType == Define.ShapeAiType_Bomb)
+                     entity = new EntityShape_RectangleBomb (playerWorld);
+                  else
+                     entity = new EntityShapeRectangle (playerWorld);
+                  break;
+               case Define.EntityType_ShapePolygon:
+                  entity = new EntityShapePolygon (playerWorld);
+                  break;
+               case Define.EntityType_ShapePolyline:
+                  entity = new EntityShapePolyline (playerWorld);
+                  break;
+               
+            // preset shapes
+               
+               case Define.EntityType_ShapeText:
+                  entity = new EntityShape_Text (playerWorld);
+                  break;
+               case Define.EntityType_UtilityCamera:
+                  entity = new EntityShape_Camera (playerWorld);
+                  break;
+               case Define.EntityType_ShapeGravityController:
+                  entity = new EntityShape_GravityController (playerWorld);
+                  break;
+               
+            // basic joints
+               
+               case Define.EntityType_JointHinge:
+                  entity = new EntityJointHinge (playerWorld);
+                  break;
+               case Define.EntityType_JointSlider:
+                  entity = new EntityJointSlider (playerWorld);
+                  break;
+               case Define.EntityType_JointDistance:
+                  entity = new EntityJointDistance (playerWorld);
+                  break;
+               case Define.EntityType_JointSpring:
+                  entity = new EntityJointSpring (playerWorld);
+                  break;
+               
+            // joint anchor
+               
+               case Define.SubEntityType_JointAnchor:
+                  entity = new SubEntityJointAnchor (playerWorld);
+                  break;
+               
+            // logic componnets
+               
+               case Define.EntityType_LogicCondition:
+                  entity = new EntityBasicCondition (playerWorld);
+                  break;
+               case Define.EntityType_LogicTask:
+                  entity = new EntityTask (playerWorld);
+                  break;
+               case Define.EntityType_LogicConditionDoor:
+                  entity = new EntityConditionDoor (playerWorld);
+                  break;
+               case Define.EntityType_LogicInputEntityAssigner:
+               case Define.EntityType_LogicInputEntityPairAssigner:
+                  entity = new EntityInputEntityAssigner (playerWorld);
+                  break;
+               case Define.EntityType_LogicEventHandler:
+                  entity = new EntityEventHandler (playerWorld);
+                  break;
+               
             }
             
-            for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
+            if (entity == null)
             {
-               var pairDefine:Object = worldDefine.mCollisionCategoryFriendLinkDefines [pairId];
+               trace ("entity is not instanced!");
+            }
+            else
+            {
+               entityDefine.mEntity = entity;
+            }
+            
+            entityDefine.mBodyId = -1;
+         }
+         
+   //*********************************************************************************************************************************
+   // create
+   //*********************************************************************************************************************************
+         
+         const kNumCreateStages:int = 3;
+         
+         var createStageId:int = 0;
+         
+         for (createId = 0; createId < entityDefineArray.length; ++ createId)
+         {
+            entityId = worldDefine.mEntityCreationOrder [createId];
+            entityDefine = entityDefineArray [entityId];
+            entity = entityDefine.mEntity;
+            
+            if (entity != null)
+            {
+               entity.Create (createStageId, entityDefine);
                
-               playerWorld.CreateCollisionCategoryFriendLink (pairDefine.mCollisionCategory1Index, pairDefine.mCollisionCategory2Index);
+               playerWorld.RegisterEntity (entity);
+            }
+         }
+         
+         for (createStageId = 1; createStageId < kNumCreateStages; ++ createStageId)
+         {
+            for (createId = 0; createId < entityDefineArray.length; ++ createId)
+            {
+               entityId = worldDefine.mEntityCreationOrder [createId];
+               entityDefine = entityDefineArray [entityId];
+               entity = entityDefine.mEntity;
+               
+               if (entity != null)
+               {
+                  entity.Create (createStageId, entityDefine);
+               }
             }
          }
          
    //*********************************************************************************************************************************
-   // 
+   // create body for shapes, the created bodies have not build physics yet.
+   // all bodies and entities_in_editor will also be registerd
    //*********************************************************************************************************************************
-         
-      // crete shape containers
          
          for (groupId = 0; groupId < brotherGroupArray.length; ++ groupId)
          {
             brotherGroup = brotherGroupArray [groupId] as Array;
             
-            var numPhyShapes:int = 0;
-            var centerX:Number = 0;
-            var centerY:Number = 0;
+            body = new EntityBody (playerWorld);
+            ;
             for (i = 0; i < brotherGroup.length; ++ i)
             {
                entityId = brotherGroup [i];
                entityDefine = entityDefineArray [entityId];
-               
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) && entityDefine.mIsPhysicsEnabled)
-               {
-                  numPhyShapes ++;
-                  centerX += entityDefine.mPosX;
-                  centerY += entityDefine.mPosY;
-               }
-            }
-            
-            if ( numPhyShapes == 0)
-               continue;
-            
-            params = new Object ();
-            params.mContainsPhysicsShapes = true;
-            params.mWorldDefine = worldDefine;
-            params.mPosX = centerX / numPhyShapes;
-            params.mPosY = centerY / numPhyShapes;
-            
-            shapeContainer = playerWorld.CreateShapeContainer (params, true);
-            
-            for (i = 0; i < brotherGroup.length; ++ i)
-            {
-               entityId = brotherGroup [i];
-               entityDefine = entityDefineArray [entityId];
-               
-               entityDefine.mShapeContainer = shapeContainer;
-            }
-         }
-         
-   //*********************************************************************************************************************************
-   // 
-   //*********************************************************************************************************************************
-         
-      // create shapes
-         
-         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
-         {
-            entityId = worldDefine.mEntityCreationOrder [createId];
-            
-            entity = null;
-            
-            entityDefine = entityDefineArray [entityId];
-            entityDefine.mCreationOrderId = createId;
-            
-            // >> starts from version 1.01
-            entityDefine.mWorldDefine = worldDefine;
-            entityDefine.mEntityIndexInEditor = entityId;
-            // <<
-            
-            //trace ("entityId = " + entityId + ", mEntityType = " + entityDefine.mEntityType);
-            
-            if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
-            {
-               shapeContainer = GetShapeContainer (playerWorld, worldDefine, entityDefine);
-               
-               if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
-               {
-                  entity = playerWorld.CreateUtilityCamera (shapeContainer, entityDefine);
-               }
-            }
-            else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
-            {
-               logic = null;
-               
-               shapeContainer = GetShapeContainer (playerWorld, worldDefine, entityDefine);
-               
-               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
-               {
-                  entity = logic = playerWorld.CreateEntityBasicCondition (entityDefine);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
-               {
-                  entity = logic = playerWorld.CreateEntityTask (entityDefine);
-                  
-                  (entity as EntityTask).SetEntityAssigners (entityDefine.mInputAssignerIndexes);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
-               {
-                  entity = logic = playerWorld.CreateEntityConditionDoor (entityDefine);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
-               {
-                  entity = logic = playerWorld.CreateEntityInputEntityAssigner (entityDefine, false);
-                  
-                  (entity as EntityInputEntityAssigner).SetEntityIndexes (entityDefine.mEntityIndexes);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
-               {
-                  entity = logic = playerWorld.CreateEntityInputEntityAssigner (entityDefine, true);
-                  
-                  (entity as EntityInputEntityAssigner).SetEntityPairIndexes (entityDefine.mEntityIndexes1, entityDefine.mEntityIndexes2);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
-               {
-                  entity = logic = playerWorld.CreateEntityEventHandler (entityDefine);
-               }
-            }
-            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
-            {
-               shape = null;
-               
-               shapeContainer = GetShapeContainer (playerWorld, worldDefine, entityDefine);
-               
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
-               {
-                  // commnet following, for mCollisionCategoryIndex is already set in AdjustWorldDefine now
-                  //if (worldDefine.mVersion >= 0x0102)
-                  //{
-                  //   // already set
-                  //}
-                  //else
-                  //{
-                  //   entityDefine.mCollisionCategoryIndex = Define.CollisionCategoryId_HiddenCategory;
-                  //}
-                  
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
-                  {
-                     entity = shape = playerWorld.CreateEntityShapeCircle (shapeContainer, entityDefine);
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
-                  {
-                     entity = shape = playerWorld.CreateEntityShapeRectangle (shapeContainer, entityDefine);
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
-                  {
-                     entity = shape = playerWorld.CreateEntityShapePolygon (shapeContainer, entityDefine);
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
-                  {
-                     entity = shape = playerWorld.CreateEntityShapePolyline (shapeContainer, entityDefine);
-                  }
-               }
-               else // not physics shape
-               {
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeText)
-                  {
-                     entityDefine.mAiType = Define.ShapeAiType_Unknown;
-                     entityDefine.mIsStatic = false;
-                     entityDefine.mIsBullet = false;
-                     entityDefine.mDensity = 1.0;
-                     entityDefine.mFriction = 0.1;
-                     entityDefine.mRestitution = 0.2;
-                     
-                     entity = shape = playerWorld.CreateEntityShapeText (shapeContainer, entityDefine);
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
-                  {
-                     entityDefine.mAiType = Define.ShapeAiType_Unknown;
-                     entityDefine.mIsStatic = false;
-                     entityDefine.mIsBullet = false;
-                     entityDefine.mDensity = 1.0;
-                     entityDefine.mFriction = 0.1;
-                     entityDefine.mRestitution = 0.2;
-                     entityDefine.mAppearanceType = Define.CircleAppearanceType_Ball;
-                     
-                     entity = shape = playerWorld.CreateEntityShapeGravityController (shapeContainer, entityDefine);
-                  }
-               }
-            }
-            
-            if (entity != null)
-            {
-               entityDefine.mEntity = entity;
-            }
-         }
-         
-   //*********************************************************************************************************************************
-   // 
-   //*********************************************************************************************************************************
-         
-      // update z-order and masses
-         
-         playerWorld.UpdateShapeLayers ();
-         playerWorld.UpdateShapeMasses (); // 
-         
-   //*********************************************************************************************************************************
-   // 
-   //*********************************************************************************************************************************
-         
-      // create joints
-         
-         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
-         {
-            entityId = worldDefine.mEntityCreationOrder [createId];
-            
-            entityDefine = entityDefineArray [entityId];
-            
-            entity = null;
-            
-            if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
-            {
-               joint = null;
-               
-               // comment some lines, for mConnectedShape1Index and mConnectedShape2Index have been set NONE in AdjustWorldDefine
-               //if (worldDefine.mVersion >= 0x0102)
-               //{
-                  if  (entityDefine.mConnectedShape1Index == Define.EntityId_Ground)
-                  {
-                     entityDefine.mConnectedShape1 = playerWorld.GetPhysicsEngine ();
-                  }
-                  else if (entityDefine.mConnectedShape1Index >= 0)
-                  {
-                     shape = worldDefine.mEntityDefines [entityDefine.mConnectedShape1Index].mEntity as player.entity.EntityShape;
-                     entityDefine.mConnectedShape1 = shape.GetPhysicsProxy ();
-                  }
-                  else
-                  {
-                     entityDefine.mConnectedShape1 = null;
-                  }
-                  
-                  if  (entityDefine.mConnectedShape2Index == Define.EntityId_Ground)
-                  {
-                     entityDefine.mConnectedShape2 = playerWorld.GetPhysicsEngine ();
-                  }
-                  else if (entityDefine.mConnectedShape2Index >= 0)
-                  {
-                     shape = worldDefine.mEntityDefines [entityDefine.mConnectedShape2Index].mEntity as player.entity.EntityShape;
-                     entityDefine.mConnectedShape2 = shape.GetPhysicsProxy ();
-                  }
-                  else
-                  {
-                     entityDefine.mConnectedShape2 = null;
-                  }
-               //}
-               //else
-               //{
-               //   entityDefine.mConnectedShape1 = null; // auto
-               //   entityDefine.mConnectedShape2 = null; // auto
-               //}
-               
-               if (entityDefine.mEntityType == Define.EntityType_JointHinge)
-               {
-                  entityDefine.mAnchorParams = entityDefineArray [entityDefine.mAnchorEntityIndex];
-                  
-                  entity = joint = playerWorld.CreateEntityJointHinge (entityDefine);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
-               {
-                  entityDefine.mAnchor1Params = entityDefineArray [entityDefine.mAnchor1EntityIndex];
-                  entityDefine.mAnchor2Params = entityDefineArray [entityDefine.mAnchor2EntityIndex];
-                  
-                  entity = joint = playerWorld.CreateEntityJointSlider (entityDefine);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
-               {
-                  entityDefine.mAnchor1Params = entityDefineArray [entityDefine.mAnchor1EntityIndex];
-                  entityDefine.mAnchor2Params = entityDefineArray [entityDefine.mAnchor2EntityIndex];
-                  
-                  entity = joint = playerWorld.CreateEntityJointDistance (entityDefine);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
-               {
-                  entityDefine.mAnchor1Params = entityDefineArray [entityDefine.mAnchor1EntityIndex];
-                  entityDefine.mAnchor2Params = entityDefineArray [entityDefine.mAnchor2EntityIndex];
-                  
-                  entity = joint = playerWorld.CreateEntityJointSpring (entityDefine);
-               }
-            }
-            
-            if (entity != null)
-            {
-               entityDefine.mEntity = entity;
-            }
-            
-         // all entity are created alrady
-            playerWorld.RegisterEntityByIndexInEditor (entityId, entityDefine.mEntity);
-         }
-         
-   //*********************************************************************************************************************************
-   // 
-   //*********************************************************************************************************************************
-         
-      // build logics
-         
-         // here invert the order, to make the fronter event handler registered fronterly
-         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
-         {
-            entityId = worldDefine.mEntityCreationOrder [createId];
-            
-            entityDefine = entityDefineArray [entityId];
-            
-         // ...
-            if ( Define.IsLogicEntity (entityDefine.mEntityType) )
-            {
                entity = entityDefine.mEntity;
                
-               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               if (entity is EntityShape)
                {
-                  var condition:EntityBasicCondition = entity as EntityBasicCondition;
-                  
-                  condition.SetCommandListDefine (entityDefine.mCodeSnippetDefine);
+                  entityDefine.mBody = body;
                }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+            }
+         }
+         
+         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
+         {
+            entityId = worldDefine.mEntityCreationOrder [createId];
+            
+            entityDefine = entityDefineArray [entityId];
+            entity = entityDefine.mEntity;
+            
+            if (entity is EntityShape)
+            {
+               shape = entity as EntityShape;
+               
+               body = entityDefine.mBody;
+               
+               if (body == null)
                {
-                  var task:EntityTask = entity as EntityTask;
-                  
-                  // moved to the 1st round
-                  //task.SetEntityAssigners (entityDefine.mInputAssignerIndexes);
+                  body = new EntityBody (playerWorld);
                }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
-               {
-                  var condition_door:EntityConditionDoor = entity as EntityConditionDoor;
-                  
-                  condition_door.SetInputConditions (entityDefine.mInputConditionEntityIndexes, entityDefine.mInputConditionTargetValues);
-                  condition_door.SetAnd (entityDefine.mIsAnd);
-                  condition_door.SetNot (entityDefine.mIsNot);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
-               {
-                  var assigner:EntityInputEntityAssigner = entity as EntityInputEntityAssigner;
-                  
-                  // moved to the 1st round
-                  //assigner.SetEntityIndexes1 (entityDefine.mEntityIndexes);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
-               {
-                  var pair_assigner:EntityInputEntityAssigner = entity as EntityInputEntityAssigner;
-                  
-                  // moved to the 1st round
-                  //pair_assigner.SetEntityIndexes1 (entityDefine.mEntityIndexes1);
-                  //pair_assigner.SetEntityIndexes2 (entityDefine.mEntityIndexes2);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
-               {
-                  var event_handler:EntityEventHandler = entity as EntityEventHandler;
-                  
-                  event_handler.SetExternalCondition (entityDefine.mInputConditionEntityIndex, entityDefine.mInputConditionTargetValue);
-                  event_handler.SetEntityAssigners (entityDefine.mInputAssignerIndexes);
-                  event_handler.SetInternalCommandListDefine (entityDefine.mCodeSnippetDefine);
-                  
-                  event_handler.Register ();
-               }
+               
+               shape.SetBody (body);
+               
+               playerWorld.RegisterEntity (body);
             }
          }
          
@@ -454,25 +312,6 @@ package common {
          playerWorld.Initialize ();
          
          return playerWorld;
-      }
-      
-      private static function GetShapeContainer (playerWorld:player.world.World, worldDefine:Object, entityDefine:Object):ShapeContainer
-      {
-         var shapeContainer:player.entity.ShapeContainer;
-         
-         shapeContainer = entityDefine.mShapeContainer;
-         if (shapeContainer == null)
-         {
-            var params:Object = new Object ();
-            params.mContainsPhysicsShapes = Define.IsBasicShapeEntity (entityDefine.mEntityType) && entityDefine.mIsPhysicsEnabled;
-            params.mWorldDefine = worldDefine;
-            params.mPosX = entityDefine.mPosX;
-            params.mPosY = entityDefine.mPosY;
-            
-            shapeContainer = playerWorld.CreateShapeContainer (params, true);
-         }
-         
-         return shapeContainer;
       }
       
       public static function ByteArray2WorldDefine (byteArray:ByteArray):WorldDefine
@@ -1618,6 +1457,9 @@ package common {
                {
                   if (worldDefine.mVersion < 0x0104)
                      entityDefine.mMaxMotorTorque = Define.DefaultHingeMotorTorque;
+                  
+                  if (worldDefine.mVersion < 0x0107)
+                     entityDefine.mMotorSpeed *= (0.1 * Define.kRadians2Degrees); // for a history bug
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
                {

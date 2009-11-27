@@ -9,6 +9,7 @@ package player.trigger.data
       
       public var mContactId:int;
       
+      public var mIsNewContact:Boolean;
       public var mBeginContactingFrame:int;       // for the first contact of the pair
       public var mNewestBeginContactingFrame:int; // for any contacts of the pair
       

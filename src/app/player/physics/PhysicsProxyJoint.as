@@ -6,86 +6,37 @@ package player.physics {
    import Box2D.Common.b2Vec2;
    import Box2D.Dynamics.Joints.b2Joint;
    
+   import player.entity.EntityJoint;
    
    public class PhysicsProxyJoint extends PhysicsProxy
    {
-      
-      internal var _b2Joint:b2Joint = null;
-      
-      protected var mPhysicsProxyBody1:PhysicsProxyBody;
-      protected var mPhysicsProxyBody2:PhysicsProxyBody;
-      
-      public function PhysicsProxyJoint (phyEngine:PhysicsEngine, proxyBody1:PhysicsProxyBody, proxyBody2:PhysicsProxyBody):void
+      public function PhysicsProxyJoint (phyEngine:PhysicsEngine):void
       {
          super (phyEngine);
+      }
+      
+      internal function GetB2joint ():b2Joint
+      {
+         return null;
+      }
+      
+      /// Get the anchor point on body1 in world coordinates.
+      public function GetAnchorPoint1():Point
+      {
+         var b2joint:b2Joint = GetB2joint ();
+         var vec:b2Vec2 = b2joint.GetAnchor1 ();
          
-         mPhysicsProxyBody1 = proxyBody1;
-         mPhysicsProxyBody2 = proxyBody2;
+         return new Point (vec.x, vec.y);
       }
-      
-      
-      override public function Destroy ():void
+
+      /// Get the anchor point on body2 in world coordinates.
+      public function GetAnchorPoint2():Point
       {
-         if (_b2Joint != null)
-            mPhysicsEngine._b2World.DestroyJoint (_b2Joint);
-      }
-      
-      public function NotifyDestroyed (object:Object):void
-      {
-         if (_b2Joint == object)
-         {
-            _b2Joint = null;
-         }
-      }
-      
-      public function GetBody1 ():PhysicsProxyBody
-      {
-         return mPhysicsProxyBody1;
-      }
-      
-      public function GetBody2 ():PhysicsProxyBody
-      {
-         return mPhysicsProxyBody2;
-      }
-      
-      public function GetAnchorPoint1 ():Point
-      {
-         var point:Point = new Point ();
+         var b2joint:b2Joint = GetB2joint ();
+         var vec:b2Vec2 = b2joint.GetAnchor2 ();
          
-         if (_b2Joint != null)
-         {
-            var vec2:b2Vec2 = _b2Joint.GetAnchor1();
-            point.x = vec2.x;
-            point.y = vec2.y;
-         }
-         else
-         {
-            point.x = 0;
-            point.y = 0;
-         }
-         
-         return point;
+         return new Point (vec.x, vec.y);
       }
-      
-      public function GetAnchorPoint2 ():Point
-      {
-         var point:Point = new Point ();
-         
-         if (_b2Joint != null)
-         {
-            var vec2:b2Vec2 = _b2Joint.GetAnchor2();
-            point.x = vec2.x;
-            point.y = vec2.y;
-         }
-         else
-         {
-            point.x = 0;
-            point.y = 0;
-         }
-         
-         return point;
-      }
-      
    }
    
 }

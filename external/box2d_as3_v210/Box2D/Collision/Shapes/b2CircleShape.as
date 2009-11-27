@@ -98,6 +98,19 @@ package Box2D.Collision.Shapes
 			//return m_p;
 			return m_p.Clone ();
 		}
+		
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
+		// call by b2Body
+		// this function should  NOT change the world position
+		override public function MoveLocalPosition (dx:Number, dy:Number):void
+		{
+			m_p.x += dx;
+			m_p.y += dy;
+		}
+		
 	} // class
 } // package
 //#endif

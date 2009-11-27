@@ -67,7 +67,7 @@ package common {
             {
                conditionAndValue = conditionAndTargetValueArray [i] as ConditionAndTargetValue;
                
-               indexes [i] = editorWorld.GetEntityIndex (conditionAndValue.mConditionEntity as Entity);
+               indexes [i] = editorWorld.GetEntityCreationId (conditionAndValue.mConditionEntity as Entity);
                values [i] = conditionAndValue.mTargetValue;
             }
             
@@ -143,7 +143,7 @@ package common {
                   value_object = direct_source.GetValueObject () as String;
                   break;
                case ValueTypeDefine.ValueType_Entity:
-                  value_object = editorWorld.GetEntityIndex (direct_source.GetValueObject () as Entity);
+                  value_object = editorWorld.GetEntityCreationId (direct_source.GetValueObject () as Entity);
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
                   value_object = editorWorld.GetCollisionCategoryIndex (direct_source.GetValueObject () as EntityCollisionCategory);

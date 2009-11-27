@@ -30,14 +30,8 @@ package editor.entity {
       {
          if (index == Define.EntityId_Ground)
             mConnectedShape1 = mWorld;
-         else if (index >= 0 && index < mWorld.numChildren)
-         {
-            mConnectedShape1 = mWorld.getChildAt (index) as EntityShape;
-         }
-         else //if (index == Define.EntityId_None)
-         {
-            mConnectedShape1 = null;
-         }
+         else
+            mConnectedShape1 = mWorld.GetEntityByCreationId (index);
       }
       
       public function SetConnectedShape2Index (index:int):void
@@ -45,14 +39,8 @@ package editor.entity {
          
          if (index == Define.EntityId_Ground)
             mConnectedShape2 = mWorld;
-         else if (index >= 0 && index < mWorld.numChildren)
-         {
-            mConnectedShape2 = mWorld.getChildAt (index) as EntityShape;
-         }
-         else // if (index == Define.EntityId_None)
-         {
-            mConnectedShape2 = null;
-         }
+         else
+            mConnectedShape2 = mWorld.GetEntityByCreationId (index);
       }
       
       public function GetConnectedShape1Index ():int
@@ -63,8 +51,10 @@ package editor.entity {
             return Define.EntityId_Ground;
          else
          {
-            if (mWorld.contains (mConnectedShape1))
-               return mWorld.getChildIndex (mConnectedShape1);
+            var id:int = mWorld.GetEntityCreationId (mConnectedShape1 as Entity);
+            
+            if (id >= 0)
+               return id;
             
             mConnectedShape1 = null;
             return Define.EntityId_None;
@@ -79,8 +69,10 @@ package editor.entity {
             return Define.EntityId_Ground;
          else
          {
-            if (mWorld.contains (mConnectedShape2))
-               return mWorld.getChildIndex (mConnectedShape2);
+            var id:int = mWorld.GetEntityCreationId (mConnectedShape2 as Entity);
+            
+            if (id >= 0)
+               return id;
             
             mConnectedShape2 = null;
             return Define.EntityId_None;

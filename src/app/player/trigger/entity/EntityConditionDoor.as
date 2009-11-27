@@ -16,30 +16,47 @@ package player.trigger.entity
          super (world);
       }
       
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
-      {
-         super.BuildFromParams (params, false);
-         
-      }
+//=============================================================
+//   create
+//=============================================================
       
-      public function SetInputConditions (conditionEntityIndexes:Array, targetValues:Array):void
+      override public function Create (createStageId:int, entityDefine:Object):void
       {
-         if (conditionEntityIndexes == null || targetValues == null)
-            return;
+         super.Create (createStageId, entityDefine);
          
-         if (targetValues.length < conditionEntityIndexes.length)
-            return;
-         
-         var newOne:ConditionAndTargetValue;
-         
-         for (var i:int = conditionEntityIndexes.length - 1; i >= 0; -- i)
+         if (createStageId == 0)
          {
-            newOne = new ConditionAndTargetValue (mWorld.GetEntityByIndexInEditor (conditionEntityIndexes [i]) as EntityCondition, targetValues [i]);
+            if (entityDefine.mIsAnd != undefined)
+               SetAnd (entityDefine.mIsAnd);
+            if (entityDefine.mIsNot != undefined)
+               SetNot (entityDefine.mIsNot);
             
-            newOne.mNextConditionAndTargetValue = mInputConditionListHead;
-            mInputConditionListHead = newOne;
+            if (entityDefine.mNumInputConditions != undefined)
+            {
+               var length:int = entityDefine.mNumInputConditions;
+               
+               var conditionEntityIndexes:Array = entityDefine.mInputConditionEntityIndexes;
+               var targetValues          :Array = entityDefine.mInputConditionTargetValues;
+               
+               if (conditionEntityIndexes != null && targetValues != null)
+               {
+                  var newOne:ConditionAndTargetValue;
+                  
+                  for (var i:int = length - 1; i >= 0; -- i)
+                  {
+                     newOne = new ConditionAndTargetValue (mWorld.GetEntityByCreationId (int(conditionEntityIndexes [i])) as EntityCondition, int (targetValues [i]));
+                     
+                     newOne.mNextConditionAndTargetValue = mInputConditionListHead;
+                     mInputConditionListHead = newOne;
+                  }
+               }
+            }
          }
       }
+      
+//=============================================================
+//   
+//=============================================================
       
       public function SetAnd (isAnd:Boolean):void
       {
@@ -51,13 +68,9 @@ package player.trigger.entity
          mIsNot = isNot;
       }
       
-      public function UnshiftInputConditions (conditionEntity:EntityCondition, targetValue:int):void
-      {
-         var newOne:ConditionAndTargetValue = new ConditionAndTargetValue (conditionEntity, targetValue);
-         
-         newOne.mNextConditionAndTargetValue = mInputConditionListHead;
-         mInputConditionListHead = newOne;
-      }
+//=============================================================
+//   as condition
+//=============================================================
       
       override public function Evaluate ():void
       {

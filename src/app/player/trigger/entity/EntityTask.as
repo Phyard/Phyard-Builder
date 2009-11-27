@@ -17,26 +17,39 @@ package player.trigger.entity
          super (world);
       }
       
-      override public function BuildFromParams (params:Object, updateAppearance:Boolean = true):void
-      {
-         super.BuildFromParams (params, false);
-         
-      }
+//=============================================================
+//   create
+//=============================================================
       
-      public function SetEntityAssigners (assignerEntityIndexes:Array):void
+      override public function Create (createStageId:int, entityDefine:Object):void
       {
-         if (assignerEntityIndexes == null)
-            return;
+         super.Create (createStageId, entityDefine);
          
-         var newElement:ListElement_InputEntityAssigner;
-          
-         for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
+         if (createStageId == 0)
          {
-            newElement = new ListElement_InputEntityAssigner (mWorld.GetEntityByIndexInEditor (assignerEntityIndexes [i]) as EntityInputEntityAssigner);
-            newElement.mNextListElement = mFirstEntityAssigner;
-            mFirstEntityAssigner = newElement;
+            if (entityDefine.mNumAssigners != undefined)
+            {
+               var numAssigners:int = entityDefine.mNumAssigners;
+               
+               var assignerEntityIndexes:Array = entityDefine.mInputAssignerIndexes;
+               if (assignerEntityIndexes != null)
+               {
+                  var newElement:ListElement_InputEntityAssigner;
+                   
+                  for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
+                  {
+                     newElement = new ListElement_InputEntityAssigner (mWorld.GetEntityByCreationId (int(assignerEntityIndexes [i])) as EntityInputEntityAssigner);
+                     newElement.mNextListElement = mFirstEntityAssigner;
+                     mFirstEntityAssigner = newElement;
+                  }
+               }
+            }
          }
       }
+         
+//=============================================================
+//   as condition
+//=============================================================
       
       override public function Evaluate ():void
       {
@@ -50,7 +63,7 @@ package player.trigger.entity
             
             while (element != null)
             {
-               status = element.mInputEntityAssigner.UpdateEntityTaskStatus ();
+               status = element.mInputEntityAssigner.GetEntityListTaskStatus ();
                if (status == ValueDefine.TaskStatus_Undetermined)
                   ++ num_undetermineds;
                else if (status == ValueDefine.TaskStatus_Failed)

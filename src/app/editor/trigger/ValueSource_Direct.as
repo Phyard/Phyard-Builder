@@ -50,7 +50,7 @@ package editor.trigger {
          if (mValueObject is Entity)
          {
             var entity:Entity = mValueObject as Entity;
-            if (entity.GetEntityIndex () < 0)
+            if (entity.GetCreationOrderId () < 0)
                SetValueObject (null)
          }
          else if (mValueObject is EntityCollisionCategory)

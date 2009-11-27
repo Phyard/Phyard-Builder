@@ -125,5 +125,11 @@ package editor.trigger {
          
          return CoreEventDeclarations.sEventHandlerDeclarations [eventId];
       }
+      
+      public static function GetBoolFunctionDeclaration ():FunctionDeclaration_Core
+      {
+         return new FunctionDeclaration_Core (
+                  CoreFunctionIds.ID_Bool, "Condition", null, [new VariableDefinitionBoolean ("Return Bool Value")], null);
+      }
    }
 }

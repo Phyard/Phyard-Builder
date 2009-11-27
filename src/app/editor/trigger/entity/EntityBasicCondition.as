@@ -22,6 +22,7 @@ package editor.trigger.entity {
    
    import editor.trigger.FunctionDefinition;
    import editor.trigger.CodeSnippet;
+   import editor.trigger.TriggerEngine;
    
    import common.Define;
    
@@ -33,7 +34,7 @@ package editor.trigger.entity {
       {
          super (world);
          
-         mCodeSnippet = new CodeSnippet (new FunctionDefinition ());
+         mCodeSnippet = new CodeSnippet (new FunctionDefinition (TriggerEngine.GetBoolFunctionDeclaration ()));
       }
       
       override public function ValidateEntityLinks ():void

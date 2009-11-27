@@ -14,8 +14,12 @@ package common.trigger {
       
    // the id < 8196 will be reserved for officeial core apis
       
-      public static const ID_Void:int                        = -1; // 
       public static const ID_ForDebug:int                    = 0; // 
+      
+   // some specail
+      
+      public static const ID_Void:int                        = 10; // 
+      public static const ID_Bool:int                        = 11; // 
       
    // global
       
@@ -166,9 +170,6 @@ package common.trigger {
       public static const ID_Entity_GetRotationByDegrees:int           = 958; // entity 
       //public static const ID_Entity_SetRotationByDegrees:int         = 959; // entity 
       
-      public static const ID_Entity_AttachWithEntity:int               = 1000;
-      public static const ID_Entity_Detach:int                         = 1001;
-      
    // game / entity / shape
       
       public static const ID_EntityShape_GetShapeCIType:int            = 1100; // entity.shape
@@ -237,6 +238,16 @@ package common.trigger {
       public static const ID_EntityShape_ApplyStepTorque:int            = 1102; // entity.shape physics
       public static const ID_EntityShape_ApplyPermanentTorque:int                   = 1103; // entity.shape physics
       //impulse and angular impulse
+      
+      
+      
+      public static const ID_EntityShape_Attach:int                         = 1250;
+      public static const ID_EntityShape_Detach:int                         = 1251;
+      public static const ID_EntityShape_Breakup:int                         = 1252;
+      public static const ID_EntityShape_Teleport:int                       = 1253;
+      public static const ID_EntityShape_Clone:int                          = 1254;
+      
+      
       
    // game /entity / joint
       

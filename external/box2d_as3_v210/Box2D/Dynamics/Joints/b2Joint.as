@@ -95,7 +95,9 @@ package Box2D.Dynamics.Joints
 			public static const e_mouseJoint:int = 5;
 			public static const e_gearJoint:int = 6;
 			public static const e_lineJoint:int = 7;
-			public static const e_fixedJoint:int = 8;
+			public static const e_weldJoint:int = 8;
+			public static const e_frictionJoint:int = 9;
+
 		//};
 
 		//enum b2LimitState
@@ -112,24 +114,24 @@ package Box2D.Dynamics.Joints
 		//b2JointType GetType() const;
 
 		/// Get the first body attached to this joint.
-		//b2Body* GetBody1();
+		//b2Body* GetBodyA();
 
 		/// Get the second body attached to this joint.
-		//b2Body* GetBody2();
+		//b2Body* GetBodyB();
 
 		/// Get the anchor point on body1 in world coordinates.
-		//virtual b2Vec2 GetAnchor1() const = 0;
-		public function GetAnchor1():b2Vec2 {return null;}
+		//virtual b2Vec2 GetAnchorA() const = 0;
+		public function GetAnchorA():b2Vec2 {return null;}
 
 		/// Get the anchor point on body2 in world coordinates.
-		//virtual b2Vec2 GetAnchor2() const = 0;
-		public function GetAnchor2():b2Vec2 {return null;}
+		//virtual b2Vec2 GetAnchorB() const = 0;
+		public function GetAnchorB():b2Vec2 {return null;}
 
-		/// Get the reaction force on body2 at the joint anchor.
+		/// Get the reaction force on body2 at the joint anchor in Newtons.
 		//virtual b2Vec2 GetReactionForce(float32 inv_dt) const = 0;
 		public function GetReactionForce (inv_dt:Number):b2Vec2 {return null;}
 
-		/// Get the reaction torque on body2.
+		/// Get the reaction torque on body2 in N*m.
 		//virtual float32 GetReactionTorque(float32 inv_dt) const = 0;
 		public function GetReactionTorque (inv_dt:Number):Number {return 0.0;}
 
@@ -141,6 +143,9 @@ package Box2D.Dynamics.Joints
 
 		/// Set the user data pointer.
 		//void SetUserData(void* data);
+
+		/// Short-cut function to determine if either body is inactive.
+		//bool IsActive() const;
 
 	//protected:
 		//friend class b2World;
@@ -160,11 +165,12 @@ package Box2D.Dynamics.Joints
 		//virtual void SolveVelocityConstraints(const b2TimeStep& step) = 0;
 		public function SolveVelocityConstraints(step:b2TimeStep):void {}
 
+		//virtual void FinalizeVelocityConstraints() {}
+		public function FinalizeVelocityConstraints():void {}
+
 		// This returns true if the position errors are within tolerance.
 		//virtual bool SolvePositionConstraints(float32 baumgarte) = 0;
 		public function SolvePositionConstraints(baumgarte:Number):Boolean {return false;}
-
-		//void ComputeXForm(b2Transform* xf, const b2Vec2& center, const b2Vec2& localCenter, float32 angle) const;
 
 		//b2JointType m_type;
 		public var m_type:int;
@@ -181,9 +187,9 @@ package Box2D.Dynamics.Joints
 		public var m_userData:Object;
 
 		// Cache here per time step to reduce cache misses.
-		public var m_localCenter1:b2Vec2 = new b2Vec2 (), m_localCenter2:b2Vec2 = new b2Vec2 ();
-		public var m_invMass1:Number, m_invI1:Number;
-		public var m_invMass2:Number, m_invI2:Number;
+		public var m_localCenterA:b2Vec2 = new b2Vec2 (), m_localCenterB:b2Vec2 = new b2Vec2 ();
+		public var m_invMassA:Number, m_invIA:Number;
+		public var m_invMassB:Number, m_invIB:Number;
 	//};
 
 	// incline
@@ -211,12 +217,12 @@ package Box2D.Dynamics.Joints
 			return m_type;
 		}
 
-		public function GetBody1():b2Body
+		public function GetBodyA():b2Body
 		{
 			return m_bodyA;
 		}
 
-		public function GetBody2():b2Body
+		public function GetBodyB():b2Body
 		{
 			return m_bodyB;
 		}
@@ -236,14 +242,6 @@ package Box2D.Dynamics.Joints
 			m_userData = data;
 		}
 
-		public function ComputeXForm(xf:b2Transform, center:b2Vec2, localCenter:b2Vec2, angle:Number):void
-		{
-			xf.R.SetFromAngle (angle);
-			//xf->position = center - b2Mul(xf->R, localCenter);
-			b2Math.b2Mul_Matrix22AndVector2_Output (xf.R, localCenter, xf.position);
-			xf.position.x = center.x - xf.position.x;
-			xf.position.y = center.y - xf.position.y;
-		}
 	} // class
 } // package
 //#endif

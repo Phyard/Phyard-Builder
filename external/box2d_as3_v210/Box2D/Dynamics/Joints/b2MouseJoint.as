@@ -51,10 +51,10 @@ package Box2D.Dynamics.Joints
 	//public:
 
 		/// Implements b2Joint.
-		//b2Vec2 GetAnchor1() const;
+		//b2Vec2 GetAnchorA() const;
 
 		/// Implements b2Joint.
-		//b2Vec2 GetAnchor2() const;
+		//b2Vec2 GetAnchorB() const;
 
 		/// Implements b2Joint.
 		//b2Vec2 GetReactionForce(float32 inv_dt) const;
@@ -64,8 +64,21 @@ package Box2D.Dynamics.Joints
 
 		/// Use this to update the target point.
 		//void SetTarget(const b2Vec2& target);
+		//const b2Vec2& GetTarget() const;
 
-		//--------------- Internals Below -------------------
+		/// Set/get the maximum force in Newtons.
+		//void SetMaxForce(float32 force);
+		//float32 GetMaxForce() const;
+
+		/// Set/get the frequency in Hertz.
+		//void SetFrequency(float32 hz);
+		//float32 GetFrequency() const;
+
+		/// Set/get the damping ratio (dimensionless).
+		//void SetDampingRatio(float32 ratio);
+		//float32 GetDampingRatio() const;
+
+	//protected:
 
 		//b2MouseJoint(const b2MouseJointDef* def);
 

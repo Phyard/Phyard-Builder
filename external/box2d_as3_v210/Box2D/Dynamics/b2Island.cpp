@@ -205,8 +205,10 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	{
 		b = m_bodies[i];
 
-		if (b.IsStatic())
+		if (b.GetType() != b2Body.b2_dynamicBody)
+		{
 			continue;
+		}
 
 		// Integrate velocities.
 		//b.m_linearVelocity += step.dt * (gravity + b->m_invMass * b->m_force);
@@ -215,8 +217,11 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		b.m_angularVelocity += step.dt * b.m_invI * b.m_torque;
 
 		// Reset forces.
-		b.m_force.Set(0.0, 0.0);
-		b.m_torque = 0.0;
+		if (step.resetForces)
+		{
+			b.m_force.SetZero ();
+			b.m_torque = 0.0;
+		}
 
 		// Apply damping.
 		// ODE: dv/dt + c * v = 0
@@ -254,6 +259,11 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	}
 
 	// Post-solve (store impulses for warm starting).
+	for (i = 0; i < m_jointCount; ++i)
+	{
+		(m_joints[i] as b2Joint).FinalizeVelocityConstraints();
+	}
+
 	contactSolver.FinalizeVelocityConstraints();
 
 	// Integrate positions.
@@ -261,7 +271,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	{
 		b = m_bodies[i];
 
-		if (b.IsStatic())
+		if (b.GetType() == b2Body.b2_staticBody)
 			continue;
 
 		// Check for large velocities.
@@ -332,7 +342,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 
 	if (allowSleep)
 	{
-		var minSleepTime:Number = b2Settings.B2_FLT_MAX;
+		var minSleepTime:Number = b2Settings.b2_maxFloat;
 
 		// the 2 const is move to the top ofthe file
 //#ifndef TARGET_FLOAT32_IS_FIXED
@@ -343,18 +353,18 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		for (i = 0; i < m_bodyCount; ++i)
 		{
 			b = m_bodies[i];
-			if (b.m_invMass == 0.0)
+			if (b.GetType() != b2Body.b2_dynamicBody)
 			{
 				continue;
 			}
 
-			if ((b.m_flags & b2Body.e_allowSleepFlag) == 0)
+			if ((b.m_flags & b2Body.e_autoSleepFlag) == 0)
 			{
 				b.m_sleepTime = 0.0;
 				minSleepTime = 0.0;
 			}
 
-			if ((b.m_flags & b2Body.e_allowSleepFlag) == 0 ||
+			if ((b.m_flags & b2Body.e_autoSleepFlag) == 0 ||
 //#ifdef TARGET_FLOAT32_IS_FIXED
 //				b2Abs(b->m_angularVelocity) > b2_angularSleepTolerance ||
 //				b2Abs(b->m_linearVelocity.x) > b2_linearSleepTolerance ||
@@ -379,10 +389,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 			for (i = 0; i < m_bodyCount; ++i)
 			{
 				b = m_bodies[i];
-				b.m_flags |= b2Body.e_sleepFlag;
-				//b->m_linearVelocity = b2Vec2_zero;
-				b.m_linearVelocity.SetZero ();
-				b.m_angularVelocity = 0.0;
+				b.SetAwake(false);
 			}
 		}
 	}
@@ -423,7 +430,7 @@ public function SolveTOI(subStep:b2TimeStep):void
 	{
 		var b:b2Body = m_bodies[i];
 
-		if (b.IsStatic())
+		if (b.GetType() == b2Body.b2_staticBody)
 			continue;
 
 		// Check for large velocities.

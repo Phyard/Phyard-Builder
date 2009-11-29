@@ -53,7 +53,7 @@ override public function TestPoint(transform:b2Transform, p:b2Vec2):Boolean
 // From Section 3.1.2
 // x = s + a * r
 // norm(x) = radius
-override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, transform:b2Transform):void
+override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, transform:b2Transform):Boolean
 {
 	var position:b2Vec2 = new b2Vec2 ();
 	var s:b2Vec2 = new b2Vec2 ();
@@ -78,10 +78,9 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, t
 	var sigma :Number= c * c - rr * b;
 
 	// Check for negative discriminant and short segment.
-	if (sigma < 0.0 || rr < b2Settings.B2_FLT_EPSILON)
+	if (sigma < 0.0 || rr < b2Settings.b2_epsilon)
 	{
-		output.hit = false;
-		return;
+		return false;
 	}
 
 	// Find the point of intersection of the line with the circle.
@@ -92,15 +91,13 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, t
 	if (0.0 <= a && a <= input.maxFraction * rr)
 	{
 		a /= rr;
-		output.hit = true;
 		output.fraction = a;
 		output.normal.Set (s.x + a * r.x, s.y + a * r.y);
 		output.normal.Normalize();
-		return;
+		return true;
 	}
 
-	output.hit = false;
-	return;
+	return false;
 }
 
 override public function ComputeAABB(aabb:b2AABB, transform:b2Transform):void

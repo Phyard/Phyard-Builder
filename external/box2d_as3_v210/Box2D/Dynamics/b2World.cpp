@@ -173,7 +173,8 @@ public function DestroyBody(b:b2Body):void
 		{
 			m_destructionListener.SayGoodbye_Fixture (f0);
 		}
-		f0.Destroy(m_blockAllocator, m_contactManager.m_broadPhase);
+		f0.DestroyProxy(m_contactManager.m_broadPhase);
+		f0.Destroy(m_blockAllocator);
 		//f0->~b2Fixture();
 		f0._b2Fixture ();
 		//m_blockAllocator.Free(f0, sizeof(b2Fixture));
@@ -238,25 +239,12 @@ public function CreateJoint(def:b2JointDef):b2Joint
 	if (j.m_bodyB.m_jointList) j.m_bodyB.m_jointList.prev = j.m_edgeB;
 	j.m_bodyB.m_jointList = j.m_edgeB;
 
-	var bodyA:b2Body = def.body1;
-	var bodyB:b2Body = def.body2;
-
-	var staticA:Boolean = bodyA.IsStatic();
-	var staticB:Boolean = bodyB.IsStatic();
+	var bodyA:b2Body = def.bodyA;
+	var bodyB:b2Body = def.bodyB;
 
 	// If the joint prevents collisions, then flag any contacts for filtering.
-	if (def.collideConnected == false && (staticA == false || staticB == false))
+	if (def.collideConnected == false)
 	{
-		// Ensure we iterate over contacts on a dynamic body (usually have less contacts
-		// than a static body). Ideally we will have a contact count on both bodies.
-		if (staticB)
-		{
-			//b2Swap(bodyA, bodyB);
-			var temp:b2Body = bodyA;
-			bodyA = bodyB;
-			bodyB = temp;
-		}
-
 		var edge:b2ContactEdge = bodyB.GetContactList();
 		while (edge != null)
 		{
@@ -307,8 +295,8 @@ public function DestroyJoint(j:b2Joint):void
 	var bodyB:b2Body = j.m_bodyB;
 
 	// Wake up connected bodies.
-	bodyA.WakeUp();
-	bodyB.WakeUp();
+	bodyA.SetAwake(true);
+	bodyB.SetAwake(true);
 
 	// Remove from body 1.
 	if (j.m_edgeA.prev)
@@ -407,12 +395,18 @@ public function Solve(step:b2TimeStep):void
 	var stack:Array = new Array (stackSize);
 	for (var seed:b2Body = m_bodyList; seed != null; seed = seed.m_next)
 	{
-		if (seed.m_flags & (b2Body.e_islandFlag | b2Body.e_sleepFlag))
+		if (seed.m_flags & b2Body.e_islandFlag)
 		{
 			continue;
 		}
 
-		if (seed.IsStatic())
+		if (seed.IsAwake() == false || seed.IsActive() == false)
+		{
+			continue;
+		}
+
+		// The seed can be dynamic or kinematic.
+		if (seed.GetType() == b2Body.b2_staticBody)
 		{
 			continue;
 		}
@@ -428,14 +422,18 @@ public function Solve(step:b2TimeStep):void
 		{
 			// Grab the next body off the stack and add it to the island.
 			b = stack[--stackCount];
+			//b2Assert(b->IsActive() == true);
 			island.AddBody (b);
 
 			// Make sure the body is awake.
-			b.m_flags &= ~b2Body.e_sleepFlag;
+			if (b.IsAwake() == false)
+			{
+				b.SetAwake(true);
+			}
 
 			// To keep islands as small as possible, we don't
 			// propagate islands across static bodies.
-			if (b.IsStatic())
+			if (b.GetType() == b2Body.b2_staticBody)
 			{
 				continue;
 			}
@@ -450,7 +448,9 @@ public function Solve(step:b2TimeStep):void
 				}
 
 				// Is this contact solid and touching?
-				if (ce.contact.IsSolid() == false || ce.contact.IsTouching() == false)
+				if (ce.contact.IsSensor() == true ||
+					ce.contact.IsEnabled() == false ||
+					ce.contact.IsTouching() == false)
 				{
 					continue;
 				}
@@ -479,10 +479,17 @@ public function Solve(step:b2TimeStep):void
 					continue;
 				}
 
+				var other2:b2Body = je.other;
+
+				// Don't simulate joints connected to inactive bodies.
+				if (other2.IsActive() == false)
+				{
+					continue;
+				}
+
 				island.AddJoint (je.joint);
 				je.joint.m_islandFlag = true;
 
-				var other2:b2Body = je.other;
 				if (other2.m_flags & b2Body.e_islandFlag)
 				{
 					continue;
@@ -501,7 +508,7 @@ public function Solve(step:b2TimeStep):void
 		{
 			// Allow static bodies to participate in other islands.
 			var b2:b2Body = island.m_bodies[i];
-			if (b2.IsStatic())
+			if (b.GetType() == b2Body.b2_staticBody)
 			{
 				b2.m_flags &= ~b2Body.e_islandFlag;
 			}
@@ -513,12 +520,12 @@ public function Solve(step:b2TimeStep):void
 	// Synchronize fixtures, check for out of range bodies.
 	for (b = m_bodyList; b != null; b = b.GetNext())
 	{
-		if (b.m_flags & b2Body.e_sleepFlag)
+		if (b.IsAwake() == false || b.IsActive() == false)
 		{
 			continue;
 		}
 
-		if (b.IsStatic())
+		if (b.GetType() == b2Body.b2_staticBody)
 		{
 			continue;
 		}
@@ -591,7 +598,9 @@ public function SolveTOI(step:b2TimeStep):void
 		for (c = m_contactManager.m_contactList; c != null; c = c.m_next)
 		{
 			// Can this contact generate a solid TOI contact?
-			if (c.IsSolid() == false || c.IsContinuous() == false)
+			if (c.IsSensor() == true ||
+				c.IsEnabled() == false ||
+				c.IsContinuous() == false)
 			{
 				continue;
 			}
@@ -612,7 +621,8 @@ public function SolveTOI(step:b2TimeStep):void
 				b1 = s1.GetBody();
 				b2 = s2.GetBody();
 
-				if ((b1.IsStatic() || b1.IsSleeping()) && (b2.IsStatic() || b2.IsSleeping()))
+				if ((b1.GetType() != b2Body.b2_dynamicBody || b1.IsAwake() == false) &&
+					(b2.GetType() != b2Body.b2_dynamicBody || b2.IsAwake() == false))
 				{
 					continue;
 				}
@@ -650,7 +660,7 @@ public function SolveTOI(step:b2TimeStep):void
 				c.m_flags |= b2Contact.e_toiFlag;
 			}
 
-			if (b2Settings.B2_FLT_EPSILON < toi && toi < minTOI)
+			if (b2Settings.b2_epsilon < toi && toi < minTOI)
 			{
 				// This is the minimum TOI found so far.
 				minContact = c;
@@ -658,7 +668,7 @@ public function SolveTOI(step:b2TimeStep):void
 			}
 		}
 
-		if (minContact == null || 1.0 - 100.0 * b2Settings.B2_FLT_EPSILON < minTOI)
+		if (minContact == null || 1.0 - 100.0 * b2Settings.b2_epsilon < minTOI)
 		{
 			// No more TOI events. Done!
 			break;
@@ -681,7 +691,7 @@ public function SolveTOI(step:b2TimeStep):void
 		minContact.m_flags &= ~b2Contact.e_toiFlag;
 
 		// Is the contact solid?
-		if (minContact.IsSolid() == false)
+		if (minContact.IsSensor() == true || minContact.IsEnabled() == false)
 		{
 			// Restore the sweeps.
 			//b1->m_sweep = backup1;
@@ -702,7 +712,7 @@ public function SolveTOI(step:b2TimeStep):void
 
 		// Build the TOI island. We need a dynamic seed.
 		var seed:b2Body = b1;
-		if (seed.IsStatic())
+		if (seed.GetType() != b2Body.b2_dynamicBody)
 		{
 			seed = b2;
 		}
@@ -725,11 +735,14 @@ public function SolveTOI(step:b2TimeStep):void
 			island.AddBody (b);
 
 			// Make sure the body is awake.
-			b.m_flags &= ~b2Body.e_sleepFlag;
+			if (b.IsAwake() == false)
+			{
+				b.SetAwake(true);
+			}
 
 			// To keep islands as small as possible, we don't
-			// propagate islands across static bodies.
-			if (b.IsStatic())
+			// propagate islands across static or kinematic bodies.
+			if (b.GetType() != b2Body.b2_dynamicBody)
 			{
 				continue;
 			}
@@ -750,7 +763,9 @@ public function SolveTOI(step:b2TimeStep):void
 				}
 
 				// Skip separate, sensor, or disabled contacts.
-				if (cEdge.contact.IsSolid() == false || cEdge.contact.IsTouching() == false)
+				if (cEdge.contact.IsSensor() == true ||
+					cEdge.contact.IsEnabled() == false ||
+					cEdge.contact.IsTouching() == false)
 				{
 					continue;
 				}
@@ -767,11 +782,11 @@ public function SolveTOI(step:b2TimeStep):void
 					continue;
 				}
 
-				// March forward, this can do no harm since this is the min TOI.
-				if (other1.IsStatic() == false)
+				// Synchronize the connected body.
+				if (other1.GetType() != b2Body.b2_staticBody)
 				{
 					other1.Advance(minTOI);
-					other1.WakeUp();
+					other1.SetAwake(true);
 				}
 
 				//b2Assert(queueStart + queueSize < queueCapacity);
@@ -792,21 +807,26 @@ public function SolveTOI(step:b2TimeStep):void
 					continue;
 				}
 
+				var other2:b2Body = jEdge.other;
+				if (other2.IsActive() == false)
+				{
+					continue;
+				}
+
 				island.AddJoint (jEdge.joint);
 
 				jEdge.joint.m_islandFlag = true;
-
-				var other2:b2Body = jEdge.other;
 
 				if (other2.m_flags & b2Body.e_islandFlag)
 				{
 					continue;
 				}
 
-				if (!other2.IsStatic())
+				// Synchronize the connected body.
+				if (other2.GetType() != b2Body.b2_staticBody)
 				{
 					other2.Advance(minTOI);
-					other2.WakeUp();
+					other2.SetAwake(true);
 				}
 
 				//b2Assert(queueStart + queueSize < queueCapacity);
@@ -833,12 +853,12 @@ public function SolveTOI(step:b2TimeStep):void
 			b = island.m_bodies[i];
 			b.m_flags &= ~b2Body.e_islandFlag;
 
-			if (b.m_flags & b2Body.e_sleepFlag)
+			if (b.IsAwake() == false)
 			{
 				continue;
 			}
 
-			if (b.IsStatic())
+			if (b.GetType() == b2Body.b2_staticBody)
 			{
 				continue;
 			}
@@ -876,7 +896,7 @@ public function SolveTOI(step:b2TimeStep):void
 	//m_stackAllocator.Free(queue);
 }
 
-public function Step(dt:Number, velocityIterations:int, positionIterations:int):void
+public function Step(dt:Number, velocityIterations:int, positionIterations:int, resetForces:Boolean):void
 {
 	var height:int;
 	height = m_contactManager.m_broadPhase.ComputeHeight();
@@ -894,6 +914,7 @@ public function Step(dt:Number, velocityIterations:int, positionIterations:int):
 	step.dt = dt;
 	step.velocityIterations	= velocityIterations;
 	step.positionIterations = positionIterations;
+	step.resetForces = resetForces;
 	if (dt > 0.0)
 	{
 		step.inv_dt = 1.0 / dt;
@@ -976,165 +997,14 @@ public function RayCast(callback:b2RayCastCallback, point1:b2Vec2, point2:b2Vec2
 
 public function DrawShape(fixture:b2Fixture, xf:b2Transform, color:b2Color):void
 {
-	/*
-	b2Color coreColor(0.9f, 0.6f, 0.6f);
-
-	switch (fixture->GetType())
-	{
-	case b2Shape::e_circle:
-		{
-			b2CircleShape* circle = (b2CircleShape*)fixture->GetShape();
-
-			b2Vec2 center = b2Mul(xf, circle->m_p);
-			float32 radius = circle->m_radius;
-			b2Vec2 axis = xf.R.col1;
-
-			m_debugDraw->DrawSolidCircle(center, radius, axis, color);
-		}
-		break;
-
-	case b2Shape::e_polygon:
-		{
-			b2PolygonShape* poly = (b2PolygonShape*)fixture->GetShape();
-			int32 vertexCount = poly->m_vertexCount;
-			b2Assert(vertexCount <= b2Settings.b2_maxPolygonVertices);
-			b2Vec2 vertices[b2Settings.b2_maxPolygonVertices];
-
-			for (int32 i = 0; i < vertexCount; ++i)
-			{
-				vertices[i] = b2Mul(xf, poly->m_vertices[i]);
-			}
-
-			m_debugDraw->DrawSolidPolygon(vertices, vertexCount, color);
-		}
-		break;
-	}
-	*/
 }
 
 public function DrawJoint(joint:b2Joint):void
 {
-	/*
-	b2Body* b1 = joint->GetBody1();
-	b2Body* b2 = joint->GetBody2();
-	const b2Transform& xf1 = b1->GetTransform();
-	const b2Transform& xf2 = b2->GetTransform();
-	b2Vec2 x1 = xf1.position;
-	b2Vec2 x2 = xf2.position;
-	b2Vec2 p1 = joint->GetAnchor1();
-	b2Vec2 p2 = joint->GetAnchor2();
-
-	b2Color color(0.5f, 0.8f, 0.8f);
-
-	switch (joint->GetType())
-	{
-	case e_distanceJoint:
-		m_debugDraw->DrawSegment(p1, p2, color);
-		break;
-
-	case e_pulleyJoint:
-		{
-			b2PulleyJoint* pulley = (b2PulleyJoint*)joint;
-			b2Vec2 s1 = pulley->GetGroundAnchor1();
-			b2Vec2 s2 = pulley->GetGroundAnchor2();
-			m_debugDraw->DrawSegment(s1, p1, color);
-			m_debugDraw->DrawSegment(s2, p2, color);
-			m_debugDraw->DrawSegment(s1, s2, color);
-		}
-		break;
-
-	case e_mouseJoint:
-		// don't draw this
-		break;
-
-	default:
-		m_debugDraw->DrawSegment(x1, p1, color);
-		m_debugDraw->DrawSegment(p1, p2, color);
-		m_debugDraw->DrawSegment(x2, p2, color);
-	}
-	*/
 }
 
 public function DrawDebugData():void
 {
-	/*
-	if (m_debugDraw == NULL)
-	{
-		return;
-	}
-
-	uint32 flags = m_debugDraw->GetFlags();
-
-	if (flags & b2DebugDraw::e_shapeBit)
-	{
-		for (b2Body* b = m_bodyList; b; b = b->GetNext())
-		{
-			const b2Transform& xf = b->GetTransform();
-			for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
-			{
-				if (b->IsStatic())
-				{
-					DrawShape(f, xf, b2Color(0.5f, 0.9f, 0.5f));
-				}
-				else if (b->IsSleeping())
-				{
-					DrawShape(f, xf, b2Color(0.5f, 0.5f, 0.9f));
-				}
-				else
-				{
-					DrawShape(f, xf, b2Color(0.9f, 0.9f, 0.9f));
-				}
-			}
-		}
-	}
-
-	if (flags & b2DebugDraw::e_jointBit)
-	{
-		for (b2Joint* j = m_jointList; j; j = j->GetNext())
-		{
-			if (j->GetType() != e_mouseJoint)
-			{
-				DrawJoint(j);
-			}
-		}
-	}
-
-	if (flags & b2DebugDraw::e_pairBit)
-	{
-		// TODO_ERIN
-	}
-
-	if (flags & b2DebugDraw::e_aabbBit)
-	{
-		b2Color color(0.9f, 0.3f, 0.9f);
-		b2BroadPhase* bp = &m_contactManager.m_broadPhase;
-
-		for (b2Body* b = m_bodyList; b; b = b->GetNext())
-		{
-			for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
-			{
-				b2AABB aabb = bp->GetFatAABB(f->m_proxyId);
-				b2Vec2 vs[4];
-				vs[0].Set(aabb.lowerBound.x, aabb.lowerBound.y);
-				vs[1].Set(aabb.upperBound.x, aabb.lowerBound.y);
-				vs[2].Set(aabb.upperBound.x, aabb.upperBound.y);
-				vs[3].Set(aabb.lowerBound.x, aabb.upperBound.y);
-
-				m_debugDraw->DrawPolygon(vs, 4, color);
-			}
-		}
-	}
-
-	if (flags & b2DebugDraw::e_centerOfMassBit)
-	{
-		for (b2Body* b = m_bodyList; b; b = b->GetNext())
-		{
-			b2Transform xf = b->GetTransform();
-			xf.position = b->GetWorldCenter();
-			m_debugDraw->DrawXForm(xf);
-		}
-	}
-	*/
 }
 
 public function GetProxyCount():int

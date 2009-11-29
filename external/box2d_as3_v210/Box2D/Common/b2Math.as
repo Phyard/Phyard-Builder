@@ -30,6 +30,7 @@ package Box2D.Common
 
 	public class b2Math
 	{
+		include "b2Math.cpp";
 
 		/// This function is used to ensure that a floating point number is
 		/// not a NaN or infinity.
@@ -704,10 +705,6 @@ package Box2D.Common
 		//{
 			//@see class b2Sweep
 		//}
-
-		public static const b2Vec2_zero:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0.0, 0.0);
-		public static const b2Mat22_identity:b2Mat22 = b2Mat22.b2Mat22_From4Numbers (1.0, 0.0, 0.0, 1.0);
-		public static const b2XForm_identity:b2Transform = b2Transform.b2Transform_FromTranslateAndRotationMatrix (b2Vec2_zero, b2Mat22_identity);
 
 	} // class
 } // package

@@ -4,8 +4,7 @@ package Box2D.Dynamics
 	import Box2D.Common.b2Vec2;
 	
 	/// A body definition holds all the data needed to construct a rigid body.
-	/// You can safely re-use body definitions.
-	/// Shapes are added to a body after construction.
+	/// You can safely re-use body definitions. Shapes are added to a body after construction.
 	//struct b2BodyDef
 	public class b2BodyDef
 	{
@@ -19,10 +18,13 @@ package Box2D.Dynamics
 			angularVelocity = 0.0;
 			linearDamping = 0.0;
 			angularDamping = 0.0;
-			allowSleep = true;
-			isSleeping = false;
+			autoSleep = true;
+			awake = true;
 			fixedRotation = false;
-			isBullet = false;
+			bullet = false;
+			type = b2Body.b2_staticBody;
+			active = true;
+			inertiaScale = 1.0;
 		}
 
 		/// Use this to store application specific body data.
@@ -53,10 +55,10 @@ package Box2D.Dynamics
 
 		/// Set this flag to false if this body should never fall asleep. Note that
 		/// this increases CPU usage.
-		public var allowSleep:Boolean;
+		public var autoSleep:Boolean;
 
-		/// Is this body initially sleeping?
-		public var isSleeping:Boolean;
+		/// Is this body initially awake or sleeping?
+		public var awake:Boolean;
 
 		/// Should this body be prevented from rotating? Useful for characters.
 		public var fixedRotation:Boolean;
@@ -65,6 +67,18 @@ package Box2D.Dynamics
 		/// other moving bodies? Note that all bodies are prevented from tunneling through
 		/// static bodies.
 		/// @warning You should use this flag sparingly since it increases processing time.
-		public var isBullet:Boolean;
+		public var bullet:Boolean;
+
+		/// Does this body start out active?
+		public var active:Boolean;
+
+		/// The body type: static, kinematic, or dynamic.
+		/// Note: if a dynamic body would have zero mass, the mass is set to one.
+		//b2BodyType type;
+		public var type:int;
+
+		/// Experimental: scales the inertia tensor.
+		public var inertiaScale:Number;
+
 	} // class
 } // package

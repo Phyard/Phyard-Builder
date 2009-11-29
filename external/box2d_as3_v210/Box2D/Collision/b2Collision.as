@@ -29,6 +29,7 @@ package Box2D.Collision
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2Transform;
+	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
 
@@ -160,6 +161,10 @@ package Box2D.Collision
 		//int32 b2ClipSegmentToLine(b2ClipVertex vOut[2], const b2ClipVertex vIn[2],
 		//							const b2Vec2& normal, float32 offset);
 		//
+
+		/// Determine if two generic shapes overlap.
+		//bool b2TestOverlap(const b2Shape* shapeA, const b2Shape* shapeB,
+		//					const b2Transform& xfA, const b2Transform& xfB);
 
 		// ---------------- Inline Functions ------------------------------------------
 

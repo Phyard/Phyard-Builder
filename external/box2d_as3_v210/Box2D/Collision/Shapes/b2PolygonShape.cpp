@@ -180,7 +180,7 @@ public static function ComputeCentroid(vs:Array, count:int):b2Vec2
 	}
 
 	// Centroid
-	//b2Assert(area > B2_FLT_EPSILON);
+	//b2Assert(area > b2_epsilon);
 	//c *= 1.0f / area;
 	tempF = 1.0 / area;
 	c.x *= tempF;
@@ -222,7 +222,7 @@ public function Set(vertices:Array, count:int):void
 		i2 = i + 1 < m_vertexCount ? i + 1 : 0;
 		//b2Vec2 edge = m_vertices[i2] - m_vertices[i1];
 		b2Math.b2Subtract_Vector2_Output (m_vertices[i2] as b2Vec2, m_vertices[i1] as b2Vec2, edge);
-		//b2Assert(edge.LengthSquared() > B2_FLT_EPSILON * B2_FLT_EPSILON);
+		//b2Assert(edge.LengthSquared() > b2_epsilon * b2_epsilon);
 		//m_normals[i] = b2Math.b2Cross2(edge, 1.0f);
 		b2Math.b2Cross_Vector2AndScalar_Output (edge, 1.0, m_normals[i]);
 		(m_normals[i] as b2Vec2).Normalize();
@@ -286,7 +286,7 @@ override public function TestPoint(xf:b2Transform, p:b2Vec2):Boolean
 	return true;
 }
 
-override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, xf:b2Transform):void
+override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, xf:b2Transform):Boolean
 {
 	var p1:b2Vec2 = new b2Vec2 ();
 	var p2:b2Vec2 = new b2Vec2 ();
@@ -309,8 +309,6 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 	d.y = p2.y - p1.y;
 	var index:int = -1;
 
-	output.hit = false;
-
 	for (var i:int = 0; i < m_vertexCount; ++i)
 	{
 		// p = p1 + a * d
@@ -325,7 +323,7 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 		{	
 			if (numerator < 0.0)
 			{
-				return;
+				return false;
 			}
 		}
 		else
@@ -349,9 +347,9 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 			}
 		}
 
-		if (upper < lower)
+		if (upper < lower - b2Settings.b2_epsilon)
 		{
-			return;
+			return false;
 		}
 	}
 
@@ -359,12 +357,13 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 
 	if (index >= 0)
 	{
-		output.hit = true;
 		output.fraction = lower;
 		//output->normal = b2Mul(xf.R, m_normals[index]);
 		b2Math.b2Mul_Matrix22AndVector2_Output (xf.R, m_normals[index] as b2Vec2, output.normal)
-		return;
+		return true;
 	}
+	
+	return false;
 }
 
 override public function ComputeAABB(aabb:b2AABB, xf:b2Transform):void
@@ -506,7 +505,7 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 	massData.mass = density * area;
 
 	// Center of mass
-	//b2Assert(area > B2_FLT_EPSILON);
+	//b2Assert(area > b2_epsilon);
 	//center *= 1.0f / area;
 	tempF = 1.0 / area;
 	center.x *= tempF;

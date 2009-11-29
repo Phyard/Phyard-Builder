@@ -52,8 +52,8 @@ package Box2D.Dynamics.Joints
 		include "b2PrismaticJoint.cpp";
 		
 	//public:
-		//b2Vec2 GetAnchor1() const;
-		//b2Vec2 GetAnchor2() const;
+		//b2Vec2 GetAnchorA() const;
+		//b2Vec2 GetAnchorB() const;
 
 		//b2Vec2 GetReactionForce(float32 inv_dt) const;
 		//float32 GetReactionTorque(float32 inv_dt) const;
@@ -97,7 +97,7 @@ package Box2D.Dynamics.Joints
 		/// Get the current motor force, usually in N.
 		//float32 GetMotorForce() const;
 
-		//--------------- Internals Below -------------------
+	//protected:
 
 		//b2PrismaticJoint(const b2PrismaticJointDef* def);
 

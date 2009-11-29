@@ -11,7 +11,7 @@
 	public class b2Polygon 
 	{
 		public static const maxVerticesPerPolygon : int = b2Settings.b2_maxPolygonVertices;
-		public static const FLT_EPSILON : Number = b2Settings.B2_FLT_EPSILON;
+		public static const FLT_EPSILON : Number = b2Settings.b2_epsilon;
 		public var x : Array; //vertex arrays
 		public var y : Array;
 		public var nVertices : int;

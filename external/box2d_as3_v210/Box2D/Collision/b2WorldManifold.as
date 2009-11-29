@@ -58,7 +58,7 @@ package Box2D.Collision
 					var pointA:b2Vec2 = b2Math.b2Mul_TransformAndVector2(xfA, manifold.m_localPoint);
 					var pointB:b2Vec2 = b2Math.b2Mul_TransformAndVector2(xfB, (manifold.m_points[0] as b2ManifoldPoint).m_localPoint);
 					normal = b2Vec2.b2Vec2_From2Numbers (1.0, 0.0);
-					if (b2Math.b2DistanceSquared(pointA, pointB) > b2Settings.B2_FLT_EPSILON * b2Settings.B2_FLT_EPSILON)
+					if (b2Math.b2DistanceSquared(pointA, pointB) > b2Settings.b2_epsilon * b2Settings.b2_epsilon)
 					{
 						//normal = pointB - pointA;
 						normal.x = pointB.x - pointA.x;

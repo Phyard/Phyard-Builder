@@ -53,8 +53,8 @@ package Box2D.Dynamics.Joints
 		include "b2GearJoint.cpp";
 		
 	//public:
-		//b2Vec2 GetAnchor1() const;
-		//b2Vec2 GetAnchor2() const;
+		//b2Vec2 GetAnchorA() const;
+		//b2Vec2 GetAnchorB() const;
 
 		//b2Vec2 GetReactionForce(float32 inv_dt) const;
 		//float32 GetReactionTorque(float32 inv_dt) const;
@@ -62,7 +62,11 @@ package Box2D.Dynamics.Joints
 		/// Get the gear ratio.
 		//float32 GetRatio() const;
 
-		//--------------- Internals Below -------------------
+		/// Set/Get the gear ratio.
+		//void SetRatio(float32 ratio);
+		//float32 GetRatio() const;
+
+	//protected:
 
 		//b2GearJoint(const b2GearJointDef* data);
 

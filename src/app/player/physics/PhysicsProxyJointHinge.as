@@ -56,10 +56,10 @@ package player.physics {
          // ...
          var hingeJointDef:b2RevoluteJointDef = new b2RevoluteJointDef ();
          
-         hingeJointDef.body1 = body1;
-         hingeJointDef.body2 = body2;
-         hingeJointDef.localAnchor1 = body1.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ()));
-         hingeJointDef.localAnchor2 = body2.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()));
+         hingeJointDef.bodyA = body1;
+         hingeJointDef.bodyB = body2;
+         hingeJointDef.localAnchorA = body1.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ()));
+         hingeJointDef.localAnchorB = body2.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()));
          hingeJointDef.referenceAngle = body2.GetAngle() - body1.GetAngle();
          
          hingeJointDef.collideConnected = collideConnected;

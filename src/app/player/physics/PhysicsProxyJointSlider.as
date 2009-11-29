@@ -41,7 +41,7 @@ package player.physics {
       override public function GetAnchorPoint2():Point
       {
          var b2joint:b2Joint = GetB2joint ();
-         var vec:b2Vec2 = _b2PrismaticJoint.GetBody2 ().GetWorldPoint(_localAnchor2InBody2);
+         var vec:b2Vec2 = _b2PrismaticJoint.GetBodyB ().GetWorldPoint(_localAnchor2InBody2);
          
          return new Point (vec.x, vec.y);
       }
@@ -73,10 +73,10 @@ package player.physics {
          
          var prismaticJointDef:b2PrismaticJointDef = new b2PrismaticJointDef ();
          
-         prismaticJointDef.body1 = body1;
-         prismaticJointDef.body2 = body2;
-         prismaticJointDef.localAnchor1 = body1.GetLocalPoint(vec2);
-         prismaticJointDef.localAnchor2 = body2.GetLocalPoint(vec2);
+         prismaticJointDef.bodyA = body1;
+         prismaticJointDef.bodyB = body2;
+         prismaticJointDef.localAnchorA = body1.GetLocalPoint(vec2);
+         prismaticJointDef.localAnchorB = body2.GetLocalPoint(vec2);
          prismaticJointDef.localAxis1 = body1.GetLocalVector(axis);
          prismaticJointDef.referenceAngle = body2.GetAngle() - body1.GetAngle();
          

@@ -66,18 +66,18 @@ public function b2PulleyJoint(def:b2PulleyJointDef)
 {
 	super (def);
 	
-	m_groundAnchor1.CopyFrom (def.groundAnchor1);
-	m_groundAnchor2.CopyFrom (def.groundAnchor2);
-	m_localAnchor1.CopyFrom (def.localAnchor1);
-	m_localAnchor2.CopyFrom (def.localAnchor2);
+	m_groundAnchor1.CopyFrom (def.groundAnchorA);
+	m_groundAnchor2.CopyFrom (def.groundAnchorB);
+	m_localAnchor1.CopyFrom (def.localAnchorA);
+	m_localAnchor2.CopyFrom (def.localAnchorB);
 
 	//b2Assert(def->ratio != 0.0f);
 	m_ratio = def.ratio;
 
-	m_constant = def.length1 + m_ratio * def.length2;
+	m_constant = def.lengthA + m_ratio * def.lengthB;
 
-	m_maxLength1 = Math.min (def.maxLength1, m_constant - m_ratio * b2_minPulleyLength);
-	m_maxLength2 = Math.min (def.maxLength2, (m_constant - b2_minPulleyLength) / m_ratio);
+	m_maxLength1 = Math.min (def.maxLengthA, m_constant - m_ratio * b2_minPulleyLength);
+	m_maxLength2 = Math.min (def.maxLengthB, (m_constant - b2_minPulleyLength) / m_ratio);
 
 	m_impulse = 0.0;
 	m_limitImpulse1 = 0.0;
@@ -192,9 +192,9 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	m_limitMass1 = b1.m_invMass + b1.m_invI * cr1u1 * cr1u1;
 	m_limitMass2 = b2.m_invMass + b2.m_invI * cr2u2 * cr2u2;
 	m_pulleyMass = m_limitMass1 + m_ratio * m_ratio * m_limitMass2;
-	//b2Assert(m_limitMass1 > B2_FLT_EPSILON);
-	//b2Assert(m_limitMass2 > B2_FLT_EPSILON);
-	//b2Assert(m_pulleyMass > B2_FLT_EPSILON);
+	//b2Assert(m_limitMass1 > b2_epsilon);
+	//b2Assert(m_limitMass2 > b2_epsilon);
+	//b2Assert(m_pulleyMass > b2_epsilon);
 	m_limitMass1 = 1.0 / m_limitMass1;
 	m_limitMass2 = 1.0 / m_limitMass2;
 	m_pulleyMass = 1.0 / m_pulleyMass;
@@ -535,12 +535,12 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	return linearError < b2Settings.b2_linearSlop;
 }
 
-override public function GetAnchor1():b2Vec2
+override public function GetAnchorA():b2Vec2
 {
 	return m_bodyA.GetWorldPoint(m_localAnchor1);
 }
 
-override public function GetAnchor2():b2Vec2
+override public function GetAnchorB():b2Vec2
 {
 	return m_bodyB.GetWorldPoint(m_localAnchor2);
 }
@@ -560,13 +560,13 @@ override public function GetReactionTorque(inv_dt:Number):Number
 	return 0.0;
 }
 
-public function GetGroundAnchor1():b2Vec2
+public function GetGroundAnchorA():b2Vec2
 {
 	//return m_groundAnchor1;
 	return m_groundAnchor1.Clone ();
 }
 
-public function GetGroundAnchor2():b2Vec2
+public function GetGroundAnchorB():b2Vec2
 {
 	//return m_groundAnchor2;
 	return m_groundAnchor2.Clone ();

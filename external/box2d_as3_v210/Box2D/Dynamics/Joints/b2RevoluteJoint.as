@@ -34,7 +34,7 @@ package Box2D.Dynamics.Joints
 	import Box2D.Dynamics.b2TimeStep;
 	import Box2D.Dynamics.b2Body;
 
-	/// A revolute joint constrains to bodies to share a common point while they
+	/// A revolute joint constrains two bodies to share a common point while they
 	/// are free to rotate about the point. The relative rotation about the shared
 	/// point is the joint angle. You can limit the relative rotation with
 	/// a joint limit that specifies a lower and upper angle. You can use a motor
@@ -45,8 +45,8 @@ package Box2D.Dynamics.Joints
 		include "b2RevoluteJoint.cpp";
 		
 	//public:
-		//b2Vec2 GetAnchor1() const;
-		//b2Vec2 GetAnchor2() const;
+		//b2Vec2 GetAnchorA() const;
+		//b2Vec2 GetAnchorB() const;
 
 		//b2Vec2 GetReactionForce(float32 inv_dt) const;
 		//float32 GetReactionTorque(float32 inv_dt) const;
@@ -90,7 +90,8 @@ package Box2D.Dynamics.Joints
 		/// Get the current motor torque, usually in N-m.
 		//float32 GetMotorTorque() const;
 
-		//--------------- Internals Below -------------------
+	//protected:
+
 		//b2RevoluteJoint(const b2RevoluteJointDef* def);
 
 		//void InitVelocityConstraints(const b2TimeStep& step);

@@ -235,3 +235,25 @@ public static function b2ClipSegmentToLine(segmentOut:b2ClipVertexSegment, segme
 
 	return numOut;
 }
+
+//bool b2TestOverlap(const b2Shape* shapeA, const b2Shape* shapeB,
+//				   const b2Transform& xfA, const b2Transform& xfB)
+public static function b2TestOverlap_Shapes (shapeA:b2Shape, shapeB:b2Shape,
+				   xfA:b2Transform, xfB:b2Transform):Boolean
+{
+	var input:b2DistanceInput = new b2DistanceInput ();
+	input.proxyA.Set(shapeA);
+	input.proxyB.Set(shapeB);
+	input.transformA.CopyFrom (xfA);
+	input.transformB.CopyFrom (xfB);
+	input.useRadii = true;
+
+	var cache:b2SimplexCache = new b2SimplexCache ();
+	cache.count = 0;
+
+	var output:b2DistanceOutput = new b2DistanceOutput ();
+
+	b2Distance.b2Distance_ (output, cache, input);
+
+	return output.distance < 10.0 * b2Settings.b2_epsilon;
+}

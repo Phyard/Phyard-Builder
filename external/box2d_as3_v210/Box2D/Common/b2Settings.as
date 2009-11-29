@@ -50,8 +50,8 @@ package Box2D.Common
 		//#define	B2_FLT_EPSILON	FLT_EPSILON
 		//#define b2_pi						3.14159265359f
 
-		public static const B2_FLT_MAX    :Number = Number.MAX_VALUE; // in the c++ version, the value is max float32 (3.402823466e+38), but all numbers in as3 are float64
-		public static const B2_FLT_EPSILON:Number = 1.192092896e-07;
+		public static const b2_maxFloat   :Number = Number.MAX_VALUE; // in the c++ version, the value is max float32 (3.402823466e+38), but all numbers in as3 are float64
+		public static const b2_epsilon    :Number = 1.192092896e-07;
 		public static const b2_pi         :Number = Math.PI;          // in the c++ version the value is 3.14159265359f
 		
 		// moved from b2Collision.h

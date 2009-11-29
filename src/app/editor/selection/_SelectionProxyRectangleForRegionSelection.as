@@ -24,8 +24,8 @@ package editor.selection {
       {
          super.RebuildRectangle (rotation, centerX, centerY, halfWidth, halfHeight);
          
-         b2eFixtureHelper.SetDensity (_b2Body.m_fixtureList, 1.0);
-         _b2Body.ResetMass ();
+         _b2Body.m_fixtureList.SetDensity (1.0);
+         _b2Body.ResetMassData ();
       }
    }
 }

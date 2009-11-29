@@ -17,7 +17,7 @@ package Box2dEx.Helper {
          
          while (b != null)
          {
-            b.WakeUp ();
+            b.SetAwake (true);
             b = b.m_next;
          }
       }

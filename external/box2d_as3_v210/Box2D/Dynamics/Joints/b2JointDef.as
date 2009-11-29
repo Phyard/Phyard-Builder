@@ -9,8 +9,8 @@ package Box2D.Dynamics.Joints
 		{
 			type = b2Joint.e_unknownJoint;
 			userData = null;
-			body1 = null;
-			body2 = null;
+			bodyA = null;
+			bodyB = null;
 			collideConnected = false;
 		}
 
@@ -22,10 +22,10 @@ package Box2D.Dynamics.Joints
 		public var userData:Object;
 
 		/// The first attached body.
-		public var body1:b2Body;
+		public var bodyA:b2Body;
 
 		/// The second attached body.
-		public var body2:b2Body;
+		public var bodyB:b2Body;
 
 		/// Set this flag to true if the attached bodies should collide.
 		public var collideConnected:Boolean;

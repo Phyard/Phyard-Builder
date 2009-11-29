@@ -45,10 +45,18 @@ package Box2D.Dynamics
 		include "b2Body.cpp"; 
 		
 	//public:
+	
+		/// Set the type of this body. This may alter the mass and velocity.
+		//void SetType(b2BodyType type);
+
+		/// Get the type of this body.
+		//b2BodyType GetType() const;
+
 		/// Creates a fixture and attach it to this body. Use this function if you need
 		/// to set some fixture parameters, like friction. Otherwise you can create the
 		/// fixture directly from a shape.
-		/// This function automatically updates the mass of the body.
+		/// If the density is non-zero, this function automatically updates the mass of the body.
+		/// Contacts are not created until the next time step.
 		/// @param def the fixture definition.
 		/// @warning This function is locked during callbacks.
 		//b2Fixture* CreateFixture(const b2FixtureDef* def);
@@ -56,15 +64,17 @@ package Box2D.Dynamics
 		/// Creates a fixture from a shape and attach it to this body.
 		/// This is a convenience function. Use b2FixtureDef if you need to set parameters
 		/// like friction, restitution, user data, or filtering.
-		/// This function automatically updates the mass of the body.
+		/// If the density is non-zero, this function automatically updates the mass of the body.
 		/// @param shape the shape to be cloned.
 		/// @param density the shape density (set to zero for static bodies).
 		/// @warning This function is locked during callbacks.
 		//b2Fixture* CreateFixture(const b2Shape* shape, float32 density = 0.0f);
 
 		/// Destroy a fixture. This removes the fixture from the broad-phase and
-		/// therefore destroys any contacts associated with this fixture. All fixtures
-		/// attached to a body are implicitly destroyed when the body is destroyed.
+		/// destroys all contacts associated with this fixture. This will
+		/// automatically adjust the mass of the body if the body is dynamic and the
+		/// fixture has positive density.
+		/// All fixtures attached to a body are implicitly destroyed when the body is destroyed.
 		/// @param fixture the fixture to be removed.
 		/// @warning This function is locked during callbacks.
 		//void DestroyFixture(b2Fixture* fixture);
@@ -143,9 +153,9 @@ package Box2D.Dynamics
 		//void GetMassData(b2MassData* data) const;
 
 		/// Set the mass properties to override the mass properties of the fixtures.
-		/// Note that this changes the center of mass position. You can make the body
-		/// static by using zero mass.
+		/// Note that this changes the center of mass position.
 		/// Note that creating or destroying fixtures can also alter the mass.
+		/// This function has no effect if the body isn't dynamic.
 		/// @warning The supplied rotational inertia is assumed to be relative to the center of mass.
 		/// @param massData the mass properties.
 		//void SetMassData(const b2MassData* data);
@@ -153,7 +163,7 @@ package Box2D.Dynamics
 		/// This resets the mass properties to the sum of the mass properties of the fixtures.
 		/// This normally does not need to be called unless you called SetMassData to override
 		/// the mass and you later want to reset the mass.
-		//void ResetMass();
+		//void ResetMassData();
 
 		/// Get the world coordinates of a point given the local coordinates.
 		/// @param localPoint a point on the body measured relative the the body's origin.
@@ -197,52 +207,69 @@ package Box2D.Dynamics
 		/// Set the angular damping of the body.
 		//void SetAngularDamping(float32 angularDamping);
 
-		/// Is this body treated like a bullet for continuous collision detection?
-		//bool IsBullet() const;
-
 		/// Should this body be treated like a bullet for continuous collision detection?
 		//void SetBullet(bool flag);
 
-		/// Is this body static (immovable)?
-		//bool IsStatic() const;
+		/// Is this body treated like a bullet for continuous collision detection?
+		//bool IsBullet() const;
 
-		/// Is this body dynamic (movable)?
-		//bool IsDynamic() const;
-
-		/// Is this body sleeping (not simulating).
-		//bool IsSleeping() const;
+		/// You can disable sleeping on this body. If you disable sleeping, the
+		/// body will be woken.
+		//void SetSleepingAllowed(bool flag);
 
 		/// Is this body allowed to sleep
-		//bool IsAllowSleeping() const;
+		//bool IsSleepingAllowed() const;
 
-		/// You can disable sleeping on this body.
-		//void AllowSleeping(bool flag);
+		/// Set the sleep state of the body. A sleeping body has very
+		/// low CPU cost.
+		/// @param flag set to true to put body to sleep, false to wake it.
+		//void SetAwake(bool flag);
 
-		/// Wake up this body so it will begin simulating.
-		//void WakeUp();
+		/// Get the sleeping state of this body.
+		/// @return true if the body is sleeping.
+		//bool IsAwake() const;
 
-		/// Put this body to sleep so it will stop simulating.
-		/// This also sets the velocity to zero.
-		//void PutToSleep();
+		/// Set the active state of the body. An inactive body is not
+		/// simulated and cannot be collided with or woken up.
+		/// If you pass a flag of true, all fixtures will be added to the
+		/// broad-phase.
+		/// If you pass a flag of false, all fixtures will be removed from
+		/// the broad-phase and all contacts will be destroyed.
+		/// Fixtures and joints are otherwise unaffected. You may continue
+		/// to create/destroy fixtures and joints on inactive bodies.
+		/// Fixtures on an inactive body are implicitly inactive and will
+		/// not participate in collisions, ray-casts, or queries.
+		/// Joints connected to an inactive body are implicitly inactive.
+		/// An inactive body is still owned by a b2World object and remains
+		/// in the body list.
+		//void SetActive(bool flag);
+
+		/// Get the active state of the body.
+		//bool IsActive() const;
+
+		/// Set this body to have fixed rotation. This causes the mass
+		/// to be reset.
+		//void SetFixedRotation(bool flag);
+
+		/// Does this body have fixed rotation?
+		//bool IsFixedRotation() const;
 
 		/// Get the list of all fixtures attached to this body.
 		//b2Fixture* GetFixtureList();
-
-		/// Get the list of all fixtures attached to this body.
 		//const b2Fixture* GetFixtureList() const;
 
 		/// Get the list of all joints attached to this body.
 		//b2JointEdge* GetJointList();
+		//const b2JointEdge* GetJointList() const;
 
 		/// Get the list of all contacts attached to this body.
 		/// @warning this list changes during the time step and you may
 		/// miss some collisions if you don't use b2ContactListener.
 		//b2ContactEdge* GetContactList();
+		//const b2ContactEdge* GetContactList() const;
 
 		/// Get the next body in the world's body list.
 		//b2Body* GetNext();
-
-		/// Get the next body in the world's body list.
 		//const b2Body* GetNext() const;
 
 		/// Get the user data pointer that was provided in the body definition.
@@ -253,49 +280,55 @@ package Box2D.Dynamics
 
 		/// Get the parent world of this body.
 		//b2World* GetWorld();
+		//const b2World* GetWorld() const;
 
 	//private:
+
+		/// The body type.
+		/// static: zero mass, zero velocity, may be manually moved
+		/// kinematic: zero mass, non-zero velocity set by user, moved by solver
+		/// dynamic: positive mass, non-zero velocity determined by forces, moved by solver
+		//enum b2BodyType
+		//{
+			public static const b2_staticBody:int = 0;
+			public static const b2_kinematicBody:int = 1;
+			public static const b2_dynamicBody:int = 2;
+		//};
 
 		// m_flags
 		//enum
 		//{
 			public static const e_islandFlag:int			= 0x0001;
-			public static const e_sleepFlag:int				= 0x0002;
-			public static const e_allowSleepFlag:int		= 0x0004;
+			public static const e_awakeFlag:int				= 0x0002;
+			public static const e_autoSleepFlag:int		= 0x0004;
 			public static const e_bulletFlag:int			= 0x0008;
 			public static const e_fixedRotationFlag:int	= 0x0010;
+			public static const e_activeFlag:int			= 0x0020;
 		//};
-
-		// m_type
-		//enum
-		//{
-			public static const e_staticType:int = 0;
-			public static const e_dynamicType:int = 1;
-			public static const e_maxTypes:int = 2;
-		//};
-
-
 
 		//b2Body(const b2BodyDef* bd, b2World* world);
 		//~b2Body();
-
 
 		//void SynchronizeFixtures();
 		//void SynchronizeTransform();
 
 		// This is used to prevent connected bodies from colliding.
 		// It may lie, depending on the collideConnected flag.
-		//bool IsConnected(const b2Body* other) const;
+		//bool ShouldCollide(const b2Body* other) const;
 
 		//void Advance(float32 t);
 
-		public var m_flags:int;
+		//b2BodyType m_type;
 		public var m_type:int;
+
+		public var m_flags:int;
 
 		public var m_islandIndex:int;
 
 		public var m_xf:b2Transform = new b2Transform ();		// the body origin transform
 		public var m_sweep:b2Sweep = new b2Sweep ();	// the swept motion for CCD
+
+		public var m_inertiaScale:Number;
 
 		public var m_linearVelocity:b2Vec2 = new b2Vec2 ();
 		public var m_angularVelocity:Number;
@@ -325,6 +358,12 @@ package Box2D.Dynamics
 
 	// inline
 		
+		//b2BodyType b2Body::GetType() const
+		public function GetType():int
+		{
+			return m_type;
+		}
+
 		public function GetTransform():b2Transform
 		{
 			return m_xf;
@@ -352,6 +391,11 @@ package Box2D.Dynamics
 
 		public function SetLinearVelocity(v:b2Vec2):void
 		{
+			if (m_type == b2_staticBody)
+			{
+				return;
+			}
+
 			//m_linearVelocity = v;
 			m_linearVelocity.x = v.x;
 			m_linearVelocity.y = v.y;
@@ -360,12 +404,17 @@ package Box2D.Dynamics
 		public function GetLinearVelocity():b2Vec2
 		{
 			// notice: in c++ version, a value type is returned
-			return m_linearVelocity;
+			return m_linearVelocity; // the caller should not modify the return value. ToDo: a safe implemmentation
 			//return b2Vec2.b2Vec2_From2Numbers (m_linearVelocity.x, m_linearVelocity.y);
 		}
 
 		public function SetAngularVelocity(w:Number):void
 		{
+			if (m_type == b2_staticBody)
+			{
+				return;
+			}
+
 			m_angularVelocity = w;
 		}
 
@@ -452,11 +501,6 @@ package Box2D.Dynamics
 			m_angularDamping = angularDamping;
 		}
 
-		public function IsBullet():Boolean
-		{
-			return (m_flags & e_bulletFlag) == e_bulletFlag;
-		}
-
 		public function SetBullet(flag:Boolean):void
 		{
 			if (flag)
@@ -469,53 +513,75 @@ package Box2D.Dynamics
 			}
 		}
 
-		public function IsStatic():Boolean
+		public function IsBullet():Boolean
 		{
-			return m_type == e_staticType;
+			return (m_flags & e_bulletFlag) == e_bulletFlag;
 		}
 
-		public function IsDynamic():Boolean
-		{
-			return m_type == e_dynamicType;
-		}
-
-		public function IsSleeping():Boolean
-		{
-			return (m_flags & e_sleepFlag) == e_sleepFlag;
-		}
-
-		public function IsAllowSleeping():Boolean
-		{
-			return (m_flags & e_allowSleepFlag) == e_allowSleepFlag;
-		}
-
-		public function AllowSleeping(flag:Boolean):void
+		public function SetAwake(flag:Boolean):void
 		{
 			if (flag)
 			{
-				m_flags |= e_allowSleepFlag;
+				m_flags |= e_awakeFlag;
+				m_sleepTime = 0.0;
 			}
 			else
 			{
-				m_flags &= ~e_allowSleepFlag;
-				WakeUp();
+				m_flags &= ~e_awakeFlag;
+				m_sleepTime = 0.0;
+				m_linearVelocity.SetZero();
+				m_angularVelocity = 0.0;
+				m_force.SetZero();
+				m_torque = 0.0;
 			}
 		}
 
-		public function WakeUp():void
+		public function IsAwake():Boolean
 		{
-			m_flags &= ~e_sleepFlag;
-			m_sleepTime = 0.0;
+			return (m_flags & e_awakeFlag) == e_awakeFlag;
 		}
 
-		public function PutToSleep():void
+		public function IsActive():Boolean
 		{
-			m_flags |= e_sleepFlag;
-			m_sleepTime = 0.0;
-			m_linearVelocity.SetZero();
-			m_angularVelocity = 0.0;
-			m_force.SetZero();
-			m_torque = 0.0;
+			return (m_flags & e_activeFlag) == e_activeFlag;
+		}
+
+		public function SetFixedRotation(flag:Boolean):void
+		{
+			if (flag)
+			{
+				m_flags |= e_fixedRotationFlag;
+			}
+			else
+			{
+				m_flags &= ~e_fixedRotationFlag;
+			}
+
+			//ResetMassData();
+			OnMassDataChanged ();
+		}
+
+		public function IsFixedRotation():Boolean
+		{
+			return (m_flags & e_fixedRotationFlag) == e_fixedRotationFlag;
+		}
+
+		public function SetSleepingAllowed(flag:Boolean):void
+		{
+			if (flag)
+			{
+				m_flags |= e_autoSleepFlag;
+			}
+			else
+			{
+				m_flags &= ~e_autoSleepFlag;
+				SetAwake(true);
+			}
+		}
+
+		public function IsSleepingAllowed():Boolean
+		{
+			return (m_flags & e_autoSleepFlag) == e_autoSleepFlag;
 		}
 
 		public function GetFixtureList():b2Fixture
@@ -533,10 +599,20 @@ package Box2D.Dynamics
 			return m_jointList;
 		}
 
+		//inline const b2JointEdge* b2Body::GetJointList() const
+		//{
+		//	return m_jointList;
+		//}
+
 		public function GetContactList():b2ContactEdge
 		{
 			return m_contactList;
 		}
+
+		//inline const b2ContactEdge* b2Body::GetContactList() const
+		//{
+		//	return m_contactList;
+		//}
 
 		public function GetNext():b2Body
 		{
@@ -548,22 +624,28 @@ package Box2D.Dynamics
 		//	return m_next;
 		//}
 
-		public function GetUserData():Object
-		{
-			return m_userData;
-		}
-
 		public function SetUserData(data:Object):void
 		{
 			m_userData = data;
 		}
 
+		public function GetUserData():Object
+		{
+			return m_userData;
+		}
+
 		public function ApplyForce(force:b2Vec2, point:b2Vec2):void
 		{
-			if (IsSleeping())
+			if (m_type != b2_dynamicBody)
 			{
-				WakeUp();
+				return;
 			}
+
+			if (IsAwake() == false)
+			{
+				SetAwake(true);
+			}
+
 			//m_force += force;
 			m_force.x += force.x;
 			m_force.y += force.y;
@@ -573,19 +655,31 @@ package Box2D.Dynamics
 
 		public function ApplyTorque(torque:Number):void
 		{
-			if (IsSleeping())
+			if (m_type != b2_dynamicBody)
 			{
-				WakeUp();
+				return;
 			}
+
+			if (IsAwake() == false)
+			{
+				SetAwake(true);
+			}
+
 			m_torque += torque;
 		}
 
 		public function ApplyImpulse(impulse:b2Vec2, point:b2Vec2):void
 		{
-			if (IsSleeping())
+			if (m_type != b2_dynamicBody)
 			{
-				WakeUp();
+				return;
 			}
+
+			if (IsAwake() == false)
+			{
+				SetAwake(true);
+			}
+
 			//m_linearVelocity += m_invMass * impulse;
 			m_linearVelocity.x += m_invMass * impulse.x;
 			m_linearVelocity.y += m_invMass * impulse.y;
@@ -615,7 +709,12 @@ package Box2D.Dynamics
 		{
 			return m_world;
 		}
-		
+
+		//inline const b2World* b2Body::GetWorld() const
+		//{
+		//	return m_world;
+		//}
+
 //******************************************************************************
 // hacking
 //******************************************************************************
@@ -626,22 +725,13 @@ package Box2D.Dynamics
 		{
 			mAutoUpdateMass = auto;
 		}
-		
-		private var mStaticForcely:Boolean = false;
-		
-		// the value of mStaticForcely may be not same as the return value of IsStatic () if it is false.
-		// need to call ResetMass to make effect
-		public function SetStatic (staticForcely:Boolean):void
+
+		public function OnMassDataChanged ():void
 		{
-			if (mStaticForcely != staticForcely)
-			{
-				mStaticForcely = staticForcely;
-				
-				if (mAutoUpdateMass)
-					ResetMass ();
-			}
+			if (mAutoUpdateMass)
+				ResetMassData ();
 		}
-		
+
 		public function CoincideWithCentroid ():void
 		{
 			//b2Assert(m_world->IsLocked() == false);
@@ -675,7 +765,7 @@ package Box2D.Dynamics
 				}
 			}
 		}
-		
+
 		// just a minor optimization to SetTransform
 		public function SetPosition (x:Number, y:Number):void
 		{
@@ -693,42 +783,45 @@ package Box2D.Dynamics
 			NotifyTransformChangedManually (m_sweep.a);
 		}
 
-		// need to call ResetMass to make effect
-		public function SetFixRotation (fixRotation:Boolean):void
+		public function IsStatic ():Boolean
 		{
-			//b2Assert(m_world->IsLocked() == false);
-			if (m_world.IsLocked() == true)
+			return m_type == b2_staticBody;
+		}
+
+		public function SetStatic (static:Boolean):void
+		{
+			if (static)
 			{
-				return;
+				SetType (b2_staticBody);
 			}
-			
-			if (fixRotation)
+			else if (mInfiniteMass)
 			{
-				if ( (m_flags & e_fixedRotationFlag) != 0 )
-					return;
-				
-				m_flags |= e_fixedRotationFlag;
-				
-				if (mAutoUpdateMass)
-					ResetMass ();
-				
-				m_angularVelocity = 0.0;
+				SetType (b2_kinematicBody)
 			}
 			else
 			{
-				if ( (m_flags & e_fixedRotationFlag) == 0 )
-					return;
-				
-				m_flags &= ~e_fixedRotationFlag;
-				
-				if (mAutoUpdateMass)
-					ResetMass ();
+				SetType (b2_dynamicBody);
 			}
 		}
 
-		public function IsFixRotation ():Boolean
+		private var mInfiniteMass:Boolean = false;
+
+		// only valid for dynaic body
+		public function SetInfiniteMass (infinite:Boolean):void
 		{
-			return m_invI == 0.0;
+			mInfiniteMass = infinite;
+
+			if (m_type == b2_staticBody)
+				return;
+
+			if (infinite)
+			{
+				SetType (b2_kinematicBody);
+			}
+			else
+			{
+				SetType (b2_dynamicBody);
+			}
 		}
 
 	} // class

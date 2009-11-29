@@ -32,6 +32,7 @@ public function b2Fixture()
 	m_next = null;
 	m_proxyId = b2BroadPhase.e_nullProxy;
 	m_shape = null;
+	m_density = 0.0;
 }
 
 //b2Fixture::~b2Fixture()
@@ -41,7 +42,7 @@ public function _b2Fixture ():void
 	//b2Assert(m_proxyId == b2BroadPhase::e_nullProxy);
 }
 
-public function Create(allocator:b2BlockAllocator, broadPhase:b2BroadPhase, body:b2Body, xf:b2Transform, def:b2FixtureDef):void
+public function Create(allocator:b2BlockAllocator, body:b2Body, xf:b2Transform, def:b2FixtureDef):void
 {
 	m_userData = def.userData;
 	m_friction = def.friction;
@@ -56,22 +57,13 @@ public function Create(allocator:b2BlockAllocator, broadPhase:b2BroadPhase, body
 
 	m_shape = def.shape.Clone(allocator);
 
-	m_shape.ComputeMass(m_massData, def.density);
-
-	// Create proxy in the broad-phase.
-	m_shape.ComputeAABB(m_aabb, xf);
-
-	m_proxyId = broadPhase.CreateProxy(m_aabb, this);
+	m_density = def.density;
 }
 
-public function Destroy(allocator:b2BlockAllocator, broadPhase:b2BroadPhase):void
+public function Destroy(allocator:b2BlockAllocator):void
 {
-	// Remove proxy from the broad-phase.
-	if (m_proxyId != b2BroadPhase.e_nullProxy)
-	{
-		broadPhase.DestroyProxy(m_proxyId);
-		m_proxyId = b2BroadPhase.e_nullProxy;
-	}
+	// The proxy must be destroyed before calling this.
+	//b2Assert(m_proxyId == b2BroadPhase::e_nullProxy);
 
 	// Free the child shape.
 	switch (m_shape.m_type)
@@ -98,6 +90,27 @@ public function Destroy(allocator:b2BlockAllocator, broadPhase:b2BroadPhase):voi
 	}
 
 	m_shape = null;
+}
+
+public function CreateProxy(broadPhase:b2BroadPhase, xf:b2Transform):void
+{
+	//b2Assert(m_proxyId == b2BroadPhase::e_nullProxy);
+
+	// Create proxy in the broad-phase.
+	m_shape.ComputeAABB(m_aabb, xf);
+	m_proxyId = broadPhase.CreateProxy(m_aabb, this);
+}
+
+public function DestroyProxy(broadPhase:b2BroadPhase):void
+{
+	if (m_proxyId == b2BroadPhase.e_nullProxy)
+	{
+		return;
+	}
+
+	// Destroy proxy in the broad-phase.
+	broadPhase.DestroyProxy(m_proxyId);
+	m_proxyId = b2BroadPhase.e_nullProxy;
 }
 
 public function Synchronize(broadPhase:b2BroadPhase, transform1:b2Transform, transform2:b2Transform):void
@@ -139,6 +152,8 @@ public function SetFilterData(filter:b2Filter):void
 		{
 			contact.FlagForFiltering();
 		}
+		
+		edge = edge.next;
 	}
 }
 
@@ -156,7 +171,6 @@ public function SetSensor(sensor:Boolean):void
 		return;
 	}
 
-	// Flag associated contacts for filtering.
 	var edge:b2ContactEdge = m_body.GetContactList();
 	while (edge != null)
 	{
@@ -165,8 +179,10 @@ public function SetSensor(sensor:Boolean):void
 		var fixtureB:b2Fixture = contact.GetFixtureB();
 		if (fixtureA == this || fixtureB == this)
 		{
-			contact.SetAsSensor(m_isSensor);
+			contact.SetSensor(fixtureA.IsSensor() || fixtureB.IsSensor());
 		}
+		
+		edge = edge.next;
 	}
 }
 

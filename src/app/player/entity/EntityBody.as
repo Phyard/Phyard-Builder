@@ -6,6 +6,8 @@ package player.entity {
    import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
    
+   import common.Define;
+   
    // There will many shapes glued with a body, either the shapes are physics or not.
    // 
    // In simulation, all shapes glued will syncronize their position and rotation with the body.
@@ -181,6 +183,19 @@ package player.entity {
 //   physics proxy
 //=============================================================
       
+      internal function TracePhysicsInfo ():void
+      {
+         if (mPhysicsProxy == null)
+            return;
+         
+         var proxyBody:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
+         
+         trace ("--------------------- body info");
+         trace ("rotation: " + proxyBody.GetRotation () * Define.kRadians2Degrees);
+         trace ("vx: " + proxyBody.GetLinearVelocityX ());
+         trace ("vy: " + proxyBody.GetLinearVelocityY ());
+      }
+      
       public function IsPhysicsBuilt ():Boolean
       {
          return mPhysicsProxy != null;
@@ -244,6 +259,14 @@ package player.entity {
          proxyBody.SetAllowSleeping (allow_sleeping);
          proxyBody.SetFixRotation (fix_rotation);
          proxyBody.ResetMass ();
+      }
+      
+      public function UpdateMass ():void
+      {
+         if (mPhysicsProxy == null)
+            return;
+         
+         (mPhysicsProxy as PhysicsProxyBody).ResetMass ();
       }
       
       public function CoincideWithCentroid ():void

@@ -11,10 +11,5 @@ package Box2dEx.Helper {
    
    public class b2eFixtureHelper
    {
-      // to commit this density change, a body.ResetMass () calling is needed
-      public static function SetDensity (fixture:b2Fixture, density:Number):void
-      {
-         fixture.GetShape ().ComputeMass(fixture.GetMassData (), density);
-      }
    }
 }

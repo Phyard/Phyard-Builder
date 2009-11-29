@@ -252,7 +252,7 @@ package editor.selection {
          var dx:Number = localX2 - localX1;
          var dy:Number = localY2 - localY1;
          
-         if (Math.abs (dx) < b2Settings.B2_FLT_EPSILON && Math.abs (dy) < b2Settings.B2_FLT_EPSILON) // will cause strange behaviour
+         if (Math.abs (dx) < b2Settings.b2_epsilon && Math.abs (dy) < b2Settings.b2_epsilon) // will cause strange behaviour
             return;
          
          var rot:Number = Math.atan2 (dy, dx);

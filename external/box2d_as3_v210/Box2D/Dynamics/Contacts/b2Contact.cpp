@@ -108,8 +108,8 @@ public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = n
 
 	if (contact.m_manifold.m_pointCount > 0)
 	{
-		contact.GetFixtureA().GetBody().WakeUp();
-		contact.GetFixtureB().GetBody().WakeUp();
+		contact.GetFixtureA().GetBody().SetAwake(true);
+		contact.GetFixtureB().GetBody().SetAwake(true);
 	}
 
 	var typeA:int = contact.GetFixtureA().GetType();
@@ -124,12 +124,7 @@ public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = n
 
 public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 {
-	if (fA == null || fB == null)
-	{
-		return
-	}
-
-	m_flags = 0;
+	m_flags = e_enabledFlag;
 
 	if (fA.IsSensor() || fB.IsSensor())
 	{
@@ -139,13 +134,9 @@ public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 	var bodyA:b2Body = fA.GetBody();
 	var bodyB:b2Body = fB.GetBody();
 
-	if (bodyA.IsStatic() || bodyA.IsBullet() || bodyB.IsStatic() || bodyB.IsBullet())
+	if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet())
 	{
 		m_flags |= e_continuousFlag;
-	}
-	else
-	{
-		m_flags &= ~e_continuousFlag;
 	}
 
 	m_fixtureA = fA;
@@ -173,7 +164,7 @@ public function Update(listener:b2ContactListener):void
 	var oldManifold:b2Manifold = m_manifold.Clone ();
 
 	// Re-enable this contact.
-	m_flags &= ~e_disabledFlag;
+	m_flags |= e_enabledFlag;
 
 	if (b2Collision.b2TestOverlap(m_fixtureA.m_aabb, m_fixtureB.m_aabb))
 	{
@@ -192,12 +183,12 @@ public function Update(listener:b2ContactListener):void
 
 	if (newCount == 0 && oldCount > 0)
 	{
-		bodyA.WakeUp();
-		bodyB.WakeUp();
+		bodyA.SetAwake(true);
+		bodyB.SetAwake(true);
 	}
 
 	// Slow contacts don't generate TOI events.
-	if (bodyA.IsStatic() || bodyA.IsBullet() || bodyB.IsStatic() || bodyB.IsBullet())
+	if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet())
 	{
 		m_flags |= e_continuousFlag;
 	}

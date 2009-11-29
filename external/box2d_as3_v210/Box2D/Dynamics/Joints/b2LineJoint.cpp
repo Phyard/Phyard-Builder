@@ -94,9 +94,9 @@ public function b2LineJoint (def:b2LineJointDef)
 {
 	super (def);
 	
-	m_localAnchor1.CopyFrom (def.localAnchor1);
-	m_localAnchor2.CopyFrom (def.localAnchor2);
-	m_localXAxis1.CopyFrom (def.localAxis1);
+	m_localAnchor1.CopyFrom (def.localAnchorA);
+	m_localAnchor2.CopyFrom (def.localAnchorB);
+	m_localXAxis1.CopyFrom (def.localAxisA);
 	m_localYAxis1.CopyFrom (b2Math.b2Cross_ScalarAndVector2 (1.0, m_localXAxis1));
 
 	m_impulse.SetZero();
@@ -126,27 +126,27 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
-	m_localCenter1.CopyFrom (b1.GetLocalCenter());
-	m_localCenter2.CopyFrom (b2.GetLocalCenter());
+	m_localCenterA.CopyFrom (b1.GetLocalCenter());
+	m_localCenterB.CopyFrom (b2.GetLocalCenter());
 
 	var xf1:b2Transform = b1.GetTransform(); //.Clone ()
 	var xf2:b2Transform = b2.GetTransform(); //.Clone ()
 
 	// Compute the effective masses.
-	//b2Vec2 r1 = b2Mul(xf1.R, m_localAnchor1 - m_localCenter1);
-	b2Math.b2Subtract_Vector2_Output (m_localAnchor1, m_localCenter1, tempV);
+	//b2Vec2 r1 = b2Mul(xf1.R, m_localAnchor1 - m_localCenterA);
+	b2Math.b2Subtract_Vector2_Output (m_localAnchor1, m_localCenterA, tempV);
 	b2Math.b2Mul_Matrix22AndVector2_Output (xf1.R, tempV, r1);
-	//b2Vec2 r2 = b2Mul(xf2.R, m_localAnchor2 - m_localCenter2);
-	b2Math.b2Subtract_Vector2_Output ( m_localAnchor2, m_localCenter2, tempV);
+	//b2Vec2 r2 = b2Mul(xf2.R, m_localAnchor2 - m_localCenterB);
+	b2Math.b2Subtract_Vector2_Output ( m_localAnchor2, m_localCenterB, tempV);
 	b2Math.b2Mul_Matrix22AndVector2_Output (xf2.R, tempV, r2);
 	//b2Vec2 d = b2->m_sweep.c + r2 - b1->m_sweep.c - r1;
 	d.x = b2.m_sweep.c.x + r2.x - b1.m_sweep.c.x - r1.x;
 	d.y = b2.m_sweep.c.y + r2.y - b1.m_sweep.c.y - r1.y;
 
-	m_invMass1 = b1.m_invMass;
-	m_invI1 = b1.m_invI;
-	m_invMass2 = b2.m_invMass;
-	m_invI2 = b2.m_invI;
+	m_invMassA = b1.m_invMass;
+	m_invIA = b1.m_invI;
+	m_invMassB = b2.m_invMass;
+	m_invIB = b2.m_invI;
 
 	// Compute motor Jacobian and effective mass.
 	{
@@ -158,8 +158,8 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 		m_a1 = b2Math.b2Cross2 (tempV, m_axis);
 		m_a2 = b2Math.b2Cross2 (r2, m_axis);
 
-		m_motorMass = m_invMass1 + m_invMass2 + m_invI1 * m_a1 * m_a1 + m_invI2 * m_a2 * m_a2;
-		if (m_motorMass > b2Settings.B2_FLT_EPSILON)
+		m_motorMass = m_invMassA + m_invMassB + m_invIA * m_a1 * m_a1 + m_invIB * m_a2 * m_a2;
+		if (m_motorMass > b2Settings.b2_epsilon)
 		{
 			m_motorMass = 1.0 / m_motorMass;
 		}
@@ -180,8 +180,8 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 		m_s1 = b2Math.b2Cross2 (tempV, m_perp);
 		m_s2 = b2Math.b2Cross2 (r2, m_perp);
 
-		var m1:Number = m_invMass1, m2:Number = m_invMass2;
-		var i1:Number = m_invI1, i2:Number = m_invI2;
+		var m1:Number = m_invMassA, m2:Number = m_invMassB;
+		var i1:Number = m_invIA, i2:Number = m_invIB;
 
 		var k11:Number = m1 + m2 + i1 * m_s1 * m_s1 + i2 * m_s2 * m_s2;
 		var k12:Number = i1 * m_s1 * m_a1 + i2 * m_s2 * m_a2;
@@ -248,15 +248,15 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 		var L1:Number = m_impulse.x * m_s1 + tF * m_a1;
 		var L2:Number = m_impulse.x * m_s2 + tF * m_a2;
 
-		//b1->m_linearVelocity -= m_invMass1 * P;
-		b1.m_linearVelocity.x -= m_invMass1 * P.x;
-		b1.m_linearVelocity.y -= m_invMass1 * P.y;
-		b1.m_angularVelocity -= m_invI1 * L1;
+		//b1->m_linearVelocity -= m_invMassA * P;
+		b1.m_linearVelocity.x -= m_invMassA * P.x;
+		b1.m_linearVelocity.y -= m_invMassA * P.y;
+		b1.m_angularVelocity -= m_invIA * L1;
 
-		//b2->m_linearVelocity += m_invMass2 * P;
-		b2.m_linearVelocity.x += m_invMass2 * P.x;
-		b2.m_linearVelocity.y += m_invMass2 * P.y;
-		b2.m_angularVelocity += m_invI2 * L2;
+		//b2->m_linearVelocity += m_invMassB * P;
+		b2.m_linearVelocity.x += m_invMassB * P.x;
+		b2.m_linearVelocity.y += m_invMassB * P.y;
+		b2.m_angularVelocity += m_invIB * L2;
 	}
 	else
 	{
@@ -305,15 +305,15 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 		L1 = impulse * m_a1;
 		L2 = impulse * m_a2;
 
-		//v1 -= m_invMass1 * P;
-		v1.x -= m_invMass1 * P.x;
-		v1.y -= m_invMass1 * P.y;
-		w1 -= m_invI1 * L1;
+		//v1 -= m_invMassA * P;
+		v1.x -= m_invMassA * P.x;
+		v1.y -= m_invMassA * P.y;
+		w1 -= m_invIA * L1;
 
-		//v2 += m_invMass2 * P;
-		v2.x += m_invMass2 * P.x;
-		v2.y += m_invMass2 * P.y;
-		w2 += m_invI2 * L2;
+		//v2 += m_invMassB * P;
+		v2.x += m_invMassB * P.x;
+		v2.y += m_invMassB * P.y;
+		w2 += m_invIB * L2;
 	}
 
 	//float32 Cdot1 = b2Math.b2Dot2(m_perp, v2 - v1) + m_s2 * w2 - m_s1 * w1;
@@ -373,15 +373,15 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 		L1 = dfVec2.x * m_s1 + dfVec2.y * m_a1;
 		L2 = dfVec2.x * m_s2 + dfVec2.y * m_a2;
 
-		//v1 -= m_invMass1 * P;
-		v1.x -= m_invMass1 * P.x;
-		v1.y -= m_invMass1 * P.y;
-		w1 -= m_invI1 * L1;
+		//v1 -= m_invMassA * P;
+		v1.x -= m_invMassA * P.x;
+		v1.y -= m_invMassA * P.y;
+		w1 -= m_invIA * L1;
 
-		//v2 += m_invMass2 * P;
-		v2.x += m_invMass2 * P.x;
-		v2.y += m_invMass2 * P.y;
-		w2 += m_invI2 * L2;
+		//v2 += m_invMassB * P;
+		v2.x += m_invMassB * P.x;
+		v2.y += m_invMassB * P.y;
+		w2 += m_invIB * L2;
 	}
 	else
 	{
@@ -403,15 +403,15 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 		L1 = df * m_s1;
 		L2 = df * m_s2;
 
-		//v1 -= m_invMass1 * P;
-		v1.x -= m_invMass1 * P.x;
-		v1.y -= m_invMass1 * P.y;
-		w1 -= m_invI1 * L1;
+		//v1 -= m_invMassA * P;
+		v1.x -= m_invMassA * P.x;
+		v1.y -= m_invMassA * P.y;
+		w1 -= m_invIA * L1;
 
-		//v2 += m_invMass2 * P;
-		v2.x += m_invMass2 * P.x;
-		v2.y += m_invMass2 * P.y;
-		w2 += m_invI2 * L2;
+		//v2 += m_invMassB * P;
+		v2.x += m_invMassB * P.x;
+		v2.y += m_invMassB * P.y;
+		w2 += m_invIB * L2;
 	}
 
 	b1.m_linearVelocity.CopyFrom (v1);
@@ -454,13 +454,13 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	R1.SetFromAngle (a1);
 	R2.SetFromAngle (a2);
 
-	//b2Vec2 r1 = b2Mul(R1, m_localAnchor1 - m_localCenter1);
-	tempV.x = m_localAnchor1.x - m_localCenter1.x;
-	tempV.y = m_localAnchor1.y - m_localCenter1.y;
+	//b2Vec2 r1 = b2Mul(R1, m_localAnchor1 - m_localCenterA);
+	tempV.x = m_localAnchor1.x - m_localCenterA.x;
+	tempV.y = m_localAnchor1.y - m_localCenterA.y;
 	b2Math.b2Mul_Matrix22AndVector2_Output (R1, tempV, r1);
-	//b2Vec2 r2 = b2Mul(R2, m_localAnchor2 - m_localCenter2);
-	tempV.x = m_localAnchor2.x - m_localCenter2.x;
-	tempV.y = m_localAnchor2.y - m_localCenter2.y;
+	//b2Vec2 r2 = b2Mul(R2, m_localAnchor2 - m_localCenterB);
+	tempV.x = m_localAnchor2.x - m_localCenterB.x;
+	tempV.y = m_localAnchor2.y - m_localCenterB.y;
 	b2Math.b2Mul_Matrix22AndVector2_Output (R2, tempV, r2);
 	//b2Vec2 d = c2 + r2 - c1 - r1;
 	d.x = c2.x + r2.x - c1.x - r1.x;
@@ -523,8 +523,8 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 
 	if (active)
 	{
-		m1 = m_invMass1; m2 = m_invMass2;
-		i1 = m_invI1;    i2 = m_invI2;
+		m1 = m_invMassA; m2 = m_invMassB;
+		i1 = m_invIA;    i2 = m_invIB;
 
 		    k11        = m1 + m2 + i1 * m_s1 * m_s1 + i2 * m_s2 * m_s2;
 		var k12:Number = i1 * m_s1 * m_a1 + i2 * m_s2 * m_a2;
@@ -544,8 +544,8 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	}
 	else
 	{
-		m1 = m_invMass1; m2 = m_invMass2;
-		i1 = m_invI1;    i2 = m_invI2;
+		m1 = m_invMassA; m2 = m_invMassB;
+		i1 = m_invIA;    i2 = m_invIB;
 
 		k11 = m1 + m2 + i1 * m_s1 * m_s1 + i2 * m_s2 * m_s2;
 
@@ -568,14 +568,14 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	var L1:Number = impulse.x * m_s1 + impulse.y * m_a1;
 	var L2:Number = impulse.x * m_s2 + impulse.y * m_a2;
 
-	//c1 -= m_invMass1 * P;
-	c1.x -= m_invMass1 * P.x;
-	c1.y -= m_invMass1 * P.y;
-	a1 -= m_invI1 * L1;
-	//c2 += m_invMass2 * P;
-	c2.x += m_invMass2 * P.x;
-	c2.y += m_invMass2 * P.y;
-	a2 += m_invI2 * L2;
+	//c1 -= m_invMassA * P;
+	c1.x -= m_invMassA * P.x;
+	c1.y -= m_invMassA * P.y;
+	a1 -= m_invIA * L1;
+	//c2 += m_invMassB * P;
+	c2.x += m_invMassB * P.x;
+	c2.y += m_invMassB * P.y;
+	a2 += m_invIB * L2;
 
 	// TODO_ERIN remove need for this.
 	b1.m_sweep.c.CopyFrom (c1);
@@ -588,12 +588,12 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	return linearError <= b2Settings.b2_linearSlop && angularError <= b2Settings.b2_angularSlop;
 }
 
-override public function GetAnchor1():b2Vec2
+override public function GetAnchorA():b2Vec2
 {
 	return m_bodyA.GetWorldPoint(m_localAnchor1);
 }
 
-override public function GetAnchor2():b2Vec2
+override public function GetAnchorB():b2Vec2
 {
 	return m_bodyB.GetWorldPoint(m_localAnchor2);
 }
@@ -691,8 +691,8 @@ public function IsLimitEnabled():Boolean
 
 public function EnableLimit(flag:Boolean):void
 {
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_enableLimit = flag;
 }
 
@@ -709,8 +709,8 @@ public function GetUpperLimit():Number
 public function SetLimits(lower:Number, upper:Number):void
 {
 	//b2Assert(lower <= upper);
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_lowerTranslation = lower;
 	m_upperTranslation = upper;
 }
@@ -722,22 +722,22 @@ public function IsMotorEnabled():Boolean
 
 public function EnableMotor(flag:Boolean):void
 {
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_enableMotor = flag;
 }
 
 public function SetMotorSpeed(speed:Number):void
 {
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_motorSpeed = speed;
 }
 
 public function SetMaxMotorForce(force:Number):void
 {
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_maxMotorForce = force;
 }
 

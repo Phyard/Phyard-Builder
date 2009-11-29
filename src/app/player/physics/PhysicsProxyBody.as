@@ -52,17 +52,17 @@ package player.physics {
       
       public function SetAutoUpdateMass (auto:Boolean):void
       {
-         b2eBodyHelper.SetAutoUpdateMass (_b2Body, auto);
+         _b2Body.SetAutoUpdateMass (auto);
       }
       
       public function ResetMass ():void
       {
-         _b2Body.ResetMass ();
+         _b2Body.ResetMassData ();
       }
       
       public function SetDisplayPosition (posX:Number, posY:Number):void
       {
-         b2eBodyHelper.SetPosition (_b2Body, posX, posY);
+         _b2Body.SetPosition (posX, posY);
       }
       
       public function GetPositionX ():Number
@@ -78,6 +78,16 @@ package player.physics {
       internal function get _physicsPos ():b2Vec2
       {
          return _b2Body.GetPosition ();
+      }
+      
+      public function GetLinearVelocityX ():Number
+      {
+        return _b2Body.GetLinearVelocity ().x;
+      }
+      
+      public function GetLinearVelocityY ():Number
+      {
+         return _b2Body.GetLinearVelocity ().y;
       }
       
       public function CoincideWithCentroid ():void
@@ -102,7 +112,7 @@ package player.physics {
       
       public function SetStatic (setStatic:Boolean):void
       {
-         b2eBodyHelper.SetStatic (_b2Body, setStatic);
+         _b2Body.SetStatic (setStatic);
       }
       
       public function IsStatic ():Boolean
@@ -122,22 +132,22 @@ package player.physics {
       
       public function SetAllowSleeping (allowSleeping:Boolean):void
       {
-         _b2Body.AllowSleeping (allowSleeping);
+         _b2Body.SetSleepingAllowed (allowSleeping);
       }
       
       public function IsAllowSleep ():Boolean
       {
-         return _b2Body.IsAllowSleeping ();
+         return _b2Body.IsSleepingAllowed ();
       }
       
       public function SetFixRotation (fixRotation:Boolean):void
       {
-         b2eBodyHelper.SetFixRotation (_b2Body, fixRotation);
+         _b2Body.SetFixedRotation (fixRotation);
       }
       
       public function IsFixRotation ():Boolean
       {
-         return b2eBodyHelper.IsFixRotation (_b2Body);
+         return _b2Body.IsFixedRotation ();
       }
       
    }

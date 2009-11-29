@@ -14,8 +14,8 @@ package Box2D.Dynamics.Joints
 		public function b2DistanceJointDef ()
 		{
 			type = b2Joint.e_distanceJoint;
-			localAnchor1.Set(0.0, 0.0);
-			localAnchor2.Set(0.0, 0.0);
+			localAnchorA.Set(0.0, 0.0);
+			localAnchorB.Set(0.0, 0.0);
 			length = 1.0;
 			frequencyHz = 0.0;
 			dampingRatio = 0.0;
@@ -27,12 +27,12 @@ package Box2D.Dynamics.Joints
 		//				const b2Vec2& anchor1, const b2Vec2& anchor2);
 
 		/// The local anchor point relative to body1's origin.
-		public var localAnchor1:b2Vec2 = new b2Vec2 ();
+		public var localAnchorA:b2Vec2 = new b2Vec2 ();
 
 		/// The local anchor point relative to body2's origin.
-		public var localAnchor2:b2Vec2 = new b2Vec2 ();
+		public var localAnchorB:b2Vec2 = new b2Vec2 ();
 
-		/// The equilibrium length between the anchor points.
+		/// The natural length between the anchor points.
 		public var length:Number;
 
 		/// The response speed.
@@ -45,10 +45,10 @@ package Box2D.Dynamics.Joints
 		public function Initialize(b1:b2Body, b2:b2Body,
 											anchor1:b2Vec2, anchor2:b2Vec2):void
 		{
-			body1 = b1;
-			body2 = b2;
-			localAnchor1.CopyFrom (body1.GetLocalPoint(anchor1));
-			localAnchor2.CopyFrom (body2.GetLocalPoint(anchor2));
+			bodyA = b1;
+			bodyB = b2;
+			localAnchorA.CopyFrom (bodyA.GetLocalPoint(anchor1));
+			localAnchorB.CopyFrom (bodyB.GetLocalPoint(anchor2));
 			var d:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (anchor2.x - anchor1.x, anchor2.y - anchor1.y);
 			length = d.Length();
 		}

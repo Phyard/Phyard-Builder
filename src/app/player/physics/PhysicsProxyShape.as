@@ -47,6 +47,8 @@ package player.physics {
          {
             fixture = _b2Fixtures [i] as b2Fixture;
             fixture.GetBody ().DestroyFixture(fixture);
+            
+            trace ("DestroyFixture");
          }
          
          _b2Fixtures.splice (0, _b2Fixtures.length);
@@ -75,7 +77,7 @@ package player.physics {
       //private static var _b2CircleShape:b2CircleShape = new b2CircleShape ();
       //private static var _b2PolygonShape:b2PolygonShape = new b2PolygonShape ();
       
-      private static const Half_B2_FLT_EPSILON:Number = b2Settings.B2_FLT_EPSILON * 0.5;
+      private static const Half_B2_FLT_EPSILON:Number = b2Settings.b2_epsilon * 0.5;
       
       public function AddCircle (shapeLocalCenterX:Number, shapeLocalCenterY:Number, radius:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
@@ -94,11 +96,11 @@ package player.physics {
             else
             {
                var innerRadius:Number = radius - halfBorderThickness;
-               if (innerRadius < b2Settings.B2_FLT_EPSILON)
+               if (innerRadius < b2Settings.b2_epsilon)
                {
                   radius = outerRadius;
                }
-               else if (borderThickness < b2Settings.B2_FLT_EPSILON)
+               else if (borderThickness < b2Settings.b2_epsilon)
                {
                   // todo: use polyline instead
                   
@@ -117,7 +119,7 @@ package player.physics {
             return;
          }
          
-         if (radius < b2Settings.B2_FLT_EPSILON)
+         if (radius < b2Settings.b2_epsilon)
             return;
          
       // shape local to world
@@ -222,7 +224,7 @@ package player.physics {
          
          var polygon_shape:b2PolygonShape = new b2PolygonShape ();
          
-         if (halfCurveThickness + halfCurveThickness < b2Settings.B2_FLT_EPSILON)
+         if (halfCurveThickness + halfCurveThickness < b2Settings.b2_epsilon)
          {
             if (vertexCount < 2)
                return;
@@ -244,7 +246,7 @@ package player.physics {
                dx = vertex2.x - vertex1.x;
                dy = vertex2.y - vertex1.y;
                
-               if (dx > - b2Settings.B2_FLT_EPSILON && dx < b2Settings.B2_FLT_EPSILON && dy > - b2Settings.B2_FLT_EPSILON && dy < b2Settings.B2_FLT_EPSILON)
+               if (dx > - b2Settings.b2_epsilon && dx < b2Settings.b2_epsilon && dy > - b2Settings.b2_epsilon && dy < b2Settings.b2_epsilon)
                   continue;
                
                polygon_shape.SetAsEdge (vertex1, vertex2);
@@ -294,7 +296,7 @@ package player.physics {
                dx = vertex2.x - vertex1.x;
                dy = vertex2.y - vertex1.y;
                
-               if (dx > - b2Settings.B2_FLT_EPSILON && dx < b2Settings.B2_FLT_EPSILON && dy > - b2Settings.B2_FLT_EPSILON && dy < b2Settings.B2_FLT_EPSILON)
+               if (dx > - b2Settings.b2_epsilon && dx < b2Settings.b2_epsilon && dy > - b2Settings.b2_epsilon && dy < b2Settings.b2_epsilon)
                   continue;
                
                // rotate vector (dx, dy) by 90 degree => (- dy, dx)
@@ -421,7 +423,7 @@ package player.physics {
             
             if (buildBorder)
             {
-               if (borderThickness >= b2Settings.B2_FLT_EPSILON)
+               if (borderThickness >= b2Settings.b2_epsilon)
                {
                   CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * borderThickness, 0);
                }
@@ -517,7 +519,7 @@ package player.physics {
             tx =   halfWidth; ty =   halfHeight; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             tx = - halfWidth; ty =   halfHeight; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             
-            if (borderThickness < b2Settings.B2_FLT_EPSILON)
+            if (borderThickness < b2Settings.b2_epsilon)
             {
                if (halfWidth >= Half_B2_FLT_EPSILON && halfHeight >= Half_B2_FLT_EPSILON)
                {

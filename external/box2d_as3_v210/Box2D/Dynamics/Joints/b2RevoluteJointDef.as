@@ -19,8 +19,8 @@ package Box2D.Dynamics.Joints
 		public function b2RevoluteJointDef()
 		{
 			type = b2Joint.e_revoluteJoint;
-			localAnchor1.Set(0.0, 0.0);
-			localAnchor2.Set(0.0, 0.0);
+			localAnchorA.Set(0.0, 0.0);
+			localAnchorB.Set(0.0, 0.0);
 			referenceAngle = 0.0;
 			lowerAngle = 0.0;
 			upperAngle = 0.0;
@@ -32,13 +32,13 @@ package Box2D.Dynamics.Joints
 
 		/// Initialize the bodies, anchors, and reference angle using the world
 		/// anchor.
-		//void Initialize(b2Body* body1, b2Body* body2, const b2Vec2& anchor);
+		//void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor);
 
 		/// The local anchor point relative to body1's origin.
-		public var localAnchor1:b2Vec2 = new b2Vec2 ();
+		public var localAnchorA:b2Vec2 = new b2Vec2 ();
 
 		/// The local anchor point relative to body2's origin.
-		public var localAnchor2:b2Vec2 = new b2Vec2 ();
+		public var localAnchorB:b2Vec2 = new b2Vec2 ();
 
 		/// The body2 angle minus body1 angle in the reference state (radians).
 		public var referenceAngle:Number;
@@ -65,11 +65,11 @@ package Box2D.Dynamics.Joints
 		// ...
 		public function Initialize(b1:b2Body, b2:b2Body, anchor:b2Vec2):void
 		{
-			body1 = b1;
-			body2 = b2;
-			localAnchor1.CopyFrom (body1.GetLocalPoint(anchor));
-			localAnchor2.CopyFrom (body2.GetLocalPoint(anchor));
-			referenceAngle = body2.GetAngle() - body1.GetAngle();
+			bodyA = b1;
+			bodyB = b2;
+			localAnchorA.CopyFrom (bodyA.GetLocalPoint(anchor));
+			localAnchorB.CopyFrom (bodyB.GetLocalPoint(anchor));
+			referenceAngle = bodyB.GetAngle() - bodyA.GetAngle();
 		}
 
 	} // class

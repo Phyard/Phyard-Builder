@@ -7,6 +7,5 @@ package Box2D.Collision
 	{
 		public var normal:b2Vec2 = new b2Vec2 ();
 		public var fraction:Number;
-		public var hit:Boolean;
 	} // class
 } // package

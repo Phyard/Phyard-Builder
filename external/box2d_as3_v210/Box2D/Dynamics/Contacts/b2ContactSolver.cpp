@@ -108,13 +108,13 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 
 			var kNormal:Number = bodyA.m_invMass + bodyB.m_invMass + bodyA.m_invI * rnA + bodyB.m_invI * rnB;
 
-			//b2Assert(kNormal > B2_FLT_EPSILON);
+			//b2Assert(kNormal > b2_epsilon);
 			ccp.normalMass = 1.0 / kNormal;
 
 			var kEqualized:Number = bodyA.m_mass * bodyA.m_invMass + bodyB.m_mass * bodyB.m_invMass;
 			kEqualized += bodyA.m_mass * bodyA.m_invI * rnA + bodyB.m_mass * bodyB.m_invI * rnB;
 
-			//b2Assert(kEqualized > B2_FLT_EPSILON);
+			//b2Assert(kEqualized > b2_epsilon);
 			ccp.equalizedMass = 1.0 / kEqualized;
 
 			var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (cc.normal, 1.0);
@@ -126,7 +126,7 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 
 			var kTangent:Number = bodyA.m_invMass + bodyB.m_invMass + bodyA.m_invI * rtA + bodyB.m_invI * rtB;
 
-			//b2Assert(kTangent > B2_FLT_EPSILON);
+			//b2Assert(kTangent > b2_epsilon);
 			ccp.tangentMass = 1.0 /  kTangent;
 
 			// Setup a velocity bias for restitution.
@@ -683,8 +683,8 @@ public function FinalizeVelocityConstraints():void
 //		{
 //			b2ContactConstraintPoint* ccp = c->points + j;
 //
-//			b2Vec2 r1 = b2Mul(bodyA->GetXForm().R, ccp->localAnchorA - bodyA->GetLocalCenter());
-//			b2Vec2 r2 = b2Mul(bodyB->GetXForm().R, ccp->localAnchorB - bodyB->GetLocalCenter());
+//			b2Vec2 r1 = b2Mul(bodyA->GetTransform().R, ccp->localAnchorA - bodyA->GetLocalCenter());
+//			b2Vec2 r2 = b2Mul(bodyB->GetTransform().R, ccp->localAnchorB - bodyB->GetLocalCenter());
 //
 //			b2Vec2 p1 = bodyA->m_sweep.c + r1;
 //			b2Vec2 p2 = bodyB->m_sweep.c + r2;

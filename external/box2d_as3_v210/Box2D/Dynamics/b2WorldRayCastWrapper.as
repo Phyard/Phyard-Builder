@@ -14,9 +14,9 @@ package Box2D.Dynamics
 			var userData:Object = broadPhase.GetUserData(proxyId);
 			var fixture:b2Fixture = userData as b2Fixture;
 			var output:b2RayCastOutput = new b2RayCastOutput (); // if this is a member variable, the followed "output.normal" must be cloned 
-			fixture.RayCast(output, input);
+			var hit:Boolean = fixture.RayCast(output, input);
 
-			if (output.hit)
+			if (hit)
 			{
 				var fraction:Number = output.fraction;
 				//b2Vec2 point = (1.0f - fraction) * input.p1 + fraction * input.p2;

@@ -41,7 +41,7 @@ public static function b2EdgeSeparation(poly1:b2PolygonShape, xf1:b2Transform, e
 
 	// Find support vertex on poly2 for -normal.
 	var index:int = 0;
-	var minDot:Number = b2Settings.B2_FLT_MAX;
+	var minDot:Number = b2Settings.b2_maxFloat;
 
 	for (var i:int = 0; i < count2; ++i)
 	{
@@ -84,7 +84,7 @@ public static function b2FindMaxSeparation(maxSeparation:b2Separation, //int32* 
 
 	// Find edge normal on poly1 that has the largest projection onto d.
 	var edge:int = 0;
-	var maxDot:Number = - b2Settings.B2_FLT_MAX;
+	var maxDot:Number = - b2Settings.b2_maxFloat;
 	for (var i:int = 0; i < count1; ++i)
 	{
 		var dot:Number = b2Math.b2Dot2 (normals1[i], dLocal1);
@@ -186,7 +186,7 @@ public static function b2FindIncidentEdge(c:b2ClipVertexSegment, //b2ClipVertex 
 
 	// Find the incident edge on poly2.
 	var index:int = 0;
-	var minDot:Number = b2Settings.B2_FLT_MAX;
+	var minDot:Number = b2Settings.b2_maxFloat;
 	for (var i:int = 0; i < count2; ++i)
 	{
 		var dot:Number = b2Math.b2Dot2 (normal1, normals2[i]);

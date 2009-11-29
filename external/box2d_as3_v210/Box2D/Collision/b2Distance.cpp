@@ -162,7 +162,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 		var d:b2Vec2 = simplex.GetSearchDirection().Clone ();
 
 		// Ensure the search direction is numerically fit.
-		if (d.LengthSquared() < b2Settings.B2_FLT_EPSILON * b2Settings.B2_FLT_EPSILON)
+		if (d.LengthSquared() < b2Settings.b2_epsilon * b2Settings.b2_epsilon)
 		{
 			// The origin is probably contained by a line segment
 			// or triangle. Thus the shapes are overlapped.
@@ -231,7 +231,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 		var rA:Number = proxyA.m_radius;
 		var rB :Number= proxyB.m_radius;
 
-		if (output.distance > rA + rB && output.distance > b2Settings.B2_FLT_EPSILON)
+		if (output.distance > rA + rB && output.distance > b2Settings.b2_epsilon)
 		{
 			// Shapes are still no overlapped.
 			// Move the witness points to the outer surface.

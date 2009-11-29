@@ -56,10 +56,10 @@ package player.physics {
          // ...
          var distanceJointDef:b2DistanceJointDef = new b2DistanceJointDef ();
          
-         distanceJointDef.body1 = body1;
-         distanceJointDef.body2 = body2;
-         distanceJointDef.localAnchor1 = body1.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ()));
-         distanceJointDef.localAnchor2 = body2.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()));
+         distanceJointDef.bodyA = body1;
+         distanceJointDef.bodyB = body2;
+         distanceJointDef.localAnchorA = body1.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ()));
+         distanceJointDef.localAnchorB = body2.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()));
          distanceJointDef.length = b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX () - anchor1.GetPositionX (), anchor2.GetPositionY () - anchor1.GetPositionY ()).Length ();
          
          distanceJointDef.collideConnected = collideConnected;

@@ -14,7 +14,7 @@ package Box2D.Collision
 		public var p2:b2Vec2 = new b2Vec2 ();	///< the ending point
 		
 		//const float32 k_slop = 100.0f * B2_FLT_EPSILON;
-		public static const k_slop:Number = 100.0 * b2Settings.B2_FLT_EPSILON;
+		public static const k_slop:Number = 100.0 * b2Settings.b2_epsilon;
 		
 		//bool TestSegment(float32* lambda, b2Vec2* normal, const b2Segment& segment, float32 maxLambda) const;
 		public function TestSegment(segment:b2Segment, maxLambda:Number):b2TestSegmentOutput

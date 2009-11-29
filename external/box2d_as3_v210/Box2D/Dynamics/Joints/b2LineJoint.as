@@ -50,8 +50,8 @@ package Box2D.Dynamics.Joints
 		include "b2LineJoint.cpp";
 		
 	//public:
-		//b2Vec2 GetAnchor1() const;
-		//b2Vec2 GetAnchor2() const;
+		//b2Vec2 GetAnchorA() const;
+		//b2Vec2 GetAnchorB() const;
 
 		//b2Vec2 GetReactionForce(float32 inv_dt) const;
 		//float32 GetReactionTorque(float32 inv_dt) const;
@@ -89,13 +89,14 @@ package Box2D.Dynamics.Joints
 		/// Get the motor speed, usually in meters per second.
 		//float32 GetMotorSpeed() const;
 
-		/// Set the maximum motor force, usually in N.
+		/// Set/Get the maximum motor force, usually in N.
 		//void SetMaxMotorForce(float32 force);
+		//float32 GetMaxMotorForce() const;
 
 		/// Get the current motor force, usually in N.
 		//float32 GetMotorForce() const;
 
-		//--------------- Internals Below -------------------
+	//protected:
 
 		//b2LineJoint(const b2LineJointDef* def);
 

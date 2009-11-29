@@ -15,8 +15,8 @@ package Box2D.Dynamics.Joints
 		public function b2PrismaticJointDef()
 		{
 			type = b2Joint.e_prismaticJoint;
-			localAnchor1.SetZero();
-			localAnchor2.SetZero();
+			localAnchorA.SetZero();
+			localAnchorB.SetZero();
 			localAxis1.Set(1.0, 0.0);
 			referenceAngle = 0.0;
 			enableLimit = false;
@@ -29,13 +29,13 @@ package Box2D.Dynamics.Joints
 
 		/// Initialize the bodies, anchors, axis, and reference angle using the world
 		/// anchor and world axis.
-		//void Initialize(b2Body* body1, b2Body* body2, const b2Vec2& anchor, const b2Vec2& axis);
+		//void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor, const b2Vec2& axis);
 
 		/// The local anchor point relative to body1's origin.
-		public var localAnchor1:b2Vec2 = new b2Vec2 ();
+		public var localAnchorA:b2Vec2 = new b2Vec2 ();
 
 		/// The local anchor point relative to body2's origin.
-		public var localAnchor2:b2Vec2 = new b2Vec2 ();
+		public var localAnchorB:b2Vec2 = new b2Vec2 ();
 
 		/// The local translation axis in body1.
 		public var localAxis1:b2Vec2 = new b2Vec2 ();
@@ -64,12 +64,12 @@ package Box2D.Dynamics.Joints
 		// ...
 		public function Initialize (b1:b2Body, b2:b2Body, anchor:b2Vec2, axis:b2Vec2):void
 		{
-			body1 = b1;
-			body2 = b2;
-			localAnchor1.CopyFrom (body1.GetLocalPoint(anchor));
-			localAnchor2.CopyFrom (body2.GetLocalPoint(anchor));
-			localAxis1.CopyFrom (body1.GetLocalVector(axis));
-			referenceAngle = body2.GetAngle() - body1.GetAngle();
+			bodyA = b1;
+			bodyB = b2;
+			localAnchorA.CopyFrom (bodyA.GetLocalPoint(anchor));
+			localAnchorB.CopyFrom (bodyB.GetLocalPoint(anchor));
+			localAxis1.CopyFrom (bodyA.GetLocalVector(axis));
+			referenceAngle = bodyB.GetAngle() - bodyA.GetAngle();
 		}
 	} // class
 } // package

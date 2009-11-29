@@ -53,7 +53,7 @@ package Box2D.Collision
 			{
 				var metric1:Number = cache.metric;
 				var metric2:Number = GetMetric();
-				if (metric2 < 0.5 * metric1 || 2.0 * metric1 < metric2 || metric2 < b2Settings.B2_FLT_EPSILON)
+				if (metric2 < 0.5 * metric1 || 2.0 * metric1 < metric2 || metric2 < b2Settings.b2_epsilon)
 				{
 					// Reset the simplex.
 					m_count = 0;
@@ -345,7 +345,7 @@ package Box2D.Collision
 			{
 				var inv_d12:Number = 1.0 / (d12_1 + d12_2);
 				m_v1.a = d12_1 * inv_d12;
-				m_v2.a = d12_1 * inv_d12;
+				m_v2.a = d12_2 * inv_d12;
 				m_count = 2;
 				return;
 			}

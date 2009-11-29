@@ -53,17 +53,17 @@ package Box2D.Dynamics.Joints
 		public static const b2_minPulleyLength:Number = 2.0;
 		
 	//public:
-		//b2Vec2 GetAnchor1() const;
-		//b2Vec2 GetAnchor2() const;
+		//b2Vec2 GetAnchorA() const;
+		//b2Vec2 GetAnchorB() const;
 
 		//b2Vec2 GetReactionForce(float32 inv_dt) const;
 		//float32 GetReactionTorque(float32 inv_dt) const;
 
 		/// Get the first ground anchor.
-		//b2Vec2 GetGroundAnchor1() const;
+		//b2Vec2 GetGroundAnchorA() const;
 
 		/// Get the second ground anchor.
-		//b2Vec2 GetGroundAnchor2() const;
+		//b2Vec2 GetGroundAnchorB() const;
 
 		///// Get the current length of the segment attached to body1.
 		//float32 GetLength1() const;
@@ -74,7 +74,7 @@ package Box2D.Dynamics.Joints
 		/// Get the pulley ratio.
 		//float32 GetRatio() const;
 
-		//--------------- Internals Below -------------------
+	//protected:
 
 		//b2PulleyJoint(const b2PulleyJointDef* data);
 

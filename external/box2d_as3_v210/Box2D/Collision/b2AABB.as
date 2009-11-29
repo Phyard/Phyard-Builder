@@ -81,12 +81,10 @@ package Box2D.Collision
 		}
 		
 		// From Real-time Collision Detection, p179.
-		public function RayCast(output:b2RayCastOutput, input:b2RayCastInput):void
+		public function RayCast(output:b2RayCastOutput, input:b2RayCastInput):Boolean
 		{
-			var tmin:Number = - b2Settings.B2_FLT_MAX;
-			var tmax:Number = b2Settings.B2_FLT_MAX;
-
-			output.hit = false;
+			var tmin:Number = - b2Settings.b2_maxFloat;
+			var tmax:Number = b2Settings.b2_maxFloat;
 
 			//b2Vec2 p = input.p1;
 			//b2Vec2 d = input.p2 - input.p1;
@@ -114,12 +112,12 @@ package Box2D.Collision
 					upper_i = upperBound.y;
 				}
 				
-				if (absD[i] < b2Settings.B2_FLT_EPSILON)
+				if (absD[i] < b2Settings.b2_epsilon)
 				{
 					// Parallel.
 					if (p[i] < lower_i || upper_i < p[i])
 					{
-						return;
+						return false;
 					}
 				}
 				else
@@ -156,7 +154,7 @@ package Box2D.Collision
 
 					if (tmin > tmax)
 					{
-						return;
+						return false;
 					}
 				}
 			}
@@ -165,13 +163,14 @@ package Box2D.Collision
 			// Does the ray intersect beyond the max fraction?
 			if (tmin < 0.0 || input.maxFraction < tmin)
 			{
-				return;
+				return false;
 			}
 
 			// Intersection.
 			output.fraction = tmin;
 			output.normal.Set (normal [0], normal[1]);
-			output.hit = true;
+			
+			return true;
 		}
 	} // class
 } // package

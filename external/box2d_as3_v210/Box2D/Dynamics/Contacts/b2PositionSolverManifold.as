@@ -22,7 +22,7 @@ package Box2D.Dynamics.Contacts
 				{
 					var pointA:b2Vec2 = cc.bodyA.GetWorldPoint(cc.localPoint);
 					var pointB:b2Vec2 = cc.bodyB.GetWorldPoint( (cc.points[0] as b2ContactConstraintPoint).localPoint);
-					if (b2Math.b2DistanceSquared(pointA, pointB) > b2Settings.B2_FLT_EPSILON * b2Settings.B2_FLT_EPSILON)
+					if (b2Math.b2DistanceSquared(pointA, pointB) > b2Settings.b2_epsilon * b2Settings.b2_epsilon)
 					{
 						//m_normal = pointB - pointA;
 						m_normal.x = pointB.x - pointA.x;

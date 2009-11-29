@@ -47,8 +47,8 @@ public function b2RevoluteJoint(def:b2RevoluteJointDef)
 {
 	super (def);
 	
-	m_localAnchor1.CopyFrom (def.localAnchor1);
-	m_localAnchor2.CopyFrom (def.localAnchor2);
+	m_localAnchor1.CopyFrom (def.localAnchorA);
+	m_localAnchor2.CopyFrom (def.localAnchorB);
 	m_referenceAngle = def.referenceAngle;
 
 	m_impulse.SetZero();
@@ -204,8 +204,8 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 	v2.CopyFrom (b2.m_linearVelocity);
 	var w2:Number = b2.m_angularVelocity;
 
-   var m1:Number = b1.m_invMass, m2:Number = b2.m_invMass;
-   var i1:Number = b1.m_invI, i2:Number = b2.m_invI;
+	var m1:Number = b1.m_invMass, m2:Number = b2.m_invMass;
+	var i1:Number = b1.m_invI, i2:Number = b2.m_invI;
 
 	// Solve motor constraint.
 	if (m_enableMotor && m_limitState != b2Joint.e_equalLimits)
@@ -428,7 +428,7 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 			// Use a particle solution (no rotation).
 			u.CopyFrom (CVec2); u.Normalize();
 			var k:Number = invMass1 + invMass2;
-			//b2Assert(k > B2_FLT_EPSILON);
+			//b2Assert(k > b2_epsilon);
 			var m:Number = 1.0 / k;
 			//b2Vec2 impulse = m * (-C);
 			impulse.x = m * (-CVec2.x);
@@ -487,12 +487,12 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	return positionError <= b2Settings.b2_linearSlop && angularError <= b2Settings.b2_angularSlop;
 }
 
-override public function GetAnchor1():b2Vec2
+override public function GetAnchorA():b2Vec2
 {
 	return m_bodyA.GetWorldPoint(m_localAnchor1);
 }
 
-override public function GetAnchor2():b2Vec2
+override public function GetAnchorB():b2Vec2
 {
 	return m_bodyB.GetWorldPoint(m_localAnchor2);
 }
@@ -532,8 +532,8 @@ public function IsMotorEnabled():Boolean
 
 public function EnableMotor(flag:Boolean):void
 {
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_enableMotor = flag;
 }
 
@@ -544,15 +544,15 @@ public function GetMotorTorque():Number
 
 public function SetMotorSpeed(speed:Number):void
 {
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_motorSpeed = speed;
 }
 
 public function SetMaxMotorTorque(torque:Number):void
 {
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_maxMotorTorque = torque;
 }
 
@@ -563,8 +563,8 @@ public function IsLimitEnabled():Boolean
 
 public function EnableLimit(flag:Boolean):void
 {
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_enableLimit = flag;
 }
 
@@ -581,8 +581,8 @@ public function GetUpperLimit():Number
 public function SetLimits(lower:Number, upper:Number):void
 {
 	//b2Assert(lower <= upper);
-	m_bodyA.WakeUp();
-	m_bodyB.WakeUp();
+	m_bodyA.SetAwake(true);
+	m_bodyB.SetAwake(true);
 	m_lowerAngle = lower;
 	m_upperAngle = upper;
 }

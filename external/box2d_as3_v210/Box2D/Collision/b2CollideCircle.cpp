@@ -60,7 +60,7 @@ circle:b2CircleShape, xf2:b2Transform):void
 
 	// Find the min separating edge.
 	var normalIndex:int = 0;
-	var separation:Number = - b2Settings.B2_FLT_MAX;
+	var separation:Number = - b2Settings.b2_maxFloat;
 	var radius:Number = polygon.m_radius + circle.m_radius;
 	var vertexCount:int = polygon.m_vertexCount;
 	//const b2Vec2* vertices = polygon->m_vertices;
@@ -92,7 +92,7 @@ circle:b2CircleShape, xf2:b2Transform):void
 	var v2:b2Vec2 = vertices[vertIndex2]; //.Clone ()
 
 	// If the center is inside the polygon ...
-	if (separation < b2Settings.B2_FLT_EPSILON)
+	if (separation < b2Settings.b2_epsilon)
 	{
 		manifold.m_pointCount = 1;
 		manifold.m_type = b2Manifold.e_faceA;

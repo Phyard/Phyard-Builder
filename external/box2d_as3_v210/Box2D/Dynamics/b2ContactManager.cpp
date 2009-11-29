@@ -121,7 +121,7 @@ public function Collide():void
 		var bodyA:b2Body = fixtureA.GetBody();
 		var bodyB:b2Body = fixtureB.GetBody();
 
-		if (bodyA.IsSleeping() && bodyB.IsSleeping())
+		if (bodyA.IsAwake() == false && bodyB.IsAwake() == false)
 		{
 			c = c.GetNext();
 			continue;
@@ -130,17 +130,8 @@ public function Collide():void
 		// Is this contact flagged for filtering?
 		if (c.m_flags & b2Contact.e_filterFlag)
 		{
-			// Are both bodies static?
-			if (bodyA.IsStatic() && bodyB.IsStatic())
-			{
-				var cNuke1:b2Contact = c;
-				c = cNuke1.GetNext();
-				Destroy(cNuke1);
-				continue;
-			}
-
-			// Does a joint override collision?
-			if (bodyB.IsConnected(bodyA))
+			// Should these bodies collide?
+			if (bodyB.ShouldCollide(bodyA) == false)
 			{
 				var cNuke2:b2Contact = c;
 				c = cNuke2.GetNext();
@@ -199,12 +190,6 @@ public function AddPair(proxyUserDataA:Object, proxyUserDataB:Object):void
 		return;
 	}
 
-	// Are both bodies static?
-	if (bodyA.IsStatic() && bodyB.IsStatic())
-	{
-		return;
-	}
-
 	// Does a contact already exist?
 	var edge:b2ContactEdge = bodyB.GetContactList();
 	while (edge != null)
@@ -229,8 +214,8 @@ public function AddPair(proxyUserDataA:Object, proxyUserDataB:Object):void
 		edge = edge.next;
 	}
 
-	// Does a joint override collision?
-	if (bodyB.IsConnected(bodyA))
+	// Does a joint override collision? Is at least one body dynamic?
+	if (bodyB.ShouldCollide(bodyA) == false)
 	{
 		return;
 	}

@@ -24,7 +24,7 @@ package player.physics {
       public function GetAnchorPoint1():Point
       {
          var b2joint:b2Joint = GetB2joint ();
-         var vec:b2Vec2 = b2joint.GetAnchor1 ();
+         var vec:b2Vec2 = b2joint.GetAnchorA ();
          
          return new Point (vec.x, vec.y);
       }
@@ -33,7 +33,7 @@ package player.physics {
       public function GetAnchorPoint2():Point
       {
          var b2joint:b2Joint = GetB2joint ();
-         var vec:b2Vec2 = b2joint.GetAnchor2 ();
+         var vec:b2Vec2 = b2joint.GetAnchorB ();
          
          return new Point (vec.x, vec.y);
       }

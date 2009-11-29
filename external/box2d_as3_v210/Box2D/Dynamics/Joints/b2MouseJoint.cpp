@@ -32,6 +32,11 @@ public function b2MouseJoint(def:b2MouseJointDef)
 //: b2Joint(def)
 {
 	super (def);
+
+	//b2Assert(def->target.IsValid());
+	//b2Assert(b2IsValid(def->maxForce) && def->maxForce >= 0.0f);
+	//b2Assert(b2IsValid(def->frequencyHz) && def->frequencyHz >= 0.0f);
+	//b2Assert(b2IsValid(def->dampingRatio) && def->dampingRatio >= 0.0f);
 	
 	m_target.CopyFrom (def.target);
 	//m_localAnchor = b2MulT(m_bodyB->GetTransform(), m_target);
@@ -49,11 +54,46 @@ public function b2MouseJoint(def:b2MouseJointDef)
 
 public function SetTarget(target:b2Vec2):void
 {
-	if (m_bodyB.IsSleeping())
+	if (m_bodyB.IsAwake() == false)
 	{
-		m_bodyB.WakeUp();
+		m_bodyB.SetAwake(true);
 	}
 	m_target.CopyFrom (target);
+}
+
+public function GetTarget():b2Vec2
+{
+	return m_target;
+}
+
+public function SetMaxForce(force:Number):void
+{
+	m_maxForce = force;
+}
+
+public function GetMaxForce():Number
+{
+	return m_maxForce;
+}
+
+public function SetFrequency(hz:Number):void
+{
+	m_frequencyHz = hz;
+}
+
+public function GetFrequency():Number
+{
+	return m_frequencyHz;
+}
+
+public function SetDampingRatio(ratio:Number):void
+{
+	m_dampingRatio = ratio;
+}
+
+public function GetDampingRatio():Number
+{
+	return m_dampingRatio;
 }
 
 override public function InitVelocityConstraints(step:b2TimeStep):void
@@ -81,7 +121,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	// magic formulas
 	// gamma has units of inverse mass.
 	// beta has units of inverse time.
-	//b2Assert(d + step.dt * k > B2_FLT_EPSILON);
+	//b2Assert(d + step.dt * k > b2_epsilon);
 	m_gamma = step.dt * (d + step.dt * k);
 	if (m_gamma != 0.0)
 	{
@@ -180,12 +220,12 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 	b.m_angularVelocity += b.m_invI * b2Math.b2Cross2 (r, impulse);
 }
 
-override public function GetAnchor1():b2Vec2
+override public function GetAnchorA():b2Vec2
 {
 	return m_target.Clone ();
 }
 
-override public function GetAnchor2():b2Vec2
+override public function GetAnchorB():b2Vec2
 {
 	return m_bodyB.GetWorldPoint(m_localAnchor);
 }

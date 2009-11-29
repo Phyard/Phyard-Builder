@@ -51,8 +51,8 @@ public function b2DistanceJoint (def:b2DistanceJointDef)
 {
 	super (def);
 	
-	m_localAnchor1.CopyFrom (def.localAnchor1);
-	m_localAnchor2.CopyFrom (def.localAnchor2);
+	m_localAnchor1.CopyFrom (def.localAnchorA);
+	m_localAnchor2.CopyFrom (def.localAnchorB);
 	m_length = def.length;
 	m_frequencyHz = def.frequencyHz;
 	m_dampingRatio = def.dampingRatio;
@@ -247,12 +247,12 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	return - b2Settings.b2_linearSlop < C && C < b2Settings.b2_linearSlop;
 }
 
-override public function GetAnchor1():b2Vec2
+override public function GetAnchorA():b2Vec2
 {
 	return m_bodyA.GetWorldPoint(m_localAnchor1);
 }
 
-override public function GetAnchor2():b2Vec2
+override public function GetAnchorB():b2Vec2
 {
 	return m_bodyB.GetWorldPoint(m_localAnchor2);
 }

@@ -44,7 +44,7 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 	var sweepB:b2Sweep = input.sweepB.Clone ();
 
 	//b2Assert(sweepA.t0 == sweepB.t0);
-	//b2Assert(1.0f - sweepA.t0 > B2_FLT_EPSILON);
+	//b2Assert(1.0f - sweepA.t0 > b2Settings.b2_epsilon);
 
 	var radius:Number = proxyA.m_radius + proxyB.m_radius;
 	var tolerance:Number = input.tolerance;
@@ -214,7 +214,7 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 //		}
 
 		// Ensure significant advancement.
-		if (newAlpha < (1.0 + 100.0 * b2Settings.B2_FLT_EPSILON) * alpha)
+		if (newAlpha < (1.0 + 100.0 * b2Settings.b2_epsilon) * alpha)
 		{
 			break;
 		}

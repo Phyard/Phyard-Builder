@@ -91,7 +91,23 @@ public static function Create(def:b2JointDef, allocator:b2BlockAllocator = null)
 			joint = new b2LineJoint (def as b2LineJointDef);
 		}
 		break;
-        
+
+	case e_weldJoint:
+		{
+			//void* mem = allocator->Allocate(sizeof(b2WeldJoint));
+			//joint = new (mem) b2WeldJoint((b2WeldJointDef*)def);
+			joint = new b2WeldJoint (def as b2WeldJointDef);
+		}
+		break;
+
+	case e_frictionJoint:
+		{
+			//void* mem = allocator->Allocate(sizeof(b2FrictionJoint));
+			//joint = new (mem) b2FrictionJoint((b2FrictionJointDef*)def);
+			joint = new b2FrictionJoint (def as b2FrictionJointDef);
+		}
+		break;
+
 	default:
 		//b2Assert(false);
 		break;
@@ -133,7 +149,15 @@ public static function Destroy (joint:b2Joint, allocator:b2BlockAllocator = null
 	case e_lineJoint:
 		//allocator->Free(joint, sizeof(b2LineJoint));
 		break;
-    
+
+	case e_weldJoint:
+		//allocator->Free(joint, sizeof(b2WeldJoint));
+		break;
+
+	case e_frictionJoint:
+		//allocator->Free(joint, sizeof(b2WeldJoint));
+		break;
+
 	default:
 		//b2Assert(false);
 		break;
@@ -145,8 +169,8 @@ public function b2Joint(def:b2JointDef)
 	m_type = def.type;
 	m_prev = null;
 	m_next = null;
-	m_bodyA = def.body1;
-	m_bodyB = def.body2;
+	m_bodyA = def.bodyA;
+	m_bodyB = def.bodyB;
 	m_collideConnected = def.collideConnected;
 	m_islandFlag = false;
 	m_userData = def.userData;
@@ -160,4 +184,9 @@ public function b2Joint(def:b2JointDef)
 	m_edgeB.other = null;
 	m_edgeB.prev = null;
 	m_edgeB.next = null;
+}
+
+public function IsActive():Boolean
+{
+	return m_bodyA.IsActive() && m_bodyB.IsActive();
 }

@@ -50,13 +50,25 @@ package Box2D.Dynamics.Joints
 		
 	//public:
 
-		//b2Vec2 GetAnchor1() const;
-		//b2Vec2 GetAnchor2() const;
+		//b2Vec2 GetAnchorA() const;
+		//b2Vec2 GetAnchorB() const;
 
 		//b2Vec2 GetReactionForce(float32 inv_dt) const;
 		//float32 GetReactionTorque(float32 inv_dt) const;
 
-		//--------------- Internals Below -------------------
+		// Set/get the natural length.
+		//void SetLength(float32 length);
+		//float32 GetLength() const;
+
+		// Set/get frequency in Hz.
+		//void SetFrequency(float32 hz);
+		//float32 GetFrequency() const;
+
+		// Set/get damping ratio.
+		//void SetDampingRatio(float32 ratio);
+		//float32 GetDampingRatio() const;
+
+	//protected:
 
 		//b2DistanceJoint(const b2DistanceJointDef* data);
 
@@ -72,8 +84,41 @@ package Box2D.Dynamics.Joints
 		public var m_gamma:Number;
 		public var m_bias:Number;
 		public var m_impulse:Number;
-		public var m_mass:Number;		// effective mass for the constraint.
+		public var m_mass:Number;
 		public var m_length:Number;
+	//}
+	
+	// inline
+	
+		public function SetLength(length:Number):void
+		{
+			m_length = length;
+		}
+
+		public function GetLength():Number
+		{
+			return m_length;
+		}
+
+		public function SetFrequency(hz:Number):void
+		{
+			m_frequencyHz = hz;
+		}
+
+		public function GetFrequency():Number
+		{
+			return m_frequencyHz;
+		}
+
+		public function SetDampingRatio(ratio:Number):void
+		{
+			m_dampingRatio = ratio;
+		}
+
+		public function GetDampingRatio():Number
+		{
+			return m_dampingRatio;
+		}
 	} // class
 } // package
 //#endif

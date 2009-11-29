@@ -24,9 +24,17 @@
 
 public function b2Body(bd:b2BodyDef, world:b2World)
 {
+	//b2Assert(bd->position.IsValid());
+	//b2Assert(bd->linearVelocity.IsValid());
+	//b2Assert(b2IsValid(bd->angle));
+	//b2Assert(b2IsValid(bd->angularVelocity));
+	//b2Assert(b2IsValid(bd->inertiaScale) && bd->inertiaScale >= 0.0f);
+	//b2Assert(b2IsValid(bd->angularDamping) && bd->angularDamping >= 0.0f);
+	//b2Assert(b2IsValid(bd->linearDamping) && bd->linearDamping >= 0.0f);
+
 	m_flags = 0;
 
-	if (bd.isBullet)
+	if (bd.bullet)
 	{
 		m_flags |= e_bulletFlag;
 	}
@@ -34,13 +42,17 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 	{
 		m_flags |= e_fixedRotationFlag;
 	}
-	if (bd.allowSleep)
+	if (bd.autoSleep)
 	{
-		m_flags |= e_allowSleepFlag;
+		m_flags |= e_autoSleepFlag;
 	}
-	if (bd.isSleeping)
+	if (bd.awake)
 	{
-		m_flags |= e_sleepFlag;
+		m_flags |= e_awakeFlag;
+	}
+	if (bd.active)
+	{
+		m_flags |= e_activeFlag;
 	}
 
 	m_world = world;
@@ -71,17 +83,28 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 	m_linearDamping = bd.linearDamping;
 	m_angularDamping = bd.angularDamping;
 
-	m_force.Set(0.0, 0.0);
+	m_force.SetZero();
 	m_torque = 0.0;
 
 	m_sleepTime = 0.0;
 
-	m_mass = 0.0;
-	m_invMass = 0.0;
+	m_type = bd.type;
+
+	if (m_type == b2_dynamicBody)
+	{
+		m_mass = 1.0;
+		m_invMass = 1.0;
+	}
+	else
+	{
+		m_mass = 0.0;
+		m_invMass = 0.0;
+	}
+	
 	m_I = 0.0;
 	m_invI = 0.0;
 
-	m_type = e_staticType;
+	m_inertiaScale = bd.inertiaScale;
 
 	m_userData = bd.userData;
 
@@ -95,6 +118,37 @@ public function _b2Body ():void
 	// shapes and joints are destroyed in b2World::Destroy
 }
 
+//void b2Body::SetType(b2BodyType type)
+public function SetType(type:int):void
+{
+	if (m_type == type)
+	{
+		return;
+	}
+
+	m_type = type;
+
+	//ResetMassData();
+	OnMassDataChanged ();
+
+	if (m_type == b2_staticBody)
+	{
+		m_linearVelocity.SetZero();
+		m_angularVelocity = 0.0;
+	}
+
+	SetAwake(true);
+
+	m_force.SetZero();
+	m_torque = 0.0;
+
+	// Since the body type changed, we need to flag contacts for filtering.
+	for (var ce:b2ContactEdge = m_contactList; ce != null; ce = ce.next)
+	{
+		ce.contact.FlagForFiltering();
+	}
+}
+
 public function CreateFixture(def:b2FixtureDef):b2Fixture
 {
 	//b2Assert(m_world->IsLocked() == false);
@@ -104,13 +158,18 @@ public function CreateFixture(def:b2FixtureDef):b2Fixture
 	}
 
 	//b2BlockAllocator* allocator = &m_world->m_blockAllocator;
-	var broadPhase:b2BroadPhase = m_world.m_contactManager.m_broadPhase;
 
-	//void* mem = allocator->Allocate(sizeof(b2Fixture));
-	//b2Fixture* fixture = new (mem) b2Fixture;
+	//void* memory = allocator->Allocate(sizeof(b2Fixture));
+	//b2Fixture* fixture = new (memory) b2Fixture;
 	//fixture->Create(allocator, broadPhase, this, m_xf, def);
-	var fixture:b2Fixture = new b2Fixture;
-	fixture.Create(null, broadPhase, this, m_xf, def);
+	var fixture:b2Fixture = new b2Fixture ();
+	fixture.Create(null, this, m_xf, def);
+
+	if (m_flags & e_activeFlag)
+	{
+		var broadPhase:b2BroadPhase = m_world.m_contactManager.m_broadPhase;
+		fixture.CreateProxy(broadPhase, m_xf);
+	}
 
 	fixture.m_next = m_fixtureList;
 	m_fixtureList = fixture;
@@ -118,15 +177,13 @@ public function CreateFixture(def:b2FixtureDef):b2Fixture
 
 	fixture.m_body = this;
 
-	var needMassUpdate:Boolean = fixture.m_massData.mass > 0.0 || fixture.m_massData.I > 0.0;
-
 	// Adjust mass properties if needed.
-	//if (needMassUpdate)
-	if (needMassUpdate && mAutoUpdateMass)
+	if (fixture.m_density > 0.0)
 	{
-		ResetMass();
+		//ResetMassData();
+		OnMassDataChanged ();
 	}
-
+	
 	// Let the world know we have a new fixture. This will cause new contacts
 	// to be created at the beginning of the next time step.
 	m_world.m_flags |= b2World.e_newFixture;
@@ -203,11 +260,20 @@ public function DestroyFixture(fixture:b2Fixture):void
 		}
 	}
 
-	var needMassUpdate:Boolean = fixture.m_massData.mass > 0.0 || fixture.m_massData.I > 0.0;
-	
 	var allocator:b2BlockAllocator = m_world.m_blockAllocator;
-	var broadPhase:b2BroadPhase = m_world.m_contactManager.m_broadPhase;
-	fixture.Destroy(null, broadPhase);
+	
+	if (m_flags & e_activeFlag)
+	{
+		//b2Assert(fixture->m_proxyId != b2BroadPhase::e_nullProxy);
+		var broadPhase:b2BroadPhase = m_world.m_contactManager.m_broadPhase;
+		fixture.DestroyProxy(broadPhase);
+	}
+	else
+	{
+		//b2Assert(fixture->m_proxyId == b2BroadPhase::e_nullProxy);
+	}
+	
+	fixture.Destroy(null);
 	fixture.m_body = null;
 	fixture.m_next = null;
 	//fixture->~b2Fixture();
@@ -217,56 +283,75 @@ public function DestroyFixture(fixture:b2Fixture):void
 	--m_fixtureCount;
 
 	// Adjust mass properties if needed.
-	if (needMassUpdate && mAutoUpdateMass)
-	{
-		ResetMass();
-	}
+	//ResetMassData();
+	OnMassDataChanged ();
 }
 
 
-public function ResetMass():void
+public function ResetMassData():void
 {
 	// Compute mass data from shapes. Each shape has its own density.
 	m_mass = 0.0;
 	m_invMass = 0.0;
 	m_I = 0.0;
 	m_invI = 0.0;
+	m_sweep.localCenter.SetZero();
 
+	// Static and kinematic bodies have zero mass.
+	if (m_type == b2_staticBody || m_type == b2_kinematicBody)
+	{
+		return;
+	}
+
+	//b2Assert(m_type == b2_dynamicBody);
+
+	// Accumulate mass over all fixtures.
 	var center:b2Vec2 = b2Math.b2Vec2_zero.Clone ();
 
-	if (! mStaticForcely)
+	for (var f:b2Fixture = m_fixtureList; f != null; f = f.m_next)
 	{
-		for (var f:b2Fixture = m_fixtureList; f != null; f = f.m_next)
+		if (f.m_density == 0.0)
 		{
-			var massData:b2MassData = f.GetMassData();
-			m_mass += massData.mass;
-			//center += massData.mass * massData.center;
-			center.x += massData.mass * massData.center.x;
-			center.y += massData.mass * massData.center.y;
-			m_I += massData.I;
+			continue;
 		}
 
-		// Compute center of mass.
-		if (m_mass > 0.0)
-		{
-			m_invMass = 1.0 / m_mass;
-			//center *= m_invMass;
-			center.x *= m_invMass;
-			center.y *= m_invMass;
-		}
+		var massData:b2MassData = new b2MassData ();
+		f.GetMassData(massData);
+		m_mass += massData.mass;
+		//center += massData.mass * massData.center;
+		center.x += massData.mass * massData.center.x;
+		center.y += massData.mass * massData.center.y;
+		m_I += massData.I;
+	}
 
-		if (m_I > 0.0 && (m_flags & e_fixedRotationFlag) == 0)
-	 	{
-			// Center the inertia about the center of mass.
-			m_I -= m_mass * b2Math.b2Dot2 (center, center);
-			//b2Assert(m_I > 0.0f);
-			m_invI = 1.0 / m_I;
-		}
-		else
-		{
-			m_I = 0.0;
-			m_invI = 0.0;
-		}
+	// Compute center of mass.
+	if (m_mass > 0.0)
+	{
+		m_invMass = 1.0 / m_mass;
+		//center *= m_invMass;
+		center.x *= m_invMass;
+		center.y *= m_invMass;
+	}
+	else
+	{
+		// Force all dynamic bodies to have a positive mass.
+		m_mass = 1.0;
+		m_invMass = 1.0;
+	}
+
+
+	if (m_I > 0.0 && (m_flags & e_fixedRotationFlag) == 0)
+ 	{
+		// Center the inertia about the center of mass.
+		m_I -= m_mass * b2Math.b2Dot2 (center, center);
+		m_I *= m_inertiaScale;
+		//b2Assert(m_I > 0.0f);
+		m_invI = 1.0 / m_I;
+	}
+	else
+	{
+		m_I = 0.0;
+		m_invI = 0.0;
 	}
 
 	// Move center of mass.
@@ -285,33 +370,17 @@ public function ResetMass():void
 	tempV = b2Math.b2Cross_ScalarAndVector2 (m_angularVelocity, tempV);
 	m_linearVelocity.x += tempV.x;
 	m_linearVelocity.y += tempV.y;
-
-	// Determine the new body type.
-	var oldType:int = m_type;
-	if (m_invMass == 0.0 && m_invI == 0.0)
-	{
-		m_type = e_staticType;
-	}
-	else
-	{
-		m_type = e_dynamicType;
-	}
-
-	// If the body type changed, we need to flag contacts for filtering.
-	if (oldType != m_type)
-	{
-		for (var ce:b2ContactEdge = m_contactList; ce != null; ce = ce.next)
-		{
-			ce.contact.FlagForFiltering();
-		}
-	}
 }
 
-// TODO_ERIN adjust linear velocity and torque to account for movement of center.
 public function SetMassData (massData:b2MassData):void
 {
 	//b2Assert(m_world->IsLocked() == false);
 	if (m_world.IsLocked() == true)
+	{
+		return;
+	}
+
+	if (m_type != b2_dynamicBody)
 	{
 		return;
 	}
@@ -322,10 +391,12 @@ public function SetMassData (massData:b2MassData):void
 
 	m_mass = massData.mass;
 
-	if (m_mass > 0.0)
+	if (m_mass <= 0.0)
 	{
-		m_invMass = 1.0 / m_mass;
+		m_mass = 1.0;
 	}
+
+	m_invMass = 1.0 / m_mass;
 
 	if (massData.I > 0.0 && (m_flags & e_fixedRotationFlag) == 0)
 	{
@@ -349,40 +420,29 @@ public function SetMassData (massData:b2MassData):void
 	tempV = b2Math.b2Cross_ScalarAndVector2 (m_angularVelocity, tempV);
 	m_linearVelocity.x += tempV.x;
 	m_linearVelocity.y += tempV.y;
-
-	var oldType:int = m_type;
-	if (m_invMass == 0.0 && m_invI == 0.0)
-	{
-		m_type = e_staticType;
-		m_angularVelocity = 0.0;
-		m_linearVelocity.SetZero();
-	}
-	else
-	{
-		m_type = e_dynamicType;
-	}
-
-	// If the body type changed, we need to flag contacts for filtering.
-	if (oldType != m_type)
-	{
-		for (var ce:b2ContactEdge = m_contactList; ce != null; ce = ce.next)
-		{
-			ce.contact.FlagForFiltering();
-		}
-	}
 }
 
-public function IsConnected(other:b2Body):Boolean
+public function ShouldCollide(other:b2Body):Boolean
 {
+	// At least one body should be dynamic.
+	if (m_type != b2_dynamicBody && other.m_type != b2_dynamicBody)
+	{
+		return false;
+	}
+
+	// Does a joint prevent collision?
 	for (var jn:b2JointEdge = m_jointList; jn != null; jn = jn.next)
 	{
 		if (jn.other == other)
 		{
-			return jn.joint.m_collideConnected == false;
+			if (jn.joint.m_collideConnected == false)
+			{
+				return false;
+			}
 		}
 	}
 
-	return false;
+	return true;
 }
 
 public function SetTransform(position:b2Vec2, angle:Number):void
@@ -437,3 +497,48 @@ public function SynchronizeFixtures():void
 	}
 }
 
+public function SetActive (flag:Boolean):void
+{
+	if (flag == IsActive())
+	{
+		return;
+	}
+
+	var broadPhase:b2BroadPhase;
+	var f:b2Fixture;
+	
+	if (flag)
+	{
+		m_flags |= e_activeFlag;
+
+		// Create all proxies.
+		broadPhase = m_world.m_contactManager.m_broadPhase;
+		for (f = m_fixtureList; f != null; f = f.m_next)
+		{
+			f.CreateProxy(broadPhase, m_xf);
+		}
+
+		// Contacts are created the next time step.
+	}
+	else
+	{
+		m_flags &= ~e_activeFlag;
+
+		// Destroy all proxies.
+		broadPhase = m_world.m_contactManager.m_broadPhase;
+		for (f = m_fixtureList; f = null; f = f.m_next)
+		{
+			f.DestroyProxy(broadPhase);
+		}
+
+		// Destroy the attached contacts.
+		var ce:b2ContactEdge = m_contactList;
+		while (ce != null)
+		{
+			var ce0:b2ContactEdge = ce;
+			ce = ce.next;
+			m_world.m_contactManager.Destroy(ce0.contact);
+		}
+		m_contactList = null;
+	}
+}

@@ -26,6 +26,8 @@ package Box2D.Collision
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2Settings;
 
+	/// A dynamic AABB tree broad-phase, inspired by Nathanael Presson's btDbvt.
+
 	// moved into b2Collision class
 	//#define b2_nullNode (-1)
 
@@ -170,9 +172,15 @@ package Box2D.Collision
 					}
 					else
 					{
-						//b2Assert(count + 1 < k_stackSize);
-						stack[count++] = node.child1;
-						stack[count++] = node.child2;
+						if (count < k_stackSize)
+						{
+							stack[count++] = node.child1;
+						}
+						
+						if (count < k_stackSize)
+						{
+							stack[count++] = node.child2;
+						}
 					}
 				}
 			}
@@ -274,9 +282,15 @@ package Box2D.Collision
 				}
 				else
 				{
-					//b2Assert(count + 1 < k_stackSize);
-					stack[count++] = node.child1;
-					stack[count++] = node.child2;
+					if (count < k_stackSize)
+					{
+						stack[count++] = node.child1;
+					}
+					
+					if (count < k_stackSize)
+					{
+						stack[count++] = node.child2;
+					}
 				}
 			}
 		}

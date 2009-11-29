@@ -109,7 +109,7 @@ package Box2D.Common
 		public function Normalize():Number
 		{
 			var length:Number = Length();
-			if (length < b2Settings.B2_FLT_EPSILON)
+			if (length < b2Settings.b2_epsilon)
 			{
 				return 0.0;
 			}

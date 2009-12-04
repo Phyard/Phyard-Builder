@@ -317,6 +317,7 @@ public function ResetMassData():void
 
 		var massData:b2MassData = new b2MassData ();
 		f.GetMassData(massData);
+		
 		m_mass += massData.mass;
 		//center += massData.mass * massData.center;
 		center.x += massData.mass * massData.center.x;

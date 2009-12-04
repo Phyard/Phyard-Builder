@@ -107,14 +107,10 @@ package player.world {
       {
          mIsRemovingLocked = true;
          
-         trace ("--------------- InitEntities ");
-         
          var entity:Entity = mHead;
          if (entity != null)
          {
             entity.Initialize ();
-            
-            trace ("entity [" + entity.GetCreationId () + "] = " + entity);
             
             var tail:Entity = mTail;
             
@@ -122,8 +118,6 @@ package player.world {
             {
                entity = entity.mNextEntity;
                entity.Initialize ();
-               
-               trace ("entity [" + entity.GetCreationId () + "] = " + entity);
             }
          }
          
@@ -308,6 +302,29 @@ package player.world {
          
          DelayUnregisterEntities ();
       }
-
+      
+      internal function ResetEntitySpecialIds ():void
+      {
+         mIsRemovingLocked = true;
+         
+         var entity:Entity = mHead;
+         if (entity != null)
+         {
+            entity.ResetSpecialId ();
+            
+            var tail:Entity = mTail;
+            
+            while (entity != tail)
+            {
+               entity = entity.mNextEntity;
+               
+               entity.ResetSpecialId ();
+            }
+         }
+         
+         mIsRemovingLocked = false;
+         
+         DelayUnregisterEntities ();
+      }
    }
 }

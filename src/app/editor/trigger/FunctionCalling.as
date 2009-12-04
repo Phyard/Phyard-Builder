@@ -24,7 +24,7 @@ package editor.trigger {
             mInputValueSources [i] = variable_def.GetDefaultValueSource ();
          }
          
-         var num_returns:int = mFunctionDeclaration.GetNumReturns ();
+         var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
          mReturnValueTargets = new Array (num_returns);
          
          for (i = 0; i < num_returns; ++ i)
@@ -59,9 +59,9 @@ package editor.trigger {
          return mInputValueSources [inputId];
       }
       
-      public function GetNumReturns ():int
+      public function GetNumOutputs ():int
       {
-         return mFunctionDeclaration.GetNumReturns ();
+         return mFunctionDeclaration.GetNumOutputs ();
       }
       
       public function SetReturnValueTargets (valueTargets:Array):void

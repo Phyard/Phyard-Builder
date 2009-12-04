@@ -79,6 +79,8 @@ package player.entity {
             // both anchors should not be null now
             mAnchor1.mJoint = this;
             mAnchor2.mJoint = this;
+            mAnchor1.mAnotherJointAnchor = mAnchor2;
+            mAnchor2.mAnotherJointAnchor = mAnchor1;
 
             // here, mAnchor1.mAnchorIndex and mAnchor1.mAnchorIndex are used to
             // store mConnectedShape1Index and mConnectedShape2Index temperarily.
@@ -223,8 +225,37 @@ package player.entity {
       {
       }
       
-      public function RebuildJointPhysics ():void
+      final public function RebuildJointPhysics ():void
       {
+         if (mAlreadyDestroyed)
+            return;
+         
+         if (mPhysicsProxy != null)
+            return;
+         
+         mAnchor1.UpdatePositionFromLocalPosition ();
+         mAnchor2.UpdatePositionFromLocalPosition ();
+         
+         RebuildJointPhysicsInternal ();
+      }
+      
+      protected function RebuildJointPhysicsInternal ():void
+      {
+         // to override
+      }
+      
+      override public function DestroyPhysicsProxy ():void
+      {
+         SaveJointStatus ();
+         
+         super.DestroyPhysicsProxy ();
+      }
+      
+      protected function SaveJointStatus ():void
+      {
+         mAnchor1.UpdatelLocalPosition ();
+         mAnchor2.UpdatelLocalPosition ();
+         
          // to override
       }
       
@@ -365,10 +396,8 @@ package player.entity {
          }
 
          // attach to shape
-         if (shape1 != null)
-            shape1.AttachJointAnchor (mAnchor1);
-         if (shape2 != null)
-            shape2.AttachJointAnchor (mAnchor2);
+         mAnchor1.SetShape (shape1);
+         mAnchor2.SetShape (shape2);
       }
       
       // for joints except hinges
@@ -499,10 +528,8 @@ package player.entity {
          }
          
          // attach to shape
-         if (shape1 != null)
-            shape1.AttachJointAnchor (mAnchor1);
-         if (shape2 != null)
-            shape2.AttachJointAnchor (mAnchor2);
+         mAnchor1.SetShape (shape1);
+         mAnchor2.SetShape (shape2);
       }
       
       private static function CompareShape (shape1:EntityShape, shape2:EntityShape):Number 

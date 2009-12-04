@@ -108,7 +108,7 @@ package Box2D.Collision.Shapes
 		
 		// call by b2Body
 		// this function should  NOT change the world position
-		public function MoveLocalPosition (dx:Number, dy:Number):void
+		public function OnBodyLocalCenterChanged (dx:Number, dy:Number):void
 		{
 			// to override
 		}

@@ -5,6 +5,7 @@ package common {
    import flash.geom.Point;
    
    import editor.world.World;
+   
    import editor.entity.Entity;
    
    import editor.entity.EntityShape
@@ -14,6 +15,7 @@ package common {
    import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeGravityController;
+   
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointHinge;
    import editor.entity.EntityJointSlider;
@@ -24,6 +26,7 @@ package common {
    import editor.entity.EntityUtility;
    import editor.entity.EntityUtilityCamera;
    
+   import editor.trigger.entity.EntityLogic;
    import editor.trigger.entity.EntityTask;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
@@ -111,7 +114,7 @@ package common {
                }
                //<<
             }
-            else if (editorEntity is editor.trigger.entity.EntityLogic)
+            else if (editorEntity is editor.trigger.entity.EntityLogic) // from v1.07
             {
                var entityIndexArray:Array;
                
@@ -121,8 +124,7 @@ package common {
                   
                   var basicCondition:editor.trigger.entity.EntityBasicCondition = child as editor.trigger.entity.EntityBasicCondition;
                   
-                  entityDefine.mName = basicCondition.GetName ();
-                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CreateCodeSnippetDefine (editorWorld, basicCondition.GetCodeSnippet ());
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, basicCondition.GetCodeSnippet ());
                }
                else if (child is editor.trigger.entity.EntityTask)
                {
@@ -132,7 +134,7 @@ package common {
                   entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (task.GetEntityAssigners ());
                   
                   entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
-                  entityDefine.mInputAssignerIndexes = entityIndexArray;
+                  entityDefine.mInputAssignerCreationIds = entityIndexArray;
                }
                else if (child is editor.trigger.entity.EntityConditionDoor)
                {
@@ -153,7 +155,7 @@ package common {
                   
                   entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
                   entityDefine.mNumEntities = entityIndexArray == null ? 0 : entityIndexArray.length;
-                  entityDefine.mEntityIndexes = entityIndexArray;
+                  entityDefine.mEntityCreationIds = entityIndexArray;
                }
                else if (child is editor.trigger.entity.EntityInputEntityPairAssigner)
                {
@@ -163,15 +165,16 @@ package common {
                   
                   entityDefine.mPairingType = pairAssigner.GetPairingType ();
                   
-                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (pairAssigner.GetInputEntities1 ());
+                  var pairEntities:Array = pairAssigner.GetInputPairEntities ();
+                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (pairEntities [0]);
                   
                   entityDefine.mNumEntities1 = entityIndexArray == null ? 0 : entityIndexArray.length;
-                  entityDefine.mEntityIndexes1 = entityIndexArray;
+                  entityDefine.mEntityCreationIds1 = entityIndexArray;
                   
-                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (pairAssigner.GetInputEntities2 ());
+                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (pairEntities [1]);
                   
                   entityDefine.mNumEntities2 = entityIndexArray == null ? 0 : entityIndexArray.length;
-                  entityDefine.mEntityIndexes2 = entityIndexArray;
+                  entityDefine.mEntityCreationIds2 = entityIndexArray;
                }
                else if (child is editor.trigger.entity.EntityEventHandler)
                {
@@ -182,13 +185,13 @@ package common {
                   
                   entityDefine.mEventId = eventHandler.GetEventId ();
                   
-                  entityDefine.mInputConditionEntityIndex = editorWorld.GetEntityCreationId (eventHandler.GetInputConditionEntity () as Entity);
+                  entityDefine.mInputConditionEntityCreationId = editorWorld.GetEntityCreationId (eventHandler.GetInputConditionEntity () as Entity);
                   entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionTargetValue ();
                   
                   entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
-                  entityDefine.mInputAssignerIndexes = entityIndexArray;
+                  entityDefine.mInputAssignerCreationIds = entityIndexArray;
                   
-                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CreateCodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet ());
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet ());
                }
             }
             else if (editorEntity is editor.entity.EntityShape)
@@ -563,11 +566,12 @@ package common {
          
          var entityId:int;
          var entityDefine:Object;
-         var entity:editor.entity.Entity;
-         var shape:editor.entity.EntityShape;
+         var entity:Entity;
+         var shape:EntityShape;
          var anchorDefine:Object;
-         var joint:editor.entity.EntityJoint;
-         var utility:editor.entity.EntityUtility;
+         var joint:EntityJoint;
+         var utility:EntityUtility;
+         var logic:EntityLogic;
          
          editorWorld.SetCreationEntityArrayLocked (true);
          
@@ -589,6 +593,35 @@ package common {
                   entity = utility = camera;
                }
                //<<
+            }
+            else if ( Define.IsLogicEntity (entityDefine.mEntityType) ) // from v1.07
+            {
+               logic = null;
+               
+               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               {
+                  entity = logic = editorWorld.CreateEntityCondition ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+               {
+                  entity = logic = editorWorld.CreateEntityTask ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
+               {
+                  entity = logic = editorWorld.CreateEntityConditionDoor ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
+               {
+                  entity = logic = editorWorld.CreateEntityInputEntityAssigner ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
+               {
+                  entity = logic = editorWorld.CreateEntityInputEntityPairAssigner ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+                  entity = logic = editorWorld.CreateEntityEventHandler (entityDefine.mEventId);
+               }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
@@ -819,8 +852,6 @@ package common {
                //entityDefine.mEntityType = Define.EntityType_Unkonwn;
             }
             
-            trace ("entityDefine.mEntityType = " + entityDefine.mEntityType + ", entity = " + entity);
-            
             if (entity != null)
             {
                entityDefine.mEntity = entity;
@@ -882,7 +913,7 @@ package common {
             }
             else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
             {
-               joint = entityDefine.mEntity as editor.entity.EntityJoint;
+               joint = entityDefine.mEntity as EntityJoint;
                
                // from v1.02
                if (entityDefine.mConnectedShape1Index >= 0)
@@ -895,6 +926,49 @@ package common {
                else
                   joint.SetConnectedShape2Index (entityDefine.mConnectedShape2Index);
                //<<
+            }
+            else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
+            {
+               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               {
+                  var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
+                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, condition.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+               {
+                  var task:EntityTask = entityDefine.mEntity as EntityTask;
+                  
+                  task.SetEntityAssignerCreationIds (entityDefine.mInputAssignerCreationIds);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
+               {
+                  var conditionDoor:EntityConditionDoor = entityDefine.mEntity as EntityConditionDoor;
+                  conditionDoor.SetAsAnd (entityDefine.mIsAnd);
+                  conditionDoor.SetAsNot (entityDefine.mIsNot);
+                  conditionDoor.SetInputConditions (entityDefine.mInputConditionEntityCreationIds, entityDefine.mInputConditionTargetValues);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
+               {
+                  var entityAssigner:EntityInputEntityAssigner = entityDefine.mEntity as EntityInputEntityAssigner;
+                  
+                  entityAssigner.SetSelectorType (entityDefine.mSelectorType);
+                  entityAssigner.SetInputEntityCreationIds (entityDefine.mEntityCreationIds);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
+               {
+                  var pairAsigner:EntityInputEntityPairAssigner = entityDefine.mEntity as EntityInputEntityPairAssigner;
+                  
+                  pairAsigner.SetPairingType (entityDefine.mPairingType);
+                  pairAsigner.SetInputPairEntityCreationdIds (entityDefine.mEntityCreationIds1, entityDefine.mEntityCreationIds2);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+                  var eventHandler:EntityEventHandler = entityDefine.mEntity as EntityEventHandler;
+                  
+                  eventHandler.SetInputCondition (entityDefine.mInputConditionEntityCreationId, entityDefine.mInputConditionTargetValue);
+                  eventHandler.SetEntityAssignerCreationIds (entityDefine.mInputAssignerCreationIds);
+                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
+               }
             }
          }
          
@@ -1014,18 +1088,11 @@ package common {
          
          var groupId:int;
          var brotherGroup:Array;
+         var brotherIDs:Array;
          
          for each (element in worldXml.BrotherGroups.BrotherGroup)
          {
-            var numBrothers:int = parseInt (element.@num_brothers);
-            var indicesStr:String = element.@brother_indices;
-            var indexStrArray:Array = indicesStr.split (/,/);
-            
-            var brotherIDs:Array = new Array (indexStrArray.length);
-            for (entityId = 0; entityId < indexStrArray.length; ++ entityId)
-            {
-               brotherIDs [entityId] = parseInt (indexStrArray [entityId]);
-            }
+            brotherIDs = EntityIndicesString2CreationIdArray (element.@brother_indices);
             
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
          }
@@ -1062,6 +1129,27 @@ package common {
          return worldDefine;
       }
       
+      public static function EntityIndicesString2CreationIdArray (indicesStr:String):Array
+      {
+         if (indicesStr == null || indicesStr.length == 0)
+            return [];
+         
+         var indexStrArray:Array = indicesStr.split (/,/);
+         
+         var creationIds:Array = new Array (indexStrArray.length);
+         var index:int;
+         for (var i:int = 0; i < indexStrArray.length; ++ i)
+         {
+            index = parseInt (indexStrArray [i]);;
+            if (isNaN (index))
+               index = -1;
+            
+            creationIds [i] = index;
+         }
+         
+         return creationIds;
+      }
+      
       public static function XmlElement2EntityDefine (element:XML, worldDefine:WorldDefine):Object
       {
          var elementLocalVertex:XML;
@@ -1078,6 +1166,48 @@ package common {
          {
             if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
             {
+            }
+         }
+         else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
+         {
+            if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+            {
+               entityDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+            {
+               entityDefine.mInputAssignerCreationIds = EntityIndicesString2CreationIdArray (element.@assigner_indices);
+               entityDefine.mNumAssigners = entityDefine.mInputAssignerCreationIds.length;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
+            {
+               entityDefine.mIsAnd = parseInt (element.@is_and) != 0;
+               entityDefine.mIsNot = parseInt (element.@is_not) != 0;
+               
+               TriggerFormatHelper.CondtionListXml2EntityDefineProperties (element.Conditions, entityDefine);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
+            {
+               entityDefine.mSelectorType = parseInt (element.@selector_type);
+               entityDefine.mEntityCreationIds = EntityIndicesString2CreationIdArray (element.@entity_indices);
+               entityDefine.mNumEntities = entityDefine.mEntityCreationIds.length;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
+            {
+               entityDefine.mPairingType = parseInt (element.@pairing_type);
+               entityDefine.mEntityCreationIds1 = EntityIndicesString2CreationIdArray (element.@entity_indices1);
+               entityDefine.mNumEntities1 = entityDefine.mEntityCreationIds1.length;
+               entityDefine.mEntityCreationIds2 = EntityIndicesString2CreationIdArray (element.@entity_indices2);
+               entityDefine.mNumEntities2 = entityDefine.mEntityCreationIds2.length;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+            {
+               entityDefine.mEventId = parseInt (element.@event_id);
+               entityDefine.mInputConditionEntityCreationId = parseInt (element.@input_condition_entity_index);
+               entityDefine.mInputConditionTargetValue = parseInt (element.@input_condition_target_value);
+               entityDefine.mInputAssignerCreationIds = EntityIndicesString2CreationIdArray (element.@assigner_indices);
+               entityDefine.mNumAssigners = entityDefine.mInputAssignerCreationIds.length;
+               entityDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
             }
          }
          else if ( Define.IsShapeEntity (entityDefine.mEntityType) )

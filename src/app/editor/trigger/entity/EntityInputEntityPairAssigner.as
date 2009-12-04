@@ -79,70 +79,124 @@ package editor.trigger.entity {
          return mEntityPairAssignerType;
       }
       
-      public function GetInputEntities1 ():Array
+      //public function GetInputEntities1 ():Array
+      //{
+      //   //return mInputEntities1;
+      //   
+      //   var entities:Array = new Array ();
+      //   
+      //   if (mInputEntities1 != null)
+      //   {
+      //      var entity:Entity;
+      //      var main_entity:Entity;
+      //      for (var i:int = 0; i < mInputEntities1.length; ++ i)
+      //      {
+      //         entity = mInputEntities1 [i] as Entity;
+      //         
+      //         if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
+      //         {
+      //            main_entity = entity == null ? null : entity.GetMainEntity ();
+      //            entities.push (main_entity);
+      //         }
+      //         else if (entity != null)
+      //         {
+      //            main_entity = entity.GetMainEntity ();
+      //            if (entities.indexOf (main_entity) < 0)
+      //            {
+      //               entities.push (main_entity);
+      //            }
+      //         }
+      //      }
+      //   }
+      //   
+      //   return entities;
+      //}
+      //
+      //public function GetInputEntities2 ():Array
+      //{
+      //   //return mInputEntities2;
+      //   
+      //   var entities:Array = new Array ();
+      //   
+      //   if (mInputEntities2 != null)
+      //   {
+      //      var entity:Entity;
+      //      var main_entity:Entity;
+      //      for (var i:int = 0; i < mInputEntities2.length; ++ i)
+      //      {
+      //         entity = mInputEntities2 [i] as Entity;
+      //         
+      //         if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
+      //         {
+      //            main_entity = entity == null ? null : entity.GetMainEntity ();
+      //            entities.push (main_entity);
+      //         }
+      //         else if (entity != null)
+      //         {
+      //            main_entity = entity.GetMainEntity ();
+      //            if (entities.indexOf (main_entity) < 0)
+      //            {
+      //               entities.push (main_entity);
+      //            }
+      //         }
+      //      }
+      //   }
+      //   
+      //   return entities;
+      //}
+      
+      public function GetInputPairEntities ():Array
       {
-         //return mInputEntities1;
+         ValidateEntityLinks ();
          
-         var entities:Array = new Array ();
-         
-         if (mInputEntities1 != null)
-         {
-            var entity:Entity;
-            var main_entity:Entity;
-            for (var i:int = 0; i < mInputEntities1.length; ++ i)
-            {
-               entity = mInputEntities1 [i] as Entity;
-               
-               if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
-               {
-                  main_entity = entity == null ? null : entity.GetMainEntity ();
-                  entities.push (main_entity);
-               }
-               else if (entity != null)
-               {
-                  main_entity = entity.GetMainEntity ();
-                  if (entities.indexOf (main_entity) < 0)
-                  {
-                     entities.push (main_entity);
-                  }
-               }
-            }
-         }
-         
-         return entities;
+         return [mInputEntities1, mInputEntities2];
       }
       
-      public function GetInputEntities2 ():Array
+      public function SetInputPairEntityCreationdIds (inputEntityCreationIds1:Array, inputEntityCreationIds2:Array):void
       {
-         //return mInputEntities2;
+         if (mInputEntities1 == null)
+            inputEntityCreationIds1 = null;
+         else (mInputEntities1.length > 0)
+            mInputEntities1.splice (0, mInputEntities1.length);
+          
+         if (mInputEntities2 == null)
+            inputEntityCreationIds2 = null;
+         else (mInputEntities2.length > 0)
+            mInputEntities2.splice (0, mInputEntities2.length);
          
-         var entities:Array = new Array ();
+         var num:int;
+         var i:int;
          
-         if (mInputEntities2 != null)
+         if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
          {
-            var entity:Entity;
-            var main_entity:Entity;
-            for (var i:int = 0; i < mInputEntities2.length; ++ i)
+            if (inputEntityCreationIds1 != null && mInputEntities2 != null)
             {
-               entity = mInputEntities2 [i] as Entity;
+               num = inputEntityCreationIds1.length;
+               if (num > inputEntityCreationIds2.length)
+                  num = inputEntityCreationIds2.length;
                
-               if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
+               for (i = 0; i < num; ++ i)
                {
-                  main_entity = entity == null ? null : entity.GetMainEntity ();
-                  entities.push (main_entity);
-               }
-               else if (entity != null)
-               {
-                  main_entity = entity.GetMainEntity ();
-                  if (entities.indexOf (main_entity) < 0)
-                  {
-                     entities.push (main_entity);
-                  }
+                  mInputEntities1.push (mWorld.GetEntityByCreationId (inputEntityCreationIds1 [i]));
+                  mInputEntities2.push (mWorld.GetEntityByCreationId (inputEntityCreationIds2 [i]));
                }
             }
          }
+         else
+         {
+            num = inputEntityCreationIds1.length;
+            for (i = 0; i < num; ++ i)
+            {
+               mInputEntities1.push (mWorld.GetEntityByCreationId (inputEntityCreationIds1 [i]));
+            }
+            
+            num = inputEntityCreationIds2.length;
+            for (i = 0; i < num; ++ i)
+            {
+               mInputEntities2.push (mWorld.GetEntityByCreationId (inputEntityCreationIds2 [i]));
+            }
+         }
          
-         return entities;
       }
       
       public function ValidateEntityLinks ():void
@@ -233,7 +287,7 @@ package editor.trigger.entity {
          var index:int = sContextMenuItems.indexOf (event.target);
          
          if (index >= 0)
-            pair_assigner.ChangePairingType (index);
+            pair_assigner.SetPairingType (index);
       }
       
       override public function UpdateAppearance ():void
@@ -320,7 +374,7 @@ package editor.trigger.entity {
             InputEntitySelector.NotifyEntityLinksModified ();
       }
       
-      public function ChangePairingType (newType:int):void
+      public function SetPairingType (newType:int):void
       {
          var oldType:int = mEntityPairAssignerType;
          mEntityPairAssignerType = newType;

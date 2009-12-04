@@ -97,6 +97,25 @@ package Box2D.Dynamics.Joints
 		public var m_dampingRatio:Number;
 		public var m_beta:Number;
 		public var m_gamma:Number;
+		
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
+		// call by b2Body
+		// this function should  NOT change the world position
+		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
+		{
+			if (jointEdge == m_edgeA)
+			{
+			}
+			else if (jointEdge == m_edgeB)
+			{
+				m_localAnchor.x += dx;
+				m_localAnchor.y += dy;
+			}
+		}
+
 	} // class
 } // package
 //#endif

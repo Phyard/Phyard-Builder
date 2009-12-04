@@ -78,6 +78,7 @@ package player.world {
       include "World_ColorInfectionRules.as";
       include "World_ContactEventHandling.as";
       include "World_GeneralEventHandling.as";
+      include "World_Misc.as";
       
    // 
       
@@ -207,11 +208,10 @@ package player.world {
       
       private var mEntityList:EntityList = new EntityList (); // include entities in editor and dynamicly created entities
       private var mEntityListBody:EntityList = new EntityList ();
+      // when adding new list, check the references of the old lists
       
       public function RegisterEntity (entity:Entity):void
       {
-      trace ("entity = " + entity + ", id= " + entity.GetCreationId ());
-      
          if (entity is EntityBody)
          {
             mEntityListBody.AddEntity (entity);
@@ -276,6 +276,11 @@ package player.world {
 //==============================================================================
       
       private var mNumSimulatedSteps:int = 0;
+      
+      public function GetSimulatedStep ():int
+      {
+         return mNumSimulatedSteps;
+      }
       
 //=============================================================
 //   init
@@ -812,10 +817,6 @@ package player.world {
          
          var ccat1:CollisionCategory = shape1.mCollisionCategory;
          var ccat2:CollisionCategory = shape2.mCollisionCategory;
-         
-         trace ("-------\nccat1 = " + ccat1.mCategoryIndex + ", mArrayIndex = " + ccat1.mArrayIndex);
-         trace ("ccat2 = " + ccat2.mCategoryIndex + ", mArrayIndex = " + ccat2.mArrayIndex);
-         trace ("ccat1.mEnemyTable [ccat2.mArrayIndex] = " + ccat1.mEnemyTable [ccat2.mArrayIndex]);
          
          return ccat1.mEnemyTable [ccat2.mArrayIndex];
       }

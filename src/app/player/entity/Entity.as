@@ -32,7 +32,7 @@ package player.entity {
       public var mIsToRemove:Boolean = false;
       public var mEntityListToAddIn:EntityList = null;
 
-      public function Entity (world:World, entityDefine:Object = null)
+      public function Entity (world:World)
       {
          mWorld = world;
       }
@@ -41,15 +41,18 @@ package player.entity {
 //   create
 //=============================================================
       
+      public function Register (creationId:int, appearanceId:int):void
+      {
+         mCreationId   = creationId;
+         mAppearanceId = appearanceId;
+         
+         mWorld.RegisterEntity (this);
+      }
+      
       public function Create (createStageId:int, entityDefine:Object):void
       {
          if (createStageId == 0)
          {
-            if (entityDefine.mCreationOrderId != undefined)
-               mCreationId   = entityDefine.mCreationOrderId;
-            if (entityDefine.mAppearanceOrderId != undefined)
-               mAppearanceId = entityDefine.mAppearanceOrderId;
-            
             if (entityDefine.mPosX != undefined)
                SetPositionX (mWorld.DisplayX2PhysicsX (entityDefine.mPosX));
             if (entityDefine.mPosY != undefined)
@@ -377,6 +380,31 @@ package player.entity {
       {
       }
       
-
+//==============================================================================
+// some variables for APIs
+//==============================================================================
+      
+      internal var mSpecialId:int = 0;
+      internal static var sLastSpecialId:int = 0;
+      
+      internal function IncreaseLastSpecialId ():void
+      {
+         if (sLastSpecialId == 0x7FFFFFFF)
+            ResetEntitySpecialIds (); // generally, this will not happen
+         
+         ++ sLastSpecialId;
+      }
+      
+      protected function ResetEntitySpecialIds ():void
+      {
+         sLastSpecialId = 0;
+         
+         mWorld.ResetEntitySpecialIds ();
+      }
+      
+      public function ResetSpecialId ():void
+      {
+         mSpecialId = 0;
+      }
    }
 }

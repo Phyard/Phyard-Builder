@@ -759,10 +759,20 @@ package Box2D.Dynamics
 				var fixture:b2Fixture = m_fixtureList; 
 				while (fixture != null)
 				{
-					fixture.GetShape ().MoveLocalPosition (dx, dy);
+					fixture.GetShape ().OnBodyLocalCenterChanged (dx, dy);
 					
 					fixture = fixture.m_next;
 				}
+				
+				var jn:b2JointEdge = m_jointList;
+				while (jn != null)
+				{
+					jn.joint.OnBodyLocalCenterChanged (dx, dy, jn);
+					
+					jn = jn.next;
+				}
+				
+				//todo: contact list
 			}
 		}
 

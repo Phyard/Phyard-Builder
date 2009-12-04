@@ -160,15 +160,13 @@ package common.trigger {
       public static const ID_Entity_SetAlpha:int                       = 953; // entity 
       
       public static const ID_Entity_GetPosition:int                    = 954; // entity 
-      //public static const ID_Entity_SetPosition:int                  = 955; // entity 
-      public static const ID_Entity_GetPositionInWorld:int                    = 954; // entity 
-      //public static const ID_Entity_SetPositionInWorld:int                  = 955; // entity 
-      public static const ID_Entity_GetPositionInContainer:int                    = 954; // entity 
-      //public static const ID_Entity_SetPositionInContainer:int                  = 955; // entity 
-      public static const ID_Entity_GetRotationByRadians:int           = 956; // entity 
-      //public static const ID_Entity_SetRotationByRadians:int         = 957; // entity 
-      public static const ID_Entity_GetRotationByDegrees:int           = 958; // entity 
-      //public static const ID_Entity_SetRotationByDegrees:int         = 959; // entity 
+      public static const ID_Entity_SetPosition:int                    = 955; // entity 
+      public static const ID_Entity_GetLocalPosition:int               = 956; // entity 
+      //public static const ID_Entity_SetLocalPosition:int             = 957; // entity 
+      public static const ID_Entity_GetRotationByRadians:int           = 960; // entity 
+      //public static const ID_Entity_SetRotationByRadians:int         = 961; // entity 
+      public static const ID_Entity_GetRotationByDegrees:int           = 962; // entity 
+      //public static const ID_Entity_SetRotationByDegrees:int         = 963; // entity 
       
    // game / entity / shape
       

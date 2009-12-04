@@ -16,6 +16,8 @@ package player.entity {
          super (world);
 
          mCollideConnected = false;
+         
+         mProxyJointSlider = new PhysicsProxyJointSlider (mWorld.GetPhysicsEngine ());
       }
       
 //=============================================================
@@ -160,21 +162,17 @@ package player.entity {
 //   physics proxy
 //=============================================================
       
+      protected var mProxyJointSlider:PhysicsProxyJointSlider;
+      
       override public function ConfirmConnectedShapes ():void
       {
          ConfirmConnectedShapes_NonHinge (mAnchor1.GetPositionX (), mAnchor1.GetPositionY (), mAnchor2.GetPositionX (), mAnchor2.GetPositionY ());
       }
       
-      override public function RebuildJointPhysics ():void
+      override protected function RebuildJointPhysicsInternal ():void
       {
-         if (mAlreadyDestroyed)
-            return;
-         
-         DestroyPhysicsProxy ();
-         
-         var proxyJointSlider:PhysicsProxyJointSlider;
-         mPhysicsProxy = proxyJointSlider = new PhysicsProxyJointSlider (mWorld.GetPhysicsEngine ());
-         proxyJointSlider.BuildSlider (
+         mPhysicsProxy = mProxyJointSlider;
+         mProxyJointSlider.BuildSlider (
                   mAnchor1, mAnchor2, mCollideConnected, 
                   mEnableLimits, mLowerTranslation, mUpperTranslation,
                   mEnableMotor, mMotorSpeed, mMaxMotorForce

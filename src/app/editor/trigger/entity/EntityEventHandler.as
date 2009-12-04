@@ -93,11 +93,6 @@ package editor.trigger.entity {
          return mEventId;
       }
       
-      public function GetEntityAssigners ():Array
-      {
-         return mEntityAssignerList; //.slice ();
-      }
-      
       public function GetInputConditionEntity ():EntityCondition
       {
          return mExternalCondition.mConditionEntity;
@@ -106,6 +101,36 @@ package editor.trigger.entity {
       public function GetInputConditionTargetValue ():int
       {
          return mExternalCondition.mTargetValue;
+      }
+      
+      public function SetInputCondition (inputConditionEntityCreationId:int, inputConditionTargetValue:int):void
+      {
+         var condition:EntityCondition = mWorld.GetEntityByCreationId (inputConditionEntityCreationId) as EntityCondition;
+         
+         if (condition != null)
+         {
+            mExternalCondition.mConditionEntity = condition;
+            mExternalCondition.mTargetValue = inputConditionTargetValue;
+         }
+      }
+      
+      public function GetEntityAssigners ():Array
+      {
+         return mEntityAssignerList; //.slice ();
+      }
+      
+      public function SetEntityAssignerCreationIds (assignerCreationIds:Array):void
+      {
+         if (mEntityAssignerList.length > 0)
+            mEntityAssignerList.splice (0, mEntityAssignerList.length);
+         if (assignerCreationIds != null && assignerCreationIds.length > 0)
+         {
+            var num:int = assignerCreationIds.length;
+            for (var i:int = 0; i < num; ++ i)
+            {
+               mEntityAssignerList.push (mWorld.GetEntityByCreationId (assignerCreationIds [i]));
+            }
+         }
       }
       
       override public function ValidateEntityLinks ():void

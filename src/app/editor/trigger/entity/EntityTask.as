@@ -63,14 +63,18 @@ package editor.trigger.entity {
          return mEntityAssignerList; //.slice ();
       }
       
-      public function SetEntityAssigners (assigners:Array):void
+      public function SetEntityAssignerCreationIds (assignerCreationIds:Array):void
       {
          if (mEntityAssignerList.length > 0)
             mEntityAssignerList.splice (0, mEntityAssignerList.length);
-         if (assigners != null && assigners.length > 0)
-            mEntityAssignerList.splice (0, 0, assigners);
-         
-         ValidateEntityLinks ();
+         if (assignerCreationIds != null && assignerCreationIds.length > 0)
+         {
+            var num:int = assignerCreationIds.length;
+            for (var i:int = 0; i < num; ++ i)
+            {
+               mEntityAssignerList.push (mWorld.GetEntityByCreationId (assignerCreationIds [i]));
+            }
+         }
       }
       
       override public function UpdateAppearance ():void

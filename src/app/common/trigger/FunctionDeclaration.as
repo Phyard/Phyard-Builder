@@ -2,9 +2,9 @@ package common.trigger
 {
    public class FunctionDeclaration
    {
-      public var mId:int;
-      public var mInputValueTypes:Array;
-      public var mReturnValueTypes:Array;
+      private var mId:int;
+      private var mInputValueTypes:Array;
+      private var mReturnValueTypes:Array;
       
       public function FunctionDeclaration (id:int, inputValueTypes:Array, returnValueTypes:Array = null)
       {
@@ -34,10 +34,10 @@ package common.trigger
          if (inputId < 0 || inputId >= mInputValueTypes.length)
             return ValueTypeDefine.ValueType_Void;
          
-         return mInputValueTypes [inputId];
+         return mInputValueTypes [inputId] & ValueTypeDefine.ValueTypeMask_Basic;
       }
       
-      public function GetNumReturns ():int
+      public function GetNumOutputs ():int
       {
          if (mReturnValueTypes == null)
             return 0;
@@ -45,7 +45,7 @@ package common.trigger
          return mReturnValueTypes.length;
       }
       
-      public function GetReturnValueType (returnId:int):int
+      public function GetOutputValueType (returnId:int):int
       {
          if (mReturnValueTypes == null)
             return ValueTypeDefine.ValueType_Void;
@@ -53,12 +53,7 @@ package common.trigger
          if (returnId < 0 || returnId >= mReturnValueTypes.length)
             return ValueTypeDefine.ValueType_Void;
          
-         return mReturnValueTypes [returnId];
-      }
-      
-      public function GetReturnValueTypes ():Array
-      {
-         return mReturnValueTypes;
+         return mReturnValueTypes [returnId] & ValueTypeDefine.ValueTypeMask_Basic;
       }
       
 //=====================================================================

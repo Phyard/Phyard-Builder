@@ -136,13 +136,12 @@ package player.entity {
 //   physics proxy
 //=============================================================
      
-      override public function RebuildShapePhysics ():void
+      override protected function RebuildShapePhysicsInternal ():void
       {
-         var proxyShape:PhysicsProxyShape = PrepareRebuildShapePhysics ();
-         if (proxyShape != null)
+         if (mProxyShape != null)
          {
-            proxyShape.AddPolygon (mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
-			}
+            mProxyShape.AddPolygon (mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
+         }
       }
       
       

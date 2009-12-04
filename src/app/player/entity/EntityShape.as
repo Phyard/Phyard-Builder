@@ -160,27 +160,27 @@ package player.entity {
       // a better design? : 
       // - entity.SetPositionX (x)
       // - entity.SetPositionY (y)
-      // - if (entity is EntityShape) (entity as EntityShape).RecalLocalPosition ()
+      // - if (entity is EntityShape) (entity as EntityShape).UpdatelLocalPosition ()
 
       override public function SetPositionX (x:Number):void
       {
          super.SetPositionX (x);
          
-         RecalLocalPosition ();
+         UpdatelLocalPosition ();
       }
       
       override public function SetPositionY (y:Number):void
       {
          super.SetPositionY (y);
          
-         RecalLocalPosition ();
+         UpdatelLocalPosition ();
       }
       
       override public function SetRotation (rot:Number):void
       {
          mRotation = rot;
          
-         RecalLocalPosition ();
+         UpdatelLocalPosition ();
       }
 
 //=============================================================
@@ -274,11 +274,11 @@ package player.entity {
       
       public function SetHollow (hollow:Boolean):void
       {
-			if (mIsHollow != hollow)
-			{
-         	mIsHollow = hollow;
-         	mBuildInterior = ! mIsHollow;
-			}
+         if (mIsHollow != hollow)
+         {
+            mIsHollow = hollow;
+            mBuildInterior = ! mIsHollow;
+         }
       }
       
       public function IsHollow ():Boolean
@@ -293,10 +293,10 @@ package player.entity {
       
       public function SetBuildBorder (buildBorder:Boolean):void
       {
-			if (mBuildBorder != buildBorder)
-			{
-         	mBuildBorder = buildBorder;
-			}
+         if (mBuildBorder != buildBorder)
+         {
+            mBuildBorder = buildBorder;
+         }
       }
       
       public function IsBulidBorder ():Boolean
@@ -306,32 +306,32 @@ package player.entity {
       
       public function SetDensity (density:Number):void
       {
-			mDensity = density;
+         mDensity = density;
       }
       
       public function GetDensity ():Number
       {
-			return mDensity;
+         return mDensity;
       }
       
       public function SetFriction (friction:Number):void
       {
-			mFriction = friction;
+         mFriction = friction;
       }
       
       public function GetFriction ():Number
       {
-			return mFriction;
+         return mFriction;
       }
       
       public function SetRestitution (restitution:Number):void
       {
-			mRestitution = restitution;
+         mRestitution = restitution;
       }
       
       public function GetRestitution ():Number
       {
-			return mRestitution;
+         return mRestitution;
       }
       
       public function SetDrawBackground (draw:Boolean):void
@@ -524,7 +524,7 @@ package player.entity {
       
       protected function OnMouseUp (event:MouseEvent):void
       {
-         trace ("click on this: " + this);
+         //trace ("click on this: " + this);
       }
 
 //=============================================================
@@ -569,9 +569,9 @@ package player.entity {
       {
          if (mBody != null)
          {
-            mPositionX = mBody.GetPositionX () + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
-            mPositionY = mBody.GetPositionY () + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
-            mRotation  = mBody.GetRotation () + mRelativeRotation;
+            mPositionX = mBody.mPositionX + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
+            mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
+            mRotation  = mBody.mRotation + mRelativeRotation;
          }
          
          mAppearanceObjectsContainer.x = mWorld.PhysicsX2DisplayX (mPositionX);
@@ -632,13 +632,13 @@ package player.entity {
             if (body != null)
             {
                body.AddShape (this);
-				}
+            }
             
-            RecalLocalPosition ();   
+            UpdatelLocalPosition ();
          }
       }
       
-      internal function RecalLocalPosition ():void
+      internal function UpdatelLocalPosition ():void
       {
          if (mBody != null)
          {
@@ -647,12 +647,6 @@ package player.entity {
             mLocalPositionX =   tempX * mBody.mCosRotation + tempY * mBody.mSinRotation;
             mLocalPositionY = - tempX * mBody.mSinRotation + tempY * mBody.mCosRotation;
             mRelativeRotation  = mRotation  - mBody.GetRotation  ();
-         }  
-         else
-         {
-            mLocalPositionX = mPositionX;
-            mLocalPositionY = mPositionY;
-            mRelativeRotation = mRotation;
          }
       }
       
@@ -665,10 +659,14 @@ package player.entity {
       internal function AttachJointAnchor (jointAnchor:SubEntityJointAnchor):void
       {
          if (jointAnchor.mShape != null)
+         {
+            if (jointAnchor.mShape == this)
+               return;
+            
             jointAnchor.mShape.DetachJointAnchor (jointAnchor);
+         }
          
          jointAnchor.mShape = this;
-         jointAnchor.mRelativeRotation = jointAnchor.mRotation - mRotation;
          
          if (mJointAnchorListHead != null)
             mJointAnchorListHead.mPrevAnchor = jointAnchor;
@@ -702,11 +700,32 @@ package player.entity {
          jointAnchor.mShape = null;
       }
       
+   //----------------------------------------------------
+   //   cos, sin: used by SubEntityJointAnchors
+   //----------------------------------------------------
+     
+      internal var mCosRotation:Number = 1.0;
+      internal var mSinRotation:Number = 0.0;
+      private  var mLastRotation:Number = 0.0; // last rotation -> sin, cos
+      
+      internal function UpdateSinCos ():void
+      {
+         if (mRotation != mLastRotation)
+         {
+            mLastRotation = mRotation;
+            
+            mCosRotation = Math.cos (mRotation);
+            mSinRotation = Math.sin (mRotation);
+         }
+      }
+      
 //=============================================================
 //   physics proxy
 //=============================================================
      
       protected var mPhysicsShapePotentially:Boolean = false;
+      
+      protected var mProxyShape:PhysicsProxyShape = null;
       
       //>> from v1.07
       protected var mPhysicsValuesValidFlags:int = 0x7FFFFFFF;
@@ -722,24 +741,24 @@ package player.entity {
       
       public function SetPhysicsEnabled (enabled:Boolean):void
       {
-         if (mBody == null)
+         if (mBody == null) // generally, mBody should not be null. It is null only when the shape is not initilized totally.
          {
-				mPhysicsEnabled = enabled;
+            mPhysicsEnabled = enabled;
          }
          else
          {
-				var oldIsPhysics:Boolean = IsPhysicsShape ();
-				mPhysicsEnabled = enabled;
-				var newIsPhysics:Boolean = IsPhysicsShape ();
-				
-				if (newIsPhysics != oldIsPhysics)
-				{
+            var oldIsPhysics:Boolean = IsPhysicsShape ();
+            mPhysicsEnabled = enabled;
+            var newIsPhysics:Boolean = IsPhysicsShape ();
+            
+            if (newIsPhysics != oldIsPhysics)
+            {
                mBody.RemoveShape (this);
                mBody.AddShape (this);
                
                // todo, reset mass, if body.isPhysics changes, break/built joints
-				}
-			}
+            }
+         }
       }
       
       override public function DestroyPhysicsProxy ():void
@@ -747,30 +766,24 @@ package player.entity {
          if (mPhysicsProxy == null)
             return;
          
-         var anchor:SubEntityJointAnchor = mJointAnchorListHead;
-         
-         while (anchor != null)
-         {
-            anchor.mJoint.DestroyPhysicsProxy ();
-            
-            anchor = anchor.mNextAnchor;
-         }
-         
          super.DestroyPhysicsProxy ();
+         
+         mProxyShape = null;
       }
       
-      protected function PrepareRebuildShapePhysics ():PhysicsProxyShape
+      final public function RebuildShapePhysics ():void
       {
+      // ...
          if (mAlreadyDestroyed)
-            return null;
+            return;
          
          DestroyPhysicsProxy ();
          
          if (! IsPhysicsShape ())
-            return null;
+            return;
          
-         if (mBody == null)
-            return null;
+         //if (mBody == null) // should not be null
+         //   return;
          
          if (! mBody.IsPhysicsBuilt ())
          {
@@ -779,20 +792,47 @@ package player.entity {
          
          var proxyShape:PhysicsProxyShape = mPhysicsProxy as PhysicsProxyShape;
          
-         if (proxyShape == null)
+         if (mProxyShape == null)
          {
-            mPhysicsProxy = proxyShape = new PhysicsProxyShape (mBody.mPhysicsProxy as PhysicsProxyBody, this);
+            mProxyShape = new PhysicsProxyShape (mBody.mPhysicsProxy as PhysicsProxyBody, this);
             //mPhysicsProxy.SetUserData (this);
+            
+            mPhysicsProxy = mProxyShape;
          }
          
-         return proxyShape;
+      // ...
+         RebuildShapePhysicsInternal ();
       }
-      
-      public function RebuildShapePhysics ():void
+
+      protected function RebuildShapePhysicsInternal ():void
       {
          // to override
       }
- 
+
+      internal function DestroyConnectedJointsPhysics ():void
+      {
+         var anchor:SubEntityJointAnchor = mJointAnchorListHead;
+         
+         while (anchor != null)
+         {
+            anchor.mJoint.DestroyPhysicsProxy ();
+            
+            anchor = anchor.mNextAnchor;
+         }
+      }
+
+      internal function RebuildConnectedJointsPhysics ():void
+      {
+         var anchor:SubEntityJointAnchor = mJointAnchorListHead;
+         
+         while (anchor != null)
+         {
+            anchor.mJoint.RebuildJointPhysics ();
+            
+            anchor = anchor.mNextAnchor;
+         }
+      }
+
 //=============================================================
 //   some paint function used by subclasses
 //=============================================================

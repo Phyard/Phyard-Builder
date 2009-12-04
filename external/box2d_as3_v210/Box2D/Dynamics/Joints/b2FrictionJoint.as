@@ -87,6 +87,26 @@ package Box2D.Dynamics.Joints
 		public var m_maxForce:Number;
 		public var m_maxTorque:Number;
 
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
+		// call by b2Body
+		// this function should  NOT change the world position
+		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
+		{
+			if (jointEdge == m_edgeA)
+			{
+				m_localAnchorA.x += dx;
+				m_localAnchorA.y += dy;
+			}
+			else if (jointEdge == m_edgeB)
+			{
+				m_localAnchorB.x += dx;
+				m_localAnchorB.y += dy;
+			}
+		}
+
 	} // class
 } // package
 

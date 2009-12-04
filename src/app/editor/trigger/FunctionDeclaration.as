@@ -44,7 +44,7 @@ package editor.trigger {
          return mName;
       }
       
-      //public function GetReturnValueType ():int
+      //public function GetOutputValueType ():int
       //{
       //   return mReturnValueType;
       //}
@@ -54,7 +54,7 @@ package editor.trigger {
          return mDescription;
       }
       
-      public function GetNumReturns ():int
+      public function GetNumOutputs ():int
       {
          if (mReturnDefinitions == null)
             return 0;
@@ -73,7 +73,7 @@ package editor.trigger {
          return mReturnDefinitions [returnId];
       }
       
-      public function GetReturnValueType (returnId:int):int
+      public function GetOutputValueType (returnId:int):int
       {
          var vd:VariableDefinition = GetReturnDefinitionAt (returnId);
          
@@ -116,7 +116,7 @@ package editor.trigger {
       {
          // the implementattion is different for Core function and Event handler
          
-         return GetNumReturns () == 1 && GetReturnValueType (0) == ValueTypeDefine.ValueType_Boolean;
+         return GetNumOutputs () == 1 && GetOutputValueType (0) == ValueTypeDefine.ValueType_Boolean;
       }
       
       public function HasInputsWithValueTypeOf (valueType:int):Boolean
@@ -156,43 +156,47 @@ package editor.trigger {
          if (coreDelcaration == null)
             return false;
          
-         if ( mId != coreDelcaration.mId)
+         if ( mId != coreDelcaration.GetID ())
             return false;
          
-         if (mParamDefinitions == null && coreDelcaration.mInputValueTypes != null)
+         var num_inputs:int = coreDelcaration.GetNumInputs ();
+         
+         if (mParamDefinitions == null && num_inputs != 0)
             return false;
          
-         if (mParamDefinitions != null && coreDelcaration.mInputValueTypes == null)
+         if (mParamDefinitions != null && num_inputs == 0)
             return false;
          
          var i:int;
          
-         if (mParamDefinitions != null && coreDelcaration.mInputValueTypes != null)
+         if (mParamDefinitions != null && num_inputs != 0)
          {
-            if (mParamDefinitions.length != coreDelcaration.mInputValueTypes.length)
+            if (mParamDefinitions.length != num_inputs)
                return false;
             
-            for (i = 0; i < mParamDefinitions.length; ++ i)
+            for (i = 0; i < num_inputs; ++ i)
             {
-               if (GetInputValueType (i) != coreDelcaration.mInputValueTypes [i])
+               if (GetInputValueType (i) != coreDelcaration.GetInputValueType (i))
                   return false;
             }
          }
          
-         if (mReturnDefinitions == null && coreDelcaration.mReturnValueTypes != null)
+         var num_outputs:int = coreDelcaration.GetNumOutputs ();
+         
+         if (mReturnDefinitions == null && num_outputs != 0)
             return false;
          
-         if (mReturnDefinitions != null && coreDelcaration.mReturnValueTypes == null)
+         if (mReturnDefinitions != null && num_outputs == 0)
             return false;
          
-         if (mReturnDefinitions != null && coreDelcaration.mReturnValueTypes != null)
+         if (mReturnDefinitions != null && num_outputs != 0)
          {
-            if (mReturnDefinitions.length != coreDelcaration.mReturnValueTypes.length)
+            if (mReturnDefinitions.length != num_outputs)
                return false;
             
-            for (i = 0; i < mReturnDefinitions.length; ++ i)
+            for (i = 0; i < num_outputs; ++ i)
             {
-               if (GetReturnValueType (i) != coreDelcaration.mReturnValueTypes [i])
+               if (GetOutputValueType (i) != coreDelcaration.GetOutputValueType (i))
                   return false;
             }
          }

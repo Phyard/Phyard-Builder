@@ -220,13 +220,7 @@ package common {
             entityDefine.mBodyId = -1;
          }
          
-   //*********************************************************************************************************************************
-   // create
-   //*********************************************************************************************************************************
-         
-         const kNumCreateStages:int = 3;
-         
-         var createStageId:int = 0;
+      // register entities by order of creation id
          
          for (createId = 0; createId < entityDefineArray.length; ++ createId)
          {
@@ -236,13 +230,17 @@ package common {
             
             if (entity != null)
             {
-               entity.Create (createStageId, entityDefine);
-               
-               playerWorld.RegisterEntity (entity);
+               entity.Register (entityDefine.mCreationOrderId, entityDefine.mAppearanceOrderId);
             }
          }
          
-         for (createStageId = 1; createStageId < kNumCreateStages; ++ createStageId)
+   //*********************************************************************************************************************************
+   // create
+   //*********************************************************************************************************************************
+         
+         const kNumCreateStages:int = 3;
+         
+         for (var createStageId:int = 0; createStageId < kNumCreateStages; ++ createStageId)
          {
             for (createId = 0; createId < entityDefineArray.length; ++ createId)
             {
@@ -903,17 +901,9 @@ package common {
          {
             brotherIDs = worldDefine.mBrotherGroupDefines [groupId];
             
-            idsStr = "";
-            for (entityId = 0; entityId < brotherIDs.length; ++ entityId)
-            {
-               if (entityId != 0)
-                  idsStr += ",";
-               idsStr += brotherIDs [entityId];
-            }
-            
             element = <BrotherGroup />;
             element.@num_brothers = brotherIDs.length;
-            element.@brother_indices = idsStr;
+            element.@brother_indices = EntityCreationIdArray2IndicesString (brotherIDs);
             xml.BrotherGroups.appendChild (element);
          }
          
@@ -1021,6 +1011,9 @@ package common {
       public static function EntityDefine2XmlElement (entityDefine:Object, worldDefine:WorldDefine):Object
       {
          var vertexId:int;
+         var i:int;
+         var num:int;
+         var creation_ids:Array;
          
          var elementLocalVertex:Object;
          
@@ -1035,6 +1028,58 @@ package common {
          {
             if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
             {
+            }
+         }
+         else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
+         {
+            if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+            {
+               element.CodeSnippet = TriggerFormatHelper2.CodeSnippetDefine2Xml (entityDefine.mCodeSnippetDefine);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+            {
+               element.@assigner_indices = EntityCreationIdArray2IndicesString (entityDefine.mInputAssignerCreationIds);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
+            {
+               element.@is_and = entityDefine.mIsAnd ? 1 : 0;
+               element.@is_not = entityDefine.mIsNot ? 1 : 0;
+               
+               element.Conditions = <Conditions />;
+               
+               var target_values:Array = entityDefine.mInputConditionTargetValues;
+               creation_ids = entityDefine.mInputConditionEntityCreationIds;
+               num = creation_ids.length;
+               if (num > target_values.length)
+                  num = target_values.length;
+               var elementCondition:XML;
+               for (i = 0; i < num; ++ i)
+               {
+                  elementCondition = <Condition />;
+                  elementCondition.@entity_index = creation_ids [i];
+                  elementCondition.@target_value = target_values [i];
+                  
+                  element.Conditions.appendChild (elementCondition);
+               }
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
+            {
+               element.@selector_type = entityDefine.mSelectorType;
+               element.@entity_indices = EntityCreationIdArray2IndicesString (entityDefine.mEntityCreationIds);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
+            {
+               element.@pairing_type = entityDefine.mPairingType;
+               element.@entity_indices1 =  EntityCreationIdArray2IndicesString (entityDefine.mEntityCreationIds1);
+               element.@entity_indices2 =  EntityCreationIdArray2IndicesString (entityDefine.mEntityCreationIds2);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+            {
+               element.@event_id = entityDefine.mEventId;
+               element.@input_condition_entity_index = entityDefine.mInputConditionEntityCreationId;
+               element.@input_condition_target_value = entityDefine.mInputConditionTargetValue;
+               element.@assigner_indices = EntityCreationIdArray2IndicesString (entityDefine.mInputAssignerCreationIds);
+               element.CodeSnippet = TriggerFormatHelper2.CodeSnippetDefine2Xml (entityDefine.mCodeSnippetDefine);
             }
          }
          else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -1221,6 +1266,25 @@ package common {
          }
          
          return element;
+      }
+      
+      public static function EntityCreationIdArray2IndicesString (creationIds:Array):String
+      {
+         if (creationIds == null)
+            return "";
+         
+         var num:int = creationIds.length;
+         if (num < 1)
+            return "";
+         
+         var indicesStr:String = "" + creationIds [0];
+         for (var i:int = 1; i < num; ++ i)
+         {
+            indicesStr += ",";
+            indicesStr += creationIds [i];
+         }
+         
+         return indicesStr;
       }
       
 //====================================================================================

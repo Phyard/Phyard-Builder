@@ -15,10 +15,22 @@ package player.trigger.entity
       
       public function Evaluate ():void
       {
+         // to override
       }
       
-      public function GetEvaluatedValue ():int
+      private var mLastEvaluateStep:int = -1;
+      
+      final public function GetEvaluatedValue ():int
       {
+         // most evaluate once at each simulateion step
+         var worldSimulateStep:int = mWorld.GetSimulatedStep ();
+         if (mLastEvaluateStep < worldSimulateStep)
+         {
+            mLastEvaluateStep = worldSimulateStep;
+            
+            Evaluate ();
+         }
+         
          return mEvaluatedValue;
       }
    }

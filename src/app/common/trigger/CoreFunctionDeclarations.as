@@ -72,13 +72,13 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetCurrentDateTime,
                      null,
                      [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,
@@ -87,8 +87,8 @@ package common.trigger {
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
           
@@ -318,7 +318,7 @@ package common.trigger {
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_SinRadians,
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -326,7 +326,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_CosRadians,
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -334,7 +334,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_TanRadians,
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -345,7 +345,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcCosRadians,
@@ -353,7 +353,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcTanRadians,
@@ -361,7 +361,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcTan2Radians,
@@ -370,7 +370,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          
@@ -379,7 +379,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft,
                      [
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -388,7 +388,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight,
                      [
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -397,7 +397,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned,
                      [
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -470,38 +470,38 @@ package common.trigger {
          
           RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Degrees2Radians,
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Radians2Degrees,
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
           RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Number2RGB,
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RGB2Number,
                      [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ]
                   );
         
@@ -603,7 +603,7 @@ package common.trigger {
                      [
                         ValueTypeDefine.ValueType_Number, 
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -611,12 +611,12 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor,
                      [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ]
                   );
          
@@ -624,15 +624,15 @@ package common.trigger {
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,
                      [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,
                      [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      null
                   );
@@ -692,13 +692,13 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetAlpha,
                      [
                         ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      null
                   );
@@ -724,7 +724,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees,
@@ -732,7 +732,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          
@@ -743,13 +743,13 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor,
                      [
                         ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ],
                      null
                   );
@@ -758,17 +758,17 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,
                      [
                         ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
                      ],
                      null
                   );
@@ -801,13 +801,13 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
                      [
                         ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
                      ],
                      null
                   );
@@ -839,6 +839,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                         ValueTypeDefine.ValueType_Number, 
                         ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Boolean, 
                         ValueTypeDefine.ValueType_Boolean, 
                         ValueTypeDefine.ValueType_Boolean, 
                      ],

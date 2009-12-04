@@ -19,6 +19,8 @@ package player.entity {
 
          mCollideConnected = true;
          
+         mProxyJointDistance = new PhysicsProxyJointDistance (mWorld.GetPhysicsEngine ());
+         
          mWorld.GetEntityLayer ().addChild (mLineShape);
       }
       
@@ -73,21 +75,17 @@ package player.entity {
 //   physics proxy
 //=============================================================
       
+      protected var mProxyJointDistance:PhysicsProxyJointDistance;
+      
       override public function ConfirmConnectedShapes ():void
       {
          ConfirmConnectedShapes_NonHinge (mAnchor1.GetPositionX (), mAnchor1.GetPositionY (), mAnchor2.GetPositionX (), mAnchor2.GetPositionY ());
       }
       
-      override public function RebuildJointPhysics ():void
+      override protected function RebuildJointPhysicsInternal ():void
       {
-         if (mAlreadyDestroyed)
-            return;
-         
-         DestroyPhysicsProxy ();
-         
-         var proxyJointDistance:PhysicsProxyJointDistance;
-         mPhysicsProxy = proxyJointDistance = new PhysicsProxyJointDistance (mWorld.GetPhysicsEngine ());
-         proxyJointDistance.BuildDistance (
+         mPhysicsProxy = mProxyJointDistance;
+         mProxyJointDistance.BuildDistance (
                   mAnchor1, mAnchor2, mCollideConnected
                );
       }

@@ -56,22 +56,49 @@ package editor.trigger.entity {
          return mEntityAssignerType;
       }
       
+      public function SetSelectorType (newType:int):void
+      {
+         var oldType:int = mEntityAssignerType;
+         mEntityAssignerType = newType;
+         
+         if (AreInternalComponentsVisible () && oldType != newType)
+         {
+            // todo
+         }
+      }
+      
       public function GetInputEntities ():Array
       {
-         //return mInputEntities;
+         //var entities:Array = new Array ();
+         //var main_entity:Entity;
+         //for (var i:int = 0; i < mInputEntities.length; ++ i)
+         //{
+         //   main_entity = (mInputEntities [i] as Entity).GetMainEntity ();
+         //   if (main_entity != null && entities.indexOf (main_entity) < 0)
+         //   {
+         //      entities.push (main_entity);
+         //   }
+         //}
+         //
+         //return entities;
          
-         var entities:Array = new Array ();
-         var main_entity:Entity;
-         for (var i:int = 0; i < mInputEntities.length; ++ i)
+         ValidateEntityLinks ();
+         
+         return mInputEntities;
+      }
+      
+      public function SetInputEntityCreationIds (entityCreationIds:Array):void
+      {
+         if (mInputEntities.length > 0)
+            mInputEntities.splice (0, mInputEntities.length);
+         if (entityCreationIds != null && entityCreationIds.length > 0)
          {
-            main_entity = (mInputEntities [i] as Entity).GetMainEntity ();
-            if (main_entity != null && entities.indexOf (main_entity) < 0)
+            var num:int = entityCreationIds.length;
+            for (var i:int = 0; i < num; ++ i)
             {
-               entities.push (main_entity);
+               mInputEntities.push (mWorld.GetEntityByCreationId (entityCreationIds [i]));
             }
          }
-         
-         return entities;
       }
       
       public function ValidateEntityLinks ():void

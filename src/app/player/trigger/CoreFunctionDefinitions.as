@@ -1217,7 +1217,7 @@ package player.trigger {
          var targetY:Number =  valueSource.EvalateValueObject () as Number;
          
          valueSource = valueSource.mNextValueSourceInList;
-         var targetRotation:int =  valueSource.EvalateValueObject () as Number;
+         var deltaRotation:int =  valueSource.EvalateValueObject () as Number;
          
          valueSource = valueSource.mNextValueSourceInList;
          var bTeleportConnectedMovables:Boolean =  valueSource.EvalateValueObject () as Boolean;
@@ -1225,7 +1225,10 @@ package player.trigger {
          valueSource = valueSource.mNextValueSourceInList;
          var bTeleprotConnectedStatics:Boolean =  valueSource.EvalateValueObject () as Boolean;
          
-         shape.Teleport (targetX, targetY, targetRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics);
+         valueSource = valueSource.mNextValueSourceInList;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         
+         shape.Teleport (targetX, targetY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
       public static function CloneShape (valueSource:ValueSource, valueTarget:ValueTarget):void

@@ -1840,7 +1840,7 @@ package editor {
             {
                var condition:EntityBasicCondition = entity as EntityBasicCondition;
                
-               values.mName = condition.GetName ();
+               values.mCodeSnippetName = condition.GetCodeSnippetName ();
                values.mCodeSnippet  = condition.GetCodeSnippet ();
                
                ShowConditionSettingDialog (values, SetConditionProperties);
@@ -1849,7 +1849,7 @@ package editor {
             {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
                
-               values.mName = event_handler.GetName ();
+               values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
                values.mEventId = event_handler.GetEventId ();
                values.mCodeSnippet  = event_handler.GetCodeSnippet ();
                
@@ -3513,7 +3513,7 @@ package editor {
          if (entity is EntityBasicCondition)
          {
             var condition:EntityBasicCondition = entity as EntityBasicCondition;
-            condition.SetName (params.mName);
+            condition.SetCodeSnippetName (params.mCodeSnippetName);
             
             var code_snippet:CodeSnippet = condition.GetCodeSnippet ();
             code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);

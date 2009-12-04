@@ -9,8 +9,8 @@ package common.trigger.define
       public var mNumInputs:int;
       public var mInputValueSourceDefines:Array;
       
-      public var mNumReturns:int;
-      public var mReturnValueTargetDefines:Array;
+      public var mNumOutputs:int;
+      public var mOutputValueTargetDefines:Array;
    }
    
 }

@@ -50,13 +50,13 @@ package player.trigger.entity
                else
                   mAssignerType = Define.EntityPairAssignerType_OneToOne;
                
-               if (entityDefine.mEntityIndexes1 != undefined)
-                  mEntitiesIndexes1 = entityDefine.mEntityIndexes1;
+               if (entityDefine.mEntityCreationIds1 != undefined)
+                  mEntitiesIndexes1 = entityDefine.mEntityCreationIds1;
                else
                   mEntitiesIndexes1 = new Array ();
                
-               if (entityDefine.mEntityIndexes2 != null)
-                  mEntitiesIndexes2 = entityDefine.mEntityIndexes2;
+               if (entityDefine.mEntityCreationIds2 != null)
+                  mEntitiesIndexes2 = entityDefine.mEntityCreationIds2;
                else
                   mEntitiesIndexes2 = new Array ();
                
@@ -99,10 +99,10 @@ package player.trigger.entity
                else
                   mAssignerType = Define.EntitySelectorType_Many;
                
-               if (entityDefine.mEntityIndexes != undefined)
+               if (entityDefine.mEntityCreationIds != undefined)
                {
-                  mEntitiesIndexes1 = entityDefine.mEntityIndexes;
-            
+                  mEntitiesIndexes1 = entityDefine.mEntityCreationIds;
+                  
                   // to optimize: sort by creation id
                }
                else

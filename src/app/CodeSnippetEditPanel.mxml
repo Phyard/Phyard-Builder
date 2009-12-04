@@ -146,7 +146,7 @@
                   currentValueSources.push (value_source.CloneSource ());
                }
                
-               for (j = 0; j < func_declaration.GetNumReturns (); ++ j)
+               for (j = 0; j < func_declaration.GetNumOutputs (); ++ j)
                {
                   value_target = func_calling.GetReturnValueTarget (j);
                   
@@ -242,7 +242,7 @@
             
             var value_target:ValueTarget;
             
-            for (j = 0; j < func_declaration.GetNumReturns (); ++ j)
+            for (j = 0; j < func_declaration.GetNumOutputs (); ++ j)
             {
                variable_def = func_declaration.GetReturnDefinitionAt (j);
                value_target = variable_def.GetDefaultValueTarget ();
@@ -408,14 +408,14 @@
                BuildContextMenuForValueSource (form_item, variable_def, value_source);
             }
             
-            if (func_declaration.GetNumReturns () > 0)
+            if (func_declaration.GetNumOutputs () > 0)
             {
                title_box = new HBox ();
                title_box.percentWidth = 100;
                title_box.setStyle ("backgroundColor", 0x7FCEFF);
                
                block_title = new Label ();
-               block_title.text = func_declaration.GetNumReturns () == 1 ? "Output Parameter" : "Output Parameters";
+               block_title.text = func_declaration.GetNumOutputs () == 1 ? "Output Parameter" : "Output Parameters";
                block_title.setStyle ("fontWeight", "bold");
                block_title.setStyle ("textAlign", "center");
                block_title.percentWidth = 100;
@@ -425,7 +425,7 @@
             }
             
             var value_target:ValueTarget;
-            for (j = 0; j < func_declaration.GetNumReturns (); ++ j)
+            for (j = 0; j < func_declaration.GetNumOutputs (); ++ j)
             {
                value_target = currentValueTargets [j];
                
@@ -556,7 +556,7 @@
             var value_target:ValueTarget;
             var target_control:UIComponent;
             
-            for (j = 0; j < func_declaration.GetNumReturns (); ++ j)
+            for (j = 0; j < func_declaration.GetNumOutputs (); ++ j)
             {
                value_target = currentReturnTargets [j];
                target_control = target_value_controls [j];
@@ -618,8 +618,9 @@
             if (inputVariableSpae.HasVariablesWithValueType (value_type))
                AppendContextMenuItem (sprite, "from Input Parameter", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
             
-            if (returnVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "from Output Parameter", OnSelectValueSource_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
+            //option: ...
+            //if (returnVariableSpae.HasVariablesWithValueType (value_type))
+            //   AppendContextMenuItem (sprite, "from Output Parameter", OnSelectValueSource_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
             
             //AppendContextMenuItem (sprite, "from Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             //AppendContextMenuItem (sprite, "from Global Variable", null, false), space_type != ValueSpaceTypeDefine.ValueSpace_Global;
@@ -791,8 +792,9 @@
             
             AppendContextMenuItem (sprite, "to Nothing", OnSelectValueTarget_Null, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
             
-            if (inputVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "to Input Parameter", OnSelectValueTarget_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+            //option: ......
+            //if (inputVariableSpae.HasVariablesWithValueType (value_type))
+            //   AppendContextMenuItem (sprite, "to Input Parameter", OnSelectValueTarget_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
             
             if (returnVariableSpae.HasVariablesWithValueType (value_type))
                AppendContextMenuItem (sprite, "to Output Parameter", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);

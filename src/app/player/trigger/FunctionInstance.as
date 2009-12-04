@@ -26,7 +26,7 @@ package player.trigger
          var num_inputs :int = func_declaration == null ? 0 : func_declaration.GetNumInputs ();
          mInputVariableSpace = new VariableSpace (num_inputs);
          
-         var num_returns:int = func_declaration == null ? 0 : func_declaration.GetNumReturns ();
+         var num_returns:int = func_declaration == null ? 0 : func_declaration.GetNumOutputs ();
          mReturnVariableSpace = new VariableSpace (num_returns);
          
          var num_locals:int = localVariableDefines == null ? 0 : localVariableDefines.length;

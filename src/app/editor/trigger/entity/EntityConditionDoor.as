@@ -104,6 +104,28 @@ package editor.trigger.entity {
          return mInputConditions;
       }
       
+      public function SetInputConditions (conditionEntityCreationIds:Array,conditionTargetValues:Array):void
+      {
+         if (mInputConditions.length > 0)
+            mInputConditions.splice (0, mInputConditions.length);
+         
+         if (conditionEntityCreationIds != null && conditionTargetValues != null)
+         {
+            var num:int = conditionEntityCreationIds.length;
+            if (num > conditionTargetValues.length)
+               num = conditionTargetValues.length;
+            
+            var condition:EntityCondition;
+            for (var i:int = 0; i < num; ++ i)
+            {
+               condition = mWorld.GetEntityByCreationId (conditionEntityCreationIds [i]) as EntityCondition;
+               
+               if (condition != null)
+                  mInputConditions.push (new ConditionAndTargetValue (condition, conditionTargetValues [i]));
+            }
+         }
+      }
+      
       override public function UpdateAppearance ():void
       {
          while (numChildren > 0)

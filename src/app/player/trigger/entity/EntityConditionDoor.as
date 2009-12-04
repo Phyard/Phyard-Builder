@@ -35,7 +35,7 @@ package player.trigger.entity
             {
                var length:int = entityDefine.mNumInputConditions;
                
-               var conditionEntityIndexes:Array = entityDefine.mInputConditionEntityIndexes;
+               var conditionEntityIndexes:Array = entityDefine.mInputConditionEntityCreationIds;
                var targetValues          :Array = entityDefine.mInputConditionTargetValues;
                
                if (conditionEntityIndexes != null && targetValues != null)

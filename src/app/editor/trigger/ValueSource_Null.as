@@ -6,7 +6,7 @@ package editor.trigger {
    
    public class ValueSource_Null implements ValueSource
    {
-      public function ValueSource_Undetermined ()
+      public function ValueSource_Null ()
       {
          
       }

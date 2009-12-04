@@ -112,6 +112,27 @@ package Box2D.Dynamics.Joints
 		public var m_state:int;
 		public var m_limitState1:int;
 		public var m_limitState2:int;
+		
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
+		// call by b2Body
+		// this function should  NOT change the world position
+		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
+		{
+			if (jointEdge == m_edgeA)
+			{
+				m_localAnchor1.x += dx;
+				m_localAnchor1.y += dy;
+			}
+			else if (jointEdge == m_edgeB)
+			{
+				m_localAnchor2.x += dx;
+				m_localAnchor2.y += dy;
+			}
+		}
+
 	} // class
 } // package
 //#endif

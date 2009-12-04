@@ -67,6 +67,7 @@ package editor.selection {
          var bodyDef:b2BodyDef = new b2BodyDef ();
          bodyDef.position.Set (pointX, pointY);
          bodyDef.angle = rotation;
+         bodyDef.type = b2Body.b2_dynamicBody;
          _b2Body = mSelectionEngine._b2World.CreateBody (bodyDef);
          
          _b2Body.SetUserData (this);

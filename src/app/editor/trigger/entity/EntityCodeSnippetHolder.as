@@ -46,12 +46,12 @@ package editor.trigger.entity {
          //mCodeSnippet = new CodeSnippet (new FunctionDefinition ());
       }
       
-      public function GetName ():String
+      public function GetCodeSnippetName ():String
       {
          return mCodeSnippet.GetName ();
       }
       
-      public function SetName (name:String):void
+      public function SetCodeSnippetName (name:String):void
       {
          mCodeSnippet.SetName (name);
       }

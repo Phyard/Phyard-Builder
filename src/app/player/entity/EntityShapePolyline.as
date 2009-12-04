@@ -130,9 +130,6 @@ package player.entity {
             
             var displayCurveThickness:Number = mWorld.PhysicsLength2DisplayLength (mCurveThickness);
             
-            trace ("mCurveThickness = " + mCurveThickness);
-            trace ("displayCurveThickness = " + displayCurveThickness);
-            
             var i:int;
             var numVertesex:int = mLocalDisplayPoints.length;
             var point1:Point;
@@ -168,13 +165,12 @@ package player.entity {
 //   physics proxy
 //=============================================================
      
-      override public function RebuildShapePhysics ():void
+      override protected function RebuildShapePhysicsInternal ():void
       {
-         var proxyShape:PhysicsProxyShape = PrepareRebuildShapePhysics ();
-         if (proxyShape != null)
+         if (mProxyShape != null)
          {
-            proxyShape.AddPolyline (mLocalPoints, mCurveThickness, mIsRoundEnds);
-			}
+            mProxyShape.AddPolyline (mLocalPoints, mCurveThickness, mIsRoundEnds);
+         }
       }
       
       

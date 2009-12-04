@@ -47,8 +47,6 @@ package player.physics {
          {
             fixture = _b2Fixtures [i] as b2Fixture;
             fixture.GetBody ().DestroyFixture(fixture);
-            
-            trace ("DestroyFixture");
          }
          
          _b2Fixtures.splice (0, _b2Fixtures.length);
@@ -396,7 +394,7 @@ package player.physics {
          
          var polygon:b2Polygon = new b2Polygon(xPositions, yPositions, vertexCount);
          
-         var numDecomposedPolygonsL:int = b2Polygon.DecomposeConvex(polygon, decomposedPolygons, vertexCount - 2);
+         numDecomposedPolygons = b2Polygon.DecomposeConvex(polygon, decomposedPolygons, vertexCount - 2);
          
          if (numDecomposedPolygons < 1)
             buildInterior = false;

@@ -867,8 +867,9 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target PositionX"), 
                              new VariableDefinitionNumber ("Target PositionY"), 
                              new VariableDefinitionNumber ("Target Rotation"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Movable Shapes?"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Static Shapes?"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"), 
                      ],
                      null
                   );
@@ -877,9 +878,9 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape"), 
                              new VariableDefinitionNumber ("Target PositionX"), 
                              new VariableDefinitionNumber ("Target PositionY"), 
-                             new VariableDefinitionNumber ("Target Rotation"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Movable Shapes?"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Static Shapes?"), 
+                             new VariableDefinitionNumber ("Delta Rotation"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
                      ],
                      null
                   );

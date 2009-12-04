@@ -30,7 +30,7 @@ package editor.trigger {
          
          if (mFunctionDeclaration != null)
          {
-            var num_returns:int = mFunctionDeclaration.GetNumReturns ();
+            var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
             for (var j:int = 0; j < num_returns; ++ j)
                mReturnVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetReturnDefinitionAt (j));
          }

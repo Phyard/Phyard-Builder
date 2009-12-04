@@ -31,7 +31,7 @@ package player.trigger.entity
             {
                var numAssigners:int = entityDefine.mNumAssigners;
                
-               var assignerEntityIndexes:Array = entityDefine.mInputAssignerIndexes;
+               var assignerEntityIndexes:Array = entityDefine.mInputAssignerCreationIds;
                if (assignerEntityIndexes != null)
                {
                   var newElement:ListElement_InputEntityAssigner;

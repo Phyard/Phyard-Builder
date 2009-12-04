@@ -46,7 +46,7 @@ package player.entity {
    {
       public function EntityBody (world:World)
       {
-         super (world, null);
+         super (world);
       }
       
 //=============================================================
@@ -179,6 +179,14 @@ package player.entity {
          }
       }
       
+      internal function SynchronizePositionAndRotationOfPhysicsProxy ():void
+      {
+         if (mPhysicsProxy != null)
+         {
+            (mPhysicsProxy as PhysicsProxyBody).SetPositionAndRotation (mPositionX, mPositionY, mRotation);
+         }
+      }
+      
 //=============================================================
 //   physics proxy
 //=============================================================
@@ -190,10 +198,10 @@ package player.entity {
          
          var proxyBody:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
          
-         trace ("--------------------- body info");
-         trace ("rotation: " + proxyBody.GetRotation () * Define.kRadians2Degrees);
-         trace ("vx: " + proxyBody.GetLinearVelocityX ());
-         trace ("vy: " + proxyBody.GetLinearVelocityY ());
+         //trace ("--------------------- body info");
+         //trace ("rotation: " + proxyBody.GetRotation () * Define.kRadians2Degrees);
+         //trace ("vx: " + proxyBody.GetLinearVelocityX ());
+         //trace ("vy: " + proxyBody.GetLinearVelocityY ());
       }
       
       public function IsPhysicsBuilt ():Boolean
@@ -291,7 +299,7 @@ package player.entity {
             var shape:EntityShape = mShapeListHead;
             while (shape != null)
             {
-               shape.RecalLocalPosition ();
+               shape.UpdatelLocalPosition ();
                
                shape = shape.mNextShapeInBody;
             }

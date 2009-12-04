@@ -45,9 +45,9 @@ package player.trigger.entity
             }
             
             // external condition
-            if (entityDefine.mInputConditionEntityIndex != undefined && entityDefine.mInputConditionTargetValue != undefined)
+            if (entityDefine.mInputConditionEntityCreationId != undefined && entityDefine.mInputConditionTargetValue != undefined)
             {
-               var conditionEntity:EntityCondition = mWorld.GetEntityByCreationId (entityDefine.mInputConditionEntityIndex) as EntityCondition;
+               var conditionEntity:EntityCondition = mWorld.GetEntityByCreationId (entityDefine.mInputConditionEntityCreationId) as EntityCondition;
                if (conditionEntity != null)
                {
                   mExternalCondition =  new ConditionAndTargetValue (conditionEntity, entityDefine.mInputConditionTargetValue);
@@ -57,11 +57,11 @@ package player.trigger.entity
          else if (createStageId == 1) // somthing to do after all EntityAssigners are created with stageId=0
          {
             // entity (pair) assigners
-            if (entityDefine.mNumAssigners != undefined && entityDefine.mInputAssignerIndexes != undefined)
+            if (entityDefine.mNumAssigners != undefined && entityDefine.mInputAssignerCreationIds != undefined)
             {
                var numAssigners:int = entityDefine.mNumAssigners;
                
-               var assignerEntityIndexes:Array = entityDefine.mInputAssignerIndexes;
+               var assignerEntityIndexes:Array = entityDefine.mInputAssignerCreationIds;
                var newElement:ListElement_InputEntityAssigner;
                 
                for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
@@ -116,8 +116,6 @@ package player.trigger.entity
       {
          if (mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
             return;
-         
-         trace ("mEventHandlerDefinition = " + mEventHandlerDefinition);
          
          //mEventHandlerDefinition.DoCall (valueSourceList, null);
          mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);

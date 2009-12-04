@@ -46,14 +46,14 @@
          {
             mParams = initialValues;
             
-            TextInput_Name.text = mParams.mName;
+            TextInput_Name.text = mParams.mCodeSnippetName;
             
             theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
          }
          
          public function GetValues (returnValues:Object):void
          {
-            returnValues.mName = TextInput_Name.text;
+            returnValues.mCodeSnippetName = TextInput_Name.text;
             
             returnValues.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
          }

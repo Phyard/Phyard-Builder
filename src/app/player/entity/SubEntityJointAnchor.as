@@ -13,15 +13,20 @@ package player.entity {
    {
       internal var mJoint:EntityJoint = null;
       internal var mAnchorIndex:int = 0;
-
-      // the connected shape, null means ground
-      internal var mShape:EntityShape = null;
-      internal var mRelativeRotation:Number = 0; // relative to shape
       
+      internal var mAnotherJointAnchor:SubEntityJointAnchor = null; // must not be null
+
+      // the connected shape, null means ground. It is possible the shape is not a physics shape.
+      internal var mShape:EntityShape = null;
+      
+      internal var mRelativeRotation:Number = 0.0; // relative to shape
+      internal var mLocalPositionX:Number = 0.0; // in shape space
+      internal var mLocalPositionY:Number = 0.0; // in shape space
+
       // anchor list of mShape
       internal var mPrevAnchor:SubEntityJointAnchor = null;
       internal var mNextAnchor:SubEntityJointAnchor = null;
-      
+
       public function SubEntityJointAnchor (world:World)
       {
          super (world);
@@ -32,6 +37,51 @@ package player.entity {
       public function GetShape ():EntityShape
       {
          return mShape;
+      }
+
+      // when calling this function, make sure the joint has not built physics.
+      internal function SetShape (shape:EntityShape):void
+      {
+         if (mShape != shape)
+         {
+            if (mShape != null)
+            {
+               mShape.DetachJointAnchor (this);
+            }
+            
+            if (shape != null)
+            {
+               shape.AttachJointAnchor (this);
+            }
+            
+            UpdatelLocalPosition ();
+         }
+      }
+
+      internal function UpdatelLocalPosition ():void
+      {
+         if (mShape != null)
+         {
+            mShape.UpdateSinCos ();
+            
+            var tempX:Number = (mPositionX - mShape.GetPositionX ());
+            var tempY:Number = (mPositionY - mShape.GetPositionY ());
+            mLocalPositionX =   tempX * mShape.mCosRotation + tempY * mShape.mSinRotation;
+            mLocalPositionY = - tempX * mShape.mSinRotation + tempY * mShape.mCosRotation;
+            mRelativeRotation  = mRotation  - mShape.GetRotation  ();
+         }
+      }
+
+      internal function UpdatePositionFromLocalPosition ():void
+      {
+         if (mShape != null)
+         {
+            mShape.UpdateSinCos ();
+            
+            mPositionX = mShape.mPositionX + mLocalPositionX * mShape.mCosRotation - mLocalPositionY * mShape.mSinRotation;
+            mPositionY = mShape.mPositionY + mLocalPositionX * mShape.mSinRotation + mLocalPositionY * mShape.mCosRotation;
+            mRotation  = mShape.mRotation + mRelativeRotation;
+         }
       }
 
 //=============================================================
@@ -51,7 +101,7 @@ package player.entity {
       {
          if (mShape != null)
          {
-            mShape.DetachJointAnchor (this);
+            SetShape (null);
          }
          
          mWorld.GetEntityLayer ().removeChild (mAnchorShape);

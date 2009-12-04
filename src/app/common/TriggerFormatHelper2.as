@@ -8,7 +8,6 @@ package common {
    import player.entity.Entity;
    import player.trigger.IPropertyOwner;
    
-   import common.trigger.CoreFunctionIds;
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition;
    import player.trigger.FunctionDefinition_Core;
@@ -27,6 +26,7 @@ package common {
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
    
+   import common.trigger.CoreFunctionIds;
    import common.trigger.FunctionDeclaration;
    
    import common.trigger.FunctionTypeDefine;
@@ -90,9 +90,9 @@ package common {
             
             var value_target_list:ValueTarget = null;
             var value_target:ValueTarget;
-            for (i = funcCallingDefine.mNumReturns - 1; i >= 0; -- i)
+            for (i = funcCallingDefine.mNumOutputs - 1; i >= 0; -- i)
             {
-               value_target = ValueTargetDefine2ReturnValueTarget (parentFunctionInstance, playerWorld, funcCallingDefine.mReturnValueTargetDefines [i], core_func_declaration.GetReturnValueType (i));
+               value_target = ValueTargetDefine2ReturnValueTarget (parentFunctionInstance, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], core_func_declaration.GetOutputValueType (i));
                value_target.mNextValueTargetInList = value_target_list;
                value_target_list = value_target;
             }
@@ -280,7 +280,7 @@ package common {
 // byte array -> define
 //==============================================================================================
       
-      public static function ByteArray2CommandListDefine (byteArray:ByteArray):CodeSnippetDefine
+      public static function ByteArray2CodeSnippetDefine (byteArray:ByteArray):CodeSnippetDefine
       {
          return null;
       }
@@ -295,23 +295,129 @@ package common {
          return null;
       }
       
+      public static function ByteArray2ValueTargetDefine (byteArray:ByteArray):ValueTargetDefine
+      {
+         return null;
+      }
+      
 //==============================================================================================
 // define -> xml
 //==============================================================================================
       
-      public static function CommandListDefine2Xml (codeSnippetDefine:CodeSnippetDefine):XML
+      public static function CodeSnippetDefine2Xml (codeSnippetDefine:CodeSnippetDefine):XML
       {
-         return null;
+         var elementCodeSnippet:XML = <CodeSnippet />;
+         
+         elementCodeSnippet.@name = codeSnippetDefine.mName;
+         
+         var num:int = codeSnippetDefine.mNumCallings;
+         var functionCallings:Array = codeSnippetDefine.mFunctionCallingDefines;
+         for (var i:int = 0; i < num; ++ i)
+         {
+            elementCodeSnippet.appendChild (FunctionCallingDefine2Xml (functionCallings[i]));
+         }
+         
+         return elementCodeSnippet;
       }
       
       public static function FunctionCallingDefine2Xml (funcCallingDefine:FunctionCallingDefine):XML
       {
-         return null;
+         var func_declaration:FunctionDeclaration = TriggerEngine.GetCoreFunctionDeclaration (funcCallingDefine.mFunctionId);
+         
+         var elementFunctionCalling:XML = <FunctionCalling />;
+         
+         elementFunctionCalling.@function_type = funcCallingDefine.mFunctionType;
+         elementFunctionCalling.@function_id = funcCallingDefine.mFunctionId;
+         
+         var i:int;
+         
+         var num_inputs:int = funcCallingDefine.mNumInputs;
+         var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
+         elementFunctionCalling.InputValueSources = <InputValueSources />;
+         for (i = 0; i < num_inputs; ++ i)
+            elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], func_declaration.GetInputValueType (i)));
+         
+         var num_outputs:int = funcCallingDefine.mNumOutputs;
+         var outputValueTargetDefines:Array = funcCallingDefine.mOutputValueTargetDefines;
+         elementFunctionCalling.OutputValueTargets = <OutputValueTargets />
+         for (i = 0; i < num_outputs; ++ i)
+            elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], func_declaration.GetOutputValueType (i)));
+         
+         return elementFunctionCalling;
       }
       
-      public static function ValueSourceDefine2Xml (valueSourceDefine:ValueSourceDefine):XML
+      public static function ValueSourceDefine2Xml (valueSourceDefine:ValueSourceDefine, valueType:int):XML
       {
-         return null;
+         var elementValueSource:XML = <ValueSource />;
+         
+         var source_type:int = valueSourceDefine.GetValueSourceType ();
+         
+         elementValueSource.@type = source_type;
+         
+         if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
+         {
+            var direct_source_define:ValueSourceDefine_Direct = valueSourceDefine as ValueSourceDefine_Direct;
+            
+            var valid:Boolean = true;
+            var value_object:Object = null;
+            
+            switch (valueType)
+            {
+               case ValueTypeDefine.ValueType_Boolean:
+                  value_object = (direct_source_define.mValueObject as Boolean) ? 1 : 0;
+                  break;
+               case ValueTypeDefine.ValueType_Number:
+                  value_object = direct_source_define.mValueObject as Number;
+                  break;
+               case ValueTypeDefine.ValueType_String:
+                  value_object = direct_source_define.mValueObject as String;
+                  if (value_object == null)
+                     value_object = "";
+                  break;
+               case ValueTypeDefine.ValueType_Entity:
+                  value_object = direct_source_define.mValueObject as int;
+                  break;
+               case ValueTypeDefine.ValueType_CollisionCategory:
+                  value_object = direct_source_define.mValueObject as int;
+                  break;
+               default:
+                  valid = false;
+                  break;
+            }
+            
+            if (valid)
+            {
+               elementValueSource.@direct_value = value_object;
+            }
+         }
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         {
+            var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
+            
+            elementValueSource.@variable_space = variable_source_define.mSpaceType;
+            elementValueSource.@variable_index = variable_source_define.mVariableIndex;
+         }
+         
+         return elementValueSource;
+      }
+      
+      public static function ValueTargetefine2Xml (valueTargetDefine:ValueTargetDefine, valueType:int):XML
+      {
+         var elementValueTarget:XML = <ValueTarget />;
+         
+         var target_type:int = valueTargetDefine.GetValueTargetType ();
+         
+         elementValueTarget.@type = target_type;
+         
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         {
+            var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
+            
+            elementValueTarget.@variable_space = variable_target_define.mSpaceType;
+            elementValueTarget.@variable_index = variable_target_define.mVariableIndex;
+         }
+         
+         return elementValueTarget;
       }
       
    }

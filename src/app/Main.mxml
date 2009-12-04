@@ -147,7 +147,7 @@
                            <mx:Button id="Button_CreateAndDoor" toolTip="Create 'and' Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/door_and.png')" downIcon="@Embed('res/create/door_and-sel.png')" overIcon="@Embed('res/create/door_and.png')" selectedUpIcon="@Embed('res/create/door_and-sel.png')" selectedOverIcon="@Embed('res/create/door_and-sel.png')" selectedDownIcon="@Embed('res/create/door_and.png')"   />
                            <mx:Button id="Button_CreateNotDoor" toolTip="Create 'not' Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/door_not.png')" downIcon="@Embed('res/create/door_not-sel.png')" overIcon="@Embed('res/create/door_not.png')" selectedUpIcon="@Embed('res/create/door_not-sel.png')" selectedOverIcon="@Embed('res/create/door_not-sel.png')" selectedDownIcon="@Embed('res/create/door_not.png')"   />
                            -->
-                           <mx:Button id="Button_CreateConditionDoor" toolTip="Create Condition Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/condition_door.png')" downIcon="@Embed('res/create/condition_door-sel.png')" overIcon="@Embed('res/create/condition_door.png')" selectedUpIcon="@Embed('res/create/condition_door-sel.png')" selectedOverIcon="@Embed('res/create/condition_door-sel.png')" selectedDownIcon="@Embed('res/create/condition_door.png')"   />
+                           <mx:Button id="Button_CreateTask" toolTip="Create Task" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/task.png')" downIcon="@Embed('res/create/task-sel.png')" overIcon="@Embed('res/create/task.png')" selectedUpIcon="@Embed('res/create/task-sel.png')" selectedOverIcon="@Embed('res/create/task-sel.png')" selectedDownIcon="@Embed('res/create/task.png')"   />
                            <mx:Spacer height="10"/>
                            <mx:Button id="Button_CreateInputEntityAssigner" toolTip="Create Input Entitiy Limiter" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_limiter.png')" downIcon="@Embed('res/create/input_entity_limiter-sel.png')" overIcon="@Embed('res/create/input_entity_limiter.png')" selectedUpIcon="@Embed('res/create/input_entity_limiter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_limiter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_limiter.png')"   />
                            <mx:Spacer height="10"/>
@@ -171,11 +171,14 @@
                         <mx:Box direction="vertical" borderStyle="none" width="39" height="100%"
                                  paddingTop="1" paddingLeft="0" paddingRight="1" paddingBottom="1"
                                  horizontalGap="0" verticalGap="0">
+                           <!--
                            <mx:Button id="Button_CreateAction" toolTip="Create Condition Result" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/result.png')" downIcon="@Embed('res/create/result-sel.png')" overIcon="@Embed('res/create/result.png')" selectedUpIcon="@Embed('res/create/result-sel.png')" selectedOverIcon="@Embed('res/create/result-sel.png')" selectedDownIcon="@Embed('res/create/result.png')"   />
+                           -->
                            <!--
                            <mx:Button id="Button_CreateOrDoor" toolTip="Create 'or' Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/door_or.png')" downIcon="@Embed('res/create/door_or-sel.png')" overIcon="@Embed('res/create/door_or.png')" selectedUpIcon="@Embed('res/create/door_or-sel.png')" selectedOverIcon="@Embed('res/create/door_or-sel.png')" selectedDownIcon="@Embed('res/create/door_or.png')"   />
                            -->
-                           <mx:Button id="Button_CreateTask" toolTip="Create Task" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/task.png')" downIcon="@Embed('res/create/task-sel.png')" overIcon="@Embed('res/create/task.png')" selectedUpIcon="@Embed('res/create/task-sel.png')" selectedOverIcon="@Embed('res/create/task-sel.png')" selectedDownIcon="@Embed('res/create/task.png')"   />
+                           <mx:Button id="Button_CreateConditionDoor" toolTip="Create Condition Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/condition_door.png')" downIcon="@Embed('res/create/condition_door-sel.png')" overIcon="@Embed('res/create/condition_door.png')" selectedUpIcon="@Embed('res/create/condition_door-sel.png')" selectedOverIcon="@Embed('res/create/condition_door-sel.png')" selectedDownIcon="@Embed('res/create/condition_door.png')"   />
+                           <mx:Spacer height="36"/>
                            <!--
                            <mx:Button id="Button_CreateTrigger" toolTip="Create Trigger" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/trigger.png')" downIcon="@Embed('res/create/trigger-sel.png')" overIcon="@Embed('res/create/trigger.png')" selectedUpIcon="@Embed('res/create/trigger-sel.png')" selectedOverIcon="@Embed('res/create/trigger-sel.png')" selectedDownIcon="@Embed('res/create/trigger.png')"   />
                            <mx:Spacer height="36"/>
@@ -363,7 +366,7 @@
                MainView.mButton_CreateTask = Button_CreateTask;
                MainView.mButton_CreateEntityAssigner = Button_CreateInputEntityAssigner;
                MainView.mButton_CreateEntityPairAssigner = Button_CreateInputEntityPairAssigner;
-               MainView.mButton_CreateAction = Button_CreateAction;
+               //MainView.mButton_CreateAction = Button_CreateAction;
                //MainView.mButton_CreateTrigger = Button_CreateTrigger;
                MainView.mButton_CreateEventHandler0 = Button_CreateEventHandler0;
                MainView.mButton_CreateEventHandler1 = Button_CreateEventHandler1;
@@ -439,7 +442,7 @@
                Button_CreateTask.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateInputEntityAssigner.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateInputEntityPairAssigner.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateAction.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               //Button_CreateAction.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                //Button_CreateTrigger.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler0.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler1.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);

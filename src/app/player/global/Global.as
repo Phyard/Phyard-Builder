@@ -1,5 +1,6 @@
 package player.global
 {
+   import player.design.Design;
    import player.world.World;
    
    import player.trigger.TriggerEngine;
@@ -14,7 +15,7 @@ package player.global
    {
       public static var sTheGlobal:Global = null;
       
-      public static var mCurrentWorld:World = null;
+      public static var mCurrentDesign:Design = null;
       
       // these variables are static, which mmeans there can only be one player instance running at the same time.
       
@@ -44,14 +45,22 @@ package player.global
          mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (false);
       }
       
-      public static function SetCurrentWorld (world:World):void
+      public static function SetCurrentDesign (design:Design):void
       {
-         mCurrentWorld = world;
+         mCurrentDesign = design;
+      }
+      
+      public static function GetCurrentDesign ():World
+      {
+         return mCurrentDesign;
       }
       
       public static function GetCurrentWorld ():World
       {
-         return mCurrentWorld;
+         if (mCurrentDesign == null)
+            return null;
+         
+         return mCurrentDesign.mCurrentWorld;
       }
       
       protected static function CreateRegisterVariableSpace (initValueObject:Object):VariableSpace

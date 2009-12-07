@@ -46,7 +46,7 @@ package common {
       // create a world define from a editor world.
       // the created word define can be used to create either a player world or a editor world
       
-      public static function EditorWorld2WorldDefine (editorWorld:editor.world.World):WorldDefine
+      public static function EditorWorld2WorldDefine (editorWorld:World):WorldDefine
       {
          if (editorWorld == null)
             return null;
@@ -88,13 +88,13 @@ package common {
          
          var numEntities:int = editorWorld.GetNumEntities ();
          var entityId:int;
-         var editorEntity:editor.entity.Entity;
+         var createId:int;
+         var editorEntity:Entity;
          //var arraySortedByCreationId:Array = new Array ();
          
-         for (entityId = 0; entityId < numEntities; ++ entityId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            var child:Object = editorWorld.GetEntityByAppearanceId (entityId);
-            editorEntity = child as Entity;
+            editorEntity = editorWorld.GetEntityByCreationId (createId);
             
             var entityDefine:Object = new Object ();
             
@@ -118,50 +118,50 @@ package common {
             {
                var entityIndexArray:Array;
                
-               if (child is editor.trigger.entity.EntityBasicCondition)
+               if (editorEntity is editor.trigger.entity.EntityBasicCondition)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicCondition;
                   
-                  var basicCondition:editor.trigger.entity.EntityBasicCondition = child as editor.trigger.entity.EntityBasicCondition;
+                  var basicCondition:editor.trigger.entity.EntityBasicCondition = editorEntity as editor.trigger.entity.EntityBasicCondition;
                   
                   entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, basicCondition.GetCodeSnippet ());
                }
-               else if (child is editor.trigger.entity.EntityTask)
+               else if (editorEntity is editor.trigger.entity.EntityTask)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicTask;
                   
-                  var task:editor.trigger.entity.EntityTask = child as editor.trigger.entity.EntityTask;
+                  var task:editor.trigger.entity.EntityTask = editorEntity as editor.trigger.entity.EntityTask;
                   entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (task.GetEntityAssigners ());
                   
                   entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                }
-               else if (child is editor.trigger.entity.EntityConditionDoor)
+               else if (editorEntity is editor.trigger.entity.EntityConditionDoor)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicConditionDoor;
                   
-                  var conditionDoor:editor.trigger.entity.EntityConditionDoor = child as editor.trigger.entity.EntityConditionDoor;
+                  var conditionDoor:editor.trigger.entity.EntityConditionDoor = editorEntity as editor.trigger.entity.EntityConditionDoor;
                   
                   entityDefine.mIsAnd = conditionDoor.IsAnd ();
                   entityDefine.mIsNot = conditionDoor.IsNot ();
                   TriggerFormatHelper.ConditionAndTargetValueArray2EntityDefineProperties (editorWorld, conditionDoor.GetInputConditions (), entityDefine);
                }
-               else if (child is editor.trigger.entity.EntityInputEntityAssigner)
+               else if (editorEntity is editor.trigger.entity.EntityInputEntityAssigner)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicInputEntityAssigner;
                   
-                  var entityAssigner:editor.trigger.entity.EntityInputEntityAssigner = child as editor.trigger.entity.EntityInputEntityAssigner;
+                  var entityAssigner:editor.trigger.entity.EntityInputEntityAssigner = editorEntity as editor.trigger.entity.EntityInputEntityAssigner;
                   entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (entityAssigner.GetInputEntities ());
                   
                   entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
                   entityDefine.mNumEntities = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds = entityIndexArray;
                }
-               else if (child is editor.trigger.entity.EntityInputEntityPairAssigner)
+               else if (editorEntity is editor.trigger.entity.EntityInputEntityPairAssigner)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicInputEntityPairAssigner;
                   
-                  var pairAssigner:editor.trigger.entity.EntityInputEntityPairAssigner = child as editor.trigger.entity.EntityInputEntityPairAssigner;
+                  var pairAssigner:editor.trigger.entity.EntityInputEntityPairAssigner = editorEntity as editor.trigger.entity.EntityInputEntityPairAssigner;
                   
                   entityDefine.mPairingType = pairAssigner.GetPairingType ();
                   
@@ -176,11 +176,11 @@ package common {
                   entityDefine.mNumEntities2 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds2 = entityIndexArray;
                }
-               else if (child is editor.trigger.entity.EntityEventHandler)
+               else if (editorEntity is editor.trigger.entity.EntityEventHandler)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicEventHandler;
                   
-                  var eventHandler:editor.trigger.entity.EntityEventHandler = child as editor.trigger.entity.EntityEventHandler;
+                  var eventHandler:editor.trigger.entity.EntityEventHandler = editorEntity as editor.trigger.entity.EntityEventHandler;
                   entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (eventHandler.GetEntityAssigners ());
                   
                   entityDefine.mEventId = eventHandler.GetEventId ();
@@ -249,7 +249,7 @@ package common {
                      //<<
                   }
                   
-                  if (child is editor.entity.EntityShapeCircle)
+                  if (editorEntity is editor.entity.EntityShapeCircle)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeCircle;
                      
@@ -257,7 +257,7 @@ package common {
                      
                      entityDefine.mAppearanceType = (shape as editor.entity.EntityShapeCircle).GetAppearanceType ();
                   }
-                  else if (child is editor.entity.EntityShapeRectangle)
+                  else if (editorEntity is editor.entity.EntityShapeRectangle)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
                      
@@ -265,7 +265,7 @@ package common {
                      entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
                   }
                   //>>from v1.04
-                  else if (child is editor.entity.EntityShapePolygon)
+                  else if (editorEntity is editor.entity.EntityShapePolygon)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolygon;
                      
@@ -273,7 +273,7 @@ package common {
                   }
                   //<<
                   //>>from v1.05
-                  else if (child is editor.entity.EntityShapePolyline)
+                  else if (editorEntity is editor.entity.EntityShapePolyline)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolyline;
                      
@@ -286,7 +286,7 @@ package common {
                else // not physics entity
                {
                   //>>from v1.02
-                  if (child is editor.entity.EntityShapeText)
+                  if (editorEntity is editor.entity.EntityShapeText)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeText;
                      
@@ -296,7 +296,7 @@ package common {
                      entityDefine.mHalfWidth = (shape as editor.entity.EntityShapeRectangle).GetHalfWidth ();
                      entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
                   }
-                  else if (child is editor.entity.EntityShapeGravityController)
+                  else if (editorEntity is editor.entity.EntityShapeGravityController)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeGravityController;
                      
@@ -327,9 +327,9 @@ package common {
                entityDefine.mConnectedShape2Index = joint.GetConnectedShape2Index ();
                //<<
                
-               if (child is editor.entity.EntityJointHinge)
+               if (editorEntity is editor.entity.EntityJointHinge)
                {
-                  var hinge:editor.entity.EntityJointHinge = child as editor.entity.EntityJointHinge;
+                  var hinge:editor.entity.EntityJointHinge = editorEntity as editor.entity.EntityJointHinge;
                   
                   entityDefine.mEntityType = Define.EntityType_JointHinge;
                   entityDefine.mAnchorEntityIndex = editorWorld.GetEntityCreationId ( hinge.GetAnchor () );
@@ -345,9 +345,9 @@ package common {
                   entityDefine.mMaxMotorTorque = hinge.mMaxMotorTorque;
                   //<<
                }
-               else if (child is editor.entity.EntityJointSlider)
+               else if (editorEntity is editor.entity.EntityJointSlider)
                {
-                  var slider:editor.entity.EntityJointSlider = child as editor.entity.EntityJointSlider;
+                  var slider:editor.entity.EntityJointSlider = editorEntity as editor.entity.EntityJointSlider;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSlider;
                   entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( slider.GetAnchor1 () );
@@ -364,17 +364,17 @@ package common {
                   entityDefine.mMaxMotorForce = slider.mMaxMotorForce;
                   //<<
                }
-               else if (child is editor.entity.EntityJointDistance)
+               else if (editorEntity is editor.entity.EntityJointDistance)
                {
-                  var distanceJoint:editor.entity.EntityJointDistance = child as editor.entity.EntityJointDistance;
+                  var distanceJoint:editor.entity.EntityJointDistance = editorEntity as editor.entity.EntityJointDistance;
                   
                   entityDefine.mEntityType = Define.EntityType_JointDistance;
                   entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( distanceJoint.GetAnchor1 () );
                   entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityCreationId ( distanceJoint.GetAnchor2 () );
                }
-               else if (child is editor.entity.EntityJointSpring)
+               else if (editorEntity is editor.entity.EntityJointSpring)
                {
-                  var spring:editor.entity.EntityJointSpring = child as editor.entity.EntityJointSpring;
+                  var spring:editor.entity.EntityJointSpring = editorEntity as editor.entity.EntityJointSpring;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSpring;
                   entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( spring.GetAnchor1 () );
@@ -404,7 +404,6 @@ package common {
          //   worldDefine.mEntityCreationOrder.push (editorEntity.GetEntityIndex ());
          //}
          
-         var createId:int;
          for (createId = 0; createId < numEntities; ++ createId)
          {
             editorEntity = editorWorld.GetEntityByCreationId (createId);
@@ -565,6 +564,7 @@ package common {
          var beginningEntityIndex:int = editorWorld.GetNumEntities ();
          
          var entityId:int;
+         var creaionId:int;
          var entityDefine:Object;
          var entity:Entity;
          var shape:EntityShape;

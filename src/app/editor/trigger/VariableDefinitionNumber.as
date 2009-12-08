@@ -16,7 +16,7 @@ package editor.trigger {
       protected var mMinValue:Number;
       protected var mMaxValue:Number;
       
-      public function VariableDefinitionNumber (name:String, description:String = null, defaultValue:Number = 0, minValue:Number = Number.MIN_VALUE,  maxValue:Number = Number.MAX_VALUE)
+      public function VariableDefinitionNumber (name:String, description:String = null, defaultValue:Number = 0, minValue:Number = Number.NEGATIVE_INFINITY,  maxValue:Number = Number.POSITIVE_INFINITY)
       {
          super (name, ValueTypeDefine.ValueType_Number, description);
          
@@ -72,8 +72,15 @@ package editor.trigger {
          {
             var text_input:TextInput = control as TextInput;
             
+         trace ("text_input.text = " + text_input.text);
+            
             var value:Number = parseFloat (text_input.text);
+            
+         trace ("value = " + value);
+            
             value = ValidateValue (value);
+            
+         trace ("value = " + value);
             
             valueSourceDirect.SetValueObject (value);
          }

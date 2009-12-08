@@ -36,7 +36,7 @@ package wrapper {
    import com.tapirgames.display.TextButton;
    import com.tapirgames.display.ImageButton;
    
-   import player.world.World;
+   import player.design.Design;
    import player.ui.UiUtil;
    import player.ui.PlayHelpDialog;
    import player.ui.PlayControlBar;
@@ -277,7 +277,7 @@ package wrapper {
                   mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
                }
                
-               if ( mPlayerWorld.IsPuzzleSolved () )
+               if ( mPlayerWorld.IsLevelSuccessed () )
                   OpenFinishedDialog ();
                else
                   CloseFinishedDialog ();
@@ -533,8 +533,6 @@ package wrapper {
          
          if (mPlayerWorld != null)
          {
-            mPlayerWorld.Update (0, 1);
-            
             mWorldLayer.addChild (mPlayerWorld);
             
             mEverFinished = false;

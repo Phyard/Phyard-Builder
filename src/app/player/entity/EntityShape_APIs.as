@@ -146,13 +146,9 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
       dx = body.mPositionX - oldPositionX;
       dy = body.mPositionY - oldPositionY;
       
-trace ("--- " + i + "> oldX = " + body.mPositionX + ", oldY = " + body.mPositionY);
-
       body.mPositionX = targetX + dx * cos - dy * sin;
       body.mPositionY = targetY + dx * sin + dy * cos;
       body.mRotation += deltaRotation;
-      
-trace ("    " + i + "> newX = " + body.mPositionX + ", newY = " + body.mPositionY);
       
       body.SynchronizePositionAndRotationOfPhysicsProxy ();
       
@@ -167,74 +163,9 @@ trace ("    " + i + "> newX = " + body.mPositionX + ", newY = " + body.mPosition
          anotherShape = anotherShape.mNextShapeInBody;
       }
    }
-
-/*
-
----------------------------------------------------
-
-// destroy physics of joints connecting with 2 shapes to teleprot
-
-   num = jointsToTeleport.length;
-   
-   for (i = 0; i < num; ++ i)
-   {
-      joint = jointsToTeleport [i] as EntityJoint;
-      joint.DestroyPhysicsProxy ();
-   }
-
-// destroy physics of shapes to teleport
-   
-   for (i = 0; i < numShapesToTeleport; ++ i)
-   {
-      shape = shapesToTeleport [i] as EntityShape;
-      
-      shape.DestroyConnectedJointsPhysics ();
-      if (shape.IsPhysicsShape ())
-      {
-         shape.DestroyPhysicsProxy ();
-      }
-   }
-   
-   
-   
-   var dx:Number = targetX - mPositionX;
-   var dy:Number = targetY - mPositionY;
-   
-   for (i = 0; i < numShapesToTeleport; ++ i)
-   {
-      shape = shapesToTeleport [i] as EntityShape;
-      
-      shape.SetPositionX (shape.mPositionX + dx);
-      shape.SetPositionY (shape.mPositionY + dy);
-      //shape.SetRotation ()
-      
-      shape.UpdatelLocalPosition ();
-   }
-   
-   for (i = 0; i < numShapesToTeleport; ++ i)
-   {
-      shape = shapesToTeleport [i] as EntityShape;
-      
-      if (shape.IsPhysicsShape ())
-      {
-         shape.RebuildShapePhysics ();
-      }
-   }
-   
-   for (i = bodiesToTeleport.length - 1; i>= 0; -- i)
-   {
-      body = bodiesToTeleport [i] as EntityBody;
-      
-      body.UpdateMass ();
-      body.CoincideWithCentroid ();
-   }
-   
-   for (i = 0; i < numShapesToTeleport; ++ i)
-   {
-      shape = shapesToTeleport [i] as EntityShape;
-      
-      shape.RebuildConnectedJointsPhysics ();
-   }
-*/
 }
 
+public function MoveTo (targetX:Number, targetY:Number):void
+{
+   // todo
+}

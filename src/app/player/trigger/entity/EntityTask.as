@@ -64,7 +64,7 @@ package player.trigger.entity
             while (element != null)
             {
                status = element.mInputEntityAssigner.GetEntityListTaskStatus ();
-               if (status == ValueDefine.TaskStatus_Undetermined)
+               if (status == ValueDefine.TaskStatus_Unfinished)
                   ++ num_undetermineds;
                else if (status == ValueDefine.TaskStatus_Failed)
                   ++ num_faileds;
@@ -75,7 +75,7 @@ package player.trigger.entity
             if (num_faileds > 0)
                mEvaluatedValue = ValueDefine.TaskStatus_Failed;
             else if (num_undetermineds > 0)
-               mEvaluatedValue = ValueDefine.TaskStatus_Undetermined;
+               mEvaluatedValue = ValueDefine.TaskStatus_Unfinished;
             else
                mEvaluatedValue = ValueDefine.TaskStatus_Successed;
          }

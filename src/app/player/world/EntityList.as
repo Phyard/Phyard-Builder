@@ -110,14 +110,16 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            entity.Initialize ();
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
                entity.Initialize ();
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          
@@ -133,14 +135,16 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            entity.SynchronizeWithPhysicsProxy ();
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
                entity.SynchronizeWithPhysicsProxy ();
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          
@@ -156,14 +160,16 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            entity.Update (dt);
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
                entity.Update (dt);
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          
@@ -179,17 +185,17 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            if (entity is EntityShape)
-               (entity as EntityShape).RebuildShapePhysics ();
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
-               
                if (entity is EntityShape)
                   (entity as EntityShape).RebuildShapePhysics ();
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          
@@ -205,17 +211,17 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            if (entity is EntityBody)
-               (entity as EntityBody).UpdateBodyPhysicsProperties ();
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
-               
                if (entity is EntityBody)
                   (entity as EntityBody).UpdateBodyPhysicsProperties ();
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          
@@ -231,17 +237,17 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            if (entity is EntityBody)
-               (entity as EntityBody).CoincideWithCentroid ();
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
-               
                if (entity is EntityBody)
                   (entity as EntityBody).CoincideWithCentroid ();
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          
@@ -250,7 +256,6 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      
       internal function ConfirmConnectedShapes ():void
       {
          mIsRemovingLocked = true;
@@ -258,17 +263,17 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            if (entity is EntityJoint)
-               (entity as EntityJoint).ConfirmConnectedShapes ();
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
-               
                if (entity is EntityJoint)
                   (entity as EntityJoint).ConfirmConnectedShapes ();
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          
@@ -284,17 +289,17 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            if (entity is EntityJoint)
-               (entity as EntityJoint).RebuildJointPhysics ();
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
-               
                if (entity is EntityJoint)
                   (entity as EntityJoint).RebuildJointPhysics ();
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          
@@ -310,15 +315,16 @@ package player.world {
          var entity:Entity = mHead;
          if (entity != null)
          {
-            entity.ResetSpecialId ();
-            
             var tail:Entity = mTail;
             
-            while (entity != tail)
+            while (true)
             {
-               entity = entity.mNextEntity;
-               
                entity.ResetSpecialId ();
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
          

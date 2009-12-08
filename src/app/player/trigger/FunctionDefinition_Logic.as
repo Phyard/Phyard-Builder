@@ -1,6 +1,6 @@
 package player.trigger
 {
-   import player.global.Global;
+   import player.design.Global;
    
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.FunctionDeclaration;

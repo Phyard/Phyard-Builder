@@ -28,14 +28,19 @@ package common.trigger {
                   
          }
          
-      // specail
+      // special
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Void,
+                     null,
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bool,
                      null,
                      [
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
+       
       // global
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Return,
@@ -54,12 +59,6 @@ package common.trigger {
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_AssignBoolenRegister0,
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ],
-                     null
-                  );
          
       // system / time
          
@@ -72,23 +71,13 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetCurrentDateTime,
                      null,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
           
@@ -261,6 +250,22 @@ package common.trigger {
           
        // math basic op
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Assign,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Negative,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Add,
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -297,16 +302,9 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Assign,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Modulo,
                      [
                         ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Negative,
-                     [
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
@@ -318,7 +316,7 @@ package common.trigger {
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_SinRadians,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -326,7 +324,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_CosRadians,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -334,7 +332,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_TanRadians,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -345,7 +343,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcCosRadians,
@@ -353,7 +351,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcTanRadians,
@@ -361,7 +359,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcTan2Radians,
@@ -370,7 +368,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
          
@@ -379,7 +377,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft,
                      [
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -388,7 +386,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight,
                      [
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -397,7 +395,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned,
                      [
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -470,43 +468,61 @@ package common.trigger {
          
           RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Degrees2Radians,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Radians2Degrees,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
           RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Number2RGB,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RGB2Number,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
         
       // math / more
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Inverse,
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Max,
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -519,14 +535,6 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Min,
                      [
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Inverse,
-                     [
                         ValueTypeDefine.ValueType_Number, 
                      ],
                      [
@@ -603,7 +611,7 @@ package common.trigger {
                      [
                         ValueTypeDefine.ValueType_Number, 
                         ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number, 
@@ -611,47 +619,138 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ]
+                  );
+         
+      // game / design
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Number,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelSuccessed,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelFailed,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelUnfinished,
+                     null,
+                     null
                   );
          
       // game / world
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_AttachCameraToShape,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
+                     ],
+                     null
+                  );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape,
                      [
                         ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                        //ValueTypeDefine.ValueType_Boolean, 
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Boolean, 
+         //            ],
+         //            null
+         //         );
          
      // game / collision category
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Cat_Assign,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_Assign,
                      [
                         ValueTypeDefine.ValueType_CollisionCategory, 
                      ],
                      [
                         ValueTypeDefine.ValueType_CollisionCategory, 
                      ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally,
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetAsFriends,
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
                   );
          
      // game / entity
@@ -664,6 +763,50 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ]
                   );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskSuccessed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskFailed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskUnfinished,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -692,13 +835,13 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetAlpha,
                      [
                         ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ],
                      null
                   );
@@ -724,7 +867,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees,
@@ -732,24 +875,40 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
                      ]
                   );
          
       // game / entity / shape
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                     ],
+                     null
+                  );
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor,
                      [
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor,
                      [
                         ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ],
                      null
                   );
@@ -758,17 +917,17 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,
                      [
                         ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer, 
                      ],
                      null
                   );
@@ -796,43 +955,43 @@ package common.trigger {
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.ValueTypeHint_Number_Single, 
-                     ],
-                     null
-                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //            ],
+         //            [
+         //               ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
+         //            ]
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single, 
+         //            ],
+         //            null
+         //         );
          
          // ...
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Attach,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     null
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Detach,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     null
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Breakup,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     null
-                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Attach,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Entity, 
+         //            ],
+         //            null
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Detach,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //            ],
+         //            null
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Breakup,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //            ],
+         //            null
+         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Teleport,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -845,17 +1004,17 @@ package common.trigger {
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Clone,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Number, 
-                        ValueTypeDefine.ValueType_Boolean, 
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ],
-                     null
-                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Clone,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Number, 
+         //               ValueTypeDefine.ValueType_Number, 
+         //               ValueTypeDefine.ValueType_Number, 
+         //               ValueTypeDefine.ValueType_Boolean, 
+         //               ValueTypeDefine.ValueType_Boolean, 
+         //            ],
+         //            null
+         //         );
          
          
          

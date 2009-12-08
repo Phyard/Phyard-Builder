@@ -31,11 +31,13 @@ package player.entity {
          
          SetBorderThickness (mWorld.DisplayLength2PhysicsLength (1.0));
          
-         SetCollisionCategory (Define.CollisionCategoryId_HiddenCategory); // default
+         SetCollisionCategoryById (Define.CollisionCategoryId_HiddenCategory); // default
          
          mPhysicsShapePotentially = false; // to override
          
          mWorld.GetEntityLayer ().addChild (mAppearanceObjectsContainer);
+         
+         mWorld.RegisterShapeAiType (mOriginalAiType, mAiType);
       }
       
 //=============================================================
@@ -55,7 +57,7 @@ package player.entity {
             else
                catId = Define.CollisionCategoryId_HiddenCategory;
             
-            SetCollisionCategory (catId);
+            SetCollisionCategoryById (catId);
             //<<
             
             //>>from v1.07
@@ -65,7 +67,7 @@ package player.entity {
             
             if (entityDefine.mAiType != undefined)
             {
-               mOriginalAiType = entityDefine.mAiType;
+               SetOriginalShapeAiType (entityDefine.mAiType);
                SetShapeAiType (entityDefine.mAiType);
             }
             
@@ -147,9 +149,24 @@ package player.entity {
       public var mCollisionCategory:CollisionCategory;
       public var mFriendGroupIndex:int = -1;
       
-      public function SetCollisionCategory (catId:int):void
+      public function SetCollisionCategoryById (ccatId:int):void
       {
-         mCollisionCategory = mWorld.GetCollisionCategory (catId);
+         mCollisionCategory = mWorld.GetCollisionCategoryById (ccatId);
+         if (mCollisionCategory == null)
+            SetCollisionCategoryById (Define.CollisionCategoryId_HiddenCategory);
+      }
+      
+      public function SetCollisionCategory (ccat:CollisionCategory):void
+      {
+         if (ccat == null)
+            SetCollisionCategoryById (Define.CollisionCategoryId_HiddenCategory);
+         else
+            mCollisionCategory = ccat;
+      }
+      
+      public function GetCollisionCategory ():CollisionCategory
+      {
+         return mCollisionCategory;
       }
       
 //=============================================================
@@ -239,9 +256,22 @@ package player.entity {
       protected var mRotationFixed:Boolean = false;
       //<<
       
+      public function SetOriginalShapeAiType (aiType:int):void
+      {
+         if (mOriginalAiType != aiType)
+         {
+            mWorld.ChangeShapeOriginalAiType (mOriginalAiType, aiType, mAiType);
+            mOriginalAiType = aiType;
+         }
+      }
+      
       public function SetShapeAiType (aiType:int):void
       {
-         mAiType = aiType;
+         if (mAiType != aiType)
+         {
+            mWorld.ChangeShapeAiType (mOriginalAiType, mAiType, aiType);
+            mAiType = aiType;
+         }
          
          mNeedRebuildAppearanceObjects = true;
          DelayUpdateAppearance (); 
@@ -440,7 +470,13 @@ package player.entity {
       
       public function SetAsSensor (sensor:Boolean):void
       {
-         mIsSensor = sensor;
+         if (mIsSensor != sensor)
+         {
+            mIsSensor = sensor;
+            
+            if (mProxyShape != null)
+               mProxyShape.SetSensor (sensor);
+         }
       }
       
       public function IsSensor ():Boolean
@@ -545,6 +581,8 @@ package player.entity {
       
       override protected function DestroyInternal ():void
       {
+         mWorld.UnregisterShapeAiType (mOriginalAiType, mAiType);
+         
          mWorld.GetEntityLayer ().removeChild (mAppearanceObjectsContainer);
          
          //mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp, true);
@@ -747,17 +785,17 @@ package player.entity {
          }
          else
          {
-            var oldIsPhysics:Boolean = IsPhysicsShape ();
-            mPhysicsEnabled = enabled;
-            var newIsPhysics:Boolean = IsPhysicsShape ();
-            
-            if (newIsPhysics != oldIsPhysics)
-            {
-               mBody.RemoveShape (this);
-               mBody.AddShape (this);
-               
-               // todo, reset mass, if body.isPhysics changes, break/built joints
-            }
+            //var oldIsPhysics:Boolean = IsPhysicsShape ();
+            //mPhysicsEnabled = enabled;
+            //var newIsPhysics:Boolean = IsPhysicsShape ();
+            //
+            //if (newIsPhysics != oldIsPhysics)
+            //{
+            //   mBody.RemoveShape (this);
+            //   mBody.AddShape (this);
+            //   
+            //   // todo, reset mass, if body.isPhysics changes, break/built joints, else if this shape physics enabled is changed, break/built joints
+            //}
          }
       }
       
@@ -807,30 +845,6 @@ package player.entity {
       protected function RebuildShapePhysicsInternal ():void
       {
          // to override
-      }
-
-      internal function DestroyConnectedJointsPhysics ():void
-      {
-         var anchor:SubEntityJointAnchor = mJointAnchorListHead;
-         
-         while (anchor != null)
-         {
-            anchor.mJoint.DestroyPhysicsProxy ();
-            
-            anchor = anchor.mNextAnchor;
-         }
-      }
-
-      internal function RebuildConnectedJointsPhysics ():void
-      {
-         var anchor:SubEntityJointAnchor = mJointAnchorListHead;
-         
-         while (anchor != null)
-         {
-            anchor.mJoint.RebuildJointPhysics ();
-            
-            anchor = anchor.mNextAnchor;
-         }
       }
 
 //=============================================================

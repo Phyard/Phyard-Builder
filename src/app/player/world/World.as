@@ -18,6 +18,9 @@ package player.world {
    import player.physics.PhysicsProxyShape;
    import player.physics.PhysicsProxyJoint;
    
+   import player.design.Global;
+   import player.design.Design;
+   
    import player.entity.EntityBody;
    
    import player.entity.Entity;
@@ -62,6 +65,7 @@ package player.world {
    import player.mode.ModeMoveWorldScene;
    
    import common.trigger.CoreEventIds;
+   import common.trigger.ValueDefine;
    
    import common.Define;
    import common.ValueAdjuster;
@@ -75,7 +79,7 @@ package player.world {
       include "World_CameraAndView.as";
       include "World_SystemEventHandling.as";
       include "World_ParticleManager.as";
-      include "World_ColorInfectionRules.as";
+      include "World_ColorInfectionRelated.as";
       include "World_ContactEventHandling.as";
       include "World_GeneralEventHandling.as";
       include "World_Misc.as";
@@ -143,13 +147,13 @@ package player.world {
          
       // ...
          
-         CreateCollisionCategories (worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
-         
          mNormalGravityAccelerationMagnitude = Define.DefaultGravityAccelerationMagnitude;
          
          SetDisplay2PhysicsLengthScale (0.1);
          
          CreatePhysicsEngine ();
+         
+         CreateCollisionCategories (worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
          
       // ...
          
@@ -277,9 +281,16 @@ package player.world {
       
       private var mNumSimulatedSteps:int = 0;
       
-      public function GetSimulatedStep ():int
+      public function GetSimulatedSteps ():int
       {
          return mNumSimulatedSteps;
+      }
+      
+      private var mLevelSimulatedTime:Number = 0.0;
+      
+      public function GetLevelMilliseconds ():Number
+      {
+         return mLevelSimulatedTime * 1000.0;
       }
       
 //=============================================================
@@ -302,6 +313,7 @@ package player.world {
       //------------------------------------
          
          mNumSimulatedSteps = 0;
+         mLevelSimulatedTime = 0.0;
          
       //------------------------------------
       // on level to init
@@ -309,11 +321,20 @@ package player.world {
          
          HandleEvent (CoreEventIds.ID_OnLevelBeginInitialize);
          
+         
+      //------------------------------------
+      // init camera
+      //------------------------------------
+         
+         MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY);
+         
       //------------------------------------
       // init physics
       //------------------------------------
          
          InitPhysics ();
+         
+         mNumSimulatedSteps = 0;
          
       //------------------------------------
       // ai init
@@ -375,8 +396,6 @@ package player.world {
          
          for (k = 0; k < speedX; ++ k)
          {
-            ++ mNumSimulatedSteps;
-            
          //-----------------------------
          // on level to update
          //-----------------------------
@@ -389,11 +408,18 @@ package player.world {
             
             UpdatePhysics (dt);
             
+            ++ mNumSimulatedSteps;
+            mLevelSimulatedTime += dt;
+            
+         //-----------------------------
+         // update camera
+         //-----------------------------
+            
+            UpdateCamera ();
+            
          //-----------------------------
          // ai update
          //-----------------------------
-            
-            ClearReport ();
             
             mEntityList.UpdateEntities (dt);
             
@@ -405,10 +431,10 @@ package player.world {
             
             HandleEvent (CoreEventIds.ID_OnLevelEndUpdate);
          }
-         
-      //----------------------------------
-      // Repaint
-      //----------------------------------
+       
+      //-----------------------------
+      // repaint
+      //-----------------------------
          
          Repaint ();
       }
@@ -417,7 +443,7 @@ package player.world {
 //   paint
 //=============================================================
 
-      private function Repaint ():void
+      public function Repaint ():void
       {
          if (mBackgroundNeedRepaint)
          {
@@ -732,19 +758,17 @@ package player.world {
          {
             mCollisionCategories = new Array (1 + collisionCategoryDefines.length);
             var catId:int;
-            for (var i:int = 1; i <= collisionCategoryDefines.length; ++ i)
+            var catArrayIndex:int;
+            for (catArrayIndex = 1; catArrayIndex <= collisionCategoryDefines.length; ++ catArrayIndex)
             {
-               catId = i - 1;
+               catId = catArrayIndex - 1;
                ccat = new CollisionCategory ();
                ccat.mCategoryIndex = catId;
-               ccat.mArrayIndex = i;
+               ccat.mArrayIndex = catArrayIndex;
                ccat.SetTableLength (mCollisionCategories.length);
-               mCollisionCategories [i] = ccat;
+               mCollisionCategories [catArrayIndex] = ccat;
                
-               if (! (collisionCategoryDefines [catId]).mCollideInternally)
-               {
-                  CreateCollisionCategoryFriendLink (catId, catId);
-               }
+               BreakOrCreateCollisionCategoryFriendLink (ccat, ccat, (collisionCategoryDefines [catId]).mCollideInternally);
             }
          }
          
@@ -754,6 +778,7 @@ package player.world {
          ccat.mArrayIndex = 0;
          ccat.SetTableLength (mCollisionCategories.length);
          mCollisionCategories [0] = ccat;
+         BreakOrCreateCollisionCategoryFriendLink (ccat, ccat, true);
          
          // friends
          if (collisionCategoryFriendLinkDefines != null)
@@ -762,12 +787,12 @@ package player.world {
             for (var j:int = 0; j < collisionCategoryFriendLinkDefines.length; ++ j)
             {
                link_def =  collisionCategoryFriendLinkDefines [j];
-               CreateCollisionCategoryFriendLink (link_def.mCollisionCategory1Index, link_def.mCollisionCategory2Index);
+               BreakOrCreateCollisionCategoryFriendLinkByIds (link_def.mCollisionCategory1Index, link_def.mCollisionCategory2Index, false);
             }
          }
       }
       
-      public function CreateCollisionCategoryFriendLink (category1Index:int, category2Index:int):void
+      public function BreakOrCreateCollisionCategoryFriendLinkByIds (category1Index:int, category2Index:int, isBreak:Boolean):void
       {
          ++ category1Index;
          if (category1Index < 0 || category1Index >= mCollisionCategories.length)
@@ -777,28 +802,49 @@ package player.world {
          if (category2Index < 0 || category2Index >= mCollisionCategories.length)
             return;
          
-         mCollisionCategories [category1Index].mEnemyTable [category2Index] = false;
+         var changed1:Boolean = (mCollisionCategories [category1Index] as CollisionCategory).mEnemyTable [category2Index] != isBreak;
+         if (changed1)
+            (mCollisionCategories [category1Index] as CollisionCategory).mEnemyTable [category2Index] = isBreak;
+         
+         var changed2:Boolean = false;
          if (category2Index != category1Index)
-            mCollisionCategories [category2Index].mEnemyTable [category1Index] = false;
+         {
+            changed2 = (mCollisionCategories [category2Index] as CollisionCategory).mEnemyTable [category1Index] != isBreak;
+            if (changed2)
+               (mCollisionCategories [category2Index] as CollisionCategory).mEnemyTable [category1Index] = isBreak;
+         }
+         
+         if (changed1 || changed2)
+            mPhysicsEngine.FlagForFilteringForAllContacts ();
       }
       
-      public function BreakCollisionCategoryFriendLink (category1Index:int, category2Index:int):void
+      public function BreakOrCreateCollisionCategoryFriendLink (category1:CollisionCategory, category2:CollisionCategory, isBreak:Boolean):void
       {
-         ++ category1Index;
-         if (category1Index < 0 || category1Index >= mCollisionCategories.length)
-            category1Index = 0;
+         if (category1 == null || category2 == null)
+            return;
          
-         ++ category2Index;
-         if (category2Index < 0 || category2Index >= mCollisionCategories.length)
-            category2Index = 0;
+         var category1Index:int = category1.mArrayIndex;
+         var category2Index:int = category2.mArrayIndex;
          
-         mCollisionCategories [category1Index].mEnemyTable [category2Index] = true;
-         mCollisionCategories [category2Index].mEnemyTable [category1Index] = true;
+         var changed1:Boolean = mCollisionCategories [category1Index].mEnemyTable [category2Index] != isBreak;
+         if (changed1)
+            mCollisionCategories [category1Index].mEnemyTable [category2Index] = isBreak;
+         
+         var changed2:Boolean = false;
+         if (category2Index != category1Index)
+         {
+            changed2 = mCollisionCategories [category2Index].mEnemyTable [category1Index] != isBreak;
+            if (changed2)
+               mCollisionCategories [category2Index].mEnemyTable [category1Index] = isBreak;
+         }
+         
+         if (changed1 || changed2)
+            mPhysicsEngine.FlagForFilteringForAllContacts ();
       }
       
-      public function GetCollisionCategory (ccatId:int):CollisionCategory
+      public function GetCollisionCategoryById (ccatId:int):CollisionCategory
       {
-         ++ ccatId;
+         ++ ccatId; // ccatIndex = ccatId + 1
          if (ccatId < 0 || ccatId >= mCollisionCategories.length)
             return mCollisionCategories [0] // the hidden category
          else
@@ -819,6 +865,25 @@ package player.world {
          var ccat2:CollisionCategory = shape2.mCollisionCategory;
          
          return ccat1.mEnemyTable [ccat2.mArrayIndex];
+      }
+      
+//==========================================================
+// temp. will removed from a later version
+//==========================================================
+      
+      public function IsLevelSuccessed ():Boolean
+      {
+         return Global.GetCurrentDesign ().IsLevelSuccessed ();
+      }
+      
+      public function IsLevelFailed ():Boolean
+      {
+         return Global.GetCurrentDesign ().IsLevelFailed ();
+      }
+      
+      public function IsLevelUnfinished ():Boolean
+      {
+         return Global.GetCurrentDesign ().IsLevelUnfinished ();
       }
       
    }

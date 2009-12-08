@@ -1,4 +1,9 @@
 
+
+//=====================================================================================
+//
+//=====================================================================================
+
 // these values are in display space
 private var mWorldLeft:int = 0;
 private var mWorldTop:int = 0;
@@ -25,30 +30,42 @@ public function GetWorldHeight ():int
    return mWorldHeight;
 }
 
-// these values are in display space
-private var mCameraWidth:Number = Define.DefaultWorldWidth;
-private var mCameraHeight:Number = Define.DefaultWorldHeight;
-private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
-private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
+//=====================================================================================
+//
+//=====================================================================================
 
 private var mZoomScale:Number = 1.0;
 
-private var mCurrentCamera:EntityShape_Camera = null;
-
-public function GetCurrentCamera ():EntityShape_Camera
+public function GetZoomScale ():Number
 {
-   return mCurrentCamera;
+   return mZoomScale;
+}
+      
+public function SetZoomScale (zoomScale:Number):void
+{
+   var oldViewCenterX:Number = x + mCameraCenterX * scaleX;
+   var oldViewCenterY:Number = y + mCameraCenterY * scaleY;
+   
+   mZoomScale = zoomScale;
+   
+   scaleX = zoomScale;
+   scaleY = zoomScale;
+   
+   x = oldViewCenterX - mCameraCenterX * scaleX;
+   y = oldViewCenterY - mCameraCenterY * scaleY;
+   
+   MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY);
 }
 
-public function SetCameraCenterX (physicsCenterX:Number):void
-{
-   mCameraCenterX = PhysicsX2DisplayX (physicsCenterX);
-}
+//=====================================================================================
+//
+//=====================================================================================
 
-public function SetCameraCenterY (physicsCenterY:Number):void
-{
-   mCameraCenterY = PhysicsY2DisplayY (physicsCenterY);
-}
+// these values are in display world space, pixels, assume scale = 1
+private var mCameraWidth:Number   = Define.DefaultWorldWidth;
+private var mCameraHeight:Number  = Define.DefaultWorldHeight;
+private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
+private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
 
 public function GetCameraCenterX ():Number
 {
@@ -70,35 +87,26 @@ public function SetCameraHeight (height:Number):void
    mCameraHeight = height;
 }
 
-public function GetZoomScale ():Number
+public function MoveWorldScene_PhysicsOffset (physicsDx:Number, physicsDy:Number):void
 {
-   return mZoomScale;
-}
-      
-public function SetZoomScale (zoomScale:Number):void
-{
-   var oldViewCenterX:Number = x + mCameraCenterX * scaleX;
-   var oldViewCenterY:Number = y + mCameraCenterY * scaleY;
+   var displayOffet:Point = PhysicsVector2DisplayVector (physicsDx, physicsDy);
    
-   mZoomScale = zoomScale;
-   
-   scaleX = zoomScale;
-   scaleY = zoomScale;
-   
-   x = oldViewCenterX - mCameraCenterX * scaleX;
-   y = oldViewCenterY - mCameraCenterY * scaleY;
-   
-   MoveWorldScene (0, 0);
+   MoveCameraCenterTo_DisplayPoint (mCameraCenterX + displayOffet.x, mCameraCenterY + displayOffet.y);
 }
 
-public function SetTargetCameraCenter (physicsX:Number, physicsY:Number):void
+public function MoveWorldScene_DisplayOffset (displayDx:Number, displayDy:Number):void
 {
-   MoveWorldScene (mCameraCenterX - PhysicsX2DisplayX (physicsX), mCameraCenterY - PhysicsY2DisplayY (physicsY));
+   MoveCameraCenterTo_DisplayPoint (mCameraCenterX + displayDx, mCameraCenterY + displayDy);
 }
 
-public function MoveWorldScene (displayDx:Number, displayDy:Number):void
+public function MoveCameraCenterTo_PhysicsPoint (physicsX:Number, physicsY:Number):void
 {
-   // assume no scales and rotation for world
+   MoveCameraCenterTo_DisplayPoint (PhysicsX2DisplayX (physicsX), PhysicsY2DisplayY (physicsY));
+}
+
+public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDisplayY:Number):void
+{
+   // assume rotation of world is zero
    
    var leftInView:Number;
    var topInView:Number;
@@ -113,7 +121,7 @@ public function MoveWorldScene (displayDx:Number, displayDy:Number):void
    }
    else
    {
-      mCameraCenterX -= displayDx;
+      mCameraCenterX = targetDisplayX;
       leftInView =(mWorldLeft - mCameraCenterX) * scaleX + mCameraWidth * 0.5;
       
       if (leftInView > 0)
@@ -131,7 +139,7 @@ public function MoveWorldScene (displayDx:Number, displayDy:Number):void
    }
    else
    {
-      mCameraCenterY -= displayDy;
+      mCameraCenterY = targetDisplayY;
       topInView = (mWorldTop - mCameraCenterY) * scaleY + mCameraHeight * 0.5;
       
       if (topInView > 0)
@@ -144,4 +152,65 @@ public function MoveWorldScene (displayDx:Number, displayDy:Number):void
    
    x = leftInView - mWorldLeft * scaleX;
    y = topInView  - mWorldTop  * scaleY;
+}
+
+protected function UpdateCamera ():void
+{
+   var targetX:Number = mCameraCenterX;
+   var targetY:Number = mCameraCenterY;
+   
+   if (mFollowedEntityCameraCenterX != null)
+   {
+      targetX = PhysicsX2DisplayX (mFollowedEntityCameraCenterX.GetPositionX ());
+      if (mFollowedEntityCameraCenterX.IsDestroyedAlready ())
+         mFollowedEntityCameraCenterX = null;
+   }
+   
+   if (mFollowedEntityCameraCenterY != null)
+   {
+      targetY = PhysicsY2DisplayY (mFollowedEntityCameraCenterY.GetPositionY ());
+      if (mFollowedEntityCameraCenterY.IsDestroyedAlready ())
+         mFollowedEntityCameraCenterY = null;
+   }
+   
+   MoveCameraCenterTo_DisplayPoint (targetX, targetY);
+}
+
+//=====================================================================================
+//
+//=====================================================================================
+
+protected var mFollowedEntityCameraCenterX:Entity = null;
+protected var mFollowedEntityCameraCenterY:Entity = null;
+protected var mFollowedEntityCameraRotation:Entity = null;
+
+protected var mSmoothFollowingCameraCenterX:Boolean = false;
+protected var mSmoothFollowingCameraCenterY:Boolean = false;
+protected var mSmoothFollowingCameraRotation:Boolean = false;
+
+public function FollowCameraWithEntity (entity:Entity, bSmooth:Boolean, followRotation:Boolean):void
+{
+   FollowCameraCenterXWithEntity (entity, bSmooth);
+   FollowCameraCenterYWithEntity (entity, bSmooth);
+   
+   if (followRotation)
+      FollowCameraRotationWithEntity (entity, bSmooth);
+}
+
+public function FollowCameraCenterXWithEntity (entity:Entity, bSmooth:Boolean):void
+{
+   mFollowedEntityCameraCenterX = entity;
+   mSmoothFollowingCameraCenterX = bSmooth;
+}
+
+public function FollowCameraCenterYWithEntity (entity:Entity, bSmooth:Boolean):void
+{
+   mFollowedEntityCameraCenterY = entity;
+   mSmoothFollowingCameraCenterY = bSmooth;
+}
+
+public function FollowCameraRotationWithEntity (entity:Entity, bSmooth:Boolean):void
+{
+   mFollowedEntityCameraRotation = entity;
+   mSmoothFollowingCameraRotation = bSmooth;
 }

@@ -52,6 +52,21 @@ package player.physics {
          _b2Fixtures.splice (0, _b2Fixtures.length);
       }
       
+//==============================================================================
+// commands
+//==============================================================================
+      
+      public function SetSensor (sensor:Boolean):void
+      {
+         var fixture:b2Fixture;
+         for (var i:int = 0; i < _b2Fixtures.length; ++ i)
+         {
+            fixture = _b2Fixtures [i] as b2Fixture;
+            fixture.SetSensor (sensor);
+         }
+         
+         mProxyBody._b2Body.SetAwake (true);
+      }
       
 //========================================================================
 // 
@@ -614,10 +629,5 @@ package player.physics {
             }
          }
       }
-      
-//==============================================================================
-// commands
-//==============================================================================
-      
    }
 }

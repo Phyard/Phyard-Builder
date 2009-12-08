@@ -3,6 +3,8 @@
 //   
 //=================================================================
 
+private var mRightHandCoordinates:Boolean = false;
+
 private var mLengthScale_Display2Physics:Number;
 private var mLengthScale_Physics2Display:Number;
 
@@ -42,6 +44,16 @@ public function SetDisplay2PhysicsOffset (displayOffsetX:Number, displayOffsetY:
 //=================================================================
 //   
 //=================================================================
+
+public function CorrectRotation (rotation:Number):Number
+{
+   if (mRightHandCoordinates)
+   {
+      // todo
+   }
+   
+   return rotation;
+}
 
 public function DisplayPosition2PhysicsPoint (dx:Number, dy:Number):Point
 {

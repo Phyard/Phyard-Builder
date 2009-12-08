@@ -34,7 +34,7 @@ private function OnAddedToStage (event:Event):void
    //stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
    
    //
-   MoveWorldScene (0, 0);
+   MoveWorldScene_DisplayOffset (0, 0);
 }
 
 private function OnRemovedFromStage (event:Event):void 

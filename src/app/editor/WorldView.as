@@ -687,7 +687,7 @@ package editor {
             
             mPlayerWorldZoomScale = mEditorWorldZoomScale;
             mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
-            mPlayerWorld.MoveWorldScene (0, 0);
+            mPlayerWorld.MoveWorldScene_DisplayOffset (0, 0);
          }
          
          if (mHelpDialog != null)
@@ -1407,7 +1407,6 @@ package editor {
          mPlayerWorld.SetCameraHeight (mViewHeight);
          
          SynchrinizePlayerWorldWithEditorWorld ();
-         mPlayerWorld.Update (0, 1);
       }
       
       private function DestroyPlayerWorld ():void
@@ -1646,7 +1645,7 @@ package editor {
          
          values.mPosX = entity.GetPositionX ();
          values.mPosY = entity.GetPositionY ();
-         values.mAngle = entity.GetRotation () * 180.0 / Math.PI;
+         values.mAngle = entity.GetRotation () * Define.kRadians2Degrees;
          
          values.mIsVisible = entity.IsVisible ();
          
@@ -2557,25 +2556,25 @@ package editor {
                break;
             case Keyboard.LEFT:
                if (event.shiftKey)
-                  RotateSelectedEntities (- 0.5 * Math.PI / 180.0, true, false);
+                  RotateSelectedEntities (- 0.5 * Define.kDegrees2Radians, true, false);
                else
                   MoveSelectedEntities (-1, 0, true, false);
                break;
             case Keyboard.RIGHT:
                if (event.shiftKey)
-                  RotateSelectedEntities (0.5 * Math.PI / 180.0, true, false);
+                  RotateSelectedEntities (0.5 * Define.kDegrees2Radians, true, false);
                else
                   MoveSelectedEntities (1, 0, true, false);
                break;
             case Keyboard.UP:
                if (event.shiftKey)
-                  RotateSelectedEntities (- 5 * Math.PI / 180.0, true, false);
+                  RotateSelectedEntities (- 5 * Define.kDegrees2Radians, true, false);
                else
                   MoveSelectedEntities (0, -1, true, false);
                break;
             case Keyboard.DOWN:
                if (event.shiftKey)
-                  RotateSelectedEntities (5* Math.PI / 180.0, true, false);
+                  RotateSelectedEntities (5* Define.kDegrees2Radians, true, false);
                else
                   MoveSelectedEntities (0, 1, true, false);
                break;
@@ -3304,7 +3303,7 @@ package editor {
             params.mPosX = MathUtil.GetClipValue (params.mPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
             params.mPosY = MathUtil.GetClipValue (params.mPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
             shape.SetPosition (params.mPosX, params.mPosY);
-            shape.SetRotation (params.mAngle * Math.PI / 180.0);
+            shape.SetRotation (params.mAngle * Define.kDegrees2Radians);
             
             shape.SetVisible (params.mIsVisible);
             

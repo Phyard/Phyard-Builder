@@ -8,6 +8,8 @@ package editor.entity {
    
    import editor.selection.SelectionProxy;
    
+   import common.Define;
+   
    public class Entity extends Sprite
    {
       protected var mEntityContainer:EntityContainer;
@@ -102,7 +104,7 @@ package editor.entity {
       
       public function GetInfoText ():String
       {
-         return "x: " + mPosX + ", y = " + mPosY + ", angle = " + (mRotation * 180.0 / Math.PI);
+         return "x: " + mPosX + ", y = " + mPosY + ", angle = " + (mRotation * Define.kRadians2Degrees);
       }
       
       public function GetPhysicsShapesCount ():uint
@@ -151,15 +153,13 @@ package editor.entity {
          y = mPosY;
       }
       
-      private static const PI2:Number = Math.PI * 2.0;
-      
       public function SetRotation (rot:Number):void
       {
-         mRotation = rot % PI2;
+         mRotation = rot % Define.kPI_x_2;
          if (mRotation < 0)
-            mRotation += PI2;
+            mRotation += Define.kPI_x_2;
          
-         rotation = (mRotation * 180.0 / Math.PI) % 360;
+         rotation = (mRotation * Define.kRadians2Degrees) % 360.0;
       }
       
 //====================================================================
@@ -238,7 +238,6 @@ package editor.entity {
       
       public function RotateSelf (dRadians:Number):void
       {
-         // rotation = (rotation + dRadians * 180.0 / Math.PI) % 360;// bug
          SetRotation (GetRotation () + dRadians);
       }
       

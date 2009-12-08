@@ -1,6 +1,5 @@
-package player.global
+package player.design
 {
-   import player.design.Design;
    import player.world.World;
    
    import player.trigger.TriggerEngine;
@@ -50,7 +49,7 @@ package player.global
          mCurrentDesign = design;
       }
       
-      public static function GetCurrentDesign ():World
+      public static function GetCurrentDesign ():Design
       {
          return mCurrentDesign;
       }

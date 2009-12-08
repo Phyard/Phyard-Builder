@@ -4,7 +4,8 @@ package common {
    import flash.utils.ByteArray;
    import flash.geom.Point;
    
-   import player.global.Global;
+   import player.design.Global;
+   import player.design.Design;
    import player.world.World;
    
    import player.entity.EntityBody;
@@ -50,7 +51,7 @@ package common {
 // 
 //===========================================================================
       
-      public static function WorldDefine2PlayerWorld (worldDefine:WorldDefine):player.world.World
+      public static function WorldDefine2PlayerWorld (worldDefine:WorldDefine):World
       {
          //trace ("WorldDefine2PlayerWorld");
          
@@ -63,7 +64,7 @@ package common {
    //*********************************************************************************************************************************
          
          // worldDefine.mVersion >= 0x0107
-         if (worldDefine.mEntityCreationOrder.length != worldDefine.mEntityDefines.length)
+         if (worldDefine.mEntityAppearanceOrder.length != worldDefine.mEntityDefines.length)
          {
             throw new Error ("numCreationOrderIds != numEntities !");
             return null;
@@ -76,20 +77,25 @@ package common {
          //
          Global.InitGlobalData ();
          
+         var design:Design = new Design ();
+         Global.SetCurrentDesign (design);
+         
          //
          var playerWorld:player.world.World = new player.world.World (worldDefine);
-         Global.SetCurrentWorld (playerWorld);
+         
+         design.RegisterWorld (playerWorld);
+         design.SetCurrentWorld (playerWorld);
          
    //*********************************************************************************************************************************
    // 
    //*********************************************************************************************************************************
          
+         var numEntities:int = worldDefine.mEntityAppearanceOrder.length;
          var entityDefineArray:Array = worldDefine.mEntityDefines;
          var brotherGroupArray:Array = worldDefine.mBrotherGroupDefines;
          var createId:int;
-         var entityId:int;
+         var appearId:int;
          var entityDefine:Object;
-         var i:int;
          var entity:Entity;
          var shape:EntityShape;
          var joint:EntityJoint;
@@ -104,30 +110,31 @@ package common {
    //*********************************************************************************************************************************
          
          // for history reason, entities are packaged by children order in editor world.
-         // so the entityId is also the appearance order id
+         // so the appearId is also the appearance order id
          
-         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityId = worldDefine.mEntityCreationOrder [createId];
+            entityDefine = entityDefineArray [createId];
             
-            entityDefine = entityDefineArray [entityId];
+            appearId = worldDefine.mEntityAppearanceOrder [createId];
             
             // >> starts from version 1.01
             entityDefine.mWorldDefine = worldDefine;
-            //entityDefine.mEntityIndexInEditor = entityId; // replaced by creation order id from v1.07
+            //entityDefine.mEntityIndexInEditor = appearId; // replaced by creation order id from v1.07
             // <<
             
             //>>from v1.07
-            entityDefine.mAppearanceOrderId = entityId;
+            entityDefine.mAppearanceOrderId = appearId;
             entityDefine.mCreationOrderId = createId;
             //<<
          }
          
          // instance entites by appearance layer order, entities can register their visual elements in constructor
          
-         for (entityId = 0; entityId < entityDefineArray.length; ++ entityId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityDefine = entityDefineArray [entityId];
+            appearId = worldDefine.mEntityAppearanceOrder [createId];
+            entityDefine = entityDefineArray [appearId];
             
             entity = null;
             
@@ -222,10 +229,9 @@ package common {
          
       // register entities by order of creation id
          
-         for (createId = 0; createId < entityDefineArray.length; ++ createId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityId = worldDefine.mEntityCreationOrder [createId];
-            entityDefine = entityDefineArray [entityId];
+            entityDefine = entityDefineArray [createId];
             entity = entityDefine.mEntity;
             
             if (entity != null)
@@ -242,10 +248,9 @@ package common {
          
          for (var createStageId:int = 0; createStageId < kNumCreateStages; ++ createStageId)
          {
-            for (createId = 0; createId < entityDefineArray.length; ++ createId)
+            for (createId = 0; createId < numEntities; ++ createId)
             {
-               entityId = worldDefine.mEntityCreationOrder [createId];
-               entityDefine = entityDefineArray [entityId];
+               entityDefine = entityDefineArray [createId];
                entity = entityDefine.mEntity;
                
                if (entity != null)
@@ -260,16 +265,18 @@ package common {
    // all bodies and entities_in_editor will also be registerd
    //*********************************************************************************************************************************
          
+         var bortherId:int;
+         
          for (groupId = 0; groupId < brotherGroupArray.length; ++ groupId)
          {
             brotherGroup = brotherGroupArray [groupId] as Array;
             
             body = new EntityBody (playerWorld);
-            ;
-            for (i = 0; i < brotherGroup.length; ++ i)
+            
+            for (bortherId = 0; bortherId < brotherGroup.length; ++ bortherId)
             {
-               entityId = brotherGroup [i];
-               entityDefine = entityDefineArray [entityId];
+               createId = brotherGroup [bortherId];
+               entityDefine = entityDefineArray [createId];
                entity = entityDefine.mEntity;
                
                if (entity is EntityShape)
@@ -279,11 +286,9 @@ package common {
             }
          }
          
-         for (createId = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityId = worldDefine.mEntityCreationOrder [createId];
-            
-            entityDefine = entityDefineArray [entityId];
+            entityDefine = entityDefineArray [createId];
             entity = entityDefine.mEntity;
             
             if (entity is EntityShape)
@@ -412,16 +417,17 @@ package common {
          
          //trace ("numEntities = " + numEntities);
          
-         var entityId:int;
+         var appearId:int;
+         var createId:int;
          var vertexId:int;
          
-         for (entityId = 0; entityId < numEntities; ++ entityId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
             var entityDefine:Object = new Object ();
             
             entityDefine.mEntityType = byteArray.readShort ();
             
-            //trace ("entityId = " + entityId + ", mEntityType = " + entityDefine.mEntityType);
+            //trace ("appearId = " + appearId + ", mEntityType = " + entityDefine.mEntityType);
             
             if (worldDefine.mVersion >= 0x0103)
             {
@@ -655,9 +661,9 @@ package common {
          if (worldDefine.mVersion >= 0x0107)
          {
             var numOrderIds:int = byteArray.readShort (); // should == numEntities
-            for (var createId:int = 0; createId < numOrderIds; ++ createId)
+            for (var i:int = 0; i < numOrderIds; ++ i)
             {
-               worldDefine.mEntityCreationOrder.push (byteArray.readShort ());
+               worldDefine.mEntityAppearanceOrder.push (byteArray.readShort ());
             }
          }
          
@@ -667,6 +673,7 @@ package common {
          var numEntityIds:int;
          
          var groupId:int;
+         var brotherId:int;
          
          for (groupId = 0; groupId < numGroups; ++ groupId)
          {
@@ -674,7 +681,7 @@ package common {
             
             numEntityIds = byteArray.readShort ();
             
-            for (entityId = 0; entityId < numEntityIds; ++ entityId)
+            for (brotherId = 0; brotherId < numEntityIds; ++ brotherId)
             {
                brotherIDs.push (byteArray.readShort ());
             }
@@ -860,11 +867,14 @@ package common {
          xml.Entities = <Entities />
          
          // entities
-         var entityId:int;
+         var appearId:int;
+         var createId:int;
          
-         for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
+         var numEntities:int = worldDefine.mEntityDefines.length;
+         
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            var entityDefine:Object = worldDefine.mEntityDefines [entityId];
+            var entityDefine:Object = worldDefine.mEntityDefines [createId];
             element = EntityDefine2XmlElement (entityDefine, worldDefine);
             
             xml.Entities.appendChild (element);
@@ -873,20 +883,8 @@ package common {
          // ...
          if (worldDefine.mVersion >= 0x0107)
          {
-            var order_text:String = "";
-            
-            if (worldDefine.mEntityCreationOrder.length > 0)
-            {
-               order_text = order_text + worldDefine.mEntityCreationOrder [0];
-            }
-            
-            for (var createIndex:int = 1; createIndex < worldDefine.mEntityCreationOrder.length; ++ createIndex)
-            {
-               order_text = order_text + "," + worldDefine.mEntityCreationOrder [createIndex];
-            }
-            
             xml.EntityCreationOrder = <EntityCreationOrder />;
-            xml.EntityCreationOrder.@entity_ids = order_text;
+            xml.EntityCreationOrder.@entity_indices = EntityIdArray2IndicesString (worldDefine.mEntityAppearanceOrder);
          }
          
          // ...
@@ -903,7 +901,7 @@ package common {
             
             element = <BrotherGroup />;
             element.@num_brothers = brotherIDs.length;
-            element.@brother_indices = EntityCreationIdArray2IndicesString (brotherIDs);
+            element.@brother_indices = EntityIdArray2IndicesString (brotherIDs);
             xml.BrotherGroups.appendChild (element);
          }
          
@@ -1038,7 +1036,7 @@ package common {
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
-               element.@assigner_indices = EntityCreationIdArray2IndicesString (entityDefine.mInputAssignerCreationIds);
+               element.@assigner_indices = EntityIdArray2IndicesString (entityDefine.mInputAssignerCreationIds);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
             {
@@ -1065,20 +1063,20 @@ package common {
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
             {
                element.@selector_type = entityDefine.mSelectorType;
-               element.@entity_indices = EntityCreationIdArray2IndicesString (entityDefine.mEntityCreationIds);
+               element.@entity_indices = EntityIdArray2IndicesString (entityDefine.mEntityCreationIds);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
             {
                element.@pairing_type = entityDefine.mPairingType;
-               element.@entity_indices1 =  EntityCreationIdArray2IndicesString (entityDefine.mEntityCreationIds1);
-               element.@entity_indices2 =  EntityCreationIdArray2IndicesString (entityDefine.mEntityCreationIds2);
+               element.@entity_indices1 =  EntityIdArray2IndicesString (entityDefine.mEntityCreationIds1);
+               element.@entity_indices2 =  EntityIdArray2IndicesString (entityDefine.mEntityCreationIds2);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
             {
                element.@event_id = entityDefine.mEventId;
                element.@input_condition_entity_index = entityDefine.mInputConditionEntityCreationId;
                element.@input_condition_target_value = entityDefine.mInputConditionTargetValue;
-               element.@assigner_indices = EntityCreationIdArray2IndicesString (entityDefine.mInputAssignerCreationIds);
+               element.@assigner_indices = EntityIdArray2IndicesString (entityDefine.mInputAssignerCreationIds);
                element.CodeSnippet = TriggerFormatHelper2.CodeSnippetDefine2Xml (entityDefine.mCodeSnippetDefine);
             }
          }
@@ -1095,12 +1093,19 @@ package common {
                element.@border_color = Int2ColorString (entityDefine.mBorderColor);
                element.@border_thickness = entityDefine.mBorderThickness;
                element.@background_color = Int2ColorString (entityDefine.mBackgroundColor);
-               element.@transparency = entityDefine.mTransparency;
+               
+               if (worldDefine.mVersion >= 0x0107)
+                  element.@background_opacity = entityDefine.mTransparency;
+               else
+                  element.@transparency = entityDefine.mTransparency;
             }
             
             if (worldDefine.mVersion >= 0x0105)
             {
-               element.@border_transparency = entityDefine.mBorderTransparency;
+               if (worldDefine.mVersion >= 0x0107)
+                  element.@border_opacity = entityDefine.mTransparency;
+               else
+                  element.@border_transparency = entityDefine.mBorderTransparency;
             }
             
             if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
@@ -1268,20 +1273,20 @@ package common {
          return element;
       }
       
-      public static function EntityCreationIdArray2IndicesString (creationIds:Array):String
+      public static function EntityIdArray2IndicesString (ids:Array):String
       {
-         if (creationIds == null)
+         if (ids == null)
             return "";
          
-         var num:int = creationIds.length;
+         var num:int = ids.length;
          if (num < 1)
             return "";
          
-         var indicesStr:String = "" + creationIds [0];
+         var indicesStr:String = "" + ids [0];
          for (var i:int = 1; i < num; ++ i)
          {
             indicesStr += ",";
-            indicesStr += creationIds [i];
+            indicesStr += ids [i];
          }
          
          return indicesStr;
@@ -1313,12 +1318,12 @@ package common {
          
          var numEntities:int = worldDefine.mEntityDefines.length;
          
-         var entityId:int;
+         var createId:int;
          var vertexId:int;
          
-         for (entityId = 0; entityId < numEntities; ++ entityId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            var entityDefine:Object = worldDefine.mEntityDefines [entityId];
+            var entityDefine:Object = worldDefine.mEntityDefines [createId];
             
             entityDefine.mPosX = ValueAdjuster.Number2Precision (entityDefine.mPosX, 12);
             entityDefine.mPosY = ValueAdjuster.Number2Precision (entityDefine.mPosY, 12);
@@ -1462,12 +1467,12 @@ package common {
          
          var numEntities:int = worldDefine.mEntityDefines.length;
          
-         var entityId:int;
+         var createId:int;
          var vertexId:int;
          
-         for (entityId = 0; entityId < numEntities; ++ entityId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            var entityDefine:Object = worldDefine.mEntityDefines [entityId];
+            var entityDefine:Object = worldDefine.mEntityDefines [createId];
             
             if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
@@ -1546,11 +1551,11 @@ package common {
          }
          
          // creation order
-         if (worldDefine.mVersion < 0x0107 || worldDefine.mEntityCreationOrder.length == 0)
+         if (worldDefine.mVersion < 0x0107 || worldDefine.mEntityAppearanceOrder.length == 0)
          {
-            for (entityId = 0; entityId < numEntities; ++ entityId)
+            for (var appearId:int = 0; appearId < numEntities; ++ appearId)
             {
-               worldDefine.mEntityCreationOrder.push (entityId);
+               worldDefine.mEntityAppearanceOrder.push (appearId);
             }
          }
       }

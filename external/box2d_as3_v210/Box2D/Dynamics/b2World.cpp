@@ -141,6 +141,26 @@ public function DestroyBody(b:b2Body):void
 	while (je != null)
 	{
 		var je0:b2JointEdge = je;
+		
+		//>> patch, if is possible the 2 bodies of a joint are the same body., 
+		// which means there are 2 same joints in the joint list of a body
+		
+		var prev_je:b2JointEdge = je0;
+		var next_je:b2JointEdge = prev_je.next;
+		while (next_je != null)
+		{
+			if (next_je.joint == je0.joint)
+			{
+				prev_je.next = next_je.next;
+				break;
+			}
+			
+			prev_je = next_je;
+			next_je = prev_je.next;
+		}
+		
+		//<<
+		
 		je = je.next;
 
 		if (m_destructionListener != null)

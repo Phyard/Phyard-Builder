@@ -48,7 +48,7 @@ package player.entity {
             if (entityDefine.mInitialGravityAcceleration != null)
                mGravityAcceleration = entityDefine.mInitialGravityAcceleration;
             if (entityDefine.mInitialGravityAngle != undefined)
-               mGravityAngle = entityDefine.mInitialGravityAngle * Math.PI / 180.0;
+               mGravityAngle = entityDefine.mInitialGravityAngle * Define.kDegrees2Radians;
          }
          else if (createStageId == 2)
          {

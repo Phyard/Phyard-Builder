@@ -19,8 +19,9 @@
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:CheckBox id="CheckBox_IsVisible" label="Visible" width="30%"/>
-      <mx:Label id="Label_Transparency" text="Transparency:" textAlign="right"/>
-      <mx:NumericStepper id="NumericStepper_Transparency" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+      <mx:Label id="Label_Opacity" text="Opacity:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_Opacity" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+      <mx:Label text="(0-100)" textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
@@ -47,8 +48,9 @@
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:Spacer width="30%"/>
-      <mx:Label id="Label_BorderTransparency" text="Border Transparency:" textAlign="right"/>
-      <mx:NumericStepper id="NumericStepper_BorderTransparency" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+      <mx:Label id="Label_BorderOpacity" text="Border Opacity:" textAlign="right"/>
+      <mx:NumericStepper id="NumericStepper_BorderOpacity" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+      <mx:Label text="(0-100)" textAlign="left"/>
    </mx:HBox>
 
    <mx:Script>
@@ -81,8 +83,8 @@
             //   
             //   CheckBox_IsVisible.enabled = true;
             //   
-            //   Label_Transparency.enabled = true;
-            //   NumericStepper_Transparency.enabled = true;
+            //   Label_Opacity.enabled = true;
+            //   NumericStepper_Opacity.enabled = true;
             //   
             //   CheckBox_DrawBorder.enabled = true;
             //   
@@ -97,8 +99,8 @@
             //   Label_BorderThickness.enabled = true;
             //   NumericStepper_BorderThickness.enabled = true;
             //   
-            //   Label_BorderTransparency.enabled = true;
-            //   NumericStepper_BorderTransparency.enabled = true;
+            //   Label_BorderOpacity.enabled = true;
+            //   NumericStepper_BorderOpacity.enabled = true;
             //}
             //else 
             if (CheckBox_IsCiShape.selected)
@@ -108,8 +110,8 @@
                
                CheckBox_IsVisible.enabled = true;
                
-               Label_Transparency.enabled = false;
-               NumericStepper_Transparency.enabled = false;
+               Label_Opacity.enabled = false;
+               NumericStepper_Opacity.enabled = false;
                
                CheckBox_DrawBorder.enabled = true;
                
@@ -124,8 +126,8 @@
                Label_BorderThickness.enabled = false;
                NumericStepper_BorderThickness.enabled = false;
                
-               Label_BorderTransparency.enabled = false;
-               NumericStepper_BorderTransparency.enabled = false;
+               Label_BorderOpacity.enabled = false;
+               NumericStepper_BorderOpacity.enabled = false;
             }
             else
             {
@@ -134,8 +136,8 @@
                
                CheckBox_IsVisible.enabled = true;
                
-               Label_Transparency.enabled = true;
-               NumericStepper_Transparency.enabled = true;
+               Label_Opacity.enabled = true;
+               NumericStepper_Opacity.enabled = true;
                
                CheckBox_DrawBorder.enabled = true;
                
@@ -150,8 +152,8 @@
                Label_BorderThickness.enabled = true;
                NumericStepper_BorderThickness.enabled = true;
                
-               Label_BorderTransparency.enabled = true;
-               NumericStepper_BorderTransparency.enabled = true;
+               Label_BorderOpacity.enabled = true;
+               NumericStepper_BorderOpacity.enabled = true;
             }
          }
          
@@ -163,13 +165,13 @@
             SelectList_AiType.selectedIndex = inputValues.mAiType;
             
             CheckBox_IsVisible.selected = inputValues.mIsVisible;
-            NumericStepper_Transparency.value = inputValues.mTransparency;
+            NumericStepper_Opacity.value = inputValues.mTransparency;
             CheckBox_DrawBorder.selected = inputValues.mDrawBorder;
             ColorPicker_BorderColor.selectedColor = inputValues.mBorderColor;
             NumericStepper_BorderThickness.value = inputValues.mBorderThickness;
             CheckBox_DrawBackground.selected = inputValues.mDrawBackground;
             ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;
-            NumericStepper_BorderTransparency.value = inputValues.mBorderTransparency;
+            NumericStepper_BorderOpacity.value = inputValues.mBorderTransparency;
             
             OnAiTypeSelectListClick ();
          }
@@ -179,13 +181,13 @@
             returnValues.mAiType = CheckBox_IsCiShape.selected && SelectList_AiType.selectedItem != null ? SelectList_AiType.selectedItem.data : Define.ShapeAiType_Unknown;
             
             returnValues.mIsVisible = CheckBox_IsVisible.selected;
-            returnValues.mTransparency = NumericStepper_Transparency.value;
+            returnValues.mTransparency = NumericStepper_Opacity.value;
             returnValues.mDrawBorder = CheckBox_DrawBorder.selected;
             returnValues.mBorderColor = ColorPicker_BorderColor.selectedColor;
             returnValues.mBorderThickness = NumericStepper_BorderThickness.value;
             returnValues.mDrawBackground = CheckBox_DrawBackground.selected;
             returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
-            returnValues.mBorderTransparency = NumericStepper_BorderTransparency.value;
+            returnValues.mBorderTransparency = NumericStepper_BorderOpacity.value;
          }
          
      ]]>

@@ -87,7 +87,7 @@ package common {
          }
          
          var numEntities:int = editorWorld.GetNumEntities ();
-         var entityId:int;
+         var appearId:int;
          var createId:int;
          var editorEntity:Entity;
          //var arraySortedByCreationId:Array = new Array ();
@@ -401,18 +401,20 @@ package common {
          //for (var arrayIndex:int = 0; arrayIndex < arraySortedByCreationId.length; ++ arrayIndex)
          //{
          //   editorEntity = arraySortedByCreationId [arrayIndex].entity;
-         //   worldDefine.mEntityCreationOrder.push (editorEntity.GetEntityIndex ());
+         //   worldDefine.mEntityAppearanceOrder.push (editorEntity.GetEntityIndex ());
          //}
          
-         for (createId = 0; createId < numEntities; ++ createId)
+         for (appearId = 0; appearId < numEntities; ++ appearId)
          {
-            editorEntity = editorWorld.GetEntityByCreationId (createId);
-            worldDefine.mEntityCreationOrder.push (editorEntity.GetAppearanceLayerId ());
+         trace ("appearId = " + appearId + ", numEntities = " + numEntities);
+            editorEntity = editorWorld.GetEntityByAppearanceId (appearId);
+            worldDefine.mEntityAppearanceOrder.push (editorEntity.GetCreationOrderId ());
          }
          
          // 
          var brotherGroupArray:Array = editorWorld.GetBrotherGroups ();
          var groupId:int;
+         var brotherId:int;
          var brotherGroup:Array;
          
          for (groupId = 0; groupId < brotherGroupArray.length; ++ groupId)
@@ -431,10 +433,10 @@ package common {
             }
             
             var brotherIDs:Array = new Array (brotherGroup.length);
-            for (entityId = 0; entityId < brotherGroup.length; ++ entityId)
+            for (brotherId = 0; brotherId < brotherGroup.length; ++ brotherId)
             {
-               editorEntity = brotherGroup [entityId] as editor.entity.Entity;
-               brotherIDs [entityId] = editorWorld.GetEntityCreationId (editorEntity);
+               editorEntity = brotherGroup [brotherId] as editor.entity.Entity;
+               brotherIDs [brotherId] = editorWorld.GetEntityCreationId (editorEntity);
             }
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
          }
@@ -563,8 +565,8 @@ package common {
          
          var beginningEntityIndex:int = editorWorld.GetNumEntities ();
          
-         var entityId:int;
-         var creaionId:int;
+         var appearId:int;
+         var createId:int;
          var entityDefine:Object;
          var entity:Entity;
          var shape:EntityShape;
@@ -573,11 +575,13 @@ package common {
          var utility:EntityUtility;
          var logic:EntityLogic;
          
+         var numEntities:int = worldDefine.mEntityDefines.length;
+         
          editorWorld.SetCreationEntityArrayLocked (true);
          
-         for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityDefine = worldDefine.mEntityDefines [entityId];
+            entityDefine = worldDefine.mEntityDefines [createId];
             
             entity = null;
             
@@ -766,7 +770,7 @@ package common {
                {
                   var hinge:editor.entity.EntityJointHinge = editorWorld.CreateEntityJointHinge ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchorEntityIndex]];
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (hinge.GetAnchor ());
                   anchorDefine.mEntity = hinge.GetAnchor ();
                   
@@ -786,10 +790,10 @@ package common {
                {
                   var slider:editor.entity.EntityJointSlider = editorWorld.CreateEntityJointSlider ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor1EntityIndex]];
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (slider.GetAnchor1 ());
                   anchorDefine.mEntity = slider.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor2EntityIndex]];
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (slider.GetAnchor2 ());
                   anchorDefine.mEntity = slider.GetAnchor2 ();
                   
@@ -809,10 +813,10 @@ package common {
                {
                   var disJoint:editor.entity.EntityJointDistance = editorWorld.CreateEntityJointDistance ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor1EntityIndex]];
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (disJoint.GetAnchor1 ());
                   anchorDefine.mEntity = disJoint.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor2EntityIndex]];
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (disJoint.GetAnchor2 ());
                   anchorDefine.mEntity = disJoint.GetAnchor2 ();
                   
@@ -822,10 +826,10 @@ package common {
                {
                   var spring:editor.entity.EntityJointSpring = editorWorld.CreateEntityJointSpring ();
                   
-                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor1EntityIndex]];
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor1 ());
                   anchorDefine.mEntity = spring.GetAnchor1 ();
-                  anchorDefine = worldDefine.mEntityDefines [worldDefine.mEntityCreationOrder[entityDefine.mAnchor2EntityIndex]];
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor2 ());
                   anchorDefine.mEntity = spring.GetAnchor2 ();
                   
@@ -870,9 +874,10 @@ package common {
          while (editorWorld.numChildren > beginningEntityIndex)
             editorWorld.removeChildAt (beginningEntityIndex);
          
-         for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
+         for (appearId = 0; appearId < numEntities; ++ appearId)
          {
-            entityDefine = worldDefine.mEntityDefines [entityId];
+            createId = worldDefine.mEntityAppearanceOrder [appearId];
+            entityDefine = worldDefine.mEntityDefines [createId];
             editorWorld.addChild (entityDefine.mEntity);
          }
          //<<<
@@ -881,19 +886,19 @@ package common {
          
          //>>> add entities by creation id order
          // from version 0x0107)
-         for (var createIndex:int = 0; createIndex < worldDefine.mEntityCreationOrder.length; ++ createIndex)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityId = worldDefine.mEntityCreationOrder [createIndex] + beginningEntityIndex;
-            entity = editorWorld.GetEntityByAppearanceId (entityId);
+            entityDefine = worldDefine.mEntityDefines [createId];
+            entity = entityDefine.mEntity;
             
             editorWorld.AddEntityToCreationArray (entity);
          }
          //<<<
          
          // modify
-         for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            entityDefine = worldDefine.mEntityDefines [entityId];
+            entityDefine = worldDefine.mEntityDefines [createId];
             
             if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
             {
@@ -909,7 +914,7 @@ package common {
                
                entity.GetMainEntity ().UpdateAppearance ();
                
-               //editorWorld.addChildAt (entity, entityId);
+               //editorWorld.addChildAt (entity, appearId);
             }
             else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
             {
@@ -973,6 +978,7 @@ package common {
          }
          
          var groupId:int;
+         var brotherId:int;
          var brotherIds:Array;
          var entities:Array;
          
@@ -980,18 +986,18 @@ package common {
          {
             brotherIds = worldDefine.mBrotherGroupDefines [groupId] as Array;
             
-            for (entityId = 0; entityId < brotherIds.length; ++ entityId)
+            for (brotherId = 0; brotherId < brotherIds.length; ++ brotherId)
             {
-               entityDefine = worldDefine.mEntityDefines [brotherIds [entityId]];
+               entityDefine = worldDefine.mEntityDefines [brotherIds [brotherId]];
                
                //if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
                //{
-               //   //brotherIds [entityId] = entityDefine.mNewIndex;
-               //   brotherIds [entityId] = editorWorld.getChildIndex (entityDefine.mEntity);
+               //   //brotherIds [brotherId] = entityDefine.mNewIndex;
+               //   brotherIds [brotherId] = editorWorld.getChildIndex (entityDefine.mEntity);
                //}
                //else
                {
-                  brotherIds [entityId] = brotherIds [entityId] + beginningEntityIndex;
+                  brotherIds [brotherId] = brotherIds [brotherId] + beginningEntityIndex;
                }
             }
             
@@ -1063,7 +1069,8 @@ package common {
             }
          }
          
-         var entityId:int;
+         var appearId:int;
+         var createId:int;
          
          for each (element in worldXml.Entities.Entity)
          {
@@ -1076,12 +1083,7 @@ package common {
          // worldDefine.mVersion >= 0x0107
          if (worldXml.EntityCreationOrder != undefined)
          {
-            var order_text:String = worldXml.EntityCreationOrder.@entity_ids;
-            var id_strings:Array = order_text.split (",");
-            for (var strId:int = 0; strId < id_strings.length; ++ strId)
-            {
-               worldDefine.mEntityCreationOrder.push (parseInt (id_strings [strId]));
-            }
+            EntityIndicesString2IdArray (worldXml.EntityCreationOrder.@entity_indices, worldDefine.mEntityAppearanceOrder);
          }
          
          // ...
@@ -1092,7 +1094,7 @@ package common {
          
          for each (element in worldXml.BrotherGroups.BrotherGroup)
          {
-            brotherIDs = EntityIndicesString2CreationIdArray (element.@brother_indices);
+            brotherIDs = EntityIndicesString2IdArray (element.@brother_indices);
             
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
          }
@@ -1129,14 +1131,16 @@ package common {
          return worldDefine;
       }
       
-      public static function EntityIndicesString2CreationIdArray (indicesStr:String):Array
+      public static function EntityIndicesString2IdArray (indicesStr:String, idArray:Array = null):Array
       {
+         if (idArray == null)
+            idArray = new Array ();
+         
          if (indicesStr == null || indicesStr.length == 0)
-            return [];
+            return idArray;
          
          var indexStrArray:Array = indicesStr.split (/,/);
          
-         var creationIds:Array = new Array (indexStrArray.length);
          var index:int;
          for (var i:int = 0; i < indexStrArray.length; ++ i)
          {
@@ -1144,10 +1148,10 @@ package common {
             if (isNaN (index))
                index = -1;
             
-            creationIds [i] = index;
+            idArray.push (index);
          }
          
-         return creationIds;
+         return idArray;
       }
       
       public static function XmlElement2EntityDefine (element:XML, worldDefine:WorldDefine):Object
@@ -1176,7 +1180,7 @@ package common {
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
-               entityDefine.mInputAssignerCreationIds = EntityIndicesString2CreationIdArray (element.@assigner_indices);
+               entityDefine.mInputAssignerCreationIds = EntityIndicesString2IdArray (element.@assigner_indices);
                entityDefine.mNumAssigners = entityDefine.mInputAssignerCreationIds.length;
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
@@ -1189,15 +1193,15 @@ package common {
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
             {
                entityDefine.mSelectorType = parseInt (element.@selector_type);
-               entityDefine.mEntityCreationIds = EntityIndicesString2CreationIdArray (element.@entity_indices);
+               entityDefine.mEntityCreationIds = EntityIndicesString2IdArray (element.@entity_indices);
                entityDefine.mNumEntities = entityDefine.mEntityCreationIds.length;
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
             {
                entityDefine.mPairingType = parseInt (element.@pairing_type);
-               entityDefine.mEntityCreationIds1 = EntityIndicesString2CreationIdArray (element.@entity_indices1);
+               entityDefine.mEntityCreationIds1 = EntityIndicesString2IdArray (element.@entity_indices1);
                entityDefine.mNumEntities1 = entityDefine.mEntityCreationIds1.length;
-               entityDefine.mEntityCreationIds2 = EntityIndicesString2CreationIdArray (element.@entity_indices2);
+               entityDefine.mEntityCreationIds2 = EntityIndicesString2IdArray (element.@entity_indices2);
                entityDefine.mNumEntities2 = entityDefine.mEntityCreationIds2.length;
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
@@ -1205,7 +1209,7 @@ package common {
                entityDefine.mEventId = parseInt (element.@event_id);
                entityDefine.mInputConditionEntityCreationId = parseInt (element.@input_condition_entity_index);
                entityDefine.mInputConditionTargetValue = parseInt (element.@input_condition_target_value);
-               entityDefine.mInputAssignerCreationIds = EntityIndicesString2CreationIdArray (element.@assigner_indices);
+               entityDefine.mInputAssignerCreationIds = EntityIndicesString2IdArray (element.@assigner_indices);
                entityDefine.mNumAssigners = entityDefine.mInputAssignerCreationIds.length;
                entityDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
             }
@@ -1223,12 +1227,19 @@ package common {
                entityDefine.mBorderColor = parseInt ( (element.@border_color).substr (2), 16);
                entityDefine.mBorderThickness = parseInt (element.@border_thickness);
                entityDefine.mBackgroundColor = parseInt ( (element.@background_color).substr (2), 16);
-               entityDefine.mTransparency = parseInt (element.@transparency);
+               
+               if (worldDefine.mVersion >= 0x0107)
+                  entityDefine.mTransparency = parseInt (element.@background_opacity);
+               else
+                  entityDefine.mTransparency = parseInt (element.@transparency);
             }
             
             if (worldDefine.mVersion >= 0x0105)
             {
-               entityDefine.mBorderTransparency = parseInt (element.@border_transparency);
+               if (worldDefine.mVersion >= 0x0107)
+                  entityDefine.mTransparency = parseInt (element.@border_opacity);
+               else
+                  entityDefine.mBorderTransparency = parseInt (element.@border_transparency);
             }
             
             if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
@@ -1490,14 +1501,17 @@ package common {
          }
          
          // entities
-         var entityId:int;
+         var appearId:int;
+         var createId:int;
          var vertexId:int;
+         
+         var numEntities:int = worldDefine.mEntityDefines.length;
          
          byteArray.writeShort (worldDefine.mEntityDefines.length);
          
-         for (entityId = 0; entityId < worldDefine.mEntityDefines.length; ++ entityId)
+         for (createId = 0; createId < numEntities; ++ createId)
          {
-            var entityDefine:Object = worldDefine.mEntityDefines [entityId];
+            var entityDefine:Object = worldDefine.mEntityDefines [createId];
             
             byteArray.writeShort (entityDefine.mEntityType);
             if (worldDefine.mVersion >= 0x0103)
@@ -1722,16 +1736,17 @@ package common {
          // ...
          if (worldDefine.mVersion >= 0x0107)
          {
-            byteArray.writeShort (worldDefine.mEntityCreationOrder.length); // should == numEntities
-            for (var createId:int = 0; createId < worldDefine.mEntityCreationOrder.length; ++ createId)
+            byteArray.writeShort (worldDefine.mEntityAppearanceOrder.length); // should == numEntities
+            for (createId = 0; createId < worldDefine.mEntityAppearanceOrder.length; ++ createId)
             {
-               byteArray.writeShort (worldDefine.mEntityCreationOrder [createId]);
+               byteArray.writeShort (worldDefine.mEntityAppearanceOrder [createId]);
             }
          }
          
          // ...
          
          var groupId:int;
+         var brotherId:int;
          var brotherIDs:Array;
          
          byteArray.writeShort (worldDefine.mBrotherGroupDefines.length);
@@ -1742,9 +1757,9 @@ package common {
             
             byteArray.writeShort (brotherIDs.length);
             
-            for (entityId = 0; entityId < brotherIDs.length; ++ entityId)
+            for (brotherId = 0; brotherId < brotherIDs.length; ++ brotherId)
             {
-               byteArray.writeShort (brotherIDs [entityId]);
+               byteArray.writeShort (brotherIDs [brotherId]);
             }
          }
          

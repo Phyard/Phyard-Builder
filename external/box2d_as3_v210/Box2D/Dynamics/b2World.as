@@ -272,6 +272,30 @@ package Box2D.Dynamics
 		{
 			return (m_flags & e_locked) == e_locked;
 		}
+		
+//====================================================================================
+// hacking
+//====================================================================================
+		
+		public function WakeUpAllBodies ():void
+		{
+			var b:b2Body = m_bodyList;
+
+			while (b != null)
+			{
+				b.SetAwake (true);
+				b = b.m_next;
+			}
+		}
+		
+		public function FlagForFilteringForAllContacts ():void
+		{
+			for (var c:b2Contact = m_contactManager.m_contactList; c != null; c = c.m_next)
+			{
+				c.FlagForFiltering ();
+			}
+		}
+		
 	} // class
 } // package
 //#endif

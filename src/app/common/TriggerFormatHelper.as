@@ -236,7 +236,7 @@ package common {
          
          var value_targets:Array = new Array (funcCallingDefine.mNumOutputs);
          for (i = 0; i < num_outputs; ++ i)
-            value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetInputValueType (i), functionDefinition);
+            value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputValueType (i), functionDefinition);
          
          var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
          func_calling.SetInputValueSources (value_sources);

@@ -248,15 +248,17 @@ package editor.entity {
       
       public function SetStatic (isStatic:Boolean):void
       {
-         if (mIsStatic && ! isStatic && mFilledColor == Define.ColorStaticObject)
+         if (mIsStatic && ! isStatic && mAiType == Define.ShapeAiType_Static)
          {
+            SetAiType (Define.ShapeAiType_Movable);
             SetFilledColor (Define.ColorMovableObject);
             SetDrawBorder (true);
             UpdateAppearance ();
          }
          
-         if (! mIsStatic && isStatic && mFilledColor == Define.ColorMovableObject)
+         if (! mIsStatic && isStatic && mAiType == Define.ShapeAiType_Movable)
          {
+            SetAiType (Define.ShapeAiType_Static);
             SetFilledColor (Define.ColorStaticObject);
             SetDrawBorder (false);
             UpdateAppearance ();

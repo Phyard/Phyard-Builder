@@ -4,7 +4,11 @@ package common.trigger {
    
    public class ValueTypeDefine
    {
-      public static const ValueTypeMask_Basic:int = 0xFFFF;
+      public static const NumberTypeMask_Basic:int = 0xFFFF;
+      
+      public static const NumberTypeMask_Detail:int = 0x000F0000;
+      
+      public static const NumberTypeMask_Usage:int = 0x02F00000;
       
 //=============================================================================
 // basic types
@@ -31,26 +35,26 @@ package common.trigger {
       
       // for direct numbers, default number is a double float (64 bits float), default is general number
       
-      public static const ValueTypeHint_Number_Double :int = 0 << 16; // 32 bits float
-      public static const ValueTypeHint_Number_Single :int = 1 << 16; // 32 bits float
-      public static const ValueTypeHint_Number_Integer:int = 2 << 16; // 32 bits int
+      public static const NumberTypeDetail_Double :int = 0 << 16; // 64 bits float, default
+      public static const NumberTypeDetail_Single :int = 1 << 16; // 32 bits float
+      public static const NumberTypeDetail_Integer:int = 2 << 16; // 32 bits int
       
-      public static const ValueTypeHint_Number_General             :int = 0 << 20;
-      public static const ValueTypeHint_Number_PositionX           :int = 1 << 20;
-      public static const ValueTypeHint_Number_PositionY           :int = 2 << 20;
-      public static const ValueTypeHint_Number_Rotation            :int = 3 << 20;
-      public static const ValueTypeHint_Number_Length              :int = 4 << 20;
-      public static const ValueTypeHint_Number_Area                :int = 5 << 20;
-      public static const ValueTypeHint_Number_LinearSpeed         :int = 6 << 20;
-      public static const ValueTypeHint_Number_AngularSpeed        :int = 7 << 20;
-      public static const ValueTypeHint_Number_Mass                :int = 8 << 20;
-      public static const ValueTypeHint_Number_Inertia             :int = 9 << 20;
-      public static const ValueTypeHint_Number_Force               :int = 10 << 20;
-      public static const ValueTypeHint_Number_LinearAcceleration  :int = 11 << 20;
-      public static const ValueTypeHint_Number_Torque              :int = 12 << 20;
-      public static const ValueTypeHint_Number_AngularAcceleration :int = 13 << 20;
-      public static const ValueTypeHint_Number_Momentum            :int = 14 << 20; // also impulse 
-      public static const ValueTypeHint_Number_AngularMomentum     :int = 15 << 20; // also angular impulse 
+      public static const NumberTypeUsage_General             :int = 0 << 20;
+      public static const NumberTypeUsage_PositionX           :int = 1 << 20;
+      public static const NumberTypeUsage_PositionY           :int = 2 << 20;
+      public static const NumberTypeUsage_Rotation            :int = 3 << 20;
+      public static const NumberTypeUsage_Length              :int = 4 << 20;
+      public static const NumberTypeUsage_Area                :int = 5 << 20;
+      public static const NumberTypeUsage_LinearSpeed         :int = 6 << 20;
+      public static const NumberTypeUsage_AngularSpeed        :int = 7 << 20;
+      public static const NumberTypeUsage_Mass                :int = 8 << 20;
+      public static const NumberTypeUsage_Inertia             :int = 9 << 20;
+      public static const NumberTypeUsage_Force               :int = 10 << 20;
+      public static const NumberTypeUsage_LinearAcceleration  :int = 11 << 20;
+      public static const NumberTypeUsage_Torque              :int = 12 << 20;
+      public static const NumberTypeUsage_AngularAcceleration :int = 13 << 20;
+      public static const NumberTypeUsage_Momentum            :int = 14 << 20; // also impulse 
+      public static const NumberTypeUsage_AngularMomentum     :int = 15 << 20; // also angular impulse 
       
       // 1 << 26
    }

@@ -112,7 +112,7 @@ package player.physics {
       
       public function WakeUpAllBodies ():void
       {
-         b2eWorldHelper.WakeUpAllBodies (_b2World);
+         _b2World.WakeUpAllBodies ();
       }
       
       public function GetActiveMovableBodiesCount (excludeBodiesConnectedWithJoints:Boolean = false):uint
@@ -133,6 +133,11 @@ package player.physics {
          }
          
          return count;
+      }
+      
+      public function FlagForFilteringForAllContacts ():void
+      {
+         _b2World.FlagForFilteringForAllContacts ();
       }
       
 //=================================================================

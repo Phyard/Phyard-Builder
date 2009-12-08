@@ -14,6 +14,7 @@ package player.entity {
    import common.trigger.CoreEventIds;
    
    import common.Define;
+   import common.trigger.ValueDefine;
    
    public class Entity implements IPropertyOwner
    {
@@ -129,7 +130,7 @@ package player.entity {
       
       public function SetRotation (rot:Number):void
       {
-         mRotation = rot;
+         mRotation = rot % Define.kPI_x_2;
       }
       
       public function GetRotation ():Number
@@ -365,6 +366,43 @@ package player.entity {
       //!!! DestroyInternal shouldn't destroy anything related with physics
       protected function DestroyInternal ():void
       {
+      }
+      
+      
+//==============================================================================
+// as task
+//==============================================================================
+      
+      protected var mTaskStatus_UserAssigned:int = ValueDefine.LevelStatus_Unfinished;
+      
+      public function IsTaskSuccessed ():Boolean
+      {
+         return mTaskStatus_UserAssigned == ValueDefine.LevelStatus_Successed;
+      }
+      
+      public function SetTaskSuccessed ():void
+      {
+         mTaskStatus_UserAssigned = ValueDefine.LevelStatus_Successed;
+      }
+      
+      public function IsTaskFailed ():Boolean
+      {
+         return mTaskStatus_UserAssigned == ValueDefine.LevelStatus_Failed;
+      }
+      
+      public function SetTaskFailed ():void
+      {
+         mTaskStatus_UserAssigned = ValueDefine.LevelStatus_Failed;
+      }
+      
+      public function IsTaskUnfinished ():Boolean
+      {
+         return mTaskStatus_UserAssigned == ValueDefine.LevelStatus_Unfinished;
+      }
+      
+      public function SetTaskUnfinished ():void
+      {
+         mTaskStatus_UserAssigned = ValueDefine.LevelStatus_Unfinished;
       }
       
 //==============================================================================

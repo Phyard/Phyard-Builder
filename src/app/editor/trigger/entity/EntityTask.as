@@ -200,7 +200,7 @@ package editor.trigger.entity {
             return ValueDefine.TaskStatus_Failed;
          
          if (zoneId == 2)
-            return ValueDefine.TaskStatus_Undetermined;
+            return ValueDefine.TaskStatus_Unfinished;
          
          return ValueDefine.TaskStatus_Successed;
       }

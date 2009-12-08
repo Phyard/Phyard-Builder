@@ -34,7 +34,25 @@ package common.trigger
          if (inputId < 0 || inputId >= mInputValueTypes.length)
             return ValueTypeDefine.ValueType_Void;
          
-         return mInputValueTypes [inputId] & ValueTypeDefine.ValueTypeMask_Basic;
+         return mInputValueTypes [inputId] & ValueTypeDefine.NumberTypeMask_Basic;
+      }
+      
+      public function GetInputNumberTypeDetail (inputId:int):int
+      {
+         var valueType:int = GetInputValueType (inputId);
+         if (valueType != ValueTypeDefine.ValueType_Number)
+            return ValueTypeDefine.NumberTypeDetail_Double;
+         
+         retyrn valueType & ValueTypeDefine.NumberTypeMask_Detail;
+      }
+      
+      public function GetInputNumberTypeUsage (inputId:int):int
+      {
+         var valueType:int = GetInputValueType (inputId);
+         if (valueType != ValueTypeDefine.ValueType_Number)
+            return ValueTypeDefine.NumberTypeDetail_Double;
+         
+         retyrn valueType & ValueTypeDefine.NumberTypeMask_Usage;
       }
       
       public function GetNumOutputs ():int
@@ -53,7 +71,7 @@ package common.trigger
          if (returnId < 0 || returnId >= mReturnValueTypes.length)
             return ValueTypeDefine.ValueType_Void;
          
-         return mReturnValueTypes [returnId] & ValueTypeDefine.ValueTypeMask_Basic;
+         return mReturnValueTypes [returnId] & ValueTypeDefine.NumberTypeMask_Basic;
       }
       
 //=====================================================================

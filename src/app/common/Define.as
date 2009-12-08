@@ -15,6 +15,7 @@ package common {
       public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/publish-your-puzzles";
       public static const EditorUrl:String = "http://colorinfection.appspot.com/htmls/editor_page_beta.html";
       
+      public static const kPI_x_2:Number = Math.PI * 2.0;
       public static const kRadians2Degrees:Number = 180.0 / Math.PI;
       public static const kDegrees2Radians:Number = Math.PI / 180.0;
       

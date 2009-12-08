@@ -11,15 +11,5 @@ package Box2dEx.Helper {
    
    public class b2eWorldHelper
    {
-      public static function WakeUpAllBodies (world:b2World):void
-      {
-         var b:b2Body = world.m_bodyList;
-         
-         while (b != null)
-         {
-            b.SetAwake (true);
-            b = b.m_next;
-         }
-      }
    }
 }

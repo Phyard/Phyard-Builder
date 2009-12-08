@@ -20,7 +20,7 @@ package common {
       
       public var mEntityDefines:Array = new Array ();
       
-      public var mEntityCreationOrder:Array = new Array ();
+      public var mEntityAppearanceOrder:Array = new Array ();
       
       public var mBrotherGroupDefines:Array = new Array ();
       

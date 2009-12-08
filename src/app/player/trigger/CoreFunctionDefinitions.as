@@ -2,9 +2,11 @@
 package player.trigger {
    import flash.utils.getTimer;
    
-   import player.global.Global;
+   import player.design.Global;
+   import player.design.Design;
    
    import player.world.World;
+   import player.world.CollisionCategory;
    
    import player.entity.Entity;
    import player.entity.EntityShape;
@@ -20,6 +22,8 @@ package player.trigger {
    import common.trigger.ValueTypeDefine;
    import common.trigger.CoreFunctionIds;
    import common.trigger.FunctionDeclaration;
+   
+   import common.Define;
    
    public class CoreFunctionDefinitions
    {
@@ -37,13 +41,11 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Return,                           ReturnVoid);
          RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfTrue,                     ReturnIfTrue);
          RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfFalse,                    ReturnIfFalse);
-         RegisterCoreFunction (CoreFunctionIds.ID_AssignBoolenRegister0,            ID_AssignBoolenRegister0);
          
       // system / time
          
          RegisterCoreFunction (CoreFunctionIds.ID_GetProgramMilliseconds,           GetProgramMilliseconds);
          RegisterCoreFunction (CoreFunctionIds.ID_GetCurrentDateTime,               GetCurrentDateTime);
-         RegisterCoreFunction (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,     MillisecondsToMinutesSeconds);
          
       // string
          
@@ -76,12 +78,13 @@ package player.trigger {
          
          // math ops
          
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Assign,                     AssignNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Negative,                   NegativeNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Add,                        AddTwoNumbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Subtract,                   SubtractTwoNumbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Multiply,                   MultiplyTwoNumbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Divide,                     DivideTwoNumbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Assign,                     AssignNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Negative,                   NegativeNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Modulo,                     ModuloTwoNumbers);
          
          // math / bitwise
          
@@ -106,15 +109,15 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Math_RandomRange,                RandomNumberRange);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_RandomIntRange,             RandomIntegerRange);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Degrees2Radians,          Degrees2Radians);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Radians2Degrees,          Radians2Degrees);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Number2RGB,               Number2RGB);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_RGB2Number,               RGB2Number);
-         
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Max,                        MaxOfTwoNumbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Min,                        MinOfTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Degrees2Radians,             Degrees2Radians);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Radians2Degrees,             Radians2Degrees);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Number2RGB,                  Number2RGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_RGB2Number,                  RGB2Number);
+         RegisterCoreFunction (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,     MillisecondsToMinutesSeconds);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Inverse,                   InverseNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Max,                        MaxOfTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Min,                        MinOfTwoNumbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Abs,                       AbsNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Sqrt,                      SqrtNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Ceil,                      CeilNumber);
@@ -127,19 +130,44 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.Id_Math_LinearInterpolation,               LinearInterpolation);
          RegisterCoreFunction (CoreFunctionIds.Id_Math_LinearInterpolationColor,          LinearInterpolationColor);
          
+      // game / design
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelMilliseconds,             GetLevelMilliseconds);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelSteps,                    GetLevelSteps);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelSuccessed,                 IsLevelSuccessed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelSuccessed,                SetLevelSuccessed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelFailed,                    IsLevelFailed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelFailed,                   SetLevelFailed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelUnfinished,                IsLevelUnfinished);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelUnfinished,               SetLevelUnfinished);
+         
       // game / world
          
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,     SetWorldGravityAcceleration_Radians);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
-         RegisterCoreFunction (CoreFunctionIds.ID_World_AttachCameraToShape,                AttachWorldCameraToShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraWithShape,                       FollowCameraWithShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,                FollowCameraCenterXWithShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,                FollowCameraCenterYWithShape);
+         //RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,               FollowCameraRotationWithShape);
          
       // game / collision category
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Cat_Assign,                         AssignCollisionCategory);
+         RegisterCoreFunction (CoreFunctionIds.ID_CCat_Assign,                                       AssignCollisionCategory);
+         RegisterCoreFunction (CoreFunctionIds.ID_CCat_SetCollideInternally,                         SetCollisionCategoryCollideInternally);
+         RegisterCoreFunction (CoreFunctionIds.ID_CCat_SetAsFriends,                                 SetCollisionCategoriesAsFriends);
          
       // game / entity
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Assign,                      AssignEntity);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskSuccessed,                       IsEntityTaskSuccessed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskSuccessed,                      SetEntityTaskSuccessed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskFailed,                          IsEntityTaskFailed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskFailed,                         SetEntityTaskFailed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskUnfinished,                      IsEntityTaskUnfinished);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskUnfinished,                     SetEntityTaskUnfinished);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
          
@@ -154,22 +182,27 @@ package player.trigger {
          
       // game / entity / shape
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCIType,                   GetShapeCIType);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColor,              GetShapeFilledColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledColor,              SetShapeFilledColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,           GetShapeFilledColorRGB);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,           SetShapeFilledColorRGB);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,            IsPhysicsShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,            IsShapePhysicsEnabled);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetPhysicsEnabled,         SetShapePhysicsEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,        GetShapeCollisionCategory);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                  GetShapeDensity);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                  SetShapeDensity);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                  GetShapeDensity);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                  SetShapeDensity);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Attach,                      AttachShapes);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Breakup,                     BreakupGluedShapes);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Attach,                      AttachShapes);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Breakup,                     BreakupGluedShapes);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                    TeleportShape);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
          
       // game / entity / joint
          
@@ -214,23 +247,19 @@ package player.trigger {
       {
          // do nothing, shouldn't run into here
       }
+      
       public static function ReturnIfTrue (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
          
          valueTarget.AssignValueObject (value);
       }
+      
       public static function ReturnIfFalse (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
          
          valueTarget.AssignValueObject (! value);
-      }
-      public static function ID_AssignBoolenRegister0 (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
-         
-         valueTarget.AssignValueObject (value);
       }
       
    //*******************************************************************
@@ -265,24 +294,6 @@ package player.trigger {
          
          valueTarget = valueTarget.mNextValueTargetInList;
          valueTarget.AssignValueObject (date.getMilliseconds ());
-      }
-      
-      public static function MillisecondsToMinutesSeconds (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var millseconds:int = valueSource.EvalateValueObject () as Number;
-         
-         var minutes:int = millseconds / 60000;
-         millseconds -= minutes * 60000;
-         var seconds:int = millseconds / 1000;
-         millseconds -= seconds * 1000;
-         
-         valueTarget.AssignValueObject (Number (minutes));
-         
-         valueTarget = valueTarget.mNextValueTargetInList;
-         valueTarget.AssignValueObject (Number (seconds));
-         
-         valueTarget = valueTarget.mNextValueTargetInList;
-         valueTarget.AssignValueObject (Number (millseconds));
       }
       
    //*******************************************************************
@@ -465,7 +476,21 @@ package player.trigger {
    // math
    //************************************************
       
-      // + - * / x=y -x 1/x
+      // + - * / x=y -x 
+      
+      public static function AssignNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (value);
+      }
+      
+      public static function NegativeNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (-value);
+      }
       
       public static function AddTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -507,18 +532,14 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 / value2);
       }
       
-      public static function AssignNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ModuloTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvalateValueObject () as Number;
          
-         valueTarget.AssignValueObject (value);
-      }
-      
-      public static function NegativeNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:Number = valueSource.EvalateValueObject () as Number;
          
-         valueTarget.AssignValueObject (-value);
+         valueTarget.AssignValueObject (value1 % value2);
       }
       
       // bitwise
@@ -680,14 +701,14 @@ package player.trigger {
       {
          var value:Number = valueSource.EvalateValueObject () as Number;
          
-         valueTarget.AssignValueObject (value * Math.PI / 180.0);
+         valueTarget.AssignValueObject (value * Define.kDegrees2Radians);
       }
       
       public static function Radians2Degrees (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var value:Number = valueSource.EvalateValueObject () as Number;
          
-         valueTarget.AssignValueObject (value * 180.0 /  Math.PI);
+         valueTarget.AssignValueObject (value * Define.kRadians2Degrees);
       }
       
       public static function Number2RGB (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -716,6 +737,33 @@ package player.trigger {
          valueTarget.AssignValueObject ((red << 16) | (green << 8) | (blue));
       }
       
+      public static function MillisecondsToMinutesSeconds (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var millseconds:int = valueSource.EvalateValueObject () as Number;
+         
+         var minutes:int = millseconds / 60000;
+         millseconds -= minutes * 60000;
+         var seconds:int = millseconds / 1000;
+         millseconds -= seconds * 1000;
+         
+         valueTarget.AssignValueObject (Number (minutes));
+         
+         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget.AssignValueObject (Number (seconds));
+         
+         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget.AssignValueObject (Number (millseconds));
+      }
+      
+      // invert 
+      
+      public static function InverseNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (1.0 / value);
+      }
+      
       // max, min
       
       public static function MaxOfTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -738,14 +786,7 @@ package player.trigger {
          valueTarget.AssignValueObject (Math.min (value1, value2));
       }
       
-      // inverse, negative, abs, sqrt, ceil, floor, round, log, exp
-      
-      public static function InverseNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueTarget.AssignValueObject (1.0 / value);
-      }
+      // abs, sqrt, ceil, floor, round, log, exp
       
       public static function AbsNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -837,14 +878,54 @@ package player.trigger {
          valueTarget.AssignValueObject ((red << 16) | (green << 8) | (blue));
       }
       
+      
    //*******************************************************************
-   // game world
+   // game / design
    //*******************************************************************
       
-      //public static function GetLevelMilliseconds (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-      //   valueTarget.AssignValueObject (0);
-      //}
+      public static function GetLevelMilliseconds (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentDesign ().GetLevelMilliseconds ());
+      }
+      
+      public static function GetLevelSteps (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentDesign ().GetLevelSteps ());
+      }
+      
+      public static function IsLevelSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelSuccessed ());
+      }
+      
+      public static function SetLevelSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         Global.GetCurrentDesign ().SetLevelSuccessed ();
+      }
+      
+      public static function IsLevelFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelFailed ());
+      }
+      
+      public static function SetLevelFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         Global.GetCurrentDesign ().SetLevelFailed ();
+      }
+      
+      public static function IsLevelUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelUnfinished ());
+      }
+      
+      public static function SetLevelUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         Global.GetCurrentDesign ().SetLevelUnfinished ();
+      }
+      
+   //*******************************************************************
+   // game / world
+   //*******************************************************************
       
       public static function SetWorldGravityAcceleration_Radians (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -862,18 +943,74 @@ package player.trigger {
          var magnitude:Number = valueSource.EvalateValueObject () as Number;
          
          valueSource = valueSource.mNextValueSourceInList;
-         var radians:Number = ((valueSource.EvalateValueObject () as Number) % 360.0) * Math.PI / 180.0;
+         var radians:Number = ((valueSource.EvalateValueObject () as Number) % 360.0) * Define.kDegrees2Radians;
          
          var physics_engine:PhysicsEngine = Global.GetCurrentWorld ().GetPhysicsEngine ();
          physics_engine.SetGravity (magnitude, radians);
       }
       
-      public static function AttachWorldCameraToShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetWorldGravityAcceleration_Vector (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var gaX:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var gaY:Number = valueSource.EvalateValueObject () as Number;
+         
+         var physics_engine:PhysicsEngine = Global.GetCurrentWorld ().GetPhysicsEngine ();
+         physics_engine.SetGravityByVector (gaX, gaY);
+      }
+      
+      public static function FollowCameraWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
          
-         //shape.GetWorld ().AttatchCurrentCameraToEntity (shape);
+         valueSource = valueSource.mNextValueSourceInList;
+         var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         //valueSource = valueSource.mNextValueSourceInList;
+         //var folowRotation:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var folowRotation:Boolean = false;
+         
+         Global.GetCurrentWorld ().FollowCameraWithEntity (shape, isSmooth, folowRotation);
       }
+      
+      public static function FollowCameraCenterXWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         Global.GetCurrentWorld ().FollowCameraCenterXWithEntity (shape, isSmooth);
+      }
+      
+      public static function FollowCameraCenterYWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         Global.GetCurrentWorld ().FollowCameraCenterYWithEntity (shape, isSmooth);
+      }
+      
+      //public static function FollowCameraRotationRotationWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   if (shape == null)
+      //      return;
+      //   
+      //   valueSource = valueSource.mNextValueSourceInList;
+      //   var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
+      //   
+      //   Global.GetCurrentWorld ().FollowCameraRotationWithEntity (shape, isSmooth);
+      //}
       
       // game / collision category
          
@@ -883,9 +1020,32 @@ package player.trigger {
       
       public static function AssignCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var cat_id:Number = valueSource.EvalateValueObject () as Number;
+         var cat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
          
-         valueTarget.AssignValueObject (cat_id);
+         valueTarget.AssignValueObject (cat);
+      }
+      
+      public static function SetCollisionCategoryCollideInternally (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var cat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var collideInternally:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         Global.GetCurrentWorld ().BreakOrCreateCollisionCategoryFriendLink (cat, cat, collideInternally);
+      }
+      
+      public static function SetCollisionCategoriesAsFriends (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var cat1:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var cat2:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var asFriends:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         Global.GetCurrentWorld ().BreakOrCreateCollisionCategoryFriendLink (cat1, cat2, ! asFriends);
       }
       
    //*******************************************************************
@@ -897,6 +1057,48 @@ package player.trigger {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
          
          valueTarget.AssignValueObject (entity);
+      }
+      
+      public static function IsEntityTaskSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (entity.IsTaskSuccessed ());
+      }
+      
+      public static function SetEntityTaskSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         entity.SetTaskSuccessed ();
+      }
+      
+      public static function IsEntityTaskFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (entity.IsTaskFailed ());
+      }
+      
+      public static function SetEntityTaskFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         entity.SetTaskFailed ();
+      }
+      
+      public static function IsEntityTaskUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (entity.IsTaskUnfinished ());
+      }
+      
+      public static function SetEntityTaskUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         entity.SetTaskUnfinished ();
       }
       
       public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -916,9 +1118,13 @@ package player.trigger {
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
          if (entity == null)
-            return;
-         
-         valueTarget.AssignValueObject (entity.IsVisible ());
+         {
+            valueTarget.AssignValueObject (false);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (entity.IsVisible ());
+         }
       }
       
       public static function SetEntityVisible (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -984,45 +1190,20 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetPositionY ());
       }
       
-      //public static function SetEntityPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-      //   var entity:Entity = valueSource.EvalateValueObject () as Entity;
-      //   if (entity == null)
-      //      return;
-      //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var pos_x:Number = valueSource.EvalateValueObject () as Number;
-      //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var pos_y:Number = valueSource.EvalateValueObject () as Number;
-      //   
-      //   entity.SetPosition (pos_x, pos_y);
-      //}
-      
-      public static function GetEntityRotationByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetEntityPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
-         if (entity == null)
-         {
-            valueTarget.AssignValueObject (0.0);
-            
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
             return;
-         }
          
-         valueTarget.AssignValueObject (entity.GetRotation () * 180.0 / Math.PI);
+         valueSource = valueSource.mNextValueSourceInList;
+         var pos_x:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var pos_y:Number = valueSource.EvalateValueObject () as Number;
+         
+         shape.MoveTo (pos_x, pos_y);
       }
-      
-      //public static function SetEntityRotationByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-      //   var entity:Entity = valueSource.EvalateValueObject () as Entity;
-      //   if (entity == null)
-      //      return;
-      //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var degrees:Number = valueSource.EvalateValueObject () as Number;
-      //   
-      //   entity.SetRotation (degrees * Math.PI / 180.0);
-      //}
       
       public static function GetEntityRotationByRadians (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -1046,9 +1227,60 @@ package player.trigger {
       //   valueTarget.AssignValueObject (entity.GetRotation ());
       //}
       
+      public static function GetEntityRotationByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+            
+            return;
+         }
+         
+         valueTarget.AssignValueObject (entity.GetRotation () * Define.kRadians2Degrees);
+      }
+      
+      //public static function SetEntityRotationByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var entity:Entity = valueSource.EvalateValueObject () as Entity;
+      //   if (entity == null)
+      //      return;
+      //   
+      //   valueSource = valueSource.mNextValueSourceInList;
+      //   var degrees:Number = valueSource.EvalateValueObject () as Number;
+      //   
+      //   entity.SetRotation (degrees * Define.kDegrees2Radians);
+      //}
+      
    //*******************************************************************
    // entity / shape
    //*******************************************************************
+      
+      public static function GetShapeCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+         {
+            // error
+            valueTarget.AssignValueObject (Define.ShapeAiType_Unknown);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetShapeAiType ());
+         }
+      }
+      
+      public static function SetShapeCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var ciType:int = uint (valueSource.EvalateValueObject ());
+         
+         shape.SetShapeAiType (ciType);
+      }
       
       public static function GetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -1067,13 +1299,8 @@ package player.trigger {
       public static function SetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         
-         //trace ("shape = " + shape);
-         
          if (shape == null)
             return;
-         
-         //trace ("creation id = " + shape.GetCreationId ());
          
          valueSource = valueSource.mNextValueSourceInList;
          var color:uint = uint (valueSource.EvalateValueObject ());
@@ -1124,7 +1351,7 @@ package player.trigger {
          shape.SetFilledColor ((red << 16) | (green << 8) | (blue));
       }
       
-      public static function IsPhysicsShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsShapePhysicsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          if (shape == null)
@@ -1135,6 +1362,37 @@ package player.trigger {
          {
             valueTarget.AssignValueObject (shape.IsPhysicsShape ());
          }
+      }
+      
+      //public static function SetShapePhysicsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //}
+      
+      public static function GetShapeCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+         {
+            valueTarget.AssignValueObject (null);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetCollisionCategory ());
+         }
+      }
+      
+      public static function SetShapeCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var ccat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         if (ccat == null)
+            return;
+         
+         shape.SetCollisionCategory (ccat);
       }
       
       public static function IsSensorShape (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1162,47 +1420,33 @@ package player.trigger {
          shape.SetAsSensor (sensor);
       }
       
-      public static function GetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-      }
+      //public static function GetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //}
       
-      public static function SetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-      }
+      //public static function SetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //}
       
-      public static function AttachShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         //var entity1:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
-         //if (entity1 == null)
-         //   return;
-         //
-         //valueSource = valueSource.mNextValueSourceInList;
-         //var entity2:ShapeContainerChild = valueSource.EvalateValueObject () as ShapeContainerChild;
-         //if (entity2 == null)
-         //   return;
-         //
-         //var world:World = entity1.GetWorld ();
-         //if (world != entity2.GetWorld ())
-         //   return;
-         
-         //world.GlueEntities (entity1, entity2);
-      }
+      //public static function AttachShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //}
       
-      public static function DetachShape (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-            return;
-         
-      }
+      //public static function DetachShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   if (shape == null)
+      //      return;
+      //   
+      //}
       
-      public static function BreakupGluedShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-            return;
-         
-      }
+      //public static function BreakupGluedShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   if (shape == null)
+      //      return;
+      //   
+      //}
       
       public static function TeleportShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -1231,13 +1475,13 @@ package player.trigger {
          shape.Teleport (targetX, targetY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
-      public static function CloneShape (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-            return;
-         
-      }
+      //public static function CloneShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   if (shape == null)
+      //      return;
+      //   
+      //}
       
       
       

@@ -1,6 +1,8 @@
 
 package editor.selection {
    
+   import com.tapirgames.util.GraphicsUtil;
+   
    import flash.geom.Point;
    import flash.display.Sprite;
    import flash.display.Shape;
@@ -16,7 +18,7 @@ package editor.selection {
    
    import Box2dEx.Helper.b2eWorldAABBQueryCallback;
    
-   import com.tapirgames.util.GraphicsUtil;
+   import common.Define;
    
    public class SelectionEngine 
    {
@@ -148,7 +150,7 @@ package editor.selection {
             
             bodyContainer.x = physicsBody.GetPosition ().x;
             bodyContainer.y = physicsBody.GetPosition ().y;
-            bodyContainer.rotation = (physicsBody.GetAngle () * 180.0 / Math.PI) % 360.0;
+            bodyContainer.rotation = (physicsBody.GetAngle () * Define.kRadians2Degrees) % 360.0;
             
             if (physicsShape is b2CircleShape)
             {

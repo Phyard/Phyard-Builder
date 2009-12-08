@@ -23,10 +23,10 @@ package player.trigger.entity
       final public function GetEvaluatedValue ():int
       {
          // most evaluate once at each simulateion step
-         var worldSimulateStep:int = mWorld.GetSimulatedStep ();
-         if (mLastEvaluateStep < worldSimulateStep)
+         var worldSimulateSteps:int = mWorld.GetSimulatedSteps ();
+         if (mLastEvaluateStep < worldSimulateSteps)
          {
-            mLastEvaluateStep = worldSimulateStep;
+            mLastEvaluateStep = worldSimulateSteps;
             
             Evaluate ();
          }

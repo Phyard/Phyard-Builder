@@ -14,9 +14,14 @@ package player.entity {
          super (world);
       }
       
-      override protected function UpdateInternal (dt:Number):void
+//=============================================================
+//   initialize
+//=============================================================
+      
+      override protected function InitializeInternal ():void
       {
-         mWorld.SetTargetCameraCenter (mPositionX, mPositionY);
+         mWorld.MoveCameraCenterTo_PhysicsPoint (mPositionX, mPositionY);
+         mWorld.FollowCameraWithEntity (this, false, false);
       }
       
    }

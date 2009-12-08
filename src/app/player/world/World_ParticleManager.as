@@ -60,6 +60,10 @@ public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number
    mParticlesToCreate += bomb.mNumParticles;
 }
 
+public function CreateExplosion ():void
+{
+}
+
 public function ParticleManager_Update (dt:Number):void
 {
    for (var bombId:int = 0; bombId < mNumBombs; ++ bombId)
@@ -94,7 +98,7 @@ public function ParticleManager_Update (dt:Number):void
       var sin:Number;
       for (var i:int = 0; i < count; ++ i)
       {
-         angle = particleId * Math.PI * 2 / bomb.mNumParticles;
+         angle = particleId * Define.kPI_x_2 / bomb.mNumParticles;
          cos = Math.cos (angle);
          sin = Math.sin (angle);
          

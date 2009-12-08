@@ -214,6 +214,7 @@
                               horizontalGap="0" verticalGap="0" borderThickness="0">
                      <ed:WorldView id="MainView" height="100%" width="100%" />
                   </mx:Box>
+                  <!--
                   <mx:Box id="Box_BottomBar" direction="horizontal" borderStyle="solid" height="29" width="100%"
                               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off"
@@ -229,6 +230,7 @@
                      <mx:Button label="" width="35" height="26" fontSize="8" creationComplete="OnCustomTriggerButtonCreated (event)"/>
                      <mx:Button label="" width="35" height="26" fontSize="8" creationComplete="OnCustomTriggerButtonCreated (event)"/>
                   </mx:Box>
+                  -->
                </mx:Box>
                </mx:Box>
             </mx:Box>
@@ -956,7 +958,7 @@
             
             private function OnRotateSelectedEntitiesAccurately (params:Object):void
             {
-               MainView.RotateSelectedEntities (params.mRotationAngle * Math.PI / 180.0, true, false);
+               MainView.RotateSelectedEntities (params.mRotationAngle * Define.kDegrees2Radians, true, false);
             }
             
             private function ShowDialog_ScaleSelectedEntitiesAccurately (event:ContextMenuEvent):void

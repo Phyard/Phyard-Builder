@@ -26,21 +26,23 @@ package editor.trigger {
          
          var global_package:FunctionPackage = new FunctionPackage ("global", sTopFuntionPackage);
          var system_package:FunctionPackage = new FunctionPackage ("system", sTopFuntionPackage);
-         var math_package:FunctionPackage   = new FunctionPackage ("math (Number)", sTopFuntionPackage);
+         var math_package:FunctionPackage   = new FunctionPackage ("math", sTopFuntionPackage);
             var trigonometry_package:FunctionPackage = new FunctionPackage ("trigonometry", math_package);
             var random_package:FunctionPackage             = new FunctionPackage ("random", math_package);
             var bitwise_package:FunctionPackage            = new FunctionPackage ("bitwise", math_package);
             var convert_package:FunctionPackage            = new FunctionPackage ("number convert", math_package);
             var interpolation_package:FunctionPackage      = new FunctionPackage ("interpolation", math_package);
-         var string_package:FunctionPackage = new FunctionPackage ("string (Text)", sTopFuntionPackage);
-         var bool_package:FunctionPackage   = new FunctionPackage ("logic (Boolean)", sTopFuntionPackage);
+         var string_package:FunctionPackage = new FunctionPackage ("string", sTopFuntionPackage);
+         var bool_package:FunctionPackage   = new FunctionPackage ("logic", sTopFuntionPackage);
          
+         var design_package:FunctionPackage  = new FunctionPackage ("level", sTopFuntionPackage);
          var world_package:FunctionPackage  = new FunctionPackage ("world", sTopFuntionPackage);
-         var cat_package:FunctionPackage    = new FunctionPackage ("ccat (Collision Category)", sTopFuntionPackage);
-         var entity_package:FunctionPackage = new FunctionPackage ("entity (Shape, Joint, Text, ...)", sTopFuntionPackage);
+         var cat_package:FunctionPackage    = new FunctionPackage ("ccat", sTopFuntionPackage);
+         var entity_package:FunctionPackage = new FunctionPackage ("entity", sTopFuntionPackage);
             var entity_is_package:FunctionPackage    = new FunctionPackage ("Is a Subtype?", entity_package);
-            var entity_shape_package:FunctionPackage = new FunctionPackage ("shape", entity_package);
-            var entity_text_package:FunctionPackage  = new FunctionPackage ("text", entity_package);
+            var entity_shape_package:FunctionPackage = new FunctionPackage ("- shape", sTopFuntionPackage);
+            var entity_text_package:FunctionPackage  = new FunctionPackage ("text", entity_shape_package);
+            var entity_more_package:FunctionPackage  = new FunctionPackage ("- more ...", sTopFuntionPackage);
          
       //================================================
       // functions
@@ -84,12 +86,6 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_AssignBoolenRegister0, global_package, "Assign Value to BoolenRegister_0", 
-                     [
-                             new VariableDefinitionBoolean ("Bool Value"), 
-                     ],
-                     null
-                  );
          
       // system / time
          
@@ -107,16 +103,6 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Day"), 
                              new VariableDefinitionNumber ("Hours"), 
                              new VariableDefinitionNumber ("Minutes"), 
-                             new VariableDefinitionNumber ("Seconds"), 
-                             new VariableDefinitionNumber ("Milliseconds"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, system_package, "MillisecondsToMinutesSeconds", 
-                     [
-                             new VariableDefinitionNumber ("Milliseconds"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Minitues"), 
                              new VariableDefinitionNumber ("Seconds"), 
                              new VariableDefinitionNumber ("Milliseconds"), 
                      ]
@@ -208,7 +194,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsNumber, bool_package, "Equals (Number == Number?)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsNumber, bool_package, "Number == Number?", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -217,7 +203,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Equals (Boolean == Boolean?)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Boolean == Boolean?", 
                      [
                              new VariableDefinitionBoolean ("Bool 1"), 
                              new VariableDefinitionBoolean ("Bool 2"), 
@@ -226,7 +212,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsEntity, bool_package, "Equals (Entity == Entity?)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsEntity, bool_package, "Entity == Entity?", 
                      [
                              new VariableDefinitionEntity ("Entity 1"), 
                              new VariableDefinitionEntity ("Entity 2"), 
@@ -235,7 +221,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Larger, bool_package, "LargerThan (Number > Number?)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Larger, bool_package, "Number > Number?", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -244,7 +230,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Less, bool_package, "LessThan (Number < Number?)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Less, bool_package, "Number < Number?", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -291,6 +277,22 @@ package editor.trigger {
           
        // math basic ops
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Assign, math_package, "= (Number Assign)", 
+                     [
+                             new VariableDefinitionNumber ("Source"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Target"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Negative, math_package, "- x (Negative)", 
+                     [
+                             new VariableDefinitionNumber ("Number"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Add, math_package, "x + y", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
@@ -309,7 +311,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Multiply, math_package, "x * y", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Multiply, math_package, "x * y (Multiply)", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -318,7 +320,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Divide, math_package, "x / y", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Divide, math_package, "x / y (Divide)", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -327,20 +329,13 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Assign, math_package, "= (Number Assign)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Divide, math_package, "x % y (Modulo)", 
                      [
-                             new VariableDefinitionNumber ("Source"), 
+                             new VariableDefinitionNumber ("Number 1"), 
+                             new VariableDefinitionNumber ("Number 2"), 
                      ],
                      [
-                             new VariableDefinitionNumber ("Target"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Negative, math_package, "- x (Negative)", 
-                     [
-                             new VariableDefinitionNumber ("Number"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
+                             new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
          
@@ -534,9 +529,27 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Number"), 
                      ]
                   );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -> Minutes : Seconds", 
+                     [
+                             new VariableDefinitionNumber ("Milliseconds"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Minitues"), 
+                             new VariableDefinitionNumber ("Seconds"), 
+                             new VariableDefinitionNumber ("Milliseconds"), 
+                     ]
+                  );
          
      // math / more
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Inverse, math_package, "Inverse (1 / x)", 
+                     [
+                             new VariableDefinitionNumber ("Number"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Max, math_package, "Max", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
@@ -553,14 +566,6 @@ package editor.trigger {
                      ],
                      [
                              new VariableDefinitionNumber ("Result 1"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Inverse, math_package, "Inverse", 
-                     [
-                             new VariableDefinitionNumber ("Number"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
                      ]
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Abs, math_package, "Abs", 
@@ -650,6 +655,51 @@ package editor.trigger {
                      ]
                   );
          
+      // game / design
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds, design_package, "GetLevelRunningMilliseconds", 
+                     null,
+                     [
+                        new VariableDefinitionNumber ("Running Milliseconds"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps, design_package, "GetLevelSimulationSteps", 
+                     null,
+                     [
+                        new VariableDefinitionNumber ("Simulation Steps"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed, design_package, "IsLevelSuccessed", 
+                     null,
+                     [
+                        new VariableDefinitionBoolean ("Finshied?"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelSuccessed, design_package, "SetLevelSuccessed", 
+                     null,
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed, design_package, "IsLevelFailed", 
+                     null,
+                     [
+                        new VariableDefinitionBoolean ("Failed?"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelFailed, design_package, "SetLevelFailed", 
+                     null,
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished, design_package, "IsLevelUnfinished", 
+                     null,
+                     [
+                        new VariableDefinitionBoolean ("Failed?"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelUnfinished, design_package, "SetLevelUnfinished", 
+                     null,
+                     null
+                  );
+         
       // game / world
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_package, "SetGravityAcceleration_ByRadians", 
@@ -666,22 +716,68 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_AttachCameraToShape, world_package, "AttachCameraToShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector, world_package, "SetGravityAcceleration_ByVector", 
                      [
-                             new VariableDefinitionEntity ("The Shape"), 
+                             new VariableDefinitionNumber ("X"), 
+                             new VariableDefinitionNumber ("Y"), 
                      ],
                      null
                   );
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape, world_package, "FollowCameraWithShape", 
+                     [
+                             new VariableDefinitionEntity ("The Followed Shape"), 
+                             new VariableDefinitionBoolean ("Smooth Following?"), 
+                             //new VariableDefinitionBoolean ("Follow Rotation?"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape, world_package, "FollowCameraCenterXWithShape", 
+                     [
+                             new VariableDefinitionEntity ("The Followed Shape"), 
+                             new VariableDefinitionBoolean ("Smooth Following?"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape, world_package, "FollowCameraCenterYWithShape", 
+                     [
+                             new VariableDefinitionEntity ("The Followed Shape"), 
+                             new VariableDefinitionBoolean ("Smooth Following?"), 
+                     ],
+                     null
+                  );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape, world_package, "FollowCameraRotationWithShape", 
+         //            [
+         //                    new VariableDefinitionEntity ("The Followed Shape"), 
+         //                    new VariableDefinitionBoolean ("Smooth Following?"), 
+         //            ],
+         //            null
+         //         );
+         
      // game / collision category
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Cat_Assign, cat_package, "= (Assign CCat)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_Assign, cat_package, "= (Assign CCat)", 
                      [
-                             new VariableDefinitionCollisionCategory ("Source Collision Category"), 
+                             new VariableDefinitionCollisionCategory ("Collision Category"), 
                      ],
                      [
-                             new VariableDefinitionCollisionCategory ("Target Collision Category"), 
+                             new VariableDefinitionCollisionCategory ("Assign To"), 
                      ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally, cat_package, "SetCollisionCategoryCollideInternally", 
+                     [
+                             new VariableDefinitionCollisionCategory ("Collision Category"), 
+                             new VariableDefinitionBoolean ("Collide Internally?"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SetAsFriends, cat_package, "SetCollisionCategoriesAsFriends", 
+                     [
+                             new VariableDefinitionCollisionCategory ("Collision Category 1"), 
+                             new VariableDefinitionCollisionCategory ("Collision Category 2"), 
+                             new VariableDefinitionBoolean ("Friends?"), 
+                     ],
+                     null
                   );
          
      // game /entity
@@ -694,6 +790,50 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Terget Entity"), 
                      ]
                   );
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_package, "IsTaskSuccessed", 
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Successed?"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskSuccessed, entity_package, "SetTaskSuccessed", 
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed, entity_package, "IsTaskFailed", 
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Failed?"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskFailed, entity_package, "SetTaskFailed", 
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished, entity_package, "IsTaskUnfinished", 
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Unfinished?"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskUnfinished, entity_package, "SetTaskUnfinished", 
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     null
+                  );
+         
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity, entity_is_package, "IsShape", 
                      [
                              new VariableDefinitionEntity ("The Entity"), 
@@ -768,6 +908,22 @@ package editor.trigger {
          
       // game / entity / shape
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType, entity_shape_package, "Get C.I. Type", 
+                     [
+                             new VariableDefinitionEntity ("The Shape"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("CI Type"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType, entity_shape_package, "Set C.I. Type", 
+                     [
+                             new VariableDefinitionEntity ("The Shape"), 
+                             new VariableDefinitionNumber ("CI Type"), 
+                     ],
+                     null
+                  );
+         
           RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, entity_shape_package, "GetFilledColor", 
                      [
                              new VariableDefinitionEntity ("The Shape"), 
@@ -826,54 +982,42 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity, entity_shape_package, "GetDensity", 
-                     [
-                             new VariableDefinitionEntity ("The Shape"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Density"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, entity_shape_package, "SetDensity", 
-                     [
-                             new VariableDefinitionEntity ("The Shape"), 
-                             new VariableDefinitionNumber ("Density"), 
-                     ],
-                     null
-                  );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity, entity_shape_package, "GetDensity", 
+         //            [
+         //                    new VariableDefinitionEntity ("The Shape"), 
+         //            ],
+         //            [
+         //                    new VariableDefinitionNumber ("Density"), 
+         //            ]
+         //         );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, entity_shape_package, "SetDensity", 
+         //            [
+         //                    new VariableDefinitionEntity ("The Shape"), 
+         //                    new VariableDefinitionNumber ("Density"), 
+         //            ],
+         //            null
+         //         );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Attach, entity_shape_package, "GlueShapes", 
-                     [
-                             new VariableDefinitionEntity ("Shape 1"), 
-                             new VariableDefinitionEntity ("Shape 2"), 
-                     ],
-                     null
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_package, "DetachShape", 
-                     [
-                             new VariableDefinitionEntity ("The Shape to Be Detached"), 
-                     ],
-                     null
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Breakup, entity_shape_package, "BreakupGluedShapes", 
-                     [
-                             new VariableDefinitionEntity ("One Shape in Glueds"), 
-                     ],
-                     null
-                  );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Attach, entity_shape_package, "GlueShapes", 
+         //            [
+         //                    new VariableDefinitionEntity ("Shape 1"), 
+         //                    new VariableDefinitionEntity ("Shape 2"), 
+         //            ],
+         //            null
+         //         );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_package, "DetachShape", 
+         //            [
+         //                    new VariableDefinitionEntity ("The Shape to Be Detached"), 
+         //            ],
+         //            null
+         //         );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Breakup, entity_shape_package, "BreakupGluedShapes", 
+         //            [
+         //                    new VariableDefinitionEntity ("One Shape in Glueds"), 
+         //            ],
+         //            null
+         //         );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Teleport, entity_shape_package, "TeleportShape", 
-                     [
-                             new VariableDefinitionEntity ("The Shape"), 
-                             new VariableDefinitionNumber ("Target PositionX"), 
-                             new VariableDefinitionNumber ("Target PositionY"), 
-                             new VariableDefinitionNumber ("Target Rotation"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
-                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"), 
-                     ],
-                     null
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, entity_shape_package, "CloneShape", 
                      [
                              new VariableDefinitionEntity ("The Shape"), 
                              new VariableDefinitionNumber ("Target PositionX"), 
@@ -881,9 +1025,21 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Delta Rotation"), 
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"), 
                      ],
                      null
                   );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, entity_shape_package, "CloneShape", 
+         //            [
+         //                    new VariableDefinitionEntity ("The Shape"), 
+         //                    new VariableDefinitionNumber ("Target PositionX"), 
+         //                    new VariableDefinitionNumber ("Target PositionY"), 
+         //                    new VariableDefinitionNumber ("Delta Rotation"), 
+         //                    new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
+         //                    new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
+         //            ],
+         //            null
+         //         );
          
          
          

@@ -244,21 +244,6 @@ package player.entity {
          // to override
       }
       
-      override public function DestroyPhysicsProxy ():void
-      {
-         SaveJointStatus ();
-         
-         super.DestroyPhysicsProxy ();
-      }
-      
-      protected function SaveJointStatus ():void
-      {
-         mAnchor1.UpdatelLocalPosition ();
-         mAnchor2.UpdatelLocalPosition ();
-         
-         // to override
-      }
-      
 //=============================================================
 //   select connected shapes
 //=============================================================

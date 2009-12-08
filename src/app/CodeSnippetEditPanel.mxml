@@ -369,9 +369,9 @@
                title_box.setStyle ("backgroundColor", 0x7FCEFF);
                
                block_title = new Label ();
-               block_title.text = func_declaration.GetNumInputs () == 1 ? "Input Parameter" : "Input Parameters";
+               block_title.text = func_declaration.GetNumInputs () == 1 ? "Input Parameter: " : "Input Parameters: ";
                block_title.setStyle ("fontWeight", "bold");
-               block_title.setStyle ("textAlign", "center");
+               block_title.setStyle ("textAlign", "left");
                block_title.percentWidth = 100;
                
                title_box.addChild (block_title);
@@ -396,7 +396,7 @@
                //form_item.maxWidth = 266;
                form_item.horizontalScrollPolicy = "off";
                form_item.label = variable_def.GetName () + ":";
-               form_item.toolTip = "hi hi";
+               //form_item.toolTip = "hi hi";
                
                //form_item.addEventListener (MouseEvent.CLICK, OnParamLabelClick);
                source_form_items.push (form_item);
@@ -415,9 +415,9 @@
                title_box.setStyle ("backgroundColor", 0x7FCEFF);
                
                block_title = new Label ();
-               block_title.text = func_declaration.GetNumOutputs () == 1 ? "Output Parameter" : "Output Parameters";
+               block_title.text = func_declaration.GetNumOutputs () == 1 ? "Output Parameter: " : "Output Parameters: ";
                block_title.setStyle ("fontWeight", "bold");
-               block_title.setStyle ("textAlign", "center");
+               block_title.setStyle ("textAlign", "left");
                block_title.percentWidth = 100;
                
                title_box.addChild (block_title);
@@ -437,7 +437,7 @@
                //form_item.maxWidth = 490;
                form_item.horizontalScrollPolicy = "off";
                form_item.label = variable_def.GetName () + ":";
-               form_item.toolTip = "hi hi";
+               //form_item.toolTip = "hi hi";
                
                //form_item.addEventListener (MouseEvent.CLICK, OnParamLabelClick);
                target_form_items.push (form_item);

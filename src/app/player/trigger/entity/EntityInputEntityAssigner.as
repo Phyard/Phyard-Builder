@@ -316,7 +316,7 @@ package player.trigger.entity
       public function GetEntityListTaskStatus ():int
       {
          // todo
-         return ValueDefine.TaskStatus_Undetermined;
+         return ValueDefine.TaskStatus_Unfinished;
       }
       
    }

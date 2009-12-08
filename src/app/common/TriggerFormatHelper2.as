@@ -3,7 +3,7 @@ package common {
    
    import flash.utils.ByteArray;
    
-   import player.global.Global;
+   import player.design.Global;
    import player.world.World;
    import player.entity.Entity;
    import player.trigger.IPropertyOwner;
@@ -142,7 +142,7 @@ package common {
                   value_source = new ValueSource_Direct (playerWorld.GetEntityByCreationId (direct_source_define.mValueObject as int));
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_source = new ValueSource_Direct (direct_source_define.mValueObject as int);
+                  value_source = new ValueSource_Direct (playerWorld.GetCollisionCategoryById (direct_source_define.mValueObject as int));
                   break;
                default:
                   break;

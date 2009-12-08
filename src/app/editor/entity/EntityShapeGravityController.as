@@ -172,7 +172,7 @@ package editor.entity {
             }
          }
          
-         var direction:Number = mInitialGravityAngle * Math.PI / 180.0;;
+         var direction:Number = mInitialGravityAngle * Define.kDegrees2Radians;
          var acceleration:Number;
          var gx0:Number;
          var gy0:Number;

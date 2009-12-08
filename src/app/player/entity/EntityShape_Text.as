@@ -58,6 +58,7 @@ package player.entity {
          
          mText = text;
          
+         mNeedRebuildAppearanceObjects = true;
          DelayUpdateAppearance ();
       }
       

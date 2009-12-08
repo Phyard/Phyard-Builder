@@ -1,24 +1,19 @@
 package common
 {
+   import flash.geom.Point;
+   
    public class CoordinateSystem
    {
-      public function CoordinateSystem (originOffsetDisplayX:Number, originOffsetDisplayY:Number, displayToPhysicsScale:Number, rightHand:Boolean)
+      public static function GetDefaultCoordinateSystem ():CoordinateSystem
       {
-         mOffsetX_Display2Physics = originOffsetDisplayX;
-         mOffsetY_Display2Physics = originOffsetDisplayY;
-         
-         mLengthScale_Display2Physics = displayToPhysicsScale;
-         
-         mIsRightHand = rightHand;
-         
-      // more values
-         
-         mLengthScale_Physics2Display = 1.0 / displayToPhysicsScale;
+         return new CoordinateSystem (0.0, 0.0, 0.1, false);
       }
       
-      //=================================================================
-      //   
-      //=================================================================
+//=========================================================================
+//
+//=========================================================================
+      
+      private var mIsRightHand:Boolean = false;
 
       private var mLengthScale_Display2Physics:Number;
       private var mLengthScale_Physics2Display:Number;
@@ -35,36 +30,38 @@ package common
       private var mLengthScale_Display2Physics_4:Number;
       private var mLengthScale_Physics2Display_4:Number;
 
-      public function SetDisplay2PhysicsLengthScale (scale:Number):void
+//=========================================================================
+//
+//=========================================================================
+
+      public function CoordinateSystem (originOffsetDisplayX:Number, originOffsetDisplayY:Number, displayToPhysicsScale:Number, rightHand:Boolean)
       {
-         mLengthScale_Display2Physics = scale;
-         mLengthScale_Physics2Display = 1.0 / mLengthScale_Display2Physics;
+         mOffsetX_Display2Physics = originOffsetDisplayX;
+         mOffsetY_Display2Physics = originOffsetDisplayY;
          
-         mLengthScale_Display2Physics_2 = scale * scale;
+         mLengthScale_Display2Physics = displayToPhysicsScale;
+         
+         mIsRightHand = rightHand;
+         
+      // more values ...
+         
+         mLengthScale_Physics2Display = 1.0 / displayToPhysicsScale;
+         
+         mLengthScale_Display2Physics_2 = mLengthScale_Physics2Display * mLengthScale_Physics2Display;
          mLengthScale_Physics2Display_2 = 1.0 / mLengthScale_Display2Physics_2;
          
-         mLengthScale_Display2Physics_3 = scale * scale * scale;
+         mLengthScale_Display2Physics_3 = mLengthScale_Physics2Display * mLengthScale_Display2Physics_2;
          mLengthScale_Physics2Display_3 = 1.0 / mLengthScale_Display2Physics_3;
          
-         mLengthScale_Display2Physics_4 = scale * scale * scale * scale;
+         mLengthScale_Display2Physics_4 = mLengthScale_Physics2Display * mLengthScale_Display2Physics_2;
          mLengthScale_Physics2Display_4 = 1.0 / mLengthScale_Display2Physics_4;
       }
-
-      public function SetDisplay2PhysicsOffset (displayOffsetX:Number, displayOffsetY:Number):void
-      {
-         mOffsetX_Display2Physics = displayOffsetX;
-         mOffsetY_Display2Physics = displayOffsetY;
-      }
-
-      //=================================================================
-      //   
-      //=================================================================
-
+      
       public function CorrectRotation (rotation:Number):Number
       {
-         if (mRightHandCoordinates)
+         if (mIsRightHand)
          {
-            // todo
+            return Define.kPI_x_2 - rotation;
          }
          
          return rotation;
@@ -184,14 +181,14 @@ package common
 
       // for force, impulse
 
-      public function DisplayForce2PhysicsForce (dm:Number):Number
+      public function DisplayForce2PhysicsForce (df:Number):Number
       {
-         return dm * mLengthScale_Display2Physics_3;
+         return df * mLengthScale_Display2Physics_3;
       }
 
-      public function PhysicsForce2DisplayForce (pm:Number):Number
+      public function PhysicsForce2DisplayForce (pf:Number):Number
       {
-         return pm * mLengthScale_Display2Physics_3;
+         return pf * mLengthScale_Display2Physics_3;
       }
    }
 }

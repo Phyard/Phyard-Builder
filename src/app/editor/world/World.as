@@ -44,11 +44,15 @@ package editor.world {
    
    import editor.trigger.TriggerEngine;
    
+   import common.CoordinateSystem;
+   
    import common.Define;
    import common.ValueAdjuster;
    
    public class World extends EntityContainer 
    {
+      public var mCoordinateSystem:CoordinateSystem;
+      
       public var mBrothersManager:BrothersManager;
       
       public var mCollisionManager:CollisionManager;
@@ -65,6 +69,8 @@ package editor.world {
       public function World ()
       {
       //
+         mCoordinateSystem = CoordinateSystem.GetDefaultCoordinateSystem ();
+         
          mBrothersManager = new BrothersManager ();
          
          mCollisionManager = new CollisionManager ();

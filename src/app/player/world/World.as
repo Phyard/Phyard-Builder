@@ -64,6 +64,8 @@ package player.world {
    import player.mode.Mode;
    import player.mode.ModeMoveWorldScene;
    
+   import common.CoordinateSystem;
+   
    import common.trigger.CoreEventIds;
    import common.trigger.ValueDefine;
    
@@ -104,6 +106,10 @@ package player.world {
       private var mNumEntitiesInEditor:int;
       private var mEntityArrayOrderByCreationId:Array;
       private var mEntityArrayOrderByAppearanceId:Array;
+      
+   // ...
+      
+      private var mCoordinateSystem:CoordinateSystem;
       
 //==============================================================================
 // construct
@@ -149,7 +155,7 @@ package player.world {
          
          mNormalGravityAccelerationMagnitude = Define.DefaultGravityAccelerationMagnitude;
          
-         SetDisplay2PhysicsLengthScale (0.1);
+         mCoordinateSystem = CoordinateSystem.GetDefaultCoordinateSystem ();
          
          CreatePhysicsEngine ();
          

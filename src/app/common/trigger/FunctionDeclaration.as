@@ -43,7 +43,7 @@ package common.trigger
          if (valueType != ValueTypeDefine.ValueType_Number)
             return ValueTypeDefine.NumberTypeDetail_Double;
          
-         retyrn valueType & ValueTypeDefine.NumberTypeMask_Detail;
+         return valueType & ValueTypeDefine.NumberTypeMask_Detail;
       }
       
       public function GetInputNumberTypeUsage (inputId:int):int
@@ -52,7 +52,7 @@ package common.trigger
          if (valueType != ValueTypeDefine.ValueType_Number)
             return ValueTypeDefine.NumberTypeDetail_Double;
          
-         retyrn valueType & ValueTypeDefine.NumberTypeMask_Usage;
+         return valueType & ValueTypeDefine.NumberTypeMask_Usage;
       }
       
       public function GetNumOutputs ():int

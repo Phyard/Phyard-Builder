@@ -1,180 +1,117 @@
 
-//=================================================================
-//   
-//=================================================================
-
-private var mRightHandCoordinates:Boolean = false;
-
-private var mLengthScale_Display2Physics:Number;
-private var mLengthScale_Physics2Display:Number;
-
-private var mOffsetX_Display2Physics:Number = 0;
-private var mOffsetY_Display2Physics:Number = 0;
-
-private var mLengthScale_Display2Physics_2:Number;
-private var mLengthScale_Physics2Display_2:Number;
-
-private var mLengthScale_Display2Physics_3:Number;
-private var mLengthScale_Physics2Display_3:Number;
-
-private var mLengthScale_Display2Physics_4:Number;
-private var mLengthScale_Physics2Display_4:Number;
-
-public function SetDisplay2PhysicsLengthScale (scale:Number):void
-{
-   mLengthScale_Display2Physics = scale;
-   mLengthScale_Physics2Display = 1.0 / mLengthScale_Display2Physics;
-   
-   mLengthScale_Display2Physics_2 = scale * scale;
-   mLengthScale_Physics2Display_2 = 1.0 / mLengthScale_Display2Physics_2;
-   
-   mLengthScale_Display2Physics_3 = scale * scale * scale;
-   mLengthScale_Physics2Display_3 = 1.0 / mLengthScale_Display2Physics_3;
-   
-   mLengthScale_Display2Physics_4 = scale * scale * scale * scale;
-   mLengthScale_Physics2Display_4 = 1.0 / mLengthScale_Display2Physics_4;
-}
-
-public function SetDisplay2PhysicsOffset (displayOffsetX:Number, displayOffsetY:Number):void
-{
-   mOffsetX_Display2Physics = displayOffsetX;
-   mOffsetY_Display2Physics = displayOffsetY;
-}
-
-//=================================================================
-//   
-//=================================================================
-
 public function CorrectRotation (rotation:Number):Number
 {
-   if (mRightHandCoordinates)
-   {
-      // todo
-   }
-   
-   return rotation;
+   return mCoordinateSystem.CorrectRotation (rotation);
 }
 
 public function DisplayPosition2PhysicsPoint (dx:Number, dy:Number):Point
 {
-   return new Point (
-      (dx - mOffsetX_Display2Physics) * mLengthScale_Display2Physics,
-      (dy - mOffsetY_Display2Physics) * mLengthScale_Display2Physics
-      );
+   return mCoordinateSystem.DisplayPosition2PhysicsPoint (dx, dy);
 }
 
 public function PhysicsPosition2DisplayPoint  (px:Number, py:Number):Point
 {
-   return new Point (
-      px * mLengthScale_Physics2Display + mOffsetX_Display2Physics,
-      py * mLengthScale_Physics2Display + mOffsetY_Display2Physics
-      );
+   return mCoordinateSystem.PhysicsPosition2DisplayPoint (px, py);
 }
 
 public function DisplayVector2PhysicsVector (dvx:Number, dvy:Number):Point
 {
-   return new Point (
-      dvx * mLengthScale_Display2Physics,
-      dvy * mLengthScale_Display2Physics
-      );
+   return mCoordinateSystem.DisplayVector2PhysicsVector (dvx, dvy);
 }
 
 public function PhysicsVector2DisplayVector (pvx:Number, pvy:Number):Point
 {
-   return new Point (
-      pvx * mLengthScale_Physics2Display,
-      pvy * mLengthScale_Physics2Display
-      );
+   return mCoordinateSystem.PhysicsVector2DisplayVector (pvx, pvy);
 }
 
 public function DisplayX2PhysicsX (displayPositionX:Number):Number
 {
-   return (displayPositionX - mOffsetX_Display2Physics) * mLengthScale_Display2Physics;
+   return mCoordinateSystem.DisplayX2PhysicsX (displayPositionX);
 }
 
 public function DisplayY2PhysicsY (displayPositionY:Number):Number
 {
-   return (displayPositionY - mOffsetY_Display2Physics) * mLengthScale_Display2Physics;
+   return mCoordinateSystem.DisplayY2PhysicsY (displayPositionY);
 }
 
 public function PhysicsX2DisplayX (physicsPositionX:Number):Number
 {
-   return physicsPositionX * mLengthScale_Physics2Display + mOffsetX_Display2Physics;
+   return mCoordinateSystem.PhysicsX2DisplayX (physicsPositionX);
 }
 
 public function PhysicsY2DisplayY (physicsPositionY:Number):Number
 {
-   return physicsPositionY * mLengthScale_Physics2Display + mOffsetY_Display2Physics;
+   return mCoordinateSystem.PhysicsY2DisplayY (physicsPositionY);
 }
 
 // for length, speed, accaleration
 
 public function DisplayLength2PhysicsLength (dl:Number):Number
 {
-   return dl * mLengthScale_Display2Physics;
+   return mCoordinateSystem.DisplayLength2PhysicsLength (dl);
 }
 
 public function PhysicsLength2DisplayLength (pl:Number):Number
 {
-   return pl * mLengthScale_Physics2Display;
+   return mCoordinateSystem.PhysicsLength2DisplayLength (pl);
 }
 
 // for area
 
 public function DisplayArea2PhysicsArea (da:Number):Number
 {
-   return da * mLengthScale_Display2Physics_2;
+   return mCoordinateSystem.DisplayArea2PhysicsArea (da);
 }
 
 public function PhysicsArea2DisplayArea (pa:Number):Number
 {
-   return pa * mLengthScale_Physics2Display_2;
+   return mCoordinateSystem.PhysicsArea2DisplayArea (pa);
 }
 
 // for mass
 
 public function DisplayMass2PhysicsMass (dm:Number):Number
 {
-   return dm * mLengthScale_Display2Physics_2;
+   return mCoordinateSystem.DisplayMass2PhysicsMass (dm);
 }
 
 public function PhysicsMass2DisplayMass (pm:Number):Number
 {
-   return pm * mLengthScale_Physics2Display_2;
+   return mCoordinateSystem.PhysicsMass2DisplayMass (pm);
 }
 
 // for interia
 
 public function DisplayInteria2PhysicsInteria (di:Number):Number
 {
-   return di * mLengthScale_Display2Physics_4;
+   return mCoordinateSystem.DisplayInteria2PhysicsInteria (di);
 }
 
 public function PhysicsInteria2DisplayInteria (pi:Number):Number
 {
-   return pi * mLengthScale_Physics2Display_4;
+   return mCoordinateSystem.PhysicsInteria2DisplayInteria (pi);
 }
 
 // for torque
 
 public function DisplayTorque2PhysicsTorque (dt:Number):Number
 {
-   return dt * mLengthScale_Display2Physics_4;
+   return mCoordinateSystem.DisplayTorque2PhysicsTorque (dt);
 }
 
 public function PhysicsTorque2DisplayTorque (pt:Number):Number
 {
-   return pt * mLengthScale_Physics2Display_4;
+   return mCoordinateSystem.PhysicsTorque2DisplayTorque (pt);
 }
 
 // for force, impulse
 
-public function DisplayForce2PhysicsForce (dm:Number):Number
+public function DisplayForce2PhysicsForce (df:Number):Number
 {
-   return dm * mLengthScale_Display2Physics_3;
+   return mCoordinateSystem.DisplayForce2PhysicsForce (df);
 }
 
-public function PhysicsForce2DisplayForce (pm:Number):Number
+public function PhysicsForce2DisplayForce (pf:Number):Number
 {
-   return pm * mLengthScale_Display2Physics_3;
+   return mCoordinateSystem.PhysicsForce2DisplayForce (pf);
 }

@@ -1461,7 +1461,7 @@ package player.trigger {
          var targetY:Number =  valueSource.EvalateValueObject () as Number;
          
          valueSource = valueSource.mNextValueSourceInList;
-         var deltaRotation:int =  valueSource.EvalateValueObject () as Number;
+         var deltaRotation:Number =  valueSource.EvalateValueObject () as Number;
          
          valueSource = valueSource.mNextValueSourceInList;
          var bTeleportConnectedMovables:Boolean =  valueSource.EvalateValueObject () as Boolean;

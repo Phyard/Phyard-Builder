@@ -11,52 +11,92 @@
 
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_EnablePhysics" label="Enable Physics" click="OnUpdateComponents()"/>
+      <mx:VBox>
+         <mx:CheckBox id="CheckBox_EnablePhysics" label="Enable Physics" click="OnUpdateComponents()"/>
+         <mx:CheckBox id="CheckBox_IsSensor" label="Sensor" click="OnUpdateComponents()"/>
+      </mx:VBox>
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_IsStatic" label="Static"/>
+      <mx:VBox>
+         <mx:CheckBox id="CheckBox_IsStatic" label="Static"/>
+         <mx:CheckBox id="CheckBox_Hollow" label="Hollow"/>
+      </mx:VBox>
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_IsBullet" label="Bullet"/>
+      <mx:VBox>
+         <mx:CheckBox id="CheckBox_IsBullet" label="Bullet"/>
+         <mx:CheckBox id="CheckBox_BuildBorder" label="Build Border"/>
+      </mx:VBox>
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_IsSensor" label="Sensor" click="OnUpdateComponents()"/>
+      <mx:VBox>
+         <mx:CheckBox id="CheckBox_AllowSleeping" label="Allow Sleeping"/>
+         <mx:CheckBox id="CheckBox_FixRotation" label="Fix Rotation"/>
+      </mx:VBox>
       <mx:Spacer width="100%"/>
    </mx:HBox>
+
+   <mx:Spacer height="5" />
 
    <mx:HBox width="100%">
-      <mx:Spacer width="100%" />
-      <mx:CheckBox id="CheckBox_Hollow" label="Hollow"/>
-      <mx:Label text="(Currently, only for polygons with border thickness larger than 1.)" textAlign="left" color="#0000FF"/>
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_Denstiy" text="Density:" textAlign="right" width="30%"/>
-      <mx:HSlider id="Slider_Denstiy" focusEnabled="false" minimum="0" maximum="10" value="1" width="70%"
-          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="1"
-          labels="['0', '5.0', '10.0']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_Friction" text="Friction:" textAlign="right" width="30%"/>
-      <mx:HSlider id="Slider_Friction" focusEnabled="false" minimum="0" maximum="1" value="0.1" width="70%"
-          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
-          labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_Restitution" text="Restitution:" textAlign="right" width="30%"/>
-      <mx:HSlider id="Slider_Restitution" focusEnabled="false" minimum="0" maximum="1" value="0.2" width="70%"
-          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
-          labels="['0', '0.5', '1.0']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-
-   <mx:Spacer height="10" />
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_CollisionCategory" text="Collision Category:" textAlign="right" width="30%"/>
+      <mx:Spacer width="100%"/>
+      <mx:Label id="Label_CollisionCategory" text="Collision Category:" textAlign="right" />
       <mx:ComboBox id="SelectList_CollisionCategory" />
+      <mx:Spacer width="100%"/>
    </mx:HBox>
-   
+
+   <mx:Spacer height="5" />
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:VBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_AngularDamping" text="Angular Damping:" textAlign="right"/>
+            <mx:TextInput id="Text_AngularDamping" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_InitialAngularMagnitude" text="Angular Velocity:" textAlign="right"/>
+            <mx:TextInput id="Text_InitialAngularMagnitude" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_Friction" text="Friction:" textAlign="right"/>
+            <mx:TextInput id="Text_Friction" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_Restitution" text="Restitution:" textAlign="right"/>
+            <mx:TextInput id="Text_Restitution" text="" width="100"/>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
+      <mx:VBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_LinearDamping" text="Linear Damping:" textAlign="right"/>
+            <mx:TextInput id="Text_LinearDamping" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_InitialVelocityMagnitude" text="Linear Velocity Magnitude:" textAlign="right"/>
+            <mx:TextInput id="Text_InitialVelocityMagnitude" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_InitialVelocityAngle" text="Linear Velocity Angle:" textAlign="right"/>
+            <mx:TextInput id="Text_InitialVelocityAngle" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_InfinteMass" label="Infinite"/>
+            <mx:Label id="Label_Denstiy" text="Density:" textAlign="right"/>
+            <mx:TextInput id="Text_Density" text="" width="100"/>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
    <mx:Spacer height="10" />
-   
+
    <mx:Script>
       <![CDATA[       
          
@@ -70,28 +110,6 @@
          
          private function OnUpdateComponents ():void
          {
-            //if (mInputValues != null && mInputValues.mIsField)
-            //{
-            //   CheckBox_EnablePhysics.enabled = false;
-            //   
-            //   CheckBox_IsStatic.enabled = true;
-            //   CheckBox_IsBullet.enabled = false;
-            //   CheckBox_IsSensor.enabled = false;
-            //   
-            //   Label_Denstiy.enabled = false;
-            //   Label_Friction.enabled = false;
-            //   Label_Restitution.enabled = false;
-            //   
-            //   Slider_Denstiy.enabled = false;
-            //   Slider_Friction.enabled = false;
-            //   Slider_Restitution.enabled = false;
-            //   
-            //   Label_CollisionCategory.enabled = true;
-            //   SelectList_CollisionCategory.enabled = true;
-            //   
-            //   CheckBox_Hollow.enabled = false;
-            //}
-            //else 
             if (CheckBox_EnablePhysics.selected)
             {
                CheckBox_IsStatic.enabled = true;
@@ -102,9 +120,9 @@
                Label_Friction.enabled = true;
                Label_Restitution.enabled = true;
                
-               Slider_Denstiy.enabled = true;
-               Slider_Friction.enabled = true;
-               Slider_Restitution.enabled = true;
+               Text_Density.enabled = true;
+               Text_Friction.enabled = true;
+               Text_Restitution.enabled = true;
                
                Label_CollisionCategory.enabled = true;
                SelectList_CollisionCategory.enabled = true;
@@ -118,12 +136,12 @@
                CheckBox_IsSensor.enabled = false;
                
                Label_Denstiy.enabled = false;
-               Label_Friction.enabled = false;
+               Text_Friction.enabled = false;
                Label_Restitution.enabled = false;
                
-               Slider_Denstiy.enabled = false;
-               Slider_Friction.enabled = false;
-               Slider_Restitution.enabled = false;
+               Text_Density.enabled = false;
+               Text_Friction.enabled = false;
+               Text_Restitution.enabled = false;
                
                Label_CollisionCategory.enabled = false;
                SelectList_CollisionCategory.enabled = false;
@@ -135,13 +153,13 @@
             {
                if (CheckBox_IsSensor.selected)
                {
-                  Label_Denstiy.enabled = false;
+                  Label_Denstiy.enabled = true;
                   Label_Friction.enabled = false;
                   Label_Restitution.enabled = false;
                   
-                  Slider_Denstiy.enabled = true;
-                  Slider_Friction.enabled = false;
-                  Slider_Restitution.enabled = false;
+                  Text_Density.enabled = true;
+                  Text_Friction.enabled = false;
+                  Text_Restitution.enabled = false;
                }
                else
                {
@@ -149,9 +167,9 @@
                   Label_Friction.enabled = true;
                   Label_Restitution.enabled = true;
                   
-                  Slider_Denstiy.enabled = true;
-                  Slider_Friction.enabled = true;
-                  Slider_Restitution.enabled = true;
+                  Text_Density.enabled = true;
+                  Text_Friction.enabled = true;
+                  Text_Restitution.enabled = true;
                }
             }
          }
@@ -166,9 +184,9 @@
             CheckBox_IsSensor.selected = inputValues.mIsSensor;
             CheckBox_Hollow.selected = inputValues.mIsHollow;
             
-            Slider_Denstiy.value = inputValues.mDensity;
-            Slider_Friction.value = inputValues.mFriction;
-            Slider_Restitution.value = inputValues.mRestitution;
+            Text_Density.text = inputValues.mDensity;
+            Text_Friction.text = inputValues.mFriction;
+            Text_Restitution.text = inputValues.mRestitution;
             
             SelectList_CollisionCategory.dataProvider = mInputValues.mCollisionCategoryListDataProvider;
             SelectList_CollisionCategory.selectedIndex = mInputValues.mCollisionCategoryListSelectedIndex;
@@ -184,9 +202,17 @@
             returnValues.mIsSensor = CheckBox_IsSensor.selected;
             returnValues.mIsHollow = CheckBox_Hollow.selected;
             
-            returnValues.mDensity = Slider_Denstiy.value;
-            returnValues.mFriction = Slider_Friction.value;
-            returnValues.mRestitution = Slider_Restitution.value;
+            var density:Number = parseFloat (Text_Density.text);
+            if ( ! isNaN (density) )
+               returnValues.mDensity = density;
+            
+            var friction:Number = parseFloat (Text_Friction.text);
+            if ( ! isNaN (friction) )
+               returnValues.mFriction = friction;
+            
+            var restitution:Number = parseFloat (Text_Restitution.text);
+            if ( ! isNaN (restitution) )
+               returnValues.mRestitution = restitution;
             
             returnValues.mCollisionCategoryIndex = SelectList_CollisionCategory.selectedItem.mCategoryIndex;
          }

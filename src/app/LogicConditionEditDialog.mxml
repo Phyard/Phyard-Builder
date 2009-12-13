@@ -4,9 +4,9 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Condition Setting" width="550">
+    title="Condition Setting" width="600">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Label text="Condition Name:" textAlign="right" />
       <mx:TextInput id="TextInput_Name" width="300"/>
@@ -15,7 +15,7 @@
 
    <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>

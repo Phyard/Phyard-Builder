@@ -765,11 +765,11 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:ShapeTextSettingDialog = new ShapeTextSettingDialog ();
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowShapeGravityControllerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
@@ -777,11 +777,11 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:ShapeGravityControllerSettingDialog = new ShapeGravityControllerSettingDialog ();
-               PopUpManager.addPopUp (settingDialog, MainView, true);
-               PopUpManager.centerPopUp (settingDialog);
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
             }
             
             private function ShowHingeSettingDialog (initialValues:Object, onConfirmFunc:Function):void

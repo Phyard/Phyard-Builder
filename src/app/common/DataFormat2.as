@@ -442,6 +442,13 @@ package common {
             entityDefine.mRotation = byteArray.readFloat ();
             entityDefine.mIsVisible = byteArray.readByte ();
             
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               entityDefine.mAlpha = byteArray.readFloat ();
+               entityDefine.mIsActive = byteArray.readByte ();
+               entityDefine.mIsEnabled = byteArray.readByte ();
+            }
+            
             if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
             {
                if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
@@ -517,6 +524,18 @@ package common {
                         // ...
                         entityDefine.mIsHollow = byteArray.readByte ();
                      }
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mBuildBorder = byteArray.readByte ();
+                        entityDefine.mLinearVelocityMagnitude = byteArray.readFloat ();
+                        entityDefine.mLinearVelocityAngle = byteArray.readFloat ();
+                        entityDefine.mAngularVelocity = byteArray.readFloat ();
+                        entityDefine.mLinearDamping = byteArray.readFloat ();
+                        entityDefine.mAngularDamping = byteArray.readFloat ();
+                        entityDefine.mIsSleepingAllowed = byteArray.readByte ();
+                        entityDefine.mIsRotationFixed = byteArray.readByte ();
+                     }
                   }
                   
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
@@ -591,6 +610,11 @@ package common {
             {
                entityDefine.mCollideConnected = byteArray.readByte ();
                
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  entityDefine.mBreakable = byteArray.readByte ();
+               }
+               
                if (worldDefine.mVersion >= 0x0104)
                {
                   entityDefine.mConnectedShape1Index = byteArray.readShort ();
@@ -639,6 +663,11 @@ package common {
                {
                   entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
                   entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mBreakDeltaLength = byteArray.readFloat ();
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
                {
@@ -650,6 +679,13 @@ package common {
                   entityDefine.mSpringType = byteArray.readByte ();
                   
                   entityDefine.mDampingRatio = byteArray.readFloat ();
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mFrequencyDeterminedManner = byteArray.readByte ();
+                     entityDefine.mFrequency = byteArray.readFloat ();
+                     entityDefine.mBreakExtendedLength = byteArray.readFloat ();
+                  }
                }
             }
             
@@ -1022,6 +1058,13 @@ package common {
          element.@r = entityDefine.mRotation;
          element.@visible = entityDefine.mIsVisible ? 1 : 0;
          
+         if (worldDefine.mVersion >= 0x0108)
+         {
+            element.@alpha = entityDefine.mAlpha;
+            element.@active = entityDefine.mIsActive ? 1 : 0;
+            element.@enabled = entityDefine.mIsEnabled ? 1 : 0;
+         }
+         
          if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
          {
             if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
@@ -1103,7 +1146,7 @@ package common {
             if (worldDefine.mVersion >= 0x0105)
             {
                if (worldDefine.mVersion >= 0x0107)
-                  element.@border_opacity = entityDefine.mTransparency;
+                  element.@border_opacity = entityDefine.mBorderTransparency;
                else
                   element.@border_transparency = entityDefine.mBorderTransparency;
             }
@@ -1142,6 +1185,19 @@ package common {
                   if (worldDefine.mVersion >= 0x0105)
                   {
                      element.@is_hollow = entityDefine.mIsHollow ? 1 : 0;
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     element.@build_border = entityDefine.mBuildBorder ? 1 : 0;
+                     
+                     element.@linear_velocity_magnitude = entityDefine.mLinearVelocityMagnitude;
+                     element.@linear_velocity_angle = entityDefine.mLinearVelocityAngle;
+                     element.@angular_velocity = entityDefine.mAngularVelocity;
+                     element.@linear_damping = entityDefine.mLinearDamping;
+                     element.@angular_damping = entityDefine.mAngularDamping;
+                     element.@sleeping_allowed = entityDefine.mIsSleepingAllowed;
+                     element.@rotation_fixed = entityDefine.mIsRotationFixed;
                   }
                }
                
@@ -1217,6 +1273,11 @@ package common {
          {
             element.@collide_connected = entityDefine.mCollideConnected ? 1 : 0;
             
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               element.@breakable = entityDefine.mBreakable ? 1 : 0;
+            }
+            
             if (worldDefine.mVersion >= 0x0102)
             {
                element.@connected_shape1_index = entityDefine.mConnectedShape1Index;
@@ -1256,6 +1317,11 @@ package common {
             {
                element.@anchor1_index = entityDefine.mAnchor1EntityIndex;
                element.@anchor2_index = entityDefine.mAnchor2EntityIndex;
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  element.@break_delta_length = entityDefine.mBreakDeltaLength;
+               }
             }
             else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
             {
@@ -1267,6 +1333,13 @@ package common {
                element.@spring_type = entityDefine.mSpringType;
                
                element.@damping_ratio = entityDefine.mDampingRatio;
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  element.@frequency_determined_manner = entityDefine.mFrequencyDeterminedManner;
+                  element.@frequency = entityDefine.mFrequency;
+                  element.@break_extended_length = entityDefine.mBreakExtendedLength;
+               }
             }
          }
          
@@ -1298,6 +1371,7 @@ package common {
       
       // adjust some float numbers
       
+      // must call FillMissedFieldsInWorldDefine before call this
       public static function AdjustNumberValuesInWorldDefine (worldDefine:WorldDefine, isForPlayer:Boolean = false):void
       {
          // collision category
@@ -1329,6 +1403,8 @@ package common {
             entityDefine.mPosY = ValueAdjuster.Number2Precision (entityDefine.mPosY, 12);
             entityDefine.mRotation = ValueAdjuster.Number2Precision (entityDefine.mRotation, 6);
             
+            entityDefine.mAlpha = ValueAdjuster.Number2Precision (entityDefine.mAlpha, 6);
+            
             if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
                if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
@@ -1338,6 +1414,12 @@ package common {
                      entityDefine.mDensity = ValueAdjuster.Number2Precision (entityDefine.mDensity, 6);
                      entityDefine.mFriction = ValueAdjuster.Number2Precision (entityDefine.mFriction, 6);
                      entityDefine.mRestitution = ValueAdjuster.Number2Precision (entityDefine.mRestitution, 6);
+                     
+                     entityDefine.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityMagnitude, 6);
+                     entityDefine.mLinearVelocityAngle = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityAngle, 6);
+                     entityDefine.mAngularVelocity = ValueAdjuster.Number2Precision (entityDefine.mAngularVelocity, 6);
+                     entityDefine.mLinearDamping = ValueAdjuster.Number2Precision (entityDefine.mLinearDamping, 6);
+                     entityDefine.mAngularDamping = ValueAdjuster.Number2Precision (entityDefine.mAngularDamping, 6);
                   }
                   
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
@@ -1345,7 +1427,7 @@ package common {
                      entityDefine.mRadius = ValueAdjuster.Number2Precision (entityDefine.mRadius, 6);
                      
                      if (isForPlayer)
-                        entityDefine.mRadius = ValueAdjuster.AdjustCircleRadius (entityDefine.mRadius, worldDefine.mVersion);
+                        entityDefine.mRadius = ValueAdjuster.AdjustCircleDisplayRadius (entityDefine.mRadius, worldDefine.mVersion);
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
@@ -1380,6 +1462,11 @@ package common {
                   {
                      entityDefine.mRadius = ValueAdjuster.Number2Precision (entityDefine.mRadius, 6);
                      
+                     if (worldDefine.mVersion < 0x0108)
+                     {
+                        entityDefine.mInitialGravityAcceleration = Define.kDefaultCoordinateSystem.PhysicsAccaleration2DisplayAccaleration (entityDefine.mInitialGravityAcceleration);
+                     }
+                     
                      entityDefine.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (entityDefine.mInitialGravityAcceleration, 6);
                   }
                }
@@ -1392,6 +1479,11 @@ package common {
                   entityDefine.mUpperAngle = ValueAdjuster.Number2Precision (entityDefine.mUpperAngle, 6);
                   entityDefine.mMotorSpeed = ValueAdjuster.Number2Precision (entityDefine.mMotorSpeed, 6);
                   
+                  if (worldDefine.mVersion < 0x0108)
+                  {
+                     entityDefine.mMaxMotorTorque = Define.kDefaultCoordinateSystem.PhysicsTorque2DisplayTorque (entityDefine.mMaxMotorTorque);
+                  }
+                  
                   entityDefine.mMaxMotorTorque = ValueAdjuster.Number2Precision (entityDefine.mMaxMotorTorque, 6);
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
@@ -1400,16 +1492,25 @@ package common {
                   entityDefine.mUpperTranslation = ValueAdjuster.Number2Precision (entityDefine.mUpperTranslation, 6);
                   entityDefine.mMotorSpeed = ValueAdjuster.Number2Precision (entityDefine.mMotorSpeed, 6);
                   
+                  if (worldDefine.mVersion < 0x0108)
+                  {
+                     entityDefine.mMaxMotorForce = Define.kDefaultCoordinateSystem.PhysicsForce2DisplayForce (entityDefine.mMaxMotorForce);
+                  }
+                  
                   entityDefine.mMaxMotorForce = ValueAdjuster.Number2Precision (entityDefine.mMaxMotorForce, 6);
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
                {
+                  entityDefine.mBreakDeltaLength = ValueAdjuster.Number2Precision (entityDefine.mBreakDeltaLength, 6);
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
                {
                   entityDefine.mStaticLengthRatio = ValueAdjuster.Number2Precision (entityDefine.mStaticLengthRatio, 6);
                   
                   entityDefine.mDampingRatio = ValueAdjuster.Number2Precision (entityDefine.mDampingRatio, 6);
+                  
+                  entityDefine.mFrequency = ValueAdjuster.Number2Precision (entityDefine.mFrequency, 6);
+                  entityDefine.mBreakExtendedLength = ValueAdjuster.Number2Precision (entityDefine.mBreakExtendedLength, 6);
                }
             }
          }
@@ -1474,6 +1575,13 @@ package common {
          {
             var entityDefine:Object = worldDefine.mEntityDefines [createId];
             
+            if (worldDefine.mVersion < 0x0108)
+            {
+               entityDefine.mAlpha = 1.0;
+               entityDefine.mIsActive = true;
+               entityDefine.mIsEnabled = true;
+            }
+            
             if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
                if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
@@ -1519,9 +1627,26 @@ package common {
                   entityDefine.mBorderTransparency = entityDefine.mTransparency;
                   entityDefine.mIsHollow = false;
                }
+               
+               if (worldDefine.mVersion < 0x0108)
+               {
+                  entityDefine.mBuildBorder = true;
+                  entityDefine.mLinearVelocityMagnitude = 0.0;
+                  entityDefine.mLinearVelocityAngle = 0.0;
+                  entityDefine.mAngularVelocity = 0.0;
+                  entityDefine. mLinearDamping = 0.0;
+                  entityDefine.mAngularDamping = 0.0;
+                  entityDefine.mIsSleepingAllowed = true;
+                  entityDefine.mIsRotationFixed = false;
+               }
             }
             else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
             {
+               if (worldDefine.mVersion < 0x0108)
+               {
+                  entityDefine.mBreakable = false;
+               }
+               
                if (entityDefine.mEntityType == Define.EntityType_JointHinge)
                {
                   if (worldDefine.mVersion < 0x0104)
@@ -1537,9 +1662,19 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
                {
+                  if (worldDefine.mVersion < 0x0108)
+                  {
+                     entityDefine.mBreakDeltaLength = 0.0;
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
                {
+                  if (worldDefine.mVersion < 0x0108)
+                  {
+                     entityDefine.mFrequencyDeterminedManner = Define.SpringFrequencyDetermineManner_Preset;
+                     entityDefine.mFrequency = 0.0;
+                     entityDefine.mBreakExtendedLength = 0.0;
+                  }
                }
                
                if (worldDefine.mVersion < 0x0102)

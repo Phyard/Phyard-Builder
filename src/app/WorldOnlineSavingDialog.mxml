@@ -4,7 +4,7 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
-    title="Save World Online" width="500" creationComplete="OnInitPanel()">
+    title="Save World Online" width="600" creationComplete="OnInitPanel()">
 
    <mx:Spacer height="5"/>
    
@@ -22,7 +22,7 @@
 
   <mx:Spacer height="10"/>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button id="Button_Save" label="Save" click="OnClickSaveButton ();"/>
       <mx:Spacer width="30"/>

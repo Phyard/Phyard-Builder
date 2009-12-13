@@ -164,26 +164,66 @@ package player.entity {
             }
             else
             {
-               var proxyBody:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
-               mPositionX = proxyBody.GetPositionX ();
-               mPositionY = proxyBody.GetPositionY ();
-               mRotation  = proxyBody.GetRotation ();
+               mPositionX = mPhysicsProxyBody.GetPositionX ();
+               mPositionY = mPhysicsProxyBody.GetPositionY ();
+               mRotation  = mPhysicsProxyBody.GetRotation ();
                
-               if (mLastRotation != mRotation)
-               {
-                  mLastRotation = mRotation;
-                  mCosRotation = Math.cos (mRotation);
-                  mSinRotation = Math.sin (mRotation);
-               }
+               UpdateSinCos ();
             }
          }
       }
       
-      internal function SynchronizePositionAndRotationOfPhysicsProxy ():void
+      internal function UpdateSinCos ():void
       {
+         if (mRotation != mLastRotation)
+         {
+            mLastRotation = mRotation;
+            
+            mCosRotation = Math.cos (mRotation);
+            mSinRotation = Math.sin (mRotation);
+         }
+      }
+      
+      internal function SynchronizePositionAndRotationToPhysicsProxy ():void
+      {
+         UpdateSinCos ();
+         
          if (mPhysicsProxy != null)
          {
-            (mPhysicsProxy as PhysicsProxyBody).SetPositionAndRotation (mPositionX, mPositionY, mRotation);
+            mPhysicsProxyBody.SetPositionAndRotation (mPositionX, mPositionY, mRotation);
+         }
+      }
+      
+//=============================================================
+//   velocity
+//=============================================================
+      
+      // for judging if this condition is evaluated already in current step.
+      private var mLastVelocityUpdatedStep:int = -1;
+      
+      internal var mLinearVelocityX:Number = 0.0;
+      internal var mLinearVelocityY:Number = 0.0;
+      internal var mAngularVelocity:Number = 0.0;
+      
+      internal function SynchronizeVelocityWithPhysicsProxy ():void
+      {
+         var worldSimulateSteps:int = mWorld.GetSimulatedSteps ();
+         if (mLastVelocityUpdatedStep < worldSimulateSteps)
+         {
+            mLastVelocityUpdatedStep = worldSimulateSteps;
+            
+            if (mPhysicsProxy == null)
+            {
+               mLinearVelocityX = 0.0;
+               mLinearVelocityY = 0.0;
+               mAngularVelocity = 0.0;
+            }
+            else
+            {
+               mLinearVelocityX = mPhysicsProxyBody.GetLinearVelocityX ();
+               mLinearVelocityY = mPhysicsProxyBody.GetLinearVelocityY ();
+               mAngularVelocity = mPhysicsProxyBody.GetAngularVelocity ();
+            }
          }
       }
       
@@ -191,17 +231,17 @@ package player.entity {
 //   physics proxy
 //=============================================================
       
+      protected var mPhysicsProxyBody:PhysicsProxyBody = null;
+      
       internal function TracePhysicsInfo ():void
       {
          if (mPhysicsProxy == null)
             return;
          
-         var proxyBody:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
-         
          //trace ("--------------------- body info");
-         //trace ("rotation: " + proxyBody.GetRotation () * Define.kRadians2Degrees);
-         //trace ("vx: " + proxyBody.GetLinearVelocityX ());
-         //trace ("vy: " + proxyBody.GetLinearVelocityY ());
+         //trace ("rotation: " + mPhysicsProxyBody.GetRotation () * Define.kRadians2Degrees);
+         //trace ("vx: " + mPhysicsProxyBody.GetLinearVelocityX ());
+         //trace ("vy: " + mPhysicsProxyBody.GetLinearVelocityY ());
       }
       
       public function IsPhysicsBuilt ():Boolean
@@ -220,6 +260,8 @@ package player.entity {
             shape = shape.mNextShapeInBody;
          }
          
+         mPhysicsProxyBody = null;
+         
          super.DestroyPhysicsProxy ();
       }
       
@@ -228,10 +270,9 @@ package player.entity {
          if (mPhysicsProxy != null)
             return;
          
-         var proxyBody:PhysicsProxyBody;
-         mPhysicsProxy = proxyBody = new PhysicsProxyBody (mWorld.GetPhysicsEngine (), this);
-         //proxyBody.SetUserData (this);
-         proxyBody.SetAutoUpdateMass (false);
+         mPhysicsProxy = mPhysicsProxyBody = new PhysicsProxyBody (mWorld.GetPhysicsEngine (), this);
+         //mPhysicsProxyBody.SetUserData (this);
+         mPhysicsProxyBody.SetAutoUpdateMass (false);
       }
       
       public function UpdateBodyPhysicsProperties ():void
@@ -252,7 +293,7 @@ package player.entity {
                is_static = true;
             if (shape.IsBullet ())
                is_bullet = true;
-            if (! shape.IsAllowSleeping ())
+            if (! shape.IsSleepingAllowed ())
                allow_sleeping = false;
             if (shape.IsRotationFixed ())
                fix_rotation = true;
@@ -260,13 +301,11 @@ package player.entity {
             shape = shape.mNextPhysicsShapeInBody;
          }
          
-         var proxyBody:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
-         
-         proxyBody.SetStatic (is_static);
-         proxyBody.SetAsBullet (is_bullet);
-         proxyBody.SetAllowSleeping (allow_sleeping);
-         proxyBody.SetFixRotation (fix_rotation);
-         proxyBody.ResetMass ();
+         mPhysicsProxyBody.SetStatic (is_static);
+         mPhysicsProxyBody.SetAsBullet (is_bullet);
+         mPhysicsProxyBody.SetAllowSleeping (allow_sleeping);
+         mPhysicsProxyBody.SetFixRotation (fix_rotation);
+         mPhysicsProxyBody.ResetMass ();
       }
       
       public function UpdateMass ():void
@@ -274,7 +313,7 @@ package player.entity {
          if (mPhysicsProxy == null)
             return;
          
-         (mPhysicsProxy as PhysicsProxyBody).ResetMass ();
+         mPhysicsProxyBody.ResetMass ();
       }
       
       public function CoincideWithCentroid ():void
@@ -282,11 +321,9 @@ package player.entity {
          if (mPhysicsProxy == null)
             return;
          
-         var proxyBody:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
-         
-         proxyBody.CoincideWithCentroid ();
-         var newX:Number = proxyBody.GetPositionX ();
-         var newY:Number = proxyBody.GetPositionY ();
+         mPhysicsProxyBody.CoincideWithCentroid ();
+         var newX:Number = mPhysicsProxyBody.GetPositionX ();
+         var newY:Number = mPhysicsProxyBody.GetPositionY ();
          var dx:Number = mPositionX - newX
          var dy:Number = mPositionY - newY;
          var abs_dx:Number = Math.abs (dx);
@@ -312,12 +349,10 @@ package player.entity {
       
       public function IsStatic ():Boolean
       {
-         var proxyBody:PhysicsProxyBody = mPhysicsProxy as PhysicsProxyBody;
-
-         if (proxyBody == null)
+         if (mPhysicsProxy == null)
             return true;
          
-         return proxyBody.IsStatic ();
+         return mPhysicsProxyBody.IsStatic ();
       }
       
    }

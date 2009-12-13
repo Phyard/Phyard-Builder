@@ -29,14 +29,14 @@ package editor.world {
       {
       }
       
-      override public function GetWorldHints ():Object
-      {
-         var world_hints:Object = new Object ();
-         world_hints.mPhysicsShapesPotentialMaxCount = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (256);
-         world_hints.mPhysicsShapesPopulationDensityLevel = ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel (8);
-         
-         return world_hints;
-      }
+      //override public function GetWorldHints ():Object
+      //{
+      //   var world_hints:Object = new Object ();
+      //   world_hints.mPhysicsShapesPotentialMaxCount = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (256);
+      //   world_hints.mPhysicsShapesPopulationDensityLevel = ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel (8);
+      //   
+      //   return world_hints;
+      //}
       
       public function GetNumCollisionCategories ():int
       {

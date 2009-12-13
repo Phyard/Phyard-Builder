@@ -9,50 +9,6 @@ package common {
 // 
 //===========================================================================
       
-      // only for player
-      public static function AdjustPhysicsShapesPotentialMaxCount (count:uint, keepZero:Boolean = false):uint
-      {
-         if (count == 0 && keepZero)
-            return 0;
-         
-         if (count <= 256)
-            return 256;
-         
-         if (count <= 512)
-            return 512;
-         
-         if (count <= 1024)
-            return 1024;
-         
-         if (count <= 2048)
-            return 2048;
-         
-         if (count <= 2048)
-            return 2048;
-         
-         return 4096;
-      }
-      
-      public static function AdjustPhysicsShapesPopulationDensityLevel (level:uint, keepZero:Boolean = false):uint
-      {
-         if (level == 0 && keepZero)
-            return 0;
-         
-         if (level <= 1)
-            return 1;
-         
-         if (level <= 2)
-            return 2;
-         
-         if (level <= 4)
-            return 4;
-         
-         if (level <= 8)
-            return 8;
-         
-         return 16;
-      }
-      
 //===========================================================================
 // 
 //===========================================================================
@@ -61,7 +17,6 @@ package common {
       //public static const 
       
       // for other float values, 7 precisions digits, writefloat in bytearray
-      
       
 //===========================================================================
 // number precision
@@ -82,15 +37,15 @@ package common {
 //===========================================================================
       
       // for both editor and player
-      public static function AdjustCircleRadius (radius:Number, version:int):Number
+      public static function AdjustCircleDisplayRadius (displayRadius:Number, version:int):Number
       {
          if ( version >= 0x0102)
          {
-            return Math.round (radius);
+            return Math.round (displayRadius);
          }
          else
          {
-            return radius;
+            return displayRadius;
          }
       }
       

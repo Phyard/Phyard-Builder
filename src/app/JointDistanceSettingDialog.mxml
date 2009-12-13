@@ -3,30 +3,53 @@
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
 
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Distance Joint Setting" width="500">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    title="Distance Joint Setting" width="600">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:VBox label="Joint" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_ConnectedShape1" text="Shape 1:" textAlign="right" width="25%"/>
-      <mx:ComboBox id="SelectList_ConnectedShape1" rowCount="10" width="10%" />
-      <mx:Spacer width="20"/>
-      <mx:Label id="Label_ConnectedShape2" text="Shape 2:" textAlign="right" width="25%"/>
-      <mx:ComboBox id="SelectList_ConnectedShape2" rowCount="10" width="10%" />
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
-   
-   <mx:Spacer height="20"/>
+         <mx:HBox width="100%">
+            <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
+         </mx:HBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+         <mx:Spacer height="6"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="6"/>
+
+         <mx:HBox width="100%">
+            <mx:HBox width="36%">
+               <mx:Spacer width="100%"/>
+               <mx:CheckBox id="CheckBox_Breakable" label="Breakable"/>
+            </mx:HBox>
+            <mx:HBox width="6%">
+            </mx:HBox>
+            <mx:HBox>
+               <mx:Label id="Label_BreakDeltaLength" text="Break Delta Length:" textAlign="right"/>
+               <mx:TextInput id="Text_BreakDeltaLength" text="" width="100"/>
+            </mx:HBox>
+         </mx:HBox>
+      
+      </mx:VBox>
+      
+      <mx:VBox label="Anchor" borderStyle="solid" height="100%" width="100%"
+                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+                horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+   </mx:TabNavigator>
+
+
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
@@ -46,20 +69,18 @@
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          
-         public function SetValues (values:Object):void
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
          {
-            CheckBox_IsVisible.selected = values.mIsVisible;
-            CheckBox_IsVisible.enabled = true;
-            CheckBox_CollideConnected.selected = values.mCollideConnected;
+            mParams = initialValues;
             
-            //
-            SelectList_ConnectedShape1.dataProvider = values.mShapeListDataProvider;
-            SelectList_ConnectedShape2.dataProvider = values.mShapeListDataProvider;
-            SelectList_ConnectedShape1.selectedIndex = values.mShapeList1SelectedIndex;
-            SelectList_ConnectedShape2.selectedIndex = values.mShapeList2SelectedIndex;
-            
-            SelectList_ConnectedShape1.enabled = values.mAnchorIndex == 0;
-            SelectList_ConnectedShape2.enabled = values.mAnchorIndex == 1;
+            CommonSettingPanel.SetValues (initialValues);
+         }
+         
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            BasicSettingPanel.SetValues (mParams);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -74,24 +95,20 @@
          
          private function OnClickOkButton():void 
          {
-             var params:Object = new Object ();
+             CommonSettingPanel.GetValues (mParams);
              
-             params.mIsVisible = CheckBox_IsVisible.selected;
-             params.mCollideConnected = CheckBox_CollideConnected.selected;
-             
-             //
-             params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.mEntityIndex;
-             params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.mEntityIndex;
-             
-             //
-             
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+            
              PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose ();
              
              if (OnConfirm != null)
-               OnConfirm (params);
+               OnConfirm (mParams);
          }
          
          private function OnClickCancelButton():void 

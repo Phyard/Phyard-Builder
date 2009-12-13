@@ -10,16 +10,21 @@
       >
 
    <mx:HBox width="100%">
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_PosX" text="    X:" textAlign="right" width="50"/>
-      <mx:TextInput id="Text_PosX" text="" width="80"/>
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_PosY" text="     Y:" textAlign="right" width="50"/>
-      <mx:TextInput id="Text_PosY" text="" width="80"/>
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_Angle" text="Angle:" textAlign="right" width="50"/>
-      <mx:TextInput id="Text_Angle" text="" width="80"/>
-      <mx:Spacer width="100%"/>
+      <mx:HBox width="44%">
+         <mx:Spacer width="100%"/>
+         <mx:Label id="Label_PosX" text="    X:" textAlign="right"/>
+         <mx:TextInput id="Text_PosX" text="" width="100"/>
+         <mx:Spacer width="100%"/>
+         <mx:Label id="Label_PosY" text="     Y:" textAlign="right"/>
+      </mx:HBox>
+
+      <mx:HBox width="56%">
+         <mx:TextInput id="Text_PosY" text="" width="100"/>
+         <mx:Spacer width="100%"/>
+         <mx:Label id="Label_Angle" text="Angle:" textAlign="right" />
+         <mx:TextInput id="Text_Angle" text="" width="100"/>
+         <mx:Spacer width="100%"/>
+      </mx:HBox>
    </mx:HBox>
    
    <mx:Script>

@@ -4,16 +4,16 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Event Handler Setting" width="550">
+    title="Event Handler Setting" width="600">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Label text="Event Handler:" textAlign="right" />
       <mx:Label id="Lavel_EventHandlerName" text=""/>
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_Enabled" label="Enabled Initially"/>
       <mx:Spacer width="100%"/>
@@ -21,7 +21,7 @@
 
    <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>

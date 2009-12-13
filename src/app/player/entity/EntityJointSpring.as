@@ -42,6 +42,15 @@ package player.entity {
                SetStaticLengthRatio (entityDefine.mStaticLengthRatio);
             if (entityDefine.mDampingRatio != undefined)
                SetDampingRatio (entityDefine.mDampingRatio);
+            
+            //>>from v1.08
+            if (entityDefine.mFrequencyDeterminedManner != undefined)
+               SetFrequencyDeterminedManner (entityDefine.mFrequencyDeterminedManner);
+            if (entityDefine.mFrequency != undefined)
+               SetFrequency (entityDefine.mFrequency);
+            if (entityDefine.mBreakExtendedLength != undefined)
+               SetBreakExtendedLength (entityDefine.mBreakExtendedLength);
+            //<<
          }
          else if (createStageId == 2)
          {
@@ -68,6 +77,14 @@ package player.entity {
       protected var mStaticLengthRatio:Number = 1.0;
       protected var mDampingRatio:Number = 0.0;
       
+      //>> v1.08
+      protected var mFrequencyDeterminedManner:int = 0;
+      protected var mFrequency:Number = 0.0;
+      //protected var mCustomSpringConstant:Number = 0.0;
+      
+      protected var mBreakExtendedLength:Number;
+      //<<
+      
       public function SetSpringType (type:int):void
       {
          mSpringType = type;
@@ -81,6 +98,46 @@ package player.entity {
       public function SetDampingRatio (ratio:Number):void
       {
          mDampingRatio = ratio;
+      }
+      
+      public function SetFrequencyDeterminedManner (manner:int):void
+      {
+         mFrequencyDeterminedManner = manner;
+      }
+      
+      public function GetFrequencyDeterminedManner ():int
+      {
+         return mFrequencyDeterminedManner;
+      }
+      
+      public function SetFrequency (f:Number):void
+      {
+         mFrequency = f;
+      }
+      
+      public function GetFrequency ():Number
+      {
+         return mFrequency;
+      }
+      
+      //public function SetCustomSpringConstant (k:Number):Number
+      //{
+      //   mCustomSpringConstant = k;
+      //}
+      
+      //public function GetCustomSpringConstant ():Number
+      //{
+      //   return mCustomSpringConstant;
+      //}
+      
+      public function SetBreakExtendedLength (length:Number):void
+      {
+         mBreakExtendedLength = length;
+      }
+      
+      public function GetBreakExtendedLength ():Number
+      {
+         return mBreakExtendedLength;
       }
       
 //=============================================================

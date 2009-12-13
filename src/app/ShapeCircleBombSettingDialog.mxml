@@ -4,32 +4,28 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Bomb Setting" width="500" creationComplete="OnInitPanel()">
+    title="Bomb Setting" width="600" creationComplete="OnInitPanel()">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:Box label="Physics" direction="vertical" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
-         <ShapePhysicsSettingPanel id="PhysicsSettingPanel" 
-               creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
+         <ShapePhysicsSettingPanel id="PhysicsSettingPanel" creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
       </mx:Box>
       <mx:Box label="Basic" direction="vertical" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
-         <ShapeGeometrySettingPanel id="GeometrySettingPanel" creationComplete="OnGeometrySettingPanelCreationComplete()"/>
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label id="Label_Radius" text="Radius:" textAlign="right" width="60"/>
-            <mx:NumericStepper id="NumericStepper_Radius" stepSize="1" width="80" />
-         </mx:HBox>
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <EntityRadiusSettingPanel id="RadiusSettingPanel" creationComplete="OnEntityRadiusSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%" />
       </mx:Box>
    </mx:TabNavigator>
 
    <mx:Spacer height="20"/>
    
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
@@ -74,14 +70,14 @@
             PhysicsSettingPanel.SetMustEnablePhysics ();
          }
          
-         private function OnGeometrySettingPanelCreationComplete ():void
+         private function OnEntityBasicSettingPanelCreationComplete ():void
          {
-            GeometrySettingPanel.SetValues (mParams);
-            
-            NumericStepper_Radius.minimum = Define.MinBombRadius;
-            NumericStepper_Radius.maximum = Define.MaxBombRadius;
-            
-            NumericStepper_Radius.value = mParams.mRadius;
+            BasicSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnEntityRadiusSettingPanelCreationComplete ():void
+         {
+            RadiusSettingPanel.SetValues (mParams);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -101,11 +97,14 @@
                PhysicsSettingPanel.GetValues (mParams);
             }
             
-            if (GeometrySettingPanel != null)
+            if (BasicSettingPanel != null)
             {
-               GeometrySettingPanel.GetValues (mParams);
+               BasicSettingPanel.GetValues (mParams);
+            }
             
-               mParams.mRadius = NumericStepper_Radius.value;
+            if (RadiusSettingPanel != null)
+            {
+               RadiusSettingPanel.GetValues (mParams);
             }
             
             PopUpManager.removePopUp(this);

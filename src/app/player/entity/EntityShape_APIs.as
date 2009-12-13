@@ -1,6 +1,7 @@
 
 public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
+// ...
    IncreaseLastSpecialId ();
    
    var shape:EntityShape = this;
@@ -150,7 +151,7 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
       body.mPositionY = targetY + dx * sin + dy * cos;
       body.mRotation += deltaRotation;
       
-      body.SynchronizePositionAndRotationOfPhysicsProxy ();
+      body.SynchronizePositionAndRotationToPhysicsProxy ();
       
    // update postion and rotation of shapes in body
       

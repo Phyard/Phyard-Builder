@@ -268,7 +268,8 @@ package common {
                   break;
                case ValueTypeDefine.ValueType_String:
                   // "as String in commented off, otherwise value_object will be always null, bug?!
-                  value_object = direct_source_define.mValueObject; // as String;
+                  // re: add back  "as String", in xml -> define: String (valueSourceElement.@direct_value)
+                  value_object = direct_source_define.mValueObject as String
                   if (value_object == null)
                      value_object = "";
                   break;
@@ -511,7 +512,7 @@ package common {
                   value_object = parseFloat (valueSourceElement.@direct_value);
                   break;
                case ValueTypeDefine.ValueType_String:
-                  value_object = valueSourceElement.@direct_value;
+                  value_object = String (valueSourceElement.@direct_value); // valueSourceElement.@direct_value is not a string, ??? 
                   if (value_object == null)
                      value_object = "";
                   break;
@@ -561,6 +562,15 @@ package common {
          }
          
          return value_target_define;
+      }
+      
+//========================================================================================
+// 
+//========================================================================================
+      
+      public static function FunctionCallingDefines_PhysicsValues2DisplayValues (functionCallingDefines:Array):void
+      {
+         
       }
       
    }

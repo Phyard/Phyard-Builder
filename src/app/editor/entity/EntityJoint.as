@@ -21,6 +21,8 @@ package editor.entity {
       private var mConnectedShape1:Sprite = null; //EntityShape = null; // also can be mWorld
       private var mConnectedShape2:Sprite = null; //EntityShape = null;
       
+      protected var mIsBreakable:Boolean = false;
+      
       public function EntityJoint (world:World)
       {
          super (world);
@@ -79,6 +81,16 @@ package editor.entity {
          }
       }
       
+      public function SetBreakable (breakable:Boolean):void
+      {
+         mIsBreakable = breakable;
+      }
+      
+      public function IsBreakable ():Boolean
+      {
+         return mIsBreakable;
+      }
+      
 //====================================================================
 //   clone
 //====================================================================
@@ -93,6 +105,8 @@ package editor.entity {
          
          //joint.SetConnectedShape1Index ( GetConnectedShape1Index () );
          //joint.SetConnectedShape2Index ( GetConnectedShape2Index () );
+         
+         joint.SetBreakable (IsBreakable ());
       }
       
    }

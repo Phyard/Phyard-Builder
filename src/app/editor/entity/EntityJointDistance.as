@@ -18,6 +18,8 @@ package editor.entity {
       public var mAnchor1:SubEntityDistanceAnchor;
       public var mAnchor2:SubEntityDistanceAnchor;
       
+      protected var mBreakDeltaLength:Number;
+      
       public function EntityJointDistance (world:World)
       {
          super (world);
@@ -65,6 +67,16 @@ package editor.entity {
          return mAnchor2;
       }
       
+      public function SetBreakDeltaLength (dLength:Number):void
+      {
+         mBreakDeltaLength = dLength;
+      }
+      
+      public function GetBreakDeltaLength ():Number
+      {
+         return mBreakDeltaLength;
+      }
+      
 //====================================================================
 //   clone
 //====================================================================
@@ -79,6 +91,8 @@ package editor.entity {
          super.SetPropertiesForClonedEntity (entity, 0, 0);
          
          var distanceJoint:EntityJointDistance = entity as EntityJointDistance;
+         
+         distanceJoint.SetBreakDeltaLength (GetBreakDeltaLength ());
          
          var anchor1:SubEntityDistanceAnchor = GetAnchor1 ();
          var anchor2:SubEntityDistanceAnchor = GetAnchor2 ();

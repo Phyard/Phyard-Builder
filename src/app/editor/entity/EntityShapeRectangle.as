@@ -36,7 +36,10 @@ package editor.entity {
       
       override public function GetTypeName ():String
       {
-         return "Rectangle";
+         if (mAiType == Define.ShapeAiType_Bomb)
+            return "Rectangle Bomb";
+         else
+            return "Rectangle";
       }
       
       override public function GetPhysicsShapesCount ():uint
@@ -76,7 +79,7 @@ package editor.entity {
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderThickness, drawBg, filledColor);
          
-         if (GetFilledColor () == Define.ColorBombObject)
+         if (mAiType == Define.ShapeAiType_Bomb)
             GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
       }
       
@@ -115,8 +118,8 @@ package editor.entity {
       {
          if (validate)
          {
-            var minHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
-            var maxHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
+            var minHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
+            var maxHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
             
             if (halfWidth * mHalfHeight * 4 > EditorSetting.MaxRectArea)
                halfWidth = EditorSetting.MaxRectArea / (mHalfHeight * 4);
@@ -134,8 +137,8 @@ package editor.entity {
       {
          if (validate)
          {
-            var minHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
-            var maxHalfWidth:Number = GetFilledColor () == Define.ColorBombObject ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
+            var minHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
+            var maxHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
             
             if (halfHeight * mHalfWidth * 4 > EditorSetting.MaxRectArea)
                halfHeight = EditorSetting.MaxRectArea / (mHalfWidth * 4);
@@ -159,14 +162,16 @@ package editor.entity {
          return mHalfHeight;
       }
       
+//====================================================================
+//   clone
+//====================================================================
+      
       override public function Destroy ():void
       {
          SetInternalComponentsVisible (false);
          
          super.Destroy ();
       }
-      
-      
       
 //====================================================================
 //   clone
@@ -427,7 +432,7 @@ package editor.entity {
          if (halfWidth * halfHeight > EditorSetting.MaxRectArea)
             return;
          
-         if (GetFilledColor () == Define.ColorBombObject)
+         if (mAiType == Define.ShapeAiType_Bomb)
          {
             if (halfHeight > halfWidth)
                halfWidth = halfHeight;

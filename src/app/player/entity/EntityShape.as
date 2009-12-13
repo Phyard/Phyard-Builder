@@ -114,23 +114,24 @@ package player.entity {
                SetHollow (entityDefine.mIsHollow);
             //<<
             
-            //>> from v1.07
+            //>> from v1.08
             if (entityDefine.mBuildBorder != undefined)
                SetBuildBorder (entityDefine.mBuildBorder)
+            
+            if (entityDefine.mLinearVelocityMagnitude != undefined && entityDefine.mLinearVelocityAngle != undefined)
+            {
+               SetLinearVelocity (entityDefine.mLinearVelocityMagnitude, entityDefine.mLinearVelocityAngle);
+            }
             if (entityDefine.mAngularVelocity != undefined)
-               SetAngularVelocity (entityDefine.mAngularVelocity);
-            if (entityDefine.mVelocityX != undefined)
-               SetLinearVelocityX (mWorld.DisplayLength2PhysicsLength (entityDefine.mVelocityX));
-            if (entityDefine.mVelocityY != undefined)
-               SetLinearVelocityY (mWorld.DisplayLength2PhysicsLength (entityDefine.mVelocityY));
+               SetAngularVelocity (entityDefine.mAngularVelocity * Define.kDegrees2Radians);
             
             if (entityDefine.mLinearDamping != undefined)
                SetLinearDamping (entityDefine.mLinearDamping);
             if (entityDefine.mAngularDamping != undefined)
                SetAngularDamping (entityDefine.mAngularDamping);
             
-            if (entityDefine.mAllowSleeping != undefined)
-               SetAllowSleeping (entityDefine.mIsAllowSleeping);
+            if (entityDefine.mIsSleepingAllowed != undefined)
+               SetSleepingAllowed (entityDefine.mIsSleepingAllowed);
             if (entityDefine.mIsRotationFixed != undefined)
                SetRotationFixed (entityDefine.mIsRotationFixed);
             //<<
@@ -139,6 +140,10 @@ package player.entity {
             {
                SetAlpha (0.8);
             }
+         }
+         else if (createStageId == 2)
+         {
+            UpdatelLocalPosition ();
          }
       }
       
@@ -169,37 +174,6 @@ package player.entity {
          return mCollisionCategory;
       }
       
-//=============================================================
-//   
-//=============================================================
-      
-      // for the 3 functions, maybe it is not a good idea to override them.
-      // a better design? : 
-      // - entity.SetPositionX (x)
-      // - entity.SetPositionY (y)
-      // - if (entity is EntityShape) (entity as EntityShape).UpdatelLocalPosition ()
-
-      override public function SetPositionX (x:Number):void
-      {
-         super.SetPositionX (x);
-         
-         UpdatelLocalPosition ();
-      }
-      
-      override public function SetPositionY (y:Number):void
-      {
-         super.SetPositionY (y);
-         
-         UpdatelLocalPosition ();
-      }
-      
-      override public function SetRotation (rot:Number):void
-      {
-         mRotation = rot;
-         
-         UpdatelLocalPosition ();
-      }
-
 //=============================================================
 //   
 //=============================================================
@@ -251,7 +225,7 @@ package player.entity {
       protected var mLinearDamping:Number = 0.0;
       protected var mAngularDamping:Number = 0.0;
       
-      protected var mAllowSleeping:Boolean = true;
+      protected var mSleepingAllowed:Boolean = true;
       
       protected var mRotationFixed:Boolean = false;
       //<<
@@ -484,6 +458,10 @@ package player.entity {
          return mIsSensor;
       }
       
+      // here, for shapes, the SetVelocity will not not change the mass of the body of shape,
+      // also not call shape.UpdateLocalPosition.
+      // Those functions must be called mannually if needed.
+      
       public function SetLinearVelocityX (vx:Number):void
       {
          mLinearVelocityX = vx;
@@ -491,6 +469,8 @@ package player.entity {
       
       public function GetLinearVelocityX ():Number
       {
+         SynchronizeVelocityWithPhysicsProxy ();
+         
          return mLinearVelocityX;
       }
       
@@ -501,7 +481,15 @@ package player.entity {
       
       public function GetLinearVelocityY ():Number
       {
+         SynchronizeVelocityWithPhysicsProxy ();
+         
          return mLinearVelocityY;
+      }
+      
+      public function SetLinearVelocity (magnitude:Number, angle:Number):void
+      {
+         SetLinearVelocityX (magnitude *  Math.cos (angle));
+         SetLinearVelocityY (magnitude *  Math.sin (angle));
       }
       
       public function SetAngularVelocity (av:Number):void
@@ -511,6 +499,8 @@ package player.entity {
       
       public function GetAngularVelocity ():Number
       {
+         SynchronizeVelocityWithPhysicsProxy ();
+         
          return mAngularVelocity;
       }
       
@@ -534,14 +524,14 @@ package player.entity {
          return mAngularDamping;
       }
       
-      public function SetAllowSleeping (allowSleeping:Boolean):void
+      public function SetSleepingAllowed (allowSleeping:Boolean):void
       {
-         mAllowSleeping = allowSleeping;
+         mSleepingAllowed = allowSleeping;
       }
       
-      public function IsAllowSleeping ():Boolean
+      public function IsSleepingAllowed ():Boolean
       {
-         return mAllowSleeping;
+         return mSleepingAllowed;
       }
       
       public function SetRotationFixed (fixed:Boolean):void
@@ -600,12 +590,12 @@ package player.entity {
       }
       
 //=============================================================
-//   
+//   update position rotation
 //=============================================================
       
       override public function SynchronizeWithPhysicsProxy ():void
       {
-         if (mBody != null)
+         //if (mBody != null) // should no be null
          {
             mPositionX = mBody.mPositionX + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
             mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
@@ -615,6 +605,29 @@ package player.entity {
          mAppearanceObjectsContainer.x = mWorld.PhysicsX2DisplayX (mPositionX);
          mAppearanceObjectsContainer.y = mWorld.PhysicsY2DisplayY (mPositionY);
          mAppearanceObjectsContainer.rotation = mRotation * Define.kRadians2Degrees;
+      }
+      
+//=============================================================
+//   update velocity
+//=============================================================
+      
+      // for judging if this condition is evaluated already in current step.
+      private var mLastVelocityUpdatedStep:int = -1;
+      
+      internal function SynchronizeVelocityWithPhysicsProxy (forcely:Boolean = false):void
+      {
+         var worldSimulateSteps:int = mWorld.GetSimulatedSteps ();
+         if (mLastVelocityUpdatedStep < worldSimulateSteps || forcely)
+         {
+            mLastVelocityUpdatedStep = worldSimulateSteps;
+            
+            //if (mBody != null) // should no be null
+            {
+               mAngularVelocity = mBody.mAngularVelocity;
+               mLinearVelocityX = mBody.mLinearVelocityX - mAngularVelocity * mLocalPositionY;
+               mLinearVelocityY = mBody.mLinearVelocityY + mAngularVelocity * mLocalPositionX;
+            }
+         }
       }
       
 //=============================================================
@@ -687,6 +700,15 @@ package player.entity {
             mRelativeRotation  = mRotation  - mBody.GetRotation  ();
          }
       }
+      
+      
+//=============================================================
+//   step accumulated values, before world.Step (), these accumlated values will be applied on body
+//=============================================================
+      
+      // need knowing mass
+      private var mAccumulatedForce:Number = 0.0;
+      private var mAccumulatedTorque:Number = 0.0;
       
 //=============================================================
 //   connected joints

@@ -20,7 +20,7 @@ package editor.entity {
    
    public class EntityShapeGravityController extends EntityShapeCircle 
    {
-      private var mInitialGravityAcceleration:Number = Define.DefaultGravityAccelerationMagnitude;
+      private var mInitialGravityAcceleration:Number = Define.kDefaultCoordinateSystem.PhysicsAccaleration2DisplayAccaleration (Define.DefaultGravityAccelerationMagnitude);
       private var mInitialGravityAngle:int = 90; // not float, for byteArray.writeArray has precision problems
       
       //private var mIsInteractive:Boolean = true;
@@ -93,7 +93,7 @@ package editor.entity {
       
       public function SetInitialGravityAngle (angle:Number):void
       {
-         mInitialGravityAngle = angle;
+         mInitialGravityAngle = angle % 360.0;
       }
       
       public function GetInitialGravityAngle ():int
@@ -103,6 +103,8 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
+         var initialGravityAcceleration:Number = mWorld.GetCoordinateSystem ().DisplayAccaleration2PhysicsAccaleration (mInitialGravityAcceleration);
+         
       // .
          if (mTextG == null)
          {
@@ -182,7 +184,7 @@ package editor.entity {
          {
             gx0 = radius_0b * Math.cos (direction);
             gy0 = radius_0b * Math.sin (direction);
-            acceleration = radius_0b + (radius_1a - radius_0b) * mInitialGravityAcceleration / Define.DefaultGravityAccelerationMagnitude;
+            acceleration = radius_0b + (radius_1a - radius_0b) * initialGravityAcceleration / Define.DefaultGravityAccelerationMagnitude;
             gx1 = acceleration * Math.cos (direction);
             gy1 = acceleration * Math.sin (direction);
          }
@@ -190,7 +192,7 @@ package editor.entity {
          {
             gx0 = 0;
             gy0 = 0;
-            acceleration = mRadius * mInitialGravityAcceleration / Define.DefaultGravityAccelerationMagnitude;
+            acceleration = mRadius * initialGravityAcceleration / Define.DefaultGravityAccelerationMagnitude;
             gx1 = acceleration * Math.cos (direction);
             gy1 = acceleration * Math.sin (direction);
          }

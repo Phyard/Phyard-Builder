@@ -62,9 +62,18 @@ package editor.entity {
       protected var mIsHollow:Boolean = false;
       //<<
       
-      //>> from v1.07
-      // protected var mIsField:Boolean = false; // canceled
-      // protected var mEventActions:Array = new Array (); // canceled
+      //>> v1.08
+      protected var mBuildBorder:Boolean = true;
+      
+      protected var mLinearVelocityMagnitude:Number = 0;
+      protected var mLinearVelocityAngle:Number = 0;
+      protected var mAngularVelocity:Number = 0;
+      
+      protected var mLinearDamping:Number = 0;
+      protected var mAngularDamping:Number = 0;
+      
+      protected var mAllowSleeping:Boolean = true;
+      protected var mFixRotation:Boolean = true;
       //<<
       
 //====================================================================
@@ -124,6 +133,16 @@ package editor.entity {
          shape.SetCollisionCategoryIndex ( GetCollisionCategoryIndex () );
          
          shape.SetHollow (IsHollow ());
+         shape.SetBuildBorder (IsBuildBorder ());
+         
+         shape.SetLinearVelocityMagnitude (GetLinearVelocityMagnitude ());
+         shape.SetLinearVelocityAngle (GetLinearVelocityAngle ());
+         shape.SetAngularVelocity (GetAngularVelocity ());
+         shape.SetLinearDamping (GetLinearDamping ());
+         shape.SetAngularDamping (GetAngularDamping ());
+         
+         shape.SetAllowSleeping (IsAllowSleeping ());
+         shape.SetFixRotation (IsFixRotation ());
       }
       
 //======================================================
@@ -246,6 +265,16 @@ package editor.entity {
          return mIsHollow;
       }
       
+      public function SetBuildBorder (build:Boolean):void
+      {
+         mBuildBorder = build;
+      }
+      
+      public function IsBuildBorder ():Boolean
+      {
+         return mBuildBorder;
+      }
+      
       public function SetStatic (isStatic:Boolean):void
       {
          if (mIsStatic && ! isStatic && mAiType == Define.ShapeAiType_Static)
@@ -337,6 +366,76 @@ package editor.entity {
       public function GetRestitution ():Number
       {
          return mRestitution;
+      }
+      
+      public function SetLinearVelocityMagnitude (speed:Number):void
+      {
+         mLinearVelocityMagnitude = speed;
+      }
+      
+      public function GetLinearVelocityMagnitude ():Number
+      {
+         return mLinearVelocityMagnitude;
+      }
+      
+      public function SetLinearVelocityAngle (angle:Number):void
+      {
+         mLinearVelocityAngle = angle;
+      }
+      
+      public function GetLinearVelocityAngle ():Number
+      {
+         return mLinearVelocityAngle;
+      }
+      
+      public function SetAngularVelocity (av:Number):void
+      {
+         mAngularVelocity = av;
+      }
+      
+      public function GetAngularVelocity ():Number
+      {
+         return mAngularVelocity;
+      }
+      
+      public function SetLinearDamping (damping:Number):void
+      {
+         mLinearDamping = damping;
+      }
+      
+      public function GetLinearDamping ():Number
+      {
+         return mLinearDamping;
+      }
+      
+      public function SetAngularDamping (damping:Number):void
+      {
+         mAngularDamping = damping;
+      }
+      
+      public function GetAngularDamping ():Number
+      {
+         return mAngularDamping;
+      }
+      
+      public function SetAllowSleeping (allowSleeping:Boolean):void
+      {
+         mAllowSleeping = allowSleeping;
+      }
+      
+      public function IsAllowSleeping ():Boolean
+      {
+         return mAllowSleeping;
+      }
+      
+      public function SetFixRotation (fixRotation:Boolean):void
+      {
+         mFixRotation = fixRotation;
+      }
+      
+      public function IsFixRotation ():Boolean
+      {
+         return mFixRotation;
       }
       
 //======================================================

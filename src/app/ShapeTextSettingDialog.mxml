@@ -3,53 +3,44 @@
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
      
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Text Setting" width="500">
-   
-   
-   <mx:XMLList id="AppearanceList">
-      <node name="Ball"/>
-      <node name="Column"/>
-   </mx:XMLList>
-   
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    title="Text Setting" width="600">
+
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:VBox label="Appearance" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnBasicPanelCreationComplete()">
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_DrawBackground" label="Show Background"/>
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border"/>
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_AutofitWidth" label="Autofit Width"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%" verticalAlign="top">
+            <mx:TextArea id="TextArea_Text" width="100%" height="200" editable="true" wordWrap="true">
+               <mx:text>
+               </mx:text>
+            </mx:TextArea>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:VBox label="Others" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <EntityWidthHeightSettingPanel id="WidthHeightSettingPanel" creationComplete="OnEntityWidthHeightSettingPanelCreationComplete()"/>
+      </mx:VBox>
+   </mx:TabNavigator>
+
+   <mx:Spacer height="10"/>
+
    <mx:HBox width="100%">
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_DrawBackground" label="Show Background"/>
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border"/>
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_AutofitWidth" label="Autofit Width"/>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_Text" text="Text:" fontWeight="bold"/>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
-   
-   <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_Text" width="100%" height="200" editable="true" wordWrap="true">
-         <mx:text>
-         </mx:text>
-      </mx:TextArea>
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_PosX" text="X:" textAlign="right"/>
-      <mx:TextInput id="Text_PosX" text="" width="100"/>
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_PosY" text="Y:" textAlign="right"/>
-      <mx:TextInput id="Text_PosY" text="" width="100"/>
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_Angle" text="Angle:" textAlign="right"/>
-      <mx:TextInput id="Text_Angle" text="" width="100"/>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
-   
-   <mx:Spacer height="20"/>
-   
-   <mx:HBox width="100%" verticalAlign="bottom">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
@@ -72,23 +63,35 @@
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          
-         private var mInputValues:Object;
-         
-         private var mAdvancePageCreated:Boolean = false;
+         private var mParams:Object;
          
          public function SetValues (values:Object):void
          {
-            mInputValues = values;
-            mAdvancePageCreated = true;
+            mParams = values;
+         }
+         
+         private function OnBasicPanelCreationComplete ():void
+         {
+            InitBasicPanel (mParams);
+         }
+         
+         private function InitBasicPanel (initialValues:Object):void
+         {
+            CheckBox_DrawBackground.selected = initialValues.mDrawBagkground;
+            CheckBox_AutofitWidth.selected = initialValues.mAutofitWidth;
+            CheckBox_DrawBorder.selected = initialValues.mDrawBorder;
             
-            CheckBox_DrawBackground.selected = values.mDrawBagkground;
-            CheckBox_AutofitWidth.selected = values.mAutofitWidth;
-            TextArea_Text.text = values.mText;
-            
-            CheckBox_DrawBorder.selected = values.mDrawBorder;
-            Text_PosX.text = "" + values.mPosX;
-            Text_PosY.text = "" + values.mPosY;
-            Text_Angle.text = "" + values.mAngle;
+            TextArea_Text.text = initialValues.mText;
+         }
+         
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            BasicSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnEntityWidthHeightSettingPanelCreationComplete ():void
+         {
+            WidthHeightSettingPanel.SetValues (mParams);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -103,40 +106,20 @@
          
          private function OnClickOkButton():void 
          {
-            //var params:Object = new Object ();
-            var params:Object = mInputValues;
+            mParams.mDrawBackground = CheckBox_DrawBackground.selected;
+            mParams.mAutofitWidth = CheckBox_AutofitWidth.selected;
+            mParams.mDrawBorder = CheckBox_DrawBorder.selected;
             
-            params.mDrawBackground = CheckBox_DrawBackground.selected;
-            params.mAutofitWidth = CheckBox_AutofitWidth.selected;
-            params.mText = TextArea_Text.text;
+            mParams.mText = TextArea_Text.text;
             
-            params.mDrawBorder = CheckBox_DrawBorder.selected;
-            
-            if (mAdvancePageCreated)
+            if (BasicSettingPanel != null)
             {
-               var valuePosX:Number = parseFloat (Text_PosX.text);
-               if ( ! isNaN (valuePosX) )
-                  params.mPosX = valuePosX;
-               else
-                  params.mPosX = mInputValues.mPosX;
-               
-               var valuePosY:Number = parseFloat (Text_PosY.text);
-               if ( ! isNaN (valuePosY) )
-                  params.mPosY = valuePosY;
-               else
-                  params.mPosY = mInputValues.mPosY;
-               
-               var valueAngle:Number = parseFloat (Text_Angle.text);
-               if ( ! isNaN (valueAngle) )
-                  params.mAngle = valueAngle;
-               else
-                  params.mAngle = mInputValues.mAngle;
+               BasicSettingPanel.GetValues (mParams);
             }
-            else
+            
+            if (WidthHeightSettingPanel != null)
             {
-               params.mPosX = mInputValues.mPosX;
-               params.mPosY = mInputValues.mPosY;
-               params.mAngle = mInputValues.mAngle;
+               WidthHeightSettingPanel.GetValues (mParams);
             }
             
             PopUpManager.removePopUp(this);
@@ -145,7 +128,7 @@
                OnClose ();
             
             if (OnConfirm != null)
-               OnConfirm (params);
+               OnConfirm (mParams);
          }
          
          private function OnClickCancelButton():void 

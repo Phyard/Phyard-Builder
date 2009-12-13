@@ -17,14 +17,16 @@
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
-      <mx:Label id="Label_Transparency" text="Transparency:" textAlign="right" width="30%"/>
-      <mx:NumericStepper id="NumericStepper_Transparency" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+      <mx:Label id="Label_Opacity" text="Opacity:" textAlign="right" width="30%"/>
+      <mx:NumericStepper id="NumericStepper_Opacity" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+      <mx:Label text="(0-100)" textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:Label id="Label_CurveThickness" text="Thickness:" textAlign="right" width="30%"/>
       <mx:NumericStepper id="NumericStepper_CurveThickness" stepSize="1" minimum="0" maximum="255" value="1" width="80" />
+      <mx:Label text="(pixels)" textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
@@ -33,15 +35,7 @@
       <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0x000000"/>
    </mx:HBox>
 
-   <mx:Spacer height="20" />
-
-   <mx:HBox width="100%">
-      <mx:Spacer width="100%"/>
-      <mx:Label text="(To enable physics, the thickness must be larger than 1.)" textAlign="center" color="#0000FF"/>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
-
-   <mx:Script>
+  <mx:Script>
       <![CDATA[       
          
          import common.Define;
@@ -57,7 +51,7 @@
             mInputValues = inputValues;
             
             CheckBox_IsVisible.selected = inputValues.mIsVisible;
-            NumericStepper_Transparency.value = inputValues.mTransparency;
+            NumericStepper_Opacity.value = inputValues.mOpacity;
             ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;
             NumericStepper_CurveThickness.value = inputValues.mCurveThickness;
          }
@@ -65,7 +59,7 @@
          public function GetValues (returnValues:Object):void
          {
             returnValues.mIsVisible = CheckBox_IsVisible.selected;
-            returnValues.mTransparency = NumericStepper_Transparency.value;
+            returnValues.mOpacity = NumericStepper_Opacity.value;
             returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
             returnValues.mCurveThickness = NumericStepper_CurveThickness.value;
          }

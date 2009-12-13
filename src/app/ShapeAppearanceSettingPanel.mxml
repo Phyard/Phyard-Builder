@@ -10,44 +10,45 @@
       >
 
    <mx:HBox width="100%">
-      <mx:Spacer width="30"/>
-      <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="30%" click="OnAiTypeSelectListClick()"/>
+      <mx:Spacer width="60"/>
+      <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="22%" click="OnAiTypeSelectListClick()"/>
       <mx:Label id="Label_AiType" text="C.I. Shape Type:" textAlign="right"/>
       <mx:ComboBox id="SelectList_AiType" rowCount="10"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Spacer width="30"/>
-      <mx:CheckBox id="CheckBox_IsVisible" label="Visible" width="30%"/>
+      <mx:Spacer width="60"/>
+      <mx:CheckBox id="CheckBox_IsVisible" label="Visible" width="22%"/>
       <mx:Label id="Label_Opacity" text="Opacity:" textAlign="right"/>
       <mx:NumericStepper id="NumericStepper_Opacity" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
       <mx:Label text="(0-100)" textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Spacer width="30"/>
-      <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="30%"/>
+      <mx:Spacer width="60"/>
+      <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="22%"/>
       <mx:Label id="Label_BackgroundColor" text="Filled Color:" textAlign="right"/>
       <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xFFFFFF"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Spacer width="30"/>
-      <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border" width="30%"/>
+      <mx:Spacer width="60"/>
+      <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border" width="22%"/>
       <mx:Label id="Label_BorderColor" text="Border Color:" textAlign="right"/>
       <mx:ColorPicker id="ColorPicker_BorderColor" showTextField="true" selectedColor="0x000000"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Spacer width="30"/>
-      <mx:Spacer width="30%"/>
+      <mx:Spacer width="60"/>
+      <mx:Spacer width="22%"/>
       <mx:Label id="Label_BorderThickness" text="Border Thickness:" textAlign="right"/>
       <mx:NumericStepper id="NumericStepper_BorderThickness" stepSize="1" minimum="0" maximum="255" value="1" width="80" />
+      <mx:Label text="(pixels)" textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Spacer width="30"/>
-      <mx:Spacer width="30%"/>
+      <mx:Spacer width="60"/>
+      <mx:Spacer width="22%"/>
       <mx:Label id="Label_BorderOpacity" text="Border Opacity:" textAlign="right"/>
       <mx:NumericStepper id="NumericStepper_BorderOpacity" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
       <mx:Label text="(0-100)" textAlign="left"/>

@@ -35,12 +35,15 @@ package editor.entity {
       
       override public function GetTypeName ():String
       {
-         return "Circle";
+         if (mAiType == Define.ShapeAiType_Bomb)
+            return "Bomb Circle";
+         else
+            return "Circle";
       }
       
       override public function GetInfoText ():String
       {
-         return super.GetInfoText () + ", radius = " + ValueAdjuster.AdjustCircleRadius (GetRadius (), Config.VersionNumber);
+         return super.GetInfoText () + ", radius = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().DisplayLength2PhysicsLength (GetRadius ()), 6);
       }
       
       override public function GetPhysicsShapesCount ():uint
@@ -126,9 +129,8 @@ package editor.entity {
       {
          if (validate)
          {
-            var minRadius:Number = GetFilledColor () == Define.ColorBombObject ? Define.MinBombRadius : EditorSetting.MinCircleRadium;
-            //var maxRadius:Number = GetFilledColor () == Define.ColorBombObject ? Define.MaxBombRadius : EditorSetting.MaxCircleRadium;
-            var maxRadius:Number = GetFilledColor () == Define.ColorBombObject ? Define.MaxBombRadius : Define.MaxCircleRadium;
+            var minRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombRadius : EditorSetting.MinCircleRadium;
+            var maxRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MaxBombRadius : Define.MaxCircleRadium;
             
             if (radius > maxRadius)
                radius =  maxRadius;

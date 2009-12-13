@@ -19,6 +19,12 @@ package editor.entity {
    public class EntityJointSpring extends EntityJoint 
    {
       
+      
+      
+//=============================================================
+//
+//=============================================================
+      
       public var mAnchor1:SubEntitySpringAnchor;
       public var mAnchor2:SubEntitySpringAnchor;
       
@@ -26,10 +32,13 @@ package editor.entity {
       //private var mFrequencyHz:Number = 1;
       public var mDampingRatio:Number = 0;
       
-      //private var mWireDiameter:Number = 2;
-      //private var mDiameter:Number = 9;
+      protected var mSpringType:int = Define.SpringType_Unkonwn;
       
-      private var mSpringType:int = Define.SpringType_Unkonwn;
+      protected var mFrequencyDeterminedManner:int = 0;
+      protected var mFrequency:Number = 0.0;
+      //protected var mCustomSpringConstant:Number = 0.0;
+      
+      protected var mBreakExtendedLength:Number;
       
       public function EntityJointSpring (world:World)
       {
@@ -108,6 +117,16 @@ package editor.entity {
       }
       */
       
+      public function SetFrequencyDeterminedManner (manner:int):void
+      {
+         mFrequencyDeterminedManner = manner;
+      }
+      
+      public function GetFrequencyDeterminedManner ():int
+      {
+         return mFrequencyDeterminedManner;
+      }
+      
       public function SetSpringType (type:int):void
       {
          mSpringType = type;
@@ -118,6 +137,37 @@ package editor.entity {
       public function GetSpringType ():int
       {
          return mSpringType;
+      }
+      
+      public function SetFrequency (f:Number):void
+      {
+         mFrequency = f;
+      }
+      
+      public function GetFrequency ():Number
+      {
+         return mFrequency;
+      }
+      
+      //public function SetCustomSpringConstant (k:Number):Number
+      //{
+      //   mCustomSpringConstant = k;
+      //}
+      
+      //public function GetCustomSpringConstant ():Number
+      //{
+      //   return mCustomSpringConstant;
+      //}
+      
+      
+      public function SetBreakExtendedLength (length:Number):void
+      {
+         mBreakExtendedLength = length;
+      }
+      
+      public function GetBreakExtendedLength ():Number
+      {
+         return mBreakExtendedLength;
       }
       
       public function GetCurrentLength ():Number
@@ -245,6 +295,9 @@ package editor.entity {
          //spring.SetFrequencyHz ( GetFrequencyHz () );
          spring.SetSpringType ( GetSpringType () );
          spring.mDampingRatio = mDampingRatio;
+         spring.SetFrequency (GetFrequency ());
+         spring.SetFrequencyDeterminedManner (GetFrequencyDeterminedManner ());
+         spring.SetBreakExtendedLength (GetBreakExtendedLength ());
          
          var anchor1:SubEntitySpringAnchor = GetAnchor1 ();
          var anchor2:SubEntitySpringAnchor = GetAnchor2 ();

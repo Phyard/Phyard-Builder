@@ -3,84 +3,94 @@
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
 
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Spring Setting" width="500">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    title="Spring Setting" width="600">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:VBox label="Joint" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_ConnectedShape1" text="Shape 1:" textAlign="right" width="25%"/>
-      <mx:ComboBox id="SelectList_ConnectedShape1" rowCount="10" width="10%" />
-      <mx:Spacer width="20"/>
-      <mx:Label id="Label_ConnectedShape2" text="Shape 2:" textAlign="right" width="25%"/>
-      <mx:ComboBox id="SelectList_ConnectedShape2" rowCount="10" width="10%" />
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
+
+         <mx:HBox width="100%">
+            <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
+         </mx:HBox>
+
+         <mx:Spacer height="6"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="6"/>
+
+         <mx:HBox width="100%">
+            <mx:HBox width="50%">
+               <mx:Spacer width="100%"/>
+               <mx:Label id="Label_StaticLength" text="Static Length / Current Length:" textAlign="right"/>
+            </mx:HBox>
+            <mx:HBox>
+               <mx:TextInput id="Text_StaticLengthRatio" text="" width="100"/>
+            </mx:HBox>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:HBox width="50%">
+               <mx:Spacer width="100%"/>
+               <mx:Label id="Label_DampingRatio" text="Damping Ratio:" textAlign="right"/>
+            </mx:HBox>
+            <mx:HBox>
+               <mx:TextInput id="Text_DampingRatio" text="" width="100"/>
+            </mx:HBox>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:HBox width="50%">
+               <mx:Spacer width="100%"/>
+               <mx:Label id="Label_PresetTypes" text="Preset Types:" textAlign="right"/>
+            </mx:HBox>
+               <mx:HBox>
+               <mx:RadioButton groupName="Type" id="TypeWeak" label="Weak"/>
+               <mx:RadioButton groupName="Type" id="TypeNormal" label="Normal"/>
+               <mx:RadioButton groupName="Type" id="TypeStrong" label="Strong"/>
+            </mx:HBox>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:HBox width="50%">
+               <mx:Spacer width="100%"/>
+               <mx:CheckBox id="CheckBox_CustomFrequency" label="Custom Frequency (f)"/>
+            </mx:HBox>
+            <mx:HBox>
+               <mx:TextInput id="Text_CustomFrequency" text="" width="100"/>
+            </mx:HBox>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:HBox width="50%">
+               <mx:Spacer width="100%"/>
+               <mx:CheckBox id="CheckBox_Breakable" label="Breakable"/>
+               <mx:Label id="Label_BreakExtendedLength" text="Break Extended Length:" textAlign="right"/>
+            </mx:HBox>
+            <mx:HBox>
+               <mx:TextInput id="Text_BreakExtendedLength" text="" width="100"/>
+            </mx:HBox>
+         </mx:HBox>
+
+      </mx:VBox>
+      
+      <mx:VBox label="Anchor" borderStyle="solid" height="100%" width="100%"
+                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+                horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+   </mx:TabNavigator>
+
 
    <mx:Spacer height="10"/>
-   
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_StaticLength" text="Static Length / Current Length:" textAlign="right" width="39%"/>
-      <!--
-      <mx:HSlider id="Slider_StaticLengthRatio" focusEnabled="false" minimum="0" maximum="3" value="1" width="60%"
-          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
-          labels="['0', '1.0', '2.0', '3.0']" allowTrackClick="true" liveDragging="true" />
-      -->
-      <mx:NumericStepper id="NumericStepper_StaticLengthRatio" minimum="0.01" maximum="3.0"
-            stepSize="0.01" width="60" />
-   </mx:HBox>
-   
-   <!--
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_WireDiameter" text="Wire Diameter:" textAlign="right" width="39%"/>
-      <mx:HSlider id="Slider_WireDiameter" focusEnabled="false" minimum="1" maximum="3" value="2" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="1"
-          labels="['1', '2', '3']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_Diameter" text="Diameter:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_Diameter" focusEnabled="false" minimum="5" maximum="21" value="9" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="2" tickInterval="2"
-          labels="['5', '21']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-   -->
-   
-   <!--
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_FrequencyHz" text="Frequency (Hz):" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_FrequencyHz" focusEnabled="false" minimum="0" maximum="5" value="10" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="0.05" tickInterval="1"
-          labels="['0', '5']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-   -->
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_DampingRatio" text="Damping Ratio:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_DampingRatio" focusEnabled="false" minimum="0" maximum="1" value="10" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="0.01" tickInterval="0.1"
-          labels="['0', '1.0']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_Type" text="Type:" textAlign="right" width="23%"/>
-      <mx:HBox width="77%" verticalAlign="bottom">
-         <mx:RadioButton groupName="Type" id="TypeWeak" label="Weak"/>
-         <mx:RadioButton groupName="Type" id="TypeNormal" label="Normal"/>
-         <mx:RadioButton groupName="Type" id="TypeStrong" label="Strong"/>
-         <mx:Spacer width="100%"/>
-      </mx:HBox>
-   </mx:HBox>
-
-   <mx:Spacer height="20"/>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
@@ -100,32 +110,28 @@
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          
-         public function SetValues (values:Object):void
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
          {
-            CheckBox_IsVisible.selected = values.mIsVisible;
-            CheckBox_IsVisible.enabled = true;
-            CheckBox_CollideConnected.selected = values.mCollideConnected;
+            mParams = initialValues;
             
-            //Slider_StaticLengthRatio.value = values.mStaticLengthRatio;
-            NumericStepper_StaticLengthRatio.value = values.mStaticLengthRatio;
+            CommonSettingPanel.SetValues (initialValues);
             
-            Slider_DampingRatio.value = values.mDampingRatio;
-            //Slider_FrequencyHz.value = values.mFrequencyHz;
-            if (values.mSpringType == Define.SpringType_Strong)
+            Text_StaticLengthRatio.text = initialValues.mStaticLengthRatio;
+            Text_DampingRatio.text = initialValues.mDampingRatio;
+            
+            if (initialValues.mSpringType == Define.SpringType_Strong)
                TypeStrong.selected = true;
-            else if (values.mSpringType == Define.SpringType_Weak)
+            else if (initialValues.mSpringType == Define.SpringType_Weak)
                TypeWeak.selected = true;
             else
                TypeNormal.selected = true;
-            
-            //
-            SelectList_ConnectedShape1.dataProvider = values.mShapeListDataProvider;
-            SelectList_ConnectedShape2.dataProvider = values.mShapeListDataProvider;
-            SelectList_ConnectedShape1.selectedIndex = values.mShapeList1SelectedIndex;
-            SelectList_ConnectedShape2.selectedIndex = values.mShapeList2SelectedIndex;
-            
-            SelectList_ConnectedShape1.enabled = values.mAnchorIndex == 0;
-            SelectList_ConnectedShape2.enabled = values.mAnchorIndex == 1;
+         }
+         
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            BasicSettingPanel.SetValues (mParams);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -140,26 +146,29 @@
          
          private function OnClickOkButton():void 
          {
-             var params:Object = new Object ();
+             CommonSettingPanel.GetValues (mParams);
              
-             params.mIsVisible = CheckBox_IsVisible.selected;
-             params.mCollideConnected = CheckBox_CollideConnected.selected;
+             var staticLengthRation:Number = parseFloat (Text_StaticLengthRatio.text);
+             if ( ! isNaN (staticLengthRation) )
+                mParams.mStaticLengthRatio = staticLengthRation;
              
-             //params.mStaticLengthRatio = Slider_StaticLengthRatio.value;
-             params.mStaticLengthRatio = NumericStepper_StaticLengthRatio.value;;
+             var dampingRation:Number = parseFloat (Text_DampingRatio.text);
+             if ( ! isNaN (dampingRation) )
+                mParams.mDampingRatio = dampingRation;
              
-             params.mDampingRatio = Slider_DampingRatio.value;
-             //params.mFrequencyHz = Slider_FrequencyHz.value;
              if (TypeStrong.selected)
-               params.mSpringType = Define.SpringType_Strong;
+               mParams.mSpringType = Define.SpringType_Strong;
              else if (TypeWeak.selected)
-               params.mSpringType = Define.SpringType_Weak;
+               mParams.mSpringType = Define.SpringType_Weak;
              else
-               params.mSpringType = Define.SpringType_Normal;
+               mParams.mSpringType = Define.SpringType_Normal;
              
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+            
              //
-             params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.mEntityIndex;
-             params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.mEntityIndex;
              
              PopUpManager.removePopUp(this);
              
@@ -167,7 +176,7 @@
                OnClose ();
              
              if (OnConfirm != null)
-               OnConfirm (params);
+               OnConfirm (mParams);
          }
          
          private function OnClickCancelButton():void 

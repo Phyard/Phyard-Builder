@@ -6,13 +6,13 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
     title="Move ..." width="300">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Label text="Move Offset X:" textAlign="right" width="100"/>
       <mx:TextInput id="TextInput_MoveOffsetX" width="80" text="0"/>
       <mx:Label text="px" textAlign="left" />
    </mx:HBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Label text="Move Offset Y:" textAlign="right" width="100"/>
       <mx:TextInput id="TextInput_MoveOffsetY" width="80" text="0"/>
       <mx:Label text="px" textAlign="left" />
@@ -20,7 +20,7 @@
 
    <mx:Spacer height="10"/>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>

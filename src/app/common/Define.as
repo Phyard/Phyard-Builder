@@ -21,6 +21,8 @@ package common {
       
       public static const kFloatEpsilon:Number = 1.192092896e-07;
       
+      public static const kDefaultCoordinateSystem:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.1, false);
+      
 //===========================================================================
 // world
 //===========================================================================
@@ -127,6 +129,10 @@ package common {
 //===========================================================================
 // spring
 //===========================================================================
+      
+      public static const SpringFrequencyDetermineManner_Preset:int = 0;
+      public static const SpringFrequencyDetermineManner_CustomFrequency:int = 1;
+      public static const SpringFrequencyDetermineManner_CustomSpringConstant:int = 2;
       
       public static const SpringType_Unkonwn:int = -1;
       public static const SpringType_Weak:int = 0;

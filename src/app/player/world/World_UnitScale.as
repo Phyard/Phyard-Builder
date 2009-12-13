@@ -56,6 +56,26 @@ public function PhysicsLength2DisplayLength (pl:Number):Number
    return mCoordinateSystem.PhysicsLength2DisplayLength (pl);
 }
 
+public function DisplaySpeed2PhysicsSpeed (dl:Number):Number
+{
+   return mCoordinateSystem.DisplaySpeed2PhysicsSpeed (dl);
+}
+
+public function PhysicsSpeed2DisplaySpeed (pl:Number):Number
+{
+   return mCoordinateSystem.PhysicsSpeed2DisplaySpeed (pl);
+}
+
+public function DisplayAccaleration2PhysicsAccaleration (dl:Number):Number
+{
+   return mCoordinateSystem.DisplayAccaleration2PhysicsAccaleration (dl);
+}
+
+public function PhysicsAccaleration2DisplayAccaleration (pl:Number):Number
+{
+   return mCoordinateSystem.PhysicsAccaleration2DisplayAccaleration (pl);
+}
+
 // for area
 
 public function DisplayArea2PhysicsArea (da:Number):Number

@@ -967,6 +967,21 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Physics Enabled?"), 
                      ]
                   );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory, entity_shape_package, "GetCollisionCategory", 
+                     [
+                             new VariableDefinitionEntity ("The Shape"), 
+                     ],
+                     [
+                             new VariableDefinitionCollisionCategory ("Collision Category (ccat)"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory, entity_shape_package, "SetCollisionCategory", 
+                     [
+                             new VariableDefinitionEntity ("The Shape"), 
+                             new VariableDefinitionCollisionCategory ("Collision Category (ccat)"), 
+                     ],
+                     null
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor, entity_shape_package, "IsSensor", 
                      [
                              new VariableDefinitionEntity ("The Shape"), 

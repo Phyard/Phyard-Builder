@@ -155,7 +155,7 @@ package player.world {
          
          mNormalGravityAccelerationMagnitude = Define.DefaultGravityAccelerationMagnitude;
          
-         mCoordinateSystem = CoordinateSystem.GetDefaultCoordinateSystem ();
+         mCoordinateSystem = Define.kDefaultCoordinateSystem;
          
          CreatePhysicsEngine ();
          

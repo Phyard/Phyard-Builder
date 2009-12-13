@@ -203,7 +203,7 @@
          <arg line="-controlflow:0"/>
          <arg line="-optimize:off"/>
          <arg line="-slr:on"/>
-         <arg line="-rename:on"/>
+         <arg line="-rename:off"/>
          <arg line="-safe:on"/>
       </exec>
       
@@ -291,7 +291,7 @@
          <arg line="-controlflow:0"/>
          <arg line="-optimize:off"/>
          <arg line="-slr:off"/>
-         <arg line="-rename:on"/>
+         <arg line="-rename:off"/>
          <arg line="-safe:off"/>
       </exec>
       
@@ -390,7 +390,7 @@
          <arg line="-controlflow:0"/>
          <arg line="-optimize:off"/>
          <arg line="-slr:on"/>
-         <arg line="-rename:on"/>
+         <arg line="-rename:off"/>
          <arg line="-safe:on"/>
       </exec>
       
@@ -401,5 +401,68 @@
    </target>
 
       
+      
+   <target name="--compile-editor-mochiads">
+      <delete dir="${dir.release.editor}" quiet="true" />
+      <mkdir dir="${dir.release.editor}" />
+      
+      <antcall target="--pre-compile" />
+      
+      <condition property="is-debugging" value="true" else="false">
+         <istrue value="${--debug}"/>
+      </condition>
+      
+      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
+         <arg line="-debug=${--debug}"/>
+         <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
+         <arg line="-define+=App::Default_Width,${--width}" />
+         <arg line="-define+=App::Default_Height,${--height}" />
+         <arg line="-output=${dir.release}/editor.swf"/>
+         <arg line="-default-background-color 0xFFFFFF"/>
+         <arg line="-default-frame-rate 30"/>
+         <arg line="-optimize=true" />
+         <arg line="-use-network" />
+         <arg line="-default-size ${--width} ${--height}" />
+         <arg line="-source-path=${dir.build.src}" />
+         <arg line="-locale=en_US" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         <arg line="-library-path=${dir.third-party}/kongragate_api/KongregateAPI.swc" />
+         <arg line="-library-path=${dir.third-party}/mindjolt_api/MindJoltAPI.swc" />
+         <arg line="-library-path=${dir.third-party}/google_analytics/analytics.swc"/>
+         
+         <!-- method 1 -->
+         <!--arg line="${dir.build.src}/main.mxml" /-->
+         
+         <!-- method 2 -->
+         <!--arg line="Main.as" /-->
+         
+         <!-- method 3 -->
+         <arg line="-frame=main_entry,wrapper.ColorInfectionEditor" />
+         <arg line=" ${dir.build.src}/wrapper/EditorPreloader.as" />
+
+      </exec>
+   </target>
+   
+   <target name="debug-editor-mochiads">
+      <antcall target="--compile-editor-mochiads">
+         <param name="--debug" value="true" />
+         <param name="--game-mode" value="" />
+         <param name="--width" value="${editor-width}" />
+         <param name="--height" value="${editor-height}" />
+      </antcall>
+   </target>
+   
+   <target name="release-editor-mochiads" depends="compile-resource">
+      <antcall target="--compile-editor-mochiads">
+         <param name="--debug" value="false" />
+         <param name="--game-mode" value="" />
+         <param name="--width" value="${editor-width}" />
+         <param name="--height" value="${editor-height}" />
+      </antcall>
+      
+      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true" />
+      <copy tofile="${dir.phyard}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true" />
+   </target>
    
 </project>

@@ -32,11 +32,14 @@ package editor.world {
    
    import editor.trigger.entity.Linkable;
    
+   import common.CoordinateSystem;
+   
    import common.Define;
    import common.ValueAdjuster;
    
    public class EntityContainer extends Sprite 
    {
+      public var mCoordinateSystem:CoordinateSystem;
       
       public var mSelectionEngine:SelectionEngine; // used within package
       
@@ -46,6 +49,8 @@ package editor.world {
       
       public function EntityContainer ()
       {
+         mCoordinateSystem = Define.kDefaultCoordinateSystem;
+         
          mSelectionEngine = new SelectionEngine ();
          
          mSelectionListManager = new SelectionListManager ();
@@ -58,14 +63,19 @@ package editor.world {
          mSelectionEngine.Destroy ();
       }
       
-      public function GetWorldHints ():Object
+      public function GetCoordinateSystem ():CoordinateSystem
       {
-         var world_hints:Object = new Object ();
-         world_hints.mPhysicsShapesPotentialMaxCount = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (4096);
-         world_hints.mPhysicsShapesPopulationDensityLevel = ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel (4);
-         
-         return world_hints;
+         return mCoordinateSystem;
       }
+      
+      //public function GetWorldHints ():Object
+      //{
+      //   var world_hints:Object = new Object ();
+      //   world_hints.mPhysicsShapesPotentialMaxCount = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (4096);
+      //   world_hints.mPhysicsShapesPopulationDensityLevel = ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel (4);
+      //   
+      //   return world_hints;
+      //}
       
       public function Update (escapedTime:Number):void
       {

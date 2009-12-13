@@ -6,7 +6,7 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
     title="Scale ..." width="300">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Label text="Scale Ratio:" textAlign="right" width="80"/>
       <mx:TextInput id="TextInput_ScaleRatio" width="80" text="100"/>
       <mx:Label text="% (> 0)" textAlign="left" />
@@ -14,7 +14,7 @@
 
    <mx:Spacer height="10"/>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>

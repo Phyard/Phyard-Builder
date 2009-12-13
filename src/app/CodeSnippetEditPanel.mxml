@@ -616,11 +616,11 @@
             AppendContextMenuItem (sprite, "from Direct Value", OnSelectValueSource_Direct, true, space_type != ValueSpaceTypeDefine.ValueSpace_Void);
             
             if (inputVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "from Input Parameter", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+               AppendContextMenuItem (sprite, "from Input Varialbes", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
             
             //option: ...
             //if (returnVariableSpae.HasVariablesWithValueType (value_type))
-            //   AppendContextMenuItem (sprite, "from Output Parameter", OnSelectValueSource_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
+            //   AppendContextMenuItem (sprite, "from Output Varialbes", OnSelectValueSource_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
             
             //AppendContextMenuItem (sprite, "from Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             //AppendContextMenuItem (sprite, "from Global Variable", null, false), space_type != ValueSpaceTypeDefine.ValueSpace_Global;
@@ -794,10 +794,10 @@
             
             //option: ......
             //if (inputVariableSpae.HasVariablesWithValueType (value_type))
-            //   AppendContextMenuItem (sprite, "to Input Parameter", OnSelectValueTarget_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
+            //   AppendContextMenuItem (sprite, "to Input Variables", OnSelectValueTarget_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
             
             if (returnVariableSpae.HasVariablesWithValueType (value_type))
-               AppendContextMenuItem (sprite, "to Output Parameter", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
+               AppendContextMenuItem (sprite, "to Output Variables", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Return);
             
             //AppendContextMenuItem (sprite, "to Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             //AppendContextMenuItem (sprite, "to Global Variable", null, false), space_type != ValueSpaceTypeDefine.ValueSpace_Global;

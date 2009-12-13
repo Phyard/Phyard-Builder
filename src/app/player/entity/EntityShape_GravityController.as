@@ -46,7 +46,7 @@ package player.entity {
             if (entityDefine.mInteractiveConditions != undefined)
                mInteractiveConditions = entityDefine.mInteractiveConditions;
             if (entityDefine.mInitialGravityAcceleration != null)
-               mGravityAcceleration = entityDefine.mInitialGravityAcceleration;
+               mGravityAcceleration = mWorld.DisplayAccaleration2PhysicsAccaleration (entityDefine.mInitialGravityAcceleration);
             if (entityDefine.mInitialGravityAngle != undefined)
                mGravityAngle = entityDefine.mInitialGravityAngle * Define.kDegrees2Radians;
          }

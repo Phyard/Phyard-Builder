@@ -34,6 +34,9 @@ package player.entity {
             if (entityDefine.mText != undefined)
                SetText (entityDefine.mText);
             
+            if (entityDefine.mAutofitWidth != undefined)
+               SetAutofitWidth (entityDefine.mAutofitWidth);
+            
             // force 50
             SetTransparency (50);
          }
@@ -56,10 +59,24 @@ package player.entity {
          if (text == null)
             text = "";
          
-         mText = text;
-         
-         mNeedRebuildAppearanceObjects = true;
-         DelayUpdateAppearance ();
+         if (mText != text)
+         {
+            mText = text;
+            
+            mNeedRebuildAppearanceObjects = true;
+            DelayUpdateAppearance ();
+         }
+      }
+      
+      public function SetAutofitWidth (auto:Boolean):void
+      {
+         if (mAutofitWidth != auto)
+         {
+            mAutofitWidth = auto;
+            
+            mNeedRebuildAppearanceObjects = true;
+            DelayUpdateAppearance ();
+         }
       }
       
 //=============================================================

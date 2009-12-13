@@ -44,15 +44,11 @@ package editor.world {
    
    import editor.trigger.TriggerEngine;
    
-   import common.CoordinateSystem;
-   
    import common.Define;
    import common.ValueAdjuster;
    
    public class World extends EntityContainer 
    {
-      public var mCoordinateSystem:CoordinateSystem;
-      
       public var mBrothersManager:BrothersManager;
       
       public var mCollisionManager:CollisionManager;
@@ -69,8 +65,6 @@ package editor.world {
       public function World ()
       {
       //
-         mCoordinateSystem = CoordinateSystem.GetDefaultCoordinateSystem ();
-         
          mBrothersManager = new BrothersManager ();
          
          mCollisionManager = new CollisionManager ();
@@ -342,9 +336,9 @@ package editor.world {
          if (bombs_count > 0)
             shapes_count += Define.MaxCoexistParticles;
          
-         mPhysicsShapesPotentialMaxCount = shapes_count; //ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (shapes_count);
+         mPhysicsShapesPotentialMaxCount = shapes_count;
          
-         mPhysicsShapesPopulationDensityLevel = bombs_count > 0 && mPhysicsShapesPotentialMaxCount <= 2048 ? 8 : 4; // ValueAdjuster.AdjustPhysicsShapesPopulationDensityLevel 
+         mPhysicsShapesPopulationDensityLevel = bombs_count > 0 && mPhysicsShapesPotentialMaxCount <= 2048 ? 8 : 4;
       }
       
       public function GetPhysicsShapesPotentialMaxCount ():uint

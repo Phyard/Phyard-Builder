@@ -75,15 +75,15 @@ package editor.trigger {
                        new VariableDefinitionEntity ("Entity"), 
                     ]);
          
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken, "OnJointBroken", "Timer",
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken, "OnJointBroken", "OnJointBroken",
                     [
                        new VariableDefinitionEntity ("Joint"), 
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "Timer",
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "OnJointReachLowerLimit",
                     [
                        new VariableDefinitionEntity ("Joint"), 
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit, "OnJointReachUpperLimit", "Timer",
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit, "OnJointReachUpperLimit", "OnJointReachUpperLimit",
                     [
                        new VariableDefinitionEntity ("Joint"), 
                     ]);

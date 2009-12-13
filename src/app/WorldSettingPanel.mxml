@@ -6,7 +6,7 @@
       >
    <mx:HBox width="100%">
       <mx:Spacer width="100%" />
-      <mx:VBox width="500">
+      <mx:VBox width="600">
          <mx:Spacer height="10" />
 
          <mx:HBox width="100%">
@@ -19,12 +19,12 @@
             <mx:CheckBox id="CheckBox_ShareSourceCode" label="Share Source Code"/>
          </mx:HBox>
 
-         <mx:HBox width="100%" verticalAlign="bottom">
+         <mx:HBox width="100%">
             <mx:Label text="Your Name:" textAlign="right" width="30%"/>
             <mx:TextInput id="Text_AuthorName" width="200" />
          </mx:HBox>
 
-         <mx:HBox width="100%" verticalAlign="bottom">
+         <mx:HBox width="100%">
             <mx:Label text="Your Homepage:" textAlign="right" width="30%"/>
             <mx:TextInput id="Text_AuthorHomePage" width="70%" />
          </mx:HBox>
@@ -175,24 +175,6 @@
                
                CheckBox_BuildBorder.selected = world.IsBuildBorder ();
                ColorPicker_BorderColor.selectedColor = world.GetBorderColor ();
-               
-               /*
-               //var shapes_count:int = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (world.GetPhysicsShapesPotentialMaxCount (), true);
-               
-               var density_level:int = ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (world.GetPhysicsShapesPopulationDensityLevel (), true);
-               RadioButton_ShapesDensityLevel_Auto.selected = false;
-               RadioButton_ShapesDensityLevel_4.selected = false;
-               RadioButton_ShapesDensityLevel_8.selected = false;
-               RadioButton_ShapesDensityLevel_16.selected = false;
-               if (density_level == 0)
-                  RadioButton_ShapesDensityLevel_Auto.selected = true;
-               else if (density_level == 4)
-                  RadioButton_ShapesDensityLevel_4.selected = true;
-               else if (density_level == 8)
-                  RadioButton_ShapesDensityLevel_8.selected = true;
-               else
-                  RadioButton_ShapesDensityLevel_16.selected = true;
-               */
             }
             
             private function SynchronizeWorldWithWorldSettingPanel (world:World):void

@@ -3,94 +3,84 @@
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
 
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
-    title="Slider Setting" width="500" creationComplete="OnInitPanel()">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    title="Slider Setting" width="600" creationComplete="OnInitPanel()">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
-      <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:VBox label="Joint" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_ConnectedShape1" text="Shape 1:" textAlign="right" width="25%"/>
-      <mx:ComboBox id="SelectList_ConnectedShape1" rowCount="10" width="10%" />
-      <mx:Spacer width="20"/>
-      <mx:Label id="Label_ConnectedShape2" text="Shape 2:" textAlign="right" width="25%"/>
-      <mx:ComboBox id="SelectList_ConnectedShape2" rowCount="10" width="10%" />
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
+         <mx:HBox width="100%">
+            <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
+         </mx:HBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limit"/>
-   </mx:HBox>
+         <mx:Spacer height="6"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="6"/>
 
-   <!--
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_LowerTranslation" text="Lower Translation:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_LowerTranslation" focusEnabled="false" minimum="-600" maximum="0" value="-10" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="100"
-          labels="['-600', '-300', '0']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:VBox width="38%">
+               <mx:HBox width="100%">
+                  <mx:Spacer width="2"/>
+                  <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limit"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_LowerTranslation" text="Lower Translation:" textAlign="right" width="120"/>
+                  <mx:TextInput id="Text_LowerTranslation" text="" width="60"/>
+                  <mx:Label text="(m)" textAlign="left"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_UpperTranslation" text="Upper Translation:" textAlign="right"/>
+                  <mx:TextInput id="Text_UpperTranslation" text="" width="60"/>
+                  <mx:Label text="(m)" textAlign="left"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Spacer width="2"/>
+                  <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth between Limits"/>
+               </mx:HBox>
+            </mx:VBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_UpperTranslation" text="Upper Translation:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_UpperTranslation" focusEnabled="false" minimum="0" maximum="600" value="10" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="100"
-          labels="['0', '300', '600']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-   
-   <mx:Spacer height="6"/>
-   -->
+            <mx:VRule  strokeWidth="1" strokeColor="#C0C0C0" height="100%" width="2%"/>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_LowerTranslation" text="Lower Translation:" textAlign="right" width="150"/>
-      <mx:NumericStepper id="NumericStepper_LowerTranslation" maximum="0"
-            stepSize="1" width="60" />
-      <mx:Label text="px" textAlign="left"/>
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_UpperTranslation" text="Upper Translation:" textAlign="right"/>
-      <mx:NumericStepper id="NumericStepper_UpperTranslation" minimum="0"
-            stepSize="1" width="60" />
-      <mx:Label text="px" textAlign="left"/>
-   </mx:HBox>
+            <mx:VBox width="56%">
+               <mx:HBox width="100%">
+                  <mx:CheckBox id="CheckBox_MotorEnabled" label="Enable Motor"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="120"/>
+                  <mx:TextInput id="Text_MotorSpeed" text="" width="100"/>
+                  <mx:Label text="(m/s)" textAlign="left"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Label id="Label_MaxMotorFore" text="Max Motor Force:" textAlign="right" width="120"/>
+                  <mx:TextInput id="Text_MaxMotorForce" text="" width="100"/>
+                  <mx:Label text="   " textAlign="left"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:CheckBox id="CheckBox_Breakable" label="Breakable"/>
+               </mx:HBox>
+            </mx:VBox>
+         </mx:HBox>
+      </mx:VBox>
+      
+      <mx:VBox label="Anchor" borderStyle="solid" height="100%" width="100%"
+                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+                horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+   </mx:TabNavigator>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:CheckBox id="CheckBox_MotorEnabled" label="Enable Motor"/>
-   </mx:HBox>
+   <mx:Spacer height="10"/>
 
-   <!--
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="23%"/>
-      <mx:HSlider id="Slider_MotorSpeed" focusEnabled="false" minimum="-300" maximum="300" value="0" width="77%"
-          dataTipPlacement="top" tickColor="black" snapInterval="1" tickInterval="60"
-          labels="['-300', '0', '300']" allowTrackClick="true" liveDragging="true" />
-   </mx:HBox>
-   -->
-   
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="120"/>
-      <mx:NumericStepper id="NumericStepper_MotorSpeed" minimum="-300" maximum="300"
-            stepSize="1" width="60" />
-      <mx:Label text="px" textAlign="left"/>
-      <mx:Spacer width="100%"/>
-      <mx:Label id="Label_MaxMotorTorque" text="Max Motor Force:" textAlign="right"/>
-      <mx:NumericStepper id="NumericStepper_MaxMotorForce" minimum="0"
-            stepSize="1" width="90" />
-      <mx:Label text="   " textAlign="left"/>
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
-      <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth between Limits"/>
-   </mx:HBox>
-
-
-   <mx:Spacer height="20"/>
-
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
@@ -112,46 +102,34 @@
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          
+         private var mParams:Object;
+         
          private function OnInitPanel ():void
          {
-            NumericStepper_LowerTranslation.minimum = - Define.MaxSliderLimitTranslation;
-            NumericStepper_UpperTranslation.maximum =   Define.MaxSliderLimitTranslation;
-            
-            NumericStepper_MotorSpeed.minimum = - Define.MaxSliderMotorSpeed;
-            NumericStepper_MotorSpeed.maximum =   Define.MaxSliderMotorSpeed;
-            
-            NumericStepper_MaxMotorForce.maximum = Define.MaxSliderMotorForce;
          }
          
-         public function SetValues (values:Object):void
+         public function SetValues (initialValues:Object):void
          {
-            CheckBox_IsVisible.selected = values.mIsVisible;
-            CheckBox_IsVisible.enabled = false;
-            CheckBox_CollideConnected.selected = values.mCollideConnected;
+            mParams = initialValues;
             
-            CheckBox_LimitEnabled.selected = values.mEnableLimit;
-            //Slider_LowerTranslation.value = values.mLowerTranslation;
-            //Slider_UpperTranslation.value = values.mUpperTranslation;
+            CommonSettingPanel.SetValues (initialValues);
             
-            NumericStepper_LowerTranslation.value = values.mLowerTranslation;
-            NumericStepper_UpperTranslation.value = values.mUpperTranslation;
+            CheckBox_LimitEnabled.selected = initialValues.mEnableLimit;
             
-            CheckBox_MotorEnabled.selected = values.mEnableMotor;
-            //Slider_MotorSpeed.value = values.mMotorSpeed;
-            NumericStepper_MotorSpeed.value = values.mMotorSpeed;
+            Text_LowerTranslation.text = initialValues.mLowerTranslation;
+            Text_UpperTranslation.text = initialValues.mUpperTranslation;
             
-            CheckBox_BackAndForth.selected = values.mBackAndForth;
+            CheckBox_MotorEnabled.selected = initialValues.mEnableMotor;
+            Text_MotorSpeed.text = initialValues.mMotorSpeed;
             
-            NumericStepper_MaxMotorForce.value = values.mMaxMotorForce;
+            CheckBox_BackAndForth.selected = initialValues.mBackAndForth;
             
-            //
-            SelectList_ConnectedShape1.dataProvider = values.mShapeListDataProvider;
-            SelectList_ConnectedShape2.dataProvider = values.mShapeListDataProvider;
-            SelectList_ConnectedShape1.selectedIndex = values.mShapeList1SelectedIndex;
-            SelectList_ConnectedShape2.selectedIndex = values.mShapeList2SelectedIndex;
-            
-            SelectList_ConnectedShape1.enabled = values.mAnchorIndex == 0;
-            SelectList_ConnectedShape2.enabled = values.mAnchorIndex == 1;
+            Text_MaxMotorForce.text = initialValues.mMaxMotorForce;
+         }
+         
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            BasicSettingPanel.SetValues (mParams);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -166,28 +144,36 @@
          
          private function OnClickOkButton():void 
          {
-             var params:Object = new Object ();
+             CommonSettingPanel.GetValues (mParams);
              
-             params.mIsVisible = CheckBox_IsVisible.selected;
-             params.mCollideConnected = CheckBox_CollideConnected.selected;
+             mParams.mEnableLimit = CheckBox_LimitEnabled.selected;
              
-             params.mEnableLimit = CheckBox_LimitEnabled.selected;
-             //params.mLowerTranslation = Slider_LowerTranslation.value;
-             //params.mUpperTranslation = Slider_UpperTranslation.value;
-             params.mLowerTranslation = NumericStepper_LowerTranslation.value;
-             params.mUpperTranslation = NumericStepper_UpperTranslation.value;
-             
-             params.mEnableMotor = CheckBox_MotorEnabled.selected;
-             //params.mMotorSpeed = Slider_MotorSpeed.value;
-             params.mMotorSpeed = NumericStepper_MotorSpeed.value;
-             
-             params.mBackAndForth = CheckBox_BackAndForth.selected;
-             
-             params.mMaxMotorForce = NumericStepper_MaxMotorForce.value;
+            var lowerTranslation:Number = parseFloat (Text_LowerTranslation.text);
+            if ( ! isNaN (lowerTranslation) )
+               mParams.mLowerTranslation = lowerTranslation;
             
-             //
-             params.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.mEntityIndex;
-             params.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.mEntityIndex;
+            var upperTranslation:Number = parseFloat (Text_UpperTranslation.text);
+            if ( ! isNaN (upperTranslation) )
+               mParams.mUpperTranslation = upperTranslation;
+            
+             mParams.mEnableMotor = CheckBox_MotorEnabled.selected;
+             
+            var motorSpeeed:Number = parseFloat (Text_MotorSpeed.text);
+            if ( ! isNaN (motorSpeeed) )
+               mParams.mMotorSpeed = motorSpeeed;
+            
+             mParams.mBackAndForth = CheckBox_BackAndForth.selected;
+             
+            var maxMorptFore:Number = parseFloat (Text_MaxMotorForce.text);
+            if ( ! isNaN (maxMorptFore) )
+               mParams.mMaxMotorForce = maxMorptFore;
+            
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+            
+            //
              
              PopUpManager.removePopUp(this);
              
@@ -195,7 +181,7 @@
                OnClose ();
              
             if (OnConfirm != null)
-               OnConfirm (params);
+               OnConfirm (mParams);
          }
          
          private function OnClickCancelButton():void 

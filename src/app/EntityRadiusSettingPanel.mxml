@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+      borderStyle="solid" borderThickness="0"
+      width="100%" height="100%"
+      creationComplete="OnInitPanel()"
+      >
+
+   <mx:HBox width="100%">
+      <mx:HBox width="44%">
+         <mx:Spacer width="100%"/>
+         <mx:Label id="Label_Radius" text="Radius:" textAlign="right"/>
+      </mx:HBox>
+      <mx:HBox width="56%">
+         <mx:TextInput id="Text_Radius" text="" width="80"/>
+         <mx:Spacer width="100%"/>
+      </mx:HBox>
+   </mx:HBox>
+   
+   <mx:Script>
+     <![CDATA[       
+         
+         import common.Define;
+         
+         private var mInputValues:Object;
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         public function SetValues (inputValues:Object):void
+         {
+            mInputValues = inputValues;
+            
+            Text_Radius.text = inputValues.mRadius;
+         }
+         
+         public function GetValues (returnValues:Object):void
+         {
+            var valueRadius:Number = parseFloat (Text_Radius.text);
+            if ( ! isNaN (valueRadius) )
+               returnValues.mRadius = valueRadius;
+            else
+               returnValues.mRadius =mInputValues.mRadius
+         }
+         
+     ]]>
+   </mx:Script>
+   
+</mx:VBox>

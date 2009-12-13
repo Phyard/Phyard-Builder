@@ -9,6 +9,7 @@ package editor.entity {
    import editor.selection.SelectionProxy;
    
    import common.Define;
+   import common.ValueAdjuster;
    
    public class Entity extends Sprite
    {
@@ -22,7 +23,13 @@ package editor.entity {
       private var mPosY:Number = 0;
       private var mRotation:Number = 0;
       
-      private var mIsVisible:Boolean = true;
+      protected var mIsVisible:Boolean = true;
+      
+      //>> v1.08
+      protected var mAlpha:Number = 1.0;
+      protected var mIsActive:Boolean = true;
+      protected var mIsEnabled:Boolean = true;
+      //<<
       
       public function Entity (container:EntityContainer)
       {
@@ -104,7 +111,9 @@ package editor.entity {
       
       public function GetInfoText ():String
       {
-         return "x: " + mPosX + ", y = " + mPosY + ", angle = " + (mRotation * Define.kRadians2Degrees);
+         return     "x = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().DisplayX2PhysicsX (mPosX), 12) 
+                + ", y = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().DisplayY2PhysicsY (mPosY), 12) 
+                + ", angle = " + ValueAdjuster.Number2Precision ((mRotation * Define.kRadians2Degrees), 6);
       }
       
       public function GetPhysicsShapesCount ():uint
@@ -113,7 +122,7 @@ package editor.entity {
       }
       
 //======================================================
-// visible
+// visible, alpha, active
 //======================================================
       
       public function SetVisible (visible:Boolean):void
@@ -124,6 +133,36 @@ package editor.entity {
       public function IsVisible ():Boolean
       {
          return mIsVisible;
+      }
+      
+      public function SetAlpha (alpha:Number):void
+      {
+         mAlpha = alpha;
+      }
+      
+      public function GetAlpha ():Number
+      {
+         return mAlpha;
+      }
+      
+      public function SetActive (active:Boolean):void
+      {
+         mIsActive = active;
+      }
+      
+      public function IsActive ():Boolean
+      {
+         return mIsActive;
+      }
+      
+      public function SetEnabled (enabled:Boolean):void
+      {
+         mIsEnabled = enabled;
+      }
+      
+      public function IsEnabled ():Boolean
+      {
+         return mIsEnabled;
       }
       
 //======================================================
@@ -212,6 +251,9 @@ package editor.entity {
          entity.SetPosition ( GetPositionX () + displayOffsetX, GetPositionY () + displayOffsetY );
          entity.SetRotation ( GetRotation () );
          entity.SetVisible ( IsVisible () );
+         entity.SetAlpha ( GetAlpha () );
+         entity.SetActive ( IsActive () );
+         entity.SetEnabled ( IsEnabled () );
       }
       
       

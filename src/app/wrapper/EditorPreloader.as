@@ -14,12 +14,12 @@ package wrapper {
 
     // Must be dynamic!
     public dynamic class EditorPreloader extends MovieClip {
-        public static var _mochiads_game_id:String = "5de1b1a3984adfa3";
+        public static var _mochiads_game_id:String = "d5a94b26a0ced224";
         //public static var _mochibot_id:String = "7a478df7"; // to g
         
         // Change this class name to your main class
         public static var MAIN_CLASS:String = "wrapper.ColorInfectionEditor";
-        public static var GAME_OPTIONS:Object = {id: _mochiads_game_id, res:"730x600"};
+        public static var GAME_OPTIONS:Object = {id: _mochiads_game_id, res:"688x696"};
         
         
         // Keep track to see if an ad loaded or not

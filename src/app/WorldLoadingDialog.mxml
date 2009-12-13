@@ -4,9 +4,9 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
-    title="Load World" width="500">
+    title="Load World" width="600">
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Label id="Label_SourceCode" text="Please paste your world XML source code in the text area:"/>
    </mx:HBox>
 
@@ -19,7 +19,7 @@
 
    <mx:Spacer height="10"/>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="Load" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>

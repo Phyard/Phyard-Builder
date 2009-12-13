@@ -4,65 +4,38 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Rectangle Setting" width="500" creationComplete="OnInitPanel()">
+    title="Rectangle Setting" width="600" creationComplete="OnInitPanel()">
 
    <mx:TabNavigator width="100%" height="100%">
-      <mx:Box label="Physics" direction="vertical" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Physics" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
-         <ShapePhysicsSettingPanel id="PhysicsSettingPanel" 
-               creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
-      </mx:Box>
-      <mx:Box label="Appearance" direction="vertical" borderStyle="solid" height="100%" width="100%"
+         <ShapePhysicsSettingPanel id="PhysicsSettingPanel" creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
+      </mx:VBox>
+      <mx:VBox label="Appearance" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
-         <ShapeAppearanceSettingPanel id="AppearanceSettingPanel"
-               creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
-      </mx:Box>
-      <mx:Box label="Basic" direction="vertical" borderStyle="solid" height="100%" width="100%"
-               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
-               horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0">
-         <ShapeGeometrySettingPanel id="GeometrySettingPanel" creationComplete="OnGeometrySettingPanelCreationComplete()"/>
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label text="Width:" textAlign="right" width="60"/>
-            <mx:TextInput id="Text_Width" text="" width="80"/>
-            <mx:Label text="Height:" textAlign="right" width="60"/>
-            <mx:TextInput id="Text_Height" text="" width="80"/>
+         <ShapeAppearanceSettingPanel id="AppearanceSettingPanel" creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
+         <mx:HBox width="100%">
+            <mx:Spacer width="60"/>
+            <mx:CheckBox id="CheckBox_RoundCorners" label="Round Corners"/>
          </mx:HBox>
+      </mx:VBox>
+      <mx:VBox label="Others" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <EntityWidthHeightSettingPanel id="WidthHeightSettingPanel" creationComplete="OnEntityWidthHeightSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%"/>
-      </mx:Box>
-      <!--
-      <mx:Box label="Events" direction="vertical" borderStyle="solid" height="100%" width="100%"
-               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
-               horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0">
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label text="When:"/>
-            <mx:Label text="this.OnContactWith (shape)" fontWeight="bold"/>
-            <mx:Spacer width="100%"/>
-         </mx:HBox>
-         <mx:HBox width="100%" verticalAlign="bottom">
-            <mx:Label text="Then:"/>
-            <mx:Spacer width="100%"/>
-         </mx:HBox>
-         <ActionEditPanel/>
-      </mx:Box>
-      -->
-      <!--
-      <mx:Box label="Custom Properties" direction="vertical" borderStyle="solid" height="100%" width="100%"
-               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
-               horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0">
-      </mx:Box>
-      -->
+      </mx:VBox>
    </mx:TabNavigator>
 
-   <mx:Spacer height="20"/>
-   
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
@@ -110,12 +83,14 @@
             AppearanceSettingPanel.SetValues (mParams);
          }
          
-         private function OnGeometrySettingPanelCreationComplete ():void
+         private function OnEntityBasicSettingPanelCreationComplete ():void
          {
-            GeometrySettingPanel.SetValues (mParams);
-            
-            Text_Width.text = "" + mParams.mWidth;
-            Text_Height.text = "" + mParams.mHeight;
+            BasicSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnEntityWidthHeightSettingPanelCreationComplete ():void
+         {
+            WidthHeightSettingPanel.SetValues (mParams);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -140,17 +115,14 @@
                AppearanceSettingPanel.GetValues (mParams);
             }
             
-            if (GeometrySettingPanel != null)
+            if (BasicSettingPanel != null)
             {
-               GeometrySettingPanel.GetValues (mParams);
+               BasicSettingPanel.GetValues (mParams);
+            }
             
-               var valueWidth:Number = parseFloat (Text_Width.text);
-               if ( ! isNaN (valueWidth) )
-                  mParams.mWidth = valueWidth;
-               
-               var valueHeight:Number = parseFloat (Text_Height.text);
-               if ( ! isNaN (valueHeight) )
-                  mParams.mHeight = valueHeight;
+            if (WidthHeightSettingPanel != null)
+            {
+               WidthHeightSettingPanel.GetValues (mParams);
             }
             
             PopUpManager.removePopUp(this);

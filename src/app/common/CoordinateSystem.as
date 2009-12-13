@@ -4,11 +4,6 @@ package common
    
    public class CoordinateSystem
    {
-      public static function GetDefaultCoordinateSystem ():CoordinateSystem
-      {
-         return new CoordinateSystem (0.0, 0.0, 0.1, false);
-      }
-      
 //=========================================================================
 //
 //=========================================================================
@@ -47,13 +42,13 @@ package common
          
          mLengthScale_Physics2Display = 1.0 / displayToPhysicsScale;
          
-         mLengthScale_Display2Physics_2 = mLengthScale_Physics2Display * mLengthScale_Physics2Display;
+         mLengthScale_Display2Physics_2 = mLengthScale_Display2Physics * mLengthScale_Display2Physics;
          mLengthScale_Physics2Display_2 = 1.0 / mLengthScale_Display2Physics_2;
          
-         mLengthScale_Display2Physics_3 = mLengthScale_Physics2Display * mLengthScale_Display2Physics_2;
+         mLengthScale_Display2Physics_3 = mLengthScale_Display2Physics_2 * mLengthScale_Display2Physics;
          mLengthScale_Physics2Display_3 = 1.0 / mLengthScale_Display2Physics_3;
          
-         mLengthScale_Display2Physics_4 = mLengthScale_Physics2Display * mLengthScale_Display2Physics_2;
+         mLengthScale_Display2Physics_4 = mLengthScale_Display2Physics_3 * mLengthScale_Display2Physics;
          mLengthScale_Physics2Display_4 = 1.0 / mLengthScale_Display2Physics_4;
       }
       
@@ -127,6 +122,26 @@ package common
       }
 
       public function PhysicsLength2DisplayLength (pl:Number):Number
+      {
+         return pl * mLengthScale_Physics2Display;
+      }
+
+      public function DisplaySpeed2PhysicsSpeed (dl:Number):Number
+      {
+         return dl * mLengthScale_Display2Physics;
+      }
+
+      public function PhysicsSpeed2DisplaySpeed (pl:Number):Number
+      {
+         return pl * mLengthScale_Physics2Display;
+      }
+
+      public function DisplayAccaleration2PhysicsAccaleration (dl:Number):Number
+      {
+         return dl * mLengthScale_Display2Physics;
+      }
+
+      public function PhysicsAccaleration2DisplayAccaleration (pl:Number):Number
       {
          return pl * mLengthScale_Physics2Display;
       }

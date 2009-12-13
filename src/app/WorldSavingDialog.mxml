@@ -4,15 +4,15 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
-    title="Save World" width="500">
+    title="Save World" width="600">
 
-   <mx:VBox width="100%" verticalAlign="bottom">
+   <mx:VBox width="100%">
       <mx:Text id="Text_TutorialLink" width="100%" selectable="true" link="OnClickTutorialLink(event)">
          <mx:htmlText><![CDATA[<li>Please at least backup the source code for later modifications.</li><li><u><font color='#0000FF'><a href='event:#'>Tutorials on how to use these codes in your blogs and webpages.</a></font></u></li>]]></mx:htmlText>
       </mx:Text >
    </mx:VBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Label id="Label_SourceCode" text="Source Code:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
       <mx:Button label="Copy Source Code" click="OnClickCopySourceCode ();"/>
@@ -25,7 +25,7 @@
       </mx:TextArea>
    </mx:HBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Label id="Label_PlayCode" text="Play Code:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
       <mx:Button label="Copy Play Code" click="OnClickCopyPlayCode ();"/>
@@ -38,7 +38,7 @@
       </mx:TextArea>
    </mx:HBox>
 
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Label id="Label_EmbedCode" text="Html Embed Code:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
       <mx:Button label="Copy Embed Code" click="OnClickCopyEmbedCode ();"/>
@@ -53,7 +53,7 @@
 
   <mx:Spacer height="10"/>
    
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="Close" click="OnClickCloseButton ();"/>
       <mx:Spacer width="100%"/>

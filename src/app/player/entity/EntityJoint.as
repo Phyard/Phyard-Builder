@@ -48,6 +48,11 @@ package player.entity {
             // ...
             if (entityDefine.mCollideConnected != undefined)
                SetCollideConnected (entityDefine.mCollideConnected);
+            
+            //>>from v1.08
+            if (entityDefine.mBreakable != undefined)
+               SetBreakable (entityDefine.mBreakable);
+            //<<
          }
          else if (createStageId == 2)
          {
@@ -182,6 +187,18 @@ package player.entity {
       public function IsCollideConnected ():Boolean
       {
          return mCollideConnected;
+      }
+      
+      protected var mBreakable:Boolean = false;
+      
+      public function SetBreakable (breakable:Boolean):void
+      {
+         mBreakable = breakable;
+      }
+      
+      public function IsBreakable ():Boolean
+      {
+         return mBreakable;
       }
       
 //=============================================================

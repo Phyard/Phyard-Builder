@@ -4,7 +4,7 @@
      You cannot run it independently. -->
      
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Polyline Setting" width="500" creationComplete="OnInitPanel()">
+    title="Polyline Setting" width="600" creationComplete="OnInitPanel()">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:Box label="Physics" direction="vertical" borderStyle="solid" height="100%" width="100%"
@@ -25,13 +25,13 @@
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
-         <ShapeGeometrySettingPanel id="GeometrySettingPanel" creationComplete="OnGeometrySettingPanelCreationComplete()"/>
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
       </mx:Box>
    </mx:TabNavigator>
 
    <mx:Spacer height="20"/>
    
-   <mx:HBox width="100%" verticalAlign="bottom">
+   <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
       <mx:Spacer width="30"/>
@@ -79,9 +79,9 @@
             AppearanceSettingPanel.SetValues (mParams);
          }
          
-         private function OnGeometrySettingPanelCreationComplete ():void
+         private function OnEntityBasicSettingPanelCreationComplete ():void
          {
-            GeometrySettingPanel.SetValues (mParams);
+            BasicSettingPanel.SetValues (mParams);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -106,9 +106,9 @@
                AppearanceSettingPanel.GetValues (mParams);
             }
             
-            if (GeometrySettingPanel != null)
+            if (BasicSettingPanel != null)
             {
-               GeometrySettingPanel.GetValues (mParams);
+               BasicSettingPanel.GetValues (mParams);
             }
             
             PopUpManager.removePopUp(this);

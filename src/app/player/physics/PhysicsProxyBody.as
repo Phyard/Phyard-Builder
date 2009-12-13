@@ -105,6 +105,11 @@ package player.physics {
          return _b2Body.GetAngle ();
       }
       
+      public function GetAngularVelocity ():Number
+      {
+         return _b2Body.GetAngularVelocity ();
+      }
+      
       public function SetPositionAndRotation (posX:Number, posY:Number, rotation:Number):void
       {
          _b2Body.SetTransform (b2Vec2.b2Vec2_From2Numbers (posX, posY), rotation);

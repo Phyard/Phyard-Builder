@@ -420,5 +420,20 @@ package common {
          return elementValueTarget;
       }
       
+//========================================================================================
+// 
+//========================================================================================
+      
+      public static function FunctionCallingDefines_DisplayValues2PhysicsValues (functionCallingDefines:Array):void
+      {
+         
+      }
+      
+      // float -> 6 precisions, double -> 12 precision
+      public static function AdjustNumberValuesInFunctionCallingDefines (functionCallingDefines:Array):void
+      {
+         
+      }
+      
    }
 }

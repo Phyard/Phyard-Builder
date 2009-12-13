@@ -18,6 +18,7 @@ package player.trigger.entity
          // to override
       }
       
+      // for judging if this condition is evaluated already in current step.
       private var mLastEvaluateStep:int = -1;
       
       final public function GetEvaluatedValue ():int

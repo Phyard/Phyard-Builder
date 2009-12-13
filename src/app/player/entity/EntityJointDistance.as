@@ -25,6 +25,39 @@ package player.entity {
       }
       
 //=============================================================
+//   create
+//=============================================================
+      
+      override public function Create (createStageId:int, entityDefine:Object):void
+      {
+         super.Create (createStageId, entityDefine);
+         
+         if (createStageId == 0)
+         {
+            //>>from v1.08
+            if (entityDefine.mBreakDeltaLength != undefined)
+               SetBreakDeltaLength (entityDefine.mBreakDeltaLength);
+            //<<
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      protected var mBreakDeltaLength:Number;
+      
+      public function SetBreakDeltaLength (dLength:Number):void
+      {
+         mBreakDeltaLength = dLength;
+      }
+      
+      public function GetBreakDeltaLength ():Number
+      {
+         return mBreakDeltaLength;
+      }
+      
+//=============================================================
 //   initialize
 //=============================================================
       

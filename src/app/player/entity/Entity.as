@@ -64,6 +64,10 @@ package player.entity {
                SetVisible   (entityDefine.mIsVisible);
             if (entityDefine.mAlpha != undefined)
                SetAlpha     (entityDefine.mAlpha);
+            if (entityDefine.mIsActive != undefined)
+               SetActive    (entityDefine.mIsActive);
+            if (entityDefine.mIsEnabled != undefined)
+               SetEnabled   (entityDefine.mIsEnabled);
          }
       }
       
@@ -107,20 +111,26 @@ package player.entity {
       internal var mRotation:Number = 0.0;
       internal var mVisible:Boolean = true;
       internal var mAlpha:Number = 1.0;
+      internal var mIsActive:Boolean = true;
+      internal var mIsEnabled:Boolean = true;
+      
+      // here, for shapes, the SetPosition will not not change the mass of the body of shape,
+      // also not call shape.UpdateLocalPosition.
+      // Those functions must be called mannually if needed.
       
       public function SetPositionX (x:Number):void
       {
          mPositionX = x;
       }
       
-      public function GetPositionX ():Number
-      {
-         return mPositionX;
-      }
-      
       public function SetPositionY (y:Number):void
       {
          mPositionY = y;
+      }
+      
+      public function GetPositionX ():Number
+      {
+         return mPositionX;
       }
       
       public function GetPositionY ():Number
@@ -160,6 +170,26 @@ package player.entity {
       public function GetAlpha ():Number
       {
          return mAlpha;
+      }
+      
+      public function SetActive (active:Boolean):void
+      {
+         mIsActive = active;
+      }
+      
+      public function IsActive ():Boolean
+      {
+         return mIsActive;
+      }
+      
+      public function SetEnabled (enabled:Boolean):void
+      {
+         mIsEnabled = enabled;
+      }
+      
+      public function IsEnabled ():Boolean
+      {
+         return mIsEnabled;
       }
       
 //=============================================================
@@ -421,6 +451,8 @@ package player.entity {
 //==============================================================================
 // some variables for APIs
 //==============================================================================
+      
+   // for some API convinience
       
       internal var mSpecialId:int = 0;
       internal static var sLastSpecialId:int = 0;

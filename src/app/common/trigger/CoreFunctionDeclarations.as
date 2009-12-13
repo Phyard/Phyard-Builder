@@ -940,6 +940,21 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor,
                      [
                         ValueTypeDefine.ValueType_Entity, 

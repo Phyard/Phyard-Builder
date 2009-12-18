@@ -16,7 +16,7 @@ package editor.entity {
    
    import editor.selection.SelectionProxy;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -101,7 +101,7 @@ package editor.entity {
          
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = Define.BorderColorSelectedObject;
             borderSize  = 3;
          }
          else

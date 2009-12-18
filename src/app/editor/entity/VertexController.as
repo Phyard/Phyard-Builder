@@ -15,7 +15,7 @@ package editor.entity {
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.setting.EditorSetting;
+   import common.Define;
    
    public class VertexController extends Sprite 
    {
@@ -62,7 +62,7 @@ package editor.entity {
          
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = Define.BorderColorSelectedObject;
             borderSize  = 3;
          }
          else if ( mSelectedSecondarily )

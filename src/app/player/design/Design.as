@@ -58,7 +58,7 @@ package player.design
          if (mLevelStatus_UserAssigned == ValueDefine.LevelStatus_Failed)
             return false;
          
-         if (mCurrentWorld.IsCICriterionEnabled ())
+         if (mCurrentWorld.IsCiRulesEnabled ())
          {
             return mCurrentWorld.IsSuccessed_CICriterion ();
          }
@@ -79,7 +79,7 @@ package player.design
          if (mLevelStatus_UserAssigned == ValueDefine.LevelStatus_Successed)
             return false;
          
-         if (mCurrentWorld.IsCICriterionEnabled ())
+         if (mCurrentWorld.IsCiRulesEnabled ())
          {
             return mCurrentWorld.IsFailed_CICriterion ();
          }

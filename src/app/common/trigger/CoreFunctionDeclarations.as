@@ -879,6 +879,13 @@ package common.trigger {
                      ]
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Destroy,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         
       // game / entity / shape
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType,

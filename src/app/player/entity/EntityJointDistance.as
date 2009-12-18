@@ -36,7 +36,7 @@ package player.entity {
          {
             //>>from v1.08
             if (entityDefine.mBreakDeltaLength != undefined)
-               SetBreakDeltaLength (entityDefine.mBreakDeltaLength);
+               SetBreakDeltaLength (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mBreakDeltaLength));
             //<<
          }
       }
@@ -83,6 +83,16 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
+         if (mPhysicsProxy != null)
+         {
+            if (mBreakable && Math.abs (mProxyJointDistance.GetCurrentLength () - mProxyJointDistance.GetStaticLength ()) > mBreakDeltaLength)
+            {
+               Destroy ();
+               
+               return;
+            }
+         }
+         
          DelayUpdateAppearance ();
       }
       
@@ -96,10 +106,10 @@ package player.entity {
       {
          GraphicsUtil.ClearAndDrawLine (
                   mLineShape, 
-                  mWorld.PhysicsX2DisplayX (mAnchor1.GetPositionX ()), 
-                  mWorld.PhysicsY2DisplayY (mAnchor1.GetPositionY ()), 
-                  mWorld.PhysicsX2DisplayX (mAnchor2.GetPositionX ()), 
-                  mWorld.PhysicsY2DisplayY (mAnchor2.GetPositionY ())
+                  mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.GetPositionX ()), 
+                  mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor1.GetPositionY ()), 
+                  mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.GetPositionX ()), 
+                  mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor2.GetPositionY ())
                );
          
          mLineShape.visible = mVisible;

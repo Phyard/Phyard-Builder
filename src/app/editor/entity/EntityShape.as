@@ -8,7 +8,7 @@ package editor.entity {
    
    import editor.selection.SelectionProxy;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -23,7 +23,7 @@ package editor.entity {
       protected var mDrawBorder:Boolean = true;
       protected var mDrawBackground:Boolean = true;
       
-      protected var mBorderColor:uint = EditorSetting.BorderColorUnselectedObject;
+      protected var mBorderColor:uint = Define.BorderColorUnselectedObject;
       protected var mBorderThickness:uint = 1; // from v1.04
       protected var mBorderTransparency:uint = 100; // from v1.05
       
@@ -39,7 +39,8 @@ package editor.entity {
       protected var mIsStatic:Boolean = false;
       public var mIsBullet:Boolean = false;
       
-      public var mDensity:Number = 1.0;
+      //public var mDensity:Number = 1.0;
+      public var mDensity:Number = 5000.0; // from v1.08
       public var mFriction:Number = 0.1;
       public var mRestitution:Number = 0.2;
       
@@ -73,7 +74,7 @@ package editor.entity {
       protected var mAngularDamping:Number = 0;
       
       protected var mAllowSleeping:Boolean = true;
-      protected var mFixRotation:Boolean = true;
+      protected var mFixRotation:Boolean = false;
       //<<
       
 //====================================================================
@@ -340,6 +341,9 @@ package editor.entity {
       
       public function SetDensity (density:Number):void
       {
+         if (density < 0)
+            density = 0.0;
+         
          mDensity = density;
       }
       
@@ -350,6 +354,9 @@ package editor.entity {
       
       public function SetFriction (friction:Number):void
       {
+         if (mFriction < 0)
+            mFriction = 0.0;
+         
          mFriction = friction;
       }
       
@@ -360,6 +367,9 @@ package editor.entity {
       
       public function SetRestitution (restitution:Number):void
       {
+         if (mRestitution < 0)
+            mRestitution = 0.0;
+         
          mRestitution = restitution;
       }
       
@@ -370,6 +380,9 @@ package editor.entity {
       
       public function SetLinearVelocityMagnitude (speed:Number):void
       {
+         if (mLinearVelocityMagnitude < 0)
+            mLinearVelocityMagnitude = 0.0;
+         
          mLinearVelocityMagnitude = speed;
       }
       
@@ -380,7 +393,7 @@ package editor.entity {
       
       public function SetLinearVelocityAngle (angle:Number):void
       {
-         mLinearVelocityAngle = angle;
+         mLinearVelocityAngle = angle % 360.0;
       }
       
       public function GetLinearVelocityAngle ():Number
@@ -400,6 +413,9 @@ package editor.entity {
       
       public function SetLinearDamping (damping:Number):void
       {
+         if (damping < 0)
+            damping = 0;
+         
          mLinearDamping = damping;
       }
       
@@ -410,6 +426,9 @@ package editor.entity {
       
       public function SetAngularDamping (damping:Number):void
       {
+         if (damping < 0)
+            damping = 0;
+         
          mAngularDamping = damping;
       }
       

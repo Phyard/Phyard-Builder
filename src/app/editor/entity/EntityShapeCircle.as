@@ -10,7 +10,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    import common.ValueAdjuster;
@@ -43,7 +43,7 @@ package editor.entity {
       
       override public function GetInfoText ():String
       {
-         return super.GetInfoText () + ", radius = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().DisplayLength2PhysicsLength (GetRadius ()), 6);
+         return super.GetInfoText () + ", radius = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (GetRadius ()), 6);
       }
       
       override public function GetPhysicsShapesCount ():uint
@@ -74,7 +74,7 @@ package editor.entity {
          
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = Define.BorderColorSelectedObject;
             if (borderThickness * mWorld.GetZoomScale () < 3)
                borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
@@ -129,7 +129,7 @@ package editor.entity {
       {
          if (validate)
          {
-            var minRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombRadius : EditorSetting.MinCircleRadium;
+            var minRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombRadius : Define.MinCircleRadium;
             var maxRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MaxBombRadius : Define.MaxCircleRadium;
             
             if (radius > maxRadius)

@@ -18,7 +18,7 @@ package editor.entity {
    import editor.selection.SelectionProxyRectangle;
    
    import editor.runtime.Resource;
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -65,7 +65,7 @@ package editor.entity {
          
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = Define.BorderColorSelectedObject;
             if (borderThickness * mWorld.GetZoomScale () < 3)
                borderThickness  = 3.0 / mWorld.GetZoomScale ();
             

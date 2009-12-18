@@ -13,15 +13,16 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    import common.ValueAdjuster;
    
    public class EntityShapeGravityController extends EntityShapeCircle 
    {
-      private var mInitialGravityAcceleration:Number = Define.kDefaultCoordinateSystem.PhysicsAccaleration2DisplayAccaleration (Define.DefaultGravityAccelerationMagnitude);
-      private var mInitialGravityAngle:int = 90; // not float, for byteArray.writeArray has precision problems
+      private var mMaximalGravityAcceleration:Number;
+      private var mInitialGravityAcceleration:Number;
+      private var mInitialGravityAngle:int;
       
       //private var mIsInteractive:Boolean = true;
       
@@ -36,6 +37,10 @@ package editor.entity {
       public function EntityShapeGravityController (world:World)
       {
          super (world);
+         
+         mMaximalGravityAcceleration = mWorld.GetDefaultGravityAccelerationMagnitude ();
+         mInitialGravityAcceleration = mMaximalGravityAcceleration;
+         mInitialGravityAngle = mWorld.GetDefaultGravityAccelerationAngle ();
       }
       
       override public function IsBasicShapeEntity ():Boolean
@@ -82,13 +87,31 @@ package editor.entity {
       
       public function SetInitialGravityAcceleration (ga:Number):void
       {
-         //mInitialGravityAcceleration = ValueAdjuster.AdjustInitialGravityAcceleration (ga);
+         if (ga < 0)
+            ga = 0.0;
+         
          mInitialGravityAcceleration = ga;
       }
       
       public function GetInitialGravityAcceleration ():Number
       {
+         if (mInitialGravityAcceleration > mMaximalGravityAcceleration)
+            mInitialGravityAcceleration = mMaximalGravityAcceleration;
+         
          return mInitialGravityAcceleration;
+      }
+      
+      public function SetMaximalGravityAcceleration (ga:Number):void
+      {
+         if (ga < 0)
+            ga = 0.0;
+         
+         mMaximalGravityAcceleration = ga;
+      }
+      
+      public function GetMaximalGravityAcceleration ():Number
+      {
+         return mMaximalGravityAcceleration;
       }
       
       public function SetInitialGravityAngle (angle:Number):void
@@ -96,15 +119,13 @@ package editor.entity {
          mInitialGravityAngle = angle % 360.0;
       }
       
-      public function GetInitialGravityAngle ():int
+      public function GetInitialGravityAngle ():Number
       {
          return mInitialGravityAngle;
       }
       
       override public function UpdateAppearance ():void
       {
-         var initialGravityAcceleration:Number = mWorld.GetCoordinateSystem ().DisplayAccaleration2PhysicsAccaleration (mInitialGravityAcceleration);
-         
       // .
          if (mTextG == null)
          {
@@ -119,26 +140,10 @@ package editor.entity {
          }
          
       // .
-         var borderColor:uint;
-         var borderSize :int;
-         
-         if ( IsSelected () )
-         {
-            borderColor = EditorSetting.BorderColorSelectedObject;
-            borderSize  = 3;
-            
-            borderSize /= mWorld.GetZoomScale ();
-         }
-         else
-         {
-            //borderColor = IsDrawBorder () ? mBorderColor : mFilledColor;
-            //borderSize  = IsDrawBorder () ? 1 : 0;
-            
-            borderColor = mBorderColor;
-            borderSize = 1;
-         }
-         
-         var bandColor:uint = IsZoneInteractive (Define.GravityController_InteractiveZone_AllArea) ? Define.ColorMovableObject : Define.ColorStaticObject;
+         var allAeraInteractive:Boolean = IsZoneInteractive (Define.GravityController_InteractiveZone_AllArea);
+         var backgroundColor:uint = allAeraInteractive ? Define.kInteractiveColor : Define.kUninteractiveColor;
+         var lightBackgroundColor:uint = GraphicsUtil.BlendColor (backgroundColor, 0xFFFFFF, allAeraInteractive ? 0.5 : 0.5);
+         var lightInteractiveBackgroundColor:uint = GraphicsUtil.BlendColor (Define.kInteractiveColor, 0xFFFFFF, 0.75);
          
          alpha = 0.7;
          
@@ -153,9 +158,18 @@ package editor.entity {
             radius_1b = radius_1a;
          
          GraphicsUtil.Clear (this);
-         GraphicsUtil.DrawCircle (this, 0, 0, radius_1b, borderColor, borderSize, true, bandColor);
-         GraphicsUtil.DrawCircle (this, 0, 0, radius_1a, mBorderColor, 1, true, mFilledColor);
-         GraphicsUtil.DrawCircle (this, 0, 0, radius_0b, mBorderColor, 1, true, mFilledColor);
+         GraphicsUtil.DrawCircle (this, 0, 0, radius_1b, 0x0, 1, true, backgroundColor);
+         GraphicsUtil.DrawCircle (this, 0, 0, radius_1a, 0x0,-1, true, lightBackgroundColor);
+         
+         if ( IsSelected () )
+         {
+            var borderColor:uint = Define.BorderColorSelectedObject;
+            var borderSize :int  = 3;
+            
+            borderSize /= mWorld.GetZoomScale ();
+            
+            GraphicsUtil.DrawCircle (this, 0, 0, radius_1b, borderColor, borderSize, false);
+         }
          
          var params:Array;
          if (mInteractiveZonesParams == null)
@@ -165,12 +179,12 @@ package editor.entity {
          if (outerRadius < Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius)
             outerRadius = Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius;
          
-         for (var i:int = Define.GravityController_InteractiveZone_Up; i <= Define.GravityController_InteractiveZone_Right; ++ i)
+         for (var i:int = Define.GravityController_InteractiveZone_Up; i <= Define.GravityController_InteractiveZone_Center; ++ i)
          {
             params = mInteractiveZonesParams [i];
             if (IsZoneInteractive (i))
             {
-               GraphicsUtil.DrawCircle (this, params [0] * outerRadius, params[1] * outerRadius, params [2], mBorderColor, 1, true, mFilledColor);
+               GraphicsUtil.DrawCircle (this, params [0] * outerRadius, params[1] * outerRadius, params [2], 0x0, 1, true, lightInteractiveBackgroundColor);
             }
          }
          
@@ -184,7 +198,7 @@ package editor.entity {
          {
             gx0 = radius_0b * Math.cos (direction);
             gy0 = radius_0b * Math.sin (direction);
-            acceleration = radius_0b + (radius_1a - radius_0b) * initialGravityAcceleration / Define.DefaultGravityAccelerationMagnitude;
+            acceleration = radius_0b + (radius_1a - radius_0b) * mInitialGravityAcceleration / mMaximalGravityAcceleration;
             gx1 = acceleration * Math.cos (direction);
             gy1 = acceleration * Math.sin (direction);
          }
@@ -192,7 +206,7 @@ package editor.entity {
          {
             gx0 = 0;
             gy0 = 0;
-            acceleration = mRadius * initialGravityAcceleration / Define.DefaultGravityAccelerationMagnitude;
+            acceleration = mRadius * mInitialGravityAcceleration / mMaximalGravityAcceleration;
             gx1 = acceleration * Math.cos (direction);
             gy1 = acceleration * Math.sin (direction);
          }

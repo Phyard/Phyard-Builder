@@ -7,7 +7,7 @@ package editor.mode {
    
    import editor.entity.Entity;
    import editor.WorldView;
-   import editor.setting.EditorSetting;
+   
    
    import editor.trigger.entity.Linkable;
    

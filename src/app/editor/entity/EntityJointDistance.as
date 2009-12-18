@@ -10,7 +10,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   
    
    public class EntityJointDistance extends EntityJoint 
    {
@@ -18,7 +18,7 @@ package editor.entity {
       public var mAnchor1:SubEntityDistanceAnchor;
       public var mAnchor2:SubEntityDistanceAnchor;
       
-      protected var mBreakDeltaLength:Number;
+      protected var mBreakDeltaLength:Number = 0.0;
       
       public function EntityJointDistance (world:World)
       {

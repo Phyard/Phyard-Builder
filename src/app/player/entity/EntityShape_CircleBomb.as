@@ -14,6 +14,8 @@ package player.entity {
       {
          super (world);
          
+         mAiTypeChangeable = false;
+         
          mBallTypeDotPercent = 0.75;
       }
       
@@ -32,7 +34,7 @@ package player.entity {
          
          if (needRebuildAppearanceObjects)
          {
-            var displayRadius:Number = mWorld.PhysicsLength2DisplayLength (mRadius);
+            var displayRadius:Number = mWorld.GetCoordinateSystem ().P2D_Length (mRadius);
             
             GraphicsUtil.DrawCircle (
                      mBackgroundShape,

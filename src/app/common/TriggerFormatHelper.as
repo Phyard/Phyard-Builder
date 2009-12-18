@@ -239,8 +239,8 @@ package common {
             value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputValueType (i), functionDefinition);
          
          var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
-         func_calling.SetInputValueSources (value_sources);
-         func_calling.SetReturnValueTargets (value_targets);
+         func_calling.AssignInputValueSources (value_sources);
+         func_calling.AssignOutputValueTargets (value_targets);
          
          return func_calling;
       }
@@ -568,9 +568,10 @@ package common {
 // 
 //========================================================================================
       
-      public static function FunctionCallingDefines_PhysicsValues2DisplayValues (functionCallingDefines:Array):void
+      // float -> 6 precisions, double -> 12 precisions
+      public static function AdjustNumberPrecisionsInCodeSnippet (codeSnippet:CodeSnippet):void
       {
-         
+         codeSnippet.AdjustNumberPrecisions ();
       }
       
    }

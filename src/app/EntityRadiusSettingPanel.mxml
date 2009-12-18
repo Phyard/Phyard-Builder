@@ -8,7 +8,6 @@
       width="100%" height="100%"
       creationComplete="OnInitPanel()"
       >
-
    <mx:HBox width="100%">
       <mx:HBox width="44%">
          <mx:Spacer width="100%"/>
@@ -19,7 +18,6 @@
          <mx:Spacer width="100%"/>
       </mx:HBox>
    </mx:HBox>
-   
    <mx:Script>
      <![CDATA[       
          

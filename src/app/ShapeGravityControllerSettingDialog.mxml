@@ -13,15 +13,7 @@
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnMainPanelCreationComplete()">
 
          <mx:HBox width="100%">
-            <mx:Spacer width="10"/>
-            <mx:CheckBox id="CheckBox_Condition" label="Only interactive when all shapes without joints connected are stopped" />
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
-            <mx:Spacer width="10"/>
-         </mx:HBox>
-
-         <mx:HBox width="100%">
-            <mx:VBox width="39%" >
+            <mx:VBox width="44%" >
                <mx:HBox width="100%">
                   <mx:Spacer width="100%"/>
                   <mx:Label id="Label_InteractiveZones" text="Interactive Zones:" textAlign="right" width="39%"/>
@@ -44,37 +36,62 @@
          </mx:HBox>
 
          <mx:HBox width="100%">
-            <mx:VBox width="39%" >
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_Condition" label="Only interactive when all shapes without joints connected are sleeping" />
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:VBox width="50%" >
                <mx:HBox width="100%">
                   <mx:Spacer width="100%"/>
-                  <mx:Label id="Label_GravityAcceleration" text="Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
+                  <mx:Label id="Label_MaximalMagnitude" text="Maximal Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
                </mx:HBox>
             </mx:VBox>
             <mx:VBox>
-               <mx:TextInput id="Text_GravityAcceleration" text="" width="100"/>
+               <mx:TextInput id="Text_MaximalMagnitude" text="" width="100"/>
             </mx:VBox>
          </mx:HBox>
 
          <mx:HBox width="100%">
-            <mx:VBox width="39%" >
+            <mx:VBox width="50%" >
                <mx:HBox width="100%">
                   <mx:Spacer width="100%"/>
-                  <mx:Label id="Label_GravityAngle" text="Gravity Acceleration Angle:" textAlign="right" width="39%"/>
+                  <mx:Label id="Label_InitialMagnitude" text="Initial Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
                </mx:HBox>
             </mx:VBox>
             <mx:VBox>
-               <mx:TextInput id="Text_GravityAngle" text="" width="100"/>
+               <mx:TextInput id="Text_InitialMagnitude" text="" width="100"/>
             </mx:VBox>
          </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:HBox width="50%">
+               <mx:Spacer width="100%"/>
+               <mx:Label id="Label_InitialAngle" text="Initial Gravity Acceleration Angle:" textAlign="right" width="39%"/>
+            </mx:HBox>
+            <mx:HBox>
+               <mx:TextInput id="Text_InitialAngle" text="" width="100"/>
+               <mx:Label text="(degrees)"/>
+            </mx:HBox>
+         </mx:HBox>
+
+         <mx:Spacer height="26" />
+
       </mx:Box>
-      <mx:Box label="Others" direction="vertical" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="100%"/>
          <EntityRadiusSettingPanel id="RadiusSettingPanel" creationComplete="OnEntityRadiusSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%" />
-      </mx:Box>
+      </mx:VBox>
    </mx:TabNavigator>
 
    <mx:Spacer height="10"/>
@@ -117,8 +134,6 @@
          
          private function InitMainPanel (initialValues:Object):void
          {
-            CheckBox_IsVisible.selected = initialValues.mIsVisible;
-            
             //CheckBox_Interactive.selected = initialValues.mIsInteractive;
             CheckBox_ZoneUp.selected = (initialValues.mInteractiveZones & (1 <<Define.GravityController_InteractiveZone_Up)) != 0;
             CheckBox_ZoneDown.selected = (initialValues.mInteractiveZones & (1 << Define.GravityController_InteractiveZone_Down)) != 0;
@@ -127,8 +142,9 @@
             CheckBox_ZoneCenter.selected = (initialValues.mInteractiveZones & (1 << Define.GravityController_InteractiveZone_Center)) != 0;
             CheckBox_ZoneAllArea.selected = (initialValues.mInteractiveZones & (1 << Define.GravityController_InteractiveZone_AllArea)) != 0;
             
-            Text_GravityAcceleration.text = initialValues.mInitialGravityAcceleration;
-            Text_GravityAngle.text = initialValues.mInitialGravityAngle;
+            Text_MaximalMagnitude.text= initialValues.mMaximalGravityAcceleration;
+            Text_InitialMagnitude.text = initialValues.mInitialGravityAcceleration;
+            Text_InitialAngle.text = initialValues.mInitialGravityAngle;
             
             CheckBox_Condition.selected = initialValues.mInteractiveConditions;
          }
@@ -155,8 +171,6 @@
          
          private function OnClickOkButton():void 
          {
-            mParams.mIsVisible = CheckBox_IsVisible.selected;
-            
             //params.mIsInteractive = CheckBox_Interactive.selected;
             mParams.mInteractiveZones = 0;
             if (CheckBox_ZoneUp.selected)
@@ -172,11 +186,15 @@
             if (CheckBox_ZoneAllArea.selected)
                mParams.mInteractiveZones |= (1 << Define.GravityController_InteractiveZone_AllArea);
             
-            var gravityAcceleration:Number = parseFloat (Text_GravityAcceleration.text);
-            if ( ! isNaN (gravityAcceleration) )
-               mParams.mInitialGravityAcceleration = gravityAcceleration;
+            var maximalMagnitude:Number = parseFloat (Text_MaximalMagnitude.text);
+            if ( ! isNaN (maximalMagnitude) )
+               mParams.mMaximalGravityAcceleration = maximalMagnitude;
             
-            var gravityAngle:Number = parseFloat (Text_GravityAngle.text);
+            var initialMagnitude:Number = parseFloat (Text_InitialMagnitude.text);
+            if ( ! isNaN (initialMagnitude) )
+               mParams.mInitialGravityAcceleration = initialMagnitude;
+            
+            var gravityAngle:Number = parseFloat (Text_InitialAngle.text);
             if ( ! isNaN (gravityAngle) )
                mParams.mInitialGravityAngle = gravityAngle;
             

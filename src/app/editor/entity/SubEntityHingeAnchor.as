@@ -10,7 +10,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   import common.Define;
    
    public class SubEntityHingeAnchor extends SubEntityJointAnchor 
    {
@@ -41,7 +41,7 @@ package editor.entity {
          
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = Define.BorderColorSelectedObject;
             borderSize  = 3;
          }
          else

@@ -143,6 +143,13 @@ package Box2D.Dynamics.Joints
 				m_localAnchor2.y += dy;
 			}
 		}
+		
+		protected var mReachMaxMotorTorqueCallback:Function = null;
+		
+		public function SetReachMaxMotorTorqueCallback (callback:Function):void
+		{
+			mReachMaxMotorTorqueCallback = callback;
+		}
 
 	} // class
 } // package

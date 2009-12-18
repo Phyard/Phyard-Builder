@@ -19,7 +19,7 @@ package editor.trigger.entity {
    
    import editor.entity.Entity;
    
-   import editor.setting.EditorSetting;
+   
    
    public class InputEntitySelector_Single extends InputEntitySelector 
    {

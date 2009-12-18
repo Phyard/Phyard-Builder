@@ -49,7 +49,7 @@ package player.entity {
             if (entityDefine.mFrequency != undefined)
                SetFrequency (entityDefine.mFrequency);
             if (entityDefine.mBreakExtendedLength != undefined)
-               SetBreakExtendedLength (entityDefine.mBreakExtendedLength);
+               SetBreakExtendedLength (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mBreakExtendedLength));
             //<<
          }
          else if (createStageId == 2)
@@ -58,11 +58,19 @@ package player.entity {
             var staticPhysicsLength:Number = currentLength * mStaticLengthRatio;
             var params:Object = Setting.GetSpringParamsByType (mSpringType, staticPhysicsLength);
             
-            mDisplayStaticLength = mWorld.PhysicsLength2DisplayLength (staticPhysicsLength);
+            mDisplayStaticLength = mWorld.GetCoordinateSystem ().P2D_Length (staticPhysicsLength);
             mDisplayDiameter = params.mDiameter;
             mDisplayWireDiameter = params.mWireDiameter;
             mDisplayStaticSegmentLength = params.mStaticSegmentLength;
-            mFrequencyHz = params.mFrequencyHz;
+            
+            if (mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_CustomFrequency)
+               mFrequencyHz = mFrequency;
+            else
+               mFrequencyHz = params.mFrequencyHz;
+            
+            trace ("mFrequencyHz = " + mFrequencyHz);
+            trace ("mFrequency = " + mFrequency);
+            trace ("params.mFrequencyHz = " + params.mFrequencyHz);
          }
       }
       
@@ -166,6 +174,16 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
+         if (mPhysicsProxy != null)
+         {
+            if (mBreakable && mProxyJointDistance.GetCurrentLength () - mProxyJointDistance.GetStaticLength () > mBreakExtendedLength)
+            {
+               Destroy ();
+               
+               return;
+            }
+         }
+         
          DelayUpdateAppearance ();
       }
       
@@ -182,10 +200,10 @@ package player.entity {
       
       override public function UpdateAppearance ():void
       {
-         var x1:Number = mWorld.PhysicsX2DisplayX (mAnchor1.mPositionX);
-         var y1:Number = mWorld.PhysicsX2DisplayX (mAnchor1.mPositionY);
-         var x2:Number = mWorld.PhysicsX2DisplayX (mAnchor2.mPositionX);
-         var y2:Number = mWorld.PhysicsX2DisplayX (mAnchor2.mPositionY);
+         var x1:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.mPositionX);
+         var y1:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.mPositionY);
+         var x2:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.mPositionX);
+         var y2:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.mPositionY);
          var dx:Number = x2 - x1;
          var dy:Number = y2 - y1;
          

@@ -41,7 +41,7 @@ package player.entity {
             if (entityDefine.mBackAndForth != undefined)
                SetBackAndForth (entityDefine.mBackAndForth);
             if (entityDefine.mMaxMotorTorque != undefined)
-               SetMaxMotorTorque (mWorld.DisplayTorque2PhysicsTorque (entityDefine.mMaxMotorTorque));
+               SetMaxMotorTorque (mWorld.GetCoordinateSystem ().D2P_Torque (entityDefine.mMaxMotorTorque));
          }
       }
       
@@ -153,13 +153,26 @@ package player.entity {
       
       override protected function UpdateInternal (dt:Number):void
       {
-         DelayUpdateAppearance ();
+         if (mPhysicsProxy != null)
+         {
+         //trace ("---------------");
+         //trace ("mProxyJointHinge.GetReactionForce (mWorld.GetLastSimulatedStepInterval_Inv ()) = " + mProxyJointHinge.GetReactionForce (mWorld.GetLastSimulatedStepInterval_Inv ()));
+         //trace ("mProxyJointHinge.GetReactionTorque (mWorld.GetLastSimulatedStepInterval_Inv ()) = " + mProxyJointHinge.GetReactionTorque (mWorld.GetLastSimulatedStepInterval_Inv ()));
+         //trace ("mWorld.GetLastSimulatedStepInterval_Inv () = " + mWorld.GetLastSimulatedStepInterval_Inv ());
+         //trace ("mMaxMotorTorque = " + mMaxMotorTorque);
+            
+            if (mBreakable && mProxyJointHinge.GetReactionTorque (mWorld.GetLastSimulatedStepInterval_Inv ()) > mMaxMotorTorque)
+            {
+               Destroy ();
+               return;
+             }
+         }
          
-         var proxyJointHinge:PhysicsProxyJointHinge = mPhysicsProxy as PhysicsProxyJointHinge;
+         DelayUpdateAppearance ();
          
          if (mEnableLimits && mEnableMotor)
          {
-            var angle:Number = proxyJointHinge.GetJointAngle ();
+            var angle:Number = mProxyJointHinge.GetJointAngle ();
             
             if ( mMotorSpeed < 0 && angle < mLowerAngle )
             {
@@ -168,7 +181,7 @@ package player.entity {
                if (mBackAndForth)
                {
                   mMotorSpeed = - mMotorSpeed;
-                  proxyJointHinge.SetMotorSpeed (mMotorSpeed);
+                  mProxyJointHinge.SetMotorSpeed (mMotorSpeed);
                }
             }
             else if (mMotorSpeed > 0 && angle > mUpperAngle )
@@ -178,7 +191,7 @@ package player.entity {
                if (mBackAndForth)
                {
                   mMotorSpeed = - mMotorSpeed;
-                  proxyJointHinge.SetMotorSpeed (mMotorSpeed);
+                  mProxyJointHinge.SetMotorSpeed (mMotorSpeed);
                }
             }
          }
@@ -213,8 +226,6 @@ package player.entity {
                   mEnableMotor, mMotorSpeed, mMaxMotorTorque
                );
       }
-      
-      
       
    }
 }

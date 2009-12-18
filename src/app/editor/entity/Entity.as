@@ -28,7 +28,6 @@ package editor.entity {
       //>> v1.08
       protected var mAlpha:Number = 1.0;
       protected var mIsActive:Boolean = true;
-      protected var mIsEnabled:Boolean = true;
       //<<
       
       public function Entity (container:EntityContainer)
@@ -111,8 +110,8 @@ package editor.entity {
       
       public function GetInfoText ():String
       {
-         return     "x = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().DisplayX2PhysicsX (mPosX), 12) 
-                + ", y = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().DisplayY2PhysicsY (mPosY), 12) 
+         return     "x = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (mPosX), 6) 
+                + ", y = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (mPosY), 6) 
                 + ", angle = " + ValueAdjuster.Number2Precision ((mRotation * Define.kRadians2Degrees), 6);
       }
       
@@ -155,15 +154,15 @@ package editor.entity {
          return mIsActive;
       }
       
-      public function SetEnabled (enabled:Boolean):void
-      {
-         mIsEnabled = enabled;
-      }
-      
-      public function IsEnabled ():Boolean
-      {
-         return mIsEnabled;
-      }
+      //public function SetEnabled (enabled:Boolean):void
+      //{
+      //   mIsEnabled = enabled;
+      //}
+      //
+      //public function IsEnabled ():Boolean
+      //{
+      //   return mIsEnabled;
+      //}
       
 //======================================================
 // pos, rotition
@@ -253,7 +252,7 @@ package editor.entity {
          entity.SetVisible ( IsVisible () );
          entity.SetAlpha ( GetAlpha () );
          entity.SetActive ( IsActive () );
-         entity.SetEnabled ( IsEnabled () );
+         //entity.SetEnabled ( IsEnabled () );
       }
       
       

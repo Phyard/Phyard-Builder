@@ -33,7 +33,7 @@ package player.entity {
          if (createStageId == 0)
          {
             if (entityDefine.mRadius != undefined)
-               SetRadius (mWorld.DisplayLength2PhysicsLength (entityDefine.mRadius));
+               SetRadius (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mRadius));
             if (entityDefine.mAppearanceType != undefined)
                SetAppearanceType (entityDefine.mAppearanceType);
          }
@@ -77,8 +77,8 @@ package player.entity {
          {
             mNeedRebuildAppearanceObjects = false;
             
-            var displayRadius:Number = mWorld.PhysicsLength2DisplayLength (mRadius) + 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
-            var displayBorderThickness:Number = mWorld.PhysicsLength2DisplayLength (mBorderThickness);
+            var displayRadius:Number = mWorld.GetCoordinateSystem ().P2D_Length (mRadius) + 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+            var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
             
          // background
             

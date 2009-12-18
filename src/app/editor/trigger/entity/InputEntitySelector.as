@@ -24,7 +24,7 @@ package editor.trigger.entity {
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   import common.Define;
    
    public class InputEntitySelector extends Sprite implements Linkable
    {
@@ -106,7 +106,7 @@ package editor.trigger.entity {
          
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = Define.BorderColorSelectedObject;
             borderSize  = 3;
          }
          else

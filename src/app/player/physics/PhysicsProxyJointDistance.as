@@ -77,6 +77,22 @@ package player.physics {
 // 
 //========================================================================
       
+      public function GetStaticLength ():Number
+      {
+         return _b2DistanceJoint.GetLength ();
+      }
+      
+      public function GetCurrentLength ():Number
+      {
+         var anchor1:b2Vec2 = _b2DistanceJoint.GetAnchorA ();
+         var anchor2:b2Vec2 = _b2DistanceJoint.GetAnchorB ();
+         
+         var dx:Number = anchor2.x - anchor1.x;
+         var dy:Number = anchor2.y - anchor1.y;
+         
+         return Math.sqrt (dx * dx + dy * dy);
+      }
+      
    }
    
 }

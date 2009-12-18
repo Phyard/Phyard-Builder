@@ -5,7 +5,7 @@ package editor.mode {
    import com.tapirgames.util.GraphicsUtil;
    
    import editor.WorldView;
-   import editor.setting.EditorSetting;
+   
    
    public class ModeMoveSelectedEntities extends Mode
    {

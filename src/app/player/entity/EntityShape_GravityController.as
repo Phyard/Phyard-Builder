@@ -25,10 +25,17 @@ package player.entity {
       {
          super (world);
          
+         mAiTypeChangeable = false;
+         
          SetAlpha (0.75);
          
          mDirectionShape = mBorderShape;
          mAppearanceObjectsContainer.addChild (mTextG);
+         
+         // default values
+         mMaximalGravityAcceleration = mWorld.GetDefaultGravityAccelerationMagnitude ();
+         mGravityAcceleration = mMaximalGravityAcceleration;
+         mGravityAngle = mWorld.GetDefaultGravityAccelerationAngle ();
       }
       
 //=============================================================
@@ -45,8 +52,10 @@ package player.entity {
                SetInteractiveZones (entityDefine.mInteractiveZones);
             if (entityDefine.mInteractiveConditions != undefined)
                mInteractiveConditions = entityDefine.mInteractiveConditions;
+            if (entityDefine.mMaximalGravityAcceleration != null)
+               mMaximalGravityAcceleration = mWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (entityDefine.mMaximalGravityAcceleration);
             if (entityDefine.mInitialGravityAcceleration != null)
-               mGravityAcceleration = mWorld.DisplayAccaleration2PhysicsAccaleration (entityDefine.mInitialGravityAcceleration);
+               mGravityAcceleration = mWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
             if (entityDefine.mInitialGravityAngle != undefined)
                mGravityAngle = entityDefine.mInitialGravityAngle * Define.kDegrees2Radians;
          }
@@ -62,8 +71,9 @@ package player.entity {
 //   
 //=============================================================
       
-      private var mGravityAcceleration:Number = Define.DefaultGravityAccelerationMagnitude;
-      private var mGravityAngle:Number = Math.PI * 0.5;
+      private var mMaximalGravityAcceleration:Number;
+      private var mGravityAcceleration:Number;
+      private var mGravityAngle:Number;
       private var mInteractiveZones:int = 1 << Define.GravityController_InteractiveZone_AllArea;
       private var mInteractiveConditions:int = 0;
       
@@ -187,19 +197,17 @@ package player.entity {
          if (mInteractiveZonesParams == null)
             mInteractiveZonesParams = new Array (Define.GravityController_InteractiveZonesCount);
          
-         var displayRadius:Number = mWorld.PhysicsLength2DisplayLength (mRadius)
+         var displayRadius:Number = mWorld.GetCoordinateSystem ().P2D_Length (mRadius)
          var outerRadius:Number = displayRadius - Define.GravityControllerZeroRegionRadius;
          if (outerRadius < Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius)
             outerRadius = Define.GravityControllerZeroRegionRadius + Define.GravityControllerZeroRegionRadius;
          
-         var gMagnidue:Number = mWorld.GetNormalGravityAccelerationMagnitude ();
-         
          // isEnabled?, centerX, centerY, radius, g, gAngle
          mInteractiveZonesParams [Define.GravityController_InteractiveZone_AllArea] = [IsZoneInteractive (Define.GravityController_InteractiveZone_AllArea), 0, 0, displayRadius, 0, 0];
-         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Up]      = [IsZoneInteractive (Define.GravityController_InteractiveZone_Up), 0, -outerRadius, Define.GravityControllerZeroRegionRadius, gMagnidue, - Math.PI * 0.5];
-         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Down]    = [IsZoneInteractive (Define.GravityController_InteractiveZone_Down), 0, outerRadius, Define.GravityControllerZeroRegionRadius, gMagnidue, Math.PI * 0.5];
-         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Left]    = [IsZoneInteractive (Define.GravityController_InteractiveZone_Left), -outerRadius, 0, Define.GravityControllerZeroRegionRadius, gMagnidue, Math.PI];
-         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Right]   = [IsZoneInteractive (Define.GravityController_InteractiveZone_Right), outerRadius, 0, Define.GravityControllerZeroRegionRadius, gMagnidue, 0];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Up]      = [IsZoneInteractive (Define.GravityController_InteractiveZone_Up), 0, -outerRadius, Define.GravityControllerZeroRegionRadius, mMaximalGravityAcceleration, - Math.PI * 0.5];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Down]    = [IsZoneInteractive (Define.GravityController_InteractiveZone_Down), 0, outerRadius, Define.GravityControllerZeroRegionRadius, mMaximalGravityAcceleration, Math.PI * 0.5];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Left]    = [IsZoneInteractive (Define.GravityController_InteractiveZone_Left), -outerRadius, 0, Define.GravityControllerZeroRegionRadius, mMaximalGravityAcceleration, Math.PI];
+         mInteractiveZonesParams [Define.GravityController_InteractiveZone_Right]   = [IsZoneInteractive (Define.GravityController_InteractiveZone_Right), outerRadius, 0, Define.GravityControllerZeroRegionRadius, mMaximalGravityAcceleration, 0];
          mInteractiveZonesParams [Define.GravityController_InteractiveZone_Center]  = [IsZoneInteractive (Define.GravityController_InteractiveZone_Center), 0, 0, Define.GravityControllerZeroRegionRadius, 0, Math.PI * 0.5];
       }
       
@@ -231,7 +239,7 @@ package player.entity {
          if (zoneId < 0)
             return;
          
-         var displayRadius:Number = mWorld.PhysicsLength2DisplayLength (mRadius);
+         var displayRadius:Number = mWorld.GetCoordinateSystem ().P2D_Length (mRadius);
          
          if (zoneId > Define.GravityController_InteractiveZone_AllArea)
          {
@@ -244,17 +252,15 @@ package player.entity {
             
             var length:Number = Math.sqrt (offsetX * offsetX + offsetY * offsetY);
             
-            var gMagnidue:Number = mWorld.GetNormalGravityAccelerationMagnitude ();
-            
             if (length <= Define.GravityControllerZeroRegionRadius)
                mGravityAcceleration = 0;
             else if (length >= displayRadius - Define.GravityControllerOneRegionThinkness)
-               mGravityAcceleration = gMagnidue;
+               mGravityAcceleration = mMaximalGravityAcceleration;
             else
-               mGravityAcceleration = gMagnidue * (length - Define.GravityControllerZeroRegionRadius) / (displayRadius - Define.GravityControllerOneRegionThinkness - Define.GravityControllerZeroRegionRadius);
+               mGravityAcceleration = mMaximalGravityAcceleration * (length - Define.GravityControllerZeroRegionRadius) / (displayRadius - Define.GravityControllerOneRegionThinkness - Define.GravityControllerZeroRegionRadius);
          }
          
-         mGravityAcceleration = MathUtil.GetClipValue (mGravityAcceleration, 0, gMagnidue);
+         mGravityAcceleration = MathUtil.GetClipValue (mGravityAcceleration, 0, mMaximalGravityAcceleration);
          
          mLastRotation = mGravityAngle + mRotation;
          
@@ -272,9 +278,6 @@ package player.entity {
 //   appearance
 //=============================================================
       
-      private var mInteractiveColor:uint = 0x6060FF;
-      private var mUninteractiveColor:uint = 0xA0A0A0;
-      
       private var mNeedRepaintDirection:Boolean = true;
       
       private var mDirectionShape:Shape; // = mBorderShape
@@ -285,7 +288,7 @@ package player.entity {
          mAppearanceObjectsContainer.visible = mVisible
          mAppearanceObjectsContainer.alpha = mAlpha; 
          
-         var displayRadius:Number = mWorld.PhysicsLength2DisplayLength (mRadius);
+         var displayRadius:Number = mWorld.GetCoordinateSystem ().P2D_Length (mRadius);
          var radius_0b:Number = Define.GravityControllerZeroRegionRadius;
          var radius_1a:Number = displayRadius - Define.GravityControllerOneRegionThinkness;
          if (radius_1a < radius_0b)
@@ -294,8 +297,10 @@ package player.entity {
          if (radius_1b < radius_1a)
             radius_1b = radius_1a;
          
-         var backgroundColor:uint = mInteractive && IsZoneInteractive (Define.GravityController_InteractiveZone_AllArea) ? mInteractiveColor : mUninteractiveColor;
-         var lightBackgroundColor:uint = GraphicsUtil.BlendColor (backgroundColor, 0xFFFFFF, 0.5);
+         var allAeraInteractive:Boolean = mInteractive && IsZoneInteractive (Define.GravityController_InteractiveZone_AllArea);
+         var backgroundColor:uint = allAeraInteractive ? Define.kInteractiveColor : Define.kUninteractiveColor;
+         var lightBackgroundColor:uint = GraphicsUtil.BlendColor (backgroundColor, 0xFFFFFF, allAeraInteractive ? 0.75 : 0.5);
+         var lightInteractiveBackgroundColor:uint = GraphicsUtil.BlendColor (Define.kInteractiveColor, 0xFFFFFF, 0.75);
          
          if (mNeedRebuildAppearanceObjects)
          {  
@@ -325,7 +330,8 @@ package player.entity {
             if (mInteractiveZonesParams == null)
                UpdateInteractiveZonesParams ();
             
-            var zoneColor:uint = mInteractive ? mInteractiveColor : mUninteractiveColor;
+            var zoneColor:uint = mInteractive ? lightInteractiveBackgroundColor : Define.kUninteractiveColor;
+            
             for (var i:int = Define.GravityController_InteractiveZone_Up; i <= Define.GravityController_InteractiveZone_Center; ++ i)
             {
                params = mInteractiveZonesParams [i];
@@ -362,7 +368,7 @@ package player.entity {
             {
                gx0 = radius_0b * Math.cos (direction);
                gy0 = radius_0b * Math.sin (direction);
-               acceleration = radius_0b + (radius_1a - radius_0b) * mGravityAcceleration / mWorld.GetNormalGravityAccelerationMagnitude ();
+               acceleration = radius_0b + (radius_1a - radius_0b) * mGravityAcceleration / mMaximalGravityAcceleration;
                gx1 = acceleration * Math.cos (direction);
                gy1 = acceleration * Math.sin (direction);
             }
@@ -370,7 +376,7 @@ package player.entity {
             {
                gx0 = 0;
                gy0 = 0;
-               acceleration = displayRadius * mGravityAcceleration / mWorld.GetNormalGravityAccelerationMagnitude ();
+               acceleration = displayRadius * mGravityAcceleration / mMaximalGravityAcceleration;
                gx1 = acceleration * Math.cos (direction);
                gy1 = acceleration * Math.sin (direction);
             }

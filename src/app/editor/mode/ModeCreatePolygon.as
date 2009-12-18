@@ -6,7 +6,7 @@ package editor.mode {
    import com.tapirgames.util.GraphicsUtil;
    
    import editor.WorldView;
-   import editor.setting.EditorSetting;
+   
    
    import editor.entity.EntityShapePolygon;
    
@@ -15,7 +15,7 @@ package editor.mode {
    public class ModeCreatePolygon extends ModeCreateShape
    {
       
-      public function ModeCreatePolygon (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = EditorSetting.MinRectSideLength) //, maxSideLength:Number = EditorSetting.MaxRectSideLength)
+      public function ModeCreatePolygon (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = Define.MinRectSideLength) //, maxSideLength:Number = Define.MaxRectSideLength)
       {
          super (mainView, ciAiType, filledColor, isStatic);
          
@@ -26,17 +26,17 @@ package editor.mode {
          //   minSideLength = temp;
          //}
          
-         if (minSideLength < EditorSetting.MinRectSideLength)
-            mMinSideLength = EditorSetting.MinRectSideLength;
-         else if (minSideLength > EditorSetting.MaxRectSideLength)
-            mMinSideLength = EditorSetting.MaxRectSideLength;
+         if (minSideLength < Define.MinRectSideLength)
+            mMinSideLength = Define.MinRectSideLength;
+         else if (minSideLength > Define.MaxRectSideLength)
+            mMinSideLength = Define.MaxRectSideLength;
          else
             mMinSideLength = minSideLength;
          
-         //if (maxSideLength < EditorSetting.MinRectSideLength)
-         //   mMaxSideLength = EditorSetting.MinRectSideLength;
-         //else if (maxSideLength > EditorSetting.MaxRectSideLength)
-         //   mMaxSideLength = EditorSetting.MaxRectSideLength;
+         //if (maxSideLength < Define.MinRectSideLength)
+         //   mMaxSideLength = Define.MinRectSideLength;
+         //else if (maxSideLength > Define.MaxRectSideLength)
+         //   mMaxSideLength = Define.MaxRectSideLength;
          //else
          //   mMaxSideLength = maxSideLength;
       }

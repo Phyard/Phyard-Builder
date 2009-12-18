@@ -8,25 +8,42 @@
       width="100%" height="100%"
       creationComplete="OnInitPanel()"
       >
-
    <mx:HBox width="100%">
-      <mx:HBox width="44%">
-         <mx:Spacer width="100%"/>
-         <mx:Label id="Label_PosX" text="    X:" textAlign="right"/>
-         <mx:TextInput id="Text_PosX" text="" width="100"/>
-         <mx:Spacer width="100%"/>
-         <mx:Label id="Label_PosY" text="     Y:" textAlign="right"/>
-      </mx:HBox>
-
-      <mx:HBox width="56%">
-         <mx:TextInput id="Text_PosY" text="" width="100"/>
-         <mx:Spacer width="100%"/>
-         <mx:Label id="Label_Angle" text="Angle:" textAlign="right" />
-         <mx:TextInput id="Text_Angle" text="" width="100"/>
-         <mx:Spacer width="100%"/>
-      </mx:HBox>
+      <mx:VBox width="44%">
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_PosX" text="    X:" textAlign="right" width="50"/>
+            <mx:TextInput id="Text_PosX" text="" width="100"/>
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_PosY" text="     Y:" textAlign="right" width="50"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_Alpha" text="Alpha:" textAlign="right" width="50"/>
+            <mx:TextInput id="Text_Alpha" text="" width="100"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer  width="50"/>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:VBox width="56%">
+         <mx:HBox width="100%">
+            <mx:TextInput id="Text_PosY" text="" width="100"/>
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_Angle" text="Angle:" textAlign="right" width="50"/>
+            <mx:TextInput id="Text_Angle" text="" width="100"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_Visible" label="Visible" width="100"/>
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="50"/>
+            <mx:CheckBox id="CheckBox_Active" label="Active" width="100"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+      </mx:VBox>
    </mx:HBox>
-   
+
+
    <mx:Script>
      <![CDATA[       
          
@@ -45,6 +62,13 @@
             Text_PosX.text = "" + inputValues.mPosX;
             Text_PosY.text = "" + inputValues.mPosY;
             Text_Angle.text = "" + inputValues.mAngle;
+            Text_Alpha.text = "" + inputValues.mAlpha;
+            
+            CheckBox_Visible.selected = inputValues.mIsVisible;
+            CheckBox_Active.selected = inputValues.mIsActive;
+            
+            CheckBox_Visible.visible = inputValues.mVisibleNonsense == null || (!inputValues.mVisibleNonsense);
+            CheckBox_Active.visible = inputValues.mActiveNonsense == null || (!inputValues.mActiveNonsense);
          }
          
          public function GetValues (returnValues:Object):void
@@ -66,6 +90,15 @@
                returnValues.mAngle = valueAngle;
             else
                returnValues.mAngle = mInputValues.mAngle;
+            
+            var alpha:Number = parseFloat (Text_Alpha.text);
+            if ( ! isNaN (alpha) )
+               returnValues.mAlpha = alpha;
+            else
+               returnValues.mAlpha = mInputValues.mAlpha;
+            
+            returnValues.mIsVisible = CheckBox_Visible.selected;
+            returnValues.mIsActive = CheckBox_Active.selected;
          }
          
      ]]>

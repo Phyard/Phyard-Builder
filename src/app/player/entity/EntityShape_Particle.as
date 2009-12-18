@@ -15,12 +15,14 @@ package player.entity {
       {
          super (world);
          
+         mAiTypeChangeable = false;
+         
          mLifeDuration = lifeDuration;
          mLife = 0.0;
          SetVisible (false);
          
          SetShapeAiType (Define.ShapeAiType_BombParticle);
-         SetRadius (mWorld.DisplayLength2PhysicsLength (1.0));
+         SetRadius (mWorld.GetCoordinateSystem ().D2P_Length (1.0));
          
          SetPhysicsEnabled (true);
          SetFriction (0.0);

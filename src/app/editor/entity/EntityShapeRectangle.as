@@ -13,7 +13,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -24,6 +24,9 @@ package editor.entity {
       public var mHalfWidth:Number;
       public var mHalfHeight:Number;
       
+      protected var mRoundCorners:Boolean = false;
+      
+      // ...
       protected var mEnableVertexControllers:Boolean = true;
       
       public function EntityShapeRectangle (world:World)
@@ -70,14 +73,14 @@ package editor.entity {
          
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = Define.BorderColorSelectedObject;
             if (borderThickness * mWorld.GetZoomScale () < 3)
                borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
          alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
          
-         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderThickness, drawBg, filledColor);
+         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderThickness, drawBg, filledColor, mRoundCorners);
          
          if (mAiType == Define.ShapeAiType_Bomb)
             GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
@@ -118,11 +121,11 @@ package editor.entity {
       {
          if (validate)
          {
-            var minHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
-            var maxHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
+            var minHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombSquareSideLength * 0.5 : Define.MinRectSideLength * 0.5;
+            var maxHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MaxBombSquareSideLength * 0.5 : Define.MaxRectSideLength * 0.5;
             
-            if (halfWidth * mHalfHeight * 4 > EditorSetting.MaxRectArea)
-               halfWidth = EditorSetting.MaxRectArea / (mHalfHeight * 4);
+            if (halfWidth * mHalfHeight * 4 > Define.MaxRectArea)
+               halfWidth = Define.MaxRectArea / (mHalfHeight * 4);
             
             if (halfWidth > maxHalfWidth)
                halfWidth = maxHalfWidth;
@@ -137,11 +140,11 @@ package editor.entity {
       {
          if (validate)
          {
-            var minHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? EditorSetting.MinBombSquareSideLength * 0.5 : EditorSetting.MinRectSideLength * 0.5;
-            var maxHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? EditorSetting.MaxBombSquareSideLength * 0.5 : EditorSetting.MaxRectSideLength * 0.5;
+            var minHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombSquareSideLength * 0.5 : Define.MinRectSideLength * 0.5;
+            var maxHalfWidth:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MaxBombSquareSideLength * 0.5 : Define.MaxRectSideLength * 0.5;
             
-            if (halfHeight * mHalfWidth * 4 > EditorSetting.MaxRectArea)
-               halfHeight = EditorSetting.MaxRectArea / (mHalfWidth * 4);
+            if (halfHeight * mHalfWidth * 4 > Define.MaxRectArea)
+               halfHeight = Define.MaxRectArea / (mHalfWidth * 4);
             
             if (halfHeight > maxHalfWidth)
                halfHeight = maxHalfWidth;
@@ -160,6 +163,16 @@ package editor.entity {
       public function GetHalfHeight ():Number
       {
          return mHalfHeight;
+      }
+      
+      public function SetRoundCorners (round:Boolean):void
+      {
+         mRoundCorners = round;
+      }
+      
+      public function IsRoundCorners ():Boolean
+      {
+         return mRoundCorners;
       }
       
 //====================================================================
@@ -419,17 +432,17 @@ package editor.entity {
          var halfWidth:Number  = (x2 - x1);// * 0.5;
          var halfHeight:Number = (y2 - y1);// * 0.5;
       
-         if (halfWidth < EditorSetting.MinRectSideLength)
+         if (halfWidth < Define.MinRectSideLength)
             return;
-         if (halfWidth > EditorSetting.MaxRectSideLength)
-            return;
-         
-         if (halfHeight < EditorSetting.MinRectSideLength)
-            return;
-         if (halfHeight > EditorSetting.MaxRectSideLength)
+         if (halfWidth > Define.MaxRectSideLength)
             return;
          
-         if (halfWidth * halfHeight > EditorSetting.MaxRectArea)
+         if (halfHeight < Define.MinRectSideLength)
+            return;
+         if (halfHeight > Define.MaxRectSideLength)
+            return;
+         
+         if (halfWidth * halfHeight > Define.MaxRectArea)
             return;
          
          if (mAiType == Define.ShapeAiType_Bomb)
@@ -439,9 +452,9 @@ package editor.entity {
             else
                halfHeight = halfWidth;
             
-            if (halfHeight < EditorSetting.MinBombSquareSideLength)
+            if (halfHeight < Define.MinBombSquareSideLength)
                return;
-            if (halfHeight > EditorSetting.MaxBombSquareSideLength)
+            if (halfHeight > Define.MaxBombSquareSideLength)
                return;
          }
          
@@ -506,15 +519,15 @@ package editor.entity {
          var halfWidth:Number  = mHalfWidth * ratio;
          var halfHeight:Number = mHalfHeight * ratio;
          
-         //if (halfWidth < EditorSetting.MinRectSideLength)
-         //   halfWidth =  EditorSetting.MinRectSideLength;
-         //if (halfWidth > EditorSetting.MaxRectSideLength)
-         //   halfWidth =  EditorSetting.MaxRectSideLength;
+         //if (halfWidth < Define.MinRectSideLength)
+         //   halfWidth =  Define.MinRectSideLength;
+         //if (halfWidth > Define.MaxRectSideLength)
+         //   halfWidth =  Define.MaxRectSideLength;
          
-         //if (halfHeight < EditorSetting.MinRectSideLength)
-         //   halfHeight =  EditorSetting.MinRectSideLength;
-         //if (halfHeight > EditorSetting.MaxRectSideLength)
-         //   halfHeight =  EditorSetting.MaxRectSideLength;
+         //if (halfHeight < Define.MinRectSideLength)
+         //   halfHeight =  Define.MinRectSideLength;
+         //if (halfHeight > Define.MaxRectSideLength)
+         //   halfHeight =  Define.MaxRectSideLength;
          
          SetHalfWidth (halfWidth);
          SetHalfHeight (halfHeight);

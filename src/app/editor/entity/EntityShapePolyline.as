@@ -13,7 +13,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -60,7 +60,7 @@ package editor.entity {
          
          if ( IsSelected () )
          {
-            bgColor = EditorSetting.BorderColorSelectedObject;
+            bgColor = Define.BorderColorSelectedObject;
             if (curveThickness * mWorld.GetZoomScale () < 3)
                curveThickness  = 3.0 / mWorld.GetZoomScale ();
          }

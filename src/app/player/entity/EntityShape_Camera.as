@@ -12,6 +12,8 @@ package player.entity {
       public function EntityShape_Camera (world:World)
       {
          super (world);
+         
+         mAiTypeChangeable = false;
       }
       
 //=============================================================

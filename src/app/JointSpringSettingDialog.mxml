@@ -58,17 +58,18 @@
          <mx:HBox width="100%">
             <mx:HBox width="50%">
                <mx:Spacer width="100%"/>
-               <mx:CheckBox id="CheckBox_CustomFrequency" label="Custom Frequency (f)"/>
+               <mx:CheckBox id="CheckBox_CustomFrequency" label="Custom Frequency (f)" click="OnUpdateComponents()"/>
             </mx:HBox>
             <mx:HBox>
                <mx:TextInput id="Text_CustomFrequency" text="" width="100"/>
+               <mx:Label text="(Hz)"/>
             </mx:HBox>
          </mx:HBox>
 
          <mx:HBox width="100%">
             <mx:HBox width="50%">
                <mx:Spacer width="100%"/>
-               <mx:CheckBox id="CheckBox_Breakable" label="Breakable"/>
+               <mx:CheckBox id="CheckBox_Breakable" label="Breakable" click="OnUpdateComponents()"/>
                <mx:Label id="Label_BreakExtendedLength" text="Break Extended Length:" textAlign="right"/>
             </mx:HBox>
             <mx:HBox>
@@ -77,8 +78,16 @@
          </mx:HBox>
 
       </mx:VBox>
-      
-      <mx:VBox label="Anchor" borderStyle="solid" height="100%" width="100%"
+
+      <mx:VBox label="Joint Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="JointBasicSettingPanel" creationComplete="OnJointBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+
+      <mx:VBox label="Anchor Basic" borderStyle="solid" height="100%" width="100%"
                 paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                 horizontalScrollPolicy="off" verticalScrollPolicy="off"
                 horizontalGap="0" verticalGap="0" borderThickness="0">
@@ -116,21 +125,46 @@
          {
             mParams = initialValues;
             
-            CommonSettingPanel.SetValues (initialValues);
+            var jointParams:Object = mParams.mJointValues;
             
-            Text_StaticLengthRatio.text = initialValues.mStaticLengthRatio;
-            Text_DampingRatio.text = initialValues.mDampingRatio;
+            CommonSettingPanel.SetValues (jointParams);
             
-            if (initialValues.mSpringType == Define.SpringType_Strong)
+            Text_StaticLengthRatio.text = jointParams.mStaticLengthRatio;
+            Text_DampingRatio.text = jointParams.mDampingRatio;
+            
+            if (jointParams.mSpringType == Define.SpringType_Strong)
                TypeStrong.selected = true;
-            else if (initialValues.mSpringType == Define.SpringType_Weak)
+            else if (jointParams.mSpringType == Define.SpringType_Weak)
                TypeWeak.selected = true;
             else
                TypeNormal.selected = true;
+            
+            CheckBox_CustomFrequency.selected = jointParams.mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_CustomFrequency;
+            Text_CustomFrequency.text = jointParams.mFrequency;
+            
+            CheckBox_Breakable.selected = jointParams.mIsBreakable
+            Text_BreakExtendedLength.text = jointParams.mBreakExtendedLength;
+            
+            OnUpdateComponents ();
+         }
+         
+         private function OnUpdateComponents ():void
+         {
+            Label_PresetTypes.enabled = ! CheckBox_CustomFrequency.selected;
+            Text_CustomFrequency.enabled = CheckBox_CustomFrequency.selected;
+            Label_BreakExtendedLength.enabled = CheckBox_Breakable.selected;
+            Text_BreakExtendedLength.enabled = CheckBox_Breakable.selected;
+         }
+         
+         private function OnJointBasicSettingPanelCreationComplete ():void
+         {
+            JointBasicSettingPanel.SetValues (mParams.mJointValues);
          }
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
+            mParams.mActiveNonsense = true;
+            mParams.mVisibleNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }
          
@@ -146,23 +180,41 @@
          
          private function OnClickOkButton():void 
          {
-             CommonSettingPanel.GetValues (mParams);
-             
-             var staticLengthRation:Number = parseFloat (Text_StaticLengthRatio.text);
-             if ( ! isNaN (staticLengthRation) )
-                mParams.mStaticLengthRatio = staticLengthRation;
-             
-             var dampingRation:Number = parseFloat (Text_DampingRatio.text);
-             if ( ! isNaN (dampingRation) )
-                mParams.mDampingRatio = dampingRation;
-             
-             if (TypeStrong.selected)
-               mParams.mSpringType = Define.SpringType_Strong;
-             else if (TypeWeak.selected)
-               mParams.mSpringType = Define.SpringType_Weak;
-             else
-               mParams.mSpringType = Define.SpringType_Normal;
-             
+            var jointParams:Object = mParams.mJointValues;
+            
+            CommonSettingPanel.GetValues (jointParams);
+            
+            var staticLengthRation:Number = parseFloat (Text_StaticLengthRatio.text);
+            if ( ! isNaN (staticLengthRation) )
+               jointParams.mStaticLengthRatio = staticLengthRation;
+            
+            var dampingRation:Number = parseFloat (Text_DampingRatio.text);
+            if ( ! isNaN (dampingRation) )
+               jointParams.mDampingRatio = dampingRation;
+            
+            if (TypeStrong.selected)
+               jointParams.mSpringType = Define.SpringType_Strong;
+            else if (TypeWeak.selected)
+               jointParams.mSpringType = Define.SpringType_Weak;
+            else
+               jointParams.mSpringType = Define.SpringType_Normal;
+            
+            jointParams.mFrequencyDeterminedManner = CheckBox_CustomFrequency.selected ? Define.SpringFrequencyDetermineManner_CustomFrequency : Define.SpringFrequencyDetermineManner_Preset;
+            var frequency:Number = parseFloat (Text_CustomFrequency.text);
+            if (! isNaN (frequency))
+               jointParams.mFrequency = frequency
+            
+            jointParams.mIsBreakable = CheckBox_Breakable.selected;
+            
+            var breakExtendedLength:Number = parseFloat (Text_BreakExtendedLength.text);
+            if (! isNaN (breakExtendedLength))
+               jointParams.mBreakExtendedLength = breakExtendedLength;
+            
+            if (JointBasicSettingPanel != null)
+            {
+               JointBasicSettingPanel.GetValues (jointParams);
+            }
+            
             if (BasicSettingPanel != null)
             {
                BasicSettingPanel.GetValues (mParams);

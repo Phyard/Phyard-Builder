@@ -9,7 +9,7 @@
       creationComplete="OnInitPanel()"
       >
 
-   <mx:HBox width="100%">
+   <mx:HBox width="100%" id="Box_CiType">
       <mx:Spacer width="60"/>
       <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="22%" click="OnAiTypeSelectListClick()"/>
       <mx:Label id="Label_AiType" text="C.I. Shape Type:" textAlign="right"/>
@@ -18,7 +18,7 @@
 
    <mx:HBox width="100%">
       <mx:Spacer width="60"/>
-      <mx:CheckBox id="CheckBox_IsVisible" label="Visible" width="22%"/>
+      <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="22%"/>
       <mx:Label id="Label_Opacity" text="Opacity:" textAlign="right"/>
       <mx:NumericStepper id="NumericStepper_Opacity" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
       <mx:Label text="(0-100)" textAlign="left"/>
@@ -26,7 +26,7 @@
 
    <mx:HBox width="100%">
       <mx:Spacer width="60"/>
-      <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="22%"/>
+      <mx:Spacer width="22%"/>
       <mx:Label id="Label_BackgroundColor" text="Filled Color:" textAlign="right"/>
       <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xFFFFFF"/>
    </mx:HBox>
@@ -109,8 +109,6 @@
                SelectList_AiType.enabled = true;
                Label_AiType.enabled = true;
                
-               CheckBox_IsVisible.enabled = true;
-               
                Label_Opacity.enabled = false;
                NumericStepper_Opacity.enabled = false;
                
@@ -134,8 +132,6 @@
             {
                SelectList_AiType.enabled = false;
                Label_AiType.enabled = false;
-               
-               CheckBox_IsVisible.enabled = true;
                
                Label_Opacity.enabled = true;
                NumericStepper_Opacity.enabled = true;
@@ -165,7 +161,6 @@
             CheckBox_IsCiShape.selected = inputValues.mAiType >= 0;
             SelectList_AiType.selectedIndex = inputValues.mAiType;
             
-            CheckBox_IsVisible.selected = inputValues.mIsVisible;
             NumericStepper_Opacity.value = inputValues.mTransparency;
             CheckBox_DrawBorder.selected = inputValues.mDrawBorder;
             ColorPicker_BorderColor.selectedColor = inputValues.mBorderColor;
@@ -174,6 +169,13 @@
             ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;
             NumericStepper_BorderOpacity.value = inputValues.mBorderTransparency;
             
+            if (inputValues.mCiTypeSelectable != null && (! inputValues.mCiTypeSelectable))
+            {
+               Box_CiType.enabled = false;
+               CheckBox_IsCiShape.enabled = false;
+               SelectList_AiType.enabled = false;
+            }
+            
             OnAiTypeSelectListClick ();
          }
          
@@ -181,7 +183,6 @@
          {
             returnValues.mAiType = CheckBox_IsCiShape.selected && SelectList_AiType.selectedItem != null ? SelectList_AiType.selectedItem.data : Define.ShapeAiType_Unknown;
             
-            returnValues.mIsVisible = CheckBox_IsVisible.selected;
             returnValues.mTransparency = NumericStepper_Opacity.value;
             returnValues.mDrawBorder = CheckBox_DrawBorder.selected;
             returnValues.mBorderColor = ColorPicker_BorderColor.selectedColor;

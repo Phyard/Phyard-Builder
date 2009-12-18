@@ -6,7 +6,7 @@ package editor.mode {
    import com.tapirgames.util.GraphicsUtil;
    
    import editor.WorldView;
-   import editor.setting.EditorSetting;
+   
    
    import editor.entity.EntityShapeCircle;
    
@@ -14,7 +14,7 @@ package editor.mode {
    
    public class ModeCreateCircle extends ModeCreateShape
    {
-      public function ModeCreateCircle (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, minRadius:Number = EditorSetting.MinCircleRadium, maxRadius:Number = EditorSetting.MaxCircleRadium)
+      public function ModeCreateCircle (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, minRadius:Number = Define.MinCircleRadium, maxRadius:Number = Define.MaxCircleRadium)
       {
          super (mainView, ciAiType, filledColor, isStatic);
          

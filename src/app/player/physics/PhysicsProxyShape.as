@@ -97,6 +97,19 @@ package player.physics {
          if ( (! buildBorder) && (! buildInterior))
             return;
          
+      // ...
+         
+         var fixture_def:b2FixtureDef = new b2FixtureDef ();
+         
+         fixture_def.density     = mEntityShape.GetDensity ();
+         fixture_def.friction    = mEntityShape.GetFriction ();
+         fixture_def.restitution = mEntityShape.GetRestitution ();
+         fixture_def.isSensor    = mEntityShape.IsSensor ();
+         
+         fixture_def.userData = this;
+         
+      // ...
+         
          if (buildBorder)
          {
             var halfBorderThickness:Number = borderThickness * 0.5;
@@ -113,15 +126,25 @@ package player.physics {
                {
                   radius = outerRadius;
                }
-               else if (borderThickness < b2Settings.b2_epsilon)
-               {
-                  // todo: use polyline instead
-                  
-                  return;
-               }
                else
                {
-                  // todo: use polygone instead
+                  // use polyline instead
+                  
+                  var numSegments:int = 50; //Math.PI * 2.0 * radius;
+                  var shapeLocalPoints:Array = new Array (numSegments);
+                  var dAngle:Number = Math.PI * 2.0 / numSegments;
+                  var angle:Number = 0.0;
+                  
+                  for (var i:int = 0; i < numSegments; ++ i)
+                  {
+                     shapeLocalPoints [i] = new Point (radius * Math.cos (angle), radius * Math.sin (angle));
+                     
+                     angle += dAngle;
+                  }
+                  
+                  var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
+                  
+                  CreatePolyline (fixture_def, bodyLocalVertexes, halfBorderThickness, true, true, true);
                   
                   return;
                }
@@ -132,10 +155,7 @@ package player.physics {
             return;
          }
          
-         if (radius < b2Settings.b2_epsilon)
-            return;
-         
-      // shape local to world
+         // shape local to world
          
          var rot:Number = mEntityShape.GetRotation ();
          
@@ -146,20 +166,9 @@ package player.physics {
          vec.x = mEntityShape.GetPositionX () + cos * shapeLocalCenterX - sin * shapeLocalCenterY;
          vec.y = mEntityShape.GetPositionY () + sin * shapeLocalCenterX + cos * shapeLocalCenterY;
          
-      // world to body local
+         // world to body local
          
          vec = mProxyBody._b2Body.GetLocalPoint (vec);
-         
-      // 
-         
-         var fixture_def:b2FixtureDef = new b2FixtureDef ();
-         
-         fixture_def.density     = mEntityShape.GetDensity ();
-         fixture_def.friction    = mEntityShape.GetFriction ();
-         fixture_def.restitution = mEntityShape.GetRestitution ();
-         fixture_def.isSensor    = mEntityShape.IsSensor ();
-         
-         fixture_def.userData = this;
          
          // ...
          var circle_shape:b2CircleShape = new b2CircleShape ();
@@ -215,18 +224,18 @@ package player.physics {
          
          var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
          
-         CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * curveThickness, roundEnds ? 1 : -1);
+         CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * curveThickness, false, true, roundEnds);
       }
       
       // close_and_round: 0 means closed, 1 means not closed but round, -1 means not close and not round
-      private function CreatePolyline (fixture_def:b2FixtureDef, bodyLocalVertexes:Array, halfCurveThickness:Number, close_and_round:int):void
+      private function CreatePolyline (fixture_def:b2FixtureDef, bodyLocalVertexes:Array, halfCurveThickness:Number, isClosed:Boolean, isRoundJoints:Boolean, isRoundEnds:Boolean):void
       {
          var vertexCount:int = bodyLocalVertexes.length;
          if (vertexCount < 1)
             return;
          
-         var isClosed:Boolean = close_and_round == 0;
-         var isRoundEnds :Boolean = close_and_round != -1; // if isClosed is true, isRoundEnds also is true
+         if (isClosed)
+            isRoundEnds = isRoundJoints;
          
          var vertex1:b2Vec2;
          var vertex2:b2Vec2;
@@ -277,18 +286,19 @@ package player.physics {
          else
          {
             var buildCircle:Boolean;
+            var firstVertex:b2Vec2;
             
             if (isClosed)
             {
-               vertex1 = bodyLocalVertexes [vertexCount - 1];
+               firstVertex = bodyLocalVertexes [vertexCount - 1];
                vertexId2 = 0;
-               buildCircle = true;
+               buildCircle = isRoundJoints;
                
                isRoundEnds = false; // some tricky here, just to avoid entering the "if (isRoundEnds)" clause in the end
             }
             else
             {
-               vertex1 = bodyLocalVertexes [0];
+               firstVertex = bodyLocalVertexes [0];
                vertexId2 = 1;
                
                buildCircle = isRoundEnds;
@@ -302,6 +312,8 @@ package player.physics {
             var borderRectVertexes:Array = [p0, p1, p2, p3];
             
             var circle_shape:b2CircleShape = new b2CircleShape ();
+            
+            vertex1 = firstVertex;
             
             for (; vertexId2 < vertexCount; ++ vertexId2)
             {
@@ -352,7 +364,7 @@ package player.physics {
                }
                else
                {
-                  buildCircle = true; // always build circle for non-end vertexes
+                  buildCircle = isRoundJoints;
                }
                
                // ..
@@ -361,7 +373,9 @@ package player.physics {
             
             // for polyline, the circle for the last vertex hasn't been built.
             // for polygon, isRoundEnds is alrady set false above 
-            if (isRoundEnds)
+            if (isRoundEnds
+               || firstVertex == vertex1 // at least, create something
+               )
             {
                circle_shape.m_radius = halfCurveThickness;
                
@@ -438,13 +452,13 @@ package player.physics {
             {
                if (borderThickness >= b2Settings.b2_epsilon)
                {
-                  CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * borderThickness, 0);
+                  CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * borderThickness, true, true, true);
                }
             }
          }
          else if (buildBorder)
          {
-            CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * borderThickness, 0);
+            CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * borderThickness, true, true, true);
          }
       }
       
@@ -476,43 +490,25 @@ package player.physics {
          
          var fixture:b2Fixture;
          
-         if (roundCorners)
+         if (buildInterior)
          {
-            tx = - halfWidth; ty = - halfHeight; p = p0; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-            tx =   halfWidth; ty = - halfHeight; p = p1; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-            tx =   halfWidth; ty =   halfHeight; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-            tx = - halfWidth; ty =   halfHeight; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
+            var extend:Boolean = buildBorder && (! roundCorners);
             
-            bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
+            var halfWidth_b :Number = halfWidth;
+            var halfHeight_b:Number = halfHeight;
             
-            if (halfWidth >= Half_B2_FLT_EPSILON && halfHeight >= Half_B2_FLT_EPSILON)
+            if (extend)
             {
-               // ...
-               polygon_shape.Set (bodyLocalVertexes, 4);
-               
-               fixture_def.shape = polygon_shape;
-               
-               fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
-               _b2Fixtures.push (fixture);
-               
-               // ...
-               CreatePolyline (fixture_def, bodyLocalVertexes, halfBorderThickness, 0);
-            }
-         }
-         else if (buildInterior)
-         {
-            if (buildBorder)
-            {
-               halfWidth  += halfBorderThickness;
-               halfHeight += halfBorderThickness;
+               halfWidth_b  += halfBorderThickness;
+               halfHeight_b += halfBorderThickness;
             }
             
             if (halfWidth >= Half_B2_FLT_EPSILON && halfHeight >= Half_B2_FLT_EPSILON)
             {
-               tx = - halfWidth; ty = - halfHeight; p = p0; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-               tx =   halfWidth; ty = - halfHeight; p = p1; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-               tx =   halfWidth; ty =   halfHeight; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
-               tx = - halfWidth; ty =   halfHeight; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
+               tx = - halfWidth_b; ty = - halfHeight_b; p = p0; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
+               tx =   halfWidth_b; ty = - halfHeight_b; p = p1; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
+               tx =   halfWidth_b; ty =   halfHeight_b; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
+               tx = - halfWidth_b; ty =   halfHeight_b; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
                
                bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
                
@@ -523,109 +519,101 @@ package player.physics {
                
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
                _b2Fixtures.push (fixture);
+               
+               if (extend)
+               {
+                  buildBorder = false; // avoiding entering the below block
+               }
             }
          }
-         else if (buildBorder)
+         
+         if (buildBorder)
          {
             tx = - halfWidth; ty = - halfHeight; p = p0; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             tx =   halfWidth; ty = - halfHeight; p = p1; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             tx =   halfWidth; ty =   halfHeight; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             tx = - halfWidth; ty =   halfHeight; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             
-            if (borderThickness < b2Settings.b2_epsilon)
+            if (roundCorners)
             {
-               if (halfWidth >= Half_B2_FLT_EPSILON && halfHeight >= Half_B2_FLT_EPSILON)
-               {
-                  bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
-                  
-                  CreatePolyline (fixture_def, bodyLocalVertexes, halfBorderThickness, 0);
-               }
+               bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
+               
+               CreatePolyline (fixture_def, bodyLocalVertexes, halfBorderThickness, true, roundCorners, roundCorners);
             }
             else
             {
-               bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);;
+               p = p0; 
+               var p0a:Point = new Point (p.x - halfBorderThickness, p.y - halfBorderThickness);
+               var p0b:Point = new Point (p.x + halfBorderThickness, p.y - halfBorderThickness);
+               var p0c:Point = new Point (p.x + halfBorderThickness, p.y + halfBorderThickness);
+               var p0d:Point = new Point (p.x - halfBorderThickness, p.y + halfBorderThickness);
                
-               var rot:Number = shapeLocalRotation + mEntityShape.GetRotation () - mProxyBody._b2Body.GetAngle ();
-               cos = Math.cos (rot);
-               sin = Math.sin (rot);
-               tx = halfBorderThickness * cos - halfBorderThickness * sin;
-               ty = halfBorderThickness * sin + halfBorderThickness * cos;
+               p = p1; 
+               var p1a:Point = new Point (p.x - halfBorderThickness, p.y - halfBorderThickness);
+               var p1b:Point = new Point (p.x + halfBorderThickness, p.y - halfBorderThickness);
+               var p1c:Point = new Point (p.x + halfBorderThickness, p.y + halfBorderThickness);
+               var p1d:Point = new Point (p.x - halfBorderThickness, p.y + halfBorderThickness);
                
-               var v0:b2Vec2 = bodyLocalVertexes [0];
-               var v1:b2Vec2 = bodyLocalVertexes [0];
-               var v2:b2Vec2 = bodyLocalVertexes [0];
-               var v3:b2Vec2 = bodyLocalVertexes [0];
+               p = p2; 
+               var p2a:Point = new Point (p.x - halfBorderThickness, p.y - halfBorderThickness);
+               var p2b:Point = new Point (p.x + halfBorderThickness, p.y - halfBorderThickness);
+               var p2c:Point = new Point (p.x + halfBorderThickness,p.y + halfBorderThickness);
+               var p2d:Point = new Point (p.x - halfBorderThickness, p.y + halfBorderThickness);
                
-               var vertex0:b2Vec2 = new b2Vec2 ();
-               var vertex1:b2Vec2 = new b2Vec2 ();
-               var vertex2:b2Vec2 = new b2Vec2 ();
-               var vertex3:b2Vec2 = new b2Vec2 ();
+               p = p3; 
+               var p3a:Point = new Point (p.x - halfBorderThickness, p.y - halfBorderThickness);
+               var p3b:Point = new Point (p.x + halfBorderThickness, p.y - halfBorderThickness);
+               var p3c:Point = new Point (p.x + halfBorderThickness, p.y + halfBorderThickness);
+               var p3d:Point = new Point (p.x - halfBorderThickness, p.y + halfBorderThickness);
                
-               var borderRectVertexes:Array = [vertex0, vertex1, vertex2, vertex3];
+               bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes ([p0a, p0b, p0c, p0d, p1a, p1b, p1c, p1d, p2a, p2b, p2c, p2d, p3a, p3b, p3c, p3d]);
                
-               // left and right
-               if (halfWidth >= Half_B2_FLT_EPSILON)
-               {
-                  // 
-                  vertex0.x = v0.x - tx; vertex0.y = v0.y - ty;
-                  vertex1.x = v1.x + tx; vertex0.y = v1.y - ty;
-                  vertex2.x = v1.x + tx; vertex3.y = v1.y + ty;
-                  vertex3.x = v0.x - tx; vertex3.y = v0.y + ty;
-                  
-                  // ...
-                  polygon_shape.Set (borderRectVertexes, 4);
-                  
-                  fixture_def.shape = polygon_shape;
-                  
-                  fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
-                  _b2Fixtures.push (fixture);
-                  
-                  // 
-                  vertex0.x = v3.x - tx; vertex0.y = v3.y - ty;
-                  vertex1.x = v2.x + tx; vertex0.y = v2.y - ty;
-                  vertex2.x = v2.x + tx; vertex3.y = v2.y + ty;
-                  vertex3.x = v3.x - tx; vertex3.y = v3.y + ty;
-                  
-                  // ...
-                  polygon_shape.Set (borderRectVertexes, 4);
-                  
-                  fixture_def.shape = polygon_shape;
-                  
-                  fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
-                  _b2Fixtures.push (fixture);
-               }
+               var v0a:b2Vec2 = bodyLocalVertexes [0];
+               var v0b:b2Vec2 = bodyLocalVertexes [1];
+               //var v0c:b2Vec2 = bodyLocalVertexes [2];
+               var v0d:b2Vec2 = bodyLocalVertexes [3];
+               var v1a:b2Vec2 = bodyLocalVertexes [4];
+               var v1b:b2Vec2 = bodyLocalVertexes [5];
+               var v1c:b2Vec2 = bodyLocalVertexes [6];
+               //var v1d:b2Vec2 = bodyLocalVertexes [7];
+               //var v2a:b2Vec2 = bodyLocalVertexes [8];
+               var v2b:b2Vec2 = bodyLocalVertexes [9];
+               var v2c:b2Vec2 = bodyLocalVertexes [10];
+               var v2d:b2Vec2 = bodyLocalVertexes [11];
+               var v3a:b2Vec2 = bodyLocalVertexes [12];
+               //var v3b:b2Vec2 = bodyLocalVertexes [13];
+               var v3c:b2Vec2 = bodyLocalVertexes [14];
+               var v3d:b2Vec2 = bodyLocalVertexes [15];
                
-               // top and bottom
-               if (halfHeight >= Half_B2_FLT_EPSILON)
-               {
-                  // 
-                  vertex0.x = v0.x - tx; vertex0.y = v0.y - ty;
-                  vertex1.x = v0.x + tx; vertex1.y = v0.y - ty;
-                  vertex2.x = v3.x + tx; vertex0.y = v3.y + ty;
-                  vertex3.x = v3.x - tx; vertex1.y = v3.y + ty;
-                  
-                  // ...
-                  polygon_shape.Set (borderRectVertexes, 4);
-                  
-                  fixture_def.shape = polygon_shape;
-                  
-                  fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
-                  _b2Fixtures.push (fixture);
-                  
-                  // 
-                  vertex0.x = v1.x - tx; vertex0.y = v1.y - ty;
-                  vertex1.x = v1.x + tx; vertex1.y = v1.y - ty;
-                  vertex2.x = v2.x + tx; vertex0.y = v2.y + ty;
-                  vertex3.x = v2.x - tx; vertex1.y = v2.y + ty;
-                  
-                  // ...
-                  polygon_shape.Set (borderRectVertexes, 4);
-                  
-                  fixture_def.shape = polygon_shape;
-                  
-                  fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
-                  _b2Fixtures.push (fixture);
-               }
+               fixture_def.shape = polygon_shape;
+               
+               // top border
+               
+               polygon_shape.Set ([v0a, v1b, v1c, v0d], 4);
+               
+               fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
+               _b2Fixtures.push (fixture);
+               
+               // bottom border
+               
+               polygon_shape.Set ([v3a, v2b, v2c, v3d], 4);
+               
+               fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
+               _b2Fixtures.push (fixture);
+               
+               // left border
+               
+               polygon_shape.Set ([v0a, v0b, v3c, v3d], 4);
+               
+               fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
+               _b2Fixtures.push (fixture);
+               
+               // right border
+               
+               polygon_shape.Set ([v1a, v1b, v2c, v2d], 4);
+               
+               fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
+               _b2Fixtures.push (fixture);
             }
          }
       }

@@ -74,48 +74,60 @@ package com.tapirgames.util {
          return (r << 16) | (g << 8) | (b);
       }
       
-      public static function CreateRectShape (x:Number, y:Number, w:Number, h:Number, borderColor:uint, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):Shape
-      {
-         var rect:Shape = new Shape();
-         if (filled) rect.graphics.beginFill(fillColor);
-         rect.graphics.lineStyle(borderSize, borderColor);
-         rect.graphics.drawRect(x, y, w, h);
-         if (borderSize >= 0) rect.graphics.lineStyle();
-         if (filled) rect.graphics.endFill();
-         
-         return rect;
-      }
-      
-      public static function CreateEllipseShape (x:Number, y:Number, w:Number, h:Number, borderColor:uint, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):Shape
-      {
-         var rect:Shape = new Shape();
-         if (filled) rect.graphics.beginFill(fillColor);
-         if (borderSize >= 0) rect.graphics.lineStyle(borderSize, borderColor);
-         rect.graphics.drawEllipse(x, y, w, h);
-         if (borderSize >= 0) rect.graphics.lineStyle();
-         if (filled) rect.graphics.endFill();
-         
-         return rect;
-      }
+      //public static function CreateRectShape (x:Number, y:Number, w:Number, h:Number, borderColor:uint, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):Shape
+      //{
+      //   var rect:Shape = new Shape();
+      //   if (filled) rect.graphics.beginFill(fillColor);
+      //   rect.graphics.lineStyle(borderSize, borderColor);
+      //   rect.graphics.drawRect(x, y, w, h);
+      //   rect.graphics.lineStyle();
+      //   if (filled) rect.graphics.endFill();
+      //   
+      //   return rect;
+      //}
+      //
+      //public static function CreateEllipseShape (x:Number, y:Number, w:Number, h:Number, borderColor:uint, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):Shape
+      //{
+      //   var rect:Shape = new Shape();
+      //   if (filled) rect.graphics.beginFill(fillColor);
+      //   if (borderSize >= 0) rect.graphics.lineStyle(borderSize, borderColor);
+      //   rect.graphics.drawEllipse(x, y, w, h);
+      //   rect.graphics.lineStyle();
+      //   if (filled) rect.graphics.endFill();
+      //   
+      //   return rect;
+      //}
       
       public static function Clear (shape:Object):void
       {
          shape.graphics.clear ();
       }
       
-      public static function ClearAndDrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
+      // roundCorners is only useful when drawing border
+      public static function ClearAndDrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundCorners:Boolean = false):void
       {
          shape.graphics.clear ();
          if (filled) shape.graphics.beginFill(fillColor);
-         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, CapsStyle.SQUARE, JointStyle.MITER, 255);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundCorners ? CapsStyle.ROUND: CapsStyle.SQUARE, roundCorners ? JointStyle.ROUND : JointStyle.MITER, 255);
          shape.graphics.drawRect(x, y, w, h);
          if (borderSize >= 0) shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       
-      public static function DrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
+      // roundCorners is only useful when drawing border
+      public static function DrawRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF, roundCorners:Boolean = false):void
       {
          if (filled) shape.graphics.beginFill(fillColor);
+         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundCorners ? CapsStyle.ROUND: CapsStyle.SQUARE, roundCorners ? JointStyle.ROUND : JointStyle.MITER, 255);
+         shape.graphics.drawRect(x, y, w, h);
+         if (borderSize >= 0) shape.graphics.lineStyle();
+         if (filled) shape.graphics.endFill();
+      }
+      
+      public static function DrawRoundRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF):void
+      {
+         if (filled) shape.graphics.beginFill(fillColor);
+         
          if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, CapsStyle.SQUARE, JointStyle.MITER, 255);
          shape.graphics.drawRect(x, y, w, h);
          if (borderSize >= 0) shape.graphics.lineStyle();
@@ -179,7 +191,7 @@ package com.tapirgames.util {
          shape.graphics.lineStyle();
       }
       
-      public static function ClearAndDrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF):void
+      public static function ClearAndDrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFF):void
       {
          shape.graphics.clear ();
          

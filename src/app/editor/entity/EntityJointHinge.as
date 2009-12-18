@@ -10,7 +10,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    import common.ValueAdjuster;
@@ -25,7 +25,7 @@ package editor.entity {
       protected var mLowerAngle:Number = 0;
       protected var mUpperAngle:Number = 0;
       public var mEnableMotor:Boolean = false;
-      public var mMotorSpeed:Number = 0;
+      public var mMotorSpeed:Number = Define.DefaultHingeMotorSpeed;
       public var mBackAndForth:Boolean = false;
       
       public var mMaxMotorTorque:Number = Define.DefaultHingeMotorTorque; // v1.04
@@ -55,6 +55,11 @@ package editor.entity {
       
       public function SetLimits (lower:Number, upper:Number):void
       {
+         if (lower > 0)
+            lower = 0.0;
+         if (upper < 0)
+            upper = 0.0;
+         
          mLowerAngle = ValueAdjuster.AdjustSliderTranslation (lower, Config.VersionNumber);
          mUpperAngle = ValueAdjuster.AdjustSliderTranslation (upper, Config.VersionNumber);
          

@@ -906,6 +906,13 @@ package editor.trigger {
                      ]
                   );
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Destroy, entity_package, "Destroy", 
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     null
+                  );
+         
       // game / entity / shape
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType, entity_shape_package, "Get C.I. Type", 

@@ -44,8 +44,6 @@ package common {
       
       public static const WorldStepTimeInterval:Number = 1.0 / 30;
       
-      public static const DefaultGravityAccelerationMagnitude:Number = 9.8;
-      
       public static function IsNormalScene (sceneLeft:int, sceneTop:int, sceneWidth:int, sceneHeight:int):Boolean
       {
          return sceneLeft == 0 && sceneTop == 0 && sceneWidth == DefaultWorldWidth && sceneHeight == DefaultWorldHeight;
@@ -57,6 +55,10 @@ package common {
       
       public static const MaxWorldZoomScale:Number = 4.0;
       public static const MinWorldZoomScale:Number = 1.0 / 16.0;
+      
+      // ...
+      public static const BodyCloneOffsetX:uint = 20;
+      public static const BodyCloneOffsetY:uint = 0;
       
 //===========================================================================
 // joint connected shape index
@@ -78,6 +80,12 @@ package common {
       
       public static const CollisionCategoryId_HiddenCategory:int = -1;
       public static const MinCollisionCategoryId:int = -1;
+      
+//===========================================================================
+// shaoe common
+//===========================================================================
+      
+      public static const DefaultShapeDensity:Number = 2700;
       
 //===========================================================================
 // rect
@@ -114,17 +122,20 @@ package common {
       public static const MaxHingeMotorSpeed:int = 360; // degree
       public static const MaxHingeMotorTorque:Number = Number.MAX_VALUE; 
       
-      public static const DefaultHingeMotorTorque:Number = 10000000;
+      public static const DefaultHingeMotorSpeed:int = 60; // degree
+      public static const DefaultHingeMotorTorque:Number = 1.0e+13; // pixles-s-kg
       
 //===========================================================================
 // slider
 //===========================================================================
       
-      public static const MaxSliderLimitTranslation:int = 36000; // degree
-      public static const MaxSliderMotorSpeed:int = 300; // degree
+      public static const MaxSliderLimitTranslation:int = 36000; // pixels
+      public static const MaxSliderMotorSpeed:int = 300; // pixels
       public static const MaxSliderMotorForce:Number = Number.MAX_VALUE; 
       
-      public static const DefaultSliderMotorForce:Number = 100000000;
+      public static const DefaultSliderMotorSpeed:Number = 30; // pixles
+      public static const DefaultSliderLimitTranslation:Number = 20; // pixles
+      public static const DefaultSliderMotorForce:Number = 1.0e+11; // pixles-s-kg
       
 //===========================================================================
 // spring
@@ -154,6 +165,9 @@ package common {
 //===========================================================================
 // gravity controller
 //===========================================================================
+      
+      public static const kInteractiveColor:uint = 0x6060FF;
+      public static const kUninteractiveColor:uint = 0xA0A0A0;
       
       public static const MinGravityControllerRadium:uint = 10;
       public static const MaxGravityControllerRadium:uint = 200;
@@ -220,7 +234,10 @@ package common {
       //v1.02
       public static const ColorTextBackground:uint = 0xFFFEFEFE; // if set as FFFFFF, no bakcground is painted, why?
       
-      
+      // ...
+      public static const BorderColorSelectedObject:uint = 0xFF0000FF;
+      public static const BorderColorUnselectedObject:uint = Define.ColorObjectBorder;
+
 //===========================================================================
 // circle appearance type
 //===========================================================================

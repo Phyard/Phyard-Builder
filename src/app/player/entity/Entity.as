@@ -55,19 +55,17 @@ package player.entity {
          if (createStageId == 0)
          {
             if (entityDefine.mPosX != undefined)
-               SetPositionX (mWorld.DisplayX2PhysicsX (entityDefine.mPosX));
+               SetPositionX (mWorld.GetCoordinateSystem ().D2P_PositionX (entityDefine.mPosX));
             if (entityDefine.mPosY != undefined)
-               SetPositionY (mWorld.DisplayY2PhysicsY (entityDefine.mPosY));
+               SetPositionY (mWorld.GetCoordinateSystem ().D2P_PositionY (entityDefine.mPosY));
             if (entityDefine.mRotation != undefined)
-               SetRotation  (entityDefine.mRotation);
+               SetRotation  (mWorld.GetCoordinateSystem ().D2P_Rotation (entityDefine.mRotation));
             if (entityDefine.mIsVisible != undefined)
                SetVisible   (entityDefine.mIsVisible);
             if (entityDefine.mAlpha != undefined)
                SetAlpha     (entityDefine.mAlpha);
             if (entityDefine.mIsActive != undefined)
                SetActive    (entityDefine.mIsActive);
-            if (entityDefine.mIsEnabled != undefined)
-               SetEnabled   (entityDefine.mIsEnabled);
          }
       }
       
@@ -95,12 +93,10 @@ package player.entity {
          return mCreationId;
       }
       
-      
-//=============================================================
-//   coordinates convert
-//=============================================================
-      
-
+      internal function GetMainEntity ():Entity
+      {
+         return this; // for SubEntity to override
+      }
       
 //=============================================================
 //   
@@ -190,62 +186,6 @@ package player.entity {
       public function IsEnabled ():Boolean
       {
          return mIsEnabled;
-      }
-      
-//=============================================================
-//   physics proxy
-//
-//   !!! can't call any function which will change the physics world in mWorld.StepPhysicsWorld
-//=============================================================
-      
-      internal var mPhysicsProxy:PhysicsProxy = null;
-      
-      public function GetPhysicsProxy ():PhysicsProxy
-      {
-         return mPhysicsProxy;
-      }
-      
-      public function DestroyPhysicsProxy ():void
-      {
-         if (mPhysicsProxy != null)
-         {
-            mPhysicsProxy.Destroy ();
-            mPhysicsProxy = null;
-         }
-      }
-      
-//=============================================================
-//   
-//=============================================================
-      
-      public function SynchronizeWithPhysicsProxy ():void
-      {
-         // to ovrride
-      }
-      
-//=============================================================
-//   appearance
-//=============================================================
-      
-      // defaultly, DelayRebuildAppearance will be delayed. If a RebuildAppearance is really needed to excute, call RebuildAppearance instead.
-      
-      public var mNextEntityToDelayUpdateAppearance:Entity = null;
-      
-      public var mIsAlreadyInDelayUpdateAppearanceList:Boolean = false;
-      
-      final public function DelayUpdateAppearance ():void
-      {
-         if (! mIsAlreadyInDelayUpdateAppearanceList)
-         {
-            mIsAlreadyInDelayUpdateAppearanceList = true;
-            mWorld.DelayUpdateEntityAppearance (this);
-         }
-      }
-      
-      // to override
-      public function UpdateAppearance ():void // used internally
-      {
-         // to overrride
       }
       
 //====================================================================================================
@@ -368,7 +308,14 @@ package player.entity {
          return mAlreadyDestroyed;
       }
       
-      final public function Destroy ():void
+      // this function is for outer packages
+      final public function DestroyEntity ():void
+      {
+         GetMainEntity ().Destroy (); // a main entity must destroy its sub entities
+      }
+      
+      // this one is for internal 
+      final internal function Destroy ():void
       {
          if (mAlreadyDestroyed)
             return;
@@ -398,6 +345,61 @@ package player.entity {
       {
       }
       
+//=============================================================
+//   appearance
+//=============================================================
+      
+      // defaultly, DelayRebuildAppearance will be delayed. If a RebuildAppearance is really needed to excute, call RebuildAppearance instead.
+      
+      public var mNextEntityToDelayUpdateAppearance:Entity = null;
+      
+      public var mIsAlreadyInDelayUpdateAppearanceList:Boolean = false;
+      
+      final public function DelayUpdateAppearance ():void
+      {
+         if (! mIsAlreadyInDelayUpdateAppearanceList)
+         {
+            mIsAlreadyInDelayUpdateAppearanceList = true;
+            mWorld.DelayUpdateEntityAppearance (this);
+         }
+      }
+      
+      // to override
+      public function UpdateAppearance ():void // used internally
+      {
+         // to overrride
+      }
+      
+//=============================================================
+//   physics proxy
+//
+//   !!! can't call any function which will change the physics world in mWorld.StepPhysicsWorld
+//=============================================================
+      
+      internal var mPhysicsProxy:PhysicsProxy = null;
+      
+      public function GetPhysicsProxy ():PhysicsProxy
+      {
+         return mPhysicsProxy;
+      }
+      
+      public function DestroyPhysicsProxy ():void
+      {
+         if (mPhysicsProxy != null)
+         {
+            mPhysicsProxy.Destroy ();
+            mPhysicsProxy = null;
+         }
+      }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      public function SynchronizeWithPhysicsProxy ():void
+      {
+         // to ovrride
+      }
       
 //==============================================================================
 // as task

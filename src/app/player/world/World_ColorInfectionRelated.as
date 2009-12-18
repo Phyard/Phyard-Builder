@@ -3,16 +3,16 @@
 //
 //=======================================================================
       
-      protected var mIsCICriterionEnabled:Boolean = true;
+      protected var mIsCiRulesEnabled:Boolean = true;
       
-      public function IsCICriterionEnabled ():Boolean
+      public function IsCiRulesEnabled ():Boolean
       {
-         return mIsCICriterionEnabled;
+         return mIsCiRulesEnabled;
       }
       
-      public function SetCICriterionEnabled (enabled:Boolean):void
+      public function SetCiRulesEnabled (enabled:Boolean):void
       {
-         mIsCICriterionEnabled = enabled;
+         mIsCiRulesEnabled = enabled;
       }
       
 //=======================================================================
@@ -121,7 +121,7 @@ private function InfectShapes (shape1:EntityShape, shape2:EntityShape):void
 protected function RemoveBombsAndRemovableShapes (stageDisplayPoint:Point):void
 {
    var worldDisplayPoint:Point = globalToLocal (stageDisplayPoint);
-   var physicsPoint:Point = DisplayPosition2PhysicsPoint (worldDisplayPoint.x, worldDisplayPoint.y);
+   var physicsPoint:Point = mCoordinateSystem.DisplayPosition2PhysicsPoint (worldDisplayPoint.x, worldDisplayPoint.y);
    
    var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
 }

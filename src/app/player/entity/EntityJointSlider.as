@@ -33,17 +33,17 @@ package player.entity {
             if (entityDefine.mEnableLimits != undefined)
                SetEnableLimits (entityDefine.mEnableLimits);
             if (entityDefine.mLowerTranslation != undefined)
-               SetLowerTranslation (mWorld.DisplayLength2PhysicsLength (entityDefine.mLowerTranslation));
+               SetLowerTranslation (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mLowerTranslation));
             if (entityDefine.mUpperTranslation != undefined)
-               SetUpperTranslation (mWorld.DisplayLength2PhysicsLength (entityDefine.mUpperTranslation));
+               SetUpperTranslation (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mUpperTranslation));
             if (entityDefine.mEnableMotor != undefined)
                SetEnableMotor (entityDefine.mEnableMotor);
             if (entityDefine.mMotorSpeed != undefined)
-               SetMotorSpeed (mWorld.DisplayLength2PhysicsLength (entityDefine.mMotorSpeed));
+               SetMotorSpeed (mWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (entityDefine.mMotorSpeed));
             if (entityDefine.mBackAndForth != undefined)
                SetBackAndForth (entityDefine.mBackAndForth);
             if (entityDefine.mMaxMotorForce != undefined)
-               SetMaxMotorForce (mWorld.DisplayForce2PhysicsForce (entityDefine.mMaxMotorForce));
+               SetMaxMotorForce (mWorld.GetCoordinateSystem ().D2P_ForceMagnitude (entityDefine.mMaxMotorForce));
          }
       }
       

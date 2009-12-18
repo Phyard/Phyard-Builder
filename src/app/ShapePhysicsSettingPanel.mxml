@@ -17,7 +17,7 @@
       </mx:VBox>
       <mx:Spacer width="100%"/>
       <mx:VBox>
-         <mx:CheckBox id="CheckBox_IsStatic" label="Static"/>
+         <mx:CheckBox id="CheckBox_IsStatic" label="Static" click="OnUpdateComponents()"/>
          <mx:CheckBox id="CheckBox_Hollow" label="Hollow"/>
       </mx:VBox>
       <mx:Spacer width="100%"/>
@@ -28,14 +28,14 @@
       <mx:Spacer width="100%"/>
       <mx:VBox>
          <mx:CheckBox id="CheckBox_AllowSleeping" label="Allow Sleeping"/>
-         <mx:CheckBox id="CheckBox_FixRotation" label="Fix Rotation"/>
+         <mx:CheckBox id="CheckBox_FixRotation" label="Fix Rotation" click="OnUpdateComponents()"/>
       </mx:VBox>
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
    <mx:Spacer height="5" />
 
-   <mx:HBox width="100%">
+   <mx:HBox width="100%" id="Box_CollisionCategory">
       <mx:Spacer width="100%"/>
       <mx:Label id="Label_CollisionCategory" text="Collision Category:" textAlign="right" />
       <mx:ComboBox id="SelectList_CollisionCategory" />
@@ -44,18 +44,42 @@
 
    <mx:Spacer height="5" />
 
-   <mx:HBox width="100%">
+   <mx:HBox width="100%" id="Box_Bottom">
       <mx:Spacer width="100%"/>
-      <mx:VBox>
+      <mx:VBox id="Box_Left">
          <mx:HBox width="100%">
             <mx:Spacer width="100%"/>
-            <mx:Label id="Label_AngularDamping" text="Angular Damping:" textAlign="right"/>
-            <mx:TextInput id="Text_AngularDamping" text="" width="100"/>
+            <mx:Label id="Label_InitialVelocityMagnitude" text="Linear Velocity Magnitude:" textAlign="right"/>
+            <mx:TextInput id="Text_InitialVelocityMagnitude" text="" width="100"/>
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:Spacer width="100%"/>
-            <mx:Label id="Label_InitialAngularMagnitude" text="Angular Velocity:" textAlign="right"/>
-            <mx:TextInput id="Text_InitialAngularMagnitude" text="" width="100"/>
+            <mx:Label id="Label_InitialVelocityAngle" text="Linear Velocity Angle (degrees):" textAlign="right"/>
+            <mx:TextInput id="Text_InitialVelocityAngle" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%" id="Box_InitialAngularVelocity">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_InitialAngularVelocity" text="Angular Velocity (degrees/s):" textAlign="right"/>
+            <mx:TextInput id="Text_InitialAngularVelocity" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%" />
+            <mx:CheckBox id="CheckBox_InfinteMass" label="Infinite" click="OnUpdateComponents()"/>
+            <mx:Label id="Label_Denstiy" text="Density:" textAlign="right"/>
+            <mx:TextInput id="Text_Density" text="" width="100"/>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
+      <mx:VBox id="Box_Right">
+         <mx:HBox width="100%" id="Box_LinearDamping">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_LinearDamping" text="Linear Damping:" textAlign="right"/>
+            <mx:TextInput id="Text_LinearDamping" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%" id="Box_AngularDamping">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_AngularDamping" text="Angular Damping:" textAlign="right"/>
+            <mx:TextInput id="Text_AngularDamping" text="" width="100"/>
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:Spacer width="100%"/>
@@ -66,30 +90,6 @@
             <mx:Spacer width="100%"/>
             <mx:Label id="Label_Restitution" text="Restitution:" textAlign="right"/>
             <mx:TextInput id="Text_Restitution" text="" width="100"/>
-         </mx:HBox>
-      </mx:VBox>
-      <mx:Spacer width="100%"/>
-      <mx:VBox>
-         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/>
-            <mx:Label id="Label_LinearDamping" text="Linear Damping:" textAlign="right"/>
-            <mx:TextInput id="Text_LinearDamping" text="" width="100"/>
-         </mx:HBox>
-         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/>
-            <mx:Label id="Label_InitialVelocityMagnitude" text="Linear Velocity Magnitude:" textAlign="right"/>
-            <mx:TextInput id="Text_InitialVelocityMagnitude" text="" width="100"/>
-         </mx:HBox>
-         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/>
-            <mx:Label id="Label_InitialVelocityAngle" text="Linear Velocity Angle:" textAlign="right"/>
-            <mx:TextInput id="Text_InitialVelocityAngle" text="" width="100"/>
-         </mx:HBox>
-         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_InfinteMass" label="Infinite"/>
-            <mx:Label id="Label_Denstiy" text="Density:" textAlign="right"/>
-            <mx:TextInput id="Text_Density" text="" width="100"/>
          </mx:HBox>
       </mx:VBox>
       <mx:Spacer width="100%"/>
@@ -115,62 +115,48 @@
                CheckBox_IsStatic.enabled = true;
                CheckBox_IsBullet.enabled = true;
                CheckBox_IsSensor.enabled = true;
+               CheckBox_BuildBorder.enabled = true
+               CheckBox_AllowSleeping.enabled = true;
+               CheckBox_FixRotation.enabled = true;
                
-               Label_Denstiy.enabled = true;
-               Label_Friction.enabled = true;
-               Label_Restitution.enabled = true;
+               CheckBox_Hollow.enabled = mInputValues.mDisableHollowEditing == null || (! mInputValues.mDisableHollowEditing);
+                
+               Box_Bottom.enabled = true;
+               Box_CollisionCategory.enabled = true;
+                
+               if (CheckBox_IsStatic.selected)
+               {
+                  Box_Left.enabled = false;
+                  Box_LinearDamping.enabled = false;
+                  Box_AngularDamping.enabled = false;
+               }
+               else
+               {
+                  Box_Left.enabled = true;
+                  Box_LinearDamping.enabled = true;
+                  Box_AngularDamping.enabled = true;
+                  
+                  Box_InitialAngularVelocity.enabled = ! CheckBox_FixRotation.selected;
+                  
+                  Text_Density.enabled = ! CheckBox_InfinteMass.selected;
+               }
                
-               Text_Density.enabled = true;
-               Text_Friction.enabled = true;
-               Text_Restitution.enabled = true;
-               
-               Label_CollisionCategory.enabled = true;
-               SelectList_CollisionCategory.enabled = true;
-               
-                CheckBox_Hollow.enabled = ! mInputValues.mDisableHollowEditing;
+               Box_Right.enabled = ! CheckBox_IsSensor.selected;
             }
             else
             {
                CheckBox_IsStatic.enabled = false;
                CheckBox_IsBullet.enabled = false;
                CheckBox_IsSensor.enabled = false;
-               
-               Label_Denstiy.enabled = false;
-               Text_Friction.enabled = false;
-               Label_Restitution.enabled = false;
-               
-               Text_Density.enabled = false;
-               Text_Friction.enabled = false;
-               Text_Restitution.enabled = false;
-               
-               Label_CollisionCategory.enabled = false;
-               SelectList_CollisionCategory.enabled = false;
+               CheckBox_Hollow.enabled = false;
+               CheckBox_BuildBorder.enabled = false;
+               CheckBox_AllowSleeping.enabled = false;
+               CheckBox_FixRotation.enabled = false;
                
                CheckBox_Hollow.enabled = false;
-            }
-            
-            if (CheckBox_IsSensor.enabled)
-            {
-               if (CheckBox_IsSensor.selected)
-               {
-                  Label_Denstiy.enabled = true;
-                  Label_Friction.enabled = false;
-                  Label_Restitution.enabled = false;
-                  
-                  Text_Density.enabled = true;
-                  Text_Friction.enabled = false;
-                  Text_Restitution.enabled = false;
-               }
-               else
-               {
-                  Label_Denstiy.enabled = true;
-                  Label_Friction.enabled = true;
-                  Label_Restitution.enabled = true;
-                  
-                  Text_Density.enabled = true;
-                  Text_Friction.enabled = true;
-                  Text_Restitution.enabled = true;
-               }
+               
+               Box_Bottom.enabled = false
+               Box_CollisionCategory.enabled = false;
             }
          }
          
@@ -183,8 +169,19 @@
             CheckBox_IsBullet.selected = inputValues.mIsBullet;
             CheckBox_IsSensor.selected = inputValues.mIsSensor;
             CheckBox_Hollow.selected = inputValues.mIsHollow;
+            CheckBox_BuildBorder.selected = inputValues.mBuildBorder;
+            CheckBox_AllowSleeping.selected = inputValues.mAllowSleeping;
+            CheckBox_FixRotation.selected = inputValues.mFixRotation;
             
+            CheckBox_InfinteMass.selected = inputValues.mDensity == 0;
             Text_Density.text = inputValues.mDensity;
+            
+            Text_InitialVelocityMagnitude.text = inputValues.mLinearVelocityMagnitude;
+            Text_InitialVelocityAngle.text = inputValues.mLinearVelocityAngle;
+            Text_InitialAngularVelocity.text = inputValues.mAngularVelocity;
+            
+            Text_LinearDamping.text = inputValues.mLinearDamping;
+            Text_AngularDamping.text = inputValues.mAngularDamping;
             Text_Friction.text = inputValues.mFriction;
             Text_Restitution.text = inputValues.mRestitution;
             
@@ -201,18 +198,62 @@
             returnValues.mIsBullet = CheckBox_IsBullet.selected;
             returnValues.mIsSensor = CheckBox_IsSensor.selected;
             returnValues.mIsHollow = CheckBox_Hollow.selected;
+            returnValues.mBuildBorder = CheckBox_BuildBorder.selected;
+            returnValues.mAllowSleeping = CheckBox_AllowSleeping.selected;
+            returnValues.mFixRotation = CheckBox_FixRotation.selected;
             
-            var density:Number = parseFloat (Text_Density.text);
-            if ( ! isNaN (density) )
-               returnValues.mDensity = density;
+            if (CheckBox_InfinteMass.selected)
+               returnValues.mDensity = 0.0;
+            else
+            {
+               var density:Number = parseFloat (Text_Density.text);
+               if ( ! isNaN (density) )
+                  returnValues.mDensity = density;
+               else
+                  returnValues.mDensity = mInputValues.mDensity;
+            }
+            
+            var linearSpeed:Number = parseFloat (Text_InitialVelocityMagnitude.text);
+            if ( ! isNaN (linearSpeed) )
+               returnValues.mLinearVelocityMagnitude = linearSpeed;
+            else
+               returnValues.mLinearVelocityMagnitude = mInputValues.mLinearVelocityMagnitude;
+            
+            var linearVelocityAngle:Number = parseFloat (Text_InitialVelocityAngle.text);
+            if ( ! isNaN (linearVelocityAngle) )
+               returnValues.mLinearVelocityAngle = linearVelocityAngle;
+            else
+               returnValues.mLinearVelocityAngle = mInputValues.mLinearVelocityAngle;
+            
+            var angularVelocity:Number = parseFloat (Text_InitialAngularVelocity.text);
+            if ( ! isNaN (angularVelocity) )
+               returnValues.mAngularVelocity = angularVelocity;
+            else
+               returnValues.mAngularVelocity = mInputValues.mAngularVelocity;
+            
+            var linearDamping:Number = parseFloat (Text_LinearDamping.text);
+            if ( ! isNaN (linearDamping) )
+               returnValues.mLinearDamping = linearDamping;
+            else
+               returnValues.mLinearDamping = mInputValues.mLinearDamping;
+            
+            var angularDamping:Number = parseFloat (Text_AngularDamping.text);
+            if ( ! isNaN (angularDamping) )
+               returnValues.mAngularDamping = angularDamping;
+            else
+               returnValues.mAngularDamping = mInputValues.mAngularDamping;
             
             var friction:Number = parseFloat (Text_Friction.text);
             if ( ! isNaN (friction) )
                returnValues.mFriction = friction;
+            else
+               returnValues.mFriction = mInputValues.mFriction;
             
             var restitution:Number = parseFloat (Text_Restitution.text);
             if ( ! isNaN (restitution) )
                returnValues.mRestitution = restitution;
+            else
+               returnValues.mRestitution = mInputValues.mRestitution;
             
             returnValues.mCollisionCategoryIndex = SelectList_CollisionCategory.selectedItem.mCategoryIndex;
          }

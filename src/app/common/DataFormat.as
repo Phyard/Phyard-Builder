@@ -84,6 +84,20 @@ package common {
             worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = editorWorld.GetPhysicsShapesPotentialMaxCount ();
             worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = editorWorld.GetPhysicsShapesPopulationDensityLevel ();
             //<<
+            
+            //>>from v1.08
+            worldDefine.mSettings.mIsInfiniteSceneSize = editorWorld.IsInfiniteSceneSize ();
+            
+            worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = editorWorld.GetDefaultGravityAccelerationMagnitude ();
+            worldDefine.mSettings.mDefaultGravityAccelerationAngle     = editorWorld.GetDefaultGravityAccelerationAngle ();
+            
+            worldDefine.mSettings.mRightHandCoordinates   = editorWorld.GetCoordinateSystem ().IsRightHand ();
+            worldDefine.mSettings.mCoordinatesOriginX     = editorWorld.GetCoordinateSystem ().GetOriginX ();
+            worldDefine.mSettings.mCoordinatesOriginY     = editorWorld.GetCoordinateSystem ().GetOriginY ();
+            worldDefine.mSettings.mCoordinatesScale       = editorWorld.GetCoordinateSystem ().GetScale ();
+            
+            worldDefine.mSettings.mIsCiRulesEnabled = editorWorld.IsCiRulesEnabled ();
+            //<<
          }
          
          var numEntities:int = editorWorld.GetNumEntities ();
@@ -108,7 +122,6 @@ package common {
             //>>from v1.08
             entityDefine.mAlpha = editorEntity.GetAlpha ();
             entityDefine.mIsActive = editorEntity.IsActive ();
-            entityDefine.mIsEnabled = editorEntity.IsEnabled ();
             //<<
             
             if (editorEntity is editor.entity.EntityUtility)
@@ -280,13 +293,16 @@ package common {
                      
                      entityDefine.mHalfWidth = (shape as editor.entity.EntityShapeRectangle).GetHalfWidth ();
                      entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
+                     entityDefine.mIsRoundCorners = (shape as EntityShapeRectangle).IsRoundCorners ();
                   }
                   //>>from v1.04
                   else if (editorEntity is editor.entity.EntityShapePolygon)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolygon;
                      
+                     //>> from v1.08
                      entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolygon).GetLocalVertexPoints ();
+                     //<<
                   }
                   //<<
                   //>>from v1.05
@@ -312,6 +328,10 @@ package common {
                      
                      entityDefine.mHalfWidth = (shape as editor.entity.EntityShapeRectangle).GetHalfWidth ();
                      entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
+                     
+                     //from v1.08
+                     entityDefine.mTextColor = (shape as EntityShapeText).GetTextColor ();
+                     //<<
                   }
                   else if (editorEntity is editor.entity.EntityShapeGravityController)
                   {
@@ -329,6 +349,10 @@ package common {
                      // ...
                      entityDefine.mInitialGravityAcceleration = (shape as editor.entity.EntityShapeGravityController).GetInitialGravityAcceleration ();
                      entityDefine.mInitialGravityAngle = (shape as editor.entity.EntityShapeGravityController).GetInitialGravityAngle ();
+                     
+                     //>> from v1,08
+                     entityDefine.mMaximalGravityAcceleration = (shape as editor.entity.EntityShapeGravityController).GetMaximalGravityAcceleration ();
+                     //<<
                   }
                   //<<
                }
@@ -916,7 +940,6 @@ package common {
                //>>from v1.08
                entity.SetAlpha (entityDefine.mAlpha);
                entity.SetActive (entityDefine.mIsActive);
-               entity.SetEnabled (entityDefine.mIsEnabled);
                //<<
                
                entity.UpdateAppearance ();
@@ -1225,7 +1248,6 @@ package common {
          {
             entityDefine.mAlpha = parseFloat (element.@alpha);;
             entityDefine.mIsActive = parseInt (element.@active) != 0;
-            entityDefine.mIsEnabled = parseInt (element.@enabled) != 0;
          }
          
          if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
@@ -1622,7 +1644,6 @@ package common {
             {
                byteArray.writeFloat (entityDefine.mAlpha);
                byteArray.writeByte (entityDefine.mIsActive);
-               byteArray.writeByte (entityDefine.mIsEnabled);
             }
             
             if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05

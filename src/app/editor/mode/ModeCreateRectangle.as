@@ -6,7 +6,7 @@ package editor.mode {
    import com.tapirgames.util.GraphicsUtil;
    
    import editor.WorldView;
-   import editor.setting.EditorSetting;
+   
    
    import editor.entity.EntityShapeRectangle;
    
@@ -15,7 +15,7 @@ package editor.mode {
    public class ModeCreateRectangle extends ModeCreateShape
    {
       
-      public function ModeCreateRectangle (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = EditorSetting.MinRectSideLength, maxSideLength:Number = EditorSetting.MaxRectSideLength)
+      public function ModeCreateRectangle (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, isSquare:Boolean = false, minSideLength:Number = Define.MinRectSideLength, maxSideLength:Number = Define.MaxRectSideLength)
       {
          super (mainView, ciAiType, filledColor, isStatic);
          
@@ -28,17 +28,17 @@ package editor.mode {
          
          mIsSquare = isSquare;
          
-         if (minSideLength < EditorSetting.MinRectSideLength)
-            mMinSideLength = EditorSetting.MinRectSideLength;
-         else if (minSideLength > EditorSetting.MaxRectSideLength)
-            mMinSideLength = EditorSetting.MaxRectSideLength;
+         if (minSideLength < Define.MinRectSideLength)
+            mMinSideLength = Define.MinRectSideLength;
+         else if (minSideLength > Define.MaxRectSideLength)
+            mMinSideLength = Define.MaxRectSideLength;
          else
             mMinSideLength = minSideLength;
          
-         if (maxSideLength < EditorSetting.MinRectSideLength)
-            mMaxSideLength = EditorSetting.MinRectSideLength;
-         else if (maxSideLength > EditorSetting.MaxRectSideLength)
-            mMaxSideLength = EditorSetting.MaxRectSideLength;
+         if (maxSideLength < Define.MinRectSideLength)
+            mMaxSideLength = Define.MinRectSideLength;
+         else if (maxSideLength > Define.MaxRectSideLength)
+            mMaxSideLength = Define.MaxRectSideLength;
          else
             mMaxSideLength = maxSideLength;
       }
@@ -103,14 +103,14 @@ package editor.mode {
          var w:Number = startPoint.x - endPoint.x; if (w < 0) w = - w;
          var h:Number = startPoint.y - endPoint.y; if (h < 0) h = - h;
          
-         if (w <= mMaxSideLength && h <= mMaxSideLength && w * h <= EditorSetting.MaxRectArea)
+         if (w <= mMaxSideLength && h <= mMaxSideLength && w * h <= Define.MaxRectArea)
          {
             mEndX = endPoint.x;
             mEndY = endPoint.y;
          }
          else
          {
-            if (w * h <= EditorSetting.MaxRectArea)
+            if (w * h <= Define.MaxRectArea)
             {
                if (w <= mMaxSideLength)
                   mEndX = endPoint.x;

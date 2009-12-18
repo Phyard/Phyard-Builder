@@ -10,7 +10,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -38,7 +38,7 @@ package editor.entity {
       protected var mFrequency:Number = 0.0;
       //protected var mCustomSpringConstant:Number = 0.0;
       
-      protected var mBreakExtendedLength:Number;
+      protected var mBreakExtendedLength:Number = 0.0;
       
       public function EntityJointSpring (world:World)
       {
@@ -141,6 +141,9 @@ package editor.entity {
       
       public function SetFrequency (f:Number):void
       {
+         if (f < 0)
+            f = 0.0;
+         
          mFrequency = f;
       }
       
@@ -162,6 +165,9 @@ package editor.entity {
       
       public function SetBreakExtendedLength (length:Number):void
       {
+         if (length < 0)
+            length = 0.0;
+         
          mBreakExtendedLength = length;
       }
       

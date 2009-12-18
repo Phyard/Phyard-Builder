@@ -18,7 +18,7 @@ package editor.trigger.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    

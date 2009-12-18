@@ -77,7 +77,6 @@ package player.world {
    // includes
       
       include "../trigger/CoreFunctionDefinitions_World.as";
-      include "World_UnitScale.as";
       include "World_CameraAndView.as";
       include "World_SystemEventHandling.as";
       include "World_ParticleManager.as";
@@ -126,10 +125,21 @@ package player.world {
          mPermitPublishing = worldDefine.mPermitPublishing;
          
          // these values are in pixel unit
-         mWorldLeft = worldDefine.mSettings.mWorldLeft;
-         mWorldTop = worldDefine.mSettings.mWorldTop;
-         mWorldWidth = worldDefine.mSettings.mWorldWidth;
-         mWorldHeight = worldDefine.mSettings.mWorldHeight;
+         
+         if (worldDefine.mSettings.mIsInfiniteSceneSize)
+         {
+            mWorldLeft   = - 0x7FFFFFFF;
+            mWorldTop    = - 0x7FFFFFFF;
+            mWorldWidth  = uint (0xFFFFFFFF);
+            mWorldHeight = uint (0xFFFFFFFF);
+         }
+         else
+         {
+            mWorldLeft = worldDefine.mSettings.mWorldLeft;
+            mWorldTop = worldDefine.mSettings.mWorldTop;
+            mWorldWidth = worldDefine.mSettings.mWorldWidth;
+            mWorldHeight = worldDefine.mSettings.mWorldHeight;
+         }
          mCameraCenterX = worldDefine.mSettings.mCameraCenterX;
          mCameraCenterY = worldDefine.mSettings.mCameraCenterY;
          
@@ -145,6 +155,10 @@ package player.world {
          
       // ...
          
+         SetCiRulesEnabled (worldDefine.mSettings.mIsCiRulesEnabled);
+         
+      // ...
+         
          mFunc_StepUpdate = Update_FixedStepInterval_SpeedX;
          
       // 
@@ -152,10 +166,13 @@ package player.world {
          ParticleManager_Initialize ();
          
       // ...
+         var coordinates_scale:Number = worldDefine.mSettings.mCoordinatesScale;
+         if (coordinates_scale <= 0)
+            coordinates_scale = 1.0;
+         mCoordinateSystem = new CoordinateSystem (worldDefine.mSettings.mCoordinatesOriginX, worldDefine.mSettings.mCoordinatesOriginY, coordinates_scale, worldDefine.mSettings.mRightHandCoordinates);
          
-         mNormalGravityAccelerationMagnitude = Define.DefaultGravityAccelerationMagnitude;
-         
-         mCoordinateSystem = Define.kDefaultCoordinateSystem;
+         mDefaultGravityAccelerationMagnitude = mCoordinateSystem.D2P_LinearAccelerationMagnitude (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+         mDefaultGravityAccelerationAngle = mCoordinateSystem.D2P_Rotation (worldDefine.mSettings.mDefaultGravityAccelerationAngle * Define.kDegrees2Radians);
          
          CreatePhysicsEngine ();
          
@@ -197,6 +214,11 @@ package player.world {
       public function IsPermitPublishing ():Boolean
       {
          return mPermitPublishing;
+      }
+      
+      public function GetCoordinateSystem ():CoordinateSystem
+      {
+         return mCoordinateSystem;
       }
       
 //==============================================================================
@@ -297,6 +319,20 @@ package player.world {
       public function GetLevelMilliseconds ():Number
       {
          return mLevelSimulatedTime * 1000.0;
+      }
+      
+      private var mLastSimulatedStepInterval:Number = 0.0;
+      
+      public function GetLastSimulatedStepInterval ():Number
+      {
+         return mLastSimulatedStepInterval;
+      }
+      
+      private var mLastSimulatedStepInterval_Inv:Number = 0.0;
+      
+      public function GetLastSimulatedStepInterval_Inv ():Number
+      {
+         return mLastSimulatedStepInterval_Inv;
       }
       
 //=============================================================
@@ -413,6 +449,9 @@ package player.world {
          //-----------------------------
             
             UpdatePhysics (dt);
+            
+            mLastSimulatedStepInterval = dt;
+            mLastSimulatedStepInterval_Inv = dt == 0 ? 0 : 1.0 / dt;
             
             ++ mNumSimulatedSteps;
             mLevelSimulatedTime += dt;
@@ -544,11 +583,14 @@ package player.world {
          {
             mBackgroundSprite = new Sprite ();
             mBackgroundLayer.addChild (mBackgroundSprite);
+            
+            UpdateBackgroundSpriteOffsetAndScale ();
          }
          
          mBackgroundSprite.graphics.clear ();
          mBackgroundSprite.graphics.beginFill(mBackgroundColor);
-         mBackgroundSprite.graphics.drawRect (mWorldLeft, mWorldTop, mWorldWidth, mWorldHeight);
+         //mBackgroundSprite.graphics.drawRect (mWorldLeft, mWorldTop, mWorldWidth, mWorldHeight); // sometime, it is too large to build
+         mBackgroundSprite.graphics.drawRect (-2048, -2048, 4096, 4096); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
          mBackgroundSprite.graphics.endFill ();
       }
 
@@ -588,10 +630,11 @@ package player.world {
                
                border.SetBody (mBorderBody);
                
-               border.SetPositionX  (DisplayX2PhysicsX (info [0]));
-               border.SetPositionY  (DisplayY2PhysicsY (info [1]));
-               border.SetHalfWidth  (DisplayLength2PhysicsLength (info [2]));
-               border.SetHalfHeight (DisplayLength2PhysicsLength (info [3]));
+               border.SetPositionX  (mCoordinateSystem.D2P_PositionX (info [0]));
+               border.SetPositionY  (mCoordinateSystem.D2P_PositionY (info [1]));
+               border.SetHalfWidth  (mCoordinateSystem.D2P_Length (info [2]));
+               border.SetHalfHeight (mCoordinateSystem.D2P_Length (info [3]));
+               border.UpdatelLocalPosition ();
                
                border.SetFilledColor (mBorderColor);
             }
@@ -665,12 +708,29 @@ package player.world {
 //   physics 
 //====================================================================================================
 
-   private var mNormalGravityAccelerationMagnitude:Number;
-   
-   public function GetNormalGravityAccelerationMagnitude ():Number
-   {
-      return mNormalGravityAccelerationMagnitude;
-   }
+      // the 2 are both physics values
+      private var mDefaultGravityAccelerationMagnitude:Number;
+      private var mDefaultGravityAccelerationAngle:Number;
+      
+      public function SetDefaultGravityAccelerationMagnitude (magnitude:Number):void
+      {
+         mDefaultGravityAccelerationMagnitude = magnitude;
+      }
+      
+      public function GetDefaultGravityAccelerationMagnitude ():Number
+      {
+         return mDefaultGravityAccelerationMagnitude;
+      }
+      
+      public function SetDefaultGravityAccelerationAngle (angle:Number):void
+      {
+         mDefaultGravityAccelerationAngle = angle;
+      }
+      
+      public function GetDefaultGravityAccelerationAngle ():Number
+      {
+         return mDefaultGravityAccelerationAngle;
+      }
 
    //===============================
    // create physics
@@ -685,7 +745,7 @@ package player.world {
 
       private function CreatePhysicsEngine ():void
       {
-         mPhysicsEngine = new PhysicsEngine (new Point (0, mNormalGravityAccelerationMagnitude)); // temp, the initial gravity will be customed
+         mPhysicsEngine = new PhysicsEngine (new Point (mDefaultGravityAccelerationMagnitude * Math.cos (mDefaultGravityAccelerationAngle), mDefaultGravityAccelerationMagnitude * Math.sin (mDefaultGravityAccelerationAngle)));
          
          mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
          mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished);

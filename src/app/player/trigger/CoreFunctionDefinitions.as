@@ -9,6 +9,7 @@ package player.trigger {
    import player.world.CollisionCategory;
    
    import player.entity.Entity;
+   import player.entity.EntityBody;
    import player.entity.EntityShape;
    import player.entity.EntityShape_Camera;
    import player.entity.EntityShape_Text;
@@ -179,6 +180,8 @@ package player.trigger {
          //RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetPosition,                 SetEntityPosition);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
          
       // game / entity / shape
          
@@ -1252,6 +1255,28 @@ package player.trigger {
       //   entity.SetRotation (degrees * Define.kDegrees2Radians);
       //}
       
+      public static function DestroyEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+            return;
+         
+         var body:EntityBody = null;
+         if (entity is EntityShape)
+         {
+            var shape:EntityShape = entity as EntityShape;
+            if (shape.IsPhysicsShape ())
+               body = shape.GetBody ();
+         }
+         
+         entity.DestroyEntity ();
+         
+         if (body != null)
+         {
+            body.OnPhysicsShapeListChanged ();
+         }
+      }
+      
    //*******************************************************************
    // entity / shape
    //*******************************************************************
@@ -1274,6 +1299,9 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          if (shape == null)
+            return;
+         
+         if (! shape.IsAiTypeChangeable ())
             return;
          
          valueSource = valueSource.mNextValueSourceInList;

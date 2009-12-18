@@ -10,7 +10,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   import common.Define;
    
    public class SubEntityJointAnchor extends WorldSubEntity 
    {

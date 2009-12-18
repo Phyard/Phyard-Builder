@@ -4,6 +4,7 @@ package editor.trigger {
    //import flash.utils.Dictionary;
    
    import common.Define;
+   import common.CoordinateSystem;
    
    public class CodeSnippet
    {
@@ -78,6 +79,61 @@ package editor.trigger {
             func_calling = mFunctionCallings [i] as FunctionCalling;
             if (func_calling != null)
                func_calling.ValidateValueSources ();
+         }
+      }
+      
+//====================================================================
+//
+//====================================================================
+      
+      public function Clone (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
+      {
+         if (ownerFunctionDefinition == null)
+            ownerFunctionDefinition = mOwnerFunctionDefinition;
+         
+         var codeSnippet:CodeSnippet = new CodeSnippet (ownerFunctionDefinition);
+         
+         codeSnippet.SetName (mName);
+         
+         var i:int;
+         var num:int = mFunctionCallings.length;
+         var callingsArray:Array = new Array (num);
+         for (i = 0; i < num; ++ i)
+         {
+            callingsArray [i] = (mFunctionCallings [i] as FunctionCalling).Clone (mOwnerFunctionDefinition);
+         }
+         codeSnippet.AssignFunctionCallings (callingsArray);
+         
+         return codeSnippet;
+      }
+      
+      public function DisplayValues2PhysicsValues (coordinateSystem:CoordinateSystem):void
+      {
+         var i:int;
+         var num:int = mFunctionCallings.length;
+         for (i = 0; i < num; ++ i)
+         {
+           (mFunctionCallings [i] as FunctionCalling).DisplayValues2PhysicsValues (coordinateSystem);
+         }
+      }
+      
+      public function PhysicsValues2DisplayValues (coordinateSystem:CoordinateSystem):void
+      {
+         var i:int;
+         var num:int = mFunctionCallings.length;
+         for (i = 0; i < num; ++ i)
+         {
+           (mFunctionCallings [i] as FunctionCalling).PhysicsValues2DisplayValues (coordinateSystem);
+         }
+      }
+      
+      public function AdjustNumberPrecisions ():void
+      {
+         var i:int;
+         var num:int = mFunctionCallings.length;
+         for (i = 0; i < num; ++ i)
+         {
+           (mFunctionCallings [i] as FunctionCalling).AdjustNumberPrecisions ();
          }
       }
    }

@@ -193,6 +193,8 @@ package common.trigger {
       public static const ID_Entity_GetRotationByDegrees:int           = 1007; // entity 
       //public static const ID_Entity_SetRotationByDegrees:int         = 1008; // entity 
       
+      public static const ID_Entity_Destroy:int                        = 1050; // entity 
+      
    // game / entity / shape
       
       public static const ID_EntityShape_GetCIType:int            = 1100; // entity.shape

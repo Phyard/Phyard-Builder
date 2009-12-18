@@ -45,6 +45,10 @@ package player.physics {
                   enableMotor:Boolean, motorSpeed:Number, maxMotorTorque:Number
                ):void
       {
+      trace ("enableMotor = " + enableMotor);
+      trace ("motorSpeed = " + motorSpeed);
+      trace ("maxMotorTorque = " + maxMotorTorque);
+      
          // ..
          var proxyShape1:PhysicsProxyShape = anchor1.GetShape () == null ? null : anchor1.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
          var proxyShape2:PhysicsProxyShape = anchor2.GetShape () == null ? null : anchor2.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
@@ -89,6 +93,18 @@ package player.physics {
       public function SetMotorSpeed (motorSpeed:Number):void
       {
          _b2RevoluteJoint.SetMotorSpeed (motorSpeed);
+      }
+      
+      public function GetReactionForce(inv_dt:Number):Number
+      {
+         var vec2:b2Vec2 = _b2RevoluteJoint.GetReactionForce (inv_dt);
+         
+         return Math.sqrt (vec2.x * vec2.x + vec2.y * vec2.y);
+      }
+
+      public function GetReactionTorque(inv_dt:Number):Number
+      {
+         return _b2RevoluteJoint.GetReactionTorque (inv_dt);
       }
    }
    

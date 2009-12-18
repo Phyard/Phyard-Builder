@@ -85,7 +85,7 @@ package editor {
    
    import editor.mode.ModeCreateEntityLink;
    
-   import editor.setting.EditorSetting;
+   
    import editor.runtime.Runtime;
    
    import editor.display.CursorCrossingLine;
@@ -185,6 +185,7 @@ package editor {
          private var mPlayControlBar:PlayControlBar = null;
          private var mHelpDialog:Sprite = null;
          private var mSelectedEntityInfoText:TextFieldEx = null;
+         private var mMouePointInfoText:TextFieldEx = null;
          
       //
       
@@ -493,10 +494,26 @@ package editor {
             mEditorBackgroundSprite.addChild (mEntityLinksSprite);
          }
          
-         var sceneLeft  :int = mEditorWorld.GetWorldLeft ();
-         var sceneTop   :int = mEditorWorld.GetWorldTop ();
-         var sceneWidth :int = mEditorWorld.GetWorldWidth ();
-         var sceneHeight:int = mEditorWorld.GetWorldHeight ();
+         var sceneLeft  :Number;
+         var sceneTop   :Number;
+         var sceneWidth :Number;
+         var sceneHeight:Number;
+         
+         if (mEditorWorld.IsInfiniteSceneSize ())
+         {
+            sceneLeft   = - 0x7FFFFFFF;
+            sceneTop    = - 0x7FFFFFFF;
+            sceneWidth  = uint (0xFFFFFFFF);
+            sceneHeight = uint (0xFFFFFFFF);
+         }
+         else
+         {
+            sceneLeft   = mEditorWorld.GetWorldLeft ();
+            sceneTop    = mEditorWorld.GetWorldTop ();
+            sceneWidth  = mEditorWorld.GetWorldWidth ();
+            sceneHeight = mEditorWorld.GetWorldHeight ();
+         }
+         
          var bgColor    :uint = mEditorWorld.GetBackgroundColor ();
          var borderColor:uint = mEditorWorld.GetBorderColor ();
          var drawBorder:Boolean = mEditorWorld.IsBuildBorder ();
@@ -669,6 +686,46 @@ package editor {
          
          mSelectedEntityInfoText.x = WorldBorderThinknessLR;
          mSelectedEntityInfoText.y = mViewHeight - (WorldBorderThinknessTB + mSelectedEntityInfoText.height) * 0.5;
+      }
+      
+      private function UpdateMousePointInfo (stagePoint:Point):void
+      {
+         if (mMouePointInfoText == null)
+         {
+            mMouePointInfoText = TextFieldEx.CreateTextField ("", false, 0xFFFF00, 0x0);
+            
+            addChild (mMouePointInfoText);
+         }
+         
+         if (stagePoint == null)
+         {
+            mMouePointInfoText.visible = false;
+            return;
+         }
+         
+         var px:Number;
+         var py:Number;
+         var worldPoint:Point;
+         
+         if ( IsPlaying () )
+         {
+            worldPoint = mPlayerWorld.globalToLocal (new Point (Math.round(stagePoint.x), Math.round (stagePoint.y)));
+            px = ValueAdjuster.Number2Precision (mPlayerWorld.GetCoordinateSystem ().D2P_PositionX (worldPoint.x), 6);
+            py = ValueAdjuster.Number2Precision (mPlayerWorld.GetCoordinateSystem ().D2P_PositionY (worldPoint.y), 6);
+         }
+         else
+         {
+            worldPoint = mEditorWorld.globalToLocal (new Point (Math.round(stagePoint.x), Math.round (stagePoint.y)));
+            px = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionX (worldPoint.x), 6);
+            py = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionY (worldPoint.y), 6);
+         }
+         
+         mMouePointInfoText.visible = true;
+         
+         mMouePointInfoText.htmlText = "<font color='#FFFFFF'>(" + px.toFixed (2) + ",  " + py.toFixed (2) + ")</font>";
+         
+         mMouePointInfoText.x = mViewWidth -  WorldBorderThinknessLR - mMouePointInfoText.width;
+         mMouePointInfoText.y = mViewHeight - (WorldBorderThinknessTB + mMouePointInfoText.height) * 0.5;
       }
       
       private function UpdateSelectedEntitiesCenterSprite ():void
@@ -951,106 +1008,106 @@ package editor {
          // CI boxes
             
             case mButtonCreateBoxMovable:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Movable, EditorSetting.ColorMovableObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Movable, Define.ColorMovableObject, false ) );
                break;
             case mButtonCreateBoxStatic:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Static, EditorSetting.ColorStaticObject, true ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Static, Define.ColorStaticObject, true ) );
                break;
             case mButtonCreateBoxBreakable:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Breakable, EditorSetting.ColorBreakableObject, true ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Breakable, Define.ColorBreakableObject, true ) );
                break;
             case mButtonCreateBoxInfected:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Infected, EditorSetting.ColorInfectedObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Infected, Define.ColorInfectedObject, false ) );
                break;
             case mButtonCreateBoxUninfected:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Uninfected, EditorSetting.ColorUninfectedObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Uninfected, Define.ColorUninfectedObject, false ) );
                break;
             case mButtonCreateBoxDontinfect:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_DontInfect, EditorSetting.ColorDontInfectObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_DontInfect, Define.ColorDontInfectObject, false ) );
                break;
             case mButtonCreateBoxBomb:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Bomb, EditorSetting.ColorBombObject, false, true, EditorSetting.MinBombSquareSideLength, EditorSetting.MaxBombSquareSideLength ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Bomb, Define.ColorBombObject, false, true, Define.MinBombSquareSideLength, Define.MaxBombSquareSideLength ) );
                break;
                
          // CI balls
             
             case mButtonCreateBallMovable:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Movable, EditorSetting.ColorMovableObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Movable, Define.ColorMovableObject, false ) );
                break;
             case mButtonCreateBallStatic:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Static, EditorSetting.ColorStaticObject, true ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Static, Define.ColorStaticObject, true ) );
                break;
             case mButtonCreateBallBreakable:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Breakable, EditorSetting.ColorBreakableObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Breakable, Define.ColorBreakableObject, false ) );
                break;
             case mButtonCreateBallInfected:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Infected, EditorSetting.ColorInfectedObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Infected, Define.ColorInfectedObject, false ) );
                break;
             case mButtonCreateBallUninfected:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Uninfected, EditorSetting.ColorUninfectedObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Uninfected, Define.ColorUninfectedObject, false ) );
                break;
             case mButtonCreateBallDontInfect:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_DontInfect, EditorSetting.ColorDontInfectObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_DontInfect, Define.ColorDontInfectObject, false ) );
                break;
             case mButtonCreateBallBomb:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Bomb, EditorSetting.ColorBombObject, false, EditorSetting.MinCircleRadium, EditorSetting.MaxBombSquareSideLength * 0.5 ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Bomb, Define.ColorBombObject, false, Define.MinCircleRadium, Define.MaxBombSquareSideLength * 0.5 ) );
                break;
                
          // CI polygons
             
             case mButtonCreatePolygonMovable:
-               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Movable, EditorSetting.ColorMovableObject, false ) );
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Movable, Define.ColorMovableObject, false ) );
                break;
             case mButtonCreatePolygonStatic:
-               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Static, EditorSetting.ColorStaticObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Static, Define.ColorStaticObject, true ) );
                break;
             case mButtonCreatePolygonBreakable:
-               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Breakable, EditorSetting.ColorBreakableObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Breakable, Define.ColorBreakableObject, true ) );
                break;
             case mButtonCreatePolygonInfected:
-               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Infected, EditorSetting.ColorInfectedObject, false ) );
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Infected, Define.ColorInfectedObject, false ) );
                break;
             case mButtonCreatePolygonUninfected:
-               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Uninfected, EditorSetting.ColorUninfectedObject, false ) );
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Uninfected, Define.ColorUninfectedObject, false ) );
                break;
             case mButtonCreatePolygonDontinfect:
-               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_DontInfect, EditorSetting.ColorDontInfectObject, false ) );
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_DontInfect, Define.ColorDontInfectObject, false ) );
                break;
             
          // CI polylines
             
             case mButtonCreatePolylineMovable:
-               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Movable, EditorSetting.ColorMovableObject, false ) );
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Movable, Define.ColorMovableObject, false ) );
                break;
             case mButtonCreatePolylineStatic:
-               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Static, EditorSetting.ColorStaticObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Static, Define.ColorStaticObject, true ) );
                break
             case mButtonCreatePolylineBreakable:
-               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Breakable, EditorSetting.ColorBreakableObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Breakable, Define.ColorBreakableObject, true ) );
                break;
             case mButtonCreatePolylineInfected:
-               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Infected, EditorSetting.ColorInfectedObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Infected, Define.ColorInfectedObject, true ) );
                break;
             case mButtonCreatePolylineUninfected:
-               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Uninfected, EditorSetting.ColorUninfectedObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Uninfected, Define.ColorUninfectedObject, true ) );
                break;
             case mButtonCreatePolylineDontinfect:
-               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_DontInfect, EditorSetting.ColorDontInfectObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_DontInfect, Define.ColorDontInfectObject, true ) );
                break;
             
           // general box, ball, polygons, polyline
             
             case mButtonCreateBox:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Unknown, EditorSetting.ColorStaticObject, true ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Unknown, Define.ColorStaticObject, true ) );
                break;
             case mButtonCreateBall:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Unknown, EditorSetting.ColorMovableObject, false ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Unknown, Define.ColorMovableObject, false ) );
                break;
             case mButtonCreatePolygon:
                SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Unknown, 0xFFFFFF, true ) );
                break;
             case mButtonCreatePolyline:
-               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Unknown, EditorSetting.ColorStaticObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Unknown, Define.ColorStaticObject, true ) );
                break;
                
          // joints
@@ -1644,14 +1701,13 @@ package editor {
          
          var values:Object = new Object ();
          
-         values.mPosX = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayX2PhysicsX (entity.GetPositionX ()), 12);
-         values.mPosY = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayY2PhysicsY (entity.GetPositionY ()), 12);
+         values.mPosX = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionX (entity.GetPositionX ()), 12);
+         values.mPosY = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionY (entity.GetPositionY ()), 12);
          values.mAngle = ValueAdjuster.Number2Precision (entity.GetRotation () * Define.kRadians2Degrees, 6);
          
          values.mIsVisible = entity.IsVisible ();
          values.mAlpha = entity.GetAlpha ();
          values.mIsActive = entity.IsActive ();
-         values.mIsEnabled = entity.IsEnabled();
          
          if (entity is EntityShape)
          {
@@ -1665,15 +1721,13 @@ package editor {
             values.mTransparency = shape.GetTransparency ();
             values.mBorderTransparency = shape.GetBorderTransparency ();
             
-            //values.mIsField = shape.IsField ();
+            values.mAiType = shape.GetAiType ();
             
             if (shape.IsBasicShapeEntity ())
             {
                values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
                values.mCollisionCategoryListDataProvider =  mEditorWorld.GetCollisionCategoryListDataProvider ();
                values.mCollisionCategoryListSelectedIndex = editor.world.World.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
-               
-               values.mAiType = shape.GetAiType ();
                
                values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
                values.mIsSensor = shape.mIsSensor;
@@ -1685,7 +1739,7 @@ package editor {
                values.mFriction = ValueAdjuster.Number2Precision (shape.mFriction, 6);
                values.mRestitution = ValueAdjuster.Number2Precision (shape.mRestitution, 6);
                
-               values.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplaySpeed2PhysicsSpeed (shape.GetLinearVelocityMagnitude ()), 6);
+               values.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (shape.GetLinearVelocityMagnitude ()), 6);
                values.mLinearVelocityAngle = ValueAdjuster.Number2Precision (shape.GetLinearVelocityAngle (), 6);
                values.mAngularVelocity = ValueAdjuster.Number2Precision (shape.GetAngularVelocity (), 6);
                values.mLinearDamping = ValueAdjuster.Number2Precision (shape.GetLinearDamping (), 6);
@@ -1700,7 +1754,7 @@ package editor {
                if (entity is EntityShapeCircle)
                {
                   //values.mRadius = (entity as EntityShapeCircle).GetRadius();
-                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength ((entity as EntityShapeCircle).GetRadius()), 6);
+                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length ((entity as EntityShapeCircle).GetRadius()), 6);
                   
                   values.mAppearanceType = (entity as EntityShapeCircle).GetAppearanceType();
                   values.mAppearanceTypeListSelectedIndex = (entity as EntityShapeCircle).GetAppearanceType();
@@ -1709,8 +1763,9 @@ package editor {
                }
                else if (entity is EntityShapeRectangle)
                {
-                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength ((shape as EntityShapeRectangle).GetHalfWidth ()), 6);
-                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength ((shape as EntityShapeRectangle).GetHalfHeight ()), 6);
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfHeight ()), 6);
+                  values.mIsRoundCorners = (shape as EntityShapeRectangle).IsRoundCorners ();
                   
                   ShowShapeRectangleSettingDialog (values, SetEntityProperties);
                }
@@ -1729,18 +1784,19 @@ package editor {
             {
                if (entity is EntityShapeText)
                {
-                  values.mDrawBagkground = shape.IsDrawBackground ();
                   values.mText = (shape as EntityShapeText).GetText ();
                   values.mAutofitWidth = (shape as EntityShapeText).IsAutofitWidth ();
                   
-                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength ((shape as EntityShapeRectangle).GetHalfWidth ()), 6);
-                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength ((shape as EntityShapeRectangle).GetHalfHeight ()), 6);
+                  values.mTextColor = (shape as EntityShapeText).GetTextColor ();
+                  
+                  values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfWidth ()), 6);
+                  values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfHeight ()), 6);
                   
                   ShowShapeTextSettingDialog (values, SetEntityProperties);
                }
                else if (entity is EntityShapeGravityController)
                {
-                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength ((entity as EntityShapeCircle).GetRadius()), 6);
+                  values.mRadius = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length ((entity as EntityShapeCircle).GetRadius()), 6);
                   
                   // removed from v1.05
                   /////values.mIsInteractive = (shape as EntityShapeGravityController).IsInteractive ();
@@ -1748,7 +1804,9 @@ package editor {
                   
                   values.mInteractiveConditions = (shape as EntityShapeGravityController).mInteractiveConditions;
                   
-                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayAccaleration2PhysicsAccaleration ((shape as EntityShapeGravityController).GetInitialGravityAcceleration ()), 6);
+                  values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetMaximalGravityAcceleration ()), 6);
+                  
+                  values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetInitialGravityAcceleration ()), 6);
                   values.mInitialGravityAngle = ValueAdjuster.Number2Precision ( (shape as EntityShapeGravityController).GetInitialGravityAngle (), 6);
                   
                   ShowShapeGravityControllerSettingDialog (values, SetEntityProperties);
@@ -1760,32 +1818,45 @@ package editor {
             var jointAnchor:SubEntityJointAnchor = entity as SubEntityJointAnchor;
             var joint:EntityJoint = entity.GetMainEntity () as EntityJoint;
             
-            values.mCollideConnected = joint.mCollideConnected;
+            var jointValues:Object = new Object ();
+            values.mJointValues = jointValues;
+            
+            jointValues.mCollideConnected = joint.mCollideConnected;
+            
+            jointValues.mPosX = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionX (joint.GetPositionX ()), 12);
+            jointValues.mPosY = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionY (joint.GetPositionY ()), 12);
+            jointValues.mAngle = ValueAdjuster.Number2Precision (joint.GetRotation () * Define.kRadians2Degrees, 6);
+            
+            jointValues.mIsVisible = joint.IsVisible ();
+            jointValues.mAlpha = joint.GetAlpha ();
+            jointValues.mIsActive = joint.IsActive ();
             
             //>>from v1.02
-            values.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, "[Auto Select]", true);
-            values.mShapeList1SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), values.mShapeListDataProvider);
-            values.mShapeList2SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), values.mShapeListDataProvider);
-            values.mAnchorIndex = jointAnchor.GetAnchorIndex ();
+            jointValues.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, "[Auto Select]", true);
+            jointValues.mShapeList1SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), jointValues.mShapeListDataProvider);
+            jointValues.mShapeList2SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), jointValues.mShapeListDataProvider);
+            jointValues.mAnchorIndex = jointAnchor.GetAnchorIndex (); // hinge will modify it below
             //<<
             
             //from v1.08
-            values.mIsBreakable = joint.IsBreakable ();
+            jointValues.mIsBreakable = joint.IsBreakable ();
             //<<
             
             if (entity is SubEntityHingeAnchor)
             {
+               jointValues.mAnchorIndex = -1; // to make both shape select lists selectable
+               
                var hinge:EntityJointHinge = joint as EntityJointHinge;
                
-               values.mEnableLimit = hinge.IsLimitsEnabled ();
-               values.mLowerAngle = ValueAdjuster.Number2Precision (hinge.GetLowerLimit (), 6);
-               values.mUpperAngle = ValueAdjuster.Number2Precision (hinge.GetUpperLimit (), 6);
-               values.mEnableMotor = hinge.mEnableMotor;
-               values.mMotorSpeed = ValueAdjuster.Number2Precision (hinge.mMotorSpeed, 6);
-               values.mBackAndForth = hinge.mBackAndForth;
+               jointValues.mEnableLimit = hinge.IsLimitsEnabled ();
+               jointValues.mLowerAngle = ValueAdjuster.Number2Precision (hinge.GetLowerLimit (), 6);
+               jointValues.mUpperAngle = ValueAdjuster.Number2Precision (hinge.GetUpperLimit (), 6);
+               jointValues.mEnableMotor = hinge.mEnableMotor;
+               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (hinge.mMotorSpeed, 6);
+               jointValues.mBackAndForth = hinge.mBackAndForth;
                
                //>>from v1.04
-               values.mMaxMotorTorque = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayTorque2PhysicsTorque (hinge.mMaxMotorTorque), 6);
+               jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Torque (hinge.mMaxMotorTorque), 6);
                //<<
                
                ShowHingeSettingDialog (values, SetEntityProperties);
@@ -1794,15 +1865,15 @@ package editor {
             {
                var slider:EntityJointSlider = joint as EntityJointSlider;
                
-               values.mEnableLimit = slider.IsLimitsEnabled ();
-               values.mLowerTranslation = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength (slider.GetLowerLimit ()), 6);
-               values.mUpperTranslation = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength (slider.GetUpperLimit ()), 6);
-               values.mEnableMotor = slider.mEnableMotor;
-               values.mMotorSpeed = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplaySpeed2PhysicsSpeed (slider.mMotorSpeed), 6);
-               values.mBackAndForth = slider.mBackAndForth;
+               jointValues.mEnableLimit = slider.IsLimitsEnabled ();
+               jointValues.mLowerTranslation = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length (slider.GetLowerLimit ()), 6);
+               jointValues.mUpperTranslation = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length (slider.GetUpperLimit ()), 6);
+               jointValues.mEnableMotor = slider.mEnableMotor;
+               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (slider.mMotorSpeed), 6);
+               jointValues.mBackAndForth = slider.mBackAndForth;
                
                //>>from v1.04
-               values.mMaxMotorForce = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayForce2PhysicsForce (slider.mMaxMotorForce), 6);
+               jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_ForceMagnitude (slider.mMaxMotorForce), 6);
                //<<
                
                ShowSliderSettingDialog (values, SetEntityProperties);
@@ -1811,14 +1882,14 @@ package editor {
             {
                var spring:EntityJointSpring = joint as EntityJointSpring;
                
-               values.mStaticLengthRatio = ValueAdjuster.Number2Precision (spring.GetStaticLengthRatio (), 6);
-               values.mSpringType = spring.GetSpringType ();
-               values.mDampingRatio = ValueAdjuster.Number2Precision (spring.mDampingRatio, 6);
+               jointValues.mStaticLengthRatio = ValueAdjuster.Number2Precision (spring.GetStaticLengthRatio (), 6);
+               jointValues.mSpringType = spring.GetSpringType ();
+               jointValues.mDampingRatio = ValueAdjuster.Number2Precision (spring.mDampingRatio, 6);
                
                //from v1.08
-               values.mFrequencyDeterminedManner = spring.GetFrequencyDeterminedManner ();
-               values.mFrequency = ValueAdjuster.Number2Precision (spring.GetFrequency (), 6);
-               values.mBreakExtendedLength = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength (spring.GetBreakExtendedLength ()), 6);
+               jointValues.mFrequencyDeterminedManner = spring.GetFrequencyDeterminedManner ();
+               jointValues.mFrequency = ValueAdjuster.Number2Precision (spring.GetFrequency (), 6);
+               jointValues.mBreakExtendedLength = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length (spring.GetBreakExtendedLength ()), 6);
                //<<
                
                ShowSpringSettingDialog (values, SetEntityProperties);
@@ -1828,7 +1899,7 @@ package editor {
                var distance:EntityJointDistance = joint as EntityJointDistance;
                
                //from v1.08
-               values.mBreakDeltaLength = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().DisplayLength2PhysicsLength (distance.GetBreakDeltaLength ()), 6);
+               jointValues.mBreakDeltaLength = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length (distance.GetBreakDeltaLength ()), 6);
                //<<
                
                ShowDistanceSettingDialog (values, SetEntityProperties);
@@ -1841,7 +1912,7 @@ package editor {
                var condition:EntityBasicCondition = entity as EntityBasicCondition;
                
                values.mCodeSnippetName = condition.GetCodeSnippetName ();
-               values.mCodeSnippet  = condition.GetCodeSnippet ();
+               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
                
                ShowConditionSettingDialog (values, SetEntityProperties);
             }
@@ -1851,7 +1922,7 @@ package editor {
                
                values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
                values.mEventId = event_handler.GetEventId ();
-               values.mCodeSnippet  = event_handler.GetCodeSnippet ();
+               values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (null);
                
                ShowEventHandlerSettingDialog (values, SetEntityProperties);
             }
@@ -2329,20 +2400,20 @@ package editor {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
-         var point:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         UpdateMousePointInfo (new Point (event.stageX, event.stageY));
+         
+         var viewPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
+         
          var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
          
-         if ( ! rect.containsPoint (point) )
+         if ( ! rect.containsPoint (viewPoint) )
          {
-            // wired: sometimes, moust out event can't be captured, so create a fake mouse out event here
+            // wired: sometimes, moust out event can't be captured, so create a fake mouse out event here. (but, still not always work)
             OnMouseOut (event);
             return;
          }
-
          
          _isZeroMove = false;
-         
-         var viewPoint:Point = DisplayObjectUtil.LocalToLocal (event.target as DisplayObject, this, new Point (event.localX, event.localY) );
          
          if (mCursorCreating.visible)
          {
@@ -2438,6 +2509,8 @@ package editor {
       {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
+         
+         UpdateMousePointInfo (null);
          
          CheckModifierKeys (event);
          
@@ -3078,7 +3151,7 @@ package editor {
          if (! clonedable)
             return;
          
-         mEditorWorld.CloneSelectedEntities (EditorSetting.BodyCloneOffsetX, EditorSetting.BodyCloneOffsetY);
+         mEditorWorld.CloneSelectedEntities (Define.BodyCloneOffsetX, Define.BodyCloneOffsetY);
          
          CreateUndoPoint ();
          
@@ -3296,14 +3369,15 @@ package editor {
          
          var entity:Entity = selectedEntities [0] as Entity;
          
-         params.mPosX = MathUtil.GetClipValue (params.mPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
-         params.mPosY = MathUtil.GetClipValue (params.mPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
-         entity.SetPosition (mEditorWorld.GetCoordinateSystem ().PhysicsX2DisplayX (params.mPosX), mEditorWorld.GetCoordinateSystem ().PhysicsY2DisplayY (params.mPosY));
+         var newPosX:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionX (params.mPosX);
+         var newPosY:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionY (params.mPosY);
+         newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
+         newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
+         entity.SetPosition (newPosX, newPosY);
          entity.SetRotation (params.mAngle * Define.kDegrees2Radians);
          entity.SetVisible (params.mIsVisible);
          entity.SetAlpha (params.mAlpha);
          entity.SetActive (params.mIsActive);
-         entity.SetEnabled (params.mIsEnabled);
          
          if (entity is EntityShape)
          {
@@ -3333,6 +3407,11 @@ package editor {
                shape.SetHollow (params.mIsHollow);
                shape.SetBuildBorder (params.mBuildBorder);
                
+               if (params.mLinearVelocityMagnitude < 0)
+               {
+                  params.mLinearVelocityMagnitude = -params.mLinearVelocityMagnitude;
+                  params.mLinearVelocityAngle = 360.0 - params.mLinearVelocityAngle;
+               }
                shape.SetLinearVelocityMagnitude (params.mLinearVelocityMagnitude);
                shape.SetLinearVelocityAngle (params.mLinearVelocityAngle);
                shape.SetAngularVelocity (params.mAngularVelocity);
@@ -3343,13 +3422,14 @@ package editor {
                
                if (entity is EntityShapeCircle)
                {
-                  (shape as EntityShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().PhysicsLength2DisplayLength (params.mRadius));
+                  (shape as EntityShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
                   (shape as EntityShapeCircle).SetAppearanceType (params.mAppearanceType);
                }
                else if (entity is EntityShapeRectangle)
                {
-                  (shape as EntityShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().PhysicsLength2DisplayLength (params.mWidth));
-                  (shape as EntityShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().PhysicsLength2DisplayLength (params.mHeight));
+                  (shape as EntityShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (shape as EntityShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  (shape as EntityShapeRectangle).SetRoundCorners (params.mIsRoundCorners);
                }
                else if (entity is EntityShapePolygon)
                {
@@ -3363,13 +3443,16 @@ package editor {
             {
                if (entity is EntityShapeText)
                {
-                  shape.SetDrawBackground (params.mDrawBackground);
+                  (shape as EntityShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (shape as EntityShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
+                  
                   (shape as EntityShapeText).SetText (params.mText);
                   (shape as EntityShapeText).SetAutofitWidth (params.mAutofitWidth);
+                  (shape as EntityShapeText).SetTextColor (params.mTextColor);
                }
                else if (entity is EntityShapeGravityController)
                {
-                  (shape as EntityShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().PhysicsLength2DisplayLength (params.mRadius));
+                  (shape as EntityShapeCircle).SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
                   
                   //(shape as EntityShapeGravityController).SetInteractive (params.mIsInteractive);
                   (shape as EntityShapeGravityController).SetInteractiveZones (params.mInteractiveZones);
@@ -3382,7 +3465,8 @@ package editor {
                      params.mInitialGravityAngle = 360.0 - params.mInitialGravityAngle;
                   }
                   
-                  (shape as EntityShapeGravityController).SetInitialGravityAcceleration (mEditorWorld.GetCoordinateSystem ().PhysicsAccaleration2DisplayAccaleration (params.mInitialGravityAcceleration));
+                  (shape as EntityShapeGravityController).SetMaximalGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
+                  (shape as EntityShapeGravityController).SetInitialGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
                   (shape as EntityShapeGravityController).SetInitialGravityAngle (params.mInitialGravityAngle);
                }
             }
@@ -3400,57 +3484,67 @@ package editor {
             var jointAnchor:SubEntityJointAnchor = entity as SubEntityJointAnchor;
             var joint:EntityJoint = jointAnchor.GetMainEntity () as EntityJoint;
             
-            joint.mCollideConnected = params.mCollideConnected;
+            var jointParams:Object = params.mJointValues;
+            
+            joint.mCollideConnected = jointParams.mCollideConnected;
+            
+            jointParams.mPosX = MathUtil.GetClipValue (jointParams.mPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
+            jointParams.mPosY = MathUtil.GetClipValue (jointParams.mPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
+            joint.SetPosition (mEditorWorld.GetCoordinateSystem ().P2D_PositionX (jointParams.mPosX), mEditorWorld.GetCoordinateSystem ().P2D_PositionY (jointParams.mPosY));
+            joint.SetRotation (jointParams.mAngle * Define.kDegrees2Radians);
+            joint.SetVisible (jointParams.mIsVisible);
+            joint.SetAlpha (jointParams.mAlpha);
+            joint.SetActive (jointParams.mIsActive);
             
             //>> from v1.02
-            joint.SetConnectedShape1Index (params.mConntectedShape1Index);
-            joint.SetConnectedShape2Index (params.mConntectedShape2Index);
+            joint.SetConnectedShape1Index (jointParams.mConntectedShape1Index);
+            joint.SetConnectedShape2Index (jointParams.mConntectedShape2Index);
             //<<
             
             //from v1.08
-            joint.SetBreakable (params.mIsBreakable);
+            joint.SetBreakable (jointParams.mIsBreakable);
             //<<
             
             if (entity is SubEntityHingeAnchor)
             {
                var hinge:EntityJointHinge = joint as EntityJointHinge;
                
-               hinge.SetLimitsEnabled (params.mEnableLimit);
-               hinge.SetLimits (params.mLowerAngle, params.mUpperAngle);
-               hinge.mEnableMotor = params.mEnableMotor;
-               hinge.mMotorSpeed = params.mMotorSpeed;
-               hinge.mBackAndForth = params.mBackAndForth;
+               hinge.SetLimitsEnabled (jointParams.mEnableLimit);
+               hinge.SetLimits (jointParams.mLowerAngle, jointParams.mUpperAngle);
+               hinge.mEnableMotor = jointParams.mEnableMotor;
+               hinge.mMotorSpeed = jointParams.mMotorSpeed;
+               hinge.mBackAndForth = jointParams.mBackAndForth;
                
                //>>from v1.04
-               hinge.mMaxMotorTorque = mEditorWorld.GetCoordinateSystem ().PhysicsTorque2DisplayTorque (params.mMaxMotorTorque);
+               hinge.mMaxMotorTorque = mEditorWorld.GetCoordinateSystem ().P2D_Torque (jointParams.mMaxMotorTorque);
                //<<
             }
             else if (entity is SubEntitySliderAnchor)
             {
                var slider:EntityJointSlider = joint as EntityJointSlider;
                
-               slider.SetLimitsEnabled (params.mEnableLimit);
-               slider.SetLimits (mEditorWorld.GetCoordinateSystem ().PhysicsLength2DisplayLength (params.mLowerTranslation), mEditorWorld.GetCoordinateSystem ().PhysicsLength2DisplayLength (params.mUpperTranslation));
-               slider.mEnableMotor = params.mEnableMotor;
-               slider.mMotorSpeed = mEditorWorld.GetCoordinateSystem ().PhysicsSpeed2DisplaySpeed (params.mMotorSpeed);
-               slider.mBackAndForth = params.mBackAndForth;
+               slider.SetLimitsEnabled (jointParams.mEnableLimit);
+               slider.SetLimits (mEditorWorld.GetCoordinateSystem ().P2D_Length (jointParams.mLowerTranslation), mEditorWorld.GetCoordinateSystem ().P2D_Length (jointParams.mUpperTranslation));
+               slider.mEnableMotor = jointParams.mEnableMotor;
+               slider.mMotorSpeed = mEditorWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (jointParams.mMotorSpeed);
+               slider.mBackAndForth = jointParams.mBackAndForth;
                
                //>>from v1.04
-               slider.mMaxMotorForce = mEditorWorld.GetCoordinateSystem ().PhysicsForce2DisplayForce (params.mMaxMotorForce);
+               slider.mMaxMotorForce = mEditorWorld.GetCoordinateSystem ().P2D_ForceMagnitude (jointParams.mMaxMotorForce);
                //<<
             }
             else if (entity is SubEntitySpringAnchor)
             {
                var spring:EntityJointSpring = joint as EntityJointSpring;
                
-               spring.SetStaticLengthRatio (params.mStaticLengthRatio);
-               spring.SetSpringType (params.mSpringType);
-               spring.mDampingRatio = params.mDampingRatio;
+               spring.SetStaticLengthRatio (jointParams.mStaticLengthRatio);
+               spring.SetSpringType (jointParams.mSpringType);
+               spring.mDampingRatio = jointParams.mDampingRatio;
                
                //from v1.08
-               spring.SetFrequencyDeterminedManner (params.mFrequencyDeterminedManner);
-               spring.SetFrequency (params.mFrequency);
-               spring.SetBreakExtendedLength (mEditorWorld.GetCoordinateSystem ().PhysicsLength2DisplayLength (params.mBreakExtendedLength));
+               spring.SetFrequencyDeterminedManner (jointParams.mFrequencyDeterminedManner);
+               spring.SetFrequency (jointParams.mFrequency);
+               spring.SetBreakExtendedLength (mEditorWorld.GetCoordinateSystem ().P2D_Length (jointParams.mBreakExtendedLength));
                //<<
             }
             else if (entity is SubEntityDistanceAnchor)
@@ -3458,7 +3552,7 @@ package editor {
                var distance:EntityJointDistance = joint as EntityJointDistance;
                
                //from v1.08
-               distance.SetBreakDeltaLength (mEditorWorld.GetCoordinateSystem ().PhysicsLength2DisplayLength (params.mBreakDeltaLength));
+               distance.SetBreakDeltaLength (mEditorWorld.GetCoordinateSystem ().P2D_Length (jointParams.mBreakDeltaLength));
                //<<
             }
             

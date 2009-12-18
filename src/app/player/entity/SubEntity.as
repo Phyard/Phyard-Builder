@@ -16,7 +16,7 @@ package player.entity {
          mMainEntity = mainEntity;
       }
       
-      public function GetMainEntity ():Entity
+      override internal function GetMainEntity ():Entity
       {
          return mMainEntity;
       }

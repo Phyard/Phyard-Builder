@@ -116,8 +116,8 @@ package player.entity {
          if (mShape != null)
             mRotation = mShape.mRotation + mRelativeRotation;
          
-         mAnchorShape.x = mWorld.PhysicsX2DisplayX (mPositionX);
-         mAnchorShape.y = mWorld.PhysicsY2DisplayY (mPositionY);
+         mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
+         mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
          mAnchorShape.rotation = mRotation * Define.kRadians2Degrees;
          
          mAnchorShape.visible = mVisible;

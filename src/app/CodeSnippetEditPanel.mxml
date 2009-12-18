@@ -189,8 +189,8 @@
                var func_id:int = item.mID;
                var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
                var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
-               func_calling.SetInputValueSources (item.mCurrentValueSources)
-               func_calling.SetReturnValueTargets (item.mCurrentValueTargets)
+               func_calling.AssignInputValueSources (item.mCurrentValueSources)
+               func_calling.AssignOutputValueTargets (item.mCurrentValueTargets)
                
                func_calling_list.push (func_calling);
             }

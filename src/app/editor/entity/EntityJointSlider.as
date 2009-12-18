@@ -10,7 +10,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -21,10 +21,10 @@ package editor.entity {
       public var mAnchor2:SubEntitySliderAnchor;
       
       protected var mEnableLimits:Boolean = true;
-      protected var mLowerTranslation:Number = -20;
-      protected var mUpperTranslation:Number = 20;
+      protected var mLowerTranslation:Number = - Define.DefaultSliderLimitTranslation;
+      protected var mUpperTranslation:Number = Define.DefaultSliderLimitTranslation;
       public var mEnableMotor:Boolean = true;
-      public var mMotorSpeed:Number = 30;
+      public var mMotorSpeed:Number = Define.DefaultSliderMotorSpeed;
       public var mBackAndForth:Boolean = true;
       
       public var mMaxMotorForce:Number = Define.DefaultSliderMotorForce; // v1.04
@@ -62,6 +62,11 @@ package editor.entity {
       
       public function SetLimits (lower:Number, upper:Number):void
       {
+         if (lower > 0)
+            lower = 0.0;
+         if (upper < 0)
+            upper = 0.0;
+         
          mLowerTranslation = lower;
          mUpperTranslation = upper;
          

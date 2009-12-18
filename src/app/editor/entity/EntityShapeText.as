@@ -17,7 +17,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -26,7 +26,7 @@ package editor.entity {
       private var mText:String;
       private var mAutofitWidth:Boolean = true;
       
-      private var mElementsContainer:Sprite;
+      private var mTextColor:uint = 0x000000;
       
       public function EntityShapeText (world:World)
       {
@@ -35,9 +35,6 @@ package editor.entity {
          SetText ("(not set yet)");
          SetDrawBorder (false);
          SetDrawBackground (false);
-         
-         mElementsContainer = new Sprite ();
-         addChild (mElementsContainer);
       }
       
       override public function IsBasicShapeEntity ():Boolean
@@ -57,41 +54,12 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
-         if (mElementsContainer == null)
-            return;
-         
-         while (mElementsContainer.numChildren > 0)
-            mElementsContainer.removeChildAt (0);
+         while (numChildren > 0)
+            removeChildAt (0);
          
       // background
          
-         var borderColor:uint;
-         var borderSize :int;
-         
-         if ( IsSelected () )
-         {
-            borderColor = EditorSetting.BorderColorSelectedObject;
-            borderSize  = 3;
-            
-            borderSize /= mWorld.GetZoomScale ();
-         }
-         else
-         {
-            //borderColor = IsDrawBorder () ? mBorderColor : mFilledColor;
-            //borderSize  = IsDrawBorder () ? 1 : 0;
-            borderColor = mBorderColor;
-            borderSize  = 1;
-         }
-         
-         var background:Shape = new Shape ();
-         background.alpha = 0.5;
-         mElementsContainer.addChild (background);
-         
-         //if (IsDrawBackground ())
-            GraphicsUtil.ClearAndDrawRect (background, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, true, mFilledColor);
-         //else
-         //   GraphicsUtil.ClearAndDrawRect (background, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false, mFilledColor);
-         
+         super.UpdateAppearance ();
          
          
       // text
@@ -110,9 +78,9 @@ package editor.entity {
          var textField:TextFieldEx;
          
          if (mAutofitWidth)
-            textField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0, true, mHalfWidth * 2 - 10);
+            textField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, mTextColor, true, mHalfWidth * 2 - 10 - mBorderThickness);
          else
-            textField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0);//, true, mHalfWidth * 2 - 10);
+            textField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, mTextColor);
             
          if (GetRotation () == 0)
             textDisplayObject = textField;
@@ -122,7 +90,7 @@ package editor.entity {
             textDisplayObject = textBitmap;
          }
          
-         mElementsContainer.addChild (textDisplayObject);
+         addChild (textDisplayObject);
          
          textDisplayObject.x = - textDisplayObject.width * 0.5;
          textDisplayObject.y = - textDisplayObject.height * 0.5;
@@ -158,21 +126,14 @@ package editor.entity {
          UpdateAppearance ();
       }
       
-      override public function SetHalfWidth (halfWidth:Number, validate:Boolean = true):void
+      public function GetTextColor ():uint
       {
-         super.SetHalfWidth (halfWidth, validate);
-         
-         UpdateAppearance ();
+         return mTextColor;
       }
       
-      override public function SetRotation (rot:Number):void
+      public function SetTextColor (color:uint):void
       {
-         var oldValue:Number  = GetRotation ();
-         
-         super.SetRotation (rot);
-         
-         if (oldValue == 0 || GetRotation () == 0)
-            UpdateAppearance ();
+         mTextColor = color;
       }
       
 //====================================================================

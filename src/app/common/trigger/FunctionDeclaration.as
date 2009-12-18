@@ -50,7 +50,7 @@ package common.trigger
       {
          var valueType:int = GetInputValueType (inputId);
          if (valueType != ValueTypeDefine.ValueType_Number)
-            return ValueTypeDefine.NumberTypeDetail_Double;
+            return ValueTypeDefine.NumberTypeUsage_General;
          
          return valueType & ValueTypeDefine.NumberTypeMask_Usage;
       }

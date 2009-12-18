@@ -151,6 +151,20 @@ package editor.trigger {
 //
 //=================================================================
       
+      public function GetInputNumberTypeDetail (inputId:int):int
+      {
+         return ValueTypeDefine.NumberTypeDetail_Double;
+      }
+      
+      public function GetInputNumberTypeUsage (inputId:int):int
+      {
+         return ValueTypeDefine.NumberTypeUsage_General;
+      }
+      
+//=================================================================
+//
+//=================================================================
+      
       protected function CheckConsistent (coreDelcaration:common.trigger.FunctionDeclaration):Boolean
       {
          if (coreDelcaration == null)

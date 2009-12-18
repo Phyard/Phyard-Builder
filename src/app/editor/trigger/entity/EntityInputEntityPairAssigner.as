@@ -24,7 +24,7 @@ package editor.trigger.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    
@@ -299,7 +299,7 @@ package editor.trigger.entity {
          mBorderThickness = 1;
          if ( IsSelected () )
          {
-            borderColor = EditorSetting.BorderColorSelectedObject;
+            borderColor = Define.BorderColorSelectedObject;
             if (mBorderThickness * mWorld.GetZoomScale () < 3)
                mBorderThickness  = 3.0 / mWorld.GetZoomScale ();
          }

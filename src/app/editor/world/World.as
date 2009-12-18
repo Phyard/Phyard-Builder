@@ -130,11 +130,15 @@ package editor.world {
       private var mShareSourceCode:Boolean = false;
       private var mPermitPublishing:Boolean = false;
       
+      // display values, pixles
+      private var mInfiniteScaneSize:Boolean = false;
+      
       private var mWorldLeft:int = 0;
       private var mWorldTop:int = 0;
       private var mWorldWidth:int = Define.DefaultWorldWidth;
       private var mWorldHeight:int = Define.DefaultWorldHeight;
       
+      // display values, pixles
       private var mCameraCenterX:int = mWorldLeft + mWorldWidth * 0.5;
       private var mCameraCenterY:int = mWorldTop  + mWorldHeight * 0.5;
       
@@ -146,6 +150,13 @@ package editor.world {
       
       private var mPhysicsShapesPotentialMaxCount:int = 1024;
       private var mPhysicsShapesPopulationDensityLevel:int = 8;
+      
+      // the 2 are both display values
+      private var mDefaultGravityAccelerationMagnitude:Number = 98; // pixels
+      private var mDefaultGravityAccelerationAngle:Number = 90; // degrees in left hand coordinates
+      
+      //
+      private var mCiRulesEnabled:Boolean = true;
       
       public function SetAuthorName (name:String):void
       {
@@ -349,6 +360,46 @@ package editor.world {
       public function GetPhysicsShapesPopulationDensityLevel ():uint
       {
          return mPhysicsShapesPopulationDensityLevel;
+      }
+      
+      public function SetDefaultGravityAccelerationMagnitude (magnitude:Number):void
+      {
+         mDefaultGravityAccelerationMagnitude = magnitude;
+      }
+      
+      public function GetDefaultGravityAccelerationMagnitude ():Number
+      {
+         return mDefaultGravityAccelerationMagnitude;
+      }
+      
+      public function SetDefaultGravityAccelerationAngle (angle:Number):void
+      {
+         mDefaultGravityAccelerationAngle = angle;
+      }
+      
+      public function GetDefaultGravityAccelerationAngle ():Number
+      {
+         return mDefaultGravityAccelerationAngle;
+      }
+      
+      public function SetInfiniteScaneSize (infinite:Boolean):void
+      {
+         mInfiniteScaneSize = infinite;
+      }
+      
+      public function IsInfiniteSceneSize ():Boolean
+      {
+         return mInfiniteScaneSize;
+      }
+      
+      public function SetCiRulesEnabled (enabled:Boolean):void
+      {
+         mCiRulesEnabled = enabled;
+      }
+      
+      public function IsCiRulesEnabled ():Boolean
+      {
+         return mCiRulesEnabled;
       }
       
 //=================================================================================

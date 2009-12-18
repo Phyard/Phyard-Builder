@@ -141,7 +141,24 @@ package player.entity {
          
          shape.mBody = null;
       }
-    
+      
+      public function IsEmpty ():Boolean
+      {
+         return mShapeListHead == null;
+      }
+      
+      public function OnPhysicsShapeListChanged ():void
+      {
+         if (IsEmpty ())
+            Destroy ();
+         else if (mPhysicsProxy != null)
+         {
+            CoincideWithCentroid ();
+            UpdateBodyPhysicsProperties ();
+            mPhysicsProxyBody.SetSleeping (false);
+         }
+      }
+      
 //=============================================================
 //   
 //=============================================================

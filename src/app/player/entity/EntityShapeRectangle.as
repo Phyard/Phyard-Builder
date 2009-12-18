@@ -33,11 +33,11 @@ package player.entity {
          if (createStageId == 0)
          {
             if (entityDefine.mHalfWidth != undefined)
-               SetHalfWidth (mWorld.DisplayLength2PhysicsLength (entityDefine.mHalfWidth));
+               SetHalfWidth (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mHalfWidth));
             if (entityDefine.mHalfHeight != undefined)
-               SetHalfHeight (mWorld.DisplayLength2PhysicsLength (entityDefine.mHalfHeight));
-            if (entityDefine.mIsRoundCorner != undefined)
-               SetRoundCornor (entityDefine.mIsRoundCorner);
+               SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mHalfHeight));
+            if (entityDefine.mIsRoundCorners != undefined)
+               SetRoundCornors (entityDefine.mIsRoundCorners);
          }
       }
       
@@ -49,7 +49,7 @@ package player.entity {
 		protected var mHalfHeight:Number = 0.0;
 		
 		//>> v1.07
-		protected var mIsRoundCornor:Boolean = false;
+		protected var mIsRoundCornors:Boolean = false;
 		//<<
 		
       public function SetHalfWidth (halfWidth:Number):void
@@ -78,14 +78,14 @@ package player.entity {
          return mHalfHeight;
       }
       
-      public function SetRoundCornor (roundCorner:Boolean):void
+      public function SetRoundCornors (roundCorners:Boolean):void
       {
-			mIsRoundCornor = roundCorner;
+         mIsRoundCornors = roundCorners;
       }
       
-      public function IsRoundCornor ():Boolean
+      public function IsRoundCornors ():Boolean
       {
-			return mIsRoundCornor;
+         return mIsRoundCornors;
       }
       
 //=============================================================
@@ -104,11 +104,11 @@ package player.entity {
          {
             mNeedRebuildAppearanceObjects = false;
             
-            var displayHalfWidth :Number = mWorld.PhysicsLength2DisplayLength (mHalfWidth) + 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
-            var displayHalfHeight:Number = mWorld.PhysicsLength2DisplayLength (mHalfHeight) + 0.5;
+            var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth) + 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+            var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight) + 0.5;
             var displayWidth :Number = 2.0 * displayHalfWidth;
             var displayHeight:Number = 2.0 * displayHalfHeight;
-            var displayBorderThickness:Number = mWorld.PhysicsLength2DisplayLength (mBorderThickness);
+            var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
          
             GraphicsUtil.ClearAndDrawRect (
                      mBackgroundShape,
@@ -130,7 +130,9 @@ package player.entity {
                      displayHeight,
                      mBorderColor,
                      displayBorderThickness, // draw border
-                     false // not draw background
+                     false, // not draw background
+                     0x0, // invald bg color
+                     mIsRoundCornors
                   );
          }
          
@@ -153,7 +155,7 @@ package player.entity {
       {
          if (mProxyShape != null)
          {
-            mProxyShape.AddRectangle (0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornor);
+            mProxyShape.AddRectangle (0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
          }
       }
       

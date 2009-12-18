@@ -21,7 +21,7 @@ package editor.trigger.entity {
    import editor.trigger.FunctionDefinition;
    import editor.trigger.CodeSnippet;
    
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    

@@ -7,20 +7,19 @@
     title="Text Setting" width="600">
 
    <mx:TabNavigator width="100%" height="100%">
-      <mx:VBox label="Appearance" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Text Appearance" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnBasicPanelCreationComplete()">
-         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_DrawBackground" label="Show Background"/>
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_DrawBorder" label="Show Border"/>
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_AutofitWidth" label="Autofit Width"/>
-            <mx:Spacer width="100%"/>
-         </mx:HBox>
 
+         <mx:HBox width="100%">
+            <mx:Label text="The text: "/>
+            <mx:Spacer width="100%"/>
+            <mx:Label text="Text Color:"/>
+            <mx:ColorPicker id="ColorPicker_TextColor" showTextField="true" selectedColor="0x000000"/>
+            <mx:Spacer width="16"/>
+            <mx:CheckBox id="CheckBox_AutofitWidth" label="Autofit Width"/>
+         </mx:HBox>
          <mx:HBox width="100%" verticalAlign="top">
             <mx:TextArea id="TextArea_Text" width="100%" height="200" editable="true" wordWrap="true">
                <mx:text>
@@ -28,13 +27,25 @@
             </mx:TextArea>
          </mx:HBox>
       </mx:VBox>
-      <mx:VBox label="Others" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Background Appearance" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
-
+         <ShapeAppearanceSettingPanel id="AppearanceSettingPanel" creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
+         <mx:Spacer width="100%"/>
+      </mx:VBox>
+      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="100%"/>
          <EntityWidthHeightSettingPanel id="WidthHeightSettingPanel" creationComplete="OnEntityWidthHeightSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
       </mx:VBox>
    </mx:TabNavigator>
 
@@ -77,11 +88,16 @@
          
          private function InitBasicPanel (initialValues:Object):void
          {
-            CheckBox_DrawBackground.selected = initialValues.mDrawBagkground;
             CheckBox_AutofitWidth.selected = initialValues.mAutofitWidth;
-            CheckBox_DrawBorder.selected = initialValues.mDrawBorder;
+            ColorPicker_TextColor.selectedColor = initialValues.mTextColor;
             
             TextArea_Text.text = initialValues.mText;
+         }
+         
+         private function OnAppearanceSettingPanelCreationComplete ():void
+         {
+            mParams.mCiTypeSelectable = false;
+            AppearanceSettingPanel.SetValues (mParams);
          }
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
@@ -106,11 +122,15 @@
          
          private function OnClickOkButton():void 
          {
-            mParams.mDrawBackground = CheckBox_DrawBackground.selected;
             mParams.mAutofitWidth = CheckBox_AutofitWidth.selected;
-            mParams.mDrawBorder = CheckBox_DrawBorder.selected;
+            mParams.mTextColor = ColorPicker_TextColor.selectedColor;
             
             mParams.mText = TextArea_Text.text;
+            
+            if (AppearanceSettingPanel != null)
+            {
+               AppearanceSettingPanel.GetValues (mParams);
+            }
             
             if (BasicSettingPanel != null)
             {

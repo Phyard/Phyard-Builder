@@ -18,6 +18,8 @@ package player.entity {
       {
          super (world);
          
+         mAiTypeChangeable = false;
+         
          mAppearanceObjectsContainer.addChild (mTextBitmap);
       }
       
@@ -33,9 +35,10 @@ package player.entity {
          {
             if (entityDefine.mText != undefined)
                SetText (entityDefine.mText);
-            
             if (entityDefine.mAutofitWidth != undefined)
                SetAutofitWidth (entityDefine.mAutofitWidth);
+            if (entityDefine.mTextColor != undefined)
+               SetTextColor (entityDefine.mTextColor);
             
             // force 50
             SetTransparency (50);
@@ -48,6 +51,7 @@ package player.entity {
       
       private var mText:String = "";
       private var mAutofitWidth:Boolean = true;
+      private var mTextColor:uint = 0x000000;
       
       public function GetText ():String
       {
@@ -79,6 +83,16 @@ package player.entity {
          }
       }
       
+      public function GetTextColor ():uint
+      {
+         return mTextColor;
+      }
+      
+      public function SetTextColor (color:uint):void
+      {
+         mTextColor = color;
+      }
+      
 //=============================================================
 //   update
 //=============================================================
@@ -105,8 +119,9 @@ package player.entity {
          
          if (needRebuildAppearanceObjects)
          {
-            var displayHalfWidth :Number = mWorld.PhysicsLength2DisplayLength (mHalfWidth);
-            //var displayHalfHeight:Number = mWorld.PhysicsLength2DisplayLength (mHalfHeight);
+            var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
+            //var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
+            var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
             
             var infoText:String = mText;
             
@@ -128,9 +143,9 @@ package player.entity {
             {
                var textFiled:TextFieldEx;
                if (mAutofitWidth)
-                  textFiled = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0, true, displayHalfWidth * 2 - 10);
+                  textFiled = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
                else
-                  textFiled = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, 0x0);
+                  textFiled = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, mTextColor);
                
                DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textFiled, mTextBitmap);
             }

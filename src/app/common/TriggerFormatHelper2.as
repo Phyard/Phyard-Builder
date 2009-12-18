@@ -45,6 +45,8 @@ package common {
    import common.trigger.define.ValueTargetDefine_Null;
    import common.trigger.define.ValueTargetDefine_Variable;
    
+   import common.CoordinateSystem;
+   
    public class TriggerFormatHelper2
    {
       
@@ -287,6 +289,7 @@ package common {
       
       public static function ByteArray2FunctionCallingDefine (byteArray:ByteArray):FunctionCallingDefine
       {
+         //GetInputNumberTypeDetail
          return null;
       }
       
@@ -424,16 +427,17 @@ package common {
 // 
 //========================================================================================
       
-      public static function FunctionCallingDefines_DisplayValues2PhysicsValues (functionCallingDefines:Array):void
-      {
-         
-      }
+      // float -> 6 precisions, double -> 12 precisions
+      //public static function AdjustNumberPrecisionsInCodeSnippet (codeSnippet:CodeSnippet):void
+      //{
+      //   codeSnippet.AdjustNumberPrecisions ();
+      //}
       
-      // float -> 6 precisions, double -> 12 precision
-      public static function AdjustNumberValuesInFunctionCallingDefines (functionCallingDefines:Array):void
-      {
-         
-      }
+      // float -> 6 precisions, double -> 12 precisions
+      //public static function AdjustNumberPrecisionsInCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
+      //{
+      //   
+      //}
       
    }
 }

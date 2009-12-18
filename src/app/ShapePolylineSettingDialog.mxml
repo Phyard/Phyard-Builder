@@ -76,6 +76,7 @@
          
          private function OnAppearanceSettingPanelCreationComplete ():void
          {
+            mParams.mCiTypeSelectable = true;
             AppearanceSettingPanel.SetValues (mParams);
          }
          

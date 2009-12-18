@@ -13,6 +13,8 @@ package player.entity {
       public function EntityShape_RectangleBomb (world:World)
       {
          super (world);
+         
+         mAiTypeChangeable = false;
       }
       
 //=============================================================
@@ -30,8 +32,8 @@ package player.entity {
          
          if (needRebuildAppearanceObjects)
          {
-            var displayHalfWidth :Number = mWorld.PhysicsLength2DisplayLength (mHalfWidth);
-            var displayHalfHeight:Number = mWorld.PhysicsLength2DisplayLength (mHalfHeight);
+            var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
+            var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
             
             GraphicsUtil.DrawRect (
                      mBackgroundShape,

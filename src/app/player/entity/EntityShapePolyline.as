@@ -18,7 +18,7 @@ package player.entity {
       {
          super (world);
          
-         SetCurveThickness (mWorld.DisplayLength2PhysicsLength (1.0));
+         SetCurveThickness (mWorld.GetCoordinateSystem ().D2P_Length (1.0));
 
          mPhysicsShapePotentially = true;
          
@@ -38,7 +38,7 @@ package player.entity {
             if (entityDefine.mLocalPoints != undefined)
                SetLocalDisplayVertexPoints (entityDefine.mLocalPoints);
             if (entityDefine.mCurveThickness != undefined)
-            	SetCurveThickness (mWorld.DisplayLength2PhysicsLength (entityDefine.mCurveThickness));
+            	SetCurveThickness (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mCurveThickness));
             if (entityDefine.mIsRoundEnd != undefined)
             	SetRoundEnds (entityDefine.mIsRoundEnds);               
          }
@@ -88,8 +88,8 @@ package player.entity {
 				displayPoint.y = inputDisplayPoint.y;
 				
 				physicsPoint = mLocalPoints [i];
-            physicsPoint.x =  mWorld.DisplayX2PhysicsX (inputDisplayPoint.x);
-            physicsPoint.y =  mWorld.DisplayY2PhysicsY (inputDisplayPoint.y);
+            physicsPoint.x =  mWorld.GetCoordinateSystem ().D2P_PositionX (inputDisplayPoint.x);
+            physicsPoint.y =  mWorld.GetCoordinateSystem ().D2P_PositionY (inputDisplayPoint.y);
          }
       }
             
@@ -128,7 +128,7 @@ package player.entity {
          {
             mNeedRebuildAppearanceObjects = false;
             
-            var displayCurveThickness:Number = mWorld.PhysicsLength2DisplayLength (mCurveThickness);
+            var displayCurveThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mCurveThickness);
             
             var i:int;
             var numVertesex:int = mLocalDisplayPoints.length;

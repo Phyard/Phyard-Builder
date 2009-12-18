@@ -145,6 +145,16 @@ package player.physics {
          return _b2Body.IsSleepingAllowed ();
       }
       
+      public function SetSleeping (sleeping:Boolean):void
+      {
+         _b2Body.SetAwake (! sleeping);
+      }
+      
+      public function IsSleeping ():Boolean
+      {
+         return ! _b2Body.IsAwake ();
+      }
+      
       public function SetFixRotation (fixRotation:Boolean):void
       {
          _b2Body.SetFixedRotation (fixRotation);

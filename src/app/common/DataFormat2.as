@@ -446,7 +446,6 @@ package common {
             {
                entityDefine.mAlpha = byteArray.readFloat ();
                entityDefine.mIsActive = byteArray.readByte ();
-               entityDefine.mIsEnabled = byteArray.readByte ();
             }
             
             if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
@@ -978,7 +977,7 @@ package common {
          return xml;
       }
       
-      private static function Int2ColorString (intValue:int):String
+      public static function Int2ColorString (intValue:int):String
       {
          var strValue:String;
          strValue = "0x";
@@ -1062,7 +1061,6 @@ package common {
          {
             element.@alpha = entityDefine.mAlpha;
             element.@active = entityDefine.mIsActive ? 1 : 0;
-            element.@enabled = entityDefine.mIsEnabled ? 1 : 0;
          }
          
          if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
@@ -1196,8 +1194,8 @@ package common {
                      element.@angular_velocity = entityDefine.mAngularVelocity;
                      element.@linear_damping = entityDefine.mLinearDamping;
                      element.@angular_damping = entityDefine.mAngularDamping;
-                     element.@sleeping_allowed = entityDefine.mIsSleepingAllowed;
-                     element.@rotation_fixed = entityDefine.mIsRotationFixed;
+                     element.@sleeping_allowed = entityDefine.mIsSleepingAllowed ? 1 : 0;
+                     element.@rotation_fixed = entityDefine.mIsRotationFixed ? 1 : 0;
                   }
                }
                
@@ -1411,6 +1409,11 @@ package common {
                {
                   if (entityDefine.mIsPhysicsEnabled)
                   {
+                     if (worldDefine.mVersion < 0x0108 && Number (entityDefine.mDensity) <= 0)
+                     {
+                        entityDefine.mIsStatic = true;
+                     }
+                     
                      entityDefine.mDensity = ValueAdjuster.Number2Precision (entityDefine.mDensity, 6);
                      entityDefine.mFriction = ValueAdjuster.Number2Precision (entityDefine.mFriction, 6);
                      entityDefine.mRestitution = ValueAdjuster.Number2Precision (entityDefine.mRestitution, 6);
@@ -1464,7 +1467,7 @@ package common {
                      
                      if (worldDefine.mVersion < 0x0108)
                      {
-                        entityDefine.mInitialGravityAcceleration = Define.kDefaultCoordinateSystem.PhysicsAccaleration2DisplayAccaleration (entityDefine.mInitialGravityAcceleration);
+                        entityDefine.mInitialGravityAcceleration = Define.kDefaultCoordinateSystem.P2D_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
                      }
                      
                      entityDefine.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (entityDefine.mInitialGravityAcceleration, 6);
@@ -1481,7 +1484,7 @@ package common {
                   
                   if (worldDefine.mVersion < 0x0108)
                   {
-                     entityDefine.mMaxMotorTorque = Define.kDefaultCoordinateSystem.PhysicsTorque2DisplayTorque (entityDefine.mMaxMotorTorque);
+                     entityDefine.mMaxMotorTorque = Define.kDefaultCoordinateSystem.P2D_Torque (entityDefine.mMaxMotorTorque);
                   }
                   
                   entityDefine.mMaxMotorTorque = ValueAdjuster.Number2Precision (entityDefine.mMaxMotorTorque, 6);
@@ -1494,7 +1497,7 @@ package common {
                   
                   if (worldDefine.mVersion < 0x0108)
                   {
-                     entityDefine.mMaxMotorForce = Define.kDefaultCoordinateSystem.PhysicsForce2DisplayForce (entityDefine.mMaxMotorForce);
+                     entityDefine.mMaxMotorForce = Define.kDefaultCoordinateSystem.P2D_ForceMagnitude (entityDefine.mMaxMotorForce);
                   }
                   
                   entityDefine.mMaxMotorForce = ValueAdjuster.Number2Precision (entityDefine.mMaxMotorForce, 6);
@@ -1579,7 +1582,6 @@ package common {
             {
                entityDefine.mAlpha = 1.0;
                entityDefine.mIsActive = true;
-               entityDefine.mIsEnabled = true;
             }
             
             if ( Define.IsShapeEntity (entityDefine.mEntityType) )

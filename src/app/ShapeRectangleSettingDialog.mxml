@@ -23,11 +23,16 @@
             <mx:CheckBox id="CheckBox_RoundCorners" label="Round Corners"/>
          </mx:HBox>
       </mx:VBox>
-      <mx:VBox label="Others" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="100%"/>
          <EntityWidthHeightSettingPanel id="WidthHeightSettingPanel" creationComplete="OnEntityWidthHeightSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%"/>
       </mx:VBox>
@@ -73,14 +78,17 @@
          
          private function OnPhysicsSettingPanelCreationComplete ():void
          {
-            mParams.mDisableHollowEditing = true;
+            mParams.mDisableHollowEditing = false;
             
             PhysicsSettingPanel.SetValues (mParams);
          }
          
          private function OnAppearanceSettingPanelCreationComplete ():void
          {
+            mParams.mCiTypeSelectable = true;
             AppearanceSettingPanel.SetValues (mParams);
+            
+            CheckBox_RoundCorners.selected = mParams.mIsRoundCorners;
          }
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
@@ -113,6 +121,8 @@
             if (AppearanceSettingPanel != null)
             {
                AppearanceSettingPanel.GetValues (mParams);
+               
+               mParams.mIsRoundCorners = CheckBox_RoundCorners.selected;
             }
             
             if (BasicSettingPanel != null)

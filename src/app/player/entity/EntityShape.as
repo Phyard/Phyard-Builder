@@ -29,7 +29,7 @@ package player.entity {
       {
          super (world);
          
-         SetBorderThickness (mWorld.DisplayLength2PhysicsLength (1.0));
+         SetBorderThickness (mWorld.GetCoordinateSystem ().D2P_Length (1.0));
          
          SetCollisionCategoryById (Define.CollisionCategoryId_HiddenCategory); // default
          
@@ -100,7 +100,7 @@ package player.entity {
             if (entityDefine.mBorderColor != undefined)
                SetBorderColor ( entityDefine.mBorderColor);
             if (entityDefine.mBorderThickness != undefined)
-               SetBorderThickness (mWorld.DisplayLength2PhysicsLength (entityDefine.mBorderThickness));
+               SetBorderThickness (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mBorderThickness));
             if (entityDefine.mBackgroundColor != undefined)
                SetFilledColor (entityDefine.mBackgroundColor);
             if (entityDefine.mTransparency != undefined)
@@ -120,7 +120,7 @@ package player.entity {
             
             if (entityDefine.mLinearVelocityMagnitude != undefined && entityDefine.mLinearVelocityAngle != undefined)
             {
-               SetLinearVelocity (entityDefine.mLinearVelocityMagnitude, entityDefine.mLinearVelocityAngle);
+               SetLinearVelocity (mWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (entityDefine.mLinearVelocityMagnitude), entityDefine.mLinearVelocityAngle * Define.kDegrees2Radians);
             }
             if (entityDefine.mAngularVelocity != undefined)
                SetAngularVelocity (entityDefine.mAngularVelocity * Define.kDegrees2Radians);
@@ -144,6 +144,11 @@ package player.entity {
          else if (createStageId == 2)
          {
             UpdatelLocalPosition ();
+            
+            if (mAiType == Define.ShapeAiType_Bomb)
+            {
+               mAiTypeChangeable = false;
+            }
          }
       }
       
@@ -602,9 +607,9 @@ package player.entity {
             mRotation  = mBody.mRotation + mRelativeRotation;
          }
          
-         mAppearanceObjectsContainer.x = mWorld.PhysicsX2DisplayX (mPositionX);
-         mAppearanceObjectsContainer.y = mWorld.PhysicsY2DisplayY (mPositionY);
-         mAppearanceObjectsContainer.rotation = mRotation * Define.kRadians2Degrees;
+         mAppearanceObjectsContainer.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
+         mAppearanceObjectsContainer.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
+         mAppearanceObjectsContainer.rotation = mWorld.GetCoordinateSystem ().P2D_Rotation (mRotation) * Define.kRadians2Degrees;
       }
       
 //=============================================================
@@ -689,7 +694,7 @@ package player.entity {
          }
       }
       
-      internal function UpdatelLocalPosition ():void
+      public function UpdatelLocalPosition ():void
       {
          if (mBody != null)
          {
@@ -870,10 +875,14 @@ package player.entity {
       }
 
 //=============================================================
-//   some paint function used by subclasses
+//   some functions
 //=============================================================
-     
-   
-   
+      
+      protected var mAiTypeChangeable:Boolean = true; // if it is false, subclass must overwrite it
+      
+      final public function IsAiTypeChangeable ():Boolean
+      {
+         return mAiTypeChangeable;
+      }
    }
 }

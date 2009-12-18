@@ -32,6 +32,31 @@
          <mx:Spacer height="20" />
 
          <mx:HBox width="100%">
+            <mx:Label width="30%" text="Coordinates System:" textAlign="right"/>
+            <mx:CheckBox id="CheckBox_CoordinatesRightHand" label="Right Hand (axis y upwards)"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:Label width="80" text="Scale:" textAlign="right"/>
+            <mx:NumericStepper id="NumericStepper_CoordinatesScale" stepSize="1" width="80" />
+            <mx:Label text="(pixels/m)"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:Label width="80" text="Origin X:" textAlign="right"/>
+            <mx:NumericStepper id="NumericStepper_CoordinatesOriginX" stepSize="1" width="80" />
+            <mx:Label text="(pixels)"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:Label width="80" text="Origin Y:" textAlign="right"/>
+            <mx:NumericStepper id="NumericStepper_CoordinatesOriginY" stepSize="1" width="80" />
+            <mx:Label text="(pixels)"/>
+         </mx:HBox>
+
+         <mx:Spacer height="20" />
+
+         <mx:HBox width="100%">
             <mx:Label width="30%" text="Scene Size:" textAlign="right"/>
             <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnCustomSizeRationClick ()"/>
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_NormalSize" value="normal"
@@ -39,8 +64,8 @@
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:Spacer width="30%"/>
-            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_LargeSize" value="large"
-                label="Large (left:-6000, top:-6000, right:6000, bottom:6000)"/>
+            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_InfinteSize" value="infinite"
+                label="Infinte"/>
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:Spacer width="30%"/>
@@ -62,6 +87,9 @@
             <mx:Label id="Label_CustomBottom" text="Bottom:" textAlign="right" width="60"/>
             <mx:NumericStepper id="NumericStepper_CustomBottom" stepSize="1" width="80" />
          </mx:HBox>
+
+         <mx:Spacer height="20" />
+
          <mx:HBox width="100%">
             <mx:Label text="Background Color:" textAlign="right" width="30%"/>
             <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xDDDDA0"/>
@@ -72,6 +100,27 @@
             <mx:Spacer width="20"/>
             <mx:CheckBox id="CheckBox_BuildBorder" label="Build Scene Border"/>
          </mx:HBox>
+
+         <mx:Spacer height="20" />
+
+         <mx:HBox width="100%">
+            <mx:Label text="Gravity Accelation Magnitude:" textAlign="right" width="30%"/>
+            <mx:TextInput id="Text_GravityAccelationMagnitude" width="100" />
+            <mx:Label text="(pxiels / s^2)"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:Label text="Gravity Accelation Angle:" textAlign="right" width="30%"/>
+            <mx:TextInput id="Text_GravityAccelationAngle" width="100" />
+         </mx:HBox>
+
+         <mx:Spacer height="20" />
+
+         <mx:HBox width="100%">
+            <mx:Spacer width="30%"/>
+            <mx:CheckBox id="CheckBox_CiRulesEnabled" label="CI Rules Enabled"/>
+         </mx:HBox>
+
          <!--
          <mx:HBox width="100%">
             <mx:Spacer width="5%"/>
@@ -130,37 +179,48 @@
                NumericStepper_CustomBottom.minimum = 0;
                NumericStepper_CustomBottom.maximum = 0.5 * Define.LargeWorldHalfWidth;
                
+               NumericStepper_CoordinatesScale.minimum = 1;
+               NumericStepper_CoordinatesScale.maximum = Number.MAX_VALUE;
+               NumericStepper_CoordinatesOriginX.minimum = - Number.MAX_VALUE;
+               NumericStepper_CoordinatesOriginX.maximum = Number.MAX_VALUE;
+               NumericStepper_CoordinatesOriginY.minimum = - Number.MAX_VALUE;
+               NumericStepper_CoordinatesOriginY.maximum = Number.MAX_VALUE;
+               
                SynchronizeWorldSettingPanelWithWorld (Runtime.mEditorWorldView.GetEditorWorld ());
             }
             
             private function SynchronizeWorldSettingPanelWithWorld (world:World):void
             {
+            // 
+               
+               CheckBox_ShareSourceCode.selected = world.IsShareSourceCode ();
+               
                Text_AuthorName.text = world.GetAuthorName ();
                Text_AuthorHomePage.text = world.GetAuthorHomepage ();
                
-               CheckBox_ShareSourceCode.selected = world.IsShareSourceCode ();
+            // 
                
                var sceneLeft  :int = world.GetWorldLeft ();
                var sceneTop   :int = world.GetWorldTop ();
                var sceneWidth :int = world.GetWorldWidth ();
                var sceneHeight:int = world.GetWorldHeight ();
                
-               if (Define.IsNormalScene (sceneLeft, sceneTop, sceneWidth, sceneHeight))
-               {
-                  RadioButton_NormalSize.selected = true;
-                  RadioButton_LargeSize.selected = false;
-                  RadioButton_CustomSize.selected = false;
-               }
-               else if (Define.IsLargeScene (sceneLeft, sceneTop, sceneWidth, sceneHeight))
+               if (world.IsInfiniteSceneSize ())
                {
                   RadioButton_NormalSize.selected = false;
-                  RadioButton_LargeSize.selected = true;
+                  RadioButton_InfinteSize.selected = true;
+                  RadioButton_CustomSize.selected = false;
+               }
+               else if (Define.IsNormalScene (sceneLeft, sceneTop, sceneWidth, sceneHeight))
+               {
+                  RadioButton_NormalSize.selected = true;
+                  RadioButton_InfinteSize.selected = false;
                   RadioButton_CustomSize.selected = false;
                }
                else
                {
                   RadioButton_NormalSize.selected = false;
-                  RadioButton_LargeSize.selected = false;
+                  RadioButton_InfinteSize.selected = false;
                   RadioButton_CustomSize.selected = true;
                }
                
@@ -171,10 +231,28 @@
                NumericStepper_CustomRight.value = sceneLeft + sceneWidth;
                NumericStepper_CustomBottom.value = sceneTop + sceneHeight;
                
+            // ...
+               
                ColorPicker_BackgroundColor.selectedColor = world.GetBackgroundColor ();
                
                CheckBox_BuildBorder.selected = world.IsBuildBorder ();
                ColorPicker_BorderColor.selectedColor = world.GetBorderColor ();
+               
+            // 
+               
+               CheckBox_CoordinatesRightHand.selected = world.GetCoordinateSystem ().IsRightHand ();
+               NumericStepper_CoordinatesScale.value = int(1.0 / world.GetCoordinateSystem ().GetScale ());
+               NumericStepper_CoordinatesOriginX.value = world.GetCoordinateSystem ().GetOriginX ();
+               NumericStepper_CoordinatesOriginY.value = world.GetCoordinateSystem ().GetOriginY ();
+               
+            // 
+               
+               Text_GravityAccelationMagnitude.text = "" + world.GetDefaultGravityAccelerationMagnitude ();
+               Text_GravityAccelationAngle.text = "" + world.GetDefaultGravityAccelerationAngle ();
+               
+            // 
+               
+               CheckBox_CiRulesEnabled.selected = world.IsCiRulesEnabled ();
             }
             
             private function SynchronizeWorldWithWorldSettingPanel (world:World):void
@@ -224,6 +302,24 @@
                   density_level = 0;
                world.SetPhysicsShapesPopulationDensityLevel (ValueAdjuster.AdjustPhysicsShapesPotentialMaxCount (density_level, true));
                */
+               
+            // 
+               
+               world.RebuildCoordinateSystem (NumericStepper_CoordinatesOriginX.value, NumericStepper_CoordinatesOriginY.value, 1.0 / NumericStepper_CoordinatesScale.value, CheckBox_CoordinatesRightHand.selected);
+               
+            // 
+               
+               var magnitude:Number = parseFloat (Text_GravityAccelationMagnitude.text);
+               if (! isNaN (magnitude))
+                  world.SetDefaultGravityAccelerationMagnitude (magnitude);
+               
+               var angle:Number = parseFloat (Text_GravityAccelationAngle.text);
+               if (! isNaN (angle))
+                  world.SetDefaultGravityAccelerationAngle (angle);
+               
+            // 
+               
+               world.SetCiRulesEnabled (CheckBox_CiRulesEnabled.selected);
             }
             
             private function OnCustomSizeRationClick ():void
@@ -250,6 +346,8 @@
             
             private function UpdateSceneSize (world:World):void
             {
+               world.SetInfiniteScaneSize (RadioButton_InfinteSize.selected);
+               
                if (RadioButton_NormalSize.selected)
                {
                   world.SetWorldLeft (0);
@@ -257,7 +355,7 @@
                   world.SetWorldWidth (Define.DefaultWorldWidth);
                   world.SetWorldHeight (Define.DefaultWorldHeight);
                }
-               else if (RadioButton_LargeSize.selected)
+               else if (RadioButton_InfinteSize.selected)
                {
                   world.SetWorldLeft (- 0.5 * Define.LargeWorldHalfWidth);
                   world.SetWorldTop  (- 0.5 * Define.LargeWorldHalfHeight);

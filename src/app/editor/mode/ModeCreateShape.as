@@ -2,7 +2,7 @@
 package editor.mode {
    
    import editor.WorldView;
-   import editor.setting.EditorSetting;
+   
    
    import common.Define;
    

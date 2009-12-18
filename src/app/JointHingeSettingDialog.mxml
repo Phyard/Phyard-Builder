@@ -70,7 +70,15 @@
 
       </mx:VBox>
 
-      <mx:VBox label="Anchor" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Joint Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="JointBasicSettingPanel" creationComplete="OnJointBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+
+      <mx:VBox label="Anchor Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
@@ -114,22 +122,33 @@
          {
             mParams = initialValues;
             
-            CommonSettingPanel.SetValues (initialValues);
+            var jointParams:Object = mParams.mJointValues;
             
-            CheckBox_LimitEnabled.selected = initialValues.mEnableLimit;
-            Text_LowerAngle.text = initialValues.mLowerAngle;
-            Text_UpperAngle.text = initialValues.mUpperAngle;
+            CommonSettingPanel.SetValues (jointParams);
             
-            CheckBox_MotorEnabled.selected = initialValues.mEnableMotor;
-            Text_MotorSpeed.text = initialValues.mMotorSpeed;
+            CheckBox_LimitEnabled.selected = jointParams.mEnableLimit;
+            Text_LowerAngle.text = jointParams.mLowerAngle;
+            Text_UpperAngle.text = jointParams.mUpperAngle;
             
-            CheckBox_BackAndForth.selected = initialValues.mBackAndForth;
+            CheckBox_MotorEnabled.selected = jointParams.mEnableMotor;
+            Text_MotorSpeed.text = jointParams.mMotorSpeed;
             
-            Text_MaxMotorTorque.text = initialValues.mMaxMotorTorque;
+            CheckBox_BackAndForth.selected = jointParams.mBackAndForth;
+            
+            Text_MaxMotorTorque.text = jointParams.mMaxMotorTorque;
+            
+            CheckBox_Breakable.selected = jointParams.mIsBreakable;
+         }
+         
+         private function OnJointBasicSettingPanelCreationComplete ():void
+         {
+            JointBasicSettingPanel.SetValues (mParams.mJointValues);
          }
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
+            mParams.mActiveNonsense = true;
+            mParams.mVisibleNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }
          
@@ -145,29 +164,38 @@
          
          private function OnClickOkButton():void 
          {
-             CommonSettingPanel.GetValues (mParams);
+            var jointParams:Object = mParams.mJointValues;
+            
+            CommonSettingPanel.GetValues (jointParams);
              
-             mParams.mEnableLimit = CheckBox_LimitEnabled.selected;
+            jointParams.mEnableLimit = CheckBox_LimitEnabled.selected;
              
             var lowerAngle:Number = parseFloat (Text_LowerAngle.text);
             if ( ! isNaN (lowerAngle) )
-               mParams.mLowerAngle = lowerAngle;
+               jointParams.mLowerAngle = lowerAngle;
             
             var upperAngle:Number = parseFloat (Text_UpperAngle.text);
             if ( ! isNaN (upperAngle) )
-               mParams.mUpperAngle = upperAngle;
+               jointParams.mUpperAngle = upperAngle;
             
-             mParams.mEnableMotor = CheckBox_MotorEnabled.selected;
+             jointParams.mEnableMotor = CheckBox_MotorEnabled.selected;
              
             var motorSpeed:Number = parseFloat (Text_MotorSpeed.text);
             if ( ! isNaN (motorSpeed) )
-               mParams.mMotorSpeed = motorSpeed;
+               jointParams.mMotorSpeed = motorSpeed;
             
-             mParams.mBackAndForth = CheckBox_BackAndForth.selected;
+            jointParams.mBackAndForth = CheckBox_BackAndForth.selected;
              
             var maxMotorTorque:Number = parseFloat (Text_MaxMotorTorque.text);
             if ( ! isNaN (maxMotorTorque) )
-               mParams.mMaxMotorTorque = maxMotorTorque;
+               jointParams.mMaxMotorTorque = maxMotorTorque;
+            
+            jointParams.mIsBreakable = CheckBox_Breakable.selected;
+            
+            if (JointBasicSettingPanel != null)
+            {
+               JointBasicSettingPanel.GetValues (jointParams);
+            }
             
             if (BasicSettingPanel != null)
             {

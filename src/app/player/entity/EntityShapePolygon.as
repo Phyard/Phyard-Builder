@@ -80,8 +80,8 @@ package player.entity {
 				displayPoint.y = inputDisplayPoint.y;
 				
 				physicsPoint = mLocalPoints [i];
-            physicsPoint.x =  mWorld.DisplayX2PhysicsX (inputDisplayPoint.x);
-            physicsPoint.y =  mWorld.DisplayY2PhysicsY (inputDisplayPoint.y);
+            physicsPoint.x =  mWorld.GetCoordinateSystem ().D2P_PositionX (inputDisplayPoint.x);
+            physicsPoint.y =  mWorld.GetCoordinateSystem ().D2P_PositionY (inputDisplayPoint.y);
          }
       }
       
@@ -101,7 +101,7 @@ package player.entity {
          {
             mNeedRebuildAppearanceObjects = false;
             
-            var displayBorderThickness:Number = mWorld.PhysicsLength2DisplayLength (mBorderThickness);
+            var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
             
             GraphicsUtil.ClearAndDrawPolygon (
                      mBackgroundShape,

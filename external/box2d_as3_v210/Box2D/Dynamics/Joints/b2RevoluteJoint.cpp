@@ -157,6 +157,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 		//m_impulse *= step.dtRatio;
 		m_impulse.x *= step.dtRatio;
 		m_impulse.y *= step.dtRatio;
+		m_impulse.z *= step.dtRatio;
 		m_motorImpulse *= step.dtRatio;
 
 		P.Set (m_impulse.x, m_impulse.y);
@@ -256,6 +257,7 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 		else if (m_limitState == e_atLowerLimit)
 		{
 			newImpulse = m_impulse.z + impulseVec3.z;
+			
 			if (newImpulse < 0.0)
 			{
 				//b2Vec2 reduced = m_mass.Solve22(-Cdot1);

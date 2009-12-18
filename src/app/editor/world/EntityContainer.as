@@ -63,6 +63,14 @@ package editor.world {
          mSelectionEngine.Destroy ();
       }
       
+      public function RebuildCoordinateSystem (originX:Number, originY:Number, scale:Number, rightHand:Boolean):void
+      {
+         if (scale <= 0)
+            scale = 1.0;
+         
+         mCoordinateSystem = new CoordinateSystem (originX, originY, scale, rightHand);
+      }
+      
       public function GetCoordinateSystem ():CoordinateSystem
       {
          return mCoordinateSystem;

@@ -5,10 +5,10 @@
 //=====================================================================================
 
 // these values are in display space
-private var mWorldLeft:int = 0;
-private var mWorldTop:int = 0;
-private var mWorldWidth:int = Define.DefaultWorldWidth;
-private var mWorldHeight:int = Define.DefaultWorldHeight;
+private var mWorldLeft:Number = 0;
+private var mWorldTop:Number = 0;
+private var mWorldWidth:Number = Define.DefaultWorldWidth;
+private var mWorldHeight:Number = Define.DefaultWorldHeight;
 
 public function GetWorldLeft ():int
 {
@@ -89,7 +89,7 @@ public function SetCameraHeight (height:Number):void
 
 public function MoveWorldScene_PhysicsOffset (physicsDx:Number, physicsDy:Number):void
 {
-   var displayOffet:Point = PhysicsVector2DisplayVector (physicsDx, physicsDy);
+   var displayOffet:Point = mCoordinateSystem.PhysicsVector2DisplayVector (physicsDx, physicsDy);
    
    MoveCameraCenterTo_DisplayPoint (mCameraCenterX + displayOffet.x, mCameraCenterY + displayOffet.y);
 }
@@ -101,7 +101,7 @@ public function MoveWorldScene_DisplayOffset (displayDx:Number, displayDy:Number
 
 public function MoveCameraCenterTo_PhysicsPoint (physicsX:Number, physicsY:Number):void
 {
-   MoveCameraCenterTo_DisplayPoint (PhysicsX2DisplayX (physicsX), PhysicsY2DisplayY (physicsY));
+   MoveCameraCenterTo_DisplayPoint (mCoordinateSystem.P2D_PositionX (physicsX), mCoordinateSystem.P2D_PositionY (physicsY));
 }
 
 public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDisplayY:Number):void
@@ -152,6 +152,19 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
    
    x = leftInView - mWorldLeft * scaleX;
    y = topInView  - mWorldTop  * scaleY;
+   
+   UpdateBackgroundSpriteOffsetAndScale ();
+}
+
+private function UpdateBackgroundSpriteOffsetAndScale ():void
+{
+   if (mBackgroundSprite != null)
+   {
+      mBackgroundSprite.x = mCameraCenterX;
+      mBackgroundSprite.y = mCameraCenterY;
+      mBackgroundSprite.scaleX = 1.0 / scaleX;
+      mBackgroundSprite.scaleY = 1.0 / scaleY;
+   }
 }
 
 protected function UpdateCamera ():void
@@ -161,14 +174,14 @@ protected function UpdateCamera ():void
    
    if (mFollowedEntityCameraCenterX != null)
    {
-      targetX = PhysicsX2DisplayX (mFollowedEntityCameraCenterX.GetPositionX ());
+      targetX = mCoordinateSystem.P2D_PositionX (mFollowedEntityCameraCenterX.GetPositionX ());
       if (mFollowedEntityCameraCenterX.IsDestroyedAlready ())
          mFollowedEntityCameraCenterX = null;
    }
    
    if (mFollowedEntityCameraCenterY != null)
    {
-      targetY = PhysicsY2DisplayY (mFollowedEntityCameraCenterY.GetPositionY ());
+      targetY = mCoordinateSystem.P2D_PositionY (mFollowedEntityCameraCenterY.GetPositionY ());
       if (mFollowedEntityCameraCenterY.IsDestroyedAlready ())
          mFollowedEntityCameraCenterY = null;
    }

@@ -40,7 +40,7 @@ package player.entity {
             if (entityDefine.mCurveThickness != undefined)
             	SetCurveThickness (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mCurveThickness));
             if (entityDefine.mIsRoundEnd != undefined)
-            	SetRoundEnds (entityDefine.mIsRoundEnds);               
+            	SetRoundEnds (entityDefine.mIsRoundEnds);
          }
       }
       
@@ -51,8 +51,8 @@ package player.entity {
       protected var mLocalPoints:Array = null;
       protected var mLocalDisplayPoints:Array = null;
       
-      protected var mCurveThickness:Number; 
-      protected var mIsRoundEnds:Boolean;
+      protected var mCurveThickness:Number = 1.0; 
+      protected var mIsRoundEnds:Boolean = true;
 
       public function GetVertexPointsCount ():int
       {

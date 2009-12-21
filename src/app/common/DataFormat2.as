@@ -1403,7 +1403,18 @@ package common {
             
             entityDefine.mAlpha = ValueAdjuster.Number2Precision (entityDefine.mAlpha, 6);
             
-            if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            if ( Define.IsLogicEntity (entityDefine.mEntityType) )
+            {
+               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               {
+                  TriggerFormatHelper2.AdjustNumberPrecisionsInCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+                  TriggerFormatHelper2.AdjustNumberPrecisionsInCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
+               }
+            }
+            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
                if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
                {
@@ -1427,6 +1438,12 @@ package common {
                   
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
+                     if (worldDefine.mVersion < 0x0107)
+                     {
+                        if (entityDefine.mBorderThickness != 0)
+                           entityDefine.mRadius = entityDefine.mRadius - 0.5;
+                     }
+                     
                      entityDefine.mRadius = ValueAdjuster.Number2Precision (entityDefine.mRadius, 6);
                      
                      if (isForPlayer)
@@ -1434,6 +1451,15 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
+                     if (worldDefine.mVersion < 0x0107)
+                     {
+                        if (entityDefine.mBorderThickness != 0)
+                        {
+                           entityDefine.mHalfWidth = entityDefine.mHalfWidth - 0.5;
+                           entityDefine.mHalfHeight = entityDefine.mHalfHeight - 0.5;
+                        }
+                     }
+                     
                      entityDefine.mHalfWidth = ValueAdjuster.Number2Precision (entityDefine.mHalfWidth, 6);
                      entityDefine.mHalfHeight = ValueAdjuster.Number2Precision (entityDefine.mHalfHeight, 6);
                   }
@@ -1584,7 +1610,18 @@ package common {
                entityDefine.mIsActive = true;
             }
             
-            if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            if ( Define.IsLogicEntity (entityDefine.mEntityType) )
+            {
+               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               {
+                  TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+                  TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
+               }
+            }
+            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
                if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
                {

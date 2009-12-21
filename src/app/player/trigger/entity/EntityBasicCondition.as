@@ -38,7 +38,11 @@ package player.trigger.entity
                mName = entityDefine.mName;
             
             if (entityDefine.mCodeSnippetDefine != undefined)
-               mConditionDefinition.SetCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
+            {
+               var codeSnippetDefine:CodeSnippetDefine = entityDefine.mCodeSnippetDefine.Clone ();
+               codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
+               mConditionDefinition.SetCodeSnippetDefine (codeSnippetDefine);
+            }
          }
       }
             

@@ -120,10 +120,11 @@ package player.entity {
             
             if (entityDefine.mLinearVelocityMagnitude != undefined && entityDefine.mLinearVelocityAngle != undefined)
             {
-               SetLinearVelocity (mWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (entityDefine.mLinearVelocityMagnitude), entityDefine.mLinearVelocityAngle * Define.kDegrees2Radians);
+               SetLinearVelocity (mWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (entityDefine.mLinearVelocityMagnitude), 
+                                 mWorld.GetCoordinateSystem ().D2P_RotationRadians (entityDefine.mLinearVelocityAngle * Define.kDegrees2Radians));
             }
             if (entityDefine.mAngularVelocity != undefined)
-               SetAngularVelocity (entityDefine.mAngularVelocity * Define.kDegrees2Radians);
+               SetAngularVelocity (mWorld.GetCoordinateSystem ().D2P_RotationRadians (entityDefine.mAngularVelocity * Define.kDegrees2Radians));
             
             if (entityDefine.mLinearDamping != undefined)
                SetLinearDamping (entityDefine.mLinearDamping);
@@ -604,12 +605,12 @@ package player.entity {
          {
             mPositionX = mBody.mPositionX + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
             mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
-            mRotation  = mBody.mRotation + mRelativeRotation;
+            mRotation  = (mBody.mRotation + mRelativeRotation) % Define.kPI_x_2;
          }
          
          mAppearanceObjectsContainer.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
          mAppearanceObjectsContainer.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
-         mAppearanceObjectsContainer.rotation = mWorld.GetCoordinateSystem ().P2D_Rotation (mRotation) * Define.kRadians2Degrees;
+         mAppearanceObjectsContainer.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotation) * Define.kRadians2Degrees;
       }
       
 //=============================================================

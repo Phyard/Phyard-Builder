@@ -45,10 +45,6 @@ package player.physics {
                   enableMotor:Boolean, motorSpeed:Number, maxMotorTorque:Number
                ):void
       {
-      trace ("enableMotor = " + enableMotor);
-      trace ("motorSpeed = " + motorSpeed);
-      trace ("maxMotorTorque = " + maxMotorTorque);
-      
          // ..
          var proxyShape1:PhysicsProxyShape = anchor1.GetShape () == null ? null : anchor1.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;
          var proxyShape2:PhysicsProxyShape = anchor2.GetShape () == null ? null : anchor2.GetShape ().GetPhysicsProxy () as PhysicsProxyShape;

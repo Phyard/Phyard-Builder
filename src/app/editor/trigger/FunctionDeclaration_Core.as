@@ -6,6 +6,7 @@ package editor.trigger {
    import common.trigger.ValueTypeDefine;
    import common.trigger.FunctionTypeDefine;
    import common.trigger.FunctionDeclaration;
+   import common.trigger.CoreFunctionDeclarations;
    
    public class FunctionDeclaration_Core extends editor.trigger.FunctionDeclaration
    {
@@ -15,7 +16,7 @@ package editor.trigger {
       {
          super (id, name, inputDefinitions, description, returnDefinitions);
          
-         mFunctionDeclaration_Common = TriggerEngine.GetCoreFunctionDeclaration (id);
+         mFunctionDeclaration_Common = CoreFunctionDeclarations.GetCoreFunctionDeclaration (id);
          
          if ( ! CheckConsistent (mFunctionDeclaration_Common) )
             throw new Error ("not consistent! id = " + id);

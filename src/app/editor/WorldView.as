@@ -1703,13 +1703,37 @@ package editor {
          
          values.mPosX = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionX (entity.GetPositionX ()), 12);
          values.mPosY = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionY (entity.GetPositionY ()), 12);
-         values.mAngle = ValueAdjuster.Number2Precision (entity.GetRotation () * Define.kRadians2Degrees, 6);
+         values.mAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationRadians (entity.GetRotation ()) * Define.kRadians2Degrees, 6);
          
          values.mIsVisible = entity.IsVisible ();
          values.mAlpha = entity.GetAlpha ();
          values.mIsActive = entity.IsActive ();
          
-         if (entity is EntityShape)
+         if (entity is EntityLogic)
+         {
+            if (entity is EntityBasicCondition)
+            {
+               var condition:EntityBasicCondition = entity as EntityBasicCondition;
+               
+               values.mCodeSnippetName = condition.GetCodeSnippetName ();
+               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
+               
+               ShowConditionSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityEventHandler)
+            {
+               var event_handler:EntityEventHandler = entity as EntityEventHandler;
+               
+               values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
+               values.mEventId = event_handler.GetEventId ();
+               values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
+               
+               ShowEventHandlerSettingDialog (values, SetEntityProperties);
+            }
+         }
+         else if (entity is EntityShape)
          {
             var shape:EntityShape = entity as EntityShape;
             
@@ -1740,8 +1764,8 @@ package editor {
                values.mRestitution = ValueAdjuster.Number2Precision (shape.mRestitution, 6);
                
                values.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (shape.GetLinearVelocityMagnitude ()), 6);
-               values.mLinearVelocityAngle = ValueAdjuster.Number2Precision (shape.GetLinearVelocityAngle (), 6);
-               values.mAngularVelocity = ValueAdjuster.Number2Precision (shape.GetAngularVelocity (), 6);
+               values.mLinearVelocityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (shape.GetLinearVelocityAngle ()), 6);
+               values.mAngularVelocity = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_AngularVelocity (shape.GetAngularVelocity ()), 6);
                values.mLinearDamping = ValueAdjuster.Number2Precision (shape.GetLinearDamping (), 6);
                values.mAngularDamping = ValueAdjuster.Number2Precision (shape.GetAngularDamping (), 6);
                values.mAllowSleeping = shape.IsAllowSleeping ();
@@ -1807,7 +1831,7 @@ package editor {
                   values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetMaximalGravityAcceleration ()), 6);
                   
                   values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetInitialGravityAcceleration ()), 6);
-                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision ( (shape as EntityShapeGravityController).GetInitialGravityAngle (), 6);
+                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision ( mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees ((shape as EntityShapeGravityController).GetInitialGravityAngle ()), 6);
                   
                   ShowShapeGravityControllerSettingDialog (values, SetEntityProperties);
                }
@@ -1847,16 +1871,24 @@ package editor {
                jointValues.mAnchorIndex = -1; // to make both shape select lists selectable
                
                var hinge:EntityJointHinge = joint as EntityJointHinge;
+               var lowerAngle:Number = mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (hinge.GetLowerLimit ());
+               var upperAngle:Number = mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (hinge.GetUpperLimit ());
+               if (lowerAngle > upperAngle)
+               {
+                  var tempAngle:Number = lowerAngle;
+                  lowerAngle = upperAngle;
+                  upperAngle = tempAngle;
+               }
                
                jointValues.mEnableLimit = hinge.IsLimitsEnabled ();
-               jointValues.mLowerAngle = ValueAdjuster.Number2Precision (hinge.GetLowerLimit (), 6);
-               jointValues.mUpperAngle = ValueAdjuster.Number2Precision (hinge.GetUpperLimit (), 6);
+               jointValues.mLowerAngle = ValueAdjuster.Number2Precision (lowerAngle, 6);
+               jointValues.mUpperAngle = ValueAdjuster.Number2Precision (upperAngle, 6);
                jointValues.mEnableMotor = hinge.mEnableMotor;
-               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (hinge.mMotorSpeed, 6);
+               jointValues.mMotorSpeed = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (hinge.mMotorSpeed), 6);
                jointValues.mBackAndForth = hinge.mBackAndForth;
                
                //>>from v1.04
-               jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Torque (hinge.mMaxMotorTorque), 6);
+               jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Torque (hinge.GetMaxMotorTorque ()), 6);
                //<<
                
                ShowHingeSettingDialog (values, SetEntityProperties);
@@ -1873,7 +1905,7 @@ package editor {
                jointValues.mBackAndForth = slider.mBackAndForth;
                
                //>>from v1.04
-               jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_ForceMagnitude (slider.mMaxMotorForce), 6);
+               jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_ForceMagnitude (slider.GetMaxMotorForce ()), 6);
                //<<
                
                ShowSliderSettingDialog (values, SetEntityProperties);
@@ -1903,28 +1935,6 @@ package editor {
                //<<
                
                ShowDistanceSettingDialog (values, SetEntityProperties);
-            }
-         }
-         else if (entity is EntityLogic)
-         {
-            if (entity is EntityBasicCondition)
-            {
-               var condition:EntityBasicCondition = entity as EntityBasicCondition;
-               
-               values.mCodeSnippetName = condition.GetCodeSnippetName ();
-               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
-               
-               ShowConditionSettingDialog (values, SetEntityProperties);
-            }
-            else if (entity is EntityEventHandler)
-            {
-               var event_handler:EntityEventHandler = entity as EntityEventHandler;
-               
-               values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
-               values.mEventId = event_handler.GetEventId ();
-               values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (null);
-               
-               ShowEventHandlerSettingDialog (values, SetEntityProperties);
             }
          }
       }
@@ -2577,7 +2587,10 @@ package editor {
                CancelCurrentCreatingMode ();
                break;
             case Keyboard.SPACE:
-               OpenEntitySettingDialog ();
+               if (IsEditing ())
+                  OpenEntitySettingDialog ();
+               else if (IsPlayingPaused ())
+                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
                break;
             //case 49: // 1
             //case Keyboard.NUMPAD_1:
@@ -3371,15 +3384,47 @@ package editor {
          
          var newPosX:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionX (params.mPosX);
          var newPosY:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionY (params.mPosY);
-         newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
-         newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
+         if (! mEditorWorld.IsInfiniteSceneSize ())
+         {
+            newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
+            newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
+         }
          entity.SetPosition (newPosX, newPosY);
-         entity.SetRotation (params.mAngle * Define.kDegrees2Radians);
+         entity.SetRotation (mEditorWorld.GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
          entity.SetVisible (params.mIsVisible);
          entity.SetAlpha (params.mAlpha);
          entity.SetActive (params.mIsActive);
          
-         if (entity is EntityShape)
+         if (entity is EntityLogic)
+         {
+            var code_snippet:CodeSnippet;
+            
+            if (entity is EntityBasicCondition)
+            {
+               var condition:EntityBasicCondition = entity as EntityBasicCondition;
+               
+               condition.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = condition.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+               
+               condition.UpdateAppearance ();
+               condition.UpdateSelectionProxy ();
+            }
+            else if (entity is EntityEventHandler)
+            {
+               var event_handler:EntityEventHandler = entity as EntityEventHandler;
+               
+               code_snippet = event_handler.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+               
+               event_handler.UpdateAppearance ();
+               event_handler.UpdateSelectionProxy ();
+            }
+         }
+         else if (entity is EntityShape)
          {
             var shape:EntityShape = entity as EntityShape;
             
@@ -3412,9 +3457,9 @@ package editor {
                   params.mLinearVelocityMagnitude = -params.mLinearVelocityMagnitude;
                   params.mLinearVelocityAngle = 360.0 - params.mLinearVelocityAngle;
                }
-               shape.SetLinearVelocityMagnitude (params.mLinearVelocityMagnitude);
-               shape.SetLinearVelocityAngle (params.mLinearVelocityAngle);
-               shape.SetAngularVelocity (params.mAngularVelocity);
+               shape.SetLinearVelocityMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
+               shape.SetLinearVelocityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
+               shape.SetAngularVelocity (mEditorWorld.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
                shape.SetLinearDamping (params. mLinearDamping);
                shape.SetAngularDamping (params.mAngularDamping);
                shape.SetAllowSleeping (params.mAllowSleeping);
@@ -3467,7 +3512,7 @@ package editor {
                   
                   (shape as EntityShapeGravityController).SetMaximalGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mMaximalGravityAcceleration));
                   (shape as EntityShapeGravityController).SetInitialGravityAcceleration (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mInitialGravityAcceleration));
-                  (shape as EntityShapeGravityController).SetInitialGravityAngle (params.mInitialGravityAngle);
+                  (shape as EntityShapeGravityController).SetInitialGravityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mInitialGravityAngle));
                }
             }
             
@@ -3488,10 +3533,15 @@ package editor {
             
             joint.mCollideConnected = jointParams.mCollideConnected;
             
-            jointParams.mPosX = MathUtil.GetClipValue (jointParams.mPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
-            jointParams.mPosY = MathUtil.GetClipValue (jointParams.mPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
-            joint.SetPosition (mEditorWorld.GetCoordinateSystem ().P2D_PositionX (jointParams.mPosX), mEditorWorld.GetCoordinateSystem ().P2D_PositionY (jointParams.mPosY));
-            joint.SetRotation (jointParams.mAngle * Define.kDegrees2Radians);
+            newPosX = mEditorWorld.GetCoordinateSystem ().P2D_PositionX (jointParams.mPosX);
+            newPosY = mEditorWorld.GetCoordinateSystem ().P2D_PositionY (jointParams.mPosY);
+            if (! mEditorWorld.IsInfiniteSceneSize ())
+            {
+               newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
+               newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
+            }
+            joint.SetPosition (newPosX, newPosY);
+            joint.SetRotation (mEditorWorld.GetCoordinateSystem ().P2D_RotationRadians (jointParams.mAngle * Define.kDegrees2Radians));
             joint.SetVisible (jointParams.mIsVisible);
             joint.SetAlpha (jointParams.mAlpha);
             joint.SetActive (jointParams.mIsActive);
@@ -3510,13 +3560,13 @@ package editor {
                var hinge:EntityJointHinge = joint as EntityJointHinge;
                
                hinge.SetLimitsEnabled (jointParams.mEnableLimit);
-               hinge.SetLimits (jointParams.mLowerAngle, jointParams.mUpperAngle);
+               hinge.SetLimits (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mLowerAngle), mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mUpperAngle));
                hinge.mEnableMotor = jointParams.mEnableMotor;
-               hinge.mMotorSpeed = jointParams.mMotorSpeed;
+               hinge.mMotorSpeed = mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (jointParams.mMotorSpeed);
                hinge.mBackAndForth = jointParams.mBackAndForth;
                
                //>>from v1.04
-               hinge.mMaxMotorTorque = mEditorWorld.GetCoordinateSystem ().P2D_Torque (jointParams.mMaxMotorTorque);
+               hinge.SetMaxMotorTorque (mEditorWorld.GetCoordinateSystem ().P2D_Torque (jointParams.mMaxMotorTorque));
                //<<
             }
             else if (entity is SubEntitySliderAnchor)
@@ -3530,7 +3580,7 @@ package editor {
                slider.mBackAndForth = jointParams.mBackAndForth;
                
                //>>from v1.04
-               slider.mMaxMotorForce = mEditorWorld.GetCoordinateSystem ().P2D_ForceMagnitude (jointParams.mMaxMotorForce);
+               slider.SetMaxMotorForce (mEditorWorld.GetCoordinateSystem ().P2D_ForceMagnitude (jointParams.mMaxMotorForce));
                //<<
             }
             else if (entity is SubEntitySpringAnchor)
@@ -3558,33 +3608,6 @@ package editor {
             
             jointAnchor.GetMainEntity ().UpdateAppearance ();
             jointAnchor.UpdateSelectionProxy ();
-         }
-         else if (entity is EntityLogic)
-         {
-            var code_snippet:CodeSnippet;
-            
-            if (entity is EntityBasicCondition)
-            {
-               var condition:EntityBasicCondition = entity as EntityBasicCondition;
-               
-               condition.SetCodeSnippetName (params.mCodeSnippetName);
-               
-               code_snippet = condition.GetCodeSnippet ();
-               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               
-               condition.UpdateAppearance ();
-               condition.UpdateSelectionProxy ();
-            }
-            else if (entity is EntityEventHandler)
-            {
-               var event_handler:EntityEventHandler = entity as EntityEventHandler;
-               
-               code_snippet = event_handler.GetCodeSnippet ();
-               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               
-               event_handler.UpdateAppearance ();
-               event_handler.UpdateSelectionProxy ();
-            }
          }
          
          CreateUndoPoint ();
@@ -3696,8 +3719,6 @@ package editor {
             var cm:CollisionManager = newWorld.GetCollisionManager ();
             var ccId:int;
             numEntities = newWorld.GetNumEntities ();
-            
-            trace ("numEntities = " + numEntities);
             
             for (i = 0; i < numEntities; ++ i)
             {

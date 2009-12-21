@@ -116,9 +116,10 @@ package player.entity {
          if (mShape != null)
             mRotation = mShape.mRotation + mRelativeRotation;
          
-         mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
-         mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
-         mAnchorShape.rotation = mRotation * Define.kRadians2Degrees;
+         // the parent joint will update the positon of this anchor
+         //mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
+         //mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
+         mAnchorShape.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotation * Define.kRadians2Degrees);
          
          mAnchorShape.visible = mVisible;
          mAnchorShape.alpha = mAlpha;

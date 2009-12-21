@@ -239,8 +239,8 @@ package editor.trigger {
          var numberDetail:int;
          for (i = 0; i < numInputs; ++ i)
          {
-            valueType = mFunctionDeclaration.GetInputValueType (i);
             source = mInputValueSources [i] as ValueSource;
+            valueType = mFunctionDeclaration.GetInputValueType (i);
             
             if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
             {

@@ -675,7 +675,6 @@ public function SolveTOI(step:b2TimeStep):void
 					toi = Math.min((1.0 - toi) * t0 + toi, 1.0);
 				}
 
-
 				c.m_toi = toi;
 				c.m_flags |= b2Contact.e_toiFlag;
 			}

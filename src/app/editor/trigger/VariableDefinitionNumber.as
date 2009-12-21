@@ -72,15 +72,9 @@ package editor.trigger {
          {
             var text_input:TextInput = control as TextInput;
             
-         trace ("text_input.text = " + text_input.text);
-            
             var value:Number = parseFloat (text_input.text);
             
-         trace ("value = " + value);
-            
             value = ValidateValue (value);
-            
-         trace ("value = " + value);
             
             valueSourceDirect.SetValueObject (value);
          }

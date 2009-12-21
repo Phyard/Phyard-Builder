@@ -145,7 +145,7 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 
 		// Compute 1D root of: f(x) - target = 0
 		var newAlpha:Number = alpha;
-//		{
+		{
 			var x1:Number = alpha, x2:Number = 1.0;
 
 			var f1:Number = separation;
@@ -211,7 +211,7 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 			}
 
 			b2_toiMaxRootIters = b2Math.b2Max_int (b2_toiMaxRootIters, rootIterCount);
-//		}
+		}
 
 		// Ensure significant advancement.
 		if (newAlpha < (1.0 + 100.0 * b2Settings.b2_epsilon) * alpha)

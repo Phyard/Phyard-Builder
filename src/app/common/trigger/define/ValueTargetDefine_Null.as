@@ -10,6 +10,11 @@ package common.trigger.define
       {
          super (ValueTargetTypeDefine.ValueTarget_Null);
       }
+      
+      override public function Clone ():ValueTargetDefine
+      {
+         return new ValueTargetDefine_Null ();
+      }
    }
    
 }

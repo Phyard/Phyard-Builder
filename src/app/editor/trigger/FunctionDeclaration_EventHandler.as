@@ -4,6 +4,7 @@ package editor.trigger {
    //import flash.utils.Dictionary;
    
    import common.trigger.FunctionTypeDefine;
+   import common.trigger.CoreEventDeclarations;
    
    // todo: change name to FunctionDeclaration_EventHandler
    public class FunctionDeclaration_EventHandler extends FunctionDeclaration
@@ -13,7 +14,7 @@ package editor.trigger {
       {
          super (id, name, paramDefines, description);
          
-         if ( ! CheckConsistent (TriggerEngine.GetCoreEventHandlerDeclarationById (id) ) )
+         if ( ! CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id) ) )
             throw new Error ("not consistent!");
       }
       

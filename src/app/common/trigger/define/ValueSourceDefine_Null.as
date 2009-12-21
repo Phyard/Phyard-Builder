@@ -12,6 +12,11 @@ package common.trigger.define
       {
          super (ValueSourceTypeDefine.ValueSource_Null);
       }
+      
+      override public function Clone ():ValueSourceDefine
+      {
+         return new ValueSourceDefine_Null ();
+      }
    }
    
 }

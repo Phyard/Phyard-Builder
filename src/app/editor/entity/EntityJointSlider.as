@@ -10,13 +10,10 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   
-   
    import common.Define;
    
    public class EntityJointSlider extends EntityJoint 
    {
-      
       public var mAnchor1:SubEntitySliderAnchor;
       public var mAnchor2:SubEntitySliderAnchor;
       
@@ -27,7 +24,7 @@ package editor.entity {
       public var mMotorSpeed:Number = Define.DefaultSliderMotorSpeed;
       public var mBackAndForth:Boolean = true;
       
-      public var mMaxMotorForce:Number = Define.DefaultSliderMotorForce; // v1.04
+      protected var mMaxMotorForce:Number = Define.DefaultSliderMotorForce; // v1.04
       
       private var mRangeBarHalfHeight:Number = 3;
       
@@ -62,11 +59,6 @@ package editor.entity {
       
       public function SetLimits (lower:Number, upper:Number):void
       {
-         if (lower > 0)
-            lower = 0.0;
-         if (upper < 0)
-            upper = 0.0;
-         
          mLowerTranslation = lower;
          mUpperTranslation = upper;
          
@@ -77,9 +69,20 @@ package editor.entity {
       {
          return mLowerTranslation;
       }
+      
       public function GetUpperLimit ():Number
       {
          return mUpperTranslation;
+      }
+      
+      public function SetMaxMotorForce (maxMotorForce:Number):void
+      {
+         mMaxMotorForce = maxMotorForce;
+      }
+      
+      public function GetMaxMotorForce ():Number
+      {
+         return mMaxMotorForce;
       }
       
       override public function Destroy ():void

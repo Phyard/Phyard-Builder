@@ -28,11 +28,6 @@ package editor.entity {
          return "Spring Anchor";
       }
       
-      override public function GetInfoText ():String
-      {
-         return "x: " + GetPositionX () + ", y = " + GetPositionY ();
-      }
-      
       override public function UpdateAppearance ():void
       {
          var borderColor:uint;

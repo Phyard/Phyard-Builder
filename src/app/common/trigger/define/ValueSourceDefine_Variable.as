@@ -19,6 +19,10 @@ package common.trigger.define
          mVariableIndex = variableIndex;
       }
       
+      override public function Clone ():ValueSourceDefine
+      {
+         return new ValueSourceDefine_Variable (mSpaceType, mSpaceType);
+      }
    }
    
 }

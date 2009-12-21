@@ -7,8 +7,15 @@ package common.trigger {
       
       public static var sEventHandlerDeclarations:Array = new Array (CoreEventIds.NumEventTypes);
       
+      private static var mInitialized:Boolean = false;
+      
       public static function Initialize ():void
       {
+         if (mInitialized)
+            return;
+         
+         mInitialized = true;
+         
       // functions
          
          RegisterEventDeclatation (CoreEventIds.ID_OnLevelBeginInitialize,
@@ -92,6 +99,17 @@ package common.trigger {
          var func_decl:FunctionDeclaration = new FunctionDeclaration (eventId, paramValueTypes);
          
          sEventHandlerDeclarations [eventId] = func_decl;
+      }
+      
+      public static function GetCoreEventHandlerDeclarationById (eventId:int):FunctionDeclaration
+      {
+         if (eventId < 0 || eventId >= CoreEventIds.NumEventTypes)
+            return null;
+         
+         if (! mInitialized)
+            Initialize ();
+         
+         return sEventHandlerDeclarations [eventId];
       }
       
    }

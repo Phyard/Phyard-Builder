@@ -126,7 +126,7 @@ package player.world {
          
          // these values are in pixel unit
          
-         if (worldDefine.mSettings.mIsInfiniteSceneSize)
+         if (worldDefine.mSettings.mIsInfiniteWorldSize)
          {
             mWorldLeft   = - 0x7FFFFFFF;
             mWorldTop    = - 0x7FFFFFFF;
@@ -172,7 +172,7 @@ package player.world {
          mCoordinateSystem = new CoordinateSystem (worldDefine.mSettings.mCoordinatesOriginX, worldDefine.mSettings.mCoordinatesOriginY, coordinates_scale, worldDefine.mSettings.mRightHandCoordinates);
          
          mDefaultGravityAccelerationMagnitude = mCoordinateSystem.D2P_LinearAccelerationMagnitude (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
-         mDefaultGravityAccelerationAngle = mCoordinateSystem.D2P_Rotation (worldDefine.mSettings.mDefaultGravityAccelerationAngle * Define.kDegrees2Radians);
+         mDefaultGravityAccelerationAngle = mCoordinateSystem.D2P_RotationRadians (worldDefine.mSettings.mDefaultGravityAccelerationAngle * Define.kDegrees2Radians);
          
          CreatePhysicsEngine ();
          

@@ -86,7 +86,7 @@ package common {
             //<<
             
             //>>from v1.08
-            worldDefine.mSettings.mIsInfiniteSceneSize = editorWorld.IsInfiniteSceneSize ();
+            worldDefine.mSettings.mIsInfiniteWorldSize = editorWorld.IsInfiniteSceneSize ();
             
             worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = editorWorld.GetDefaultGravityAccelerationMagnitude ();
             worldDefine.mSettings.mDefaultGravityAccelerationAngle     = editorWorld.GetDefaultGravityAccelerationAngle ();
@@ -387,7 +387,7 @@ package common {
                   entityDefine.mBackAndForth = hinge.mBackAndForth;
                   
                   //>>from v1.04
-                  entityDefine.mMaxMotorTorque = hinge.mMaxMotorTorque;
+                  entityDefine.mMaxMotorTorque = hinge.GetMaxMotorTorque ();
                   //<<
                }
                else if (editorEntity is editor.entity.EntityJointSlider)
@@ -406,7 +406,7 @@ package common {
                   entityDefine.mBackAndForth = slider.mBackAndForth;
                   
                   //>>from v1.04
-                  entityDefine.mMaxMotorForce = slider.mMaxMotorForce;
+                  entityDefine.mMaxMotorForce = slider.GetMaxMotorForce ();
                   //<<
                }
                else if (editorEntity is editor.entity.EntityJointDistance)
@@ -846,7 +846,7 @@ package common {
                   hinge.mBackAndForth = entityDefine.mBackAndForth;
                   
                   //>>v1.04
-                  hinge.mMaxMotorTorque = entityDefine.mMaxMotorTorque;
+                  hinge.SetMaxMotorTorque (entityDefine.mMaxMotorTorque);
                   //<<
                   
                   entity = joint = hinge;
@@ -869,7 +869,7 @@ package common {
                   slider.mBackAndForth = entityDefine.mBackAndForth;
                   
                   //>>v1.04
-                  slider.mMaxMotorForce = entityDefine.mMaxMotorForce;
+                  slider.SetMaxMotorForce (entityDefine.mMaxMotorForce);
                   //<<
                   
                   entity = joint = slider;

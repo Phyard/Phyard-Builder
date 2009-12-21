@@ -131,7 +131,7 @@ package editor.world {
       private var mPermitPublishing:Boolean = false;
       
       // display values, pixles
-      private var mInfiniteScaneSize:Boolean = false;
+      private var mInfiniteWorldSize:Boolean = false;
       
       private var mWorldLeft:int = 0;
       private var mWorldTop:int = 0;
@@ -384,12 +384,12 @@ package editor.world {
       
       public function SetInfiniteScaneSize (infinite:Boolean):void
       {
-         mInfiniteScaneSize = infinite;
+         mInfiniteWorldSize = infinite;
       }
       
       public function IsInfiniteSceneSize ():Boolean
       {
-         return mInfiniteScaneSize;
+         return mInfiniteWorldSize;
       }
       
       public function SetCiRulesEnabled (enabled:Boolean):void

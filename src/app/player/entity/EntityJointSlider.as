@@ -32,10 +32,11 @@ package player.entity {
          {
             if (entityDefine.mEnableLimits != undefined)
                SetEnableLimits (entityDefine.mEnableLimits);
-            if (entityDefine.mLowerTranslation != undefined)
-               SetLowerTranslation (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mLowerTranslation));
-            if (entityDefine.mUpperTranslation != undefined)
-               SetUpperTranslation (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mUpperTranslation));
+            if (entityDefine.mLowerTranslation != undefined && entityDefine.mUpperTranslation != undefined)
+            {
+               SetTranslationLimits (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mLowerTranslation), 
+                                    mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mUpperTranslation));
+            }
             if (entityDefine.mEnableMotor != undefined)
                SetEnableMotor (entityDefine.mEnableMotor);
             if (entityDefine.mMotorSpeed != undefined)
@@ -59,14 +60,18 @@ package player.entity {
       protected var mBackAndForth:Boolean = false;
       protected var mMaxMotorForce:Number = 100000000;
       
-      public function SetLowerTranslation (translation:Number):void
+      public function SetTranslationLimits (lowerTranslation:Number, upperTranslation:Number):void
       {
-         mLowerTranslation = translation;
-      }
-      
-      public function SetUpperTranslation (translation:Number):void
-      {
-         mUpperTranslation = translation;
+         if (lowerTranslation < upperTranslation)
+         {
+            mLowerTranslation = lowerTranslation;
+            mUpperTranslation = upperTranslation;
+         }
+         else
+         {
+            mLowerTranslation = upperTranslation;
+            mUpperTranslation = lowerTranslation;
+         }
       }
       
       public function SetEnableLimits (enableLimits:Boolean):void
@@ -91,6 +96,9 @@ package player.entity {
       
       public function SetMaxMotorForce (maxForce:Number):void
       {
+         if (maxForce < 0)
+            maxForce = 0.0;
+         
          mMaxMotorForce = maxForce;
       }
       

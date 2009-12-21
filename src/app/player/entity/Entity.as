@@ -59,7 +59,7 @@ package player.entity {
             if (entityDefine.mPosY != undefined)
                SetPositionY (mWorld.GetCoordinateSystem ().D2P_PositionY (entityDefine.mPosY));
             if (entityDefine.mRotation != undefined)
-               SetRotation  (mWorld.GetCoordinateSystem ().D2P_Rotation (entityDefine.mRotation));
+               SetRotation  (mWorld.GetCoordinateSystem ().D2P_RotationRadians (entityDefine.mRotation));
             if (entityDefine.mIsVisible != undefined)
                SetVisible   (entityDefine.mIsVisible);
             if (entityDefine.mAlpha != undefined)

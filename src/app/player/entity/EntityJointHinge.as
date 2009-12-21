@@ -30,14 +30,15 @@ package player.entity {
          {
             if (entityDefine.mEnableLimits != undefined)
                SetEnableLimits (entityDefine.mEnableLimits);
-            if (entityDefine.mLowerAngle != undefined)
-               SetLowerAngle (entityDefine.mLowerAngle * Define.kDegrees2Radians);
-            if (entityDefine.mUpperAngle != undefined)
-               SetUpperAngle (entityDefine.mUpperAngle * Define.kDegrees2Radians);
+            if (entityDefine.mLowerAngle != undefined && entityDefine.mUpperAngle != undefined)
+            {
+               SetAngleLimits (mWorld.GetCoordinateSystem ().D2P_RotationDegrees (entityDefine.mLowerAngle) * Define.kDegrees2Radians, 
+                               mWorld.GetCoordinateSystem ().D2P_RotationDegrees (entityDefine.mUpperAngle) * Define.kDegrees2Radians);
+            }
             if (entityDefine.mEnableMotor != undefined)
                SetEnableMotor (entityDefine.mEnableMotor);
             if (entityDefine.mMotorSpeed != undefined)
-               SetMotorSpeed (entityDefine.mMotorSpeed * Define.kDegrees2Radians);
+               SetMotorSpeed (mWorld.GetCoordinateSystem ().D2P_AngularVelocity (entityDefine.mMotorSpeed * Define.kDegrees2Radians));
             if (entityDefine.mBackAndForth != undefined)
                SetBackAndForth (entityDefine.mBackAndForth);
             if (entityDefine.mMaxMotorTorque != undefined)
@@ -57,19 +58,18 @@ package player.entity {
       protected var mBackAndForth:Boolean = false;
       protected var mMaxMotorTorque:Number = 10000000;
       
-      public function SetLowerAngle (angle:Number):void
+      public function SetAngleLimits (lowerAngle:Number, upperAngle:Number):void
       {
-         mLowerAngle = angle;
-      }
-      
-      public function GetLowerAngle ():Number
-      {
-         return mLowerAngle;
-      }
-      
-      public function SetUpperAngle (angle:Number):void
-      {
-         mUpperAngle = angle;
+         if (lowerAngle < upperAngle)
+         {
+            mLowerAngle = lowerAngle;
+            mUpperAngle = upperAngle;
+         }
+         else
+         {
+            mLowerAngle = upperAngle;
+            mUpperAngle = lowerAngle;
+         }
       }
       
       public function GetUpperAngle ():Number
@@ -109,6 +109,9 @@ package player.entity {
       
       public function SetMaxMotorTorque (maxTorque:Number):void
       {
+         if (maxTorque < 0)
+            maxTorque = 0.0;
+         
          mMaxMotorTorque = maxTorque;
       }
       

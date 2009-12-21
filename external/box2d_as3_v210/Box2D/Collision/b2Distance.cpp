@@ -84,8 +84,8 @@ public static function b2Distance_(output:b2DistanceOutput,
 {
 	++b2_gjkCalls;
 
-	const proxyA:b2DistanceProxy = input.proxyA; // .Clone ()
-	const proxyB:b2DistanceProxy = input.proxyB; // .Clone (0
+	const proxyA:b2DistanceProxy = input.proxyA; //.Clone ();
+	const proxyB:b2DistanceProxy = input.proxyB; //.Clone ();
 
 	var transformA:b2Transform = input.transformA.Clone ();
 	var transformB:b2Transform = input.transformB.Clone ();
@@ -120,7 +120,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 			//saveA[i] = vertices[i].indexA;
 			//saveB[i] = vertices[i].indexB;
 			saveA[i] = simplex.GetSimplexVertex (i).indexA;
-			saveA[i] = simplex.GetSimplexVertex (i).indexB;
+			saveB[i] = simplex.GetSimplexVertex (i).indexB;
 		}
 
 		switch (simplex.m_count)
@@ -229,7 +229,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 	if (input.useRadii)
 	{
 		var rA:Number = proxyA.m_radius;
-		var rB :Number= proxyB.m_radius;
+		var rB:Number = proxyB.m_radius;
 
 		if (output.distance > rA + rB && output.distance > b2Settings.b2_epsilon)
 		{

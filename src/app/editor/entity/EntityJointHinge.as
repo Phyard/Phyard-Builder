@@ -28,7 +28,7 @@ package editor.entity {
       public var mMotorSpeed:Number = Define.DefaultHingeMotorSpeed;
       public var mBackAndForth:Boolean = false;
       
-      public var mMaxMotorTorque:Number = Define.DefaultHingeMotorTorque; // v1.04
+      protected var mMaxMotorTorque:Number = Define.DefaultHingeMotorTorque; // v1.04
       
       public function EntityJointHinge (world:World)
       {
@@ -55,13 +55,16 @@ package editor.entity {
       
       public function SetLimits (lower:Number, upper:Number):void
       {
-         if (lower > 0)
-            lower = 0.0;
-         if (upper < 0)
-            upper = 0.0;
-         
-         mLowerAngle = ValueAdjuster.AdjustSliderTranslation (lower, Config.VersionNumber);
-         mUpperAngle = ValueAdjuster.AdjustSliderTranslation (upper, Config.VersionNumber);
+         if (lower < upper)
+         {
+            mLowerAngle = lower;
+            mUpperAngle = upper;
+         }
+         else
+         {
+            mLowerAngle = upper;
+            mUpperAngle = lower;
+         }
          
          UpdateAppearance ();
       }
@@ -70,11 +73,24 @@ package editor.entity {
       {
          return mLowerAngle;
       }
+      
       public function GetUpperLimit ():Number
       {
          return mUpperAngle;
       }
       
+      public function GetMaxMotorTorque ():Number
+      {
+         return mMaxMotorTorque;
+      }
+      
+      public function SetMaxMotorTorque (maxMotorTorque:Number):void
+      {
+         if (maxMotorTorque < 0)
+            maxMotorTorque = 0.0;
+         
+         mMaxMotorTorque = maxMotorTorque;
+      }
       
       override public function Destroy ():void
       {

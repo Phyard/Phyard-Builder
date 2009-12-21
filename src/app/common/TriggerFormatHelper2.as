@@ -28,6 +28,7 @@ package common {
    
    import common.trigger.CoreFunctionIds;
    import common.trigger.FunctionDeclaration;
+   import common.trigger.CoreFunctionDeclarations;
    
    import common.trigger.FunctionTypeDefine;
    import common.trigger.ValueSourceTypeDefine;
@@ -77,8 +78,8 @@ package common {
          if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
             var function_id:int = funcCallingDefine.mFunctionId;
-            var core_func_definition:FunctionDefinition_Core = TriggerEngine.GetCoreFunctionDefinition (function_id);
-            var core_func_declaration:FunctionDeclaration = core_func_definition.GetFunctionDeclaration ();
+            var core_func_definition:FunctionDefinition = TriggerEngine.GetCoreFunctionDefinition (function_id);
+            var core_func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (function_id);
             
             var value_source_list:ValueSource = null;
             var value_source:ValueSource;
@@ -295,11 +296,31 @@ package common {
       
       public static function ByteArray2ValueSourceDefine (byteArray:ByteArray):ValueSourceDefine
       {
+         //case ValueTypeDefine.ValueType_Number:
+         //{
+         //   number_value = ;
+         //   switch ()
+         //   {
+         //      case ValueTypeDefine.NumberTypeDetail_Integer:
+         //         writeInt ( int(number_value & 0xFFFFFFFF) );
+         //   }
+         //}
+         
          return null;
       }
       
       public static function ByteArray2ValueTargetDefine (byteArray:ByteArray):ValueTargetDefine
       {
+         //case ValueTypeDefine.ValueType_Number:
+         //{
+         //   number_value = ;
+         //   switch ()
+         //   {
+         //      case ValueTypeDefine.NumberTypeDetail_Integer:
+         //         writeInt ( int(number_value & 0xFFFFFFFF) );
+         //   }
+         //}
+         
          return null;
       }
       
@@ -325,7 +346,7 @@ package common {
       
       public static function FunctionCallingDefine2Xml (funcCallingDefine:FunctionCallingDefine):XML
       {
-         var func_declaration:FunctionDeclaration = TriggerEngine.GetCoreFunctionDeclaration (funcCallingDefine.mFunctionId);
+         var func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (funcCallingDefine.mFunctionId);
          
          var elementFunctionCalling:XML = <FunctionCalling />;
          
@@ -428,16 +449,66 @@ package common {
 //========================================================================================
       
       // float -> 6 precisions, double -> 12 precisions
-      //public static function AdjustNumberPrecisionsInCodeSnippet (codeSnippet:CodeSnippet):void
-      //{
-      //   codeSnippet.AdjustNumberPrecisions ();
-      //}
+      public static function AdjustNumberPrecisionsInCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
+      {
+         var funcCallingDefine:FunctionCallingDefine;
+         var i:int;
+         var numCallings:int = codeSnippetDefine.mNumCallings;
+         for (i = 0; i < numCallings; ++ i)
+         {
+            funcCallingDefine = codeSnippetDefine.mFunctionCallingDefines [i];
+            
+            if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
+            {
+               var functionId:int = funcCallingDefine.mFunctionId;
+               var funcDclaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
+               
+               var sourceDefine:ValueSourceDefine;
+               var direcSourceDefine:ValueSourceDefine_Direct;
+               var sourceValueType:int;
+               var directNumber:Number;
+               var numberDetail:int;
+               var numInputs:int = funcCallingDefine.mNumInputs;
+               var j:int;
+               for (j = 0; j < numInputs; ++ j)
+               {
+                  sourceDefine = funcCallingDefine.mInputValueSourceDefines [j];
+                  sourceValueType = sourceDefine.GetValueSourceType ();
+                  
+                  if (sourceValueType == ValueTypeDefine.ValueType_Number && sourceDefine is ValueSourceDefine_Direct)
+                  {
+                     direcSourceDefine = sourceDefine as ValueSourceDefine_Direct;
+                     directNumber = Number (direcSourceDefine.mValueObject);
+                     numberDetail = funcDclaration.GetInputNumberTypeDetail (j);
+                     
+                     switch (numberDetail)
+                     {
+                        case ValueTypeDefine.NumberTypeDetail_Single:
+                           directNumber = ValueAdjuster.Number2Precision (directNumber, 6);
+                           break;
+                        case ValueTypeDefine.NumberTypeDetail_Integer:
+                           directNumber = Math.round (directNumber);
+                           break;
+                        case ValueTypeDefine.NumberTypeDetail_Double:
+                        default:
+                           directNumber = ValueAdjuster.Number2Precision (directNumber, 12);
+                           break;
+                     }
+                     
+                     direcSourceDefine.mValueObject = directNumber;
+                  }
+               }
+            }
+            else
+            {
+            }
+         }
+      }
       
-      // float -> 6 precisions, double -> 12 precisions
-      //public static function AdjustNumberPrecisionsInCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
-      //{
-      //   
-      //}
-      
+      // it is possible some new parameters are appended in a newer version for some functions
+      public static function FillMissedFieldsInWorldDefine (codeSnippetDefine:CodeSnippetDefine):void
+      {
+         
+      }
    }
 }

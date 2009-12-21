@@ -67,10 +67,6 @@ package player.entity {
                mFrequencyHz = mFrequency;
             else
                mFrequencyHz = params.mFrequencyHz;
-            
-            trace ("mFrequencyHz = " + mFrequencyHz);
-            trace ("mFrequency = " + mFrequency);
-            trace ("params.mFrequencyHz = " + params.mFrequencyHz);
          }
       }
       
@@ -90,7 +86,7 @@ package player.entity {
       protected var mFrequency:Number = 0.0;
       //protected var mCustomSpringConstant:Number = 0.0;
       
-      protected var mBreakExtendedLength:Number;
+      protected var mBreakExtendedLength:Number = 0.0;
       //<<
       
       public function SetSpringType (type:int):void

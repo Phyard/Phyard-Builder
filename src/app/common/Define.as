@@ -85,7 +85,7 @@ package common {
 // shaoe common
 //===========================================================================
       
-      public static const DefaultShapeDensity:Number = 2700;
+      public static const DefaultShapeDensity:Number = 5; // 2700; // 2700 is the density of stone and glass
       
 //===========================================================================
 // rect

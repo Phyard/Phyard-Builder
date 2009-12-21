@@ -349,7 +349,7 @@ public function SolveVelocityConstraints():void
 			P.Set (lambda * normal.x, lambda * normal.y);
 			//vA -= invMassA * P;
 			vA.x -= invMassA * P.x;
-			vA.y-= invMassA * P.y;
+			vA.y -= invMassA * P.y;
 			wA -= invIA * b2Math.b2Cross2 (ccp.rA, P);
 
 			//vB += invMassB * P;
@@ -780,7 +780,6 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 			var impulse:Number = -ccp.equalizedMass * C;
 
 			P.Set (impulse * normal.x, impulse * normal.y);
-
 			//bodyA->m_sweep.c -= invMassA * P;
 			rC = bodyA.m_sweep.c;
 			rC.x -= invMassA * P.x;

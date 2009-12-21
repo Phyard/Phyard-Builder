@@ -53,11 +53,15 @@ package player.entity {
             if (entityDefine.mInteractiveConditions != undefined)
                mInteractiveConditions = entityDefine.mInteractiveConditions;
             if (entityDefine.mMaximalGravityAcceleration != null)
+            {
                mMaximalGravityAcceleration = mWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (entityDefine.mMaximalGravityAcceleration);
+               if (mMaximalGravityAcceleration < 0)
+                  mMaximalGravityAcceleration = -mMaximalGravityAcceleration;
+            }
             if (entityDefine.mInitialGravityAcceleration != null)
                mGravityAcceleration = mWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
             if (entityDefine.mInitialGravityAngle != undefined)
-               mGravityAngle = entityDefine.mInitialGravityAngle * Define.kDegrees2Radians;
+               mGravityAngle = mWorld.GetCoordinateSystem ().D2P_RotationRadians (entityDefine.mInitialGravityAngle * Define.kDegrees2Radians);
          }
          else if (createStageId == 2)
          {

@@ -23,6 +23,7 @@ package player.trigger {
    import common.trigger.ValueTypeDefine;
    import common.trigger.CoreFunctionIds;
    import common.trigger.FunctionDeclaration;
+   import common.trigger.CoreFunctionDeclarations;
    
    import common.Define;
    
@@ -227,7 +228,7 @@ package player.trigger {
          if (functionId < 0 || functionId >= CoreFunctionIds.NumPlayerFunctions)
             return;
          
-         var func_decl:FunctionDeclaration = TriggerEngine.GetCoreFunctionDeclaration (functionId);
+         var func_decl:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
          
          sCoreFunctionDefinitions [functionId] = new FunctionDefinition_Core (func_decl, callback);
       }

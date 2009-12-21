@@ -11,6 +11,7 @@ package player.trigger.entity
    import common.trigger.define.CodeSnippetDefine;
    
    import common.trigger.CoreEventIds;
+   import common.trigger.CoreEventDeclarations;
    
    public class EntityEventHandler extends EntityLogic
    {
@@ -37,11 +38,15 @@ package player.trigger.entity
          {
             if (entityDefine.mEventId != undefined)
             {
-               mEventHandlerDefinition = new FunctionDefinition_Logic (TriggerEngine.GetCoreEventHandlerDeclarationById (entityDefine.mEventId));
+               mEventHandlerDefinition = new FunctionDefinition_Logic (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (entityDefine.mEventId));
                
                // code snippets
                if (entityDefine.mCodeSnippetDefine != undefined)
-                  mEventHandlerDefinition.SetCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
+               {
+                  var codeSnippetDefine:CodeSnippetDefine = entityDefine.mCodeSnippetDefine.Clone ();
+                  codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
+                  mEventHandlerDefinition.SetCodeSnippetDefine (codeSnippetDefine);
+               }
             }
             
             // external condition

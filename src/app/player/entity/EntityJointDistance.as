@@ -45,7 +45,7 @@ package player.entity {
 //   
 //=============================================================
       
-      protected var mBreakDeltaLength:Number;
+      protected var mBreakDeltaLength:Number = 0.0;
       
       public function SetBreakDeltaLength (dLength:Number):void
       {

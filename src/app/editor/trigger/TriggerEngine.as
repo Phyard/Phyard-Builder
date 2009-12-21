@@ -110,22 +110,6 @@ package editor.trigger {
          return PlayerFunctionDefinesForEditing.sCoreApiMenuItemXML;
       }
       
-      public static function GetCoreFunctionDeclaration (functionId:int):common.trigger.FunctionDeclaration
-      {
-         if (functionId < 0 || functionId >= CoreFunctionIds.NumPlayerFunctions)
-            return null;
-         
-         return CoreFunctionDeclarations.sCoreFunctionDeclarations [functionId];
-      }
-      
-      public static function GetCoreEventHandlerDeclarationById (eventId:int):common.trigger.FunctionDeclaration
-      {
-         if (eventId < 0 || eventId >= CoreEventIds.NumEventTypes)
-            return null;
-         
-         return CoreEventDeclarations.sEventHandlerDeclarations [eventId];
-      }
-      
       public static function GetBoolFunctionDeclaration ():FunctionDeclaration_Core
       {
          return new FunctionDeclaration_Core (

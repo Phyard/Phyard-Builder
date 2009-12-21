@@ -55,22 +55,6 @@ package player.trigger
          return CoreFunctionDefinitions.sCoreFunctionDefinitions [functionId];
       }
       
-      public static function GetCoreFunctionDeclaration (functionId:int):FunctionDeclaration
-      {
-         if (functionId < 0 || functionId >= CoreFunctionIds.NumPlayerFunctions)
-            return null;
-         
-         return CoreFunctionDeclarations.sCoreFunctionDeclarations [functionId];
-      }
-      
-      public static function GetCoreEventHandlerDeclarationById (eventId:int):FunctionDeclaration
-      {
-         if (eventId < 0 || eventId >= CoreEventIds.NumEventTypes)
-            return null;
-         
-         return CoreEventDeclarations.sEventHandlerDeclarations [eventId];
-      }
-      
       //public static function GetVoidFunctionDeclaration ():FunctionDeclaration
       //{
       //   return new FunctionDeclaration (CoreFunctionIds.ID_Void, null);

@@ -16,6 +16,11 @@ package common.trigger.define
          mSpaceType = spaceType;
          mVariableIndex = variableIndex;
       }
+      
+      override public function Clone ():ValueTargetDefine
+      {
+         return new ValueTargetDefine_Variable (mSpaceType, mVariableIndex);
+      }
    }
    
 }

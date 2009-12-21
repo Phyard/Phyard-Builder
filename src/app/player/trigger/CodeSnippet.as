@@ -23,31 +23,5 @@ package player.trigger
          }
       }
       
-//====================================================================
-//
-//====================================================================
-      
-      public function DisplayValues2PhysicsValues (coordinateSystem:CoordinateSystem):void
-      {
-         var calling:FunctionCalling = mFirstFunctionCalling;
-         
-         while (calling != null)
-         {
-            calling.DisplayValues2PhysicsValues (coordinateSystem);
-            calling = calling.mNextFunctionCalling;
-         }
-      }
-      
-      public function PhysicsValues2DisplayValues (coordinateSystem:CoordinateSystem):void
-      {
-         var calling:FunctionCalling = mFirstFunctionCalling;
-         
-         while (calling != null)
-         {
-            calling.PhysicsValues2DisplayValues (coordinateSystem);
-            calling = calling.mNextFunctionCalling;
-         }
-      }
-      
    }
 }

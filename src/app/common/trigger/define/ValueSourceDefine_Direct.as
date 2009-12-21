@@ -19,6 +19,10 @@ package common.trigger.define
          mValueObject = valueObject;
       }
       
+      override public function Clone ():ValueSourceDefine
+      {
+         return new ValueSourceDefine_Direct (mValueType, mValueObject);
+      }
    }
    
 }

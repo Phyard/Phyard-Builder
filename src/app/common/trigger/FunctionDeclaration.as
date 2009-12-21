@@ -39,20 +39,24 @@ package common.trigger
       
       public function GetInputNumberTypeDetail (inputId:int):int
       {
-         var valueType:int = GetInputValueType (inputId);
-         if (valueType != ValueTypeDefine.ValueType_Number)
+         if (mInputValueTypes == null)
             return ValueTypeDefine.NumberTypeDetail_Double;
          
-         return valueType & ValueTypeDefine.NumberTypeMask_Detail;
+         if (inputId < 0 || inputId >= mInputValueTypes.length)
+            return ValueTypeDefine.NumberTypeDetail_Double;
+         
+         return  mInputValueTypes [inputId] & ValueTypeDefine.NumberTypeMask_Detail;
       }
       
       public function GetInputNumberTypeUsage (inputId:int):int
       {
-         var valueType:int = GetInputValueType (inputId);
-         if (valueType != ValueTypeDefine.ValueType_Number)
+         if (mInputValueTypes == null)
             return ValueTypeDefine.NumberTypeUsage_General;
          
-         return valueType & ValueTypeDefine.NumberTypeMask_Usage;
+         if (inputId < 0 || inputId >= mInputValueTypes.length)
+            return ValueTypeDefine.NumberTypeUsage_General;
+         
+         return mInputValueTypes [inputId] & ValueTypeDefine.NumberTypeMask_Usage;
       }
       
       public function GetNumOutputs ():int

@@ -575,6 +575,13 @@ package player.entity {
 //   destroy
 //=============================================================
       
+      override public function DestroyEntity ():void
+      {
+         super.DestroyEntity ();
+         
+         mBody.OnPhysicsShapeListChanged (IsPhysicsShape ());
+      }
+      
       override protected function DestroyInternal ():void
       {
          mWorld.UnregisterShapeAiType (mOriginalAiType, mAiType);
@@ -675,7 +682,7 @@ package player.entity {
          return mBody;
       }
       
-      public function SetBody (body:EntityBody):void
+      internal function SetBody (body:EntityBody):void
       {
          if (mBody != body)
          {
@@ -689,6 +696,8 @@ package player.entity {
             if (body != null)
             {
                body.AddShape (this);
+               
+               // here not rebuild physics automatically.
             }
             
             UpdatelLocalPosition ();
@@ -766,9 +775,9 @@ package player.entity {
          jointAnchor.mShape = null;
       }
       
-   //----------------------------------------------------
-   //   cos, sin: used by SubEntityJointAnchors
-   //----------------------------------------------------
+//=============================================================
+//   local <-> world, for SubEntityJointAnchors and other general uses
+//=============================================================
      
       internal var mCosRotation:Number = 1.0;
       internal var mSinRotation:Number = 0.0;
@@ -783,6 +792,38 @@ package player.entity {
             mCosRotation = Math.cos (mRotation);
             mSinRotation = Math.sin (mRotation);
          }
+      }
+      
+      internal function LocalPoint2WorldPoint (localX:Number, localY:Number):Point
+      {
+         return new Point (
+               mPositionX + localX *.mCosRotation - localY * mSinRotation,
+               mPositionY + localX * mSinRotation + localY * mCosRotation
+            );
+      }
+      
+      internal function WorldPoint2LocalPoint (worldX:Number, worldlY:Number):Point
+      {
+         return new Point (
+               mPositionX + worldX *.mCosRotation + worldlY * mSinRotation,
+               mPositionY - worldX * mSinRotation + worldlY * mCosRotation
+            );
+      }
+      
+      internal function LocalVector2WorldVector (localVX:Number, localVY:Number):Point
+      {
+         return new Point (
+               localVX *.mCosRotation - localVY * mSinRotation,
+               localVX * mSinRotation + localVY * mCosRotation
+            );
+      }
+      
+      internal function WorldVector2LocalVector (worldVX:Number, worldlVY:Number):Point
+      {
+         return new Point (
+                 worldVX *.mCosRotation + worldlVY * mSinRotation,
+               - worldVX * mSinRotation + worldlVY * mCosRotation
+            );
       }
       
 //=============================================================
@@ -868,11 +909,20 @@ package player.entity {
          
       // ...
          RebuildShapePhysicsInternal ();
+         
+      // ...
+         mProxyShape.UpdateMass ();
       }
 
       protected function RebuildShapePhysicsInternal ():void
       {
          // to override
+      }
+
+      // when detaching, someinfo must be saved
+      internal function SaveShapeStatus ():void
+      {
+         
       }
 
 //=============================================================

@@ -170,3 +170,84 @@ public function MoveTo (targetX:Number, targetY:Number):void
 {
    // todo
 }
+
+//================================================================
+// 
+//================================================================
+
+public function AddLinearImpulseAtPoint (worldLinearImpulse:Number, worldX:Number, worldY:Number):void
+{
+   if (mPhysicsProxy != null)
+   {
+      mBody.mPhysicsProxyBody.AddImpulse (worldLinearImpulse, worldX, worldY);
+   }
+}
+
+public function AddForceImpulseAtPoint (worldForceX:Number, worldForceY:Number, worldX:Number, worldY:Number):void
+{
+   if (mPhysicsProxy != null)
+   {
+      mBody.mPhysicsProxyBody.AddForce (worldLinearImpulse, worldX, worldY);
+   }
+}
+
+public function AddAngularImpulse (angularImpulse:Number):void
+{
+   if (mPhysicsProxy != null)
+   {
+      mBody.mPhysicsProxyBody.AddAngularImpulse (angularImpulse);
+   }
+}
+
+public function AddTorque (torque:Number):void
+{
+   if (mPhysicsProxy != null)
+   {
+      mBody.mPhysicsProxyBody.AddTorque(torque);
+   }
+}
+
+//================================================================
+// 
+//================================================================
+
+public function Detach ():void
+{
+   var oldBody = mBody;
+   SetBody (null);
+   oldBody.OnBodyPhysicsShapeListChanged ();
+   
+   var newBody:EntityBody = new EntityBody ();
+   RegisterEntity (newBody);
+   
+   SetBody (body);
+   
+   // now newBody == mBody
+   newBody.RebuildBodyPhysics ();
+   RebuildShapePhysics ();
+   
+   newBody.OnBodyPhysicsShapeListChanged ();
+}
+
+public function AttachWith (anotherShape:EntityShape):void
+{
+}
+
+public function DetachThenAttachWith (anotherShape:EntityShape):void
+{
+   var newBody:EntityBody = shape.GetBody ();
+   if (shape.GetBody () == mBody)
+      return;
+   
+   var oldBody = mBody;
+   SetBody (null);
+   oldBody.OnBodyPhysicsShapeListChanged ();
+   
+   SetBody (newBody);
+   
+   // now newBody == mBody
+   newBody.RebuildBodyPhysics (); // it is possible newBody has not built phyiscs yet.
+   RebuildShapePhysics ();
+   
+   newBody.OnBodyPhysicsShapeListChanged ();
+}

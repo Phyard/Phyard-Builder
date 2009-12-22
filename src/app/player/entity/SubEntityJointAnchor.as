@@ -78,8 +78,9 @@ package player.entity {
          {
             mShape.UpdateSinCos ();
             
-            mPositionX = mShape.mPositionX + mLocalPositionX * mShape.mCosRotation - mLocalPositionY * mShape.mSinRotation;
-            mPositionY = mShape.mPositionY + mLocalPositionX * mShape.mSinRotation + mLocalPositionY * mShape.mCosRotation;
+            var point:Point = mSshape.LocalPoint2WorldPoint (mLocalPositionX, mLocalPositionY);
+            mPositionX = point.x;
+            mPositionY = point.y;
             mRotation  = mShape.mRotation + mRelativeRotation;
          }
       }
@@ -123,6 +124,12 @@ package player.entity {
          
          mAnchorShape.visible = mVisible;
          mAnchorShape.alpha = mAlpha;
+      }
+      
+      internal function UpdateDisplayObjectPosition ():void
+      {
+         mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
+         mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
       }
       
 //=============================================================

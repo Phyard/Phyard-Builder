@@ -239,8 +239,13 @@ package player.entity {
 //   intialize
 //=============================================================
       
-		protected var mAlreadyInitialized:Boolean = false;
-		
+      protected var mAlreadyInitialized:Boolean = false;
+      
+      public function IsInitializedAlready ():Boolean
+      {
+         return mAlreadyInitialized;
+      }
+      
       final public function Initialize ():void
       {
          if (mAlreadyDestroyed || mAlreadyInitialized) // if is possible an entity initialized before this entity has made this entity destroyed.
@@ -308,8 +313,9 @@ package player.entity {
          return mAlreadyDestroyed;
       }
       
-      // this function is for outer packages
-      final public function DestroyEntity ():void
+      // this function is for outer packages.
+      // EntityShapes overrides this function
+      public function DestroyEntity ():void
       {
          GetMainEntity ().Destroy (); // a main entity must destroy its sub entities
       }

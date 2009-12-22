@@ -20,9 +20,11 @@ public function ParticleManager_Initialize ():void
    mNumBombs = 0;
 }
 
-public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number):void
+public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number, density:Number):void
 {
-   var numParticles:int = 32 * ( 0.5 + radius * 2.0 * radius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength) );
+   var worldDisplayRadius:Number = shape.GetPositionY (), mCoordinateSystem.P2D_Length (radius);
+   
+   var numParticles:int = 32 * ( 0.5 + worldDisplayRadius * 2.0 * worldDisplayRadius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength) );
    
    if (mParticlesToCreate + numParticles > Define.MaxCoexistParticles)
    {
@@ -33,20 +35,20 @@ public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number
    var bomb:Object = new Object ();
    mBombs [mNumBombs ++] = bomb;
    
-   var particleSpeed:Number = 8.0 * ( 0.25 + 1.0 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
-   var particleDensity:Number = 5.0;
-   var particleLifeTime:Number = Define.WorldStepTimeInterval * 18 * ( 0.5 + 1.5 * radius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
+   var particleDisplaySpeed:Number = 8.0 * ( 0.25 + 1.0 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
+   var particleDensity:Number = density;
+   var particleLifeTime:Number = Define.WorldStepTimeInterval * 18 * ( 0.5 + 1.5 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
    
-   if (radius > 12) radius = 12;
-   if (radius < 5 ) radius = 5;
+   if (worldDisplayRadius > 12) worldDisplayRadius = 12;
+   if (worldDisplayRadius < 5 ) worldDisplayRadius = 5;
    
    bomb.mPosX = posX;
    bomb.mPosY = posY;
-   bomb.mRadius = radius;
+   bomb.mRadius = mCoordinateSystem.D2P_Length (worldDisplayRadius);
    
    var minCountEachStep:int = NumParticlesToCreatedEachStep / 2;
    bomb.mNumParticles = int ((numParticles + minCountEachStep - 1) / minCountEachStep) * minCountEachStep;
-   bomb.mParticleSpeed = particleSpeed;
+   bomb.mParticleSpeed = mCoordinateSystem.D2P_LinearVelocityMagnitude (particleDisplaySpeed);
    bomb.mParticelDensity = particleDensity;
    bomb.mParticelLifeDuration = particleLifeTime;
    bomb.mParticleStartIdInterval = GetParticleStartIdInterval (bomb.mNumParticles);
@@ -98,7 +100,7 @@ public function ParticleManager_Update (dt:Number):void
       var sin:Number;
       for (var i:int = 0; i < count; ++ i)
       {
-         angle = particleId * Define.kPI_x_2 / bomb.mNumParticles;
+         angle = mCoordinateSystem.P2D_RotationRadians (particleId * Define.kPI_x_2 / bomb.mNumParticles);
          cos = Math.cos (angle);
          sin = Math.sin (angle);
          
@@ -152,18 +154,23 @@ private function GetParticleStartIdInterval (numParticles:int):int
 
 private function CreateEntityParticle (posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, lifeDuration:Number):EntityShape_Particle
 {
+   var body:EntityBody = new EntityBody (this);
+   RegisterEntity (body);
+   
    var particle:EntityShape_Particle = new EntityShape_Particle (this, lifeDuration);
+   RegisterEntity (particle);
+   
    particle.SetPositionX (posX);
    particle.SetPositionY (posY);
    particle.SetLinearVelocityX (velocityX);
    particle.SetLinearVelocityY (velocityY);
    particle.SetDensity (density);
-   
-   var body:EntityBody = new EntityBody (this);
    particle.SetBody (body);
    
-   RegisterEntity (particle);
-   RegisterEntity (body);
+   body.RebuildBodyPhysics ();
+   particle.RebuildShapePhysics ();
+   
+   body.OnBodyPhysicsShapeListChanged ();
    
    return particle;
 }

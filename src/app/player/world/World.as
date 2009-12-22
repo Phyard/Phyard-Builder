@@ -769,8 +769,7 @@ package player.world {
          
       // update body mass, coincide bodies with centroid
          
-         mEntityListBody.UpdateBodyPhysicsProperties ();
-         mEntityListBody.CoincideBodiesWithCentroid ();
+         mEntityListBody.OnBodyPhysicsShapeListChanged ();
          
       // build joints
          

@@ -99,8 +99,8 @@ package common {
 // circle
 //===========================================================================
       
-      public static const MinCircleRadium:uint = MinRectSideLength * 0.5; // don't change
-      public static const MaxCircleRadium:uint = int.MAX_VALUE; //100;
+      public static const MinCircleRadius:uint = MinRectSideLength * 0.5; // don't change
+      public static const MaxCircleRadius:uint = int.MAX_VALUE; //100;
       
 //===========================================================================
 // bomb

@@ -52,8 +52,8 @@
             SelectList_ConnectedShape1.selectedIndex = initialValues.mShapeList1SelectedIndex;
             SelectList_ConnectedShape2.selectedIndex = initialValues.mShapeList2SelectedIndex;
             
-            SelectList_ConnectedShape1.enabled = initialValues.mAnchorIndex == 0;
-            SelectList_ConnectedShape2.enabled = initialValues.mAnchorIndex == 1;
+            SelectList_ConnectedShape1.enabled = initialValues.mAnchorIndex != 1;
+            SelectList_ConnectedShape2.enabled = initialValues.mAnchorIndex != 0;
          }
          
          public function GetValues (returnValues:Object):void

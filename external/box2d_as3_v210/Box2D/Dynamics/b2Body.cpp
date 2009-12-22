@@ -340,7 +340,6 @@ public function ResetMassData():void
 		m_invMass = 1.0;
 	}
 
-
 	if (m_I > 0.0 && (m_flags & e_fixedRotationFlag) == 0)
  	{
 		// Center the inertia about the center of mass.

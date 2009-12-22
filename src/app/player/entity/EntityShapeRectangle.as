@@ -45,13 +45,13 @@ package player.entity {
 //   
 //=============================================================
       
-		protected var mHalfWidth:Number = 0.0;
-		protected var mHalfHeight:Number = 0.0;
-		
-		//>> v1.07
-		protected var mIsRoundCornors:Boolean = false;
-		//<<
-		
+      protected var mHalfWidth:Number = 0.0;
+      protected var mHalfHeight:Number = 0.0;
+
+      //>> v1.07
+      protected var mIsRoundCornors:Boolean = false;
+      //<<
+
       public function SetHalfWidth (halfWidth:Number):void
       {
          if (halfWidth < 0)

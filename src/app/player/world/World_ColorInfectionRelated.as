@@ -2,38 +2,38 @@
 //=======================================================================
 //
 //=======================================================================
-      
-      protected var mIsCiRulesEnabled:Boolean = true;
-      
-      public function IsCiRulesEnabled ():Boolean
-      {
-         return mIsCiRulesEnabled;
-      }
-      
-      public function SetCiRulesEnabled (enabled:Boolean):void
-      {
-         mIsCiRulesEnabled = enabled;
-      }
-      
+
+protected var mIsCiRulesEnabled:Boolean = true;
+
+public function IsCiRulesEnabled ():Boolean
+{
+   return mIsCiRulesEnabled;
+}
+
+public function SetCiRulesEnabled (enabled:Boolean):void
+{
+   mIsCiRulesEnabled = enabled;
+}
+
 //=======================================================================
 //
 //=======================================================================
-      
-      public function IsSuccessed_CICriterion ():Boolean
-      {
-         return (mNumToBeInfecteds == mNumIntectedToBeInfecteds) && (mNumInfectedDontInfects == 0);
-      }
-      
-      public function IsFailed_CICriterion ():Boolean
-      {
-         return mNumInfectedDontInfects > 0;
-      }
-      
-      public function IsUnfinished_CICriterion ():Boolean
-      {
-         return ! (IsSuccessed_CICriterion () || IsFailed_CICriterion ());
-      }
-      
+
+public function IsSuccessed_CICriterion ():Boolean
+{
+   return (mNumToBeInfecteds == mNumIntectedToBeInfecteds) && (mNumInfectedDontInfects == 0);
+}
+
+public function IsFailed_CICriterion ():Boolean
+{
+   return mNumInfectedDontInfects > 0;
+}
+
+public function IsUnfinished_CICriterion ():Boolean
+{
+   return ! (IsSuccessed_CICriterion () || IsFailed_CICriterion ());
+}
+
 //=============================================================
 // 
 //=============================================================
@@ -118,10 +118,43 @@ private function InfectShapes (shape1:EntityShape, shape2:EntityShape):void
    }
 }
 
-protected function RemoveBombsAndRemovableShapes (stageDisplayPoint:Point):void
+protected function RemoveBombsAndRemovableShapes (worldDisplayPoint:Point):void
 {
-   var worldDisplayPoint:Point = globalToLocal (stageDisplayPoint);
    var physicsPoint:Point = mCoordinateSystem.DisplayPosition2PhysicsPoint (worldDisplayPoint.x, worldDisplayPoint.y);
    
    var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
+   
+   var shape:EntityShape;
+   var aiType:int;
+   var num:int = shapeArray.length;
+   for (var i:int = 0; i < num; ++ i)
+   {
+      shape = shapeArray [i] as EntityShape;
+      aiType = shape.GetShapeAiType ();
+      
+      if (aiType == Define.ShapeAiType_Breakable)
+      {
+         if (! shape.IsDestroyedAlready ())
+            shape.GetBody ().DestroyAllBreakableShapes ();
+      }
+      else if (aiType == Define.ShapeAiType_Bomb) 
+      {
+         var bombSize:Number = 0.0;
+         if (shape is EntityShape_CircleBomb)
+         {
+            bombSize = (shape as EntityShape_CircleBomb).GetRadius ();
+         }
+         else if (shape is EntityShape_RectangleBomb)
+         {
+            bombSize = 2.0 * Math.min ((shape as EntityShape_RectangleBomb).GetHalfWidth (), (shape as EntityShape_RectangleBomb).GetHalfHeight ());
+         }
+         
+         if (bombSize > 0)
+         {
+            ParticleManager_AddBomb (shape.GetPositionX (), bombSize, shape.GetDensity ());
+         }
+         
+         shape.DestroyEntity ();
+      }
+   }
 }

@@ -54,9 +54,19 @@ package player.entity {
          mRadius = radius;
       }
       
+      public function GetRadius ():Number
+      {
+         return mRadius;
+      }
+      
       public function SetAppearanceType (type:int):void
       {
          mAppearanceType = type;
+      }
+      
+      public function GetAppearanceType ():int
+      {
+         return mAppearanceType;
       }
       
 //=============================================================

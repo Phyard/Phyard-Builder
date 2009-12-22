@@ -204,45 +204,23 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function UpdateBodyPhysicsProperties ():void
+      internal function OnBodyPhysicsShapeListChanged ():void
       {
          mIsRemovingLocked = true;
          
          var entity:Entity = mHead;
+         var body:EntityBody;
          if (entity != null)
          {
             var tail:Entity = mTail;
             
             while (true)
             {
-               if (entity is EntityBody)
-                  (entity as EntityBody).UpdateBodyPhysicsProperties ();
-               
-               if (entity == tail)
-                  break;
-               
-               entity = entity.mNextEntity;
-            }
-         }
-         
-         mIsRemovingLocked = false;
-         
-         DelayUnregisterEntities ();
-      }
-      
-      internal function CoincideBodiesWithCentroid ():void
-      {
-         mIsRemovingLocked = true;
-         
-         var entity:Entity = mHead;
-         if (entity != null)
-         {
-            var tail:Entity = mTail;
-            
-            while (true)
-            {
-               if (entity is EntityBody)
-                  (entity as EntityBody).CoincideWithCentroid ();
+               body = entity as EntityBody;
+               if (body != null)
+               {
+                  body.OnPhysicsShapeListChanged ();
+               }
                
                if (entity == tail)
                   break;

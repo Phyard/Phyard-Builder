@@ -70,7 +70,7 @@ package player.entity {
       internal var mShapeListHead:EntityShape = null;
       internal var mPhysicsShapeListHead:EntityShape = null;
       
-      public function AddShape (shape:EntityShape):void
+      internal function AddShape (shape:EntityShape):void
       {
          if (shape.mBody != null)
          {
@@ -96,7 +96,7 @@ package player.entity {
          }
       }
       
-      public function RemoveShape (shape:EntityShape):void
+      internal function RemoveShape (shape:EntityShape):void
       {
          if (shape.mBody != this)
             return;
@@ -142,20 +142,24 @@ package player.entity {
          shape.mBody = null;
       }
       
-      public function IsEmpty ():Boolean
+      public function OnPhysicsShapeListChanged (physicsListChanged:Boolean = true):void
       {
-         return mShapeListHead == null;
-      }
-      
-      public function OnPhysicsShapeListChanged ():void
-      {
-         if (IsEmpty ())
-            Destroy ();
-         else if (mPhysicsProxy != null)
+         if (mShapeListHead == null)
          {
-            CoincideWithCentroid ();
-            UpdateBodyPhysicsProperties ();
-            mPhysicsProxyBody.SetSleeping (false);
+            Destroy ();
+         }
+         else if (physicsListChanged)
+         {
+            if (mPhysicsShapeListHead == null)
+            {
+               DestroyPhysicsProxy ();
+            }
+            else if (mPhysicsProxy != null)
+            {
+               UpdateBodyPhysicsProperties ();
+               CoincideWithCentroid ();
+               mPhysicsProxyBody.SetSleeping (false);
+            }
          }
       }
       
@@ -363,7 +367,7 @@ package player.entity {
 //=============================================================
 //   shape list
 //=============================================================
-      
+
       public function IsStatic ():Boolean
       {
          if (mPhysicsProxy == null)

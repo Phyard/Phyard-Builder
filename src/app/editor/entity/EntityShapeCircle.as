@@ -129,8 +129,8 @@ package editor.entity {
       {
          if (validate)
          {
-            var minRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombRadius : Define.MinCircleRadium;
-            var maxRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MaxBombRadius : Define.MaxCircleRadium;
+            var minRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MinBombRadius : Define.MinCircleRadius;
+            var maxRadius:Number = mAiType == Define.ShapeAiType_Bomb ? Define.MaxBombRadius : Define.MaxCircleRadius;
             
             if (radius > maxRadius)
                radius =  maxRadius;

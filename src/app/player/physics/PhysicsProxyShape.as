@@ -27,6 +27,11 @@ package player.physics {
       
       internal var mProxyBody:PhysicsProxyBody = null;
       
+      internal var mMass:Number = 0.0;
+      internal var mI:Number = 0.0;
+      internal var mCentroidX:Number = 0.0;
+      internal var mCentroidY:Number = 0.0;
+      
       public function PhysicsProxyShape (proxyBody:PhysicsProxyBody, entityShape:EntityShape):void
       {
          super (proxyBody.mPhysicsEngine);
@@ -66,6 +71,61 @@ package player.physics {
          }
          
          mProxyBody._b2Body.SetAwake (true);
+      }
+      
+      public function UpdateMass ():void
+      {
+         mMass = 0.0;
+         mI = 0.0;
+         mCentroidX = 0.0;
+         mCentroidY = 0.0;
+         
+         var centerX:Number = 0.0;
+         var centerY:Number = 0.0;
+         
+         var i:int;
+         var num:int = fixtureArray.length;
+         var fixture:b2Fixture;
+         for (i = 0; i < num; ++ i)
+         {
+            fixture = fixtureArray [i] as b2Fixture;
+            
+            fixture.GetMassData(massData);
+            
+            centerX += massData.center.x;
+            centerY += massData.center.y;
+            
+            mMass += massData.mass;
+            mCentroidX += massData.mass * massData.center.x;
+            mCentroidY += massData.mass * massData.center.y;
+            mI += massData.I;
+         }
+         
+         var invMass:Number;
+         if (mMass > 0)
+         {
+            invMass = 1.0 / mass;
+            mCentroidX = mCentroidX * invMass;
+            mCentroidY = mCentroidY * invMass;
+         }
+         else if (num > 0)
+         {
+            invMass = 1.0 / Number(num);
+            mCentroidX = centerX * invMass;
+            mCentroidY = centerY * invMass;
+         }
+      }
+      
+      // should make sure UpdateMass is called before calling this function
+      public function GetMass ():Number
+      {
+         return mMass;
+      }
+      
+      // should make sure UpdateMass is called before calling this function
+      public function GetI ():Number
+      {
+         return mI;
       }
       
 //========================================================================
@@ -617,5 +677,9 @@ package player.physics {
             }
          }
       }
+      
+//=============================================================================
+// 
+//=============================================================================
    }
 }

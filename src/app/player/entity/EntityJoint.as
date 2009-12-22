@@ -226,9 +226,11 @@ package player.entity {
             
             mAnchor1.mPositionX = anchorPoint1.x;
             mAnchor1.mPositionY = anchorPoint1.y;
+            mAnchor1.UpdateDisplayObjectPosition ();
             
             mAnchor2.mPositionX = anchorPoint2.x;
             mAnchor2.mPositionY = anchorPoint2.y;
+            mAnchor2.UpdateDisplayObjectPosition ();
             
             DelayUpdateAppearance ();
          }
@@ -259,6 +261,11 @@ package player.entity {
       protected function RebuildJointPhysicsInternal ():void
       {
          // to override
+      }
+      
+      internal function SaveJointStatus ():void
+      {
+         
       }
       
 //=============================================================

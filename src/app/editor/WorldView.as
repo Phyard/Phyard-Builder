@@ -1050,7 +1050,7 @@ package editor {
                SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_DontInfect, Define.ColorDontInfectObject, false ) );
                break;
             case mButtonCreateBallBomb:
-               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Bomb, Define.ColorBombObject, false, Define.MinCircleRadium, Define.MaxBombSquareSideLength * 0.5 ) );
+               SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Bomb, Define.ColorBombObject, false, Define.MinCircleRadius, Define.MaxBombSquareSideLength * 0.5 ) );
                break;
                
          // CI polygons

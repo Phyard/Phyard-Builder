@@ -14,7 +14,7 @@ package editor.mode {
    
    public class ModeCreateCircle extends ModeCreateShape
    {
-      public function ModeCreateCircle (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, minRadius:Number = Define.MinCircleRadium, maxRadius:Number = Define.MaxCircleRadium)
+      public function ModeCreateCircle (mainView:WorldView, ciAiType:int, filledColor:uint, isStatic:Boolean, minRadius:Number = Define.MinCircleRadius, maxRadius:Number = Define.MaxCircleRadius)
       {
          super (mainView, ciAiType, filledColor, isStatic);
          

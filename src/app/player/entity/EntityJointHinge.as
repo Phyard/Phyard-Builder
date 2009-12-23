@@ -3,6 +3,7 @@ package player.entity {
    import player.world.World;
 
    import player.physics.PhysicsProxyShape;
+   import player.physics.PhysicsProxyJoint;
    import player.physics.PhysicsProxyJointHinge;
    
    import common.Define;
@@ -214,6 +215,11 @@ package player.entity {
 //=============================================================
       
       protected var mProxyJointHinge:PhysicsProxyJointHinge;
+      
+      override internal function GetPhysicsProxyJoint ():PhysicsProxyJoint
+      {
+         return mProxyJointHinge;
+      }
       
       override public function ConfirmConnectedShapes ():void
       {

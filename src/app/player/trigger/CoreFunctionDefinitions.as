@@ -202,12 +202,13 @@ package player.trigger {
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                  GetShapeDensity);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                  SetShapeDensity);
          
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Attach,                      AttachShapes);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Breakup,                     BreakupGluedShapes);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                    TeleportShape);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Attach,                      AttachShapes);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Breakup,                     BreakupGluedShapes);
+
       // game / entity / joint
          
          
@@ -1461,22 +1462,6 @@ package player.trigger {
       //{
       //}
       
-      //public static function DetachShape (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-      //   if (shape == null)
-      //      return;
-      //   
-      //}
-      
-      //public static function BreakupGluedShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-      //   if (shape == null)
-      //      return;
-      //   
-      //}
-      
       public static function TeleportShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
@@ -1512,8 +1497,23 @@ package player.trigger {
       //   
       //}
       
+      public static function DetachShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+		 shape.Detach ();
+      }
       
-      
+      //public static function BreakupGluedShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   if (shape == null)
+      //      return;
+      //   
+      //}
+
    //*******************************************************************
    // entity / shape / text
    //*******************************************************************

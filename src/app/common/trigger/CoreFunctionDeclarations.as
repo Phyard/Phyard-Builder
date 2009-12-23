@@ -1004,25 +1004,6 @@ package common.trigger {
          
          // ...
          
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Attach,
-         //            [
-         //               ValueTypeDefine.ValueType_Entity, 
-         //               ValueTypeDefine.ValueType_Entity, 
-         //            ],
-         //            null
-         //         );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Detach,
-         //            [
-         //               ValueTypeDefine.ValueType_Entity, 
-         //            ],
-         //            null
-         //         );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Breakup,
-         //            [
-         //               ValueTypeDefine.ValueType_Entity, 
-         //            ],
-         //            null
-         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Teleport,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -1047,7 +1028,34 @@ package common.trigger {
          //            null
          //         );
          
-         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Detach,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Entity, 
+         //            ],
+         //            null
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Entity, 
+         //            ],
+         //            null
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Breakup,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //            ],
+         //            null
+         //         );
+
+
          
       // game / entity / joint
          

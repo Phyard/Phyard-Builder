@@ -240,8 +240,14 @@ package player.entity {
 //   physics proxy
 //=============================================================
 
+      internal function GetPhysicsProxyJoint ():PhysicsProxyJoint
+      {
+         return null; // to override
+      }
+      
       public function ConfirmConnectedShapes ():void
       {
+         // to overide
       }
       
       final public function RebuildJointPhysics ():void

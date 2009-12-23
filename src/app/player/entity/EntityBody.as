@@ -42,8 +42,17 @@ package player.entity {
    //     fixRotation is true if any physicsShape.fixRotation is true;
    //     isStatic is true if any physicsShape.isStatic is true;
    
+   // int box2d, it is legal the postion of the EntityBody and the centroid are different.
+   // but in this soft, then must be the same.
+   
    public class EntityBody extends Entity
    {
+      include "EntityBody_APIs.as";
+      
+//=============================================================
+//   
+//=============================================================
+      
       public function EntityBody (world:World)
       {
          super (world);
@@ -70,6 +79,19 @@ package player.entity {
       internal var mShapeListHead:EntityShape = null;
       internal var mPhysicsShapeListHead:EntityShape = null;
       
+      internal var mNumShapes:int = 0;
+      internal var mNumPhysicsShapes:int = 0;
+      
+      public function GetNumPhysicsShapes ():int
+      {
+         return mNumPhysicsShapes;
+      }
+      
+      public function GetNumShapes ():int
+      {
+         return mNumShapes;
+      }
+      
       internal function AddShape (shape:EntityShape):void
       {
          if (shape.mBody != null)
@@ -93,7 +115,11 @@ package player.entity {
             if (mPhysicsShapeListHead != null)
                mPhysicsShapeListHead.mPrevPhysicsShapeInBody = shape;
             mPhysicsShapeListHead = shape;
+            
+            ++ mNumPhysicsShapes;
          }
+         
+         ++ mNumShapes;
       }
       
       internal function RemoveShape (shape:EntityShape):void
@@ -137,7 +163,11 @@ package player.entity {
             {
                DestroyPhysicsProxy ();
             }
+            
+            -- mNumPhysicsShapes;
          }
+         
+         -- mNumShapes;
          
          shape.mBody = null;
       }
@@ -252,7 +282,7 @@ package player.entity {
 //   physics proxy
 //=============================================================
       
-      protected var mPhysicsProxyBody:PhysicsProxyBody = null;
+      internal var mPhysicsProxyBody:PhysicsProxyBody = null;
       
       internal function TracePhysicsInfo ():void
       {
@@ -263,11 +293,6 @@ package player.entity {
          //trace ("rotation: " + mPhysicsProxyBody.GetRotation () * Define.kRadians2Degrees);
          //trace ("vx: " + mPhysicsProxyBody.GetLinearVelocityX ());
          //trace ("vy: " + mPhysicsProxyBody.GetLinearVelocityY ());
-      }
-      
-      public function IsPhysicsBuilt ():Boolean
-      {
-         return mPhysicsProxy != null;
       }
       
       override public function DestroyPhysicsProxy ():void
@@ -342,25 +367,26 @@ package player.entity {
          if (mPhysicsProxy == null)
             return;
          
-         mPhysicsProxyBody.CoincideWithCentroid ();
+         if (! mPhysicsProxyBody.CoincideWithCentroid ())
+            return;
+         
          var newX:Number = mPhysicsProxyBody.GetPositionX ();
          var newY:Number = mPhysicsProxyBody.GetPositionY ();
          var dx:Number = mPositionX - newX
          var dy:Number = mPositionY - newY;
          var abs_dx:Number = Math.abs (dx);
          var abs_dy:Number = Math.abs (dy);
-         if (abs_dx > Number.MIN_VALUE || abs_dy > Number.MIN_VALUE)
+         
+         mPositionX = newX;
+         mPositionY = newY;
+         
+         var shape:EntityShape = mShapeListHead;
+         while (shape != null)
          {
-            mPositionX = newX;
-            mPositionY = newY;
+            shape.UpdatelLocalPosition ();
+            shape.UpdateMassAndInertiaAndCentroid ();
             
-            var shape:EntityShape = mShapeListHead;
-            while (shape != null)
-            {
-               shape.UpdatelLocalPosition ();
-               
-               shape = shape.mNextShapeInBody;
-            }
+            shape = shape.mNextShapeInBody;
          }
       }
 
@@ -375,6 +401,5 @@ package player.entity {
          
          return mPhysicsProxyBody.IsStatic ();
       }
-      
    }
 }

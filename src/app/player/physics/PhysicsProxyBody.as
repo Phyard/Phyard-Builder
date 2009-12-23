@@ -60,6 +60,16 @@ package player.physics {
          _b2Body.ResetMassData ();
       }
       
+      public function GetMass ():Number
+      {
+         return _b2Body.GetMass ();
+      }
+      
+      public function GetInertia ():Number
+      {
+         return _b2Body.GetInertia ();
+      }
+      
       public function SetDisplayPosition (posX:Number, posY:Number):void
       {
          _b2Body.SetPosition (posX, posY);
@@ -90,9 +100,15 @@ package player.physics {
          return _b2Body.GetLinearVelocity ().y;
       }
       
-      public function CoincideWithCentroid ():void
+      public function CoincideWithCentroid ():Boolean//Point
       {
-         _b2Body.CoincideWithCentroid ();
+         return _b2Body.CoincideWithCentroid ();
+         
+         //var vec:b2Vec2 = _b2Body.CoincideWithCentroid ();
+         //if (vec == null)
+         //   return null;
+         //
+         //return new Point (vec.x, vec.y);
       }
       
       public function SetRotation (rotation:Number):void
@@ -165,6 +181,31 @@ package player.physics {
          return _b2Body.IsFixedRotation ();
       }
       
+      public function AddLinearImpulseAtPoint (worldLinearImpulseX:Number, worldLinearImpulseY:Number, worldX:Number, worldY:Number):void
+      {
+         _b2Body.ApplyImpulse (
+                  b2Vec2.b2Vec2_From2Numbers (worldLinearImpulseX, worldLinearImpulseY),
+                  b2Vec2.b2Vec2_From2Numbers (worldX, worldY)
+               );
+      }
+
+      public function AddForceAtPoint (worldForceX:Number, worldForceY:Number, worldX:Number, worldY:Number):void
+      {
+         _b2Body.ApplyForce (
+                  b2Vec2.b2Vec2_From2Numbers (worldForceX, worldForceY),
+                  b2Vec2.b2Vec2_From2Numbers (worldX, worldY)
+               );
+      }
+
+      public function AddAngularImpulse (angularImpulse:Number):void
+      {
+         _b2Body.ApplyAngularImpulse (angularImpulse);
+      }
+
+      public function AddTorque (torque:Number):void
+      {
+         _b2Body.ApplyTorque (torque);
+      }
    }
    
 }

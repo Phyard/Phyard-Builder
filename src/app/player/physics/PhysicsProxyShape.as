@@ -11,6 +11,7 @@ package player.physics {
    //import Box2D.Collision.Shapes.b2PolygonDef;
    import Box2D.Collision.Shapes.b2CircleShape;
    import Box2D.Collision.Shapes.b2PolygonShape;
+   import Box2D.Collision.Shapes.b2MassData;
    
    import Box2D.Dynamics.b2Fixture;
    import Box2D.Dynamics.b2FixtureDef;
@@ -26,11 +27,6 @@ package player.physics {
       internal var mEntityShape:EntityShape;
       
       internal var mProxyBody:PhysicsProxyBody = null;
-      
-      internal var mMass:Number = 0.0;
-      internal var mI:Number = 0.0;
-      internal var mCentroidX:Number = 0.0;
-      internal var mCentroidY:Number = 0.0;
       
       public function PhysicsProxyShape (proxyBody:PhysicsProxyBody, entityShape:EntityShape):void
       {
@@ -75,57 +71,50 @@ package player.physics {
       
       public function UpdateMass ():void
       {
-         mMass = 0.0;
-         mI = 0.0;
-         mCentroidX = 0.0;
-         mCentroidY = 0.0;
+         var mass:Number = 0.0;
+         var inertia:Number = 0.0;
+         var centroidX:Number = 0.0;
+         var centroidY:Number = 0.0;
          
          var centerX:Number = 0.0;
          var centerY:Number = 0.0;
          
+         var massData:b2MassData = new b2MassData ();
          var i:int;
-         var num:int = fixtureArray.length;
+         var num:int = _b2Fixtures.length;
          var fixture:b2Fixture;
          for (i = 0; i < num; ++ i)
          {
-            fixture = fixtureArray [i] as b2Fixture;
+            fixture = _b2Fixtures [i] as b2Fixture;
             
             fixture.GetMassData(massData);
             
             centerX += massData.center.x;
             centerY += massData.center.y;
             
-            mMass += massData.mass;
-            mCentroidX += massData.mass * massData.center.x;
-            mCentroidY += massData.mass * massData.center.y;
-            mI += massData.I;
+            mass += massData.mass;
+            centroidX += massData.mass * massData.center.x;
+            centroidY += massData.mass * massData.center.y;
+            inertia += massData.I;
          }
          
          var invMass:Number;
          if (mMass > 0)
          {
             invMass = 1.0 / mass;
-            mCentroidX = mCentroidX * invMass;
-            mCentroidY = mCentroidY * invMass;
+            centroidX = centroidX * invMass;
+            centroidY = centroidY * invMass;
          }
          else if (num > 0)
          {
             invMass = 1.0 / Number(num);
-            mCentroidX = centerX * invMass;
-            mCentroidY = centerY * invMass;
+            centroidX = centerX * invMass;
+            centroidY = centerY * invMass;
          }
-      }
-      
-      // should make sure UpdateMass is called before calling this function
-      public function GetMass ():Number
-      {
-         return mMass;
-      }
-      
-      // should make sure UpdateMass is called before calling this function
-      public function GetI ():Number
-      {
-         return mI;
+         
+         mEntityShape.SetMass (mass);
+         mEntityShape.SetInertia (inertia);
+         mEntityShape.SetCentroid (centroidX, centroidY);
       }
       
 //========================================================================

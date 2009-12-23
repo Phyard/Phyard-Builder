@@ -29,6 +29,7 @@ package Box2D.Dynamics.Joints
 	import Box2D.Common.b2Vec2;
 	import Box2D.Dynamics.b2TimeStep;
 	import Box2D.Dynamics.b2Body;
+	import Box2D.Dynamics.Contacts.b2ContactEdge;
 
 	//class b2Body;
 	//class b2Joint;
@@ -251,6 +252,87 @@ package Box2D.Dynamics.Joints
 		public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
 		{
 			// to override
+		}
+		
+		final public function ChangeJointBody (newBody:b2Body, isBodyA:Boolean):void
+		{
+			if (m_collideConnected == false)
+			{
+				FlagConnectedContactsForFiltering ()
+			}
+
+			var oldBody:b2Body;
+			var edge:b2JointEdge;
+			
+			if (isBodyA)
+			{
+				oldBody = m_bodyA;
+				edge = m_edgeA;
+				m_bodyA = newBody;
+			}
+			else
+			{
+				oldBody = m_bodyB;
+				edge = m_edgeB;
+				m_bodyB = newBody;
+			}
+
+			oldBody.SetAwake(true);
+			newBody.SetAwake(true);
+
+			if (m_collideConnected == false)
+			{
+				FlagConnectedContactsForFiltering ()
+			}
+
+		// remove self from old body joint list
+
+			// Remove from body 1.
+			if (edge.prev != null)
+			{
+				edge.prev.next = edge.next;
+			}
+
+			if (edge.next != null)
+			{
+				edge.next.prev = edge.prev;
+			}
+
+			if (edge == oldBody.m_jointList)
+			{
+				oldBody.m_jointList = edge.next;
+			}
+
+		// add self to new body joint list
+
+			edge.next = newBody.m_jointList;
+			if (newBody.m_jointList != null) newBody.m_jointList.prev = edge;
+			newBody.m_jointList = edge;
+
+		// more tot do ...
+
+			NotifyBodyChanged (oldBody, isBodyA);
+		}
+
+		protected function NotifyBodyChanged (oldBody:b2Body, isBodyA:Boolean):void
+		{
+			// to override
+		}
+
+		public function FlagConnectedContactsForFiltering ():void
+		{
+			var edge:b2ContactEdge = m_bodyB.GetContactList();
+			while (edge != null)
+			{
+				if (edge.other == m_bodyA)
+				{
+					// Flag the contact for filtering at the next time step (where either
+					// body is awake).
+					edge.contact.FlagForFiltering();
+				}
+
+				edge = edge.next;
+			}
 		}
 		
 	} // class

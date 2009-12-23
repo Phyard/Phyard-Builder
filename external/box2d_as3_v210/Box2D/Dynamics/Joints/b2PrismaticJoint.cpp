@@ -105,7 +105,7 @@ public function b2PrismaticJoint(def:b2PrismaticJointDef)
 	m_localAnchor1.CopyFrom (def.localAnchorA);
 	m_localAnchor2.CopyFrom (def.localAnchorB);
 	m_localXAxis1.CopyFrom (def.localAxis1);
-	m_localYAxis1.CopyFrom (b2Math.b2Cross_ScalarAndVector2 (1.0, m_localXAxis1));
+	b2Math.b2Cross_ScalarAndVector2_Output (1.0, m_localXAxis1, m_localYAxis1);
 	m_refAngle = def.referenceAngle;
 
 	m_impulse.SetZero();

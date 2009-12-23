@@ -22,7 +22,7 @@ public function ParticleManager_Initialize ():void
 
 public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number, density:Number):void
 {
-   var worldDisplayRadius:Number = shape.GetPositionY (), mCoordinateSystem.P2D_Length (radius);
+   var worldDisplayRadius:Number = mCoordinateSystem.P2D_Length (radius);
    
    var numParticles:int = 32 * ( 0.5 + worldDisplayRadius * 2.0 * worldDisplayRadius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength) );
    
@@ -170,7 +170,7 @@ private function CreateEntityParticle (posX:Number, posY:Number, velocityX:Numbe
    body.RebuildBodyPhysics ();
    particle.RebuildShapePhysics ();
    
-   body.OnBodyPhysicsShapeListChanged ();
+   body.OnPhysicsShapeListChanged ();
    
    return particle;
 }

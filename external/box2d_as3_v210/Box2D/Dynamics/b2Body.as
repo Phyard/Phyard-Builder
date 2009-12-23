@@ -732,12 +732,12 @@ package Box2D.Dynamics
 				ResetMassData ();
 		}
 
-		public function CoincideWithCentroid ():void
+		public function CoincideWithCentroid ():Boolean//b2Vec2
 		{
 			//b2Assert(m_world->IsLocked() == false);
 			if (m_world.IsLocked() == true)
 			{
-				return;
+				return false;// null;
 			}
 			
 			var dx:Number = - m_sweep.localCenter.x;
@@ -746,34 +746,37 @@ package Box2D.Dynamics
 			var abs_dx:Number = Math.abs (dx);
 			var abs_dy:Number = Math.abs (dy);
 			
-			if (abs_dx > Number.MIN_VALUE || abs_dy > Number.MIN_VALUE)
+			if (abs_dx < Number.MIN_VALUE && abs_dy < Number.MIN_VALUE)
+				return false;// null;
+			
+			m_xf.position.x = m_sweep.c.x;
+			m_xf.position.y = m_sweep.c.y;
+			
+			m_sweep.localCenter.x = 0.0;
+			m_sweep.localCenter.y = 0.0;
+			
+		// adjust local coordinates for shapes
+			
+			var fixture:b2Fixture = m_fixtureList; 
+			while (fixture != null)
 			{
-				m_xf.position.x = m_sweep.c.x;
-				m_xf.position.y = m_sweep.c.y;
+				fixture.GetShape ().OnBodyLocalCenterChanged (dx, dy);
 				
-				m_sweep.localCenter.x = 0.0;
-				m_sweep.localCenter.y = 0.0;
-				
-			// adjust local coordinates for shapes
-				
-				var fixture:b2Fixture = m_fixtureList; 
-				while (fixture != null)
-				{
-					fixture.GetShape ().OnBodyLocalCenterChanged (dx, dy);
-					
-					fixture = fixture.m_next;
-				}
-				
-				var jn:b2JointEdge = m_jointList;
-				while (jn != null)
-				{
-					jn.joint.OnBodyLocalCenterChanged (dx, dy, jn);
-					
-					jn = jn.next;
-				}
-				
-				//todo: contact list
+				fixture = fixture.m_next;
 			}
+			
+			var jn:b2JointEdge = m_jointList;
+			while (jn != null)
+			{
+				jn.joint.OnBodyLocalCenterChanged (dx, dy, jn);
+				
+				jn = jn.next;
+			}
+			
+			//todo: contact list
+			
+			// ...
+			return true; //new b2Vec2.b2Vec2_From2Numbers (dx, dy);
 		}
 
 		// just a minor optimization to SetTransform
@@ -832,6 +835,20 @@ package Box2D.Dynamics
 			{
 				SetType (b2_dynamicBody);
 			}
+		}
+
+		public function ApplyAngularImpulse (angularImpulse:Number):void
+		{
+			if (m_type != b2_dynamicBody)
+			{
+				return;
+			}
+
+			if (IsAwake() == false)
+			{
+				SetAwake(true);
+			}
+			m_angularVelocity += m_invI * angularImpulse;
 		}
 
 	} // class

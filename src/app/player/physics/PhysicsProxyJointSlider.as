@@ -40,10 +40,27 @@ package player.physics {
       /// Get the anchor point on body2 in world coordinates.
       override public function GetAnchorPoint2():Point
       {
-         var b2joint:b2Joint = GetB2joint ();
          var vec:b2Vec2 = _b2PrismaticJoint.GetBodyB ().GetWorldPoint(_localAnchor2InBody2);
          
          return new Point (vec.x, vec.y);
+      }
+      
+      override public function ReconncetShape (proxyShape:PhysicsProxyShape, isShapeA:Boolean):void
+      {
+         if (! isShapeA)
+         {
+            var body2:b2Body = _b2PrismaticJoint.GetBodyB ();
+            
+            var worldVec:b2Vec2 = body2.GetWorldPoint(_localAnchor2InBody2);
+            
+            super.ReconncetShape (proxyShape, isShapeA);
+            
+            _localAnchor2InBody2 = body2.GetLocalPoint(worldVec);
+         }
+         else
+         {
+            super.ReconncetShape (proxyShape, isShapeA);
+         }
       }
       
 //========================================================================

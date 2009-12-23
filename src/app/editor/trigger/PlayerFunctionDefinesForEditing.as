@@ -1020,25 +1020,6 @@ package editor.trigger {
          //            null
          //         );
          
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Attach, entity_shape_package, "GlueShapes", 
-         //            [
-         //                    new VariableDefinitionEntity ("Shape 1"), 
-         //                    new VariableDefinitionEntity ("Shape 2"), 
-         //            ],
-         //            null
-         //         );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_package, "DetachShape", 
-         //            [
-         //                    new VariableDefinitionEntity ("The Shape to Be Detached"), 
-         //            ],
-         //            null
-         //         );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Breakup, entity_shape_package, "BreakupGluedShapes", 
-         //            [
-         //                    new VariableDefinitionEntity ("One Shape in Glueds"), 
-         //            ],
-         //            null
-         //         );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Teleport, entity_shape_package, "TeleportShape", 
                      [
                              new VariableDefinitionEntity ("The Shape"), 
@@ -1063,7 +1044,27 @@ package editor.trigger {
          //            null
          //         );
          
-         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_package, "DetachShape", 
+                     [
+                             new VariableDefinitionEntity ("The Shape to Be Detached"), 
+                     ],
+                     null
+                  );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Attach, entity_shape_package, "GlueShapes", 
+         //            [
+         //                    new VariableDefinitionEntity ("Shape 1"), 
+         //                    new VariableDefinitionEntity ("Shape 2"), 
+         //            ],
+         //            null
+         //         );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Breakup, entity_shape_package, "BreakupGluedShapes", 
+         //            [
+         //                    new VariableDefinitionEntity ("One Shape in Glueds"), 
+         //            ],
+         //            null
+         //         );
+
+
          
       // game / entity / joint
          

@@ -140,6 +140,22 @@ package Box2D.Dynamics.Joints
 			}
 		}
 
+		override protected function NotifyBodyChanged (oldBody:b2Body, isBodyA:Boolean):void
+		{
+			var worldAnchor:b2Vec2;
+			
+			if (isBodyA)
+			{
+				worldAnchor = oldBody.GetWorldPoint(m_localAnchor1);
+				m_localAnchor1.CopyFrom (m_bodyA.GetLocalPoint (worldAnchor));
+			}
+			else
+			{
+				worldAnchor = oldBody.GetWorldPoint(m_localAnchor2);
+				m_localAnchor2.CopyFrom (m_bodyB.GetLocalPoint (worldAnchor));
+			}
+		}
+
 	} // class
 } // package
 //#endif

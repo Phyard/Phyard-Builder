@@ -151,7 +151,7 @@ protected function RemoveBombsAndRemovableShapes (worldDisplayPoint:Point):void
          
          if (bombSize > 0)
          {
-            ParticleManager_AddBomb (shape.GetPositionX (), bombSize, shape.GetDensity ());
+            ParticleManager_AddBomb (shape.GetPositionX (), shape.GetPositionY (), bombSize, shape.GetDensity ());
          }
          
          shape.DestroyEntity ();

@@ -7,6 +7,7 @@ package player.entity {
    import com.tapirgames.util.GraphicsUtil;
    
    import player.physics.PhysicsProxyShape;
+   import player.physics.PhysicsProxyJoint;
    import player.physics.PhysicsProxyJointDistance;
    
    import common.Define;
@@ -121,6 +122,11 @@ package player.entity {
 //=============================================================
       
       protected var mProxyJointDistance:PhysicsProxyJointDistance;
+      
+      override internal function GetPhysicsProxyJoint ():PhysicsProxyJoint
+      {
+         return mProxyJointDistance;
+      }
       
       override public function ConfirmConnectedShapes ():void
       {

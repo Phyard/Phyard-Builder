@@ -551,6 +551,43 @@ package player.entity {
       }
       
 //=============================================================
+//   more runtime properties
+//=============================================================
+      
+      internal var mMass:Number = 0.0;
+      internal var mInertia:Number = 0.0;
+      
+      // the centroid position is relative to the position of mBody
+      internal var mCentroidX:Number = 0.0;
+      internal var mCentroidY:Number = 0.0;
+      
+   // the following setter functions should be only called by mProxyShape
+      
+      public function SetMass (mass:Number):void
+      {
+         mMass = mass;
+      }
+      
+      public function SetInertia (inertia:Number):void
+      {
+         mInertia = inertia;
+      }
+      
+      public function SetCentroid (centroidX:Number, centroidY:Number):void
+      {
+         mCentroidX = centroidX;
+         mCentroidY = centroidY;
+      }
+      
+      public function UpdateMassAndInertiaAndCentroid ():void
+      {
+         if (mPhysicsProxy != null)
+         {
+            mProxyShape.UpdateMass ();
+         }
+      }
+      
+//=============================================================
 //   mouse events
 //=============================================================
       
@@ -682,7 +719,7 @@ package player.entity {
          return mBody;
       }
       
-      internal function SetBody (body:EntityBody):void
+      public function SetBody (body:EntityBody):void
       {
          if (mBody != body)
          {
@@ -715,7 +752,6 @@ package player.entity {
             mRelativeRotation  = mRotation  - mBody.GetRotation  ();
          }
       }
-      
       
 //=============================================================
 //   step accumulated values, before world.Step (), these accumlated values will be applied on body
@@ -797,7 +833,7 @@ package player.entity {
       internal function LocalPoint2WorldPoint (localX:Number, localY:Number):Point
       {
          return new Point (
-               mPositionX + localX *.mCosRotation - localY * mSinRotation,
+               mPositionX + localX * mCosRotation - localY * mSinRotation,
                mPositionY + localX * mSinRotation + localY * mCosRotation
             );
       }
@@ -805,7 +841,7 @@ package player.entity {
       internal function WorldPoint2LocalPoint (worldX:Number, worldlY:Number):Point
       {
          return new Point (
-               mPositionX + worldX *.mCosRotation + worldlY * mSinRotation,
+               mPositionX + worldX * mCosRotation + worldlY * mSinRotation,
                mPositionY - worldX * mSinRotation + worldlY * mCosRotation
             );
       }
@@ -813,7 +849,7 @@ package player.entity {
       internal function LocalVector2WorldVector (localVX:Number, localVY:Number):Point
       {
          return new Point (
-               localVX *.mCosRotation - localVY * mSinRotation,
+               localVX * mCosRotation - localVY * mSinRotation,
                localVX * mSinRotation + localVY * mCosRotation
             );
       }
@@ -821,7 +857,7 @@ package player.entity {
       internal function WorldVector2LocalVector (worldVX:Number, worldlVY:Number):Point
       {
          return new Point (
-                 worldVX *.mCosRotation + worldlVY * mSinRotation,
+                 worldVX * mCosRotation + worldlVY * mSinRotation,
                - worldVX * mSinRotation + worldlVY * mCosRotation
             );
       }
@@ -873,9 +909,9 @@ package player.entity {
          if (mPhysicsProxy == null)
             return;
          
-         super.DestroyPhysicsProxy ();
-         
          mProxyShape = null;
+         
+         super.DestroyPhysicsProxy ();
       }
       
       final public function RebuildShapePhysics ():void
@@ -911,7 +947,6 @@ package player.entity {
          RebuildShapePhysicsInternal ();
          
       // ...
-         mProxyShape.UpdateMass ();
       }
 
       protected function RebuildShapePhysicsInternal ():void

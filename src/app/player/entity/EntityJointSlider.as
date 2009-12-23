@@ -3,6 +3,7 @@ package player.entity {
    import player.world.World;
    
    import player.physics.PhysicsProxyShape;
+   import player.physics.PhysicsProxyJoint;
    import player.physics.PhysicsProxyJointSlider;
    
    import common.Define;
@@ -173,6 +174,11 @@ package player.entity {
 //=============================================================
       
       protected var mProxyJointSlider:PhysicsProxyJointSlider;
+      
+      override internal function GetPhysicsProxyJoint ():PhysicsProxyJoint
+      {
+         return mProxyJointSlider;
+      }
       
       override public function ConfirmConnectedShapes ():void
       {

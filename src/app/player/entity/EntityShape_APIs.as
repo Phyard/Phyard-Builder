@@ -172,76 +172,54 @@ public function MoveTo (targetX:Number, targetY:Number):void
 }
 
 //================================================================
-// 
-//================================================================
-
-public function AddLinearImpulseAtPoint (worldLinearImpulse:Number, worldX:Number, worldY:Number):void
-{
-   if (mPhysicsProxy != null)
-   {
-      mBody.mPhysicsProxyBody.AddImpulse (worldLinearImpulse, worldX, worldY);
-   }
-}
-
-public function AddForceImpulseAtPoint (worldForceX:Number, worldForceY:Number, worldX:Number, worldY:Number):void
-{
-   if (mPhysicsProxy != null)
-   {
-      mBody.mPhysicsProxyBody.AddForce (worldLinearImpulse, worldX, worldY);
-   }
-}
-
-public function AddAngularImpulse (angularImpulse:Number):void
-{
-   if (mPhysicsProxy != null)
-   {
-      mBody.mPhysicsProxyBody.AddAngularImpulse (angularImpulse);
-   }
-}
-
-public function AddTorque (torque:Number):void
-{
-   if (mPhysicsProxy != null)
-   {
-      mBody.mPhysicsProxyBody.AddTorque(torque);
-   }
-}
-
-//================================================================
-// 
+// detach / attach (glue)
+// all these functions assume the physics of entities are all built.
 //================================================================
 
 public function Detach ():void
 {
-   var oldBody = mBody;
+   var oldBody:EntityBody = mBody;
+   if (oldBody.mNumShapes == 1 && oldBody.mShapeListHead == this)
+      return;
+   
+// crete a new body
+   
    SetBody (null);
-   oldBody.OnBodyPhysicsShapeListChanged ();
+   oldBody.OnPhysicsShapeListChanged ();
    
-   var newBody:EntityBody = new EntityBody ();
-   RegisterEntity (newBody);
+   var newBody:EntityBody = new EntityBody (mWorld);
+   mWorld.RegisterEntity (newBody);
    
-   SetBody (body);
-   
-   // now newBody == mBody
+   SetBody (newBody);
    newBody.RebuildBodyPhysics ();
    RebuildShapePhysics ();
+   newBody.OnPhysicsShapeListChanged ();
    
-   newBody.OnBodyPhysicsShapeListChanged ();
+// now, the joints connected with shapes are still connect the old body (because in box2d, joints are connected with body instead of shape)
+   
+   var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
+   while (jointAnchor != null)
+   {
+      jointAnchor.mJoint.GetPhysicsProxyJoint ().ReconncetShape (mProxyShape, jointAnchor.mAnchorIndex == 0);
+      
+      jointAnchor = jointAnchor.mNextAnchor;
+   }
 }
 
 public function AttachWith (anotherShape:EntityShape):void
 {
+  // var 
 }
 
 public function DetachThenAttachWith (anotherShape:EntityShape):void
 {
-   var newBody:EntityBody = shape.GetBody ();
-   if (shape.GetBody () == mBody)
+   var newBody:EntityBody = anotherShape.GetBody ();
+   if (newBody == mBody)
       return;
    
-   var oldBody = mBody;
+   var oldBody:EntityBody = mBody;
    SetBody (null);
-   oldBody.OnBodyPhysicsShapeListChanged ();
+   oldBody.OnPhysicsShapeListChanged ();
    
    SetBody (newBody);
    
@@ -249,5 +227,9 @@ public function DetachThenAttachWith (anotherShape:EntityShape):void
    newBody.RebuildBodyPhysics (); // it is possible newBody has not built phyiscs yet.
    RebuildShapePhysics ();
    
-   newBody.OnBodyPhysicsShapeListChanged ();
+   newBody.OnPhysicsShapeListChanged ();
+}
+
+public function BreakupBrothers  ():void
+{
 }

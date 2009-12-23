@@ -384,6 +384,11 @@ package player.entity {
       
       internal var mPhysicsProxy:PhysicsProxy = null;
       
+      public function IsPhysicsBuilt ():Boolean
+      {
+         return mPhysicsProxy != null;
+      }
+      
       public function GetPhysicsProxy ():PhysicsProxy
       {
          return mPhysicsProxy;

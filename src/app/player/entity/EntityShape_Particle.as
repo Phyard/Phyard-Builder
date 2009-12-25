@@ -11,6 +11,8 @@ package player.entity {
       private var mLifeDuration:Number = 1.2; // seconds
       private var mLife:Number = 0.0;
       
+      // ...
+      
       public function EntityShape_Particle (world:World, lifeDuration:Number)
       {
          super (world);
@@ -54,6 +56,8 @@ package player.entity {
          else
          {
             SetAlpha ((mLifeDuration - mLife) / mLifeDuration);
+            
+            mBody.mPhysicsProxyBody.AddForceAtPoint (- mMass * mWorld.GetCurrentGravityAccelerationX (), - mMass * mWorld.GetCurrentGravityAccelerationY (), mPositionX, mPositionY);
          }
       }
       

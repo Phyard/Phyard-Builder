@@ -48,7 +48,7 @@ public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number
    
    var minCountEachStep:int = NumParticlesToCreatedEachStep / 2;
    bomb.mNumParticles = int ((numParticles + minCountEachStep - 1) / minCountEachStep) * minCountEachStep;
-   bomb.mParticleSpeed = mCoordinateSystem.D2P_LinearVelocityMagnitude (particleDisplaySpeed);
+   bomb.mParticleSpeed = particleDisplaySpeed; //mCoordinateSystem.D2P_LinearVelocityMagnitude (particleDisplaySpeed);
    bomb.mParticelDensity = particleDensity;
    bomb.mParticelLifeDuration = particleLifeTime;
    bomb.mParticleStartIdInterval = GetParticleStartIdInterval (bomb.mNumParticles);
@@ -104,7 +104,8 @@ public function ParticleManager_Update (dt:Number):void
          cos = Math.cos (angle);
          sin = Math.sin (angle);
          
-         CreateEntityParticle (
+         EntityShape.CreateParticle (
+                  this,
                   bomb.mPosX + bomb.mRadius * cos, 
                   bomb.mPosY + bomb.mRadius * sin, 
                   bomb.mParticleSpeed * cos, 
@@ -152,26 +153,4 @@ private function GetParticleStartIdInterval (numParticles:int):int
 //==============================================================
 
 
-private function CreateEntityParticle (posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, lifeDuration:Number):EntityShape_Particle
-{
-   var body:EntityBody = new EntityBody (this);
-   RegisterEntity (body);
-   
-   var particle:EntityShape_Particle = new EntityShape_Particle (this, lifeDuration);
-   RegisterEntity (particle);
-   
-   particle.SetPositionX (posX);
-   particle.SetPositionY (posY);
-   particle.SetLinearVelocityX (velocityX);
-   particle.SetLinearVelocityY (velocityY);
-   particle.SetDensity (density);
-   particle.SetBody (body);
-   
-   body.RebuildBodyPhysics ();
-   particle.RebuildShapePhysics ();
-   
-   body.OnPhysicsShapeListChanged ();
-   
-   return particle;
-}
 

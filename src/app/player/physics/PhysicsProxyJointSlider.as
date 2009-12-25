@@ -10,6 +10,7 @@ package player.physics {
    import Box2D.Common.b2Vec2;
    
    import player.entity.SubEntityJointAnchor;
+   import player.entity.EntityShape;
    
    public class PhysicsProxyJointSlider extends PhysicsProxyJoint
    {
@@ -45,7 +46,7 @@ package player.physics {
          return new Point (vec.x, vec.y);
       }
       
-      override public function ReconncetShape (proxyShape:PhysicsProxyShape, isShapeA:Boolean):void
+      override public function ReconncetShape (shape:EntityShape, isShapeA:Boolean):void
       {
          if (! isShapeA)
          {
@@ -53,13 +54,13 @@ package player.physics {
             
             var worldVec:b2Vec2 = body2.GetWorldPoint(_localAnchor2InBody2);
             
-            super.ReconncetShape (proxyShape, isShapeA);
+            super.ReconncetShape (shape, isShapeA);
             
             _localAnchor2InBody2 = body2.GetLocalPoint(worldVec);
          }
          else
          {
-            super.ReconncetShape (proxyShape, isShapeA);
+            super.ReconncetShape (shape, isShapeA);
          }
       }
       

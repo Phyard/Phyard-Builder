@@ -325,7 +325,6 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 		tempV.y = - CdotVec2.y;
 		impulseVec2 = m_mass.Solve22 (tempV);
 
-
 		m_impulse.x += impulseVec2.x;
 		m_impulse.y += impulseVec2.y;
 

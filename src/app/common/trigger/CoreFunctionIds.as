@@ -273,9 +273,10 @@ package common.trigger {
       public static const ID_EntityShape_Detach:int                         = 1260;
       public static const ID_EntityShape_AttachWith:int                     = 1261;
       public static const ID_EntityShape_DetachThenAttachWith:int           = 1262;
-      public static const ID_EntityShape_Breakup:int                        = 1263;
+      public static const ID_EntityShape_BreakupBrothers:int                = 1263;
       
-      
+      public static const ID_EntityShape_BreakAllJoints:int                 = 1280;
+	  
    // game /entity / joint
       
       // from 1300

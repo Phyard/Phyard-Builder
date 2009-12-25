@@ -37,9 +37,9 @@ package player.physics {
       private var mContactListener:_ContactListener;
       private var mContactFilter:_ContactFilter;
       
-      public function PhysicsEngine (initialGravity:Point):void
+      public function PhysicsEngine ():void
       {
-         var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (initialGravity.x, initialGravity.y);
+         var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0, 0);
          
          _b2World = b2WorldPool.AllocB2World (gravity);
          _b2GroundBody = _b2World.CreateBody(new b2BodyDef());

@@ -21,7 +21,7 @@ package common.trigger.define
       
       override public function Clone ():ValueSourceDefine
       {
-         return new ValueSourceDefine_Variable (mSpaceType, mSpaceType);
+         return new ValueSourceDefine_Variable (mSpaceType, mVariableIndex);
       }
    }
    

@@ -1034,26 +1034,33 @@ package common.trigger {
                      ],
                      null
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith,
-         //            [
-         //               ValueTypeDefine.ValueType_Entity, 
-         //               ValueTypeDefine.ValueType_Entity, 
-         //            ],
-         //            null
-         //         );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,
-         //            [
-         //               ValueTypeDefine.ValueType_Entity, 
-         //               ValueTypeDefine.ValueType_Entity, 
-         //            ],
-         //            null
-         //         );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Breakup,
-         //            [
-         //               ValueTypeDefine.ValueType_Entity, 
-         //            ],
-         //            null
-         //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+		 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
 
 
          

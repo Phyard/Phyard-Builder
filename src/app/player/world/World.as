@@ -712,6 +712,9 @@ package player.world {
       private var mDefaultGravityAccelerationMagnitude:Number;
       private var mDefaultGravityAccelerationAngle:Number;
       
+      private var mCurrentGravityAccelerationX:Number;
+      private var mCurrentGravityAccelerationY:Number;
+      
       public function SetDefaultGravityAccelerationMagnitude (magnitude:Number):void
       {
          mDefaultGravityAccelerationMagnitude = magnitude;
@@ -731,6 +734,24 @@ package player.world {
       {
          return mDefaultGravityAccelerationAngle;
       }
+      
+      public function SetCurrentGravityAcceleration (gaX:Number, gaY:Number):void
+      {
+         mPhysicsEngine.SetGravityByVector (gaX, gaY);
+         
+         mCurrentGravityAccelerationX = gaX;
+         mCurrentGravityAccelerationY = gaY;
+      }
+      
+      public function GetCurrentGravityAccelerationX ():Number
+      {
+         return mCurrentGravityAccelerationX;
+      }
+      
+      public function GetCurrentGravityAccelerationY ():Number
+      {
+         return mCurrentGravityAccelerationY;
+      }
 
    //===============================
    // create physics
@@ -745,10 +766,12 @@ package player.world {
 
       private function CreatePhysicsEngine ():void
       {
-         mPhysicsEngine = new PhysicsEngine (new Point (mDefaultGravityAccelerationMagnitude * Math.cos (mDefaultGravityAccelerationAngle), mDefaultGravityAccelerationMagnitude * Math.sin (mDefaultGravityAccelerationAngle)));
+         mPhysicsEngine = new PhysicsEngine ();
          
          mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
          mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished);
+         
+         SetCurrentGravityAcceleration (mDefaultGravityAccelerationMagnitude * Math.cos (mDefaultGravityAccelerationAngle), mDefaultGravityAccelerationMagnitude * Math.sin (mDefaultGravityAccelerationAngle));
       }
 
    //===============================

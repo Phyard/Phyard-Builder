@@ -92,6 +92,7 @@ package player.entity {
          return mNumShapes;
       }
       
+      // to add a shape in the body, use EntityShape.SetBody (theBody), don't call AddShape directly
       internal function AddShape (shape:EntityShape):void
       {
          if (shape.mBody != null)
@@ -122,6 +123,7 @@ package player.entity {
          ++ mNumShapes;
       }
       
+      // to remove a shape in the body, use EntityShape.SetBody (null), don't call RemoveShape directly
       internal function RemoveShape (shape:EntityShape):void
       {
          if (shape.mBody != this)
@@ -159,11 +161,6 @@ package player.entity {
             if (next != null)
                next.mPrevPhysicsShapeInBody = prev;
             
-            if (mPhysicsShapeListHead == null)
-            {
-               DestroyPhysicsProxy ();
-            }
-            
             -- mNumPhysicsShapes;
          }
          
@@ -178,13 +175,13 @@ package player.entity {
          {
             Destroy ();
          }
-         else if (physicsListChanged)
+         else if (mPhysicsProxy != null)
          {
             if (mPhysicsShapeListHead == null)
             {
                DestroyPhysicsProxy ();
             }
-            else if (mPhysicsProxy != null)
+            else if (physicsListChanged)
             {
                UpdateBodyPhysicsProperties ();
                CoincideWithCentroid ();
@@ -194,13 +191,14 @@ package player.entity {
       }
       
 //=============================================================
-//   
+//   postion, rotation
 //=============================================================
       
       internal var mCosRotation:Number = 1.0;
       internal var mSinRotation:Number = 0.0;
-      private  var mLastRotation:Number = 0.0;
+      private var mLastRotation:Number = 0.0;
       
+      // EntityBody.Update () will never be called. SynchronizeWithPhysicsProxy will do what Update () should do.
       override public function SynchronizeWithPhysicsProxy ():void
       {
          if (mShapeListHead == null)
@@ -243,6 +241,26 @@ package player.entity {
          {
             mPhysicsProxyBody.SetPositionAndRotation (mPositionX, mPositionY, mRotation);
          }
+      }
+      
+//=============================================================
+//   mass, inertia
+//=============================================================
+      
+      internal function GetMass ():Number
+      {
+         if (mPhysicsProxy == null)
+            return 0.0;
+         else
+            return mPhysicsProxyBody.GetMass ();
+      }
+      
+      internal function GetInertia ():Number
+      {
+         if (mPhysicsProxy == null)
+            return 0.0;
+         else
+            return mPhysicsProxyBody.GetInertia ();
       }
       
 //=============================================================
@@ -309,6 +327,14 @@ package player.entity {
          mPhysicsProxyBody = null;
          
          super.DestroyPhysicsProxy ();
+      }
+      
+      internal function GetPhysicsProxyBody ():PhysicsProxyBody
+      {
+         if (mPhysicsProxy == null)
+            return null;
+         else
+            return mPhysicsProxyBody;
       }
       
       public function RebuildBodyPhysics ():void

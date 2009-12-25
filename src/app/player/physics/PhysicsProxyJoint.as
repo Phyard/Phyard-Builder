@@ -8,6 +8,7 @@ package player.physics {
    import Box2D.Dynamics.b2Body;
    
    import player.entity.EntityJoint;
+   import player.entity.EntityShape;
    
    public class PhysicsProxyJoint extends PhysicsProxy
    {
@@ -21,13 +22,14 @@ package player.physics {
          return null; // to override
       }
       
-      public function ReconncetShape (proxyShape:PhysicsProxyShape, isShapeA:Boolean):void
+      public function ReconncetShape (shape:EntityShape, isShapeA:Boolean):void
       {
          var joint:b2Joint = GetB2joint ();
          if (joint == null)
             return;
          
-         var body:b2Body = proxyShape.mProxyBody._b2Body;
+         var proxyShape:PhysicsProxyShape = shape == null ? null : shape.GetPhysicsProxy () as PhysicsProxyShape;
+         var body:b2Body = proxyShape == null ? mPhysicsEngine._b2GroundBody : proxyShape.mProxyBody._b2Body;
          
          joint.ChangeJointBody (body, isShapeA);
       }

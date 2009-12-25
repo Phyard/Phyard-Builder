@@ -206,8 +206,11 @@ package player.trigger {
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Attach,                      AttachShapes);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Breakup,                     BreakupGluedShapes);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_AttachWith,                  AttachTwoShapes);
+		 RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,        DetachShapeThenAttachWithAnother);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakupBrothers,             BreakupShapeBrothers);
+
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakAllJoints,             BreakShapeJoints);
 
       // game / entity / joint
          
@@ -1506,13 +1509,51 @@ package player.trigger {
 		 shape.Detach ();
       }
       
-      //public static function BreakupGluedShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-      //   if (shape == null)
-      //      return;
-      //   
-      //}
+	  public static function AttachTwoShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape1:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape1 == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var shape2:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape2 == null)
+            return;
+
+		 shape1.AttachWith (shape2);
+      }
+	  
+	  public static function DetachShapeThenAttachWithAnother (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape1:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape1 == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var shape2:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape2 == null)
+            return;
+
+		 shape1.DetachThenAttachWith (shape2);
+      }
+	  
+      public static function BreakupShapeBrothers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+		 shape.BreakupBrothers ();
+      }
+	  
+	  public static function BreakShapeJoints (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+		 shape.BreakAllJoints ();
+      }
 
    //*******************************************************************
    // entity / shape / text

@@ -763,7 +763,6 @@ package common
             case ValueTypeDefine.NumberTypeUsage_AngularImpulse:
                directValue = D2P_AngularImpulse (directValue);
                break;
-               
             case ValueTypeDefine.NumberTypeUsage_LinearDeltaX:
                directValue = D2P_LinearDeltaX (directValue);
                break;

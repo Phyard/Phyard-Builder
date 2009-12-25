@@ -182,54 +182,260 @@ public function Detach ():void
    if (oldBody.mNumShapes == 1 && oldBody.mShapeListHead == this)
       return;
    
+   var isPhysicsShape:Boolean = IsPhysicsShape ();
+   
 // crete a new body
    
-   SetBody (null);
-   oldBody.OnPhysicsShapeListChanged ();
+   if (isPhysicsShape)
+      UpdateVelocityAndWorldCentroid ();
    
    var newBody:EntityBody = new EntityBody (mWorld);
    mWorld.RegisterEntity (newBody);
    
    SetBody (newBody);
-   newBody.RebuildBodyPhysics ();
-   RebuildShapePhysics ();
-   newBody.OnPhysicsShapeListChanged ();
+   if (isPhysicsShape)
+   {
+      RebuildShapePhysics ();
+   }
    
 // now, the joints connected with shapes are still connect the old body (because in box2d, joints are connected with body instead of shape)
    
    var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
    while (jointAnchor != null)
    {
-      jointAnchor.mJoint.GetPhysicsProxyJoint ().ReconncetShape (mProxyShape, jointAnchor.mAnchorIndex == 0);
+      jointAnchor.mJoint.GetPhysicsProxyJoint ().ReconncetShape (this, jointAnchor.mAnchorIndex == 0);
       
       jointAnchor = jointAnchor.mNextAnchor;
    }
+   
+// ...
+   
+   // now newBody == mBody
+   newBody.OnPhysicsShapeListChanged ();
+   
+   if (isPhysicsShape)
+      AddMomentumToBody ();
+   
+// ..
+   
+   oldBody.OnPhysicsShapeListChanged ();
 }
 
 public function AttachWith (anotherShape:EntityShape):void
 {
-  // var 
+trace ("AttachWith");
+   var anotherBody:EntityBody = anotherShape.GetBody ();
+   
+   if (anotherBody == mBody)
+      return;
+trace ("AttachWith 111");
+   
+// ...
+   
+   var keptBody:EntityBody;
+   var discardedBody:EntityBody;
+   if (mBody.mNumPhysicsShapes == anotherBody.mNumPhysicsShapes)
+   {
+      if (mBody.mNumShapes >= anotherBody.mNumShapes)
+      {
+         keptBody = mBody;
+         discardedBody = anotherBody;
+      }
+      else
+      {
+         keptBody = anotherBody;
+         discardedBody = mBody;
+      }
+   }
+   else if (mBody.mNumPhysicsShapes > anotherBody.mNumPhysicsShapes)
+   {
+      keptBody = mBody;
+      discardedBody = anotherBody;
+   }
+   else
+   {
+      keptBody = anotherBody;
+      discardedBody = mBody;
+   }
+   
+// ...
+   
+   var isPhysicsBody:Boolean = discardedBody.mPhysicsShapeListHead != null;
+   
+   discardedBody.SynchronizeVelocityWithPhysicsProxy ();
+   var discardMass:Number = discardedBody.GetMass ();
+   var discardInertia:Number = discardedBody.GetInertia ();
+   
+// ...
+   
+   var shape:EntityShape;
+   var jointAnchor:SubEntityJointAnchor;
+   while (discardedBody.mShapeListHead != null)
+   {
+      shape = discardedBody.mShapeListHead;
+      
+      shape.SetBody (keptBody);
+      if (shape.IsPhysicsShape ())
+         shape.RebuildShapePhysics ();
+      
+      jointAnchor = shape.mJointAnchorListHead;
+      while (jointAnchor != null)
+      {
+         jointAnchor.mJoint.GetPhysicsProxyJoint ().ReconncetShape (shape, jointAnchor.mAnchorIndex == 0);
+         
+         jointAnchor = jointAnchor.mNextAnchor;
+      }
+   }
+   
+// ..
+   
+   keptBody.OnPhysicsShapeListChanged ();
+   
+   if (isPhysicsBody)
+   {
+      var momentumX:Number = discardMass * discardedBody.mLinearVelocityX;
+      var momentumY:Number = discardMass * discardedBody.mLinearVelocityY;
+      keptBody.mPhysicsProxyBody.AddLinearImpulseAtPoint (momentumX, momentumY, discardedBody.mPositionX, discardedBody.mPositionY);
+      keptBody.mPhysicsProxyBody.AddAngularImpulse (discardInertia * discardedBody.mAngularVelocity + (discardedBody.mPositionX - keptBody.mPositionX) * momentumY - (discardedBody.mPositionY - keptBody.mPositionY) * momentumX);
+   }
+   
+// ..
+   
+   discardedBody.OnPhysicsShapeListChanged ();
 }
 
 public function DetachThenAttachWith (anotherShape:EntityShape):void
 {
-   var newBody:EntityBody = anotherShape.GetBody ();
-   if (newBody == mBody)
+   var anotherBody:EntityBody = anotherShape.GetBody ();
+   
+   if (anotherBody == mBody)
       return;
    
+   var isPhysicsShape:Boolean = IsPhysicsShape ();
+   
    var oldBody:EntityBody = mBody;
-   SetBody (null);
+   
+   UpdateVelocityAndWorldCentroid ();
+   
+   SetBody (anotherBody);
+   if (isPhysicsShape)
+      RebuildShapePhysics ();
+   
+// ...
+   
+   var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
+   while (jointAnchor != null)
+   {
+      jointAnchor.mJoint.GetPhysicsProxyJoint ().ReconncetShape (this, jointAnchor.mAnchorIndex == 0);
+      
+      jointAnchor = jointAnchor.mNextAnchor;
+   }
+   
+// ..
+   
+   // now anotherBody == mBody
+   anotherBody.OnPhysicsShapeListChanged ();
+   
+   if (isPhysicsShape)
+      AddMomentumToBody ();
+   
+// ...
+   
    oldBody.OnPhysicsShapeListChanged ();
-   
-   SetBody (newBody);
-   
-   // now newBody == mBody
-   newBody.RebuildBodyPhysics (); // it is possible newBody has not built phyiscs yet.
-   RebuildShapePhysics ();
-   
-   newBody.OnPhysicsShapeListChanged ();
 }
 
-public function BreakupBrothers  ():void
+public function BreakupBrothers ():void
 {
+   var oldBody:EntityBody = mBody;
+   
+   var newBody:EntityBody;
+   var shape:EntityShape;
+   var jointAnchor:SubEntityJointAnchor;
+   var isPhysicsShape:Boolean;
+   
+   while (oldBody.mShapeListHead != null)
+   {
+      shape = oldBody.mShapeListHead;
+      
+      isPhysicsShape = shape.IsPhysicsShape ();
+      
+      if (isPhysicsShape)
+         shape.UpdateVelocityAndWorldCentroid ();
+      
+      newBody = new EntityBody (mWorld);
+      mWorld.RegisterEntity (newBody);
+      
+      shape.SetBody (newBody);
+      if (isPhysicsShape)
+      {
+         shape.RebuildShapePhysics ();
+      }
+      
+      jointAnchor = shape.mJointAnchorListHead;
+      while (jointAnchor != null)
+      {
+         jointAnchor.mJoint.GetPhysicsProxyJoint ().ReconncetShape (shape, jointAnchor.mAnchorIndex == 0);
+         
+         jointAnchor = jointAnchor.mNextAnchor;
+      }
+      
+      newBody.OnPhysicsShapeListChanged ();
+      
+      if (isPhysicsShape)
+         shape.AddMomentumToBody ();
+   }
+   
+// ..
+   
+   oldBody.OnPhysicsShapeListChanged ();
+}
+
+public function BreakAllJoints ():void
+{
+   while (mJointAnchorListHead != null)
+   {
+      mJointAnchorListHead.mJoint.Destroy ();
+   }
+}
+
+public function BreakAllJointsOfBrothers ():void
+{
+   
+}
+
+public function BreakAllJointsOfIsland ():void
+{
+   
+}
+
+//================================================================
+// misc 
+//================================================================
+
+public static function CreateParticle (world:World, posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, lifeDuration:Number):EntityShape_Particle
+{
+   var body:EntityBody = new EntityBody (world);
+   world.RegisterEntity (body);
+   
+   var particle:EntityShape_Particle = new EntityShape_Particle (world, lifeDuration);
+   world.RegisterEntity (particle);
+   
+   particle.SetPositionX (posX);
+   particle.SetPositionY (posY);
+   particle.SetLinearVelocityX (velocityX);
+   particle.SetLinearVelocityY (velocityY);
+   particle.SetDensity (density);
+   particle.SetBody (body);
+   
+   particle.RebuildShapePhysics ();
+   
+   body.OnPhysicsShapeListChanged ();
+   
+   // for circle, postion == centroid
+   particle.mWorldCentroidX = posX;
+   particle.mWorldCentroidY = posY;
+   particle.AddMomentumToBody ();
+   
+   // ...
+   return particle;
 }

@@ -1050,19 +1050,33 @@ package editor.trigger {
                      ],
                      null
                   );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Attach, entity_shape_package, "GlueShapes", 
-         //            [
-         //                    new VariableDefinitionEntity ("Shape 1"), 
-         //                    new VariableDefinitionEntity ("Shape 2"), 
-         //            ],
-         //            null
-         //         );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Breakup, entity_shape_package, "BreakupGluedShapes", 
-         //            [
-         //                    new VariableDefinitionEntity ("One Shape in Glueds"), 
-         //            ],
-         //            null
-         //         );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith, entity_shape_package, "AttachShapes", 
+                     [
+                             new VariableDefinitionEntity ("Shape 1"), 
+                             new VariableDefinitionEntity ("Shape 2"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith, entity_shape_package, "DetachThenAttach", 
+                     [
+                             new VariableDefinitionEntity ("Shape 1"), 
+                             new VariableDefinitionEntity ("Shape 2"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers, entity_shape_package, "BreakupBrothers", 
+                     [
+                             new VariableDefinitionEntity ("One Borther Shape"), 
+                     ],
+                     null
+                  );
+	     
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_package, "BreakAllJoints",
+                     [
+                        new VariableDefinitionEntity ("The Shape"),  
+                     ],
+                     null
+                  );
 
 
          

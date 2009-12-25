@@ -106,7 +106,7 @@ package common {
 // bomb
 //===========================================================================
       
-      public static const MaxCoexistParticles:uint = 500;
+      public static const MaxCoexistParticles:uint = 1000;
       
       public static const MinBombRadius:uint = 2; // don't change
       public static const MaxBombRadius:uint = 16;

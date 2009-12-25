@@ -267,23 +267,26 @@ package Box2D.Dynamics.Joints
 			if (isBodyA)
 			{
 				oldBody = m_bodyA;
+				if (oldBody == newBody)
+					return;
+				
 				edge = m_edgeA;
 				m_bodyA = newBody;
+				m_edgeB.other = newBody;
 			}
 			else
 			{
 				oldBody = m_bodyB;
+				if (oldBody == newBody)
+					return;
+				
 				edge = m_edgeB;
 				m_bodyB = newBody;
+				m_edgeA.other = newBody;
 			}
 
 			oldBody.SetAwake(true);
 			newBody.SetAwake(true);
-
-			if (m_collideConnected == false)
-			{
-				FlagConnectedContactsForFiltering ()
-			}
 
 		// remove self from old body joint list
 
@@ -308,6 +311,11 @@ package Box2D.Dynamics.Joints
 			edge.next = newBody.m_jointList;
 			if (newBody.m_jointList != null) newBody.m_jointList.prev = edge;
 			newBody.m_jointList = edge;
+
+			if (m_collideConnected == false)
+			{
+				FlagConnectedContactsForFiltering ()
+			}
 
 		// more tot do ...
 

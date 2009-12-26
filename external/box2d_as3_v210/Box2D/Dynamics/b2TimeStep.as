@@ -52,7 +52,6 @@ package Box2D.Dynamics
 		public var velocityIterations:int;
 		public var positionIterations:int;
 		public var warmStarting:Boolean;
-		public var resetForces:Boolean;
 	} // class
 } // package
 

@@ -18,7 +18,7 @@ package Box2D.Dynamics
 			angularVelocity = 0.0;
 			linearDamping = 0.0;
 			angularDamping = 0.0;
-			autoSleep = true;
+			allowSleep = true;
 			awake = true;
 			fixedRotation = false;
 			bullet = false;
@@ -27,8 +27,10 @@ package Box2D.Dynamics
 			inertiaScale = 1.0;
 		}
 
-		/// Use this to store application specific body data.
-		public var userData:Object;
+		/// The body type: static, kinematic, or dynamic.
+		/// Note: if a dynamic body would have zero mass, the mass is set to one.
+		//b2BodyType type;
+		public var type:int;
 
 		/// The world position of the body. Avoid creating bodies at the origin
 		/// since this can lead to many overlapping shapes.
@@ -55,7 +57,7 @@ package Box2D.Dynamics
 
 		/// Set this flag to false if this body should never fall asleep. Note that
 		/// this increases CPU usage.
-		public var autoSleep:Boolean;
+		public var allowSleep:Boolean;
 
 		/// Is this body initially awake or sleeping?
 		public var awake:Boolean;
@@ -72,10 +74,8 @@ package Box2D.Dynamics
 		/// Does this body start out active?
 		public var active:Boolean;
 
-		/// The body type: static, kinematic, or dynamic.
-		/// Note: if a dynamic body would have zero mass, the mass is set to one.
-		//b2BodyType type;
-		public var type:int;
+		/// Use this to store application specific body data.
+		public var userData:Object;
 
 		/// Experimental: scales the inertia tensor.
 		public var inertiaScale:Number;

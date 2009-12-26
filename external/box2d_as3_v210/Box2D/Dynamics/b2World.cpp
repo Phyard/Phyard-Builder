@@ -144,7 +144,7 @@ public function DestroyBody(b:b2Body):void
 		
 		//>> patch, if is possible the 2 bodies of a joint are the same body., 
 		// which means there are 2 same joints in the joint list of a body
-		
+		// this block doesn't exist in v++ version
 		var prev_je:b2JointEdge = je0;
 		var next_je:b2JointEdge = prev_je.next;
 		while (next_je != null)
@@ -158,7 +158,6 @@ public function DestroyBody(b:b2Body):void
 			prev_je = next_je;
 			next_je = prev_je.next;
 		}
-		
 		//<<
 		
 		je = je.next;
@@ -915,7 +914,7 @@ public function SolveTOI(step:b2TimeStep):void
 	//m_stackAllocator.Free(queue);
 }
 
-public function Step(dt:Number, velocityIterations:int, positionIterations:int, resetForces:Boolean):void
+public function Step(dt:Number, velocityIterations:int, positionIterations:int):void
 {
 	var height:int;
 	height = m_contactManager.m_broadPhase.ComputeHeight();
@@ -933,7 +932,6 @@ public function Step(dt:Number, velocityIterations:int, positionIterations:int, 
 	step.dt = dt;
 	step.velocityIterations	= velocityIterations;
 	step.positionIterations = positionIterations;
-	step.resetForces = resetForces;
 	if (dt > 0.0)
 	{
 		step.inv_dt = 1.0 / dt;
@@ -982,6 +980,15 @@ public function Step(dt:Number, velocityIterations:int, positionIterations:int, 
 	}
 
 	m_flags &= ~e_locked;
+}
+
+public function ClearForces():void
+{
+	for (var body:b2Body = m_bodyList; body != null; body = body.GetNext())
+	{
+		body.m_force.SetZero();
+		body.m_torque = 0.0;
+	}
 }
 
 //struct b2WorldQueryWrapper

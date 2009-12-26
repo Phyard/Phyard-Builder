@@ -216,13 +216,6 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		b.m_linearVelocity.y += step.dt * (gravity.y + b.m_invMass * b.m_force.y);
 		b.m_angularVelocity += step.dt * b.m_invI * b.m_torque;
 
-		// Reset forces.
-		if (step.resetForces)
-		{
-			b.m_force.SetZero ();
-			b.m_torque = 0.0;
-		}
-
 		// Apply damping.
 		// ODE: dv/dt + c * v = 0
 		// Solution: v(t) = v0 * exp(-c * t)
@@ -353,7 +346,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		for (i = 0; i < m_bodyCount; ++i)
 		{
 			b = m_bodies[i];
-			if (b.GetType() != b2Body.b2_dynamicBody)
+			if (b.GetType() == b2Body.b2_staticBody)
 			{
 				continue;
 			}
@@ -365,14 +358,8 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 			}
 
 			if ((b.m_flags & b2Body.e_autoSleepFlag) == 0 ||
-//#ifdef TARGET_FLOAT32_IS_FIXED
-//				b2Abs(b->m_angularVelocity) > b2_angularSleepTolerance ||
-//				b2Abs(b->m_linearVelocity.x) > b2_linearSleepTolerance ||
-//				b2Abs(b->m_linearVelocity.y) > b2_linearSleepTolerance)
-//#else
 				b.m_angularVelocity * b.m_angularVelocity > angTolSqr ||
 				b2Math.b2Dot2(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr)
-//#endif
 			{
 				b.m_sleepTime = 0.0;
 				minSleepTime = 0.0;

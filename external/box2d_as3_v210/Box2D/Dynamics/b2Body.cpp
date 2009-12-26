@@ -42,7 +42,7 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 	{
 		m_flags |= e_fixedRotationFlag;
 	}
-	if (bd.autoSleep)
+	if (bd.allowSleep)
 	{
 		m_flags |= e_autoSleepFlag;
 	}

@@ -228,6 +228,7 @@ package Box2D.Dynamics
 		{
 			m_density = density;
 			
+			// the following doesn't exit in c++ version
 			if (m_body != null)
 			{
 				m_body.OnMassDataChanged ();

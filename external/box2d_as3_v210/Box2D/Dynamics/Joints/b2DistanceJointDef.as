@@ -35,7 +35,7 @@ package Box2D.Dynamics.Joints
 		/// The natural length between the anchor points.
 		public var length:Number;
 
-		/// The response speed.
+		/// The mass-spring-damper frequency in Hertz.
 		public var frequencyHz:Number;
 
 		/// The damping ratio. 0 = no damping, 1 = critical damping.

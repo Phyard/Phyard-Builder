@@ -264,3 +264,25 @@ override public function GetReactionTorque(inv_dt:Number):Number
 {
 	return inv_dt * m_angularImpulse;
 }
+
+public function SetMaxForce(force:Number):void
+{
+	//b2Assert(b2IsValid(force) && force >= 0.0f);
+	m_maxForce = force;
+}
+
+public function GetMaxForce():Number
+{
+	return m_maxForce;
+}
+
+public function SetMaxTorque(torque:Number):void
+{
+	//b2Assert(b2IsValid(torque) && torque >= 0.0f);
+	m_maxTorque = torque;
+}
+
+public function GetMaxTorque():Number
+{
+	return m_maxTorque;
+}

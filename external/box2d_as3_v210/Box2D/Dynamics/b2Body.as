@@ -46,12 +46,6 @@ package Box2D.Dynamics
 		
 	//public:
 	
-		/// Set the type of this body. This may alter the mass and velocity.
-		//void SetType(b2BodyType type);
-
-		/// Get the type of this body.
-		//b2BodyType GetType() const;
-
 		/// Creates a fixture and attach it to this body. Use this function if you need
 		/// to set some fixture parameters, like friction. Otherwise you can create the
 		/// fixture directly from a shape.
@@ -206,6 +200,12 @@ package Box2D.Dynamics
 
 		/// Set the angular damping of the body.
 		//void SetAngularDamping(float32 angularDamping);
+
+		/// Set the type of this body. This may alter the mass and velocity.
+		//void SetType(b2BodyType type);
+
+		/// Get the type of this body.
+		//b2BodyType GetType() const;
 
 		/// Should this body be treated like a bullet for continuous collision detection?
 		//void SetBullet(bool flag);

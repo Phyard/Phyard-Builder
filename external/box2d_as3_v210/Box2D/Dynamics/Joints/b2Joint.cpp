@@ -166,6 +166,8 @@ public static function Destroy (joint:b2Joint, allocator:b2BlockAllocator = null
 
 public function b2Joint(def:b2JointDef)
 {
+	//b2Assert(def->bodyA != def->bodyB);
+
 	m_type = def.type;
 	m_prev = null;
 	m_next = null;

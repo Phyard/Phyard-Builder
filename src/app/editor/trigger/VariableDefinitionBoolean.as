@@ -17,11 +17,15 @@ package editor.trigger {
       
       protected var mDefaultValue:Boolean = false;
       
-      public function VariableDefinitionBoolean (name:String, description:String = null, defalutValue:Boolean = false)
+      public function VariableDefinitionBoolean (name:String, description:String = null, options:Object = null)
       {
-         super (name, ValueTypeDefine.ValueType_Boolean, description);
+         super (ValueTypeDefine.ValueType_Boolean, name, description);
          
-         mDefaultValue = defalutValue;
+         if (options != null)
+         {
+            if (options.mDefaultValue != undefined)
+               mDefaultValue = Boolean (options.mDefaultValue);
+         }
       }
       
 //==============================================================================

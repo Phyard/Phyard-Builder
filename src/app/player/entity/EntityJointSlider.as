@@ -73,6 +73,11 @@ package player.entity {
             mLowerTranslation = upperTranslation;
             mUpperTranslation = lowerTranslation;
          }
+         
+         if (mPhysicsProxy != null)
+         {
+            mProxyJointSlider.SetLimits (mLowerTranslation, mUpperTranslation);
+         }
       }
       
       public function SetEnableLimits (enableLimits:Boolean):void
@@ -177,7 +182,7 @@ package player.entity {
       
       override internal function GetPhysicsProxyJoint ():PhysicsProxyJoint
       {
-         return mProxyJointSlider;
+         return mPhysicsProxy == null ? null :mProxyJointSlider;
       }
       
       override public function ConfirmConnectedShapes ():void

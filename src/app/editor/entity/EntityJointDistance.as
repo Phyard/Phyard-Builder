@@ -45,16 +45,27 @@ package editor.entity {
          super.Destroy ();
       }
       
+      override public function UpdateJointPosition ():void
+      {
+         SetPosition (0.5 * (mAnchor1.x + mAnchor2.x), 0.5 * (mAnchor1.y + mAnchor2.y));
+         SetRotation (Math.atan2 (mAnchor2.y - mAnchor1.y, mAnchor2.x - mAnchor1.x));
+      }
+      
       override public function UpdateAppearance ():void
       {
          alpha = 0.7;
          
-         var x1:Number = mAnchor1.x;
-         var y1:Number = mAnchor1.y;
-         var x2:Number = mAnchor2.x;
-         var y2:Number = mAnchor2.y;
+         var x1:Number = mAnchor1.x - x;
+         var y1:Number = mAnchor1.y - y;
+         var x2:Number = mAnchor2.x - x;
+         var y2:Number = mAnchor2.y - y;
          
-         GraphicsUtil.ClearAndDrawLine (this, x1, y1, x2, y2);
+         var dx:Number = x2 - x1;
+         var dy:Number = y2 - y1;
+         
+         var length:Number = Math.sqrt (dx * dx + dy * dy);
+         
+         GraphicsUtil.ClearAndDrawLine (this, - 0.5 * length, 0, 0.5 * length, 0);
       }
       
       public function GetAnchor1 ():SubEntityDistanceAnchor

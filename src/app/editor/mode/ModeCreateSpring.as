@@ -80,7 +80,7 @@ package editor.mode {
             mEntityJointSpring.GetAnchor2 ().SetPosition (posX, posY);
          }
          
-         mEntityJointSpring.UpdateAppearance ();
+         mEntityJointSpring.NotifyAnchorPositionChanged ();
          
          mMainView.UpdateSelectedEntityInfo ();
       }

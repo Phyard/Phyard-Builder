@@ -80,7 +80,7 @@ package editor.mode {
             mEntityJointSlider.GetAnchor2 ().SetPosition (posX, posY);
          }
          
-         mEntityJointSlider.UpdateAppearance ();
+         mEntityJointSlider.NotifyAnchorPositionChanged ();
          
          mMainView.UpdateSelectedEntityInfo ();
       }

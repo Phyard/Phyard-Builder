@@ -267,6 +267,16 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ConditionAssign,
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Negative,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -275,6 +285,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Add,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -815,6 +826,13 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     null
+                  );
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,
                      [
@@ -893,6 +911,19 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      null
+                  );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Overlapped,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
                   );
          
       // game / entity / shape
@@ -1064,11 +1095,7 @@ package common.trigger {
 
 
          
-      // game / entity / joint
-         
-         
-         
-      // game / entity / util
+      // game / entity / shape / text
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_GetText,
                      [
@@ -1100,6 +1127,27 @@ package common.trigger {
                   );
       }
       
+      // game / entity / joint
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimits,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
+                     ],
+                     null
+                  );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                     ],
+                     null
+                  );
+         
+         
 //===========================================================
 // util functions
 //===========================================================

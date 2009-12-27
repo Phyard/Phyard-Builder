@@ -184,20 +184,23 @@ package editor.entity {
          return Math.sqrt (dx * dx + dy * dy);
       }
       
+      override public function UpdateJointPosition ():void
+      {
+         SetPosition (0.5* (mAnchor1.x + mAnchor2.x), 0.5 * (mAnchor1.y + mAnchor2.y));
+         SetRotation (Math.atan2 (mAnchor2.y - mAnchor1.y, mAnchor2.x - mAnchor1.x));
+      }
+      
       override public function UpdateAppearance ():void
       {
          alpha = 0.7;
          
-         var x1:Number = mAnchor1.x;
-         var y1:Number = mAnchor1.y;
-         var x2:Number = mAnchor2.x;
-         var y2:Number = mAnchor2.y;
+         var x1:Number = mAnchor1.x - x;
+         var y1:Number = mAnchor1.y - y;
+         var x2:Number = mAnchor2.x - x;
+         var y2:Number = mAnchor2.y - y;
          
          var dx:Number = x2 - x1;
          var dy:Number = y2 - y1;
-         
-         SetRotation (Math.atan2 (dy, dx));
-         SetPosition (x1, y1);
          
          var length:Number = Math.sqrt (dx * dx + dy * dy);
          var staticLength:Number = mStaticLengthRatio * length;
@@ -213,13 +216,13 @@ package editor.entity {
          
          graphics.clear ();
          
-         var xa:Number = 0;
+         var xa:Number = - 0.5 * length;
          var ya:Number = 0;
-         var xb:Number = segmentLen / 3;
+         var xb:Number = xa + segmentLen / 3;
          var yb:Number = - halfSpringWidth;
-         var xc:Number = segmentLen * 2 / 3;
+         var xc:Number = xa + segmentLen * 2 / 3;
          var yc:Number = halfSpringWidth;
-         var xd:Number = segmentLen;
+         var xd:Number = xa + segmentLen;
          var yd:Number = 0;
          for (var i:int = 0; i < numSegments; ++ i)
          {

@@ -12,13 +12,17 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      protected var mMaxLength:int;
+      protected var mMaxLength:int = 0;
       
-      public function VariableDefinitionString (name:String, description:String = null, maxLength:int = 0)
+      public function VariableDefinitionString (name:String, description:String = null, options:Object = null)
       {
-         super (name, ValueTypeDefine.ValueType_String, description);
+         super (ValueTypeDefine.ValueType_String, name, description);
          
-         mMaxLength = maxLength;
+         if (options != null)
+         {
+            if (options.mMaxLength != undefined)
+               mMaxLength = int (options.mMaxLength);
+         }
       }
       
       protected function ValidateValue (text:String):String

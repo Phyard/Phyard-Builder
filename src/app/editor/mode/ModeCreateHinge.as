@@ -63,7 +63,7 @@ package editor.mode {
          
          mEntityJointHinge.GetAnchor ().SetPosition (posX, posY);
          
-         mEntityJointHinge.UpdateAppearance ();
+         mEntityJointHinge.NotifyAnchorPositionChanged ();
          
          mMainView.UpdateSelectedEntityInfo ();
       }

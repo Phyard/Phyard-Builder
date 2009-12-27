@@ -65,6 +65,8 @@ package common.trigger {
       
       public static const ID_Math_Assign:int                      = 300; // 
       public static const ID_Math_Negative:int                    = 301; // 
+      public static const ID_Math_ConditionAssign:int             = 302; //
+      
       
       public static const ID_Math_Add:int                         = 306; // 
       public static const ID_Math_Subtract:int                    = 307; // 
@@ -157,7 +159,7 @@ package common.trigger {
       
       public static const ID_CCat_Assign:int                              = 850; // world
       public static const ID_CCat_SetCollideInternally:int                = 851; // world
-      public static const ID_CCat_SetAsFriends:int                          = 852; // world
+      public static const ID_CCat_SetAsFriends:int                        = 852; // world
       
    // game / entity
       
@@ -167,8 +169,9 @@ package common.trigger {
       public static const ID_Entity_SetTaskSuccessed:int               = 911; // entity.shape
       public static const ID_Entity_IsTaskFailed:int                   = 912; // entity.shape
       public static const ID_Entity_SetTaskFailed:int                  = 913; // entity.shape
-      public static const ID_Entity_IsTaskUnfinished:int                = 914; // entity.shape
+      public static const ID_Entity_IsTaskUnfinished:int               = 914; // entity.shape
       public static const ID_Entity_SetTaskUnfinished:int              = 915; // entity.shape
+      public static const ID_Entity_SetTaskStatus:int                  = 916; // entity.shape
       
       public static const ID_Entity_IsShapeEntity:int                  = 920; // entity.shape
       public static const ID_Entity_IsCircleShapeEntity:int            = 920; // entity.shape
@@ -194,6 +197,8 @@ package common.trigger {
       //public static const ID_Entity_SetRotationByDegrees:int         = 1008; // entity 
       
       public static const ID_Entity_Destroy:int                        = 1050; // entity 
+      
+      public static const ID_Entity_Overlapped:int                     = 1060; // entity 
       
    // game / entity / shape
       
@@ -277,23 +282,27 @@ package common.trigger {
       
       public static const ID_EntityShape_BreakAllJoints:int                 = 1280;
 	  
-   // game /entity / joint
-      
-      // from 1300
-      
-   // game / entity / utils
+   // game / entity / shape / text
       
       public static const ID_EntityText_GetText:int                   = 1550; // entity.text
       public static const ID_EntityText_SetText:int                   = 1551; // entity.text
       public static const ID_EntityText_AppendText:int                = 1552; // entity.text
       public static const ID_EntityText_AppendNewLine:int             = 1553; // entity.text
       
+   // game / entity / joint
+      
+      // from 2000
+      
+      public static const ID_EntityJoint_SetHingeLimits:int                   = 2000; // entity.text
+      
+      public static const ID_EntityJoint_SetSliderLimits:int                   = 2030; // entity.text
+      
    // game / entity / field
       
-      // from 1800
+      // from 2200
       
    //=============================================================
       
-      public static const NumPlayerFunctions:int = 2000;
+      public static const NumPlayerFunctions:int = 4096;
    }
 }

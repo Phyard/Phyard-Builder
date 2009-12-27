@@ -71,6 +71,11 @@ package player.entity {
             mLowerAngle = upperAngle;
             mUpperAngle = lowerAngle;
          }
+         
+         if (mPhysicsProxy != null)
+         {
+            mProxyJointHinge.SetLimits (mLowerAngle, mUpperAngle);
+         }
       }
       
       public function GetUpperAngle ():Number
@@ -218,7 +223,7 @@ package player.entity {
       
       override internal function GetPhysicsProxyJoint ():PhysicsProxyJoint
       {
-         return mProxyJointHinge;
+         return mPhysicsProxy == null ? null : mProxyJointHinge;
       }
       
       override public function ConfirmConnectedShapes ():void

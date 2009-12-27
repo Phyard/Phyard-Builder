@@ -123,6 +123,10 @@ private var mContactEventHandlerValueSource1:ValueSource_Direct = new ValueSourc
 private var mContactEventHandlerValueSource0:ValueSource_Direct = new ValueSource_Direct (null, mContactEventHandlerValueSource1);
 private var mContactEventHandlerValueSourceList:ValueSource = mContactEventHandlerValueSource0;
 
+private var mContactEventHandlerValueSource1_InvertEntityOrder:ValueSource_Direct = new ValueSource_Direct (null, mContactEventHandlerValueSource2);
+private var mContactEventHandlerValueSource0_InvertEntityOrder:ValueSource_Direct = new ValueSource_Direct (null, mContactEventHandlerValueSource1_InvertEntityOrder);
+private var mContactEventHandlerValueSourceList_InvertEntityOrder:ValueSource = mContactEventHandlerValueSource0_InvertEntityOrder;
+
 private function HandleShapeContactEvents ():void
 {
    var list_element:ListElement_EventHandler;
@@ -134,6 +138,9 @@ private function HandleShapeContactEvents ():void
       mContactEventHandlerValueSource0.mValueObject = contact_info.mEntityShape1;
       mContactEventHandlerValueSource1.mValueObject = contact_info.mEntityShape2;
       mContactEventHandlerValueSource2.mValueObject = mNumSimulatedSteps - contact_info.mBeginContactingFrame;
+      
+      mContactEventHandlerValueSource0_InvertEntityOrder.mValueObject = contact_info.mEntityShape2;
+      mContactEventHandlerValueSource1_InvertEntityOrder.mValueObject = contact_info.mEntityShape1;
       
       isContactContinued = true;
       
@@ -155,7 +162,7 @@ private function HandleShapeContactEvents ():void
          
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mContactEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (list_element.mNeedExchangePairOrder ? mContactEventHandlerValueSourceList_InvertEntityOrder : mContactEventHandlerValueSourceList);
             
             list_element = list_element.mNextListElement;
          }
@@ -169,7 +176,7 @@ private function HandleShapeContactEvents ():void
          
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mContactEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (list_element.mNeedExchangePairOrder ? mContactEventHandlerValueSourceList_InvertEntityOrder : mContactEventHandlerValueSourceList);
             
             list_element = list_element.mNextListElement;
          }
@@ -199,7 +206,7 @@ private function HandleShapeContactEvents ():void
          
          while (list_element != null)
          {
-            list_element.mEventHandler.HandleEvent (mContactEventHandlerValueSourceList);
+            list_element.mEventHandler.HandleEvent (list_element.mNeedExchangePairOrder ? mContactEventHandlerValueSourceList_InvertEntityOrder :mContactEventHandlerValueSourceList);
             
             list_element = list_element.mNextListElement;
          }

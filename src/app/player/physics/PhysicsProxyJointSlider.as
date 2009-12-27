@@ -117,6 +117,11 @@ package player.physics {
 // 
 //========================================================================
       
+      public function SetLimits (lowerTranslation:Number, upperTranslation:Number):void
+      {
+         _b2PrismaticJoint.SetLimits (lowerTranslation, upperTranslation);
+      }
+      
       public function GetJointTranslation ():Number
       {
          return _b2PrismaticJoint.GetJointTranslation ();

@@ -16,17 +16,23 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      protected var mFilterFunction:Function = null;
+      protected var mFilter:Function = null;
       protected var mNullValueEnabled:Boolean = true;
       protected var mMultiValuesEnabled:Boolean = false;
       
-      public function VariableDefinitionEntity (name:String, description:String = null, filterFunc:Function = null, nullValueEnabled:Boolean = true, multiValuesEnabled:Boolean = false)
+      public function VariableDefinitionEntity (name:String, description:String = null, options:Object = null)
       {
-         super (name, ValueTypeDefine.ValueType_Entity, description);
+         super (ValueTypeDefine.ValueType_Entity, name, description);
          
-         mFilterFunction = filterFunc;
-         mNullValueEnabled = nullValueEnabled;
-         mMultiValuesEnabled = multiValuesEnabled;
+         if (options != null)
+         {
+            if (options.mFilter != undefined)
+               mFilter = options.mFilter;
+            if (options.mNullValueEnabled != undefined)
+               mNullValueEnabled = Boolean (options.mNullValueEnabled);
+            if (options.mMultiValuesEnabled != undefined)
+               mMultiValuesEnabled = Boolean (options.mMultiValuesEnabled);
+         }
       }
       
 //==============================================================================
@@ -50,7 +56,7 @@ package editor.trigger {
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
       {
          var world:World = Runtime.GetCurrentWorld ();
-         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (mFilterFunction);
+         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (mFilter);
          
          var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
          var sel_index:int = -1;

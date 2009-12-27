@@ -25,6 +25,9 @@ package player.trigger.entity
       protected var mPairHashtable:Dictionary = null;
       protected var mPairHashtable_IgnorePairOrder:Dictionary = null;
       
+      // for check entity task status convenience
+      protected var mInputEntityArray:Array = null;
+      
       // 
       public function EntityInputEntityAssigner (world:World)
       {
@@ -38,6 +41,8 @@ package player.trigger.entity
       override public function Create (createStageId:int, entityDefine:Object):void
       {
          super.Create (createStageId, entityDefine);
+         
+         var i:int;
          
          if (createStageId == 0)
          {
@@ -77,7 +82,7 @@ package player.trigger.entity
                   var id:int;
                   var id1:int;
                   var id2:int;
-                  for (var i:int = 0; i < length; ++ i)
+                  for (i = 0; i < length; ++ i)
                   {
                      id1 = mEntitiesIndexes1 [i];
                      id2 = mEntitiesIndexes2 [i];
@@ -104,6 +109,17 @@ package player.trigger.entity
                   mEntitiesIndexes1 = entityDefine.mEntityCreationIds;
                   
                   // to optimize: sort by creation id
+                  
+                  // get entities
+                  
+                  if (mEntitiesIndexes1.length > 0)
+                  {
+                     mInputEntityArray = new Array (mEntitiesIndexes1.length);
+                     for (i = 0; i < mEntitiesIndexes1.length; ++ i)
+                     {
+                        mInputEntityArray [i] = mWorld.GetEntityByCreationId (mEntitiesIndexes1 [i]);
+                     }
+                  }
                }
                else
                {
@@ -315,8 +331,34 @@ package player.trigger.entity
       // as input of a task entity
       public function GetEntityListTaskStatus ():int
       {
-         // todo
-         return ValueDefine.TaskStatus_Unfinished;
+         if (mEntityList == null)
+            return ValueDefine.TaskStatus_Unfinished;
+         
+         var numUndertermineds:int = 0;
+         
+         var num:int = mInputEntityArray.length;
+         var entity:Entity;
+         for (var i:int = 0; i < num; ++ i)
+         {
+            entity = mInputEntityArray [i];
+            if (entity != null)
+            {
+               if (entity.IsDestroyedAlready ())
+                  mInputEntityArray.splice (i, 1);
+               else
+               {
+                  if (entity.IsTaskFailed ())
+                     return ValueDefine.TaskStatus_Failed;
+                  else if (entity.IsTaskUnfinished ())
+                     ++ numUndertermineds;
+               }
+            }
+         }
+         
+         if (numUndertermineds > 0)
+            return ValueDefine.TaskStatus_Unfinished;
+         else
+            return ValueDefine.TaskStatus_Successed;
       }
       
    }

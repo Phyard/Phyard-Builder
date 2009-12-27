@@ -440,6 +440,11 @@ package common {
                   entityDefine.mBreakExtendedLength = spring.GetBreakExtendedLength ();
                   //<<
                }
+               
+               if (joint != null)
+               {
+                  joint.UpdateJointPosition ();
+               }
             }
             else if (editorEntity is editor.entity.SubEntityJointAnchor)
             {

@@ -40,6 +40,7 @@ package common.trigger.define
          }
          
          callingDefine.mNumOutputs = mNumOutputs;
+         callingDefine.mOutputValueTargetDefines = new Array (mNumOutputs);
          for (i = 0; i < mNumOutputs; ++ i)
          {
             callingDefine.mOutputValueTargetDefines [i] = (mOutputValueTargetDefines [i] as ValueTargetDefine).Clone ();

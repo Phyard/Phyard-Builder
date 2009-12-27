@@ -8,8 +8,6 @@ package player.trigger.entity
    
    public class EntityTask extends EntityCondition
    {
-      public static var sNeedToReEvaluated:Boolean = false;
-      
       protected var mFirstEntityAssigner:ListElement_InputEntityAssigner = null;
       
       public function EntityTask (world:World)
@@ -53,32 +51,29 @@ package player.trigger.entity
       
       override public function Evaluate ():void
       {
-         if (sNeedToReEvaluated)
+         var num_undetermineds:int = 0;
+         
+         var element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
+         var status:int;
+         
+         while (element != null)
          {
-            var num_faileds:int = 0;
-            var num_undetermineds:int = 0;
-            
-            var element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
-            var status:int;
-            
-            while (element != null)
+            status = element.mInputEntityAssigner.GetEntityListTaskStatus ();
+            if (status == ValueDefine.TaskStatus_Unfinished)
+               ++ num_undetermineds;
+            else if (status == ValueDefine.TaskStatus_Failed)
             {
-               status = element.mInputEntityAssigner.GetEntityListTaskStatus ();
-               if (status == ValueDefine.TaskStatus_Unfinished)
-                  ++ num_undetermineds;
-               else if (status == ValueDefine.TaskStatus_Failed)
-                  ++ num_faileds;
-               
-               element = element.mNextListElement;
+               mEvaluatedValue = ValueDefine.TaskStatus_Failed;
+               return;
             }
             
-            if (num_faileds > 0)
-               mEvaluatedValue = ValueDefine.TaskStatus_Failed;
-            else if (num_undetermineds > 0)
-               mEvaluatedValue = ValueDefine.TaskStatus_Unfinished;
-            else
-               mEvaluatedValue = ValueDefine.TaskStatus_Successed;
+            element = element.mNextListElement;
          }
+         
+         if (num_undetermineds > 0)
+            mEvaluatedValue = ValueDefine.TaskStatus_Unfinished;
+         else
+            mEvaluatedValue = ValueDefine.TaskStatus_Successed;
       }
    }
 }

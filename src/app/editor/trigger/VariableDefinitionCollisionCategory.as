@@ -18,9 +18,9 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      public function VariableDefinitionCollisionCategory (name:String, description:String = null)
+      public function VariableDefinitionCollisionCategory (name:String, description:String = null, options:Object = null)
       {
-         super (name, ValueTypeDefine.ValueType_CollisionCategory, description);
+         super (ValueTypeDefine.ValueType_CollisionCategory, name, description);
       }
       
 //==============================================================================

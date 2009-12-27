@@ -93,36 +93,16 @@ package editor.mode {
             }
          }
          
-         // second round
+         // second round, link general entity with a linkable
+         
          for (i = 0; !created && i < entities.length; ++ i)
          {
-            entity = entities [i] as Entity;
+            entity = (entities [i] as Entity).GetMainEntity ();
             if (! (entity is Linkable) )
             {
                created = mFromLinkable.TryToCreateLink (mFromWorldDisplayX, mFromWorldDisplayY, entity, endX, endY);
             }
          }
-         
-         /*
-         var linkable:Linkable = mMainView.GetEditorWorld ().GetFirstLinkablesAtPoint (endX, endY);
-         if (linkable != null && linkable is Entity)
-         {
-            created = mFromLinkable.TryToCreateLink (mFromWorldDisplayX, mFromWorldDisplayY, linkable as Entity, endX, endY);
-            if (! created && mFromLinkable is Entity)
-               created = linkable.TryToCreateLink (endX, endY, mFromLinkable as Entity, mFromWorldDisplayX, mFromWorldDisplayY);
-         }
-         if (! created)
-         {
-            var entities:Array = mMainView.GetEditorWorld ().GetEntitiesAtPoint (endX, endY);
-            var entity:Entity;
-            for (var i:int = 0; !created && i < entities.length; ++ i)
-            {
-               entity = entities [i] as Entity;
-               if (entity != linkable)
-                  created = mFromLinkable.TryToCreateLink (mFromWorldDisplayX, mFromWorldDisplayY, entity, endX, endY);
-            }
-         }
-         */
          
          if (created)
             mMainView.RepaintEntityLinks ();

@@ -80,7 +80,7 @@ package editor.mode {
             mEntityJointDistance.GetAnchor2 ().SetPosition (posX, posY);
          }
          
-         mEntityJointDistance.UpdateAppearance ();
+         mEntityJointDistance.NotifyAnchorPositionChanged ();
          
          mMainView.UpdateSelectedEntityInfo ();
       }

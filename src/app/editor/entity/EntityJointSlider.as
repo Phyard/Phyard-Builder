@@ -95,6 +95,12 @@ package editor.entity {
          super.Destroy ();
       }
       
+      override public function UpdateJointPosition ():void
+      {
+         SetPosition (0.5* (mAnchor1.x + mAnchor2.x), 0.5 * (mAnchor1.y + mAnchor2.y));
+         SetRotation (Math.atan2 (mAnchor2.y - mAnchor1.y, mAnchor2.x - mAnchor1.x));
+      }
+      
       override public function UpdateAppearance ():void
       {
          alpha = 0.7;
@@ -107,12 +113,9 @@ package editor.entity {
          var dx:Number = x2 - x1;
          var dy:Number = y2 - y1;
          var distance:Number = Math.sqrt (dx * dx + dy * dy);
+         var halfDistancle:Number = 0.5 * distance;
          
-         SetRotation (Math.atan2 (dy, dx));
-         SetPosition (x1, y1);
-         
-         //GraphicsUtil.ClearAndDrawLine (this, x1, y1, x2, y2);
-         GraphicsUtil.ClearAndDrawLine (this, 0, 0, distance * 1.5, 0);
+         GraphicsUtil.ClearAndDrawLine (this, - halfDistancle, 0, distance, 0);
          
          
          if (distance < 0.01)
@@ -127,14 +130,14 @@ package editor.entity {
          //GraphicsUtil.DrawLine (this, lowerX, lowerY, upperX, upperY, 0x808080, 5);
          
          if ( IsLimitsEnabled () )
-            GraphicsUtil.DrawLine (this,distance +  mLowerTranslation, 0, distance + mUpperTranslation, 0, 0x808080, 5);
+            GraphicsUtil.DrawLine (this,halfDistancle +  mLowerTranslation, 0, halfDistancle + mUpperTranslation, 0, 0x808080, 5);
          
          //var dxHalfHeight:Number = - mRangeBarHalfHeight * dy / distance;
          //var dyHalfHeight:Number =   mRangeBarHalfHeight * dx / distance;
          
          if (mVertexControllerLower != null)
          {
-            mVertexControllerLower.SetPosition (distance + mLowerTranslation, 0);
+            mVertexControllerLower.SetPosition (halfDistancle + mLowerTranslation, 0);
             mVertexControllerLower.UpdateSelectionProxy ();
             
             mVertexControllerLower.SetSelectable (IsLimitsEnabled ());
@@ -143,7 +146,7 @@ package editor.entity {
          
          if (mVertexControllerUpper != null)
          {
-            mVertexControllerUpper.SetPosition (distance + mUpperTranslation, 0);
+            mVertexControllerUpper.SetPosition (halfDistancle + mUpperTranslation, 0);
             mVertexControllerUpper.UpdateSelectionProxy ();
             
             mVertexControllerUpper.SetSelectable (IsLimitsEnabled ());

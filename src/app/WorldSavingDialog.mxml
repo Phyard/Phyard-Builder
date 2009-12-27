@@ -8,9 +8,13 @@
 
    <mx:VBox width="100%">
       <mx:Text id="Text_TutorialLink" width="100%" selectable="true" link="OnClickTutorialLink(event)">
-         <mx:htmlText><![CDATA[<li>Please at least backup the source code for later modifications.</li><li><u><font color='#0000FF'><a href='event:#'>Tutorials on how to use these codes in your blogs and webpages.</a></font></u></li>]]></mx:htmlText>
+         <mx:htmlText><![CDATA[<li>Please at least backup the source code for later modifications.</li>]]></mx:htmlText>
       </mx:Text >
    </mx:VBox>
+   
+   <!--
+   <li><u><font color='#0000FF'><a href='event:#'>Tutorials on how to use these codes in your blogs and webpages.</a></font></u></li>
+   -->
 
    <mx:HBox width="100%">
       <mx:Label id="Label_SourceCode" text="Source Code:" fontWeight="bold"/>
@@ -18,8 +22,8 @@
       <mx:Button label="Copy Source Code" click="OnClickCopySourceCode ();"/>
    </mx:HBox>
 
-   <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_SourceCode" width="100%" height="150" editable="true" wordWrap="false">
+   <mx:HBox width="100%">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="256" editable="true" wordWrap="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
@@ -38,6 +42,7 @@
       </mx:TextArea>
    </mx:HBox>
 
+   <!--
    <mx:HBox width="100%">
       <mx:Label id="Label_EmbedCode" text="Html Embed Code:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
@@ -50,8 +55,9 @@
          </mx:text>
       </mx:TextArea>
    </mx:HBox>
+   -->
 
-  <mx:Spacer height="10"/>
+   <mx:Spacer height="10"/>
    
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
@@ -80,6 +86,7 @@
             TextArea_SourceCode.text = values.mXmlString;
             TextArea_PlayCode.text = values.mHexString;
             
+            /*
             var embedCode:String = 
 "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"600\" height=\"600\">\n"
 + 
@@ -108,6 +115,7 @@
 
             
             TextArea_EmbedCode.text = embedCode;
+*/
          }
          
          public function SetCloseFunc (onClose:Function):void
@@ -133,10 +141,10 @@
             System.setClipboard(TextArea_PlayCode.text);
          }
          
-         private function OnClickCopyEmbedCode ():void
-         {
-            System.setClipboard(TextArea_EmbedCode.text);
-         }
+         //private function OnClickCopyEmbedCode ():void
+         //{
+         //   System.setClipboard(TextArea_EmbedCode.text);
+         //}
          
          private function OnClickTutorialLink (event:TextEvent):void
          {

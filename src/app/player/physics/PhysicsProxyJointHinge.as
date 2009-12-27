@@ -81,6 +81,11 @@ package player.physics {
 // 
 //========================================================================
       
+      public function SetLimits (lowerAngle:Number, upperAngle:Number):void
+      {
+         _b2RevoluteJoint.SetLimits (lowerAngle, upperAngle);
+      }
+      
       public function GetJointAngle ():Number
       {
          return _b2RevoluteJoint.GetJointAngle ();

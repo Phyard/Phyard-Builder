@@ -29,7 +29,7 @@ package editor.entity {
       {
          super.Move (offsetX, offsetY, updateSelectionProxy);
          
-         GetMainEntity ().UpdateAppearance ();
+         (GetMainEntity () as EntityJoint).NotifyAnchorPositionChanged ();
       }
       
       override public function Rotate (centerX:Number, centerY:Number, dRadians:Number, updateSelectionProxy:Boolean = true):void

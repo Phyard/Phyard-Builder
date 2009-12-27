@@ -41,7 +41,7 @@ package common.trigger {
       public static const NumberTypeDetail_Single :int = 1 << 16; // 32 bits float
       public static const NumberTypeDetail_Integer:int = 2 << 16; // 32 bits int
       
-      // most 64 usages
+      // most 64 usages, assume offset_rotation must be zero
       
       public static const NumberTypeUsage_General                          :int = 0 << 20;
       public static const NumberTypeUsage_PositionX                        :int = 1 << 20;

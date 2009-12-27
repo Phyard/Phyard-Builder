@@ -250,7 +250,7 @@ package player.entity {
       
       override internal function GetPhysicsProxyJoint ():PhysicsProxyJoint
       {
-         return mProxyJointDistance;
+         return mPhysicsProxy == null ? null : mProxyJointDistance;
       }
       
       override public function ConfirmConnectedShapes ():void

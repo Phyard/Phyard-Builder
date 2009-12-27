@@ -8,11 +8,7 @@ package player.trigger {
    import player.world.World;
    import player.world.CollisionCategory;
    
-   import player.entity.Entity;
-   import player.entity.EntityBody;
-   import player.entity.EntityShape;
-   import player.entity.EntityShape_Camera;
-   import player.entity.EntityShape_Text;
+   import player.entity.*;
    
    import player.physics.PhysicsEngine;
    
@@ -81,6 +77,7 @@ package player.trigger {
          // math ops
          
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Assign,                     AssignNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_ConditionAssign,            ConditionAssignNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Negative,                   NegativeNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Add,                        AddTwoNumbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Subtract,                   SubtractTwoNumbers);
@@ -170,6 +167,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskFailed,                         SetEntityTaskFailed);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskUnfinished,                      IsEntityTaskUnfinished);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskUnfinished,                     SetEntityTaskUnfinished);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskStatus,                         SetEntityTaskStatus);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
          
@@ -183,6 +181,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Overlapped,        AreTwoEntitiesOverlppped);
          
       // game / entity / shape
          
@@ -212,16 +212,17 @@ package player.trigger {
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakAllJoints,             BreakShapeJoints);
 
-      // game / entity / joint
-         
-         
-         
-      // game / entity / util
+      // game / entity / shape / text
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_GetText,                  GetTextFromTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetText,                  SetTextForTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendText,               AppendTextToTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendNewLine,            AppendNewLineToTextComponent);
+         
+      // game / entity / joint
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetHingeLimits,                  SetHingeLimits);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,                 SetSliderLimits);
          
       // game / entity / field
          
@@ -491,6 +492,19 @@ package player.trigger {
          var value:Number = valueSource.EvalateValueObject () as Number;
          
          valueTarget.AssignValueObject (value);
+      }
+      
+      public static function ConditionAssignNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var contionResult:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var trueValue:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var falseValue:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (contionResult ? trueValue : falseValue);
       }
       
       public static function NegativeNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1071,12 +1085,17 @@ package player.trigger {
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
          
-         valueTarget.AssignValueObject (entity.IsTaskSuccessed ());
+         var successed:Boolean = entity == null ? false : entity.IsTaskSuccessed ();
+         
+         valueTarget.AssignValueObject (successed);
       }
       
       public static function SetEntityTaskSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+            return;
+         
          
          entity.SetTaskSuccessed ();
       }
@@ -1085,12 +1104,17 @@ package player.trigger {
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
          
-         valueTarget.AssignValueObject (entity.IsTaskFailed ());
+         var failed:Boolean = entity == null ? false : entity.IsTaskFailed ();
+         
+         valueTarget.AssignValueObject (failed);
       }
       
       public static function SetEntityTaskFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+            return;
+         
          
          entity.SetTaskFailed ();
       }
@@ -1099,40 +1123,50 @@ package player.trigger {
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
          
-         valueTarget.AssignValueObject (entity.IsTaskUnfinished ());
+         var unfinished:Boolean = entity == null ? true : entity.IsTaskUnfinished ();
+         
+         valueTarget.AssignValueObject (unfinished);
       }
       
       public static function SetEntityTaskUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+            return;
          
          entity.SetTaskUnfinished ();
+      }
+      
+      public static function SetEntityTaskStatus (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var status:int = int (valueSource.EvalateValueObject ());
+         
+         if (status > 0)
+            entity.SetTaskSuccessed ();
+         else if (status < 0)
+            entity.SetTaskFailed ();
+         else
+            entity.SetTaskUnfinished ();
       }
       
       public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-         {
-            valueTarget.AssignValueObject (false);
-         }
-         else
-         {
-            valueTarget.AssignValueObject (true);
-         }
+         
+         valueTarget.AssignValueObject (shape != null);
       }
       
       public static function IsEntityVisible (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
-         if (entity == null)
-         {
-            valueTarget.AssignValueObject (false);
-         }
-         else
-         {
-            valueTarget.AssignValueObject (entity.IsVisible ());
-         }
+         
+         var visible:Boolean = entity == null ? false : entity.IsVisible ();
+         valueTarget.AssignValueObject (visible);
       }
       
       public static function SetEntityVisible (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1149,18 +1183,9 @@ package player.trigger {
       
       public static function GetEntityAlpha (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var alpha:Number;
-         
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
-         if (entity == null)
-         {
-            // error
-            alpha = 1.0;
-         }
-         else
-         {
-            alpha = entity.GetAlpha ();
-         }
+         
+         var alpha:Number = entity == null ? 1.0 : entity.GetAlpha ();
          
          valueTarget.AssignValueObject (alpha);
       }
@@ -1282,6 +1307,38 @@ package player.trigger {
          }
       }
       
+      public static function AreTwoEntitiesOverlppped(valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity1:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity1 == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var entity2:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity2 == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var toleranceDx:Number = Number (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var toleranceDy:Number = Number (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var toleranceDr:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
+         
+         var dx:Number = entity1.GetPositionX () - entity2.GetPositionX ();
+         var dy:Number = entity1.GetPositionY () - entity2.GetPositionY ();
+         var dr:Number = entity1.GetRotation () - entity2.GetRotation ();
+         if (dx < 0) dx = -dx;
+         if (dy < 0) dy = -dy;
+         if (dr < 0) dr = -dr;
+         
+         var overlapped:Boolean = dx < toleranceDx && dy < toleranceDy && dr < toleranceDr;
+         
+         valueTarget.AssignValueObject (overlapped);
+      }
+      
    //*******************************************************************
    // entity / shape
    //*******************************************************************
@@ -1289,15 +1346,9 @@ package player.trigger {
       public static function GetShapeCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-         {
-            // error
-            valueTarget.AssignValueObject (Define.ShapeAiType_Unknown);
-         }
-         else
-         {
-            valueTarget.AssignValueObject (shape.GetShapeAiType ());
-         }
+         
+         var aiType:int = shape == null ? Define.ShapeAiType_Unknown : shape.GetShapeAiType ();
+         valueTarget.AssignValueObject (aiType);
       }
       
       public static function SetShapeCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1318,15 +1369,9 @@ package player.trigger {
       public static function GetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-         {
-            // error
-            valueTarget.AssignValueObject (0);
-         }
-         else
-         {
-            valueTarget.AssignValueObject (shape.GetFilledColor ());
-         }
+         
+         var filledColor:uint = shape == null ? 0 : shape.GetFilledColor ();
+         valueTarget.AssignValueObject (filledColor);
       }
       
       public static function SetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1343,18 +1388,9 @@ package player.trigger {
       
       public static function GetShapeFilledColorRGB (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var color:uint;
-         
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-         {
-            // error
-            color = 0x0;
-         }
-         else
-         {
-            color = shape.GetFilledColor ();
-         }
+         
+         var color:uint = shape == null ? 0x0 : shape.GetFilledColor ();
          
          valueTarget.AssignValueObject ((color >> 16) & 0xFF);
          
@@ -1387,14 +1423,9 @@ package player.trigger {
       public static function IsShapePhysicsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-         {
-            valueTarget.AssignValueObject (false);
-         }
-         else
-         {
-            valueTarget.AssignValueObject (shape.IsPhysicsShape ());
-         }
+         
+         var enabled:Boolean = shape == null ? false : shape.IsPhysicsShape ();
+         valueTarget.AssignValueObject (enabled);
       }
       
       //public static function SetShapePhysicsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1404,14 +1435,9 @@ package player.trigger {
       public static function GetShapeCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-         {
-            valueTarget.AssignValueObject (null);
-         }
-         else
-         {
-            valueTarget.AssignValueObject (shape.GetCollisionCategory ());
-         }
+         
+         var ccat:CollisionCategory = shape == null ? null : shape.GetCollisionCategory ();
+         valueTarget.AssignValueObject (ccat);
       }
       
       public static function SetShapeCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1431,14 +1457,9 @@ package player.trigger {
       public static function IsSensorShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-         {
-            valueTarget.AssignValueObject (false);
-         }
-         else
-         {
-            valueTarget.AssignValueObject (shape.IsSensor ());
-         }
+         
+         var sensor:Boolean = shape == null ? false : shape.IsSensor ();
+         valueTarget.AssignValueObject (sensor);
       }
       
       public static function SetShapeAsSensor (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1562,14 +1583,9 @@ package player.trigger {
       public static function GetTextFromTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
-         if (entity_text == null)
-         {
-            valueTarget.AssignValueObject ("");
-         }
-         else
-         {
-            valueTarget.AssignValueObject (entity_text.GetText ());
-         }
+         
+         var text:String = entity_text == null ? "" : entity_text.GetText ();
+         valueTarget.AssignValueObject (text);
       }
       
       public static function SetTextForTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1605,5 +1621,38 @@ package player.trigger {
          entity_text.SetText (entity_text.GetText () + "\n");
       }
       
+   //*******************************************************************
+   // entity / joint
+   //*******************************************************************
+      
+      public static function SetHingeLimits (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         if (hinge == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var lowerLimit:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var upperLimit:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
+         
+         hinge.SetAngleLimits (lowerLimit, upperLimit);
+      }
+      
+      public static function SetSliderLimits (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         if (slider == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var lowerLimit:Number = Number (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var upperLimit:Number = Number (valueSource.EvalateValueObject ());
+         
+         slider.SetTranslationLimits (lowerLimit, upperLimit);
+      }
    }
 }

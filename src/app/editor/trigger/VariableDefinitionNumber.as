@@ -12,18 +12,34 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      protected var mDefaultValue:Number;
-      protected var mMinValue:Number;
-      protected var mMaxValue:Number;
+      protected var mDefaultValue:Number = 0.0;
+      protected var mMinValue:Number = - Number.MAX_VALUE;
+      protected var mMaxValue:Number = Number.MAX_VALUE;
       
-      public function VariableDefinitionNumber (name:String, description:String = null, defaultValue:Number = 0, minValue:Number = Number.NEGATIVE_INFINITY,  maxValue:Number = Number.POSITIVE_INFINITY)
+      protected var mIsColorValue:Boolean = false;
+      
+      public function VariableDefinitionNumber (name:String, description:String = null, options:Object = null)
       {
-         super (name, ValueTypeDefine.ValueType_Number, description);
+         super (ValueTypeDefine.ValueType_Number, name, description);
          
-         mMinValue = minValue < maxValue ? minValue : maxValue;
-         mMaxValue = maxValue > minValue ? maxValue : minValue;
-         
-         mDefaultValue = ValidateValue (defaultValue);
+         if (options != null)
+         {
+            if (options.mMinValue != undefined)
+               mMinValue = Number (options.mMinValue);
+            if (options.mMaxValue != undefined)
+               mMaxValue = Number (options.mMaxValue);
+            if (options.mDefaultValue != undefined)
+               mDefaultValue = Number (options.mDefaultValue);
+            if (options.mIsColorValue != undefined)
+               mIsColorValue = Boolean (options.mIsColorValue);
+            
+            if (mMinValue > mMaxValue)
+            {
+               var tempValue:Number = mMaxValue;
+               mMaxValue = mMinValue;
+               mMinValue = tempValue;
+            }
+         }
       }
       
       protected function ValidateValue (value:Number):Number
@@ -45,7 +61,16 @@ package editor.trigger {
       
       override public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         return Number (valueObject);
+         var num:Number = Number (valueObject);;
+         if (isNaN (num))
+            num = 0.0;
+         
+         if (num < mMinValue)
+            num = mMinValue;
+         if (num > mMaxValue)
+            num = mMaxValue;
+         
+         return num;
       }
       
 //==============================================================================
@@ -61,7 +86,16 @@ package editor.trigger {
       {
          var text_input:TextInput = new TextInput ()
          
-         text_input.text = (parseFloat ((Number (valueSourceDirect.GetValueObject ())).toFixed (12))).toString ();
+         if (mIsColorValue)
+         {
+            var text:String = (int (valueSourceDirect.GetValueObject ()) & 0xFFFFFF).toString (16);
+            while (text.length < 6)
+               text = "0" + text;
+            
+            text_input.text = "0x" + text.toUpperCase ();
+         }
+         else
+            text_input.text = (parseFloat ((Number (valueSourceDirect.GetValueObject ())).toFixed (12))).toString ();
          
          return text_input;
       }
@@ -71,8 +105,13 @@ package editor.trigger {
          if (control is TextInput)
          {
             var text_input:TextInput = control as TextInput;
+            var text:String = text_input.text;
+            var value:Number;
             
-            var value:Number = parseFloat (text_input.text);
+            if (text.length > 2 && text.substr (0, 2).toLowerCase() == "0x")
+               value = parseInt (text.substr (2), 16);
+            else
+               value = parseFloat (text);
             
             value = ValidateValue (value);
             

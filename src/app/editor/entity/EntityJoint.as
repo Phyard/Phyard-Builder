@@ -91,6 +91,18 @@ package editor.entity {
          return mIsBreakable;
       }
       
+      final public function NotifyAnchorPositionChanged ():void
+      {
+         UpdateJointPosition ();
+         
+         UpdateAppearance ();
+      }
+      
+      public function UpdateJointPosition ():void
+      {
+         
+      }
+      
 //====================================================================
 //   clone
 //====================================================================

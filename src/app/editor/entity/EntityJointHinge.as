@@ -104,6 +104,12 @@ package editor.entity {
          return mAnchor;
       }
       
+      override public function UpdateJointPosition ():void
+      {
+         SetPosition (mAnchor.x, mAnchor.y);
+         SetRotation (0.0);
+      }
+      
 //====================================================================
 //   flip
 //====================================================================

@@ -114,10 +114,10 @@ package editor.trigger {
       
       private var mDescription:String = null;
       
-      public function VariableDefinition (name:String, valueType:int, description:String = null)
+      public function VariableDefinition (valueType:int, name:String, description:String = null)
       {
-         mName = name;
          mValueType = valueType;
+         mName = name;
          mDescription = description;
       }
       

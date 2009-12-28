@@ -19,6 +19,16 @@
 //#include <Box2D/Collision/b2Collision.h>
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
+private static var normal1World:b2Vec2 = new b2Vec2 ();
+private static var normal1:b2Vec2 = new b2Vec2 ();
+private static var v1:b2Vec2 = new b2Vec2 ();
+private static var v2:b2Vec2 = new b2Vec2 ();
+private static var d:b2Vec2 = new b2Vec2 ();
+private static var dLocal1:b2Vec2 = new b2Vec2 ();
+private static var tempV:b2Vec2 = new b2Vec2 ();
+private static var v11:b2Vec2 = new b2Vec2 ();
+private static var v12:b2Vec2 = new b2Vec2 ();
+
 // Find the separation between poly1 and poly2 for a give edge normal on poly1.
 public static function b2EdgeSeparation(poly1:b2PolygonShape, xf1:b2Transform, edge1:int,
 							  poly2:b2PolygonShape, xf2:b2Transform):Number
@@ -36,8 +46,8 @@ public static function b2EdgeSeparation(poly1:b2PolygonShape, xf1:b2Transform, e
 	//b2Assert(0 <= edge1 && edge1 < count1);
 
 	// Convert normal from poly1's frame into poly2's frame.
-	var normal1World:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf1.R, normals1[edge1]);
-	var normal1:b2Vec2 = b2Math.b2MulT_Matrix22AndVector2 (xf2.R, normal1World);
+	b2Math.b2Mul_Matrix22AndVector2_Output (xf1.R, normals1[edge1], normal1World);
+	b2Math.b2MulT_Matrix22AndVector2_Output (xf2.R, normal1World, normal1);
 
 	// Find support vertex on poly2 for -normal.
 	var index:int = 0;
@@ -53,8 +63,8 @@ public static function b2EdgeSeparation(poly1:b2PolygonShape, xf1:b2Transform, e
 		}
 	}
 
-	var v1:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf1, vertices1[edge1]);
-	var v2:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf2, vertices2[index]);
+	b2Math.b2Mul_TransformAndVector2_Output (xf1, vertices1[edge1], v1);
+	b2Math.b2Mul_TransformAndVector2_Output (xf2, vertices2[index], v2);
 	//var separation:Number = b2Math.b2Dot2(v2 - v1, normal1World);
 	v2.SubtractWith (v1);
 	var separation:Number = b2Math.b2Dot2(v2, normal1World);
@@ -77,8 +87,8 @@ public static function b2FindMaxSeparation(maxSeparation:b2Separation, //int32* 
 	// Vector pointing from the centroid of poly1 to the centroid of poly2.
 	//b2Vec2 d = b2Mul(xf2, poly2->m_centroid) - b2Mul(xf1, poly1->m_centroid);
 	//b2Vec2 dLocal1 = b2MulT(xf1.R, d);
-	var d:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf2, poly2.m_centroid);
-	var dLocal1:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf1, poly1.m_centroid);
+	b2Math.b2Mul_TransformAndVector2_Output (xf2, poly2.m_centroid, d);
+	b2Math.b2Mul_TransformAndVector2_Output (xf1, poly1.m_centroid, dLocal1);
 	d.SubtractWith (dLocal1);
 	b2Math.b2MulT_Matrix22AndVector2_Output (xf1.R, d, dLocal1);
 
@@ -182,7 +192,8 @@ public static function b2FindIncidentEdge(c:b2ClipVertexSegment, //b2ClipVertex 
 
 	// Get the normal of the reference edge in poly2's frame.
 	//b2Vec2 normal1 = b2MulT(xf2.R, b2Mul(xf1.R, normals1[edge1]));
-	var normal1:b2Vec2 = b2Math.b2MulT_Matrix22AndVector2 (xf2.R, b2Math.b2Mul_Matrix22AndVector2 (xf1.R, normals1[edge1]));
+	b2Math.b2Mul_Matrix22AndVector2_Output (xf1.R, normals1[edge1], tempV)
+	b2Math.b2MulT_Matrix22AndVector2_Output (xf2.R, tempV, normal1);
 
 	// Find the incident edge on poly2.
 	var index:int = 0;
@@ -207,7 +218,8 @@ public static function b2FindIncidentEdge(c:b2ClipVertexSegment, //b2ClipVertex 
 	//c[0].id.features.incidentVertex = 0;
 	var c0:b2ClipVertex = c.GetClipVertexById (0);
 	b2Math.b2Mul_TransformAndVector2_Output (xf2, vertices2[i1], c0.v);
-	c0.id.SetFeatures (edge1, i1, 0);
+	//c0.id.SetFeatures (edge1, i1, 0);
+	c0.id = b2ContactID.ContactID_SetFeatures  (c0.id, edge1, i1, 0);
 
 	//c[1].v = b2Mul(xf2, vertices2[i2]);
 	//c[1].id.features.referenceEdge = (uint8)edge1;
@@ -215,7 +227,8 @@ public static function b2FindIncidentEdge(c:b2ClipVertexSegment, //b2ClipVertex 
 	//c[1].id.features.incidentVertex = 1;
 	var c1:b2ClipVertex = c.GetClipVertexById (1);
 	b2Math.b2Mul_TransformAndVector2_Output (xf2, vertices2[i2], c1.v);
-	c1.id.SetFeatures (edge1, i2, 1);
+	//c1.id.SetFeatures (edge1, i2, 1);
+	c1.id = b2ContactID.ContactID_SetFeatures (c1.id, edge1, i2, 1);
 }
 
 // Find edge normal of max separation on A - return if separating axis is found
@@ -292,25 +305,26 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	//b2Vec2 v11 = vertices1[edge1];
 	//b2Vec2 v12 = edge1 + 1 < count1 ? vertices1[edge1+1] : vertices1[0];
 	// notice: can't use reference
-	var v11:b2Vec2 = (vertices1[edge1] as b2Vec2).Clone ();
-	var v12:b2Vec2 = edge1 + 1 < count1 ? (vertices1[edge1+1] as b2Vec2).Clone (): (vertices1[0] as b2Vec2).Clone ();
+	var tempV11:b2Vec2 = (vertices1[edge1] as b2Vec2);//.Clone ();
+	//var tempV12:b2Vec2 = edge1 + 1 < count1 ? (vertices1[edge1+1] as b2Vec2).Clone (): (vertices1[0] as b2Vec2).Clone ();
+	var tempV12:b2Vec2 = edge1 + 1 < count1 ? (vertices1[edge1+1] as b2Vec2): (vertices1[0] as b2Vec2);
 
-	//b2Vec2 localTangent = v12 - v11;
-	var localTangent:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (v12.x - v11.x, v12.y - v11.y);
+	//b2Vec2 localTangent = tempV12 - tempV11;
+	var localTangent:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (tempV12.x - tempV11.x, tempV12.y - tempV11.y);
 	localTangent.Normalize();
 	
 	//b2Vec2 localNormal = b2Math.b2Cross2(localTangent, 1.0f);
-	//b2Vec2 planePoint = 0.5f * (v11 + v12);
+	//b2Vec2 planePoint = 0.5f * (tempV11 + tempV12);
 	var localNormal:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (localTangent, 1.0);
-	var planePoint:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0.5 * (v11.x + v12.x), 0.5 * (v11.y + v12.y));
+	var planePoint:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0.5 * (tempV11.x + tempV12.x), 0.5 * (tempV11.y + tempV12.y));
 
 	//b2Vec2 tangent = b2Mul(xf1.R, localTangent);
 	//b2Vec2 normal = b2Math.b2Cross2(tangent, 1.0f);
 	var tangent:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf1.R, localTangent);
 	var normal:b2Vec2  = b2Math.b2Cross_Vector2AndScalar (tangent, 1.0);
 	
-	v11 = b2Math.b2Mul_TransformAndVector2 (xf1, v11);
-	v12 = b2Math.b2Mul_TransformAndVector2 (xf1, v12);
+	b2Math.b2Mul_TransformAndVector2_Output (xf1, tempV11, v11);
+	b2Math.b2Mul_TransformAndVector2_Output (xf1, tempV12, v12);
 
 	// Face offset.
 	var frontOffset:Number = b2Math.b2Dot2 (normal, v11);
@@ -342,8 +356,10 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	// Now clipPoints2 contains the clipped points.
 	//manifold->m_localPlaneNormal = localNormal;
 	//manifold->m_localPoint = planePoint;
-	manifold.m_localPlaneNormal.CopyFrom (localNormal);
-	manifold.m_localPoint.CopyFrom (planePoint);
+	manifold.m_localPlaneNormal.x = localNormal.x;
+	manifold.m_localPlaneNormal.y = localNormal.y;
+	manifold.m_localPoint.x = planePoint.x;
+	manifold.m_localPoint.y = planePoint.y;
 
 	var pointCount:int = 0;
 	for (var i:int = 0; i < b2Settings.b2_maxManifoldPoints; ++i)
@@ -358,8 +374,10 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 			//cp->m_id.features.flip = flip;
 			var cp:b2ManifoldPoint = manifold.m_points [pointCount];
 			b2Math.b2MulT_TransformAndVector2_Output (xf2, clipPoints2.GetClipVertexById(i).v, cp.m_localPoint)
-			cp.m_id.CopyFrom (clipPoints2.GetClipVertexById (i).id);
-			cp.m_id.SetFlip (flip);
+			//cp.m_id.CopyFrom (clipPoints2.GetClipVertexById (i).id);
+			//cp.m_id.SetFlip (flip);
+			cp.m_id = clipPoints2.GetClipVertexById (i).id;
+			cp.m_id = b2ContactID.ContactID_SetFlip (cp.m_id, flip);
 			++pointCount;
 		}
 	}

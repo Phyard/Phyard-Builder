@@ -28,7 +28,8 @@ public static function b2GetPointStates(
 {
 	var i:int;
 	var j:int;
-	var id:b2ContactID;
+	//var id:b2ContactID;
+	var id:uint;
 	
 	for (i = 0; i < b2Settings.b2_maxManifoldPoints; ++i)
 	{
@@ -39,13 +40,15 @@ public static function b2GetPointStates(
 	// Detect persists and removes.
 	for (i = 0; i < manifold1.m_pointCount; ++i)
 	{
-		id = (manifold1.m_points[i] as b2ManifoldPoint).m_id.Clone ();
+		//id = (manifold1.m_points[i] as b2ManifoldPoint).m_id.Clone ();
+		id = (manifold1.m_points[i] as b2ManifoldPoint).m_id;
 
 		state1[i] = b2_removeState;
 
 		for (j = 0; j < manifold2.m_pointCount; ++j)
 		{
-			if ((manifold2.m_points[j] as b2ManifoldPoint).m_id.key == id.key)
+			//if ((manifold2.m_points[j] as b2ManifoldPoint).m_id.key == id.key)
+			if ((manifold2.m_points[j] as b2ManifoldPoint).m_id == id)
 			{
 				state1[i] = b2_persistState;
 				break;
@@ -56,13 +59,15 @@ public static function b2GetPointStates(
 	// Detect persists and adds.
 	for (i = 0; i < manifold2.m_pointCount; ++i)
 	{
-		id = (manifold2.m_points[i] as b2ManifoldPoint).m_id.Clone ();
+		//id = (manifold2.m_points[i] as b2ManifoldPoint).m_id.Clone ();
+		id = (manifold2.m_points[i] as b2ManifoldPoint).m_id;
 
 		state2[i] = b2_addState;
 
 		for (j = 0; j < manifold1.m_pointCount; ++j)
 		{
-			if ((manifold1.m_points[j] as b2ManifoldPoint).m_id.key == id.key)
+			//if ((manifold1.m_points[j] as b2ManifoldPoint).m_id.key == id.key)
+			if ((manifold1.m_points[j] as b2ManifoldPoint).m_id == id)
 			{
 				state2[i] = b2_persistState;
 				break;
@@ -224,11 +229,13 @@ public static function b2ClipSegmentToLine(segmentOut:b2ClipVertexSegment, segme
 		vOut_numOut.v.y = vIn0.v.y + interp * (vIn1.v.y - vIn0.v.y);
 		if (distance0 > 0.0)
 		{
-			vOut_numOut.id.CopyFrom (vIn0.id);
+			//vOut_numOut.id.CopyFrom (vIn0.id);
+			vOut_numOut.id = vIn0.id;
 		}
 		else
 		{
-			vOut_numOut.id.CopyFrom (vIn1.id);
+			//vOut_numOut.id.CopyFrom (vIn1.id);
+			vOut_numOut.id = vIn1.id;
 		}
 		++numOut;
 	}
@@ -236,22 +243,28 @@ public static function b2ClipSegmentToLine(segmentOut:b2ClipVertexSegment, segme
 	return numOut;
 }
 
+private static var mSimplexCache:b2SimplexCache = new b2SimplexCache ();
+private static var mDistanceInput:b2DistanceInput = new b2DistanceInput ();
+private static var mDistanceOutput:b2DistanceOutput = new b2DistanceOutput ();
+
 //bool b2TestOverlap(const b2Shape* shapeA, const b2Shape* shapeB,
 //				   const b2Transform& xfA, const b2Transform& xfB)
 public static function b2TestOverlap_Shapes (shapeA:b2Shape, shapeB:b2Shape,
 				   xfA:b2Transform, xfB:b2Transform):Boolean
 {
-	var input:b2DistanceInput = new b2DistanceInput ();
+	var input:b2DistanceInput = mDistanceInput; //new b2DistanceInput ();
 	input.proxyA.Set(shapeA);
 	input.proxyB.Set(shapeB);
-	input.transformA.CopyFrom (xfA);
-	input.transformB.CopyFrom (xfB);
+	//input.transformA.CopyFrom (xfA);
+	//input.transformB.CopyFrom (xfB);
+	input.transformA = xfA;
+	input.transformB = xfB;
 	input.useRadii = true;
 
-	var cache:b2SimplexCache = new b2SimplexCache ();
+	var cache:b2SimplexCache = mSimplexCache; //new b2SimplexCache ();
 	cache.count = 0;
 
-	var output:b2DistanceOutput = new b2DistanceOutput ();
+	var output:b2DistanceOutput = mDistanceOutput; //new b2DistanceOutput ();
 
 	b2Distance.b2Distance_ (output, cache, input);
 

@@ -20,6 +20,14 @@
 //#include <Box2D/Collision/Shapes/b2CircleShape.h>
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
+//private static var d:b2Vec2 = new b2Vec2 ();
+private static var p1:b2Vec2 = new b2Vec2 ();
+private static var p2:b2Vec2 = new b2Vec2 ();
+private static var c:b2Vec2 = new b2Vec2 ();
+private static var cLocal:b2Vec2 = new b2Vec2 ();
+private static var temp1:b2Vec2 = new b2Vec2 ();
+private static var temp2:b2Vec2 = new b2Vec2 ();
+
 public static function b2CollideCircles(
 	manifold:b2Manifold,
 	circle1:b2CircleShape, xf1:b2Transform,
@@ -27,10 +35,11 @@ circle2:b2CircleShape, xf2:b2Transform):void
 {
 	manifold.m_pointCount = 0;
 
-	var p1:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf1, circle1.m_p);
-	var p2:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf2, circle2.m_p);
+	b2Math.b2Mul_TransformAndVector2_Output (xf1, circle1.m_p, p1);
+	b2Math.b2Mul_TransformAndVector2_Output (xf2, circle2.m_p, p2);
 
-	var d:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (p2.x - p1.x, p2.y - p1.y);
+	d.x = p2.x - p1.x;
+	d.y = p2.y - p1.y;
 	var distSqr:Number = b2Math.b2Dot2 (d, d);
 	var radius:Number = circle1.m_radius + circle2.m_radius;
 	if (distSqr > radius * radius)
@@ -44,7 +53,8 @@ circle2:b2CircleShape, xf2:b2Transform):void
 	manifold.m_pointCount = 1;
 
 	(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom ( circle2.m_p);
-	(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+	//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+	(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
 }
 
 public static function b2CollidePolygonAndCircle(
@@ -55,8 +65,8 @@ circle:b2CircleShape, xf2:b2Transform):void
 	manifold.m_pointCount = 0;
 
 	// Compute circle position in the frame of the polygon.
-	var c:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (xf2, circle.m_p);
-	var cLocal:b2Vec2 = b2Math.b2MulT_TransformAndVector2 (xf1, c);
+	b2Math.b2Mul_TransformAndVector2_Output (xf2, circle.m_p, c);
+	b2Math.b2MulT_TransformAndVector2_Output (xf1, c, cLocal);
 
 	// Find the min separating edge.
 	var normalIndex:int = 0;
@@ -101,15 +111,14 @@ circle:b2CircleShape, xf2:b2Transform):void
 		manifold.m_localPoint.x = 0.5 * (v1.x + v2.x);
 		manifold.m_localPoint.y = 0.5 * (v1.y + v2.y);
 		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
-		(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+		//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+		(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
 		return;
 	}
 
 	// Compute barycentric coordinates
 	//var u1:Number = b2Math.b2Dot2 (cLocal - v1, v2 - v1);
 	//var u2:Number = b2Math.b2Dot2 (cLocal - v2, v1 - v2);
-	var temp1:b2Vec2 = new b2Vec2 ();
-	var temp2:b2Vec2 = new b2Vec2 ();
 	
 	temp1.x = cLocal.x - v1.x; temp1.y = cLocal.y - v1.y;
 	temp2.x = v2.x     - v1.x; temp2.y =  v2.y     - v1.y;
@@ -131,7 +140,8 @@ circle:b2CircleShape, xf2:b2Transform):void
 		manifold.m_localPlaneNormal.Normalize();
 		manifold.m_localPoint.CopyFrom (v1);
 		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
-		(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+		//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+		(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
 	}
 	else if (u2 <= 0.0)
 	{
@@ -146,7 +156,8 @@ circle:b2CircleShape, xf2:b2Transform):void
 		manifold.m_localPlaneNormal.Normalize();
 		manifold.m_localPoint.CopyFrom (v2);
 		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
-		(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+		//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+		(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
 	}
 	else
 	{
@@ -168,6 +179,7 @@ circle:b2CircleShape, xf2:b2Transform):void
 		manifold.m_localPlaneNormal.CopyFrom (normals[vertIndex1]);
 		manifold.m_localPoint.CopyFrom (faceCenter);
 		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
-		(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+		//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
+		(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
 	}
 }

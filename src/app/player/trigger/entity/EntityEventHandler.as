@@ -97,7 +97,6 @@ package player.trigger.entity
             case CoreEventIds.ID_OnEntityInitialized:
             case CoreEventIds.ID_OnEntityUpdated:
             case CoreEventIds.ID_OnEntityDestroyed:
-            case CoreEventIds.ID_OnJointBroken:
             case CoreEventIds.ID_OnJointReachLowerLimit:
             case CoreEventIds.ID_OnJointReachUpperLimit:
                var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;

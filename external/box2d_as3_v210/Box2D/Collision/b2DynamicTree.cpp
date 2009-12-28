@@ -142,6 +142,11 @@ public function DestroyProxy(proxyId:int):void
 	FreeNode(proxyId);
 }
 
+private static var mTempAABB:b2AABB = new b2AABB ();
+private static var mTempVec2:b2Vec2 = new b2Vec2 ();
+private static var delta1:b2Vec2 = new b2Vec2 ();
+private static var delta2:b2Vec2 = new b2Vec2 ();
+
 public function MoveProxy(proxyId:int, aabb:b2AABB, displacement:b2Vec2):Boolean
 {
 	//b2Assert(0 <= proxyId && proxyId < m_nodeCapacity);
@@ -160,7 +165,8 @@ public function MoveProxy(proxyId:int, aabb:b2AABB, displacement:b2Vec2):Boolean
 	//b2Vec2 r(b2_aabbExtension, b2_aabbExtension);
 	//b.lowerBound = b.lowerBound - r;
 	//b.upperBound = b.upperBound + r;
-	var b:b2AABB = new b2AABB (); // aabb.Clone ();
+	//var b:b2AABB = new b2AABB (); // aabb.Clone ();
+	var b:b2AABB = mTempAABB;
 	b.lowerBound.x = aabb.lowerBound.x - b2Settings.b2_aabbExtension;
 	b.lowerBound.y = aabb.lowerBound.y - b2Settings.b2_aabbExtension;
 	b.upperBound.x = aabb.upperBound.x + b2Settings.b2_aabbExtension;
@@ -168,7 +174,7 @@ public function MoveProxy(proxyId:int, aabb:b2AABB, displacement:b2Vec2):Boolean
 
 	// Predict AABB displacement.
 	//b2Vec2 d = b2_aabbMultiplier * displacement;
-	var d:b2Vec2 = new b2Vec2 ();
+	var d:b2Vec2 = mTempVec2; //new b2Vec2 ();
 	d.x = b2Settings.b2_aabbMultiplier * displacement.x;
 	d.y = b2Settings.b2_aabbMultiplier * displacement.y;
 
@@ -215,8 +221,8 @@ public function InsertLeaf(leaf:int):void
 	var sibling:int = m_root;
 	if ((m_nodes[sibling] as b2DynamicTreeNode).IsLeaf() == false)
 	{
-		var delta1:b2Vec2 = new b2Vec2 ();
-		var delta2:b2Vec2 = new b2Vec2 ();
+		//var delta1:b2Vec2 = new b2Vec2 ();
+		//var delta2:b2Vec2 = new b2Vec2 ();
 		do 
 		{
 			node = m_nodes[sibling] as b2DynamicTreeNode;

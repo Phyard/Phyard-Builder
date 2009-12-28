@@ -105,12 +105,18 @@ public static function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:
 public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = null):void
 {
 	//b2Assert(s_initialized == true);
-
+	
 	if (contact.m_manifold.m_pointCount > 0)
 	{
 		contact.GetFixtureA().GetBody().SetAwake(true);
 		contact.GetFixtureB().GetBody().SetAwake(true);
 	}
+
+	//>> hacking
+	contact.m_manifold.mNextManifoldInPool = mManifoldPool;
+	mManifoldPool = contact.m_manifold;
+	contact.m_manifold = null;
+	//<<
 
 	var typeA:int = contact.GetFixtureA().GetType();
 	var typeB:int = contact.GetFixtureB().GetType();
@@ -121,6 +127,8 @@ public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = n
 	var destroyFcn:Function = (s_registers[typeA][typeB] as b2ContactRegister).destroyFcn;
 	destroyFcn(contact, allocator);
 }
+
+private static var mManifoldPool:b2Manifold = null; // b2Manifold pool
 
 public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 {
@@ -142,6 +150,17 @@ public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 	m_fixtureA = fA;
 	m_fixtureB = fB;
 
+	if (mManifoldPool == null)
+	{
+		m_manifold = new b2Manifold ();
+	}
+	else
+	{
+		m_manifold = mManifoldPool;
+		mManifoldPool = mManifoldPool.mNextManifoldInPool;
+		m_manifold.mNextManifoldInPool = null;
+	}
+	
 	m_manifold.m_pointCount = 0;
 
 	m_prev = null;
@@ -158,10 +177,29 @@ public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 	m_nodeB.other = null;
 }
 
+private static var mOldManifold:b2Manifold = new b2Manifold ();
 public function Update(listener:b2ContactListener):void
 {
+	var i:int;
+	var j:int;
+	var mp2:b2ManifoldPoint;
+	var mp1:b2ManifoldPoint;
+	
 	//b2Manifold oldManifold = m_manifold;
-	var oldManifold:b2Manifold = m_manifold.Clone ();
+	//var oldManifold:b2Manifold = m_manifold.Clone ();
+	// hacking, optimization
+	var oldManifold:b2Manifold = mOldManifold;
+	oldManifold.m_pointCount = m_manifold.m_pointCount;
+	for (i = 0; i < m_manifold.m_pointCount; ++i)
+	{
+		//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
+		mp2 = m_manifold.m_points [i] as b2ManifoldPoint;
+		mp1 = oldManifold.m_points [i] as b2ManifoldPoint;
+		//mp1.m_id.key = mp2.m_id.key;
+		mp1.m_id = mp2.m_id;
+		mp1.m_normalImpulse = mp2.m_normalImpulse;
+		mp1.m_tangentImpulse = mp2.m_tangentImpulse;
+	}
 
 	// Re-enable this contact.
 	m_flags |= e_enabledFlag;
@@ -208,20 +246,22 @@ public function Update(listener:b2ContactListener):void
 
 		// Match old contact ids to new contact ids and copy the
 		// stored impulses to warm start the solver.
-			for (var i:int = 0; i < m_manifold.m_pointCount; ++i)
+			for (i = 0; i < m_manifold.m_pointCount; ++i)
 			{
 				//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
-				var mp2:b2ManifoldPoint = m_manifold.m_points [i] as b2ManifoldPoint;
+				mp2 = m_manifold.m_points [i] as b2ManifoldPoint;
 				mp2.m_normalImpulse = 0.0;
 				mp2.m_tangentImpulse = 0.0;
-				var id2:b2ContactID = mp2.m_id.Clone ();
+				//var id2:b2ContactID = mp2.m_id.Clone ();
+				var id2:uint = mp2.m_id;
 
-				for (var j:int = 0; j < oldManifold.m_pointCount; ++j)
+				for (j = 0; j < oldManifold.m_pointCount; ++j)
 				{
 					//b2ManifoldPoint* mp1 = oldManifold.m_points + j;
-					var mp1:b2ManifoldPoint = oldManifold.m_points [j] as b2ManifoldPoint;
+					mp1 = oldManifold.m_points [j] as b2ManifoldPoint;
 
-					if (mp1.m_id.key == id2.key)
+					//if (mp1.m_id.key == id2.key2)
+					if (mp1.m_id == id2)
 					{
 						mp2.m_normalImpulse = mp1.m_normalImpulse;
 						mp2.m_tangentImpulse = mp1.m_tangentImpulse;
@@ -267,13 +307,14 @@ public function Update(listener:b2ContactListener):void
 	}
 }
 
+private static var mTOIInput:b2TOIInput = new b2TOIInput ();
 public function ComputeTOI(sweepA:b2Sweep, sweepB:b2Sweep):Number
 {
-	var input:b2TOIInput = new b2TOIInput ();
+	var input:b2TOIInput = mTOIInput; //new b2TOIInput ();
 	input.proxyA.Set(m_fixtureA.GetShape());
 	input.proxyB.Set(m_fixtureB.GetShape());
-	input.sweepA.CopyFrom (sweepA);
-	input.sweepB.CopyFrom (sweepB);
+	input.sweepA = sweepA; //.CopyFrom (sweepA);
+	input.sweepB = sweepB; //.CopyFrom (sweepB);
 	input.tolerance = b2Settings.b2_linearSlop;
 
 	return b2TimeOfImpact.b2TimeOfImpact_ (input);

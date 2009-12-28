@@ -8,10 +8,10 @@ package Box2D.Collision
 	/// in the computation. Even 
 	public class b2DistanceInput
 	{
-		public var proxyA:b2DistanceProxy = new b2DistanceProxy ();
-		public var proxyB:b2DistanceProxy = new b2DistanceProxy ();
-		public var transformA:b2Transform = new b2Transform ();
-		public var transformB:b2Transform = new b2Transform ();
+		public var proxyA:b2DistanceProxy; // = new b2DistanceProxy ();
+		public var proxyB:b2DistanceProxy; // = new b2DistanceProxy ();
+		public var transformA:b2Transform; // = new b2Transform ();
+		public var transformB:b2Transform; // = new b2Transform ();
 		public var useRadii:Boolean;
 	} // class
 } //package

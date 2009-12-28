@@ -30,17 +30,20 @@ package Box2D.Common
 			t0 = another.t0;
 		}
 		
+		private static var mVec2:b2Vec2 = new b2Vec2 ();
 		/// Get the interpolated transform at a specific time.
 		/// @param alpha is a factor in [0,1], where 0 indicates t0.
 		public function GetTransform(xf:b2Transform, alpha:Number):void
 		{
-			xf.position.x = (1.0 - alpha) * c0.x + alpha * c.x;
-			xf.position.y = (1.0 - alpha) * c0.y + alpha * c.y;
-			var angle:Number = (1.0 - alpha) * a0 + alpha * a;
+			var _alpha:Number = 1.0 - alpha;
+			xf.position.x = _alpha * c0.x + alpha * c.x;
+			xf.position.y = _alpha * c0.y + alpha * c.y;
+			var angle:Number = _alpha * a0 + alpha * a;
 			xf.R.SetFromAngle(angle);
 
 			// Shift to origin
-			var vec2:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf.R, localCenter);
+			var vec2:b2Vec2 = mVec2;
+			b2Math.b2Mul_Matrix22AndVector2_Output (xf.R, localCenter, vec2);
 			xf.position.x -= vec2.x;
 			xf.position.y -= vec2.y;
 		}

@@ -28,19 +28,19 @@ package editor.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnLevelEndUpdate, "OnLevelEndUpdate", "Trigger",
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelFinished, "OnLevelFinished", "Trigger",
-                    null
-                    );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelFailed, "OnLevelFailed", "Trigger",
-                    null
-                    );
+         //RegisterEventDeclatation (CoreEventIds.ID_OnLevelFinished, "OnLevelFinished", "Trigger",
+         //           null
+         //           );
+         //RegisterEventDeclatation (CoreEventIds.ID_OnLevelFailed, "OnLevelFailed", "Trigger",
+         //           null
+         //           );
          
-         RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape, "OnSensorContainsPhysicsShape", "When shape 1 containing the center of shape 2",
-                    [
-                       new VariableDefinitionEntity ("Shape 1"), 
-                       new VariableDefinitionEntity ("Shape 2"), 
-                       new VariableDefinitionNumber ("Seconds") 
-                    ]);
+         //RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape, "OnSensorContainsPhysicsShape", "When shape 1 containing the center of shape 2",
+         //           [
+         //              new VariableDefinitionEntity ("Shape 1"), 
+         //              new VariableDefinitionEntity ("Shape 2"), 
+         //              new VariableDefinitionNumber ("Seconds") 
+         //           ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, "OnTwoPhysicsShapesBeginContacting", "When 2 physics shapes start contacting",
                     [
                        new VariableDefinitionEntity ("Shape 1"), 
@@ -75,10 +75,10 @@ package editor.trigger {
                        new VariableDefinitionEntity ("Entity"), 
                     ]);
          
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken, "OnJointBroken", "OnJointBroken",
-                    [
-                       new VariableDefinitionEntity ("Joint"), 
-                    ]);
+         //RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken, "OnJointBroken", "OnJointBroken",
+         //           [
+         //              new VariableDefinitionEntity ("Joint"), 
+         //           ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "OnJointReachLowerLimit",
                     [
                        new VariableDefinitionEntity ("Joint"), 

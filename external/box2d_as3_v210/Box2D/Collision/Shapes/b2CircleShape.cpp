@@ -100,9 +100,11 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, t
 	return false;
 }
 
+private static var mP:b2Vec2 = new b2Vec2 ();
+
 override public function ComputeAABB(aabb:b2AABB, transform:b2Transform):void
 {
-	var p:b2Vec2 = new b2Vec2 ();
+	var p:b2Vec2 = mP;//new b2Vec2 ();
 	
 	//b2Vec2 p = transform.position + b2Mul(transform.R, m_p);
 	b2Math.b2Mul_Matrix22AndVector2_Output (transform.R, m_p, p)

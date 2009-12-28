@@ -7,12 +7,14 @@ package Box2D.Dynamics.Contacts
 	
 	public class b2PositionSolverManifold
 	{
+	   private static var pointA:b2Vec2 = new b2Vec2 ();
+	   private static var pointB:b2Vec2 = new b2Vec2 ();
+	   private static var planePoint:b2Vec2 = new b2Vec2 ();
+	   private static var clipPoint:b2Vec2 = new b2Vec2 ();
+	
 		public function Initialize(cc:b2ContactConstraint):void
 		{
 			var i:int;
-			
-			var planePoint:b2Vec2;
-			var clipPoint:b2Vec2;
 			
 			//b2Assert(cc->pointCount > 0);
 
@@ -20,8 +22,8 @@ package Box2D.Dynamics.Contacts
 			{
 			case b2Manifold.e_circles:
 				{
-					var pointA:b2Vec2 = cc.bodyA.GetWorldPoint(cc.localPoint);
-					var pointB:b2Vec2 = cc.bodyB.GetWorldPoint( (cc.points[0] as b2ContactConstraintPoint).localPoint);
+					cc.bodyA.GetWorldPoint_Output(cc.localPoint, pointA);
+					cc.bodyB.GetWorldPoint_Output( (cc.points[0] as b2ContactConstraintPoint).localPoint, pointB);
 					if (b2Math.b2DistanceSquared(pointA, pointB) > b2Settings.b2_epsilon * b2Settings.b2_epsilon)
 					{
 						//m_normal = pointB - pointA;
@@ -44,12 +46,12 @@ package Box2D.Dynamics.Contacts
 
 			case b2Manifold.e_faceA:
 				{
-					m_normal.CopyFrom (cc.bodyA.GetWorldVector (cc.localPlaneNormal)); // in fact, can direct reference
-					planePoint = cc.bodyA.GetWorldPoint (cc.localPoint);
+					cc.bodyA.GetWorldVector_Output (cc.localPlaneNormal, m_normal);
+					cc.bodyA.GetWorldPoint_Output (cc.localPoint, planePoint);
 
 					for (i = 0; i < cc.pointCount; ++i)
 					{
-						clipPoint = cc.bodyB.GetWorldPoint ( (cc.points[i] as b2ContactConstraintPoint).localPoint);
+						cc.bodyB.GetWorldPoint_Output ( (cc.points[i] as b2ContactConstraintPoint).localPoint, clipPoint);
 						//m_separations[i] = b2Math.b2Dot2(clipPoint - planePoint, m_normal) - cc->radius;
 						//m_points[i] = clipPoint;
 						(m_points[i] as b2Vec2).CopyFrom (clipPoint);
@@ -62,12 +64,12 @@ package Box2D.Dynamics.Contacts
 
 			case b2Manifold.e_faceB:
 				{
-					m_normal.CopyFrom (cc.bodyB.GetWorldVector(cc.localPlaneNormal)); // in fact, can direct reference
-					planePoint = cc.bodyB.GetWorldPoint(cc.localPoint);
+					cc.bodyB.GetWorldVector_Output (cc.localPlaneNormal, m_normal); // in fact, can direct reference
+					cc.bodyB.GetWorldPoint_Output(cc.localPoint, planePoint);
 
 					for (i = 0; i < cc.pointCount; ++i)
 					{
-						clipPoint = cc.bodyA.GetWorldPoint ((cc.points[i] as b2ContactConstraintPoint).localPoint);
+						cc.bodyA.GetWorldPoint_Output ((cc.points[i] as b2ContactConstraintPoint).localPoint, clipPoint);
 						//m_separations[i] = b2Math.b2Dot2(clipPoint - planePoint, m_normal) - cc->radius;
 						//m_points[i] = clipPoint;
 						(m_points[i] as b2Vec2).CopyFrom (clipPoint);

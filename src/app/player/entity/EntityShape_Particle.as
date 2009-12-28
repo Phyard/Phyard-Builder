@@ -24,7 +24,7 @@ package player.entity {
          SetVisible (false);
          
          SetShapeAiType (Define.ShapeAiType_BombParticle);
-         SetRadius (mWorld.GetCoordinateSystem ().D2P_Length (1.0));
+         SetRadius (mWorld.GetCoordinateSystem ().D2P_Length (0.5));//1.0));
          
          SetPhysicsEnabled (true);
          SetFriction (0.0);

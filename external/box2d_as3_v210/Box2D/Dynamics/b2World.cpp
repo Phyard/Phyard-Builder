@@ -388,11 +388,12 @@ public function Solve(step:b2TimeStep):void
 	var i:int;
 	
 	// Size the island for the worst case.
-	var island:b2Island = new b2Island (m_bodyCount,
-										m_contactManager.m_contactCount,
-										m_jointCount,
-										m_stackAllocator,
-										m_contactManager.m_contactListener);
+	//var island:b2Island = new b2Island (m_bodyCount,
+	//									m_contactManager.m_contactCount,
+	//									m_jointCount,
+	//									m_stackAllocator,
+	//									m_contactManager.m_contactListener);
+	var island:b2Island = GetIsland ();
 
 	// Clear all the island flags.
 	for (b = m_bodyList; b != null; b = b.m_next)
@@ -560,6 +561,14 @@ public function Solve(step:b2TimeStep):void
 // Find TOI contacts and solve them.
 public function SolveTOI(step:b2TimeStep):void
 {
+//var numMinTOIs:int = 0;
+//var numComputeTOIs:int = 0;
+//var numSynchronizeTransform:int = 0;
+//var numIslands:int = 0;
+//var sumIslandsBodies:int = 0;
+//var sumIslandsContacts:int = 0;
+//var numSynchronizeFixtures:int = 0;
+
 	var b:b2Body;
 	var c:b2Contact;
 	var j:b2Joint;
@@ -572,11 +581,12 @@ public function SolveTOI(step:b2TimeStep):void
 	var i:int;
 	
 	// Reserve an island and a queue for TOI island solution.
-	var island:b2Island = new b2Island (m_bodyCount,
-										b2Settings.b2_maxTOIContactsPerIsland,
-										b2Settings.b2_maxTOIJointsPerIsland,
-										m_stackAllocator,
-										m_contactManager.m_contactListener);
+	//var island:b2Island = new b2Island (m_bodyCount,
+	//									b2Settings.b2_maxTOIContactsPerIsland,
+	//									b2Settings.b2_maxTOIJointsPerIsland,
+	//									m_stackAllocator,
+	//									m_contactManager.m_contactListener);
+	var island:b2Island = GetIsland ();
 
 	//Simple one pass queue
 	//Relies on the fact that we're only making one pass
@@ -664,6 +674,7 @@ public function SolveTOI(step:b2TimeStep):void
 
 				// Compute the time of impact.
 				toi = c.ComputeTOI(b1.m_sweep, b2.m_sweep);
+//++ numComputeTOIs;
 
 				//b2Assert(0.0f <= toi && toi <= 1.0f);
 
@@ -691,7 +702,9 @@ public function SolveTOI(step:b2TimeStep):void
 			// No more TOI events. Done!
 			break;
 		}
-		
+
+//++ numMinTOIs;
+
 		// Advance the bodies to the TOI.
 		s1 = minContact.GetFixtureA();
 		s2 = minContact.GetFixtureB();
@@ -718,6 +731,7 @@ public function SolveTOI(step:b2TimeStep):void
 			b2.m_sweep.CopyFrom (backup2);
 			b1.SynchronizeTransform();
 			b2.SynchronizeTransform();
+//numSynchronizeTransform += 2;
 			continue;
 		}
 
@@ -751,6 +765,7 @@ public function SolveTOI(step:b2TimeStep):void
 			--queueSize;
 
 			island.AddBody (b);
+//++ sumIslandsBodies;
 
 			// Make sure the body is awake.
 			if (b.IsAwake() == false)
@@ -790,6 +805,7 @@ public function SolveTOI(step:b2TimeStep):void
 
 				island.AddContact (cEdge.contact);
 				cEdge.contact.m_flags |= b2Contact.e_islandFlag;
+//++ sumIslandsContacts;
 
 				// Update other body.
 				var other1:b2Body = cEdge.other;
@@ -863,6 +879,7 @@ public function SolveTOI(step:b2TimeStep):void
 		subStep.positionIterations = step.positionIterations;
 
 		island.SolveTOI(subStep);
+//++ numIslands;
 
 		// Post solve cleanup.
 		for (i = 0; i < island.m_bodyCount; ++i)
@@ -883,6 +900,7 @@ public function SolveTOI(step:b2TimeStep):void
 
 			// Update fixtures (for broad-phase).
 			b.SynchronizeFixtures();
+//++ numSynchronizeFixtures;
 
 			// Invalidate all contact TOIs associated with this body. Some of these
 			// may not be in the island because they were not touching.
@@ -910,6 +928,10 @@ public function SolveTOI(step:b2TimeStep):void
 		// Also, some contacts can be destroyed.
 		m_contactManager.FindNewContacts();
 	}
+
+//trace ("numMinTOIs = " + numMinTOIs + ", numComputeTOIs = " + numComputeTOIs);
+//trace ("numSynchronizeTransform = " + numSynchronizeTransform + ", numSynchronizeFixtures = " + numSynchronizeFixtures);
+//trace ("numIslands = " + numIslands + ", numBodiesPerIsland = " + (sumIslandsBodies / numIslands) + ", numContactsPerIsland = " + (sumIslandsContacts / numIslands));
 
 	//m_stackAllocator.Free(queue);
 }

@@ -14,6 +14,24 @@ package Box2D.Collision
 			public static const e_faceB:int = 2;
 		//};
 
+		private static var pointA:b2Vec2 = new b2Vec2 ();
+		private static var pointB:b2Vec2 = new b2Vec2 ();
+		private static var localPointA:b2Vec2 = new b2Vec2 ();
+		private static var localPointA1:b2Vec2;
+		private static var localPointA2:b2Vec2;
+		private static var localPointB:b2Vec2 = new b2Vec2 ();
+		private static var localPointB1:b2Vec2;
+		private static var localPointB2:b2Vec2;
+		private static var normal:b2Vec2 = new b2Vec2 ();
+		private static var tempV:b2Vec2 = new b2Vec2 ();
+
+		private static var pA:b2Vec2 = new b2Vec2 ();
+		private static var pB:b2Vec2 = new b2Vec2 ();
+		private static var dA:b2Vec2 = new b2Vec2 ();
+		private static var dB:b2Vec2 = new b2Vec2 ();
+		private static var r:b2Vec2 = new b2Vec2 ();
+
+
 		public function Initialize(cache:b2SimplexCache,
 			proxyA:b2DistanceProxy, transformA:b2Transform,
 			proxyB:b2DistanceProxy, transformB:b2Transform):void
@@ -23,32 +41,18 @@ package Box2D.Collision
 			var count:int = cache.count;
 			//b2Assert(0 < count && count < 3);
 
-			var pointA:b2Vec2 = new b2Vec2 ();
-			var pointB:b2Vec2 = new b2Vec2 ();
-			var localPointA:b2Vec2 = new b2Vec2 ();
-			var localPointA1:b2Vec2 = new b2Vec2 ();
-			var localPointA2:b2Vec2 = new b2Vec2 ();
-			var localPointB:b2Vec2 = new b2Vec2 ();
-			var localPointB1:b2Vec2 = new b2Vec2 ();
-			var localPointB2:b2Vec2 = new b2Vec2 ();
-			var normal:b2Vec2 = new b2Vec2 ();
-			var tempV:b2Vec2 = new b2Vec2 ();
 			var s:Number;
 			var sgn:Number;
 			
-			var pA:b2Vec2 = new b2Vec2 ();
-			var pB:b2Vec2 = new b2Vec2 ();
-			var dA:b2Vec2 = new b2Vec2 ();
-			var dB:b2Vec2 = new b2Vec2 ();
-			var r:b2Vec2 = new b2Vec2 ();
-
 			if (count == 1)
 			{
 				m_type = e_points;
-				localPointA.CopyFrom (m_proxyA.GetVertex(cache.indexA[0]));
-				localPointB.CopyFrom (m_proxyB.GetVertex(cache.indexB[0]));
-				b2Math.b2Mul_TransformAndVector2_Output (transformA, localPointA, pointA);
-				b2Math.b2Mul_TransformAndVector2_Output(transformB, localPointB, pointB);
+				//localPointA.CopyFrom (m_proxyA.GetVertex(cache.indexA[0]));
+				//localPointB.CopyFrom (m_proxyB.GetVertex(cache.indexB[0]));
+				localPointA1 = m_proxyA.GetVertex(cache.indexA[0]);
+				localPointB1 = m_proxyB.GetVertex(cache.indexB[0]);
+				b2Math.b2Mul_TransformAndVector2_Output (transformA, localPointA1, pointA);
+				b2Math.b2Mul_TransformAndVector2_Output(transformB, localPointB1, pointB);
 				//m_axis = pointB - pointA;
 				m_axis.x = pointB.x - pointA.x;
 				m_axis.y = pointB.y - pointA.y;
@@ -58,9 +62,12 @@ package Box2D.Collision
 			{
 				// Two points on A and one on B
 				m_type = e_faceA;
-				localPointA1.CopyFrom (m_proxyA.GetVertex(cache.indexA[0]));
-				localPointA2.CopyFrom (m_proxyA.GetVertex(cache.indexA[1]));
-				localPointB.CopyFrom (m_proxyB.GetVertex(cache.indexB[0]));
+				//localPointA1.CopyFrom (m_proxyA.GetVertex(cache.indexA[0]));
+				//localPointA2.CopyFrom (m_proxyA.GetVertex(cache.indexA[1]));
+				localPointA1 = m_proxyA.GetVertex(cache.indexA[0]);
+				localPointA2 = m_proxyA.GetVertex(cache.indexA[1]);
+				//localPointB.CopyFrom (m_proxyB.GetVertex(cache.indexB[0]));
+				localPointB1 = m_proxyB.GetVertex(cache.indexB[0]);
 				//m_localPoint = 0.5f * (localPointA1 + localPointA2);
 				m_localPoint.x = 0.5 * (localPointA1.x + localPointA2.x);
 				m_localPoint.y = 0.5 * (localPointA1.y + localPointA2.y);
@@ -71,7 +78,7 @@ package Box2D.Collision
 
 				b2Math.b2Mul_Matrix22AndVector2_Output (transformA.R, m_axis, normal);
 				b2Math.b2Mul_TransformAndVector2_Output (transformA, m_localPoint, pointA);
-				b2Math.b2Mul_TransformAndVector2_Output (transformB, localPointB, pointB);
+				b2Math.b2Mul_TransformAndVector2_Output (transformB, localPointB1, pointB);
 
 				tempV.x = pointB.x - pointA.x;
 				tempV.y = pointB.y - pointA.y;
@@ -87,9 +94,12 @@ package Box2D.Collision
 			{
 				// Two points on B and one on A.
 				m_type = e_faceB;
-				localPointA.CopyFrom (proxyA.GetVertex(cache.indexA[0]));
-				localPointB1.CopyFrom (proxyB.GetVertex(cache.indexB[0]));
-				localPointB2.CopyFrom (proxyB.GetVertex(cache.indexB[1]));
+				//localPointA.CopyFrom (proxyA.GetVertex(cache.indexA[0]));
+				localPointA1 = proxyA.GetVertex(cache.indexA[0]);
+				//localPointB1.CopyFrom (proxyB.GetVertex(cache.indexB[0]));
+				//localPointB2.CopyFrom (proxyB.GetVertex(cache.indexB[1]));
+				localPointB1 = proxyB.GetVertex(cache.indexB[0]);
+				localPointB2 = proxyB.GetVertex(cache.indexB[1]);
 				//m_localPoint = 0.5f * (localPointB1 + localPointB2);
 				m_localPoint.x = 0.5 * (localPointB1.x + localPointB2.x);
 				m_localPoint.y = 0.5 * (localPointB1.y + localPointB2.y);
@@ -100,7 +110,7 @@ package Box2D.Collision
 
 				b2Math.b2Mul_Matrix22AndVector2_Output(transformB.R, m_axis, normal);
 				b2Math.b2Mul_TransformAndVector2_Output(transformB, m_localPoint, pointB);
-				b2Math.b2Mul_TransformAndVector2_Output(transformA, localPointA, pointA);
+				b2Math.b2Mul_TransformAndVector2_Output(transformA, localPointA1, pointA);
 
 				tempV.x = pointA.x - pointB.x;
 				tempV.y = pointA.y - pointB.y;
@@ -116,10 +126,14 @@ package Box2D.Collision
 			{
 				// Two points on B and two points on A.
 				// The faces are parallel.
-				localPointA1.CopyFrom(m_proxyA.GetVertex(cache.indexA[0]));
-				localPointA2.CopyFrom(m_proxyA.GetVertex(cache.indexA[1]));
-				localPointB1.CopyFrom(m_proxyB.GetVertex(cache.indexB[0]));
-				localPointB2.CopyFrom(m_proxyB.GetVertex(cache.indexB[1]));
+				//localPointA1.CopyFrom(m_proxyA.GetVertex(cache.indexA[0]));
+				//localPointA2.CopyFrom(m_proxyA.GetVertex(cache.indexA[1]));
+				//localPointB1.CopyFrom(m_proxyB.GetVertex(cache.indexB[0]));
+				//localPointB2.CopyFrom(m_proxyB.GetVertex(cache.indexB[1]));
+				localPointA1 = m_proxyA.GetVertex(cache.indexA[0]);
+				localPointA2 = m_proxyA.GetVertex(cache.indexA[1]);
+				localPointB1 = m_proxyB.GetVertex(cache.indexB[0]);
+				localPointB2 = m_proxyB.GetVertex(cache.indexB[1]);
 
 				b2Math.b2Mul_TransformAndVector2_Output(transformA, localPointA1, pA);
 				tempV.x = localPointA2.x - localPointA1.x;
@@ -175,9 +189,9 @@ package Box2D.Collision
 					b2Math.b2Cross_Vector2AndScalar_Output (tempV, 1.0, m_axis);
 					m_axis.Normalize();
 
-					//m_localPoint = localPointB;
-					m_localPoint.x = localPointB.x;
-					m_localPoint.y = localPointB.y;
+					m_localPoint = localPointB;
+					//m_localPoint.x = localPointB.x;
+					//m_localPoint.y = localPointB.y;
 
 					b2Math.b2Mul_Matrix22AndVector2_Output(transformB.R, m_axis, normal);
 					b2Math.b2Mul_TransformAndVector2_Output(transformA, localPointA, pointA);
@@ -201,9 +215,9 @@ package Box2D.Collision
 					b2Math.b2Cross_Vector2AndScalar_Output (tempV, 1.0, m_axis);
 					m_axis.Normalize();
 
-					//m_localPoint = localPointA;
-					m_localPoint.x = localPointA.x;
-					m_localPoint.y = localPointA.y;
+					m_localPoint = localPointA;
+					//m_localPoint.x = localPointA.x;
+					//m_localPoint.y = localPointA.y;
 
 					b2Math.b2Mul_Matrix22AndVector2_Output(transformA.R, m_axis, normal);
 					b2Math.b2Mul_TransformAndVector2_Output(transformA, localPointA, pointA);
@@ -222,15 +236,11 @@ package Box2D.Collision
 			}
 		}
 
+		private static var axisA:b2Vec2 = new b2Vec2 ();
+		private static var axisB:b2Vec2 = new b2Vec2 ();
+		
 		public function Evaluate(transformA:b2Transform, transformB:b2Transform):Number
 		{
-			var axisA:b2Vec2 = new b2Vec2 ();
-			var axisB:b2Vec2 = new b2Vec2 ();
-			var pointA:b2Vec2 = new b2Vec2 ();
-			var pointB:b2Vec2 = new b2Vec2 ();
-			var normal:b2Vec2 = new b2Vec2 ();
-			var _normal:b2Vec2 = new b2Vec2 ();
-			var tempV:b2Vec2 = new b2Vec2 ();
 			var separation:Number;
 
 			switch (m_type)
@@ -270,8 +280,7 @@ package Box2D.Collision
 					b2Math.b2Mul_Matrix22AndVector2_Output (transformA.R, m_axis, normal);
 					b2Math.b2Mul_TransformAndVector2_Output (transformA, m_localPoint, pointA);
 					
-					_normal = normal.GetNegative ();
-					b2Math.b2MulT_Matrix22AndVector2_Output (transformB.R, _normal, axisB);
+					b2Math.b2MulT_Matrix22AndVector2_Output (transformB.R, normal.GetNegative (), axisB);
 
 					b2Math.b2Mul_TransformAndVector2_Output (transformB, m_proxyB.GetSupportVertex(axisB), pointB);
 
@@ -297,8 +306,7 @@ package Box2D.Collision
 					b2Math.b2Mul_Matrix22AndVector2_Output (transformB.R, m_axis, normal);
 					b2Math.b2Mul_TransformAndVector2_Output(transformB, m_localPoint, pointB);
 					
-					_normal = normal.GetNegative ();
-					b2Math.b2MulT_Matrix22AndVector2_Output (transformA.R, _normal, axisA);
+					b2Math.b2MulT_Matrix22AndVector2_Output (transformA.R, normal.GetNegative (), axisA);
 					
 					b2Math.b2Mul_TransformAndVector2_Output(transformA, m_proxyA.GetSupportVertex(axisA), pointA);
 

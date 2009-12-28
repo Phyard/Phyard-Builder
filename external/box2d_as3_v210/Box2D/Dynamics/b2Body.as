@@ -448,10 +448,22 @@ package Box2D.Dynamics
 			return b2Math.b2Mul_TransformAndVector2(m_xf, localPoint);
 		}
 
+		public function GetWorldPoint_Output(localPoint:b2Vec2, worldPoint:b2Vec2):void
+		{
+			//return b2Mul(m_xf, localPoint);
+			b2Math.b2Mul_TransformAndVector2_Output (m_xf, localPoint, worldPoint);
+		}
+
 		public function GetWorldVector(localVector:b2Vec2):b2Vec2
 		{
 			//return b2Mul(m_xf.R, localVector);
 			return b2Math.b2Mul_Matrix22AndVector2(m_xf.R, localVector);
+		}
+
+		public function GetWorldVector_Output (localVector:b2Vec2, worldVector:b2Vec2):void
+		{
+			//return b2Mul(m_xf.R, localVector);
+			b2Math.b2Mul_Matrix22AndVector2_Output (m_xf.R, localVector, worldVector);
 		}
 
 		public function GetLocalPoint(worldPoint:b2Vec2):b2Vec2
@@ -460,10 +472,22 @@ package Box2D.Dynamics
 			return b2Math.b2MulT_TransformAndVector2(m_xf, worldPoint);
 		}
 
+		public function GetLocalPoint_Output (worldPoint:b2Vec2, localPoint:b2Vec2):void
+		{
+			//return b2MulT(m_xf, worldPoint);
+			b2Math.b2MulT_TransformAndVector2_Output (m_xf, worldPoint, localPoint);
+		}
+
 		public function GetLocalVector(worldVector:b2Vec2):b2Vec2
 		{
 			//return b2MulT(m_xf.R, worldVector);
 			return b2Math.b2MulT_Matrix22AndVector2(m_xf.R, worldVector);
+		}
+
+		public function GetLocalVector_Output (worldVector:b2Vec2, localVector:b2Vec2):void
+		{
+			//return b2MulT(m_xf.R, worldVector);
+			b2Math.b2MulT_Matrix22AndVector2_Output (m_xf.R, worldVector, localVector);
 		}
 
 		public function GetLinearVelocityFromWorldPoint(worldPoint:b2Vec2):b2Vec2

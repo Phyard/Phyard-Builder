@@ -58,8 +58,8 @@ package player.physics {
          
          distanceJointDef.bodyA = body1;
          distanceJointDef.bodyB = body2;
-         distanceJointDef.localAnchorA = body1.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ()));
-         distanceJointDef.localAnchorB = body2.GetLocalPoint(b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()));
+         body1.GetLocalPoint_Output (b2Vec2.b2Vec2_From2Numbers (anchor1.GetPositionX (), anchor1.GetPositionY ()), distanceJointDef.localAnchorA);
+         body2.GetLocalPoint_Output (b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX (), anchor2.GetPositionY ()), distanceJointDef.localAnchorB);
          distanceJointDef.length = b2Vec2.b2Vec2_From2Numbers (anchor2.GetPositionX () - anchor1.GetPositionX (), anchor2.GetPositionY () - anchor1.GetPositionY ()).Length ();
          
          distanceJointDef.collideConnected = collideConnected;

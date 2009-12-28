@@ -56,7 +56,7 @@ package player.physics {
             
             super.ReconncetShape (shape, isShapeA);
             
-            _localAnchor2InBody2 = body2.GetLocalPoint(worldVec);
+            _localAnchor2InBody2 = body2.GetLocalPoint (worldVec);
          }
          else
          {
@@ -93,9 +93,9 @@ package player.physics {
          
          prismaticJointDef.bodyA = body1;
          prismaticJointDef.bodyB = body2;
-         prismaticJointDef.localAnchorA = body1.GetLocalPoint(vec2);
-         prismaticJointDef.localAnchorB = body2.GetLocalPoint(vec2);
-         prismaticJointDef.localAxis1 = body1.GetLocalVector(axis);
+         body1.GetLocalPoint_Output (vec2, prismaticJointDef.localAnchorA);
+         body2.GetLocalPoint_Output (vec2, prismaticJointDef.localAnchorB);
+         body1.GetLocalVector_Output(axis, prismaticJointDef.localAxis1);
          prismaticJointDef.referenceAngle = body2.GetAngle() - body1.GetAngle();
          
          prismaticJointDef.collideConnected = collideConnected;

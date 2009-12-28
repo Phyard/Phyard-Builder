@@ -12,8 +12,8 @@ package common.trigger {
       public static const ID_OnLevelEndInitialize:int = 1;
       public static const ID_OnLevelBeginUpdate:int = 2;
       public static const ID_OnLevelEndUpdate:int = 3;
-      public static const ID_OnLevelFinished:int = 4;
-      public static const ID_OnLevelFailed:int = 5;
+      //public static const ID_OnLevelFinished:int = 4;
+      //public static const ID_OnLevelFailed:int = 5;
       
    // world related (maybe in later versions)
       
@@ -35,13 +35,13 @@ package common.trigger {
       public static const ID_OnShapeMouseDown:int = 90;
       public static const ID_OnShapeMouseUp:int = 91;
       
-      public static const ID_OnJointBroken:int = 110;
+      //public static const ID_OnJointBroken:int = 110;
       public static const ID_OnJointReachLowerLimit:int = 111;
       public static const ID_OnJointReachUpperLimit:int = 112;
       
    // 2 shapes contact
       
-      public static const ID_OnSensorContainsPhysicsShape:int = 130;
+      //public static const ID_OnSensorContainsPhysicsShape:int = 130;
       public static const ID_OnTwoPhysicsShapesBeginContacting:int = 131;
       public static const ID_OnTwoPhysicsShapesKeepContacting:int = 132;
       public static const ID_OnTwoPhysicsShapesEndContacting:int = 133;

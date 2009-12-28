@@ -113,6 +113,9 @@ public function DestroyProxy(broadPhase:b2BroadPhase):void
 	m_proxyId = b2BroadPhase.e_nullProxy;
 }
 
+private static var aabb1:b2AABB = new b2AABB ();
+private static var aabb2:b2AABB= new b2AABB ();
+private static var displacement:b2Vec2 = new b2Vec2 ();
 public function Synchronize(broadPhase:b2BroadPhase, transform1:b2Transform, transform2:b2Transform):void
 {
 	if (m_proxyId == b2BroadPhase.e_nullProxy)
@@ -121,13 +124,15 @@ public function Synchronize(broadPhase:b2BroadPhase, transform1:b2Transform, tra
 	}
 
 	// Compute an AABB that covers the swept shape (may miss some rotation effect).
-	var aabb1:b2AABB = new b2AABB (), aabb2:b2AABB= new b2AABB ();
+	//var aabb1:b2AABB = new b2AABB (), aabb2:b2AABB= new b2AABB ();
 	m_shape.ComputeAABB(aabb1, transform1);
 	m_shape.ComputeAABB(aabb2, transform2);
 	
 	m_aabb.Combine(aabb1, aabb2);
 
-	var displacement:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (transform2.position.x - transform1.position.x, transform2.position.y - transform1.position.y);
+	//var displacement:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (transform2.position.x - transform1.position.x, transform2.position.y - transform1.position.y);
+	displacement.x = transform2.position.x - transform1.position.x;
+	displacement.y = transform2.position.y - transform1.position.y;
 
 	broadPhase.MoveProxy(m_proxyId, m_aabb, displacement);
 }

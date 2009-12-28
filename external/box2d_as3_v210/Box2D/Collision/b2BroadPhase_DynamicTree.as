@@ -189,7 +189,6 @@ package Box2D.Collision
 
 			// Reset pair buffer
 			m_pairCount = 0;
-			m_pairBuffer = new Array (); // !!! different with c++ version
 
 			// Perform tree queries for all moving proxies.
 			for (i = 0; i < m_moveCount; ++i)
@@ -214,14 +213,15 @@ package Box2D.Collision
 
 			// Sort the pair buffer to expose duplicates.
 			//std::sort(m_pairBuffer, m_pairBuffer + m_pairCount, b2PairLessThan);
-			m_pairBuffer.sort (b2PairLessThan);
+			var sortedPairBuffer:Array = m_pairBuffer.slice (0, m_pairCount);
+			sortedPairBuffer.sort (b2PairLessThan, Array.NUMERIC);
 			
 			// Send the pairs back to the client.
 			i = 0;
 			while (i < m_pairCount)
 			{
 				//b2Pair* primaryPair = m_pairBuffer + i;
-				var primaryPair:b2Pair = m_pairBuffer [i];
+				var primaryPair:b2Pair = sortedPairBuffer [i];
 				var userDataA:Object = m_tree.GetUserData(primaryPair.proxyIdA);
 				var userDataB:Object = m_tree.GetUserData(primaryPair.proxyIdB);
 
@@ -232,7 +232,7 @@ package Box2D.Collision
 				while (i < m_pairCount)
 				{
 					//b2Pair* pair = m_pairBuffer + i;
-					var pair:b2Pair = m_pairBuffer [i];
+					var pair:b2Pair = sortedPairBuffer [i];
 					if (pair.proxyIdA != primaryPair.proxyIdA || pair.proxyIdB != primaryPair.proxyIdB)
 					{
 						break;

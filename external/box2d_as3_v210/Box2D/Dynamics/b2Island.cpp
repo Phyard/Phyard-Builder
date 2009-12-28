@@ -509,6 +509,7 @@ public function SolveTOI(subStep:b2TimeStep):void
 	Report(contactSolver.m_constraints);
 }
 
+private static var mContactImpulse:b2ContactImpulse = new b2ContactImpulse ();
 //void b2Island::Report(const b2ContactConstraint* constraints)
 public function Report(constraints:Array):void
 {
@@ -519,19 +520,24 @@ public function Report(constraints:Array):void
 	
 	var i:int, j:int;
 	
+	var impulse:b2ContactImpulse = mContactImpulse; //new b2ContactImpulse ();
+	
+	var cc:b2ContactConstraint;
+	var ccp:b2ContactConstraintPoint;
+	
 	for (i = 0; i < m_contactCount; ++i)
 	{
 		var c:b2Contact = m_contacts[i];
 
 		//const b2ContactConstraint* cc = constraints + i;
-		var cc:b2ContactConstraint = constraints[i];
+		cc = constraints[i];
 		
 		//@notice: it is best to use a member variable m_impulse
-		var impulse:b2ContactImpulse = new b2ContactImpulse ();
 		for (j = 0; j < cc.pointCount; ++j)
 		{
-			impulse.normalImpulses[j] = (cc.points[j] as b2ContactConstraintPoint).normalImpulse;
-			impulse.tangentImpulses[j] = (cc.points[j] as b2ContactConstraintPoint).tangentImpulse;
+			ccp = cc.points[j] as b2ContactConstraintPoint;
+			impulse.normalImpulses[j] = ccp.normalImpulse;
+			impulse.tangentImpulses[j] = ccp.tangentImpulse;
 		}
 
 		m_listener.PostSolve(c, impulse);

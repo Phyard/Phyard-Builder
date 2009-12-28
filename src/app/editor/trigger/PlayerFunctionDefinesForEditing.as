@@ -542,7 +542,7 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -> Minutes : Seconds", 
                      [
-                             new VariableDefinitionNumber ("Milliseconds"), 
+                             new VariableDefinitionNumber ("Milliseconds", null, {mMinValue: 0.0}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Minitues"), 
@@ -659,7 +659,7 @@ package editor.trigger {
                      [
                              new VariableDefinitionNumber ("Color x", null, {mIsColorValue: true}), 
                              new VariableDefinitionNumber ("Color y", null, {mIsColorValue: true}), 
-                             new VariableDefinitionNumber ("Factor t"), 
+                             new VariableDefinitionNumber ("Factor t (0-1)", null, {mMinValue: 0.0, mMaxValue:1.0}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result (x * t + (1.0 - t) * y)", null, {mIsColorValue: true}), 
@@ -738,7 +738,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape, world_package, "FollowCameraWithShape", 
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?"), 
+                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
                              //new VariableDefinitionBoolean ("Follow Rotation?"), 
                      ],
                      null
@@ -746,21 +746,21 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape, world_package, "FollowCameraCenterXWithShape", 
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?"), 
+                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape, world_package, "FollowCameraCenterYWithShape", 
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?"), 
+                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
          //RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape, world_package, "FollowCameraRotationWithShape", 
          //            [
          //                    new VariableDefinitionEntity ("The Followed Shape"), 
-         //                    new VariableDefinitionBoolean ("Smooth Following?"), 
+         //                    new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
          //            ],
          //            null
          //         );
@@ -778,7 +778,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally, cat_package, "SetCollisionCategoryCollideInternally", 
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category"), 
-                             new VariableDefinitionBoolean ("Collide Internally?"), 
+                             new VariableDefinitionBoolean ("Collide Internally?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -786,7 +786,7 @@ package editor.trigger {
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category 1"), 
                              new VariableDefinitionCollisionCategory ("Collision Category 2"), 
-                             new VariableDefinitionBoolean ("Friends?"), 
+                             new VariableDefinitionBoolean ("Friends?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -871,7 +871,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetVisible, entity_package, "SetVisible", 
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsVisualEntity}), 
-                             new VariableDefinitionBoolean ("Visible"), 
+                             new VariableDefinitionBoolean ("Visible", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -886,7 +886,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetAlpha, entity_package, "SetAlpha", 
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsVisualEntity}), 
-                             new VariableDefinitionNumber ("Alpha"), 
+                             new VariableDefinitionNumber ("Alpha (0-1)", null, {mMinValue: 0.0, mMaxValue:1.0}), 
                      ],
                      null
                   );
@@ -935,9 +935,9 @@ package editor.trigger {
                      [
                         new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
                         new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
-                        new VariableDefinitionNumber ("Tolerance Delta X", null, {mMinValue:0.0}), 
-                        new VariableDefinitionNumber ("Tolerance Delta Y", null, {mMinValue:0.0}), 
-                        new VariableDefinitionNumber ("Tolerance Delta Angle (degrees)", null, {mMinValue:0.0}), 
+                        new VariableDefinitionNumber ("Tolerance Delta X", null, {mMinValue:0.0, mDefaultValue:0.2}), 
+                        new VariableDefinitionNumber ("Tolerance Delta Y", null, {mMinValue:0.0, mDefaultValue:0.2}), 
+                        new VariableDefinitionNumber ("Tolerance Delta Angle (degrees)", null, {mMinValue:0.0, mDefaultValue:6}), 
                      ],
                      [
                         new VariableDefinitionBoolean ("Overlapped?"), 
@@ -1031,7 +1031,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, entity_shape_package, "SetAsSensor", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
-                             new VariableDefinitionBoolean ("Is Sensor"), 
+                             new VariableDefinitionBoolean ("Is Sensor", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -1046,7 +1046,7 @@ package editor.trigger {
          //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, entity_shape_package, "SetDensity", 
          //            [
          //                    new VariableDefinitionEntity ("The Shape"), 
-         //                    new VariableDefinitionNumber ("Density"), 
+         //                    new VariableDefinitionNumber ("Density", null, {mMinValue: 0.0}), 
          //            ],
          //            null
          //         );
@@ -1057,9 +1057,9 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target PositionX"), 
                              new VariableDefinitionNumber ("Target PositionY"), 
                              new VariableDefinitionNumber ("Delta Rotation"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
-                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -1069,8 +1069,8 @@ package editor.trigger {
          //                    new VariableDefinitionNumber ("Target PositionX"), 
          //                    new VariableDefinitionNumber ("Target PositionY"), 
          //                    new VariableDefinitionNumber ("Delta Rotation"), 
-         //                    new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
-         //                    new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
+         //                    new VariableDefinitionBoolean ("Teleport Connected Movables?", null, {mDefaultValue: true}), 
+         //                    new VariableDefinitionBoolean ("Teleport Connected Statics?", null, {mDefaultValue: true}), 
          //            ],
          //            null
          //         );

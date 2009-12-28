@@ -641,6 +641,7 @@ override public function GetReactionTorque(inv_dt:Number):Number
 	return inv_dt * m_impulse.y;
 }
 
+private static var axis:b2Vec2 = new b2Vec2 ();
 public function GetJointTranslation():Number
 {
 	var d:b2Vec2 = new b2Vec2 ();
@@ -653,7 +654,7 @@ public function GetJointTranslation():Number
 	//b2Vec2 d = p2 - p1;
 	d.x = p2.x - p1.x;
 	d.y = p2.y - p1.y;
-	var axis:b2Vec2 = b1.GetWorldVector(m_localXAxis1);
+	b1.GetWorldVector_Output(m_localXAxis1, axis);
 
 	var translation:Number = b2Math.b2Dot2 (d, axis);
 	return translation;
@@ -688,7 +689,7 @@ public function GetJointSpeed():Number
 	//b2Vec2 d = p2 - p1;
 	d.x = p2.x - p1.x;
 	d.y = p2.y - p1.y;
-	var axis:b2Vec2 = b1.GetWorldVector(m_localXAxis1);
+	b1.GetWorldVector_Output(m_localXAxis1, axis);
 
 	//b2Vec2 v1 = b1->m_linearVelocity;
 	//b2Vec2 v2 = b2->m_linearVelocity;

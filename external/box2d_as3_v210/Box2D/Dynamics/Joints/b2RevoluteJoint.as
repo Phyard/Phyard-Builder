@@ -144,24 +144,22 @@ package Box2D.Dynamics.Joints
 			}
 		}
 
+		private static var worldAnchor:b2Vec2;
+			
 		override protected function NotifyBodyChanged (oldBody:b2Body, isBodyA:Boolean):void
 		{
-			var worldAnchor:b2Vec2;
-			
-trace ("111 m_referenceAngle = " + m_referenceAngle);
 			if (isBodyA)
 			{
-				worldAnchor = oldBody.GetWorldPoint(m_localAnchor1);
-				m_localAnchor1.CopyFrom (m_bodyA.GetLocalPoint (worldAnchor));
+				oldBody.GetWorldPoint_Output (m_localAnchor1, worldAnchor);
+				m_bodyA.GetLocalPoint_Output (worldAnchor, m_localAnchor1);
 				m_referenceAngle -= m_bodyA.GetAngle () - oldBody.GetAngle ();
 			}
 			else
 			{
-				worldAnchor = oldBody.GetWorldPoint(m_localAnchor2);
-				m_localAnchor2.CopyFrom (m_bodyB.GetLocalPoint (worldAnchor));
+				oldBody.GetWorldPoint_Output (m_localAnchor2, worldAnchor);
+				m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchor2);
 				m_referenceAngle += m_bodyB.GetAngle () - oldBody.GetAngle ();
 			}
-trace ("222 m_referenceAngle = " + m_referenceAngle);
 		}
 
 		protected var mReachMaxMotorTorqueCallback:Function = null;

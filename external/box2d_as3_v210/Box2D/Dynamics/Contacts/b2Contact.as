@@ -183,7 +183,7 @@ package Box2D.Dynamics.Contacts
 		public var m_fixtureA:b2Fixture;
 		public var m_fixtureB:b2Fixture;
 
-		public var m_manifold:b2Manifold = new b2Manifold ();
+		public var m_manifold:b2Manifold//  = new b2Manifold (); // now use manifold pool to optimize
 
 		public var m_toi:Number;
 	//};

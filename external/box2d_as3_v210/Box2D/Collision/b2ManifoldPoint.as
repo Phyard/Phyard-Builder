@@ -30,14 +30,16 @@ package Box2D.Collision
 			m_normalImpulse = another.m_normalImpulse;
 			m_tangentImpulse = another.m_tangentImpulse;
 			
-			m_id.CopyFrom (another.m_id);
+			//m_id.CopyFrom (another.m_id);
+			m_id = another.m_id;
 		}
 		
 		public var m_localPoint:b2Vec2 = new b2Vec2 ();		///< usage depends on manifold type
 		public var m_normalImpulse:Number;	///< the non-penetration impulse
 		public var m_tangentImpulse:Number;	///< the friction impulse
-		public var m_id:b2ContactID = new b2ContactID ();			///< uniquely identifies a contact point between two shapes
-		
+		//public var m_id:b2ContactID = new b2ContactID ();			///< uniquely identifies a contact point between two shapes
+		// hacking to optimize
+		public var m_id:uint;
 		
 	} // class
 } // package

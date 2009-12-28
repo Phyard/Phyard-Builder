@@ -107,7 +107,6 @@ package player.entity {
 //   joint events
 //=============================================================
       
-      private var mBrokenEventHandlerList:ListElement_EventHandler = null;
       private var mReachLowerLimitEventHandlerList:ListElement_EventHandler = null;
       private var mReachUpperLimitEventHandlerList:ListElement_EventHandler = null;
       
@@ -117,9 +116,6 @@ package player.entity {
          
          switch (eventId)
          {
-            case CoreEventIds.ID_OnJointBroken:
-               mBrokenEventHandlerList = RegisterEventHandlerToList (mBrokenEventHandlerList, eventHandler);
-               break;
             case CoreEventIds.ID_OnJointReachLowerLimit:
                mReachLowerLimitEventHandlerList = RegisterEventHandlerToList (mReachLowerLimitEventHandlerList, eventHandler);
                break;
@@ -128,20 +124,6 @@ package player.entity {
                break;
             default:
                break;
-         }
-      }
-
-      final public function OnJointBroken ():void
-      {
-         var  list_element:ListElement_EventHandler = mBrokenEventHandlerList;
-         
-         mEventHandlerValueSource0.mValueObject = this;
-         
-         while (list_element != null)
-         {
-            list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
-            
-            list_element = list_element.mNextListElement;
          }
       }
 

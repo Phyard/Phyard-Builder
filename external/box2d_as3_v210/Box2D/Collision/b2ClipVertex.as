@@ -17,10 +17,13 @@ package Box2D.Collision
 		public function CopyFrom (another:b2ClipVertex):void
 		{
 			v.CopyFrom (another.v);
-			id.CopyFrom (another.id);
+			//id.CopyFrom (another.id);
+			id = another.id;
 		}
 		
 		public var v:b2Vec2 = new b2Vec2 ();
-		public var id:b2ContactID = new b2ContactID ();
+		//public var id:b2ContactID = new b2ContactID ();
+		// hacking to optimize
+		public var id:uint;
 	} // class
 } // package

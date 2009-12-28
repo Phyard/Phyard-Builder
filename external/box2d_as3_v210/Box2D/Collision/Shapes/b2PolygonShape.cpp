@@ -366,11 +366,15 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 	return false;
 }
 
+private static var lower:b2Vec2 = new b2Vec2 ();
+private static var upper:b2Vec2 = new b2Vec2 ();
+private static var v:b2Vec2 = new b2Vec2 ();
+	
 override public function ComputeAABB(aabb:b2AABB, xf:b2Transform):void
 {
-	var lower:b2Vec2 = new b2Vec2 ();
-	var upper:b2Vec2 = new b2Vec2 ();
-	var v:b2Vec2 = new b2Vec2 ();
+	//var lower:b2Vec2 = new b2Vec2 ();
+	//var upper:b2Vec2 = new b2Vec2 ();
+	//var v:b2Vec2 = new b2Vec2 ();
 	
 	//b2Vec2 lower = b2Mul(xf, m_vertices[0]);
 	b2Math.b2Mul_TransformAndVector2_Output (xf, m_vertices[0] as b2Vec2, lower);

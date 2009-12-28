@@ -32,6 +32,12 @@ public static var b2_toiRootIters:int, b2_toiMaxRootIters:int;
 	//@see b2SeparationFunction.as
 //};
 
+private static var mSimplexCache:b2SimplexCache = new b2SimplexCache ();
+private static var mDistanceInput:b2DistanceInput = new b2DistanceInput ();
+private static var mDistanceOutput:b2DistanceOutput = new b2DistanceOutput ();
+private static var m_xfA:b2Transform = new b2Transform ();
+private static var m_xfB:b2Transform = new b2Transform ();
+private static var mSeparationFunction:b2SeparationFunction = new b2SeparationFunction ();
 // CCD via the secant method.
 public static function b2TimeOfImpact_(input:b2TOIInput):Number
 {
@@ -40,8 +46,8 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 	var proxyA:b2DistanceProxy = input.proxyA;
 	var proxyB:b2DistanceProxy = input.proxyB;
 
-	var sweepA:b2Sweep = input.sweepA.Clone ();
-	var sweepB:b2Sweep = input.sweepB.Clone ();
+	var sweepA:b2Sweep = input.sweepA; //.Clone ();
+	var sweepB:b2Sweep = input.sweepB; //.Clone ();
 
 	//b2Assert(sweepA.t0 == sweepB.t0);
 	//b2Assert(1.0f - sweepA.t0 > b2Settings.b2_epsilon);
@@ -56,23 +62,24 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 	var target:Number = 0.0;
 
 	// Prepare input for distance query.
-	var cache:b2SimplexCache = new b2SimplexCache ();
+	var cache:b2SimplexCache = mSimplexCache; //new b2SimplexCache ();
 	cache.count = 0;
-	var distanceInput:b2DistanceInput = new b2DistanceInput ();
-	distanceInput.proxyA.CopyFrom (input.proxyA);
-	distanceInput.proxyB.CopyFrom (input.proxyB);
+	var distanceInput:b2DistanceInput = mDistanceInput; //new b2DistanceInput ();
+	distanceInput.proxyA = input.proxyA; //.CopyFrom (input.proxyA);
+	distanceInput.proxyB = input.proxyB; //.CopyFrom (input.proxyB);
 	distanceInput.useRadii = false;
 
 	for(;;)
 	{
-		var xfA:b2Transform = new b2Transform (), xfB:b2Transform = new b2Transform ();
+		var xfA:b2Transform = m_xfA; //new b2Transform ();
+		var xfB:b2Transform = m_xfB; //new b2Transform ();
 		sweepA.GetTransform(xfA, alpha);
 		sweepB.GetTransform(xfB, alpha);
 
 		// Get the distance between shapes.
-		distanceInput.transformA.CopyFrom (xfA);
-		distanceInput.transformB.CopyFrom (xfB);
-		var distanceOutput:b2DistanceOutput = new b2DistanceOutput ();
+		distanceInput.transformA = xfA; //.CopyFrom (xfA);
+		distanceInput.transformB = xfB; //.CopyFrom (xfB);
+		var distanceOutput:b2DistanceOutput = mDistanceOutput; //new b2DistanceOutput ();
 		b2Distance.b2Distance_ (distanceOutput, cache, distanceInput);
 
 		if (distanceOutput.distance <= 0.0)
@@ -81,7 +88,7 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 			break;
 		}
 
-		var fcn:b2SeparationFunction = new b2SeparationFunction ();
+		var fcn:b2SeparationFunction = mSeparationFunction; //new b2SeparationFunction ();
 		fcn.Initialize(cache, proxyA, xfA, proxyB, xfB);
 
 		var separation:Number = fcn.Evaluate(xfA, xfB);

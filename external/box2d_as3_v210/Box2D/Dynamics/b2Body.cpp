@@ -481,12 +481,15 @@ private function NotifyTransformChangedManually (angle:Number):void
 	m_world.m_contactManager.FindNewContacts();
 }
 
+private static var xf1:b2Transform = new b2Transform ();
+private static var temp:b2Vec2 = new b2Vec2 ();
 public function SynchronizeFixtures():void
 {
-	var xf1:b2Transform = new b2Transform ();
+	//var xf1:b2Transform = new b2Transform ();
 	xf1.R.SetFromAngle (m_sweep.a0);
 	//xf1.position = m_sweep.c0 - b2Mul(xf1.R, m_sweep.localCenter);
-	var temp:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf1.R, m_sweep.localCenter);
+	//var temp:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf1.R, m_sweep.localCenter);
+	b2Math.b2Mul_Matrix22AndVector2_Output (xf1.R, m_sweep.localCenter, temp);
 	xf1.position.x = m_sweep.c0.x - temp.x;
 	xf1.position.y = m_sweep.c0.y - temp.y;
 

@@ -66,8 +66,8 @@ package Box2D.Dynamics.Joints
 			bodyB = b2;
 			groundAnchorA.CopyFrom (ga1);
 			groundAnchorB.CopyFrom (ga2);
-			localAnchorA.CopyFrom (bodyA.GetLocalPoint(anchor1));
-			localAnchorB.CopyFrom (bodyB.GetLocalPoint(anchor2));
+			bodyA.GetLocalPoint_Output(anchor1, localAnchorA);
+			bodyB.GetLocalPoint_Output(anchor2, localAnchorB);
 			//b2Vec2 d1 = anchor1 - ga1;
 			var d1:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (anchor1.x - ga1.x, anchor1.y - ga1.y)
 			lengthA = d1.Length();

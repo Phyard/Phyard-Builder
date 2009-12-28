@@ -61,8 +61,8 @@ package Box2D.Dynamics.Joints
 		{
 			bodyA = b1;
 			bodyB = b2;
-			localAnchorA.CopyFrom (bodyA.GetLocalPoint(anchor));
-			localAnchorB.CopyFrom (bodyB.GetLocalPoint(anchor));
+			bodyA.GetLocalPoint_Output(anchor, localAnchorA);
+			bodyB.GetLocalPoint_Output(anchor, localAnchorB);
 			localAxisA.CopyFrom (bodyA.GetLocalVector(axis));
 		}
 	} // class

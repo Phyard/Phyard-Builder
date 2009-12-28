@@ -25,23 +25,38 @@
 
 //#define B2_DEBUG_SOLVER 0
 
+private static var tempVa:b2Vec2 = new b2Vec2 ();
+private static var tempVb:b2Vec2 = new b2Vec2 ();
+private static var tempV:b2Vec2 = new b2Vec2 ();
+private static var tangent:b2Vec2 = new b2Vec2 ();
+private static var mWorldManifold:b2WorldManifold = new b2WorldManifold ();
+public static var m_ConstraintsArray:Array = new Array ();
+
+
 //b2ContactSolver::b2ContactSolver(const b2TimeStep& step, b2Contact** contacts, int32 contactCount, b2StackAllocator* allocator)
 public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:int, allocator:b2StackAllocator = null)
 {
 	var i:int;
 	var j:int;
+	var cc:b2ContactConstraint;
 	
-	var tempVa:b2Vec2 = new b2Vec2 ();
-	var tempVb:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-		
 	//m_step = step;
 	m_step.CopyFrom (step);
 	m_allocator = allocator;
 
 	m_constraintCount = contactCount;
 	//m_constraints = (b2ContactConstraint*)m_allocator->Allocate(m_constraintCount * sizeof(b2ContactConstraint));
-	m_constraints = new Array (m_constraintCount);
+	if (m_ConstraintsArray.length < m_constraintCount)
+	{
+		var oldCount:int = m_ConstraintsArray.length;
+		m_ConstraintsArray.length = m_constraintCount;
+		
+		for (i = oldCount; i < m_constraintCount; ++ i)
+		{
+			cc = new b2ContactConstraint ();
+			m_ConstraintsArray [i] = cc;
+		}
+	}
 
 	for (i = 0; i < m_constraintCount; ++i)
 	{	
@@ -68,11 +83,10 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 
 		//b2Assert(manifold->m_pointCount > 0);
 
-		var worldManifold:b2WorldManifold = new b2WorldManifold ();
+		var worldManifold:b2WorldManifold = mWorldManifold; //new b2WorldManifold ();
 		worldManifold.Initialize(manifold, bodyA.m_xf, radiusA, bodyB.m_xf, radiusB);
 
-		var cc:b2ContactConstraint = new b2ContactConstraint ();
-		m_constraints [i] = cc; // in c++ version, all constraints have created when constraints array is created.
+		cc = m_constraints [i];
 		cc.bodyA = bodyA;
 		cc.bodyB = bodyB;
 		cc.manifold = manifold;
@@ -81,8 +95,10 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 		cc.friction = friction;
 		cc.restitution = restitution;
 
-		cc.localPlaneNormal.CopyFrom (manifold.m_localPlaneNormal);
-		cc.localPoint.CopyFrom (manifold.m_localPoint);
+		//cc.localPlaneNormal.CopyFrom (manifold.m_localPlaneNormal);
+		cc.localPlaneNormal = manifold.m_localPlaneNormal;
+		//cc.localPoint.CopyFrom (manifold.m_localPoint);
+		cc.localPoint = manifold.m_localPoint;
 		cc.radius = radiusA + radiusB;
 		cc.type = manifold.m_type;
 
@@ -94,7 +110,8 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 			ccp.normalImpulse = cp.m_normalImpulse;
 			ccp.tangentImpulse = cp.m_tangentImpulse;
 
-			ccp.localPoint.CopyFrom (cp.m_localPoint);
+			//ccp.localPoint.CopyFrom (cp.m_localPoint);
+			ccp.localPoint = cp.m_localPoint;
 
 			//ccp->rA = worldManifold.m_points[j] - bodyA->m_sweep.c;
 			//ccp->rB = worldManifold.m_points[j] - bodyB->m_sweep.c;
@@ -117,7 +134,7 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 			//b2Assert(kEqualized > b2_epsilon);
 			ccp.equalizedMass = 1.0 / kEqualized;
 
-			var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (cc.normal, 1.0);
+			b2Math.b2Cross_Vector2AndScalar_Output (cc.normal, 1.0, tangent);
 
 			var rtA:Number = b2Math.b2Cross2 (ccp.rA, tangent);
 			var rtB:Number = b2Math.b2Cross2 (ccp.rB, tangent);
@@ -188,12 +205,14 @@ public function Destructor ():void
 	//m_allocator->Free(m_constraints);
 }
 
+private static var mP:b2Vec2 = new b2Vec2 ();
+
 public function InitVelocityConstraints(step:b2TimeStep):void
 {
 	var i:int;
 	var j:int;
 	
-	var P:b2Vec2 = new b2Vec2 ();
+	var P:b2Vec2 = mP;//new b2Vec2 ();
 	
 	// Warm start.
 	for (i = 0; i < m_constraintCount; ++i)
@@ -243,25 +262,25 @@ public function InitVelocityConstraints(step:b2TimeStep):void
 	}
 }
 
+private static var vA:b2Vec2 = new b2Vec2 ();
+private static var vB:b2Vec2 = new b2Vec2 ();
+//private static var tempVa:b2Vec2 = new b2Vec2 ();
+//private static var tempVb:b2Vec2 = new b2Vec2 ();
+private static var dv:b2Vec2 = new b2Vec2 ();
+private static var dv1:b2Vec2 = new b2Vec2 ();
+private static var dv2:b2Vec2 = new b2Vec2 ();
+private static var P:b2Vec2 = new b2Vec2 ();
+private static var P1:b2Vec2 = new b2Vec2 ();
+private static var P2:b2Vec2 = new b2Vec2 ();
+private static var a:b2Vec2 = new b2Vec2 ();
+private static var b:b2Vec2 = new b2Vec2 ();
+private static var x:b2Vec2 = new b2Vec2 ();
+private static var d:b2Vec2 = new b2Vec2 ();
+
 public function SolveVelocityConstraints():void
 {
 	var i:int;
 	var j:int;
-	
-	var vA:b2Vec2 = new b2Vec2 ();
-	var vB:b2Vec2 = new b2Vec2 ();
-	var tempVa:b2Vec2 = new b2Vec2 ();
-	var tempVb:b2Vec2 = new b2Vec2 ();
-	var dv:b2Vec2 = new b2Vec2 ();
-	var dv1:b2Vec2 = new b2Vec2 ();
-	var dv2:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
-	var P1:b2Vec2 = new b2Vec2 ();
-	var P2:b2Vec2 = new b2Vec2 ();
-	var a:b2Vec2 = new b2Vec2 ();
-	var b:b2Vec2 = new b2Vec2 ();
-	var x:b2Vec2 = new b2Vec2 ();
-	var d:b2Vec2 = new b2Vec2 ();
 	
 	for (i = 0; i < m_constraintCount; ++i)
 	{
@@ -279,7 +298,8 @@ public function SolveVelocityConstraints():void
 		var invMassB:Number = bodyB.m_invMass;
 		var invIB:Number = bodyB.m_invI;
 		var normal:b2Vec2 = c.normal; // .Clone ()
-		var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (normal, 1.0); 
+		//var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (normal, 1.0); 
+		b2Math.b2Cross_Vector2AndScalar_Output (normal, 1.0, tangent); 
 		var friction:Number = c.friction;
 
 		//b2Assert(c->pointCount == 1 || c->pointCount == 2);
@@ -628,9 +648,11 @@ public function SolveVelocityConstraints():void
 			}
 		}
 
-		bodyA.m_linearVelocity.CopyFrom (vA);
+		bodyA.m_linearVelocity.x = vA.x;
+		bodyA.m_linearVelocity.y = vA.y;
 		bodyA.m_angularVelocity = wA;
-		bodyB.m_linearVelocity.CopyFrom (vB);
+		bodyB.m_linearVelocity.x = vB.x;
+		bodyB.m_linearVelocity.y = vB.y;
 		bodyB.m_angularVelocity = wB;
 	}
 }
@@ -726,6 +748,9 @@ public function FinalizeVelocityConstraints():void
 	//@see b2PositionSolverManifold.as
 //};
 
+private static var rA:b2Vec2 = new b2Vec2 ();
+private static var rB:b2Vec2 = new b2Vec2 ();
+
 // Sequential solver.
 public function SolvePositionConstraints(baumgarte:Number):Boolean
 {
@@ -733,11 +758,11 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 	var j:int;
 	var minSeparation:Number = 0.0;
 	
-	var rA:b2Vec2 = new b2Vec2 ();
-	var rB:b2Vec2 = new b2Vec2 ();
+	//var rA:b2Vec2 = new b2Vec2 ();
+	//var rB:b2Vec2 = new b2Vec2 ();
 	var rC:b2Vec2;
 	
-	var P:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
 	var tF:Number;
 	
 	var psm:b2PositionSolverManifold = new b2PositionSolverManifold ();

@@ -28,6 +28,13 @@ package Box2D.Collision
 			}
 		}
 		
+		private static var tempV:b2Vec2 = new b2Vec2 ();
+		private static var pointA:b2Vec2 = new b2Vec2 ();
+		private static var pointB:b2Vec2 = new b2Vec2 ();
+		private static var normal:b2Vec2 = new b2Vec2 ();
+		private static var planePoint:b2Vec2 = new b2Vec2 ();
+		private static var clipPoint:b2Vec2 = new b2Vec2 ();
+		
 		public function Initialize(manifold:b2Manifold,
 								  xfA:b2Transform, radiusA:Number,
 								  xfB:b2Transform, radiusB:Number):void
@@ -37,12 +44,12 @@ package Box2D.Collision
 				return;
 			}
 			
-			var tempV:b2Vec2 = new b2Vec2 ();
+			//var tempV:b2Vec2 = new b2Vec2 ();
 			
 			var i:int;
-			var normal:b2Vec2;
-			var planePoint:b2Vec2;
-			var clipPoint:b2Vec2;
+			//var normal:b2Vec2;
+			//var planePoint:b2Vec2;
+			//var clipPoint:b2Vec2;
 			
 			var cAx:Number;
 			var cAy:Number;
@@ -55,9 +62,11 @@ package Box2D.Collision
 			{
 			case b2Manifold.e_circles:
 				{
-					var pointA:b2Vec2 = b2Math.b2Mul_TransformAndVector2(xfA, manifold.m_localPoint);
-					var pointB:b2Vec2 = b2Math.b2Mul_TransformAndVector2(xfB, (manifold.m_points[0] as b2ManifoldPoint).m_localPoint);
-					normal = b2Vec2.b2Vec2_From2Numbers (1.0, 0.0);
+					b2Math.b2Mul_TransformAndVector2_Output (xfA, manifold.m_localPoint, pointA);
+					b2Math.b2Mul_TransformAndVector2_Output (xfB, (manifold.m_points[0] as b2ManifoldPoint).m_localPoint, pointB);
+					//normal = b2Vec2.b2Vec2_From2Numbers (1.0, 0.0);
+					normal.x = 1.0;
+					normal.y = 0.0;
 					if (b2Math.b2DistanceSquared(pointA, pointB) > b2Settings.b2_epsilon * b2Settings.b2_epsilon)
 					{
 						//normal = pointB - pointA;
@@ -84,8 +93,8 @@ package Box2D.Collision
 
 			case b2Manifold.e_faceA:
 				{
-					normal = b2Math.b2Mul_Matrix22AndVector2(xfA.R, manifold.m_localPlaneNormal);
-					planePoint = b2Math.b2Mul_TransformAndVector2(xfA, manifold.m_localPoint);
+					b2Math.b2Mul_Matrix22AndVector2_Output (xfA.R, manifold.m_localPlaneNormal, normal);
+					b2Math.b2Mul_TransformAndVector2_Output (xfA, manifold.m_localPoint, planePoint);
 
 					// Ensure normal points from A to B.
 					//m_normal = normal;
@@ -98,7 +107,7 @@ package Box2D.Collision
 						//b2Vec2 cA = clipPoint + (radiusA - b2Math.b2Dot2(clipPoint - planePoint, normal)) * normal;
 						//b2Vec2 cB = clipPoint - radiusB * normal;
 						//m_points[i] = 0.5f * (cA + cB);
-						clipPoint = b2Math.b2Mul_TransformAndVector2(xfB, (manifold.m_points[i] as b2ManifoldPoint).m_localPoint);
+						b2Math.b2Mul_TransformAndVector2_Output (xfB, (manifold.m_points[i] as b2ManifoldPoint).m_localPoint, clipPoint);
 						tempV.x = clipPoint.x - planePoint.x;
 						tempV.y = clipPoint.y - planePoint.y;
 						temp = (radiusA - b2Math.b2Dot2(tempV, normal));
@@ -114,8 +123,8 @@ package Box2D.Collision
 
 			case b2Manifold.e_faceB:
 				{
-					normal = b2Math.b2Mul_Matrix22AndVector2(xfB.R, manifold.m_localPlaneNormal);
-					planePoint = b2Math.b2Mul_TransformAndVector2(xfB, manifold.m_localPoint);
+					b2Math.b2Mul_Matrix22AndVector2_Output (xfB.R, manifold.m_localPlaneNormal, normal);
+					b2Math.b2Mul_TransformAndVector2_Output (xfB, manifold.m_localPoint, planePoint);
 
 					// Ensure normal points from A to B.
 					//m_normal = -normal;
@@ -128,7 +137,7 @@ package Box2D.Collision
 						//b2Vec2 cA = clipPoint - radiusA * normal;
 						//b2Vec2 cB = clipPoint + (radiusB - b2Math.b2Dot2(clipPoint - planePoint, normal)) * normal;
 						//m_points[i] = 0.5f * (cA + cB);
-						clipPoint = b2Math.b2Mul_TransformAndVector2(xfA, (manifold.m_points[i] as b2ManifoldPoint).m_localPoint);
+						b2Math.b2Mul_TransformAndVector2_Output (xfA, (manifold.m_points[i] as b2ManifoldPoint).m_localPoint, clipPoint);
 						cAx = clipPoint.x - radiusA * normal.x;
 						cAy = clipPoint.y - radiusA * normal.y;
 						tempV.x = clipPoint.x - planePoint.x;

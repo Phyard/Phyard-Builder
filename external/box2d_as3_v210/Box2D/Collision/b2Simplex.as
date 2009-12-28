@@ -137,7 +137,7 @@ package Box2D.Collision
 				return b2Math.b2Vec2_zero.Clone ();
 
 			case 1:
-				return m_v1.w.Clone ();
+				return m_v1.w;//.Clone ();
 
 			case 2:
 				//return m_v1.a * m_v1.w + m_v2.a * m_v2.w;

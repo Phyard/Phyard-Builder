@@ -30,18 +30,18 @@ package common.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnLevelEndUpdate,
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelFinished,
-                    null
-                    );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelFailed,
-                    null
-                    );
-         RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape,
-                    [
-                        ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number, 
-                    ]);
+         //RegisterEventDeclatation (CoreEventIds.ID_OnLevelFinished,
+         //           null
+         //           );
+         //RegisterEventDeclatation (CoreEventIds.ID_OnLevelFailed,
+         //           null
+         //           );
+         //RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape,
+         //           [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Number, 
+         //           ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting,
                     [
                         ValueTypeDefine.ValueType_Entity, 
@@ -73,10 +73,10 @@ package common.trigger {
                     [
                         ValueTypeDefine.ValueType_Entity, 
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken,
-                    [
-                        ValueTypeDefine.ValueType_Entity, 
-                    ]);
+         //RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken,
+         //           [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //           ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit,
                     [
                         ValueTypeDefine.ValueType_Entity, 

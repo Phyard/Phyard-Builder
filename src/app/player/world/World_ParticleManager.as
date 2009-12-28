@@ -36,7 +36,7 @@ public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number
    mBombs [mNumBombs ++] = bomb;
    
    var particleDisplaySpeed:Number = 800.0 * ( 0.25 + 1.0 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
-   var particleDensity:Number = density;
+   var particleDensity:Number = 2.5 * density;
    var particleLifeTime:Number = Define.WorldStepTimeInterval * 18 * ( 0.5 + 1.5 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
    
    if (worldDisplayRadius > 12) worldDisplayRadius = 12;
@@ -103,9 +103,6 @@ public function ParticleManager_Update (dt:Number):void
          angle = mCoordinateSystem.P2D_RotationRadians (particleId * Define.kPI_x_2 / bomb.mNumParticles);
          cos = Math.cos (angle);
          sin = Math.sin (angle);
-         
-trace ("vx = " + (bomb.mParticleSpeed * cos));
-trace ("vy = " + (bomb.mParticleSpeed * sin));
          
          EntityShape.CreateParticle (
                   this,

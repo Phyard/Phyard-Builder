@@ -78,6 +78,8 @@ public static var b2_gjkCalls:int, b2_gjkIters:int, b2_gjkMaxIters:int;
 	//@see b2Simplex.as
 //}
 
+private static var mSimplex:b2Simplex = new b2Simplex ();
+
 public static function b2Distance_(output:b2DistanceOutput,
 				cache:b2SimplexCache,
 				input:b2DistanceInput):void
@@ -87,11 +89,11 @@ public static function b2Distance_(output:b2DistanceOutput,
 	const proxyA:b2DistanceProxy = input.proxyA; //.Clone ();
 	const proxyB:b2DistanceProxy = input.proxyB; //.Clone ();
 
-	var transformA:b2Transform = input.transformA.Clone ();
-	var transformB:b2Transform = input.transformB.Clone ();
+	var transformA:b2Transform = input.transformA;//.Clone ();
+	var transformB:b2Transform = input.transformB;//.Clone ();
 
 	// Initialize the simplex.
-	var simplex:b2Simplex = new b2Simplex ();
+	var simplex:b2Simplex = mSimplex; //new b2Simplex ();
 	simplex.ReadCache(cache, proxyA, transformA, proxyB, transformB);
 
 	// Get simplex vertices as an array.
@@ -104,7 +106,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 	var saveA:Array = [0, 0, 0], saveB:Array = [0, 0, 0];
 	var saveCount:int = 0;
 
-	var closestPoint:b2Vec2 = simplex.GetClosestPoint().Clone ();
+	var closestPoint:b2Vec2 = simplex.GetClosestPoint();//.Clone ();
 	var distanceSqr1:Number = closestPoint.LengthSquared();
 	var distanceSqr2:Number = distanceSqr1;
 
@@ -148,7 +150,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 		}
 
 		// Compute closest point.
-		var p:b2Vec2 = simplex.GetClosestPoint().Clone ();
+		var p:b2Vec2 = simplex.GetClosestPoint();//.Clone ();
 		distanceSqr2 = p.LengthSquared();
 
 		// Ensure progress
@@ -159,7 +161,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 		distanceSqr1 = distanceSqr2;
 
 		// Get search direction.
-		var d:b2Vec2 = simplex.GetSearchDirection().Clone ();
+		var d:b2Vec2 = simplex.GetSearchDirection();//.Clone ();
 
 		// Ensure the search direction is numerically fit.
 		if (d.LengthSquared() < b2Settings.b2_epsilon * b2Settings.b2_epsilon)

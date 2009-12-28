@@ -280,6 +280,28 @@ package Box2D.Dynamics
 // hacking
 //====================================================================================
 		
+		private var mIsland:b2Island = null;
+		
+		private function GetIsland ():b2Island
+		{
+			if (mIsland == null || mIsland.m_bodyCapacity < m_bodyCount)
+			{
+				mIsland = new b2Island (m_bodyCount + m_bodyCount,
+										b2Settings.b2_maxTOIContactsPerIsland,
+										b2Settings.b2_maxTOIJointsPerIsland,
+										m_stackAllocator,
+										m_contactManager.m_contactListener);
+			}
+			else
+			{
+				mIsland.m_listener = m_contactManager.m_contactListener;
+				
+				mIsland.Clear ();
+			}
+			
+			return mIsland;
+		}
+		
 		public function WakeUpAllBodies ():void
 		{
 			var b:b2Body = m_bodyList;

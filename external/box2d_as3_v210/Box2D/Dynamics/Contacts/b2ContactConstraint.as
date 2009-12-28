@@ -22,7 +22,7 @@ package Box2D.Dynamics.Contacts
 		public var localPlaneNormal:b2Vec2 = new b2Vec2 ();
 		public var localPoint:b2Vec2 = new b2Vec2 ();
 		public var normal:b2Vec2 = new b2Vec2 ();
-		public var normalMass:b2Mat22 = new b2Mat22 ();
+		public var normalMass:b2Mat22;// = new b2Mat22 ();
 		public var K:b2Mat22 = new b2Mat22 ();
 		public var bodyA:b2Body;
 		public var bodyB:b2Body;

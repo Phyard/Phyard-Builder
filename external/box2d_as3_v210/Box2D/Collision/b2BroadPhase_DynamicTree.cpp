@@ -25,16 +25,15 @@ public function b2BroadPhase_DynamicTree()
 	
 	m_proxyCount = 0;
 
-	m_pairCapacity = 16;
+	m_pairCapacity = 16
 	m_pairCount = 0;
 	//m_pairBuffer = (b2Pair*)b2Alloc(m_pairCapacity * sizeof(b2Pair));
 
-	//m_pairBuffer = new Array (m_pairCapacity);
-	//for (i = 0; i < m_pairCapacity; ++ i)
-	//{
-	//	m_pairBuffer [i] = new b2Pair ();
-	//}
-	m_pairBuffer = new Array (); // if roll back to the c++ version, pls remember to rmove the "m_pairBuffer.= new Array ();" in UpdatePaires ()
+	m_pairBuffer = new Array (m_pairCapacity);
+	for (i = 0; i < m_pairCapacity; ++ i)
+	{
+		m_pairBuffer [i] = new b2Pair ();
+	}
 
 	m_moveCapacity = 16;
 	m_moveCount = 0;
@@ -118,29 +117,20 @@ public function QueryCallback(proxyId:int):Boolean
 	}
 
 	// Grow the pair buffer as needed.
-	//if (m_pairCount == m_pairCapacity)
-	//{
-	//	//b2Pair* oldBuffer = m_pairBuffer;
-	//	//m_pairCapacity *= 2;
-	//	//m_pairBuffer = (b2Pair*)b2Alloc(m_pairCapacity * sizeof(b2Pair));
-	//	//memcpy(m_pairBuffer, oldBuffer, m_pairCount * sizeof(b2Pair));
-	//	//b2Free(oldBuffer);
-	//	var oldCapacity:int = m_pairCapacity;
-	//	m_pairCapacity *= 2;
-	//	m_pairBuffer.length = m_pairCapacity;
-	//	for (var i:int = oldCapacity; i < m_pairCapacity; ++ i)
-	//	{
-	//		m_pairBuffer [i] = new b2Pair ();
-	//	}
-	//}
-	//
-	//m_pairBuffer[m_pairCount].proxyIdA = b2Math.b2Min_int (proxyId, m_queryProxyId);
-	//m_pairBuffer[m_pairCount].proxyIdB = b2Math.b2Max_int (proxyId, m_queryProxyId);
-	var pair:b2Pair = new b2Pair ();
-	pair.proxyIdA = b2Math.b2Min_int (proxyId, m_queryProxyId);
-	pair.proxyIdB = b2Math.b2Max_int (proxyId, m_queryProxyId);
-	m_pairBuffer.push (pair);
+	if (m_pairCount == m_pairCapacity)
+	{
+		var oldCapacity:int = m_pairCapacity;
+		m_pairCapacity *= 2;
+		m_pairBuffer.length = m_pairCapacity;
+		for (var i:int = oldCapacity; i < m_pairCapacity; ++ i)
+		{
+			m_pairBuffer [i] = new b2Pair ();
+		}
+	}
 
+	var pair:b2Pair = m_pairBuffer[m_pairCount];
+	pair.proxyIdA = Math.min (proxyId, m_queryProxyId);
+	pair.proxyIdB = Math.max (proxyId, m_queryProxyId);
 	++m_pairCount;
 	
 	return true;

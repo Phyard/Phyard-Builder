@@ -81,7 +81,9 @@ package editor.entity {
          
          alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
          
-         GraphicsUtil.ClearAndDrawCircle (this, 0, 0, mRadius, borderColor, 
+         var visualRadius:Number = mRadius + 0.5; // be consistent with player
+         
+         GraphicsUtil.ClearAndDrawCircle (this, 0, 0, visualRadius, borderColor, 
                                                             borderThickness, drawBg, filledColor);
          
          if (mAppearanceType == Define.CircleAppearanceType_Ball)
@@ -100,7 +102,7 @@ package editor.entity {
          {
             var radius2:Number = mRadius * 0.5;
             GraphicsUtil.DrawEllipse (this, - radius2, - radius2, radius2 + radius2, radius2 + radius2, borderColor, 1, false, filledColor);
-            GraphicsUtil.DrawLine (this, radius2, 0, mRadius, 0, borderColor, 1);
+            GraphicsUtil.DrawLine (this, radius2, 0, visualRadius, 0, borderColor, 1);
          }
          
          if (Define.IsBombShape (GetAiType ()))

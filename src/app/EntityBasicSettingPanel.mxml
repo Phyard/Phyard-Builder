@@ -67,8 +67,10 @@
             CheckBox_Visible.selected = inputValues.mIsVisible;
             CheckBox_Active.selected = inputValues.mIsActive;
             
-            CheckBox_Visible.visible = inputValues.mVisibleNonsense == null || (!inputValues.mVisibleNonsense);
-            CheckBox_Active.visible = inputValues.mActiveNonsense == null || (!inputValues.mActiveNonsense);
+            Label_Alpha.enabled = inputValues.mAlphaNonsense == null || (!inputValues.mAlphaNonsense);
+            Text_Alpha.enabled = inputValues.mAlphaNonsense == null || (!inputValues.mAlphaNonsense);
+            CheckBox_Visible.enabled = inputValues.mVisibleNonsense == null || (!inputValues.mVisibleNonsense);
+            CheckBox_Active.enabled = inputValues.mActiveNonsense == null || (!inputValues.mActiveNonsense);
          }
          
          public function GetValues (returnValues:Object):void

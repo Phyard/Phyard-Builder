@@ -53,7 +53,7 @@ package player.mode {
          mStartX = endX;
          mStartY = endY;
          
-         mWorld.MoveWorldScene_DisplayOffset (-dx, -dy);
+         mWorld.MouseMoveCamera (-dx, -dy);
       }
       
       protected function FinishSession (endX:Number, endY:Number):void

@@ -80,10 +80,13 @@ package editor.entity {
          
          alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
          
-         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderThickness, drawBg, filledColor, mRoundCorners);
+         var visualHalfWidth:Number = mHalfWidth + 0.5;
+         var visualHalfHeight:Number = mHalfHeight + 0.5;
+         
+         GraphicsUtil.ClearAndDrawRect (this, - visualHalfWidth, - visualHalfHeight, visualHalfWidth + visualHalfWidth, visualHalfHeight + visualHalfHeight, borderColor, borderThickness, drawBg, filledColor, mRoundCorners);
          
          if (mAiType == Define.ShapeAiType_Bomb)
-            GraphicsUtil.DrawRect (this, - mHalfWidth * 0.5, - mHalfHeight * 0.5, mHalfWidth, mHalfHeight, 0x808080, 0, true, 0x808080);
+            GraphicsUtil.DrawRect (this, - visualHalfWidth * 0.5, - visualHalfHeight * 0.5, visualHalfWidth, visualHalfHeight, 0x808080, 0, true, 0x808080);
       }
       
       override public function UpdateSelectionProxy ():void
@@ -418,6 +421,7 @@ package editor.entity {
             x1 = vertexController2.GetPositionX ();
             x2 = vertexController.GetPositionX () + localOffsetX;
          }
+         
          if (vertexController.GetPositionY () < vertexController2.GetPositionY ())
          {
             y1 = vertexController.GetPositionY () + localOffsetY;

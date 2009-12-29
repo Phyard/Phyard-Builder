@@ -718,7 +718,7 @@ public function SolveTOI(step:b2TimeStep):void
 		b2.Advance(minTOI);
 
 		// The TOI contact likely has some new contact points.
-		minContact.Update(m_contactManager.m_contactListener);
+		minContact.Update(m_contactManager.m_contactListener, m_contactManager.m_contactPreSolveListener);
 		minContact.m_flags &= ~b2Contact.e_toiFlag;
 
 		// Is the contact solid?

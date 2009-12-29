@@ -21,8 +21,6 @@
 
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_IsVisible" label="Visible"/>
-      <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
       <mx:Spacer width="100%"/>
    </mx:HBox>
@@ -42,8 +40,6 @@
          {
             mInputValues = initialValues;
             
-            CheckBox_IsVisible.selected = initialValues.mIsVisible;
-            CheckBox_IsVisible.enabled = true;
             CheckBox_CollideConnected.selected = initialValues.mCollideConnected;
             
             //
@@ -58,7 +54,6 @@
          
          public function GetValues (returnValues:Object):void
          {
-             returnValues.mIsVisible = CheckBox_IsVisible.selected;
              returnValues.mCollideConnected = CheckBox_CollideConnected.selected;
              
              //

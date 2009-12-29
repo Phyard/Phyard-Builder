@@ -245,6 +245,8 @@ public static function b2ClipSegmentToLine(segmentOut:b2ClipVertexSegment, segme
 
 private static var mSimplexCache:b2SimplexCache = new b2SimplexCache ();
 private static var mDistanceInput:b2DistanceInput = new b2DistanceInput ();
+   private static var mDistanceProxyA:b2DistanceProxy = new b2DistanceProxy ();
+   private static var mDistanceProxyB:b2DistanceProxy = new b2DistanceProxy ();
 private static var mDistanceOutput:b2DistanceOutput = new b2DistanceOutput ();
 
 //bool b2TestOverlap(const b2Shape* shapeA, const b2Shape* shapeB,
@@ -253,6 +255,8 @@ public static function b2TestOverlap_Shapes (shapeA:b2Shape, shapeB:b2Shape,
 				   xfA:b2Transform, xfB:b2Transform):Boolean
 {
 	var input:b2DistanceInput = mDistanceInput; //new b2DistanceInput ();
+	input.proxyA = mDistanceProxyA;
+	input.proxyB = mDistanceProxyB;
 	input.proxyA.Set(shapeA);
 	input.proxyB.Set(shapeB);
 	//input.transformA.CopyFrom (xfA);

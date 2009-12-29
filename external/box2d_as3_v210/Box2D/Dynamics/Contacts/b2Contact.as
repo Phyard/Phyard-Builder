@@ -44,6 +44,7 @@ package Box2D.Dynamics.Contacts
 	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2ContactListener;
+	import Box2D.Dynamics.b2ContactPreSolveListener;
 
 	//class b2Body;
 	//class b2Contact;

@@ -178,7 +178,7 @@ public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 }
 
 private static var mOldManifold:b2Manifold = new b2Manifold ();
-public function Update(listener:b2ContactListener):void
+public function Update(listener:b2ContactListener, preSolveLinster:b2ContactPreSolveListener):void
 {
 	var i:int;
 	var j:int;
@@ -189,16 +189,24 @@ public function Update(listener:b2ContactListener):void
 	//var oldManifold:b2Manifold = m_manifold.Clone ();
 	// hacking, optimization
 	var oldManifold:b2Manifold = mOldManifold;
-	oldManifold.m_pointCount = m_manifold.m_pointCount;
-	for (i = 0; i < m_manifold.m_pointCount; ++i)
+	
+	if (preSolveLinster == null)
 	{
-		//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
-		mp2 = m_manifold.m_points [i] as b2ManifoldPoint;
-		mp1 = oldManifold.m_points [i] as b2ManifoldPoint;
-		//mp1.m_id.key = mp2.m_id.key;
-		mp1.m_id = mp2.m_id;
-		mp1.m_normalImpulse = mp2.m_normalImpulse;
+		oldManifold.m_pointCount = m_manifold.m_pointCount;
+		for (i = 0; i < m_manifold.m_pointCount; ++i)
+		{
+			//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
+			mp2 = m_manifold.m_points [i] as b2ManifoldPoint;
+			mp1 = oldManifold.m_points [i] as b2ManifoldPoint;
+			//mp1.m_id.key = mp2.m_id.key;
+			mp1.m_id = mp2.m_id;
+				mp1.m_normalImpulse = mp2.m_normalImpulse;
 		mp1.m_tangentImpulse = mp2.m_tangentImpulse;
+		}
+	}
+	else
+	{
+		oldManifold.CopyFrom (m_manifold);
 	}
 
 	// Re-enable this contact.
@@ -301,9 +309,9 @@ public function Update(listener:b2ContactListener):void
 		listener.EndContact(this);
 	}
 
-	if ((m_flags & e_sensorFlag) == 0)
+	if (preSolveLinster != null && (m_flags & e_sensorFlag) == 0)
 	{
-		listener.PreSolve(this, oldManifold);
+		preSolveLinster.PreSolve(this, oldManifold);
 	}
 }
 

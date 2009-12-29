@@ -91,7 +91,7 @@ package common {
 // rect
 //===========================================================================
       
-      public static const MinRectSideLength:uint = 4;
+      public static const MinRectSideLength:uint = 2;
       public static const MaxRectSideLength:uint = int.MAX_VALUE; //600;
       public static const MaxRectArea:uint = int.MAX_VALUE; // 600 * 200;
       
@@ -108,7 +108,7 @@ package common {
       
       public static const MaxCoexistParticles:uint = 1000;
       
-      public static const MinBombRadius:uint = 2; // don't change
+      public static const MinBombRadius:uint = MinCircleRadius; // don't change
       public static const MaxBombRadius:uint = 16;
       public static const MinBombSquareSideLength:uint = MinBombRadius * 2; // don't change
       public static const MaxBombSquareSideLength:uint = MaxBombRadius * 2;
@@ -182,6 +182,19 @@ package common {
       public static const GravityController_InteractiveZone_Right:uint = 4;
       public static const GravityController_InteractiveZone_Center:uint = 5;
       public static const GravityController_InteractiveZonesCount:uint = 6;
+      
+//===========================================================================
+// camera
+//===========================================================================
+      
+      public static const Camera_FollowedTarget_Self:int = 0;
+      public static const Camera_FollowedTarget_Brothers:int = 1;
+      
+      public static const Camera_FollowingStyle_X       :int = 0x01;
+      public static const Camera_FollowingStyle_Y       :int = 0x02;
+      public static const Camera_FollowingStyle_Angle   :int = 0x04;
+      public static const Camera_FollowingStyle_All     :int = 0xFF;
+      public static const Camera_FollowingStyle_Default :int = Camera_FollowingStyle_X | Camera_FollowingStyle_Y;
       
 //===========================================================================
 // Logic

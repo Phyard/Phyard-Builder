@@ -35,8 +35,8 @@ public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number
    var bomb:Object = new Object ();
    mBombs [mNumBombs ++] = bomb;
    
-   var particleDisplaySpeed:Number = 800.0 * ( 0.25 + 1.0 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
-   var particleDensity:Number = 2.5 * density;
+   var particleDisplaySpeed:Number = 800.0 * ( 0.20 + 2.6 * worldDisplayRadius / Number (Define.DefaultBombSquareSideLength) );
+   var particleDensity:Number = 5.0 * density;
    var particleLifeTime:Number = Define.WorldStepTimeInterval * 18 * ( 0.5 + 1.5 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
    
    if (worldDisplayRadius > 12) worldDisplayRadius = 12;

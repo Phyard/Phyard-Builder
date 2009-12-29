@@ -86,7 +86,11 @@ package common {
       // for both editor and player
       public static function AdjustCircleDisplayRadius (displayRadius:Number, version:int):Number
       {
-         if ( version >= 0x0102)
+         if ( version >= 0x0108)
+         {
+            return (Math.round (2.0 * displayRadius)) * 0.5;
+         }
+         else if ( version >= 0x0102)
          {
             return Math.round (displayRadius);
          }

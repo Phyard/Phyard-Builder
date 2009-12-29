@@ -290,11 +290,13 @@ package Box2D.Dynamics
 										b2Settings.b2_maxTOIContactsPerIsland,
 										b2Settings.b2_maxTOIJointsPerIsland,
 										m_stackAllocator,
-										m_contactManager.m_contactListener);
+										//m_contactManager.m_contactListener
+										m_contactManager.m_contactPostSolveListener
+										);
 			}
 			else
 			{
-				mIsland.m_listener = m_contactManager.m_contactListener;
+				mIsland.m_listener = m_contactManager.m_contactPostSolveListener;
 				
 				mIsland.Clear ();
 			}
@@ -320,7 +322,28 @@ package Box2D.Dynamics
 				c.FlagForFiltering ();
 			}
 		}
-		
+
+		public function SetContactPreSolveListener(listener:b2ContactPreSolveListener):void
+		{
+			m_contactManager.m_contactPreSolveListener = listener;
+		}
+
+		public function GetContactPreSolveListener():b2ContactPreSolveListener
+		{
+			return m_contactManager.m_contactPreSolveListener;
+		}
+
+		public function SetContactPostSolveListener(listener:b2ContactPostSolveListener):void
+		{
+			m_contactManager.m_contactPostSolveListener = listener;
+		}
+
+		public function GetContactPostSolveListener():b2ContactPostSolveListener
+		{
+			return m_contactManager.m_contactPostSolveListener;
+		}
+
+
 	} // class
 } // package
 //#endif

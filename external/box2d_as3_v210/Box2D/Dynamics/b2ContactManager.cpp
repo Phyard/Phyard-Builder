@@ -166,7 +166,7 @@ public function Collide():void
 		}
 
 		// The contact persists.
-		c.Update(m_contactListener);
+		c.Update(m_contactListener, m_contactPreSolveListener);
 		c = c.GetNext();
 	}
 }

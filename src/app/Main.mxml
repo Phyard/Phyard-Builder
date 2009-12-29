@@ -510,6 +510,8 @@
                MainView.ShowSpringSettingDialog = ShowSpringSettingDialog;
                MainView.ShowDistanceSettingDialog = ShowDistanceSettingDialog;
                
+               MainView.ShowCameraSettingDialog = ShowCameraSettingDialog;
+               
                //MainView.ShowWorldSettingDialog = ShowWorldSettingDialog;
                MainView.ShowWorldSavingDialog = ShowWorldSavingDialog;
                MainView.ShowWorldLoadingDialog = ShowWorldLoadingDialog;
@@ -807,6 +809,18 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:JointDistanceSettingDialog = new JointDistanceSettingDialog ();
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowCameraSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:UtilityCameraSettingDialog = new UtilityCameraSettingDialog ();
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
                settingDialog.SetValues (initialValues);

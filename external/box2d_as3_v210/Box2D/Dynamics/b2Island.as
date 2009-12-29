@@ -100,7 +100,8 @@ package Box2D.Dynamics
 		//void Report(const b2ContactConstraint* constraints);
 
 		public var m_allocator:b2StackAllocator;
-		public var m_listener:b2ContactListener;
+		//public var m_listener:b2ContactListener;
+		public var m_listener:b2ContactPostSolveListener = null; // hacking
 
 		//b2Body** m_bodies;
 		//b2Contact** m_contacts;

@@ -69,7 +69,8 @@ package player.physics {
       {
          //(_b2World.m_contactListener as _ContactListener).Reset ();
          //_b2World.Step (escapedTime, 30); // v2.01
-         _b2World.Step (escapedTime, 6, 3); // v2.10
+         _b2World.Step (escapedTime, 8, 3); // v2.10
+         //_b2World.Step (escapedTime, 8, 6); // v2.10
          _b2World.ClearForces ();
       }
       

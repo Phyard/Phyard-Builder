@@ -155,7 +155,9 @@ public function b2Island(
 	contactCapacity:int,
 	jointCapacity:int,
 	allocator:b2StackAllocator,
-	listener:b2ContactListener)
+	//listener:b2ContactListener
+	listener:b2ContactPostSolveListener
+	)
 {
 	m_bodyCapacity = bodyCapacity;
 	m_contactCapacity = contactCapacity;

@@ -146,7 +146,7 @@ protected function RemoveBombsAndRemovableShapes (worldDisplayPoint:Point):void
          }
          else if (shape is EntityShape_RectangleBomb)
          {
-            bombSize = 2.0 * Math.min ((shape as EntityShape_RectangleBomb).GetHalfWidth (), (shape as EntityShape_RectangleBomb).GetHalfHeight ());
+            bombSize = Math.sqrt ((shape as EntityShape_RectangleBomb).GetHalfWidth () * (shape as EntityShape_RectangleBomb).GetHalfHeight ());
          }
          
          if (bombSize > 0)

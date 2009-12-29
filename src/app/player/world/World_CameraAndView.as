@@ -172,21 +172,39 @@ protected function UpdateCamera ():void
    var targetX:Number = mCameraCenterX;
    var targetY:Number = mCameraCenterY;
    
+   if (mFollowedEntityCameraCenterX != null && mFollowedEntityCameraCenterX.IsDestroyedAlready ())
+      mFollowedEntityCameraCenterX = null;
+   
    if (mFollowedEntityCameraCenterX != null)
-   {
       targetX = mCoordinateSystem.P2D_PositionX (mFollowedEntityCameraCenterX.GetPositionX ());
-      if (mFollowedEntityCameraCenterX.IsDestroyedAlready ())
-         mFollowedEntityCameraCenterX = null;
-   }
+   else
+      targetX = mCameraCenterX + mCameraMovedOffsetX_ByMouse;
+   
+   if (mFollowedEntityCameraCenterY != null && mFollowedEntityCameraCenterY.IsDestroyedAlready ())
+      mFollowedEntityCameraCenterY = null;
    
    if (mFollowedEntityCameraCenterY != null)
-   {
       targetY = mCoordinateSystem.P2D_PositionY (mFollowedEntityCameraCenterY.GetPositionY ());
-      if (mFollowedEntityCameraCenterY.IsDestroyedAlready ())
-         mFollowedEntityCameraCenterY = null;
-   }
+   else
+      targetY = mCameraCenterY + mCameraMovedOffsetY_ByMouse;
    
    MoveCameraCenterTo_DisplayPoint (targetX, targetY);
+   
+   mCameraMovedOffsetX_ByMouse = 0;
+   mCameraMovedOffsetY_ByMouse = 0;
+}
+
+//=====================================================================================
+//
+//=====================================================================================
+
+protected var mCameraMovedOffsetX_ByMouse:Number = 0;
+protected var mCameraMovedOffsetY_ByMouse:Number = 0;
+
+public function MouseMoveCamera (offsetX:Number, offsetY:Number):void
+{
+   mCameraMovedOffsetX_ByMouse += offsetX;
+   mCameraMovedOffsetY_ByMouse += offsetY;
 }
 
 //=====================================================================================
@@ -195,19 +213,19 @@ protected function UpdateCamera ():void
 
 protected var mFollowedEntityCameraCenterX:Entity = null;
 protected var mFollowedEntityCameraCenterY:Entity = null;
-protected var mFollowedEntityCameraRotation:Entity = null;
+protected var mFollowedEntityCameraAngle:Entity = null;
 
 protected var mSmoothFollowingCameraCenterX:Boolean = false;
 protected var mSmoothFollowingCameraCenterY:Boolean = false;
-protected var mSmoothFollowingCameraRotation:Boolean = false;
+protected var mSmoothFollowingCameraAngle:Boolean = false;
 
-public function FollowCameraWithEntity (entity:Entity, bSmooth:Boolean, followRotation:Boolean):void
+public function FollowCameraWithEntity (entity:Entity, bSmooth:Boolean, followAngle:Boolean):void
 {
    FollowCameraCenterXWithEntity (entity, bSmooth);
    FollowCameraCenterYWithEntity (entity, bSmooth);
    
-   if (followRotation)
-      FollowCameraRotationWithEntity (entity, bSmooth);
+   if (followAngle)
+      FollowCameraAngleWithEntity (entity, bSmooth);
 }
 
 public function FollowCameraCenterXWithEntity (entity:Entity, bSmooth:Boolean):void
@@ -222,8 +240,8 @@ public function FollowCameraCenterYWithEntity (entity:Entity, bSmooth:Boolean):v
    mSmoothFollowingCameraCenterY = bSmooth;
 }
 
-public function FollowCameraRotationWithEntity (entity:Entity, bSmooth:Boolean):void
+public function FollowCameraAngleWithEntity (entity:Entity, bSmooth:Boolean):void
 {
-   mFollowedEntityCameraRotation = entity;
-   mSmoothFollowingCameraRotation = bSmooth;
+   mFollowedEntityCameraAngle = entity;
+   mSmoothFollowingCameraAngle = bSmooth;
 }

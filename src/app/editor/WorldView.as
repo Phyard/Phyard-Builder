@@ -98,7 +98,6 @@ package editor {
    import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeGravityController;
-   import editor.entity.EntityUtilityCamera;
    
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointDistance;
@@ -111,6 +110,9 @@ package editor {
    import editor.entity.SubEntitySliderAnchor;
    import editor.entity.SubEntityDistanceAnchor;
    import editor.entity.SubEntitySpringAnchor;
+   
+   import editor.entity.EntityUtility;
+   import editor.entity.EntityUtilityCamera;
    
    import editor.trigger.entity.EntityLogic;
    import editor.trigger.entity.EntityEventHandler;
@@ -1227,7 +1229,8 @@ package editor {
       // edit
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
          
-         mButtonSetting.enabled = selectedEntities.length == 1 && IsEntitySettingable (selectedEntities[0]);
+         //mButtonSetting.enabled = selectedEntities.length == 1 && IsEntitySettingable (selectedEntities[0]);
+         mButtonSetting.enabled = mLastSelectedEntity != null && IsEntitySettingable (mLastSelectedEntity);
          
          mButtonDelete.enabled = mButtonFlipH.enabled = mButtonFlipV.enabled = 
          mButtonMoveToTop.enabled = mButtonMoveToBottom.enabled = selectedEntities.length > 0;
@@ -1256,8 +1259,8 @@ package editor {
          
       // creat ...
          
-         mButtonCreateCravityController.enabled = mEditorWorld.GetNumEntities (Filters.IsGravityControllerEntity) == 0;
-         mButtonCreateCamera           .enabled = mEditorWorld.GetNumEntities (Filters.IsCameraEntity) == 0;
+         //mButtonCreateCravityController.enabled = mEditorWorld.GetNumEntities (Filters.IsGravityControllerEntity) == 0;
+         //mButtonCreateCamera           .enabled = mEditorWorld.GetNumEntities (Filters.IsCameraEntity) == 0;
          
       // file ...
          
@@ -1636,6 +1639,7 @@ package editor {
       public var ShowDistanceSettingDialog:Function = null;
       public var ShowShapeTextSettingDialog:Function = null;
       public var ShowShapeGravityControllerSettingDialog:Function = null;
+      public var ShowCameraSettingDialog:Function = null;
       
       public var ShowWorldSettingDialog:Function = null;
       public var ShowWorldSavingDialog:Function = null;
@@ -1658,12 +1662,14 @@ package editor {
          if (entity == null)
             return false;
          
-         return entity is EntityShape || entity is SubEntityHingeAnchor || entity is SubEntitySliderAnchor
-                || entity is SubEntitySpringAnchor // v1.01
-                || entity is SubEntityDistanceAnchor // v1.02
-                || entity is EntityBasicCondition // v1.07
-                || entity is EntityEventHandler // v1.07
-                ;
+         //return entity is EntityShape || entity is SubEntityHingeAnchor || entity is SubEntitySliderAnchor
+         //       || entity is SubEntitySpringAnchor // v1.01
+         //       || entity is SubEntityDistanceAnchor // v1.02
+         //       || entity is EntityBasicCondition // v1.07
+         //       || entity is EntityEventHandler // v1.07
+         //       ;
+         
+         return true; // v1.08
       }
       
       public function OpenEntitySettingDialog ():void
@@ -1674,11 +1680,14 @@ package editor {
          if (Runtime.HasSettingDialogOpened ())
             return;
          
-         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         if (selectedEntities == null || selectedEntities.length != 1)
+         //var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         //if (selectedEntities == null || selectedEntities.length != 1)
+         //   return;
+         if (mLastSelectedEntity == null)
             return;
          
-         var entity:Entity = selectedEntities [0] as Entity;
+         //var entity:Entity = selectedEntities [0] as Entity;
+         var entity:Entity = mLastSelectedEntity;
          
          var values:Object = new Object ();
          
@@ -1916,6 +1925,17 @@ package editor {
                //<<
                
                ShowDistanceSettingDialog (values, SetEntityProperties);
+            }
+         }
+         else if (entity is EntityUtility)
+         {
+            var utility:EntityUtility = entity as EntityUtility;
+            
+            if (entity is EntityUtilityCamera)
+            {
+               var camera:EntityUtilityCamera = utility as EntityUtilityCamera;
+               
+               ShowCameraSettingDialog (values, SetEntityProperties);
             }
          }
       }
@@ -3549,6 +3569,9 @@ package editor {
                //>>from v1.04
                hinge.SetMaxMotorTorque (mEditorWorld.GetCoordinateSystem ().P2D_Torque (jointParams.mMaxMotorTorque));
                //<<
+               
+               // 
+               hinge.GetAnchor ().SetVisible (jointParams.mIsVisible);
             }
             else if (entity is SubEntitySliderAnchor)
             {
@@ -3563,6 +3586,10 @@ package editor {
                //>>from v1.04
                slider.SetMaxMotorForce (mEditorWorld.GetCoordinateSystem ().P2D_ForceMagnitude (jointParams.mMaxMotorForce));
                //<<
+               
+               // 
+               slider.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
+               slider.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
             }
             else if (entity is SubEntitySpringAnchor)
             {
@@ -3577,6 +3604,10 @@ package editor {
                spring.SetFrequency (jointParams.mFrequency);
                spring.SetBreakExtendedLength (mEditorWorld.GetCoordinateSystem ().P2D_Length (jointParams.mBreakExtendedLength));
                //<<
+               
+               // 
+               spring.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
+               spring.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
             }
             else if (entity is SubEntityDistanceAnchor)
             {
@@ -3585,6 +3616,10 @@ package editor {
                //from v1.08
                distance.SetBreakDeltaLength (mEditorWorld.GetCoordinateSystem ().P2D_Length (jointParams.mBreakDeltaLength));
                //<<
+               
+               // 
+               distance.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
+               distance.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
             }
             
             jointAnchor.GetMainEntity ().UpdateAppearance ();
@@ -3716,7 +3751,7 @@ package editor {
             //var numCats:int = cm.GetNumCollisionCategories ();// this is bug
             while (ccId < cm.GetNumCollisionCategories ()) //numCats)
             {
-               entity = cm.GetCollisionCategoryByIndex (i);
+               entity = cm.GetCollisionCategoryByIndex (ccId);
                if ( entity.IsSelected () ) // generally should use world.IsEntitySelected instead, this one is fast but only for internal uses
                {
                   ++ ccId;

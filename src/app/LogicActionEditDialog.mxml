@@ -4,11 +4,11 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Event Handler Setting" width="600">
+    title="Action Setting" width="600">
 
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
-      <mx:Label text="Handler Name:" textAlign="right" />
+      <mx:Label text="Action Name:" textAlign="right" />
       <mx:TextInput id="TextInput_Name" width="300"/>
       <mx:Spacer width="100%"/>
    </mx:HBox>
@@ -60,15 +60,15 @@
          {
             mParams = initialValues;
             
-         // ...
-            this.title = "Event Handler Setting - " + mParams.mCodeSnippet.GetOwnerFunctionDefinition ().GetName ();
-            TextInput_Name = mParams.mName;
+            TextInput_Name.text = mParams.mCodeSnippetName;
             
             theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
          }
          
          public function GetValues (returnValues:Object):void
          {
+            returnValues.mCodeSnippetName = TextInput_Name.text;
+            
             returnValues.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
          }
          
@@ -98,7 +98,7 @@
             GetValues (mParams);
             
             PopUpManager.removePopUp(this);
-            
+             
             if (OnClose != null)
                OnClose ();
             

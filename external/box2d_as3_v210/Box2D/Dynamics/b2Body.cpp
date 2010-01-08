@@ -287,6 +287,11 @@ public function DestroyFixture(fixture:b2Fixture):void
 	OnMassDataChanged ();
 }
 
+private static var oldCenter:b2Vec2 = new b2Vec2 ();
+private static var tempV:b2Vec2 = new b2Vec2 ();
+private static var tempVb:b2Vec2 = new b2Vec2 ();
+private static var massData:b2MassData = new b2MassData ();
+private static var center:b2Vec2 = new b2Vec2 ();;
 
 public function ResetMassData():void
 {
@@ -297,25 +302,45 @@ public function ResetMassData():void
 	m_invI = 0.0;
 	m_sweep.localCenter.SetZero();
 
+	center.SetZero ();
+	
+	var f:b2Fixture;
+
 	// Static and kinematic bodies have zero mass.
 	if (m_type == b2_staticBody || m_type == b2_kinematicBody)
 	{
+		//>> hacking
+		for (f = m_fixtureList; f != null; f = f.m_next)
+		{
+			f.GetMassData(massData);
+			
+			//center += massData.mass * massData.center;
+			center.x += massData.mass * massData.center.x;
+			center.y += massData.mass * massData.center.y;
+			
+			//m_sweep.localCenter = center;
+			m_sweep.localCenter.x = center.x;
+			m_sweep.localCenter.y = center.y;
+			//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
+			b2Math.b2Mul_TransformAndVector2_Output (m_xf, m_sweep.localCenter, tempV);
+			m_sweep.c0.x = m_sweep.c.x = tempV.x;
+			m_sweep.c0.y = m_sweep.c.y = tempV.y;
+		}
+		//<<
+		
 		return;
 	}
 
 	//b2Assert(m_type == b2_dynamicBody);
 
 	// Accumulate mass over all fixtures.
-	var center:b2Vec2 = b2Math.b2Vec2_zero.Clone ();
-
-	for (var f:b2Fixture = m_fixtureList; f != null; f = f.m_next)
+	for (f = m_fixtureList; f != null; f = f.m_next)
 	{
 		if (f.m_density == 0.0)
 		{
 			continue;
 		}
 
-		var massData:b2MassData = new b2MassData ();
 		f.GetMassData(massData);
 		
 		m_mass += massData.mass;
@@ -355,21 +380,23 @@ public function ResetMassData():void
 	}
 
 	// Move center of mass.
-	var oldCenter:b2Vec2 = m_sweep.c.Clone();
+	//var oldCenter:b2Vec2 = m_sweep.c.Clone();
+	oldCenter.x = m_sweep.c.x;
+	oldCenter.y = m_sweep.c.y;
 	//m_sweep.localCenter = center;
 	m_sweep.localCenter.x = center.x;
 	m_sweep.localCenter.y = center.y;
 	//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
-	var tempV:b2Vec2 = b2Math.b2Mul_TransformAndVector2 (m_xf, m_sweep.localCenter);
+	b2Math.b2Mul_TransformAndVector2_Output (m_xf, m_sweep.localCenter, tempV);
 	m_sweep.c0.x = m_sweep.c.x = tempV.x;
 	m_sweep.c0.y = m_sweep.c.y = tempV.y;
 
 	// Update center of mass velocity.
 	//m_linearVelocity += b2Cross(m_angularVelocity, m_sweep.c - oldCenter);
 	b2Math.b2Subtract_Vector2_Output (m_sweep.c, oldCenter, tempV);
-	tempV = b2Math.b2Cross_ScalarAndVector2 (m_angularVelocity, tempV);
-	m_linearVelocity.x += tempV.x;
-	m_linearVelocity.y += tempV.y;
+	b2Math.b2Cross_ScalarAndVector2_Output (m_angularVelocity, tempV, tempVb);
+	m_linearVelocity.x += tempVb.x;
+	m_linearVelocity.y += tempVb.y;
 }
 
 public function SetMassData (massData:b2MassData):void

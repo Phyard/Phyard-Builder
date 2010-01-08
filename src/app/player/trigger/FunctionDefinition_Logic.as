@@ -64,6 +64,17 @@ package player.trigger
          //mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
       }
       
+      // as action, no inputs, returns
+      public function ExcuteAction ():void
+      {
+         //mLogicFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
+         
+         mCodeSnippet.Excute ();
+         
+         // no returns
+         //mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
+      }
+      
       protected function BuildNewFunctionInstance (localVariableDefines:Array):void
       {
          var fi:FunctionInstance = new FunctionInstance (this, localVariableDefines);

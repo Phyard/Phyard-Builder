@@ -1,15 +1,17 @@
 package player.world {
    
    import flash.display.Sprite;
+   import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    
+   import flash.events.EventPhase;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.KeyboardEvent;
    import flash.ui.Keyboard;
-   import flash.events.EventPhase;
+   import flash.events.FocusEvent;
    
    import flash.utils.Dictionary;
    
@@ -50,6 +52,8 @@ package player.world {
    import player.trigger.entity.EntityBasicCondition;
    import player.trigger.entity.EntityTask;
    import player.trigger.entity.EntityEventHandler;
+   import player.trigger.entity.EntityEventHandler_Timer;
+   import player.trigger.entity.EntityEventHandler_Keyboard;
    import player.trigger.entity.EntityConditionDoor;
    import player.trigger.entity.EntityInputEntityAssigner;
    
@@ -71,6 +75,7 @@ package player.world {
    
    import common.Define;
    import common.ValueAdjuster;
+   import common.KeyCodes;
    
    public class World extends Sprite implements IPropertyOwner
    {
@@ -82,6 +87,7 @@ package player.world {
       include "World_ParticleManager.as";
       include "World_ColorInfectionRelated.as";
       include "World_ContactEventHandling.as";
+      include "World_KeyboardEventHandling.as";
       include "World_GeneralEventHandling.as";
       include "World_Misc.as";
       
@@ -124,10 +130,16 @@ package player.world {
          mShareSourceCode  = worldDefine.mShareSourceCode;
          mPermitPublishing = worldDefine.mPermitPublishing;
          
+         // ...
+         
+         mIsInfiniteWorldSize = worldDefine.mSettings.mIsInfiniteWorldSize;
+         
          // these values are in pixel unit
          
-         if (worldDefine.mSettings.mIsInfiniteWorldSize)
+         if (mIsInfiniteWorldSize)
          {
+            mBuildBorder = false;
+            
             mWorldLeft   = - 0x7FFFFFFF;
             mWorldTop    = - 0x7FFFFFFF;
             mWorldWidth  = uint (0xFFFFFFFF);
@@ -345,6 +357,12 @@ package player.world {
          var tail:Entity;
          
       //------------------------------------
+      // init some structures
+      //------------------------------------
+         
+         InitKeyHoldInfo ();
+         
+      //------------------------------------
       // create display layers, borders
       //------------------------------------
          
@@ -361,8 +379,7 @@ package player.world {
       // on level to init
       //------------------------------------
          
-         HandleEvent (CoreEventIds.ID_OnLevelBeginInitialize);
-         
+         HandleEventById (CoreEventIds.ID_OnWorldBeforeInitializing);
          
       //------------------------------------
       // init camera
@@ -388,7 +405,7 @@ package player.world {
       // on level inited
       //------------------------------------
          
-         HandleEvent (CoreEventIds.ID_OnLevelEndInitialize);
+         HandleEventById (CoreEventIds.ID_OnWorldAfterInitialized);
          
       //------------------------------------
       // Repaint
@@ -442,7 +459,7 @@ package player.world {
          // on level to update
          //-----------------------------
             
-            HandleEvent (CoreEventIds.ID_OnLevelBeginUpdate);
+            HandleEventById (CoreEventIds.ID_OnLWorldBeforeUpdating);
             
          //-----------------------------
          // update physics
@@ -470,11 +487,23 @@ package player.world {
             
             ParticleManager_Update (dt);
             
+         //------------------------------------
+         // handle key-hold eventgs
+         //------------------------------------
+            
+            HandleKeyHoldEvents ();
+            
+         //-----------------------------
+         // handle timer events
+         //-----------------------------
+            
+            HandleTimerEvents ();
+            
          //-----------------------------
          // on level updated
          //-----------------------------
             
-            HandleEvent (CoreEventIds.ID_OnLevelEndUpdate);
+            HandleEventById (CoreEventIds.ID_OnWorldAfterUpdated);
          }
        
       //-----------------------------
@@ -512,6 +541,18 @@ package player.world {
             
             entity = next;
          }
+      }
+
+   //==================================
+   // buffer entities to rebuild appearance
+   //==================================
+
+      private var mEntityToDelayUpdateAppearanceListHead:Entity = null;
+
+      public function DelayUpdateEntityAppearance (entity:Entity):void
+      {
+         entity.mNextEntityToDelayUpdateAppearance = mEntityToDelayUpdateAppearanceListHead;
+         mEntityToDelayUpdateAppearanceListHead = entity;
       }
 
    //===============================
@@ -555,7 +596,7 @@ package player.world {
    // background
    //===============================
 
-      private var mDrawBackground:Boolean = true;
+      private var mDrawBackground:Boolean = true; // 
       private var mBackgroundColor:uint = 0xDDDDA0;
       
       private var mBackgroundNeedRepaint:Boolean = true;
@@ -592,6 +633,23 @@ package player.world {
          //mBackgroundSprite.graphics.drawRect (mWorldLeft, mWorldTop, mWorldWidth, mWorldHeight); // sometime, it is too large to build
          mBackgroundSprite.graphics.drawRect (-2048, -2048, 4096, 4096); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
          mBackgroundSprite.graphics.endFill ();
+      }
+      
+      // this function
+      public function IsBackgroundLayerContains (displayObject:DisplayObject):Boolean
+      {
+         if (displayObject == null)
+            return false;
+         
+         while (displayObject != null)
+         {
+            if (displayObject == mBackgroundLayer)
+               return true;
+            
+            displayObject = displayObject.parent;
+         }
+         
+         return false;
       }
 
    //===============================
@@ -676,18 +734,6 @@ package player.world {
       public function GetBorderColor ():uint
       {
          return mBorderColor;
-      }
-
-   //==================================
-   // entities to rebuild appearance
-   //==================================
-
-      private var mEntityToDelayUpdateAppearanceListHead:Entity = null;
-
-      public function DelayUpdateEntityAppearance (entity:Entity):void
-      {
-         entity.mNextEntityToDelayUpdateAppearance = mEntityToDelayUpdateAppearanceListHead;
-         mEntityToDelayUpdateAppearanceListHead = entity;
       }
 
 //====================================================================================================

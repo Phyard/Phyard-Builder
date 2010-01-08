@@ -40,7 +40,12 @@ package common {
    import player.trigger.entity.EntityTask;
    import player.trigger.entity.EntityConditionDoor;
    import player.trigger.entity.EntityInputEntityAssigner;
+   import player.trigger.entity.EntityAction;
    import player.trigger.entity.EntityEventHandler;
+   import player.trigger.entity.EntityEventHandler_Timer;
+   import player.trigger.entity.EntityEventHandler_Keyboard;
+   
+   import common.trigger.CoreEventIds;
    
    public class DataFormat2
    {
@@ -133,8 +138,7 @@ package common {
          
          for (createId = 0; createId < numEntities; ++ createId)
          {
-            appearId = worldDefine.mEntityAppearanceOrder [createId];
-            entityDefine = entityDefineArray [appearId];
+            entityDefine = entityDefineArray [createId];
             
             entity = null;
             
@@ -209,10 +213,31 @@ package common {
                case Define.EntityType_LogicInputEntityPairAssigner:
                   entity = new EntityInputEntityAssigner (playerWorld);
                   break;
-               case Define.EntityType_LogicEventHandler:
-                  entity = new EntityEventHandler (playerWorld);
+               case Define.EntityType_LogicAction:
+                  entity = new EntityAction (playerWorld);
                   break;
-               
+               case Define.EntityType_LogicEventHandler:
+                  var eventId:int = entityDefine.mEventId;
+                  switch (eventId)
+                  {
+                     case CoreEventIds.ID_OnWorldTimer:
+                     case CoreEventIds.ID_OnEntityTimer:
+                     case CoreEventIds.ID_OnEntityPairTimer:
+                        entity = new EntityEventHandler_Timer (playerWorld);
+                        break;
+                     case CoreEventIds.ID_OnWorldKeyDown:
+                     case CoreEventIds.ID_OnWorldKeyUp:
+                     case CoreEventIds.ID_OnWorldKeyHold:
+                        entity = new EntityEventHandler_Keyboard (playerWorld);
+                        break;
+                     default:
+                        entity = new EntityEventHandler (playerWorld);
+                        break;
+                  }
+                  break;
+               default:
+                  trace ("unknow entity type: " + entityDefine.mEntityType);
+                  break;
             }
             
             if (entity == null)
@@ -445,7 +470,7 @@ package common {
             if (worldDefine.mVersion >= 0x0108)
             {
                entityDefine.mAlpha = byteArray.readFloat ();
-               entityDefine.mIsActive = byteArray.readByte ();
+               entityDefine.mIsEnabled = byteArray.readByte ();
             }
             
             if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
@@ -1060,7 +1085,7 @@ package common {
          if (worldDefine.mVersion >= 0x0108)
          {
             element.@alpha = entityDefine.mAlpha;
-            element.@active = entityDefine.mIsActive ? 1 : 0;
+            element.@active = entityDefine.mIsEnabled ? 1 : 0;
          }
          
          if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
@@ -1607,7 +1632,7 @@ package common {
             if (worldDefine.mVersion < 0x0108)
             {
                entityDefine.mAlpha = 1.0;
-               entityDefine.mIsActive = true;
+               entityDefine.mIsEnabled = true;
             }
             
             if ( Define.IsLogicEntity (entityDefine.mEntityType) )

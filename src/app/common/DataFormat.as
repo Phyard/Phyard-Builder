@@ -33,6 +33,9 @@ package common {
    import editor.trigger.entity.EntityInputEntityAssigner;
    import editor.trigger.entity.EntityInputEntityPairAssigner;
    import editor.trigger.entity.EntityEventHandler;
+   import editor.trigger.entity.EntityEventHandler_Timer;
+   import editor.trigger.entity.EntityEventHandler_Keyboard;
+   import editor.trigger.entity.EntityEventHandler_Mouse;
    
    public class DataFormat
    {
@@ -121,7 +124,7 @@ package common {
             
             //>>from v1.08
             entityDefine.mAlpha = editorEntity.GetAlpha ();
-            entityDefine.mIsActive = editorEntity.IsActive ();
+            entityDefine.mIsEnabled = editorEntity.IsEnabled ();
             //<<
             
             if (editorEntity is editor.entity.EntityUtility)
@@ -130,6 +133,13 @@ package common {
                 if (editorEntity is editor.entity.EntityUtilityCamera)
                {
                   entityDefine.mEntityType = Define.EntityType_UtilityCamera;
+                  
+                  var camera:editor.entity.EntityUtilityCamera = editorEntity as editor.entity.EntityUtilityCamera;
+                  
+                  //>>from v.108
+                  entityDefine.mFollowedTarget = camera.GetFollowedTarget ();
+                  entityDefine.mFollowingStyle = camera.GetFollowingStyle ();
+                  //<<
                }
                //<<
             }
@@ -210,7 +220,37 @@ package common {
                   entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                   
+                  entityDefine.mExternalActionEntityCreationId = editorWorld.GetEntityCreationId (eventHandler.GetExternalAction ());
+                  
                   entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet ());
+                  
+                  //>> from v1.08
+                  if (editorEntity is editor.trigger.entity.EntityEventHandler_Timer)
+                  {
+                     var timerEventHandler:EntityEventHandler_Timer = eventHandler as EntityEventHandler_Timer;
+                     
+                     entityDefine.mRunningInterval = timerEventHandler.GetRunningInterval ();
+                     entityDefine.mOnlyRunOnce = timerEventHandler.IsOnlyRunOnce ();
+                  }
+                  else if (editorEntity is editor.trigger.entity.EntityEventHandler_Keyboard)
+                  {
+                     var keyboardEventHandler:EntityEventHandler_Keyboard = eventHandler as EntityEventHandler_Keyboard;
+                     
+                     entityDefine.mKeyCodes = keyboardEventHandler.GetKeyCodes ();
+                  }
+                  else if (editorEntity is editor.trigger.entity.EntityEventHandler_Mouse)
+                  {
+                     var mouseEventHandler:EntityEventHandler_Mouse = eventHandler as EntityEventHandler_Mouse;
+                  }
+                  //<<
+               }
+               else if (editorEntity is editor.trigger.entity.EntityAction)
+               {
+                  entityDefine.mEntityType = Define.EntityType_LogicAction;
+                  
+                  var action:editor.trigger.entity.EntityAction = editorEntity as editor.trigger.entity.EntityAction;
+                  
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, action.GetCodeSnippet ());
                }
             }
             else if (editorEntity is editor.entity.EntityShape)
@@ -944,7 +984,7 @@ package common {
                
                //>>from v1.08
                entity.SetAlpha (entityDefine.mAlpha);
-               entity.SetActive (entityDefine.mIsActive);
+               entity.SetEnabled (entityDefine.mIsEnabled);
                //<<
                
                entity.UpdateAppearance ();
@@ -1252,7 +1292,7 @@ package common {
          if (worldDefine.mVersion >= 0x0108)
          {
             entityDefine.mAlpha = parseFloat (element.@alpha);;
-            entityDefine.mIsActive = parseInt (element.@active) != 0;
+            entityDefine.mIsEnabled = parseInt (element.@active) != 0;
          }
          
          if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
@@ -1648,7 +1688,7 @@ package common {
             if (worldDefine.mVersion >= 0x0108)
             {
                byteArray.writeFloat (entityDefine.mAlpha);
-               byteArray.writeByte (entityDefine.mIsActive);
+               byteArray.writeByte (entityDefine.mIsEnabled);
             }
             
             if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05

@@ -35,19 +35,21 @@ package editor.trigger.entity {
    
    public class EntityEventHandler extends EntityCodeSnippetHolder 
    {
-      private var mNumEntityParams:int = 0;
+      protected var mNumEntityParams:int = 0;
       
-      private var mAllPotentialEventDeclarations:Array = null;
+      protected var mAllPotentialEventDeclarations:Array = null;
       
       //private var 
       
       //
-      private var mEventHandlerDefinition:FunctionDefinition;
-      private var mEventId:int;
+      protected var mEventHandlerDefinition:FunctionDefinition;
+      protected var mEventId:int;
       
       protected var mExternalCondition:ConditionAndTargetValue = new ConditionAndTargetValue (null, ValueDefine.BoolValue_True);
       
       protected var mEntityAssignerList:Array = new Array ();
+      
+      protected var mExternalActionEntity:EntityAction = null;
       
       public function EntityEventHandler (world:World, defaultEventId:int, potientialEventIds:Array = null)
       {
@@ -133,6 +135,16 @@ package editor.trigger.entity {
          }
       }
       
+      public function GetExternalAction ():EntityAction
+      {
+         return mExternalActionEntity;
+      }
+      
+      public function SetExternalAction (action:EntityAction):void
+      {
+         mExternalActionEntity = action;
+      }
+      
       override public function ValidateEntityLinks ():void
       {
          //mCodeSnippet.ValidateValueSources ();
@@ -144,6 +156,11 @@ package editor.trigger.entity {
          {
             mExternalCondition.mConditionEntity = null;
             mExternalCondition.mTargetValue = ValueDefine.BoolValue_True;
+         }
+         
+         if (mExternalActionEntity != null && mExternalActionEntity.GetCreationOrderId () < 0)
+         {
+            SetExternalAction (null);
          }
       }
       
@@ -274,6 +291,15 @@ package editor.trigger.entity {
             
             return true;
          }
+         else if (toEntity is EntityAction)
+         {
+            if (mExternalActionEntity == toEntity)
+               SetExternalAction (null);
+            else
+               SetExternalAction (toEntity as EntityAction);
+            
+            return true;
+         }
          else 
          {
             var index:int;
@@ -326,6 +352,11 @@ package editor.trigger.entity {
                entity = mEntityAssignerList [i] as Entity;
                GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY ());
             }
+         }
+         
+         if (mExternalActionEntity != null)
+         {
+            GraphicsUtil.DrawLine (canvasSprite, GetPositionX () + mHalfWidth, GetPositionY (), mExternalActionEntity.GetPositionX (), mExternalActionEntity.GetPositionY ());
          }
       }
    }

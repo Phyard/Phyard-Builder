@@ -100,14 +100,55 @@ package player.entity {
 //   mouse event
 //=============================================================
       
-      protected function OnMouseMove (event:MouseEvent):void
+      protected function OnMouseDown_GC (event:MouseEvent):void
       {
          if (event.buttonDown)
          {
             UpdateGravity (event.localX, event.localY);
          }
          
-         event.stopPropagation ();
+         OnMouseDown (event);
+         
+         event.stopPropagation (); // prevent mWorld recieving this event
+      }
+
+      protected function OnMouseUp_GC (event:MouseEvent):void
+      {
+         if (event.buttonDown)
+         {
+            UpdateGravity (event.localX, event.localY);
+         }
+         
+         OnMouseUp (event);
+         
+         event.stopPropagation (); // prevent mWorld recieving this event
+      }
+
+      protected function OnMouseMove_GC (event:MouseEvent):void
+      {
+         if (event.buttonDown)
+         {
+            UpdateGravity (event.localX, event.localY);
+         }
+         
+         OnMouseMove (event);
+         
+         event.stopPropagation (); // prevent mWorld recieving this event
+      }
+
+      override protected function GetMouseDownListener ():Function
+      {
+         return mInteractiveZones != 0 ? OnMouseDown_GC : super.GetMouseDownListener ();
+      }
+      
+      override protected function GetMouseUpListener ():Function
+      {
+         return mInteractiveZones != 0 ? OnMouseUp_GC : super.GetMouseUpListener ();
+      }
+      
+      override protected function GetMouseMoveListener ():Function
+      {
+         return mInteractiveZones != 0 ? OnMouseMove_GC : super.GetMouseDownListener ();
       }
 
 //=============================================================
@@ -125,13 +166,6 @@ package player.entity {
       override protected function InitializeInternal ():void
       {
          super.InitializeInternal ();
-         
-         if (mInteractiveZones != 0)
-         {
-            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_DOWN, OnMouseMove);
-            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_UP, OnMouseMove);
-         }
          
          mInteractive = GetInteractivity ();
          UpdateInteractiveZonesParams ();
@@ -153,13 +187,6 @@ package player.entity {
       
       override protected function DestroyInternal ():void
       {
-         if (mInteractiveZones != 0)
-         {
-            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseMove);
-            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseMove);
-         }
-         
          super.DestroyInternal ();
       }
       

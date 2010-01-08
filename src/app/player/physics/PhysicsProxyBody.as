@@ -131,14 +131,14 @@ package player.physics {
          _b2Body.SetTransform (b2Vec2.b2Vec2_From2Numbers (posX, posY), rotation);
       }
       
-      public function SetStatic (setStatic:Boolean):void
+      public function SetStatic (static:Boolean):void
       {
-         _b2Body.SetStatic (setStatic);
+         _b2Body.SetType (static ? b2Body.b2_staticBody : b2Body.b2_dynamicBody);
       }
       
       public function IsStatic ():Boolean
       {
-         return _b2Body.IsStatic ();
+         return _b2Body.GetType () == b2Body.b2_staticBody;
       }
       
       public function SetAsBullet (bullet:Boolean):void

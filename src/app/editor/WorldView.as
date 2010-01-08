@@ -115,12 +115,16 @@ package editor {
    import editor.entity.EntityUtilityCamera;
    
    import editor.trigger.entity.EntityLogic;
-   import editor.trigger.entity.EntityEventHandler;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
    import editor.trigger.entity.EntityInputEntityAssigner;
    import editor.trigger.entity.EntityInputEntityPairAssigner;
+   import editor.trigger.entity.EntityEventHandler;
+   import editor.trigger.entity.EntityEventHandler_Timer;
+   import editor.trigger.entity.EntityEventHandler_Keyboard;
+   import editor.trigger.entity.EntityEventHandler_Mouse;
+   import editor.trigger.entity.EntityAction;
    
    import editor.trigger.entity.InputEntitySelector;
    
@@ -674,7 +678,10 @@ package editor {
          
          // ...
          if (mLastSelectedEntity != null && ! mEditorWorld.IsEntitySelected (mLastSelectedEntity))
-            mLastSelectedEntity = null;
+         {
+            SetLastSelectedEntities (null);
+            return;
+         }
          
          if (mLastSelectedEntity == null)
             return;
@@ -975,7 +982,6 @@ package editor {
       public var mButton_CreateEntityAssigner:Button;
       public var mButton_CreateEntityPairAssigner:Button;
       public var mButton_CreateAction:Button;
-      //public var mButton_CreateTrigger:Button;
       public var mButton_CreateEventHandler0:Button;
       public var mButton_CreateEventHandler1:Button;
       public var mButton_CreateEventHandler2:Button;
@@ -983,12 +989,17 @@ package editor {
       public var mButton_CreateEventHandler4:Button;
       public var mButton_CreateEventHandler5:Button;
       public var mButton_CreateEventHandler6:Button;
+      public var mButton_CreateEventHandler7:Button;
+      public var mButton_CreateEventHandler8:Button;
       public var mButton_CreateEventHandler50:Button;
       public var mButton_CreateEventHandler51:Button;
       public var mButton_CreateEventHandler52:Button;
       public var mButton_CreateEventHandler53:Button;
       public var mButton_CreateEventHandler54:Button;
       public var mButton_CreateEventHandler55:Button;
+      public var mButton_CreateEventHandler56:Button;
+      public var mButton_CreateEventHandler57:Button;
+      public var mButton_CreateEventHandler58:Button;
       
       public function OnCreateButtonClick (event:MouseEvent):void
       {
@@ -1145,6 +1156,9 @@ package editor {
             case mButton_CreateTask:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTask) );
                break;
+            case mButton_CreateAction:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityAction) );
+               break;
             case mButton_CreateEntityAssigner:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityAssigner) );
                break;
@@ -1152,43 +1166,58 @@ package editor {
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityPairAssigner) );
                break;
             case mButton_CreateEventHandler0:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelBeginInitialize, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldBeforeInitializing, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler1:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelEndInitialize, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterInitialized, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler2:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelBeginUpdate, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLWorldBeforeUpdating, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler3:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLevelEndUpdate, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterUpdated, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler4:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityInitialized, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler5:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityUpdated, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler6:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityDestroyed, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler50:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler51:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler52:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler53:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTimer, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler54:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachLowerLimit, mPotientialEventIds:null}) );
                break;
-            case mButton_CreateEventHandler55:
+            case mButton_CreateEventHandler5:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachUpperLimit, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler6:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldTimer, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler7:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldKeyDown, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler8:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldMouseClick, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler50:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityInitialized, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler51:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityUpdated, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler52:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityDestroyed, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler53:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler54:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler55:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler56:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityPairTimer, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler57:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityTimer, mPotientialEventIds:null}) );
+               break;
+            case mButton_CreateEventHandler58:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityMouseClick, mPotientialEventIds:null}) );
                break;
             
          // ...
@@ -1412,7 +1441,7 @@ package editor {
          if (! firstTime)
          {
             //
-            mLastSelectedEntity = null;
+            SetLastSelectedEntities (null);
             mLastSelectedEntities = null;
             
             CalSelectedEntitiesCenterPoint ();
@@ -1652,10 +1681,12 @@ package editor {
       
       public var ShowEditorCustomCommandSettingDialog:Function = null;
       
-      public var ShowActionSettingDialog:Function = null;
-      public var ShowEventHandlerSettingDialog:Function = null;
       public var ShowConditionSettingDialog:Function = null;
-      public var ShowTriggerSettingDialog:Function = null;
+      public var ShowEventHandlerSettingDialog:Function = null;
+      public var ShowTimerEventHandlerSettingDialog:Function = null;
+      public var ShowKeyboardEventHandlerSettingDialog:Function = null;
+      public var ShowMouseEventHandlerSettingDialog:Function = null;
+      public var ShowActionSettingDialog:Function = null;
       
       public function IsEntitySettingable (entity:Entity):Boolean
       {
@@ -1697,7 +1728,7 @@ package editor {
          
          values.mIsVisible = entity.IsVisible ();
          values.mAlpha = entity.GetAlpha ();
-         values.mIsActive = entity.IsActive ();
+         values.mIsEnabled = entity.IsEnabled ();
          
          if (entity is EntityLogic)
          {
@@ -1711,6 +1742,16 @@ package editor {
                
                ShowConditionSettingDialog (values, SetEntityProperties);
             }
+            else if (entity is EntityAction)
+            {
+               var action:EntityAction = entity as EntityAction;
+               
+               values.mCodeSnippetName = action.GetCodeSnippetName ();
+               values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
+               
+               ShowActionSettingDialog (values, SetEntityProperties);
+            }
             else if (entity is EntityEventHandler)
             {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
@@ -1720,7 +1761,31 @@ package editor {
                values.mCodeSnippet  = event_handler.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
                
-               ShowEventHandlerSettingDialog (values, SetEntityProperties);
+               if (entity is EntityEventHandler_Timer)
+               {
+                  var timer_event_handler:EntityEventHandler_Timer = entity as EntityEventHandler_Timer;
+                  
+                  values.mRunningInterval = timer_event_handler.GetRunningInterval ();
+                  values.mOnlyRunOnce = timer_event_handler.IsOnlyRunOnce ();
+                  
+                  ShowTimerEventHandlerSettingDialog (values, SetEntityProperties);
+               }
+               else if (entity is EntityEventHandler_Keyboard)
+               {
+                  var keyboard_event_handler:EntityEventHandler_Keyboard = entity as EntityEventHandler_Keyboard;
+                  
+                  values.mKeyCodes = keyboard_event_handler.GetKeyCodes ();
+                  
+                  ShowKeyboardEventHandlerSettingDialog (values, SetEntityProperties);
+               }
+               else if (entity is EntityEventHandler_Mouse)
+               {
+                  ShowMouseEventHandlerSettingDialog (values, SetEntityProperties);
+               }
+               else
+               {
+                  ShowEventHandlerSettingDialog (values, SetEntityProperties);
+               }
             }
          }
          else if (entity is EntityShape)
@@ -1843,7 +1908,7 @@ package editor {
             
             jointValues.mIsVisible = joint.IsVisible ();
             jointValues.mAlpha = joint.GetAlpha ();
-            jointValues.mIsActive = joint.IsActive ();
+            jointValues.mIsEnabled = joint.IsEnabled ();
             
             //>>from v1.02
             jointValues.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, "[Auto Select]", true);
@@ -1934,6 +1999,11 @@ package editor {
             if (entity is EntityUtilityCamera)
             {
                var camera:EntityUtilityCamera = utility as EntityUtilityCamera;
+               
+               //from v1.08
+               values.mFollowedTarget = camera.GetFollowedTarget ();
+               values.mFollowingStyle = camera.GetFollowingStyle ();
+               //<<
                
                ShowCameraSettingDialog (values, SetEntityProperties);
             }
@@ -2580,7 +2650,7 @@ package editor {
          if (! mActive) // in other tab panels
             return;
          
-         //trace ("event.keyCode = " + event.keyCode);
+         //trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
          
          switch (event.keyCode)
          {
@@ -2635,9 +2705,9 @@ package editor {
             case 66: // B
                BreakApartSelectedEntities ();
                break;
-            case 76: // L
-               OpenPlayCodeLoadingDialog ();
-               break;
+            //case 76: // L // cancelled
+            //   OpenPlayCodeLoadingDialog ();
+            //   break;
             case 192: // ~
                ToggleMouseEditLocked ();
                break;
@@ -2888,17 +2958,6 @@ package editor {
          return camera;
       }
       
-      public function CreateEntityEventHandler (options:Object = null):EntityEventHandler
-      {
-         var handler:EntityEventHandler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
-         if (handler == null)
-            return null;
-         
-         SetTheOnlySelectedEntity (handler);
-         
-         return handler;
-      }
-      
       public function CreateEntityCondition (options:Object = null):EntityBasicCondition
       {
          var condition:EntityBasicCondition = mEditorWorld.CreateEntityCondition ();
@@ -2909,7 +2968,6 @@ package editor {
          
          return condition;
       }
-      
       
       public function CreateEntityConditionDoor (options:Object = null):EntityConditionDoor
       {
@@ -2955,6 +3013,60 @@ package editor {
          return entity_pair_assigner;
       }
       
+      public function CreateEntityEventHandler (options:Object = null):EntityEventHandler
+      {
+         var handler:EntityEventHandler
+         
+         switch (options.mDefaultEventId)
+         {
+            case CoreEventIds.ID_OnWorldTimer:
+            case CoreEventIds.ID_OnEntityTimer:
+            case CoreEventIds.ID_OnEntityPairTimer:
+               handler = mEditorWorld.CreateEntityEventHandler_Timer (int(options.mDefaultEventId), options.mPotientialEventIds);
+               break;
+            case CoreEventIds.ID_OnPhysicsShapeMouseDown:
+            case CoreEventIds.ID_OnPhysicsShapeMouseUp:
+            case CoreEventIds.ID_OnEntityMouseClick:
+            case CoreEventIds.ID_OnEntityMouseDown:
+            case CoreEventIds.ID_OnEntityMouseUp:
+            case CoreEventIds.ID_OnEntityMouseMove:
+            case CoreEventIds.ID_OnEntityMouseEnter:
+            case CoreEventIds.ID_OnEntityMouseOut:
+            case CoreEventIds.ID_OnWorldMouseClick:
+            case CoreEventIds.ID_OnWorldMouseDown:
+            case CoreEventIds.ID_OnWorldMouseUp:
+            case CoreEventIds.ID_OnWorldMouseMove:
+               handler = mEditorWorld.CreateEntityEventHandler_Mouse (int(options.mDefaultEventId), options.mPotientialEventIds);
+               break;
+            case CoreEventIds.ID_OnWorldKeyDown:
+            case CoreEventIds.ID_OnWorldKeyUp:
+            case CoreEventIds.ID_OnWorldKeyHold:
+               handler = mEditorWorld.CreateEntityEventHandler_Keyboard (int(options.mDefaultEventId), options.mPotientialEventIds);
+               break;
+            default:
+               handler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
+               break;
+         }
+         
+         if (handler == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (handler);
+         
+         return handler;
+      }
+      
+      public function CreateEntityAction (options:Object = null):EntityAction
+      {
+         var action:EntityAction = mEditorWorld.CreateEntityAction ();
+         if (action == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (action);
+         
+         return action;
+      }
+      
       
       
 //============================================================================
@@ -2965,6 +3077,17 @@ package editor {
       private var mLastSelectedEntities:Array = null;
       
       private var _SelectedEntitiesCenterPoint:Point = new Point ();
+      
+      public function SetLastSelectedEntities (entity:Entity):void
+      {
+         mLastSelectedEntity = entity;
+         
+         if (mLastSelectedEntity != null)
+            entity.SetInternalComponentsVisible (true);
+         
+         UpdateUiButtonsEnabledStatus ();
+         UpdateSelectedEntityInfo ();
+      }
       
       public function SetTheOnlySelectedEntity (entity:Entity):void
       {
@@ -2980,10 +3103,7 @@ package editor {
          if (mEditorWorld.GetSelectedEntities ().length != 1)
             return;
          
-         mLastSelectedEntity = entity;
-         
-         entity.SetInternalComponentsVisible (true);
-         UpdateSelectedEntityInfo ();
+         SetLastSelectedEntities (entity);
          
          if (mCurrentMouseMode == MouseMode_SelectGlued)
             mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
@@ -3003,9 +3123,7 @@ package editor {
             entity.SetInternalComponentsVisible (true);
          }
          
-         mLastSelectedEntity = entity;
-         
-         UpdateSelectedEntityInfo ();
+         SetLastSelectedEntities (entity);
          
          // to make selecting part of a glued possible
          // mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
@@ -3018,8 +3136,6 @@ package editor {
          var entities:Array = mEditorWorld.GetEntitiesIntersectWithRegion (left, top, right, bottom);
          
          mEditorWorld.ClearSelectedEntities ();
-         
-         UpdateSelectedEntityInfo ();
          
          if (_mouseEventCtrlDown || mCurrentMouseMode == MouseMode_SelectSingle)
          {
@@ -3041,10 +3157,13 @@ package editor {
          CalSelectedEntitiesCenterPoint ();
          
          var selecteds:Array = mEditorWorld.GetSelectedEntities ();
-         if (selecteds.length == 1)
+         if (selecteds.length > 0)
          {
-            mLastSelectedEntity = selecteds [0];
-            UpdateSelectedEntityInfo ();
+            SetLastSelectedEntities (selecteds [0]);
+         }
+         else
+         {
+            SetLastSelectedEntities (null);
          }
       }
       
@@ -3377,11 +3496,14 @@ package editor {
       
       public function SetEntityProperties (params:Object):void
       {
-         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         if (selectedEntities == null || selectedEntities.length != 1)
+         //var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         //if (selectedEntities == null || selectedEntities.length != 1)
+         //   return;
+         if (mLastSelectedEntity == null)
             return;
          
-         var entity:Entity = selectedEntities [0] as Entity;
+         //var entity:Entity = selectedEntities [0] as Entity;
+         var entity:Entity = mLastSelectedEntity;
          
          var newPosX:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionX (params.mPosX);
          var newPosY:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionY (params.mPosY);
@@ -3390,11 +3512,12 @@ package editor {
             newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
             newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
          }
+         
          entity.SetPosition (newPosX, newPosY);
          entity.SetRotation (mEditorWorld.GetCoordinateSystem ().P2D_RotationRadians (params.mAngle * Define.kDegrees2Radians));
          entity.SetVisible (params.mIsVisible);
          entity.SetAlpha (params.mAlpha);
-         entity.SetActive (params.mIsActive);
+         entity.SetEnabled (params.mIsEnabled);
          
          if (entity is EntityLogic)
          {
@@ -3413,6 +3536,19 @@ package editor {
                condition.UpdateAppearance ();
                condition.UpdateSelectionProxy ();
             }
+            else if (entity is EntityAction)
+            {
+               var action:EntityAction = entity as EntityAction;
+               
+               action.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = action.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+               
+               action.UpdateAppearance ();
+               action.UpdateSelectionProxy ();
+            }
             else if (entity is EntityEventHandler)
             {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
@@ -3420,6 +3556,27 @@ package editor {
                code_snippet = event_handler.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
                code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+               
+               if (entity is EntityEventHandler_Timer)
+               {
+                  var timer_event_handler:EntityEventHandler_Timer = entity as EntityEventHandler_Timer;
+                  
+                  timer_event_handler.SetRunningInterval (params.mRunningInterval);
+                  timer_event_handler.SetOnlyRunOnce (params.mOnlyRunOnce);
+               }
+               else if (entity is EntityEventHandler_Keyboard)
+               {
+                  var keyboard_event_handler:EntityEventHandler_Keyboard = entity as EntityEventHandler_Keyboard;
+                  
+                  keyboard_event_handler.ChangeKeyboardEventId (params.mEventId);
+                  keyboard_event_handler.SetKeyCodes (params.mKeyCodes);
+               }
+               else if (entity is EntityEventHandler_Mouse)
+               {
+                  var mouse_event_handler:EntityEventHandler_Mouse = entity as EntityEventHandler_Mouse;
+                  
+                  mouse_event_handler.ChangeMouseEventId (params.mEventId);
+               }
                
                event_handler.UpdateAppearance ();
                event_handler.UpdateSelectionProxy ();
@@ -3545,7 +3702,7 @@ package editor {
             joint.SetRotation (mEditorWorld.GetCoordinateSystem ().P2D_RotationRadians (jointParams.mAngle * Define.kDegrees2Radians));
             joint.SetVisible (jointParams.mIsVisible);
             joint.SetAlpha (jointParams.mAlpha);
-            joint.SetActive (jointParams.mIsActive);
+            joint.SetEnabled (jointParams.mIsEnabled);
             
             //>> from v1.02
             joint.SetConnectedShape1Index (jointParams.mConntectedShape1Index);
@@ -3624,6 +3781,20 @@ package editor {
             
             jointAnchor.GetMainEntity ().UpdateAppearance ();
             jointAnchor.UpdateSelectionProxy ();
+         }
+         else if (entity is EntityUtility)
+         {
+            var utility:EntityUtility = entity as EntityUtility;
+            
+            if (entity is EntityUtilityCamera)
+            {
+               var camera:EntityUtilityCamera = utility as EntityUtilityCamera;
+               
+               //from v1.08
+               camera.SetFollowedTarget (params.mFollowedTarget);
+               camera.SetFollowingStyle (params.mFollowingStyle);
+               //<<
+            }
          }
          
          CreateUndoPoint ();
@@ -3912,7 +4083,7 @@ package editor {
          if (worldState == null)
             return;
          
-         mLastSelectedEntity = null;
+         SetLastSelectedEntities (null);
          mLastSelectedEntities = null;
          
          var object:Object = worldState.mUserData;
@@ -3945,7 +4116,7 @@ package editor {
                if (entityId == object.mMainSelectedEntityId)
                {
                   entity.SetInternalComponentsVisible (true);
-                  mLastSelectedEntity = entity;
+                  SetLastSelectedEntities (entity);
                   
                   if (object.mSelectedVertexControllerId >= 0)
                   {

@@ -16,6 +16,11 @@ package player.entity {
          mAiTypeChangeable = false;
       }
       
+      override public function IsVisualShape ():Boolean
+      {
+         return false;
+      }
+      
 //=============================================================
 //   create
 //=============================================================
@@ -65,11 +70,11 @@ package player.entity {
          
          if (targetEntity != null)
          {
-            if (mFollowingStyle & Define.Camera_FollowingStyle_X == Define.Camera_FollowingStyle_X)
+            if ( (mFollowingStyle & Define.Camera_FollowingStyle_X) == Define.Camera_FollowingStyle_X)
                mWorld.FollowCameraCenterXWithEntity (targetEntity, false);
-            if (mFollowingStyle & Define.Camera_FollowingStyle_Y == Define.Camera_FollowingStyle_Y)
+            if ( (mFollowingStyle & Define.Camera_FollowingStyle_Y) == Define.Camera_FollowingStyle_Y)
                mWorld.FollowCameraCenterYWithEntity (targetEntity, false);
-            if (mFollowingStyle & Define.Camera_FollowingStyle_Angle == Define.Camera_FollowingStyle_Angle)
+            if ( (mFollowingStyle & Define.Camera_FollowingStyle_Angle) == Define.Camera_FollowingStyle_Angle)
                mWorld.FollowCameraAngleWithEntity (targetEntity, false);
          }
       }

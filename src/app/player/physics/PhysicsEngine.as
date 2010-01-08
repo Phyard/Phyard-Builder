@@ -122,7 +122,7 @@ package player.physics {
          var count:int = 0;
          for (var b:b2Body = _b2World.m_bodyList; b != null; b = b.m_next)
          {
-            if ( b.IsStatic () )
+            if ( b.GetType () != b2Body.b2_dynamicBody )
                continue;
             
             if (excludeBodiesConnectedWithJoints && b.m_jointList != null)

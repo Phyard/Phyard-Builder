@@ -55,14 +55,14 @@ package player.trigger
          return CoreFunctionDefinitions.sCoreFunctionDefinitions [functionId];
       }
       
-      //public static function GetVoidFunctionDeclaration ():FunctionDeclaration
-      //{
-      //   return new FunctionDeclaration (CoreFunctionIds.ID_Void, null);
-      //}
+      public static function GetVoidFunctionDeclaration ():FunctionDeclaration
+      {
+         return CoreFunctionDefinitions.sCoreFunctionDefinitions [CoreFunctionIds.ID_Void];
+      }
       
       public static function GetBoolFunctionDeclaration ():FunctionDeclaration
       {
-         return new FunctionDeclaration (CoreFunctionIds.ID_Bool, null, [ValueTypeDefine.ValueType_Boolean]);
+         return CoreFunctionDefinitions.sCoreFunctionDefinitions [CoreFunctionIds.ID_Bool];
       }
    }
 }

@@ -29,7 +29,8 @@ package common {
       
       //public static const MaxEntitiesCount:int = 512;
       //public static const MaxEntitiesCount:int = 1024;
-      public static const MaxEntitiesCount:int = 1024 * 3;
+      //public static const MaxEntitiesCount:int = 1024 * 3;
+      public static const MaxEntitiesCount:int = 0x7FFFFFFF; // unlimited
       
       public static const DefaultWorldWidth:int = 600; 
       public static const DefaultWorldHeight:int = 600; 
@@ -187,8 +188,8 @@ package common {
 // camera
 //===========================================================================
       
-      public static const Camera_FollowedTarget_Self:int = 0;
-      public static const Camera_FollowedTarget_Brothers:int = 1;
+      public static const Camera_FollowedTarget_Brothers:int = 0;
+      public static const Camera_FollowedTarget_Self:int = 1;
       
       public static const Camera_FollowingStyle_X       :int = 0x01;
       public static const Camera_FollowingStyle_Y       :int = 0x02;
@@ -199,6 +200,8 @@ package common {
 //===========================================================================
 // Logic
 //===========================================================================
+      
+      public static const NumRegistersPerVariableType:int = 16;
       
       public static const MaxLogicComponentNameLength:int = 32;
       public static const TriggerComponentRadius:int = 10;
@@ -221,8 +224,6 @@ package common {
       
       public static const MaxEntitiesCountEachAssigner:int = 20; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
       public static const MaxEntityPairesCountEachOneToOnePairAssigner:int = 10; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
-      
-      public static const NumRegistersPerType:int = 16;
       
 //===========================================================================
 // colors
@@ -292,6 +293,7 @@ package common {
       public static const EntityType_LogicEventHandler:int = 213;
       public static const EntityType_LogicInputEntityAssigner:int = 214;
       public static const EntityType_LogicInputEntityPairAssigner:int = 215;
+      public static const EntityType_LogicAction:int = 216;
       
       // from v1.07, folloing functions should only be used in packaging./ loading
       // they should NOT used in player pacakge, use EntityShape.mPhysicsShapePotentially instead

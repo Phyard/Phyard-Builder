@@ -15,7 +15,7 @@ package editor.trigger {
          super (id, name, paramDefines, description);
          
          if ( ! CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id) ) )
-            throw new Error ("not consistent!");
+            throw new Error ("not consistent! event id = " + id);
       }
       
       override public function GetType ():int 

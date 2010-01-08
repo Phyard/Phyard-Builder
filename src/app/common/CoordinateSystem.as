@@ -78,7 +78,7 @@ package common
 // 
 //=======================================================
       
-      public function DisplayPosition2PhysicsPoint (dx:Number, dy:Number):Point
+      public function DisplayPoint2PhysicsPosition (dx:Number, dy:Number):Point
       {
          if (mIsRightHand)
          {

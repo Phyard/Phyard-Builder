@@ -64,9 +64,9 @@ package player.design
       
       protected static function CreateRegisterVariableSpace (initValueObject:Object):VariableSpace
       {
-         var vs:VariableSpace = new VariableSpace (Define.NumRegistersPerType);
+         var vs:VariableSpace = new VariableSpace (Define.NumRegistersPerVariableType);
          
-         for (var i:int = 0; i < Define.NumRegistersPerType; ++ i)
+         for (var i:int = 0; i < Define.NumRegistersPerVariableType; ++ i)
             vs.GetVariableAt (i).SetValueObject (initValueObject);
          
          return vs;

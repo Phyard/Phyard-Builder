@@ -34,6 +34,10 @@ package player.trigger {
             RegisterCoreFunction (CoreFunctionIds.ID_ForDebug,                     ForDebug);
          }
          
+      // some specail
+         
+         // 
+         
       // global
          
          RegisterCoreFunction (CoreFunctionIds.ID_Return,                           ReturnVoid);
@@ -1325,14 +1329,15 @@ package player.trigger {
          var toleranceDy:Number = Number (valueSource.EvalateValueObject ());
          
          valueSource = valueSource.mNextValueSourceInList;
-         var toleranceDr:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
+         var toleranceDr:Number = Number (valueSource.EvalateValueObject ());
          
          var dx:Number = entity1.GetPositionX () - entity2.GetPositionX ();
          var dy:Number = entity1.GetPositionY () - entity2.GetPositionY ();
-         var dr:Number = entity1.GetRotation () - entity2.GetRotation ();
+         var dr:Number = ((entity1.GetRotation () - entity2.GetRotation ()) * Define.kRadians2Degrees) % 360;
          if (dx < 0) dx = -dx;
          if (dy < 0) dy = -dy;
          if (dr < 0) dr = -dr;
+         if (dr > 180) dr = 360 - dr;
          
          var overlapped:Boolean = dx < toleranceDx && dy < toleranceDy && dr < toleranceDr;
          

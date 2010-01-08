@@ -37,7 +37,7 @@
             <mx:CheckBox id="CheckBox_Visible" label="Visible" width="100"/>
             <mx:Spacer width="100%"/>
             <mx:Spacer width="50"/>
-            <mx:CheckBox id="CheckBox_Active" label="Active" width="100"/>
+            <mx:CheckBox id="CheckBox_Enabled" label="Enabled" width="100"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
       </mx:VBox>
@@ -65,12 +65,33 @@
             Text_Alpha.text = "" + inputValues.mAlpha;
             
             CheckBox_Visible.selected = inputValues.mIsVisible;
-            CheckBox_Active.selected = inputValues.mIsActive;
+            CheckBox_Enabled.selected = inputValues.mIsEnabled;
             
-            Label_Alpha.enabled = inputValues.mAlphaNonsense == null || (!inputValues.mAlphaNonsense);
-            Text_Alpha.enabled = inputValues.mAlphaNonsense == null || (!inputValues.mAlphaNonsense);
-            CheckBox_Visible.enabled = inputValues.mVisibleNonsense == null || (!inputValues.mVisibleNonsense);
-            CheckBox_Active.enabled = inputValues.mActiveNonsense == null || (!inputValues.mActiveNonsense);
+            if (inputValues.mPositionNonSense != null && inputValues.mPositionNonSense)
+            {
+               Label_PosX.enabled = false;
+               Text_PosX.enabled = false;
+               Label_PosY.enabled = false;
+               Text_PosY.enabled = false;
+            }
+            
+            if (inputValues.mRotationNonSense != null && inputValues.mRotationNonSense)
+            {
+               Label_Angle.enabled = false;
+               Text_Angle.enabled = false;
+            }
+            
+            if (inputValues.mVisibleNonsense != null && inputValues.mVisibleNonsense)
+            {
+               Label_Alpha.enabled = false;
+               Text_Alpha.enabled = false;
+               CheckBox_Visible.enabled = false;
+            }
+            
+            if (inputValues.mEnabledNonsense != null && inputValues.mEnabledNonsense)
+            {
+               CheckBox_Enabled.enabled = false;
+            }
          }
          
          public function GetValues (returnValues:Object):void
@@ -100,7 +121,7 @@
                returnValues.mAlpha = mInputValues.mAlpha;
             
             returnValues.mIsVisible = CheckBox_Visible.selected;
-            returnValues.mIsActive = CheckBox_Active.selected;
+            returnValues.mIsEnabled = CheckBox_Enabled.selected;
          }
          
      ]]>

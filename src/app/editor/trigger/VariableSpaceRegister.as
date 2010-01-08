@@ -20,7 +20,7 @@ package editor.trigger {
          
          var init_value:Object = VariableDefinition.GetDefaultInitialValueByType (mValueType);
          
-         for (var i:int = 0; i < Define.NumRegistersPerType; ++ i)
+         for (var i:int = 0; i < Define.NumRegistersPerVariableType; ++ i)
             CreateVariableInstance(mValueType, "", init_value)
       }
       

@@ -175,18 +175,22 @@ package player.entity {
          {
             Destroy ();
          }
-         else if (mPhysicsProxy != null)
+         else 
          {
-            if (mPhysicsShapeListHead == null)
+            if (mPhysicsProxy != null)
             {
-               DestroyPhysicsProxy ();
+               if (mPhysicsShapeListHead == null)
+               {
+                  DestroyPhysicsProxy ();
+               }
+               else if (physicsListChanged)
+               {
+                  UpdateBodyPhysicsProperties ();
+                  mPhysicsProxyBody.SetSleeping (false);
+               }
             }
-            else if (physicsListChanged)
-            {
-               UpdateBodyPhysicsProperties ();
-               CoincideWithCentroid ();
-               mPhysicsProxyBody.SetSleeping (false);
-            }
+            
+            CoincideWithCentroid ();
          }
       }
       
@@ -324,9 +328,9 @@ package player.entity {
             shape = shape.mNextShapeInBody;
          }
          
-         mPhysicsProxyBody = null;
-         
          super.DestroyPhysicsProxy ();
+         
+         mPhysicsProxyBody = null;
       }
       
       internal function GetPhysicsProxyBody ():PhysicsProxyBody
@@ -390,23 +394,70 @@ package player.entity {
       
       public function CoincideWithCentroid ():void
       {
+         var newX:Number;
+         var newY:Number;
+         var shape:EntityShape;
+         
          if (mPhysicsProxy == null)
+         {
+            newX = 0.0;
+            newY = 0.0;
+            var n:int = 0;
+            
+            var nonVisualX:Number = 0.0;
+            var nonVisualY:Number = 0.0;
+            var numNonVisuals:int = 0;
+            
+            shape = mShapeListHead;
+            while (shape != null)
+            {
+               if (shape.IsVisualShape ())
+               {
+                  newX += shape.mPositionX;
+                  newY += shape.mPositionY;
+                  ++ n;
+               }
+               else
+               {
+                  nonVisualX += shape.mPositionX;
+                  nonVisualY += shape.mPositionY;
+                  ++ numNonVisuals;
+               }
+               
+               shape = shape.mNextShapeInBody;
+            }
+            
+            if (n > 0)
+            {
+               newX /= n;
+               newY /= n;
+            }
+            else if (numNonVisuals > 0)
+            {
+               newX = nonVisualX / numNonVisuals;
+               newY = nonVisualY / numNonVisuals;
+            }
+         }
+         else
+         {
+            mPhysicsProxyBody.CoincideWithCentroid ();
+            
+            newX = mPhysicsProxyBody.GetPositionX ();
+            newY = mPhysicsProxyBody.GetPositionY ();
+         }
+         
+         if (newX == mPositionX && newY == mPositionY)
             return;
          
-         if (! mPhysicsProxyBody.CoincideWithCentroid ())
-            return;
-         
-         var newX:Number = mPhysicsProxyBody.GetPositionX ();
-         var newY:Number = mPhysicsProxyBody.GetPositionY ();
-         var dx:Number = mPositionX - newX
-         var dy:Number = mPositionY - newY;
-         var abs_dx:Number = Math.abs (dx);
-         var abs_dy:Number = Math.abs (dy);
+         //var dx:Number = mPositionX - newX
+         //var dy:Number = mPositionY - newY;
+         //var abs_dx:Number = Math.abs (dx);
+         //var abs_dy:Number = Math.abs (dy);
          
          mPositionX = newX;
          mPositionY = newY;
          
-         var shape:EntityShape = mShapeListHead;
+         shape = mShapeListHead;
          while (shape != null)
          {
             shape.UpdatelLocalPosition ();

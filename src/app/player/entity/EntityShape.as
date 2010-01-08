@@ -11,7 +11,13 @@ package player.entity {
    import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
    
+   import player.trigger.ValueSource;
+   import player.trigger.ValueSource_Direct
+   import player.trigger.entity.EntityEventHandler;
+   import player.trigger.data.ListElement_EventHandler;
+   
    import common.Define;
+   import common.trigger.CoreEventIds;
    
    // The shape class includes many types. Generally, if a entity has position and rotation and can be glued with other entities, then the entity can be viewed as a shape.
    // Yes, certainly, for many special shapes, many memeber properties are meaningless.
@@ -38,6 +44,11 @@ package player.entity {
          mWorld.GetEntityLayer ().addChild (mAppearanceObjectsContainer);
          
          mWorld.RegisterShapeAiType (mOriginalAiType, mAiType);
+      }
+      
+      public function IsVisualShape ():Boolean
+      {
+         return true;
       }
       
 //=============================================================
@@ -551,14 +562,155 @@ package player.entity {
       }
       
 //=============================================================
-//   mouse events
+//   mouse event handlers
 //=============================================================
       
-      protected function OnMouseUp (event:MouseEvent):void
+      private var mPhyicsShapeMouseDownEventHandlerList:ListElement_EventHandler = null;
+      private var mPhyicsShapeMouseUpEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseClickEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseDownEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseUpEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseMoveEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseEnterEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseOutEventHandlerList:ListElement_EventHandler = null;
+      
+      override public function RegisterEventHandler (eventId:int, eventHandler:EntityEventHandler):void
       {
-         //trace ("click on this: " + this);
+         switch (eventId)
+         {
+            case CoreEventIds.ID_OnPhysicsShapeMouseDown:
+               mPhyicsShapeMouseDownEventHandlerList = RegisterEventHandlerToList (mPhyicsShapeMouseDownEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnPhysicsShapeMouseUp:
+               mPhyicsShapeMouseUpEventHandlerList = RegisterEventHandlerToList (mPhyicsShapeMouseUpEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseClick:
+               mMouseClickEventHandlerList = RegisterEventHandlerToList (mMouseClickEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseDown:
+               mMouseDownEventHandlerList = RegisterEventHandlerToList (mMouseDownEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseUp:
+               mMouseUpEventHandlerList = RegisterEventHandlerToList (mMouseUpEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseMove:
+               mMouseMoveEventHandlerList = RegisterEventHandlerToList (mMouseMoveEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseEnter:
+               mMouseEnterEventHandlerList = RegisterEventHandlerToList (mMouseEnterEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseOut:
+               mMouseOutEventHandlerList = RegisterEventHandlerToList (mMouseOutEventHandlerList, eventHandler);
+               break;
+            default:
+               break;
+         }
       }
-
+      
+   // for physics shapes
+      
+      public function OnPhysicsShapeMouseDown(valueSourceList:ValueSource):void
+      {
+         var listElement:ListElement_EventHandler = mPhyicsShapeMouseDownEventHandlerList;
+         
+         while (listElement != null)
+         {
+            listElement.mEventHandler.HandleEvent (valueSourceList);
+            
+            listElement = listElement.mNextListElement;
+         }
+      }
+      
+      public function OnPhysicsShapeMousUp(valueSourceList:ValueSource):void
+      {
+         var listElement:ListElement_EventHandler = mPhyicsShapeMouseUpEventHandlerList;
+         
+         while (listElement != null)
+         {
+            listElement.mEventHandler.HandleEvent (valueSourceList);
+            
+            listElement = listElement.mNextListElement;
+         }
+      }
+      
+   // ...
+      
+      protected function OnMouseClick (event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseClickEventHandlerList);
+      }
+      
+      protected function OnMouseDown(event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseDownEventHandlerList);
+      }
+      
+      protected function OnMouseUp(event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseUpEventHandlerList);
+      }
+      
+      protected function OnMouseMove(event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseMoveEventHandlerList);
+      }
+      
+      protected function OnMouseEnter (event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseEnterEventHandlerList);
+      }
+      
+      protected function OnMouseOut(event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseOutEventHandlerList);
+      }
+      
+      private function HandleMouseEvent (event:MouseEvent, listElement:ListElement_EventHandler):void
+      {
+         var valueSourceList:ValueSource_Direct = mWorld.MouseEvent2ValueSourceList (event);
+         
+         valueSourceList.mValueObject = this;
+         
+         while (listElement != null)
+         {
+            listElement.mEventHandler.HandleEvent (valueSourceList);
+            
+            listElement = listElement.mNextListElement;
+         }
+      }
+      
+   // these function will be override by some subclasses. Subclasses should call add/removeEventListener in their class body.
+      
+      protected function GetMouseClickListener ():Function
+      {
+         return mMouseClickEventHandlerList == null ? null : OnMouseClick;
+      }
+      
+      protected function GetMouseDownListener ():Function
+      {
+         return mMouseDownEventHandlerList == null ? null : OnMouseDown;
+      }
+      
+      protected function GetMouseUpListener ():Function
+      {
+         return mMouseUpEventHandlerList == null ? null : OnMouseUp;
+      }
+      
+      protected function GetMouseMoveListener ():Function
+      {
+         return mMouseMoveEventHandlerList == null ? null : OnMouseMove;
+      }
+      
+      protected function GetMouseEnterListener ():Function
+      {
+         return mMouseEnterEventHandlerList == null ? null : OnMouseEnter;
+      }
+      
+      protected function GetMouseOutListener ():Function
+      {
+         return mMouseOutEventHandlerList == null ? null : OnMouseOut;
+      }
+      
 //=============================================================
 //   initialize
 //=============================================================
@@ -567,8 +719,19 @@ package player.entity {
       {
          DelayUpdateAppearance ();
          
-         //mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_UP, OnMouseUp, true);
-         //mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_UP, OnMouseUp, false);
+         mAppearanceObjectsContainer.mouseChildren = false;
+         if (GetMouseClickListener () != null)
+            mAppearanceObjectsContainer.addEventListener (MouseEvent.CLICK, GetMouseClickListener ());
+         if (GetMouseDownListener () != null)
+            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_DOWN, GetMouseDownListener ());
+         if (GetMouseUpListener () != null)
+            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_UP, GetMouseUpListener ());
+         if (GetMouseMoveListener () != null)
+            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_MOVE, GetMouseMoveListener ());
+         if (GetMouseEnterListener () != null)
+            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OVER, GetMouseEnterListener ());
+         if  (GetMouseOutListener () != null)
+            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
       }
       
 //=============================================================
@@ -590,12 +753,22 @@ package player.entity {
          
          mWorld.GetEntityLayer ().removeChild (mAppearanceObjectsContainer);
          
-         //mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp, true);
-         //mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp, false);
-         
          BreakAllJoints ();
          
          SetBody (null);
+         
+         if (GetMouseClickListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (MouseEvent.CLICK, GetMouseClickListener ());
+         if (GetMouseDownListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_DOWN, GetMouseDownListener ());
+         if (GetMouseUpListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_UP, GetMouseUpListener ());
+         if (GetMouseMoveListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_MOVE, GetMouseMoveListener ());
+         if (GetMouseEnterListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_OVER, GetMouseEnterListener ());
+         if  (GetMouseOutListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
       }
       
 //=============================================================
@@ -655,8 +828,8 @@ package player.entity {
          {
             mMass = 0.0;
             mInertia = 0.0;
-            mLocalCentroidX = mPositionX;
-            mLocalCentroidY = mPositionY;
+            mLocalCentroidX = mLocalPositionX;
+            mLocalCentroidY = mLocalPositionY;
          }
       }
       

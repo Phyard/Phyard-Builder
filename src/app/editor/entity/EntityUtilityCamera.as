@@ -34,6 +34,8 @@ package editor.entity {
       {
          super (world);
          
+         SetVisible (false);
+         
          addChild (mCameraBitmap);
          mCameraBitmap.x = - mCameraBitmap.bitmapData.width * 0.5;
          mCameraBitmap.y = - mCameraBitmap.bitmapData.height * 0.5;
@@ -50,6 +52,37 @@ package editor.entity {
       {
          return 0;
       }
+      
+//=============================================================
+//   
+//=============================================================
+      
+      protected var mFollowedTarget:int = Define.Camera_FollowedTarget_Brothers; //Camera_FollowedTarget_Self;
+      protected var mFollowingStyle:int = Define.Camera_FollowingStyle_Default;
+      
+      public function SetFollowedTarget (target:int):void
+      {
+         mFollowedTarget = target;
+      }
+      
+      public function GetFollowedTarget ():int
+      {
+         return mFollowedTarget;
+      }
+      
+      public function SetFollowingStyle (style:int):void
+      {
+         mFollowingStyle = style;
+      }
+      
+      public function GetFollowingStyle ():int
+      {
+         return mFollowingStyle;
+      }
+      
+//=============================================================
+//   
+//=============================================================
       
       override public function UpdateAppearance ():void
       {
@@ -69,7 +102,7 @@ package editor.entity {
             if (borderThickness * mWorld.GetZoomScale () < 3)
                borderThickness  = 3.0 / mWorld.GetZoomScale ();
             
-            GraphicsUtil.DrawRect (mBackgroundShape, - mCameraWidth * 0.5, - mCameraHeight * 0.5, mCameraWidth, mCameraHeight, borderColor, borderThickness, false, filledColor);
+            //GraphicsUtil.DrawRect (mBackgroundShape, - mCameraWidth * 0.5, - mCameraHeight * 0.5, mCameraWidth, mCameraHeight, borderColor, borderThickness, false, filledColor);
          }
          
          GraphicsUtil.DrawRect (mBackgroundShape, - mCameraBitmap.width * 0.5, - mCameraBitmap.height * 0.5, mCameraBitmap.bitmapData.width, mCameraBitmap.bitmapData.height, borderColor, borderThickness, false, filledColor);

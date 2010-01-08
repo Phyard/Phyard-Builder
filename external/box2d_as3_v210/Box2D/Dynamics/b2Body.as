@@ -820,47 +820,6 @@ package Box2D.Dynamics
 			NotifyTransformChangedManually (m_sweep.a);
 		}
 
-		public function IsStatic ():Boolean
-		{
-			return m_type == b2_staticBody;
-		}
-
-		public function SetStatic (static:Boolean):void
-		{
-			if (static)
-			{
-				SetType (b2_staticBody);
-			}
-			else if (mInfiniteMass)
-			{
-				SetType (b2_kinematicBody)
-			}
-			else
-			{
-				SetType (b2_dynamicBody);
-			}
-		}
-
-		private var mInfiniteMass:Boolean = false;
-
-		// only valid for dynaic body
-		public function SetInfiniteMass (infinite:Boolean):void
-		{
-			mInfiniteMass = infinite;
-
-			if (m_type == b2_staticBody)
-				return;
-
-			if (infinite)
-			{
-				SetType (b2_kinematicBody);
-			}
-			else
-			{
-				SetType (b2_dynamicBody);
-			}
-		}
-
 		public function ApplyAngularImpulse (angularImpulse:Number):void
 		{
 			if (m_type != b2_dynamicBody)

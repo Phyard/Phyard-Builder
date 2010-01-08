@@ -25,6 +25,23 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:Spacer height="100%" />
+         <mx:HBox id="HanlderBasicSettingPanel" width="100%" creationComplete="OnHanlderBasicSettingPanelCreationComplete()">
+            <mx:Spacer width="100%"/>
+            <mx:VBox>
+               <mx:CheckBox label=" " visible="false"/>
+               <mx:Label text="Timer Interval:" textAlign="right"/>
+            </mx:VBox>
+            <mx:VBox>
+               <mx:CheckBox id="CheckBox_RunOnce" label="Only Run Once" />
+               <mx:HBox>
+                  <mx:NumericStepper id="NumericStepper_Interval" stepSize="1" minimum="1" maximum="0x7FFFFFFF" width="100"/>
+                  <mx:Label text="(steps)"/>
+               </mx:HBox>
+            </mx:VBox>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
          <mx:Spacer height="100%" />
       </mx:VBox>
    </mx:TabNavigator>
@@ -83,6 +100,12 @@
             BasicSettingPanel.SetValues (mParams);
          }
          
+         private function OnHanlderBasicSettingPanelCreationComplete ():void
+         {
+            CheckBox_RunOnce.selected = mParams.mOnlyRunOnce;
+            NumericStepper_Interval.value = mParams.mRunningInterval;
+         }
+         
          public function SetConfirmFunc (onConfirm:Function):void
          {
             OnConfirm = onConfirm;
@@ -96,6 +119,17 @@
          private function OnClickOkButton():void 
          {
             GetValues (mParams);
+            
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+            
+            if (HanlderBasicSettingPanel != null)
+            {
+               mParams.mOnlyRunOnce = CheckBox_RunOnce.selected;
+               mParams.mRunningInterval = NumericStepper_Interval.value;
+            }
             
             PopUpManager.removePopUp(this);
             

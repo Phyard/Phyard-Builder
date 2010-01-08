@@ -27,7 +27,7 @@ package editor.entity {
       
       //>> v1.08
       protected var mAlpha:Number = 1.0;
-      protected var mIsActive:Boolean = true;
+      protected var mIsEnabled:Boolean = true;
       //<<
       
       public function Entity (container:EntityContainer)
@@ -144,25 +144,15 @@ package editor.entity {
          return mAlpha;
       }
       
-      public function SetActive (active:Boolean):void
+      public function SetEnabled (enabled:Boolean):void
       {
-         mIsActive = active;
+         mIsEnabled = enabled;
       }
       
-      public function IsActive ():Boolean
+      public function IsEnabled ():Boolean
       {
-         return mIsActive;
+         return mIsEnabled;
       }
-      
-      //public function SetEnabled (enabled:Boolean):void
-      //{
-      //   mIsEnabled = enabled;
-      //}
-      //
-      //public function IsEnabled ():Boolean
-      //{
-      //   return mIsEnabled;
-      //}
       
 //======================================================
 // pos, rotition
@@ -251,8 +241,7 @@ package editor.entity {
          entity.SetRotation ( GetRotation () );
          entity.SetVisible ( IsVisible () );
          entity.SetAlpha ( GetAlpha () );
-         entity.SetActive ( IsActive () );
-         //entity.SetEnabled ( IsEnabled () );
+         entity.SetEnabled ( IsEnabled () );
       }
       
       

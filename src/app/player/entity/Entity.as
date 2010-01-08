@@ -64,8 +64,8 @@ package player.entity {
                SetVisible   (entityDefine.mIsVisible);
             if (entityDefine.mAlpha != undefined)
                SetAlpha     (entityDefine.mAlpha);
-            if (entityDefine.mIsActive != undefined)
-               SetActive    (entityDefine.mIsActive);
+            if (entityDefine.mIsEnabled != undefined)
+               SetEnabled    (entityDefine.mIsEnabled);
          }
       }
       
@@ -105,10 +105,9 @@ package player.entity {
       internal var mPositionX:Number = 0.0;
       internal var mPositionY:Number = 0.0;
       internal var mRotation:Number = 0.0;
-      internal var mVisible:Boolean = true;
-      internal var mAlpha:Number = 1.0;
-      internal var mIsActive:Boolean = true;
-      internal var mIsEnabled:Boolean = true;
+      protected var mVisible:Boolean = true;
+      protected var mAlpha:Number = 1.0;
+      protected var mIsEnabled:Boolean = true;
       
       // here, for shapes, the SetPosition will not not change the mass of the body of shape,
       // also not call shape.UpdateLocalPosition.
@@ -168,19 +167,9 @@ package player.entity {
          return mAlpha;
       }
       
-      public function SetActive (active:Boolean):void
+      public function SetEnabled (active:Boolean):void
       {
-         mIsActive = active;
-      }
-      
-      public function IsActive ():Boolean
-      {
-         return mIsActive;
-      }
-      
-      public function SetEnabled (enabled:Boolean):void
-      {
-         mIsEnabled = enabled;
+         mIsEnabled = active;
       }
       
       public function IsEnabled ():Boolean
@@ -217,7 +206,7 @@ package player.entity {
          }
       }
       
-      public static function RegisterEventHandlerToList (list:ListElement_EventHandler, eventHandler:EntityEventHandler):ListElement_EventHandler
+      protected static function RegisterEventHandlerToList (list:ListElement_EventHandler, eventHandler:EntityEventHandler):ListElement_EventHandler
       {
          var  list_element:ListElement_EventHandler = list;
          
@@ -460,6 +449,12 @@ package player.entity {
       public function SetPropertyValue (propertyId:int, value:Object):void
       {
       }
+      
+//==============================================================================
+// mouse event
+//==============================================================================
+      
+      
       
 //==============================================================================
 // some variables for APIs

@@ -4,6 +4,8 @@
 //
 //=====================================================================================
 
+private var mIsInfiniteWorldSize:Boolean = false;
+
 // these values are in display space
 private var mWorldLeft:Number = 0;
 private var mWorldTop:Number = 0;

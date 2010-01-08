@@ -120,7 +120,7 @@ private function InfectShapes (shape1:EntityShape, shape2:EntityShape):void
 
 protected function RemoveBombsAndRemovableShapes (worldDisplayPoint:Point):void
 {
-   var physicsPoint:Point = mCoordinateSystem.DisplayPosition2PhysicsPoint (worldDisplayPoint.x, worldDisplayPoint.y);
+   var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
    
    var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
    

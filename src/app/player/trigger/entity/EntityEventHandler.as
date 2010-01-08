@@ -18,12 +18,22 @@ package player.trigger.entity
       public var mNextEntityEventHandlerOfTheSameType:EntityEventHandler = null;
       
       public var mExternalCondition:ConditionAndTargetValue = null;
+      
       public var mFirstEntityAssigner:ListElement_InputEntityAssigner = null;
+      
+      protected var mEventId:int = CoreEventIds.ID_Invalid;
       public var mEventHandlerDefinition:FunctionDefinition_Logic = null;
+      
+      public var mExternalAction:EntityAction = null;
       
       public function EntityEventHandler (world:World)
       {
          super (world);
+      }
+      
+      public function GetEventId ():int
+      {
+         return mEventId;
       }
       
 //=============================================================
@@ -38,7 +48,8 @@ package player.trigger.entity
          {
             if (entityDefine.mEventId != undefined)
             {
-               mEventHandlerDefinition = new FunctionDefinition_Logic (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (entityDefine.mEventId));
+               mEventId = int (entityDefine.mEventId);
+               mEventHandlerDefinition = new FunctionDefinition_Logic (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
                
                // code snippets
                if (entityDefine.mCodeSnippetDefine != undefined)
@@ -57,6 +68,11 @@ package player.trigger.entity
                {
                   mExternalCondition =  new ConditionAndTargetValue (conditionEntity, entityDefine.mInputConditionTargetValue);
                }
+            }
+            
+            if (entityDefine.mExternalActionEntityCreationId != undefined)
+            {
+               mExternalAction = mWorld.GetEntityByCreationId (entityDefine.mExternalActionEntityCreationId) as EntityAction;
             }
          }
          else if (createStageId == 1) // somthing to do after all EntityAssigners are created with stageId=0
@@ -86,7 +102,7 @@ package player.trigger.entity
 //   register to entity
 //=============================================================
       
-      private function RegisterToEntityEventHandlerLists ():void
+      protected function RegisterToEntityEventHandlerLists ():void
       {
          var eventId:int = mEventHandlerDefinition.GetFunctionDeclaration ().GetID ();
          
@@ -94,11 +110,22 @@ package player.trigger.entity
          
          switch (eventId)
          {
+            // ai flow
             case CoreEventIds.ID_OnEntityInitialized:
             case CoreEventIds.ID_OnEntityUpdated:
             case CoreEventIds.ID_OnEntityDestroyed:
+            // joint
             case CoreEventIds.ID_OnJointReachLowerLimit:
             case CoreEventIds.ID_OnJointReachUpperLimit:
+            // shape
+            case CoreEventIds.ID_OnPhysicsShapeMouseDown:
+            case CoreEventIds.ID_OnPhysicsShapeMouseUp:
+            case CoreEventIds.ID_OnEntityMouseClick:
+            case CoreEventIds.ID_OnEntityMouseDown:
+            case CoreEventIds.ID_OnEntityMouseUp:
+            case CoreEventIds.ID_OnEntityMouseMove:
+            case CoreEventIds.ID_OnEntityMouseEnter:
+            case CoreEventIds.ID_OnEntityMouseOut:
                var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
                while (list_element != null)
                {
@@ -116,13 +143,25 @@ package player.trigger.entity
 //
 //======================================================================================================
       
+      override protected function DestroyInternal ():void
+      {
+         SetEnabled (false);
+      }
+      
+//======================================================================================================
+//
+//======================================================================================================
+      
       public function HandleEvent (valueSourceList:ValueSource):void
       {
-         if (mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
+         if (mIsEnabled == false || mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
             return;
          
          //mEventHandlerDefinition.DoCall (valueSourceList, null);
          mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
+         
+         if (mExternalAction != null)
+            mExternalAction.Excute ();
       }     
    }
 }

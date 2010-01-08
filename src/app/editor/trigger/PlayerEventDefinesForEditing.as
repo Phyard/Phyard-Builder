@@ -16,24 +16,57 @@ package editor.trigger {
       {
       // functions
          
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelBeginInitialize, "OnLevelBeginInitialize", "Initialize Leel",
+      // ...
+         
+      // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeInitializing, "OnLevelBeginInitialize", "",
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelEndInitialize, "OnLevelEndInitialize", "Initialize Leel",
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterInitialized, "OnLevelEndInitialize", "",
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelBeginUpdate, "OnLevelBeginUpdate", "Trigger",
+         RegisterEventDeclatation (CoreEventIds.ID_OnLWorldBeforeUpdating, "OnLevelBeginUpdate", "",
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelEndUpdate, "OnLevelEndUpdate", "Trigger",
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterUpdated, "OnLevelEndUpdate", "",
                     null
                     );
-         //RegisterEventDeclatation (CoreEventIds.ID_OnLevelFinished, "OnLevelFinished", "Trigger",
-         //           null
-         //           );
-         //RegisterEventDeclatation (CoreEventIds.ID_OnLevelFailed, "OnLevelFailed", "Trigger",
-         //           null
-         //           );
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldTimer, "OnWorldTimer", "OnWorldTimer",
+                    [
+                     new VariableDefinitionNumber ("Calling Times"), 
+                    ]);
+         
+      // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized, "OnEntityInitialized", "OnEntityInitialized",
+                    [
+                       new VariableDefinitionEntity ("Entity"), 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityUpdated, "OnEntityUpdate", "OnEntityUpdate",
+                    [
+                       new VariableDefinitionEntity ("Entity"), 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityDestroyed, "OnEntityDestroyed", "OnEntityDestroyed",
+                    [
+                       new VariableDefinitionEntity ("Entity"), 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityTimer, "OnEntityTimer", "OnEntityTimer",
+                    [
+                       new VariableDefinitionNumber ("Calling Times"), 
+                       new VariableDefinitionEntity ("Entity"), 
+                    ]);
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "OnJointReachLowerLimit",
+                    [
+                       new VariableDefinitionEntity ("Joint"), 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit, "OnJointReachUpperLimit", "OnJointReachUpperLimit",
+                    [
+                       new VariableDefinitionEntity ("Joint"), 
+                    ]);
+         
+      // ...
          
          //RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape, "OnSensorContainsPhysicsShape", "When shape 1 containing the center of shape 2",
          //           [
@@ -57,37 +90,165 @@ package editor.trigger {
                        new VariableDefinitionEntity ("Shape 1"), 
                        new VariableDefinitionEntity ("Shape 2")
                     ]);
-         
-         RegisterEventDeclatation (CoreEventIds.ID_OnTimer, "OnTimer", "Timer",
-                    null
-                    );
-         
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized, "OnEntityInitialized", "OnEntityInitialized",
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityPairTimer, "OnEntityPairTimer", "OnEntityPairTimer",
                     [
-                       new VariableDefinitionEntity ("Entity"), 
-                    ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityUpdated, "OnEntityUpdate", "OnEntityUpdate",
-                    [
-                       new VariableDefinitionEntity ("Entity"), 
-                    ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityDestroyed, "OnEntityDestroyed", "OnEntityDestroyed",
-                    [
-                       new VariableDefinitionEntity ("Entity"), 
+                        new VariableDefinitionNumber ("Calling Times"),
+                        new VariableDefinitionEntity ("Entity 1"), 
+                        new VariableDefinitionEntity ("Entity 2"), 
                     ]);
          
-         //RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken, "OnJointBroken", "OnJointBroken",
-         //           [
-         //              new VariableDefinitionEntity ("Joint"), 
-         //           ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "OnJointReachLowerLimit",
+      // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseDown, "OnPhysicsShapeMouseDown", "Presss mouse on a physics shape",
                     [
-                       new VariableDefinitionEntity ("Joint"), 
+                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionNumber ("Local X"),
+                        new VariableDefinitionNumber ("Local Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit, "OnJointReachUpperLimit", "OnJointReachUpperLimit",
+         RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseUp, "OnPhysicsShapeMouseUp", "Release mouse on a physics shape",
                     [
-                       new VariableDefinitionEntity ("Joint"), 
+                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionNumber ("Local X"),
+                        new VariableDefinitionNumber ("Local Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
-
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseClick, "OnEntityMouseClick", "Click mouse on an entity",
+                    [
+                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionNumber ("Local X"),
+                        new VariableDefinitionNumber ("Local Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseDown, "OnEntityMouseDown", "Press mouse on an entity",
+                    [
+                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionNumber ("Local X"),
+                        new VariableDefinitionNumber ("Local Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseUp, "OnEntityMouseUp", "Release mouse on an entity",
+                    [
+                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionNumber ("Local X"),
+                        new VariableDefinitionNumber ("Local Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseMove, "OnEntityMouseMove", "Move mouse in an entity",
+                    [
+                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionNumber ("Local X"),
+                        new VariableDefinitionNumber ("Local Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseEnter, "OnEntityMouseEnter", "Mouse enters an entity",
+                    [
+                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionNumber ("Local X"),
+                        new VariableDefinitionNumber ("Local Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseOut, "OnEntityMouseOut", "Move mouse out of an entity",
+                    [
+                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionNumber ("Local X"),
+                        new VariableDefinitionNumber ("Local Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         
+      // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseClick, "OnWorldMouseClick", "When world is clicked",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseDown, "OnWorldMouseDown", "Press mouse in world",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseUp, "OnWorldMouseUp", "Release mouse in world",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseMove, "OnWorldMouseMove", "Move moust in world",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         
+      // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldKeyDown, "OnKeyDown", "When a key is pressed",
+                    [
+                        new VariableDefinitionNumber ("Key Code"),
+                        new VariableDefinitionNumber ("Char Code"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionNumber ("Holding Ticks"),
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldKeyUp, "OnKeyUp", "When a key is released",
+                    [
+                        new VariableDefinitionNumber ("Key Code"),
+                        new VariableDefinitionNumber ("Char Code"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionNumber ("Holding Ticks"),
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldKeyHold, "OnKeyHold", "When a key is hold",
+                    [
+                        new VariableDefinitionNumber ("Key Code"),
+                        new VariableDefinitionNumber ("Char Code"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionNumber ("Holding Ticks"),
+                    ]);
          
       // event settings
          

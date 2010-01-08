@@ -16,26 +16,61 @@ package common.trigger {
          
          mInitialized = true;
          
-      // functions
+      // ...
          
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelBeginInitialize,
+      // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeInitializing,
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelEndInitialize,
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterInitialized,
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelBeginUpdate,
+         RegisterEventDeclatation (CoreEventIds.ID_OnLWorldBeforeUpdating,
                     null
                     );
-         RegisterEventDeclatation (CoreEventIds.ID_OnLevelEndUpdate,
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterUpdated,
                     null
                     );
-         //RegisterEventDeclatation (CoreEventIds.ID_OnLevelFinished,
-         //           null
-         //           );
-         //RegisterEventDeclatation (CoreEventIds.ID_OnLevelFailed,
-         //           null
-         //           );
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldTimer,
+                    [
+                        ValueTypeDefine.ValueType_Number, 
+                    ]);
+         
+      // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityUpdated,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityDestroyed,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityTimer,
+                    [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         
+      // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                    ]);
+      }
+         
+       // ...
+         
          //RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape,
          //           [
          //               ValueTypeDefine.ValueType_Entity, 
@@ -58,35 +93,166 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                         ValueTypeDefine.ValueType_Entity, 
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnTimer,
-                    null
-                    );
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized,
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityPairTimer,
                     [
+                        ValueTypeDefine.ValueType_Number, 
+                        ValueTypeDefine.ValueType_Entity, 
                         ValueTypeDefine.ValueType_Entity, 
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityUpdated,
+         
+     // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseDown,
+                    [ 
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseUp,
+                    [ 
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseClick,
                     [
                         ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityDestroyed,
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseDown,
                     [
                         ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
                     ]);
-         //RegisterEventDeclatation (CoreEventIds.ID_OnJointBroken,
-         //           [
-         //               ValueTypeDefine.ValueType_Entity, 
-         //           ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit,
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseUp,
                     [
                         ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit,
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseMove,
                     [
                         ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
                     ]);
-      }
-      
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseEnter,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseOut,
+                    [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                    ]);
+         
+     // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseClick,
+                    [ 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseDown,
+                    [ 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseUp,
+                    [ 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseMove,
+                    [ 
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                    ]);
+         
+     // ...
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldKeyDown,
+                    [
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Number,
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldKeyUp,
+                    [
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Number,
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldKeyHold,
+                    [
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Number,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Number,
+                    ]);
+         
 //===========================================================
 // util functions
 //===========================================================

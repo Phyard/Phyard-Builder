@@ -143,12 +143,7 @@
                                  paddingTop="1" paddingLeft="1" paddingRight="0" paddingBottom="1"
                                  horizontalGap="0" verticalGap="0">
                            <mx:Button id="Button_CreateCondition" toolTip="Create Basic Condition" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/condition.png')" downIcon="@Embed('res/create/condition-sel.png')" overIcon="@Embed('res/create/condition.png')" selectedUpIcon="@Embed('res/create/condition-sel.png')" selectedOverIcon="@Embed('res/create/condition-sel.png')" selectedDownIcon="@Embed('res/create/condition.png')"   />
-                           <!--
-                           <mx:Button id="Button_CreateAndDoor" toolTip="Create 'and' Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/door_and.png')" downIcon="@Embed('res/create/door_and-sel.png')" overIcon="@Embed('res/create/door_and.png')" selectedUpIcon="@Embed('res/create/door_and-sel.png')" selectedOverIcon="@Embed('res/create/door_and-sel.png')" selectedDownIcon="@Embed('res/create/door_and.png')"   />
-                           <mx:Button id="Button_CreateNotDoor" toolTip="Create 'not' Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/door_not.png')" downIcon="@Embed('res/create/door_not-sel.png')" overIcon="@Embed('res/create/door_not.png')" selectedUpIcon="@Embed('res/create/door_not-sel.png')" selectedOverIcon="@Embed('res/create/door_not-sel.png')" selectedDownIcon="@Embed('res/create/door_not.png')"   />
-                           -->
                            <mx:Button id="Button_CreateTask" toolTip="Create Task" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/task.png')" downIcon="@Embed('res/create/task-sel.png')" overIcon="@Embed('res/create/task.png')" selectedUpIcon="@Embed('res/create/task-sel.png')" selectedOverIcon="@Embed('res/create/task-sel.png')" selectedDownIcon="@Embed('res/create/task.png')"   />
-                           <mx:Spacer height="10"/>
                            <mx:Button id="Button_CreateInputEntityAssigner" toolTip="Create Input Entitiy Limiter" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_limiter.png')" downIcon="@Embed('res/create/input_entity_limiter-sel.png')" overIcon="@Embed('res/create/input_entity_limiter.png')" selectedUpIcon="@Embed('res/create/input_entity_limiter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_limiter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_limiter.png')"   />
                            <mx:Spacer height="10"/>
                            <!--
@@ -159,9 +154,11 @@
                            <mx:Button id="Button_CreateEventHandler1" toolTip="Create Event Handler 1&#xD;Create Event Handler 1" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
                            <mx:Button id="Button_CreateEventHandler2" toolTip="Create Event Handler 2" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
                            <mx:Button id="Button_CreateEventHandler3" toolTip="Create Event Handler 3&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
-                           <mx:Button id="Button_CreateEventHandler4" toolTip="Create Event Handler 6" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
-                           <mx:Button id="Button_CreateEventHandler5" toolTip="Create Event Handler 7&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
-                           <mx:Button id="Button_CreateEventHandler6" toolTip="Create Event Handler 8" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
+                           <mx:Button id="Button_CreateEventHandler4" toolTip="Create Event Handler 4" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
+                           <mx:Button id="Button_CreateEventHandler5" toolTip="Create Event Handler 5&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
+                           <mx:Button id="Button_CreateEventHandler6" toolTip="Create Event Handler 6" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
+                           <mx:Button id="Button_CreateEventHandler7" toolTip="Create Event Handler 7" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
+                           <mx:Button id="Button_CreateEventHandler8" toolTip="Create Event Handler 8" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
                            <!--
                            <mx:Button id="Button_CreateEventHandler9" toolTip="Create Event Handler 9&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
                            -->
@@ -176,12 +173,7 @@
                            <mx:Button id="Button_CreateOrDoor" toolTip="Create 'or' Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/door_or.png')" downIcon="@Embed('res/create/door_or-sel.png')" overIcon="@Embed('res/create/door_or.png')" selectedUpIcon="@Embed('res/create/door_or-sel.png')" selectedOverIcon="@Embed('res/create/door_or-sel.png')" selectedDownIcon="@Embed('res/create/door_or.png')"   />
                            -->
                            <mx:Button id="Button_CreateConditionDoor" toolTip="Create Condition Door" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/condition_door.png')" downIcon="@Embed('res/create/condition_door-sel.png')" overIcon="@Embed('res/create/condition_door.png')" selectedUpIcon="@Embed('res/create/condition_door-sel.png')" selectedOverIcon="@Embed('res/create/condition_door-sel.png')" selectedDownIcon="@Embed('res/create/condition_door.png')"   />
-                           <mx:Spacer height="36"/>
-                           <!--
-                           <mx:Button id="Button_CreateTrigger" toolTip="Create Trigger" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/trigger.png')" downIcon="@Embed('res/create/trigger-sel.png')" overIcon="@Embed('res/create/trigger.png')" selectedUpIcon="@Embed('res/create/trigger-sel.png')" selectedOverIcon="@Embed('res/create/trigger-sel.png')" selectedDownIcon="@Embed('res/create/trigger.png')"   />
-                           <mx:Spacer height="36"/>
-                           -->
-                           <mx:Spacer height="10"/>
+                           <mx:Button id="Button_CreateAction" toolTip="Create Function" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/action.png')" downIcon="@Embed('res/create/action-sel.png')" overIcon="@Embed('res/create/action.png')" selectedUpIcon="@Embed('res/create/action-sel.png')" selectedOverIcon="@Embed('res/create/action-sel.png')" selectedDownIcon="@Embed('res/create/action.png')"   />
                            <mx:Button id="Button_CreateInputEntityPairAssigner" toolTip="Create Input Entitiy Pair Limiter" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_pair_limiter.png')" downIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" overIcon="@Embed('res/create/input_entity_pair_limiter.png')" selectedUpIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_pair_limiter.png')"   />
                            <mx:Spacer height="10"/>
                            <!--
@@ -194,6 +186,9 @@
                            <mx:Button id="Button_CreateEventHandler53" toolTip="Create Event Handler 4" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
                            <mx:Button id="Button_CreateEventHandler54" toolTip="Create Event Handler 6" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
                            <mx:Button id="Button_CreateEventHandler55" toolTip="Create Event Handler 7&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
+                           <mx:Button id="Button_CreateEventHandler56" toolTip="Create Event Handler 7&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
+                           <mx:Button id="Button_CreateEventHandler57" toolTip="Create Event Handler 7&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
+                           <mx:Button id="Button_CreateEventHandler58" toolTip="Create Event Handler 7&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
                            <!--
                            <mx:Button id="Button_CreateEventHandler18" toolTip="Create Event Handler 8" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
                            <mx:Button id="Button_CreateEventHandler19" toolTip="Create Event Handler 9&#xD;Create Event Handler 3" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/event_on_shape_click.png')" downIcon="@Embed('res/create/event_on_shape_click-sel.png')" overIcon="@Embed('res/create/event_on_shape_click.png')" selectedUpIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedOverIcon="@Embed('res/create/event_on_shape_click-sel.png')" selectedDownIcon="@Embed('res/create/event_on_shape_click.png')"   />
@@ -364,8 +359,7 @@
                MainView.mButton_CreateTask = Button_CreateTask;
                MainView.mButton_CreateEntityAssigner = Button_CreateInputEntityAssigner;
                MainView.mButton_CreateEntityPairAssigner = Button_CreateInputEntityPairAssigner;
-               //MainView.mButton_CreateAction = Button_CreateAction;
-               //MainView.mButton_CreateTrigger = Button_CreateTrigger;
+               MainView.mButton_CreateAction = Button_CreateAction;
                MainView.mButton_CreateEventHandler0 = Button_CreateEventHandler0;
                MainView.mButton_CreateEventHandler1 = Button_CreateEventHandler1;
                MainView.mButton_CreateEventHandler2 = Button_CreateEventHandler2;
@@ -373,12 +367,17 @@
                MainView.mButton_CreateEventHandler4 = Button_CreateEventHandler4;
                MainView.mButton_CreateEventHandler5 = Button_CreateEventHandler5;
                MainView.mButton_CreateEventHandler6 = Button_CreateEventHandler6;
+               MainView.mButton_CreateEventHandler7 = Button_CreateEventHandler7;
+               MainView.mButton_CreateEventHandler8 = Button_CreateEventHandler8;
                MainView.mButton_CreateEventHandler50 = Button_CreateEventHandler50;
                MainView.mButton_CreateEventHandler51 = Button_CreateEventHandler51;
                MainView.mButton_CreateEventHandler52 = Button_CreateEventHandler52;
                MainView.mButton_CreateEventHandler53 = Button_CreateEventHandler53
                MainView.mButton_CreateEventHandler54 = Button_CreateEventHandler54;
                MainView.mButton_CreateEventHandler55 = Button_CreateEventHandler55;
+               MainView.mButton_CreateEventHandler56 = Button_CreateEventHandler56;
+               MainView.mButton_CreateEventHandler57 = Button_CreateEventHandler57;
+               MainView.mButton_CreateEventHandler58 = Button_CreateEventHandler58;
                
                Button_CreateBox_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBox_Movable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -433,8 +432,7 @@
                Button_CreateTask.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateInputEntityAssigner.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateInputEntityPairAssigner.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateAction.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateTrigger.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateAction.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler0.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler1.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler2.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -442,12 +440,17 @@
                Button_CreateEventHandler4.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler5.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler6.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateEventHandler7.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateEventHandler8.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler50.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler51.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler52.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler53.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler54.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler55.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateEventHandler56.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateEventHandler57.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateEventHandler58.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                MainView.mButtonClone = Button_Clone;
                MainView.mButtonDelete = Button_Delete;
@@ -521,9 +524,12 @@
                
                MainView.ShowEditorCustomCommandSettingDialog = ShowEditorCustomCommandSettingDialog;
                
-               MainView.ShowEventHandlerSettingDialog = ShowEventHandlerSettingDialog;
                MainView.ShowConditionSettingDialog = ShowConditionSettingDialog;
-               //MainView.ShowTriggerSettingDialog = ShowTriggerSettingDialog;
+               MainView.ShowActionSettingDialog = ShowActionSettingDialog;
+               MainView.ShowEventHandlerSettingDialog = ShowEventHandlerSettingDialog;
+               MainView.ShowTimerEventHandlerSettingDialog = ShowTimerEventHandlerSettingDialog;
+               MainView.ShowKeyboardEventHandlerSettingDialog = ShowKeyboardEventHandlerSettingDialog;
+               MainView.ShowMouseEventHandlerSettingDialog = ShowMouseEventHandlerSettingDialog;
                
                MainView.OnStartPlaying = OnStartPlaying;
                MainView.OnStopPlaying = OnStopPlaying;
@@ -821,6 +827,18 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:UtilityCameraSettingDialog = new UtilityCameraSettingDialog ();
+               settingDialog.SetValues (initialValues);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowConditionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:LogicConditionEditDialog = new LogicConditionEditDialog ();
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
                settingDialog.SetValues (initialValues);
@@ -840,11 +858,11 @@
                settingDialog.SetCloseFunc (OnCloseDialog);
             }
             
-            private function ShowConditionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            private function ShowTimerEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
                Runtime.SetHasSettingDialogOpened (true);
                
-               var settingDialog:LogicConditionEditDialog = new LogicConditionEditDialog ();
+               var settingDialog:LogicTimerEventHandlerEditDialog = new LogicTimerEventHandlerEditDialog ();
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);
                settingDialog.SetValues (initialValues);
@@ -852,17 +870,41 @@
                settingDialog.SetCloseFunc (OnCloseDialog);
             }
             
-            //private function ShowTriggerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
-            //{
-            //   Runtime.SetHasSettingDialogOpened (true);
-            //   
-            //   var settingDialog:LogicConditionEditDialog = new LogicConditionEditDialog ();
-            //   PopUpManager.addPopUp (settingDialog, MainView, true);
-            //   PopUpManager.centerPopUp (settingDialog);
-            //   settingDialog.SetValues (initialValues);
-            //   settingDialog.SetConfirmFunc (onConfirmFunc);
-            //   settingDialog.SetCloseFunc (OnCloseDialog);
-            //}
+            private function ShowKeyboardEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:LogicKeyboardEventHandlerEditDialog = new LogicKeyboardEventHandlerEditDialog ();
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowMouseEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:LogicMouseEventHandlerEditDialog = new LogicMouseEventHandlerEditDialog ();
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowActionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:LogicActionEditDialog = new LogicActionEditDialog ();
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+            }
             
             //private function ShowWorldSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             //{

@@ -64,10 +64,10 @@ package player.entity {
       
       public function SetLocalDisplayVertexPoints (points:Array):void
       {
-			var i:int;
-			var inputDisplayPoint:Point;
-			var displayPoint:Point;
-			var physicsPoint:Point;
+         var i:int;
+         var inputDisplayPoint:Point;
+         var displayPoint:Point;
+         var physicsPoint:Point;
          if (mLocalPoints == null || mLocalPoints.length != points.length)
          {
             mLocalPoints = new Array (points.length);
@@ -81,13 +81,13 @@ package player.entity {
          
          for (i = 0; i < mLocalPoints.length; ++ i)
          {
-				inputDisplayPoint = points [i];
-				
-				displayPoint = mLocalDisplayPoints [i];
-				displayPoint.x = inputDisplayPoint.x;
-				displayPoint.y = inputDisplayPoint.y;
-				
-				physicsPoint = mLocalPoints [i];
+            inputDisplayPoint = points [i];
+
+            displayPoint = mLocalDisplayPoints [i];
+            displayPoint.x = inputDisplayPoint.x;
+            displayPoint.y = inputDisplayPoint.y;
+
+            physicsPoint = mLocalPoints [i];
             physicsPoint.x =  mWorld.GetCoordinateSystem ().D2P_PositionX (inputDisplayPoint.x);
             physicsPoint.y =  mWorld.GetCoordinateSystem ().D2P_PositionY (inputDisplayPoint.y);
          }

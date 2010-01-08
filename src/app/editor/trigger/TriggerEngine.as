@@ -110,10 +110,14 @@ package editor.trigger {
          return PlayerFunctionDefinesForEditing.sCoreApiMenuItemXML;
       }
       
+      public static function GetVoidFunctionDeclaration ():FunctionDeclaration_Core
+      {
+         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_Void);
+      }
+      
       public static function GetBoolFunctionDeclaration ():FunctionDeclaration_Core
       {
-         return new FunctionDeclaration_Core (
-                  CoreFunctionIds.ID_Bool, "Condition", null, [new VariableDefinitionBoolean ("Return Bool Value")], null);
+         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_Bool);
       }
    }
 }

@@ -100,7 +100,7 @@ package editor.trigger {
          var callingsArray:Array = new Array (num);
          for (i = 0; i < num; ++ i)
          {
-            callingsArray [i] = (mFunctionCallings [i] as FunctionCalling).Clone (mOwnerFunctionDefinition);
+            callingsArray [i] = (mFunctionCallings [i] as FunctionCalling).Clone (ownerFunctionDefinition);
          }
          codeSnippet.AssignFunctionCallings (callingsArray);
          

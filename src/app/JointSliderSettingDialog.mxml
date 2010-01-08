@@ -141,12 +141,15 @@
          
          private function OnJointBasicSettingPanelCreationComplete ():void
          {
+            mParams.mJointValues.mPositionNonSense = true;
+            mParams.mJointValues.mRotationNonSense = true;
+            mParams.mVisibleNonsense = true;
             JointBasicSettingPanel.SetValues (mParams.mJointValues);
          }
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
-            mParams.mActiveNonsense = true;
+            mParams.mEnabledNonsense = true;
             mParams.mVisibleNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }

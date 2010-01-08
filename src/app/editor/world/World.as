@@ -29,12 +29,16 @@ package editor.world {
    
    import editor.entity.SubEntityJointAnchor;
    
-   import editor.trigger.entity.EntityEventHandler;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
    import editor.trigger.entity.EntityInputEntityAssigner;
    import editor.trigger.entity.EntityInputEntityPairAssigner;
+   import editor.trigger.entity.EntityEventHandler;
+   import editor.trigger.entity.EntityEventHandler_Timer;
+   import editor.trigger.entity.EntityEventHandler_Keyboard;
+   import editor.trigger.entity.EntityEventHandler_Mouse;
+   import editor.trigger.entity.EntityAction;
    
    import editor.entity.VertexController;
    
@@ -682,17 +686,6 @@ package editor.world {
          return camera;
       }
       
-      public function CreateEntityEventHandler (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler
-      {
-         if (numChildren >= Define.MaxEntitiesCount)
-            return null;
-         
-         var handler:EntityEventHandler = new EntityEventHandler (this, defaultEventId, potientialEventIds);
-         addChild (handler);
-         
-         return handler;
-      }
-      
       public function CreateEntityCondition ():EntityBasicCondition
       {
          if (numChildren >= Define.MaxEntitiesCount)
@@ -746,6 +739,61 @@ package editor.world {
          addChild (entity_pair_assigner);
          
          return entity_pair_assigner;
+      }
+      
+      public function CreateEntityEventHandler (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var handler:EntityEventHandler = new EntityEventHandler (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         return handler;
+      }
+      
+      public function CreateEntityEventHandler_Timer (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Timer
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var handler:EntityEventHandler_Timer = new EntityEventHandler_Timer (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         return handler;
+      }
+      
+      public function CreateEntityEventHandler_Keyboard (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Keyboard
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var handler:EntityEventHandler_Keyboard = new EntityEventHandler_Keyboard (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         return handler;
+      }
+      
+      public function CreateEntityEventHandler_Mouse (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Mouse
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var handler:EntityEventHandler_Mouse = new EntityEventHandler_Mouse (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         return handler;
+      }
+      
+      public function CreateEntityAction ():EntityAction
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var action:EntityAction = new EntityAction (this);
+         addChild (action);
+         
+         return action;
       }
       
 //=================================================================================

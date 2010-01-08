@@ -69,6 +69,19 @@ package editor.trigger {
                        );
          }
          
+      // special
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Void, null, "Action", 
+                     null,
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool, null, "Condition",
+                     null,
+                     [
+                              new VariableDefinitionBoolean ("Bool Value"), 
+                     ]
+                  );
+       
       // global
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Return, global_package, "Return", 
@@ -935,8 +948,8 @@ package editor.trigger {
                      [
                         new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
                         new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
-                        new VariableDefinitionNumber ("Tolerance Delta X", null, {mMinValue:0.0, mDefaultValue:0.2}), 
-                        new VariableDefinitionNumber ("Tolerance Delta Y", null, {mMinValue:0.0, mDefaultValue:0.2}), 
+                        new VariableDefinitionNumber ("Tolerance Delta X", null, {mMinValue:0.0, mDefaultValue:0.8}), 
+                        new VariableDefinitionNumber ("Tolerance Delta Y", null, {mMinValue:0.0, mDefaultValue:0.8}), 
                         new VariableDefinitionNumber ("Tolerance Delta Angle (degrees)", null, {mMinValue:0.0, mDefaultValue:6}), 
                      ],
                      [
@@ -1179,7 +1192,8 @@ package editor.trigger {
          
          sFunctionDeclarations [function_id] = new FunctionDeclaration_Core (function_id, function_name, param_defines, return_defines, null);
          
-         functionPackage.AddFunctionDeclaration (sFunctionDeclarations [function_id]);
+         if (functionPackage != null)
+            functionPackage.AddFunctionDeclaration (sFunctionDeclarations [function_id]);
       }
       
       public static function GetFunctionDeclarationById (function_id:int):FunctionDeclaration_Core

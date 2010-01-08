@@ -101,7 +101,7 @@ package editor.trigger {
          
          RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseDown, "OnPhysicsShapeMouseDown", "Presss mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionEntity ("The Physics Shape"), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -111,7 +111,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseUp, "OnPhysicsShapeMouseUp", "Release mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionEntity ("The Physics Shape"), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -119,9 +119,9 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseClick, "OnEntityMouseClick", "Click mouse on an entity",
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseClick, "OnShapeMouseClick", "Click mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionEntity ("The Shape"), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -129,9 +129,9 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseDown, "OnEntityMouseDown", "Press mouse on an entity",
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseDown, "OnShapeMouseDown", "Press mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionEntity ("The Shape"), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -139,9 +139,9 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseUp, "OnEntityMouseUp", "Release mouse on an entity",
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseUp, "OnShapeMouseUp", "Release mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionEntity ("The Shape"), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -149,9 +149,9 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseMove, "OnEntityMouseMove", "Move mouse in an entity",
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseMove, "OnShapeMouseMove", "Move mouse in an entity",
                     [
-                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionEntity ("The Shape"), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -159,9 +159,9 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseEnter, "OnEntityMouseEnter", "Mouse enters an entity",
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseEnter, "OnShapeMouseEnter", "Mouse enters an entity",
                     [
-                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionEntity ("The Shape"), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -169,9 +169,9 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseOut, "OnEntityMouseOut", "Move mouse out of an entity",
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseOut, "OnShapeMouseOut", "Move mouse out of an entity",
                     [
-                        new VariableDefinitionEntity ("The Entity"), 
+                        new VariableDefinitionEntity ("The Shape"), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),

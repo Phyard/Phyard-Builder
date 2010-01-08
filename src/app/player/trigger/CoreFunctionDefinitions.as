@@ -1307,6 +1307,7 @@ package player.trigger {
          
          if (body != null)
          {
+trace ("--- OnPhysicsShapeListChanged");
             body.OnPhysicsShapeListChanged ();
          }
       }

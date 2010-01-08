@@ -132,13 +132,17 @@ package player.world {
          
          // ...
          
+         SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
+         SetBuildBorder (worldDefine.mSettings.mBuildBorder);
+         SetBorderColor (worldDefine.mSettings.mBorderColor);
+         
          mIsInfiniteWorldSize = worldDefine.mSettings.mIsInfiniteWorldSize;
          
          // these values are in pixel unit
          
          if (mIsInfiniteWorldSize)
          {
-            mBuildBorder = false;
+            SetBuildBorder (false);
             
             mWorldLeft   = - 0x7FFFFFFF;
             mWorldTop    = - 0x7FFFFFFF;
@@ -152,12 +156,9 @@ package player.world {
             mWorldWidth = worldDefine.mSettings.mWorldWidth;
             mWorldHeight = worldDefine.mSettings.mWorldHeight;
          }
+         
          mCameraCenterX = worldDefine.mSettings.mCameraCenterX;
          mCameraCenterY = worldDefine.mSettings.mCameraCenterY;
-         
-         SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
-         SetBuildBorder (worldDefine.mSettings.mBuildBorder);
-         SetBorderColor (worldDefine.mSettings.mBorderColor);
          
       // ...
          

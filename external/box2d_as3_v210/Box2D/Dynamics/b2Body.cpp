@@ -310,22 +310,26 @@ public function ResetMassData():void
 	if (m_type == b2_staticBody || m_type == b2_kinematicBody)
 	{
 		//>> hacking
+		var num:int = 0;
 		for (f = m_fixtureList; f != null; f = f.m_next)
 		{
+			++ num;
 			f.GetMassData(massData);
 			
-			//center += massData.mass * massData.center;
-			center.x += massData.mass * massData.center.x;
-			center.y += massData.mass * massData.center.y;
-			
-			//m_sweep.localCenter = center;
-			m_sweep.localCenter.x = center.x;
-			m_sweep.localCenter.y = center.y;
-			//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
-			b2Math.b2Mul_TransformAndVector2_Output (m_xf, m_sweep.localCenter, tempV);
-			m_sweep.c0.x = m_sweep.c.x = tempV.x;
-			m_sweep.c0.y = m_sweep.c.y = tempV.y;
+			center.x += massData.center.x;
+			center.y += massData.center.y;
 		}
+		
+		//m_sweep.localCenter = center;
+		if (num > 0)
+		{
+			m_sweep.localCenter.x = center.x / num;
+			m_sweep.localCenter.y = center.y / num;
+		}
+		//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
+		b2Math.b2Mul_TransformAndVector2_Output (m_xf, m_sweep.localCenter, tempV);
+		m_sweep.c0.x = m_sweep.c.x = tempV.x;
+		m_sweep.c0.y = m_sweep.c.y = tempV.y;
 		//<<
 		
 		return;

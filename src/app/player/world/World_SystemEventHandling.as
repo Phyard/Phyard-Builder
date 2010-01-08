@@ -83,36 +83,79 @@ public function OnMouseClick (event:MouseEvent):void
 
 public function OnMouseDown (event:MouseEvent):void
 {
-   MouseEvent2ValueSourceList (event);
-   HandleEventById (CoreEventIds.ID_OnWorldMouseDown, mWorldMouseEventHandlerValueSourceList);
-   
    // ...
    SetCurrentMode (new ModeMoveWorldScene (this));
    
    if (mCurrentMode != null)
       mCurrentMode.OnMouseDown (event.stageX, event.stageY);
+   
+   // ...
+   MouseEvent2ValueSourceList (event);
+   HandleEventById (CoreEventIds.ID_OnWorldMouseDown, mWorldMouseEventHandlerValueSourceList);
+   
+   // ...
+   if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
+   {
+      var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+      var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
+      var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
+      
+      var shape:EntityShape;
+      var num:int = shapeArray.length;
+      for (var i:int = 0; i < num; ++ i)
+      {
+         shape = shapeArray [i] as EntityShape;
+         
+         MouseEvent2ValueSourceList (event);
+         mMouseEventHandlerValueSource0.mValueObject = shape;
+         
+         shape.OnPhysicsShapeMouseDown (mEntityMouseEventHandlerValueSourceList);
+      }
+   }
 }
 
 public function OnMouseUp (event:MouseEvent):void
 {
-   MouseEvent2ValueSourceList (event);
-   HandleEventById (CoreEventIds.ID_OnWorldMouseUp, mWorldMouseEventHandlerValueSourceList);
-   
    // ...
    if (mCurrentMode != null)
       mCurrentMode.OnMouseUp (event.stageX, event.stageY);
    
-   RemoveBombsAndRemovableShapes (globalToLocal (new Point (event.stageX, event.stageY)));
+   // ...
+   MouseEvent2ValueSourceList (event);
+   HandleEventById (CoreEventIds.ID_OnWorldMouseUp, mWorldMouseEventHandlerValueSourceList);
+   
+   // ...
+   var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+   var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
+   var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
+      
+   if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
+   {
+      var shape:EntityShape;
+      var num:int = shapeArray.length;
+      for (var i:int = 0; i < num; ++ i)
+      {
+         shape = shapeArray [i] as EntityShape;
+         
+         MouseEvent2ValueSourceList (event);
+         mMouseEventHandlerValueSource0.mValueObject = shape;
+         
+         shape.OnPhysicsShapeMousUp (mEntityMouseEventHandlerValueSourceList);
+      }
+   }
+   
+   RemoveBombsAndRemovableShapes (shapeArray);
 }
 
 public function OnMouseMove (event:MouseEvent):void
 {
-   MouseEvent2ValueSourceList (event);
-   HandleEventById (CoreEventIds.ID_OnWorldMouseMove, mWorldMouseEventHandlerValueSourceList);
-   
    // ...
    if (mCurrentMode != null)
       mCurrentMode.OnMouseMove (event.stageX, event.stageY, event.buttonDown);
+   
+   //
+   MouseEvent2ValueSourceList (event);
+   HandleEventById (CoreEventIds.ID_OnWorldMouseMove, mWorldMouseEventHandlerValueSourceList);
 }
 
 private var mMouseEventHandlerValueSource7:ValueSource_Direct = new ValueSource_Direct (null); // is overlapped by some entities

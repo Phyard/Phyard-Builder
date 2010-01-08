@@ -118,43 +118,42 @@ private function InfectShapes (shape1:EntityShape, shape2:EntityShape):void
    }
 }
 
-protected function RemoveBombsAndRemovableShapes (worldDisplayPoint:Point):void
+protected function RemoveBombsAndRemovableShapes (shapeArray:Array):void
 {
-   var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
-   
-   var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
-   
    var shape:EntityShape;
    var aiType:int;
    var num:int = shapeArray.length;
    for (var i:int = 0; i < num; ++ i)
    {
       shape = shapeArray [i] as EntityShape;
-      aiType = shape.GetShapeAiType ();
       
-      if (aiType == Define.ShapeAiType_Breakable)
+      if (! shape.IsDestroyedAlready ())
       {
-         if (! shape.IsDestroyedAlready ())
+         aiType = shape.GetShapeAiType ();
+         
+         if (aiType == Define.ShapeAiType_Breakable)
+         {
             shape.GetBody ().DestroyAllBreakableShapes ();
-      }
-      else if (aiType == Define.ShapeAiType_Bomb) 
-      {
-         var bombSize:Number = 0.0;
-         if (shape is EntityShape_CircleBomb)
-         {
-            bombSize = (shape as EntityShape_CircleBomb).GetRadius ();
          }
-         else if (shape is EntityShape_RectangleBomb)
+         else if (aiType == Define.ShapeAiType_Bomb) 
          {
-            bombSize = Math.sqrt ((shape as EntityShape_RectangleBomb).GetHalfWidth () * (shape as EntityShape_RectangleBomb).GetHalfHeight ());
+            var bombSize:Number = 0.0;
+            if (shape is EntityShape_CircleBomb)
+            {
+               bombSize = (shape as EntityShape_CircleBomb).GetRadius ();
+            }
+            else if (shape is EntityShape_RectangleBomb)
+            {
+               bombSize = Math.sqrt ((shape as EntityShape_RectangleBomb).GetHalfWidth () * (shape as EntityShape_RectangleBomb).GetHalfHeight ());
+            }
+            
+            if (bombSize > 0)
+            {
+               ParticleManager_AddBomb (shape.GetPositionX (), shape.GetPositionY (), bombSize, shape.GetDensity ());
+            }
+            
+            shape.DestroyEntity ();
          }
-         
-         if (bombSize > 0)
-         {
-            ParticleManager_AddBomb (shape.GetPositionX (), shape.GetPositionY (), bombSize, shape.GetDensity ());
-         }
-         
-         shape.DestroyEntity ();
       }
    }
 }

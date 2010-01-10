@@ -24,9 +24,18 @@ package editor.entity {
    public class EntityShapeText extends EntityShapeRectangle 
    {
       private var mText:String;
-      private var mAutofitWidth:Boolean = true;
+      private var mWordWrap:Boolean = true;
       
       private var mTextColor:uint = 0x000000;
+      private var mFontSize:uint = 10;
+      private var mIsBold:Boolean = false;
+      private var mIsItalic:Boolean = false;
+      
+      private var mAdaptiveBackgroundSize:Boolean = false;
+      
+      //
+      protected var mTextLayer:Sprite = new Sprite ();
+      protected var mTextSprite:DisplayObject = null;
       
       public function EntityShapeText (world:World)
       {
@@ -35,6 +44,8 @@ package editor.entity {
          SetText ("(not set yet)");
          SetDrawBorder (false);
          SetDrawBackground (false);
+         
+         addChild (mTextLayer);
       }
       
       override public function IsBasicShapeEntity ():Boolean
@@ -54,46 +65,66 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
-         while (numChildren > 0)
-            removeChildAt (0);
+         if (mTextSprite != null)
+            mTextLayer.removeChild (mTextSprite);
          
-      // background
+         RebuildTextSprite ();
+         
+         AdjustBackgroundSize ();
          
          super.UpdateAppearance ();
          
-         
-      // text
+         mTextLayer.addChild (mTextSprite);
+      }
+      
+      protected function AdjustBackgroundSize ():void
+      {
+         if (IsAdaptiveBackgroundSize ())
+         {
+            SetHalfWidth  (0.5 * mTextSprite.width + 5);
+            SetHalfHeight (0.5 * mTextSprite.height + 5);
+         }
+      }
+      
+      protected function GetDisplayText ():String
+      {
          var infoText:String = mText;
          
          if (infoText == null)
-            return;
+            return "";
          
          infoText = TextUtil.GetHtmlEscapedText (infoText);
          infoText = TextUtil.ParseWikiString (infoText);
          
-         //trace ("infoText = " + infoText);
+         if (mIsBold)
+            infoText = "<b>" + infoText + "</b>";
+         if (mIsItalic)
+            infoText = "<i>" + infoText + "</i>";
          
-         var textDisplayObject:DisplayObject;
+         return "<font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font>";;
+      }
+      
+      protected function RebuildTextSprite ():void
+      {
+         var displayText:String = GetDisplayText ();
          
          var textField:TextFieldEx;
          
-         if (mAutofitWidth)
-            textField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, mTextColor, true, mHalfWidth * 2 - 10 - mBorderThickness);
+         if (mWordWrap && (! mAdaptiveBackgroundSize))
+            textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor, true, mHalfWidth * 2 - 10 - mBorderThickness);
          else
-            textField = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, mTextColor);
+            textField = TextFieldEx.CreateTextField (displayText, false, 0xFFFFFF, mTextColor);
             
          if (GetRotation () == 0)
-            textDisplayObject = textField;
+            mTextSprite = textField;
          else
          {
             var textBitmap:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (textField);
-            textDisplayObject = textBitmap;
+            mTextSprite = textBitmap;
          }
          
-         addChild (textDisplayObject);
-         
-         textDisplayObject.x = - textDisplayObject.width * 0.5;
-         textDisplayObject.y = - textDisplayObject.height * 0.5;
+         mTextSprite.x = - mTextSprite.width * 0.5;
+         mTextSprite.y = - mTextSprite.height * 0.5;
       }
       
       public function GetText ():String
@@ -110,18 +141,16 @@ package editor.entity {
             text = text.substr (0, Define.MaxTextLength);
          
          mText = text;
-         
-         UpdateAppearance ();
       }
       
-      public function IsAutofitWidth ():Boolean
+      public function IsWordWrap ():Boolean
       {
-         return mAutofitWidth;
+         return mWordWrap;
       }
       
-      public function SetAutofitWidth (auto:Boolean):void
+      public function SetWordWrap (auto:Boolean):void
       {
-         mAutofitWidth = auto;
+         mWordWrap = auto;
          
          UpdateAppearance ();
       }
@@ -134,6 +163,48 @@ package editor.entity {
       public function SetTextColor (color:uint):void
       {
          mTextColor = color;
+      }
+      
+      public function GetFontSize ():uint
+      {
+         return mFontSize;
+      }
+      
+      public function SetFontSize (size:uint):void
+      {
+         mFontSize = size;
+      }
+      
+      public function IsBold ():Boolean
+      {
+         return mIsBold;
+      }
+      
+      public function SetBold (bold:Boolean):void
+      {
+         mIsBold = bold;
+      }
+      
+      public function IsItalic ():Boolean
+      {
+         return mIsItalic;
+      }
+      
+      public function SetItalic (italic:Boolean):void
+      {
+         mIsItalic = italic;
+      }
+      
+      public function IsAdaptiveBackgroundSize ():Boolean
+      {
+         return mAdaptiveBackgroundSize;
+      }
+      
+      public function SetAdaptiveBackgroundSize (adapt:Boolean):void
+      {
+         mAdaptiveBackgroundSize = adapt;
+         
+         mEnableVertexControllers = ! mAdaptiveBackgroundSize;
       }
       
 //====================================================================
@@ -151,7 +222,7 @@ package editor.entity {
          
          var text:EntityShapeText = entity as EntityShapeText;
          text.SetText ( GetText () );
-         text.SetAutofitWidth (IsAutofitWidth ());
+         text.SetWordWrap (IsWordWrap ());
       }
       
    }

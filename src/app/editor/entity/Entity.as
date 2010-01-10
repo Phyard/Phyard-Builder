@@ -34,7 +34,8 @@ package editor.entity {
       {
          mEntityContainer = container;
          
-         mEntityContainer.OnEntityCreated (this);
+         if (mEntityContainer != null) // at some special cases, mEntityContainer is null
+            mEntityContainer.OnEntityCreated (this);
       }
       
       public function GetContainer ():EntityContainer

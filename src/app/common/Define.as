@@ -163,6 +163,17 @@ package common {
       
       public static const MaxTextLength:uint = 1000;
       
+      public static const ColorTextBackground:uint = 0xFFFEFEFE; // if set as FFFFFF, no bakcground is painted, why?
+      
+//===========================================================================
+// text button
+//===========================================================================
+      
+      public static const ColorTextButtonBackground:uint = 0xFFA0FFA0;
+      public static const ColorTextButtonBackground_MouseOver:uint = 0xFFA0A0FF;
+      public static const ColorTextButtonText:uint = 0x000000;
+      public static const ColorTextButtonBorder:uint = 0x000000;
+      
 //===========================================================================
 // gravity controller
 //===========================================================================
@@ -245,9 +256,6 @@ package common {
       // v1.01
       public static const ColorBombObject:uint = 0xFF000000;
       
-      //v1.02
-      public static const ColorTextBackground:uint = 0xFFFEFEFE; // if set as FFFFFF, no bakcground is painted, why?
-      
       // ...
       public static const BorderColorSelectedObject:uint = 0xFF0000FF;
       public static const BorderColorUnselectedObject:uint = Define.ColorObjectBorder;
@@ -274,6 +282,7 @@ package common {
       // preset shapes
       public static const EntityType_ShapeText:int = 31; // from v1.02
       public static const EntityType_ShapeGravityController:int = 32; // from v1.02
+      public static const EntityType_ShapeTextButton:int = 33; // from v1.08
       
       // basic joints
       public static const EntityType_JointHinge:int = 60;
@@ -286,14 +295,14 @@ package common {
       // preset shapes, for history reason, the id jumps to here
       public static const EntityType_UtilityCamera:int = 110;
       
-      // logic
+      // logic // from v1.07
       public static const EntityType_LogicCondition:int = 210;
       public static const EntityType_LogicTask:int = 211;
       public static const EntityType_LogicConditionDoor:int = 212;
       public static const EntityType_LogicEventHandler:int = 213;
       public static const EntityType_LogicInputEntityAssigner:int = 214;
       public static const EntityType_LogicInputEntityPairAssigner:int = 215;
-      public static const EntityType_LogicAction:int = 216;
+      public static const EntityType_LogicAction:int = 216; // from v1.08
       
       // from v1.07, folloing functions should only be used in packaging./ loading
       // they should NOT used in player pacakge, use EntityShape.mPhysicsShapePotentially instead
@@ -314,6 +323,7 @@ package common {
                || entityType == EntityType_ShapePolygon 
                || entityType == EntityType_ShapePolyline
                || entityType == EntityType_ShapeText
+               || entityType == EntityType_ShapeTextButton
                || entityType == EntityType_ShapeGravityController
                ;
       }
@@ -343,6 +353,7 @@ package common {
                || entityType == EntityType_LogicTask 
                || entityType == EntityType_LogicConditionDoor 
                || entityType == EntityType_LogicEventHandler 
+               || entityType == EntityType_LogicAction 
                || entityType == EntityType_LogicInputEntityAssigner 
                || entityType == EntityType_LogicInputEntityPairAssigner 
                ;

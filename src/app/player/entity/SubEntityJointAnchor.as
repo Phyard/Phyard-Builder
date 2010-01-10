@@ -172,20 +172,14 @@ package player.entity {
          }
       }
 
-      private function RebuildAppearance_Hinge ():void
-      {
-         DrawCircle (5);
-         DrawCircle (1);
-      }
-
       private function RebuildAppearance_HingeOuter ():void
       {
-         DrawCircle (5);
+         DrawCircle (5, true);
       }
 
       private function RebuildAppearance_HingeInner ():void
       {
-         DrawCircle (1);
+         DrawCircle (1, false);
       }
 
       private function RebuildAppearance_Fixed ():void
@@ -195,10 +189,10 @@ package player.entity {
 
       private function RebuildAppearance_General ():void
       {
-         DrawCircle (3);
+         DrawCircle (2, false);
       }
 
-      private function DrawCircle (displayRadius:Number):void
+      private function DrawCircle (displayRadius:Number, filled:Boolean):void
       {
          GraphicsUtil.DrawCircle (
                   mAnchorShape,
@@ -207,7 +201,7 @@ package player.entity {
                   displayRadius,
                   0x0, // border color
                   1, // border thickness
-                  true, // draw background
+                  filled, // draw background
                   0xFFFFFF // filled color
                );
       }

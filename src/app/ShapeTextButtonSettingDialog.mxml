@@ -20,6 +20,13 @@
          <ShapeAppearanceSettingPanel id="AppearanceSettingPanel" creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
          <mx:Spacer width="100%"/>
       </mx:VBox>
+      <mx:VBox label="Background Appearance (Mouse Over)" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <ShapeAppearanceSettingPanel id="AppearanceSettingPanel_MouseOver" creationComplete="OnMouseOverAppearanceSettingPanelCreationComplete()"/>
+         <mx:Spacer width="100%"/>
+      </mx:VBox>
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
@@ -86,6 +93,12 @@
             mParams.mCiTypeSelectable = false;
             AppearanceSettingPanel.SetValues (mParams);
          }
+
+         private function OnMouseOverAppearanceSettingPanelCreationComplete ():void
+         {
+            mParams.mMouseOverValues.mCiTypeSelectable = false;
+            AppearanceSettingPanel_MouseOver.SetValues (mParams.mMouseOverValues);
+         }
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
@@ -117,6 +130,11 @@
             if (AppearanceSettingPanel != null)
             {
                AppearanceSettingPanel.GetValues (mParams);
+            }
+
+            if (AppearanceSettingPanel_MouseOver != null)
+            {
+               AppearanceSettingPanel_MouseOver.GetValues (mParams.mMouseOverValues);
             }
             
             if (BasicSettingPanel != null)

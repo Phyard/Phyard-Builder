@@ -13,15 +13,15 @@ package editor.mode {
    
    public class ModePlaceCreateEntitiy extends Mode
    {
-      private var mEntityCreatFunction:Function = null;
-      private var mEntityCreatOptions:Object = null;
+      private var mEntityCreateFunction:Function = null;
+      private var mEntityCreateOptions:Object = null;
       
       public function ModePlaceCreateEntitiy (mainView:WorldView, createFunc:Function, createOptions:Object = undefined)
       {
          super (mainView);
          
-         mEntityCreatFunction = createFunc;
-         mEntityCreatOptions = createOptions;
+         mEntityCreateFunction = createFunc;
+         mEntityCreateOptions = createOptions;
       }
       
       private var mEntity:Entity = null;
@@ -50,9 +50,9 @@ package editor.mode {
       {
          ResetSession (true);
          
-         if (mEntityCreatFunction != null)
+         if (mEntityCreateFunction != null)
          {
-            mEntity = mEntityCreatFunction (mEntityCreatOptions);
+            mEntity = mEntityCreateFunction (mEntityCreateOptions);
          }
          
          if (mEntity == null)

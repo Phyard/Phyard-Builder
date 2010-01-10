@@ -14,6 +14,7 @@ package common {
    import editor.entity.EntityShapePolygon;
    import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
+   import editor.entity.EntityShapeTextButton;
    import editor.entity.EntityShapeGravityController;
    
    import editor.entity.EntityJoint;
@@ -361,17 +362,40 @@ package common {
                   //>>from v1.02
                   if (editorEntity is editor.entity.EntityShapeText)
                   {
-                     entityDefine.mEntityType = Define.EntityType_ShapeText;
-                     
                      entityDefine.mText = (shape as EntityShapeText).GetText ();
-                     entityDefine.mAutofitWidth = (shape as EntityShapeText).IsAutofitWidth ();
                      
                      entityDefine.mHalfWidth = (shape as editor.entity.EntityShapeRectangle).GetHalfWidth ();
                      entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
                      
+                     entityDefine.mWordWrap = (shape as EntityShapeText).IsWordWrap ();
+                     
                      //from v1.08
+                     entityDefine.mAdaptiveBackgroundSize = (shape as EntityShapeText).IsAdaptiveBackgroundSize ();
                      entityDefine.mTextColor = (shape as EntityShapeText).GetTextColor ();
+                     entityDefine.mFontSize = (shape as EntityShapeText).GetFontSize ();
+                     entityDefine.mIsBold = (shape as EntityShapeText).IsBold ();
+                     entityDefine.mIsItalic = (shape as EntityShapeText).IsItalic ();
                      //<<
+                     
+                     if (editorEntity is EntityShapeTextButton)
+                     {
+                        entityDefine.mEntityType = Define.EntityType_ShapeTextButton;
+                        
+                        entityDefine.mUsingHandCursor = (shape as EntityShapeTextButton).UsingHandCursor ();
+                        
+                        var mouseOverShape:EntityShape = (shape as EntityShapeTextButton).GetMouseOverShape ();
+                        entityDefine.mDrawBorder_MouseOver = mouseOverShape.IsDrawBorder ();
+                        entityDefine.mDrawBackground_MouseOver = mouseOverShape.IsDrawBackground ();
+                        entityDefine.mBorderColor_MouseOver = mouseOverShape.GetBorderColor ();
+                        entityDefine.mBorderThickness_MouseOver = mouseOverShape.GetBorderThickness ();
+                        entityDefine.mBackgroundColor_MouseOver =mouseOverShape.GetFilledColor ();
+                        entityDefine.mTransparency_MouseOver = mouseOverShape.GetTransparency ();
+                        entityDefine.mBorderTransparency_MouseOver = mouseOverShape.GetBorderTransparency ();
+                     }
+                     else
+                     {
+                        entityDefine.mEntityType = Define.EntityType_ShapeText;
+                     }
                   }
                   else if (editorEntity is editor.entity.EntityShapeGravityController)
                   {
@@ -824,7 +848,7 @@ package common {
                   {
                      var text:editor.entity.EntityShapeText = editorWorld.CreateEntityShapeText ();
                      text.SetText (entityDefine.mText);
-                     text.SetAutofitWidth (entityDefine.mAutofitWidth);
+                     text.SetWordWrap (entityDefine.mWordWrap);
                      
                      text.SetHalfWidth (entityDefine.mHalfWidth);
                      text.SetHalfHeight (entityDefine.mHalfHeight);
@@ -1204,9 +1228,9 @@ package common {
          
          // ...
          // worldDefine.mVersion >= 0x0107
-         if (worldXml.EntityCreationOrder != undefined)
+         if (worldXml.EntityAppearingOrder != undefined)
          {
-            EntityIndicesString2IdArray (worldXml.EntityCreationOrder.@entity_indices, worldDefine.mEntityAppearanceOrder);
+            EntityIndicesString2IdArray (worldXml.EntityAppearingOrder.@entity_indices, worldDefine.mEntityAppearanceOrder);
          }
          
          // ...
@@ -1460,7 +1484,10 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_ShapeText)
                {
                   entityDefine.mText = element.@text;
-                  entityDefine.mAutofitWidth = parseInt (element.@autofit_width) != 0;
+                  if (worldDefine.mVersion < 0x0108)
+                     entityDefine.mWordWrap = parseInt (element.@autofit_width) != 0;
+                  else
+                     entityDefine.mWordWrap = parseInt (element.@word_wrap) != 0;
                   
                   entityDefine.mHalfWidth = parseFloat (element.@half_width);
                   entityDefine.mHalfHeight = parseFloat (element.@half_height);
@@ -1818,7 +1845,7 @@ package common {
                   if (entityDefine.mEntityType == Define.EntityType_ShapeText)
                   {
                      byteArray.writeUTF (entityDefine.mText);
-                     byteArray.writeByte (entityDefine.mAutofitWidth);
+                     byteArray.writeByte (entityDefine.mWordWrap);
                      
                      byteArray.writeFloat (entityDefine.mHalfWidth);
                      byteArray.writeFloat (entityDefine.mHalfHeight);

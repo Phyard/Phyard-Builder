@@ -68,9 +68,6 @@ package editor {
    import editor.mode.ModeCreateSlider;
    import editor.mode.ModeCreateSpring;
    
-   import editor.mode.ModeCreateText;
-   import editor.mode.ModeCreateGravityController;
-   
    import editor.mode.ModePlaceCreateEntitiy;
    
    import editor.mode.ModeRegionSelectEntities;
@@ -97,6 +94,7 @@ package editor {
    import editor.entity.EntityShapePolygon;
    import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
+   import editor.entity.EntityShapeTextButton;
    import editor.entity.EntityShapeGravityController;
    
    import editor.entity.EntityJoint;
@@ -968,13 +966,13 @@ package editor {
       public var mButtonCreateJointSpring:Button;
       
       public var mButtonCreateText:Button;
-      public var mButtonCreateCravityController:Button;
+      public var mButtonCreateGravityController:Button;
       public var mButtonCreateBox:Button;
       public var mButtonCreateBall:Button;
       public var mButtonCreatePolygon:Button;
       public var mButtonCreatePolyline:Button;
       public var mButtonCreateCamera:Button;
-      //public var mButtonCreateField:Button;
+      public var mButtonCreateTextButton:Button;
       
       public var mButton_CreateCondition:Button;
       public var mButton_CreateConditionDoor:Button;
@@ -1134,15 +1132,16 @@ package editor {
          // others
             
             case mButtonCreateText:
-               SetCurrentCreateMode ( new ModeCreateText (this) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateText));
                break;
-            
-            case mButtonCreateCravityController:
-               SetCurrentCreateMode ( new ModeCreateGravityController (this) );
+            case mButtonCreateGravityController:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateGravityController));
                break;
-            
             case mButtonCreateCamera:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityCamera) );
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityCamera));
+               break;
+            case mButtonCreateTextButton:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTextButton));
                break;
             
           // logic
@@ -1288,7 +1287,7 @@ package editor {
          
       // creat ...
          
-         //mButtonCreateCravityController.enabled = mEditorWorld.GetNumEntities (Filters.IsGravityControllerEntity) == 0;
+         //mButtonCreateGravityController.enabled = mEditorWorld.GetNumEntities (Filters.IsGravityControllerEntity) == 0;
          //mButtonCreateCamera           .enabled = mEditorWorld.GetNumEntities (Filters.IsCameraEntity) == 0;
          
       // file ...
@@ -1667,6 +1666,7 @@ package editor {
       public var ShowSpringSettingDialog:Function = null;
       public var ShowDistanceSettingDialog:Function = null;
       public var ShowShapeTextSettingDialog:Function = null;
+      public var ShowShapeTextButtonSettingDialog:Function = null;
       public var ShowShapeGravityControllerSettingDialog:Function = null;
       public var ShowCameraSettingDialog:Function = null;
       
@@ -1796,7 +1796,7 @@ package editor {
             values.mDrawBackground = shape.IsDrawBackground ();
             values.mBorderColor = shape.GetBorderColor ();
             values.mBorderThickness = shape.GetBorderThickness ();
-            values.mBackgroundColor =shape.GetFilledColor ();
+            values.mBackgroundColor = shape.GetFilledColor ();
             values.mTransparency = shape.GetTransparency ();
             values.mBorderTransparency = shape.GetBorderTransparency ();
             
@@ -1864,14 +1864,38 @@ package editor {
                if (entity is EntityShapeText)
                {
                   values.mText = (shape as EntityShapeText).GetText ();
-                  values.mAutofitWidth = (shape as EntityShapeText).IsAutofitWidth ();
                   
                   values.mTextColor = (shape as EntityShapeText).GetTextColor ();
+                  values.mFontSize = (shape as EntityShapeText).GetFontSize ();
+                  values.mIsBold = (shape as EntityShapeText).IsBold ();
+                  values.mIsItalic = (shape as EntityShapeText).IsItalic ();
+                  
+                  values.mWordWrap = (shape as EntityShapeText).IsWordWrap ();
+                  values.mAdaptiveBackgroundSize = (shape as EntityShapeText).IsAdaptiveBackgroundSize ();
                   
                   values.mWidth  = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfWidth ()), 6);
                   values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfHeight ()), 6);
                   
-                  ShowShapeTextSettingDialog (values, SetEntityProperties);
+                  if (entity is EntityShapeTextButton)
+                  {
+                     values.mUsingHandCursor = (shape as EntityShapeTextButton).UsingHandCursor ();
+                     
+                     var moveOverShape:EntityShape = (shape as EntityShapeTextButton).GetMouseOverShape ();
+                     values.mMouseOverValues = new Object ();
+                     values.mMouseOverValues.mDrawBorder = moveOverShape.IsDrawBorder ();
+                     values.mMouseOverValues.mDrawBackground = moveOverShape.IsDrawBackground ();
+                     values.mMouseOverValues.mBorderColor = moveOverShape.GetBorderColor ();
+                     values.mMouseOverValues.mBorderThickness = moveOverShape.GetBorderThickness ();
+                     values.mMouseOverValues.mBackgroundColor = moveOverShape.GetFilledColor ();
+                     values.mMouseOverValues.mTransparency = moveOverShape.GetTransparency ();
+                     values.mMouseOverValues.mBorderTransparency = moveOverShape.GetBorderTransparency ();
+                     
+                     ShowShapeTextButtonSettingDialog (values, SetEntityProperties);
+                  }
+                  else
+                  {
+                     ShowShapeTextSettingDialog (values, SetEntityProperties);
+                  }
                }
                else if (entity is EntityShapeGravityController)
                {
@@ -2597,12 +2621,8 @@ package editor {
          
          //var point:Point = DisplayObjectUtil.LocalToLocal ( (event.target as DisplayObject).parent, this, new Point (event.localX, event.localY) );
          var point:Point = globalToLocal ( new Point (event.stageX, event.stageY) );
-         //var rect:Rectangle = new Rectangle (0, 0, parent.width, parent.height);
-         var rect:Rectangle = new Rectangle (0, 0, width, height);
          
-         var isOut:Boolean = ! rect.containsPoint (point);
-         
-         if ( ! isOut )
+         if ( new Rectangle (1, 1, width - 1, height - 1).containsPoint (point) )
             return;
          
          if (IsCreating ())
@@ -2899,22 +2919,15 @@ package editor {
          return spring;
       }
       
-      public function CreateText (left:Number, top:Number, right:Number, bottom:Number):EntityShapeText
+      public function CreateText (options:Object = null):EntityShapeText
       {
-         var startPoint:Point = new Point (left, top);
-         var endPoint  :Point = new Point (right,bottom);
-         
-         var centerX:Number = (startPoint.x + endPoint.x) * 0.5;
-         var centerY:Number = (startPoint.y + endPoint.y) * 0.5;
-         
-         var halfWidth :Number = (startPoint.x - endPoint.x) * 0.5; if (halfWidth  < 0) halfWidth  = - halfWidth;
-         var halfHeight:Number = (startPoint.y - endPoint.y) * 0.5; if (halfHeight < 0) halfHeight = - halfHeight;
-         
          var shapeText:EntityShapeText = mEditorWorld.CreateEntityShapeText ();
          if (shapeText == null)
             return null;
          
-         shapeText.SetPosition (centerX, centerY);
+         var halfWidth :Number = 50;
+         var halfHeight:Number = 25;
+         
          shapeText.SetHalfWidth  (halfWidth);
          shapeText.SetHalfHeight (halfHeight);
          
@@ -2926,18 +2939,27 @@ package editor {
          return shapeText;
       }
       
-      public function CreateGravityController (centerX:Number, centerY:Number, radius:Number):EntityShapeGravityController
+      public function CreateEntityTextButton (options:Object = null):EntityShapeTextButton
       {
-         var centerPoint:Point = new Point (centerX, centerY);
-         var edgePoint  :Point = new Point (centerX + radius, centerY);
+         var button:EntityShapeTextButton = mEditorWorld.CreateEntityShapeTextButton ();
+         if (button == null)
+            return null;
          
-         radius = Point.distance (centerPoint, edgePoint);
+         button.SetStatic (true);
          
+         SetTheOnlySelectedEntity (button);
+         
+         return button;
+      }
+      
+      public function CreateGravityController (options:Object = null):EntityShapeGravityController
+      {
          var gController:EntityShapeGravityController = mEditorWorld.CreateEntityShapeGravityController ();
          if (gController == null)
             return null;
          
-         gController.SetPosition (centerX, centerY);
+         var radius:Number = 50;
+         
          gController.SetRadius (radius);
          
          gController.SetStatic (true);
@@ -3649,9 +3671,32 @@ package editor {
                   (shape as EntityShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
                   (shape as EntityShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
                   
+                  (shape as EntityShapeText).SetWordWrap (params.mWordWrap);
+                  (shape as EntityShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
+                  
                   (shape as EntityShapeText).SetText (params.mText);
-                  (shape as EntityShapeText).SetAutofitWidth (params.mAutofitWidth);
                   (shape as EntityShapeText).SetTextColor (params.mTextColor);
+                  (shape as EntityShapeText).SetFontSize (params.mFontSize);
+                  (shape as EntityShapeText).SetBold (params.mIsBold);
+                  (shape as EntityShapeText).SetItalic (params.mIsItalic);
+                  
+                  if (entity is EntityShapeTextButton)
+                  {
+                     (shape as EntityShapeTextButton).SetUsingHandCursor (params.mUsingHandCursor);
+                     
+                     var moveOverShape:EntityShape = (shape as EntityShapeTextButton).GetMouseOverShape ();
+                     moveOverShape.SetDrawBorder (params.mMouseOverValues.mDrawBorder);
+                     moveOverShape.SetTransparency (params.mMouseOverValues.mTransparency);
+                     moveOverShape.SetDrawBorder (params.mMouseOverValues.mDrawBorder);
+                     moveOverShape.SetBorderColor (params.mMouseOverValues.mBorderColor);
+                     moveOverShape.SetBorderThickness (params.mMouseOverValues.mBorderThickness);
+                     moveOverShape.SetDrawBackground (params.mMouseOverValues.mDrawBackground);
+                     moveOverShape.SetFilledColor (params.mMouseOverValues.mBackgroundColor);
+                     moveOverShape.SetBorderTransparency (params.mMouseOverValues.mBorderTransparency);
+                   }
+                  else
+                  {
+                  }
                }
                else if (entity is EntityShapeGravityController)
                {

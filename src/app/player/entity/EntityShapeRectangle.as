@@ -106,34 +106,9 @@ package player.entity {
             
             var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth) + 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
             var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight) + 0.5;
-            var displayWidth :Number = 2.0 * displayHalfWidth;
-            var displayHeight:Number = 2.0 * displayHalfHeight;
             var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
-         
-            GraphicsUtil.ClearAndDrawRect (
-                     mBackgroundShape,
-                     - displayHalfWidth,
-                     - displayHalfHeight,
-                     displayWidth,
-                     displayHeight,
-                     mBorderColor,
-                     -1, // not draw border
-                     true, // draw background
-                     GetFilledColor ()
-                  );
             
-            GraphicsUtil.ClearAndDrawRect (
-                     mBorderShape,
-                     - displayHalfWidth,
-                     - displayHalfHeight,
-                     displayWidth,
-                     displayHeight,
-                     mBorderColor,
-                     displayBorderThickness, // draw border
-                     false, // not draw background
-                     0x0, // invald bg color
-                     mIsRoundCornors
-                  );
+            RebuildBackgroundAndBorder (displayHalfWidth, displayHalfHeight, displayBorderThickness);
          }
          
          if (mNeedUpdateAppearanceProperties)
@@ -146,7 +121,38 @@ package player.entity {
             mBorderShape.alpha = GetBorderTransparency () * 0.01;
          }
       }
-     
+      
+      protected function RebuildBackgroundAndBorder (displayHalfWidth:Number, displayHalfHeight:Number, displayBorderThickness:Number):void
+      {
+         var displayWidth :Number = displayHalfWidth +  displayHalfWidth;
+         var displayHeight:Number = displayHalfHeight +  displayHalfHeight;
+         
+         GraphicsUtil.ClearAndDrawRect (
+                  mBackgroundShape,
+                  - displayHalfWidth,
+                  - displayHalfHeight,
+                  displayWidth,
+                  displayHeight,
+                  mBorderColor,
+                  -1, // not draw border
+                  true, // draw background
+                  GetFilledColor ()
+               );
+         
+         GraphicsUtil.ClearAndDrawRect (
+                  mBorderShape,
+                  - displayHalfWidth,
+                  - displayHalfHeight,
+                  displayWidth,
+                  displayHeight,
+                  mBorderColor,
+                  displayBorderThickness, // draw border
+                  false, // not draw background
+                  0x0, // invald bg color
+                  mIsRoundCornors
+               );
+      }
+      
 //=============================================================
 //   physics proxy
 //=============================================================

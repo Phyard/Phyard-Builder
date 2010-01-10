@@ -18,6 +18,7 @@ package editor.world {
    import editor.entity.EntityShapePolygon;
    import editor.entity.EntityShapePolyline;
    import editor.entity.EntityShapeText;
+   import editor.entity.EntityShapeTextButton;
    import editor.entity.EntityShapeGravityController;
    import editor.entity.EntityUtilityCamera;
    
@@ -662,6 +663,17 @@ package editor.world {
          addChild (text);
          
          return text;
+      }
+      
+      public function CreateEntityShapeTextButton ():EntityShapeTextButton
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
+         var button:EntityShapeTextButton = new EntityShapeTextButton (this);
+         addChild (button);
+         
+         return button;
       }
       
       public function CreateEntityShapeGravityController ():EntityShapeGravityController

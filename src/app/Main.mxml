@@ -76,8 +76,8 @@
                            <mx:Button id="Button_CreateJoint_Distance" toolTip="Create Distance Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_distance.png')" downIcon="@Embed('res/create/joint-sel_distance.png')" overIcon="@Embed('res/create/joint_distance.png')" selectedUpIcon="@Embed('res/create/joint-sel_distance.png')" selectedOverIcon="@Embed('res/create/joint-sel_distance.png')" selectedDownIcon="@Embed('res/create/joint_distance.png')"   />
                            <mx:Spacer height="10"/>
                            <mx:Button id="Button_CreateBox_Bomb" toolTip="Create Bomb Box" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/box_bomb.png')" downIcon="@Embed('res/create/box-sel_bomb.png')" overIcon="@Embed('res/create/box_bomb.png')" selectedUpIcon="@Embed('res/create/box-sel_bomb.png')" selectedOverIcon="@Embed('res/create/box-sel_bomb.png')" selectedDownIcon="@Embed('res/create/box_bomb.png')"   />
-                           <mx:Button id="Button_CreateText" toolTip="Create Text" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/text.png')" downIcon="@Embed('res/create/text-sel.png')" overIcon="@Embed('res/create/text.png')" selectedUpIcon="@Embed('res/create/text-sel.png')" selectedOverIcon="@Embed('res/create/text-sel.png')" selectedDownIcon="@Embed('res/create/text.png')"   />
                            <mx:Button id="Button_CreateCamera" toolTip="Create Camera" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/create/camera-disabled.png')"  upIcon="@Embed('res/create/camera.png')" downIcon="@Embed('res/create/camera-sel.png')" overIcon="@Embed('res/create/camera.png')" selectedUpIcon="@Embed('res/create/camera-sel.png')" selectedOverIcon="@Embed('res/create/camera-sel.png')" selectedDownIcon="@Embed('res/create/camera.png')"   />
+                           <mx:Button id="Button_CreateText" toolTip="Create Text" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/text.png')" downIcon="@Embed('res/create/text-sel.png')" overIcon="@Embed('res/create/text.png')" selectedUpIcon="@Embed('res/create/text-sel.png')" selectedOverIcon="@Embed('res/create/text-sel.png')" selectedDownIcon="@Embed('res/create/text.png')"   />
                            <mx:Spacer height="10"/>
                         </mx:Box>
                         <mx:Box direction="vertical" borderStyle="none" width="39" height="100%"
@@ -91,9 +91,7 @@
                            <mx:Spacer height="10"/>
                            <mx:Button id="Button_CreateBall_Bomb" toolTip="Create Bomb Ball" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/ball_bomb.png')" downIcon="@Embed('res/create/ball-sel_bomb.png')" overIcon="@Embed('res/create/ball_bomb.png')" selectedUpIcon="@Embed('res/create/ball-sel_bomb.png')" selectedOverIcon="@Embed('res/create/ball-sel_bomb.png')" selectedDownIcon="@Embed('res/create/ball_bomb.png')"   />
                            <mx:Button id="Button_CreateGravityController" toolTip="Create Cravity Controller" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/create/gravity-controller-disabled.png')" selectedDisabledIcon="@Embed('res/create/gravity-controller-disabled.png')" upIcon="@Embed('res/create/gravity-controller.png')" downIcon="@Embed('res/create/gravity-controller-sel.png')" overIcon="@Embed('res/create/gravity-controller.png')" selectedUpIcon="@Embed('res/create/gravity-controller-sel.png')" selectedOverIcon="@Embed('res/create/gravity-controller-sel.png')" selectedDownIcon="@Embed('res/create/gravity-controller.png')"   />
-                           <!--
-                           <mx:Button id="Button_CreateField" toolTip="Create Field" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/field.png')" downIcon="@Embed('res/create/field-sel.png')" overIcon="@Embed('res/create/field.png')" selectedUpIcon="@Embed('res/create/field-sel.png')" selectedOverIcon="@Embed('res/create/field-sel.png')" selectedDownIcon="@Embed('res/create/field.png')"   />
-                           -->
+                           <mx:Button id="Button_CreateTextButton" toolTip="Create Text Button" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/text-button.png')" downIcon="@Embed('res/create/text-button-sel.png')" overIcon="@Embed('res/create/text-button.png')" selectedUpIcon="@Embed('res/create/text-button-sel.png')" selectedOverIcon="@Embed('res/create/text-button-sel.png')" selectedDownIcon="@Embed('res/create/text-button.png')"   />
                            <mx:Spacer height="36"/>
                            <mx:Spacer height="10"/>
                         </mx:Box>
@@ -336,23 +334,19 @@
                MainView.mButtonCreatePolylineUninfected     = Button_CreatePolyline_Uninfected;
                MainView.mButtonCreatePolylineDontinfect     = Button_CreatePolyline_Dontinfect;
                
-               //MainView.mButtonCreateComponentT  = Button_CreateComponent_T
-               //MainView.mButtonCreateComponentV = Button_CreateComponent_V;
-               //MainView.mButtonCreateComponent7   = Button_CreateComponent_7;
-               
                MainView.mButtonCreateJointHinge  = Button_CreateJoint_Hinge
                MainView.mButtonCreateJointSlider = Button_CreateJoint_Slider;
                MainView.mButtonCreateJointDistance = Button_CreateJoint_Distance;
                MainView.mButtonCreateJointSpring = Button_CreateJoint_Spring;
                
                MainView.mButtonCreateText = Button_CreateText;
-               MainView.mButtonCreateCravityController = Button_CreateGravityController;
+               MainView.mButtonCreateGravityController = Button_CreateGravityController;
                MainView.mButtonCreateBall = Button_CreateBall;
                MainView.mButtonCreateBox = Button_CreateBox;
                MainView.mButtonCreatePolygon = Button_CreatePolygon;
                MainView.mButtonCreatePolyline = Button_CreatePolyline;
                MainView.mButtonCreateCamera = Button_CreateCamera;
-               //MainView.mButtonCreateField = Button_CreateField;
+               MainView.mButtonCreateTextButton = Button_CreateTextButton;
                
                MainView.mButton_CreateCondition = Button_CreateCondition;
                MainView.mButton_CreateConditionDoor = Button_CreateConditionDoor;
@@ -409,10 +403,6 @@
                Button_CreatePolyline_Uninfected.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreatePolyline_Dontinfect.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
-               //Button_CreateComponent_T.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateComponent_V.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateComponent_7.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               
                Button_CreateJoint_Hinge.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Slider.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Distance.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -425,7 +415,7 @@
                Button_CreatePolygon.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreatePolyline.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateCamera.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               //Button_CreateField.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateTextButton.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                Button_CreateCondition.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateConditionDoor.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -506,6 +496,7 @@
                MainView.ShowShapePolylineSettingDialog = ShowShapePolylineSettingDialog;
                
                MainView.ShowShapeTextSettingDialog = ShowShapeTextSettingDialog;
+               MainView.ShowShapeTextButtonSettingDialog = ShowShapeTextButtonSettingDialog;
                MainView.ShowShapeGravityControllerSettingDialog = ShowShapeGravityControllerSettingDialog;
                
                MainView.ShowHingeSettingDialog = ShowHingeSettingDialog;
@@ -755,6 +746,18 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:ShapeTextSettingDialog = new ShapeTextSettingDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowShapeTextButtonSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:ShapeTextButtonSettingDialog = new ShapeTextButtonSettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (OnCloseDialog);

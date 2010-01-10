@@ -30,6 +30,7 @@ package common {
    import player.entity.SubEntityJointAnchor;
    
    import player.entity.EntityShape_Text;
+   import player.entity.EntityShape_TextButton;
    import player.entity.EntityShape_Camera;
    import player.entity.EntityShape_GravityController;
    import player.entity.EntityShape_CircleBomb;
@@ -117,28 +118,21 @@ package common {
          // for history reason, entities are packaged by children order in editor world.
          // so the appearId is also the appearance order id
          
-         for (createId = 0; createId < numEntities; ++ createId)
+         // instance entites by appearance layer order, entities can register their visual elements in constructor
+         
+         for (appearId = 0; appearId < numEntities; ++ appearId)
          {
+            createId = worldDefine.mEntityAppearanceOrder [appearId];
             entityDefine = entityDefineArray [createId];
-            
-            appearId = worldDefine.mEntityAppearanceOrder [createId];
             
             // >> starts from version 1.01
             entityDefine.mWorldDefine = worldDefine;
-            //entityDefine.mEntityIndexInEditor = appearId; // replaced by creation order id from v1.07
             // <<
             
             //>>from v1.07
             entityDefine.mAppearanceOrderId = appearId;
             entityDefine.mCreationOrderId = createId;
             //<<
-         }
-         
-         // instance entites by appearance layer order, entities can register their visual elements in constructor
-         
-         for (createId = 0; createId < numEntities; ++ createId)
-         {
-            entityDefine = entityDefineArray [createId];
             
             entity = null;
             
@@ -169,6 +163,9 @@ package common {
                
                case Define.EntityType_ShapeText:
                   entity = new EntityShape_Text (playerWorld);
+                  break;
+               case Define.EntityType_ShapeTextButton:
+                  entity = new EntityShape_TextButton (playerWorld);
                   break;
                case Define.EntityType_UtilityCamera:
                   entity = new EntityShape_Camera (playerWorld);
@@ -604,7 +601,7 @@ package common {
                   if (entityDefine.mEntityType == Define.EntityType_ShapeText)
                   {
                      entityDefine.mText = byteArray.readUTF ();
-                     entityDefine.mAutofitWidth = byteArray.readByte ();
+                     entityDefine.mWordWrap = byteArray.readByte ();
                      
                      entityDefine.mHalfWidth = byteArray.readFloat ();
                      entityDefine.mHalfHeight = byteArray.readFloat ();
@@ -943,8 +940,8 @@ package common {
          // ...
          if (worldDefine.mVersion >= 0x0107)
          {
-            xml.EntityCreationOrder = <EntityCreationOrder />;
-            xml.EntityCreationOrder.@entity_indices = EntityIdArray2IndicesString (worldDefine.mEntityAppearanceOrder);
+            xml.EntityAppearingOrder = <EntityAppearingOrder />;
+            xml.EntityAppearingOrder.@entity_indices = EntityIdArray2IndicesString (worldDefine.mEntityAppearanceOrder);
          }
          
          // ...
@@ -1268,7 +1265,10 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_ShapeText)
                {
                   element.@text = entityDefine.mText;
-                  element.@autofit_width = entityDefine.mAutofitWidth ? 1 : 0;
+                  if (worldDefine.mVersion < 0x0108)
+                     element.@autofit_width = entityDefine.mWordWrap ? 1 : 0;
+                  else
+                     element.@word_wrap = entityDefine.mWordWrap ? 1 : 0;
                   
                   element.@half_width = entityDefine.mHalfWidth;
                   element.@half_height = entityDefine.mHalfHeight;

@@ -35,10 +35,18 @@ package player.entity {
          {
             if (entityDefine.mText != undefined)
                SetText (entityDefine.mText);
-            if (entityDefine.mAutofitWidth != undefined)
-               SetAutofitWidth (entityDefine.mAutofitWidth);
+            if (entityDefine.mWordWrap != undefined)
+               SetWordWrap (entityDefine.mWordWrap);
             if (entityDefine.mTextColor != undefined)
                SetTextColor (entityDefine.mTextColor);
+            if (entityDefine.mFontSize != undefined)
+               SetFontSize (entityDefine.mFontSize);
+            if (entityDefine.mIsBold != undefined)
+               SetBold (entityDefine.mIsBold);
+            if (entityDefine.mIsItalic != undefined)
+               SetItalic (entityDefine.mIsItalic);
+            if (entityDefine.mAdaptiveBackgroundSize != undefined)
+               SetAdaptiveBackgroundSize (entityDefine.mAdaptiveBackgroundSize);
             
             // force 50
             SetTransparency (50);
@@ -50,8 +58,12 @@ package player.entity {
 //=============================================================
       
       private var mText:String = "";
-      private var mAutofitWidth:Boolean = true;
+      private var mAdaptiveBackgroundSize:Boolean = false;
+      private var mWordWrap:Boolean = true;
       private var mTextColor:uint = 0x000000;
+      private var mFontSize:uint = 10;
+      private var mIsBold:Boolean = false;
+      private var mIsItalic:Boolean = false;
       
       public function GetText ():String
       {
@@ -67,16 +79,16 @@ package player.entity {
          {
             mText = text;
             
-            mNeedRebuildAppearanceObjects = true;
+            mNeedRebuildTextSprite = true;
             DelayUpdateAppearance ();
          }
       }
       
-      public function SetAutofitWidth (auto:Boolean):void
+      public function SetWordWrap (auto:Boolean):void
       {
-         if (mAutofitWidth != auto)
+         if (mWordWrap != auto)
          {
-            mAutofitWidth = auto;
+            mWordWrap = auto;
             
             mNeedRebuildAppearanceObjects = true;
             DelayUpdateAppearance ();
@@ -93,6 +105,46 @@ package player.entity {
          mTextColor = color;
       }
       
+      public function GetFontSize ():uint
+      {
+         return mFontSize;
+      }
+      
+      public function SetFontSize (size:uint):void
+      {
+         mFontSize = size;
+      }
+      
+      public function IsBold ():Boolean
+      {
+         return mIsBold;
+      }
+      
+      public function SetBold (bold:Boolean):void
+      {
+         mIsBold = bold;
+      }
+      
+      public function IsItalic ():Boolean
+      {
+         return mIsItalic;
+      }
+      
+      public function SetItalic (italic:Boolean):void
+      {
+         mIsItalic = italic;
+      }
+      
+      public function IsAdaptiveBackgroundSize ():Boolean
+      {
+         return mAdaptiveBackgroundSize;
+      }
+      
+      public function SetAdaptiveBackgroundSize (adapt:Boolean):void
+      {
+         mAdaptiveBackgroundSize = adapt;
+      }
+      
 //=============================================================
 //   update
 //=============================================================
@@ -105,58 +157,78 @@ package player.entity {
 //   appearance
 //=============================================================
       
-      private var mTextBitmap:Bitmap = new Bitmap ();
+      protected var mTextBitmap:Bitmap = new Bitmap ();
+      protected var mNeedRebuildTextSprite:Boolean = false;
       
       override public function UpdateAppearance ():void
       {
-         //mAppearanceObjectsContainer.visible = mVisible
-         //mAppearanceObjectsContainer.alpha = mAlpha; 
-         
-         var needRebuildAppearanceObjects:Boolean = mNeedRebuildAppearanceObjects;
-         //var needUpdateAppearanceProperties:Boolean = mNeedRebuildAppearanceProperties;
-         
-         super.UpdateAppearance ();
-         
-         if (needRebuildAppearanceObjects)
+         if (mNeedRebuildTextSprite)
          {
-            var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
-            //var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
-            var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
+            mNeedRebuildTextSprite = false;
             
-            var infoText:String = mText;
-            
-            if (infoText == null)
-            {
-               infoText = "";
-            }
-            else
-            {
-               infoText = TextUtil.GetHtmlEscapedText (infoText);
-               infoText = TextUtil.ParseWikiString (infoText);
-            }
-            
-            if (infoText.length == 0)
-            {
-               mTextBitmap.bitmapData = null;
-            }
-            else
-            {
-               var textFiled:TextFieldEx;
-               if (mAutofitWidth)
-                  textFiled = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
-               else
-                  textFiled = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + infoText + "</font>", false, 0xFFFFFF, mTextColor);
-               
-               DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textFiled, mTextBitmap);
-            }
-            
-            mTextBitmap.x = - 0.5 * mTextBitmap.width;
-            mTextBitmap.y = - 0.5 * mTextBitmap.height;
+            RebuildTextBitmap ();
          }
          
+         AdjustBackgroundSize ();
          
+         super.UpdateAppearance ();
       }
       
+      protected function AdjustBackgroundSize ():void
+      {
+         if (IsAdaptiveBackgroundSize ())
+         {
+            SetHalfWidth  (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.width + 5));
+            SetHalfHeight (mWorld.GetCoordinateSystem ().D2P_Length (0.5 * mTextBitmap.height + 5));
+            
+            mNeedRebuildAppearanceObjects = true;
+         }
+      }
+      
+      protected function RebuildTextBitmap ():void
+      {
+         var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
+         //var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
+         var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
+         
+         var infoText:String = GetDisplayText ();
+         
+         if (infoText == null)
+         {
+            mTextBitmap.bitmapData = null;
+         }
+         else
+         {
+            var textFiled:TextFieldEx;
+            if (mWordWrap && (! mAdaptiveBackgroundSize))
+               textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor, true, displayHalfWidth * 2 - 10 - displayBorderThickness);
+            else
+               textFiled = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, mTextColor);
+            
+            DisplayObjectUtil.CreateCacheDisplayObjectInBitmap (textFiled, mTextBitmap);
+         }
+         
+         mTextBitmap.x = - 0.5 * mTextBitmap.width;
+         mTextBitmap.y = - 0.5 * mTextBitmap.height;
+      }
+      
+      protected function GetDisplayText ():String
+      {
+         var infoText:String = mText;
+         
+         if (infoText == null)
+            return null;
+         
+         infoText = TextUtil.GetHtmlEscapedText (infoText);
+         infoText = TextUtil.ParseWikiString (infoText);
+         
+         if (mIsBold)
+            infoText = "<b>" + infoText + "</b>";
+         if (mIsItalic)
+            infoText = "<i>" + infoText + "</i>";
+         
+         return "<font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font>";;
+      }
    }
    
 }

@@ -128,7 +128,7 @@ package editor.trigger {
                   case ValueSpaceTypeDefine.ValueSpace_Input:
                      vi = ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
                      break;
-                  case ValueSpaceTypeDefine.ValueSpace_Return:
+                  case ValueSpaceTypeDefine.ValueSpace_Output:
                      vi = ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
                      break;
                   default:
@@ -159,7 +159,7 @@ package editor.trigger {
                   case ValueSpaceTypeDefine.ValueSpace_Input:
                      vi = ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
                      break;
-                  case ValueSpaceTypeDefine.ValueSpace_Return:
+                  case ValueSpaceTypeDefine.ValueSpace_Output:
                      vi = ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
                      break;
                   default:

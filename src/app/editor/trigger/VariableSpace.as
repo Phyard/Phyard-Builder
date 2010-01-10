@@ -126,15 +126,15 @@ package editor.trigger {
          return false;
       }
       
-      public function GetVariableSelectListDataProviderByValueType (valueType:int):Array
+      public function GetVariableSelectListDataProviderByValueType (valueType:int, validVariableIndexes:Array = null):Array
       {
          var entity_list:Array = new Array ();
          
-            var item:Object = new Object ();
-            item.label = "(null)"; // mNullVariableInstance.GetLongName ();
-            item.mVariableIndex = -1;
-            
-            entity_list.push (item);
+         var item:Object = new Object ();
+         item.label = "(null)"; // mNullVariableInstance.GetLongName ();
+         item.mVariableIndex = -1;
+         
+         entity_list.push (item);
          
          var vi:VariableInstance;
          
@@ -144,6 +144,12 @@ package editor.trigger {
             
             if (vi.GetValueType () != valueType)
                continue;
+            
+            if (validVariableIndexes != null)
+            {
+               if (validVariableIndexes.indexOf (i) < 0)
+                  continue;
+            }
             
             item = new Object ();
             item.label = vi.GetLongName ();

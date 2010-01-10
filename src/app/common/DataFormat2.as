@@ -1536,6 +1536,9 @@ package common {
                   if (worldDefine.mVersion < 0x0108)
                   {
                      entityDefine.mMaxMotorTorque = Define.kDefaultCoordinateSystem.P2D_Torque (entityDefine.mMaxMotorTorque);
+                     
+                     // anchor visible
+                     worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex].mIsVisible = entityDefine.mIsVisible;
                   }
                   
                   entityDefine.mMaxMotorTorque = ValueAdjuster.Number2Precision (entityDefine.mMaxMotorTorque, 6);
@@ -1549,6 +1552,10 @@ package common {
                   if (worldDefine.mVersion < 0x0108)
                   {
                      entityDefine.mMaxMotorForce = Define.kDefaultCoordinateSystem.P2D_ForceMagnitude (entityDefine.mMaxMotorForce);
+                     
+                     // anchor visilbe
+                     worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex].mIsVisible = entityDefine.mIsVisible;
+                     worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex].mIsVisible = entityDefine.mIsVisible;
                   }
                   
                   entityDefine.mMaxMotorForce = ValueAdjuster.Number2Precision (entityDefine.mMaxMotorForce, 6);
@@ -1556,6 +1563,13 @@ package common {
                else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
                {
                   entityDefine.mBreakDeltaLength = ValueAdjuster.Number2Precision (entityDefine.mBreakDeltaLength, 6);
+                  
+                  if (worldDefine.mVersion < 0x0108)
+                  {
+                     // anchor visilbe
+                     worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex].mIsVisible = entityDefine.mIsVisible;
+                     worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex].mIsVisible = entityDefine.mIsVisible;
+                  }
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
                {
@@ -1565,6 +1579,13 @@ package common {
                   
                   entityDefine.mFrequency = ValueAdjuster.Number2Precision (entityDefine.mFrequency, 6);
                   entityDefine.mBreakExtendedLength = ValueAdjuster.Number2Precision (entityDefine.mBreakExtendedLength, 6);
+                  
+                  if (worldDefine.mVersion < 0x0108)
+                  {
+                     // anchor visilbe
+                     worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex].mIsVisible = entityDefine.mIsVisible;
+                     worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex].mIsVisible = entityDefine.mIsVisible;
+                  }
                }
             }
          }

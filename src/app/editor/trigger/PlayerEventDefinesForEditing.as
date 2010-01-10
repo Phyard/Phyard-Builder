@@ -1,6 +1,9 @@
 
 package editor.trigger {
    
+   import editor.entity.*;
+   import editor.trigger.entity.*;
+   
    import common.trigger.ValueTypeDefine;
    import common.trigger.CoreEventIds;
    
@@ -59,36 +62,36 @@ package editor.trigger {
          
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "OnJointReachLowerLimit",
                     [
-                       new VariableDefinitionEntity ("Joint"), 
+                       new VariableDefinitionEntity ("Joint", null, EntityJoint.prototype), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit, "OnJointReachUpperLimit", "OnJointReachUpperLimit",
                     [
-                       new VariableDefinitionEntity ("Joint"), 
+                       new VariableDefinitionEntity ("Joint", null, EntityJoint.prototype), 
                     ]);
          
       // ...
          
          //RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape, "OnSensorContainsPhysicsShape", "When shape 1 containing the center of shape 2",
          //           [
-         //              new VariableDefinitionEntity ("Shape 1"), 
-         //              new VariableDefinitionEntity ("Shape 2"), 
+         //              new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
+         //              new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype), 
          //              new VariableDefinitionNumber ("Seconds") 
          //           ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, "OnTwoPhysicsShapesBeginContacting", "When 2 physics shapes start contacting",
                     [
-                       new VariableDefinitionEntity ("Shape 1"), 
-                       new VariableDefinitionEntity ("Shape 2")
+                       new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
+                       new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype)
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, "OnTwoPhysicsShapesKeepContacting", "When 2 physics shapes are contacting with each other",
                     [
-                       new VariableDefinitionEntity ("Shape 1"), 
-                       new VariableDefinitionEntity ("Shape 2"), 
+                       new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
+                       new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype), 
                        new VariableDefinitionNumber ("Seconds") 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, "OnTwoPhysicsShapesEndContacting", "When 2 physics shapes end contacting",
                     [
-                       new VariableDefinitionEntity ("Shape 1"), 
-                       new VariableDefinitionEntity ("Shape 2")
+                       new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
+                       new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype)
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityPairTimer, "OnEntityPairTimer", "OnEntityPairTimer",
                     [
@@ -101,7 +104,7 @@ package editor.trigger {
          
          RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseDown, "OnPhysicsShapeMouseDown", "Presss mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Physics Shape"), 
+                        new VariableDefinitionEntity ("The Physics Shape", null, EntityShape.prototype), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -111,7 +114,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseUp, "OnPhysicsShapeMouseUp", "Release mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Physics Shape"), 
+                        new VariableDefinitionEntity ("The Physics Shape", null, EntityShape.prototype), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -121,7 +124,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseClick, "OnShapeMouseClick", "Click mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape"), 
+                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -131,7 +134,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseDown, "OnShapeMouseDown", "Press mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape"), 
+                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -141,7 +144,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseUp, "OnShapeMouseUp", "Release mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape"), 
+                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -151,7 +154,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseMove, "OnShapeMouseMove", "Move mouse in an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape"), 
+                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -161,7 +164,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseEnter, "OnShapeMouseEnter", "Mouse enters an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape"), 
+                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -171,7 +174,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseOut, "OnShapeMouseOut", "Move mouse out of an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape"), 
+                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
                         new VariableDefinitionNumber ("Local X"),
                         new VariableDefinitionNumber ("Local Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),

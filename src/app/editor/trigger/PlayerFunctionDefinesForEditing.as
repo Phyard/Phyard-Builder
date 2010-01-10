@@ -817,7 +817,7 @@ package editor.trigger {
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_as_task_package, "IsTaskSuccessed", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsTaskEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
                      ],
                      [
                              new VariableDefinitionBoolean ("Successed?"), 
@@ -825,13 +825,13 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskSuccessed, entity_as_task_package, "SetTaskSuccessed", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsTaskEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed, entity_as_task_package, "IsTaskFailed", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsTaskEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
                      ],
                      [
                              new VariableDefinitionBoolean ("Failed?"), 
@@ -839,13 +839,13 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskFailed, entity_as_task_package, "SetTaskFailed", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsTaskEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished, entity_as_task_package, "IsTaskUnfinished", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsTaskEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
                      ],
                      [
                              new VariableDefinitionBoolean ("Unfinished?"), 
@@ -853,13 +853,13 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskUnfinished, entity_as_task_package, "SetTaskUnfinished", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsTaskEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,  entity_as_task_package, "SetTaskStatus", 
                      [
-                        new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsTaskEntity}), 
+                        new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
                         new VariableDefinitionNumber ("Task Status (-1/0/1)"), 
                      ],
                      null
@@ -875,7 +875,7 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsVisible, entity_package, "IsVisible", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsVisualEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsVisualEntity}), 
                      ],
                      [
                              new VariableDefinitionBoolean ("Visible?"), 
@@ -883,14 +883,14 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetVisible, entity_package, "SetVisible", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsVisualEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsVisualEntity}), 
                              new VariableDefinitionBoolean ("Visible", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetAlpha, entity_package, "GetAlpha", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsVisualEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsVisualEntity}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Alpha"), 
@@ -898,14 +898,14 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetAlpha, entity_package, "SetAlpha", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.IsVisualEntity}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsVisualEntity}), 
                              new VariableDefinitionNumber ("Alpha (0-1)", null, {mMinValue: 0.0, mMaxValue:1.0}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetPosition, entity_package, "GetPosition", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.DoesEntityHasPosition}), 
                      ],
                      [
                              new VariableDefinitionNumber ("x"), 
@@ -914,7 +914,7 @@ package editor.trigger {
                   );
          //RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetPosition, entity_package, "SetPosition", 
          //            [
-         //                    new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
+         //                    new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.DoesEntityHasPosition}), 
          //                    new VariableDefinitionNumber ("x"), 
          //                    new VariableDefinitionNumber ("y"), 
          //            ],
@@ -922,7 +922,7 @@ package editor.trigger {
          //         );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians, entity_package, "GetRotationByRadians", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.DoesEntityHasPosition}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Rotation (radians)"), 
@@ -930,7 +930,7 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees, entity_package, "GetRotationByDegrees", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.DoesEntityHasPosition}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Rotation (degrees)"), 
@@ -939,15 +939,15 @@ package editor.trigger {
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Destroy, entity_package, "Destroy", 
                      [
-                             new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.CanEntityBeDestroyedManually}), 
+                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.CanEntityBeDestroyedManually}), 
                      ],
                      null
                   );
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Overlapped, entity_package, "Two Entities Overlapped?", 
                      [
-                        new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
-                        new VariableDefinitionEntity ("The Entity", null, {mFilter: Filters.DoesEntityHasPosition}), 
+                        new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.DoesEntityHasPosition}), 
+                        new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.DoesEntityHasPosition}), 
                         new VariableDefinitionNumber ("Tolerance Delta X", null, {mMinValue:0.0, mDefaultValue:0.8}), 
                         new VariableDefinitionNumber ("Tolerance Delta Y", null, {mMinValue:0.0, mDefaultValue:0.8}), 
                         new VariableDefinitionNumber ("Tolerance Delta Angle (degrees)", null, {mMinValue:0.0, mDefaultValue:6}), 
@@ -961,7 +961,7 @@ package editor.trigger {
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType, entity_shape_package, "Get C.I. Type", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      [
                              new VariableDefinitionNumber ("CI Type"), 
@@ -969,7 +969,7 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType, entity_shape_package, "Set C.I. Type", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                              new VariableDefinitionNumber ("CI Type"), 
                      ],
                      null
@@ -977,7 +977,7 @@ package editor.trigger {
          
           RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, entity_shape_package, "GetFilledColor", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
@@ -985,14 +985,14 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, entity_shape_package, "SetFilledColor", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, entity_shape_package, "GetFilledColorRGB", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Red"), 
@@ -1002,7 +1002,7 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB, entity_shape_package, "SetFilledColorRGB", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                              new VariableDefinitionNumber ("Red"), 
                              new VariableDefinitionNumber ("Green"), 
                              new VariableDefinitionNumber ("Blue"), 
@@ -1012,7 +1012,7 @@ package editor.trigger {
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled, entity_shape_package, "IsPhysicsEnabled", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      [
                              new VariableDefinitionBoolean ("Physics Enabled?"), 
@@ -1020,7 +1020,7 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory, entity_shape_package, "GetCollisionCategory", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category (ccat)"), 
@@ -1028,14 +1028,14 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory, entity_shape_package, "SetCollisionCategory", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                              new VariableDefinitionCollisionCategory ("Collision Category (ccat)"), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor, entity_shape_package, "IsSensor", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      [
                              new VariableDefinitionBoolean ("Is Sensor"), 
@@ -1043,7 +1043,7 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, entity_shape_package, "SetAsSensor", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                              new VariableDefinitionBoolean ("Is Sensor", null, {mDefaultValue: true}), 
                      ],
                      null
@@ -1066,7 +1066,7 @@ package editor.trigger {
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Teleport, entity_shape_package, "TeleportShape", 
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                              new VariableDefinitionNumber ("Target PositionX"), 
                              new VariableDefinitionNumber ("Target PositionY"), 
                              new VariableDefinitionNumber ("Delta Rotation"), 
@@ -1078,7 +1078,7 @@ package editor.trigger {
                   );
          //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, entity_shape_package, "CloneShape", 
          //            [
-         //                    new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}), 
+         //                    new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
          //                    new VariableDefinitionNumber ("Target PositionX"), 
          //                    new VariableDefinitionNumber ("Target PositionY"), 
          //                    new VariableDefinitionNumber ("Delta Rotation"), 
@@ -1090,34 +1090,34 @@ package editor.trigger {
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_package, "DetachShape", 
                      [
-                             new VariableDefinitionEntity ("The Shape to Be Detached", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("The Shape to Be Detached", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith, entity_shape_package, "AttachShapes", 
                      [
-                             new VariableDefinitionEntity ("Shape 1", null, {mFilter: Filters.IsShapeEntity}), 
-                             new VariableDefinitionEntity ("Shape 2", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("Shape 1", null, null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("Shape 2", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith, entity_shape_package, "DetachThenAttach", 
                      [
-                             new VariableDefinitionEntity ("Shape 1", null, {mFilter: Filters.IsShapeEntity}), 
-                             new VariableDefinitionEntity ("Shape 2", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("Shape 1", null, null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("Shape 2", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers, entity_shape_package, "BreakupBrothers", 
                      [
-                             new VariableDefinitionEntity ("One Borther Shape", null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionEntity ("One Borther Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      null
                   );
 	     
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_package, "BreakAllJoints",
                      [
-                        new VariableDefinitionEntity ("The Shape", null, {mFilter: Filters.IsShapeEntity}),  
+                        new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}),  
                      ],
                      null
                   );
@@ -1128,7 +1128,7 @@ package editor.trigger {
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetText, entity_text_package, "GetText", 
                      [
-                             new VariableDefinitionEntity ("Text Component", null, {mFilter: Filters.IsTextEntity}), 
+                             new VariableDefinitionEntity ("Text Component", null, null, {mFilter: Filters.IsTextEntity}), 
                      ],
                      [
                              new VariableDefinitionString ("New Text"), 
@@ -1136,21 +1136,21 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetText, entity_text_package, "SetText", 
                      [
-                             new VariableDefinitionEntity ("Text Component", null, {mFilter: Filters.IsTextEntity}), 
+                             new VariableDefinitionEntity ("Text Component", null, null, {mFilter: Filters.IsTextEntity}), 
                              new VariableDefinitionString ("New Text"), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendText, entity_text_package, "AppendText", 
                      [
-                             new VariableDefinitionEntity ("Text Component", null, {mFilter: Filters.IsTextEntity}), 
+                             new VariableDefinitionEntity ("Text Component", null, null, {mFilter: Filters.IsTextEntity}), 
                              new VariableDefinitionString ("Text to Append"), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendNewLine, entity_text_package, "AppendNewLine", 
                      [
-                             new VariableDefinitionEntity ("Text Component", null, {mFilter: Filters.IsTextEntity}), 
+                             new VariableDefinitionEntity ("Text Component", null, null, {mFilter: Filters.IsTextEntity}), 
                      ],
                      null
                   );
@@ -1159,7 +1159,7 @@ package editor.trigger {
          
         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimits, entity_joint_package, "SetHingeLimits", 
                      [
-                        new VariableDefinitionEntity ("The Hinge", null, {mFilter: Filters.IsHingeEntity}), 
+                        new VariableDefinitionEntity ("The Hinge", null, null, {mFilter: Filters.IsHingeEntity}), 
                         new VariableDefinitionNumber ("Lower Angle (degrees)"), 
                         new VariableDefinitionNumber ("Upper Angle (degrees)"), 
                      ],
@@ -1168,7 +1168,7 @@ package editor.trigger {
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderLimits, entity_joint_package, "SetSliderLimits", 
                      [
-                        new VariableDefinitionEntity ("The Slider", null, {mFilter: Filters.IsSliderEntity}), 
+                        new VariableDefinitionEntity ("The Slider", null, null, {mFilter: Filters.IsSliderEntity}), 
                         new VariableDefinitionNumber ("Lower Translation"), 
                         new VariableDefinitionNumber ("Upper Translation"), 
                      ],

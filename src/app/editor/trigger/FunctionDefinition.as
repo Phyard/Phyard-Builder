@@ -131,12 +131,20 @@ package editor.trigger {
          return mFunctionDeclaration.HasInputsWithValueTypeOf (valueType);
       }
       
-      public function HasInputsCompatibleWith (variableDefinition:VariableDefinition):Boolean
+      public function HasInputsSatisfy (variableDefinition:VariableDefinition):Boolean
       {
          if (mFunctionDeclaration == null)
             return false;
          
-         return mFunctionDeclaration.HasInputsCompatibleWith (variableDefinition);
+         return mFunctionDeclaration.HasInputsSatisfy (variableDefinition);
+      }
+      
+      public function HasOutputsSatisfiedBy (variableDefinition:VariableDefinition):Boolean
+      {
+         if (mFunctionDeclaration == null)
+            return false;
+         
+         return mFunctionDeclaration.HasOutputsSatisfiedBy (variableDefinition);
       }
    }
 }

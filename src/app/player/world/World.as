@@ -402,6 +402,12 @@ package player.world {
          
          mEntityList.InitEntities ();
          
+      //-----------------------------
+      // update camera
+      //-----------------------------
+         
+         UpdateCamera ();
+         
       //------------------------------------
       // on level inited
       //------------------------------------
@@ -475,18 +481,18 @@ package player.world {
             mLevelSimulatedTime += dt;
             
          //-----------------------------
-         // update camera
-         //-----------------------------
-            
-            UpdateCamera ();
-            
-         //-----------------------------
          // ai update
          //-----------------------------
             
             mEntityList.UpdateEntities (dt);
             
             ParticleManager_Update (dt);
+            
+         //-----------------------------
+         // update camera
+         //-----------------------------
+            
+            UpdateCamera ();
             
          //------------------------------------
          // handle key-hold eventgs

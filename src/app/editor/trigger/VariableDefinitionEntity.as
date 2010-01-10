@@ -20,9 +20,9 @@ package editor.trigger {
       protected var mNullValueEnabled:Boolean = true;
       protected var mMultiValuesEnabled:Boolean = false;
       
-      public function VariableDefinitionEntity (name:String, description:String = null, options:Object = null)
+      public function VariableDefinitionEntity (name:String, description:String = null, typeClassPrototype:Object = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Entity, name, description);
+         super (ValueTypeDefine.ValueType_Entity, name, description, typeClassPrototype);
          
          if (options != null)
          {
@@ -35,9 +35,37 @@ package editor.trigger {
          }
       }
       
+      public function GetFilter ():Function
+      {
+         return mFilter;
+      }
+      
 //==============================================================================
 // to override
 //==============================================================================
+      
+      override public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
+      {
+         if (super.IsCompatibleWith (variableDefinition))
+         {
+            // variableDefinition must be a VariableDefinitionEntity
+            ;
+            var filter:Function = (variableDefinition as VariableDefinitionEntity).GetFilter ();
+            if (filter != null)
+            {
+               return filter (GetTypeClassPrototype ());
+            }
+            
+            return true;
+         }
+         
+         return false;
+      }
+      
+      override public function GetDefaultTypeClassPrototype ():Object
+      {
+         return WorldEntity.prototype;
+      }
       
       override public function ValidateDirectValueObject (valueObject:Object):Object
       {

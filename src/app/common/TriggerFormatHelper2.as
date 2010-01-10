@@ -174,7 +174,7 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Input:
                   variable_instance = parentFunctionInstance.GetInputVariableAt (variable_index);
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_Return:
+               case ValueSpaceTypeDefine.ValueSpace_Output:
                   variable_instance = parentFunctionInstance.GetReturnVariableAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
@@ -254,7 +254,7 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Input:
                   variable_instance = parentFunctionInstance.GetInputVariableAt (variable_index);
                   break;
-               case ValueSpaceTypeDefine.ValueSpace_Return:
+               case ValueSpaceTypeDefine.ValueSpace_Output:
                   variable_instance = parentFunctionInstance.GetReturnVariableAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:

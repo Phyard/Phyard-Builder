@@ -133,7 +133,7 @@ package editor.trigger {
          return false;
       }
       
-      public function HasInputsCompatibleWith (variableDefinition:VariableDefinition):Boolean
+      public function HasInputsSatisfy (variableDefinition:VariableDefinition):Boolean
       {
          if (mParamDefinitions == null)
             return false;
@@ -145,6 +145,52 @@ package editor.trigger {
          }
          
          return false;
+      }
+      
+      public function GetInputVariableIndexesSatisfy (variableDefinition:VariableDefinition):Array
+      {
+         var indexes:Array = new Array ();
+         
+         if (mParamDefinitions != null)
+         {
+            for (var i:int = 0; i < mParamDefinitions.length; ++ i)
+            {
+               if (GetParamDefinitionAt (i).IsCompatibleWith (variableDefinition))
+                  indexes.push (i);
+            }
+         }
+         
+         return indexes;
+      }
+      
+      public function HasOutputsSatisfiedBy (variableDefinition:VariableDefinition):Boolean
+      {
+         if (mParamDefinitions == null)
+            return false;
+         
+         for (var i:int = 0; i < mParamDefinitions.length; ++ i)
+         {
+            if (variableDefinition.IsCompatibleWith (GetParamDefinitionAt (i)))
+               return true;
+         }
+         
+         return false;
+      }
+      
+      public function GetOutputVariableIndexesSatisfiedBy (variableDefinition:VariableDefinition):Array
+      {
+         var indexes:Array = new Array ();
+         
+         if (mParamDefinitions != null)
+         {
+            for (var i:int = 0; i < mParamDefinitions.length; ++ i)
+            {
+               if (variableDefinition.IsCompatibleWith (GetParamDefinitionAt (i)))
+                  indexes.push (i);
+            }
+         }
+         
+         return indexes;
       }
       
 //=================================================================

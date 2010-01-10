@@ -15,7 +15,7 @@ package editor.trigger {
       
       override public function GetSpaceType ():int
       {
-         return ValueSpaceTypeDefine.ValueSpace_Return;
+         return ValueSpaceTypeDefine.ValueSpace_Output;
       }
       
       override public function GetSpaceName ():String

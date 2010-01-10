@@ -114,11 +114,15 @@ package editor.trigger {
       
       private var mDescription:String = null;
       
-      public function VariableDefinition (valueType:int, name:String, description:String = null)
+      private var mTypeClassPrototype:Object = null;
+      
+      public function VariableDefinition (valueType:int, name:String, description:String = null, typeClassPrototype:Object = null)
       {
          mValueType = valueType;
          mName = name;
          mDescription = description;
+         
+         mTypeClassPrototype = typeClassPrototype;
       }
       
       public function GetName ():String
@@ -136,9 +140,19 @@ package editor.trigger {
          return mDescription;
       }
       
+      public function GetTypeClassPrototype ():Object
+      {
+         return mTypeClassPrototype != null ? mTypeClassPrototype : GetDefaultTypeClassPrototype ();
+      }
+      
+      public function GetDefaultTypeClassPrototype ():Object
+      {
+         return Object.prototype;
+      }
+      
       public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
       {
-         return (mValueType == variableDefinition.GetValueType ());
+         return (mValueType == variableDefinition.GetValueType ()) && (variableDefinition.GetTypeClassPrototype ().isPrototypeOf (GetTypeClassPrototype ()));
       }
       
 //==============================================================================
@@ -204,12 +218,12 @@ package editor.trigger {
          return new ValueTarget_Variable (variableSpace.GetNullVariableInstance ());
       }
       
-      public function CreateControlForVariableValueTarget (valueTargetVariable:ValueTarget_Variable):UIComponent
+      public function CreateControlForVariableValueTarget (valueTargetVariable:ValueTarget_Variable, validVariableIndexes:Array = null):UIComponent
       {
          var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
          var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType);
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType, validVariableIndexes);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
@@ -316,12 +330,12 @@ package editor.trigger {
             return new ValueSource_Variable (variableSpace.GetNullVariableInstance ());
          }
          
-         public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable):UIComponent
+         public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable, validVariableIndexes:Array = null):UIComponent
          {
             var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
             var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
             
-            var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType);
+            var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType, validVariableIndexes);
             
             var combo_box:ComboBox = new ComboBox ();
             combo_box.dataProvider = variable_list;

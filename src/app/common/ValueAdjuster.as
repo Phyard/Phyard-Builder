@@ -30,6 +30,8 @@ package common {
       // numDigits >= 1
       public static function Number2PrecisionString (number:Number, numDigits:uint):String
       {
+         if (! isFinite (number))
+            return String (number);
          //
          var unsafeUpperValue:Number = parseFloat ("1e+" + numDigits); 
          var unsafeLowerValue:Number = parseFloat ("9.5e+" + (numDigits - 1)); 

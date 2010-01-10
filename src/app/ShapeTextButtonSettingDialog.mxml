@@ -25,7 +25,15 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <ShapeAppearanceSettingPanel id="AppearanceSettingPanel_MouseOver" creationComplete="OnMouseOverAppearanceSettingPanelCreationComplete()"/>
-         <mx:Spacer width="100%"/>
+         <mx:Spacer height="100%" />
+         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:Spacer height="100%" />
+         <mx:HBox id="MouseOverSpecialSettingPanel" creationComplete="OnMouseOverSpecialSettingPanelCreationComplete()" width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_UsingHandCursor" label="Use Hand Cursor"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="100%" />
       </mx:VBox>
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
@@ -99,6 +107,11 @@
             mParams.mMouseOverValues.mCiTypeSelectable = false;
             AppearanceSettingPanel_MouseOver.SetValues (mParams.mMouseOverValues);
          }
+
+         private function OnMouseOverSpecialSettingPanelCreationComplete ():void
+         {
+            CheckBox_UsingHandCursor.selected = mParams.mUsingHandCursor;
+         }
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
@@ -135,6 +148,11 @@
             if (AppearanceSettingPanel_MouseOver != null)
             {
                AppearanceSettingPanel_MouseOver.GetValues (mParams.mMouseOverValues);
+            }
+
+            if (MouseOverSpecialSettingPanel != null)
+            {
+               mParams.mUsingHandCursor = CheckBox_UsingHandCursor.selected;
             }
             
             if (BasicSettingPanel != null)

@@ -18,9 +18,9 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      public function VariableDefinitionCollisionCategory (name:String, description:String = null, options:Object = null)
+      public function VariableDefinitionCollisionCategory (name:String, description:String = null, typeClassPrototype:Object = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_CollisionCategory, name, description);
+         super (ValueTypeDefine.ValueType_CollisionCategory, name, description, typeClassPrototype);
       }
       
 //==============================================================================
@@ -35,6 +35,11 @@ package editor.trigger {
 //==============================================================================
 // to override
 //==============================================================================
+      
+      override public function GetDefaultTypeClassPrototype ():Object
+      {
+         return EntityCollisionCategory.prototype;
+      }
       
       override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {

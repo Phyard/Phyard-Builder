@@ -155,6 +155,8 @@ package Box2D.Dynamics.Joints
 				m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchor2);
 			}
 		}
+		
+		public var mSpringConstant:Number = -1.0;
 
 	} // class
 } // package

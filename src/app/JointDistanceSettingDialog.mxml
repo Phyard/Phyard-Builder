@@ -11,30 +11,29 @@
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
+         <mx:VBox width="100%">
 
-         <mx:HBox width="100%">
-            <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
-         </mx:HBox>
+            <mx:HBox width="100%">
+               <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
+            </mx:HBox>
 
-         <mx:Spacer height="6"/>
-         <mx:HBox width="100%">
-            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
-         </mx:HBox>
-         <mx:Spacer height="6"/>
+            <mx:Spacer height="6"/>
+            <mx:HBox width="100%">
+               <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+            </mx:HBox>
+            <mx:Spacer height="6"/>
 
-         <mx:HBox width="100%">
-            <mx:HBox width="36%">
+            <mx:HBox width="100%">
                <mx:Spacer width="100%"/>
-               <mx:CheckBox id="CheckBox_Breakable" label="Breakable" click="OnUpdateComponents ()"/>
+               <mx:HBox id="Box_BreakDeltaLength">
+                  <mx:Label id="Label_BreakDeltaLength" text="Break Delta Length:" textAlign="right"/>
+                  <mx:TextInput id="Text_BreakDeltaLength" text="" width="100"/>
+               </mx:HBox>
+               <mx:Spacer width="100%"/>
             </mx:HBox>
-            <mx:HBox width="6%">
-            </mx:HBox>
-            <mx:HBox id="Box_BreakDeltaLength">
-               <mx:Label id="Label_BreakDeltaLength" text="Break Delta Length:" textAlign="right"/>
-               <mx:TextInput id="Text_BreakDeltaLength" text="" width="100"/>
-            </mx:HBox>
-         </mx:HBox>
-      
+
+            <mx:Spacer height="6"/>
+         </mx:VBox>
       </mx:VBox>
 
       <mx:VBox label="Joint Basic" borderStyle="solid" height="100%" width="100%"
@@ -85,9 +84,8 @@
             
             var jointParams:Object = mParams.mJointValues;
             
+            jointParams.mOnBreakableChanged = OnBreakableChanged;
             CommonSettingPanel.SetValues (jointParams);
-            
-            CheckBox_Breakable.selected = jointParams.mIsBreakable;
             
             Text_BreakDeltaLength.text = jointParams.mBreakDeltaLength;
             
@@ -96,7 +94,11 @@
          
          private function OnUpdateComponents ():void
          {
-            Box_BreakDeltaLength.enabled = CheckBox_Breakable.selected;
+         }
+         
+         private function OnBreakableChanged (breakable:Boolean):void
+         {
+            Box_BreakDeltaLength.enabled = breakable;
          }
          
          private function OnJointBasicSettingPanelCreationComplete ():void
@@ -128,8 +130,6 @@
             var jointParams:Object = mParams.mJointValues;
             
             CommonSettingPanel.GetValues (jointParams);
-            
-            jointParams.mIsBreakable = CheckBox_Breakable.selected;
             
             var breakDeltaLength:Number = parseFloat (Text_BreakDeltaLength.text);
             if (! isNaN (breakDeltaLength))

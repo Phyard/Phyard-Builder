@@ -689,7 +689,7 @@ package editor {
          var typeName:String = mLastSelectedEntity.GetTypeName ();
          var infoText:String = mLastSelectedEntity.GetInfoText ();
          
-         mSelectedEntityInfoText.htmlText = "<font color='#FFFFFF'><b>" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + ": " + typeName + "</b>: " + infoText + "</font>";
+         mSelectedEntityInfoText.htmlText = "<font color='#FFFFFF'><b>#" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + "> " + typeName + "</b>: " + infoText + "</font>";
          
          mSelectedEntityInfoText.x = WorldBorderThinknessLR;
          mSelectedEntityInfoText.y = mViewHeight - (WorldBorderThinknessTB + mSelectedEntityInfoText.height) * 0.5;
@@ -729,7 +729,7 @@ package editor {
          
          mMouePointInfoText.visible = true;
          
-         mMouePointInfoText.htmlText = "<font color='#FFFFFF'>(" + px.toFixed (2) + ",  " + py.toFixed (2) + ")</font>";
+         mMouePointInfoText.htmlText = "<font color='#FFFFFF'>(" + worldPoint.x + "px, " + worldPoint.y + "px) - (" + px.toFixed (2) + "m,  " + py.toFixed (2) + "m)</font>";
          
          mMouePointInfoText.x = mViewWidth -  WorldBorderThinknessLR - mMouePointInfoText.width;
          mMouePointInfoText.y = mViewHeight - (WorldBorderThinknessTB + mMouePointInfoText.height) * 0.5;
@@ -1855,6 +1855,7 @@ package editor {
                else if (entity is EntityShapePolyline)
                {
                   values.mCurveThickness = (shape as EntityShapePolyline).GetCurveThickness ();
+                  values.mIsRoundEnds = (shape as EntityShapePolyline).IsRoundEnds ();
                   
                   ShowShapePolylineSettingDialog (values, SetEntityProperties);
                }
@@ -2000,6 +2001,7 @@ package editor {
                //from v1.08
                jointValues.mFrequencyDeterminedManner = spring.GetFrequencyDeterminedManner ();
                jointValues.mFrequency = ValueAdjuster.Number2Precision (spring.GetFrequency (), 6);
+               jointValues.mSpringConstant = ValueAdjuster.Number2Precision (spring.GetSpringConstant () * mEditorWorld.GetCoordinateSystem ().D2P_Length (1.0) / mEditorWorld.GetCoordinateSystem ().D2P_ForceMagnitude (1.0), 6);
                jointValues.mBreakExtendedLength = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length (spring.GetBreakExtendedLength ()), 6);
                //<<
                
@@ -3617,8 +3619,10 @@ package editor {
             shape.SetFilledColor (params.mBackgroundColor);
             shape.SetBorderTransparency (params.mBorderTransparency);
             
+trace ("111");
             if (shape.IsBasicShapeEntity ())
             {
+trace ("222");
                shape.SetAiType (params.mAiType);
                shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
                
@@ -3662,6 +3666,7 @@ package editor {
                else if (entity is EntityShapePolyline)
                {
                   (shape as EntityShapePolyline).SetCurveThickness (params.mCurveThickness);
+                  (shape as EntityShapePolyline).SetRoundEnds (params.mIsRoundEnds);
                }
             }
             else // no physics entity
@@ -3804,6 +3809,7 @@ package editor {
                //from v1.08
                spring.SetFrequencyDeterminedManner (jointParams.mFrequencyDeterminedManner);
                spring.SetFrequency (jointParams.mFrequency);
+               spring.SetSpringConstant (jointParams.mSpringConstant * mEditorWorld.GetCoordinateSystem ().P2D_Length (1.0) / mEditorWorld.GetCoordinateSystem ().P2D_ForceMagnitude (1.0));
                spring.SetBreakExtendedLength (mEditorWorld.GetCoordinateSystem ().P2D_Length (jointParams.mBreakExtendedLength));
                //<<
                

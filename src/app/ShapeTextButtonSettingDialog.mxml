@@ -71,7 +71,7 @@
          import mx.events.MenuEvent;
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
-         
+
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          

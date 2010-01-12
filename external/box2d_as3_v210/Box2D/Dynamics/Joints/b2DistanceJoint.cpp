@@ -59,6 +59,11 @@ public function b2DistanceJoint (def:b2DistanceJointDef)
 	m_impulse = 0.0;
 	m_gamma = 0.0;
 	m_bias = 0.0;
+	
+	//hacking
+	//>>
+	mSpringConstant = def.springConstant;
+	//<
 }
 
 override public function InitVelocityConstraints (step:b2TimeStep):void
@@ -102,18 +107,45 @@ override public function InitVelocityConstraints (step:b2TimeStep):void
 
 	m_mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
 
-	if (m_frequencyHz > 0.0)
+	//>> hacking
+	var C:Number;
+	var omega:Number;
+	var d:Number;
+	var k:Number;
+	if (mSpringConstant > 0.0)
 	{
-		var C:Number = length - m_length;
-
-		// Frequency
-		var omega:Number = 2.0 * b2Settings.b2_pi * m_frequencyHz;
-
-		// Damping coefficient
-		var d:Number = 2.0 * m_mass * m_dampingRatio * omega;
+		C = length - m_length;
 
 		// Spring stiffness
-		var k:Number = m_mass * omega * omega;
+		k = mSpringConstant;
+
+		omega = Math.sqrt (k / m_mass);
+
+		// Damping coefficient
+		d = 2.0 * m_mass * m_dampingRatio * omega;
+
+		// magic formulas
+		m_gamma = step.dt * (d + step.dt * k);
+		m_gamma = m_gamma != 0.0 ? 1.0 / m_gamma : 0.0;
+		m_bias = C * step.dt * k * m_gamma;
+
+		m_mass = invMass + m_gamma;
+		m_mass = m_mass != 0.0 ? 1.0 / m_mass : 0.0;
+	}
+	else
+	//<< end hacking
+	if (m_frequencyHz > 0.0)
+	{
+		C = length - m_length;
+
+		// Frequency
+		omega = 2.0 * b2Settings.b2_pi * m_frequencyHz;
+
+		// Damping coefficient
+		d = 2.0 * m_mass * m_dampingRatio * omega;
+
+		// Spring stiffness
+		k = m_mass * omega * omega;
 
 		// magic formulas
 		m_gamma = step.dt * (d + step.dt * k);
@@ -202,6 +234,15 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 
 	//B2_NOT_USED(baumgarte);
 
+	//hacking
+	//>>
+	if (mSpringConstant > 0.0)
+	{
+		// There is no position correction for soft distance constraints.
+		return true;
+	}
+	else
+	//<< end hacking
 	if (m_frequencyHz > 0.0)
 	{
 		// There is no position correction for soft distance constraints.

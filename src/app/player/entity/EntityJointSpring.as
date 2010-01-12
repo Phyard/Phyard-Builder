@@ -49,6 +49,8 @@ package player.entity {
                SetFrequencyDeterminedManner (entityDefine.mFrequencyDeterminedManner);
             if (entityDefine.mFrequency != undefined)
                SetFrequency (entityDefine.mFrequency);
+            if (entityDefine.mSpringConstant != undefined)
+               SetSpringConstant (entityDefine.mSpringConstant * mWorld.GetCoordinateSystem ().D2P_Length (1.0) / mWorld.GetCoordinateSystem ().D2P_ForceMagnitude (1.0));
             if (entityDefine.mBreakExtendedLength != undefined)
                SetBreakExtendedLength (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mBreakExtendedLength));
             //<<
@@ -57,17 +59,15 @@ package player.entity {
          {
             var currentLength:Number = Point.distance (new Point (mAnchor2.mPositionX, mAnchor2.mPositionY), new Point (mAnchor1.mPositionX, mAnchor1.mPositionY));
             var staticPhysicsLength:Number = currentLength * mStaticLengthRatio;
-            var params:Object = Setting.GetSpringParamsByType (mSpringType, staticPhysicsLength);
+            var params:Object = Setting.GetSpringParamsByType (mSpringType,  mWorld.GetCoordinateSystem ().P2D_Length (staticPhysicsLength));
             
             mDisplayStaticLength = mWorld.GetCoordinateSystem ().P2D_Length (staticPhysicsLength);
             mDisplayDiameter = params.mDiameter;
             mDisplayWireDiameter = params.mWireDiameter;
             mDisplayStaticSegmentLength = params.mStaticSegmentLength;
             
-            if (mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_CustomFrequency)
-               mFrequencyHz = mFrequency;
-            else
-               mFrequencyHz = params.mFrequencyHz;
+            if (mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_Preset)
+               mFrequency = params.mFrequencyHz;
          }
       }
       
@@ -77,7 +77,6 @@ package player.entity {
       
       protected var mSpringType:Number = Define.SpringType_Normal;
       
-      protected var mFrequencyHz:Number = 0.0;
       
       protected var mStaticLengthRatio:Number = 1.0;
       protected var mDampingRatio:Number = 0.0;
@@ -85,7 +84,7 @@ package player.entity {
       //>> v1.08
       protected var mFrequencyDeterminedManner:int = 0;
       protected var mFrequency:Number = 0.0;
-      //protected var mCustomSpringConstant:Number = 0.0;
+      protected var mSpringConstant:Number = 0.0;
       
       protected var mBreakExtendedLength:Number = 0.0;
       //<<
@@ -125,15 +124,18 @@ package player.entity {
          return mFrequency;
       }
       
-      //public function SetCustomSpringConstant (k:Number):Number
-      //{
-      //   mCustomSpringConstant = k;
-      //}
+      public function SetSpringConstant (k:Number):void
+      {
+         if (k < 0)
+            k = 0;
+         
+         mSpringConstant = k;
+      }
       
-      //public function GetCustomSpringConstant ():Number
-      //{
-      //   return mCustomSpringConstant;
-      //}
+      public function GetSpringConstant ():Number
+      {
+         return mSpringConstant;
+      }
       
       public function SetBreakExtendedLength (length:Number):void
       {
@@ -260,12 +262,33 @@ package player.entity {
       
       override protected function RebuildJointPhysicsInternal ():void
       {
-         var staticLengthRatio:Number = (mFrequencyHz < Number.MIN_VALUE) ? 1.0 : mStaticLengthRatio;
+         var frequencyHz:Number;
+         var springConstant:Number;
+         var staticLengthRatio:Number;
+         
+         if (mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_CustomSpringConstant)
+         {
+            springConstant = mSpringConstant;
+            frequencyHz = -1.0;
+            
+            staticLengthRatio = (springConstant < Number.MIN_VALUE) ? 1.0 : mStaticLengthRatio;
+         }
+         else 
+         {
+            springConstant = -1.0;
+            frequencyHz = mFrequency;
+            
+            staticLengthRatio = (frequencyHz < Number.MIN_VALUE) ? 1.0 : mStaticLengthRatio;
+         }
+         
+         if (frequencyHz < 0 && springConstant < 0)
+            frequencyHz = 0.0;
          
          mPhysicsProxy = mProxyJointDistance;
          mProxyJointDistance.BuildDistance (
                   mAnchor1, mAnchor2, mCollideConnected, 
-                  staticLengthRatio, mFrequencyHz, mDampingRatio
+                  staticLengthRatio, frequencyHz, mDampingRatio, 
+                  springConstant
                );
       }
       

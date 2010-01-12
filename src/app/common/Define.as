@@ -21,7 +21,7 @@ package common {
       
       public static const kFloatEpsilon:Number = 1.192092896e-07;
       
-      public static const kDefaultCoordinateSystem:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.1, false);
+      public static const kDefaultCoordinateSystem:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.05, false);
       
 //===========================================================================
 // world
@@ -124,7 +124,7 @@ package common {
       public static const MaxHingeMotorTorque:Number = Number.MAX_VALUE; 
       
       public static const DefaultHingeMotorSpeed:int = 60; // degree
-      public static const DefaultHingeMotorTorque:Number = 1.0e+13; // pixles-s-kg
+      public static const DefaultHingeMotorTorque:Number = 1.0e+10; // pixles-s-kg
       
 //===========================================================================
 // slider
@@ -136,7 +136,7 @@ package common {
       
       public static const DefaultSliderMotorSpeed:Number = 30; // pixles
       public static const DefaultSliderLimitTranslation:Number = 20; // pixles
-      public static const DefaultSliderMotorForce:Number = 1.0e+11; // pixles-s-kg
+      public static const DefaultSliderMotorForce:Number = 1.0e+8; // pixles-s-kg
       
 //===========================================================================
 // spring

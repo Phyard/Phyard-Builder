@@ -11,72 +11,83 @@
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
+         <mx:VBox width="100%">
 
-
-         <mx:HBox width="100%">
-            <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
-         </mx:HBox>
-
-         <mx:Spacer height="6"/>
-         <mx:HBox width="100%">
-            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
-         </mx:HBox>
-         <mx:Spacer height="6"/>
-
-         <mx:HBox width="100%">
-            <mx:HBox width="50%">
-               <mx:Spacer width="100%"/>
-               <mx:Label id="Label_StaticLength" text="Static Length / Current Length:" textAlign="right"/>
+            <mx:HBox width="100%">
+               <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
             </mx:HBox>
-            <mx:HBox>
-               <mx:TextInput id="Text_StaticLengthRatio" text="" width="100"/>
-            </mx:HBox>
-         </mx:HBox>
 
-         <mx:HBox width="100%">
-            <mx:HBox width="50%">
-               <mx:Spacer width="100%"/>
-               <mx:Label id="Label_DampingRatio" text="Damping Ratio:" textAlign="right"/>
+            <mx:Spacer height="6"/>
+            <mx:HBox width="100%">
+               <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
             </mx:HBox>
-            <mx:HBox>
-               <mx:TextInput id="Text_DampingRatio" text="" width="100"/>
-            </mx:HBox>
-         </mx:HBox>
+            <mx:Spacer height="6"/>
 
-         <mx:HBox width="100%">
-            <mx:HBox width="50%">
-               <mx:Spacer width="100%"/>
-               <mx:Label id="Label_PresetTypes" text="Preset Types:" textAlign="right"/>
-            </mx:HBox>
+            <mx:HBox width="100%">
+               <mx:HBox width="50%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_StaticLength" text="Static Length / Current Length:" textAlign="right"/>
+               </mx:HBox>
                <mx:HBox>
-               <mx:RadioButton groupName="Type" id="TypeWeak" label="Weak"/>
-               <mx:RadioButton groupName="Type" id="TypeNormal" label="Normal"/>
-               <mx:RadioButton groupName="Type" id="TypeStrong" label="Strong"/>
+                  <mx:TextInput id="Text_StaticLengthRatio" text="" width="100"/>
+               </mx:HBox>
             </mx:HBox>
-         </mx:HBox>
 
-         <mx:HBox width="100%">
-            <mx:HBox width="50%">
-               <mx:Spacer width="100%"/>
-               <mx:CheckBox id="CheckBox_CustomFrequency" label="Custom Frequency (f)" click="OnUpdateComponents()"/>
+            <mx:HBox width="100%">
+               <mx:HBox width="50%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_DampingRatio" text="Damping Ratio:" textAlign="right"/>
+               </mx:HBox>
+               <mx:HBox>
+                  <mx:TextInput id="Text_DampingRatio" text="" width="100"/>
+               </mx:HBox>
             </mx:HBox>
-            <mx:HBox>
-               <mx:TextInput id="Text_CustomFrequency" text="" width="100"/>
-               <mx:Label text="(Hz)"/>
-            </mx:HBox>
-         </mx:HBox>
 
-         <mx:HBox width="100%">
-            <mx:HBox width="50%">
-               <mx:Spacer width="100%"/>
-               <mx:CheckBox id="CheckBox_Breakable" label="Breakable" click="OnUpdateComponents()"/>
-               <mx:Label id="Label_BreakExtendedLength" text="Break Extended Length:" textAlign="right"/>
+            <mx:HBox width="100%">
+               <mx:HBox width="50%">
+                  <mx:Spacer width="100%"/>
+                  <mx:RadioButton id="Radio_PresetTypes" groupName="FrequencyDetermineManner" label="Presets" click="OnUpdateComponents()"/>
+               </mx:HBox>
+               <mx:HBox id="PreSetOptionsPanel">
+                  <mx:RadioButton groupName="PresetType" id="TypeWeak" label="Weak"/>
+                  <mx:RadioButton groupName="PresetType" id="TypeNormal" label="Normal"/>
+                  <mx:RadioButton groupName="PresetType" id="TypeStrong" label="Strong"/>
+               </mx:HBox>
             </mx:HBox>
-            <mx:HBox>
-               <mx:TextInput id="Text_BreakExtendedLength" text="" width="100"/>
-            </mx:HBox>
-         </mx:HBox>
 
+            <mx:HBox width="100%">
+               <mx:HBox width="50%">
+                  <mx:Spacer width="100%"/>
+                  <mx:RadioButton id="Radio_CustomFrequency" groupName="FrequencyDetermineManner" label="Custom Frequency (f)" click="OnUpdateComponents()"/>
+               </mx:HBox>
+               <mx:HBox>
+                  <mx:TextInput id="Text_CustomFrequency" text="" width="100"/>
+                  <mx:Label text="(Hz)"/>
+               </mx:HBox>
+            </mx:HBox>
+
+            <mx:HBox width="100%">
+               <mx:HBox width="50%">
+                  <mx:Spacer width="100%"/>
+                  <mx:RadioButton id="Radio_CustomSpringConstant" groupName="FrequencyDetermineManner" label="Custom Spring Constant (k)" click="OnUpdateComponents()"/>
+               </mx:HBox>
+               <mx:HBox>
+                  <mx:TextInput id="Text_CustomSpringConstant" text="" width="100"/>
+                  <mx:Label text=""/>
+               </mx:HBox>
+            </mx:HBox>
+
+            <mx:HBox width="100%" id="Box_BreakDeltaLength">
+               <mx:HBox width="50%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_BreakExtendedLength" text="Break Extended Length:" textAlign="right"/>
+               </mx:HBox>
+               <mx:HBox>
+                  <mx:TextInput id="Text_BreakExtendedLength" text="" width="100"/>
+               </mx:HBox>
+            </mx:HBox>
+            
+         </mx:VBox>
       </mx:VBox>
 
       <mx:VBox label="Joint Basic" borderStyle="solid" height="100%" width="100%"
@@ -126,7 +137,8 @@
             mParams = initialValues;
             
             var jointParams:Object = mParams.mJointValues;
-            
+
+            jointParams.mOnBreakableChanged = OnBreakableChanged;
             CommonSettingPanel.SetValues (jointParams);
             
             Text_StaticLengthRatio.text = jointParams.mStaticLengthRatio;
@@ -138,11 +150,15 @@
                TypeWeak.selected = true;
             else
                TypeNormal.selected = true;
-            
-            CheckBox_CustomFrequency.selected = jointParams.mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_CustomFrequency;
+
+            Radio_CustomFrequency.selected = jointParams.mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_CustomFrequency;
             Text_CustomFrequency.text = jointParams.mFrequency;
+
+            Radio_CustomSpringConstant.selected = jointParams.mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_CustomSpringConstant;
+            Text_CustomSpringConstant.text = jointParams.mSpringConstant;
             
-            CheckBox_Breakable.selected = jointParams.mIsBreakable
+            Radio_PresetTypes.selected = jointParams.mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_Preset;
+            
             Text_BreakExtendedLength.text = jointParams.mBreakExtendedLength;
             
             OnUpdateComponents ();
@@ -150,10 +166,14 @@
          
          private function OnUpdateComponents ():void
          {
-            Label_PresetTypes.enabled = ! CheckBox_CustomFrequency.selected;
-            Text_CustomFrequency.enabled = CheckBox_CustomFrequency.selected;
-            Label_BreakExtendedLength.enabled = CheckBox_Breakable.selected;
-            Text_BreakExtendedLength.enabled = CheckBox_Breakable.selected;
+            PreSetOptionsPanel.enabled = Radio_PresetTypes.selected;
+            Text_CustomFrequency.enabled = Radio_CustomFrequency.selected;
+            Text_CustomSpringConstant.enabled = Radio_CustomSpringConstant.selected;
+         }
+
+         private function OnBreakableChanged (breakable:Boolean):void
+         {
+            Box_BreakDeltaLength.enabled = breakable;
          }
          
          private function OnJointBasicSettingPanelCreationComplete ():void
@@ -200,13 +220,21 @@
                jointParams.mSpringType = Define.SpringType_Weak;
             else
                jointParams.mSpringType = Define.SpringType_Normal;
+
+            if (Radio_CustomFrequency.selected)
+               jointParams.mFrequencyDeterminedManner = Define.SpringFrequencyDetermineManner_CustomFrequency;
+            else if (Radio_CustomSpringConstant.selected)
+               jointParams.mFrequencyDeterminedManner = Define.SpringFrequencyDetermineManner_CustomSpringConstant;
+            else
+               jointParams.mFrequencyDeterminedManner = Define.SpringFrequencyDetermineManner_Preset;
             
-            jointParams.mFrequencyDeterminedManner = CheckBox_CustomFrequency.selected ? Define.SpringFrequencyDetermineManner_CustomFrequency : Define.SpringFrequencyDetermineManner_Preset;
             var frequency:Number = parseFloat (Text_CustomFrequency.text);
             if (! isNaN (frequency))
                jointParams.mFrequency = frequency
             
-            jointParams.mIsBreakable = CheckBox_Breakable.selected;
+            var springConstant:Number = parseFloat (Text_CustomSpringConstant.text);
+            if (! isNaN (springConstant))
+               jointParams.mSpringConstant = springConstant
             
             var breakExtendedLength:Number = parseFloat (Text_BreakExtendedLength.text);
             if (! isNaN (breakExtendedLength))

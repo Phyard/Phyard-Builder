@@ -19,10 +19,12 @@
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <ShapeAppearanceSettingPanel id="AppearanceSettingPanel" creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%" />
-         <mx:HBox width="100%">
-            <mx:Spacer width="30"/>
-            <mx:Label text="Appearance Type:" textAlign="right" width="30%"/>
-            <mx:ComboBox id="SelectList_AppearanceType" creationComplete="OnAppearanceTypeSelectListCreationComplete()"/>
+         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:Spacer height="100%" />
+         <mx:HBox id="AppearanceOtherSettingsPanel" width="100%" creationComplete="OnAppearanceOtherSettingsCreationComplete()">
+            <mx:Spacer width="60"/>
+            <mx:Label text="Appearance Type:" textAlign="right" width="22%"/>
+            <mx:ComboBox id="SelectList_AppearanceType"/>
          </mx:HBox>
          <mx:Spacer height="100%" />
       </mx:VBox>
@@ -64,6 +66,7 @@
          import mx.controls.Menu;
          
          import common.Define;
+         import editor.trigger.Lists;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
@@ -92,13 +95,9 @@
             SelectList_AppearanceType.selectedIndex = mParams.mAppearanceTypeListSelectedIndex;
          }
          
-         private function OnAppearanceTypeSelectListCreationComplete():void
+         private function OnAppearanceOtherSettingsCreationComplete():void
          {
-            var dp:Array = new Array ();
-            dp.push({label:"Ball", data:Define.CircleAppearanceType_Ball});
-            dp.push({label:"Column", data:Define.CircleAppearanceType_Column});
-            dp.push({label:"Circle", data:Define.CircleAppearanceType_Circle});
-            SelectList_AppearanceType.dataProvider = dp;
+            SelectList_AppearanceType.dataProvider = Lists.GetListWithDataInLabel (Lists.mCircleAppearanceList);
          }
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
@@ -131,7 +130,10 @@
             if (AppearanceSettingPanel != null)
             {
                AppearanceSettingPanel.GetValues (mParams);
-               
+            }
+
+            if (AppearanceOtherSettingsPanel != null)
+            {
                mParams.mAppearanceType = SelectList_AppearanceType.selectedItem.data;
             }
             

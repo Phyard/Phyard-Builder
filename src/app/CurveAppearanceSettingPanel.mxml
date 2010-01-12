@@ -32,6 +32,12 @@
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
+      <mx:Label id="Label_BackgroundColor" text="Color:" textAlign="right" width="30%"/>
+      <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0x000000"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="30"/>
       <mx:Label id="Label_CurveThickness" text="Thickness:" textAlign="right" width="30%"/>
       <mx:NumericStepper id="NumericStepper_CurveThickness" stepSize="1" minimum="0" maximum="255" value="1" width="80" />
       <mx:Label text="(pixels)" textAlign="left"/>
@@ -39,27 +45,21 @@
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
-      <mx:Label id="Label_BackgroundColor" text="Color:" textAlign="right" width="30%"/>
-      <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0x000000"/>
+      <mx:Spacer width="30%"/>
+      <mx:CheckBox id="CheckBox_RoundEnds" label="Round Ends"/>
    </mx:HBox>
 
   <mx:Script>
       <![CDATA[       
          
          import common.Define;
+         import editor.trigger.Lists;
          
          private var mInputValues:Object;
          
          private function OnInitPanel ():void
          {
-            var dp:Array = new Array ();
-            dp.push({label:"Static", data:Define.ShapeAiType_Static});
-            dp.push({label:"Movable", data:Define.ShapeAiType_Movable});
-            dp.push({label:"Breakable", data:Define.ShapeAiType_Breakable});
-            dp.push({label:"Infected", data:Define.ShapeAiType_Infected});
-            dp.push({label:"Uninfected", data:Define.ShapeAiType_Uninfected});
-            dp.push({label:"DontInfect", data:Define.ShapeAiType_DontInfect});
-            SelectList_AiType.dataProvider = dp;
+            SelectList_AiType.dataProvider = Lists.GetListWithDataInLabel (Lists.mAiTypeList);
          }
          
          private function OnAiTypeSelectListClick ():void
@@ -91,11 +91,13 @@
          public function SetValues (inputValues:Object):void
          {
             CheckBox_IsCiShape.selected = inputValues.mAiType >= 0;
-            SelectList_AiType.selectedIndex = inputValues.mAiType;
+            SelectList_AiType.selectedIndex = Lists.SelectedValue2SelectedIndex (Lists.mAiTypeList, inputValues.mAiType);
             
             NumericStepper_Opacity.value = inputValues.mTransparency;
             ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;
             NumericStepper_CurveThickness.value = inputValues.mCurveThickness;
+            
+            CheckBox_RoundEnds.selected = inputValues.mIsRoundEnds;
             
             OnAiTypeSelectListClick ();
          }
@@ -107,6 +109,8 @@
             returnValues.mTransparency = NumericStepper_Opacity.value;
             returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
             returnValues.mCurveThickness = NumericStepper_CurveThickness.value;
+               
+            returnValues.mIsRoundEnds = CheckBox_RoundEnds.selected;
          }
          
      ]]>

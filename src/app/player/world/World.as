@@ -796,8 +796,6 @@ package player.world {
       
       public function SetCurrentGravityAcceleration (gaX:Number, gaY:Number):void
       {
-         mPhysicsEngine.SetGravityByVector (gaX, gaY);
-         
          mCurrentGravityAccelerationX = gaX;
          mCurrentGravityAccelerationY = gaY;
       }
@@ -813,6 +811,25 @@ package player.world {
       }
 
    //===============================
+   // global forces
+   //===============================
+
+      private var mGlobalForceX:Number;
+      private var mGlobalForceY:Number;
+
+      public function ClearGlobalForces ():void
+      {
+         mGlobalForceX = 0.0;
+         mGlobalForceY = 0.0;
+      }
+
+      public function AddGlobalForce (fx:Number, fy:Number):void
+      {
+         mGlobalForceX += fx;
+         mGlobalForceY += fy;
+      }
+
+   //===============================
    // create physics
    //===============================
 
@@ -825,12 +842,15 @@ package player.world {
 
       private function CreatePhysicsEngine ():void
       {
+         ClearGlobalForces ();
+         SetCurrentGravityAcceleration (mDefaultGravityAccelerationMagnitude * Math.cos (mDefaultGravityAccelerationAngle), mDefaultGravityAccelerationMagnitude * Math.sin (mDefaultGravityAccelerationAngle));
+         
          mPhysicsEngine = new PhysicsEngine ();
          
          mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
          mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished);
          
-         SetCurrentGravityAcceleration (mDefaultGravityAccelerationMagnitude * Math.cos (mDefaultGravityAccelerationAngle), mDefaultGravityAccelerationMagnitude * Math.sin (mDefaultGravityAccelerationAngle));
+         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX, mCurrentGravityAccelerationY);
       }
 
    //===============================
@@ -852,6 +872,7 @@ package player.world {
       // update body mass, coincide bodies with centroid
          
          mEntityListBody.OnBodyPhysicsShapeListChanged ();
+         mEntityListBody.AddShapeMomentums ();
          
       // build joints
          
@@ -873,6 +894,9 @@ package player.world {
 
       private function UpdatePhysics (dt:Number):void
       {
+         mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX + mGlobalForceX, mCurrentGravityAccelerationY + mGlobalForceY);
+         ClearGlobalForces ();
+         
          mPhysicsEngine.Update (dt);
          
       // sycronize with physics, should before HandleShapeContactEvents

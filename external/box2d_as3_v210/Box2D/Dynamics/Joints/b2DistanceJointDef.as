@@ -19,6 +19,11 @@ package Box2D.Dynamics.Joints
 			length = 1.0;
 			frequencyHz = 0.0;
 			dampingRatio = 0.0;
+			
+			//hacking
+			//>>
+			springConstant = -1.0;
+			//<
 		}
 
 		/// Initialize the bodies, anchors, and length using the world
@@ -52,5 +57,11 @@ package Box2D.Dynamics.Joints
 			var d:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (anchor2.x - anchor1.x, anchor2.y - anchor1.y);
 			length = d.Length();
 		}
+		
+		//hacking
+		//>>
+		public var springConstant:Number;
+		//<
+		
 	} // class
 } // package

@@ -65,9 +65,6 @@ package player.entity {
          }
          else if (createStageId == 2)
          {
-            mLastRotation = mGravityAngle + mRotation;
-            
-            mWorld.GetPhysicsEngine ().SetGravity (mGravityAcceleration, mLastRotation);
          }
       }
            
@@ -155,9 +152,25 @@ package player.entity {
 //   
 //=============================================================
       
-      private var mLastRotation:Number;
+      private var mGravityWorldRotation:Number = 0.0;
+      private var mCosGravityWorldRotation:Number = Math.cos (mGravityWorldRotation);
+      private var mSinGravityWorldRotation:Number = Math.sin (mGravityWorldRotation);
       private var mInteractiveZonesParams:Array = null;
       private var mInteractive:Boolean;
+      
+      private function RegisterGravity ():void
+      {
+         // mGravityAngle is in self coordinate, newRotation is in world coordinate
+         var newRotation:Number = mGravityAngle + mRotation;
+         if (mGravityWorldRotation != newRotation)
+         {
+            mGravityWorldRotation = newRotation;
+            mCosGravityWorldRotation = Math.cos (mGravityWorldRotation);
+            mSinGravityWorldRotation = Math.sin (mGravityWorldRotation);
+         }
+         
+         mWorld.AddGlobalForce (mGravityAcceleration * mCosGravityWorldRotation, mGravityAcceleration * mSinGravityWorldRotation);
+      }
       
 //=============================================================
 //   intialize
@@ -198,14 +211,7 @@ package player.entity {
       {
          super.UpdateInternal (dt);
          
-         // parent is a ShapeContainer, which is a child of mWorld
-         var nowRotation:Number = mGravityAngle + mRotation;
-         
-         if (mLastRotation != nowRotation)
-         {
-            mLastRotation = nowRotation;
-            mWorld.GetPhysicsEngine ().SetGravity (mGravityAcceleration, mLastRotation);
-         }
+         RegisterGravity ();
          
          var lastInteractive:Boolean = mInteractive;
          mInteractive = GetInteractivity ();
@@ -293,16 +299,12 @@ package player.entity {
          
          mGravityAcceleration = MathUtil.GetClipValue (mGravityAcceleration, 0, mMaximalGravityAcceleration);
          
-         mLastRotation = mGravityAngle + mRotation;
-         
-         //mWorld.mPhysicsEngine.SetGravity (mGravityAcceleration, mLastRotation);
-         // from v1.07
-         mWorld.GetPhysicsEngine ().SetGravity (mGravityAcceleration, mLastRotation);
          mWorld.GetPhysicsEngine ().WakeUpAllBodies ();
          
          // 
          mNeedRepaintDirection = true;
-         DelayUpdateAppearance ();
+         //DelayUpdateAppearance ();
+         UpdateAppearance (); // to response the user input even in pause status
       }
       
 //=============================================================

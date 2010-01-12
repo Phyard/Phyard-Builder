@@ -60,19 +60,13 @@
       <![CDATA[       
          
          import common.Define;
+         import editor.trigger.Lists;
          
          private var mInputValues:Object;
          
          private function OnInitPanel ():void
          {
-            var dp:Array = new Array ();
-            dp.push({label:"Static", data:Define.ShapeAiType_Static});
-            dp.push({label:"Movable", data:Define.ShapeAiType_Movable});
-            dp.push({label:"Breakable", data:Define.ShapeAiType_Breakable});
-            dp.push({label:"Infected", data:Define.ShapeAiType_Infected});
-            dp.push({label:"Uninfected", data:Define.ShapeAiType_Uninfected});
-            dp.push({label:"DontInfect", data:Define.ShapeAiType_DontInfect});
-            SelectList_AiType.dataProvider = dp;
+            SelectList_AiType.dataProvider = Lists.GetListWithDataInLabel (Lists.mAiTypeList);
          }
          
          private function OnAiTypeSelectListClick ():void
@@ -132,7 +126,7 @@
             mInputValues = inputValues;
             
             CheckBox_IsCiShape.selected = inputValues.mAiType >= 0;
-            SelectList_AiType.selectedIndex = inputValues.mAiType;
+            SelectList_AiType.selectedIndex = Lists.SelectedValue2SelectedIndex (Lists.mAiTypeList, inputValues.mAiType);
             
             NumericStepper_Opacity.value = inputValues.mTransparency;
             CheckBox_DrawBorder.selected = inputValues.mDrawBorder;

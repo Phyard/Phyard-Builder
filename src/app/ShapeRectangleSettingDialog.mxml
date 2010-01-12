@@ -18,10 +18,14 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <ShapeAppearanceSettingPanel id="AppearanceSettingPanel" creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
-         <mx:HBox width="100%">
+         <mx:Spacer height="100%"/>
+         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:Spacer height="100%"/>
+         <mx:HBox id="AppearanceOtherSettingsPanel" width="100%" creationComplete="OnAppearanceOtherSettingsPanelCreationComplete()">
             <mx:Spacer width="60"/>
             <mx:CheckBox id="CheckBox_RoundCorners" label="Round Corners"/>
          </mx:HBox>
+         <mx:Spacer height="100%"/>
       </mx:VBox>
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
@@ -87,7 +91,10 @@
          {
             mParams.mCiTypeSelectable = true;
             AppearanceSettingPanel.SetValues (mParams);
-            
+         }
+
+         private function OnAppearanceOtherSettingsPanelCreationComplete ():void
+         {
             CheckBox_RoundCorners.selected = mParams.mIsRoundCorners;
          }
          
@@ -121,7 +128,10 @@
             if (AppearanceSettingPanel != null)
             {
                AppearanceSettingPanel.GetValues (mParams);
-               
+            }
+
+            if (AppearanceOtherSettingsPanel != null)
+            {
                mParams.mIsRoundCorners = CheckBox_RoundCorners.selected;
             }
             

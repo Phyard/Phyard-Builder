@@ -100,6 +100,16 @@ package common.trigger {
                         ValueTypeDefine.ValueType_String, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ConditionAssign,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_String, 
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_Add,
                      [
                         ValueTypeDefine.ValueType_String, 
@@ -147,6 +157,16 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Assign,
                      [
                         ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Boolean,
+                        ValueTypeDefine.ValueType_Boolean,
                      ],
                      [
                         ValueTypeDefine.ValueType_Boolean, 
@@ -662,15 +682,17 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed,
                      null,
                      [
                         ValueTypeDefine.ValueType_Boolean,
                      ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelSuccessed,
-                     null,
-                     null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed,
                      null,
@@ -678,19 +700,11 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Boolean,
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelFailed,
-                     null,
-                     null
-                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished,
                      null,
                      [
                         ValueTypeDefine.ValueType_Boolean,
                      ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelUnfinished,
-                     null,
-                     null
                   );
          
       // game / world
@@ -757,6 +771,16 @@ package common.trigger {
                         ValueTypeDefine.ValueType_CollisionCategory, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally,
                      [
                         ValueTypeDefine.ValueType_CollisionCategory, 
@@ -783,7 +807,24 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ]
+                  );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -791,12 +832,6 @@ package common.trigger {
                      [
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskSuccessed,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed,
                      [
@@ -806,12 +841,6 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskFailed,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     null
-                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -819,19 +848,6 @@ package common.trigger {
                      [
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskUnfinished,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     null
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
-                     ],
-                     null
                   );
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,

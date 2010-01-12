@@ -675,15 +675,6 @@
                   PopUpManager.addPopUp (settingBombDialog, MainView, true);
                   PopUpManager.centerPopUp (settingBombDialog);
                }
-               //else if (initialValues.mIsField == true)
-               //{
-               //   var settingFieldDialog:ShapeFieldSettingDialog = new ShapeFieldSettingDialog ();
-               //   settingFieldDialog.SetValues (initialValues);
-               //   settingFieldDialog.SetConfirmFunc (onConfirmFunc);
-               //   settingFieldDialog.SetCloseFunc (OnCloseDialog);
-               //   PopUpManager.addPopUp (settingFieldDialog, MainView, true);
-               //   PopUpManager.centerPopUp (settingFieldDialog);
-               //}
                else
                {
                   var settingDialog:ShapeRectangleSettingDialog = new ShapeRectangleSettingDialog ();

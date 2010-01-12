@@ -234,6 +234,36 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
+      internal function AddShapeMomentums ():void
+      {
+         mIsRemovingLocked = true;
+         
+         var entity:Entity = mHead;
+         var body:EntityBody;
+         if (entity != null)
+         {
+            var tail:Entity = mTail;
+            
+            while (true)
+            {
+               body = entity as EntityBody;
+               if (body != null)
+               {
+                  body.AddShapeMomentums ();
+               }
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
+            }
+         }
+         
+         mIsRemovingLocked = false;
+         
+         DelayUnregisterEntities ();
+      }
+      
       internal function ConfirmConnectedShapes ():void
       {
          mIsRemovingLocked = true;

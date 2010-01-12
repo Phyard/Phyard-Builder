@@ -42,7 +42,8 @@ package player.physics {
       
       public function BuildDistance (
                   anchor1:SubEntityJointAnchor, anchor2:SubEntityJointAnchor, collideConnected:Boolean, 
-                  staticLengthRatio:Number = 1.0, frequencyHz:Number = 0.0, dampingRatio:Number = 0.0
+                  staticLengthRatio:Number = 1.0, frequencyHz:Number = 0.0, dampingRatio:Number = 0.0, 
+                  springConstant:Number = -1.0
                ):void
       {
          // ..
@@ -67,6 +68,7 @@ package player.physics {
          distanceJointDef.length *= staticLengthRatio;
          distanceJointDef.frequencyHz = frequencyHz;
          distanceJointDef.dampingRatio = dampingRatio;
+         distanceJointDef.springConstant = springConstant;
          
          _b2DistanceJoint = mPhysicsEngine._b2World.CreateJoint(distanceJointDef) as b2DistanceJoint;
          

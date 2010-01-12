@@ -22,6 +22,7 @@ package player.trigger {
    import common.trigger.CoreFunctionDeclarations;
    
    import common.Define;
+   import common.trigger.ValueDefine;
    
    public class CoreFunctionDefinitions
    {
@@ -52,6 +53,7 @@ package player.trigger {
       // string
          
          RegisterCoreFunction (CoreFunctionIds.ID_String_Assign,                      AssignString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_ConditionAssign,             ConditionAssignString);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Add,                         AddTwoStrings);
          
          RegisterCoreFunction (CoreFunctionIds.ID_String_NumberToString,              NumberToString);
@@ -61,10 +63,11 @@ package player.trigger {
          
       // bool
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Assign,            AssignBoolean);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Invert,            BooleanInvert);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsTrue,            IsTrue);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsFalse,           IsFalse);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Assign,                AssignBoolean);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_ConditionAssign,       ConditionAssignBoolean);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Invert,                BooleanInvert);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsTrue,                IsTrue);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsFalse,               IsFalse);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsNumber,      EqualsWith_Numbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsBoolean,     EqualsWith_Booleans);
@@ -137,12 +140,10 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelMilliseconds,             GetLevelMilliseconds);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelSteps,                    GetLevelSteps);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStatus,                   SetLevelStatus);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelSuccessed,                 IsLevelSuccessed);
-         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelSuccessed,                SetLevelSuccessed);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelFailed,                    IsLevelFailed);
-         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelFailed,                   SetLevelFailed);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelUnfinished,                IsLevelUnfinished);
-         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelUnfinished,               SetLevelUnfinished);
          
       // game / world
          
@@ -158,20 +159,19 @@ package player.trigger {
       // game / collision category
          
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_Assign,                                       AssignCollisionCategory);
+         RegisterCoreFunction (CoreFunctionIds.ID_CCat_ConditionAssign,                              ConditionAssignCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_SetCollideInternally,                         SetCollisionCategoryCollideInternally);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_SetAsFriends,                                 SetCollisionCategoriesAsFriends);
          
       // game / entity
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Assign,                      AssignEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_ConditionAssign,             ConditionAssignEntity);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskSuccessed,                       IsEntityTaskSuccessed);
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskSuccessed,                      SetEntityTaskSuccessed);
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskFailed,                          IsEntityTaskFailed);
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskFailed,                         SetEntityTaskFailed);
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskUnfinished,                      IsEntityTaskUnfinished);
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskUnfinished,                     SetEntityTaskUnfinished);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskStatus,                         SetEntityTaskStatus);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskSuccessed,                       IsEntityTaskSuccessed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskFailed,                          IsEntityTaskFailed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskUnfinished,                      IsEntityTaskUnfinished);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
          
@@ -320,6 +320,19 @@ package player.trigger {
          valueTarget.AssignValueObject (value);
       }
       
+      public static function ConditionAssignString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var string1:Boolean = valueSource.EvalateValueObject () as String;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var string2:Boolean = valueSource.EvalateValueObject () as String;
+         
+         valueTarget.AssignValueObject (condtion ? string1 : string2);
+      }
+      
       public static function AddTwoStrings (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var value1:String = valueSource.EvalateValueObject () as String;
@@ -369,6 +382,19 @@ package player.trigger {
          var value:Boolean = valueSource.EvalateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (value);
+      }
+      
+      public static function ConditionAssignBoolean (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var bool1:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var bool2:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         valueTarget.AssignValueObject (condtion ? bool1 : bool2);
       }
       
       public static function BooleanInvert (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -919,14 +945,27 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.GetCurrentDesign ().GetLevelSteps ());
       }
       
+      public static function SetLevelStatus (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         switch (int (valueSource.EvalateValueObject ()))
+         {
+            case ValueDefine.LevelStatus_Failed:
+               Global.GetCurrentDesign ().SetLevelFailed ();
+               break;
+            case ValueDefine.LevelStatus_Successed:
+               Global.GetCurrentDesign ().SetLevelSuccessed ();
+               break;
+            case ValueDefine.LevelStatus_Unfinished:
+               Global.GetCurrentDesign ().SetLevelUnfinished ();
+               break;
+            default:
+               break;
+         }
+      }
+      
       public static function IsLevelSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelSuccessed ());
-      }
-      
-      public static function SetLevelSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         Global.GetCurrentDesign ().SetLevelSuccessed ();
       }
       
       public static function IsLevelFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -934,19 +973,9 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelFailed ());
       }
       
-      public static function SetLevelFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         Global.GetCurrentDesign ().SetLevelFailed ();
-      }
-      
       public static function IsLevelUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelUnfinished ());
-      }
-      
-      public static function SetLevelUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         Global.GetCurrentDesign ().SetLevelUnfinished ();
       }
       
    //*******************************************************************
@@ -1051,6 +1080,19 @@ package player.trigger {
          valueTarget.AssignValueObject (cat);
       }
       
+      public static function ConditionAssignCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var cat1:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var cat2:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         valueTarget.AssignValueObject (condtion ? cat1 : cat2);
+      }
+      
       public static function SetCollisionCategoryCollideInternally (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var cat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
@@ -1085,6 +1127,42 @@ package player.trigger {
          valueTarget.AssignValueObject (entity);
       }
       
+      public static function ConditionAssignEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var condition:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var entity1:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var entity2:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (condition ? entity1 : entity2);
+      }
+      
+      public static function SetEntityTaskStatus (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         switch (int (valueSource.EvalateValueObject ()))
+         {
+            case ValueDefine.TaskStatus_Failed:
+               entity.SetTaskFailed ();
+               break;
+            case ValueDefine.TaskStatus_Successed:
+               entity.SetTaskSuccessed ();
+               break;
+            case ValueDefine.TaskStatus_Unfinished:
+               entity.SetTaskUnfinished ();
+               break;
+            default:
+               break;
+         }
+      }
+      
       public static function IsEntityTaskSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
@@ -1092,16 +1170,6 @@ package player.trigger {
          var successed:Boolean = entity == null ? false : entity.IsTaskSuccessed ();
          
          valueTarget.AssignValueObject (successed);
-      }
-      
-      public static function SetEntityTaskSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
-         if (entity == null)
-            return;
-         
-         
-         entity.SetTaskSuccessed ();
       }
       
       public static function IsEntityTaskFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1113,16 +1181,6 @@ package player.trigger {
          valueTarget.AssignValueObject (failed);
       }
       
-      public static function SetEntityTaskFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
-         if (entity == null)
-            return;
-         
-         
-         entity.SetTaskFailed ();
-      }
-      
       public static function IsEntityTaskUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
@@ -1130,32 +1188,6 @@ package player.trigger {
          var unfinished:Boolean = entity == null ? true : entity.IsTaskUnfinished ();
          
          valueTarget.AssignValueObject (unfinished);
-      }
-      
-      public static function SetEntityTaskUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
-         if (entity == null)
-            return;
-         
-         entity.SetTaskUnfinished ();
-      }
-      
-      public static function SetEntityTaskStatus (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
-         if (entity == null)
-            return;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var status:int = int (valueSource.EvalateValueObject ());
-         
-         if (status > 0)
-            entity.SetTaskSuccessed ();
-         else if (status < 0)
-            entity.SetTaskFailed ();
-         else
-            entity.SetTaskUnfinished ();
       }
       
       public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void

@@ -29,14 +29,13 @@ package editor.entity {
       public var mAnchor2:SubEntitySpringAnchor;
       
       private var mStaticLengthRatio:Number = 1;
-      //private var mFrequencyHz:Number = 1;
       public var mDampingRatio:Number = 0;
       
       protected var mSpringType:int = Define.SpringType_Unkonwn;
       
       protected var mFrequencyDeterminedManner:int = 0;
       protected var mFrequency:Number = 0.0;
-      //protected var mCustomSpringConstant:Number = 0.0;
+      protected var mCustomSpringConstant:Number = 0.0; // Hookean Coefficient,(pixles / Newton)
       
       protected var mBreakExtendedLength:Number = 0.0;
       
@@ -76,18 +75,6 @@ package editor.entity {
       {
          return mStaticLengthRatio;
       }
-      
-      //public function SetFrequencyHz (fHz:Number):void
-      //{
-      //   mFrequencyHz = fHz > 0 ? fHz : 0;
-      //   
-      //   UpdateAppearance ();
-      //}
-      //
-      //public function GetFrequencyHz ():Number
-      //{
-      //   return mFrequencyHz;
-      //}
       
       /*
       public function SetWireDiameter (d:Number):void
@@ -152,16 +139,15 @@ package editor.entity {
          return mFrequency;
       }
       
-      //public function SetCustomSpringConstant (k:Number):Number
-      //{
-      //   mCustomSpringConstant = k;
-      //}
+      public function SetSpringConstant (k:Number):void
+      {
+         mCustomSpringConstant = k;
+      }
       
-      //public function GetCustomSpringConstant ():Number
-      //{
-      //   return mCustomSpringConstant;
-      //}
-      
+      public function GetSpringConstant ():Number
+      {
+         return mCustomSpringConstant;
+      }
       
       public function SetBreakExtendedLength (length:Number):void
       {
@@ -307,6 +293,7 @@ package editor.entity {
          spring.SetFrequency (GetFrequency ());
          spring.SetFrequencyDeterminedManner (GetFrequencyDeterminedManner ());
          spring.SetBreakExtendedLength (GetBreakExtendedLength ());
+         spring.SetSpringConstant (GetSpringConstant ());
          
          var anchor1:SubEntitySpringAnchor = GetAnchor1 ();
          var anchor2:SubEntitySpringAnchor = GetAnchor2 ();

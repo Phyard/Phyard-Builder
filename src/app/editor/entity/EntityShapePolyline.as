@@ -27,6 +27,8 @@ package editor.entity {
       
       protected var mCurveThickness:uint = 1;
       
+      protected var mRoundEnds:Boolean = true; // v1.08
+      
       private var mMinX:Number;
       private var mMaxX:Number;
       private var mMinY:Number;
@@ -67,12 +69,7 @@ package editor.entity {
          
          alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
          
-         GraphicsUtil.Clear (this);
-         
-         for (var i:int = 1; i < GetVertexPointsCount (); ++ i)
-         {
-            GraphicsUtil.DrawLine (this, mLocalPoints [i - 1].x, mLocalPoints [i - 1].y, mLocalPoints [i].x, mLocalPoints [i].y, bgColor, curveThickness);
-         }
+         GraphicsUtil.ClearAndDrawPolyline (this, mLocalPoints, bgColor, curveThickness, mRoundEnds);
       }
       
       override public function UpdateSelectionProxy ():void
@@ -93,16 +90,18 @@ package editor.entity {
          
          var halfThickness:Number = thickness * 0.5;
          
-         if (GetVertexPointsCount () > 0)
+         if (mRoundEnds && halfThickness > 2 && GetVertexPointsCount () > 0)
             (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [0].x, mLocalPoints [0].y, halfThickness);
          for (var i:int = 1; i < mLocalPoints.length; ++ i)
          {
             (mSelectionProxy as SelectionProxy).CreateLineSegmentZone (mLocalPoints [i - 1].x, mLocalPoints [i - 1].y, mLocalPoints [i].x, mLocalPoints [i].y, thickness);
-            if (halfThickness > 2 || i == (mLocalPoints.length - 1))
+            if (halfThickness > 2 && i < (mLocalPoints.length - 1))
             {
                (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [i].x, mLocalPoints [i].y, halfThickness);
             }
          }
+         if (mRoundEnds && halfThickness > 2 && GetVertexPointsCount () > 1)
+            (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [mLocalPoints.length - 1].x, mLocalPoints [mLocalPoints.length - 1].y, halfThickness);
          
          if (Compile::Is_Debugging)// && false)
          {
@@ -137,6 +136,16 @@ package editor.entity {
       public function GetCurveThickness ():uint
       {
          return mCurveThickness;
+      }
+      
+      public function IsRoundEnds ():Boolean
+      {
+         return mRoundEnds;
+      }
+      
+      public function SetRoundEnds (roundEnds:Boolean):void
+      {
+         mRoundEnds = roundEnds;
       }
       
 //====================================================================

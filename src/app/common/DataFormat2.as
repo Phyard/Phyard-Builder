@@ -1418,6 +1418,8 @@ package common {
          var createId:int;
          var vertexId:int;
          
+         var hasGravityControllers:Boolean = false;
+         
          for (createId = 0; createId < numEntities; ++ createId)
          {
             var entityDefine:Object = worldDefine.mEntityDefines [createId];
@@ -1445,6 +1447,7 @@ package common {
                {
                   if (entityDefine.mIsPhysicsEnabled)
                   {
+                     // from v1.08, a dynamic shape with zero density will not view as a static shape
                      if (worldDefine.mVersion < 0x0108 && Number (entityDefine.mDensity) <= 0)
                      {
                         entityDefine.mIsStatic = true;
@@ -1495,6 +1498,12 @@ package common {
                         entityDefine.mLocalPoints [vertexId].x = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].x, 6);
                         entityDefine.mLocalPoints [vertexId].y = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].y, 6);
                      }
+                     
+                     if (worldDefine.mVersion < 0x0107)
+                     {
+                        if (entityDefine.mCurveThickness < 2.0)
+                           entityDefine.mBuildBorder = false;
+                     }
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
@@ -1502,6 +1511,12 @@ package common {
                      {
                         entityDefine.mLocalPoints [vertexId].x = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].x, 6);
                         entityDefine.mLocalPoints [vertexId].y = ValueAdjuster.Number2Precision (entityDefine.mLocalPoints [vertexId].y, 6);
+                     }
+                     
+                     if (worldDefine.mVersion < 0x0107)
+                     {
+                        if (entityDefine.mCurveThickness < 2.0)
+                           entityDefine.mBuildBorder = false;
                      }
                   }
                }
@@ -1514,6 +1529,8 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
                   {
+                     hasGravityControllers = true;
+                     
                      entityDefine.mRadius = ValueAdjuster.Number2Precision (entityDefine.mRadius, 6);
                      
                      if (worldDefine.mVersion < 0x0108)
@@ -1588,6 +1605,13 @@ package common {
                   }
                }
             }
+         }
+         
+         // before v1.08, gravity = hasGravityControllers ? theLastGravityController.gravity : world.defaultGravity
+         // from   v1.08, gravity = world.defaultGravity + sum (all GravityController.gravity)
+         if (worldDefine.mVersion < 0x0108 && hasGravityControllers)
+         {
+            worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = 0.0;
          }
       }
       

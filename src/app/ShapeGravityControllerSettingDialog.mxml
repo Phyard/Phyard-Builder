@@ -11,73 +11,73 @@
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnMainPanelCreationComplete()">
+         <mx:VBox width="100%">
+            <mx:HBox width="100%">
+               <mx:VBox width="44%" >
+                  <mx:HBox width="100%">
+                     <mx:Spacer width="100%"/>
+                     <mx:Label id="Label_InteractiveZones" text="Interactive Zones:" textAlign="right" width="39%"/>
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox>
+                  <mx:HBox>
+                     <mx:CheckBox id="CheckBox_ZoneUp" label="Up" width="15%"/>
+                     <mx:CheckBox id="CheckBox_ZoneDown" label="Down" width="15%"/>
+                  </mx:HBox>
+                  <mx:HBox>
+                     <mx:CheckBox id="CheckBox_ZoneLeft" label="Left" width="15%"/>
+                     <mx:CheckBox id="CheckBox_ZoneRight" label="Right" width="15%"/>
+                  </mx:HBox>
+                  <mx:HBox>
+                     <mx:CheckBox id="CheckBox_ZoneCenter" label="Center" width="15%"/>
+                     <mx:CheckBox id="CheckBox_ZoneAllArea" label="All Area" width="15%"/>
+                  </mx:HBox>
+               </mx:VBox>
+            </mx:HBox>
 
-         <mx:HBox width="100%">
-            <mx:VBox width="44%" >
-               <mx:HBox width="100%">
-                  <mx:Spacer width="100%"/>
-                  <mx:Label id="Label_InteractiveZones" text="Interactive Zones:" textAlign="right" width="39%"/>
-               </mx:HBox>
-            </mx:VBox>
-            <mx:VBox>
-               <mx:HBox>
-                  <mx:CheckBox id="CheckBox_ZoneUp" label="Up" width="15%"/>
-                  <mx:CheckBox id="CheckBox_ZoneDown" label="Down" width="15%"/>
-               </mx:HBox>
-               <mx:HBox>
-                  <mx:CheckBox id="CheckBox_ZoneLeft" label="Left" width="15%"/>
-                  <mx:CheckBox id="CheckBox_ZoneRight" label="Right" width="15%"/>
-               </mx:HBox>
-               <mx:HBox>
-                  <mx:CheckBox id="CheckBox_ZoneCenter" label="Center" width="15%"/>
-                  <mx:CheckBox id="CheckBox_ZoneAllArea" label="All Area" width="15%"/>
-               </mx:HBox>
-            </mx:VBox>
-         </mx:HBox>
-
-         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_Condition" label="Only interactive when all shapes without joints connected are sleeping" />
-            <mx:Spacer width="100%"/>
-         </mx:HBox>
-
-         <mx:HBox width="100%">
-            <mx:VBox width="50%" >
-               <mx:HBox width="100%">
-                  <mx:Spacer width="100%"/>
-                  <mx:Label id="Label_MaximalMagnitude" text="Maximal Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
-               </mx:HBox>
-            </mx:VBox>
-            <mx:VBox>
-               <mx:TextInput id="Text_MaximalMagnitude" text="" width="100"/>
-            </mx:VBox>
-         </mx:HBox>
-
-         <mx:HBox width="100%">
-            <mx:VBox width="50%" >
-               <mx:HBox width="100%">
-                  <mx:Spacer width="100%"/>
-                  <mx:Label id="Label_InitialMagnitude" text="Initial Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
-               </mx:HBox>
-            </mx:VBox>
-            <mx:VBox>
-               <mx:TextInput id="Text_InitialMagnitude" text="" width="100"/>
-            </mx:VBox>
-         </mx:HBox>
-
-         <mx:HBox width="100%">
-            <mx:HBox width="50%">
+            <mx:HBox width="100%">
                <mx:Spacer width="100%"/>
-               <mx:Label id="Label_InitialAngle" text="Initial Gravity Acceleration Angle:" textAlign="right" width="39%"/>
+               <mx:CheckBox id="CheckBox_Condition" label="Only interactive when all shapes without joints connected are sleeping" />
+               <mx:Spacer width="100%"/>
             </mx:HBox>
-            <mx:HBox>
-               <mx:TextInput id="Text_InitialAngle" text="" width="100"/>
-               <mx:Label text="(degrees)"/>
+
+            <mx:HBox width="100%">
+               <mx:VBox width="50%" >
+                  <mx:HBox width="100%">
+                     <mx:Spacer width="100%"/>
+                     <mx:Label id="Label_MaximalMagnitude" text="Maximal Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox>
+                  <mx:TextInput id="Text_MaximalMagnitude" text="" width="100"/>
+               </mx:VBox>
             </mx:HBox>
-         </mx:HBox>
 
-         <mx:Spacer height="26" />
+            <mx:HBox width="100%">
+               <mx:VBox width="50%" >
+                  <mx:HBox width="100%">
+                     <mx:Spacer width="100%"/>
+                     <mx:Label id="Label_InitialMagnitude" text="Initial Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox>
+                  <mx:TextInput id="Text_InitialMagnitude" text="" width="100"/>
+               </mx:VBox>
+            </mx:HBox>
 
+            <mx:HBox width="100%">
+               <mx:HBox width="50%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_InitialAngle" text="Initial Gravity Acceleration Angle:" textAlign="right" width="39%"/>
+               </mx:HBox>
+               <mx:HBox>
+                  <mx:TextInput id="Text_InitialAngle" text="" width="100"/>
+                  <mx:Label text="(degrees)"/>
+               </mx:HBox>
+            </mx:HBox>
+
+            <mx:Spacer height="10" />
+         </mx:VBox>
       </mx:Box>
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"

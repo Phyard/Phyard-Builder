@@ -8,6 +8,7 @@ package editor.trigger {
    
    import common.trigger.CoreFunctionIds;
    import common.trigger.ValueTypeDefine;
+   import editor.trigger.Lists;
    
    public class PlayerFunctionDefinesForEditing
    {
@@ -132,10 +133,20 @@ package editor.trigger {
                              new VariableDefinitionString ("Target String"), 
                      ]
                   );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", 
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"), 
+                             new VariableDefinitionString ("Source String 1"), 
+                             new VariableDefinitionString ("Source String 2"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Target String"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Add, string_package, "String + String", 
                      [
-                             new VariableDefinitionString ("Source String"), 
-                             new VariableDefinitionString ("Source String"), 
+                             new VariableDefinitionString ("Source String 1"), 
+                             new VariableDefinitionString ("Source String 2"), 
                      ],
                      [
                              new VariableDefinitionString ("Target String"), 
@@ -179,6 +190,16 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Assign, bool_package, "= (Assign Boolean)", 
                      [
                              new VariableDefinitionBoolean ("Source Boolean"), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Target Boolean"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign, bool_package, "=? (Condition Assign Boolean)", 
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"), 
+                             new VariableDefinitionBoolean ("Source Boolean 1"), 
+                             new VariableDefinitionBoolean ("Source Boolean 2"), 
                      ],
                      [
                              new VariableDefinitionBoolean ("Target Boolean"), 
@@ -299,7 +320,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ConditionAssign, math_package, "= (Number Condition Assign)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ConditionAssign, math_package, "=? (Number Condition Assign)", 
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                              new VariableDefinitionNumber ("True Source"), 
@@ -693,15 +714,17 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Simulation Steps"), 
                      ]
                   );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus, design_package, "SetLevelStatus", 
+                     [
+                        new VariableDefinitionNumber ("Status", null, null, {mValueLists: Lists.mLevelStatusList}), 
+                     ],
+                     null
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed, design_package, "IsLevelSuccessed", 
                      null,
                      [
                         new VariableDefinitionBoolean ("Finshied?"), 
                      ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelSuccessed, design_package, "SetLevelSuccessed", 
-                     null,
-                     null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed, design_package, "IsLevelFailed", 
                      null,
@@ -709,19 +732,11 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Failed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelFailed, design_package, "SetLevelFailed", 
-                     null,
-                     null
-                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished, design_package, "IsLevelUnfinished", 
                      null,
                      [
                         new VariableDefinitionBoolean ("Failed?"), 
                      ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelUnfinished, design_package, "SetLevelUnfinished", 
-                     null,
-                     null
                   );
          
       // game / world
@@ -785,6 +800,16 @@ package editor.trigger {
                              new VariableDefinitionCollisionCategory ("Collision Category"), 
                      ],
                      [
+                             new VariableDefinitionCollisionCategory ("Target"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign, cat_package, "?= (Condition Assign CCat)", 
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionCollisionCategory ("Collision Category 1"), 
+                             new VariableDefinitionCollisionCategory ("Collision Category 2"), 
+                     ],
+                     [
                              new VariableDefinitionCollisionCategory ("Assign To"), 
                      ]
                   );
@@ -811,10 +836,27 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Source Entity"), 
                      ],
                      [
-                             new VariableDefinitionEntity ("Terget Entity"), 
+                             new VariableDefinitionEntity ("Terget"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign, entity_package, "?= (Condition Assign Entity)", 
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionEntity ("Source Entity 1"), 
+                             new VariableDefinitionEntity ("Source Entity 2"), 
+                     ],
+                     [
+                             new VariableDefinitionEntity ("Terget"), 
                      ]
                   );
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,  entity_as_task_package, "SetTaskStatus", 
+                     [
+                        new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
+                        new VariableDefinitionNumber ("Task Status (-1/0/1)", null, null, {mValueLists: Lists.mEntityTaskStatusList}), 
+                     ],
+                     null
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_as_task_package, "IsTaskSuccessed", 
                      [
                              new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
@@ -822,12 +864,6 @@ package editor.trigger {
                      [
                              new VariableDefinitionBoolean ("Successed?"), 
                      ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskSuccessed, entity_as_task_package, "SetTaskSuccessed", 
-                     [
-                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
-                     ],
-                     null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed, entity_as_task_package, "IsTaskFailed", 
                      [
@@ -837,12 +873,6 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Failed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskFailed, entity_as_task_package, "SetTaskFailed", 
-                     [
-                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
-                     ],
-                     null
-                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished, entity_as_task_package, "IsTaskUnfinished", 
                      [
                              new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
@@ -850,19 +880,6 @@ package editor.trigger {
                      [
                              new VariableDefinitionBoolean ("Unfinished?"), 
                      ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskUnfinished, entity_as_task_package, "SetTaskUnfinished", 
-                     [
-                             new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
-                     ],
-                     null
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,  entity_as_task_package, "SetTaskStatus", 
-                     [
-                        new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsTaskEntity}), 
-                        new VariableDefinitionNumber ("Task Status (-1/0/1)"), 
-                     ],
-                     null
                   );
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity, entity_is_subtype_package, "IsShape", 
@@ -970,7 +987,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType, entity_shape_package, "Set C.I. Type", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
-                             new VariableDefinitionNumber ("CI Type"), 
+                             new VariableDefinitionNumber ("CI Type", null, null, {mValueLists: Lists.mAiTypeList}), 
                      ],
                      null
                   );

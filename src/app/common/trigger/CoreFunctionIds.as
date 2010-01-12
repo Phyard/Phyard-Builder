@@ -35,7 +35,8 @@ package common.trigger {
    // string
       
       public static const ID_String_Assign:int                    = 120; // 
-      public static const ID_String_Add:int                       = 121; // 
+      public static const ID_String_Add:int                       = 121; // to exchange with 122
+      public static const ID_String_ConditionAssign:int           = 122; //
       
       public static const ID_String_NumberToString:int            = 150; // 
       public static const ID_String_BooleanToString:int           = 151; // 
@@ -48,6 +49,7 @@ package common.trigger {
       public static const ID_Bool_Invert :int                    = 171; // 
       public static const ID_Bool_IsTrue :int                    = 172; // 
       public static const ID_Bool_IsFalse:int                    = 173; // 
+      public static const ID_Bool_ConditionAssign:int            = 174; // // to put after ID_Bool_Assign
       
       public static const ID_Bool_EqualsNumber:int               = 180; // 
       public static const ID_Bool_EqualsBoolean:int              = 181; // 
@@ -133,12 +135,10 @@ package common.trigger {
       public static const ID_Design_GetLevelMilliseconds:int                    = 600; // design
       public static const ID_Design_GetLevelSteps:int                           = 601; // design
       
+      public static const ID_Design_SetLevelStatus:int                         = 609; // design
       public static const ID_Design_IsLevelSuccessed:int                         = 610; // design
-      public static const ID_Design_SetLevelSuccessed:int                        = 611; // design
       public static const ID_Design_IsLevelFailed:int                            = 612; // design
-      public static const ID_Design_SetLevelFailed:int                           = 613; // design
       public static const ID_Design_IsLevelUnfinished:int                        = 614; // design
-      public static const ID_Design_SetLevelUnfinished:int                       = 615; // design
       
    // game / world
       
@@ -151,19 +151,21 @@ package common.trigger {
       public static const ID_World_FollowCameraWithShape:int                         = 720; // world
       public static const ID_World_FollowCameraCenterXWithShape:int                  = 721; // world
       public static const ID_World_FollowCameraCenterYWithShape:int                  = 722; // world
-      //public static const ID_World_FollowCameraRotationWithShape:int                 = 723; // world
+      //public static const ID_World_FollowCameraRotationWithShape:int               = 723; // world
       
       // VirtualClickOnEntityCenter (entity)
       
    // game / collision category
       
-      public static const ID_CCat_Assign:int                              = 850; // world
-      public static const ID_CCat_SetCollideInternally:int                = 851; // world
-      public static const ID_CCat_SetAsFriends:int                        = 852; // world
+      public static const ID_CCat_Assign:int                              = 850; // CCat
+      public static const ID_CCat_SetCollideInternally:int                = 851; // CCat
+      public static const ID_CCat_SetAsFriends:int                        = 852; // CCat
+      public static const ID_CCat_ConditionAssign:int                     = 853; // CCat, to ptu after ID_CCat_Assign
       
    // game / entity
       
       public static const ID_Entity_Assign:int                         = 900; // entity.shape
+      public static const ID_Entity_ConditionAssign:int                = 901; // entity.shape
       
       public static const ID_Entity_IsTaskSuccessed:int                = 910; // entity.shape
       public static const ID_Entity_SetTaskSuccessed:int               = 911; // entity.shape

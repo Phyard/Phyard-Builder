@@ -39,7 +39,7 @@ package player.entity {
                SetLocalDisplayVertexPoints (entityDefine.mLocalPoints);
             if (entityDefine.mCurveThickness != undefined)
             	SetCurveThickness (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mCurveThickness));
-            if (entityDefine.mIsRoundEnd != undefined)
+            if (entityDefine.mIsRoundEnds != undefined)
             	SetRoundEnds (entityDefine.mIsRoundEnds);
          }
       }
@@ -105,12 +105,12 @@ package player.entity {
       
       public function SetRoundEnds (roundEnds:Boolean):void
       {
-			mIsRoundEnds = roundEnds;
+         mIsRoundEnds = roundEnds;
       }
       
       public function IsRoundEnds ():Boolean
       {
-			return mIsRoundEnds;
+         return mIsRoundEnds;
       }
       
 //=============================================================
@@ -130,26 +130,7 @@ package player.entity {
             
             var displayCurveThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mCurveThickness);
             
-            var i:int;
-            var numVertesex:int = mLocalDisplayPoints.length;
-            var point1:Point;
-            var point2:Point;
-            
-            GraphicsUtil.Clear (mLineShape);
-            for (i = 1; i < numVertesex; ++ i)
-            {
-               point1 = mLocalDisplayPoints [i - 1];
-               point2 = mLocalDisplayPoints [i];
-               
-               GraphicsUtil.DrawLine (
-                        mLineShape, 
-                        point1.x, 
-                        point1.y, 
-                        point2.x, 
-                        point2.y, 
-                        GetFilledColor (), 
-                        displayCurveThickness);
-            }
+            GraphicsUtil.ClearAndDrawPolyline (mLineShape, mLocalDisplayPoints, GetFilledColor (), displayCurveThickness, mIsRoundEnds);
          }
          
          if (mNeedUpdateAppearanceProperties)

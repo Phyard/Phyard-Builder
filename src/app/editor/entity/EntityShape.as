@@ -40,7 +40,7 @@ package editor.entity {
       public var mIsBullet:Boolean = false;
       
       //public var mDensity:Number = 1.0;
-      public var mDensity:Number = 5000.0; // from v1.08
+      public var mDensity:Number = Define.DefaultShapeDensity; // from v1.08
       public var mFriction:Number = 0.1;
       public var mRestitution:Number = 0.2;
       

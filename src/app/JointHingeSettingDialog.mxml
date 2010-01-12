@@ -62,9 +62,6 @@
                   <mx:TextInput id="Text_MaxMotorTorque" text="" width="100"/>
                   <mx:Label text="   " textAlign="left"/>
                </mx:HBox>
-               <mx:HBox width="100%">
-                  <mx:CheckBox id="CheckBox_Breakable" label="Breakable"/>
-               </mx:HBox>
             </mx:VBox>
          </mx:HBox>
 
@@ -124,6 +121,7 @@
             
             var jointParams:Object = mParams.mJointValues;
             
+            jointParams.mDisableBrealable = true;
             CommonSettingPanel.SetValues (jointParams);
             
             CheckBox_LimitEnabled.selected = jointParams.mEnableLimit;
@@ -136,8 +134,6 @@
             CheckBox_BackAndForth.selected = jointParams.mBackAndForth;
             
             Text_MaxMotorTorque.text = jointParams.mMaxMotorTorque;
-            
-            CheckBox_Breakable.selected = jointParams.mIsBreakable;
          }
          
          private function OnJointBasicSettingPanelCreationComplete ():void
@@ -191,8 +187,6 @@
             var maxMotorTorque:Number = parseFloat (Text_MaxMotorTorque.text);
             if ( ! isNaN (maxMotorTorque) )
                jointParams.mMaxMotorTorque = maxMotorTorque;
-            
-            jointParams.mIsBreakable = CheckBox_Breakable.selected;
             
             if (JointBasicSettingPanel != null)
             {

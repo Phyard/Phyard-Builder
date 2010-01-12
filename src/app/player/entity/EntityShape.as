@@ -137,10 +137,10 @@ package player.entity {
             if (entityDefine.mAngularVelocity != undefined)
                SetAngularVelocity (mWorld.GetCoordinateSystem ().D2P_RotationRadians (entityDefine.mAngularVelocity * Define.kDegrees2Radians));
             
-            if (entityDefine.mLinearDamping != undefined)
-               SetLinearDamping (entityDefine.mLinearDamping);
-            if (entityDefine.mAngularDamping != undefined)
-               SetAngularDamping (entityDefine.mAngularDamping);
+            //if (entityDefine.mLinearDamping != undefined)
+            //   SetLinearDamping (entityDefine.mLinearDamping);
+            //if (entityDefine.mAngularDamping != undefined)
+            //   SetAngularDamping (entityDefine.mAngularDamping);
             
             if (entityDefine.mIsSleepingAllowed != undefined)
                SetSleepingAllowed (entityDefine.mIsSleepingAllowed);
@@ -844,6 +844,17 @@ package player.entity {
       // for judging if this condition is evaluated already in current step.
       private var mLastVelocityUpdatedStep:int = -1;
       
+      internal function UpdateWorldCentroid ():void
+      {
+         mBody.SynchronizeVelocityWithPhysicsProxy ();
+         
+         var worldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
+         var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
+         
+         mWorldCentroidX = mBody.mPositionX + worldLocalCentroidX;
+         mWorldCentroidY = mBody.mPositionY + worldLocalCentroidY;
+      }
+      
       internal function UpdateVelocityAndWorldCentroid (forcely:Boolean = false):void
       {
          var worldSimulateSteps:int = mWorld.GetSimulatedSteps ();
@@ -871,10 +882,21 @@ package player.entity {
          if (mPhysicsProxy == null)
             return;
          
+         if (IsStatic ())
+            return;
+         
          var momentumX:Number = mMass * mLinearVelocityX;
          var momentumY:Number = mMass * mLinearVelocityY;
          mBody.mPhysicsProxyBody.AddLinearImpulseAtPoint (momentumX, momentumY, mWorldCentroidX, mWorldCentroidY);
-         mBody.mPhysicsProxyBody.AddAngularImpulse (mInertia * mAngularVelocity + (mWorldCentroidX - mBody.mPositionX) * momentumY - (mWorldCentroidY - mBody.mPositionY) * momentumX);
+         
+         if (IsRotationFixed ())
+         {
+            mBody.mPhysicsProxyBody.AddAngularImpulse ((mWorldCentroidX - mBody.mPositionX) * momentumY - (mWorldCentroidY - mBody.mPositionY) * momentumX);
+         }
+         else
+         {
+            mBody.mPhysicsProxyBody.AddAngularImpulse (mInertia * mAngularVelocity + (mWorldCentroidX - mBody.mPositionX) * momentumY - (mWorldCentroidY - mBody.mPositionY) * momentumX);
+         }
       }
       
 //=============================================================

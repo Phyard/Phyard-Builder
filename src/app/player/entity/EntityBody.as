@@ -466,6 +466,19 @@ package player.entity {
             shape = shape.mNextShapeInBody;
          }
       }
+      
+      public function AddShapeMomentums ():void
+      {
+         var shape:EntityShape = mPhysicsShapeListHead;
+         
+         while (shape != null)
+         {
+            shape.UpdateWorldCentroid (); // UpdateVelocityAndWorldCentroid will clear shape velocity
+            shape.AddMomentumToBody ();
+            
+            shape = shape.mNextPhysicsShapeInBody;
+         }
+      }
 
 //=============================================================
 //   shape list

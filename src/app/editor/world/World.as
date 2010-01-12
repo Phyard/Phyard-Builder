@@ -157,7 +157,7 @@ package editor.world {
       private var mPhysicsShapesPopulationDensityLevel:int = 8;
       
       // the 2 are both display values
-      private var mDefaultGravityAccelerationMagnitude:Number = 98; // pixels
+      private var mDefaultGravityAccelerationMagnitude:Number = 196; // pixels
       private var mDefaultGravityAccelerationAngle:Number = 90; // degrees in left hand coordinates
       
       //

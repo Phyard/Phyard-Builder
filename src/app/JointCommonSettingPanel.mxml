@@ -23,6 +23,8 @@
       <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
       <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_Breakable" label="Breakable" click="OnModifyBreakable ()"/>
+      <mx:Spacer width="100%"/>
    </mx:HBox>
 
    <mx:Script>
@@ -31,9 +33,16 @@
          import common.Define;
          
          private var mInputValues:Object;
+         private var mOnBreakableChanged:Function = null;
          
          private function OnInitPanel ():void
          {
+         }
+
+         private function OnModifyBreakable ():void
+         {
+            if (mOnBreakableChanged != null)
+               mOnBreakableChanged (CheckBox_Breakable.selected);
          }
          
          public function SetValues (initialValues:Object):void
@@ -41,6 +50,10 @@
             mInputValues = initialValues;
             
             CheckBox_CollideConnected.selected = initialValues.mCollideConnected;
+            CheckBox_Breakable.selected = initialValues.mIsBreakable;
+
+            if (initialValues.mOnBreakableChanged != undefined)
+               mOnBreakableChanged = initialValues.mOnBreakableChanged;
             
             //
             SelectList_ConnectedShape1.dataProvider = initialValues.mShapeListDataProvider;
@@ -50,15 +63,22 @@
             
             SelectList_ConnectedShape1.enabled = initialValues.mAnchorIndex != 1;
             SelectList_ConnectedShape2.enabled = initialValues.mAnchorIndex != 0;
+
+            //
+            CheckBox_Breakable.enabled = initialValues.mDisableBrealable == undefined || (! initialValues.mDisableBrealable);
+
+            //
+            OnModifyBreakable ();
          }
          
          public function GetValues (returnValues:Object):void
          {
-             returnValues.mCollideConnected = CheckBox_CollideConnected.selected;
+            returnValues.mCollideConnected = CheckBox_CollideConnected.selected;
+            returnValues.mIsBreakable = CheckBox_Breakable.selected;
              
-             //
-             returnValues.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.mEntityIndex;
-             returnValues.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.mEntityIndex;
+            //
+            returnValues.mConntectedShape1Index = SelectList_ConnectedShape1.selectedItem.mEntityIndex;
+            returnValues.mConntectedShape2Index = SelectList_ConnectedShape2.selectedItem.mEntityIndex;
          }
          
      ]]>

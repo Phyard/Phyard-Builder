@@ -152,7 +152,16 @@ package editor.trigger {
       
       public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
       {
-         return (mValueType == variableDefinition.GetValueType ()) && (variableDefinition.GetTypeClassPrototype ().isPrototypeOf (GetTypeClassPrototype ()));
+         if (mValueType != variableDefinition.GetValueType ())
+            return false;
+         
+         // 
+         //var variablePrototype:Object = variableDefinition.GetTypeClassPrototype ();
+         //var selfPrototype:Object = GetTypeClassPrototype ();
+         //if (variablePrototype != selfPrototype && (! variablePrototype.isPrototypeOf (selfPrototype)))
+         //   return false;
+         
+         return true;
       }
       
 //==============================================================================

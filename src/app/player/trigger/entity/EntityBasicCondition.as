@@ -9,7 +9,7 @@ package player.trigger.entity
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
-   public class EntityBasicCondition extends EntityCondition
+   public class EntityBasicCondition extends EntityCondition implements ScriptHolder
    {
       public var mConditionDefinition:FunctionDefinition_Logic;
       public var mName:String = null;
@@ -52,10 +52,28 @@ package player.trigger.entity
       
       override public function Evaluate ():void
       {
+         mEvaluatedValue = RunBoolFunction () ? ValueDefine.BoolValue_True : ValueDefine.BoolValue_False;
+      }
+      
+//=============================================================
+//   as ScriptHolder
+//=============================================================
+      
+      public function RunScript ():void
+      {
+         Evaluate ();
+      }
+      
+//=============================================================
+//   as Bool Function
+//=============================================================
+      
+      public function RunBoolFunction ():Boolean
+      {
          // if (mConditionListDefinition != null) // should not be null
          mConditionDefinition.EvaluateCondition (mBooleanReturnValueTarget);
          
-         mEvaluatedValue = mBooleanReturnValueTarget.mBoolValue ? ValueDefine.BoolValue_True : ValueDefine.BoolValue_False;
+         return mBooleanReturnValueTarget.mBoolValue;
       }
       
    }

@@ -115,6 +115,23 @@ package editor.trigger {
                ); 
       }
       
+      // object can be an Entity subclass.prototype or a subclass instance
+      public static function IsScriptHolderEntity (object:Object):Boolean
+      {
+         return Boolean (
+                  EntityAction.prototype == object || EntityAction.prototype.isPrototypeOf (object)
+               || EntityBasicCondition.prototype == object || EntityBasicCondition.prototype.isPrototypeOf (object)
+               ); 
+      }
+      
+      // object can be an Entity subclass.prototype or a subclass instance
+      public static function IsBasicConditionEntity (object:Object):Boolean
+      {
+         return Boolean (
+                  EntityBasicCondition.prototype == object || EntityBasicCondition.prototype.isPrototypeOf (object)
+               ); 
+      }
+      
    }
 }
 

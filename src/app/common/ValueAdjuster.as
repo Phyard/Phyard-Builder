@@ -22,19 +22,57 @@ package common {
 // number precision
 //===========================================================================
       
+      public static const sUnsafeLowerValues:Array = [
+            NaN,
+            parseFloat ("9.5e+0"),
+            parseFloat ("9.5e+1"),
+            parseFloat ("9.5e+2"),
+            parseFloat ("9.5e+3"),
+            parseFloat ("9.5e+4"),
+            parseFloat ("9.5e+5"),
+            parseFloat ("9.5e+6"),
+            parseFloat ("9.5e+7"),
+            parseFloat ("9.5e+8"),
+            parseFloat ("9.5e+9"),
+            parseFloat ("9.5e+10"),
+            parseFloat ("9.5e+11"),
+            parseFloat ("9.5e+12"),
+            parseFloat ("9.5e+13"),
+            parseFloat ("9.5e+14"),
+         ];
+      
+      public static const sUnsafeUpperValues:Array = [
+            NaN,
+            parseFloat ("1e+1"),
+            parseFloat ("1e+2"),
+            parseFloat ("1e+3"),
+            parseFloat ("1e+4"),
+            parseFloat ("1e+5"),
+            parseFloat ("1e+6"),
+            parseFloat ("1e+7"),
+            parseFloat ("1e+8"),
+            parseFloat ("1e+9"),
+            parseFloat ("1e+10"),
+            parseFloat ("1e+11"),
+            parseFloat ("1e+12"),
+            parseFloat ("1e+13"),
+            parseFloat ("1e+14"),
+            parseFloat ("1e+15"),
+         ];
+      
       public static function Number2Fixed (number:Number, numFractionDigits:uint):Number
       {
          return parseFloat (number.toFixed (numFractionDigits));
       }
       
-      // numDigits >= 1
+      // 1 <= numDigits <= 15
       public static function Number2PrecisionString (number:Number, numDigits:uint):String
       {
          if (! isFinite (number))
             return String (number);
          //
-         var unsafeUpperValue:Number = parseFloat ("1e+" + numDigits); 
-         var unsafeLowerValue:Number = parseFloat ("9.5e+" + (numDigits - 1)); 
+         var unsafeUpperValue:Number = sUnsafeUpperValues [numDigits]; 
+         var unsafeLowerValue:Number = sUnsafeLowerValues [numDigits];
          
          var abs_number:Number = Math.abs (number);
          

@@ -86,7 +86,7 @@ package common {
             var i:int;
             for (i = funcCallingDefine.mNumInputs - 1; i >= 0; -- i)
             {
-               value_source = ValueSourceDefine2InputValueSource (parentFunctionInstance, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], core_func_declaration.GetInputValueType (i));
+               value_source = ValueSourceDefine2InputValueSource (parentFunctionInstance, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], core_func_declaration.GetInputParamValueType (i));
                value_source.mNextValueSourceInList = value_source_list;
                value_source_list = value_source;
             }
@@ -95,7 +95,7 @@ package common {
             var value_target:ValueTarget;
             for (i = funcCallingDefine.mNumOutputs - 1; i >= 0; -- i)
             {
-               value_target = ValueTargetDefine2ReturnValueTarget (parentFunctionInstance, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], core_func_declaration.GetOutputValueType (i));
+               value_target = ValueTargetDefine2ReturnValueTarget (parentFunctionInstance, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], core_func_declaration.GetOutputParamValueType (i));
                value_target.mNextValueTargetInList = value_target_list;
                value_target_list = value_target;
             }
@@ -359,13 +359,13 @@ package common {
          var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
          elementFunctionCalling.InputValueSources = <InputValueSources />;
          for (i = 0; i < num_inputs; ++ i)
-            elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], func_declaration.GetInputValueType (i)));
+            elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i)));
          
          var num_outputs:int = funcCallingDefine.mNumOutputs;
          var outputValueTargetDefines:Array = funcCallingDefine.mOutputValueTargetDefines;
          elementFunctionCalling.OutputValueTargets = <OutputValueTargets />
          for (i = 0; i < num_outputs; ++ i)
-            elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], func_declaration.GetOutputValueType (i)));
+            elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i)));
          
          return elementFunctionCalling;
       }

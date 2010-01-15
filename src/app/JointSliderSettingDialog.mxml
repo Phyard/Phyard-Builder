@@ -46,7 +46,7 @@
                </mx:HBox>
             </mx:VBox>
 
-            <mx:VRule  strokeWidth="1" strokeColor="#C0C0C0" height="100%" width="2%"/>
+            <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%" width="2%"/>
 
             <mx:VBox width="56%">
                <mx:HBox width="100%">
@@ -140,6 +140,7 @@
             mParams.mJointValues.mPositionNonSense = true;
             mParams.mJointValues.mRotationNonSense = true;
             mParams.mVisibleNonsense = true;
+            mParams.mEnabledNonsense = true;
             JointBasicSettingPanel.SetValues (mParams.mJointValues);
          }
          

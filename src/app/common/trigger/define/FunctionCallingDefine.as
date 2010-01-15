@@ -68,7 +68,7 @@ package common.trigger.define
             for (var i:int = 0; i < mNumInputs; ++ i)
             {
                sourceDefine = mInputValueSourceDefines [i] as ValueSourceDefine;
-               valueType = functionDeclaration.GetInputValueType (i);
+               valueType = functionDeclaration.GetInputParamValueType (i);
                
                if (valueType == ValueTypeDefine.ValueType_Number && sourceDefine is ValueSourceDefine_Direct)
                {
@@ -97,7 +97,7 @@ package common.trigger.define
             for (var i:int = 0; i < mNumInputs; ++ i)
             {
                sourceDefine = mInputValueSourceDefines [i] as ValueSourceDefine;
-               valueType = functionDeclaration.GetInputValueType (i);
+               valueType = functionDeclaration.GetInputParamValueType (i);
                
                if (valueType == ValueTypeDefine.ValueType_Number && sourceDefine is ValueSourceDefine_Direct)
                {

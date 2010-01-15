@@ -135,7 +135,7 @@ package common.trigger {
       public static const ID_Design_GetLevelMilliseconds:int                    = 600; // design
       public static const ID_Design_GetLevelSteps:int                           = 601; // design
       
-      public static const ID_Design_SetLevelStatus:int                         = 609; // design
+      public static const ID_Design_SetLevelStatus:int                           = 609; // design
       public static const ID_Design_IsLevelSuccessed:int                         = 610; // design
       public static const ID_Design_IsLevelFailed:int                            = 612; // design
       public static const ID_Design_IsLevelUnfinished:int                        = 614; // design
@@ -152,6 +152,17 @@ package common.trigger {
       public static const ID_World_FollowCameraCenterXWithShape:int                  = 721; // world
       public static const ID_World_FollowCameraCenterYWithShape:int                  = 722; // world
       //public static const ID_World_FollowCameraRotationWithShape:int               = 723; // world
+      public static const ID_World_CameraFadeOutThenFadeIn:int                       = 725; // world
+      //public static const ID_World_CameraFadeOut:int                       = 725; // world
+      //public static const ID_World_CameraFadeIn:int                       = 725; // world
+      //public static const ID_World_CameraCloseThenOpen:int                           = 726; // world
+      
+      public static const ID_World_CallScript:int                               = 750; // world
+      public static const ID_World_ConditionCallScript:int                      = 751; // world
+      public static const ID_World_CallBoolFunction:int                         = 752; // world
+      public static const ID_World_ConditionCallBoolFunction:int                = 753; // world
+      public static const ID_World_CallScriptMultiTimes:int                   = 754; // world      
+      public static const ID_World_CallBoolFunctionMultiTimes:int             = 755; // world      
       
       // VirtualClickOnEntityCenter (entity)
       
@@ -197,6 +208,8 @@ package common.trigger {
       //public static const ID_Entity_SetRotationByRadians:int         = 1006; // entity 
       public static const ID_Entity_GetRotationByDegrees:int           = 1007; // entity 
       //public static const ID_Entity_SetRotationByDegrees:int         = 1008; // entity 
+      public static const ID_Entity_WorldPoint2LocalPoint:int          = 1010; // entity 
+      public static const ID_Entity_LocalPoint2WorldPoint:int          = 1011; // entity 
       
       public static const ID_Entity_Destroy:int                        = 1050; // entity 
       
@@ -274,8 +287,9 @@ package common.trigger {
       
       
       
-      public static const ID_EntityShape_Teleport:int                       = 1253;
-      //public static const ID_EntityShape_Clone:int                          = 1254;
+      public static const ID_EntityShape_Teleport:int                         = 1252;
+      public static const ID_EntityShape_TeleportOffsets:int                  = 1253;
+      //public static const ID_EntityShape_Clone:int                          = 1255;
       
       public static const ID_EntityShape_Detach:int                         = 1260;
       public static const ID_EntityShape_AttachWith:int                     = 1261;

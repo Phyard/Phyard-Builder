@@ -1,4 +1,13 @@
 
+public function IsForbidMouseAndKeyboardEventHandling ():Boolean
+{
+   // not a good ideas:
+   // assume: mouse down before fading, release mosue when fading, then make some confused.
+   // it is best provide a function IsCameraFading () for user convienience.
+   
+   return true;
+}
+
 //=============================================================
 //   
 //=============================================================
@@ -73,6 +82,9 @@ private function OnRemovedFromStage (event:Event):void
 
 //=============================================================
 //   mouse events
+//   All moust events are not directly caused by the world sprite itself.
+//   They are all caused by some descendants of the world sprite. 
+//   So every mouse event will not be triggered twice.
 //=============================================================
 
 public function OnMouseClick (event:MouseEvent):void
@@ -181,7 +193,7 @@ public function MouseEvent2ValueSourceList (event:MouseEvent):ValueSource_Direct
    mMouseEventHandlerValueSource4.mValueObject = event.ctrlKey;
    mMouseEventHandlerValueSource5.mValueObject = event.shiftKey;
    mMouseEventHandlerValueSource6.mValueObject = event.altKey;
-   mMouseEventHandlerValueSource7.mValueObject = (event.target is DisplayObject) ? (! IsBackgroundLayerContains (event.target as DisplayObject)) : false; // for world event only
+   mMouseEventHandlerValueSource7.mValueObject = IsContentLayerContains (event.target as DisplayObject); // for world event only
    
    return mEntityMouseEventHandlerValueSourceList; // for entities
 }
@@ -233,5 +245,7 @@ public function OnDeactivated (event:Event):void
    
    // 
    ClearKeyHoldInfo (true);
+   
+   // todo: also a ClearMouseHoldInfo () ? This needs tracking the mouse position.
 }
 

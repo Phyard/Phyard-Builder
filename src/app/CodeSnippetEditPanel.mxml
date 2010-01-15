@@ -234,7 +234,7 @@
             
             for (j = 0; j < func_declaration.GetNumInputs (); ++ j)
             {
-               variable_def = func_declaration.GetParamDefinitionAt (j);
+               variable_def = func_declaration.GetInputParamDefinitionAt (j);
                value_source = variable_def.GetDefaultValueSource ();
                initialValueSources.push (value_source.CloneSource ());
                currentValueSources.push (value_source.CloneSource ());
@@ -244,7 +244,7 @@
             
             for (j = 0; j < func_declaration.GetNumOutputs (); ++ j)
             {
-               variable_def = func_declaration.GetReturnDefinitionAt (j);
+               variable_def = func_declaration.GetOuputParamDefinitionAt (j);
                value_target = variable_def.GetDefaultValueTarget ();
                initialReturnTargets.push (value_target.CloneTarget ());
                currentReturnTargets.push (value_target.CloneTarget ());
@@ -388,7 +388,7 @@
             {
                value_source = currentValueSources [j];
                
-               variable_def = func_declaration.GetParamDefinitionAt (j);
+               variable_def = func_declaration.GetInputParamDefinitionAt (j);
                
                form_item = new FormItem ();
                form_item.percentWidth = 100;
@@ -429,7 +429,7 @@
             {
                value_target = currentValueTargets [j];
                
-               variable_def = func_declaration.GetReturnDefinitionAt (j);
+               variable_def = func_declaration.GetOuputParamDefinitionAt (j);
                
                form_item = new FormItem ();
                form_item.percentWidth = 100;
@@ -462,7 +462,7 @@
                valueControls [inputId] = null;
             }
             
-            var variable_def:VariableDefinition = func_declaration.GetParamDefinitionAt (inputId);
+            var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (inputId);
             var value_source:ValueSource = currentValueSources [inputId];
             
             var value_control:UIComponent = null;
@@ -508,7 +508,7 @@
                valueControls [returnId] = null;
             }
             
-            var variable_def:VariableDefinition = func_declaration.GetReturnDefinitionAt (returnId);
+            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (returnId);
             var value_target:ValueTarget= currentValueTargets [returnId];
             
             var value_control:UIComponent = null;
@@ -565,7 +565,7 @@
             {
                value_source = currentValueSources [j];
                source_control = source_value_controls [j];
-               variable_def = func_declaration.GetParamDefinitionAt (j);
+               variable_def = func_declaration.GetInputParamDefinitionAt (j);
                
                if (value_source is ValueSource_Direct)
                   variable_def.RetrieveDirectValueSourceFromControl (value_source as ValueSource_Direct, source_control);
@@ -582,7 +582,7 @@
             {
                value_target = currentReturnTargets [j];
                target_control = target_value_controls [j];
-               variable_def = func_declaration.GetReturnDefinitionAt (j);
+               variable_def = func_declaration.GetOuputParamDefinitionAt (j);
                
                if (value_target is ValueTarget_Null)
                   variable_def.RetrieveNullValueTargetFromControl (value_target as ValueTarget_Null, target_control);
@@ -657,7 +657,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetParamDefinitionAt (param_index);
+            var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultValueSource ();
             
             mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
@@ -679,7 +679,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetParamDefinitionAt (param_index);
+            var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = mCurrentEditingItem.mInitialValueSources [param_index];
             
             mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
@@ -701,7 +701,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetParamDefinitionAt (param_index);
+            var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultDirectValueSource ();
             
             mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
@@ -725,7 +725,7 @@
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetParamDefinitionAt (param_index);
+            var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (ownerFuncDefinition.GetInputVariableSpace ());
             
             mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
@@ -747,7 +747,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetParamDefinitionAt (param_index);
+            var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (TriggerEngine.GetRegisterVariableSpace (variable_def.GetValueType()));
             
             mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
@@ -803,7 +803,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetReturnDefinitionAt (return_index);
+            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = mCurrentEditingItem.mInitialValueTargets [return_index];
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
@@ -825,7 +825,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetReturnDefinitionAt (return_index);
+            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultNullValueTarget ();
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
@@ -849,7 +849,7 @@
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetReturnDefinitionAt (return_index);
+            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (ownerFuncDefinition.GetReturnVariableSpace ());
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
@@ -871,7 +871,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetReturnDefinitionAt (return_index);
+            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (TriggerEngine.GetRegisterVariableSpace (variable_def.GetValueType()));
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;

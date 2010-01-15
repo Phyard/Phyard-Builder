@@ -36,7 +36,7 @@ package wrapper {
    import com.tapirgames.display.TextButton;
    import com.tapirgames.display.ImageButton;
    
-   import player.design.Design;
+   import player.world.World;
    import player.ui.UiUtil;
    import player.ui.PlayHelpDialog;
    import player.ui.PlayControlBar;
@@ -55,6 +55,9 @@ package wrapper {
 //
 //======================================================================
       
+      private var mStartRightNow:Boolean = false;
+      private var GetWorldDefine:Function = null;
+      
       private var mWorldPlayCode:String = null;
       private var mWorldDataForPlaying:ByteArray = null;
       private var mWorldSourceCode:String = null;
@@ -71,7 +74,8 @@ package wrapper {
       
       private var mWorldLayer:Sprite = new Sprite ();
       private var mTopBarLayer:Sprite = new Sprite ();
-      private var mBottomBarLayer:Sprite = new Sprite ();
+      //private var mBottomBarLayer:Sprite = new Sprite ();
+      private var mBorderLineBarLayer:Sprite = new Sprite ();
       private var mErrorMessageLayer:Sprite = new Sprite ();
       private var mFinishedTextLayer:Sprite = new Sprite ();
       private var mDialogLayer:Sprite = new Sprite ();
@@ -84,16 +88,25 @@ package wrapper {
 //
 //======================================================================
       
-      public function ColorInfectionPlayer ()
+      public function ColorInfectionPlayer (start:Boolean = false, getWorldDefine:Function = null)
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
          addChild (mWorldLayer);
          addChild (mTopBarLayer);
-         addChild (mBottomBarLayer);
+         //addChild (mBottomBarLayer);
+         addChild (mBorderLineBarLayer);
          addChild (mErrorMessageLayer);
          addChild (mFinishedTextLayer);
          addChild (mDialogLayer);
+         
+         mStartRightNow = start;
+         GetWorldDefine = getWorldDefine;
+      }
+      
+      public function GetPlayerWorld ():World
+      {
+         return mPlayerWorld;
       }
       
       public function SetOptions (options:Object = null):void
@@ -115,12 +128,22 @@ package wrapper {
       private function OnAddedToStage (e:Event):void
       {
          addEventListener (Event.ENTER_FRAME, OnEnterFrame);
+         addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
          
-         ChangeState (StateId_Load);
+         if (GetWorldDefine != null)
+            ChangeState (StateId_BuildWorld);
+         else
+            ChangeState (StateId_Load);
          
          //
          //mAnalytics = new Analytics (this, mAnalyticsDurations);
          //mAnalytics.TrackPageview (Config.VirtualPageName_PlayerJustLoaded);
+      }
+      
+      private function OnRemovedFromFrame (e:Event):void
+      {
+         removeEventListener (Event.ENTER_FRAME, OnEnterFrame);
+         removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
       }
       
       private function OnEnterFrame (event:Event):void 
@@ -189,8 +212,9 @@ package wrapper {
       private static const StateId_None:int = -1;
       private static const StateId_Load:int = 0;
       private static const StateId_LoadFailed:int = 1;
-      private static const StateId_Play:int = 2;
-      private static const StateId_OnlineLoad:int = 3;
+      private static const StateId_BuildWorld:int = 2;
+      private static const StateId_Play:int = 3;
+      private static const StateId_OnlineLoad:int = 4;
       
       private var mStateId:int = StateId_None;
       
@@ -199,10 +223,6 @@ package wrapper {
       
       public function Update ():void
       {
-      // ...
-         mStepTimeSpan.End ();
-         mStepTimeSpan.Start ();
-         
       // ...
          
          switch (mStateId)
@@ -218,16 +238,7 @@ package wrapper {
                   mWorldPlayCode = params.mWorldPlayCode;
                   mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
                   
-                  RebuildPlayerWorld ();
-                  
-                  if (mPlayerWorld == null)
-                  {
-                     ChangeState (StateId_LoadFailed);
-                  }
-                  else
-                  {
-                     ChangeState (StateId_Play);
-                  }
+                  ChangeState (StateId_BuildWorld)
                }
                else
                {
@@ -239,6 +250,19 @@ package wrapper {
             case StateId_OnlineLoad:
                break;
             case StateId_LoadFailed:
+               break;
+            case StateId_BuildWorld:
+               RebuildPlayerWorld ();
+               
+               if (mPlayerWorld == null)
+               {
+                  ChangeState (StateId_LoadFailed);
+               }
+               else
+               {
+                  ChangeState (StateId_Play);
+               }
+               
                break;
             case StateId_Play:
             {
@@ -274,7 +298,7 @@ package wrapper {
                
                if ( mPlayerWorld != null && IsPlaying () && mHelpDialog.visible == false )
                {
-                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+                  Step ();
                }
                
                if ( mPlayerWorld.IsLevelSuccessed () )
@@ -286,6 +310,15 @@ package wrapper {
             default:
                break;
          }
+      }
+      
+      public function Step ():void
+      {
+         mStepTimeSpan.End ();
+         mStepTimeSpan.Start ();
+         
+         if (mPlayerWorld != null)
+            mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
       }
       
       public function ChangeState (newStateId:int):void
@@ -327,13 +360,27 @@ package wrapper {
                mErrorMessageLayer.addChild (linkText);
                
                break;
+            case StateId_BuildWorld:
+               while (mErrorMessageLayer.numChildren > 0)
+                  mErrorMessageLayer.removeChildAt (0);
+               
+               var buildingText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Building ..."));
+               buildingText.x = (Define.DefaultWorldWidth  - buildingText.width ) * 0.5;
+               buildingText.y = (Define.DefaultWorldHeight - buildingText.height) * 0.5;
+               mErrorMessageLayer.addChild (buildingText);
+               
+               break;
             case StateId_Play:
                while (mErrorMessageLayer.numChildren > 0)
                   mErrorMessageLayer.removeChildAt (0);
                
                BuildContextMenu ();
                
-               CreateUI ();
+               CreateTopBar ();
+               if (mStartRightNow)
+                  mPlayControlBar.OnClickStart ();
+               
+               mWorldLayer.y = mTopBarLayer.y + mTopBarLayer.height;
                
                OnPause (null);
                
@@ -342,7 +389,9 @@ package wrapper {
                
                CreateFinishedDialog ();
                
-               CreateBottomBar ();
+               //CreateBottomBar ();
+               
+               CreateBorderLineLayer ();
                
                break;
             default:
@@ -473,19 +522,7 @@ package wrapper {
                
                mWorldDataForPlaying = designDataForPlaying;
                
-               //
-               {
-                  RebuildPlayerWorld ();
-                  
-                  if (mPlayerWorld == null)
-                  {
-                     ChangeState (StateId_LoadFailed);
-                  }
-                  else
-                  {
-                     ChangeState (StateId_Play);
-                  }
-               }
+               ChangeState (StateId_BuildWorld);
             }
             else
             {
@@ -513,22 +550,22 @@ package wrapper {
          
          mPlayerWorld = null;
          
-         if (mWorldDataForPlaying == null)
-            trace ("mWorldDataForPlaying == null !");
-         else
+         try
          {
-            try
-            {
-               mWorldDataForPlaying.position = 0;
-               mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.ByteArray2WorldDefine (mWorldDataForPlaying));
-            }
-            catch (error:Error)
-            {
-               trace ("create world error." + error);
-               
-               if (Compile::Is_Debugging)
-                  throw error;
-            }
+            var worldDefine:WorldDefine = null;
+            if (GetWorldDefine != null)
+               worldDefine = GetWorldDefine ();
+            else if (mWorldDataForPlaying != null)
+               worldDefine = DataFormat2.ByteArray2WorldDefine (mWorldDataForPlaying)
+            
+            mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (worldDefine);
+         }
+         catch (error:Error)
+         {
+            trace ("create world error." + error);
+            
+            if (Compile::Is_Debugging)
+               throw error;
          }
          
          if (mPlayerWorld != null)
@@ -546,6 +583,7 @@ package wrapper {
 //
 //======================================================================
       
+      /*
       private function CreateBottomBar ():void
       {
          mBottomBarLayer.x = Define.DefaultWorldWidth * 0.5;
@@ -607,6 +645,12 @@ package wrapper {
                textField.y = 2;
             }
          }
+      }
+      */
+      
+      public function CreateBorderLineLayer ():void
+      {
+         GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, -1, 0, Define.DefaultPlayerWidth + 1, Define.DefaultPlayerHeight + Define.PlayerPlayBarThickness, 0x606060);
       }
       
       private var mFinishedDialog:Sprite;
@@ -726,18 +770,15 @@ package wrapper {
       
       private var mPlayControlBar:PlayControlBar = null;
       
-      private function CreateUI ():void
+      private function CreateTopBar ():void
       {
-         mTopBarLayer.x= Define.DefaultWorldWidth * 0.5;
+         mTopBarLayer.x= 0;
          
-         mTopBarLayer.graphics.clear ();
-         mTopBarLayer.graphics.beginFill(0x606060);
-         mTopBarLayer.graphics.drawRect ( - Define.DefaultWorldWidth * 0.5, 0, Define.DefaultWorldWidth, Define.WorldBorderThinknessTB);
-         mTopBarLayer.graphics.endFill ();
+         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, Define.DefaultPlayerWidth, Define.PlayerPlayBarThickness, 0x606060, 1, true, 0x606060);
          
          mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, OnSpeed, OnHelp, mMainMenuCallback, OnZoom);
          mTopBarLayer.addChild (mPlayControlBar); 
-         mPlayControlBar.x = - mPlayControlBar.width * 0.5;
+         mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
          mPlayControlBar.y = 2;
       }
       
@@ -745,7 +786,7 @@ package wrapper {
 //
 //======================================================================
       
-      private function IsPlaying ():Boolean
+      public function IsPlaying ():Boolean
       {
          if(mPlayControlBar == null)
             return false;

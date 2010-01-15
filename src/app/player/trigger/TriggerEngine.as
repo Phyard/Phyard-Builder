@@ -57,12 +57,12 @@ package player.trigger
       
       public static function GetVoidFunctionDeclaration ():FunctionDeclaration
       {
-         return CoreFunctionDefinitions.sCoreFunctionDefinitions [CoreFunctionIds.ID_Void];
+         return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_Void];
       }
       
       public static function GetBoolFunctionDeclaration ():FunctionDeclaration
       {
-         return CoreFunctionDefinitions.sCoreFunctionDefinitions [CoreFunctionIds.ID_Bool];
+         return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_Bool];
       }
    }
 }

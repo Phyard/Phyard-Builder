@@ -9,7 +9,7 @@ package player.trigger.entity
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
-   public class EntityAction extends EntityLogic
+   public class EntityAction extends EntityLogic implements ScriptHolder
    {
       public var mVoidFunctionDefinition:FunctionDefinition_Logic;
       public var mName:String = null;
@@ -47,9 +47,18 @@ package player.trigger.entity
 //   as action
 //=============================================================
       
-      public function Excute ():void
+      public function Perform ():void
       {
          mVoidFunctionDefinition.ExcuteAction ();
+      }
+      
+//=============================================================
+//   as ScriptHolder
+//=============================================================
+      
+      public function RunScript ():void
+      {
+         Perform ();
       }
       
    }

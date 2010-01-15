@@ -24,7 +24,7 @@ package player.entity {
          
          mProxyJointDistance = new PhysicsProxyJointDistance (mWorld.GetPhysicsEngine ());
          
-         mWorld.GetEntityLayer ().addChild (mSpringShape);
+         mWorld.AddChildToEntityLayer (mSpringShape);
       }
       
 //=============================================================
@@ -162,7 +162,7 @@ package player.entity {
       
       override protected function DestroyInternal ():void
       {
-         mWorld.GetEntityLayer ().removeChild (mSpringShape);
+         mWorld.RemoveChildFromEntityLayer (mSpringShape);
          
          super.DestroyInternal ();
       }

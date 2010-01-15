@@ -32,7 +32,7 @@ package player.entity {
       {
          super (world);
          
-         mWorld.GetEntityLayer ().addChild (mAnchorShape);
+         mWorld.AddChildToEntityLayer (mAnchorShape);
       }
 
       public function GetShape ():EntityShape
@@ -106,7 +106,7 @@ package player.entity {
             SetShape (null);
          }
          
-         mWorld.GetEntityLayer ().removeChild (mAnchorShape);
+         mWorld.RemoveChildFromEntityLayer (mAnchorShape);
       }
       
 //=============================================================

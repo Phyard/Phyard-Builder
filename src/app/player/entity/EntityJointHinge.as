@@ -151,7 +151,7 @@ package player.entity {
       
       override protected function DestroyInternal ():void
       {
-         //mWorld.GetEntityLayer ().removeChild (mAnchorShape);
+         //mWorld.RemoveChildFromEntityLayer (mAnchorShape);
          
          super.DestroyInternal ();
       }

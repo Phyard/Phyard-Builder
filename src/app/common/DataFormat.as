@@ -307,7 +307,6 @@ package common {
                      //>>from v1.05
                      entityDefine.mIsHollow = shape.IsHollow ();
                      //<<
-<<<<<<< .mine
                      
                      //>>from v1.08
                      entityDefine.mBuildBorder = shape.IsBuildBorder ();
@@ -317,19 +316,6 @@ package common {
                      entityDefine.mIsSleepingAllowed = shape.IsAllowSleeping ();
                      entityDefine.mIsRotationFixed = shape.IsFixRotation ();
                      //<<
-=======
-                     
-                     //>>from v1.08
-                     entityDefine.mBuildBorder = shape.IsBuildBorder ();
-                     entityDefine.mLinearVelocityMagnitude = shape.GetLinearVelocityMagnitude ();
-                     entityDefine.mLinearVelocityAngle = shape.GetLinearVelocityAngle ();
-                     entityDefine.mAngularVelocity = shape.GetAngularVelocity ();
-                     entityDefine. mLinearDamping = shape.GetLinearDamping ();
-                     entityDefine.mAngularDamping = shape.GetAngularDamping ();
-                     entityDefine.mIsSleepingAllowed = shape.IsAllowSleeping ();
-                     entityDefine.mIsRotationFixed = shape.IsFixRotation ();
-                     //<<
->>>>>>> .r93
                   }
                   
                   if (editorEntity is editor.entity.EntityShapeCircle)
@@ -513,7 +499,6 @@ package common {
                   //entityDefine.mFrequencyHz = spring.GetFrequencyHz ();
                   entityDefine.mSpringType = spring.GetSpringType ();
                   entityDefine.mDampingRatio = spring.mDampingRatio;
-<<<<<<< .mine
                   
                   //>>from v1.08
                   entityDefine.mFrequencyDeterminedManner = spring.GetFrequencyDeterminedManner ();
@@ -521,14 +506,6 @@ package common {
                   entityDefine.mSpringConstant = spring.GetSpringConstant ();
                   entityDefine.mBreakExtendedLength = spring.GetBreakExtendedLength ();
                   //<<
-=======
-                  
-                  //>>from v1.08
-                  entityDefine.mFrequencyDeterminedManner = spring.GetFrequencyDeterminedManner ();
-                  entityDefine.mFrequency = spring.GetFrequency ();
-                  entityDefine.mBreakExtendedLength = spring.GetBreakExtendedLength ();
-                  //<<
->>>>>>> .r93
                }
                
                if (joint != null)

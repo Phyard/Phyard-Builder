@@ -30,13 +30,13 @@ package editor.trigger {
          {
             for (i = 0; i < num_inputs; ++ i)
             {
-               variable_def = mFunctionDeclaration.GetParamDefinitionAt (i);
+               variable_def = mFunctionDeclaration.GetInputParamDefinitionAt (i);
                mInputValueSources [i] = variable_def.GetDefaultValueSource ();
             }
             
             for (i = 0; i < num_returns; ++ i)
             {
-               variable_def = mFunctionDeclaration.GetReturnDefinitionAt (i);
+               variable_def = mFunctionDeclaration.GetOuputParamDefinitionAt (i);
                mReturnValueTargets [i] = variable_def.GetDefaultValueTarget ();
             }
          }
@@ -189,7 +189,7 @@ package editor.trigger {
          var numberUsage:int;
          for (i = 0; i < numInputs; ++ i)
          {
-            valueType = mFunctionDeclaration.GetInputValueType (i);
+            valueType = mFunctionDeclaration.GetInputParamValueType (i);
             source = mInputValueSources [i] as ValueSource;
             
             if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
@@ -214,7 +214,7 @@ package editor.trigger {
          var numberUsage:int;
          for (i = 0; i < numInputs; ++ i)
          {
-            valueType = mFunctionDeclaration.GetInputValueType (i);
+            valueType = mFunctionDeclaration.GetInputParamValueType (i);
             source = mInputValueSources [i] as ValueSource;
             
             if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
@@ -240,7 +240,7 @@ package editor.trigger {
          for (i = 0; i < numInputs; ++ i)
          {
             source = mInputValueSources [i] as ValueSource;
-            valueType = mFunctionDeclaration.GetInputValueType (i);
+            valueType = mFunctionDeclaration.GetInputParamValueType (i);
             
             if (valueType == ValueTypeDefine.ValueType_Number && source is ValueSource_Direct)
             {

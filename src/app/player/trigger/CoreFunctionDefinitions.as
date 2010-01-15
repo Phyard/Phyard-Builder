@@ -1,14 +1,14 @@
 
 package player.trigger {
    import flash.utils.getTimer;
+   import flash.geom.Point;
    
    import player.design.Global;
    import player.design.Design;
    
-   import player.world.World;
-   import player.world.CollisionCategory;
-   
+   import player.world.*;
    import player.entity.*;
+   import player.trigger.entity.*;
    
    import player.physics.PhysicsEngine;
    
@@ -156,6 +156,15 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,                FollowCameraCenterYWithShape);
          //RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,               FollowCameraRotationWithShape);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn,                CameraFadeOutThenFadeIn);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_World_CallScript,                          CallScript);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_ConditionCallScript,                 ConditionCallScript);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_CallBoolFunction,                          CallBoolFunction);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_ConditionCallBoolFunction,                 ConditionCallBoolFunction);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_CallScriptMultiTimes,                    CallScriptMultiTimes);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes,              CallBoolFunctionMultiTimes);
+         
       // game / collision category
          
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_Assign,                                       AssignCollisionCategory);
@@ -184,6 +193,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,        WorldPoint2EntityLocalPoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,        EntityLocalPoint2WorldPoint);
+         
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Overlapped,        AreTwoEntitiesOverlppped);
@@ -206,12 +218,13 @@ package player.trigger {
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                  GetShapeDensity);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                  SetShapeDensity);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                    TeleportShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_AttachWith,                  AttachTwoShapes);
-		 RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,        DetachShapeThenAttachWithAnother);
+		   RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,        DetachShapeThenAttachWithAnother);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakupBrothers,             BreakupShapeBrothers);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakAllJoints,             BreakShapeJoints);
@@ -1067,8 +1080,99 @@ package player.trigger {
       //   Global.GetCurrentWorld ().FollowCameraRotationWithEntity (shape, isSmooth);
       //}
       
-      // game / collision category
+      public static function CameraFadeOutThenFadeIn (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var fadeColor:uint = uint (valueSource.EvalateValueObject ());
          
+         valueSource = valueSource.mNextValueSourceInList;
+         var stepsFadeOut:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var stepsFadeStaying:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var stepsFadeIn:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var scriptToRun:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         
+         Global.GetCurrentWorld ().CameraFadeOutThenFadeIn (fadeColor, stepsFadeOut, stepsFadeIn, stepsFadeStaying, scriptToRun);
+      }
+      
+      public static function CallScript (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var scriptToRun:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         
+         if (scriptToRun != null)
+            scriptToRun.RunScript ();
+      }
+      
+      public static function ConditionCallScript (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var script1:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var script2:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         
+         if (condtion)
+         {
+            if (script1 != null)
+               script1.RunScript ();
+         }
+         else
+         {
+            if (script2 != null)
+               script2.RunScript ();
+         }
+      }
+      
+      public static function CallBoolFunction (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var boolFunction:EntityBasicCondition = valueSource.EvalateValueObject () as EntityBasicCondition;
+         
+         valueTarget.AssignValueObject (boolFunction == null ? false : boolFunction.RunBoolFunction ());
+      }
+      
+      public static function ConditionCallBoolFunction  (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var boolFunction1:EntityBasicCondition = valueSource.EvalateValueObject () as EntityBasicCondition;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var boolFunction2:EntityBasicCondition = valueSource.EvalateValueObject () as EntityBasicCondition;
+         
+         if (condtion)
+            valueTarget.AssignValueObject (boolFunction1 == null ? false : boolFunction1.RunBoolFunction ());
+         else
+            valueTarget.AssignValueObject (boolFunction2 == null ? false : boolFunction2.RunBoolFunction ());
+      }
+      
+      public static function CallScriptMultiTimes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var scriptToRun:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var times:int = int (valueSource.EvalateValueObject ());
+         
+         while (-- times >= 0)
+            scriptToRun.RunScript ();
+      }
+      
+      public static function CallBoolFunctionMultiTimes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var boolFunction:EntityBasicCondition = valueSource.EvalateValueObject () as EntityBasicCondition;
+         
+         if (boolFunction != null)
+         {
+            while (boolFunction.RunBoolFunction ());
+         }
+      }
+      
    //*******************************************************************
    // game collision category
    //*******************************************************************
@@ -1321,6 +1425,62 @@ package player.trigger {
       //   entity.SetRotation (degrees * Define.kDegrees2Radians);
       //}
       
+      public static function WorldPoint2EntityLocalPoint (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var localPoint:Point;
+         
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+         {
+            localPoint = new Point (0.0, 0.0);
+         }
+         else
+         {
+            valueSource = valueSource.mNextValueSourceInList;
+            var world_x:Number = valueSource.EvalateValueObject () as Number;
+            
+            valueSource = valueSource.mNextValueSourceInList;
+            var world_y:Number = valueSource.EvalateValueObject () as Number;
+            
+            localPoint = shape.WorldPoint2LocalPoint (world_x, world_y);
+         }
+         
+         // ...
+         
+         valueTarget.AssignValueObject (localPoint.x);
+         
+         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget.AssignValueObject (localPoint.y);
+      }
+      
+      public static function EntityLocalPoint2WorldPoint (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var worldPoint:Point;
+         
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+         {
+            worldPoint = new Point (0.0 ,0.0);
+         }
+         else
+         {
+            valueSource = valueSource.mNextValueSourceInList;
+            var local_x:Number = valueSource.EvalateValueObject () as Number;
+            
+            valueSource = valueSource.mNextValueSourceInList;
+            var local_y:Number = valueSource.EvalateValueObject () as Number;
+            
+         worldPoint = shape.LocalPoint2WorldPoint (local_x, local_y);
+         }
+         
+         // ...
+         
+         valueTarget.AssignValueObject (worldPoint.x);
+         
+         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget.AssignValueObject (worldPoint.y);
+      }
+      
       public static function DestroyEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
@@ -1530,13 +1690,13 @@ package player.trigger {
             return;
          
          valueSource = valueSource.mNextValueSourceInList;
-         var targetX:Number =  valueSource.EvalateValueObject () as Number;
+         var targetX:Number = valueSource.EvalateValueObject () as Number;
          
          valueSource = valueSource.mNextValueSourceInList;
-         var targetY:Number =  valueSource.EvalateValueObject () as Number;
+         var targetY:Number = valueSource.EvalateValueObject () as Number;
          
          valueSource = valueSource.mNextValueSourceInList;
-         var deltaRotation:Number =  valueSource.EvalateValueObject () as Number;
+         var targetRotation:Number = (valueSource.EvalateValueObject () as Number) * Define.kDegrees2Radians;
          
          valueSource = valueSource.mNextValueSourceInList;
          var bTeleportConnectedMovables:Boolean =  valueSource.EvalateValueObject () as Boolean;
@@ -1547,7 +1707,34 @@ package player.trigger {
          valueSource = valueSource.mNextValueSourceInList;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvalateValueObject () as Boolean;
          
-         shape.Teleport (targetX, targetY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         shape.Teleport (targetX, targetY, targetRotation - shape.GetRotation (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+      }
+      
+      public static function TeleportShape_Offsets (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var deltaX:Number =  valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var deltaY:Number =  valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var deltaRotation:Number = (valueSource.EvalateValueObject () as Number) * Define.kDegrees2Radians;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         
+         shape.Teleport (shape.GetPositionX () + deltaX, shape.GetPositionY () + deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
       //public static function CloneShape (valueSource:ValueSource, valueTarget:ValueTarget):void

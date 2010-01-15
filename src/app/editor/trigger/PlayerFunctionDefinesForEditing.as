@@ -556,7 +556,7 @@ package editor.trigger {
                   );
           RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Number2RGB, convert_package, "Number -> RGB", 
                      [
-                             new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
+                             new VariableDefinitionNumber ("Number", null, null, {mIsColorValue: true}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Red"), 
@@ -571,12 +571,12 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Blue (0-255)"), 
                      ],
                      [
-                             new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
+                             new VariableDefinitionNumber ("Number", null, null, {mIsColorValue: true}), 
                      ]
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -> Minutes : Seconds", 
                      [
-                             new VariableDefinitionNumber ("Milliseconds", null, {mMinValue: 0.0}), 
+                             new VariableDefinitionNumber ("Milliseconds", null, null, {mMinValue: 0.0}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Minitues"), 
@@ -691,12 +691,12 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor, interpolation_package, "Color Linear Interpolation", 
                      [
-                             new VariableDefinitionNumber ("Color x", null, {mIsColorValue: true}), 
-                             new VariableDefinitionNumber ("Color y", null, {mIsColorValue: true}), 
-                             new VariableDefinitionNumber ("Factor t (0-1)", null, {mMinValue: 0.0, mMaxValue:1.0}), 
+                             new VariableDefinitionNumber ("Color x", null, null, {mIsColorValue: true}), 
+                             new VariableDefinitionNumber ("Color y", null, null, {mIsColorValue: true}), 
+                             new VariableDefinitionNumber ("Factor t (0-1)", null, null, {mMinValue: 0.0, mMaxValue:1.0}), 
                      ],
                      [
-                             new VariableDefinitionNumber ("Result (x * t + (1.0 - t) * y)", null, {mIsColorValue: true}), 
+                             new VariableDefinitionNumber ("Result (x * t + (1.0 - t) * y)", null, null, {mIsColorValue: true}), 
                      ]
                   );
          
@@ -766,7 +766,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape, world_package, "FollowCameraWithShape", 
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Smooth Following?", null, null, {mDefaultValue: true}), 
                              //new VariableDefinitionBoolean ("Follow Rotation?"), 
                      ],
                      null
@@ -774,24 +774,80 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape, world_package, "FollowCameraCenterXWithShape", 
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Smooth Following?", null, null, {mDefaultValue: true}), 
                      ],
                      null
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape, world_package, "FollowCameraCenterYWithShape", 
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Smooth Following?", null, null, {mDefaultValue: true}), 
                      ],
                      null
                   );
          //RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape, world_package, "FollowCameraRotationWithShape", 
          //            [
          //                    new VariableDefinitionEntity ("The Followed Shape"), 
-         //                    new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
+         //                    new VariableDefinitionBoolean ("Smooth Following?", null, null, {mDefaultValue: true}), 
          //            ],
          //            null
          //         );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn, world_package, "FadeOutThenFadeIn", 
+                     [
+                             new VariableDefinitionNumber ("Fade Color", null, null, {mIsColorValue: true}), 
+                             new VariableDefinitionNumber ("Fade Out Steps", null, null, {mMinValue: 0}), 
+                             new VariableDefinitionNumber ("Fade Staying Steps", null, null, {mMinValue: 1}), 
+                             new VariableDefinitionNumber ("Fade In Steps", null, null, {mMinValue: 0}), 
+                             new VariableDefinitionEntity ("Script to Call", null, null, {mFilter: Filters.IsScriptHolderEntity}), 
+                     ],
+                     null
+                  );
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallScript, world_package, "CallScript", 
+                     [
+                             new VariableDefinitionEntity ("Script to Call", null, null, {mFilter: Filters.IsScriptHolderEntity}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallScript, world_package, "Condition CallScript", 
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionEntity ("Script1 to Call", null, null, {mFilter: Filters.IsScriptHolderEntity}), 
+                             new VariableDefinitionEntity ("Script2 to Call", null, null, {mFilter: Filters.IsScriptHolderEntity}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunction, world_package, "CallBoolFunction", 
+                     [
+                             new VariableDefinitionEntity ("Script to Call", null, null, {mFilter: Filters.IsBasicConditionEntity}), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Return Bool Result"),
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction, world_package, "Condition CallBoolFunction", 
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionEntity ("Script1 to Call", null, null, {mFilter: Filters.IsBasicConditionEntity}), 
+                             new VariableDefinitionEntity ("Script2 to Call", null, null, {mFilter: Filters.IsBasicConditionEntity}), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Return Bool Result"),
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallScriptMultiTimes, world_package, "CallScriptMultiTimes", 
+                     [
+                             new VariableDefinitionEntity ("Script to Call", null, null, {mFilter: Filters.IsScriptHolderEntity}), 
+                             new VariableDefinitionNumber ("Calling Times", null, null, {mMinValue: 0}),  // dengerous
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes, world_package, "CallBoolFunctionMultiTimes", 
+                     [
+                             new VariableDefinitionEntity ("Script to Call", null, null, {mFilter: Filters.IsBasicConditionEntity}), 
+                     ],
+                     null
+                  );
          
      // game / collision category
          
@@ -816,7 +872,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally, cat_package, "SetCollisionCategoryCollideInternally", 
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category"), 
-                             new VariableDefinitionBoolean ("Collide Internally?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Collide Internally?", null, null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -824,7 +880,7 @@ package editor.trigger {
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category 1"), 
                              new VariableDefinitionCollisionCategory ("Collision Category 2"), 
-                             new VariableDefinitionBoolean ("Friends?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Friends?", null, null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -901,7 +957,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetVisible, entity_package, "SetVisible", 
                      [
                              new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsVisualEntity}), 
-                             new VariableDefinitionBoolean ("Visible", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Visible", null, null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -916,7 +972,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetAlpha, entity_package, "SetAlpha", 
                      [
                              new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.IsVisualEntity}), 
-                             new VariableDefinitionNumber ("Alpha (0-1)", null, {mMinValue: 0.0, mMaxValue:1.0}), 
+                             new VariableDefinitionNumber ("Alpha (0-1)", null, null, {mMinValue: 0.0, mMaxValue:1.0}), 
                      ],
                      null
                   );
@@ -954,6 +1010,29 @@ package editor.trigger {
                      ]
                   );
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint, entity_shape_package, "WorldPoint2LocalPoint", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), // currently, only for shapes
+                             new VariableDefinitionNumber ("World Point X"), 
+                             new VariableDefinitionNumber ("World Point Y"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Local Point X"), 
+                             new VariableDefinitionNumber ("Local Point Y"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint, entity_shape_package, "LocalPoint2WorldPoint", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), // currently, only for shapes
+                             new VariableDefinitionNumber ("Local Point X"), 
+                             new VariableDefinitionNumber ("Local Point Y"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("World Point X"), 
+                             new VariableDefinitionNumber ("World Point Y"), 
+                     ]
+                  );
+         
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Destroy, entity_package, "Destroy", 
                      [
                              new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.CanEntityBeDestroyedManually}), 
@@ -965,9 +1044,9 @@ package editor.trigger {
                      [
                         new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.DoesEntityHasPosition}), 
                         new VariableDefinitionEntity ("The Entity", null, null, {mFilter: Filters.DoesEntityHasPosition}), 
-                        new VariableDefinitionNumber ("Tolerance Delta X", null, {mMinValue:0.0, mDefaultValue:0.8}), 
-                        new VariableDefinitionNumber ("Tolerance Delta Y", null, {mMinValue:0.0, mDefaultValue:0.8}), 
-                        new VariableDefinitionNumber ("Tolerance Delta Angle (degrees)", null, {mMinValue:0.0, mDefaultValue:6}), 
+                        new VariableDefinitionNumber ("Tolerance Delta X", null, null, {mMinValue:0.0, mDefaultValue:0.8}), 
+                        new VariableDefinitionNumber ("Tolerance Delta Y", null, null, {mMinValue:0.0, mDefaultValue:0.8}), 
+                        new VariableDefinitionNumber ("Tolerance Delta Angle (degrees)", null, null, {mMinValue:0.0, mDefaultValue:6}), 
                      ],
                      [
                         new VariableDefinitionBoolean ("Overlapped?"), 
@@ -997,13 +1076,13 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                      ],
                      [
-                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
+                             new VariableDefinitionNumber ("Filled Color", null, null, {mIsColorValue: true}), 
                      ]
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, entity_shape_package, "SetFilledColor", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
-                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
+                             new VariableDefinitionNumber ("Filled Color", null, null, {mIsColorValue: true}), 
                      ],
                      null
                   );
@@ -1061,7 +1140,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, entity_shape_package, "SetAsSensor", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
-                             new VariableDefinitionBoolean ("Is Sensor", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Is Sensor", null, null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -1076,7 +1155,7 @@ package editor.trigger {
          //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, entity_shape_package, "SetDensity", 
          //            [
          //                    new VariableDefinitionEntity ("The Shape"), 
-         //                    new VariableDefinitionNumber ("Density", null, {mMinValue: 0.0}), 
+         //                    new VariableDefinitionNumber ("Density", null, null, {mMinValue: 0.0}), 
          //            ],
          //            null
          //         );
@@ -1086,10 +1165,22 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
                              new VariableDefinitionNumber ("Target PositionX"), 
                              new VariableDefinitionNumber ("Target PositionY"), 
-                             new VariableDefinitionNumber ("Delta Rotation"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Movables?", null, {mDefaultValue: true}), 
-                             new VariableDefinitionBoolean ("Teleport Connected Statics?", null, {mDefaultValue: false}), 
-                             new VariableDefinitionBoolean ("Break Embarrassed Joints?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionNumber ("Target Angle (degrees)"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?", null, null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?", null, null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?", null, null, {mDefaultValue: true}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets, entity_shape_package, "TeleportShape_Offsets", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, null, {mFilter: Filters.IsShapeEntity}), 
+                             new VariableDefinitionNumber ("Offset PositionX"), 
+                             new VariableDefinitionNumber ("Offset PositionY"), 
+                             new VariableDefinitionNumber ("Delta Angle (degrees)"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?", null, null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?", null, null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?", null, null, {mDefaultValue: true}), 
                      ],
                      null
                   );
@@ -1099,8 +1190,8 @@ package editor.trigger {
          //                    new VariableDefinitionNumber ("Target PositionX"), 
          //                    new VariableDefinitionNumber ("Target PositionY"), 
          //                    new VariableDefinitionNumber ("Delta Rotation"), 
-         //                    new VariableDefinitionBoolean ("Teleport Connected Movables?", null, {mDefaultValue: true}), 
-         //                    new VariableDefinitionBoolean ("Teleport Connected Statics?", null, {mDefaultValue: true}), 
+         //                    new VariableDefinitionBoolean ("Teleport Connected Movables?", null, null, {mDefaultValue: true}), 
+         //                    new VariableDefinitionBoolean ("Teleport Connected Statics?", null, null, {mDefaultValue: true}), 
          //            ],
          //            null
          //         );

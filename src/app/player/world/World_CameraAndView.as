@@ -64,8 +64,8 @@ public function SetZoomScale (zoomScale:Number):void
 //=====================================================================================
 
 // these values are in display world space, pixels, assume scale = 1
-private var mCameraWidth:Number   = Define.DefaultWorldWidth;
-private var mCameraHeight:Number  = Define.DefaultWorldHeight;
+private var mViewportWidth:Number   = Define.DefaultWorldWidth;
+private var mViewportHeight:Number  = Define.DefaultWorldHeight;
 private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
 private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
 
@@ -81,12 +81,12 @@ public function GetCameraCenterY ():Number
 
 public function SetCameraWidth (width:Number):void
 {
-   mCameraWidth = width;
+   mViewportWidth = width;
 }
 
 public function SetCameraHeight (height:Number):void
 {
-   mCameraHeight = height;
+   mViewportHeight = height;
 }
 
 public function MoveWorldScene_PhysicsOffset (physicsDx:Number, physicsDy:Number):void
@@ -116,40 +116,40 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
    var worldViewWidth :Number = mWorldWidth  * scaleX;
    var worldViewHeight:Number = mWorldHeight * scaleY;
    
-   if (worldViewWidth < mCameraWidth)
+   if (worldViewWidth < mViewportWidth)
    {
       mCameraCenterX = mWorldLeft + mWorldWidth * 0.5;
-      leftInView = (mWorldLeft - mCameraCenterX) * scaleX + mCameraWidth * 0.5;
+      leftInView = (mWorldLeft - mCameraCenterX) * scaleX + mViewportWidth * 0.5;
    }
    else
    {
       mCameraCenterX = targetDisplayX;
-      leftInView =(mWorldLeft - mCameraCenterX) * scaleX + mCameraWidth * 0.5;
+      leftInView =(mWorldLeft - mCameraCenterX) * scaleX + mViewportWidth * 0.5;
       
       if (leftInView > 0)
          leftInView = 0;
-      if (leftInView + worldViewWidth < mCameraWidth)
-         leftInView = mCameraWidth - worldViewWidth;
+      if (leftInView + worldViewWidth < mViewportWidth)
+         leftInView = mViewportWidth - worldViewWidth;
       
-      mCameraCenterX = mWorldLeft + (mCameraWidth * 0.5 - leftInView) / scaleX;
+      mCameraCenterX = mWorldLeft + (mViewportWidth * 0.5 - leftInView) / scaleX;
    }
    
-   if (worldViewHeight < mCameraHeight)
+   if (worldViewHeight < mViewportHeight)
    {
       mCameraCenterY = mWorldTop + mWorldHeight * 0.5;
-      topInView = (mWorldTop - mCameraCenterY) * scaleY + mCameraHeight * 0.5;
+      topInView = (mWorldTop - mCameraCenterY) * scaleY + mViewportHeight * 0.5;
    }
    else
    {
       mCameraCenterY = targetDisplayY;
-      topInView = (mWorldTop - mCameraCenterY) * scaleY + mCameraHeight * 0.5;
+      topInView = (mWorldTop - mCameraCenterY) * scaleY + mViewportHeight * 0.5;
       
       if (topInView > 0)
          topInView = 0;
-      if (topInView + worldViewHeight < mCameraHeight)
-         topInView = mCameraHeight - worldViewHeight;
+      if (topInView + worldViewHeight < mViewportHeight)
+         topInView = mViewportHeight - worldViewHeight;
       
-      mCameraCenterY = mWorldTop + (mCameraHeight * 0.5 - topInView) / scaleY;
+      mCameraCenterY = mWorldTop + (mViewportHeight * 0.5 - topInView) / scaleY;
    }
    
    x = leftInView - mWorldLeft * scaleX;
@@ -194,6 +194,8 @@ protected function UpdateCamera ():void
    
    mCameraMovedOffsetX_ByMouse = 0;
    mCameraMovedOffsetY_ByMouse = 0;
+   
+   FadingCamera ();
 }
 
 //=====================================================================================
@@ -210,7 +212,7 @@ public function MouseMoveCamera (offsetX:Number, offsetY:Number):void
 }
 
 //=====================================================================================
-//
+// camera follow entity
 //=====================================================================================
 
 protected var mFollowedEntityCameraCenterX:Entity = null;
@@ -246,4 +248,50 @@ public function FollowCameraAngleWithEntity (entity:Entity, bSmooth:Boolean):voi
 {
    mFollowedEntityCameraAngle = entity;
    mSmoothFollowingCameraAngle = bSmooth;
+}
+
+//=====================================================================================
+// fade
+//=====================================================================================
+
+private var mTempCameraFadeParams:CameraFadeParams = null; // to avoid IsForbidMouseAndKeyboardEventHandling returning a wrong result if CameraFadeOutThenFadeIn is called in a mouse or keyboard event
+
+private var mCameraFadeParams:CameraFadeParams = null;
+
+public function CameraFadeOutThenFadeIn (fadeColor:uint, stepsFadeOut:Number, stepsFadeIn:Number, stepsFadeStaying:int, scriptToRun:ScriptHolder):void
+{
+   mTempCameraFadeParams = new CameraFadeParams (fadeColor, stepsFadeOut, stepsFadeIn, stepsFadeStaying, scriptToRun);
+   mFadeMaskSprite.visible = true;
+}
+
+protected function FadingCamera ():void
+{
+   if (mTempCameraFadeParams != null)
+   {
+      mCameraFadeParams = mTempCameraFadeParams;
+      mTempCameraFadeParams = null;
+   }
+   
+   if (mCameraFadeParams != null)
+   {
+      var finished:Boolean = mCameraFadeParams.Step ();
+      
+      if (finished)
+      {
+         mCameraFadeParams = null;
+         mFadeMaskSprite.visible = false;
+      }
+      else
+      {
+         if (mCameraFadeParams.mFadeColor != mCameraFadeColor)
+         {
+            mCameraFadeColor = mCameraFadeParams.mFadeColor;
+            mCameraFadeMaskNeedRepaint = true;
+         }
+         
+         mFadeMaskSprite.alpha = mCameraFadeParams.mCurrentAlpha;
+         mFadeMaskSprite.x = mCameraCenterX;
+         mFadeMaskSprite.y = mCameraCenterY;
+      }
+   }
 }

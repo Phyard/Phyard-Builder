@@ -68,7 +68,7 @@ package editor.trigger.entity {
          mNumEntityParams = 0;
          for (i = 0; i < mEventHandlerDefinition.GetNumInputs (); ++ i)
          {
-            var variable_def:VariableDefinition = mEventHandlerDefinition.GetParamDefinitionAt (i);
+            var variable_def:VariableDefinition = mEventHandlerDefinition.GetInputParamDefinitionAt (i);
             if (variable_def is VariableDefinitionEntity)
                ++ mNumEntityParams;
          }

@@ -41,7 +41,7 @@ package player.entity {
          
          mPhysicsShapePotentially = false; // to override
          
-         mWorld.GetEntityLayer ().addChild (mAppearanceObjectsContainer);
+         mWorld.AddChildToEntityLayer (mAppearanceObjectsContainer);
          
          mWorld.RegisterShapeAiType (mOriginalAiType, mAiType);
       }
@@ -719,7 +719,7 @@ package player.entity {
       {
          DelayUpdateAppearance ();
          
-         mAppearanceObjectsContainer.mouseChildren = false;
+         mAppearanceObjectsContainer.mouseChildren = false; // import, otherwise sometimes a mouse event will be triggered twice.
          if (GetMouseClickListener () != null)
             mAppearanceObjectsContainer.addEventListener (MouseEvent.CLICK, GetMouseClickListener ());
          if (GetMouseDownListener () != null)
@@ -738,6 +738,8 @@ package player.entity {
 //   destroy
 //=============================================================
       
+      // if to destroy many shapes, don't use this function, because OnPhysicsShapeListChanged is some time-consuming
+      // this function is for signle destroying.
       override public function DestroyEntity ():void
       {
          var body:EntityBody = mBody;
@@ -751,7 +753,7 @@ package player.entity {
       {
          mWorld.UnregisterShapeAiType (mOriginalAiType, mAiType);
          
-         mWorld.GetEntityLayer ().removeChild (mAppearanceObjectsContainer);
+         mWorld.RemoveChildFromEntityLayer (mAppearanceObjectsContainer);
          
          BreakAllJoints ();
          
@@ -1049,19 +1051,26 @@ package player.entity {
          }
       }
       
-      internal function LocalPoint2WorldPoint (localX:Number, localY:Number):Point
+      public function LocalPoint2WorldPoint (localX:Number, localY:Number):Point
       {
+         UpdateSinCos ();
+         
          return new Point (
                mPositionX + localX * mCosRotation - localY * mSinRotation,
                mPositionY + localX * mSinRotation + localY * mCosRotation
             );
       }
       
-      internal function WorldPoint2LocalPoint (worldX:Number, worldlY:Number):Point
+      public function WorldPoint2LocalPoint (worldX:Number, worldY:Number):Point
       {
+         UpdateSinCos ();
+         
+         worldX -= mPositionX;
+         worldY -= mPositionY;
+         
          return new Point (
-               mPositionX + worldX * mCosRotation + worldlY * mSinRotation,
-               mPositionY - worldX * mSinRotation + worldlY * mCosRotation
+                 worldX * mCosRotation + worldY * mSinRotation,
+               - worldX * mSinRotation + worldY * mCosRotation
             );
       }
       

@@ -161,7 +161,7 @@ package player.trigger.entity
          mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
          
          if (mExternalAction != null)
-            mExternalAction.Excute ();
+            mExternalAction.Perform ();
       }     
    }
 }

@@ -26,7 +26,7 @@ package common.trigger
          return mInputValueTypes.length;
       }
       
-      public function GetInputValueType (inputId:int):int
+      public function GetInputParamValueType (inputId:int):int
       {
          if (mInputValueTypes == null)
             return ValueTypeDefine.ValueType_Void;
@@ -67,7 +67,7 @@ package common.trigger
          return mReturnValueTypes.length;
       }
       
-      public function GetOutputValueType (returnId:int):int
+      public function GetOutputParamValueType (returnId:int):int
       {
          if (mReturnValueTypes == null)
             return ValueTypeDefine.ValueType_Void;

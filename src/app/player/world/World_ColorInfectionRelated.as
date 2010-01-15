@@ -21,7 +21,7 @@ public function SetCiRulesEnabled (enabled:Boolean):void
 
 public function IsSuccessed_CICriterion ():Boolean
 {
-   return (mNumToBeInfecteds == mNumIntectedToBeInfecteds) && (mNumInfectedDontInfects == 0);
+   return (mNumToBeInfecteds == mNumIntectedToBeInfecteds) && (mNumInfectedDontInfects == 0) && (mNumToBeInfecteds + mNumDontInfecteds > 0);
 }
 
 public function IsFailed_CICriterion ():Boolean

@@ -372,11 +372,11 @@
                   var sceneWidth  :int = sceneRight  - sceneLeft;
                   var sceneHeight :int = sceneBottom - sceneTop;
                   
-                  if (sceneWidth < Define.DefaultWorldWidth)
-                     sceneWidth = Define.DefaultWorldWidth;
+                  if (sceneWidth < Define.MinWorldWidth)
+                     sceneWidth = Define.MinWorldWidth;
                   
-                  if (sceneHeight < Define.DefaultWorldHeight)
-                     sceneHeight = Define.DefaultWorldHeight;
+                  if (sceneHeight < Define.MinWorldHeight)
+                     sceneHeight = Define.MinWorldHeight;
                   
                   NumericStepper_CustomLeft.value = sceneLeft;
                   NumericStepper_CustomTop.value = sceneTop;

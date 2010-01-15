@@ -78,6 +78,7 @@
          
          private function OnEntityBasicSettingPanelCreationComplete ():void
          {
+            mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }
          

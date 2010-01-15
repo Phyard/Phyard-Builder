@@ -43,10 +43,8 @@ package editor {
    import mx.events.CloseEvent;
    //import mx.events.FlexEvent;
    
-   import com.tapirgames.display.FpsCounter;
-   import com.tapirgames.display.TextFieldEx;
-   
    import com.tapirgames.util.TimeSpan;
+   import com.tapirgames.util.FpsStat;
    import com.tapirgames.util.UrlUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.MathUtil;
@@ -142,8 +140,9 @@ package editor {
    import editor.trigger.Filters;
    
    import player.world.World;
-   import player.ui.PlayHelpDialog;
-   import player.ui.PlayControlBar;
+   //import player.ui.PlayHelpDialog;
+   //import player.ui.PlayControlBar;
+   import wrapper.ColorInfectionPlayer;
    
    import common.WorldDefine;
    import common.DataFormat;
@@ -182,15 +181,6 @@ package editor {
       private var mPlayerElementsContainer:Sprite;
       private var mTopLayerContainer:Sprite;
          
-      private var mUiContainer:Sprite;
-         
-         private var mUiTopBar:Shape = null;
-         private var mUiBottomBar:Shape = null;
-         private var mPlayControlBar:PlayControlBar = null;
-         private var mHelpDialog:Sprite = null;
-         private var mSelectedEntityInfoText:TextFieldEx = null;
-         private var mMouePointInfoText:TextFieldEx = null;
-         
       //
       
       //
@@ -209,16 +199,9 @@ package editor {
       
       private var mWorldHistoryManager:WorldHistoryManager;
       
-      private var mPlayerWorld:player.world.World = null;
+      private var mDesignPlayer:ColorInfectionPlayer = null;
          
-         private var mPlayerWorldZoomScale:Number = 1.0;
-         private var mPlayerWorldZoomScaleChangedSpeed:Number = 0.0;
-      
-      //private var mWorldPlayingSpeedX:int = 2;
-      
-      private var mOuterWorldHexString:String;
-      
-      //
+      // ...
       private var mAnalyticsDurations:Array = [0.5, 1, 2, 5, 10, 15, 20, 30];
       private var mAnalytics:Analytics;
       
@@ -361,28 +344,19 @@ package editor {
          UpdateChildComponents ();
       }
       
-      private var mFpsCounter:FpsCounter = null;
+      private var mFpsStat:FpsStat = new FpsStat ();
       private var mStepTimeSpan:TimeSpan = new TimeSpan ();
       
       public var mActive:Boolean = true;
       
       private function OnEnterFrame (event:Event):void 
       {
-         //
-         if (mFpsCounter == null)
-         {
-            mFpsCounter = new FpsCounter ();
-            mFpsCounter.x = 20;
-            mFpsCounter.y = 30;
-            mTopLayerContainer.addChild (mFpsCounter);
-         }
-         
-         mFpsCounter.Update (mStepTimeSpan.GetLastSpan ());
-         
-         //
          mStepTimeSpan.End ();
          mStepTimeSpan.Start ();
+
+         mFpsStat.Step (mStepTimeSpan.GetLastSpan ());
          
+         //
          if ( ! Runtime.HasSettingDialogOpened () && mActive)
             stage.focus = stage;
          
@@ -390,39 +364,15 @@ package editor {
          
          if ( IsPlaying () )
          {
-            if (mPlayerWorld != null)
-            {
-               if (mPlayerWorld.GetZoomScale () != mPlayerWorldZoomScale)
-               {
-                  if (mPlayerWorld.GetZoomScale () < mPlayerWorldZoomScale)
-                  {
-                     if (mPlayerWorldZoomScaleChangedSpeed < 0)
-                        mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
-                     
-                     newScale = mPlayerWorld.scaleX + mPlayerWorldZoomScaleChangedSpeed;
-                     
-                     if (newScale >= mPlayerWorldZoomScale)
-                        mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
-                     else
-                        mPlayerWorld.SetZoomScale (newScale);
-                  }
-                  else
-                  {
-                     if (mPlayerWorldZoomScaleChangedSpeed > 0)
-                        mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
-                     
-                     newScale = mPlayerWorld.scaleX + mPlayerWorldZoomScaleChangedSpeed;
-                     
-                     if (newScale <= mPlayerWorldZoomScale)
-                        mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
-                     else
-                        mPlayerWorld.SetZoomScale (newScale);
-                  }
-               }
-               
-               if ( ! IsPlayingPaused () && ! mHelpDialog.visible )
-                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
-            }
+            // mDesignPlayer.Update
+            // will call mDesignPlayer.EnterFrame ()
+            
+            //
+            UpdateDesignPalyerPosition ();
+            var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld ();
+            var playingSteps:int = playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
+            StatusBar_SetRunningSteps ("Step#" + playingSteps);
+            StatusBar_SetRunningFPS ("FPS: " + mFpsStat.GetFps ().toFixed (2));
          }
          else
          {
@@ -477,14 +427,8 @@ package editor {
       public function UpdateChildComponents ():void
       {
          UpdateBackgroundAndWorldPosition ();
-         UpdateViewInterface ();
+         //UpdateViewInterface ();
          UpdateSelectedEntityInfo ();
-         
-         if (mPlayerWorld != null)
-         {
-            mPlayerWorld.SetCameraWidth (mViewWidth);
-            mPlayerWorld.SetCameraHeight (mViewHeight);
-         }
       }
       
       public function UpdateBackgroundAndWorldPosition ():void
@@ -628,85 +572,31 @@ package editor {
          }
       }
       
-      public function UpdateViewInterface ():void
-      {
-         if (mUiContainer == null)
-         {
-            mUiContainer = new Sprite ();
-            addChild (mUiContainer);
-            
-            mUiTopBar = new Shape ();
-            mUiContainer.addChild (mUiTopBar);
-            
-            mUiBottomBar = new Shape ();
-            mUiContainer.addChild (mUiBottomBar);
-            
-            mPlayControlBar = new PlayControlBar (_OnRestartPlaying, _OnStartPlaying, _OnPausePlaying, _OnStopPlaying, _OnSetPlayingSpeed, _OnOpenPlayHelpDialog, null, _OnZoomWorld);
-            mUiContainer.addChild (mPlayControlBar);
-            
-            mHelpDialog = new PlayHelpDialog (_OnClosePlayHelpDialog);
-            mUiContainer.addChild (mHelpDialog);
-            mHelpDialog.visible = false;
-         }
-         
-         mUiTopBar.graphics.clear ();
-         mUiTopBar.graphics.beginFill(0x606060);
-         mUiTopBar.graphics.drawRect (0, 0, mViewWidth, WorldBorderThinknessTB);
-         mUiTopBar.graphics.endFill ();
-         
-         mUiBottomBar.graphics.clear ();
-         mUiBottomBar.graphics.beginFill(0x606060);
-         mUiBottomBar.graphics.drawRect (0, mViewHeight - WorldBorderThinknessTB, mViewWidth, WorldBorderThinknessTB);
-         mUiBottomBar.graphics.endFill ();
-         
-         mPlayControlBar.x = (mViewWidth - mPlayControlBar.width) * 0.5;
-         mPlayControlBar.y = 2;
-      }
-      
       public function UpdateSelectedEntityInfo ():void
       {
-         if (mSelectedEntityInfoText == null)
-         {
-            mSelectedEntityInfoText = TextFieldEx.CreateTextField ("", false, 0xFFFF00, 0x0);
-            
-            addChild (mSelectedEntityInfoText);
-         }
-         
-         mSelectedEntityInfoText.visible = false;
-         
          // ...
          if (mLastSelectedEntity != null && ! mEditorWorld.IsEntitySelected (mLastSelectedEntity))
-         {
             SetLastSelectedEntities (null);
-            return;
-         }
          
          if (mLastSelectedEntity == null)
+         {
+            if (StatusBar_SetMainSelectedEntityInfo != null)
+               StatusBar_SetMainSelectedEntityInfo (null);
             return;
-         
-         mSelectedEntityInfoText.visible = true;
+         }
          
          var typeName:String = mLastSelectedEntity.GetTypeName ();
          var infoText:String = mLastSelectedEntity.GetInfoText ();
          
-         mSelectedEntityInfoText.htmlText = "<font color='#FFFFFF'><b>#" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + "> " + typeName + "</b>: " + infoText + "</font>";
-         
-         mSelectedEntityInfoText.x = WorldBorderThinknessLR;
-         mSelectedEntityInfoText.y = mViewHeight - (WorldBorderThinknessTB + mSelectedEntityInfoText.height) * 0.5;
+         StatusBar_SetMainSelectedEntityInfo ("<b>&lt;" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + "&gt; " + typeName + "</b>: " + infoText);
       }
       
       private function UpdateMousePointInfo (stagePoint:Point):void
       {
-         if (mMouePointInfoText == null)
-         {
-            mMouePointInfoText = TextFieldEx.CreateTextField ("", false, 0xFFFF00, 0x0);
-            
-            addChild (mMouePointInfoText);
-         }
-         
          if (stagePoint == null)
          {
-            mMouePointInfoText.visible = false;
+            StatusBar_SetMainDisplayPosition (null);
+            StatusBar_SetMainPhysicsPosition (null);
             return;
          }
          
@@ -716,9 +606,16 @@ package editor {
          
          if ( IsPlaying () )
          {
-            worldPoint = mPlayerWorld.globalToLocal (new Point (Math.round(stagePoint.x), Math.round (stagePoint.y)));
-            px = ValueAdjuster.Number2Precision (mPlayerWorld.GetCoordinateSystem ().D2P_PositionX (worldPoint.x), 6);
-            py = ValueAdjuster.Number2Precision (mPlayerWorld.GetCoordinateSystem ().D2P_PositionY (worldPoint.y), 6);
+            if (mDesignPlayer != null)
+            {
+               var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld ();
+               if (playerWorld != null)
+               {
+                  worldPoint = playerWorld.globalToLocal (new Point (Math.round(stagePoint.x), Math.round (stagePoint.y)));
+                  px = ValueAdjuster.Number2Precision (playerWorld.GetCoordinateSystem ().D2P_PositionX (worldPoint.x), 6);
+                  py = ValueAdjuster.Number2Precision (playerWorld.GetCoordinateSystem ().D2P_PositionY (worldPoint.y), 6);
+               }
+            }
          }
          else
          {
@@ -727,12 +624,8 @@ package editor {
             py = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_PositionY (worldPoint.y), 6);
          }
          
-         mMouePointInfoText.visible = true;
-         
-         mMouePointInfoText.htmlText = "<font color='#FFFFFF'>(" + worldPoint.x + "px, " + worldPoint.y + "px) - (" + px.toFixed (2) + "m,  " + py.toFixed (2) + "m)</font>";
-         
-         mMouePointInfoText.x = mViewWidth -  WorldBorderThinknessLR - mMouePointInfoText.width;
-         mMouePointInfoText.y = mViewHeight - (WorldBorderThinknessTB + mMouePointInfoText.height) * 0.5;
+         StatusBar_SetMainDisplayPosition ("(" + worldPoint.x + "px, " + worldPoint.y + "px)");
+         StatusBar_SetMainPhysicsPosition ("(" + px.toFixed (2) + "m,  " + py.toFixed (2) + "m)");
       }
       
       private function UpdateSelectedEntitiesCenterSprite ():void
@@ -741,25 +634,6 @@ package editor {
          var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, mForegroundSprite, _SelectedEntitiesCenterPoint );
          mSelectedEntitiesCenterSprite.x = point.x;
          mSelectedEntitiesCenterSprite.y = point.y;
-      }
-      
-      private function SynchrinizePlayerWorldWithEditorWorld ():void
-      {
-         if (mPlayerWorld != null)
-         {
-            mPlayerWorld.x = mEditorWorld.x;
-            mPlayerWorld.y = mEditorWorld.y;
-            
-            mPlayerWorldZoomScale = mEditorWorldZoomScale;
-            mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
-            mPlayerWorld.MoveWorldScene_DisplayOffset (0, 0);
-         }
-         
-         if (mHelpDialog != null)
-         {
-            mHelpDialog.x = (mViewWidth - mHelpDialog.width) * 0.5;
-            mHelpDialog.y = (mViewHeight - mHelpDialog.height) * 0.5;
-         }
       }
       
       public function RepaintEntityLinks ():void
@@ -892,8 +766,8 @@ package editor {
       }
       
       private var mIsCreating:Boolean = false;
+      
       private var mIsPlaying:Boolean = false;
-      //private var mIsPlayingPaused:Boolean = false;
       
       private function IsCreating ():Boolean
       {
@@ -912,15 +786,8 @@ package editor {
       
       public function IsPlayingPaused ():Boolean
       {
-         //return mIsPlaying && mIsPlayingPaused;
-         return mIsPlaying && ! mPlayControlBar.IsPlaying ();
+         return mIsPlaying && mDesignPlayer != null && (! mDesignPlayer.IsPlaying ());
       }
-      
-      public function GetPlayingSpeedX ():int
-      {
-         return mPlayControlBar.GetPlayingSpeedX ();
-      }
-      
       
 //==================================================================================
 // outer components
@@ -1233,7 +1100,6 @@ package editor {
       public var mButtonFlipV:Button;
       public var mButtonGlue:Button;
       public var mButtonBreakApart:Button;
-      public var mButtonNewDesign:Button;
       public var mButtonSetting:Button;
       public var mButtonMoveToTop:Button;
       public var mButtonMoveToBottom:Button;
@@ -1246,7 +1112,10 @@ package editor {
       public var mButtonMouseRotate:Button;
       public var mButtonMouseScale:Button;
       
-      //public var mButtonAuthorInfo:Button;
+      public var mButton_Play:Button;
+      public var mButton_Stop:Button;
+      
+      public var mButtonNewDesign:Button;
       public var mButtonSaveWorld:Button;
       public var mButtonLoadWorld:Button;
       
@@ -1300,6 +1169,16 @@ package editor {
       {
          switch (event.target)
          {
+            case mButtonNewDesign:
+               ClearAllEntities ();
+               break;
+            case mButtonSaveWorld:
+               OpenWorldSavingDialog ();
+               break;
+            case mButtonLoadWorld:
+               OpenWorldLoadingDialog ();
+               break;
+            
             case mButtonClone:
                CloneSelectedEntities ();
                break;
@@ -1318,9 +1197,6 @@ package editor {
             case mButtonBreakApart:
                BreakApartSelectedEntities ();
                break;
-            case mButtonNewDesign:
-               ClearAllEntities ();
-               break
             case mButtonSetting:
                OpenEntitySettingDialog ();
                break;
@@ -1329,15 +1205,6 @@ package editor {
                break;
             case mButtonMoveToBottom:
                MoveSelectedEntitiesToBottom ();
-               break;
-            //case mButtonAuthorInfo:
-            //   OpenWorldSettingDialog ();
-            //   break;
-            case mButtonSaveWorld:
-               OpenWorldSavingDialog ();
-               break;
-            case mButtonLoadWorld:
-               OpenWorldLoadingDialog ();
                break;
             case mButtonUndo:
                Undo ();
@@ -1363,10 +1230,29 @@ package editor {
             case mButtonMouseScale:
                SetMouseEditModeEnabled (MouseEditMode_Scale, mButtonMouseScale.selected);
                break;
+            
+            case mButton_Play:
+               Play_RunRestart ()
+               break;
+            case mButton_Stop:
+               Play_Stop ();
+               break;
+            
             default:
                break;
          }
       }
+      
+   // status bar
+      
+      public var StatusBar_SetMainSelectedEntityInfo:Function;
+      public var StatusBar_SetMainDisplayPosition:Function;
+      public var StatusBar_SetMainPhysicsPosition:Function;
+      
+      public var StatusBar_SetRunningSteps:Function;
+      public var StatusBar_SetRunningFPS:Function;
+      
+   // context menu
       
       private var mMenuItemAbout:ContextMenuItem;
       private var mMenuItemExportSelectedsToSystemMemory:ContextMenuItem;
@@ -1462,195 +1348,100 @@ package editor {
          mEditorWorld = null;
       }
       
-      private function SetPlayerWorld (newPlayerWorld:player.world.World):void
+      private function ScaleEditorWorldTo (scale:Number):void
       {
-         DestroyPlayerWorld ();
+         if (IsEditing ())
+         {
+            mEditorWorldZoomScale = scale;
+            mEditorWorldZoomScaleChangedSpeed = (mEditorWorldZoomScale - mEditorWorld.scaleX) * 0.03;
+            
+            //UpdateBackgroundAndWorldPosition ();
+         }
+      }
+      
+      private function SetDesignPlayer (newPlayer:ColorInfectionPlayer):void
+      {
+         DestroyDesignPlayer ();
          
-         mPlayerWorld = newPlayerWorld;
+         mDesignPlayer = newPlayer;
          
-         if (mPlayerWorld == null)
+         if (mDesignPlayer == null)
             return;
          
-         mPlayerElementsContainer.addChild (mPlayerWorld);
+         mPlayerElementsContainer.addChild (mDesignPlayer);
          
-         mPlayerWorld.SetCameraWidth (mViewWidth);
-         mPlayerWorld.SetCameraHeight (mViewHeight);
-         
-         SynchrinizePlayerWorldWithEditorWorld ();
+         UpdateDesignPalyerPosition ();
       }
       
-      private function DestroyPlayerWorld ():void
+      private function DestroyDesignPlayer():void
       {
-         SystemUtil.TraceMemory ("before DestroyPlayerWorld", true);
+         //SystemUtil.TraceMemory ("before DestroyPlayerWorld", true);
          
-         if ( mPlayerWorld != null)
+         if ( mDesignPlayer != null)
          {
-            mPlayerWorld.Destroy ();
-            
-            if ( mPlayerElementsContainer.contains (mPlayerWorld) )
-               mPlayerElementsContainer.removeChild (mPlayerWorld);
+            if ( mPlayerElementsContainer.contains (mDesignPlayer) )
+               mPlayerElementsContainer.removeChild (mDesignPlayer);
          }
          
-         mPlayerWorld = null;
+         mDesignPlayer = null;
          
-         SystemUtil.TraceMemory ("after DestroyPlayerWorld", true);
+         //SystemUtil.TraceMemory ("after DestroyPlayerWorld", true);
       }
       
-      public function OnPlayRunRestart (keepPauseStatus:Boolean = false):void
+      public function UpdateDesignPalyerPosition ():void
+      {
+         if (mDesignPlayer != null)
+         {
+            mDesignPlayer.x = (mViewWidth - Define.DefaultPlayerWidth) / 2;
+            mDesignPlayer.y = (mViewHeight - Define.DefaultPlayerHeight - Define.PlayerPlayBarThickness) / 2;
+         }
+      }
+      
+//============================================================================
+// playing
+//============================================================================
+      
+      public var OnPlayingStarted:Function;
+      public var OnPlayingStopped:Function;
+      
+      private function GetWorldDefine ():WorldDefine
+      {
+         return DataFormat.EditorWorld2WorldDefine ( mEditorWorld );
+      }
+      
+      public function Play_RunRestart (keepPauseStatus:Boolean = false):void
       {
          if (Runtime.HasSettingDialogOpened ())
             return;
          
-         DestroyPlayerWorld ();
+         DestroyDesignPlayer ();
          
-         var playerWorld:player.world.World = null;
-         
-         if (mOuterWorldHexString != null)
-         {
-            try 
-            {
-               playerWorld = DataFormat2.WorldDefine2PlayerWorld (DataFormat2.HexString2WorldDefine (mOuterWorldHexString));
-            }
-            catch (err:Error)
-            {
-               mOuterWorldHexString = null;
-               playerWorld = null;
-            }
-         }
-         
-         if (playerWorld == null)
-         {
-            if (Runtime.mSynchronizeWorldWithWorldSettingPanel != null)
-               Runtime.mSynchronizeWorldWithWorldSettingPanel (mEditorWorld);
-            
-            var wd1:WorldDefine = DataFormat.EditorWorld2WorldDefine ( mEditorWorld );
-            //{
-            //   var ba:ByteArray = DataFormat.WorldDefine2ByteArray ( wd1 );
-            //   ba.position = 0;
-            //   var wd2:WorldDefine = DataFormat2.ByteArray2WorldDefine ( ba );
-            //   
-            //   playerWorld = DataFormat2.WorldDefine2PlayerWorld (wd2);
-            //}
-            //{
-               playerWorld = DataFormat2.WorldDefine2PlayerWorld (wd1);
-            //}
-         }
-         
-         SetPlayerWorld (playerWorld);
+         SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine));
          
          mIsPlaying = true;
-         //if ( ! keepPauseStatus )
-         //   mIsPlayingPaused = false;
          
          mPlayerElementsContainer.visible = true;
          mEditorElementsContainer.visible = false;
          
-         if (OnStartPlaying != null)
-            OnStartPlaying ();
+         if (OnPlayingStarted != null)
+            OnPlayingStarted ();
       }
       
-      public function OnPlayPauseResume ():void
+      public function Play_Stop ():void
       {
-         //mIsPlayingPaused = ! mIsPlayingPaused;
-      }
-      
-      public function OnPlayStop ():void
-      {
-         mOuterWorldHexString = null;
-         
-         mPlayControlBar.SetZoomScale (mEditorWorldZoomScale);
-         
-         DestroyPlayerWorld ();
+         DestroyDesignPlayer ();
          
          mIsPlaying = false;
          
          mPlayerElementsContainer.visible = false;
          mEditorElementsContainer.visible = true;
          
-         if (OnStopPlaying != null)
-            OnStopPlaying ();
+         if (OnPlayingStopped != null)
+            OnPlayingStopped ();
       }
       
-      public function SetPlayingSpeed (speed:Number):void
+      private function SetPlayingSpeed (speed:Number):void
       {
-         /*
-         mWorldPlayingSpeedX = Math.round (speed + speed);
-         if (mWorldPlayingSpeedX < 0)
-            mWorldPlayingSpeedX = 0;
-         if (mWorldPlayingSpeedX > 10)
-            mWorldPlayingSpeedX = 10;
-         */
-      }
-      
-//============================================================================
-// callbacks for main.mxml
-//============================================================================
-      
-      public var OnStartPlaying:Function;
-      public var OnStopPlaying:Function;
-      
-//============================================================================
-// play control var callbacks
-//============================================================================
-      
-      private function _OnRestartPlaying (data:Object = null):void
-      {
-         OnPlayRunRestart ();
-         //CloseHelpDialog ();
-      }
-      
-      public function _OnStartPlaying (data:Object = null):void
-      {
-         if (! IsPlaying ())
-            OnPlayRunRestart ();
-      }
-      
-      public function _OnPausePlaying (data:Object = null):void
-      {
-      }
-      
-      public function _OnStopPlaying (data:Object = null):void
-      {
-         OnPlayStop ();
-      }
-      
-      private function _OnSetPlayingSpeed (data:Object = null):void
-      {
-      }
-      
-      private function _OnOpenPlayHelpDialog(data:Object = null):void
-      {
-         if (mHelpDialog != null)
-            mHelpDialog.visible = true;
-         
-         //OnPause (null);
-      }
-      
-      private function _OnClosePlayHelpDialog ():void
-      {
-         if (mHelpDialog != null)
-            mHelpDialog.visible = false;
-      }
-      
-      private function _OnZoomWorld (data:Object = null):void
-      {
-         if (IsPlaying ())
-         {
-            if (mPlayerWorld != null)
-            {
-               mPlayerWorldZoomScale = mPlayControlBar.GetZoomScale ();
-               mPlayerWorldZoomScaleChangedSpeed = (mPlayerWorldZoomScale - mPlayerWorld.scaleX) * 0.03;
-            }
-            
-            //UpdateBackgroundAndWorldPosition ();
-         }
-         else
-         {
-            mEditorWorldZoomScale = mPlayControlBar.GetZoomScale ();
-            mEditorWorldZoomScaleChangedSpeed = (mEditorWorldZoomScale - mEditorWorld.scaleX) * 0.03;
-            
-            //UpdateBackgroundAndWorldPosition ();
-         }
       }
       
 //============================================================================
@@ -2114,16 +1905,16 @@ package editor {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
       
-      private function OpenPlayCodeLoadingDialog ():void
-      {
-         if (! IsPlaying ())
-            return;
-         
-         if (Runtime.HasSettingDialogOpened ())
-            return;
-         
-         ShowPlayCodeLoadingDialog (LoadPlayerWorldFromHexString);
-      }
+      //private function OpenPlayCodeLoadingDialog ():void
+      //{
+      //   if (! IsPlaying ())
+      //      return;
+      //   
+      //   if (Runtime.HasSettingDialogOpened ())
+      //      return;
+      //   
+      //   ShowPlayCodeLoadingDialog (LoadPlayerWorldFromHexString);
+      //}
       
       private function  OpenImportSourceCodeDialog ():void
       {
@@ -2683,7 +2474,7 @@ package editor {
                if (IsEditing ())
                   OpenEntitySettingDialog ();
                else if (IsPlayingPaused ())
-                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+                  mDesignPlayer.Step ();
                break;
             //case 49: // 1
             //case Keyboard.NUMPAD_1:
@@ -3619,10 +3410,8 @@ package editor {
             shape.SetFilledColor (params.mBackgroundColor);
             shape.SetBorderTransparency (params.mBorderTransparency);
             
-trace ("111");
             if (shape.IsBasicShapeEntity ())
             {
-trace ("222");
                shape.SetAiType (params.mAiType);
                shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
                
@@ -3882,25 +3671,6 @@ trace ("222");
          {
             SetEditorWorld (new editor.world.World ());
             
-            Alert.show("Sorry, loading error!", "Error");
-            
-            if (Compile::Is_Debugging)
-               throw error;
-         }
-      }
-      
-      public function LoadPlayerWorldFromHexString (params:Object):void
-      {
-         var hexString:String = params.mHexString;
-         
-         mOuterWorldHexString = hexString;
-         
-         try
-         {
-            OnPlayRunRestart (true);
-         }
-         catch (error:Error)
-         {
             Alert.show("Sorry, loading error!", "Error");
             
             if (Compile::Is_Debugging)

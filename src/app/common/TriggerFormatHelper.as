@@ -107,11 +107,11 @@ package common {
          
          var value_source_defines:Array = new Array (num_inputs);
          for (i = 0; i < num_inputs; ++ i)
-            value_source_defines [i] = ValueSource2ValueSourceDefine (editorWorld, funcCalling.GetInputValueSource (i), func_declaration.GetInputValueType (i));
+            value_source_defines [i] = ValueSource2ValueSourceDefine (editorWorld, funcCalling.GetInputValueSource (i), func_declaration.GetInputParamValueType (i));
          
          var value_target_defines:Array = new Array (num_outputs);
          for (i = 0; i < num_outputs; ++ i)
-            value_target_defines [i] = ValueTarget2ValueTargetDefine (editorWorld, funcCalling.GetReturnValueTarget (i), func_declaration.GetInputValueType (i));
+            value_target_defines [i] = ValueTarget2ValueTargetDefine (editorWorld, funcCalling.GetReturnValueTarget (i), func_declaration.GetInputParamValueType (i));
          
          var func_calling_define:FunctionCallingDefine = new FunctionCallingDefine ();
          func_calling_define.mFunctionType = func_declaration.GetType ();
@@ -232,11 +232,11 @@ package common {
          
          var value_sources:Array = new Array (funcCallingDefine.mNumInputs);
          for (i = 0; i < num_inputs; ++ i)
-            value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputValueType (i), functionDefinition);
+            value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
          
          var value_targets:Array = new Array (funcCallingDefine.mNumOutputs);
          for (i = 0; i < num_outputs; ++ i)
-            value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputValueType (i), functionDefinition);
+            value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
          
          var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
          func_calling.AssignInputValueSources (value_sources);
@@ -469,7 +469,7 @@ package common {
          i = 0;
          for each (elementValueSource in funcCallingElement.InputValueSources.ValueSource)
          {
-            value_source_defines.push (Xml2ValueSourceDefine (elementValueSource, func_declaration.GetInputValueType (i ++)));
+            value_source_defines.push (Xml2ValueSourceDefine (elementValueSource, func_declaration.GetInputParamValueType (i ++)));
          }
          
          var value_target_defines:Array = new Array ();
@@ -477,7 +477,7 @@ package common {
          i = 0;
          for each (elementValueTarget in funcCallingElement.OutputValueTargets.ValueTarget)
          {
-            value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget, func_declaration.GetOutputValueType (i ++)));
+            value_target_defines.push (Xml2ValueTargetDefine (elementValueTarget, func_declaration.GetOutputParamValueType (i ++)));
          }
          
          var func_calling_define:FunctionCallingDefine = new FunctionCallingDefine ();

@@ -16,7 +16,8 @@ package player.entity {
          SetDrawBorder (false);
          SetBuildBorder (false);
          
-         mWorld.GetBorderLayer ().addChild (mAppearanceObjectsContainer);
+         mWorld.RemoveChildFromEntityLayer (mAppearanceObjectsContainer); // added in EntityShape class
+         mWorld.AddChildToBorderLayer (mAppearanceObjectsContainer);
       }
    }
 }

@@ -23,11 +23,6 @@ package editor.trigger {
          return FunctionTypeDefine.FunctionType_EventHandler;
       }
       
-      override public function CanBeCalledInConditionList ():Boolean
-      {
-         return false;
-      }
-      
    }
 }
 

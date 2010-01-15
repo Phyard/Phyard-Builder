@@ -223,12 +223,10 @@ public function Detach ():void
 
 public function AttachWith (anotherShape:EntityShape):void
 {
-trace ("AttachWith");
    var anotherBody:EntityBody = anotherShape.GetBody ();
    
    if (anotherBody == mBody)
       return;
-trace ("AttachWith 111");
    
 // ...
    

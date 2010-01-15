@@ -23,7 +23,7 @@ package editor.trigger {
          {
             var num_inputs:int = mFunctionDeclaration.GetNumInputs ();
             for (var i:int = 0; i < num_inputs; ++ i)
-               mInputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetParamDefinitionAt (i));
+               mInputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetInputParamDefinitionAt (i));
          }
          
          mReturnVariableSpace = new VariableSpaceReturn ();
@@ -32,7 +32,7 @@ package editor.trigger {
          {
             var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
             for (var j:int = 0; j < num_returns; ++ j)
-               mReturnVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetReturnDefinitionAt (j));
+               mReturnVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOuputParamDefinitionAt (j));
          }
       }
       
@@ -107,20 +107,20 @@ package editor.trigger {
          return mFunctionDeclaration.GetNumInputs ();
       }
       
-      public function GetParamDefinitionAt (inputId:int):VariableDefinition
+      public function GetInputParamDefinitionAt (inputId:int):VariableDefinition
       {
          if (mFunctionDeclaration == null)
             return null;
          
-         return mFunctionDeclaration.GetParamDefinitionAt (inputId);
+         return mFunctionDeclaration.GetInputParamDefinitionAt (inputId);
       }
       
-      public function GetInputValueType (inputId:int):int
+      public function GetInputParamValueType (inputId:int):int
       {
          if (mFunctionDeclaration == null)
             return ValueTypeDefine.ValueType_Void;;
          
-         return mFunctionDeclaration.GetInputValueType (inputId);
+         return mFunctionDeclaration.GetInputParamValueType (inputId);
       }
       
       public function HasInputsWithValueTypeOf (valueType:int):Boolean

@@ -32,16 +32,23 @@ package common {
       //public static const MaxEntitiesCount:int = 1024 * 3;
       public static const MaxEntitiesCount:int = 0x7FFFFFFF; // unlimited
       
-      public static const DefaultWorldWidth:int = 600; 
-      public static const DefaultWorldHeight:int = 600; 
+      public static const DefaultWorldWidth:int = 600; //600; 
+      public static const DefaultWorldHeight:int = 600; //600; 
       public static const WorldBorderThinknessLR:int = 10; 
       public static const WorldBorderThinknessTB:int = 20; 
+      
+      public static const MinWorldWidth:int = 100;
+      public static const MinWorldHeight:int = 100; 
       
       public static const LargeWorldHalfWidth:int = 12000; 
       public static const LargeWorldHalfHeight:int = 12000; 
       
       public static const CategoryViewWidth:int = 680; 
       public static const CategoryViewHeight:int = 630; 
+      
+      public static const PlayerPlayBarThickness:int = 20;
+      public static const DefaultPlayerWidth:int = 600;
+      public static const DefaultPlayerHeight:int = 600;
       
       public static const WorldStepTimeInterval:Number = 1.0 / 30;
       

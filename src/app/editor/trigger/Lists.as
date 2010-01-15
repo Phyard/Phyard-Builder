@@ -61,6 +61,18 @@ package editor.trigger {
             {label:"Circle", data:Define.CircleAppearanceType_Circle},
          ];
       
+      public static const mWorldPresetScaleList:Array = [
+            {label:"1/16", data:1.0/16.0},
+            {label:"1/8", data:1.0/8.0},
+            {label:"1/4", data:1.0/4.0},
+            {label:"1/2", data:1.0/2.0},
+            {label:"1", data:1.00},
+            {label:"2", data:2.00},
+            {label:"4", data:4.00},
+            {label:"8", data:8.00},
+            {label:"16", data:16.00},
+         ];
+      
       public static const mKeyCodeList:Array = [
          ];
    }

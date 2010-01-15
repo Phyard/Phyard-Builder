@@ -80,6 +80,7 @@
          {
             mParams.mRotationNonSense = true;
             mParams.mVisibleNonsense = true;
+            mParams.mEnabledNonsense = true;
             BasicSettingPanel.SetValues (mParams);
          }
          

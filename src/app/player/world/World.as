@@ -49,8 +49,10 @@ package player.world {
    import player.entity.EntityJointDistance;
    import player.entity.EntityJointSpring;
    
+   import player.trigger.entity.ScriptHolder;
    import player.trigger.entity.EntityBasicCondition;
    import player.trigger.entity.EntityTask;
+   import player.trigger.entity.EntityAction;
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.entity.EntityEventHandler_Timer;
    import player.trigger.entity.EntityEventHandler_Keyboard;
@@ -419,6 +421,18 @@ package player.world {
       //------------------------------------
          
          Repaint ();
+         
+      //------------------------------------
+      // to avoid losing mouse events when remove entity sprites
+      //------------------------------------
+         
+         mDelayRemoveDisplayObjectFromContentLayer = true;
+         
+      //-----------------------------
+      // system dispatchs mouse, keyboard and other events
+      //-----------------------------
+         
+         // ...
       }
       
 //=============================================================
@@ -440,8 +454,36 @@ package player.world {
       
       public function Update (escapedTime:Number, speedX:int):void
       {
+      //-----------------------------
+      // remove the delay removeds
+      //-----------------------------
+         
+         DelayRemoveDisplayObjectFromContentLayer ();
+            
+      //-----------------------------
+      // update
+      //-----------------------------
+         
          if (mFunc_StepUpdate != null)
             mFunc_StepUpdate (escapedTime, speedX);
+         
+      //-----------------------------
+      // repaint
+      //-----------------------------
+         
+         Repaint ();
+         
+      //------------------------------------
+      // to avoid losing mouse events when remove entity sprites
+      //------------------------------------
+         
+         mDelayRemoveDisplayObjectFromContentLayer = true;
+         
+      //-----------------------------
+      // system dispatchs mouse, keyboard and other events
+      //-----------------------------
+         
+         // ...
       }
       
       public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int):void
@@ -512,18 +554,6 @@ package player.world {
             
             HandleEventById (CoreEventIds.ID_OnWorldAfterUpdated);
          }
-       
-      //-----------------------------
-      // repaint
-      //-----------------------------
-         
-         Repaint ();
-         
-      //-----------------------------
-      // system dispatchs moust keyboard and other events
-      //-----------------------------
-         
-         // ...
       }
       
 //=============================================================
@@ -534,9 +564,8 @@ package player.world {
       {
          if (mBackgroundNeedRepaint)
          {
-            RepaintBackground ();
-            
             mBackgroundNeedRepaint = false;
+            RepaintBackground ();
          }
          
          var next:Entity;
@@ -553,6 +582,12 @@ package player.world {
             entity.mNextEntityToDelayUpdateAppearance = null;
             
             entity = next;
+         }
+         
+         if (mCameraFadeMaskNeedRepaint)
+         {
+            mCameraFadeMaskNeedRepaint = false;
+            RepaintFadeMaskSprite ();
          }
       }
 
@@ -573,36 +608,42 @@ package player.world {
    //===============================
 
       private var mBackgroundLayer   :Sprite;
-      private var mBorderLayer       :Sprite;
-      private var mEntityLayer       :Sprite;
-
-      public function GetEntityLayer ():DisplayObjectContainer
-      {
-         return mEntityLayer;
-      }
-
-      public function GetBorderLayer ():DisplayObjectContainer
-      {
-         return mBorderLayer;
-      }
+         private var mBackgroundSprite:Sprite;
+      private var mContentLayer     :Sprite;
+         private var mBorderLayer       :Sprite;
+         private var mEntityLayer       :Sprite;
+      private var mForegroundLayer   :Sprite;
+         private var mFadeMaskSprite     :Sprite;
 
       private function CreateGraphicsLayers ():void
       {
          mBackgroundLayer    = new Sprite ();
-         mBorderLayer        = new Sprite ();
-         mEntityLayer        = new Sprite ();
+            mBackgroundSprite = new Sprite ();
+         mContentLayer    = new Sprite ();
+            mBorderLayer        = new Sprite ();
+            mEntityLayer        = new Sprite ();
+         mForegroundLayer        = new Sprite ();
+            mFadeMaskSprite        = new Sprite ();
          
          addChild (mBackgroundLayer);
+         addChild (mContentLayer);
+         addChild (mForegroundLayer);
+         
+         mBackgroundLayer.addChild (mBackgroundSprite);
+         
          if (mDrawBorderAboveEntities)
          {
-            addChild (mEntityLayer);
-            addChild (mBorderLayer);
+            mContentLayer.addChild (mEntityLayer);
+            mContentLayer.addChild (mBorderLayer);
          }
          else
          {
-            addChild (mBorderLayer);
-            addChild (mEntityLayer);
+            mContentLayer.addChild (mBorderLayer);
+            mContentLayer.addChild (mEntityLayer);
          }
+         
+         mForegroundLayer.addChild (mFadeMaskSprite);
+         mFadeMaskSprite.visible = false;
       }
 
    //===============================
@@ -629,40 +670,46 @@ package player.world {
          return mBackgroundColor;
       }
 
-      private var mBackgroundSprite:Sprite = null;
-      
       private function RepaintBackground ():void
       {
-         if (mBackgroundSprite == null)
-         {
-            mBackgroundSprite = new Sprite ();
-            mBackgroundLayer.addChild (mBackgroundSprite);
-            
-            UpdateBackgroundSpriteOffsetAndScale ();
-         }
-         
          mBackgroundSprite.graphics.clear ();
          mBackgroundSprite.graphics.beginFill(mBackgroundColor);
-         //mBackgroundSprite.graphics.drawRect (mWorldLeft, mWorldTop, mWorldWidth, mWorldHeight); // sometime, it is too large to build
-         mBackgroundSprite.graphics.drawRect (-2048, -2048, 4096, 4096); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
+         //mBackgroundSprite.graphics.drawRect (mWorldLeft, mWorldTop, mWorldWidth, mWorldHeight); // sometimes, it is too large to build
+         mBackgroundSprite.graphics.drawRect (- 0.5 * Define.DefaultPlayerWidth, - 0.5 * Define.DefaultPlayerHeight, Define.DefaultPlayerWidth, Define.DefaultPlayerHeight); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
          mBackgroundSprite.graphics.endFill ();
       }
       
       // this function
-      public function IsBackgroundLayerContains (displayObject:DisplayObject):Boolean
+      public function IsContentLayerContains (displayObject:DisplayObject):Boolean
       {
          if (displayObject == null)
             return false;
          
          while (displayObject != null)
          {
-            if (displayObject == mBackgroundLayer)
+            if (displayObject == mContentLayer)
                return true;
             
             displayObject = displayObject.parent;
          }
          
          return false;
+      }
+
+   //===============================
+   // fade mask sprite
+   //===============================
+
+      private var mCameraFadeColor:uint = 0xFFFFFFFF;
+      
+      private var mCameraFadeMaskNeedRepaint:Boolean = true;
+
+      private function RepaintFadeMaskSprite ():void
+      {
+         mFadeMaskSprite.graphics.clear ();
+         mFadeMaskSprite.graphics.beginFill(mCameraFadeColor);
+         mFadeMaskSprite.graphics.drawRect (- 0.5 * mViewportWidth, - 0.5 * mViewportHeight, mViewportWidth, mViewportHeight); // at larget ennough one, the mask sprite will be always put in screen center, and the scale will not chagned
+         mFadeMaskSprite.graphics.endFill ();
       }
 
    //===============================
@@ -747,6 +794,76 @@ package player.world {
       public function GetBorderColor ():uint
       {
          return mBorderColor;
+      }
+
+   //===============================
+   // entity and border layers
+   //===============================
+
+      private var mDelayRemoveDisplayObjectFromContentLayer:Boolean = false;
+      
+      private var mDisplayObjectsDelayRemovedFromEntityLayer:Array = new Array ();
+      private var mDisplayObjectsDelayRemovedFromBorderLayer:Array = new Array ();
+
+      public function DelayRemoveDisplayObjectFromContentLayer ():void
+      {
+         mDelayRemoveDisplayObjectFromContentLayer = false;
+         
+         var i:int;
+         var num:int;
+         var displayObject:DisplayObject;
+         
+         num = mDisplayObjectsDelayRemovedFromEntityLayer.length;
+         for (i = 0; i < num; ++ i)
+         {
+            displayObject = mDisplayObjectsDelayRemovedFromEntityLayer [i] as DisplayObject;
+            if (displayObject.parent == mEntityLayer)
+               mEntityLayer.removeChild (displayObject);
+         }
+         mDisplayObjectsDelayRemovedFromEntityLayer.splice (0, num);
+         
+         num = mDisplayObjectsDelayRemovedFromBorderLayer.length;
+         for (i = 0; i < num; ++ i)
+         {
+            displayObject = mDisplayObjectsDelayRemovedFromBorderLayer [i] as DisplayObject;
+            if (displayObject.parent == mBorderLayer)
+               mBorderLayer.removeChild (displayObject);
+         }
+         mDisplayObjectsDelayRemovedFromBorderLayer.splice (0, num);
+      }
+
+      public function AddChildToEntityLayer (displayObject:DisplayObject):void
+      {
+         mEntityLayer.addChild (displayObject);
+      }
+
+      public function RemoveChildFromEntityLayer (displayObject:DisplayObject):void
+      {
+         if (mDelayRemoveDisplayObjectFromContentLayer)
+         {
+            mDisplayObjectsDelayRemovedFromEntityLayer.push (displayObject);
+         }
+         else
+         {
+            mEntityLayer.removeChild (displayObject);
+         }
+      }
+
+      public function AddChildToBorderLayer (displayObject:DisplayObject):void
+      {
+         mBorderLayer.addChild (displayObject);
+      }
+
+      public function RemoveChildFromBorderLayer (displayObject:DisplayObject):void
+      {
+         if (mDelayRemoveDisplayObjectFromContentLayer)
+         {
+            mDisplayObjectsDelayRemovedFromBorderLayer.push (displayObject);
+         }
+         else
+         {
+            mBorderLayer.removeChild (displayObject);
+         }
       }
 
 //====================================================================================================

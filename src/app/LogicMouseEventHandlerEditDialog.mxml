@@ -6,18 +6,11 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
     title="Event Handler Setting" width="600">
 
-   <mx:HBox width="100%">
-      <mx:Spacer width="100%"/>
-      <mx:Label text="Handler Name:" textAlign="right" />
-      <mx:TextInput id="TextInput_Name" width="300"/>
-      <mx:Spacer width="100%"/>
-   </mx:HBox>
-
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Script" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0">
+               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnCodeSnippetSettingPanelCreationComplete()">
          <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
       </mx:VBox>
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
@@ -83,10 +76,11 @@
             mParams = initialValues;
             
             mIsWorldEvent = mParams.mEventId >= CoreEventIds.ID_OnWorldMouseClick && mParams.mEventId <= CoreEventIds.MaxWorldMouseEventId;
-            
-         // ...
+         }
+         
+         public function OnCodeSnippetSettingPanelCreationComplete ():void
+         {
             this.title = "Event Handler Setting - " + mParams.mCodeSnippet.GetOwnerFunctionDefinition ().GetName ();
-            TextInput_Name = mParams.mName;
             
             theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
          }

@@ -36,6 +36,8 @@ package editor.entity {
          
          if (mEntityContainer != null) // at some special cases, mEntityContainer is null
             mEntityContainer.OnEntityCreated (this);
+         
+         //SetName (null);
       }
       
       public function GetContainer ():EntityContainer
@@ -46,6 +48,11 @@ package editor.entity {
       public function IsUtilityEntity ():Boolean
       {
          return false;
+      }
+      
+      public function GetDefaultName ():String
+      {
+         return "Entity";
       }
       
 //======================================================
@@ -154,6 +161,19 @@ package editor.entity {
       {
          return mIsEnabled;
       }
+      
+      //public function SetName (name:String):void
+      //{
+      //   if (name == null)
+      //      name = GetDefaultName ();
+      //   
+      //   mName = name;
+      //}
+      //
+      //public function GetName ():String
+      //{
+      //   return mName;
+      //}
       
 //======================================================
 // pos, rotition

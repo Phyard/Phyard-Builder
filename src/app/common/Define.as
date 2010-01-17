@@ -35,7 +35,7 @@ package common {
       public static const DefaultWorldWidth:int = 600; //600; 
       public static const DefaultWorldHeight:int = 600; //600; 
       public static const WorldBorderThinknessLR:int = 10; 
-      public static const WorldBorderThinknessTB:int = 20; 
+      public static const WorldBorderThinknessTB:int = 10; // 20; // 20 is before v1.08
       
       public static const MinWorldWidth:int = 100;
       public static const MinWorldHeight:int = 100; 

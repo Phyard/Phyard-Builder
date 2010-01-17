@@ -78,6 +78,11 @@ package player.entity {
          }
       }
       
+      public function GetLowerAngle ():Number
+      {
+         return mLowerAngle;
+      }
+      
       public function GetUpperAngle ():Number
       {
          return mUpperAngle;

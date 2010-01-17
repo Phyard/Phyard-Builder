@@ -105,9 +105,9 @@ package editor.trigger {
          return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (func_id);
       }
       
-      public static function GetCoreApiFunctionsMenuItemXML ():XML
+      public static function GetCoreApiFunctionsMenuBarDataProvider ():XML
       {
-         return PlayerFunctionDefinesForEditing.sCoreApiMenuItemXML;
+         return PlayerFunctionDefinesForEditing.sMenuBarDataProvider;
       }
       
       public static function GetVoidFunctionDeclaration ():FunctionDeclaration_Core

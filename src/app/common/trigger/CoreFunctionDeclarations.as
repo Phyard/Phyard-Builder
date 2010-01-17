@@ -897,6 +897,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -906,14 +907,15 @@ package common.trigger {
                      ]
                   );
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ]
-                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //            ],
+         //            [
+         //               ValueTypeDefine.ValueType_Boolean, 
+         //            ]
+         //         );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsVisible,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -944,6 +946,22 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsEnabled,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetEnabled,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetPosition,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -1022,6 +1040,55 @@ package common.trigger {
                   );
          
       // game / entity / shape
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsCircleShapeEntity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType,
                      [
@@ -1236,7 +1303,16 @@ package common.trigger {
       
       // game / entity / joint
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimits,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,
                      [
                         ValueTypeDefine.ValueType_Entity, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
@@ -1245,6 +1321,15 @@ package common.trigger {
                      null
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -1254,6 +1339,28 @@ package common.trigger {
                      null
                   );
          
+      // game / entity / event handler
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_ResetTimer,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
+         //            ],
+         //            null
+         //         );
          
 //===========================================================
 // util functions

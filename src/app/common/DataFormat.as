@@ -92,6 +92,11 @@ package common {
             //>>from v1.08
             worldDefine.mSettings.mIsInfiniteWorldSize = editorWorld.IsInfiniteSceneSize ();
             
+            worldDefine.mSettings.mWorldBorderLeftThickness = editorWorld.GetWorldBorderLeftThickness ();
+            worldDefine.mSettings.mWorldBorderTopThickness = editorWorld.GetWorldBorderTopThickness ();
+            worldDefine.mSettings.mWorldBorderRightThickness = editorWorld.GetWorldBorderRightThickness ();
+            worldDefine.mSettings.mWorldBorderBottomThickness = editorWorld.GetWorldBorderBottomThickness ();
+            
             worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = editorWorld.GetDefaultGravityAccelerationMagnitude ();
             worldDefine.mSettings.mDefaultGravityAccelerationAngle     = editorWorld.GetDefaultGravityAccelerationAngle ();
             
@@ -339,9 +344,7 @@ package common {
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolygon;
                      
-                     //>> from v1.08
                      entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolygon).GetLocalVertexPoints ();
-                     //<<
                   }
                   //<<
                   //>>from v1.05

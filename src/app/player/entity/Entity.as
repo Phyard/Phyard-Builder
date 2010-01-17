@@ -167,9 +167,9 @@ package player.entity {
          return mAlpha;
       }
       
-      public function SetEnabled (active:Boolean):void
+      public function SetEnabled (enabled:Boolean):void
       {
-         mIsEnabled = active;
+         mIsEnabled = enabled;
       }
       
       public function IsEnabled ():Boolean

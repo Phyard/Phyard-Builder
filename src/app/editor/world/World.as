@@ -143,6 +143,13 @@ package editor.world {
       private var mWorldWidth:int = Define.DefaultWorldWidth;
       private var mWorldHeight:int = Define.DefaultWorldHeight;
       
+      //>>v1.08
+      private var mWorldBorderLeftThickness:Number = Define.WorldBorderThinknessLR;
+      private var mWorldBorderTopThickness:Number = Define.WorldBorderThinknessTB;
+      private var mWorldBorderRightThickness:Number = Define.WorldBorderThinknessLR;
+      private var mWorldBorderBottomThickness:Number = Define.WorldBorderThinknessTB;
+      //<<
+      
       // display values, pixles
       private var mCameraCenterX:int = mWorldLeft + mWorldWidth * 0.5;
       private var mCameraCenterY:int = mWorldTop  + mWorldHeight * 0.5;
@@ -151,20 +158,32 @@ package editor.world {
       private var mBuildBorder:Boolean = true;
       private var mBorderColor:uint = Define.ColorStaticObject;
       
+      //>>v1.08
+      private var mBorderAtTopLayer:Boolean = true;
+      //<<
+      
       private var mZoomScale:Number = 1.0;
       
       private var mPhysicsShapesPotentialMaxCount:int = 1024;
       private var mPhysicsShapesPopulationDensityLevel:int = 8;
       
+      //>>v1.08
       // the 2 are both display values
       private var mDefaultGravityAccelerationMagnitude:Number = 196; // pixels
       private var mDefaultGravityAccelerationAngle:Number = 90; // degrees in left hand coordinates
+      //<<
       
       //
       private var mCiRulesEnabled:Boolean = true;
       
       public function SetAuthorName (name:String):void
       {
+         if (name == null)
+            name = "";
+         
+         if (name.length > 30)
+            name = name.substr (0, 30);
+         
          mAuthorName = name;
       }
       
@@ -173,9 +192,20 @@ package editor.world {
          return mAuthorName;
       }
       
-      public function SetAuthorHomepage (link:String):void
+      public function SetAuthorHomepage (url:String):void
       {
-         mAuthorHomepage = link;
+         if (url == null)
+            url = "";
+         
+         if (url.length > 0)
+         {
+            if (url.substr (0, 4).toLowerCase() != "http")
+                url = "http://" + url;
+            if (url.length > 100)
+               url = url.substr (0, 100);
+         }
+         
+         mAuthorHomepage = url;
       }
       
       public function GetAuthorHomepage ():String
@@ -253,6 +283,46 @@ package editor.world {
          return mWorldTop + mWorldHeight;
       }
       
+      public function SetWorldBorderLeftThickness (thickness:Number):void
+      {
+         mWorldBorderLeftThickness = thickness;
+      }
+      
+      public function SetWorldBorderTopThickness (thickness:Number):void
+      {
+         mWorldBorderTopThickness = thickness;
+      }
+      
+      public function SetWorldBorderRightThickness (thickness:Number):void
+      {
+         mWorldBorderRightThickness = thickness;
+      }
+      
+      public function SetWorldBorderBottomThickness (thickness:Number):void
+      {
+         mWorldBorderBottomThickness = thickness;
+      }
+      
+      public function GetWorldBorderLeftThickness ():Number
+      {
+         return mWorldBorderLeftThickness;
+      }
+      
+      public function GetWorldBorderTopThickness ():Number
+      {
+         return mWorldBorderTopThickness;
+      }
+      
+      public function GetWorldBorderRightThickness ():Number
+      {
+         return mWorldBorderRightThickness;
+      }
+      
+      public function GetWorldBorderBottomThickness ():Number
+      {
+         return mWorldBorderBottomThickness;
+      }
+      
       public function SetCameraCenterX (centerX:int):void
       {
          mCameraCenterX = centerX;
@@ -301,6 +371,16 @@ package editor.world {
       public function IsBuildBorder ():Boolean
       {
          return mBuildBorder;
+      }
+      
+      public function SetBorderAtTopLayer (topLayer:Boolean):void
+      {
+         mBorderAtTopLayer = topLayer;
+      }
+      
+      public function IsBorderAtTopLayer ():Boolean
+      {
+         return mBorderAtTopLayer;
       }
       
       public function GetZoomScale ():Number
@@ -387,7 +467,7 @@ package editor.world {
          return mDefaultGravityAccelerationAngle;
       }
       
-      public function SetInfiniteScaneSize (infinite:Boolean):void
+      public function SetInfiniteSceneSize (infinite:Boolean):void
       {
          mInfiniteWorldSize = infinite;
       }

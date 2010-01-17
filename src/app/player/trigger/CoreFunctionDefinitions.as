@@ -182,12 +182,17 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskFailed,                          IsEntityTaskFailed);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskUnfinished,                      IsEntityTaskUnfinished);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
+         //RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsVisible,                   IsEntityVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetVisible,                  SetEntityVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetAlpha,                    GetEntityAlpha);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetAlpha,                    SetEntityAlpha);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsEnabled,                   IsEntityEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetEnabled,                  SetEntityEnabled);
+         
+         
+         
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetPosition,                 GetEntityPosition);
          //RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetPosition,                 SetEntityPosition);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
@@ -201,6 +206,13 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Overlapped,        AreTwoEntitiesOverlppped);
          
       // game / entity / shape
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsCircleShapeEntity,              IsCircleShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,           IsRectangleShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,             IsPolygonShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,            IsPolylineShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy,               IsBombShapeEntitiy);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy,        IsWorldBorderEntitiy);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCIType,                   GetShapeCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
@@ -238,10 +250,21 @@ package player.trigger {
          
       // game / entity / joint
          
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetHingeLimits,                  SetHingeLimits);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,                 SetSliderLimits);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,                      GetHingeLimitsByDegrees);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,                      SetHingeLimitsByDegrees);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,                     GetSliderLimits);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,                     SetSliderLimits);
          
       // game / entity / field
+         
+         
+         
+      // game / entity / event handler
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_ResetTimer,                           ResetTimer);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,                       SetTimerPaused);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,                     SetTimerInterval);
          
       }
       
@@ -1294,12 +1317,12 @@ package player.trigger {
          valueTarget.AssignValueObject (unfinished);
       }
       
-      public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         
-         valueTarget.AssignValueObject (shape != null);
-      }
+      //public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   
+      //   valueTarget.AssignValueObject (shape != null);
+      //}
       
       public static function IsEntityVisible (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -1340,6 +1363,26 @@ package player.trigger {
          var alpha:Number = valueSource.EvalateValueObject () as Number;
          
          entity.SetAlpha (alpha);
+      }
+      
+      public static function IsEntityEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         var enabled:Boolean = entity == null ? false : entity.IsEnabled ();
+         valueTarget.AssignValueObject (enabled);
+      }
+      
+      public static function SetEntityEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var enabled:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         entity.SetEnabled (enabled);
       }
       
       public static function GetEntityPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1539,6 +1582,50 @@ package player.trigger {
    //*******************************************************************
    // entity / shape
    //*******************************************************************
+      
+      public static function IsCircleShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShapeCircle = valueSource.EvalateValueObject () as EntityShapeCircle;
+         
+         valueTarget.AssignValueObject (shape != null); 
+      }
+      
+      public static function IsRectangleShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShapeRectangle = valueSource.EvalateValueObject () as EntityShapeRectangle;
+         
+         valueTarget.AssignValueObject (shape != null); 
+      }
+      
+      public static function IsPolygonShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShapePolygon = valueSource.EvalateValueObject () as EntityShapePolygon;
+         
+         valueTarget.AssignValueObject (shape != null); 
+      }
+      
+      public static function IsPolylineShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShapePolyline = valueSource.EvalateValueObject () as EntityShapePolyline;
+         
+         valueTarget.AssignValueObject (shape != null); 
+      }
+      
+      public static function IsBombShapeEntitiy (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape
+         
+         valueTarget.AssignValueObject (shape is EntityShape_CircleBomb || shape is EntityShape_RectangleBomb); 
+      }
+      
+      public static function IsWorldBorderEntitiy (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape_WorldBorder = valueSource.EvalateValueObject () as EntityShape_WorldBorder;
+         
+         valueTarget.AssignValueObject (shape != null); 
+      }
+      
+      // ...
       
       public static function GetShapeCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -1751,7 +1838,7 @@ package player.trigger {
          if (shape == null)
             return;
          
-		 shape.Detach ();
+         shape.Detach ();
       }
       
 	  public static function AttachTwoShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1765,7 +1852,7 @@ package player.trigger {
          if (shape2 == null)
             return;
 
-		 shape1.AttachWith (shape2);
+         shape1.AttachWith (shape2);
       }
 	  
 	  public static function DetachShapeThenAttachWithAnother (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1779,7 +1866,7 @@ package player.trigger {
          if (shape2 == null)
             return;
 
-		 shape1.DetachThenAttachWith (shape2);
+         shape1.DetachThenAttachWith (shape2);
       }
 	  
       public static function BreakupShapeBrothers (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1849,7 +1936,27 @@ package player.trigger {
    // entity / joint
    //*******************************************************************
       
-      public static function SetHingeLimits (valueSource:ValueSource, valueTarget:ValueTarget):void
+     public static function GetHingeLimitsByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         
+         if (hinge == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (hinge.GetLowerAngle () * Define.kRadians2Degrees);
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (hinge.GetUpperAngle () * Define.kRadians2Degrees);
+         }
+      }
+      
+      public static function SetHingeLimitsByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
          if (hinge == null)
@@ -1862,6 +1969,26 @@ package player.trigger {
          var upperLimit:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
          
          hinge.SetAngleLimits (lowerLimit, upperLimit);
+      }
+      
+      public static function GetSliderLimits (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         
+         if (slider == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (slider.GetLowerTranslation ());
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (slider.GetUpperTranslation ());
+         }
       }
       
       public static function SetSliderLimits (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1878,5 +2005,41 @@ package player.trigger {
          
          slider.SetTranslationLimits (lowerLimit, upperLimit);
       }
+      
+      // game / entity / event handler
+         
+      public static function ResetTimer (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var timer:EntityEventHandler_Timer = valueSource.EvalateValueObject () as EntityEventHandler_Timer;
+         if (timer == null)
+            return;
+         
+         timer.Reset ();
+      }
+      
+      public static function SetTimerPaused (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var timer:EntityEventHandler_Timer = valueSource.EvalateValueObject () as EntityEventHandler_Timer;
+         if (timer == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var paused:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         timer.SetPaused (paused);
+      }
+      
+      //public static function SetTimerInterval (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var timer:EntityEventHandler_Timer = valueSource.EvalateValueObject () as EntityEventHandler_Timer;
+      //   if (timer == null)
+      //      return;
+      //   
+      //   valueSource = valueSource.mNextValueSourceInList;
+      //   var interval:Number = Number (valueSource.EvalateValueObject ());
+      //   
+      //   timer.SetRunningInterval (interval);
+      //}
+      
    }
 }

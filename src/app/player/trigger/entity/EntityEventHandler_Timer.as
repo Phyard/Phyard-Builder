@@ -133,10 +133,13 @@ package player.trigger.entity
       // for judging if this handler is excuted already in current step.
       private var mLastHandlingStep:int = -1;
       
-      protected function HasEverRunOnceInCurrentStepAlready ():Boolean
+      protected function WillNotRun ():Boolean
       {
          if (mIsEnabled == false)
             return true; // avoid to run
+         
+         if (mOnlyRunOnce && mRunningTimes > 0)
+            return true;
          
          var worldSimulateSteps:int = mWorld.GetSimulatedSteps ();
          if (mLastHandlingStep >= worldSimulateSteps)
@@ -156,19 +159,16 @@ package player.trigger.entity
       
       public function HandleWorldTimerEvent ():void
       {
-         if (HasEverRunOnceInCurrentStepAlready ())
+         if (WillNotRun ())
             return;
          
          mTimerEventHandlerValueSource0.mValueObject = mRunningTimes;
          
          HandleEvent (mTimerEventHandlerValueSourceList);
-         
-         if (mOnlyRunOnce)
-            DestroyEntity ();
       }      
       public function HandleEntityTimerEvent ():void
       {
-         if (HasEverRunOnceInCurrentStepAlready ())
+         if (WillNotRun ())
             return;
          
          mTimerEventHandlerValueSource0.mValueObject = mRunningTimes;
@@ -180,13 +180,10 @@ package player.trigger.entity
             
             list_element = list_element.mNextListElement;
          }
-         
-         if (mOnlyRunOnce)
-            DestroyEntity ();
       }      
       public function HandleEntityPairTimerEvent ():void
       {
-         if (HasEverRunOnceInCurrentStepAlready ())
+         if (WillNotRun ())
             return;
          
          mTimerEventHandlerValueSource0.mValueObject = mRunningTimes;
@@ -198,9 +195,6 @@ package player.trigger.entity
             
             list_element = list_element.mNextListElement;
          }
-         
-         if (mOnlyRunOnce)
-            DestroyEntity ();
       }      
    }
 }

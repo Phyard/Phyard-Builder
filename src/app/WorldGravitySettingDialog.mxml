@@ -4,24 +4,25 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Condition Setting" width="600">
+    title="Coordinate System Setting" width="600"  creationComplete="OnInitPanel()">
 
-   <mx:TabNavigator width="100%" height="100%">
-      <mx:VBox label="Script" borderStyle="solid" height="100%" width="100%"
-               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
-               horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnCodeSnippetSettingPanelCreationComplete()">
-         <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
+    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
+      <mx:Spacer width="100%"/>
+      <mx:VBox>
+         <mx:Label text="Gravity Accelation Magnitude:" textAlign="right"/>
+         <mx:Label text="Gravity Accelation Angle:" textAlign="right"/>
       </mx:VBox>
-      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
-               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
-               horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0">
-         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
-         <mx:Spacer height="100%" />
+      <mx:VBox>
+         <mx:HBox>
+            <mx:TextInput id="Text_GravityAccelationMagnitude" width="100" />
+         </mx:HBox>
+         <mx:HBox>
+            <mx:TextInput id="Text_GravityAccelationAngle" width="100" />
+         </mx:HBox>
       </mx:VBox>
-   </mx:TabNavigator>
-
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
@@ -51,29 +52,13 @@
          
          public function SetValues (initialValues:Object):void
          {
-            mParams = initialValues;
-         }
-         
-         public function OnCodeSnippetSettingPanelCreationComplete ():void
-         {
-            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
-         }
-         
-         public function GetValues (returnValues:Object):void
-         {
-            returnValues.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
+            mParams = initialValues;            
          }
          
          private function OnInitPanel ():void
          {
-         }
-         
-         private function OnEntityBasicSettingPanelCreationComplete ():void
-         {
-            mParams.mRotationNonSense = true;
-            mParams.mVisibleNonsense = true;
-            mParams.mEnabledNonsense = true;
-            BasicSettingPanel.SetValues (mParams);
+            Text_GravityAccelationMagnitude.text = mParams.mDefaultGravityAccelerationMagnitude;
+            Text_GravityAccelationAngle.text = mParams.mDefaultGravityAccelerationAngle;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -88,12 +73,13 @@
          
          private function OnClickOkButton():void 
          {
-            GetValues (mParams);
+            var magnitude:Number = parseFloat (Text_GravityAccelationMagnitude.text);
+            if (! isNaN (magnitude))
+                mParams.mDefaultGravityAccelerationMagnitude = magnitude;
             
-            if (BasicSettingPanel != null)
-            {
-               BasicSettingPanel.GetValues (mParams);
-            }
+            var angle:Number = parseFloat (Text_GravityAccelationAngle.text);
+            if (! isNaN (angle))
+               mParams.mDefaultGravityAccelerationAngle = angle;
             
             PopUpManager.removePopUp(this);
              

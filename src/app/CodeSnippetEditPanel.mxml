@@ -10,20 +10,22 @@
       >
 
    <mx:VBox width="100%">
+      <mx:HBox id="Box_Toolbar" width="100%">
+         <mx:MenuBar id="MenuBar_Api" itemClick="OnMenuBarClick (event);" height="100%"/>
+         <mx:Spacer width="100%"/>
+         <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+            <mx:Button id="Button_DeleteCommmand" click="OnDeleteCalling ()" toolTip="Delete Command" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_delete.png')" disabledIcon="@Embed('res/action/command_delete-disabled.png')" />
+            <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="18" />
+            <mx:Button id="Button_MoveUpCommmand" click="OnMoveCallingUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_moveup.png')" disabledIcon="@Embed('res/action/command_moveup-disabled.png')" />
+            <mx:Button id="Button_MoveDownCommmand" click="OnMoveCallingDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_movedown.png')" disabledIcon="@Embed('res/action/command_movedown-disabled.png')" />
+         </mx:HBox>
+      </mx:HBox>
       <mx:HBox id="Box_Commands" height="156" width="100%">
-         <mx:VBox>
-            <mx:Button id="Button_AddCommmand" click="OnNewCalling ()" toolTip="Add Command" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_add.png')" disabledIcon="@Embed('res/action/command_add-disabled.png')" />
-            <mx:Button id="Button_DeleteCommmand" click="OnDeleteCalling ()" toolTip="Delete Command" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_delete.png')" disabledIcon="@Embed('res/action/command_delete-disabled.png')" />
-            <mx:Button id="Button_MoveUpCommmand" click="OnMoveCallingUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_moveup.png')" disabledIcon="@Embed('res/action/command_moveup-disabled.png')" />
-            <mx:Button id="Button_MoveDownCommmand" click="OnMoveCallingDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_movedown.png')" disabledIcon="@Embed('res/action/command_movedown-disabled.png')" />
-         </mx:VBox>
-         <mx:VBox width="100%" height="100%">
-            <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
-         </mx:VBox>
+         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
       </mx:HBox>
       <mx:HBox height="186" width="100%">
          <mx:ViewStack borderStyle="solid" width="100%" height="100%">
-            <mx:Form label="Parameters" id="Box_ParamsAndReturns" width="100%" height="100%" horizontalScrollPolicy="off" autoLayout="true" labelWidth="200">
+            <mx:Form label="Parameters" id="Box_ParamsAndReturns" width="100%" height="100%" horizontalScrollPolicy="off" autoLayout="true" labelWidth="200" verticalGap="1" paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6">
             </mx:Form>
          </mx:ViewStack>
       </mx:HBox>
@@ -100,6 +102,14 @@
          
          private function OnInitPanel ():void
          {
+            MenuBar_Api.labelField="@name"
+            MenuBar_Api.showRoot = false;
+            MenuBar_Api.dataProvider = TriggerEngine.GetCoreApiFunctionsMenuBarDataProvider ();
+         }
+         
+         private function OnMenuBarClick (event:MenuEvent):void
+         {
+            OnNewCalling (event.item.@id);
          }
          
          public function SetCodeSnippet (codeSnippet:CodeSnippet):void
@@ -198,24 +208,12 @@
             return func_calling_list;
          }
          
-         private function OnNewCalling ():void
+         private function OnNewCalling (id:int):void
          {
-            var myMenuData:XML = TriggerEngine.GetCoreApiFunctionsMenuItemXML ();
+            if (isNaN (id) || id < 0)
+               return;
             
-            var myMenu:Menu= Menu.createMenu(Button_AddCommmand, myMenuData, false);
-            myMenu.labelField="@name"
-            myMenu.addEventListener("itemClick", OnNewCommandMenuItemClicked);
-            
-            // Calculate position of Menu in Application's coordinates. 
-            var point:Point = new Point (0, Button_AddCommmand.height);
-            point=Button_AddCommmand.localToGlobal(point);
-            
-            myMenu.show(point.x, point.y);
-         }
-         
-         private function OnNewCommandMenuItemClicked(event:MenuEvent):void
-         {
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (event.item.@id);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (id);
             
             if (func_declaration == null)
                return;
@@ -262,6 +260,7 @@
             
             OnCurrentCommandChanged ();
             
+            List_Commands.validateNow ();
             UpdateInterface ();
          }
          
@@ -282,6 +281,7 @@
                
                OnCurrentCommandChanged ();
                
+               List_Commands.validateNow ();
                UpdateInterface ();
             }
          }
@@ -318,6 +318,11 @@
          
          private function UpdateInterface ():void
          {
+            if (List_Commands.selectedIndex >= 0)
+            {
+               List_Commands.scrollToIndex (List_Commands.selectedIndex);
+            }
+            
             Button_DeleteCommmand.enabled = List_Commands.selectedIndex >= 0;
             Button_MoveUpCommmand.enabled = List_Commands.selectedIndex >= 1;
             Button_MoveDownCommmand.enabled = List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1;
@@ -410,6 +415,10 @@
             
             if (func_declaration.GetNumOutputs () > 0)
             {
+               var spacer:Spacer = new Spacer ();   
+               spacer.height = 5;
+               Box_ParamsAndReturns.addChild (spacer);
+            
                title_box = new HBox ();
                title_box.percentWidth = 100;
                title_box.setStyle ("backgroundColor", 0x7FCEFF);

@@ -186,19 +186,16 @@ package common.trigger {
       public static const ID_Entity_SetTaskUnfinished:int              = 915; // entity.shape
       public static const ID_Entity_SetTaskStatus:int                  = 916; // entity.shape
       
-      public static const ID_Entity_IsShapeEntity:int                  = 920; // entity.shape
-      public static const ID_Entity_IsCircleShapeEntity:int            = 920; // entity.shape
-      public static const ID_Entity_IsRectangleShapeEntity:int         = 920; // entity.shape
-      public static const ID_Entity_IsPolygonShapeEntity:int           = 920; // entity.shape
-      public static const ID_Entity_IsPolygonLineEntity:int            = 920; // entity.shape
-      
-      public static const ID_Entity_IsJointEntity:int                  = 950; // entity.shape
+      //public static const ID_Entity_IsShapeEntity:int                  = 920; // entity.shape
+      //public static const ID_Entity_IsJointEntity:int                  = 951; // entity.shape
       
       
       public static const ID_Entity_IsVisible:int                      = 980; // entity 
       public static const ID_Entity_SetVisible:int                     = 981; // entity 
       public static const ID_Entity_GetAlpha:int                       = 982; // entity 
       public static const ID_Entity_SetAlpha:int                       = 983; // entity 
+      public static const ID_Entity_IsEnabled:int                      = 984; // entity 
+      public static const ID_Entity_SetEnabled:int                     = 985; // entity 
       
       public static const ID_Entity_GetPosition:int                    = 1001; // entity 
       //public static const ID_Entity_SetPosition:int                    = 1002; // entity 
@@ -297,7 +294,17 @@ package common.trigger {
       public static const ID_EntityShape_BreakupBrothers:int                = 1263;
       
       public static const ID_EntityShape_BreakAllJoints:int                 = 1280;
-	  
+      
+   // game / shape / is a 
+      
+      public static const ID_Entity_IsCircleShapeEntity:int            = 1400; // entity.shape
+      public static const ID_Entity_IsRectangleShapeEntity:int         = 1401; // entity.shape
+      public static const ID_Entity_IsPolygonShapeEntity:int           = 1402; // entity.shape
+      public static const ID_Entity_IsPolylineShapeEntity:int          = 1403; // entity.shape
+      public static const ID_Entity_IsBombShapeEntitiy:int             = 1404; // entity.shape
+      public static const ID_Entity_IsWorldBorderShapeEntitiy:int      = 1405; // entity.shape
+
+      
    // game / entity / shape / text
       
       public static const ID_EntityText_GetText:int                   = 1550; // entity.text
@@ -309,13 +316,26 @@ package common.trigger {
       
       // from 2000
       
-      public static const ID_EntityJoint_SetHingeLimits:int                   = 2000; // entity.text
+      public static const ID_EntityJoint_GetHingeLimitsByDegrees:int                   = 2000; // joint.hinge
+      //public static const ID_EntityJoint_GetHingeLimitsByRadians:int                   = 2001; // joint.hinge
+      public static const ID_EntityJoint_SetHingeLimitsByDegrees:int                       = 2004; // joint.hinge
+      //public static const ID_EntityJoint_SetHingeAngleLimitsByRadians:int                              = 2005; // joint.hinge
       
-      public static const ID_EntityJoint_SetSliderLimits:int                   = 2030; // entity.text
+      public static const ID_EntityJoint_GetSliderLimits:int                      = 2030; // joint.slider
+      public static const ID_EntityJoint_SetSliderLimits:int                      = 2032; // joint.slider
       
    // game / entity / field
       
       // from 2200
+      
+   // game / entity / event handler
+      
+      //public static const ID_EntityTrigger_GetTimerTicks:int                       = 2500; // trigger.timer
+      public static const ID_EntityTrigger_ResetTimer:int                          = 2501; // trigger.timer
+      //public static const ID_EntityTrigger_IsTimerPaused:int                       = 2502; // trigger.timer
+      public static const ID_EntityTrigger_SetTimerPaused:int                      = 2503; // trigger.timer
+      //public static const ID_EntityTrigger_GetTimerInterval:int                    = 2504; // trigger.timer
+      //public static const ID_EntityTrigger_SetTimerInterval:int                    = 2505; // trigger.timer
       
    //=============================================================
       

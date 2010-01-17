@@ -132,6 +132,22 @@ package editor.trigger {
                ); 
       }
       
+      // object can be an Entity subclass.prototype or a subclass instance
+      public static function IsTimerEventHandlerEntity (object:Object):Boolean
+      {
+         return Boolean (
+                  EntityEventHandler_Timer.prototype == object || EntityEventHandler_Timer.prototype.isPrototypeOf (object)
+               ); 
+      }
+      
+      // object can be an Entity subclass.prototype or a subclass instance
+      public static function CanBeDisabled (object:Object):Boolean
+      {
+         return Boolean (
+                  EntityEventHandler.prototype == object || EntityEventHandler.prototype.isPrototypeOf (object)
+               ); 
+      }
+      
    }
 }
 

@@ -1533,11 +1533,6 @@ package common {
                      
                      entityDefine.mRadius = ValueAdjuster.Number2Precision (entityDefine.mRadius, 6);
                      
-                     if (worldDefine.mVersion < 0x0108)
-                     {
-                        entityDefine.mInitialGravityAcceleration = Define.kDefaultCoordinateSystem.P2D_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
-                     }
-                     
                      entityDefine.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (entityDefine.mInitialGravityAcceleration, 6);
                   }
                }
@@ -1686,6 +1681,10 @@ package common {
                {
                   TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
                }
+               if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+                  TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
+               }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
                   TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
@@ -1706,6 +1705,11 @@ package common {
                      {
                         entityDefine.mInteractiveZones = entityDefine.mIsInteractive ? (1 << Define.GravityController_InteractiveZone_AllArea) : 0;
                         entityDefine.mInteractiveConditions = 0;
+                     }
+					 
+                     if (worldDefine.mVersion < 0x0108)
+                     {
+                        entityDefine.mInitialGravityAcceleration = Define.kDefaultCoordinateSystem.P2D_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
                      }
                   }
                }
@@ -1743,7 +1747,7 @@ package common {
                   entityDefine.mLinearVelocityMagnitude = 0.0;
                   entityDefine.mLinearVelocityAngle = 0.0;
                   entityDefine.mAngularVelocity = 0.0;
-                  entityDefine. mLinearDamping = 0.0;
+                  entityDefine.mLinearDamping = 0.0;
                   entityDefine.mAngularDamping = 0.0;
                   entityDefine.mIsSleepingAllowed = true;
                   entityDefine.mIsRotationFixed = false;

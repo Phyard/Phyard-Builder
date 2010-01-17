@@ -159,6 +159,11 @@ package player.world {
             mWorldHeight = worldDefine.mSettings.mWorldHeight;
          }
          
+         mWorldBorderLeftThickness = worldDefine.mSettings.mWorldBorderLeftThickness;
+         mWorldBorderTopThickness = worldDefine.mSettings.mWorldBorderTopThickness;
+         mWorldBorderRightThickness = worldDefine.mSettings.mWorldBorderRightThickness;
+         mWorldBorderBottomThickness = worldDefine.mSettings.mWorldBorderBottomThickness;
+         
          mCameraCenterX = worldDefine.mSettings.mCameraCenterX;
          mCameraCenterY = worldDefine.mSettings.mCameraCenterY;
          
@@ -716,6 +721,11 @@ package player.world {
    // border
    //===============================
 
+      private var mWorldBorderLeftThickness:Number = Define.WorldBorderThinknessLR;
+      private var mWorldBorderTopThickness:Number = Define.WorldBorderThinknessTB;
+      private var mWorldBorderRightThickness:Number = Define.WorldBorderThinknessLR;
+      private var mWorldBorderBottomThickness:Number = Define.WorldBorderThinknessTB;
+      
       private var mBorderBody:EntityBody;
       private var mBorderShapes:Array; // 4 border
 

@@ -10,7 +10,7 @@
       <mx:VBox label="Joint" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0">
+               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnMainSettingPanelCreationComplete()">
 
          <mx:HBox width="100%">
             <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
@@ -117,8 +117,11 @@
          
          public function SetValues (initialValues:Object):void
          {
-            mParams = initialValues;
-            
+            mParams = initialValues;            
+         }
+         
+         private function OnMainSettingPanelCreationComplete ():void
+         {
             var jointParams:Object = mParams.mJointValues;
             
             jointParams.mDisableBrealable = true;

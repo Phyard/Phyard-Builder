@@ -4,24 +4,29 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Condition Setting" width="600">
+    title="Desing Info Setting" width="600"  creationComplete="OnInitPanel()">
 
-   <mx:TabNavigator width="100%" height="100%">
-      <mx:VBox label="Script" borderStyle="solid" height="100%" width="100%"
-               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
-               horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnCodeSnippetSettingPanelCreationComplete()">
-         <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
+    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
+      <mx:Spacer width="100%"/>
+      <mx:VBox>
+         <!--
+         <mx:CheckBox id="CheckBox_PermitPublishing" label="Permit Other Websites to Publish"/>
+         -->
+         <mx:CheckBox label=" " visible="false"/>
+         <mx:Label text="Your Name:" textAlign="right" width="30%"/>
+         <mx:Label text="Your Homepage:" textAlign="right" width="30%"/>
       </mx:VBox>
-      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
-               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
-               horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0">
-         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
-         <mx:Spacer height="100%" />
+      <mx:VBox>
+         <!--
+         <mx:CheckBox id="CheckBox_PermitPublishing" label="Permit Other Websites to Publish"/>
+         -->
+         <mx:CheckBox id="CheckBox_ShareSourceCode" label="Share Source Code"/>
+         <mx:TextInput id="Text_AuthorName" width="200" />
+         <mx:TextInput id="Text_AuthorHomePage" width="368" />
       </mx:VBox>
-   </mx:TabNavigator>
-
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:Button label="OK" click="OnClickOkButton ();"/>
@@ -51,29 +56,14 @@
          
          public function SetValues (initialValues:Object):void
          {
-            mParams = initialValues;
-         }
-         
-         public function OnCodeSnippetSettingPanelCreationComplete ():void
-         {
-            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
-         }
-         
-         public function GetValues (returnValues:Object):void
-         {
-            returnValues.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
+            mParams = initialValues;            
          }
          
          private function OnInitPanel ():void
          {
-         }
-         
-         private function OnEntityBasicSettingPanelCreationComplete ():void
-         {
-            mParams.mRotationNonSense = true;
-            mParams.mVisibleNonsense = true;
-            mParams.mEnabledNonsense = true;
-            BasicSettingPanel.SetValues (mParams);
+            CheckBox_ShareSourceCode.selected = mParams.mShareSoureCode;
+            Text_AuthorName.text = mParams.mAuthorName;
+            Text_AuthorHomePage.text = mParams.mAuthorHomepage;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -88,12 +78,9 @@
          
          private function OnClickOkButton():void 
          {
-            GetValues (mParams);
-            
-            if (BasicSettingPanel != null)
-            {
-               BasicSettingPanel.GetValues (mParams);
-            }
+            mParams.mShareSoureCode = CheckBox_ShareSourceCode.selected;
+            mParams.mAuthorName = Text_AuthorName.text;
+            mParams.mAuthorHomepage = Text_AuthorHomePage.text;
             
             PopUpManager.removePopUp(this);
              

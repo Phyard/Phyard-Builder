@@ -80,6 +80,16 @@ package player.entity {
          }
       }
       
+      public function GetLowerTranslation ():Number
+      {
+         return mLowerTranslation;
+      }
+      
+      public function GetUpperTranslation ():Number
+      {
+         return mUpperTranslation;
+      }
+      
       public function SetEnableLimits (enableLimits:Boolean):void
       {
          mEnableLimits = enableLimits;

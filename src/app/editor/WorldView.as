@@ -1348,15 +1348,31 @@ package editor {
          mEditorWorld = null;
       }
       
-      private function ScaleEditorWorldTo (scale:Number):void
+      public function ScaleEditorWorld (scaleIn:Boolean):Boolean
       {
+         var reachLimit:Boolean = false;
+         
          if (IsEditing ())
          {
-            mEditorWorldZoomScale = scale;
+            var newSscale:Number = mEditorWorldZoomScale * (scaleIn ? 2.0 : 0.5);
+            if (int (newSscale * 16.0) <= 1)
+            {
+               newSscale = 1.0 / 16.0;
+               reachLimit = true;
+            }
+            if (int (newSscale) >= 16)
+            {
+               newSscale = 16.0;
+               reachLimit = true;
+            }
+            
+            mEditorWorldZoomScale = newSscale;
             mEditorWorldZoomScaleChangedSpeed = (mEditorWorldZoomScale - mEditorWorld.scaleX) * 0.03;
             
             //UpdateBackgroundAndWorldPosition ();
          }
+         
+         return reachLimit;
       }
       
       private function SetDesignPlayer (newPlayer:ColorInfectionPlayer):void
@@ -1472,6 +1488,8 @@ package editor {
       
       public var ShowEditorCustomCommandSettingDialog:Function = null;
       
+      public var ShowConditionDoorSettingDialog:Function = null;
+      public var ShowTaskSettingDialog:Function = null;
       public var ShowConditionSettingDialog:Function = null;
       public var ShowEventHandlerSettingDialog:Function = null;
       public var ShowTimerEventHandlerSettingDialog:Function = null;
@@ -1523,27 +1541,7 @@ package editor {
          
          if (entity is EntityLogic)
          {
-            if (entity is EntityBasicCondition)
-            {
-               var condition:EntityBasicCondition = entity as EntityBasicCondition;
-               
-               values.mCodeSnippetName = condition.GetCodeSnippetName ();
-               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
-               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
-               
-               ShowConditionSettingDialog (values, SetEntityProperties);
-            }
-            else if (entity is EntityAction)
-            {
-               var action:EntityAction = entity as EntityAction;
-               
-               values.mCodeSnippetName = action.GetCodeSnippetName ();
-               values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
-               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
-               
-               ShowActionSettingDialog (values, SetEntityProperties);
-            }
-            else if (entity is EntityEventHandler)
+            if (entity is EntityEventHandler)
             {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
                
@@ -1577,6 +1575,34 @@ package editor {
                {
                   ShowEventHandlerSettingDialog (values, SetEntityProperties);
                }
+            }
+            else if (entity is EntityBasicCondition)
+            {
+               var condition:EntityBasicCondition = entity as EntityBasicCondition;
+               
+               values.mCodeSnippetName = condition.GetCodeSnippetName ();
+               values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
+               
+               ShowConditionSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityAction)
+            {
+               var action:EntityAction = entity as EntityAction;
+               
+               values.mCodeSnippetName = action.GetCodeSnippetName ();
+               values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
+               
+               ShowActionSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityConditionDoor)
+            {
+               ShowConditionDoorSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityTask)
+            {
+               ShowTaskSettingDialog (values, SetEntityProperties);
             }
          }
          else if (entity is EntityShape)
@@ -3338,33 +3364,7 @@ package editor {
          {
             var code_snippet:CodeSnippet;
             
-            if (entity is EntityBasicCondition)
-            {
-               var condition:EntityBasicCondition = entity as EntityBasicCondition;
-               
-               condition.SetCodeSnippetName (params.mCodeSnippetName);
-               
-               code_snippet = condition.GetCodeSnippet ();
-               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
-               
-               condition.UpdateAppearance ();
-               condition.UpdateSelectionProxy ();
-            }
-            else if (entity is EntityAction)
-            {
-               var action:EntityAction = entity as EntityAction;
-               
-               action.SetCodeSnippetName (params.mCodeSnippetName);
-               
-               code_snippet = action.GetCodeSnippet ();
-               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
-               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
-               
-               action.UpdateAppearance ();
-               action.UpdateSelectionProxy ();
-            }
-            else if (entity is EntityEventHandler)
+            if (entity is EntityEventHandler)
             {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
                
@@ -3396,6 +3396,39 @@ package editor {
                event_handler.UpdateAppearance ();
                event_handler.UpdateSelectionProxy ();
             }
+            else if (entity is EntityBasicCondition)
+            {
+               var condition:EntityBasicCondition = entity as EntityBasicCondition;
+               
+               condition.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = condition.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+               
+               condition.UpdateAppearance ();
+               condition.UpdateSelectionProxy ();
+            }
+            else if (entity is EntityAction)
+            {
+               var action:EntityAction = entity as EntityAction;
+               
+               action.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = action.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+               
+               action.UpdateAppearance ();
+               action.UpdateSelectionProxy ();
+            }
+            else if (entity is EntityConditionDoor)
+            {
+            }
+            else if (entity is EntityTask)
+            {
+            }
+
          }
          else if (entity is EntityShape)
          {
@@ -3636,6 +3669,135 @@ package editor {
                //<<
             }
          }
+         
+         CreateUndoPoint ();
+      }
+      
+//=================================================================================
+//   world settings
+//=================================================================================
+      
+      public function GetCurrentWorldDesignInfo ():Object
+      {
+         var info:Object = new Object ();
+         
+         info.mShareSoureCode = mEditorWorld.IsShareSourceCode ();
+         info.mAuthorName = mEditorWorld.GetAuthorName ();
+         info.mAuthorHomepage = mEditorWorld.GetAuthorHomepage ();
+         
+         return info;
+      }
+      
+      public function SetCurrentWorldDesignInfo (info:Object):void
+      {
+         mEditorWorld.SetShareSourceCode (info.mShareSoureCode);
+         mEditorWorld.SetAuthorName (info.mAuthorName);
+         mEditorWorld.SetAuthorHomepage (info.mAuthorHomepage);
+         
+         CreateUndoPoint ();
+      }
+      
+      public function GetCurrentWorldCoordinateSystemInfo ():Object
+      {
+         var info:Object = new Object ();
+         
+         info.mIsRightHand = mEditorWorld.GetCoordinateSystem ().IsRightHand ();
+         info.mScale = mEditorWorld.GetCoordinateSystem ().GetScale ();
+         info.mOriginX = mEditorWorld.GetCoordinateSystem ().GetOriginX ();
+         info.mOroginY = mEditorWorld.GetCoordinateSystem ().GetOriginY ();
+         
+         return info;
+      }
+      
+      public function SetCurrentWorldCoordinateSystemInfo (info:Object):void
+      {
+         mEditorWorld.RebuildCoordinateSystem (
+                  info.mOriginX,
+                  info.mOroginY,
+                  info.mScale,
+                  info.mIsRightHand
+               );
+         
+         UpdateSelectedEntityInfo ();
+         
+         CreateUndoPoint ();
+      }
+      
+      public function GetCurrentWorldLevelRulesInfo ():Object
+      {
+         var info:Object = new Object ();
+         
+         info.mIsCiRulesEnabled = mEditorWorld.IsCiRulesEnabled ();
+         
+         return info;
+      }
+      
+      public function SetCurrentWorldLevelRulesInfo (info:Object):void
+      {
+         mEditorWorld.SetCiRulesEnabled (info.mIsCiRulesEnabled);
+         
+         CreateUndoPoint ();
+      }
+      
+      public function GetCurrentWorldGravityInfo ():Object
+      {
+         var info:Object = new Object ();
+         
+         info.mDefaultGravityAccelerationMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (mEditorWorld.GetDefaultGravityAccelerationMagnitude ()), 6);
+         info.mDefaultGravityAccelerationAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (mEditorWorld.GetDefaultGravityAccelerationAngle ()), 6);
+         
+         return info;
+      }
+      
+      public function SetCurrentWorldGravityInfo (info:Object):void
+      {
+         mEditorWorld.SetDefaultGravityAccelerationMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (info.mDefaultGravityAccelerationMagnitude));
+         mEditorWorld.SetDefaultGravityAccelerationAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (info.mDefaultGravityAccelerationAngle));
+         
+         CreateUndoPoint ();
+      }
+      
+      public function GetCurrentWorldAppearanceInfo ():Object
+      {
+         var info:Object = new Object ();
+         
+         info.mIsInfiniteSceneSize = mEditorWorld.IsInfiniteSceneSize ();
+         info.mWorldLeft = mEditorWorld.GetWorldLeft ();
+         info.mWorldTop = mEditorWorld.GetWorldTop ();
+         info.mWorldWidth = mEditorWorld.GetWorldWidth ();
+         info.mWorldHeight = mEditorWorld.GetWorldHeight ();
+         
+         info.mBackgroundColor = mEditorWorld.GetBackgroundColor ();
+         info.mBorderColor = mEditorWorld.GetBorderColor ();
+         info.mIsBuildBorder = mEditorWorld.IsBuildBorder ();
+         info.mIsBorderAtTopLayer = mEditorWorld.IsBorderAtTopLayer ();
+         info.mWorldBorderLeftThickness = mEditorWorld.GetWorldBorderLeftThickness ();
+         info.mWorldBorderTopThickness = mEditorWorld.GetWorldBorderTopThickness ();
+         info.mWorldBorderRightThickness  = mEditorWorld.GetWorldBorderRightThickness ();
+         info.mWorldBorderBottomThickness = mEditorWorld.GetWorldBorderBottomThickness ();
+         
+         
+         return info;
+      }
+      
+      public function SetCurrentWorldAppearanceInfo (info:Object):void
+      {
+         mEditorWorld.SetInfiniteSceneSize (info.mIsInfiniteSceneSize);
+         mEditorWorld.SetWorldLeft (info.mWorldLeft);
+         mEditorWorld.SetWorldTop (info.mWorldTop);
+         mEditorWorld.SetWorldWidth (info.mWorldWidth);
+         mEditorWorld.SetWorldHeight (info.mWorldHeight);
+         
+         mEditorWorld.SetBackgroundColor (info.mBackgroundColor);
+         mEditorWorld.SetBorderColor (info.mBorderColor);
+         mEditorWorld.SetBuildBorder (info.mIsBuildBorder);
+         mEditorWorld.SetBorderAtTopLayer (info.mIsBorderAtTopLayer);
+         mEditorWorld.SetWorldBorderLeftThickness (info.mWorldBorderLeftThickness);
+         mEditorWorld.SetWorldBorderTopThickness (info.mWorldBorderTopThickness);
+         mEditorWorld.SetWorldBorderRightThickness (info.mWorldBorderRightThickness);
+         mEditorWorld.SetWorldBorderBottomThickness (info.mWorldBorderBottomThickness);
+         
+         UpdateChildComponents ();
          
          CreateUndoPoint ();
       }

@@ -10,7 +10,7 @@
    <property name="editor-height" value="683" />
    
    <property name="player-width" value="600" />
-   <property name="player-height" value="600" />
+   <property name="player-height" value="620" />
    
    <property name="dir.src"        value="${basedir}/src" />
    <property name="dir.external"        value="${basedir}/external" />

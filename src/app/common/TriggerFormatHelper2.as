@@ -283,45 +283,131 @@ package common {
 // byte array -> define
 //==============================================================================================
       
-      public static function ByteArray2CodeSnippetDefine (byteArray:ByteArray):CodeSnippetDefine
+      public static function LoadCodeSnippetDefineFromBinFile (binFile:ByteArray):CodeSnippetDefine
       {
-         return null;
-      }
-      
-      public static function ByteArray2FunctionCallingDefine (byteArray:ByteArray):FunctionCallingDefine
-      {
-         //GetInputNumberTypeDetail
-         return null;
-      }
-      
-      public static function ByteArray2ValueSourceDefine (byteArray:ByteArray):ValueSourceDefine
-      {
-         //case ValueTypeDefine.ValueType_Number:
-         //{
-         //   number_value = ;
-         //   switch ()
-         //   {
-         //      case ValueTypeDefine.NumberTypeDetail_Integer:
-         //         writeInt ( int(number_value & 0xFFFFFFFF) );
-         //   }
-         //}
+         var codeSnippetDefine:CodeSnippetDefine = new CodeSnippetDefine ();
          
-         return null;
+         codeSnippetDefine.mName = binFile.readUTF ();
+         codeSnippetDefine.mNumCallings = binFile.readShort ();
+         codeSnippetDefine.mFunctionCallingDefines = new Array (codeSnippetDefine.mNumCallings);
+         for (var i:int = 0; i < codeSnippetDefine.mNumCallings; ++ i)
+            codeSnippetDefine.mFunctionCallingDefines [i] = LoadFunctionCallingDefineFromBinFile (binFile);
+         
+         return codeSnippetDefine;
       }
       
-      public static function ByteArray2ValueTargetDefine (byteArray:ByteArray):ValueTargetDefine
+      public static function  LoadFunctionCallingDefineFromBinFile (binFile:ByteArray):FunctionCallingDefine
       {
-         //case ValueTypeDefine.ValueType_Number:
-         //{
-         //   number_value = ;
-         //   switch ()
-         //   {
-         //      case ValueTypeDefine.NumberTypeDetail_Integer:
-         //         writeInt ( int(number_value & 0xFFFFFFFF) );
-         //   }
-         //}
+         var funcCallingDefine:FunctionCallingDefine = new FunctionCallingDefine ();
          
-         return null;
+         var func_type:int;
+         var func_id:int;
+         
+         var i:int;
+         var num_inputs:int;
+         var num_outputs:int;
+         var inputValueSourceDefines:Array;
+         var outputValueTargetDefines:Array;
+         
+         funcCallingDefine.mFunctionType = func_type = binFile.readByte ();
+         funcCallingDefine.mFunctionId = func_id = binFile.readShort ();
+         
+         funcCallingDefine.mNumInputs = num_inputs = binFile.readByte ();
+         funcCallingDefine.mNumOutputs = num_outputs = binFile.readByte ();
+         
+         funcCallingDefine.mInputValueSourceDefines = inputValueSourceDefines = new Array (num_inputs);
+         funcCallingDefine.mOutputValueTargetDefines = outputValueTargetDefines = new Array (num_outputs);
+         
+         var func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id);
+         
+         for (i = 0; i < num_inputs; ++ i)
+            inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+         
+         for (i = 0; i < num_outputs; ++ i)
+            outputValueTargetDefines [i] = LoadValueTargetDefineFromBinFile (binFile);
+         
+         return funcCallingDefine;
+      }
+      
+      public static function  LoadValueSourceDefineFromBinFile (binFile:ByteArray, valueType:int, numberDetail:int):ValueSourceDefine
+      {
+         var valueSourceDefine:ValueSourceDefine = null;
+         
+         var source_type:int = binFile.readByte ();
+         
+         if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
+         {
+            switch (valueType)
+            {
+               case ValueTypeDefine.ValueType_Boolean:
+                  valueSourceDefine = new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Boolean, binFile.readByte () != 0);
+                  break;
+               case ValueTypeDefine.ValueType_Number:
+                  switch (numberDetail)
+                  {
+                     case ValueTypeDefine.NumberTypeDetail_Single:
+                        valueSourceDefine = new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Number, binFile.readFloat ());
+                        break;
+                     case ValueTypeDefine.NumberTypeDetail_Integer:
+                        valueSourceDefine = new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Number, binFile.readInt ());
+                        break;
+                     case ValueTypeDefine.NumberTypeDetail_Double:
+                     default:
+                        valueSourceDefine = new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Number, binFile.readDouble ());
+                        break;
+                  }
+                  
+                  break;
+               case ValueTypeDefine.ValueType_String:
+                  valueSourceDefine = new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_String, binFile.readUTF ());
+                  break;
+               case ValueTypeDefine.ValueType_Entity:
+                  valueSourceDefine = new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Entity, binFile.readInt ());
+                  break;
+               case ValueTypeDefine.ValueType_CollisionCategory:
+                  valueSourceDefine = new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_CollisionCategory, binFile.readInt ());
+                  break;
+               default:
+                  trace ("error");
+                  break;
+            }
+         }
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         {
+            valueSourceDefine = new ValueSourceDefine_Variable (
+                  binFile.readByte (),
+                  binFile.readShort ()
+               );
+         }
+         
+         if (valueSourceDefine == null)
+         {
+            valueSourceDefine = new ValueSourceDefine_Null ();
+         }
+         
+         return valueSourceDefine;
+      }
+      
+      public static function  LoadValueTargetDefineFromBinFile (binFile:ByteArray):ValueTargetDefine
+      {
+         var valueTargetDefine:ValueTargetDefine = null;
+         
+         var target_type:int = binFile.readByte ();
+         
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         {
+            valueTargetDefine = new ValueTargetDefine_Variable (
+                  binFile.readByte (),
+                  binFile.readShort ()
+               );
+         }
+         
+         if (valueTargetDefine == null)
+         {
+            valueTargetDefine = new ValueTargetDefine_Null ();
+         }
+         
+         return valueTargetDefine;
       }
       
 //==============================================================================================

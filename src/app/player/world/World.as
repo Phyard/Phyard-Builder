@@ -135,16 +135,22 @@ package player.world {
          // ...
          
          SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
-         SetBuildBorder (worldDefine.mSettings.mBuildBorder);
          SetBorderColor (worldDefine.mSettings.mBorderColor);
          
          mIsInfiniteWorldSize = worldDefine.mSettings.mIsInfiniteWorldSize;
          
          // these values are in pixel unit
          
+         mWorldBorderLeftThickness = worldDefine.mSettings.mWorldBorderLeftThickness;
+         mWorldBorderTopThickness = worldDefine.mSettings.mWorldBorderTopThickness;
+         mWorldBorderRightThickness = worldDefine.mSettings.mWorldBorderRightThickness;
+         mWorldBorderBottomThickness = worldDefine.mSettings.mWorldBorderBottomThickness;
+         mBuildBorder = worldDefine.mSettings.mBuildBorder;
+         mIsBorderAtTopLayer = worldDefine.mSettings.mBorderAtTopLayer;
+         
          if (mIsInfiniteWorldSize)
          {
-            SetBuildBorder (false);
+            mBuildBorder = false; // force false
             
             mWorldLeft   = - 0x7FFFFFFF;
             mWorldTop    = - 0x7FFFFFFF;
@@ -158,11 +164,6 @@ package player.world {
             mWorldWidth = worldDefine.mSettings.mWorldWidth;
             mWorldHeight = worldDefine.mSettings.mWorldHeight;
          }
-         
-         mWorldBorderLeftThickness = worldDefine.mSettings.mWorldBorderLeftThickness;
-         mWorldBorderTopThickness = worldDefine.mSettings.mWorldBorderTopThickness;
-         mWorldBorderRightThickness = worldDefine.mSettings.mWorldBorderRightThickness;
-         mWorldBorderBottomThickness = worldDefine.mSettings.mWorldBorderBottomThickness;
          
          mCameraCenterX = worldDefine.mSettings.mCameraCenterX;
          mCameraCenterY = worldDefine.mSettings.mCameraCenterY;
@@ -636,7 +637,7 @@ package player.world {
          
          mBackgroundLayer.addChild (mBackgroundSprite);
          
-         if (mDrawBorderAboveEntities)
+         if (mIsBorderAtTopLayer)
          {
             mContentLayer.addChild (mEntityLayer);
             mContentLayer.addChild (mBorderLayer);
@@ -739,10 +740,10 @@ package player.world {
             // order: top, bottom, left, right. 
             // values: posX, posY, halfWidth, halfHeight
             var shape_info:Array = [
-                           [mWorldLeft + mWorldWidth * 0.5,                          mWorldTop + WorldBorderThinknessTB * 0.5 - 0.5,          mWorldWidth * 0.5,            WorldBorderThinknessTB * 0.5],
-                           [mWorldLeft + mWorldWidth * 0.5,                          mWorldTop + mWorldHeight - WorldBorderThinknessTB * 0.5, mWorldWidth * 0.5,            WorldBorderThinknessTB * 0.5],
-                           [mWorldLeft + WorldBorderThinknessLR * 0.5 - 0.5,         mWorldTop + mWorldHeight * 0.5,                          WorldBorderThinknessLR * 0.5, mWorldHeight * 0.5          ],
-                           [mWorldLeft + mWorldWidth - WorldBorderThinknessLR * 0.5, mWorldTop + mWorldHeight * 0.5,                          WorldBorderThinknessLR * 0.5, mWorldHeight * 0.5          ],
+                           [mWorldBorderTopThickness    > 0.0, mWorldLeft + mWorldWidth * 0.5,                              mWorldTop + mWorldBorderTopThickness * 0.5,                   mWorldWidth * 0.5,                mWorldBorderTopThickness * 0.5   ],
+                           [mWorldBorderBottomThickness > 0.0, mWorldLeft + mWorldWidth * 0.5,                              mWorldTop + mWorldHeight - mWorldBorderBottomThickness * 0.5, mWorldWidth * 0.5,                mWorldBorderBottomThickness * 0.5],
+                           [mWorldBorderLeftThickness   > 0.0, mWorldLeft + mWorldBorderLeftThickness * 0.5,                mWorldTop + mWorldHeight * 0.5,                               mWorldBorderLeftThickness * 0.5,  mWorldHeight * 0.5               ],
+                           [mWorldBorderRightThickness  > 0.0, mWorldLeft + mWorldWidth - mWorldBorderRightThickness * 0.5, mWorldTop + mWorldHeight * 0.5,                               mWorldBorderRightThickness * 0.5, mWorldHeight * 0.5               ],
                         ];
             
             mBorderShapes = new Array (4);
@@ -751,33 +752,30 @@ package player.world {
             {
                var info:Array = shape_info [i];
                
-               var border:EntityShape_WorldBorder = new EntityShape_WorldBorder (this);
-               mBorderShapes [i] = border;
-               
-               RegisterEntity (border);
-               
-               border.SetBody (mBorderBody);
-               
-               border.SetPositionX  (mCoordinateSystem.D2P_PositionX (info [0]));
-               border.SetPositionY  (mCoordinateSystem.D2P_PositionY (info [1]));
-               border.SetHalfWidth  (mCoordinateSystem.D2P_Length (info [2]));
-               border.SetHalfHeight (mCoordinateSystem.D2P_Length (info [3]));
-               border.UpdatelLocalPosition ();
-               
-               border.SetFilledColor (mBorderColor);
+               if (info [0])
+               {
+                  var border:EntityShape_WorldBorder = new EntityShape_WorldBorder (this);
+                  mBorderShapes [i] = border;
+                  
+                  RegisterEntity (border);
+                  
+                  border.SetBody (mBorderBody);
+                  
+                  border.SetPositionX  (mCoordinateSystem.D2P_PositionX (info [1]));
+                  border.SetPositionY  (mCoordinateSystem.D2P_PositionY (info [2]));
+                  border.SetHalfWidth  (mCoordinateSystem.D2P_Length (info [3]));
+                  border.SetHalfHeight (mCoordinateSystem.D2P_Length (info [4]));
+                  border.UpdatelLocalPosition ();
+                  
+                  border.SetFilledColor (mBorderColor);
+               }
             }
          }
       }
 
-      private var mDrawBorderAboveEntities:Boolean = true;
+      private var mIsBorderAtTopLayer:Boolean = true;
       private var mBuildBorder:Boolean = false;
       private var mBorderColor:uint = Define.ColorStaticObject;
-
-      // cant change once set
-      private function SetBuildBorder (buildBorder:Boolean):void
-      {
-         mBuildBorder = buildBorder;
-      }
 
       private function IsBuildBorder ():Boolean
       {

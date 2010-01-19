@@ -33,10 +33,13 @@ package common {
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityInputEntityAssigner;
    import editor.trigger.entity.EntityInputEntityPairAssigner;
+   import editor.trigger.entity.EntityAction;
    import editor.trigger.entity.EntityEventHandler;
    import editor.trigger.entity.EntityEventHandler_Timer;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
+   
+   import common.trigger.CoreEventIds;
    
    public class DataFormat
    {
@@ -67,6 +70,7 @@ package common {
             //>>from v1.02
             worldDefine.mShareSourceCode = editorWorld.IsShareSourceCode ();
             worldDefine.mPermitPublishing = editorWorld.IsPermitPublishing ();
+            //<<
          }
          
          // settings
@@ -83,15 +87,18 @@ package common {
             worldDefine.mSettings.mBorderColor = editorWorld.GetBorderColor ();
             //<<
             
-            //>>from v1.06
+            //>>added from v1.06
+            //>>removed from v1.08
             editorWorld.StatisticsPhysicsShapes ();
             worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = editorWorld.GetPhysicsShapesPotentialMaxCount ();
             worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = editorWorld.GetPhysicsShapesPopulationDensityLevel ();
+            //<<
             //<<
             
             //>>from v1.08
             worldDefine.mSettings.mIsInfiniteWorldSize = editorWorld.IsInfiniteSceneSize ();
             
+            worldDefine.mSettings.mBorderAtTopLayer = editorWorld.IsBorderAtTopLayer ();
             worldDefine.mSettings.mWorldBorderLeftThickness = editorWorld.GetWorldBorderLeftThickness ();
             worldDefine.mSettings.mWorldBorderTopThickness = editorWorld.GetWorldBorderTopThickness ();
             worldDefine.mSettings.mWorldBorderRightThickness = editorWorld.GetWorldBorderRightThickness ();
@@ -168,7 +175,6 @@ package common {
                   var task:editor.trigger.entity.EntityTask = editorEntity as editor.trigger.entity.EntityTask;
                   entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (task.GetEntityAssigners ());
                   
-                  entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                }
                else if (editorEntity is editor.trigger.entity.EntityConditionDoor)
@@ -223,14 +229,11 @@ package common {
                   entityDefine.mInputConditionEntityCreationId = editorWorld.GetEntityCreationId (eventHandler.GetInputConditionEntity () as Entity);
                   entityDefine.mInputConditionTargetValue = eventHandler.GetInputConditionTargetValue ();
                   
-                  entityDefine.mNumAssigners = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                   
+                  //>>v1.08
                   entityDefine.mExternalActionEntityCreationId = editorWorld.GetEntityCreationId (eventHandler.GetExternalAction ());
                   
-                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet ());
-                  
-                  //>> from v1.08
                   if (editorEntity is editor.trigger.entity.EntityEventHandler_Timer)
                   {
                      var timerEventHandler:EntityEventHandler_Timer = eventHandler as EntityEventHandler_Timer;
@@ -249,6 +252,8 @@ package common {
                      var mouseEventHandler:EntityEventHandler_Mouse = eventHandler as EntityEventHandler_Mouse;
                   }
                   //<<
+                  
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet ());
                }
                else if (editorEntity is editor.trigger.entity.EntityAction)
                {
@@ -306,7 +311,7 @@ package common {
                      entityDefine.mFriction = shape.mFriction;
                      entityDefine.mRestitution = shape.mRestitution;
                      
-                     // add in v1,04, move here from above from v1.05
+                     // add in v1,04, move here from above since v1.05
                      entityDefine.mIsSensor = shape.mIsSensor;
                      
                      //>>from v1.05
@@ -315,11 +320,11 @@ package common {
                      
                      //>>from v1.08
                      entityDefine.mBuildBorder = shape.IsBuildBorder ();
+                     entityDefine.mIsSleepingAllowed = shape.IsAllowSleeping ();
+                     entityDefine.mIsRotationFixed = shape.IsFixRotation ();
                      entityDefine.mLinearVelocityMagnitude = shape.GetLinearVelocityMagnitude ();
                      entityDefine.mLinearVelocityAngle = shape.GetLinearVelocityAngle ();
                      entityDefine.mAngularVelocity = shape.GetAngularVelocity ();
-                     entityDefine.mIsSleepingAllowed = shape.IsAllowSleeping ();
-                     entityDefine.mIsRotationFixed = shape.IsFixRotation ();
                      //<<
                   }
                   
@@ -337,7 +342,10 @@ package common {
                      
                      entityDefine.mHalfWidth = (shape as editor.entity.EntityShapeRectangle).GetHalfWidth ();
                      entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
+                     
+                     //from v1.08
                      entityDefine.mIsRoundCorners = (shape as EntityShapeRectangle).IsRoundCorners ();
+                     //<<
                   }
                   //>>from v1.04
                   else if (editorEntity is editor.entity.EntityShapePolygon)
@@ -354,11 +362,11 @@ package common {
                      
                      entityDefine.mCurveThickness = (shape as editor.entity.EntityShapePolyline).GetCurveThickness ();
                      
-                     entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolyline).GetLocalVertexPoints ();
-                     
                      //>> from v1.08
                      entityDefine.mIsRoundEnds = (shape as editor.entity.EntityShapePolyline).IsRoundEnds ();
                      //<<
+                     
+                     entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolyline).GetLocalVertexPoints ();
                   }
                   //<<
                }
@@ -382,21 +390,25 @@ package common {
                      entityDefine.mIsItalic = (shape as EntityShapeText).IsItalic ();
                      //<<
                      
-                     if (editorEntity is EntityShapeTextButton)
+                     // from v1.08
+                     if (editorEntity is EntityShapeTextButton) 
                      {
                         entityDefine.mEntityType = Define.EntityType_ShapeTextButton;
                         
                         entityDefine.mUsingHandCursor = (shape as EntityShapeTextButton).UsingHandCursor ();
                         
                         var mouseOverShape:EntityShape = (shape as EntityShapeTextButton).GetMouseOverShape ();
-                        entityDefine.mDrawBorder_MouseOver = mouseOverShape.IsDrawBorder ();
+                        
                         entityDefine.mDrawBackground_MouseOver = mouseOverShape.IsDrawBackground ();
+                        entityDefine.mBackgroundColor_MouseOver = mouseOverShape.GetFilledColor ();
+                        entityDefine.mBackgroundTransparency_MouseOver = mouseOverShape.GetTransparency ();
+                        
+                        entityDefine.mDrawBorder_MouseOver = mouseOverShape.IsDrawBorder ();
                         entityDefine.mBorderColor_MouseOver = mouseOverShape.GetBorderColor ();
                         entityDefine.mBorderThickness_MouseOver = mouseOverShape.GetBorderThickness ();
-                        entityDefine.mBackgroundColor_MouseOver =mouseOverShape.GetFilledColor ();
-                        entityDefine.mTransparency_MouseOver = mouseOverShape.GetTransparency ();
                         entityDefine.mBorderTransparency_MouseOver = mouseOverShape.GetBorderTransparency ();
                      }
+                     //<<
                      else
                      {
                         entityDefine.mEntityType = Define.EntityType_ShapeText;
@@ -648,9 +660,31 @@ package common {
                //<<
                
                
-               //>>from v1.06
+               //>> [v1.06, v1.08)
                //worldDefine.mSettings.mPhysicsShapesPotentialMaxCount;
                //worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel;
+               //<<
+               
+               //>>from v1.08
+               editorWorld.SetInfiniteSceneSize (worldDefine.mSettings.mIsInfiniteWorldSize);
+               
+               editorWorld.SetBorderAtTopLayer (worldDefine.mSettings.mBorderAtTopLayer);
+               editorWorld.SetWorldBorderLeftThickness (worldDefine.mSettings.mWorldBorderLeftThickness);
+               editorWorld.SetWorldBorderTopThickness (worldDefine.mSettings.mWorldBorderTopThickness);
+               editorWorld.SetWorldBorderRightThickness (worldDefine.mSettings.mWorldBorderRightThickness);
+               editorWorld.SetWorldBorderBottomThickness (worldDefine.mSettings.mWorldBorderBottomThickness);
+               
+               editorWorld.SetDefaultGravityAccelerationMagnitude (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+               editorWorld.SetDefaultGravityAccelerationAngle (worldDefine.mSettings.mDefaultGravityAccelerationAngle);
+               
+               editorWorld.RebuildCoordinateSystem (
+                     worldDefine.mSettings.mCoordinatesOriginX,
+                     worldDefine.mSettings.mCoordinatesOriginY,
+                     worldDefine.mSettings.mCoordinatesScale,
+                     worldDefine.mSettings.mRightHandCoordinates
+                  );
+               
+               editorWorld.SetCiRulesEnabled (worldDefine.mSettings.mIsCiRulesEnabled);
                //<<
             }
          }
@@ -723,6 +757,11 @@ package common {
                {
                   var camera:editor.entity.EntityUtilityCamera = editorWorld.CreateEntityUtilityCamera ();
                   
+                  //>>from v.108
+                  camera.SetFollowedTarget (entityDefine.mFollowedTarget);
+                  camera.SetFollowingStyle (entityDefine.mFollowingStyle);
+                  //<<
+                  
                   entity = utility = camera;
                }
                //<<
@@ -753,7 +792,40 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
-                  entity = logic = editorWorld.CreateEntityEventHandler (entityDefine.mEventId);
+                  switch (entityDefine.mEventId)
+                  {
+                     case CoreEventIds.ID_OnWorldTimer:
+                     case CoreEventIds.ID_OnEntityTimer:
+                     case CoreEventIds.ID_OnEntityPairTimer:
+                        entity = logic = editorWorld.CreateEntityEventHandler_Timer (entityDefine.mEventId);
+                        break;
+                     case CoreEventIds.ID_OnWorldKeyDown:
+                     case CoreEventIds.ID_OnWorldKeyUp:
+                     case CoreEventIds.ID_OnWorldKeyHold:
+                        entity = logic = editorWorld.CreateEntityEventHandler_Keyboard (entityDefine.mEventId);
+                        break;
+                     case CoreEventIds.ID_OnPhysicsShapeMouseDown:
+                     case CoreEventIds.ID_OnPhysicsShapeMouseUp:
+                     case CoreEventIds.ID_OnEntityMouseClick:
+                     case CoreEventIds.ID_OnEntityMouseDown:
+                     case CoreEventIds.ID_OnEntityMouseUp:
+                     case CoreEventIds.ID_OnEntityMouseMove:
+                     case CoreEventIds.ID_OnEntityMouseEnter:
+                     case CoreEventIds.ID_OnEntityMouseOut:
+                     case CoreEventIds.ID_OnWorldMouseClick:
+                     case CoreEventIds.ID_OnWorldMouseDown:
+                     case CoreEventIds.ID_OnWorldMouseUp:
+                     case CoreEventIds.ID_OnWorldMouseMove:
+                        entity = logic = editorWorld.CreateEntityEventHandler_Mouse (entityDefine.mEventId);
+                        break;
+                     default:
+                        entity = logic = editorWorld.CreateEntityEventHandler (entityDefine.mEventId);
+                        break;
+                  }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+                  entity = logic = editorWorld.CreateEntityAction ();
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -776,15 +848,21 @@ package common {
                      rect.SetHalfWidth (entityDefine.mHalfWidth);
                      rect.SetHalfHeight (entityDefine.mHalfHeight);
                      
+                     //from v1.08
+                     rect.SetRoundCorners (entityDefine.mIsRoundCorners);
+                     //<<
+                     
                      entity = shape = rect;
                   }
                   //>> from v1.04
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
                      var polygon:editor.entity.EntityShapePolygon = editorWorld.CreateEntityShapePolygon ();
-                        polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY);
-                        polygon.SetRotation (entityDefine.mRotation);
-                     polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
+                     
+                     // commented off, do it in the 2nd round below
+                     //   polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
+                     //   polygon.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
+                     //polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
                      
                      entity = shape = polygon;
                   }
@@ -793,11 +871,17 @@ package common {
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
                      var polyline:editor.entity.EntityShapePolyline = editorWorld.CreateEntityShapePolyline ();
-                        polyline.SetPosition (entityDefine.mPosX, entityDefine.mPosY);
-                        polyline.SetRotation (entityDefine.mRotation);
-                     polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
                      
                      polyline.SetCurveThickness (entityDefine.mCurveThickness);
+                     
+                     //>> from v1.08
+                     polyline.SetRoundEnds (entityDefine.mIsRoundEnds);
+                     //<<
+                     
+                     // commented off, do it in the 2nd round below
+                     //   polyline.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
+                     //   polyline.SetRotation (entityDefine.mRotation);                 // but the SetLocalVertexPoints needs position and rotation set before
+                     //polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
                      
                      entity = shape = polyline;
                   }
@@ -836,13 +920,11 @@ package common {
                         
                         //>>from v1.08
                         shape.SetBuildBorder (entityDefine.mBuildBorder);
+                        shape.SetAllowSleeping (entityDefine.mIsSleepingAllowed);
+                        shape.SetFixRotation (entityDefine.mIsRotationFixed);
                         shape.SetLinearVelocityMagnitude (entityDefine.mLinearVelocityMagnitude);
                         shape.SetLinearVelocityAngle (entityDefine.mLinearVelocityAngle);
                         shape.SetAngularVelocity (entityDefine.mAngularVelocity);
-                        shape.SetLinearDamping (entityDefine. mLinearDamping);
-                        shape.SetAngularDamping (entityDefine.mAngularDamping);
-                        shape.SetAllowSleeping (entityDefine.mIsSleepingAllowed);
-                        shape.SetFixRotation (entityDefine.mIsRotationFixed);
                         //<<
                      }
                   }
@@ -850,11 +932,46 @@ package common {
                else // not physics shape
                {
                   //>> v1.02
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeText)
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeText || entityDefine.mEntityType == Define.EntityType_ShapeTextButton)
                   {
-                     var text:editor.entity.EntityShapeText = editorWorld.CreateEntityShapeText ();
+                     var text:EntityShapeText;
+                     
+                     // from v1.08
+                     if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton)
+                     {
+                        var textButton:EntityShapeTextButton = editorWorld.CreateEntityShapeTextButton ();
+                        
+                        textButton.SetUsingHandCursor (entityDefine.mUsingHandCursor);
+                        
+                        var mouseOverShape:EntityShape = textButton.GetMouseOverShape ();
+                        
+                        mouseOverShape.SetDrawBackground (entityDefine.mDrawBackground_MouseOve);
+                        mouseOverShape.SetFilledColor (entityDefine.mBackgroundColor_MouseOver);
+                        mouseOverShape.SetTransparency (entityDefine.mBackgroundTransparency_MouseOver);
+                        
+                        mouseOverShape.SetDrawBorder (entityDefine.mDrawBorder_MouseOver);
+                        mouseOverShape.SetBorderColor (entityDefine.mBorderColor_MouseOver);
+                        mouseOverShape.SetBorderThickness (entityDefine.mBorderThickness_MouseOver);
+                        mouseOverShape.SetBorderTransparency (entityDefine.mBorderTransparency_MouseOver);
+                        
+                        text = textButton;
+                     }
+                     //<<
+                     else
+                     {
+                        text = editorWorld.CreateEntityShapeText ();
+                     }
+                     
                      text.SetText (entityDefine.mText);
                      text.SetWordWrap (entityDefine.mWordWrap);
+                     
+                     //from v1.08
+                     text.SetAdaptiveBackgroundSize (entityDefine.mAdaptiveBackgroundSize);
+                     text.SetTextColor (entityDefine.mTextColor);
+                     text.SetFontSize (entityDefine.mFontSize);
+                     text.SetBold (entityDefine.mIsBold);
+                     text.SetItalic (entityDefine.mIsItalic);
+                     //<<
                      
                      text.SetHalfWidth (entityDefine.mHalfWidth);
                      text.SetHalfHeight (entityDefine.mHalfHeight);
@@ -877,6 +994,10 @@ package common {
                      // ...
                      gController.SetInitialGravityAcceleration (entityDefine.mInitialGravityAcceleration)
                      gController.SetInitialGravityAngle (entityDefine.mInitialGravityAngle)
+                     
+                     //>> from v1,08
+                     gController.SetMaximalGravityAcceleration (entityDefine.mMaximalGravityAcceleration);
+                     //<<
                      
                      entity = shape = gController;
                   }
@@ -960,7 +1081,9 @@ package common {
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (distanceJoint.GetAnchor2 ());
                   anchorDefine.mEntity = distanceJoint.GetAnchor2 ();
                   
+                  //>>from v1.08
                   distanceJoint.SetBreakDeltaLength (entityDefine.mBreakDeltaLength);
+                  //<<
                   
                   entity = joint = distanceJoint;
                }
@@ -981,9 +1104,12 @@ package common {
                   
                   spring.mDampingRatio = entityDefine.mDampingRatio;
                   
+                  //>>from v1.08
                   spring.SetFrequencyDeterminedManner (entityDefine.mFrequencyDeterminedManner);
                   spring.SetFrequency (entityDefine.mFrequency);
+                  spring.SetSpringConstant (entityDefine.mSpringConstant);
                   spring.SetBreakExtendedLength (entityDefine.mBreakExtendedLength);
+                  //<<
                   
                   entity = joint = spring;
                }
@@ -992,7 +1118,9 @@ package common {
                {
                   joint.mCollideConnected = entityDefine.mCollideConnected ;
                   
+                  //>>from v1.08
                   joint.SetBreakable (entityDefine.mBreakable);
+                  //<<
                }
             }
             else if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
@@ -1048,12 +1176,34 @@ package common {
          }
          //<<<
          
-         // modify
+         // modify, 2nd round
          for (createId = 0; createId < numEntities; ++ createId)
          {
             entityDefine = worldDefine.mEntityDefines [createId];
             
-            if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
+            if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            {
+               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               {
+                  //>> from v1.04
+                  if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
+                  {
+                     polygon = entityDefine.mEntity as EntityShapePolygon;
+                     polygon.SetLocalVertexPoints (entityDefine.mLocalPoints);
+                  }
+                  //<<
+                  //>>from v1.05
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
+                  {
+                     polyline = entityDefine.mEntity as  EntityShapePolyline;
+                     polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
+                     
+                     polyline.SetCurveThickness (entityDefine.mCurveThickness);
+                  }
+                  //<<
+               }
+            }
+            else if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
             {
                //trace ("entityDefine.mPosX = " + entityDefine.mPosX + ", entityDefine.mPosY = " + entityDefine.mPosY);
                
@@ -1125,7 +1275,40 @@ package common {
                   
                   eventHandler.SetInputCondition (entityDefine.mInputConditionEntityCreationId, entityDefine.mInputConditionTargetValue);
                   eventHandler.SetEntityAssignerCreationIds (entityDefine.mInputAssignerCreationIds);
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     eventHandler.SetExternalActionCreationId (entityDefine.mExternalActionEntityCreationId);
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     if (eventHandler is editor.trigger.entity.EntityEventHandler_Timer)
+                     {
+                        var timerEventHandler:EntityEventHandler_Timer = eventHandler as EntityEventHandler_Timer;
+                        
+                        timerEventHandler.SetRunningInterval (entityDefine.mRunningInterval);
+                        timerEventHandler.SetOnlyRunOnce (entityDefine.mOnlyRunOnce);
+                     }
+                     else if (eventHandler is editor.trigger.entity.EntityEventHandler_Keyboard)
+                     {
+                        var keyboardEventHandler:EntityEventHandler_Keyboard = eventHandler as EntityEventHandler_Keyboard;
+                        
+                        keyboardEventHandler.SetKeyCodes (entityDefine.mKeyCodes);
+                     }
+                     else if (eventHandler is editor.trigger.entity.EntityEventHandler_Mouse)
+                     {
+                        var mouseEventHandler:EntityEventHandler_Mouse = eventHandler as EntityEventHandler_Mouse;
+                     }
+                  }
+                  
                   TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+                  var action:EntityAction = entityDefine.mEntity as EntityAction;
+                  
+                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, action.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
                }
             }
          }
@@ -1210,11 +1393,44 @@ package common {
                else if (element.@name == "border_color")
                   worldDefine.mSettings.mBorderColor = parseInt ( (element.@value).substr (2), 16);
                
-               //>>from v1.06
+               //>>from v1.06 to v1.08 (not include 1.08)
                else if (element.@name == "physics_shapes_potential_max_count")
                   worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = parseInt (element.@value);
                else if (element.@name == "physics_shapes_population_density_level")
                   worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = parseInt (element.@value);
+               //<<
+               
+               //>>from v1.08
+               else if (element.@name == "infinite_scene_size")
+                  worldDefine.mSettings.mIsInfiniteWorldSize = parseInt (element.@value) != 0;
+               
+               else if (element.@name == "border_at_top_layer")
+                  worldDefine.mSettings.mBorderAtTopLayer = parseInt (element.@value) != 0;
+               else if (element.@name == "border_left_thinckness")
+                  worldDefine.mSettings.mWorldBorderLeftThickness = parseFloat (element.@value);
+               else if (element.@name == "border_top_thinckness")
+                  worldDefine.mSettings.mWorldBorderTopThickness = parseFloat (element.@value);
+               else if (element.@name == "border_right_thinckness")
+                  worldDefine.mSettings.mWorldBorderRightThickness = parseFloat (element.@value);
+               else if (element.@name == "border_bottom_thinckness")
+                  worldDefine.mSettings.mWorldBorderBottomThickness = parseFloat (element.@value);
+               
+               else if (element.@name == "gravity_acceleration_magnitude")
+                  worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = parseFloat (element.@value);
+               else if (element.@name == "gravity_acceleration_angle")
+                  worldDefine.mSettings.mDefaultGravityAccelerationAngle = parseFloat (element.@value);
+               
+               else if (element.@name == "right_hand_coordinates")
+                  worldDefine.mSettings.mRightHandCoordinates = parseInt (element.@value) != 0;
+               else if (element.@name == "coordinates_origin_x")
+                  worldDefine.mSettings.mCoordinatesOriginX = parseFloat (element.@value);
+               else if (element.@name == "coordinates_origin_y")
+                  worldDefine.mSettings.mCoordinatesOriginY = parseFloat (element.@value);
+               else if (element.@name == "coordinates_scale")
+                  worldDefine.mSettings.mCoordinatesScale = parseFloat (element.@value);
+               
+               else if (element.@name == "ci_rules_enabled")
+                  worldDefine.mSettings.mIsCiRulesEnabled = parseInt (element.@value) != 0;
                //<<
                
                else
@@ -1236,7 +1452,7 @@ package common {
          // worldDefine.mVersion >= 0x0107
          if (worldXml.EntityAppearingOrder != undefined)
          {
-            EntityIndicesString2IdArray (worldXml.EntityAppearingOrder.@entity_indices, worldDefine.mEntityAppearanceOrder);
+            IndicesString2IntegerArray (worldXml.EntityAppearingOrder.@entity_indices, worldDefine.mEntityAppearanceOrder);
          }
          
          // ...
@@ -1247,7 +1463,7 @@ package common {
          
          for each (element in worldXml.BrotherGroups.BrotherGroup)
          {
-            brotherIDs = EntityIndicesString2IdArray (element.@brother_indices);
+            brotherIDs = IndicesString2IntegerArray (element.@brother_indices);
             
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
          }
@@ -1284,7 +1500,7 @@ package common {
          return worldDefine;
       }
       
-      public static function EntityIndicesString2IdArray (indicesStr:String, idArray:Array = null):Array
+      public static function IndicesString2IntegerArray (indicesStr:String, idArray:Array = null):Array
       {
          if (idArray == null)
             idArray = new Array ();
@@ -1329,6 +1545,11 @@ package common {
          {
             if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
             {
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  entityDefine.mFollowedTarget = parseFloat (element.@followed_target);
+                  entityDefine.mFollowingStyle = parseFloat (element.@following_style);
+               }
             }
          }
          else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
@@ -1339,8 +1560,7 @@ package common {
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
-               entityDefine.mInputAssignerCreationIds = EntityIndicesString2IdArray (element.@assigner_indices);
-               entityDefine.mNumAssigners = entityDefine.mInputAssignerCreationIds.length;
+               entityDefine.mInputAssignerCreationIds = IndicesString2IntegerArray (element.@assigner_indices);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
             {
@@ -1352,15 +1572,15 @@ package common {
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
             {
                entityDefine.mSelectorType = parseInt (element.@selector_type);
-               entityDefine.mEntityCreationIds = EntityIndicesString2IdArray (element.@entity_indices);
+               entityDefine.mEntityCreationIds = IndicesString2IntegerArray (element.@entity_indices);
                entityDefine.mNumEntities = entityDefine.mEntityCreationIds.length;
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
             {
                entityDefine.mPairingType = parseInt (element.@pairing_type);
-               entityDefine.mEntityCreationIds1 = EntityIndicesString2IdArray (element.@entity_indices1);
+               entityDefine.mEntityCreationIds1 = IndicesString2IntegerArray (element.@entity_indices1);
                entityDefine.mNumEntities1 = entityDefine.mEntityCreationIds1.length;
-               entityDefine.mEntityCreationIds2 = EntityIndicesString2IdArray (element.@entity_indices2);
+               entityDefine.mEntityCreationIds2 = IndicesString2IntegerArray (element.@entity_indices2);
                entityDefine.mNumEntities2 = entityDefine.mEntityCreationIds2.length;
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
@@ -1368,8 +1588,37 @@ package common {
                entityDefine.mEventId = parseInt (element.@event_id);
                entityDefine.mInputConditionEntityCreationId = parseInt (element.@input_condition_entity_index);
                entityDefine.mInputConditionTargetValue = parseInt (element.@input_condition_target_value);
-               entityDefine.mInputAssignerCreationIds = EntityIndicesString2IdArray (element.@assigner_indices);
-               entityDefine.mNumAssigners = entityDefine.mInputAssignerCreationIds.length;
+               entityDefine.mInputAssignerCreationIds = IndicesString2IntegerArray (element.@assigner_indices);
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  entityDefine.mExternalActionEntityCreationId = parseInt (element.@external_action_entity_index);
+               }
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  switch (entityDefine.mEventId)
+                  {
+                     case CoreEventIds.ID_OnWorldTimer:
+                     case CoreEventIds.ID_OnEntityTimer:
+                     case CoreEventIds.ID_OnEntityPairTimer:
+                        entityDefine.mRunningInterval = parseFloat (element.@running_interval);
+                        entityDefine.mOnlyRunOnce = parseInt (element.@only_run_once) != 0;
+                        break;
+                     case CoreEventIds.ID_OnWorldKeyDown:
+                     case CoreEventIds.ID_OnWorldKeyUp:
+                     case CoreEventIds.ID_OnWorldKeyHold:
+                        entityDefine.mKeyCodes = IndicesString2IntegerArray (element.@key_codes);
+                        break;
+                     default:
+                        break;
+                  }
+               }
+               
+               entityDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+            {
                entityDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
             }
          }
@@ -1445,13 +1694,11 @@ package common {
                   if (worldDefine.mVersion >= 0x0108)
                   {
                      entityDefine.mBuildBorder = parseInt (element.@build_border) != 0;
+                     entityDefine.mIsSleepingAllowed = parseInt (element.@sleeping_allowed) != 0;
+                     entityDefine.mIsRotationFixed = parseInt (element.@rotation_fixed) != 0;
                      entityDefine.mLinearVelocityMagnitude = parseFloat (element.@linear_velocity_magnitude);
                      entityDefine.mLinearVelocityAngle = parseFloat (element.@linear_velocity_angle);
                      entityDefine.mAngularVelocity = parseFloat (element.@angular_velocity);
-                     entityDefine.mLinearDamping = parseFloat (element.@linear_damping);
-                     entityDefine.mAngularDamping = parseFloat (element.@angular_damping);;
-                     entityDefine.mIsSleepingAllowed = parseInt (element.@sleeping_allowed) != 0;
-                     entityDefine.mIsRotationFixed = parseInt (element.@rotation_fixed) != 0;
                   }
                }
                
@@ -1462,6 +1709,11 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                {
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mIsRoundCorners = parseInt (element.@round_corners) != 0;
+                  }
+                  
                   entityDefine.mHalfWidth = parseFloat (element.@half_width);
                   entityDefine.mHalfHeight = parseFloat (element.@half_height);
                }
@@ -1477,8 +1729,12 @@ package common {
                {
                   entityDefine.mCurveThickness = parseInt (element.@curve_thickness);
                   
-                  entityDefine.mLocalPoints = new Array ();
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mIsRoundEnds = parseInt (element.@round_ends) != 0;
+                  }
                   
+                  entityDefine.mLocalPoints = new Array ();
                   for each (elementLocalVertex in element.LocalVertices.Vertex)
                   {
                      entityDefine.mLocalPoints.push (new Point (parseFloat (elementLocalVertex.@x), parseFloat (elementLocalVertex.@y)));
@@ -1487,13 +1743,41 @@ package common {
             }
             else
             {
-               if (entityDefine.mEntityType == Define.EntityType_ShapeText)
+               if (entityDefine.mEntityType == Define.EntityType_ShapeText 
+                  || entityDefine.mEntityType == Define.EntityType_ShapeTextButton // v1.08
+                  )
                {
                   entityDefine.mText = element.@text;
                   if (worldDefine.mVersion < 0x0108)
                      entityDefine.mWordWrap = parseInt (element.@autofit_width) != 0;
                   else
                      entityDefine.mWordWrap = parseInt (element.@word_wrap) != 0;
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mAdaptiveBackgroundSize = parseInt (element.@adaptive_background_size) != 0;
+                     entityDefine.mTextColor = parseInt ( (element.@text_color).substr (2), 16);
+                     entityDefine.mFontSize = parseInt (element.@font_size);
+                     entityDefine.mIsBold = parseInt (element.@bold) != 0;
+                     entityDefine.mIsItalic = parseInt (element.@italic) != 0;
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
+                     {
+                        entityDefine.mUsingHandCursor = parseInt (element.@using_hand_cursor) != 0;
+                        
+                        entityDefine.mDrawBackground_MouseOver = parseInt (element.@draw_background_on_mouse_over) != 0;
+                        entityDefine.mBackgroundColor_MouseOver = parseInt ( (element.@background_color_on_mouse_over).substr (2), 16);
+                        entityDefine.mBackgroundTransparency_MouseOver = parseInt (element.@background_opacity_on_mouse_over);
+                        
+                        entityDefine.mDrawBorder_MouseOver = parseInt (element.@draw_border_on_mouse_over) != 0;
+                        entityDefine.mBorderColor_MouseOver = parseInt ( (element.@border_color_on_mouse_over).substr (2), 16);
+                        entityDefine.mBorderThickness_MouseOver = parseInt (element.@border_thickness_on_mouse_over);
+                        entityDefine.mBorderTransparency_MouseOver = parseInt (element.@border_opacity_on_mouse_over);
+                     }
+                  }
                   
                   entityDefine.mHalfWidth = parseFloat (element.@half_width);
                   entityDefine.mHalfHeight = parseFloat (element.@half_height);
@@ -1517,17 +1801,17 @@ package common {
                   
                   entityDefine.mInitialGravityAcceleration = parseFloat (element.@initial_gravity_acceleration);
                   entityDefine.mInitialGravityAngle = parseFloat (element.@initial_gravity_angle);
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mMaximalGravityAcceleration = parseFloat (element.@maximal_gravity_acceleration);
+                  }
                }
             }
          }
          else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
          {
             entityDefine.mCollideConnected = parseInt (element.@collide_connected) != 0;
-            
-            if (worldDefine.mVersion >= 0x0108)
-            {
-               entityDefine.mBreakable = parseInt (element.@breakable) != 0;
-            }
             
             if (worldDefine.mVersion >= 0x0102)
             {
@@ -1537,6 +1821,11 @@ package common {
             else
             {
                // ...
+            }
+            
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               entityDefine.mBreakable = parseInt (element.@breakable) != 0;
             }
             
             if (entityDefine.mEntityType == Define.EntityType_JointHinge)
@@ -1593,6 +1882,7 @@ package common {
                {
                   entityDefine.mFrequencyDeterminedManner = parseInt (element.@frequency_determined_manner);
                   entityDefine.mFrequency = parseFloat (element.@frequency);
+                  entityDefine.mSpringConstant = parseFloat (element.@spring_constant);
                   entityDefine.mBreakExtendedLength = parseFloat (element.@break_extended_length);
                }
             }
@@ -1657,10 +1947,31 @@ package common {
                byteArray.writeUnsignedInt (worldDefine.mSettings.mBorderColor);
             }
             
-            if (worldDefine.mVersion >= 0x0106)
+            if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
             {
                byteArray.writeInt (worldDefine.mSettings.mPhysicsShapesPotentialMaxCount);
                byteArray.writeShort (worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
+            }
+            
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               byteArray.writeByte (worldDefine.mSettings.mIsInfiniteWorldSize ? 1 : 0);
+               
+               byteArray.writeByte (worldDefine.mSettings.mBorderAtTopLayer ? 1 : 0);
+               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderLeftThickness);
+               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderTopThickness);
+               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderRightThickness);
+               byteArray.writeFloat (worldDefine.mSettings.mWorldBorderBottomThickness);
+               
+               byteArray.writeFloat (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+               byteArray.writeFloat (worldDefine.mSettings.mDefaultGravityAccelerationAngle);
+               
+               byteArray.writeByte (worldDefine.mSettings.mRightHandCoordinates ? 1 : 0);
+               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesOriginX);
+               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesOriginY);
+               byteArray.writeDouble (worldDefine.mSettings.mCoordinatesScale);
+               
+               byteArray.writeByte (worldDefine.mSettings.mIsCiRulesEnabled ? 1 : 0);
             }
          }
          
@@ -1696,6 +2007,8 @@ package common {
          var createId:int;
          var vertexId:int;
          
+         var i:int;
+         
          var numEntities:int = worldDefine.mEntityDefines.length;
          
          byteArray.writeShort (worldDefine.mEntityDefines.length);
@@ -1716,18 +2029,101 @@ package common {
                byteArray.writeFloat (entityDefine.mPosY);
             }
             byteArray.writeFloat (entityDefine.mRotation);
-            byteArray.writeByte (entityDefine.mIsVisible);
+            byteArray.writeByte (entityDefine.mIsVisible ? 1 : 0);
             
             if (worldDefine.mVersion >= 0x0108)
             {
                byteArray.writeFloat (entityDefine.mAlpha);
-               byteArray.writeByte (entityDefine.mIsEnabled);
+               byteArray.writeByte (entityDefine.mIsEnabled ? 1 : 0);
             }
             
             if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
             {
                if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
                {
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     byteArray.writeByte (entityDefine.mFollowedTarget);
+                     byteArray.writeByte (entityDefine.mFollowingStyle);
+                  }
+               }
+            }
+            else if ( Define.IsLogicEntity (entityDefine.mEntityType) ) // from v1.07
+            {
+               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               {
+                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mCodeSnippetDefine);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+               {
+                  WriteShortArrayIntoBinFile (entityDefine.mInputAssignerCreationIds, byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
+               {
+                  byteArray.writeByte (entityDefine.mIsAnd ? 1 : 0);
+                  byteArray.writeByte (entityDefine.mIsNot ? 1 : 0);
+                  
+                  var target_values:Array = entityDefine.mInputConditionTargetValues;
+                  var creation_ids:Array = entityDefine.mInputConditionEntityCreationIds;
+                  var num:int = creation_ids.length;
+                  if (num > target_values.length)
+                     num = target_values.length;
+                  
+                  byteArray.writeShort (num);
+                  for (i = 0; i < num; ++ i)
+                  {
+                     byteArray.writeShort (creation_ids [i]);
+                     byteArray.writeByte (target_values [i]);
+                  }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
+               {
+                  byteArray.writeByte (entityDefine.mSelectorType);
+                  WriteShortArrayIntoBinFile (entityDefine.mEntityCreationIds, byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
+               {
+                  byteArray.writeByte (entityDefine.mPairingType);
+                  WriteShortArrayIntoBinFile (entityDefine.mEntityCreationIds1, byteArray);
+                  WriteShortArrayIntoBinFile (entityDefine.mEntityCreationIds2, byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+                  byteArray.writeShort (entityDefine.mEventId);
+                  byteArray.writeShort (entityDefine.mInputConditionEntityCreationId);
+                  byteArray.writeByte (entityDefine.mInputConditionTargetValue);
+                  WriteShortArrayIntoBinFile (entityDefine.mInputAssignerCreationIds, byteArray);
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     byteArray.writeShort (entityDefine.mExternalActionEntityCreationId);
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     switch (entityDefine.mEventId)
+                     {
+                        case CoreEventIds.ID_OnWorldTimer:
+                        case CoreEventIds.ID_OnEntityTimer:
+                        case CoreEventIds.ID_OnEntityPairTimer:
+                           byteArray.writeFloat (entityDefine.mRunningInterval);
+                           byteArray.writeByte (entityDefine.mOnlyRunOnce ? 1 : 0);
+                           break;
+                        case CoreEventIds.ID_OnWorldKeyDown:
+                        case CoreEventIds.ID_OnWorldKeyUp:
+                        case CoreEventIds.ID_OnWorldKeyHold:
+                           WriteShortArrayIntoBinFile (entityDefine.mKeyCodes, byteArray);
+                           break;
+                        default:
+                           break;
+                     }
+                  }
+                  
+                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mCodeSnippetDefine);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mCodeSnippetDefine);
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -1804,14 +2200,12 @@ package common {
                      
                      if (worldDefine.mVersion >= 0x0108)
                      {
-                        byteArray.writeByte (entityDefine.mBuildBorder);
+                        byteArray.writeByte (entityDefine.mBuildBorder ? 1 : 0);
+                        byteArray.writeByte (entityDefine.mIsSleepingAllowed ? 1 : 0);
+                        byteArray.writeByte (entityDefine.mIsRotationFixed) ? 1 : 0;
                         byteArray.writeFloat (entityDefine.mLinearVelocityMagnitude);
                         byteArray.writeFloat (entityDefine.mLinearVelocityAngle);
                         byteArray.writeFloat (entityDefine.mAngularVelocity);
-                        byteArray.writeFloat (entityDefine.mLinearDamping);
-                        byteArray.writeFloat (entityDefine.mAngularDamping );
-                        byteArray.writeByte (entityDefine.mIsSleepingAllowed);
-                        byteArray.writeByte (entityDefine.mIsRotationFixed);
                      }
                   }
                   
@@ -1822,6 +2216,11 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        byteArray.writeByte (entityDefine.mIsRoundCorners ? 1 : 0);
+                     }
+                     
                      byteArray.writeFloat (entityDefine.mHalfWidth);
                      byteArray.writeFloat (entityDefine.mHalfHeight);
                   }
@@ -1837,6 +2236,11 @@ package common {
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
                      byteArray.writeByte (entityDefine.mCurveThickness);
+                  
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        byteArray.writeByte (entityDefine.mIsRoundEnds ? 1 : 0);
+                     }
                      
                      byteArray.writeShort (entityDefine.mLocalPoints.length);
                      for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
@@ -1848,10 +2252,38 @@ package common {
                }
                else // not physics entity
                {
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeText)
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeText 
+                     || entityDefine.mEntityType == Define.EntityType_ShapeTextButton // v1.08
+                     )
                   {
                      byteArray.writeUTF (entityDefine.mText);
-                     byteArray.writeByte (entityDefine.mWordWrap);
+                     byteArray.writeByte (entityDefine.mWordWrap ? 1 : 0);
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        byteArray.writeByte (entityDefine.mAdaptiveBackgroundSize ? 1 : 0);
+                        byteArray.writeUnsignedInt (entityDefine.mTextColor);
+                        byteArray.writeShort (entityDefine.font_size);
+                        byteArray.writeByte (entityDefine.mIsBold ? 1 : 0);
+                        byteArray.writeByte (entityDefine.mIsItalic ? 1 : 0);
+                     }
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
+                        {
+                           byteArray.writeByte (entityDefine.mUsingHandCursor ? 1 : 0);
+                           
+                           byteArray.writeByte (entityDefine.mDrawBackground_MouseOver ? 1 : 0);
+                           byteArray.writeUnsignedInt (entityDefine.mBackgroundColor_MouseOver);
+                           byteArray.writeByte (entityDefine.mBackgroundTransparency_MouseOver);
+                           
+                           byteArray.writeByte (entityDefine.mDrawBorder_MouseOver ? 1 : 0);
+                           byteArray.writeUnsignedInt (entityDefine.mBorderColor_MouseOver);
+                           byteArray.writeByte (entityDefine.mBorderThickness_MouseOver);
+                           byteArray.writeByte (entityDefine.mBorderTransparency_MouseOver);
+                        }
+                     }
                      
                      byteArray.writeFloat (entityDefine.mHalfWidth);
                      byteArray.writeFloat (entityDefine.mHalfHeight);
@@ -1872,17 +2304,17 @@ package common {
                      
                      byteArray.writeFloat (entityDefine.mInitialGravityAcceleration);
                      byteArray.writeShort (entityDefine.mInitialGravityAngle);
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        byteArray.writeFloat (entityDefine.mMaximalGravityAcceleration);
+                     }
                   }
                }
             }
             else if (Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
             {
                byteArray.writeByte (entityDefine.mCollideConnected);
-               
-               if (worldDefine.mVersion >= 0x0108)
-               {
-                  byteArray.writeByte (entityDefine.mBreakable);
-               }
                
                if (worldDefine.mVersion >= 0x0104)
                {
@@ -1893,6 +2325,11 @@ package common {
                {
                   byteArray.writeByte (entityDefine.mConnectedShape1Index);
                   byteArray.writeByte (entityDefine.mConnectedShape2Index);
+               }
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  byteArray.writeByte (entityDefine.mBreakable ? 1 : 0);
                }
                
                if (entityDefine.mEntityType == Define.EntityType_JointHinge)
@@ -1953,6 +2390,7 @@ package common {
                   {
                      byteArray.writeByte (entityDefine.mFrequencyDeterminedManner);
                      byteArray.writeFloat (entityDefine.mFrequency);
+                     byteArray.writeFloat (entityDefine.mSpringConstant);
                      byteArray.writeFloat (entityDefine.mBreakExtendedLength);
                   }
                }
@@ -1962,17 +2400,12 @@ package common {
          // ...
          if (worldDefine.mVersion >= 0x0107)
          {
-            byteArray.writeShort (worldDefine.mEntityAppearanceOrder.length); // should == numEntities
-            for (createId = 0; createId < worldDefine.mEntityAppearanceOrder.length; ++ createId)
-            {
-               byteArray.writeShort (worldDefine.mEntityAppearanceOrder [createId]);
-            }
+            WriteShortArrayIntoBinFile (worldDefine.mEntityAppearanceOrder, byteArray);
          }
          
          // ...
          
          var groupId:int;
-         var brotherId:int;
          var brotherIDs:Array;
          
          byteArray.writeShort (worldDefine.mBrotherGroupDefines.length);
@@ -1981,18 +2414,27 @@ package common {
          {
             brotherIDs = worldDefine.mBrotherGroupDefines [groupId] as Array;
             
-            byteArray.writeShort (brotherIDs.length);
-            
-            for (brotherId = 0; brotherId < brotherIDs.length; ++ brotherId)
-            {
-               byteArray.writeShort (brotherIDs [brotherId]);
-            }
+            WriteShortArrayIntoBinFile (brotherIDs, byteArray);
          }
          
          return byteArray;
       }
       
-      
+      public static function WriteShortArrayIntoBinFile (shortArray:Array, binFile:ByteArray):void
+      {
+         if (shortArray == null)
+         {
+            binFile.writeShort (0);
+            return;
+         }
+         
+         binFile.writeShort (shortArray.length);
+         
+         for (var i:int = 0; i < shortArray.length; ++ i)
+         {
+            binFile.writeShort (shortArray [i]);
+         }
+      }
       
       public static function WorldDefine2HexString (worldDefine:WorldDefine):String
       {

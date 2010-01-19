@@ -80,6 +80,7 @@
          
          private function OnInitPanel ():void
          {
+            CheckBox_FollowAngle.enabled = false;
          }
          
          public function SetValues (initialValues:Object):void

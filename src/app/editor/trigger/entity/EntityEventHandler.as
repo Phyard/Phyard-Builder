@@ -145,6 +145,11 @@ package editor.trigger.entity {
          mExternalActionEntity = action;
       }
       
+      public function SetExternalActionCreationId (actionCreationId:int):void
+      {
+         mExternalActionEntity = mWorld.GetEntityByCreationId (actionCreationId) as EntityAction;
+      }
+      
       override public function ValidateEntityLinks ():void
       {
          //mCodeSnippet.ValidateValueSources ();

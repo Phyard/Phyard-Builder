@@ -77,7 +77,7 @@ package editor.trigger {
          //              new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype), 
          //              new VariableDefinitionNumber ("Seconds") 
          //           ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, "OnTwoPhysicsShapesBeginContacting", "When 2 physics shapes start contacting",
+         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, "OnTwoPhysicsShapesStartContacting", "When 2 physics shapes start contacting",
                     [
                        new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
                        new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype)
@@ -88,7 +88,7 @@ package editor.trigger {
                        new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype), 
                        new VariableDefinitionNumber ("Seconds") 
                     ]);
-         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, "OnTwoPhysicsShapesEndContacting", "When 2 physics shapes end contacting",
+         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, "OnTwoPhysicsShapesStopContacting", "When 2 physics shapes stop contacting",
                     [
                        new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
                        new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype)

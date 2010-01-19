@@ -10,42 +10,42 @@
       >
 
    <mx:HBox width="100%">
-      <mx:Spacer width="30"/>
-      <mx:Spacer width="30%"/>
+      <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="22%" click="OnAiTypeSelectListClick()"/>
+      <mx:Spacer width="18"/>
+      <mx:Label id="Label_AiType" text="C.I. Shape Type:" textAlign="right" width="30%"/>
+      <mx:ComboBox id="SelectList_AiType" rowCount="10"/>
+      <mx:Spacer width="100%"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Spacer width="30"/>
-      <mx:Label id="Label_AiType" text="C.I. Shape Type:" textAlign="right" width="30%"/>
-      <mx:ComboBox id="SelectList_AiType" rowCount="10"/>
    </mx:HBox>
 
    <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
-      <mx:Label id="Label_Opacity" text="Opacity:" textAlign="right" width="30%"/>
+      <mx:Label id="Label_Opacity" text="Opacity:" textAlign="right" width="36%"/>
       <mx:NumericStepper id="NumericStepper_Opacity" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
       <mx:Label text="(0-100)" textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
-      <mx:Label id="Label_BackgroundColor" text="Color:" textAlign="right" width="30%"/>
+      <mx:Label id="Label_BackgroundColor" text="Color:" textAlign="right" width="36%"/>
       <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0x000000"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
-      <mx:Label id="Label_CurveThickness" text="Thickness:" textAlign="right" width="30%"/>
+      <mx:Label id="Label_CurveThickness" text="Thickness:" textAlign="right" width="36%"/>
       <mx:NumericStepper id="NumericStepper_CurveThickness" stepSize="1" minimum="0" maximum="255" value="1" width="80" />
       <mx:Label text="(pixels)" textAlign="left"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
-      <mx:Spacer width="30%"/>
+      <mx:Spacer width="36%"/>
       <mx:CheckBox id="CheckBox_RoundEnds" label="Round Ends"/>
    </mx:HBox>
 

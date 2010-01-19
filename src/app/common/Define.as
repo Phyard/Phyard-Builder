@@ -21,6 +21,7 @@ package common {
       
       public static const kFloatEpsilon:Number = 1.192092896e-07;
       
+      public static const kDefaultCoordinateSystem_BeforeV0108:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.1, false);
       public static const kDefaultCoordinateSystem:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.05, false);
       
 //===========================================================================
@@ -213,7 +214,7 @@ package common {
       public static const Camera_FollowingStyle_Y       :int = 0x02;
       public static const Camera_FollowingStyle_Angle   :int = 0x04;
       public static const Camera_FollowingStyle_All     :int = 0xFF;
-      public static const Camera_FollowingStyle_Default :int = Camera_FollowingStyle_X | Camera_FollowingStyle_Y;
+      public static const Camera_FollowingStyle_Default :int = Camera_FollowingStyle_X | Camera_FollowingStyle_Y; // don't change it 
       
 //===========================================================================
 // Logic

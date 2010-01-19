@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Coordinate System Setting" width="600"  creationComplete="OnInitPanel()">
+    title="Scene Appearance Setting" width="600"  creationComplete="OnInitPanel()">
 
     <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
       <mx:Spacer width="100%"/>
@@ -214,10 +214,10 @@
             mParams.mIsBuildBorder = CheckBox_BuildBorder.selected;
             mParams.mIsBorderAtTopLayer = CheckBox_BuildBorderAboveEntities.selected;
             
-            NumericStepper_LeftBorderThickness.value = mParams.mWorldBorderLeftThickness;
-            NumericStepper_RightBorderThickness.value = mParams.mWorldBorderRightThickness;
-            NumericStepper_TopBorderThickness.value = mParams.mWorldBorderTopThickness;
-            NumericStepper_BottomBorderThickness.value = mParams.mWorldBorderBottomThickness;
+            mParams.mWorldBorderLeftThickness = NumericStepper_LeftBorderThickness.value;
+            mParams.mWorldBorderRightThickness = NumericStepper_RightBorderThickness.value;
+            mParams.mWorldBorderTopThickness = NumericStepper_TopBorderThickness.value;
+            mParams.mWorldBorderBottomThickness = NumericStepper_BottomBorderThickness.value;
                      
             PopUpManager.removePopUp(this);
              

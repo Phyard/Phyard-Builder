@@ -57,6 +57,7 @@ package wrapper {
       
       private var mStartRightNow:Boolean = false;
       private var GetWorldDefine:Function = null;
+      private var GetWorldBinaryData:Function = null;
       
       private var mWorldPlayCode:String = null;
       private var mWorldDataForPlaying:ByteArray = null;
@@ -88,7 +89,7 @@ package wrapper {
 //
 //======================================================================
       
-      public function ColorInfectionPlayer (start:Boolean = false, getWorldDefine:Function = null)
+      public function ColorInfectionPlayer (start:Boolean = false, getWorldDefine:Function = null, getWorldBinaryData:Function = null)
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
@@ -102,6 +103,7 @@ package wrapper {
          
          mStartRightNow = start;
          GetWorldDefine = getWorldDefine;
+         GetWorldBinaryData = getWorldBinaryData;
       }
       
       public function GetPlayerWorld ():World
@@ -130,7 +132,7 @@ package wrapper {
          addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
          
-         if (GetWorldDefine != null)
+         if (GetWorldDefine != null || GetWorldBinaryData != null )
             ChangeState (StateId_BuildWorld);
          else
             ChangeState (StateId_Load);
@@ -553,10 +555,20 @@ package wrapper {
          try
          {
             var worldDefine:WorldDefine = null;
-            if (GetWorldDefine != null)
+            
+            if (GetWorldBinaryData != null)
+            {
+               worldDefine = DataFormat2.ByteArray2WorldDefine (GetWorldBinaryData ())
+            }
+            else if (GetWorldDefine != null)
+            {
                worldDefine = GetWorldDefine ();
+            }
             else if (mWorldDataForPlaying != null)
+            {
+               mWorldDataForPlaying.position = 0;
                worldDefine = DataFormat2.ByteArray2WorldDefine (mWorldDataForPlaying)
+            }
             
             mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (worldDefine);
          }

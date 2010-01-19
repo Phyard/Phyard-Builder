@@ -78,10 +78,8 @@ package player.trigger.entity
          else if (createStageId == 1) // somthing to do after all EntityAssigners are created with stageId=0
          {
             // entity (pair) assigners
-            if (entityDefine.mNumAssigners != undefined && entityDefine.mInputAssignerCreationIds != undefined)
+            if (entityDefine.mInputAssignerCreationIds != undefined)
             {
-               var numAssigners:int = entityDefine.mNumAssigners;
-               
                var assignerEntityIndexes:Array = entityDefine.mInputAssignerCreationIds;
                var newElement:ListElement_InputEntityAssigner;
                 

@@ -557,17 +557,19 @@ package editor {
          
          if (drawBorder)
          {
-            var borderThinknessLR:Number = WorldBorderThinknessLR * mEditorWorld.scaleX;
-            var borderThinknessTB:Number = WorldBorderThinknessTB * mEditorWorld.scaleY;
+            var borderThinknessL:Number = mEditorWorld.GetWorldBorderLeftThickness () * mEditorWorld.scaleX;
+            var borderThinknessR:Number = mEditorWorld.GetWorldBorderRightThickness () * mEditorWorld.scaleX;
+            var borderThinknessT:Number = mEditorWorld.GetWorldBorderTopThickness () * mEditorWorld.scaleY;
+            var borderThinknessB:Number = mEditorWorld.GetWorldBorderBottomThickness () * mEditorWorld.scaleY;
             
             mEditorBackgroundSprite.graphics.beginFill(borderColor);
-            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewTop, borderThinknessLR, worldViewHeight);
-            mEditorBackgroundSprite.graphics.drawRect (worldViewRight - borderThinknessLR, worldViewTop, borderThinknessLR, worldViewHeight);
+            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewTop, borderThinknessL, worldViewHeight);
+            mEditorBackgroundSprite.graphics.drawRect (worldViewRight - borderThinknessR, worldViewTop, borderThinknessR, worldViewHeight);
             mEditorBackgroundSprite.graphics.endFill ();
             
             mEditorBackgroundSprite.graphics.beginFill(borderColor);
-            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewTop, worldViewWidth, borderThinknessTB);
-            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewBottom - borderThinknessTB, worldViewWidth, borderThinknessTB);
+            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewTop, worldViewWidth, borderThinknessT);
+            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewBottom - borderThinknessB, worldViewWidth, borderThinknessB);
             mEditorBackgroundSprite.graphics.endFill ();
          }
       }
@@ -1425,6 +1427,14 @@ package editor {
          return DataFormat.EditorWorld2WorldDefine ( mEditorWorld );
       }
       
+      private function GetWorldBinaryData ():ByteArray
+      {
+         var byteArray:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine ( mEditorWorld ));
+         byteArray.position = 0;
+         
+         return byteArray;
+      }
+      
       public function Play_RunRestart (keepPauseStatus:Boolean = false):void
       {
          if (Runtime.HasSettingDialogOpened ())
@@ -1432,7 +1442,12 @@ package editor {
          
          DestroyDesignPlayer ();
          
-         SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine));
+         var useQuickMethod:Boolean = true;
+         
+         if (useQuickMethod)
+            SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine));
+         else
+            SetDesignPlayer (new ColorInfectionPlayer (true, null, GetWorldBinaryData));
          
          mIsPlaying = true;
          

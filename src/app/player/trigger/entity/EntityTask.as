@@ -25,10 +25,8 @@ package player.trigger.entity
          
          if (createStageId == 0)
          {
-            if (entityDefine.mNumAssigners != undefined)
+            if (entityDefine.mInputAssignerCreationIds != undefined)
             {
-               var numAssigners:int = entityDefine.mNumAssigners;
-               
                var assignerEntityIndexes:Array = entityDefine.mInputAssignerCreationIds;
                if (assignerEntityIndexes != null)
                {

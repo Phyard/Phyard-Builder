@@ -37,10 +37,6 @@ package common {
    import common.trigger.define.ValueSourceDefine_Null;
    import common.trigger.define.ValueSourceDefine_Direct;
    import common.trigger.define.ValueSourceDefine_Variable;
-   //import common.trigger.define.ValueSourceDefine_Property_Global;
-   //import common.trigger.define.ValueSourceDefine_Property_World;
-   //import common.trigger.define.ValueSourceDefine_Property_Entity;
-   //import common.trigger.define.ValueSourceDefine_Property_OwnerVariable;
    import common.trigger.define.ValueTargetDefine;
    import common.trigger.define.ValueTargetDefine_Null;
    import common.trigger.define.ValueTargetDefine_Variable;
@@ -220,8 +216,8 @@ package common {
       
       public static function FunctionCallingDefine2FunctionCalling (editorWorld:World, funcCallingDefine:FunctionCallingDefine, functionDefinition:FunctionDefinition):FunctionCalling
       {
-         var func_id:int = funcCallingDefine.mFunctionId;
          var func_type:int = funcCallingDefine.mFunctionType;
+         var func_id:int = funcCallingDefine.mFunctionId;
          var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
          
          var i:int;
@@ -391,27 +387,111 @@ package common {
 // define -> byte array
 //==============================================================================================
       
-      public static function CodeSnippetDefine2ByteArray (codeSnippetDefine:CodeSnippetDefine):ByteArray
+      public static function WriteCodeSnippetDefineIntoBinFile (binFile:ByteArray, codeSnippetDefine:CodeSnippetDefine):void
       {
-         return null;
+         binFile.writeUTF (codeSnippetDefine.mName);
+         binFile.writeShort (codeSnippetDefine.mNumCallings);
+         for (var i:int = 0; i < codeSnippetDefine.mNumCallings; ++ i)
+            WriteFunctionCallingDefineIntoBinFile (binFile, codeSnippetDefine.mFunctionCallingDefines [i]);
       }
       
-      public static function FunctionCallingDefine2ByteArray (funcCallingDefine:FunctionCallingDefine):ByteArray
+      public static function WriteFunctionCallingDefineIntoBinFile (binFile:ByteArray, funcCallingDefine:FunctionCallingDefine):void
       {
          // param number will be packed for easey back-compiliabel later
-         return null;
+         
+         var func_type:int = funcCallingDefine.mFunctionType;
+         var func_id:int = funcCallingDefine.mFunctionId;
+         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+         
+         var i:int;
+         var num_inputs:int = funcCallingDefine.mNumInputs;
+         var num_outputs:int = funcCallingDefine.mNumOutputs;
+         var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
+         var outputValueTargetDefines:Array = funcCallingDefine.mOutputValueTargetDefines;
+         
+         binFile.writeByte (func_type);
+         binFile.writeShort (func_id);
+         
+         binFile.writeByte (num_inputs);
+         binFile.writeByte (num_outputs);
+         
+         for (i = 0; i < num_inputs; ++ i)
+            WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+         
+         for (i = 0; i < num_outputs; ++ i)
+            WriteValueTargetDefinIntoBinFile (binFile, outputValueTargetDefines [i]);
       }
       
-      public static function ValueSourceDefine2ByteArray (valueSourceDefine:ValueSourceDefine):ByteArray
+      public static function WriteValueSourceDefinIntoBinFile (binFile:ByteArray, valueSourceDefine:ValueSourceDefine, valueType:int, numberDetail:int):void
       {
          // ValueSourceDefine_Direct.mValueType will not packed
-         return null;
+         
+         var source_type:int = valueSourceDefine.GetValueSourceType ();
+         
+         binFile.writeByte (source_type);
+         
+         if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
+         {
+            var direct_source_define:ValueSourceDefine_Direct = valueSourceDefine as ValueSourceDefine_Direct;
+            var value_object:Object = direct_source_define.mValueObject;
+            
+            switch (valueType)
+            {
+               case ValueTypeDefine.ValueType_Boolean:
+                  binFile.writeByte ((value_object as Boolean) ? 1 : 0);
+                  break;
+               case ValueTypeDefine.ValueType_Number:
+                  switch (numberDetail)
+                  {
+                     case ValueTypeDefine.NumberTypeDetail_Single:
+                        binFile.writeFloat (value_object as Number);
+                        break;
+                     case ValueTypeDefine.NumberTypeDetail_Integer:
+                        binFile.writeInt (value_object as Number);
+                        break;
+                     case ValueTypeDefine.NumberTypeDetail_Double:
+                     default:
+                        binFile.writeDouble (value_object as Number);
+                        break;
+                  }
+                  
+                  break;
+               case ValueTypeDefine.ValueType_String:
+                  binFile.writeUTF (value_object == null ? "" : value_object as String);
+                  break;
+               case ValueTypeDefine.ValueType_Entity:
+                  binFile.writeInt (value_object as int);
+                  break;
+               case ValueTypeDefine.ValueType_CollisionCategory:
+                  binFile.writeInt (value_object as int);
+                  break;
+               default:
+                  trace ("error");
+                  break;
+            }
+         }
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
+         {
+            var variable_source_define:ValueSourceDefine_Variable = valueSourceDefine as ValueSourceDefine_Variable;
+            
+            binFile.writeByte (variable_source_define.mSpaceType);
+            binFile.writeShort (variable_source_define.mVariableIndex);
+         }
       }
       
-      public static function ValueTargetDefine2ByteArray (valueTargetDefine:ValueTargetDefine):ByteArray
+      public static function WriteValueTargetDefinIntoBinFile (binFile:ByteArray, valueTargetDefine:ValueTargetDefine):void
       {
-         // ValueSourceDefine_Direct.mValueType will not packed
-         return null;
+         var target_type:int = valueTargetDefine.GetValueTargetType ();
+         
+         binFile.writeByte (target_type);
+         
+         if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
+         {
+            var variable_target_define:ValueTargetDefine_Variable = valueTargetDefine as ValueTargetDefine_Variable;
+            
+            binFile.writeByte (variable_target_define.mSpaceType);
+            binFile.writeShort (variable_target_define.mVariableIndex);
+         }
       }
       
 //==============================================================================================

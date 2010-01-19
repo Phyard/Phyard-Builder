@@ -350,7 +350,7 @@ package editor.trigger {
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Inverse, math_package, "1.0 / x (Inverse)", 
                      [
-                             new VariableDefinitionNumber ("Number"), 
+                             new VariableDefinitionNumber ("Number", null, null, {mDefaultValue: 1.0}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result"), 
@@ -392,7 +392,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Divide, math_package, "x % y (Modulo)", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Modulo, math_package, "x % y (Modulo)", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 

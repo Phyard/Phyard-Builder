@@ -388,10 +388,31 @@ package common {
                worldDefine.mSettings.mBorderColor = byteArray.readUnsignedInt ();
             }
             
-            if (worldDefine.mVersion >= 0x0106)
+            if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
             {
                worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = byteArray.readInt ();
                worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = byteArray.readShort ();
+            }
+            
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               worldDefine.mSettings.mIsInfiniteWorldSize = byteArray.readByte () != 0;
+               
+               worldDefine.mSettings.mBorderAtTopLayer = byteArray.readByte () != 0;
+               worldDefine.mSettings.mWorldBorderLeftThickness = byteArray.readFloat ();
+               worldDefine.mSettings.mWorldBorderTopThickness = byteArray.readFloat ();
+               worldDefine.mSettings.mWorldBorderRightThickness = byteArray.readFloat ();
+               worldDefine.mSettings.mWorldBorderBottomThickness = byteArray.readFloat ();
+               
+               worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = byteArray.readFloat ();
+               worldDefine.mSettings.mDefaultGravityAccelerationAngle = byteArray.readFloat ();
+               
+               worldDefine.mSettings.mRightHandCoordinates = byteArray.readByte () != 0;
+               worldDefine.mSettings.mCoordinatesOriginX = byteArray.readDouble ();
+               worldDefine.mSettings.mCoordinatesOriginY = byteArray.readDouble ();
+               worldDefine.mSettings.mCoordinatesScale = byteArray.readDouble ();
+               
+               worldDefine.mSettings.mIsCiRulesEnabled = byteArray.readByte () != 0;
             }
          }
          
@@ -462,18 +483,98 @@ package common {
                entityDefine.mPosY = byteArray.readFloat ();
             }
             entityDefine.mRotation = byteArray.readFloat ();
-            entityDefine.mIsVisible = byteArray.readByte ();
+            entityDefine.mIsVisible = byteArray.readByte () != 0;
             
             if (worldDefine.mVersion >= 0x0108)
             {
                entityDefine.mAlpha = byteArray.readFloat ();
-               entityDefine.mIsEnabled = byteArray.readByte ();
+               entityDefine.mIsEnabled = byteArray.readByte () != 0;
             }
             
             if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
             {
                if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
                {
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mFollowedTarget = byteArray.readByte ();
+                     entityDefine.mFollowingStyle = byteArray.readByte ();
+                  }
+               }
+            }
+            else if ( Define.IsLogicEntity (entityDefine.mEntityType) ) // from v1.07
+            {
+               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               {
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper2.LoadCodeSnippetDefineFromBinFile (byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+               {
+                  entityDefine.mInputAssignerCreationIds = ReadShortArrayFromBinFile (byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
+               {
+                  entityDefine.mIsAnd = byteArray.readByte () != 0;
+                  entityDefine.mIsNot = byteArray.readByte () != 0;
+                  
+                  var num:int = byteArray.readShort ();
+                  entityDefine.mInputConditionEntityCreationIds = new Array (num);
+                  entityDefine.mInputConditionTargetValues = new Array (num);
+                  
+                  for (i = 0; i < num; ++ i)
+                  {
+                     entityDefine.mInputConditionEntityCreationIds [i] = byteArray.readShort ();
+                     entityDefine.mInputConditionTargetValues [i] = byteArray.readByte ();
+                  }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
+               {
+                  entityDefine.mSelectorType = byteArray.readByte ();
+                  entityDefine.mEntityCreationIds = ReadShortArrayFromBinFile (byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
+               {
+                  entityDefine.mPairingType = byteArray.readByte ();
+                  entityDefine.mEntityCreationIds1 = ReadShortArrayFromBinFile (byteArray);
+                  entityDefine.mEntityCreationIds2 = ReadShortArrayFromBinFile (byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+                  entityDefine.mEventId = byteArray.readShort ();
+                  entityDefine.mInputConditionEntityCreationId = byteArray.readShort ();
+                  entityDefine.mInputConditionTargetValue = byteArray.readByte ();
+                  entityDefine.mInputAssignerCreationIds = ReadShortArrayFromBinFile (byteArray);
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mExternalActionEntityCreationId = byteArray.readShort ();
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     switch (entityDefine.mEventId)
+                     {
+                        case CoreEventIds.ID_OnWorldTimer:
+                        case CoreEventIds.ID_OnEntityTimer:
+                        case CoreEventIds.ID_OnEntityPairTimer:
+                           entityDefine.mRunningInterval = byteArray.readFloat ();
+                           entityDefine.mOnlyRunOnce = byteArray.readByte () != 0;
+                           break;
+                        case CoreEventIds.ID_OnWorldKeyDown:
+                        case CoreEventIds.ID_OnWorldKeyUp:
+                        case CoreEventIds.ID_OnWorldKeyHold:
+                           entityDefine.mKeyCodes = ReadShortArrayFromBinFile (byteArray);
+                           break;
+                        default:
+                           break;
+                     }
+                  }
+                  
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper2.LoadCodeSnippetDefineFromBinFile (byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper2.LoadCodeSnippetDefineFromBinFile (byteArray);
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -548,14 +649,12 @@ package common {
                      
                      if (worldDefine.mVersion >= 0x0108)
                      {
-                        entityDefine.mBuildBorder = byteArray.readByte ();
+                        entityDefine.mBuildBorder = byteArray.readByte () != 0;
+                        entityDefine.mIsSleepingAllowed = byteArray.readByte () != 0;
+                        entityDefine.mIsRotationFixed = byteArray.readByte () != 0;
                         entityDefine.mLinearVelocityMagnitude = byteArray.readFloat ();
                         entityDefine.mLinearVelocityAngle = byteArray.readFloat ();
                         entityDefine.mAngularVelocity = byteArray.readFloat ();
-                        entityDefine.mLinearDamping = byteArray.readFloat ();
-                        entityDefine.mAngularDamping = byteArray.readFloat ();
-                        entityDefine.mIsSleepingAllowed = byteArray.readByte ();
-                        entityDefine.mIsRotationFixed = byteArray.readByte ();
                      }
                   }
                   
@@ -566,6 +665,11 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mIsRoundCorners = byteArray.readByte () != 0
+                     }
+                     
                      entityDefine.mHalfWidth = byteArray.readFloat ();
                      entityDefine.mHalfHeight = byteArray.readFloat ();
                   }
@@ -585,6 +689,11 @@ package common {
                   {
                      entityDefine.mCurveThickness = byteArray.readByte ();
                      
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mIsRoundEnds = byteArray.readByte () != 0;
+                     }
+                     
                      entityDefine.mLocalPoints = new Array ( byteArray.readShort () );
                      
                      for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
@@ -598,10 +707,38 @@ package common {
                }
                else // not physis shape
                {
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeText)
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeText 
+                     || entityDefine.mEntityType == Define.EntityType_ShapeTextButton // v1.08
+                     )
                   {
                      entityDefine.mText = byteArray.readUTF ();
                      entityDefine.mWordWrap = byteArray.readByte ();
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mAdaptiveBackgroundSize = byteArray.readByte () != 0;
+                        entityDefine.mTextColor = byteArray.readUnsignedInt ();
+                        entityDefine.font_size = byteArray.readShort ();
+                        entityDefine.mIsBold  = byteArray.readByte () != 0;
+                        entityDefine.mIsItalic = byteArray.readByte () != 0;
+                     }
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
+                        {
+                           entityDefine.mUsingHandCursor = byteArray.readByte () != 0;
+                           
+                           entityDefine.mDrawBackground_MouseOver = byteArray.readByte () != 0;
+                           entityDefine.mBackgroundColor_MouseOver = byteArray.readUnsignedInt ();
+                           entityDefine.mBackgroundTransparency_MouseOver = byteArray.readByte ();
+                           
+                           entityDefine.mDrawBorder_MouseOver = byteArray.readByte () != 0;
+                           entityDefine.mBorderColor_MouseOver = byteArray.readUnsignedInt ();
+                           entityDefine.mBorderThickness_MouseOver = byteArray.readByte ();
+                           entityDefine.mBorderTransparency_MouseOver = byteArray.readByte ();
+                        }
+                     }
                      
                      entityDefine.mHalfWidth = byteArray.readFloat ();
                      entityDefine.mHalfHeight = byteArray.readFloat ();
@@ -624,6 +761,11 @@ package common {
                      
                      entityDefine.mInitialGravityAcceleration = byteArray.readFloat ();
                      entityDefine.mInitialGravityAngle = byteArray.readShort ();
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mMaximalGravityAcceleration = byteArray.readFloat ();
+                     }
                   }
                }
             }
@@ -727,21 +869,11 @@ package common {
          // ...
          
          var numGroups:int = byteArray.readShort ();
-         var numEntityIds:int;
-         
          var groupId:int;
-         var brotherId:int;
          
          for (groupId = 0; groupId < numGroups; ++ groupId)
          {
-            var brotherIDs:Array = new Array ();
-            
-            numEntityIds = byteArray.readShort ();
-            
-            for (brotherId = 0; brotherId < numEntityIds; ++ brotherId)
-            {
-               brotherIDs.push (byteArray.readShort ());
-            }
+            var brotherIDs:Array = ReadShortArrayFromBinFile (byteArray);
             
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
          }
@@ -749,6 +881,20 @@ package common {
          
          
          return worldDefine;
+      }
+      
+      public static function ReadShortArrayFromBinFile (binFile:ByteArray):Array
+      {
+         var num:int = binFile.readShort ();
+         
+         var shortArray:Array = new Array (num);
+         
+         for (var i:int = 0; i < num; ++ i)
+         {
+            shortArray [i] = binFile.readShort ();
+         }
+         
+         return shortArray;
       }
       
       public static function HexString2WorldDefine (hexString:String):WorldDefine
@@ -912,12 +1058,47 @@ package common {
             xml.Settings.appendChild (element);
          }
          
-         if (worldDefine.mVersion >= 0x0106)
+         if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
          {
             element = IntSetting2XmlElement ("physics_shapes_potential_max_count", worldDefine.mSettings.mPhysicsShapesPotentialMaxCount);
             xml.Settings.appendChild (element);
             
             element = IntSetting2XmlElement ("physics_shapes_population_density_level", worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel);
+            xml.Settings.appendChild (element);
+         }
+         
+         if (worldDefine.mVersion >= 0x0108)
+         {
+            element = BoolSetting2XmlElement ("infinite_scene_size", worldDefine.mSettings.mIsInfiniteWorldSize);
+            xml.Settings.appendChild (element);
+            
+            element = BoolSetting2XmlElement ("border_at_top_layer", worldDefine.mSettings.mBorderAtTopLayer);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("border_left_thinckness", worldDefine.mSettings.mWorldBorderLeftThickness);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("border_top_thinckness", worldDefine.mSettings.mWorldBorderTopThickness);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("border_right_thinckness", worldDefine.mSettings.mWorldBorderRightThickness);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("border_bottom_thinckness", worldDefine.mSettings.mWorldBorderBottomThickness);
+            xml.Settings.appendChild (element);
+            
+            element = IntSetting2XmlElement ("gravity_acceleration_magnitude", worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("gravity_acceleration_angle", worldDefine.mSettings.mDefaultGravityAccelerationAngle);
+            xml.Settings.appendChild (element);
+            
+            element = BoolSetting2XmlElement ("right_hand_coordinates", worldDefine.mSettings.mRightHandCoordinates);
+            xml.Settings.appendChild (element);
+            
+            element = IntSetting2XmlElement ("coordinates_origin_x", worldDefine.mSettings.mCoordinatesOriginX);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("coordinates_origin_y", worldDefine.mSettings.mCoordinatesOriginY);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("coordinates_scale", worldDefine.mSettings.mCoordinatesScale);
+            xml.Settings.appendChild (element);
+            
+            element = BoolSetting2XmlElement ("ci_rules_enabled", worldDefine.mSettings.mIsCiRulesEnabled);
             xml.Settings.appendChild (element);
          }
          
@@ -941,7 +1122,7 @@ package common {
          if (worldDefine.mVersion >= 0x0107)
          {
             xml.EntityAppearingOrder = <EntityAppearingOrder />;
-            xml.EntityAppearingOrder.@entity_indices = EntityIdArray2IndicesString (worldDefine.mEntityAppearanceOrder);
+            xml.EntityAppearingOrder.@entity_indices = IntegerArray2IndicesString (worldDefine.mEntityAppearanceOrder);
          }
          
          // ...
@@ -958,7 +1139,7 @@ package common {
             
             element = <BrotherGroup />;
             element.@num_brothers = brotherIDs.length;
-            element.@brother_indices = EntityIdArray2IndicesString (brotherIDs);
+            element.@brother_indices = IntegerArray2IndicesString (brotherIDs);
             xml.BrotherGroups.appendChild (element);
          }
          
@@ -1079,6 +1260,11 @@ package common {
          element.@r = entityDefine.mRotation;
          element.@visible = entityDefine.mIsVisible ? 1 : 0;
          
+         //>>from v1.08
+         element.@alpha = entityDefine.mAlpha;
+         element.@enabled = entityDefine.mIsEnabled ? 1 : 0;
+         //<<
+         
          if (worldDefine.mVersion >= 0x0108)
          {
             element.@alpha = entityDefine.mAlpha;
@@ -1089,6 +1275,11 @@ package common {
          {
             if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
             {
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  element.@followed_target = entityDefine.mFollowedTarget;
+                  element.@following_style = entityDefine.mFollowingStyle;
+               }
             }
          }
          else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
@@ -1099,7 +1290,7 @@ package common {
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
-               element.@assigner_indices = EntityIdArray2IndicesString (entityDefine.mInputAssignerCreationIds);
+               element.@assigner_indices = IntegerArray2IndicesString (entityDefine.mInputAssignerCreationIds);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
             {
@@ -1126,20 +1317,50 @@ package common {
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
             {
                element.@selector_type = entityDefine.mSelectorType;
-               element.@entity_indices = EntityIdArray2IndicesString (entityDefine.mEntityCreationIds);
+               element.@entity_indices = IntegerArray2IndicesString (entityDefine.mEntityCreationIds);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
             {
                element.@pairing_type = entityDefine.mPairingType;
-               element.@entity_indices1 =  EntityIdArray2IndicesString (entityDefine.mEntityCreationIds1);
-               element.@entity_indices2 =  EntityIdArray2IndicesString (entityDefine.mEntityCreationIds2);
+               element.@entity_indices1 =  IntegerArray2IndicesString (entityDefine.mEntityCreationIds1);
+               element.@entity_indices2 =  IntegerArray2IndicesString (entityDefine.mEntityCreationIds2);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
             {
                element.@event_id = entityDefine.mEventId;
                element.@input_condition_entity_index = entityDefine.mInputConditionEntityCreationId;
                element.@input_condition_target_value = entityDefine.mInputConditionTargetValue;
-               element.@assigner_indices = EntityIdArray2IndicesString (entityDefine.mInputAssignerCreationIds);
+               element.@assigner_indices = IntegerArray2IndicesString (entityDefine.mInputAssignerCreationIds);
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  element.@external_action_entity_index = entityDefine.mExternalActionEntityCreationId;
+               }
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  switch (entityDefine.mEventId)
+                  {
+                     case CoreEventIds.ID_OnWorldTimer:
+                     case CoreEventIds.ID_OnEntityTimer:
+                     case CoreEventIds.ID_OnEntityPairTimer:
+                        element.@running_interval = entityDefine.mRunningInterval;
+                        element.@only_run_once = entityDefine.mOnlyRunOnce ? 1 : 0;
+                        break;
+                     case CoreEventIds.ID_OnWorldKeyDown:
+                     case CoreEventIds.ID_OnWorldKeyUp:
+                     case CoreEventIds.ID_OnWorldKeyHold:
+                        element.@key_codes = IntegerArray2IndicesString (entityDefine.mKeyCodes);
+                        break;
+                     default:
+                        break;
+                  }
+               }
+               
+               element.CodeSnippet = TriggerFormatHelper2.CodeSnippetDefine2Xml (entityDefine.mCodeSnippetDefine);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+            {
                element.CodeSnippet = TriggerFormatHelper2.CodeSnippetDefine2Xml (entityDefine.mCodeSnippetDefine);
             }
          }
@@ -1210,14 +1431,11 @@ package common {
                   if (worldDefine.mVersion >= 0x0108)
                   {
                      element.@build_border = entityDefine.mBuildBorder ? 1 : 0;
-                     
+                     element.@sleeping_allowed = entityDefine.mIsSleepingAllowed ? 1 : 0;
+                     element.@rotation_fixed = entityDefine.mIsRotationFixed ? 1 : 0;
                      element.@linear_velocity_magnitude = entityDefine.mLinearVelocityMagnitude;
                      element.@linear_velocity_angle = entityDefine.mLinearVelocityAngle;
                      element.@angular_velocity = entityDefine.mAngularVelocity;
-                     element.@linear_damping = entityDefine.mLinearDamping;
-                     element.@angular_damping = entityDefine.mAngularDamping;
-                     element.@sleeping_allowed = entityDefine.mIsSleepingAllowed ? 1 : 0;
-                     element.@rotation_fixed = entityDefine.mIsRotationFixed ? 1 : 0;
                   }
                }
                
@@ -1228,6 +1446,11 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                {
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     element.@round_corners = entityDefine.mIsRoundCorners ? 1 : 0;
+                  }
+                  
                   element.@half_width = entityDefine.mHalfWidth;
                   element.@half_height = entityDefine.mHalfHeight;
                }
@@ -1248,8 +1471,12 @@ package common {
                {
                   element.@curve_thickness = entityDefine.mCurveThickness;
                   
-                  element.LocalVertices = <LocalVertices />
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     element.@round_ends = entityDefine.mIsRoundEnds ? 1 : 0;
+                  }
                   
+                  element.LocalVertices = <LocalVertices />
                   for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
                   {
                      elementLocalVertex = <Vertex />;
@@ -1262,13 +1489,41 @@ package common {
             }
             else // not physics shape
             {
-               if (entityDefine.mEntityType == Define.EntityType_ShapeText)
+               if (entityDefine.mEntityType == Define.EntityType_ShapeText 
+                  || entityDefine.mEntityType == Define.EntityType_ShapeTextButton // v1.08
+                  )
                {
                   element.@text = entityDefine.mText;
                   if (worldDefine.mVersion < 0x0108)
                      element.@autofit_width = entityDefine.mWordWrap ? 1 : 0;
                   else
                      element.@word_wrap = entityDefine.mWordWrap ? 1 : 0;
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     element.@adaptive_background_size = entityDefine.mAdaptiveBackgroundSize ? 1 : 0;
+                     element.@text_color = Int2ColorString (entityDefine.mTextColor);
+                     element.@font_size = entityDefine.mFontSize;
+                     element.@bold = entityDefine.mIsBold ? 1 : 0;
+                     element.@italic = entityDefine.mIsItalic ? 1 : 0;
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
+                     {
+                        element.@using_hand_cursor = entityDefine.mUsingHandCursor ? 1 : 0;
+                        
+                        element.@draw_background_on_mouse_over = entityDefine.mDrawBackground_MouseOver ? 1 : 0;
+                        element.@background_color_on_mouse_over = Int2ColorString (entityDefine.mBackgroundColor_MouseOver);
+                        element.@background_opacity_on_mouse_over = entityDefine.mBackgroundTransparency_MouseOver;
+                        
+                        element.@draw_border_on_mouse_over = entityDefine.mDrawBorder_MouseOver ? 1 : 0;
+                        element.@border_color_on_mouse_over = Int2ColorString (entityDefine.mBorderColor_MouseOver);
+                        element.@border_thickness_on_mouse_over = entityDefine.mBorderThickness_MouseOver;
+                        element.@border_opacity_on_mouse_over = entityDefine.mBorderTransparency_MouseOver;
+                     }
+                  }
                   
                   element.@half_width = entityDefine.mHalfWidth;
                   element.@half_height = entityDefine.mHalfHeight;
@@ -1289,6 +1544,11 @@ package common {
                   
                   element.@initial_gravity_acceleration = entityDefine.mInitialGravityAcceleration;
                   element.@initial_gravity_angle = entityDefine.mInitialGravityAngle;
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     element.@maximal_gravity_acceleration = entityDefine.mMaximalGravityAcceleration;
+                  }
                }
             }
          }
@@ -1296,15 +1556,15 @@ package common {
          {
             element.@collide_connected = entityDefine.mCollideConnected ? 1 : 0;
             
-            if (worldDefine.mVersion >= 0x0108)
-            {
-               element.@breakable = entityDefine.mBreakable ? 1 : 0;
-            }
-            
             if (worldDefine.mVersion >= 0x0102)
             {
                element.@connected_shape1_index = entityDefine.mConnectedShape1Index;
                element.@connected_shape2_index = entityDefine.mConnectedShape2Index;
+            }
+            
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               element.@breakable = entityDefine.mBreakable ? 1 : 0;
             }
             
             if (entityDefine.mEntityType == Define.EntityType_JointHinge)
@@ -1361,6 +1621,7 @@ package common {
                {
                   element.@frequency_determined_manner = entityDefine.mFrequencyDeterminedManner;
                   element.@frequency = entityDefine.mFrequency;
+                  element.@spring_constant = entityDefine.mSpringConstant;
                   element.@break_extended_length = entityDefine.mBreakExtendedLength;
                }
             }
@@ -1369,7 +1630,7 @@ package common {
          return element;
       }
       
-      public static function EntityIdArray2IndicesString (ids:Array):String
+      public static function IntegerArray2IndicesString (ids:Array):String
       {
          if (ids == null)
             return "";
@@ -1397,6 +1658,20 @@ package common {
       // must call FillMissedFieldsInWorldDefine before call this
       public static function AdjustNumberValuesInWorldDefine (worldDefine:WorldDefine, isForPlayer:Boolean = false):void
       {
+         // world settings
+         
+         worldDefine.mSettings.mWorldBorderLeftThickness = ValueAdjuster.Number2Precision (worldDefine.mSettings.mWorldBorderLeftThickness, 6)
+         worldDefine.mSettings.mWorldBorderTopThickness = ValueAdjuster.Number2Precision (worldDefine.mSettings.mWorldBorderTopThickness, 6)
+         worldDefine.mSettings.mWorldBorderRightThickness = ValueAdjuster.Number2Precision (worldDefine.mSettings.mWorldBorderRightThickness, 6)
+         worldDefine.mSettings.mWorldBorderBottomThickness = ValueAdjuster.Number2Precision (worldDefine.mSettings.mWorldBorderBottomThickness, 6)
+         
+         worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = ValueAdjuster.Number2Precision (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude, 6)
+         worldDefine.mSettings.mDefaultGravityAccelerationAngle = ValueAdjuster.Number2Precision (worldDefine.mSettings.mDefaultGravityAccelerationAngle, 6)
+         
+         worldDefine.mSettings.mCoordinatesOriginX = ValueAdjuster.Number2Precision (worldDefine.mSettings.mCoordinatesOriginX, 12);
+         worldDefine.mSettings.mCoordinatesOriginY = ValueAdjuster.Number2Precision (worldDefine.mSettings.mCoordinatesOriginY, 12);
+         worldDefine.mSettings.mCoordinatesScale = ValueAdjuster.Number2Precision (worldDefine.mSettings.mCoordinatesScale, 12);
+         
          // collision category
          
          if (worldDefine.mVersion >= 0x0102)
@@ -1460,8 +1735,6 @@ package common {
                      entityDefine.mLinearVelocityMagnitude = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityMagnitude, 6);
                      entityDefine.mLinearVelocityAngle = ValueAdjuster.Number2Precision (entityDefine.mLinearVelocityAngle, 6);
                      entityDefine.mAngularVelocity = ValueAdjuster.Number2Precision (entityDefine.mAngularVelocity, 6);
-                     entityDefine.mLinearDamping = ValueAdjuster.Number2Precision (entityDefine.mLinearDamping, 6);
-                     entityDefine.mAngularDamping = ValueAdjuster.Number2Precision (entityDefine.mAngularDamping, 6);
                   }
                   
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
@@ -1533,7 +1806,14 @@ package common {
                      
                      entityDefine.mRadius = ValueAdjuster.Number2Precision (entityDefine.mRadius, 6);
                      
+                     if (worldDefine.mVersion < 0x0108)
+                     {
+                        entityDefine.mInitialGravityAcceleration = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
+                     }
+                     
                      entityDefine.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (entityDefine.mInitialGravityAcceleration, 6);
+                     
+                     entityDefine.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (entityDefine.mMaximalGravityAcceleration, 6);
                   }
                }
             }
@@ -1547,7 +1827,7 @@ package common {
                   
                   if (worldDefine.mVersion < 0x0108)
                   {
-                     entityDefine.mMaxMotorTorque = Define.kDefaultCoordinateSystem.P2D_Torque (entityDefine.mMaxMotorTorque);
+                     entityDefine.mMaxMotorTorque = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_Torque (entityDefine.mMaxMotorTorque);
                      
                      // anchor visible
                      worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex].mIsVisible = entityDefine.mIsVisible;
@@ -1563,7 +1843,7 @@ package common {
                   
                   if (worldDefine.mVersion < 0x0108)
                   {
-                     entityDefine.mMaxMotorForce = Define.kDefaultCoordinateSystem.P2D_ForceMagnitude (entityDefine.mMaxMotorForce);
+                     entityDefine.mMaxMotorForce = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_ForceMagnitude (entityDefine.mMaxMotorForce);
                      
                      // anchor visilbe
                      worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex].mIsVisible = entityDefine.mIsVisible;
@@ -1656,6 +1936,27 @@ package common {
             worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = 4;
          }
          
+         if (worldDefine.mVersion < 0x0108)
+         {
+            worldDefine.mSettings.mIsInfiniteWorldSize = false;
+            
+            worldDefine.mSettings.mBorderAtTopLayer = false;
+            worldDefine.mSettings.mWorldBorderLeftThickness = 10;
+            worldDefine.mSettings.mWorldBorderTopThickness = 20;
+            worldDefine.mSettings.mWorldBorderRightThickness = 10;
+            worldDefine.mSettings.mWorldBorderBottomThickness = 20;
+            
+            worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (9.8);
+            worldDefine.mSettings.mDefaultGravityAccelerationAngle = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_RotationDegrees (90);
+            
+            worldDefine.mSettings.mRightHandCoordinates = Define.kDefaultCoordinateSystem_BeforeV0108.IsRightHand ();
+            worldDefine.mSettings.mCoordinatesOriginX = Define.kDefaultCoordinateSystem_BeforeV0108.GetOriginX ();
+            worldDefine.mSettings.mCoordinatesOriginY = Define.kDefaultCoordinateSystem_BeforeV0108.GetOriginY ();
+            worldDefine.mSettings.mCoordinatesScale = Define.kDefaultCoordinateSystem_BeforeV0108.GetScale ();
+            
+            worldDefine.mSettings.mIsCiRulesEnabled  = true;
+         }
+         
          // collision category
          
          // entities
@@ -1675,7 +1976,18 @@ package common {
                entityDefine.mIsEnabled = true;
             }
             
-            if ( Define.IsLogicEntity (entityDefine.mEntityType) )
+            if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
+            {
+               if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
+               {
+                  if (worldDefine.mVersion < 0x0108)
+                  {
+                     entityDefine.mFollowedTarget = Define.Camera_FollowedTarget_Brothers;
+                     entityDefine.mFollowingStyle = Define.Camera_FollowingStyle_Default;
+                  }
+               }
+            }
+            else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
             {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
@@ -1687,6 +1999,11 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
+                  if (worldDefine.mVersion < 0x0108)
+                  {
+                     entityDefine.mExternalActionEntityCreationId = -1;
+                  }
+                  
                   TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
                }
             }
@@ -1699,17 +2016,30 @@ package common {
                {
                   entityDefine.mAiType = Define.ShapeAiType_Unknown;
                   
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeText 
+                     || entityDefine.mEntityType == Define.EntityType_ShapeTextButton // v1.08
+                     )
+                  {
+                     if (worldDefine.mVersion < 0x0108)
+                     {
+                        entityDefine.mAdaptiveBackgroundSize = false;
+                        entityDefine.mTextColor = 0x0;
+                        entityDefine.font_size = 10;
+                        entityDefine.mIsBold = false;
+                        entityDefine.mIsItalic = false;
+                     }
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
                   {
                      if (worldDefine.mVersion < 0x0105)
                      {
                         entityDefine.mInteractiveZones = entityDefine.mIsInteractive ? (1 << Define.GravityController_InteractiveZone_AllArea) : 0;
                         entityDefine.mInteractiveConditions = 0;
                      }
-					 
+                     
                      if (worldDefine.mVersion < 0x0108)
                      {
-                        entityDefine.mInitialGravityAcceleration = Define.kDefaultCoordinateSystem.P2D_LinearAccelerationMagnitude (entityDefine.mInitialGravityAcceleration);
+                        entityDefine.mMaximalGravityAcceleration = Define.kDefaultCoordinateSystem_BeforeV0108.P2D_LinearAccelerationMagnitude (9.8);
                      }
                   }
                }
@@ -1744,13 +2074,11 @@ package common {
                if (worldDefine.mVersion < 0x0108)
                {
                   entityDefine.mBuildBorder = true;
+                  entityDefine.mIsSleepingAllowed = true;
+                  entityDefine.mIsRotationFixed = false;
                   entityDefine.mLinearVelocityMagnitude = 0.0;
                   entityDefine.mLinearVelocityAngle = 0.0;
                   entityDefine.mAngularVelocity = 0.0;
-                  entityDefine.mLinearDamping = 0.0;
-                  entityDefine.mAngularDamping = 0.0;
-                  entityDefine.mIsSleepingAllowed = true;
-                  entityDefine.mIsRotationFixed = false;
                }
             }
             else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
@@ -1786,6 +2114,7 @@ package common {
                   {
                      entityDefine.mFrequencyDeterminedManner = Define.SpringFrequencyDetermineManner_Preset;
                      entityDefine.mFrequency = 0.0;
+                     entityDefine.mSpringConstant = 0.0;
                      entityDefine.mBreakExtendedLength = 0.0;
                   }
                }

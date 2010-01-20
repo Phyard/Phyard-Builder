@@ -111,6 +111,7 @@ package common {
             worldDefine.mSettings.mCoordinatesOriginX     = editorWorld.GetCoordinateSystem ().GetOriginX ();
             worldDefine.mSettings.mCoordinatesOriginY     = editorWorld.GetCoordinateSystem ().GetOriginY ();
             worldDefine.mSettings.mCoordinatesScale       = editorWorld.GetCoordinateSystem ().GetScale ();
+trace ("111 worldDefine.mSettings.mCoordinatesScale = " + worldDefine.mSettings.mCoordinatesScale);
             
             worldDefine.mSettings.mIsCiRulesEnabled = editorWorld.IsCiRulesEnabled ();
             //<<
@@ -1144,9 +1145,6 @@ package common {
                entity.SetAlpha (entityDefine.mAlpha);
                entity.SetEnabled (entityDefine.mIsEnabled);
                //<<
-               
-               entity.UpdateAppearance ();
-               entity.UpdateSelectionProxy ();
             }
          }
          
@@ -1180,6 +1178,7 @@ package common {
          for (createId = 0; createId < numEntities; ++ createId)
          {
             entityDefine = worldDefine.mEntityDefines [createId];
+            entity = entityDefine.mEntity;
             
             if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
@@ -1197,8 +1196,6 @@ package common {
                   {
                      polyline = entityDefine.mEntity as  EntityShapePolyline;
                      polyline.SetLocalVertexPoints (entityDefine.mLocalPoints);
-                     
-                     polyline.SetCurveThickness (entityDefine.mCurveThickness);
                   }
                   //<<
                }
@@ -1310,6 +1307,13 @@ package common {
                   
                   TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, action.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
                }
+            }
+            
+            // ...
+            if (entity != null)
+            {
+               entity.UpdateAppearance ();
+               entity.UpdateSelectionProxy ();
             }
          }
          

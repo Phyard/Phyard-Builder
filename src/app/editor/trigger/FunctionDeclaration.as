@@ -148,6 +148,36 @@ package editor.trigger {
          return indexes;
       }
       
+      public function HasInputsSatisfyBy (variableDefinition:VariableDefinition):Boolean
+      {
+         if (mInputParamDefinitions != null)
+         {
+            for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
+            {
+               if (variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
+                  return true;
+            }
+         }
+         
+         return false;
+      }
+      
+      public function GetInputVariableIndexesSatisfy (variableDefinition:VariableDefinition):Array
+      {
+         var indexes:Array = new Array ();
+         
+         if (mInputParamDefinitions != null)
+         {
+            for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
+            {
+               if (variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
+                  indexes.push (i);
+            }
+         }
+         
+         return indexes;
+      }
+      
       public function HasOutputsSatisfiedBy (variableDefinition:VariableDefinition):Boolean
       {
          if (mOutputParamDefinitions != null)

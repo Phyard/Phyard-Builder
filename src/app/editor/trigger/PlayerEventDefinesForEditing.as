@@ -44,20 +44,20 @@ package editor.trigger {
          
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized, "OnEntityInitialized", "OnEntityInitialized",
                     [
-                       new VariableDefinitionEntity ("Entity"), 
+                       new VariableDefinitionEntity ("Entity", null, Entity.prototype), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityUpdated, "OnEntityUpdate", "OnEntityUpdate",
                     [
-                       new VariableDefinitionEntity ("Entity"), 
+                       new VariableDefinitionEntity ("Entity", null, Entity.prototype), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityDestroyed, "OnEntityDestroyed", "OnEntityDestroyed",
                     [
-                       new VariableDefinitionEntity ("Entity"), 
+                       new VariableDefinitionEntity ("Entity", null, Entity.prototype), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityTimer, "OnEntityTimer", "OnEntityTimer",
                     [
                        new VariableDefinitionNumber ("Calling Times"), 
-                       new VariableDefinitionEntity ("Entity"), 
+                       new VariableDefinitionEntity ("Entity", null, Entity.prototype), 
                     ]);
          
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "OnJointReachLowerLimit",
@@ -96,8 +96,8 @@ package editor.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityPairTimer, "OnEntityPairTimer", "OnEntityPairTimer",
                     [
                         new VariableDefinitionNumber ("Calling Times"),
-                        new VariableDefinitionEntity ("Entity 1"), 
-                        new VariableDefinitionEntity ("Entity 2"), 
+                        new VariableDefinitionEntity ("Entity 1", null, Entity.prototype), 
+                        new VariableDefinitionEntity ("Entity 2", null, Entity.prototype), 
                     ]);
          
       // ...

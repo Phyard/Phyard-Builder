@@ -518,6 +518,7 @@ package common {
                   entityDefine.mIsNot = byteArray.readByte () != 0;
                   
                   var num:int = byteArray.readShort ();
+                  entityDefine.mNumInputConditions = num;
                   entityDefine.mInputConditionEntityCreationIds = new Array (num);
                   entityDefine.mInputConditionTargetValues = new Array (num);
                   
@@ -773,11 +774,6 @@ package common {
             {
                entityDefine.mCollideConnected = byteArray.readByte ();
                
-               if (worldDefine.mVersion >= 0x0108)
-               {
-                  entityDefine.mBreakable = byteArray.readByte ();
-               }
-               
                if (worldDefine.mVersion >= 0x0104)
                {
                   entityDefine.mConnectedShape1Index = byteArray.readShort ();
@@ -787,6 +783,11 @@ package common {
                {
                   entityDefine.mConnectedShape1Index = byteArray.readByte ();
                   entityDefine.mConnectedShape2Index = byteArray.readByte ();
+               }
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  entityDefine.mBreakable = byteArray.readByte ();
                }
                
                if (entityDefine.mEntityType == Define.EntityType_JointHinge)
@@ -847,6 +848,7 @@ package common {
                   {
                      entityDefine.mFrequencyDeterminedManner = byteArray.readByte ();
                      entityDefine.mFrequency = byteArray.readFloat ();
+                     entityDefine.mSpringConstant = byteArray.readFloat ();
                      entityDefine.mBreakExtendedLength = byteArray.readFloat ();
                   }
                }
@@ -1074,28 +1076,28 @@ package common {
             
             element = BoolSetting2XmlElement ("border_at_top_layer", worldDefine.mSettings.mBorderAtTopLayer);
             xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("border_left_thinckness", worldDefine.mSettings.mWorldBorderLeftThickness);
+            element = FloatSetting2XmlElement ("border_left_thinckness", worldDefine.mSettings.mWorldBorderLeftThickness);
             xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("border_top_thinckness", worldDefine.mSettings.mWorldBorderTopThickness);
+            element = FloatSetting2XmlElement ("border_top_thinckness", worldDefine.mSettings.mWorldBorderTopThickness);
             xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("border_right_thinckness", worldDefine.mSettings.mWorldBorderRightThickness);
+            element = FloatSetting2XmlElement ("border_right_thinckness", worldDefine.mSettings.mWorldBorderRightThickness);
             xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("border_bottom_thinckness", worldDefine.mSettings.mWorldBorderBottomThickness);
+            element = FloatSetting2XmlElement ("border_bottom_thinckness", worldDefine.mSettings.mWorldBorderBottomThickness);
             xml.Settings.appendChild (element);
             
-            element = IntSetting2XmlElement ("gravity_acceleration_magnitude", worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
+            element = FloatSetting2XmlElement ("gravity_acceleration_magnitude", worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
             xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("gravity_acceleration_angle", worldDefine.mSettings.mDefaultGravityAccelerationAngle);
+            element = FloatSetting2XmlElement ("gravity_acceleration_angle", worldDefine.mSettings.mDefaultGravityAccelerationAngle);
             xml.Settings.appendChild (element);
             
             element = BoolSetting2XmlElement ("right_hand_coordinates", worldDefine.mSettings.mRightHandCoordinates);
             xml.Settings.appendChild (element);
             
-            element = IntSetting2XmlElement ("coordinates_origin_x", worldDefine.mSettings.mCoordinatesOriginX);
+            element = FloatSetting2XmlElement ("coordinates_origin_x", worldDefine.mSettings.mCoordinatesOriginX, true);
             xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("coordinates_origin_y", worldDefine.mSettings.mCoordinatesOriginY);
+            element = FloatSetting2XmlElement ("coordinates_origin_y", worldDefine.mSettings.mCoordinatesOriginY, true);
             xml.Settings.appendChild (element);
-            element = IntSetting2XmlElement ("coordinates_scale", worldDefine.mSettings.mCoordinatesScale);
+            element = FloatSetting2XmlElement ("coordinates_scale", worldDefine.mSettings.mCoordinatesScale, true);
             xml.Settings.appendChild (element);
             
             element = BoolSetting2XmlElement ("ci_rules_enabled", worldDefine.mSettings.mIsCiRulesEnabled);
@@ -1230,6 +1232,17 @@ package common {
       private static function BoolSetting2XmlElement (settingName:String, settingValue:Boolean):Object
       {
          return Setting2XmlElement (settingName, settingValue ? "1" : "0");
+      }
+      
+      private static function FloatSetting2XmlElement (settingName:String, settingValue:Number, isDouble:Boolean = false):Object
+      {
+         var strValue:String;
+         if (isDouble)
+            strValue = "" + ValueAdjuster.Number2Precision (settingValue, 12)
+         else
+            strValue = "" + ValueAdjuster.Number2Precision (settingValue, 6)
+         
+         return Setting2XmlElement (settingName, strValue);
       }
       
       private static function Setting2XmlElement (settingName:String, settingValue:String):Object

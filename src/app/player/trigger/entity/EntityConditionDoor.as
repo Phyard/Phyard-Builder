@@ -31,6 +31,7 @@ package player.trigger.entity
             if (entityDefine.mIsNot != undefined)
                SetNot (entityDefine.mIsNot);
             
+trace ("### entityDefine.mNumInputConditions = " + entityDefine.mNumInputConditions);
             if (entityDefine.mNumInputConditions != undefined)
             {
                var length:int = entityDefine.mNumInputConditions;
@@ -38,6 +39,9 @@ package player.trigger.entity
                var conditionEntityIndexes:Array = entityDefine.mInputConditionEntityCreationIds;
                var targetValues          :Array = entityDefine.mInputConditionTargetValues;
                
+trace ("length = " + length);
+trace ("conditionEntityIndexes = " + conditionEntityIndexes);
+trace ("targetValues = " + targetValues);
                if (conditionEntityIndexes != null && targetValues != null)
                {
                   var newOne:ConditionAndTargetValue;
@@ -84,9 +88,9 @@ package player.trigger.entity
                {
                   mEvaluatedValue = mIsNot ? ValueDefine.BoolValue_True : ValueDefine.BoolValue_False;
                   
-                  break;
+                  return;
                }
-                  
+               
                conditionAndTargetValue = conditionAndTargetValue.mNextConditionAndTargetValue;
             }
             
@@ -100,7 +104,7 @@ package player.trigger.entity
                {
                   mEvaluatedValue = mIsNot ? ValueDefine.BoolValue_False : ValueDefine.BoolValue_True;
                   
-                  break;
+                  return;
                }
                
                conditionAndTargetValue = conditionAndTargetValue.mNextConditionAndTargetValue;

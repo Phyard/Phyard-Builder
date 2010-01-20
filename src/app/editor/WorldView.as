@@ -642,7 +642,8 @@ package editor {
       {
          mEntityLinksSprite.graphics.clear ();
          
-         mEditorWorld.DrawEntityLinkLines (mEntityLinksSprite);
+         if (mEditorWorld != null)
+            mEditorWorld.DrawEntityLinkLines (mEntityLinksSprite);
       }
       
       public function RepaintWorldDebugInfo ():void
@@ -1442,7 +1443,7 @@ package editor {
          
          DestroyDesignPlayer ();
          
-         var useQuickMethod:Boolean = true;
+         var useQuickMethod:Boolean = false;
          
          if (useQuickMethod)
             SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine));

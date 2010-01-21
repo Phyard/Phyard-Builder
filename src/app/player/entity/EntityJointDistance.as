@@ -86,10 +86,8 @@ package player.entity {
       {
          if (mPhysicsProxy != null)
          {
-      trace ("mBreakable = " + mBreakable);
             if (mBreakable && Math.abs (mProxyJointDistance.GetCurrentLength () - mProxyJointDistance.GetStaticLength ()) > mBreakDeltaLength)
             {
-      trace ("Destroy = " + Destroy);
                Destroy ();
                
                return;

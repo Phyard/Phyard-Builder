@@ -14,9 +14,9 @@ package editor.trigger {
       
       protected var mMaxLength:int = 0;
       
-      public function VariableDefinitionString (name:String, description:String = null, typeClassPrototype:Object = null, options:Object = null)
+      public function VariableDefinitionString (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_String, name, description, typeClassPrototype);
+         super (ValueTypeDefine.ValueType_String, name, description);
          
          if (options != null)
          {
@@ -39,11 +39,6 @@ package editor.trigger {
 //==============================================================================
 // to override
 //==============================================================================
-      
-      override public function GetDefaultTypeClassPrototype ():Object
-      {
-         return String.prototype;
-      }
       
       override public function ValidateDirectValueObject (valueObject:Object):Object
       {

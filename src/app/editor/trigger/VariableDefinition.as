@@ -114,15 +114,11 @@ package editor.trigger {
       
       private var mDescription:String = null;
       
-      private var mTypeClassPrototype:Object = null;
-      
-      public function VariableDefinition (valueType:int, name:String, description:String = null, typeClassPrototype:Object = null)
+      public function VariableDefinition (valueType:int, name:String, description:String = null)
       {
          mValueType = valueType;
          mName = name;
          mDescription = description;
-         
-         mTypeClassPrototype = typeClassPrototype;
       }
       
       public function GetName ():String
@@ -140,28 +136,9 @@ package editor.trigger {
          return mDescription;
       }
       
-      public function GetTypeClassPrototype ():Object
-      {
-         return mTypeClassPrototype != null ? mTypeClassPrototype : GetDefaultTypeClassPrototype ();
-      }
-      
-      public function GetDefaultTypeClassPrototype ():Object
-      {
-         return Object.prototype;
-      }
-      
       public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
       {
-         if (mValueType != variableDefinition.GetValueType ())
-            return false;
-         
-         // 
-         //var variablePrototype:Object = variableDefinition.GetTypeClassPrototype ();
-         //var selfPrototype:Object = GetTypeClassPrototype ();
-         //if (variablePrototype != selfPrototype && (! variablePrototype.isPrototypeOf (selfPrototype)))
-         //   return false;
-         
-         return true;
+         return mValueType == variableDefinition.GetValueType ();
       }
       
 //==============================================================================

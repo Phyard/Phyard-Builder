@@ -17,9 +17,9 @@ package editor.trigger {
       
       protected var mDefaultValue:Boolean = false;
       
-      public function VariableDefinitionBoolean (name:String, description:String = null, typeClassPrototype:Object = null, options:Object = null)
+      public function VariableDefinitionBoolean (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Boolean, name, description, typeClassPrototype);
+         super (ValueTypeDefine.ValueType_Boolean, name, description);
          
          if (options != null)
          {
@@ -31,11 +31,6 @@ package editor.trigger {
 //==============================================================================
 // to override
 //==============================================================================
-      
-      override public function GetDefaultTypeClassPrototype ():Object
-      {
-         return Boolean.prototype;
-      }
       
       override public function ValidateDirectValueObject (valueObject:Object):Object
       {

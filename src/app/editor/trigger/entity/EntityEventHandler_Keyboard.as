@@ -36,8 +36,6 @@ package editor.trigger.entity {
             
             mEventHandlerDefinition = new FunctionDefinition (TriggerEngine.GetEventDeclarationById (mEventId));
             
-         trace ("mEventId = " + mEventId + ", mEventHandlerDefinition.GetName () = " + mEventHandlerDefinition.GetName ());
-            
             mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
          }
       }

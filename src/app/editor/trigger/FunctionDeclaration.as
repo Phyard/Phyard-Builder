@@ -124,7 +124,7 @@ package editor.trigger {
          {
             for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
             {
-               if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition))
+               if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition) || variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
                   return true;
             }
          }
@@ -140,37 +140,7 @@ package editor.trigger {
          {
             for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
             {
-               if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition))
-                  indexes.push (i);
-            }
-         }
-         
-         return indexes;
-      }
-      
-      public function HasInputsSatisfyBy (variableDefinition:VariableDefinition):Boolean
-      {
-         if (mInputParamDefinitions != null)
-         {
-            for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
-            {
-               if (variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
-                  return true;
-            }
-         }
-         
-         return false;
-      }
-      
-      public function GetInputVariableIndexesSatisfy (variableDefinition:VariableDefinition):Array
-      {
-         var indexes:Array = new Array ();
-         
-         if (mInputParamDefinitions != null)
-         {
-            for (var i:int = 0; i < mInputParamDefinitions.length; ++ i)
-            {
-               if (variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
+               if (GetInputParamDefinitionAt (i).IsCompatibleWith (variableDefinition) || variableDefinition.IsCompatibleWith (GetInputParamDefinitionAt (i)))
                   indexes.push (i);
             }
          }

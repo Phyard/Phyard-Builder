@@ -719,7 +719,7 @@ package common {
                      {
                         entityDefine.mAdaptiveBackgroundSize = byteArray.readByte () != 0;
                         entityDefine.mTextColor = byteArray.readUnsignedInt ();
-                        entityDefine.font_size = byteArray.readShort ();
+                        entityDefine.mFontSize = byteArray.readShort ();
                         entityDefine.mIsBold  = byteArray.readByte () != 0;
                         entityDefine.mIsItalic = byteArray.readByte () != 0;
                      }

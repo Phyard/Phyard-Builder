@@ -111,7 +111,6 @@ package common {
             worldDefine.mSettings.mCoordinatesOriginX     = editorWorld.GetCoordinateSystem ().GetOriginX ();
             worldDefine.mSettings.mCoordinatesOriginY     = editorWorld.GetCoordinateSystem ().GetOriginY ();
             worldDefine.mSettings.mCoordinatesScale       = editorWorld.GetCoordinateSystem ().GetScale ();
-trace ("111 worldDefine.mSettings.mCoordinatesScale = " + worldDefine.mSettings.mCoordinatesScale);
             
             worldDefine.mSettings.mIsCiRulesEnabled = editorWorld.IsCiRulesEnabled ();
             //<<
@@ -2267,7 +2266,7 @@ trace ("111 worldDefine.mSettings.mCoordinatesScale = " + worldDefine.mSettings.
                      {
                         byteArray.writeByte (entityDefine.mAdaptiveBackgroundSize ? 1 : 0);
                         byteArray.writeUnsignedInt (entityDefine.mTextColor);
-                        byteArray.writeShort (entityDefine.font_size);
+                        byteArray.writeShort (entityDefine.mFontSize);
                         byteArray.writeByte (entityDefine.mIsBold ? 1 : 0);
                         byteArray.writeByte (entityDefine.mIsItalic ? 1 : 0);
                      }

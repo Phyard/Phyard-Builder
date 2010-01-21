@@ -44,60 +44,60 @@ package editor.trigger {
          
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized, "OnEntityInitialized", "OnEntityInitialized",
                     [
-                       new VariableDefinitionEntity ("Entity", null, Entity.prototype), 
+                       new VariableDefinitionEntity ("Entity"), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityUpdated, "OnEntityUpdate", "OnEntityUpdate",
                     [
-                       new VariableDefinitionEntity ("Entity", null, Entity.prototype), 
+                       new VariableDefinitionEntity ("Entity"), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityDestroyed, "OnEntityDestroyed", "OnEntityDestroyed",
                     [
-                       new VariableDefinitionEntity ("Entity", null, Entity.prototype), 
+                       new VariableDefinitionEntity ("Entity"), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityTimer, "OnEntityTimer", "OnEntityTimer",
                     [
                        new VariableDefinitionNumber ("Calling Times"), 
-                       new VariableDefinitionEntity ("Entity", null, Entity.prototype), 
+                       new VariableDefinitionEntity ("Entity"), 
                     ]);
          
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "OnJointReachLowerLimit",
                     [
-                       new VariableDefinitionEntity ("Joint", null, EntityJoint.prototype), 
+                       new VariableDefinitionEntity ("Joint", null, {mValidClasses: Filters.sJointEntityClasses}), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit, "OnJointReachUpperLimit", "OnJointReachUpperLimit",
                     [
-                       new VariableDefinitionEntity ("Joint", null, EntityJoint.prototype), 
+                       new VariableDefinitionEntity ("Joint", null, {mValidClasses: Filters.sJointEntityClasses}), 
                     ]);
          
       // ...
          
          //RegisterEventDeclatation (CoreEventIds.ID_OnSensorContainsPhysicsShape, "OnSensorContainsPhysicsShape", "When shape 1 containing the center of shape 2",
          //           [
-         //              new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
-         //              new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype), 
+         //              new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+         //              new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}), 
          //              new VariableDefinitionNumber ("Seconds") 
          //           ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, "OnTwoPhysicsShapesStartContacting", "When 2 physics shapes start contacting",
                     [
-                       new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
-                       new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype)
+                       new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                       new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses})
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, "OnTwoPhysicsShapesKeepContacting", "When 2 physics shapes are contacting with each other",
                     [
-                       new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
-                       new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype), 
+                       new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                       new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                        new VariableDefinitionNumber ("Seconds") 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, "OnTwoPhysicsShapesStopContacting", "When 2 physics shapes stop contacting",
                     [
-                       new VariableDefinitionEntity ("Shape 1", null, EntityShape.prototype), 
-                       new VariableDefinitionEntity ("Shape 2", null, EntityShape.prototype)
+                       new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                       new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses})
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityPairTimer, "OnEntityPairTimer", "OnEntityPairTimer",
                     [
                         new VariableDefinitionNumber ("Calling Times"),
-                        new VariableDefinitionEntity ("Entity 1", null, Entity.prototype), 
-                        new VariableDefinitionEntity ("Entity 2", null, Entity.prototype), 
+                        new VariableDefinitionEntity ("Entity 1"), 
+                        new VariableDefinitionEntity ("Entity 2"), 
                     ]);
          
       // ...

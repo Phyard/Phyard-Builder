@@ -31,7 +31,6 @@ package player.trigger.entity
             if (entityDefine.mIsNot != undefined)
                SetNot (entityDefine.mIsNot);
             
-trace ("### entityDefine.mNumInputConditions = " + entityDefine.mNumInputConditions);
             if (entityDefine.mNumInputConditions != undefined)
             {
                var length:int = entityDefine.mNumInputConditions;
@@ -39,9 +38,6 @@ trace ("### entityDefine.mNumInputConditions = " + entityDefine.mNumInputConditi
                var conditionEntityIndexes:Array = entityDefine.mInputConditionEntityCreationIds;
                var targetValues          :Array = entityDefine.mInputConditionTargetValues;
                
-trace ("length = " + length);
-trace ("conditionEntityIndexes = " + conditionEntityIndexes);
-trace ("targetValues = " + targetValues);
                if (conditionEntityIndexes != null && targetValues != null)
                {
                   var newOne:ConditionAndTargetValue;

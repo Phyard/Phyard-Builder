@@ -227,7 +227,7 @@ package player.entity {
          if (mIsItalic)
             infoText = "<i>" + infoText + "</i>";
          
-         return "<font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font>";;
+         return "<font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font>";
       }
    }
    

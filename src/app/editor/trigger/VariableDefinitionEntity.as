@@ -5,6 +5,7 @@ package editor.trigger {
    
    import editor.world.World;
    import editor.entity.WorldEntity;
+   import editor.entity.Entity;
    
    import editor.runtime.Runtime;
    
@@ -16,18 +17,21 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      protected var mFilter:Function = null;
+      protected var mValidClasses:Array = null;
+      protected var mExceptClasses:Array = null;
       protected var mNullValueEnabled:Boolean = true;
       protected var mMultiValuesEnabled:Boolean = false;
       
-      public function VariableDefinitionEntity (name:String, description:String = null, typeClassPrototype:Object = null, options:Object = null)
+      public function VariableDefinitionEntity (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Entity, name, description, typeClassPrototype);
+         super (ValueTypeDefine.ValueType_Entity, name, description);
          
          if (options != null)
          {
-            if (options.mFilter != undefined)
-               mFilter = options.mFilter;
+            if (options.mValidClasses != undefined)
+               mValidClasses = options.mValidClasses;
+            if (options.mExceptClasses != undefined)
+               mExceptClasses = options.mExceptClasses;
             if (options.mNullValueEnabled != undefined)
                mNullValueEnabled = Boolean (options.mNullValueEnabled);
             if (options.mMultiValuesEnabled != undefined)
@@ -35,9 +39,77 @@ package editor.trigger {
          }
       }
       
-      public function GetFilter ():Function
+      private static const sDefaultValidClasses:Array = [WorldEntity];
+      
+      public function GetValidClasses ():Array
       {
-         return mFilter;
+         return mValidClasses == null ? sDefaultValidClasses : mValidClasses;
+      }
+      
+      public function GetExceptClasses ():Array
+      {
+         return mExceptClasses;
+      }
+      
+      public function DoesSatisfyAnyPrototypesIn (classes:Array):Boolean
+      {
+         if (classes == null)
+            return false;
+         
+         var validClasses:Array = GetValidClasses ();
+         
+         if (validClasses == null)
+            return false;
+         
+         var validClass:Object;
+         var inputClass:Object;
+         
+         for (var i:int = 0; i < validClasses.length; ++ i)
+         {
+            validClass = validClasses [i];
+            for (var j:int = 0; j < classes.length; ++ j)
+            {
+               inputClass = classes [j];
+               if (inputClass.prototype == validClass.prototype || inputClass.prototype.isPrototypeOf (validClass.prototype))
+                  return true;
+            }
+         }
+         
+         return false;
+      }
+      
+      public function IsValidEntity (entity:Entity):Boolean
+      {
+         if (entity == null)
+            return false;
+         
+         var i:int;
+         var exceptClass:Object;
+         
+         var exceptClasses:Array = GetExceptClasses ();
+         if (exceptClasses != null)
+         {
+            for (i = 0; i < exceptClasses.length; ++ i)
+            {
+               exceptClass = exceptClasses [i];
+               
+               if (exceptClass.prototype.isPrototypeOf (entity))
+                  return false;
+            }
+         }
+         
+         var validClass:Object;
+         
+         var validClasses:Array = GetValidClasses ();
+         for (i = 0; i < validClasses.length; ++ i)
+         {
+            validClass = validClasses [i];
+            
+            if (validClass.prototype.isPrototypeOf (entity))
+               return true;
+         }
+         
+         return false;
       }
       
 //==============================================================================
@@ -49,22 +121,14 @@ package editor.trigger {
          if (super.IsCompatibleWith (variableDefinition))
          {
             // variableDefinition must be a VariableDefinitionEntity
-            ;
-            var filter:Function = (variableDefinition as VariableDefinitionEntity).GetFilter ();
-            if (filter != null)
-            {
-               return filter (GetTypeClassPrototype ());
-            }
             
-            return true;
+            if ( DoesSatisfyAnyPrototypesIn ( (variableDefinition as VariableDefinitionEntity).GetExceptClasses () ) )
+               return false;
+            
+            return DoesSatisfyAnyPrototypesIn ( (variableDefinition as VariableDefinitionEntity).GetValidClasses () );
          }
          
          return false;
-      }
-      
-      override public function GetDefaultTypeClassPrototype ():Object
-      {
-         return WorldEntity.prototype;
       }
       
       override public function ValidateDirectValueObject (valueObject:Object):Object
@@ -84,7 +148,7 @@ package editor.trigger {
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
       {
          var world:World = Runtime.GetCurrentWorld ();
-         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (mFilter);
+         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (IsValidEntity);
          
          var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
          var sel_index:int = -1;

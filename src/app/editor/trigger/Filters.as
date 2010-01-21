@@ -9,7 +9,7 @@ package editor.trigger {
       
       
 //=====================================================
-// used in joint dialog
+// filter, used in joint dialog
 //=====================================================
       
       public static function IsPhysicsShapeEntity (entity:Entity):Boolean
@@ -20,134 +20,87 @@ package editor.trigger {
       }
       
 //=====================================================
-// used in api
+// all kind of prototypes list
 //=====================================================
       
-      // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsTaskEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  Entity.prototype == object || Entity.prototype.isPrototypeOf (object)
-                  );
-      }
+   // can apply SetTask?
+      
+      public static const sTaskEntityClasses:Array  = [
+                  WorldEntity,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsVisualEntity (object:Object):Boolean
-      {
-         return Boolean (
-                     EntityShape.prototype == object || EntityShape.prototype.isPrototypeOf (object) 
-                  || EntityJoint.prototype == object || EntityJoint.prototype.isPrototypeOf (object)
-                  );
-      }
+      public static const sVisualEntityClasses:Array = [
+                  EntityShape,
+                  EntityJoint,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function DoesEntityHasPosition (object:Object):Boolean
-      {
-         return Boolean (
-                EntityShape.prototype == object || EntityShape.prototype.isPrototypeOf (object)
-             || EntityUtilityCamera.prototype == object || EntityUtilityCamera.prototype.isPrototypeOf (object)
-             ); 
-      }
+      public static const sMoveableEntityClasses:Array = [
+                  EntityShape,
+                  EntityUtilityCamera,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function CanEntityBeDestroyedManually (object:Object):Boolean
-      {
-         return Boolean (
-                  ! ( EntityLogic.prototype == object || EntityLogic.prototype.isPrototypeOf (object)
-                   || SubEntityJointAnchor.prototype == object || SubEntityJointAnchor.prototype.isPrototypeOf (object)
-                   )
-               ); 
-      }
+      public static const sShapeEntityClasses:Array = [
+                  EntityShape,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsShapeEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityShape.prototype == object || EntityShape.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sTextEntityClasses:Array = [
+                  EntityShapeText,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsTextEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityShapeText.prototype == object || EntityShapeText.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sCameraEntityClasses:Array = [
+                  EntityUtilityCamera,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsCameraEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityUtilityCamera.prototype == object || EntityUtilityCamera.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sGravityControllerEntityClasses:Array = [
+                  EntityShapeGravityController,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsGravityControllerEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityShapeGravityController.prototype == object || EntityShapeGravityController.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sJointEntityClasses:Array = [
+                  EntityJoint,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsJointEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityJoint.prototype == object || EntityJoint.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sJointHingeEntityClasses :Array = [
+                  EntityJointHinge,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsHingeEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityJointHinge.prototype == object || EntityJointHinge.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sJointSliderEntityClasses :Array = [
+                  EntityJointSlider,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsSliderEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityJointSlider.prototype == object || EntityJointSlider.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sLogicEntityClasses:Array = [
+                  EntityLogic,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsScriptHolderEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityAction.prototype == object || EntityAction.prototype.isPrototypeOf (object)
-               || EntityBasicCondition.prototype == object || EntityBasicCondition.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sScriptHolderEntityClasses:Array = [
+                  EntityAction,
+                  EntityBasicCondition,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsBasicConditionEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityBasicCondition.prototype == object || EntityBasicCondition.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sBasicConditionEntityClasses:Array = [
+                  EntityBasicCondition,
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function IsTimerEventHandlerEntity (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityEventHandler_Timer.prototype == object || EntityEventHandler_Timer.prototype.isPrototypeOf (object)
-               ); 
-      }
+      public static const sTimerEventHandlerEntityClasses:Array = [
+                  EntityEventHandler_Timer
+            ];
       
       // object can be an Entity subclass.prototype or a subclass instance
-      public static function CanBeDisabled (object:Object):Boolean
-      {
-         return Boolean (
-                  EntityEventHandler.prototype == object || EntityEventHandler.prototype.isPrototypeOf (object)
-               ); 
-      }
-      
+      public static const sCanBeDisabledEntityClasses:Array = [
+                  EntityEventHandler,
+            ];
    }
 }
 

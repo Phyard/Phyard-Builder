@@ -20,7 +20,7 @@ public function ParticleManager_Initialize ():void
    mNumBombs = 0;
 }
 
-public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number, density:Number):void
+public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number, density:Number, ccat:CollisionCategory):void
 {
    var worldDisplayRadius:Number = mCoordinateSystem.P2D_Length (radius);
    
@@ -46,6 +46,7 @@ public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number
    bomb.mPosX = posX;
    bomb.mPosY = posY;
    bomb.mRadius = mCoordinateSystem.D2P_Length (worldDisplayRadius);
+   bomb.mCollisionCategory = ccat;
    
    var minCountEachStep:int = NumParticlesToCreatedEachStep / 2;
    bomb.mNumParticles = int ((numParticles + minCountEachStep - 1) / minCountEachStep) * minCountEachStep;
@@ -112,7 +113,9 @@ public function ParticleManager_Update (dt:Number):void
                   bomb.mParticleSpeed * cos, 
                   bomb.mParticleSpeed * sin, 
                   bomb.mParticelDensity, 
-                  bomb.mParticelLifeDuration);
+                  bomb.mParticelLifeDuration,
+                  bomb.mCollisionCategory
+               );
          
          particleId += idInterval;
          ++ bomb.mNumCreateParticles;

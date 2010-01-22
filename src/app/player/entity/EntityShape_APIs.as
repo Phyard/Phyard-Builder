@@ -410,7 +410,7 @@ public function BreakAllJointsOfIsland ():void
 // misc 
 //================================================================
 
-public static function CreateParticle (world:World, posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, lifeDuration:Number):EntityShape_Particle
+public static function CreateParticle (world:World, posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, lifeDuration:Number, ccat:CollisionCategory):EntityShape_Particle
 {
    var body:EntityBody = new EntityBody (world);
    world.RegisterEntity (body);
@@ -424,6 +424,7 @@ public static function CreateParticle (world:World, posX:Number, posY:Number, ve
    particle.SetLinearVelocityY (velocityY);
    particle.SetDensity (density);
    particle.SetBody (body);
+   particle.SetCollisionCategory (ccat);
    
    particle.RebuildShapePhysics ();
    

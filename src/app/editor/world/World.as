@@ -39,6 +39,7 @@ package editor.world {
    import editor.trigger.entity.EntityEventHandler_Timer;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
+   import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityAction;
    
    import editor.entity.VertexController;
@@ -872,6 +873,17 @@ package editor.world {
             return null;
          
          var handler:EntityEventHandler_Mouse = new EntityEventHandler_Mouse (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         return handler;
+      }
+      
+      public function CreateEntityEventHandler_Contact (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Contact
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var handler:EntityEventHandler_Contact = new EntityEventHandler_Contact (this, defaultEventId, potientialEventIds);
          addChild (handler);
          
          return handler;

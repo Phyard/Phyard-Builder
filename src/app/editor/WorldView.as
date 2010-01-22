@@ -120,6 +120,7 @@ package editor {
    import editor.trigger.entity.EntityEventHandler_Timer;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
+   import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityAction;
    
    import editor.trigger.entity.InputEntitySelector;
@@ -863,8 +864,6 @@ package editor {
       public var mButton_CreateEventHandler51:Button;
       public var mButton_CreateEventHandler52:Button;
       public var mButton_CreateEventHandler53:Button;
-      public var mButton_CreateEventHandler54:Button;
-      public var mButton_CreateEventHandler55:Button;
       public var mButton_CreateEventHandler56:Button;
       public var mButton_CreateEventHandler57:Button;
       public var mButton_CreateEventHandler58:Button;
@@ -1072,12 +1071,6 @@ package editor {
                break;
             case mButton_CreateEventHandler53:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler54:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, mPotientialEventIds:null}) );
-               break;
-            case mButton_CreateEventHandler55:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, mPotientialEventIds:null}) );
                break;
             case mButton_CreateEventHandler56:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityPairTimer, mPotientialEventIds:null}) );
@@ -1511,6 +1504,7 @@ package editor {
       public var ShowTimerEventHandlerSettingDialog:Function = null;
       public var ShowKeyboardEventHandlerSettingDialog:Function = null;
       public var ShowMouseEventHandlerSettingDialog:Function = null;
+      public var ShowContactEventHandlerSettingDialog:Function = null;
       public var ShowActionSettingDialog:Function = null;
       
       public function IsEntitySettingable (entity:Entity):Boolean
@@ -1586,6 +1580,10 @@ package editor {
                else if (entity is EntityEventHandler_Mouse)
                {
                   ShowMouseEventHandlerSettingDialog (values, SetEntityProperties);
+               }
+               else if (entity is EntityEventHandler_Contact)
+               {
+                  ShowContactEventHandlerSettingDialog (values, SetEntityProperties);
                }
                else
                {
@@ -2900,6 +2898,11 @@ package editor {
             case CoreEventIds.ID_OnWorldKeyHold:
                handler = mEditorWorld.CreateEntityEventHandler_Keyboard (int(options.mDefaultEventId), options.mPotientialEventIds);
                break;
+            case CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting:
+            case CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting:
+            case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
+               handler = mEditorWorld.CreateEntityEventHandler_Contact (int(options.mDefaultEventId), options.mPotientialEventIds);
+               break;
             default:
                handler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
                break;
@@ -3176,13 +3179,24 @@ package editor {
          mEditorWorld.BreakApartSelectedEntities ();
       }
       
-      public function ClearAllEntities (showAlert:Boolean = true):void
+      public function ClearAllEntities (showAlert:Boolean = true, resetScene:Boolean = false):void
       {
          if (showAlert)
-            Alert.show("Do you want to clear all objects?", "Clear All", 3, this, OnCloseClearAllAlert, null, Alert.NO);
+            Alert.show("Do you want to clear all objects?", "Clear All", 3, this, resetScene ? OnCloseClearAllAndResetSceneAlert : OnCloseClearAllAlert, null, Alert.NO);
          else
          {
-            mEditorWorld.DestroyAllEntities ();
+            if (resetScene)
+            {
+               SetEditorWorld (new editor.world.World ());
+               mViewCenterWorldX = DefaultWorldWidth * 0.5;
+               mViewCenterWorldY = DefaultWorldHeight * 0.5;
+               
+               UpdateChildComponents ();
+            }
+            else
+            {
+               mEditorWorld.DestroyAllEntities ();
+            }
             
             CreateUndoPoint ();
             
@@ -3199,7 +3213,15 @@ package editor {
       {
          if (event == null || event.detail==Alert.YES)
          {
-            ClearAllEntities (false);
+            ClearAllEntities (false, false);
+         }
+      }
+      
+      private function OnCloseClearAllAndResetSceneAlert (event:CloseEvent):void 
+      {
+         if (event == null || event.detail==Alert.YES)
+         {
+            ClearAllEntities (false, true);
          }
       }
       
@@ -3407,6 +3429,12 @@ package editor {
                   var mouse_event_handler:EntityEventHandler_Mouse = entity as EntityEventHandler_Mouse;
                   
                   mouse_event_handler.ChangeMouseEventId (params.mEventId);
+               }
+               else if (entity is EntityEventHandler_Contact)
+               {
+                  var contact_event_handler:EntityEventHandler_Contact = entity as EntityEventHandler_Contact;
+                  
+                  contact_event_handler.ChangeContactEventId (params.mEventId);
                }
                
                event_handler.UpdateAppearance ();

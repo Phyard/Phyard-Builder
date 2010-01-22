@@ -149,7 +149,7 @@ protected function RemoveBombsAndRemovableShapes (shapeArray:Array):void
             
             if (bombSize > 0)
             {
-               ParticleManager_AddBomb (shape.GetPositionX (), shape.GetPositionY (), bombSize, shape.GetDensity ());
+               ParticleManager_AddBomb (shape.GetPositionX (), shape.GetPositionY (), bombSize, shape.GetDensity (), shape.GetCollisionCategory ());
             }
             
             shape.DestroyEntity ();

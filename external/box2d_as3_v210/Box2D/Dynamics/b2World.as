@@ -282,13 +282,43 @@ package Box2D.Dynamics
 		
 		private var mIsland:b2Island = null;
 		
-		private function GetIsland ():b2Island
+		private function GetIsland (jointCount:int, contactCount:int):b2Island
 		{
-			if (mIsland == null || mIsland.m_bodyCapacity < m_bodyCount)
+			var bodyCount:int = m_bodyCount;
+			
+			if (bodyCount < 128)
+				bodyCount = 128;
+			
+			if (jointCount < b2Settings.b2_maxTOIJointsPerIsland)
+				jointCount = b2Settings.b2_maxTOIJointsPerIsland;
+			
+			if (contactCount < b2Settings.b2_maxTOIContactsPerIsland)
+				contactCount = b2Settings.b2_maxTOIContactsPerIsland;
+			
+			if (mIsland != null)
 			{
-				mIsland = new b2Island (m_bodyCount + m_bodyCount,
-										b2Settings.b2_maxTOIContactsPerIsland,
-										b2Settings.b2_maxTOIJointsPerIsland,
+				if (bodyCount > mIsland.m_bodyCapacity)
+				{
+					bodyCount = bodyCount + bodyCount;
+					mIsland = null;
+				}
+				
+				if (jointCount > mIsland.m_jointCapacity)
+				{
+					jointCount = jointCount + jointCount;
+					mIsland = null;
+				}
+				
+				if (contactCount > mIsland.m_contactCapacity)
+				{
+					contactCount = contactCount + contactCount;
+					mIsland = null;
+				}
+			}
+			
+			if (mIsland == null)
+			{
+				mIsland = new b2Island (bodyCount, contactCount, jointCount,
 										m_stackAllocator,
 										//m_contactManager.m_contactListener
 										m_contactManager.m_contactPostSolveListener

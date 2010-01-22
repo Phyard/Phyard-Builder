@@ -184,6 +184,10 @@
       </antcall>
    </target>
    
+   <target name="compile-resource-then-debug-editor" depends="compile-resource">
+      <antcall target="debug-editor" />
+   </target>
+   
    <target name="release-editor" depends="compile-resource">
       <antcall target="--compile-editor">
          <param name="--debug" value="false" />

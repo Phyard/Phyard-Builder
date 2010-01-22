@@ -38,6 +38,7 @@ package common {
    import editor.trigger.entity.EntityEventHandler_Timer;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
+   import editor.trigger.entity.EntityEventHandler_Contact;
    
    import common.trigger.CoreEventIds;
    
@@ -250,6 +251,10 @@ package common {
                   else if (editorEntity is editor.trigger.entity.EntityEventHandler_Mouse)
                   {
                      var mouseEventHandler:EntityEventHandler_Mouse = eventHandler as EntityEventHandler_Mouse;
+                  }
+                  else if (editorEntity is editor.trigger.entity.EntityEventHandler_Contact)
+                  {
+                     var contactEventHandler:EntityEventHandler_Contact = eventHandler as EntityEventHandler_Contact;
                   }
                   //<<
                   
@@ -817,6 +822,11 @@ package common {
                      case CoreEventIds.ID_OnWorldMouseUp:
                      case CoreEventIds.ID_OnWorldMouseMove:
                         entity = logic = editorWorld.CreateEntityEventHandler_Mouse (entityDefine.mEventId);
+                        break;
+                     case CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting:
+                     case CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting:
+                     case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
+                        entity = logic = editorWorld.CreateEntityEventHandler_Contact (entityDefine.mEventId);
                         break;
                      default:
                         entity = logic = editorWorld.CreateEntityEventHandler (entityDefine.mEventId);

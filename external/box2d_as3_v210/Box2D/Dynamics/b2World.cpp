@@ -393,7 +393,7 @@ public function Solve(step:b2TimeStep):void
 	//									m_jointCount,
 	//									m_stackAllocator,
 	//									m_contactManager.m_contactListener);
-	var island:b2Island = GetIsland ();
+	var island:b2Island = GetIsland (m_jointCount, m_contactManager.m_contactCount);
 
 	// Clear all the island flags.
 	for (b = m_bodyList; b != null; b = b.m_next)
@@ -586,7 +586,7 @@ public function SolveTOI(step:b2TimeStep):void
 	//									b2Settings.b2_maxTOIJointsPerIsland,
 	//									m_stackAllocator,
 	//									m_contactManager.m_contactListener);
-	var island:b2Island = GetIsland ();
+	var island:b2Island = GetIsland (b2Settings.b2_maxTOIJointsPerIsland, b2Settings.b2_maxTOIContactsPerIsland);
 
 	//Simple one pass queue
 	//Relies on the fact that we're only making one pass

@@ -32,8 +32,17 @@ package editor.trigger.entity {
       //
       protected var mHalfWidth:Number;
       protected var mHalfHeight:Number;
+      
+      protected var mTextFieldCenterX:Number;
+      protected var mTextFieldCenterY:Number;
       protected var mTextFieldHalfWidth:Number;
       protected var mTextFieldHalfHeight:Number;
+      
+      protected var mEventIconBitmap:Bitmap = null;
+      protected var mIconCenterX:Number;
+      protected var mIconCenterY:Number;
+      protected var mIconHalfWidth:Number;
+      protected var mIconHalfHeight:Number;
       
       //
       protected var mBorderThickness:Number = 1;

@@ -27,7 +27,7 @@ package editor.trigger.entity {
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.CodeSnippet;
    
-   
+   import editor.runtime.Resource;
    
    import common.Define;
    
@@ -63,6 +63,8 @@ package editor.trigger.entity {
          mEventHandlerDefinition = new FunctionDefinition (TriggerEngine.GetEventDeclarationById (mEventId));
          
          mCodeSnippet = new CodeSnippet (mEventHandlerDefinition);
+         
+         mEventIconBitmap = Resource.EventId2IconBitmap (mEventId);
          
          var i:int;
          mNumEntityParams = 0;
@@ -194,11 +196,17 @@ package editor.trigger.entity {
          var tw:int = text_field.width;
          var th:int = text_field.height;
          
-         mHalfWidth  = (tw + 20) * 0.5;
-         mHalfHeight = (th + 6) * 0.5;
+         var iw:int = mEventIconBitmap == null ? 0 : mEventIconBitmap.width;
+         var ih:int = mEventIconBitmap == null ? 0 : mEventIconBitmap.height;
+         
+         mHalfWidth  = ((ih > 0 ? ih : 0 ) + tw + 20) * 0.5;
+         mHalfHeight = ((ih > th ? ih : th) + 0) * 0.5;
          
          mTextFieldHalfWidth = tw * 0.5;
          mTextFieldHalfHeight = th * 0.5;
+         
+         mIconHalfWidth = iw * 0.5;
+         mIconHalfHeight = ih * 0.5;
          
          // background
          
@@ -212,9 +220,11 @@ package editor.trigger.entity {
          }
          
          var background:Shape = new Shape ();
-         GraphicsUtil.ClearAndDrawRect (background, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, mBorderThickness, true, 0xB0B0FF);
+         GraphicsUtil.ClearAndDrawRect (background, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, 0xB0B0FF);
          var background2:Shape = new Shape ();
-         GraphicsUtil.ClearAndDrawRect (background2, - tw * 0.5, - th * 0.5, tw, th, 0x0, 1, true, 0xFFFFFF);
+         GraphicsUtil.ClearAndDrawRect (background2,  - mHalfWidth + 10 + iw, - th * 0.5, tw, th, 0x0, 1, true, 0xFFFFFF);
+         var border:Shape = new Shape ();
+         GraphicsUtil.ClearAndDrawRect (border, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, mBorderThickness, false);
          
       // children
          
@@ -223,10 +233,31 @@ package editor.trigger.entity {
          text_field.alpha = 1.0;
          
          addChild (background);
+         if (mEventIconBitmap != null)
+         {
+            addChild (mEventIconBitmap);
+            mEventIconBitmap.x = - mHalfWidth + 10;
+            mEventIconBitmap.y = - mIconHalfHeight;
+            
+            text_field.x = mEventIconBitmap.x + mEventIconBitmap.width;
+         }
+         else
+         {
+            text_field.x = - mTextFieldHalfWidth;
+         }
+         text_field.y = - mTextFieldHalfHeight;
+         
          addChild (background2);
          addChild (text_field); 
-         text_field.x = - 0.5 * text_field.width;
-         text_field.y = - 0.5 * text_field.height;
+         addChild (border); 
+         
+         mTextFieldCenterX = text_field.x + mTextFieldHalfWidth;
+         mTextFieldCenterY = text_field.y + mTextFieldHalfHeight;
+         
+         mIconCenterX = mEventIconBitmap.x + mIconHalfWidth;
+         mIconCenterY = mEventIconBitmap.y + mIconHalfHeight;
+         
+         GraphicsUtil.DrawRect (border, mEventIconBitmap.x, mEventIconBitmap.y, mIconHalfWidth + mIconHalfWidth, mIconHalfHeight + mIconHalfHeight, 0x0, 1, false);
       }
       
       override public function UpdateSelectionProxy ():void
@@ -261,10 +292,12 @@ package editor.trigger.entity {
       
       override public function GetLinkZoneId (localX:Number, localY:Number, checkActiveZones:Boolean = true, checkPassiveZones:Boolean = true):int
       {
-         if (localX > mTextFieldHalfWidth || localX < -mTextFieldHalfWidth || localY > mTextFieldHalfHeight || localY < -mTextFieldHalfHeight)
-            return 0;
+         if (localX > mTextFieldCenterX - mTextFieldHalfWidth && localX < mTextFieldCenterX + mTextFieldHalfWidth && localY > mTextFieldCenterY - mTextFieldHalfHeight && localY < mTextFieldCenterY + mTextFieldHalfHeight)
+            return -1;
+         if (localX > mIconCenterX - mIconHalfWidth && localX < mIconCenterX + mIconHalfWidth && localY > mIconCenterY - mIconHalfHeight && localY < mIconCenterY + mIconHalfHeight)
+            return -1;
          
-         return -1;
+         return 0;
       }
       
       override public function CanStartCreatingLink (worldDisplayX:Number, worldDisplayY:Number):Boolean

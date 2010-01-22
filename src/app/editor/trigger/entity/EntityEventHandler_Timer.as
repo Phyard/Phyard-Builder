@@ -14,6 +14,8 @@ package editor.trigger.entity {
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.CodeSnippet;
    
+   import editor.runtime.Resource;
+   
    import common.Define;
    
    import common.trigger.ValueDefine;

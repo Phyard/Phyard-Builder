@@ -14,6 +14,8 @@ package editor.trigger.entity {
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.CodeSnippet;
    
+   import editor.runtime.Resource;
+   
    import common.Define;
    
    import common.trigger.ValueDefine;
@@ -37,6 +39,8 @@ package editor.trigger.entity {
             mEventHandlerDefinition = new FunctionDefinition (TriggerEngine.GetEventDeclarationById (mEventId));
             
             mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
+            
+            mEventIconBitmap = Resource.EventId2IconBitmap (mEventId);
          }
       }
       

@@ -1,5 +1,10 @@
 package editor.runtime {
    
+   import flash.utils.Dictionary;
+   import flash.display.Bitmap;
+   
+   import common.trigger.CoreEventIds;
+   
    public class Resource
    {
    // camera icon
@@ -47,16 +52,41 @@ package editor.runtime {
       
       // keyboard
       
-      [Embed("../../res/create/event_on_keyboard.png")]
+      [Embed("../../res/create/event_on_key_down.png")]
       public static var IconOnKeyDownEvent:Class;
+      [Embed("../../res/create/event_on_key_up.png")]
+      public static var IconOnKeyUpEvent:Class;
+      [Embed("../../res/create/event_on_key_hold.png")]
+      public static var IconOnKeyHoldEvent:Class;
       
       // mouse
       
       [Embed("../../res/create/event_on_world_mouse_clicked.png")]
       public static var IconOnWorldMouseClickedEvent:Class;
+      [Embed("../../res/create/event_on_world_mouse_move.png")]
+      public static var IconOnWorldMouseMoveEvent:Class;
+      [Embed("../../res/create/event_on_world_mouse_down.png")]
+      public static var IconOnWorldMouseDownEvent:Class;
+      [Embed("../../res/create/event_on_world_mouse_up.png")]
+      public static var IconOnWorldMouseUpEvent:Class;
+      
+      [Embed("../../res/create/event_on_physics_shape_mouse_down.png")]
+      public static var IconOnPhysicsEntityMouseDownEvent:Class;
+      [Embed("../../res/create/event_on_physics_shape_mouse_up.png")]
+      public static var IconOnPhysicsEntityMouseUpEvent:Class;
       
       [Embed("../../res/create/event_on_shape_mouse_clicked.png")]
       public static var IconOnEntityMouseClickedEvent:Class;
+      [Embed("../../res/create/event_on_shape_mouse_move.png")]
+      public static var IconOnEntityMouseMoveEvent:Class;
+      [Embed("../../res/create/event_on_shape_mouse_down.png")]
+      public static var IconOnEntityMouseDownEvent:Class;
+      [Embed("../../res/create/event_on_shape_mouse_up.png")]
+      public static var IconOnEntityMouseUpEvent:Class;
+      [Embed("../../res/create/event_on_shape_mouse_enter.png")]
+      public static var IconOnEntityMouseEnterEvent:Class;
+      [Embed("../../res/create/event_on_shape_mouse_out.png")]
+      public static var IconOnEntityMouseOutEvent:Class;
       
       // timer
       
@@ -68,6 +98,60 @@ package editor.runtime {
       
       [Embed("../../res/create/event_on_world_timer.png")]
       public static var IconOnWorldTimerEvent:Class;
+      
+   // event id -> icon
+      
+      private static var sEventId2IconClass:Dictionary = null;
+      
+      public static function EventId2IconBitmap (eventId:int):Bitmap
+      {
+         if (sEventId2IconClass == null)
+         {
+            sEventId2IconClass = new Dictionary ();
+            
+            sEventId2IconClass [CoreEventIds.ID_OnEntityInitialized] = IconOnEntityInitilizedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityUpdated    ] = IconOnEntityUpdatedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityDestroyed  ] = IconOnEntityDestroyedEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnJointReachLowerLimit] = IconOnJointReachLowerLimitEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnJointReachUpperLimit] = IconOnJointReachUpperLimitEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeInitializing] = IconOnBeforeLevelInitializingEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldAfterInitialized  ] = IconOnAfterLevelInitializedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnLWorldBeforeUpdating   ] = IconOnBeforeLevelUpdatingEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldAfterUpdated      ] = IconOnAfterLevelUpdatedEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting] = IconOnShapeStartContactingEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting ] = IconOnShapeKeepContactingEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesEndContacting  ] = IconOnShapeStopContactingEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnWorldKeyDown] = IconOnKeyDownEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldKeyUp  ] = IconOnKeyUpEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldKeyHold] = IconOnKeyHoldEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnWorldMouseClick] = IconOnWorldMouseClickedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldMouseDown ] = IconOnWorldMouseDownEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldMouseUp   ] = IconOnWorldMouseUpEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldMouseMove ] = IconOnWorldMouseMoveEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnPhysicsShapeMouseDown] = IconOnPhysicsEntityMouseDownEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnPhysicsShapeMouseUp  ] = IconOnPhysicsEntityMouseUpEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseClick     ] = IconOnEntityMouseClickedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseDown      ] = IconOnEntityMouseDownEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseUp        ] = IconOnEntityMouseUpEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseMove      ] = IconOnEntityMouseMoveEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseEnter     ] = IconOnEntityMouseEnterEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseOut       ] = IconOnEntityMouseOutEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnEntityTimer    ] = IconOnEntityTimerEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityPairTimer] = IconOnEntityPairTimerEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldTimer     ] = IconOnWorldTimerEvent;
+         }
+         
+         var iconClass:Class = sEventId2IconClass [eventId];
+         
+         return iconClass == null ? null : new iconClass ();
+      }
       
    // keyboard icons
       

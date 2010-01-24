@@ -81,7 +81,7 @@ package common {
 // collsion category
 //===========================================================================
       
-      public static const MaxCollisionCategoriesCount:int = 64; // must be less than 128
+      public static const MaxCollisionCategoriesCount:int = 128; // can be larger
       
       public static const CategoryDefaultName:String = "Category";
       public static const MinCollisionCategoryNameLength:int = 1;

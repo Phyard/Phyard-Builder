@@ -297,23 +297,28 @@ package Box2D.Dynamics
 			
 			if (mIsland != null)
 			{
+				var toCreateNewIsland:Boolean = false;
+				
 				if (bodyCount > mIsland.m_bodyCapacity)
 				{
 					bodyCount = bodyCount + bodyCount;
-					mIsland = null;
+					toCreateNewIsland = true;
 				}
 				
 				if (jointCount > mIsland.m_jointCapacity)
 				{
 					jointCount = jointCount + jointCount;
-					mIsland = null;
+					toCreateNewIsland = true;
 				}
 				
 				if (contactCount > mIsland.m_contactCapacity)
 				{
 					contactCount = contactCount + contactCount;
-					mIsland = null;
+					toCreateNewIsland = true;
 				}
+				
+				if (toCreateNewIsland)
+					mIsland = null;
 			}
 			
 			if (mIsland == null)

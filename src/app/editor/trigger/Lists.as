@@ -1,6 +1,9 @@
 package editor.trigger {
    
+   import flash.ui.Keyboard;
+   
    import common.Define;
+   import common.KeyCodes;
    import common.trigger.ValueDefine;
    
    public class Lists
@@ -62,6 +65,15 @@ package editor.trigger {
          ];
       
       public static const mKeyCodeList:Array = [
+            {label:"W", data:KeyCodes.Key_W},
+            {label:"A", data:KeyCodes.Key_A},
+            {label:"S", data:KeyCodes.Key_S},
+            {label:"D", data:KeyCodes.Key_D},
+            {label:"Left", data:Keyboard.LEFT},
+            {label:"Right", data:Keyboard.RIGHT},
+            {label:"Top", data:Keyboard.UP},
+            {label:"Down", data:Keyboard.DOWN},
+            {label:"Space", data:Keyboard.SPACE},
          ];
    }
 }

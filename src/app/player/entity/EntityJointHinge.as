@@ -111,6 +111,9 @@ package player.entity {
       public function SetMotorSpeed (speed:Number):void
       {
          mMotorSpeed = speed;
+         
+         if (mPhysicsProxy != null)
+            mProxyJointHinge.SetMotorSpeed (mMotorSpeed);
       }
       
       public function GetMotorSpeed ():Number

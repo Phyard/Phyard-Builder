@@ -22,7 +22,7 @@ package editor.trigger.entity {
    
    public class EntityEventHandler_Timer extends EntityEventHandler 
    {
-      protected var mRunningInterval:Number = 1.0; // steps or seconds
+      protected var mRunningInterval:Number = 120.0; // steps or seconds
       protected var mOnlyRunOnce:Boolean = true;
       
       public function EntityEventHandler_Timer (world:World, defaultEventId:int, potientialEventIds:Array = null)

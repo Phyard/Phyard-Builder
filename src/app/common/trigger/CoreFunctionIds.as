@@ -31,6 +31,7 @@ package common.trigger {
       
       public static const ID_GetProgramMilliseconds:int           = 70; //
       public static const ID_GetCurrentDateTime:int               = 71; //
+      public static const ID_IsKeyHold:int                        = 72; //
       
    // string
       
@@ -247,6 +248,8 @@ package common.trigger {
       public static const ID_EntityShape_SetAsSensor:int               = 1158; // entity.shape physics
       //public static const ID_EntityShape_IsBullet:int                  = 1159; // entity.shape physics
       //public static const ID_EntityShape_SetAsBullet:int               = 1160; // entity.shape physics
+      public static const ID_EntityShape_IsSleeping:int                  = 1161; // entity.shape physics
+      public static const ID_EntityShape_SetSleeping:int                 = 1162; // entity.shape physics
       
       //public static const ID_EntityShape_GetLocalCentroid:int          = 1070; // entity.shape physics
       //public static const ID_EntityShape_GetWorldCentroid:int          = 1071; // entity.shape physics
@@ -320,9 +323,13 @@ package common.trigger {
       //public static const ID_EntityJoint_GetHingeLimitsByRadians:int                   = 2001; // joint.hinge
       public static const ID_EntityJoint_SetHingeLimitsByDegrees:int                       = 2004; // joint.hinge
       //public static const ID_EntityJoint_SetHingeAngleLimitsByRadians:int                              = 2005; // joint.hinge
+      public static const ID_EntityJoint_GetHingeMotorSpeed:int                      = 2006; // joint.slider
+      public static const ID_EntityJoint_SetHingeMotorSpeed:int                      = 2007; // joint.slider
       
       public static const ID_EntityJoint_GetSliderLimits:int                      = 2030; // joint.slider
+      public static const ID_EntityJoint_GetSliderMotorSpeed:int                  = 2031; // joint.slider
       public static const ID_EntityJoint_SetSliderLimits:int                      = 2032; // joint.slider
+      public static const ID_EntityJoint_SetSliderMotorSpeed:int                  = 2033; // joint.slider
       
    // game / entity / field
       

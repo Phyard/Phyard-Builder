@@ -491,5 +491,22 @@ package player.entity {
          
          return mPhysicsProxyBody.IsStatic ();
       }
+      
+      public function IsSleeping ():Boolean
+      {
+         if (mPhysicsProxy == null)
+            return false;
+         
+         return mPhysicsProxyBody.IsSleeping ();
+      }
+      
+      public function SetSleeping (sleeping:Boolean):void
+      {
+         if (mPhysicsProxy == null)
+            return;
+         
+         mPhysicsProxyBody.SetSleeping (sleeping);
+      }
+
    }
 }

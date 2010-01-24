@@ -1158,6 +1158,10 @@ package editor {
       // file ...
          
          mButtonNewDesign.enabled = true; //mEditorWorld.numChildren > 0;
+         
+      // context menu
+         
+         mMenuItemExportSelectedsToSystemMemory.enabled = selectedEntities.length > 0;
       }
       
       
@@ -1280,7 +1284,10 @@ package editor {
          theContextMenu.customItems.push (mMenuItemImport);
          mMenuItemImport.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         mMenuItemAbout = new ContextMenuItem("About This Editor", true);
+         var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
+         
+         mMenuItemAbout = new ContextMenuItem("About Color Infection Editor v" + majorVersion + "." + (minorVersion >= 10 ? "" : "0") + minorVersion, true);
          theContextMenu.customItems.push (mMenuItemAbout);
          mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
       }

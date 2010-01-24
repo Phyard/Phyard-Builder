@@ -899,6 +899,10 @@ package player.world {
       private var mCurrentGravityAccelerationX:Number;
       private var mCurrentGravityAccelerationY:Number;
       
+      // particles use the last step gravity to ...
+      private var mLastStepGravityAccelerationX:Number;
+      private var mLastStepGravityAccelerationY:Number;
+      
       public function SetDefaultGravityAccelerationMagnitude (magnitude:Number):void
       {
          mDefaultGravityAccelerationMagnitude = magnitude;
@@ -933,6 +937,16 @@ package player.world {
       public function GetCurrentGravityAccelerationY ():Number
       {
          return mCurrentGravityAccelerationY;
+      }
+      
+      public function GetLastStepGravityAccelerationX ():Number
+      {
+         return mLastStepGravityAccelerationX;
+      }
+      
+      public function GetLastStepGravityAccelerationY ():Number
+      {
+         return mLastStepGravityAccelerationY;
       }
 
    //===============================
@@ -975,6 +989,8 @@ package player.world {
          mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
          mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished);
          
+         mLastStepGravityAccelerationX = mCurrentGravityAccelerationX;
+         mLastStepGravityAccelerationY = mCurrentGravityAccelerationY;
          mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX, mCurrentGravityAccelerationY);
       }
 
@@ -1019,6 +1035,8 @@ package player.world {
 
       private function UpdatePhysics (dt:Number):void
       {
+         mLastStepGravityAccelerationX = mCurrentGravityAccelerationX + mGlobalForceX;
+         mLastStepGravityAccelerationY = mCurrentGravityAccelerationY + mGlobalForceY;
          mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX + mGlobalForceX, mCurrentGravityAccelerationY + mGlobalForceY);
          ClearGlobalForces ();
          

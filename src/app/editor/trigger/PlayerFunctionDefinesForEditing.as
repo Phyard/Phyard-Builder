@@ -132,6 +132,14 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Milliseconds"), 
                      ]
                   );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_IsKeyHold, system_package, "IsKeyHold", 
+                     [
+                             new VariableDefinitionNumber ("The Key", null, {mValueLists: Lists.mKeyCodeList}), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Is Hold?"),
+                     ]
+                  );
          
       // string
          
@@ -1234,6 +1242,21 @@ package editor.trigger {
          //            ],
          //            null
          //         );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping, shape_physics_package, "IsSleeping", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Is Sleeping?"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping, shape_physics_package, "SetSleeping", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionBoolean ("Sleeping?", null, {mDefaultValue: false}), 
+                     ],
+                     null
+                  );
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Teleport, entity_shape_package, "TeleportShape", 
                      [
@@ -1357,6 +1380,21 @@ package editor.trigger {
                      ],
                      null
                   );
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed, entity_joint_package, "GetHingeMotorSpeed", 
+                     [
+                        new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
+                     ],
+                     [
+                        new VariableDefinitionNumber ("Motor Speed (degrees/s)"), 
+                     ]
+                  );
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed, entity_joint_package, "SetHingeMotorSpeed", 
+                     [
+                        new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
+                        new VariableDefinitionNumber ("Motor Speed (degrees/s)"), 
+                     ],
+                     null
+                  );
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits, entity_joint_package, "GetSliderLimits", 
                      [
@@ -1372,6 +1410,21 @@ package editor.trigger {
                         new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
                         new VariableDefinitionNumber ("Lower Translation"), 
                         new VariableDefinitionNumber ("Upper Translation"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed, entity_joint_package, "GetSliderMotorSpeed", 
+                     [
+                        new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
+                     ],
+                     [
+                        new VariableDefinitionNumber ("Motor Speed (m/s)"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed, entity_joint_package, "SetSliderMotorSpeed", 
+                     [
+                        new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
+                        new VariableDefinitionNumber ("Motor Speed (m/s)"), 
                      ],
                      null
                   );

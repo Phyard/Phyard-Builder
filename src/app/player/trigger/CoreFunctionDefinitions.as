@@ -49,6 +49,7 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_GetProgramMilliseconds,           GetProgramMilliseconds);
          RegisterCoreFunction (CoreFunctionIds.ID_GetCurrentDateTime,               GetCurrentDateTime);
+         RegisterCoreFunction (CoreFunctionIds.ID_IsKeyHold,                        IsKeyHold);
          
       // string
          
@@ -229,6 +230,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                  GetShapeDensity);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                  SetShapeDensity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetSleeping,                 SetShapeSleeping);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
@@ -252,9 +255,13 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,                      GetHingeLimitsByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,                      SetHingeLimitsByDegrees);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed,                      GetHingeMotorSpeed);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed,                      SetHingeMotorSpeed);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,                     GetSliderLimits);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,                     SetSliderLimits);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed,                     GetSliderMotorSpeed);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed,                     SetSliderMotorSpeed);
          
       // game / entity / field
          
@@ -343,6 +350,13 @@ package player.trigger {
          
          valueTarget = valueTarget.mNextValueTargetInList;
          valueTarget.AssignValueObject (date.getMilliseconds ());
+      }
+      
+      public static function IsKeyHold (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var keyCode:int = int (valueSource.EvalateValueObject ());
+         
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsKeyHold (keyCode));
       }
       
    //*******************************************************************
@@ -1766,9 +1780,31 @@ package player.trigger {
       //{
       //}
       
-      //public static function AttachShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-      //}
+      public static function IsShapeSleeping (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         if (shape == null)
+            valueTarget.AssignValueObject (false);
+         else
+         {
+            var body:EntityBody = shape.GetBody ();
+            
+            valueTarget.AssignValueObject (body.IsSleeping ());
+         }
+      }
+      
+      public static function SetShapeSleeping (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var sleeping:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         shape.GetBody ().SetSleeping (sleeping);
+      }
       
       public static function TeleportShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -1971,6 +2007,32 @@ package player.trigger {
          hinge.SetAngleLimits (lowerLimit, upperLimit);
       }
       
+     public static function GetHingeMotorSpeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         
+         if (hinge == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (hinge.GetMotorSpeed () * Define.kRadians2Degrees);
+         }
+      }
+      
+      public static function SetHingeMotorSpeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         if (hinge == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var motorSpeed:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
+         
+         hinge.SetMotorSpeed (motorSpeed);
+      }
+      
       public static function GetSliderLimits (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
@@ -2004,6 +2066,32 @@ package player.trigger {
          var upperLimit:Number = Number (valueSource.EvalateValueObject ());
          
          slider.SetTranslationLimits (lowerLimit, upperLimit);
+      }
+      
+      public static function GetSliderMotorSpeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         
+         if (slider == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (slider.GetMotorSpeed ());
+         }
+      }
+      
+      public static function SetSliderMotorSpeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         if (slider == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var motorSpeed:Number = Number (valueSource.EvalateValueObject ());
+         
+         slider.SetMotorSpeed (motorSpeed);
       }
       
       // game / entity / event handler

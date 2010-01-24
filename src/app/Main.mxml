@@ -86,7 +86,7 @@
       </mx:ViewStack>
       <mx:Spacer width="100%"/>
       <mx:HBox id="Box_SwitchViewCommands" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
-         <mx:Button id="Button_ToggleCCatEditView" toggle="true" toolTip="Edit Collisiont Categories" click="OnToggleCCatEditView ();" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" cornerRadius="0" icon="@Embed('res/file/design-edit-ccats.png')" selectedUpIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-ccats.png')" />
+         <mx:Button id="Button_ToggleCCatEditView" toggle="true" toolTip="Edit Collision Categories" click="OnToggleCCatEditView ();" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" cornerRadius="0" icon="@Embed('res/file/design-edit-ccats.png')" selectedUpIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-ccats.png')" />
          <mx:Spacer width="5"/>
       </mx:HBox>
 
@@ -637,7 +637,7 @@
             //===================================================================================================
                
                AppendContextMenuItem (Button_NewDesign, "Clear All Entities", ClearAllEntities);
-               AppendContextMenuItem (Button_NewDesign, "Clear Entities And Reset Scene", ClearAllEntitiesAndResetScene);
+               AppendContextMenuItem (Button_NewDesign, "Clear All Entities and Reset Scene", ClearAllEntitiesAndResetScene);
                
                AppendContextMenuItem (Button_OpenDesign, "Load Lastest Version Online ...", OnLoadSourceCodeOnline);
                

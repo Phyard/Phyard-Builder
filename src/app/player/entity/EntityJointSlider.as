@@ -100,9 +100,17 @@ package player.entity {
          mEnableMotor = enableMotor;
       }
       
+      public function GetMotorSpeed ():Number
+      {
+         return mMotorSpeed;
+      }
+      
       public function SetMotorSpeed (speed:Number):void
       {
          mMotorSpeed = speed;
+         
+         if (mPhysicsProxy != null)
+            mProxyJointSlider.SetMotorSpeed (mMotorSpeed);
       }
       
       public function SetBackAndForth (backAndForth:Boolean):void

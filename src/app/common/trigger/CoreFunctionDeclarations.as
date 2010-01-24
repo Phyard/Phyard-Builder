@@ -89,6 +89,14 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_IsKeyHold,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
           
       // string
          
@@ -1194,6 +1202,21 @@ package common.trigger {
          //            ],
          //            null
          //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
          
          // ...
          
@@ -1320,6 +1343,21 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_AngularVelocity, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_AngularVelocity, 
+                     ],
+                     null
+                  );
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,
                      [
@@ -1335,6 +1373,21 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude, 
                      ],
                      null
                   );

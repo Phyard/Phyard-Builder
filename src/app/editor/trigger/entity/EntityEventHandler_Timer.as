@@ -50,5 +50,25 @@ package editor.trigger.entity {
       {
          return mOnlyRunOnce;
       }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityEventHandler_Timer (mWorld, mEventId);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var timerHandler:EntityEventHandler_Timer = entity as EntityEventHandler_Timer;
+         
+         timerHandler.SetRunningInterval (GetRunningInterval ());
+         timerHandler.SetOnlyRunOnce (IsOnlyRunOnce ());
+      }
+      
    }
 }

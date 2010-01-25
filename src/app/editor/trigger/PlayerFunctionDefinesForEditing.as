@@ -1067,6 +1067,14 @@ package editor.trigger {
                      ]
                   );
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed, entity_package, "IsDestroyed", 
+                     [
+                             new VariableDefinitionEntity ("The Entity", null, {mExceptClasses: Filters.sLogicEntityClasses}), 
+                     ],
+                     [
+                        new VariableDefinitionBoolean ("Already Destroyed?"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Destroy, entity_package, "Destroy", 
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mExceptClasses: Filters.sLogicEntityClasses}), 

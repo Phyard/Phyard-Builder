@@ -237,13 +237,16 @@ package editor.entity {
          return true;
       }
       
-      public function Clone (displayOffsetX:Number, displayOffsetY:Number):Entity
+      public final function Clone (displayOffsetX:Number, displayOffsetY:Number):Entity
       {
          var entity:Entity = CreateCloneShell ();
          
          if (entity != null)
          {
             SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+            
+            entity.UpdateSelectionProxy ();
+            entity.UpdateAppearance ();
          }
          
          return entity;

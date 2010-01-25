@@ -86,6 +86,50 @@ package editor.trigger {
 //
 //====================================================================
       
+      public function CopyCallingsFrom (codeSnippet:CodeSnippet, insertAt:int = 0, callingIds:Array = null):void
+      {
+         if (codeSnippet == null)
+            return;
+         
+         var i:int;
+         var count:int = codeSnippet.GetNumFunctionCallings ();
+         
+         if (callingIds == null)
+         {
+            callingIds = new Array (count);
+            
+            for (i = 0; i < count; ++ i)
+               callingIds [i] = i;
+         }
+         
+         var num:int = callingIds.length;
+         
+         var callingId:int;
+         var clonedCallings:Array = new Array (callingIds.length);
+         var clonedCount:int = 0;
+         
+         for (i = 0; i < num; ++ i)
+         {
+            callingId = callingIds [i];
+            if (callingId >= 0 && callingId < count)
+            {
+               clonedCallings [clonedCount ++] = codeSnippet.GetFunctionCallingAt (callingId).Clone (mOwnerFunctionDefinition);
+            }
+         }
+         
+         if (insertAt < 0)
+            insertAt = 0;
+         else if (insertAt > mFunctionCallings.length)
+            insertAt = mFunctionCallings.length;
+         
+         for (i = 0; i < clonedCount; ++ i)
+            mFunctionCallings.splice (insertAt ++, 0, clonedCallings [i]);
+      }
+      
+//====================================================================
+//
+//====================================================================
+      
       public function Clone (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
       {
          if (ownerFunctionDefinition == null)

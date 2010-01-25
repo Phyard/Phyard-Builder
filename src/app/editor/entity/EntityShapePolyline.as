@@ -348,6 +348,7 @@ package editor.entity {
          var polyline:EntityShapePolyline = entity as EntityShapePolyline;
          
          polyline.SetCurveThickness (GetCurveThickness ());
+         polyline.SetRoundEnds (IsRoundEnds ());
          
          for (var i:int = 0; i < mLocalPoints.length; ++ i)
          {
@@ -355,9 +356,7 @@ package editor.entity {
          }
          
          polyline.SynchronizeWithLocalPoints ();
-         
          polyline.UpdateSelectionProxy ();
-         polyline.UpdateAppearance ();
       }
       
       

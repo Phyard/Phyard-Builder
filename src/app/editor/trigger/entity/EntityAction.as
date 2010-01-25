@@ -114,6 +114,22 @@ package editor.trigger.entity {
       }
       
 //====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityAction (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var action:EntityAction = entity as EntityAction;
+      }
+      
+//====================================================================
 //   linkable
 //====================================================================
       

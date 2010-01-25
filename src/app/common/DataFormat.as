@@ -1252,39 +1252,39 @@ package common {
                {
                   var task:EntityTask = entityDefine.mEntity as EntityTask;
                   
-                  task.SetEntityAssignerCreationIds (entityDefine.mInputAssignerCreationIds);
+                  task.SetEntityAssignersByCreationIds (entityDefine.mInputAssignerCreationIds);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
                {
                   var conditionDoor:EntityConditionDoor = entityDefine.mEntity as EntityConditionDoor;
                   conditionDoor.SetAsAnd (entityDefine.mIsAnd);
                   conditionDoor.SetAsNot (entityDefine.mIsNot);
-                  conditionDoor.SetInputConditions (entityDefine.mInputConditionEntityCreationIds, entityDefine.mInputConditionTargetValues);
+                  conditionDoor.SetInputConditionsByCreationIds (entityDefine.mInputConditionEntityCreationIds, entityDefine.mInputConditionTargetValues);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
                {
                   var entityAssigner:EntityInputEntityAssigner = entityDefine.mEntity as EntityInputEntityAssigner;
                   
                   entityAssigner.SetSelectorType (entityDefine.mSelectorType);
-                  entityAssigner.SetInputEntityCreationIds (entityDefine.mEntityCreationIds);
+                  entityAssigner.SetInputEntitiesByCreationIds (entityDefine.mEntityCreationIds);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
                {
                   var pairAsigner:EntityInputEntityPairAssigner = entityDefine.mEntity as EntityInputEntityPairAssigner;
                   
                   pairAsigner.SetPairingType (entityDefine.mPairingType);
-                  pairAsigner.SetInputPairEntityCreationdIds (entityDefine.mEntityCreationIds1, entityDefine.mEntityCreationIds2);
+                  pairAsigner.SetInputPairEntitiesByCreationdIds (entityDefine.mEntityCreationIds1, entityDefine.mEntityCreationIds2);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
                   var eventHandler:EntityEventHandler = entityDefine.mEntity as EntityEventHandler;
                   
-                  eventHandler.SetInputCondition (entityDefine.mInputConditionEntityCreationId, entityDefine.mInputConditionTargetValue);
-                  eventHandler.SetEntityAssignerCreationIds (entityDefine.mInputAssignerCreationIds);
+                  eventHandler.SetInputConditionByCreationId (entityDefine.mInputConditionEntityCreationId, entityDefine.mInputConditionTargetValue);
+                  eventHandler.SetEntityAssignersByCreationIds (entityDefine.mInputAssignerCreationIds);
                   
                   if (worldDefine.mVersion >= 0x0108)
                   {
-                     eventHandler.SetExternalActionCreationId (entityDefine.mExternalActionEntityCreationId);
+                     eventHandler.SetExternalActionByCreationId (entityDefine.mExternalActionEntityCreationId);
                   }
                   
                   if (worldDefine.mVersion >= 0x0108)

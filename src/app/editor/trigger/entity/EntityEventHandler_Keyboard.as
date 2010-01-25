@@ -66,5 +66,24 @@ package editor.trigger.entity {
       {
          return mKeyCodes.slice ();
       }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityEventHandler_Keyboard (mWorld, mEventId);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var keyboardHandler:EntityEventHandler_Keyboard = entity as EntityEventHandler_Keyboard;
+         
+         keyboardHandler.SetKeyCodes (GetKeyCodes ());
+      }
+      
    }
 }

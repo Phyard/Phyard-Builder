@@ -223,6 +223,11 @@ package editor.entity {
          var text:EntityShapeText = entity as EntityShapeText;
          text.SetText ( GetText () );
          text.SetWordWrap (IsWordWrap ());
+         text.SetTextColor (GetTextColor ());
+         text.SetFontSize (GetFontSize ());
+         text.SetBold (IsBold ());
+         text.SetItalic (IsItalic ());
+         text.SetAdaptiveBackgroundSize (IsAdaptiveBackgroundSize ());
       }
       
    }

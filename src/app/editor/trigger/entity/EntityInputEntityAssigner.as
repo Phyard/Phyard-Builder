@@ -87,10 +87,26 @@ package editor.trigger.entity {
          return mInputEntities;
       }
       
-      public function SetInputEntityCreationIds (entityCreationIds:Array):void
+      public function SetInputEntities (inputEntities:Array):void
       {
          if (mInputEntities.length > 0)
             mInputEntities.splice (0, mInputEntities.length);
+         
+         if (inputEntities != null && inputEntities.length > 0)
+         {
+            var num:int = inputEntities.length;
+            for (var i:int = 0; i < num; ++ i)
+            {
+               mInputEntities.push (inputEntities [i]);
+            }
+         }
+      }
+      
+      public function SetInputEntitiesByCreationIds (entityCreationIds:Array):void
+      {
+         if (mInputEntities.length > 0)
+            mInputEntities.splice (0, mInputEntities.length);
+         
          if (entityCreationIds != null && entityCreationIds.length > 0)
          {
             var num:int = entityCreationIds.length;
@@ -197,6 +213,25 @@ package editor.trigger.entity {
             if (updateSelectionProxy)
                mInputEntitySelector.UpdateSelectionProxy ();
          }
+      }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityInputEntityAssigner (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var assigner:EntityInputEntityAssigner = entity as EntityInputEntityAssigner;
+         
+         assigner.SetSelectorType (GetSelectorType ());
+         assigner.SetInputEntities (GetInputEntities ());
       }
       
 //====================================================================

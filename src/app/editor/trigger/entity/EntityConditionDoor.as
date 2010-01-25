@@ -104,7 +104,23 @@ package editor.trigger.entity {
          return mInputConditions;
       }
       
-      public function SetInputConditions (conditionEntityCreationIds:Array,conditionTargetValues:Array):void
+      public function SetInputConditionByCreationId (conditions:Array):void
+      {
+         var creationIds:Array = new Array (conditions.length);
+         var targetValues:Array = new Array (conditions.length);
+         
+         var conditionAndTargetValue:ConditionAndTargetValue;
+         for (var i:int = 0; i < conditions.length; ++ i)
+         {
+            conditionAndTargetValue = conditions [i];
+            creationIds  [i] = (conditionAndTargetValue.mConditionEntity as Entity).GetCreationOrderId ();
+            targetValues [i] = conditionAndTargetValue.mTargetValue;
+         }
+         
+         SetInputConditionsByCreationIds (creationIds, targetValues);
+      }
+      
+      public function SetInputConditionsByCreationIds (conditionEntityCreationIds:Array,conditionTargetValues:Array):void
       {
          if (mInputConditions.length > 0)
             mInputConditions.splice (0, mInputConditions.length);
@@ -187,6 +203,26 @@ package editor.trigger.entity {
          var borderThickness:Number = mBorderThickness;
          
          (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX () + (- kBandWidth - kBandWidth + kHalfWidth) * 0.5, GetPositionY (), (kBandWidth + kBandWidth + kHalfWidth) * 0.5 + borderThickness * 0.5 , kHalfHeight + borderThickness * 0.5 );
+      }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityConditionDoor (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var conditionDoor:EntityConditionDoor = entity as EntityConditionDoor;
+         
+         conditionDoor.SetAsAnd (IsAnd ());
+         conditionDoor.SetAsNot (IsNot ());
+         conditionDoor.SetInputConditionByCreationId (GetInputConditions ());
       }
       
 //==============================================================================================================

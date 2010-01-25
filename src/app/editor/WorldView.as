@@ -3153,6 +3153,12 @@ package editor {
          
          mEditorWorld.CloneSelectedEntities (Define.BodyCloneOffsetX, Define.BodyCloneOffsetY);
          
+         selectedEntities = mEditorWorld.GetSelectedEntities ();
+         if (selectedEntities.length == 1)
+         {
+            SetLastSelectedEntities (selectedEntities [0]);
+         }
+         
          CreateUndoPoint ();
          
          CalSelectedEntitiesCenterPoint ();

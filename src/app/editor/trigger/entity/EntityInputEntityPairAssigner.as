@@ -152,7 +152,23 @@ package editor.trigger.entity {
          return [mInputEntities1, mInputEntities2];
       }
       
-      public function SetInputPairEntityCreationdIds (inputEntityCreationIds1:Array, inputEntityCreationIds2:Array):void
+      public function SetInputPairEntities (entities1:Array, entities2:Array):void
+      {
+         var creationIds1:Array = new Array (entities1.length);
+         var creationIds2:Array = new Array (entities2.length);
+         
+         var i:int;
+         
+         for (i = 0; i < entities1.length; ++ i)
+            creationIds1 [i] = (entities1 [i] as Entity).GetCreationOrderId ();
+         
+         for (i = 0; i < entities2.length; ++ i)
+            creationIds2 [i] = (entities2 [i] as Entity).GetCreationOrderId ();
+         
+         SetInputPairEntitiesByCreationdIds (creationIds1, creationIds2);
+      }
+      
+      public function SetInputPairEntitiesByCreationdIds (inputEntityCreationIds1:Array, inputEntityCreationIds2:Array):void
       {
          if (mInputEntities1 == null)
             inputEntityCreationIds1 = null;
@@ -552,6 +568,27 @@ package editor.trigger.entity {
                   selector.UpdateSelectionProxy ();
             }
          }
+      }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityInputEntityPairAssigner (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var pairAssigner:EntityInputEntityPairAssigner = entity as EntityInputEntityPairAssigner;
+         
+         pairAssigner.SetPairingType (GetPairingType ());
+         
+         var inputEntitites:Array = GetInputPairEntities ();
+         pairAssigner.SetInputPairEntities (inputEntitites [0], inputEntitites[1]);
       }
       
 //====================================================================

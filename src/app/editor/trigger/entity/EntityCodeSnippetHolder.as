@@ -96,6 +96,19 @@ package editor.trigger.entity {
       }
       
 //====================================================================
+//   clone
+//====================================================================
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var codeSnippetHolder:EntityCodeSnippetHolder = entity as EntityCodeSnippetHolder;
+         
+         codeSnippetHolder.GetCodeSnippet ().CopyCallingsFrom (mCodeSnippet);
+      }
+      
+//====================================================================
 //   linkable
 //====================================================================
       

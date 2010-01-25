@@ -63,7 +63,17 @@ package editor.trigger.entity {
          return mEntityAssignerList; //.slice ();
       }
       
-      public function SetEntityAssignerCreationIds (assignerCreationIds:Array):void
+      public function SetEntityAssigners (assigners:Array):void
+      {
+         mEntityAssignerList.splice (0, mEntityAssignerList.length);
+         
+         for (var i:int = 0; i < assigners.length; ++ i)
+         {
+            mEntityAssignerList.push (assigners [i]);
+         }
+      }
+      
+      public function SetEntityAssignersByCreationIds (assignerCreationIds:Array):void
       {
          if (mEntityAssignerList.length > 0)
             mEntityAssignerList.splice (0, mEntityAssignerList.length);
@@ -121,6 +131,24 @@ package editor.trigger.entity {
          var borderThickness:Number = mBorderThickness;
          
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle( GetRotation (), GetPositionX (), GetPositionY (), kRadius );
+      }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityTask (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var task:EntityTask = entity as EntityTask;
+         
+         task.SetEntityAssigners (GetEntityAssigners ());
       }
       
 //====================================================================

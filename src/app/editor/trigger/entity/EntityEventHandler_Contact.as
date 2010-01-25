@@ -41,5 +41,22 @@ package editor.trigger.entity {
             mEventIconBitmap = Resource.EventId2IconBitmap (mEventId);
          }
       }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityEventHandler_Contact (mWorld, mEventId);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var contactHandler:EntityEventHandler_Contact = entity as EntityEventHandler_Contact;
+      }
+      
    }
 }

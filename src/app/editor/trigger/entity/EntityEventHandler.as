@@ -107,14 +107,19 @@ package editor.trigger.entity {
          return mExternalCondition.mTargetValue;
       }
       
-      public function SetInputCondition (inputConditionEntityCreationId:int, inputConditionTargetValue:int):void
+      public function SetInputCondition (condition:EntityCondition, inputConditionTargetValue:int):void
+      {
+         mExternalCondition.mConditionEntity = condition;
+         mExternalCondition.mTargetValue = inputConditionTargetValue;
+      }
+      
+      public function SetInputConditionByCreationId (inputConditionEntityCreationId:int, inputConditionTargetValue:int):void
       {
          var condition:EntityCondition = mWorld.GetEntityByCreationId (inputConditionEntityCreationId) as EntityCondition;
          
          if (condition != null)
          {
-            mExternalCondition.mConditionEntity = condition;
-            mExternalCondition.mTargetValue = inputConditionTargetValue;
+            SetInputCondition (condition, inputConditionTargetValue);
          }
       }
       
@@ -123,10 +128,26 @@ package editor.trigger.entity {
          return mEntityAssignerList; //.slice ();
       }
       
-      public function SetEntityAssignerCreationIds (assignerCreationIds:Array):void
+      public function SetEntityAssigners (assigners:Array):void
       {
          if (mEntityAssignerList.length > 0)
             mEntityAssignerList.splice (0, mEntityAssignerList.length);
+         
+         if (assigners != null && assigners.length > 0)
+         {
+            var num:int = assigners.length;
+            for (var i:int = 0; i < num; ++ i)
+            {
+               mEntityAssignerList.push (assigners [i]);
+            }
+         }
+      }
+      
+      public function SetEntityAssignersByCreationIds (assignerCreationIds:Array):void
+      {
+         if (mEntityAssignerList.length > 0)
+            mEntityAssignerList.splice (0, mEntityAssignerList.length);
+         
          if (assignerCreationIds != null && assignerCreationIds.length > 0)
          {
             var num:int = assignerCreationIds.length;
@@ -147,7 +168,7 @@ package editor.trigger.entity {
          mExternalActionEntity = action;
       }
       
-      public function SetExternalActionCreationId (actionCreationId:int):void
+      public function SetExternalActionByCreationId (actionCreationId:int):void
       {
          mExternalActionEntity = mWorld.GetEntityByCreationId (actionCreationId) as EntityAction;
       }
@@ -273,6 +294,26 @@ package editor.trigger.entity {
          var borderThickness:Number = mBorderThickness;
          
          (mSelectionProxy as SelectionProxyRectangle).RebuildRectangle ( GetRotation (), GetPositionX (), GetPositionY (), mHalfWidth + borderThickness * 0.5 , mHalfHeight + borderThickness * 0.5 );
+      }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityEventHandler (mWorld, mEventId);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var eventHandler:EntityEventHandler = entity as EntityEventHandler;
+         
+         eventHandler.SetInputCondition (GetInputConditionEntity (), GetInputConditionTargetValue ());
+         eventHandler.SetEntityAssigners (GetEntityAssigners ());
+         eventHandler.SetExternalAction (GetExternalAction ());
       }
       
 //==========================================================================================

@@ -202,6 +202,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,        WorldPoint2EntityLocalPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,        EntityLocalPoint2WorldPoint);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsDestroyed,        IsEntityDestroyed);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Overlapped,        AreTwoEntitiesOverlppped);
@@ -1420,20 +1421,23 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetPositionY ());
       }
       
-      public static function SetEntityPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-            return;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var pos_x:Number = valueSource.EvalateValueObject () as Number;
-         
-         valueSource = valueSource.mNextValueSourceInList;
-         var pos_y:Number = valueSource.EvalateValueObject () as Number;
-         
-         shape.MoveTo (pos_x, pos_y);
-      }
+      //public static function SetEntityPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   if (shape == null)
+      //      return;
+      //   
+      //   if (entity.IsDestroyedAlready ())
+      //      return;
+      //   
+      //   valueSource = valueSource.mNextValueSourceInList;
+      //   var pos_x:Number = valueSource.EvalateValueObject () as Number;
+      //   
+      //   valueSource = valueSource.mNextValueSourceInList;
+      //   var pos_y:Number = valueSource.EvalateValueObject () as Number;
+      //   
+      //   shape.MoveTo (pos_x, pos_y);
+      //}
       
       public static function GetEntityRotationByRadians (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -1527,7 +1531,7 @@ package player.trigger {
             valueSource = valueSource.mNextValueSourceInList;
             var local_y:Number = valueSource.EvalateValueObject () as Number;
             
-         worldPoint = shape.LocalPoint2WorldPoint (local_x, local_y);
+            worldPoint = shape.LocalPoint2WorldPoint (local_x, local_y);
          }
          
          // ...
@@ -1538,10 +1542,26 @@ package player.trigger {
          valueTarget.AssignValueObject (worldPoint.y);
       }
       
+      public static function IsEntityDestroyed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+         {
+            valueTarget.AssignValueObject (false);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (entity.IsDestroyedAlready ());
+         }
+      }
+      
       public static function DestroyEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
          if (entity == null)
+            return;
+         
+         if (entity.IsDestroyedAlready ())
             return;
          
          var body:EntityBody = null;
@@ -1655,6 +1675,9 @@ package player.trigger {
          if (shape == null)
             return;
          
+         if (shape.IsDestroyedAlready ())
+            return;
+         
          if (! shape.IsAiTypeChangeable ())
             return;
          
@@ -1728,6 +1751,9 @@ package player.trigger {
       
       //public static function SetShapePhysicsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
       //{
+         //if (shape.IsDestroyedAlready ())
+         //   return;
+         //
       //}
       
       public static function GetShapeCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1766,6 +1792,9 @@ package player.trigger {
          if (shape == null)
             return;
          
+         if (shape.IsDestroyedAlready ())
+            return;
+         
          valueSource = valueSource.mNextValueSourceInList;
          var sensor:Boolean = valueSource.EvalateValueObject () as Boolean;
          
@@ -1774,17 +1803,23 @@ package player.trigger {
       
       //public static function GetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
       //{
+         //if (shape.IsDestroyedAlready ())
+         //   return;
+         //
       //}
       
       //public static function SetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
       //{
+         //if (shape.IsDestroyedAlready ())
+         //   return;
+         //
       //}
       
       public static function IsShapeSleeping (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          
-         if (shape == null)
+         if (shape == null || shape.IsDestroyedAlready ())
             valueTarget.AssignValueObject (false);
          else
          {
@@ -1800,6 +1835,9 @@ package player.trigger {
          if (shape == null)
             return;
          
+         if (shape.IsDestroyedAlready ())
+            return;
+         
          valueSource = valueSource.mNextValueSourceInList;
          var sleeping:Boolean = valueSource.EvalateValueObject () as Boolean;
          
@@ -1810,6 +1848,9 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
             return;
          
          valueSource = valueSource.mNextValueSourceInList;
@@ -1837,6 +1878,9 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
             return;
          
          valueSource = valueSource.mNextValueSourceInList;
@@ -1880,12 +1924,12 @@ package player.trigger {
 	  public static function AttachTwoShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape1:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape1 == null)
+         if (shape1 == null || shape1.IsDestroyedAlready ())
             return;
          
          valueSource = valueSource.mNextValueSourceInList;
          var shape2:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape2 == null)
+         if (shape2 == null || shape2.IsDestroyedAlready ())
             return;
 
          shape1.AttachWith (shape2);
@@ -1897,12 +1941,16 @@ package player.trigger {
          if (shape1 == null)
             return;
          
+         if (shape1.IsDestroyedAlready ())
+            return;
+         
          valueSource = valueSource.mNextValueSourceInList;
          var shape2:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape2 == null)
-            return;
-
-         shape1.DetachThenAttachWith (shape2);
+         
+         if (shape2 == null || shape2.IsDestroyedAlready ())
+            shape1.Detach ();
+         else
+            shape1.DetachThenAttachWith (shape2);
       }
 	  
       public static function BreakupShapeBrothers (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1911,7 +1959,10 @@ package player.trigger {
          if (shape == null)
             return;
          
-		 shape.BreakupBrothers ();
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         shape.BreakupBrothers ();
       }
 	  
 	  public static function BreakShapeJoints (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1920,7 +1971,10 @@ package player.trigger {
          if (shape == null)
             return;
          
-		 shape.BreakAllJoints ();
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         shape.BreakAllJoints ();
       }
 
    //*******************************************************************
@@ -1941,6 +1995,9 @@ package player.trigger {
          if (entity_text == null)
             return;
          
+         if (entity_text.IsDestroyedAlready ())
+            return;
+         
          valueSource = valueSource.mNextValueSourceInList;
          var text:String = valueSource.EvalateValueObject () as String;
          
@@ -1953,6 +2010,9 @@ package player.trigger {
          if (entity_text == null)
             return;
          
+         if (entity_text.IsDestroyedAlready ())
+            return;
+         
          valueSource = valueSource.mNextValueSourceInList;
          var text:String = valueSource.EvalateValueObject () as String;
          
@@ -1963,6 +2023,9 @@ package player.trigger {
       {
          var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
          if (entity_text == null)
+            return;
+         
+         if (entity_text.IsDestroyedAlready ())
             return;
          
          entity_text.SetText (entity_text.GetText () + "\n");

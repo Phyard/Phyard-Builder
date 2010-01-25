@@ -14,10 +14,12 @@
          <mx:MenuBar id="MenuBar_Api" itemClick="OnMenuBarClick (event);" height="100%"/>
          <mx:Spacer width="100%"/>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-            <mx:Button id="Button_DeleteCommmand" click="OnDeleteCalling ()" toolTip="Delete Command" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_delete.png')" disabledIcon="@Embed('res/action/command_delete-disabled.png')" />
-            <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="18" />
             <mx:Button id="Button_MoveUpCommmand" click="OnMoveCallingUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_moveup.png')" disabledIcon="@Embed('res/action/command_moveup-disabled.png')" />
             <mx:Button id="Button_MoveDownCommmand" click="OnMoveCallingDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_movedown.png')" disabledIcon="@Embed('res/action/command_movedown-disabled.png')" />
+         </mx:HBox>
+         <mx:Spacer width="10"/>
+         <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+            <mx:Button id="Button_DeleteCommmand" click="OnDeleteCalling ()" toolTip="Delete Command" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('res/action/command_delete.png')" disabledIcon="@Embed('res/action/command_delete-disabled.png')" />
          </mx:HBox>
       </mx:HBox>
       <mx:HBox id="Box_Commands" height="156" width="100%">

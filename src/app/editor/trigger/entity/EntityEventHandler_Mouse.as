@@ -41,5 +41,22 @@ package editor.trigger.entity {
             mEventIconBitmap = Resource.EventId2IconBitmap (mEventId);
          }
       }
+      
+//====================================================================
+//   clone
+//====================================================================
+      
+      override protected function CreateCloneShell ():Entity
+      {
+         return new EntityEventHandler_Mouse (mWorld, mEventId);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var mouseHandler:EntityEventHandler_Mouse = entity as EntityEventHandler_Mouse;
+      }
+      
    }
 }

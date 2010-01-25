@@ -123,15 +123,20 @@ package editor.entity {
 //   clone
 //====================================================================
       
-      override public function IsClonedable ():Boolean
-      {
-         return false;
-      }
-      
       // only one gc most in a scene
       override protected function CreateCloneShell ():Entity
       {
-         return null;
+         return new EntityUtilityCamera (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var camera:EntityUtilityCamera = entity as EntityUtilityCamera;
+         
+         camera.SetFollowedTarget (GetFollowedTarget ());
+         camera.SetFollowingStyle (GetFollowingStyle ());
       }
       
    }

@@ -205,8 +205,7 @@ package editor.entity {
          var rect:EntityShapeRectangle = entity as EntityShapeRectangle;
          rect.SetHalfWidth ( GetHalfWidth () );
          rect.SetHalfHeight ( GetHalfHeight () );
-         rect.UpdateAppearance ();
-         rect.UpdateSelectionProxy ();
+         rect.SetRoundCorners (IsRoundCorners ());
       }
       
       

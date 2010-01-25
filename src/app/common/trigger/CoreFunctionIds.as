@@ -209,6 +209,7 @@ package common.trigger {
       public static const ID_Entity_WorldPoint2LocalPoint:int          = 1010; // entity 
       public static const ID_Entity_LocalPoint2WorldPoint:int          = 1011; // entity 
       
+      public static const ID_Entity_IsDestroyed:int                    = 1049; // entity 
       public static const ID_Entity_Destroy:int                        = 1050; // entity 
       
       public static const ID_Entity_Overlapped:int                     = 1060; // entity 

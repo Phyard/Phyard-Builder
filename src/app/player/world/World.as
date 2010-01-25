@@ -288,7 +288,8 @@ package player.world {
          
          entity.mEntityList.RemoveEntity (entity);
          
-         if (entity.IsDefinedInEditor ())
+         // an entity defined in editor will never removed from the 2 arrays to make the reference in api callings always be accessable.
+         if (! entity.IsDefinedInEditor ())
          {
             mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
             mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;

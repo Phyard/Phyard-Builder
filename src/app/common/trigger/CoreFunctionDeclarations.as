@@ -1027,6 +1027,14 @@ package common.trigger {
                      ]
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Destroy,
                      [
                         ValueTypeDefine.ValueType_Entity, 

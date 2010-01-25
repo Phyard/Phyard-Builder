@@ -307,8 +307,6 @@ package editor.entity {
          newAnchor1.UpdateSelectionProxy ();
          newAnchor2.UpdateAppearance ();
          newAnchor2.UpdateSelectionProxy ();
-         
-         spring.UpdateAppearance ();
       }
       
       override public function GetSubEntities ():Array

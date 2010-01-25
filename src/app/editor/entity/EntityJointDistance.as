@@ -117,8 +117,6 @@ package editor.entity {
          newAnchor1.UpdateSelectionProxy ();
          newAnchor2.UpdateAppearance ();
          newAnchor2.UpdateSelectionProxy ();
-         
-         distanceJoint.UpdateAppearance ();
       }
       
       override public function GetSubEntities ():Array

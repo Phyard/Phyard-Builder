@@ -366,9 +366,6 @@ package editor.entity {
          }
          
          polygon.SynchronizeWithLocalPoints ();
-         
-         polygon.UpdateSelectionProxy ();
-         polygon.UpdateAppearance ();
       }
       
       

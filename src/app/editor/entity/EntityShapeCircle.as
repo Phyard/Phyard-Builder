@@ -185,8 +185,6 @@ package editor.entity {
          var cirlce:EntityShapeCircle = entity as EntityShapeCircle;
          cirlce.SetRadius ( GetRadius () );
          cirlce.SetAppearanceType ( GetAppearanceType () );
-         cirlce.UpdateAppearance ();
-         cirlce.UpdateSelectionProxy ();
       }
       
       

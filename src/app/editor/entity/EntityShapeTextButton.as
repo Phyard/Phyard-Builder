@@ -102,8 +102,16 @@ package editor.entity {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
          var text_button:EntityShapeTextButton = entity as EntityShapeTextButton;
-         text_button.SetText ( GetText () );
-         text_button.SetWordWrap (IsWordWrap ());
+         
+         var anotherMouseOverShape:EntityShape = text_button.GetMouseOverShape ();
+         
+         anotherMouseOverShape.SetDrawBackground (mMouseOverShape.IsDrawBackground ());
+         anotherMouseOverShape.SetFilledColor (mMouseOverShape.GetFilledColor ());
+         anotherMouseOverShape.SetTransparency (mMouseOverShape.GetTransparency ());
+         anotherMouseOverShape.SetDrawBorder (mMouseOverShape.IsDrawBorder ());
+         anotherMouseOverShape.SetBorderColor (mMouseOverShape.GetBorderColor ());
+         anotherMouseOverShape.SetBorderTransparency (mMouseOverShape.GetBorderTransparency ());
+         anotherMouseOverShape.SetBorderThickness (mMouseOverShape.GetBorderThickness ());
       }
       
    }

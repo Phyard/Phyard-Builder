@@ -239,15 +239,23 @@ package editor.entity {
 //   clone
 //====================================================================
       
-      override public function IsClonedable ():Boolean
-      {
-         return false;
-      }
-      
       // only one gc most in a scene
       override protected function CreateCloneShell ():Entity
       {
-         return null;
+         return new EntityShapeGravityController (mWorld);
+      }
+      
+      override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
+      {
+         super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
+         
+         var gravityController:EntityShapeGravityController = entity as EntityShapeGravityController;
+         
+         gravityController.mInteractiveConditions = mInteractiveConditions;
+         gravityController.SetInteractiveZones (GetInteractiveZones ());
+         gravityController.SetInitialGravityAcceleration (GetInitialGravityAcceleration ());
+         gravityController.SetMaximalGravityAcceleration (GetMaximalGravityAcceleration ());
+         gravityController.SetInitialGravityAngle (GetInitialGravityAngle ());
       }
       
 //====================================================================

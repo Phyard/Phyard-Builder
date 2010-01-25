@@ -224,8 +224,6 @@ package editor.entity {
          newAnchor1.UpdateSelectionProxy ();
          newAnchor2.UpdateAppearance ();
          newAnchor2.UpdateSelectionProxy ();
-         
-         slider.UpdateAppearance ();
       }
       
       override public function GetSubEntities ():Array

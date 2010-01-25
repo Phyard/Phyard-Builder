@@ -363,10 +363,13 @@ package player.trigger.entity
          while (i < num)
          {
             entity = mInputEntityArray1 [i];
-            if (entity == null || entity.IsDestroyedAlready ())
+            if (entity == null)
             {
                mInputEntityArray1.splice (i, 1);
                -- num;
+            }
+            else if (entity.IsDestroyedAlready ())
+            {
             }
             else
             {
@@ -402,7 +405,7 @@ package player.trigger.entity
          while (i < num)
          {
             entity = mInputEntityArray1 [i];
-            if (entity == null || entity.IsDestroyedAlready ())
+            if (entity == null) // || entity.IsDestroyedAlready ())
             {
                mInputEntityArray1.splice (i, 1);
                -- num;
@@ -446,8 +449,8 @@ package player.trigger.entity
                   entity1 = mInputEntityArray1 [i];
                   entity2 = mInputEntityArray2 [i];
                   
-                  if (entity1 == null || entity1.IsDestroyedAlready ()
-                     || entity2 == null || entity2.IsDestroyedAlready ())
+                  if (entity1 == null // || entity1.IsDestroyedAlready ()
+                     || entity2 == null) // || entity2.IsDestroyedAlready ())
                   {
                      mInputEntityArray1.splice (i, 1);
                      mInputEntityArray2.splice (i, 1);
@@ -475,7 +478,7 @@ package player.trigger.entity
                {
                   entity2 = mInputEntityArray2 [j];
                   
-                  if (entity2 == null || entity2.IsDestroyedAlready ())
+                  if (entity2 == null) // || entity2.IsDestroyedAlready ())
                   {
                      mInputEntityArray2.splice (j, 1);
                      -- num2;
@@ -490,7 +493,7 @@ package player.trigger.entity
                {
                   entity1 = mInputEntityArray1 [i];
                   
-                  if (entity1 == null || entity1.IsDestroyedAlready ())
+                  if (entity1 == null) // || entity1.IsDestroyedAlready ())
                   {
                      mInputEntityArray1.splice (i, 1);
                      -- num1;
@@ -520,7 +523,7 @@ package player.trigger.entity
                {
                   entity1 = mInputEntityArray1 [i];
                   
-                  if (entity1 == null || entity1.IsDestroyedAlready ())
+                  if (entity1 == null) // || entity1.IsDestroyedAlready ())
                   {
                      mInputEntityArray1.splice (i, 1);
                      -- num1;

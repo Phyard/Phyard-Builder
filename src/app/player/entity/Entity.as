@@ -352,7 +352,7 @@ package player.entity {
       
       final public function DelayUpdateAppearance ():void
       {
-         if (! mIsAlreadyInDelayUpdateAppearanceList)
+         if (! (mIsAlreadyInDelayUpdateAppearanceList || mAlreadyDestroyed))
          {
             mIsAlreadyInDelayUpdateAppearanceList = true;
             mWorld.DelayUpdateEntityAppearance (this);

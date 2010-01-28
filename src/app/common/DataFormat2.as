@@ -1752,7 +1752,7 @@ package common {
                   
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
-                     if (worldDefine.mVersion < 0x0107)
+                     if (worldDefine.mVersion >= 0x0105 && worldDefine.mVersion < 0x0107)
                      {
                         if (entityDefine.mBorderThickness != 0)
                            entityDefine.mRadius = entityDefine.mRadius - 0.5;
@@ -1765,7 +1765,7 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
-                     if (worldDefine.mVersion < 0x0107)
+                     if (worldDefine.mVersion >= 0x0105 && worldDefine.mVersion < 0x0107)
                      {
                         if (entityDefine.mBorderThickness != 0)
                         {
@@ -1787,7 +1787,7 @@ package common {
                      
                      if (worldDefine.mVersion < 0x0107)
                      {
-                        if (entityDefine.mCurveThickness < 2.0)
+                        if (entityDefine.mBorderThickness < 2.0)
                            entityDefine.mBuildBorder = false;
                      }
                   }
@@ -1802,7 +1802,7 @@ package common {
                      if (worldDefine.mVersion < 0x0107)
                      {
                         if (entityDefine.mCurveThickness < 2.0)
-                           entityDefine.mBuildBorder = false;
+                           entityDefine.mIsPhysicsEnabled = false;
                      }
                   }
                }
@@ -1836,7 +1836,9 @@ package common {
                {
                   entityDefine.mLowerAngle = ValueAdjuster.Number2Precision (entityDefine.mLowerAngle, 6);
                   entityDefine.mUpperAngle = ValueAdjuster.Number2Precision (entityDefine.mUpperAngle, 6);
-                  entityDefine.mMotorSpeed = ValueAdjuster.Number2Precision (entityDefine.mMotorSpeed, 6);
+                  
+                  if (worldDefine.mVersion < 0x0107)
+                     entityDefine.mMotorSpeed *= (0.1 * Define.kRadians2Degrees); // for a history bug
                   
                   if (worldDefine.mVersion < 0x0108)
                   {
@@ -1846,6 +1848,7 @@ package common {
                      worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex].mIsVisible = entityDefine.mIsVisible;
                   }
                   
+                  entityDefine.mMotorSpeed = ValueAdjuster.Number2Precision (entityDefine.mMotorSpeed, 6);
                   entityDefine.mMaxMotorTorque = ValueAdjuster.Number2Precision (entityDefine.mMaxMotorTorque, 6);
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
@@ -2024,6 +2027,26 @@ package common {
             {
                if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
                {
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
+                  {
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
+                  {
+                     if (worldDefine.mVersion < 0x0108)
+                     {
+                        entityDefine.mIsRoundCorners = false;
+                     }
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
+                  {
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
+                  {
+                     if (worldDefine.mVersion < 0x0108)
+                     {
+                        entityDefine.mIsRoundEnds = true;
+                     }
+                  }
                }
                else // not physis shape
                {
@@ -2037,7 +2060,7 @@ package common {
                      {
                         entityDefine.mAdaptiveBackgroundSize = false;
                         entityDefine.mTextColor = 0x0;
-                        entityDefine.font_size = 10;
+                        entityDefine.mFontSize = 10;
                         entityDefine.mIsBold = false;
                         entityDefine.mIsItalic = false;
                      }
@@ -2105,9 +2128,6 @@ package common {
                {
                   if (worldDefine.mVersion < 0x0104)
                      entityDefine.mMaxMotorTorque = Define.DefaultHingeMotorTorque;
-                  
-                  if (worldDefine.mVersion < 0x0107)
-                     entityDefine.mMotorSpeed *= (0.1 * Define.kRadians2Degrees); // for a history bug
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
                {

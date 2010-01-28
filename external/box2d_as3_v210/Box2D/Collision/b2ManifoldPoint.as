@@ -25,21 +25,21 @@ package Box2D.Collision
 		// this function doesn't exist in the c++ version
 		public function CopyFrom (another:b2ManifoldPoint):void
 		{
-			m_localPoint.x = another.m_localPoint.x;
-			m_localPoint.y = another.m_localPoint.y;
-			m_normalImpulse = another.m_normalImpulse;
-			m_tangentImpulse = another.m_tangentImpulse;
+			localPoint.x = another.localPoint.x;
+			localPoint.y = another.localPoint.y;
+			normalImpulse = another.normalImpulse;
+			tangentImpulse = another.tangentImpulse;
 			
 			//m_id.CopyFrom (another.m_id);
-			m_id = another.m_id;
+			id = another.id;
 		}
 		
-		public var m_localPoint:b2Vec2 = new b2Vec2 ();		///< usage depends on manifold type
-		public var m_normalImpulse:Number;	///< the non-penetration impulse
-		public var m_tangentImpulse:Number;	///< the friction impulse
-		//public var m_id:b2ContactID = new b2ContactID ();			///< uniquely identifies a contact point between two shapes
+		public var localPoint:b2Vec2 = new b2Vec2 ();		///< usage depends on manifold type
+		public var normalImpulse:Number;	///< the non-penetration impulse
+		public var tangentImpulse:Number;	///< the friction impulse
+		//public var id:b2ContactID = new b2ContactID ();			///< uniquely identifies a contact point between two shapes
 		// hacking to optimize
-		public var m_id:uint;
+		public var id:uint;
 		
 	} // class
 } // package

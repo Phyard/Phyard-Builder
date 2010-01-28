@@ -38,17 +38,17 @@ public static function b2GetPointStates(
 	}
 
 	// Detect persists and removes.
-	for (i = 0; i < manifold1.m_pointCount; ++i)
+	for (i = 0; i < manifold1.pointCount; ++i)
 	{
 		//id = (manifold1.m_points[i] as b2ManifoldPoint).m_id.Clone ();
-		id = (manifold1.m_points[i] as b2ManifoldPoint).m_id;
+		id = (manifold1.points[i] as b2ManifoldPoint).id;
 
 		state1[i] = b2_removeState;
 
-		for (j = 0; j < manifold2.m_pointCount; ++j)
+		for (j = 0; j < manifold2.pointCount; ++j)
 		{
 			//if ((manifold2.m_points[j] as b2ManifoldPoint).m_id.key == id.key)
-			if ((manifold2.m_points[j] as b2ManifoldPoint).m_id == id)
+			if ((manifold2.points[j] as b2ManifoldPoint).id == id)
 			{
 				state1[i] = b2_persistState;
 				break;
@@ -57,17 +57,17 @@ public static function b2GetPointStates(
 	}
 
 	// Detect persists and adds.
-	for (i = 0; i < manifold2.m_pointCount; ++i)
+	for (i = 0; i < manifold2.pointCount; ++i)
 	{
 		//id = (manifold2.m_points[i] as b2ManifoldPoint).m_id.Clone ();
-		id = (manifold2.m_points[i] as b2ManifoldPoint).m_id;
+		id = (manifold2.points[i] as b2ManifoldPoint).id;
 
 		state2[i] = b2_addState;
 
-		for (j = 0; j < manifold1.m_pointCount; ++j)
+		for (j = 0; j < manifold1.pointCount; ++j)
 		{
 			//if ((manifold1.m_points[j] as b2ManifoldPoint).m_id.key == id.key)
-			if ((manifold1.m_points[j] as b2ManifoldPoint).m_id == id)
+			if ((manifold1.points[j] as b2ManifoldPoint).id == id)
 			{
 				state2[i] = b2_persistState;
 				break;

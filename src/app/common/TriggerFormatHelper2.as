@@ -142,8 +142,22 @@ package common {
                   value_source = new ValueSource_Direct (direct_source_define.mValueObject as String);
                   break;
                case ValueTypeDefine.ValueType_Entity:
-                  value_source = new ValueSource_Direct (playerWorld.GetEntityByCreationId (direct_source_define.mValueObject as int));
+               {
+                  var entityIndex:int = direct_source_define.mValueObject as int;
+                  if (entityIndex < 0)
+                  {
+                     if (entityIndex == Define.EntityId_Ground)
+                        value_source = new ValueSource_Direct (playerWorld);
+                     else // if (entityIndex == Define.EntityId_None)
+                        value_source = new ValueSource_Direct (null);
+                  }
+                  else
+                  {
+                     value_source = new ValueSource_Direct (playerWorld.GetEntityByCreationId (entityIndex));
+                  }
+                  
                   break;
+               }
                case ValueTypeDefine.ValueType_CollisionCategory:
                   value_source = new ValueSource_Direct (playerWorld.GetCollisionCategoryById (direct_source_define.mValueObject as int));
                   break;
@@ -552,6 +566,7 @@ package common {
                var sourceDefine:ValueSourceDefine;
                var direcSourceDefine:ValueSourceDefine_Direct;
                var sourceValueType:int;
+               var valueType:int;
                var directNumber:Number;
                var numberDetail:int;
                var numInputs:int = funcCallingDefine.mNumInputs;
@@ -560,28 +575,33 @@ package common {
                {
                   sourceDefine = funcCallingDefine.mInputValueSourceDefines [j];
                   sourceValueType = sourceDefine.GetValueSourceType ();
+                  valueType = funcDclaration.GetInputParamValueType (j);
                   
-                  if (sourceValueType == ValueTypeDefine.ValueType_Number && sourceDefine is ValueSourceDefine_Direct)
+                  if (sourceValueType == ValueSourceTypeDefine.ValueSource_Direct)
                   {
                      direcSourceDefine = sourceDefine as ValueSourceDefine_Direct;
-                     directNumber = Number (direcSourceDefine.mValueObject);
-                     numberDetail = funcDclaration.GetInputNumberTypeDetail (j);
                      
-                     switch (numberDetail)
+                     if (valueType == ValueTypeDefine.ValueType_Number)
                      {
-                        case ValueTypeDefine.NumberTypeDetail_Single:
-                           directNumber = ValueAdjuster.Number2Precision (directNumber, 6);
-                           break;
-                        case ValueTypeDefine.NumberTypeDetail_Integer:
-                           directNumber = Math.round (directNumber);
-                           break;
-                        case ValueTypeDefine.NumberTypeDetail_Double:
-                        default:
-                           directNumber = ValueAdjuster.Number2Precision (directNumber, 12);
-                           break;
+                        directNumber = Number (direcSourceDefine.mValueObject);
+                        numberDetail = funcDclaration.GetInputNumberTypeDetail (j);
+                        
+                        switch (numberDetail)
+                        {
+                           case ValueTypeDefine.NumberTypeDetail_Single:
+                              directNumber = ValueAdjuster.Number2Precision (directNumber, 6);
+                              break;
+                           case ValueTypeDefine.NumberTypeDetail_Integer:
+                              directNumber = Math.round (directNumber);
+                              break;
+                           case ValueTypeDefine.NumberTypeDetail_Double:
+                           default:
+                              directNumber = ValueAdjuster.Number2Precision (directNumber, 12);
+                              break;
+                        }
+                        
+                        direcSourceDefine.mValueObject = directNumber;
                      }
-                     
-                     direcSourceDefine.mValueObject = directNumber;
                   }
                }
             }

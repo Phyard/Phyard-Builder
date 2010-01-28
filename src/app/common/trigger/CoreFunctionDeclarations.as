@@ -231,6 +231,24 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsString,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsCCat,
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Larger,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -675,6 +693,16 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Clamp,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
          
       // game / design
          
@@ -690,6 +718,14 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetMousePosition,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,
+                     ]
+                  );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,
@@ -824,6 +860,10 @@ package common.trigger {
                      ],
                      null
                   );
+         
+     // game / world / appearance
+         
+         
          
      // game / collision category
          

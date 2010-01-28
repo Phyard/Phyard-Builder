@@ -164,30 +164,6 @@ public function SetFilterData(filter:b2Filter):void
 
 public function SetSensor(sensor:Boolean):void
 {
-	if (m_isSensor == sensor)
-	{
-		return;
-	}
-
 	m_isSensor = sensor;
-
-	if (m_body == null)
-	{
-		return;
-	}
-
-	var edge:b2ContactEdge = m_body.GetContactList();
-	while (edge != null)
-	{
-		var contact:b2Contact = edge.contact;
-		var fixtureA:b2Fixture = contact.GetFixtureA();
-		var fixtureB:b2Fixture = contact.GetFixtureB();
-		if (fixtureA == this || fixtureB == this)
-		{
-			contact.SetSensor(fixtureA.IsSensor() || fixtureB.IsSensor());
-		}
-		
-		edge = edge.next;
-	}
 }
 

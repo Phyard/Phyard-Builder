@@ -11,6 +11,8 @@ package editor.trigger {
    
    import common.trigger.ValueTypeDefine;
    
+   import common.Define;
+   
    public class VariableDefinitionEntity extends VariableDefinition
    {
    //========================================================================================================
@@ -21,6 +23,7 @@ package editor.trigger {
       protected var mExceptClasses:Array = null;
       protected var mNullValueEnabled:Boolean = true;
       protected var mMultiValuesEnabled:Boolean = false;
+      protected var mGroundSelectable:Boolean = false;
       
       public function VariableDefinitionEntity (name:String, description:String = null, options:Object = null)
       {
@@ -36,6 +39,8 @@ package editor.trigger {
                mNullValueEnabled = Boolean (options.mNullValueEnabled);
             if (options.mMultiValuesEnabled != undefined)
                mMultiValuesEnabled = Boolean (options.mMultiValuesEnabled);
+            if (options.mGroundSelectable != undefined)
+               mGroundSelectable = Boolean (options.mGroundSelectable);
          }
       }
       
@@ -148,13 +153,24 @@ package editor.trigger {
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
       {
          var world:World = Runtime.GetCurrentWorld ();
-         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (IsValidEntity);
+         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable);
          
          var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
          var sel_index:int = -1;
-         var entity_index:int = -1;
-         if (entity != null)
+         var entity_index:int = Define.EntityId_None;
+         
+         if (entity == null)
+         {
+            if (valueSourceDirect.GetValueObject () is World)
+            {
+               entity_index = Define.EntityId_Ground;
+            }
+         }
+         else
+         {
             entity_index = entity.GetCreationOrderId ();
+         }
+         
          sel_index = World.EntityIndex2SelectListSelectedIndex (entity_index, entity_list);
          
          var combo_box:ComboBox = new ComboBox ();
@@ -179,9 +195,16 @@ package editor.trigger {
                var world:World = Runtime.GetCurrentWorld ();
                var entity_index:int = combo_box.selectedItem.mEntityIndex;
                if (entity_index < 0)
-                  valueSourceDirect.SetValueObject (null);
+               {
+                  if (entity_index == Define.EntityId_Ground)
+                     valueSourceDirect.SetValueObject (Runtime.GetCurrentWorld ());
+                  else // if (entity_index == Define.EntityId_None)
+                     valueSourceDirect.SetValueObject (null);
+               }
                else
+               {
                   valueSourceDirect.SetValueObject (world.GetEntityByCreationId (entity_index));
+               }
             }
          }
       }

@@ -33,16 +33,16 @@ package Box2D.Collision
 		// this function doesn't exist in the c++ version
 		public function CopyFrom (another:b2Manifold):void
 		{
-			m_localPlaneNormal.x = another.m_localPlaneNormal.x;
-			m_localPlaneNormal.y = another.m_localPlaneNormal.y;
-			m_localPoint.x = another.m_localPoint.x;
-			m_localPoint.y = another.m_localPoint.y;
-			m_type = another.m_type;
+			localNormal.x = another.localNormal.x;
+			localNormal.y = another.localNormal.y;
+			localPoint.x = another.localPoint.x;
+			localPoint.y = another.localPoint.y;
+			type = another.type;
 			
-			m_pointCount = another.m_pointCount;
-			for (var i:int = 0; i < m_pointCount; ++ i)
+			pointCount = another.pointCount;
+			for (var i:int = 0; i < pointCount; ++ i)
 			{
-				(m_points [i] as b2ManifoldPoint).CopyFrom (another.m_points [i] as b2ManifoldPoint);
+				(points [i] as b2ManifoldPoint).CopyFrom (another.points [i] as b2ManifoldPoint);
 			}
 		}
 		
@@ -51,7 +51,7 @@ package Box2D.Collision
 		{
 			for (var i:int = 0; i < b2Settings.b2_maxManifoldPoints; ++ i)
 			{
-				m_points [i] = new b2ManifoldPoint ();
+				points [i] = new b2ManifoldPoint ();
 			}
 		}
 		
@@ -62,12 +62,12 @@ package Box2D.Collision
 			public static const e_faceB:int = 2;
 		//};
 
-		public var m_points:Array = new Array (b2Settings.b2_maxManifoldPoints);	///< the points of contact
-		public var m_localPlaneNormal:b2Vec2 = new b2Vec2 ();						///< not use for Type::e_points
-		public var m_localPoint:b2Vec2 = new b2Vec2 ();							///< usage depends on manifold type
+		public var points:Array = new Array (b2Settings.b2_maxManifoldPoints);	///< the points of contact
+		public var localNormal:b2Vec2 = new b2Vec2 ();						///< not use for Type::e_points
+		public var localPoint:b2Vec2 = new b2Vec2 ();							///< usage depends on manifold type
 		//Type m_type;
-		public var m_type:int;
-		public var m_pointCount:int;								///< the number of manifold points
+		public var type:int;
+		public var pointCount:int;								///< the number of manifold points
 		
 		// hacking
 		public var mNextManifoldInPool:b2Manifold = null;

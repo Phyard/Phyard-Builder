@@ -304,6 +304,7 @@ package Box2D.Dynamics
 			public static const e_bulletFlag:int			= 0x0008;
 			public static const e_fixedRotationFlag:int	= 0x0010;
 			public static const e_activeFlag:int			= 0x0020;
+			public static const e_toiFlag:int				= 0x0040;
 		//};
 
 		//b2Body(const b2BodyDef* bd, b2World* world);
@@ -396,6 +397,11 @@ package Box2D.Dynamics
 				return;
 			}
 
+			if (b2Math.b2Dot2 (v,v) > 0.0)
+			{
+				SetAwake(true);
+			}
+
 			//m_linearVelocity = v;
 			m_linearVelocity.x = v.x;
 			m_linearVelocity.y = v.y;
@@ -413,6 +419,11 @@ package Box2D.Dynamics
 			if (m_type == b2_staticBody)
 			{
 				return;
+			}
+
+			if (w * w > 0.0)
+			{
+				SetAwake(true);
 			}
 
 			m_angularVelocity = w;
@@ -546,8 +557,11 @@ package Box2D.Dynamics
 		{
 			if (flag)
 			{
-				m_flags |= e_awakeFlag;
-				m_sleepTime = 0.0;
+				if ((m_flags & e_awakeFlag) == 0)
+				{
+					m_flags |= e_awakeFlag;
+					m_sleepTime = 0.0;
+				}
 			}
 			else
 			{
@@ -781,7 +795,7 @@ package Box2D.Dynamics
 			
 		// adjust local coordinates for shapes
 			
-			var fixture:b2Fixture = m_fixtureList; 
+			var fixture:b2Fixture = m_fixtureList;
 			while (fixture != null)
 			{
 				fixture.GetShape ().OnBodyLocalCenterChanged (dx, dy);

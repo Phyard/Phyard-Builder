@@ -904,7 +904,7 @@ package editor.world {
 //   queries
 //=================================================================================
       
-      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, nullEntityLable:String = "(null)", includeGround:Boolean = false):Array
+      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, includeGround:Boolean = false, nullEntityLable:String = "(null)"):Array
       {
          var list:Array = new Array ();
          

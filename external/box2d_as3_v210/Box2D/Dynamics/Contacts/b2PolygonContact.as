@@ -26,9 +26,11 @@ package Box2D.Dynamics.Contacts
 	//class b2BlockAllocator;
 	
 	import Box2D.Common.b2BlockAllocator;
+	import Box2D.Common.b2Transform;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Collision.b2Collision;
+	import Box2D.Collision.b2Manifold;
 	import Box2D.Collision.Shapes.b2PolygonShape;
 
 	public class b2PolygonContact extends b2Contact
@@ -43,7 +45,7 @@ package Box2D.Dynamics.Contacts
 		//~b2PolygonContact() {}
 		public function _b2PolygonContact ():void {}
 
-		//void Evaluate();
+		//void Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB);
 	} // class
 } // package
 //#endif

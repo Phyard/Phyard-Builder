@@ -27,7 +27,6 @@ package Box2D.Common
 			c.y = another.c.y;
 			a0 = another.a0;
 			a = another.a;
-			t0 = another.t0;
 		}
 		
 		private static var mVec2:b2Vec2 = new b2Vec2 ();
@@ -52,21 +51,15 @@ package Box2D.Common
 		/// @param t the new initial time.
 		public function Advance(t:Number):void
 		{
-			if (t0 < t && 1.0 - t0 > b2Settings.b2_epsilon)
-			{
-				var alpha:Number = (t - t0) / (1.0 - t0);
-				var _alpha:Number = 1.0 - alpha;
-				c0.x = _alpha * c0.x + alpha * c.x;
-				c0.y = _alpha * c0.y + alpha * c.y;
-				a0 = _alpha * a0 + alpha * a;
-				t0 = t;
-			}
+			var _t:Number = 1.0 - t;
+			c0.x = _t * c0.x + t * c.x;
+			c0.y = _t * c0.y + t * c.y;
+			a0 = _t * a0 + t * a;
 		}
 
 		public var localCenter:b2Vec2 = new b2Vec2 ();	///< local center of mass position
 		public var c0:b2Vec2 = new b2Vec2 (), c:b2Vec2 = new b2Vec2 ();		///< center world positions
 		public var a0:Number, a:Number;		///< world angles
-		public var t0:Number;			///< time interval = [t0,1], where t0 is in [0,1]
 		
 	} // class
 } // package

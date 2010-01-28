@@ -12,6 +12,23 @@ public function IsForbidMouseAndKeyboardEventHandling ():Boolean
 //   
 //=============================================================
 
+private var mCurrentMouseX:Number = 0;
+private var mCurrentMouseY:Number = 0;
+
+public function GetCurrentMouseX ():Number
+{
+   return mCurrentMouseX;
+}
+
+public function GetCurrentMouseY ():Number
+{
+   return mCurrentMouseY;
+}
+
+//=============================================================
+//   
+//=============================================================
+
 private var mCurrentMode:Mode = null;
 
 public function SetCurrentMode (mode:Mode):void
@@ -187,8 +204,11 @@ public function MouseEvent2ValueSourceList (event:MouseEvent):ValueSource_Direct
    point = globalToLocal (point);
    point = mCoordinateSystem.DisplayPoint2PhysicsPosition (point.x, point.y);
    
-   mMouseEventHandlerValueSource1.mValueObject = point.x;
-   mMouseEventHandlerValueSource2.mValueObject = point.y;
+   mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
+   mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
+   
+   mMouseEventHandlerValueSource1.mValueObject = mCurrentMouseX;
+   mMouseEventHandlerValueSource2.mValueObject = mCurrentMouseY;
    mMouseEventHandlerValueSource3.mValueObject = event.buttonDown;
    mMouseEventHandlerValueSource4.mValueObject = event.ctrlKey;
    mMouseEventHandlerValueSource5.mValueObject = event.shiftKey;

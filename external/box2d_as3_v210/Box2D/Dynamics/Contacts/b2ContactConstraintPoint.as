@@ -11,7 +11,6 @@ package Box2D.Dynamics.Contacts
 		public var tangentImpulse:Number;
 		public var normalMass:Number;
 		public var tangentMass:Number;
-		public var equalizedMass:Number;
 		public var velocityBias:Number;
 	} // class
 } // package

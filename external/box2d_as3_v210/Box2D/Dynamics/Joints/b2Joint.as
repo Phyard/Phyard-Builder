@@ -166,9 +166,6 @@ package Box2D.Dynamics.Joints
 		//virtual void SolveVelocityConstraints(const b2TimeStep& step) = 0;
 		public function SolveVelocityConstraints(step:b2TimeStep):void {}
 
-		//virtual void FinalizeVelocityConstraints() {}
-		public function FinalizeVelocityConstraints():void {}
-
 		// This returns true if the position errors are within tolerance.
 		//virtual bool SolvePositionConstraints(float32 baumgarte) = 0;
 		public function SolvePositionConstraints(baumgarte:Number):Boolean {return false;}

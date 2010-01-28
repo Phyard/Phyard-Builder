@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2010 Erin Catto http://www.gphysics.com
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,60 +16,51 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-//#ifndef B2_CONTACT_SOLVER_H
-//#define B2_CONTACT_SOLVER_H
+//#ifndef B2_TOI_SOLVER_H
+//#define B2_TOI_SOLVER_H
 
 package Box2D.Dynamics.Contacts
 {
 	//#include <Box2D/Common/b2Math.h>
-	//#include <Box2D/Collision/b2Collision.h>
-	//#include <Box2D/Dynamics/b2Island.h>
 
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2StackAllocator;
-	import Box2D.Dynamics.b2TimeStep;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2Fixture;
-	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.b2Manifold;
-	import Box2D.Collision.b2WorldManifold;
 	import Box2D.Collision.b2ManifoldPoint;
+	import Box2D.Collision.Shapes.b2Shape;
 
 	//class b2Contact;
 	//class b2Body;
-	//class b2Island;
+	//struct b2TOIConstraint;
 	//class b2StackAllocator;
 
-	//struct b2ContactConstraintPoint
-	//{
-		//@see b2ContactConstraintPoint.cpp
-	//};
-
-	//struct b2ContactConstraint
-	//{
-		//@see b2ContactConstraint.cpp
-	//};
-
-	public class b2ContactSolver
+	/// This is a pure position solver for a single movable body in contact with
+	/// multiple non-moving bodies.
+	public class b2TOISolver
 	{
-		include "b2ContactSolver.cpp";
+		include "b2TOISolver.cpp";
 		
 	//public:
-		//b2ContactSolver(b2Contact** contacts, int32 contactCount, b2StackAllocator* allocator, float32 impulseRatio);
-		//~b2ContactSolver();
+		//b2TOISolver(b2StackAllocator* allocator);
+		//~b2TOISolver();
 
-		//void WarmStart();
-		//void SolveVelocityConstraints();
-		//void StoreImpulses();
+		//void Initialize(b2Contact** contacts, int32 contactCount, b2Body* toiBody);
+		//void Clear();
 
-		//bool SolvePositionConstraints(float32 baumgarte);
+		// Perform one solver iteration. Returns true if converged.
+		//bool Solve(float32 baumgarte);
 
-		public var m_allocator:b2StackAllocator;
-		//b2ContactConstraint* m_constraints;
-		public var m_constraints:Array = m_ConstraintsArray;
-		public var m_constraintCount:int = 0;
-	} // class
-} // package
+	//private:
+
+		//b2TOIConstraint* m_constraints;
+		private var m_constraints:Array = null;
+		private var m_count:int;
+		private var m_toiBody:b2Body;
+		private var m_allocator:b2StackAllocator;
+	}
+}
 //#endif

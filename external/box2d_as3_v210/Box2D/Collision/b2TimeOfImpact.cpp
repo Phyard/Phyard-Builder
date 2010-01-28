@@ -27,102 +27,81 @@
 public static var b2_toiCalls:int, b2_toiIters:int, b2_toiMaxIters:int;
 public static var b2_toiRootIters:int, b2_toiMaxRootIters:int;
 
+public static var b2_toiMaxOptIters:int;
+
 //struct b2SeparationFunction
 //{
 	//@see b2SeparationFunction.as
 //};
 
-private static var mSimplexCache:b2SimplexCache = new b2SimplexCache ();
-private static var mDistanceInput:b2DistanceInput = new b2DistanceInput ();
-private static var mDistanceOutput:b2DistanceOutput = new b2DistanceOutput ();
-private static var m_xfA:b2Transform = new b2Transform ();
-private static var m_xfB:b2Transform = new b2Transform ();
-private static var mSeparationFunction:b2SeparationFunction = new b2SeparationFunction ();
-// CCD via the secant method.
-public static function b2TimeOfImpact_(input:b2TOIInput):Number
+private static var sSimplexCache:b2SimplexCache = new b2SimplexCache ();
+private static var sDistanceInput:b2DistanceInput = new b2DistanceInput ();
+private static var sDistanceOutput:b2DistanceOutput = new b2DistanceOutput ();
+
+private static var xfA:b2Transform = new b2Transform ();
+private static var xfB:b2Transform = new b2Transform ();
+
+private static var sSeparationFunction:b2SeparationFunction = new b2SeparationFunction ();
+private static var sFindMinSeparationOutput:b2FindMinSeparationOutput = new b2FindMinSeparationOutput ();
+
+// CCD via the local separating axis method. This seeks progression
+// by computing the largest time at which separation is maintained.
+public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):void
 {
 	++b2_toiCalls;
 
-	var proxyA:b2DistanceProxy = input.proxyA;
-	var proxyB:b2DistanceProxy = input.proxyB;
+	output.state = b2TOIOutput.e_unknown;
+	output.t = input.tMax;
+
+	const proxyA:b2DistanceProxy = input.proxyA;
+	const proxyB:b2DistanceProxy = input.proxyB;
 
 	var sweepA:b2Sweep = input.sweepA; //.Clone ();
 	var sweepB:b2Sweep = input.sweepB; //.Clone ();
+	var tMax:Number = input.tMax;
 
-	//b2Assert(sweepA.t0 == sweepB.t0);
-	//b2Assert(1.0f - sweepA.t0 > b2Settings.b2_epsilon);
+	var target:Number = b2Settings.b2_linearSlop;
+	var tolerance:Number = 0.25 * b2Settings.b2_linearSlop;
+	//b2Assert(target > tolerance);
 
-	var radius:Number = proxyA.m_radius + proxyB.m_radius;
-	var tolerance:Number = input.tolerance;
-
-	var alpha:Number = 0.0;
-
+	var t1:Number = 0.0;
 	const k_maxIterations:int = 1000;	// TODO_ERIN b2Settings
 	var iter:int = 0;
-	var target:Number = 0.0;
 
 	// Prepare input for distance query.
-	var cache:b2SimplexCache = mSimplexCache; //new b2SimplexCache ();
+	var cache:b2SimplexCache = sSimplexCache;
 	cache.count = 0;
-	var distanceInput:b2DistanceInput = mDistanceInput; //new b2DistanceInput ();
-	distanceInput.proxyA = input.proxyA; //.CopyFrom (input.proxyA);
-	distanceInput.proxyB = input.proxyB; //.CopyFrom (input.proxyB);
+	var distanceInput:b2DistanceInput = sDistanceInput;
+	distanceInput.proxyA = input.proxyA;
+	distanceInput.proxyB = input.proxyB;
 	distanceInput.useRadii = false;
 
+	// The outer loop progressively attempts to compute new separating axes.
+	// This loop terminates when an axis is repeated (no progress is made).
 	for(;;)
 	{
-		var xfA:b2Transform = m_xfA; //new b2Transform ();
-		var xfB:b2Transform = m_xfB; //new b2Transform ();
-		sweepA.GetTransform(xfA, alpha);
-		sweepB.GetTransform(xfB, alpha);
+		sweepA.GetTransform(xfA, t1);
+		sweepB.GetTransform(xfB, t1);
 
-		// Get the distance between shapes.
-		distanceInput.transformA = xfA; //.CopyFrom (xfA);
-		distanceInput.transformB = xfB; //.CopyFrom (xfB);
-		var distanceOutput:b2DistanceOutput = mDistanceOutput; //new b2DistanceOutput ();
+		// Get the distance between shapes. We can also use the results
+		// to get a separating axis.
+		distanceInput.transformA = xfA; // .CopyFrom
+		distanceInput.transformB = xfB; // .CopyFrom
+		var distanceOutput:b2DistanceOutput = sDistanceOutput;
 		b2Distance.b2Distance_ (distanceOutput, cache, distanceInput);
 
+		// If the shapes are overlapped, we give up on continuous collision.
 		if (distanceOutput.distance <= 0.0)
 		{
-			alpha = 1.0;
+			// Failure!
+			output.state = b2TOIOutput.e_overlapped;
+			output.t = 0.0;
 			break;
 		}
 
-		var fcn:b2SeparationFunction = mSeparationFunction; //new b2SeparationFunction ();
-		fcn.Initialize(cache, proxyA, xfA, proxyB, xfB);
-
-		var separation:Number = fcn.Evaluate(xfA, xfB);
-		if (separation <= 0.0)
-		{
-			alpha = 1.0;
-			break;
-		}
-
-		if (iter == 0)
-		{
-			// Compute a reasonable target distance to give some breathing room
-			// for conservative advancement. We take advantage of the shape radii
-			// to create additional clearance.
-			if (separation > radius)
-			{
-				target = Math.max(radius - tolerance, 0.75 * radius);
-			}
-			else
-			{
-				target = Math.max(separation - tolerance, 0.02 * radius);
-			}
-		}
-
-		if (separation - target < 0.5 * tolerance)
-		{
-			if (iter == 0)
-			{
-				alpha = 1.0;
-				break;
-			}
-
-			break;
-		}
+		// Initialize the separating axis.
+		var fcn:b2SeparationFunction = sSeparationFunction;
+		fcn.Initialize(cache, proxyA, sweepA, proxyB, sweepB);
 
 //#if 0
 //		// Dump the curve seen by the root finder
@@ -150,62 +129,98 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 //		}
 //#endif
 
-		// Compute 1D root of: f(x) - target = 0
-		var newAlpha:Number = alpha;
+		// Compute the TOI on the separating axis. We do this by successively
+		// resolving the deepest point. This loop is bounded by the number of vertices.
+		var done:Boolean = false;
+		var t2:Number = tMax;
+		for (;;)
 		{
-			var x1:Number = alpha, x2:Number = 1.0;
+			// Find the deepest point at t2. Store the witness point indices.
+			fcn.FindMinSeparation(sFindMinSeparationOutput, t2);
+			var indexA:int = sFindMinSeparationOutput.indexA, 
+				indexB:int = sFindMinSeparationOutput.indexB;
+			var s2:Number = sFindMinSeparationOutput.separation;
 
-			var f1:Number = separation;
-
-			sweepA.GetTransform(xfA, x2);
-			sweepB.GetTransform(xfB, x2);
-			var f2:Number = fcn.Evaluate(xfA, xfB);
-
-			// If intervals don't overlap at t2, then we are done.
-			if (f2 >= target)
+			// Is the final configuration separated?
+			if (s2 > target + tolerance)
 			{
-				alpha = 1.0;
+				// Victory!
+				output.state = b2TOIOutput.e_separated;
+				output.t = tMax;
+				done = true;
 				break;
 			}
 
-			// Determine when intervals intersect.
+			// Is the final configuration touching?
+			if (s2 > target - tolerance)
+			{
+				// Victory!
+				output.state = b2TOIOutput.e_touching;
+				output.t = t2;
+				done = true;
+				break;
+			}
+
+			// Compute the initial separation of the witness points.
+			var s1:Number = fcn.Evaluate(indexA, indexB, t1);
+
+			// Check for initial overlap. This might happen if the root finder
+			// runs out of iterations.
+			if (s1 < target - tolerance)
+			{
+				output.state = b2TOIOutput.e_failed;
+				output.t = t1;
+				done = true;
+				break;
+			}
+
+			// Check for touching
+			if (s1 <= target + tolerance)
+			{
+				// Victory! t1 should hold the TOI (could be 0.0).
+				output.state = b2TOIOutput.e_touching;
+				output.t = t1;
+				done = true;
+				break;
+			}
+
+			// Compute 1D root of: f(x) - target = 0
 			var rootIterCount:int = 0;
+			var a1:Number = t1, a2:Number = t2;
 			for (;;)
 			{
 				// Use a mix of the secant rule and bisection.
-				var x:Number;
-				if ((rootIterCount & 1) != 0)
+				var t:Number;
+				if (rootIterCount & 1)
 				{
 					// Secant rule to improve convergence.
-					x = x1 + (target - f1) * (x2 - x1) / (f2 - f1);
+					t = a1 + (target - s1) * (a2 - a1) / (s2 - s1);
 				}
 				else
 				{
 					// Bisection to guarantee progress.
-					x = 0.5 * (x1 + x2);
+					t = 0.5 * (a1 + a2);
 				}
 
-				sweepA.GetTransform(xfA, x);
-				sweepB.GetTransform(xfB, x);
+				var s:Number = fcn.Evaluate(indexA, indexB, t);
 
-				var f:Number = fcn.Evaluate(xfA, xfB);
-
-				if (Math.abs(f - target) < 0.025 * tolerance)
+				if (Math.abs (s - target) < tolerance)
 				{
-					newAlpha = x;
+					// t2 holds a tentative value for t1
+					t2 = t;
 					break;
 				}
 
 				// Ensure we continue to bracket the root.
-				if (f > target)
+				if (s > target)
 				{
-					x1 = x;
-					f1 = f;
+					a1 = t;
+					s1 = s;
 				}
 				else
 				{
-					x2 = x;
-					f2 = f;
+					a2 = t;
+					s2 = s;
 				}
 
 				++rootIterCount;
@@ -217,27 +232,25 @@ public static function b2TimeOfImpact_(input:b2TOIInput):Number
 				}
 			}
 
-			b2_toiMaxRootIters = b2Math.b2Max_int (b2_toiMaxRootIters, rootIterCount);
+			b2_toiMaxRootIters = Math.max (b2_toiMaxRootIters, rootIterCount);
 		}
-
-		// Ensure significant advancement.
-		if (newAlpha < (1.0 + 100.0 * b2Settings.b2_epsilon) * alpha)
-		{
-			break;
-		}
-
-		alpha = newAlpha;
 
 		++iter;
 		++b2_toiIters;
 
+		if (done)
+		{
+			break;
+		}
+
 		if (iter == k_maxIterations)
 		{
+			// Root finder got stuck. Semi-victory.
+			output.state = b2TOIOutput.e_failed;
+			output.t = t1;
 			break;
 		}
 	}
 
-	b2_toiMaxIters = b2_toiMaxIters > iter ? b2_toiMaxIters : iter;
-
-	return alpha;
+	b2_toiMaxIters = Math.max (b2_toiMaxIters, iter);
 }

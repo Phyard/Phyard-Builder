@@ -678,6 +678,9 @@ package common {
                editorWorld.SetWorldBorderTopThickness (worldDefine.mSettings.mWorldBorderTopThickness);
                editorWorld.SetWorldBorderRightThickness (worldDefine.mSettings.mWorldBorderRightThickness);
                editorWorld.SetWorldBorderBottomThickness (worldDefine.mSettings.mWorldBorderBottomThickness);
+         trace ("###########################");
+         trace ("worldDefine.mSettings.mWorldBorderLeftThickness = " + worldDefine.mSettings.mWorldBorderLeftThickness);
+         trace ("worldDefine.mSettings.mWorldBorderTopThickness = " + worldDefine.mSettings.mWorldBorderTopThickness);
                
                editorWorld.SetDefaultGravityAccelerationMagnitude (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
                editorWorld.SetDefaultGravityAccelerationAngle (worldDefine.mSettings.mDefaultGravityAccelerationAngle);
@@ -1184,6 +1187,7 @@ package common {
          //<<<
          
          // modify, 2nd round
+         
          for (createId = 0; createId < numEntities; ++ createId)
          {
             entityDefine = worldDefine.mEntityDefines [createId];
@@ -1231,14 +1235,14 @@ package common {
                
                // from v1.02
                if (entityDefine.mConnectedShape1Index >= 0)
-                  joint.SetConnectedShape1Index (int(entityDefine.mConnectedShape1Index) + beginningEntityIndex);
-               else
-                  joint.SetConnectedShape1Index (entityDefine.mConnectedShape1Index);
+                  entityDefine.mConnectedShape1Index += beginningEntityIndex;
+               
+               joint.SetConnectedShape1Index (entityDefine.mConnectedShape1Index);
                
                if (entityDefine.mConnectedShape2Index >= 0)
-                  joint.SetConnectedShape2Index (int(entityDefine.mConnectedShape2Index) + beginningEntityIndex);
-               else
-                  joint.SetConnectedShape2Index (entityDefine.mConnectedShape2Index);
+                  entityDefine.mConnectedShape2Index += beginningEntityIndex;
+               
+               joint.SetConnectedShape2Index (entityDefine.mConnectedShape2Index);
                //<<
             }
             else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
@@ -1246,12 +1250,15 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
+                  
+                  TriggerFormatHelper.ShiftEntityRefIndexesInCodeSnippet (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex);
                   TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, condition.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
                   var task:EntityTask = entityDefine.mEntity as EntityTask;
                   
+                  ShiftEntityRefIndexes (entityDefine.mInputAssignerCreationIds, beginningEntityIndex);
                   task.SetEntityAssignersByCreationIds (entityDefine.mInputAssignerCreationIds);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
@@ -1259,6 +1266,7 @@ package common {
                   var conditionDoor:EntityConditionDoor = entityDefine.mEntity as EntityConditionDoor;
                   conditionDoor.SetAsAnd (entityDefine.mIsAnd);
                   conditionDoor.SetAsNot (entityDefine.mIsNot);
+                  ShiftEntityRefIndexes (entityDefine.mInputConditionEntityCreationIds, beginningEntityIndex);
                   conditionDoor.SetInputConditionsByCreationIds (entityDefine.mInputConditionEntityCreationIds, entityDefine.mInputConditionTargetValues);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
@@ -1266,6 +1274,7 @@ package common {
                   var entityAssigner:EntityInputEntityAssigner = entityDefine.mEntity as EntityInputEntityAssigner;
                   
                   entityAssigner.SetSelectorType (entityDefine.mSelectorType);
+                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds, beginningEntityIndex);
                   entityAssigner.SetInputEntitiesByCreationIds (entityDefine.mEntityCreationIds);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
@@ -1273,17 +1282,26 @@ package common {
                   var pairAsigner:EntityInputEntityPairAssigner = entityDefine.mEntity as EntityInputEntityPairAssigner;
                   
                   pairAsigner.SetPairingType (entityDefine.mPairingType);
+                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds1, beginningEntityIndex);
+                  ShiftEntityRefIndexes (entityDefine.mEntityCreationIds2, beginningEntityIndex);
                   pairAsigner.SetInputPairEntitiesByCreationdIds (entityDefine.mEntityCreationIds1, entityDefine.mEntityCreationIds2);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
                   var eventHandler:EntityEventHandler = entityDefine.mEntity as EntityEventHandler;
                   
+                  if (entityDefine.mInputConditionEntityCreationId >= 0)
+                     entityDefine.mInputConditionEntityCreationId += beginningEntityIndex;
+                  
                   eventHandler.SetInputConditionByCreationId (entityDefine.mInputConditionEntityCreationId, entityDefine.mInputConditionTargetValue);
+                  ShiftEntityRefIndexes (entityDefine.mInputAssignerCreationIds, beginningEntityIndex);
                   eventHandler.SetEntityAssignersByCreationIds (entityDefine.mInputAssignerCreationIds);
                   
                   if (worldDefine.mVersion >= 0x0108)
                   {
+                     if (entityDefine.mExternalActionEntityCreationId >= 0)
+                        entityDefine.mExternalActionEntityCreationId += beginningEntityIndex;
+                     
                      eventHandler.SetExternalActionByCreationId (entityDefine.mExternalActionEntityCreationId);
                   }
                   
@@ -1308,12 +1326,14 @@ package common {
                      }
                   }
                   
+                  TriggerFormatHelper.ShiftEntityRefIndexesInCodeSnippet (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex);
                   TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
+                  TriggerFormatHelper.ShiftEntityRefIndexesInCodeSnippet (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex);
                   TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, action.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
                }
             }
@@ -1335,25 +1355,35 @@ package common {
          {
             brotherIds = worldDefine.mBrotherGroupDefines [groupId] as Array;
             
+            ShiftEntityRefIndexes (brotherIds, beginningEntityIndex);
+            
             for (brotherId = 0; brotherId < brotherIds.length; ++ brotherId)
             {
                entityDefine = worldDefine.mEntityDefines [brotherIds [brotherId]];
                
-               //if ( Define.IsJointAnchorEntity (entityDefine.mEntityType) )
-               //{
-               //   //brotherIds [brotherId] = entityDefine.mNewIndex;
-               //   brotherIds [brotherId] = editorWorld.getChildIndex (entityDefine.mEntity);
-               //}
-               //else
-               {
-                  brotherIds [brotherId] = brotherIds [brotherId] + beginningEntityIndex;
-               }
+               brotherIds [brotherId] = brotherIds [brotherId];
             }
             
             editorWorld.GlueEntitiesByCreationIds (brotherIds);
          }
         
          return editorWorld;
+      }
+      
+      public static function ShiftEntityRefIndexes (entityIndexes:Array, idShiftedValue:int):void
+      {
+         if (entityIndexes != null)
+         {
+            var num:int = entityIndexes.length;
+            var id:int;
+            for (var i:int = 0; i < num; ++ i)
+            {
+               id = entityIndexes [i];
+               
+               if (id >= 0)
+                  entityIndexes [i] = id + idShiftedValue;
+            }
+         }
       }
       
       public static function Xml2WorldDefine (worldXml:XML):WorldDefine

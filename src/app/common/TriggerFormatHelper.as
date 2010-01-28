@@ -145,8 +145,23 @@ package common {
                   value_object = direct_source.GetValueObject () as String;
                   break;
                case ValueTypeDefine.ValueType_Entity:
-                  value_object = editorWorld.GetEntityCreationId (direct_source.GetValueObject () as Entity);
+               {
+                  var entity:Entity = direct_source.GetValueObject () as Entity;
+                  
+                  if (entity == null)
+                  {
+                     if (direct_source.GetValueObject () is World)
+                        value_object = Define.EntityId_Ground;
+                     else
+                        value_object = Define.EntityId_None;
+                  }
+                  else
+                  {
+                     value_object = editorWorld.GetEntityCreationId (entity);
+                  }
+                  
                   break;
+               }
                case ValueTypeDefine.ValueType_CollisionCategory:
                   value_object = editorWorld.GetCollisionCategoryIndex (direct_source.GetValueObject () as EntityCollisionCategory);
                   break;
@@ -270,8 +285,26 @@ package common {
                      value_object = "";
                   break;
                case ValueTypeDefine.ValueType_Entity:
-                  value_object = editorWorld.GetEntityByCreationId (direct_source_define.mValueObject as int);
+               {
+                  var entityIndex:int = direct_source_define.mValueObject as int;
+                  if (entityIndex < 0)
+                  {
+                     if (entityIndex == Define.EntityId_Ground)
+                     {
+                        value_object = editorWorld;
+                     }
+                     else if (entityIndex == Define.EntityId_None)
+                     {
+                        value_object = null;
+                     }
+                  }
+                  else
+                  {
+                     value_object = editorWorld.GetEntityByCreationId (entityIndex);
+                  }
+                  
                   break;
+               }
                case ValueTypeDefine.ValueType_CollisionCategory:
                   value_object = editorWorld.GetCollisionCategoryByIndex (direct_source_define.mValueObject as int);
                   break;
@@ -652,6 +685,61 @@ package common {
       public static function AdjustNumberPrecisionsInCodeSnippet (codeSnippet:CodeSnippet):void
       {
          codeSnippet.AdjustNumberPrecisions ();
+      }
+      
+      public static function ShiftEntityRefIndexesInCodeSnippet (codeSnippetDefine:CodeSnippetDefine, entityIdShiftedValue:int, ccatIdShiftedValue:int):void
+      {
+         var funcCallingDefine:FunctionCallingDefine;
+         var i:int;
+         var numCallings:int = codeSnippetDefine.mNumCallings;
+         for (i = 0; i < numCallings; ++ i)
+         {
+            funcCallingDefine = codeSnippetDefine.mFunctionCallingDefines [i];
+            
+            if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
+            {
+               var functionId:int = funcCallingDefine.mFunctionId;
+               var funcDclaration:common.trigger.FunctionDeclaration = common.trigger.CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
+               
+               var sourceDefine:ValueSourceDefine;
+               var direcSourceDefine:ValueSourceDefine_Direct;
+               var sourceValueType:int;
+               var valueType:int;
+               var entityIndex:int;
+               var ccatIndex:int;
+               var numInputs:int = funcCallingDefine.mNumInputs;
+               var j:int;
+               for (j = 0; j < numInputs; ++ j)
+               {
+                  sourceDefine = funcCallingDefine.mInputValueSourceDefines [j];
+                  sourceValueType = sourceDefine.GetValueSourceType ();
+                  valueType = funcDclaration.GetInputParamValueType (j);
+                  
+                  if (sourceValueType == ValueSourceTypeDefine.ValueSource_Direct)
+                  {
+                     direcSourceDefine = sourceDefine as ValueSourceDefine_Direct;
+                     
+                     if (valueType == ValueTypeDefine.ValueType_Entity)
+                     {
+                        entityIndex = int (direcSourceDefine.mValueObject);
+                        
+                        if (entityIndex >= 0)
+                           direcSourceDefine.mValueObject = entityIndex + entityIdShiftedValue;
+                     }
+                     else if (valueType == ValueTypeDefine.ValueType_CollisionCategory)
+                     {
+                        ccatIndex = int (direcSourceDefine.mValueObject);
+                        
+                        if (ccatIndex >= 0)
+                           direcSourceDefine.mValueObject = ccatIndex + ccatIdShiftedValue;
+                     }
+                  }
+               }
+            }
+            else
+            {
+            }
+         }
       }
       
    }

@@ -541,7 +541,7 @@ package player.physics {
          
          if (buildInterior)
          {
-            var extend:Boolean = buildBorder && (! roundCorners);
+            var extend:Boolean = buildBorder && (! roundCorners || borderThickness < b2Settings.b2_epsilon);
             
             var halfWidth_b :Number = halfWidth;
             var halfHeight_b:Number = halfHeight;
@@ -571,8 +571,12 @@ package player.physics {
                
                if (extend)
                {
-                  buildBorder = false; // avoiding entering the below block
+                  buildBorder = false; // avoid entering the below block
                }
+            }
+            else
+            {
+               buildInterior = false; // force building polyline for zero-thickness border below
             }
          }
          
@@ -583,7 +587,9 @@ package player.physics {
             tx =   halfWidth; ty =   halfHeight; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             tx = - halfWidth; ty =   halfHeight; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             
-            if (roundCorners)
+            if (roundCorners 
+               || ( (! buildInterior) &&  borderThickness < b2Settings.b2_epsilon)
+               )
             {
                bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
                

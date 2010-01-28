@@ -63,7 +63,6 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 	m_xf.R.SetFromAngle(bd.angle);
 
 	m_sweep.localCenter.SetZero();
-	m_sweep.t0 = 1.0;
 	m_sweep.a0 = m_sweep.a = bd.angle;
 	//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 	b2Math.b2Mul_TransformAndVector2_Output (m_xf, m_sweep.localCenter, m_sweep.c);
@@ -321,11 +320,14 @@ public function ResetMassData():void
 		}
 		
 		//m_sweep.localCenter = center;
-		if (num > 0)
+		if (num > 1)
 		{
-			m_sweep.localCenter.x = center.x / num;
-			m_sweep.localCenter.y = center.y / num;
+			center.x /= Number (num);
+			center.y /= Number (num);
 		}
+		m_sweep.localCenter.x = center.x;
+		m_sweep.localCenter.y = center.y;
+		
 		//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 		b2Math.b2Mul_TransformAndVector2_Output (m_xf, m_sweep.localCenter, tempV);
 		m_sweep.c0.x = m_sweep.c.x = tempV.x;
@@ -344,7 +346,6 @@ public function ResetMassData():void
 		{
 			continue;
 		}
-
 		f.GetMassData(massData);
 		
 		m_mass += massData.mass;

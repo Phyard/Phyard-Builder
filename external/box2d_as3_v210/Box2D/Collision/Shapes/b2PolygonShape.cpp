@@ -439,7 +439,7 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 	if (m_vertexCount == 2)
 	{
 		//massData->center = 0.5f * (m_vertices[0] + m_vertices[1]);
-		b2Math.b2Add_Vector2_Output (m_vertices[0] as b2Vec2, m_vertices[1] as b2Vec2, tempV)
+		b2Math.b2Add_Vector2_Output (m_vertices[0] as b2Vec2, m_vertices[1] as b2Vec2, tempV);
 		massData.center.x = 0.5 * tempV.x;
 		massData.center.y = 0.5 * tempV.y;
 		massData.mass = 0.0;
@@ -467,7 +467,8 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 
 	const k_inv3:Number = 1.0 / 3.0;
 
-	for (var i:int = 0; i < m_vertexCount; ++i)
+	var i:int;
+	for (i = 0; i < m_vertexCount; ++i)
 	{
 		// Triangle vertices.
 		//b2Vec2 p1 = pRef;
@@ -508,6 +509,21 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 	// Total mass
 	massData.mass = density * area;
 
+	//>> hacking
+	if (area < Number.MIN_VALUE)
+	{
+		center.Set(0.0, 0.0);
+		
+		for (i = 0; i < m_vertexCount; ++i)
+		{
+			var pp:b2Vec2 = m_vertices[i]; // .CopyFrom ()
+			center.x += pp.x;
+			center.y += pp.y;
+		}
+		area = m_vertexCount;
+	}
+	//<<
+	
 	// Center of mass
 	//b2Assert(area > b2_epsilon);
 	//center *= 1.0f / area;

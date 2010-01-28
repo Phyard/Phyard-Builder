@@ -55,6 +55,8 @@ package common.trigger {
       public static const ID_Bool_EqualsNumber:int               = 180; // 
       public static const ID_Bool_EqualsBoolean:int              = 181; // 
       public static const ID_Bool_EqualsEntity:int               = 182; // 
+      public static const ID_Bool_EqualsString:int               = 183; // 
+      public static const ID_Bool_EqualsCCat:int                 = 184; // 
       
       public static const ID_Bool_Larger:int                     = 210; // 
       public static const ID_Bool_Less:int                       = 211; // 
@@ -126,6 +128,7 @@ package common.trigger {
       public static const ID_Math_Log:int                         = 516; // 
       public static const ID_Math_Exp:int                         = 517; // 
       public static const ID_Math_Power:int                       = 518; // 
+      public static const ID_Math_Clamp:int                       = 519; // 
       
       public static const Id_Math_LinearInterpolation:int                  = 530; //
       public static const Id_Math_LinearInterpolationColor:int             = 531; //
@@ -135,6 +138,7 @@ package common.trigger {
       
       public static const ID_Design_GetLevelMilliseconds:int                    = 600; // design
       public static const ID_Design_GetLevelSteps:int                           = 601; // design
+      public static const ID_Design_GetMousePosition:int                        = 602; // design
       
       public static const ID_Design_SetLevelStatus:int                           = 609; // design
       public static const ID_Design_IsLevelSuccessed:int                         = 610; // design
@@ -155,7 +159,7 @@ package common.trigger {
       //public static const ID_World_FollowCameraRotationWithShape:int               = 723; // world
       public static const ID_World_CameraFadeOutThenFadeIn:int                       = 725; // world
       //public static const ID_World_CameraFadeOut:int                       = 725; // world
-      //public static const ID_World_CameraFadeIn:int                       = 725; // world
+      //public static const ID_World_CameraFadeIn:int                        = 725; // world
       //public static const ID_World_CameraCloseThenOpen:int                           = 726; // world
       
       public static const ID_World_CallScript:int                               = 750; // world

@@ -91,7 +91,7 @@ package Box2D.Dynamics
 		//void* GetUserData();
 
 		/// Set the user data. Use this to store your application specific data.
-		//void SetUserData(void* data);
+		//void* GetUserData() const;
 
 		/// Test a point for containment in this fixture.
 		/// @param xf the shape world transform.

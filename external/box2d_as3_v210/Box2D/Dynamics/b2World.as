@@ -42,8 +42,12 @@ package Box2D.Dynamics
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Contacts.b2ContactEdge;
+	import Box2D.Dynamics.Contacts.b2TOISolver;
 	import Box2D.Collision.b2AABB;
 	import Box2D.Collision.b2RayCastInput;
+	import Box2D.Collision.b2TOIInput;
+	import Box2D.Collision.b2TOIOutput;
+	import Box2D.Collision.b2TimeOfImpact;
 	
 	import Box2D.Dynamics.b2Body;
 	
@@ -117,7 +121,9 @@ package Box2D.Dynamics
 		//			bool resetForces);
 
 		/// Call this after you are done with time steps to clear the forces. You normally
-		/// call this after each call to Step, unless you are performing sub-steps.
+		/// call this after each call to Step, unless you are performing sub-steps. By default,
+		/// forces will be automatically cleared, so you don't need to call this function.
+		/// @see SetAutoClearForces
 		//void ClearForces();
 
 		/// Call this to draw shapes and other debug draw data.
@@ -127,7 +133,7 @@ package Box2D.Dynamics
 		/// provided AABB.
 		/// @param callback a user implemented callback class.
 		/// @param aabb the query box.
-		//void QueryAABB(b2QueryCallback* callback, const b2AABB& aabb);
+		//void QueryAABB(b2QueryCallback* callback, const b2AABB& aabb) const;
 
 		/// Ray-cast the world for all fixtures in the path of the ray. Your callback
 		/// controls whether you get the closest point, any point, or n-points.
@@ -135,7 +141,7 @@ package Box2D.Dynamics
 		/// @param callback a user implemented callback class.
 		/// @param point1 the ray starting point
 		/// @param point2 the ray ending point
-		//void RayCast(b2RayCastCallback* callback, const b2Vec2& point1, const b2Vec2& point2);
+		//void RayCast(b2RayCastCallback* callback, const b2Vec2& point1, const b2Vec2& point2) const;
 
 		/// Get the world body list. With the returned body, use b2Body::GetNext to get
 		/// the next body in the world list. A NULL body indicates the end of the list.
@@ -180,13 +186,20 @@ package Box2D.Dynamics
 		/// Is the world locked (in the middle of a time step).
 		//bool IsLocked() const;
 
+		/// Set flag to control automatic clearing of forces after each time step.
+		//void SetAutoClearForces(bool flag);
+
+		/// Get the flag that controls automatic clearing of forces after each time step.
+		//bool GetAutoClearForces() const;
+
 	//private:
 
 		// m_flags
 		//enum
 		//{
 			public static const e_newFixture:int	= 0x0001;
-			public static const e_locked:int		= 0x0002;
+			public static const e_locked:int		   = 0x0002;
+			public static const e_clearForces:int	= 0x0004;
 		//};
 
 		//friend class b2Body;
@@ -194,7 +207,8 @@ package Box2D.Dynamics
 		//friend class b2Controller;
 
 		//void Solve(const b2TimeStep& step);
-		//void SolveTOI(const b2TimeStep& step);
+		//void SolveTOI();
+		//void SolveTOI(b2Body* body);
 
 		//void DrawJoint(b2Joint* joint);
 		//void DrawShape(b2Fixture* shape, const b2Transform& xf, const b2Color& color);
@@ -289,9 +303,6 @@ package Box2D.Dynamics
 			if (bodyCount < 128)
 				bodyCount = 128;
 			
-			if (jointCount < b2Settings.b2_maxTOIJointsPerIsland)
-				jointCount = b2Settings.b2_maxTOIJointsPerIsland;
-			
 			if (contactCount < b2Settings.b2_maxTOIContactsPerIsland)
 				contactCount = b2Settings.b2_maxTOIContactsPerIsland;
 			
@@ -325,8 +336,7 @@ package Box2D.Dynamics
 			{
 				mIsland = new b2Island (bodyCount, contactCount, jointCount,
 										m_stackAllocator,
-										//m_contactManager.m_contactListener
-										m_contactManager.m_contactPostSolveListener
+										m_contactManager.m_contactPostSolveListener //m_contactManager.m_contactListener
 										);
 			}
 			else
@@ -378,6 +388,23 @@ package Box2D.Dynamics
 			return m_contactManager.m_contactPostSolveListener;
 		}
 
+		public function SetAutoClearForces(flag:Boolean):void
+		{
+			if (flag)
+			{
+				m_flags |= e_clearForces;
+			}
+			else
+			{
+				m_flags &= ~e_clearForces;
+			}
+		}
+
+		/// Get the flag that controls automatic clearing of forces after each time step.
+		public function GetAutoClearForces():Boolean
+		{
+			return (m_flags & e_clearForces) == e_clearForces;
+		}
 
 	} // class
 } // package

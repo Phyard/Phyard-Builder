@@ -242,7 +242,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 					  polyA:b2PolygonShape, xfA:b2Transform,
 					  polyB:b2PolygonShape, xfB:b2Transform):void
 {
-	manifold.m_pointCount = 0;
+	manifold.pointCount = 0;
 	var totalRadius:Number = polyA.m_radius + polyB.m_radius;
 
 	//var edgeA:int = 0;
@@ -280,7 +280,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 		xf1 = xfB;
 		xf2 = xfA;
 		edge1 = edgeB;
-		manifold.m_type = b2Manifold.e_faceB;
+		manifold.type = b2Manifold.e_faceB;
 		flip = 1;
 	}
 	else
@@ -290,7 +290,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 		xf1 = xfA;
 		xf2 = xfB;
 		edge1 = edgeA;
-		manifold.m_type = b2Manifold.e_faceA;
+		manifold.type = b2Manifold.e_faceA;
 		flip = 0;
 	}
 
@@ -356,10 +356,10 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	// Now clipPoints2 contains the clipped points.
 	//manifold->m_localPlaneNormal = localNormal;
 	//manifold->m_localPoint = planePoint;
-	manifold.m_localPlaneNormal.x = localNormal.x;
-	manifold.m_localPlaneNormal.y = localNormal.y;
-	manifold.m_localPoint.x = planePoint.x;
-	manifold.m_localPoint.y = planePoint.y;
+	manifold.localNormal.x = localNormal.x;
+	manifold.localNormal.y = localNormal.y;
+	manifold.localPoint.x = planePoint.x;
+	manifold.localPoint.y = planePoint.y;
 
 	var pointCount:int = 0;
 	for (var i:int = 0; i < b2Settings.b2_maxManifoldPoints; ++i)
@@ -372,15 +372,15 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 			//cp->m_localPoint = b2MulT(xf2, clipPoints2[i].v);
 			//cp->m_id = clipPoints2[i].id;
 			//cp->m_id.features.flip = flip;
-			var cp:b2ManifoldPoint = manifold.m_points [pointCount];
-			b2Math.b2MulT_TransformAndVector2_Output (xf2, clipPoints2.GetClipVertexById(i).v, cp.m_localPoint)
+			var cp:b2ManifoldPoint = manifold.points [pointCount];
+			b2Math.b2MulT_TransformAndVector2_Output (xf2, clipPoints2.GetClipVertexById(i).v, cp.localPoint)
 			//cp.m_id.CopyFrom (clipPoints2.GetClipVertexById (i).id);
 			//cp.m_id.SetFlip (flip);
-			cp.m_id = clipPoints2.GetClipVertexById (i).id;
-			cp.m_id = b2ContactID.ContactID_SetFlip (cp.m_id, flip);
+			cp.id = clipPoints2.GetClipVertexById (i).id;
+			cp.id = b2ContactID.ContactID_SetFlip (cp.id, flip);
 			++pointCount;
 		}
 	}
 
-	manifold.m_pointCount = pointCount;
+	manifold.pointCount = pointCount;
 }

@@ -89,17 +89,8 @@ package Box2D.Dynamics.Contacts
 		/// Get the world manifold.
 		//void GetWorldManifold(b2WorldManifold* worldManifold) const;
 
-		/// Is this contact touching.
+		/// Is this contact touching?
 		//bool IsTouching() const;
-
-		/// Does this contact generate TOI events for continuous simulation?
-		//bool IsContinuous() const;
-
-		/// Change this to be a sensor or non-sensor contact.
-		//void SetSensor(bool sensor);
-
-		/// Is this contact a sensor?
-		//bool IsSensor() const;
 
 		/// Enable/disable this contact. This can be used inside the pre-solve
 		/// contact listener. The contact is only disabled for the current
@@ -124,30 +115,26 @@ package Box2D.Dynamics.Contacts
 		/// Flag this contact for filtering. Filtering will occur the next time step.
 		//void FlagForFiltering();
 
-		//--------------- Internals Below -------------------
+		/// Evaluate this contact with your own manifold and transforms.
+		//virtual void Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB) = 0;
+		public function Evaluate(manifold:b2Manifold, xfA:b2Transform, xfB:b2Transform):void {}
+
 	//protected:
 		//friend class b2ContactManager;
 		//friend class b2World;
 		//friend class b2ContactSolver;
 
-		// m_flags
+		// Flags stored in m_flags
 		//enum
 		//{
-			// This contact should not participate in Solve
-			// The contact equivalent of sensors
-			public static const e_sensorFlag:int		= 0x0001;
-			// Generate TOI events
-			public static const e_continuousFlag:int	= 0x0002;
 			// Used when crawling contact graph when forming islands.
-			public static const e_islandFlag:int		= 0x0004;
-			// Used in SolveTOI to indicate the cached toi value is still valid.
-			public static const e_toiFlag:int			= 0x0008;
+			public static const e_islandFlag:int		= 0x0001;
 			// Set when the shapes are touching.
-			public static const e_touchingFlag:int		= 0x0010;
+			public static const e_touchingFlag:int		= 0x0002;
 			// This contact can be disabled (by user)
-			public static const e_enabledFlag:int		= 0x0020;
+			public static const e_enabledFlag:int		= 0x0004;
 			// This contact needs filtering because a fixture filter was changed.
-			public static const e_filterFlag:int		= 0x0040;
+			public static const e_filterFlag:int		= 0x0008;
 		//};
 
 		//static void AddType(b2ContactCreateFcn* createFcn, b2ContactDestroyFcn* destroyFcn,
@@ -163,10 +150,6 @@ package Box2D.Dynamics.Contacts
 		public function Destructor ():void {}
 
 		//void Update(b2ContactListener* listener);
-		//virtual void Evaluate() = 0;
-		public function Evaluate():void {}
-
-		//float32 ComputeTOI(const b2Sweep& sweepA, const b2Sweep& sweepB) const;
 
 		//static b2ContactRegister s_registers[b2Shape::e_typeCount][b2Shape::e_typeCount];
 		//static bool s_initialized;
@@ -186,7 +169,8 @@ package Box2D.Dynamics.Contacts
 
 		public var m_manifold:b2Manifold//  = new b2Manifold (); // now use manifold pool to optimize
 
-		public var m_toi:Number;
+		public var m_toiCount:int
+		//public var m_toi:Number;
 	//};
 	
 	// inline
@@ -211,23 +195,6 @@ package Box2D.Dynamics.Contacts
 			worldManifold.Initialize(m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
 		}
 
-		public function SetSensor(sensor:Boolean):void
-		{
-			if (sensor)
-			{
-				m_flags |= e_sensorFlag;
-			}
-			else
-			{
-				m_flags &= ~e_sensorFlag;
-			}
-		}
-
-		public function IsSensor() :Boolean
-		{
-			return (m_flags & e_sensorFlag) == e_sensorFlag;
-		}
-
 		public function SetEnabled(flag:Boolean):void
 		{
 			if (flag)
@@ -248,11 +215,6 @@ package Box2D.Dynamics.Contacts
 		public function IsTouching():Boolean
 		{
 			return (m_flags & e_touchingFlag) == e_touchingFlag;
-		}
-
-		public function IsContinuous():Boolean
-		{
-			return (m_flags & e_continuousFlag) == e_continuousFlag;
 		}
 
 		public function GetNext():b2Contact

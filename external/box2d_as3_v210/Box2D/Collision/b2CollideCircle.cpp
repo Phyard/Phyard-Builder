@@ -21,8 +21,8 @@
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
 //private static var d:b2Vec2 = new b2Vec2 ();
-private static var p1:b2Vec2 = new b2Vec2 ();
-private static var p2:b2Vec2 = new b2Vec2 ();
+private static var pA:b2Vec2 = new b2Vec2 ();
+private static var pB:b2Vec2 = new b2Vec2 ();
 private static var c:b2Vec2 = new b2Vec2 ();
 private static var cLocal:b2Vec2 = new b2Vec2 ();
 private static var temp1:b2Vec2 = new b2Vec2 ();
@@ -30,53 +30,53 @@ private static var temp2:b2Vec2 = new b2Vec2 ();
 
 public static function b2CollideCircles(
 	manifold:b2Manifold,
-	circle1:b2CircleShape, xf1:b2Transform,
-circle2:b2CircleShape, xf2:b2Transform):void
+	circleA:b2CircleShape, xfA:b2Transform,
+circleB:b2CircleShape, xfB:b2Transform):void
 {
-	manifold.m_pointCount = 0;
+	manifold.pointCount = 0;
 
-	b2Math.b2Mul_TransformAndVector2_Output (xf1, circle1.m_p, p1);
-	b2Math.b2Mul_TransformAndVector2_Output (xf2, circle2.m_p, p2);
+	b2Math.b2Mul_TransformAndVector2_Output (xfA, circleA.m_p, pA);
+	b2Math.b2Mul_TransformAndVector2_Output (xfB, circleB.m_p, pB);
 
-	d.x = p2.x - p1.x;
-	d.y = p2.y - p1.y;
+	d.x = pB.x - pA.x;
+	d.y = pB.y - pA.y;
 	var distSqr:Number = b2Math.b2Dot2 (d, d);
-	var radius:Number = circle1.m_radius + circle2.m_radius;
+	var radius:Number = circleA.m_radius + circleB.m_radius;
 	if (distSqr > radius * radius)
 	{
 		return;
 	}
 
-	manifold.m_type = b2Manifold.e_circles;
-	manifold.m_localPoint.CopyFrom (circle1.m_p);
-	manifold.m_localPlaneNormal.SetZero();
-	manifold.m_pointCount = 1;
+	manifold.type = b2Manifold.e_circles;
+	manifold.localPoint.CopyFrom (circleA.m_p);
+	manifold.localNormal.SetZero();
+	manifold.pointCount = 1;
 
-	(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom ( circle2.m_p);
+	(manifold.points[0] as b2ManifoldPoint).localPoint.CopyFrom ( circleB.m_p);
 	//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
-	(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
+	(manifold.points[0] as b2ManifoldPoint).id = 0;
 }
 
 public static function b2CollidePolygonAndCircle(
 	manifold:b2Manifold,
-	polygon:b2PolygonShape, xf1:b2Transform,
-circle:b2CircleShape, xf2:b2Transform):void
+	polygonA:b2PolygonShape, xfA:b2Transform,
+circleB:b2CircleShape, xfB:b2Transform):void
 {
-	manifold.m_pointCount = 0;
+	manifold.pointCount = 0;
 
 	// Compute circle position in the frame of the polygon.
-	b2Math.b2Mul_TransformAndVector2_Output (xf2, circle.m_p, c);
-	b2Math.b2MulT_TransformAndVector2_Output (xf1, c, cLocal);
+	b2Math.b2Mul_TransformAndVector2_Output (xfB, circleB.m_p, c);
+	b2Math.b2MulT_TransformAndVector2_Output (xfA, c, cLocal);
 
 	// Find the min separating edge.
 	var normalIndex:int = 0;
 	var separation:Number = - b2Settings.b2_maxFloat;
-	var radius:Number = polygon.m_radius + circle.m_radius;
-	var vertexCount:int = polygon.m_vertexCount;
-	//const b2Vec2* vertices = polygon->m_vertices;
-	//const b2Vec2* normals = polygon->m_normals;
-	var vertices:Array = polygon.m_vertices;
-	var normals:Array = polygon.m_normals;
+	var radius:Number = polygonA.m_radius + circleB.m_radius;
+	var vertexCount:int = polygonA.m_vertexCount;
+	//const b2Vec2* vertices = polygonA->m_vertices;
+	//const b2Vec2* normals = polygonA->m_normals;
+	var vertices:Array = polygonA.m_vertices;
+	var normals:Array = polygonA.m_normals;
 
 	for (var i:int = 0; i < vertexCount; ++i)
 	{
@@ -104,15 +104,15 @@ circle:b2CircleShape, xf2:b2Transform):void
 	// If the center is inside the polygon ...
 	if (separation < b2Settings.b2_epsilon)
 	{
-		manifold.m_pointCount = 1;
-		manifold.m_type = b2Manifold.e_faceA;
-		manifold.m_localPlaneNormal.CopyFrom (normals[normalIndex]);
-		//manifold.m_localPoint = 0.5 * (v1 + v2);
-		manifold.m_localPoint.x = 0.5 * (v1.x + v2.x);
-		manifold.m_localPoint.y = 0.5 * (v1.y + v2.y);
-		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
-		//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
-		(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
+		manifold.pointCount = 1;
+		manifold.type = b2Manifold.e_faceA;
+		manifold.localNormal.CopyFrom (normals[normalIndex]);
+		//manifold.localPoint = 0.5 * (v1 + v2);
+		manifold.localPoint.x = 0.5 * (v1.x + v2.x);
+		manifold.localPoint.y = 0.5 * (v1.y + v2.y);
+		(manifold.points[0] as b2ManifoldPoint).localPoint.CopyFrom (circleB.m_p);
+		//(manifold.points[0] as b2ManifoldPoint).m_id.key = 0;
+		(manifold.points[0] as b2ManifoldPoint).id = 0;
 		return;
 	}
 
@@ -134,14 +134,14 @@ circle:b2CircleShape, xf2:b2Transform):void
 			return;
 		}
 
-		manifold.m_pointCount = 1;
-		manifold.m_type = b2Manifold.e_faceA;
-		manifold.m_localPlaneNormal.Set (cLocal.x - v1.x, cLocal.y - v1.y)
-		manifold.m_localPlaneNormal.Normalize();
-		manifold.m_localPoint.CopyFrom (v1);
-		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
-		//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
-		(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
+		manifold.pointCount = 1;
+		manifold.type = b2Manifold.e_faceA;
+		manifold.localNormal.Set (cLocal.x - v1.x, cLocal.y - v1.y)
+		manifold.localNormal.Normalize();
+		manifold.localPoint.CopyFrom (v1);
+		(manifold.points[0] as b2ManifoldPoint).localPoint.CopyFrom (circleB.m_p);
+		//(manifold.points[0] as b2ManifoldPoint).m_id.key = 0;
+		(manifold.points[0] as b2ManifoldPoint).id = 0;
 	}
 	else if (u2 <= 0.0)
 	{
@@ -150,14 +150,14 @@ circle:b2CircleShape, xf2:b2Transform):void
 			return;
 		}
 
-		manifold.m_pointCount = 1;
-		manifold.m_type = b2Manifold.e_faceA;
-		manifold.m_localPlaneNormal.Set (cLocal.x - v2.x, cLocal.y - v2.y);
-		manifold.m_localPlaneNormal.Normalize();
-		manifold.m_localPoint.CopyFrom (v2);
-		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
-		//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
-		(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
+		manifold.pointCount = 1;
+		manifold.type = b2Manifold.e_faceA;
+		manifold.localNormal.Set (cLocal.x - v2.x, cLocal.y - v2.y);
+		manifold.localNormal.Normalize();
+		manifold.localPoint.CopyFrom (v2);
+		(manifold.points[0] as b2ManifoldPoint).localPoint.CopyFrom (circleB.m_p);
+		//(manifold.points[0] as b2ManifoldPoint).m_id.key = 0;
+		(manifold.points[0] as b2ManifoldPoint).id = 0;
 	}
 	else
 	{
@@ -174,12 +174,12 @@ circle:b2CircleShape, xf2:b2Transform):void
 			return;
 		}
 
-		manifold.m_pointCount = 1;
-		manifold.m_type = b2Manifold.e_faceA;
-		manifold.m_localPlaneNormal.CopyFrom (normals[vertIndex1]);
-		manifold.m_localPoint.CopyFrom (faceCenter);
-		(manifold.m_points[0] as b2ManifoldPoint).m_localPoint.CopyFrom (circle.m_p);
-		//(manifold.m_points[0] as b2ManifoldPoint).m_id.key = 0;
-		(manifold.m_points[0] as b2ManifoldPoint).m_id = 0;
+		manifold.pointCount = 1;
+		manifold.type = b2Manifold.e_faceA;
+		manifold.localNormal.CopyFrom (normals[vertIndex1]);
+		manifold.localPoint.CopyFrom (faceCenter);
+		(manifold.points[0] as b2ManifoldPoint).localPoint.CopyFrom (circleB.m_p);
+		//(manifold.points[0] as b2ManifoldPoint).m_id.key = 0;
+		(manifold.points[0] as b2ManifoldPoint).id = 0;
 	}
 }

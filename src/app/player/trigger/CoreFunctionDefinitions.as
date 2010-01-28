@@ -73,6 +73,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsNumber,      EqualsWith_Numbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsBoolean,     EqualsWith_Booleans);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsEntity,      EqualsWith_Entities);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsString,      EqualsWith_Strings);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsCCat,        EqualsWith_CollisiontCategories);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Larger,            LargerThan);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Less,              LessThan);
@@ -133,6 +135,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Log,                       LogNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Exp,                       ExpNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Math_Power,                     Power);
+         RegisterCoreFunction (CoreFunctionIds.ID_Math_Clamp,                     Clamp);
          
          RegisterCoreFunction (CoreFunctionIds.Id_Math_LinearInterpolation,               LinearInterpolation);
          RegisterCoreFunction (CoreFunctionIds.Id_Math_LinearInterpolationColor,          LinearInterpolationColor);
@@ -141,6 +144,8 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelMilliseconds,             GetLevelMilliseconds);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelSteps,                    GetLevelSteps);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetMousePosition,                 GetWorldMousePosition);
+         
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStatus,                   SetLevelStatus);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelSuccessed,                 IsLevelSuccessed);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelFailed,                    IsLevelFailed);
@@ -497,6 +502,26 @@ package player.trigger {
          
          valueSource = valueSource.mNextValueSourceInList;
          var value2:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (value1 == value2);
+      }
+      
+      public static function EqualsWith_Strings (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:String = valueSource.EvalateValueObject () as String;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:String = valueSource.EvalateValueObject () as String;
+         
+         valueTarget.AssignValueObject (value1 == value2);
+      }
+      
+      public static function EqualsWith_CollisiontCategories (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value1:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
          
          valueTarget.AssignValueObject (value1 == value2);
       }
@@ -950,6 +975,34 @@ package player.trigger {
          valueTarget.AssignValueObject (Math.pow (value1, value2));
       }
       
+      public static function Clamp (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var limit1:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var limit2:Number = valueSource.EvalateValueObject () as Number;
+         
+         if (limit1 <= limit2)
+         {
+            if (value < limit1)
+               value = limit1;
+            else if (value > limit2)
+               value = limit2;
+         }
+         else
+         {
+            if (value < limit2)
+               value = limit2;
+            else if (value > limit1)
+               value = limit1;
+         }
+         
+         valueTarget.AssignValueObject (value);
+      }
+      
       public static function LinearInterpolation (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var value1:Number = valueSource.EvalateValueObject () as Number;
@@ -994,6 +1047,14 @@ package player.trigger {
       public static function GetLevelSteps (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentDesign ().GetLevelSteps ());
+      }
+      
+      public static function GetWorldMousePosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseX ());
+         
+         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseY ());
       }
       
       public static function SetLevelStatus (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1691,43 +1752,84 @@ package player.trigger {
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          
-         var filledColor:uint = shape == null ? 0 : shape.GetFilledColor ();
+         var filledColor:uint;
+         
+         if (shape == null)
+         {
+            var world:World = valueSource.EvalateValueObject () as World;
+            if (world != null)
+               filledColor = world.GetBackgroundColor ();
+         }
+         else
+         {
+            filledColor = shape.GetFilledColor ();
+         }
+         
          valueTarget.AssignValueObject (filledColor);
       }
       
       public static function SetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         var world:World;
          if (shape == null)
-            return;
+         {
+            world = valueSource.EvalateValueObject () as World;
+            if (world == null)
+               return;
+         }
          
          valueSource = valueSource.mNextValueSourceInList;
          var color:uint = uint (valueSource.EvalateValueObject ());
          
-         shape.SetFilledColor (color);
+         if (shape == null)
+         {
+            world.SetBackgroundColor (color);
+         }
+         else
+         {
+            shape.SetFilledColor (color);
+         }
       }
       
       public static function GetShapeFilledColorRGB (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          
-         var color:uint = shape == null ? 0x0 : shape.GetFilledColor ();
+         var filledColor:uint;
          
-         valueTarget.AssignValueObject ((color >> 16) & 0xFF);
+         if (shape == null)
+         {
+            var world:World = valueSource.EvalateValueObject () as World;
+            if (world != null)
+               filledColor = world.GetBackgroundColor ();
+         }
+         else
+         {
+            filledColor = shape.GetFilledColor ();
+         }
+         
+         valueTarget.AssignValueObject ((filledColor >> 16) & 0xFF);
          
          valueTarget = valueTarget.mNextValueTargetInList;
-         valueTarget.AssignValueObject ((color >> 8) & 0xFF);
+         valueTarget.AssignValueObject ((filledColor >> 8) & 0xFF);
          
          valueTarget = valueTarget.mNextValueTargetInList;
-         valueTarget.AssignValueObject ((color >> 0) & 0xFF);
+         valueTarget.AssignValueObject ((filledColor >> 0) & 0xFF);
       }
       
       public static function SetShapeFilledColorRGB (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          
+         var world:World;
          if (shape == null)
-            return;
+         {
+            world = valueSource.EvalateValueObject () as World;
+            if (world == null)
+               return;
+         }
          
          valueSource = valueSource.mNextValueSourceInList;
          var red:int =  valueSource.EvalateValueObject () as Number;
@@ -1738,7 +1840,14 @@ package player.trigger {
          valueSource = valueSource.mNextValueSourceInList;
          var blue:int =  valueSource.EvalateValueObject () as Number;
          
-         shape.SetFilledColor ((red << 16) | (green << 8) | (blue));
+         if (shape == null)
+         {
+            world.SetBackgroundColor ((red << 16) | (green << 8) | (blue));
+         }
+         else
+         {
+            shape.SetFilledColor ((red << 16) | (green << 8) | (blue));
+         }
       }
       
       public static function IsShapePhysicsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void

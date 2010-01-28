@@ -106,7 +106,7 @@ public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = n
 {
 	//b2Assert(s_initialized == true);
 	
-	if (contact.m_manifold.m_pointCount > 0)
+	if (contact.m_manifold.pointCount > 0)
 	{
 		contact.GetFixtureA().GetBody().SetAwake(true);
 		contact.GetFixtureB().GetBody().SetAwake(true);
@@ -134,22 +134,10 @@ public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 {
 	m_flags = e_enabledFlag;
 
-	if (fA.IsSensor() || fB.IsSensor())
-	{
-		m_flags |= e_sensorFlag;
-	}
-
-	var bodyA:b2Body = fA.GetBody();
-	var bodyB:b2Body = fB.GetBody();
-
-	if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet())
-	{
-		m_flags |= e_continuousFlag;
-	}
-
 	m_fixtureA = fA;
 	m_fixtureB = fB;
 
+	//hacking
 	if (mManifoldPool == null)
 	{
 		m_manifold = new b2Manifold ();
@@ -160,8 +148,9 @@ public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 		mManifoldPool = mManifoldPool.mNextManifoldInPool;
 		m_manifold.mNextManifoldInPool = null;
 	}
+	//<<
 	
-	m_manifold.m_pointCount = 0;
+	m_manifold.pointCount = 0;
 
 	m_prev = null;
 	m_next = null;
@@ -175,10 +164,18 @@ public function b2Contact(fA:b2Fixture, fB:b2Fixture)
 	m_nodeB.prev = null;
 	m_nodeB.next = null;
 	m_nodeB.other = null;
+
+	m_toiCount = 0;
 }
 
 private static var mOldManifold:b2Manifold = new b2Manifold ();
-public function Update(listener:b2ContactListener, preSolveLinster:b2ContactPreSolveListener):void
+
+// Update the contact manifold and touching status.
+// Note: do not assume the fixture AABBs are overlapping or are valid.
+
+public function Update(listener:b2ContactListener
+	, preSolveLinster:b2ContactPreSolveListener // hacking
+	):void 
 {
 	var i:int;
 	var j:int;
@@ -192,16 +189,16 @@ public function Update(listener:b2ContactListener, preSolveLinster:b2ContactPreS
 	
 	if (preSolveLinster == null)
 	{
-		oldManifold.m_pointCount = m_manifold.m_pointCount;
-		for (i = 0; i < m_manifold.m_pointCount; ++i)
+		oldManifold.pointCount = m_manifold.pointCount;
+		for (i = 0; i < m_manifold.pointCount; ++i)
 		{
 			//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
-			mp2 = m_manifold.m_points [i] as b2ManifoldPoint;
-			mp1 = oldManifold.m_points [i] as b2ManifoldPoint;
+			mp2 = m_manifold.points [i] as b2ManifoldPoint;
+			mp1 = oldManifold.points [i] as b2ManifoldPoint;
 			//mp1.m_id.key = mp2.m_id.key;
-			mp1.m_id = mp2.m_id;
-				mp1.m_normalImpulse = mp2.m_normalImpulse;
-		mp1.m_tangentImpulse = mp2.m_tangentImpulse;
+			mp1.id = mp2.id;
+			mp1.normalImpulse = mp2.normalImpulse;
+			mp1.tangentImpulse = mp2.tangentImpulse;
 		}
 	}
 	else
@@ -212,75 +209,57 @@ public function Update(listener:b2ContactListener, preSolveLinster:b2ContactPreS
 	// Re-enable this contact.
 	m_flags |= e_enabledFlag;
 
+	var sensorA:Boolean = m_fixtureA.IsSensor();
+	var sensorB:Boolean = m_fixtureB.IsSensor();
+	var sensor:Boolean = sensorA || sensorB;
+
 	var touching:Boolean = false;
 	var wasTouching:Boolean = (m_flags & e_touchingFlag) == e_touchingFlag;
 
 	var bodyA:b2Body = m_fixtureA.GetBody();
 	var bodyB:b2Body = m_fixtureB.GetBody();
-
-	var aabbOverlap:Boolean = b2Collision.b2TestOverlap(m_fixtureA.m_aabb, m_fixtureB.m_aabb);
+	const xfA:b2Transform = bodyA.GetTransform();
+	const xfB:b2Transform = bodyB.GetTransform();
 
 	// Is this contact a sensor?
-	if (m_flags & e_sensorFlag == e_sensorFlag)
+	if (sensor)
 	{
-		if (aabbOverlap)
-		{
-			const shapeA:b2Shape = m_fixtureA.GetShape();
-			const shapeB:b2Shape = m_fixtureB.GetShape();
-			const xfA:b2Transform = bodyA.GetTransform();
-			const xfB:b2Transform = bodyB.GetTransform();
-			touching = b2Collision.b2TestOverlap_Shapes (shapeA, shapeB, xfA, xfB);
-		}
+		const shapeA:b2Shape = m_fixtureA.GetShape();
+		const shapeB:b2Shape = m_fixtureB.GetShape();
+		touching = b2Collision.b2TestOverlap_Shapes (shapeA, shapeB, xfA, xfB);
 
 		// Sensors don't generate manifolds.
-		m_manifold.m_pointCount = 0;
+		m_manifold.pointCount = 0;
 	}
 	else
 	{
-		// Slow contacts don't generate TOI events.
-		if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet())
-		{
-			m_flags |= e_continuousFlag;
-		}
-		else
-		{
-			m_flags &= ~e_continuousFlag;
-		}
-
-		if (aabbOverlap)
-		{
-			Evaluate();
-			touching = m_manifold.m_pointCount > 0;
+		Evaluate(m_manifold, xfA, xfB);
+		touching = m_manifold.pointCount > 0;
 
 		// Match old contact ids to new contact ids and copy the
 		// stored impulses to warm start the solver.
-			for (i = 0; i < m_manifold.m_pointCount; ++i)
+		for (i = 0; i < m_manifold.pointCount; ++i)
+		{
+			//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
+			mp2 = m_manifold.points [i] as b2ManifoldPoint;
+			mp2.normalImpulse = 0.0;
+			mp2.tangentImpulse = 0.0;
+			//var id2:b2ContactID = mp2.m_id.Clone ();
+			var id2:uint = mp2.id;
+
+			for (j = 0; j < oldManifold.pointCount; ++j)
 			{
-				//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
-				mp2 = m_manifold.m_points [i] as b2ManifoldPoint;
-				mp2.m_normalImpulse = 0.0;
-				mp2.m_tangentImpulse = 0.0;
-				//var id2:b2ContactID = mp2.m_id.Clone ();
-				var id2:uint = mp2.m_id;
+				//b2ManifoldPoint* mp1 = oldManifold.m_points + j;
+				mp1 = oldManifold.points [j] as b2ManifoldPoint;
 
-				for (j = 0; j < oldManifold.m_pointCount; ++j)
+				//if (mp1.m_id.key == id2.key2)
+				if (mp1.id == id2)
 				{
-					//b2ManifoldPoint* mp1 = oldManifold.m_points + j;
-					mp1 = oldManifold.m_points [j] as b2ManifoldPoint;
-
-					//if (mp1.m_id.key == id2.key2)
-					if (mp1.m_id == id2)
-					{
-						mp2.m_normalImpulse = mp1.m_normalImpulse;
-						mp2.m_tangentImpulse = mp1.m_tangentImpulse;
-						break;
-					}
+					mp2.normalImpulse = mp1.normalImpulse;
+					mp2.tangentImpulse = mp1.tangentImpulse;
+					break;
 				}
 			}
-		}
-		else
-		{
-			m_manifold.m_pointCount = 0;
 		}
 
 		if (touching != wasTouching)
@@ -309,21 +288,8 @@ public function Update(listener:b2ContactListener, preSolveLinster:b2ContactPreS
 		listener.EndContact(this);
 	}
 
-	if (preSolveLinster != null && (m_flags & e_sensorFlag) == 0)
+	if (preSolveLinster != null && sensor == false)
 	{
 		preSolveLinster.PreSolve(this, oldManifold);
 	}
-}
-
-private static var mTOIInput:b2TOIInput = new b2TOIInput ();
-public function ComputeTOI(sweepA:b2Sweep, sweepB:b2Sweep):Number
-{
-	var input:b2TOIInput = mTOIInput; //new b2TOIInput ();
-	input.proxyA.Set(m_fixtureA.GetShape());
-	input.proxyB.Set(m_fixtureB.GetShape());
-	input.sweepA = sweepA; //.CopyFrom (sweepA);
-	input.sweepB = sweepB; //.CopyFrom (sweepB);
-	input.tolerance = b2Settings.b2_linearSlop;
-
-	return b2TimeOfImpact.b2TimeOfImpact_ (input);
 }

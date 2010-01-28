@@ -76,8 +76,6 @@ package Box2D.Dynamics
 
 		//void Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSleep);
 
-		//void SolveTOI(b2TimeStep& subStep);
-
 		public function AddBody (body:b2Body):void
 		{
 			//b2Assert(m_bodyCount < m_bodyCapacity);

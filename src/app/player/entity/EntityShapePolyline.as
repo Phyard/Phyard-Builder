@@ -38,9 +38,9 @@ package player.entity {
             if (entityDefine.mLocalPoints != undefined)
                SetLocalDisplayVertexPoints (entityDefine.mLocalPoints);
             if (entityDefine.mCurveThickness != undefined)
-            	SetCurveThickness (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mCurveThickness));
+               SetCurveThickness (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mCurveThickness));
             if (entityDefine.mIsRoundEnds != undefined)
-            	SetRoundEnds (entityDefine.mIsRoundEnds);
+               SetRoundEnds (entityDefine.mIsRoundEnds);
          }
       }
       

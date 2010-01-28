@@ -614,7 +614,7 @@ package editor {
                var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld ();
                if (playerWorld != null)
                {
-                  worldPoint = playerWorld.globalToLocal (new Point (Math.round(stagePoint.x), Math.round (stagePoint.y)));
+                  worldPoint = playerWorld.globalToLocal (new Point (stagePoint.x, stagePoint.y));
                   px = ValueAdjuster.Number2Precision (playerWorld.GetCoordinateSystem ().D2P_PositionX (worldPoint.x), 6);
                   py = ValueAdjuster.Number2Precision (playerWorld.GetCoordinateSystem ().D2P_PositionY (worldPoint.y), 6);
                }
@@ -1774,7 +1774,7 @@ package editor {
             jointValues.mIsEnabled = joint.IsEnabled ();
             
             //>>from v1.02
-            jointValues.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, "[Auto Select]", true);
+            jointValues.mShapeListDataProvider = mEditorWorld.GetEntitySelectListDataProviderByFilter (Filters.IsPhysicsShapeEntity, true, "[Auto Select]");
             jointValues.mShapeList1SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape1Index (), jointValues.mShapeListDataProvider);
             jointValues.mShapeList2SelectedIndex = editor.world.World.EntityIndex2SelectListSelectedIndex (joint.GetConnectedShape2Index (), jointValues.mShapeListDataProvider);
             jointValues.mAnchorIndex = jointAnchor.GetAnchorIndex (); // hinge will modify it below
@@ -3203,6 +3203,7 @@ package editor {
                SetEditorWorld (new editor.world.World ());
                mViewCenterWorldX = DefaultWorldWidth * 0.5;
                mViewCenterWorldY = DefaultWorldHeight * 0.5;
+               mEditorWorldZoomScale = 1.0;
                
                UpdateChildComponents ();
             }

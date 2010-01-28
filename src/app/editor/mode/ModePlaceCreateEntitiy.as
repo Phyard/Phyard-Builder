@@ -81,6 +81,7 @@ package editor.mode {
          
          ResetSession (false);
          
+         mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);
       }
       

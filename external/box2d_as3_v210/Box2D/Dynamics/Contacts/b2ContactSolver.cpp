@@ -33,15 +33,13 @@ private static var mWorldManifold:b2WorldManifold = new b2WorldManifold ();
 public static var m_ConstraintsArray:Array = new Array ();
 
 
-//b2ContactSolver::b2ContactSolver(const b2TimeStep& step, b2Contact** contacts, int32 contactCount, b2StackAllocator* allocator)
-public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:int, allocator:b2StackAllocator = null)
+public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2StackAllocator, impulseRatio:Number)
 {
 	var i:int;
 	var j:int;
 	var cc:b2ContactConstraint;
 	
 	//m_step = step;
-	m_step.CopyFrom (step);
 	m_allocator = allocator;
 
 	m_constraintCount = contactCount;
@@ -81,7 +79,7 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 		var wA:Number = bodyA.m_angularVelocity;
 		var wB:Number = bodyB.m_angularVelocity;
 
-		//b2Assert(manifold->m_pointCount > 0);
+		//b2Assert(manifold->pointCount > 0);
 
 		var worldManifold:b2WorldManifold = mWorldManifold; //new b2WorldManifold ();
 		worldManifold.Initialize(manifold, bodyA.m_xf, radiusA, bodyB.m_xf, radiusB);
@@ -90,33 +88,32 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 		cc.bodyA = bodyA;
 		cc.bodyB = bodyB;
 		cc.manifold = manifold;
-		cc.normal.CopyFrom (worldManifold.m_normal);
-		cc.pointCount = manifold.m_pointCount;
+		cc.normal.CopyFrom (worldManifold.normal);
+		cc.pointCount = manifold.pointCount;
 		cc.friction = friction;
-		cc.restitution = restitution;
 
 		//cc.localPlaneNormal.CopyFrom (manifold.m_localPlaneNormal);
-		cc.localPlaneNormal = manifold.m_localPlaneNormal;
-		//cc.localPoint.CopyFrom (manifold.m_localPoint);
-		cc.localPoint = manifold.m_localPoint;
+		cc.localNormal = manifold.localNormal;
+		//cc.localPoint.CopyFrom (manifold.localPoint);
+		cc.localPoint = manifold.localPoint;
 		cc.radius = radiusA + radiusB;
-		cc.type = manifold.m_type;
+		cc.type = manifold.type;
 
 		for (j = 0; j < cc.pointCount; ++j)
 		{
-			var cp:b2ManifoldPoint = manifold.m_points [j];
+			var cp:b2ManifoldPoint = manifold.points [j];
 			var ccp:b2ContactConstraintPoint = cc.points [j];
 
-			ccp.normalImpulse = cp.m_normalImpulse;
-			ccp.tangentImpulse = cp.m_tangentImpulse;
+			ccp.normalImpulse = impulseRatio * cp.normalImpulse;
+			ccp.tangentImpulse = impulseRatio * cp.tangentImpulse;
 
 			//ccp.localPoint.CopyFrom (cp.m_localPoint);
-			ccp.localPoint = cp.m_localPoint;
+			ccp.localPoint = cp.localPoint;
 
 			//ccp->rA = worldManifold.m_points[j] - bodyA->m_sweep.c;
 			//ccp->rB = worldManifold.m_points[j] - bodyB->m_sweep.c;
-			b2Math.b2Subtract_Vector2_Output (worldManifold.m_points[j], bodyA.m_sweep.c, ccp.rA);
-			b2Math.b2Subtract_Vector2_Output (worldManifold.m_points[j], bodyB.m_sweep.c, ccp.rB);
+			b2Math.b2Subtract_Vector2_Output (worldManifold.points[j], bodyA.m_sweep.c, ccp.rA);
+			b2Math.b2Subtract_Vector2_Output (worldManifold.points[j], bodyB.m_sweep.c, ccp.rB);
 
 			var rnA:Number  = b2Math.b2Cross2 (ccp.rA, cc.normal);
 			var rnB:Number = b2Math.b2Cross2 (ccp.rB, cc.normal);
@@ -127,12 +124,6 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 
 			//b2Assert(kNormal > b2_epsilon);
 			ccp.normalMass = 1.0 / kNormal;
-
-			var kEqualized:Number = bodyA.m_mass * bodyA.m_invMass + bodyB.m_mass * bodyB.m_invMass;
-			kEqualized += bodyA.m_mass * bodyA.m_invI * rnA + bodyB.m_mass * bodyB.m_invI * rnB;
-
-			//b2Assert(kEqualized > b2_epsilon);
-			ccp.equalizedMass = 1.0 / kEqualized;
 
 			b2Math.b2Cross_Vector2AndScalar_Output (cc.normal, 1.0, tangent);
 
@@ -155,7 +146,7 @@ public function b2ContactSolver(step:b2TimeStep, contacts:Array, contactCount:in
 			var vRel:Number = b2Math.b2Dot2 (cc.normal, tempV);
 			if (vRel < -b2Settings.b2_velocityThreshold)
 			{
-				ccp.velocityBias = -cc.restitution * vRel;
+				ccp.velocityBias = -restitution * vRel;
 			}
 		}
 
@@ -207,7 +198,7 @@ public function Destructor ():void
 
 private static var mP:b2Vec2 = new b2Vec2 ();
 
-public function InitVelocityConstraints(step:b2TimeStep):void
+public function WarmStart():void
 {
 	var i:int;
 	var j:int;
@@ -230,34 +221,20 @@ public function InitVelocityConstraints(step:b2TimeStep):void
 
 		var ccp:b2ContactConstraintPoint;
 
-		if (step.warmStarting)
+		for (j = 0; j < c.pointCount; ++j)
 		{
-			for (j = 0; j < c.pointCount; ++j)
-			{
-				ccp = c.points [j];
-				ccp.normalImpulse *= step.dtRatio;
-				ccp.tangentImpulse *= step.dtRatio;
-				//b2Vec2 P = ccp->normalImpulse * normal + ccp->tangentImpulse * tangent;
-				P.Set (	ccp.normalImpulse * normal.x + ccp.tangentImpulse * tangent.x, 
-							ccp.normalImpulse * normal.y + ccp.tangentImpulse * tangent.y);
-				bodyA.m_angularVelocity -= invIA * b2Math.b2Cross2 (ccp.rA, P);
-				//bodyA->m_linearVelocity -= invMassA * P;
-				bodyA.m_linearVelocity.x -= invMassA * P.x;
-				bodyA.m_linearVelocity.y -= invMassA * P.y;
-				bodyB.m_angularVelocity += invIB * b2Math.b2Cross2 (ccp.rB, P);
-				//bodyB->m_linearVelocity += invMassB * P;
-				bodyB.m_linearVelocity.x += invMassB * P.x;
-				bodyB.m_linearVelocity.y += invMassB * P.y;
-			}
-		}
-		else
-		{
-			for (j = 0; j < c.pointCount; ++j)
-			{
-				ccp = c.points [j];
-				ccp.normalImpulse = 0.0;
-				ccp.tangentImpulse = 0.0;
-			}
+			ccp = c.points [j];
+			//b2Vec2 P = ccp->normalImpulse * normal + ccp->tangentImpulse * tangent;
+			P.Set (	ccp.normalImpulse * normal.x + ccp.tangentImpulse * tangent.x, 
+						ccp.normalImpulse * normal.y + ccp.tangentImpulse * tangent.y);
+			bodyA.m_angularVelocity -= invIA * b2Math.b2Cross2 (ccp.rA, P);
+			//bodyA->m_linearVelocity -= invMassA * P;
+			bodyA.m_linearVelocity.x -= invMassA * P.x;
+			bodyA.m_linearVelocity.y -= invMassA * P.y;
+			bodyB.m_angularVelocity += invIB * b2Math.b2Cross2 (ccp.rB, P);
+			//bodyB->m_linearVelocity += invMassB * P;
+			bodyB.m_linearVelocity.x += invMassB * P.x;
+			bodyB.m_linearVelocity.y += invMassB * P.y;
 		}
 	}
 }
@@ -552,7 +529,7 @@ public function SolveVelocityConstraints():void
 
 
 				//
-				// Case 3: wB = 0 and x1 = 0
+				// Case 3: vn2 = 0 and x1 = 0
 				//
 				// vn1 = a11 * 0 + a12 * x2' + b1' 
 				//   0 = a21 * 0 + a22 * x2' + b2'
@@ -657,7 +634,7 @@ public function SolveVelocityConstraints():void
 	}
 }
 
-public function FinalizeVelocityConstraints():void
+public function StoreImpulses():void
 {
 	var i:int;
 	var j:int;
@@ -673,75 +650,14 @@ public function FinalizeVelocityConstraints():void
 
 		for (j = 0; j < c.pointCount; ++j)
 		{
-			mp  = m.m_points[j];
+			mp  = m.points[j];
 			ccp = c.points[j];
 			
-			mp.m_normalImpulse  = ccp.normalImpulse;
-			mp.m_tangentImpulse = ccp.tangentImpulse;
+			mp.normalImpulse  = ccp.normalImpulse;
+			mp.tangentImpulse = ccp.tangentImpulse;
 		}
 	}
 }
-
-//#if 0
-//// Sequential solver.
-//bool b2ContactSolver::SolvePositionConstraints(float32 baumgarte)
-//{
-//	float32 minSeparation = 0.0f;
-//
-//	for (int32 i = 0; i < m_constraintCount; ++i)
-//	{
-//		b2ContactConstraint* c = m_constraints + i;
-//		b2Body* bodyA = c->bodyA;
-//		b2Body* bodyB = c->bodyB;
-//		float32 invMassA = bodyA->m_mass * bodyA->m_invMass;
-//		float32 invIA = bodyA->m_mass * bodyA->m_invI;
-//		float32 invMassB = bodyB->m_mass * bodyB->m_invMass;
-//		float32 invIB = bodyB->m_mass * bodyB->m_invI;
-//
-//		b2Vec2 normal = c->normal;
-//
-//		// Solve normal constraints
-//		for (int32 j = 0; j < c->pointCount; ++j)
-//		{
-//			b2ContactConstraintPoint* ccp = c->points + j;
-//
-//			b2Vec2 r1 = b2Mul(bodyA->GetTransform().R, ccp->localAnchorA - bodyA->GetLocalCenter());
-//			b2Vec2 r2 = b2Mul(bodyB->GetTransform().R, ccp->localAnchorB - bodyB->GetLocalCenter());
-//
-//			b2Vec2 p1 = bodyA->m_sweep.c + r1;
-//			b2Vec2 p2 = bodyB->m_sweep.c + r2;
-//			b2Vec2 dp = p2 - p1;
-//
-//			// Approximate the current separation.
-//			float32 separation = b2Math.b2Dot2(dp, normal) + ccp->separation;
-//
-//			// Track max constraint error.
-//			minSeparation = b2Min(minSeparation, separation);
-//
-//			// Prevent large corrections and allow slop.
-//			float32 C = b2Clamp(baumgarte * (separation + b2_linearSlop), -b2_maxLinearCorrection, 0.0f);
-//
-//			// Compute normal impulse
-//			float32 impulse = -ccp->equalizedMass * C;
-//
-//			b2Vec2 P = impulse * normal;
-//
-//			bodyA->m_sweep.c -= invMassA * P;
-//			bodyA->m_sweep.a -= invIA * b2Math.b2Cross2(r1, P);
-//			bodyA->SynchronizeTransform();
-//
-//			bodyB->m_sweep.c += invMassB * P;
-//			bodyB->m_sweep.a += invIB * b2Math.b2Cross2(r2, P);
-//			bodyB->SynchronizeTransform();
-//		}
-//	}
-//
-//	// We can't expect minSpeparation >= -b2_linearSlop because we don't
-//	// push the separation above -b2_linearSlop.
-//	return minSeparation >= -1.5f * b2Settings.b2_linearSlop;
-//}
-//
-//#elif 1
 
 //struct b2PositionSolverManifold
 //{
@@ -778,17 +694,15 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 		var invMassB:Number = bodyB.m_mass * bodyB.m_invMass;
 		var invIB:Number = bodyB.m_mass * bodyB.m_invI;
 
-		//b2PositionSolverManifold psm;
-		psm.Initialize(c);
-		var normal:b2Vec2 = psm.m_normal; // .Clone ()
-
 		// Solve normal constraints
 		for (j = 0; j < c.pointCount; ++j)
 		{
-			var ccp:b2ContactConstraintPoint = c.points [j];
+			//b2PositionSolverManifold psm;
+			psm.Initialize(c, j);
+			var normal:b2Vec2 = psm.normal; // .Clone ()
 
-			var point:b2Vec2 = psm.m_points[j]; // .Clone ()
-			var separation:Number = psm.m_separations[j];
+			var point:b2Vec2 = psm.point; // .Clone ()
+			var separation:Number = psm.separation;
 
 			rC = bodyA.m_sweep.c;
 			rA.Set (point.x - rC.x, point.y - rC.y);
@@ -801,8 +715,13 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 			// Prevent large corrections and allow slop.
 			var C:Number = b2Math.b2Clamp_Number (baumgarte * (separation + b2Settings.b2_linearSlop), - b2Settings.b2_maxLinearCorrection, 0.0);
 
+			// Compute the effective mass.
+			var rnA:Number = b2Math.b2Cross2 (rA, normal);
+			var rnB:Number = b2Math.b2Cross2 (rB, normal);
+			var K:Number = invMassA + invMassB + invIA * rnA * rnA + invIB * rnB * rnB;
+
 			// Compute normal impulse
-			var impulse:Number = -ccp.equalizedMass * C;
+			var impulse:Number = K > 0.0 ? - C / K : 0.0;
 
 			P.Set (impulse * normal.x, impulse * normal.y);
 			//bodyA->m_sweep.c -= invMassA * P;

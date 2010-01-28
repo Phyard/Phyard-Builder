@@ -88,7 +88,7 @@ package Box2D.Common
 		public static const b2_angularSlop:Number = (2.0 / 180.0 * b2Settings.b2_pi);
 
 		/// The radius of the polygon/edge shape skin. This should not be modified. Making
-		/// this smaller means polygons will have and insufficient for continuous collision.
+		/// this smaller means polygons will have an insufficient buffer for continuous collision.
 		/// Making it larger may create artifacts for vertex collision.
 		public static const b2_polygonRadius:Number = (2.0 * b2Settings.b2_linearSlop);
 
@@ -97,9 +97,6 @@ package Box2D.Common
 
 		/// Maximum number of contacts to be handled to solve a TOI island.
 		public static const b2_maxTOIContactsPerIsland:int = 32;
-
-		/// Maximum number of joints to be handled to solve a TOI island.
-		public static const b2_maxTOIJointsPerIsland:int = 32;
 
 		/// A velocity threshold for elastic collisions. Any collision with a relative linear
 		/// velocity below this threshold will be treated as inelastic.

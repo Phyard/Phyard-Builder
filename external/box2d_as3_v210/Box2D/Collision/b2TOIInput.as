@@ -9,6 +9,6 @@ package Box2D.Collision
 		public var proxyB:b2DistanceProxy = new b2DistanceProxy ();
 		public var sweepA:b2Sweep;// = new b2Sweep ();
 		public var sweepB:b2Sweep;// = new b2Sweep ();
-		public var tolerance:Number;
+		public var tMax:Number;		// defines sweep interval [0, tMax]
 	} // class
 } // package

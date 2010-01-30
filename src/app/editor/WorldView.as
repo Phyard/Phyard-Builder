@@ -2521,7 +2521,7 @@ package editor {
                if (IsEditing ())
                   OpenEntitySettingDialog ();
                else if (IsPlayingPaused ())
-                  mDesignPlayer.Step ();
+                  mDesignPlayer.Step (true);
                break;
             //case 49: // 1
             //case Keyboard.NUMPAD_1:

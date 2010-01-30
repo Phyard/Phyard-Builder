@@ -17,7 +17,7 @@ package editor.trigger {
       
       public static const sToppestPackage:FunctionPackage = new FunctionPackage ("");
       
-      public static const sBasicPackage:FunctionPackage = new FunctionPackage ("Basic", sToppestPackage);
+      public static const sGlobalPackage:FunctionPackage = new FunctionPackage ("Global", sToppestPackage);
       public static const sWorldPackage:FunctionPackage = new FunctionPackage ("World", sToppestPackage);
       public static const sEntityPackage:FunctionPackage = new FunctionPackage ("Entity", sToppestPackage);
       
@@ -30,25 +30,25 @@ package editor.trigger {
       // packages
       //================================================
          
-         var system_package:FunctionPackage = new FunctionPackage ("System", sBasicPackage);
-         var global_package:FunctionPackage = new FunctionPackage ("Global", sBasicPackage);
-         var math_package:FunctionPackage   = new FunctionPackage ("Math", sBasicPackage);
+         var system_package:FunctionPackage = new FunctionPackage ("System", sGlobalPackage);
+         var basic_package:FunctionPackage = new FunctionPackage ("Basic", sGlobalPackage);
+         var math_package:FunctionPackage   = new FunctionPackage ("Math", sGlobalPackage);
             var usual_math_package:FunctionPackage         = new FunctionPackage ("Usual", math_package);
             var trigonometry_package:FunctionPackage = new FunctionPackage ("Trigonometry", math_package);
             var random_package:FunctionPackage             = new FunctionPackage ("Random", math_package);
             var bitwise_package:FunctionPackage            = new FunctionPackage ("Bitwise", math_package);
             var convert_package:FunctionPackage            = new FunctionPackage ("Number Convert", math_package);
             var interpolation_package:FunctionPackage      = new FunctionPackage ("Interpolation", math_package);
-         var string_package:FunctionPackage = new FunctionPackage ("String", sBasicPackage);
-         var bool_package:FunctionPackage   = new FunctionPackage ("Logic", sBasicPackage);
+         var string_package:FunctionPackage = new FunctionPackage ("String", sGlobalPackage);
+         var bool_package:FunctionPackage   = new FunctionPackage ("Logic", sGlobalPackage);
          
          var world_general_package:FunctionPackage  = new FunctionPackage ("General", sWorldPackage);
+         var ccat_package:FunctionPackage    = new FunctionPackage ("CCat", sWorldPackage);
          var level_package:FunctionPackage  = new FunctionPackage ("Level Status", sWorldPackage);
          var world_physics_package:FunctionPackage    = new FunctionPackage ("Physics", sWorldPackage);
          //var world_appearance_package:FunctionPackage    = new FunctionPackage ("Appearance", sWorldPackage);
          var world_camera_package:FunctionPackage    = new FunctionPackage ("Camera", sWorldPackage);
          var world_script_package:FunctionPackage    = new FunctionPackage ("Script", sWorldPackage);
-         var ccat_package:FunctionPackage    = new FunctionPackage ("CCat", sWorldPackage);
          
          var entity_package:FunctionPackage = new FunctionPackage ("Common", sEntityPackage);
                 var entity_as_task_package:FunctionPackage    = new FunctionPackage ("- Task Status", sEntityPackage);
@@ -66,7 +66,7 @@ package editor.trigger {
          
          if (Compile::Is_Debugging)
          {
-            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, global_package, "ForDevDebug", 
+            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, basic_package, "ForDevDebug", 
                           [
                              new VariableDefinitionEntity ("Shape"), 
                              new VariableDefinitionNumber ("Gravity Angle"), 
@@ -99,17 +99,17 @@ package editor.trigger {
        
       // global
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Return, global_package, "Return", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Return, basic_package, "Return", 
                      null,
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfTrue, global_package, "ReturnIfTrue", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfTrue, basic_package, "ReturnIfTrue", 
                      [
                              new VariableDefinitionBoolean ("Bool Value"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfFalse, global_package, "ReturnIfFalse", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfFalse, basic_package, "ReturnIfFalse", 
                      [
                              new VariableDefinitionBoolean ("Bool Value"), 
                      ],
@@ -602,7 +602,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Degrees"), 
                      ]
                   );
-          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Number2RGB, convert_package, "Number -> RGB", 
+          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Number2RGB, convert_package, "Color -> RGB", 
                      [
                              new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
                      ],
@@ -612,7 +612,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Blue"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_RGB2Number, convert_package, "RGB -> Number", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_RGB2Number, convert_package, "RGB -> Color", 
                      [
                              new VariableDefinitionNumber ("Red (0-255)"), 
                              new VariableDefinitionNumber ("Green (0-255)"), 
@@ -635,6 +635,14 @@ package editor.trigger {
          
      // math / usual
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Abs, usual_math_package, "Abs", 
+                     [
+                             new VariableDefinitionNumber ("Number"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Max, usual_math_package, "Max", 
                      [
                              new VariableDefinitionNumber ("Number 1"), 
@@ -653,9 +661,11 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Abs, usual_math_package, "Abs", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Clamp, usual_math_package, "Clamp", 
                      [
-                             new VariableDefinitionNumber ("Number"), 
+                             new VariableDefinitionNumber ("Number to Clamp"), 
+                             new VariableDefinitionNumber ("Lower Limit"), 
+                             new VariableDefinitionNumber ("Upper Limit"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result"), 
@@ -713,16 +723,6 @@ package editor.trigger {
                      [
                              new VariableDefinitionNumber ("Number"), 
                              new VariableDefinitionNumber ("Power"), 
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"), 
-                     ]
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Clamp, usual_math_package, "Clamp", 
-                     [
-                             new VariableDefinitionNumber ("Number to Clamp"), 
-                             new VariableDefinitionNumber ("Lower Limit"), 
-                             new VariableDefinitionNumber ("Upper Limit"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result"), 
@@ -1202,7 +1202,7 @@ package editor.trigger {
                      null
                   );
          
-          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "GetFilledColor", 
+          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "GetBackgroundColor", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                      ],
@@ -1210,14 +1210,14 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "SetFilledColor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "SetBackgroundColor", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "GetFilledColorRGB", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "GetBackgroundColorRGB", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                      ],
@@ -1227,7 +1227,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Blue"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB, shape_appearance_package, "SetFilledColorRGB", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB, shape_appearance_package, "SetBackgroundColorRGB", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                              new VariableDefinitionNumber ("Red"), 
@@ -1268,7 +1268,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Sensor"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, shape_physics_package, "SetAsSensor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, shape_physics_package, "SetSensor", 
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionBoolean ("Is Sensor", null, {mDefaultValue: true}), 
@@ -1411,7 +1411,7 @@ package editor.trigger {
          
        // game / entity / joint
          
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees, entity_joint_package, "GetHingeLimits", 
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees, entity_joint_package, "GetHingeLimits (By Degrees)", 
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                      ],
@@ -1420,7 +1420,7 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Upper Angle (degrees)"), 
                      ]
                   );
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees, entity_joint_package, "SetHingeLimits", 
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees, entity_joint_package, "SetHingeLimits (By Degrees)", 
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                         new VariableDefinitionNumber ("Lower Angle (degrees)"), 
@@ -1428,7 +1428,7 @@ package editor.trigger {
                      ],
                      null
                   );
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed, entity_joint_package, "GetHingeMotorSpeed", 
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed, entity_joint_package, "GetHingeMotorSpeed (By Degrees)", 
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                      ],
@@ -1436,7 +1436,7 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Motor Speed (degrees/s)"), 
                      ]
                   );
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed, entity_joint_package, "SetHingeMotorSpeed", 
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed, entity_joint_package, "SetHingeMotorSpeed (By Degrees)", 
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                         new VariableDefinitionNumber ("Motor Speed (degrees/s)"), 

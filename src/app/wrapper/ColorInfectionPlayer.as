@@ -298,10 +298,7 @@ package wrapper {
                   }
                }
                
-               if ( mPlayerWorld != null && IsPlaying () && mHelpDialog.visible == false )
-               {
-                  Step ();
-               }
+               Step (false);
                
                if ( mPlayerWorld.IsLevelSuccessed () )
                   OpenFinishedDialog ();
@@ -314,13 +311,26 @@ package wrapper {
          }
       }
       
-      public function Step ():void
+      public function Step (singleStepMode:Boolean = false):void
       {
          mStepTimeSpan.End ();
          mStepTimeSpan.Start ();
          
          if (mPlayerWorld != null)
-            mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+         {
+            var paused:Boolean = (! IsPlaying ()) || mHelpDialog.visible;
+            
+            if ( (! paused) || singleStepMode )
+            {
+               mPlayerWorld.SetPaused (paused);
+               mPlayerWorld.SetSingleStepMode (singleStepMode);
+               
+               mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+               
+               if (mPlayControlBar != null)
+                  mPlayControlBar.NotifyStepped ();
+            }
+         }
       }
       
       public function ChangeState (newStateId:int):void

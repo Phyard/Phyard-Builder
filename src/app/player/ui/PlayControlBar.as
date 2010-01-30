@@ -260,6 +260,12 @@ package player.ui {
          }
       }
       
+      public function NotifyStepped ():void
+      {
+         mButtonRestart.SetBitmapData (mBitmapDataRetart);
+         mButtonRestart.SetClickEventHandler (OnClickRestart);
+      }
+      
 //======================================================================
 //
 //======================================================================

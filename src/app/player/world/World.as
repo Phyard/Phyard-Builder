@@ -357,6 +357,19 @@ package player.world {
          return mLastSimulatedStepInterval_Inv;
       }
       
+      private var mInSingleStepMode:Boolean = false;
+      private var mIsPaused:Boolean = false;
+      
+      public function SetPaused (paused:Boolean):void
+      {
+         mIsPaused = paused;
+      }
+      
+      public function SetSingleStepMode (inSingleStepMode:Boolean):void
+      {
+         mInSingleStepMode = inSingleStepMode;
+      }
+      
 //=============================================================
 //   init
 //=============================================================

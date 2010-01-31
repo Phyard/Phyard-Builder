@@ -140,7 +140,7 @@ package Box2D.Collision
 			{
 			case e_points:
 				{
-					b2Math.b2MulT_Matrix22AndVector2_Output (xfA.R,  m_axis, axisA);
+					b2Math.b2MulT_Matrix22AndVector2_Output (xfA.R, m_axis, axisA);
 					tempV.x = -m_axis.x;
 					tempV.y = -m_axis.y;
 					b2Math.b2MulT_Matrix22AndVector2_Output (xfB.R, tempV, axisB);

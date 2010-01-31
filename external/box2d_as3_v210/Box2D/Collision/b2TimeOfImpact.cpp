@@ -72,8 +72,8 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 	var cache:b2SimplexCache = sSimplexCache;
 	cache.count = 0;
 	var distanceInput:b2DistanceInput = sDistanceInput;
-	distanceInput.proxyA = input.proxyA;
-	distanceInput.proxyB = input.proxyB;
+	distanceInput.proxyA = input.proxyA; // .Clone () // hacking
+	distanceInput.proxyB = input.proxyB; // .Clone () // hacking
 	distanceInput.useRadii = false;
 
 	// The outer loop progressively attempts to compute new separating axes.
@@ -85,8 +85,8 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 
 		// Get the distance between shapes. We can also use the results
 		// to get a separating axis.
-		distanceInput.transformA = xfA; // .CopyFrom
-		distanceInput.transformB = xfB; // .CopyFrom
+		distanceInput.transformA = xfA; // .CopyFrom // hacking
+		distanceInput.transformB = xfB; // .CopyFrom // hacking
 		var distanceOutput:b2DistanceOutput = sDistanceOutput;
 		b2Distance.b2Distance_ (distanceOutput, cache, distanceInput);
 
@@ -191,7 +191,7 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 			{
 				// Use a mix of the secant rule and bisection.
 				var t:Number;
-				if (rootIterCount & 1)
+				if ( (rootIterCount & 1) != 0)
 				{
 					// Secant rule to improve convergence.
 					t = a1 + (target - s1) * (a2 - a1) / (s2 - s1);

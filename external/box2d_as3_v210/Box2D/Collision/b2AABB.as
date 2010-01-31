@@ -35,12 +35,24 @@ package Box2D.Collision
 			return b2Vec2.b2Vec2_From2Numbers (0.5 * (lowerBound.x + upperBound.x), 0.5 * (lowerBound.y + upperBound.y));
 		}
 
+		public function GetCenter_Output (outputV:b2Vec2):void
+		{
+			outputV.x = 0.5 * (lowerBound.x + upperBound.x);
+			outputV.y = 0.5 * (lowerBound.y + upperBound.y);
+		}
+
 		/// Get the extents of the AABB (half-widths).
 		public function GetExtents():b2Vec2
 		{
 			//return 0.5f * (upperBound - lowerBound);
 			
 			return b2Vec2.b2Vec2_From2Numbers (0.5 * (upperBound.x - lowerBound.x), 0.5 * (upperBound.y - lowerBound.y));
+		}
+
+		public function GetExtents_Output (outputV:b2Vec2):void
+		{
+			outputV.x = 0.5 * (upperBound.x - lowerBound.x);
+			outputV.y = 0.5 * (upperBound.y - lowerBound.y);
 		}
 
 		/// Combine two AABBs into this one.

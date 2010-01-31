@@ -161,7 +161,7 @@ public function Solve(baumgarte:Number):Boolean
 			var psm:b2TOISolverManifold = sTOISolverManifold;
 			psm.Initialize(c, j);
 			//b2Vec2 normal = psm.normal;
-			var normal:b2Vec2 = psm.normal; //.Clone ()
+			var normal:b2Vec2 = psm.normal; //.Clone () // hacking
 
 			//b2Vec2 point = psm.point;
 			var point:b2Vec2 = psm.point; // .Clone ()

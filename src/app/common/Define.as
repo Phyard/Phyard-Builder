@@ -21,8 +21,8 @@ package common {
       
       public static const kFloatEpsilon:Number = 1.192092896e-07;
       
-      public static const kDefaultCoordinateSystem_BeforeV0108:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.1, false);
       public static const kDefaultCoordinateSystem:CoordinateSystem = new CoordinateSystem (0.0, 0.0, 0.05, false);
+      public static const kDefaultCoordinateSystem_BeforeV0108:CoordinateSystem = kDefaultCoordinateSystem; // new CoordinateSystem (0.0, 0.0, 0.1, false);
       
 //===========================================================================
 // world

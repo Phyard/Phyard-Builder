@@ -237,6 +237,8 @@ public static function b2FindIncidentEdge(c:b2ClipVertexSegment, //b2ClipVertex 
 // Find incident edge
 // Clip
 
+private static var sIncidentEdge:b2ClipVertexSegment = new b2ClipVertexSegment ();
+
 // The normal points from 1 to 2
 public static function b2CollidePolygons(manifold:b2Manifold,
 					  polyA:b2PolygonShape, xfA:b2Transform,
@@ -295,7 +297,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	}
 
 	//b2ClipVertex incidentEdge[2];
-	var incidentEdge:b2ClipVertexSegment = new b2ClipVertexSegment ();
+	var incidentEdge:b2ClipVertexSegment = sIncidentEdge; //new b2ClipVertexSegment ();
 	b2FindIncidentEdge(incidentEdge, poly1, xf1, edge1, poly2, xf2);
 
 	var count1:int = poly1.m_vertexCount;

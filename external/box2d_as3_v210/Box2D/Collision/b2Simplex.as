@@ -9,16 +9,17 @@ package Box2D.Collision
 	public class b2Simplex
 	{
 		//this function doesn't exist in the c++ version
-		public function GetSimplexVertex (id:int):b2SimplexVertex
-		{
-			switch (id)
-			{
-				case 0: return m_v1;
-				case 1: return m_v2;
-				case 2: return m_v3;
-				default: return null;
-			}
-		}
+		// now it is removed, use m_vertices instead
+		//public function GetSimplexVertex (id:int):b2SimplexVertex
+		//{
+		//	switch (id)
+		//	{
+		//		case 0: return m_v1;
+		//		case 1: return m_v2;
+		//		case 2: return m_v3;
+		//		default: return null;
+		//	}
+		//}
 
 		public function ReadCache(	cache:b2SimplexCache,
 						proxyA:b2DistanceProxy, transformA:b2Transform,
@@ -29,10 +30,11 @@ package Box2D.Collision
 			// Copy data from cache.
 			m_count = cache.count;
 			//b2SimplexVertex* vertices = &m_v1;
+			const vertices:Array = m_vertices;
 			for (var i:int = 0; i < m_count; ++i)
 			{
 				//b2SimplexVertex* v = vertices + i;
-				var v1:b2SimplexVertex = GetSimplexVertex (i);
+				var v1:b2SimplexVertex = vertices [i];
 				v1.indexA = cache.indexA[i];
 				v1.indexB = cache.indexB[i];
 				var wALocal1:b2Vec2 = proxyA.GetVertex(v1.indexA);//.Clone ();
@@ -86,24 +88,28 @@ package Box2D.Collision
 			//cache->count = uint16(m_count);
 			cache.count = uint(m_count);
 			//const b2SimplexVertex* vertices = &m_v1;
+			const vertices:Array = m_vertices;
 			for (var i:int = 0; i < m_count; ++i)
 			{
 				//cache->indexA[i] = uint8(vertices[i].indexA);
 				//cache->indexB[i] = uint8(vertices[i].indexB);
-				var v:b2SimplexVertex = GetSimplexVertex (i);
+				var v:b2SimplexVertex = vertices [i];
 				cache.indexA[i] = uint(v.indexA);
 				cache.indexB[i] = uint(v.indexB);
 			}
 		}
 
-		public function GetSearchDirection():b2Vec2
+		private static var e12:b2Vec2 = new b2Vec2 ();
+
+		public function GetSearchDirection_Output (output:b2Vec2):void
 		{
 			switch (m_count)
 			{
 			case 1:
 				//return -m_v1.w;
-				return m_v1.w.GetNegative ();
-
+				output.x = - m_v1.w.x;
+				output.y = - m_v1.w.y;
+				break;
 			case 2:
 				{
 					//b2Vec2 e12 = m_v2.w - m_v1.w;
@@ -113,42 +119,54 @@ package Box2D.Collision
 					if (sgn > 0.0)
 					{
 						// Origin is left of e12.
-						return b2Math.b2Cross_ScalarAndVector2 (1.0, e12);
+						//return b2Math.b2Cross_ScalarAndVector2 (1.0, e12);
+						b2Math.b2Cross_ScalarAndVector2_Output (1.0, e12, output);
 					}
 					else
 					{
 						// Origin is right of e12.
-						return b2Math.b2Cross_Vector2AndScalar (e12, 1.0);
+						//return b2Math.b2Cross_Vector2AndScalar (e12, 1.0);
+						b2Math.b2Cross_Vector2AndScalar_Output (e12, 1.0, output);
 					}
 				}
-
+				break;
 			default:
 				//b2Assert(false);
-				return b2Math.b2Vec2_zero.Clone ();
+				//return b2Math.b2Vec2_zero.Clone ();
+				output.SetZero ();
+				break;
 			}
 		}
 
-		public function GetClosestPoint():b2Vec2
+		public function GetClosestPoint_Output (output:b2Vec2):void
 		{
 			switch (m_count)
 			{
 			case 0:
 				//b2Assert(false);
-				return b2Math.b2Vec2_zero.Clone ();
-
+				//return b2Math.b2Vec2_zero.Clone ();
+				output.SetZero ();
+				break;
 			case 1:
-				return m_v1.w;//.Clone ();
-
+				//return m_v1.w;//.Clone ();
+				output.x = m_v1.w.x;
+				output.y = m_v1.w.y;
+				break;
 			case 2:
 				//return m_v1.a * m_v1.w + m_v2.a * m_v2.w;
-				return b2Vec2.b2Vec2_From2Numbers (m_v1.a * m_v1.w.x + m_v2.a * m_v2.w.x, m_v1.a * m_v1.w.y + m_v2.a * m_v2.w.y);
-
+				//return b2Vec2.b2Vec2_From2Numbers (m_v1.a * m_v1.w.x + m_v2.a * m_v2.w.x, m_v1.a * m_v1.w.y + m_v2.a * m_v2.w.y);
+				output.x = m_v1.a * m_v1.w.x + m_v2.a * m_v2.w.x;
+				output.y = m_v1.a * m_v1.w.y + m_v2.a * m_v2.w.y;
+				break;
 			case 3:
-				return b2Math.b2Vec2_zero.Clone ();
-
+				//return b2Math.b2Vec2_zero.Clone ();
+				output.SetZero ();
+				break;
 			default:
 				//b2Assert(false);
-				return b2Math.b2Vec2_zero.Clone ();
+				//return b2Math.b2Vec2_zero.Clone ();
+				output.SetZero ();
+				break;
 			}
 		}
 
@@ -222,6 +240,8 @@ package Box2D.Collision
 
 		public var m_v1:b2SimplexVertex = new b2SimplexVertex (), m_v2:b2SimplexVertex = new b2SimplexVertex (), m_v3:b2SimplexVertex = new b2SimplexVertex ();
 		public var m_count:int;
+		
+		public var m_vertices:Array = [m_v1, m_v2, m_v3];
 		
 		// Solve a line segment using barycentric coordinates.
 		//

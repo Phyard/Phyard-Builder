@@ -176,6 +176,7 @@ public function b2Island(
 	m_contacts = new Array (contactCapacity);
 	m_joints = new Array (jointCapacity);
 
+	// as3: below 2 lines is not commented of in c++ version 
 	//m_velocities = (b2Velocity*)m_allocator->Allocate(m_bodyCapacity * sizeof(b2Velocity));
 	//m_positions = (b2Position*)m_allocator->Allocate(m_bodyCapacity * sizeof(b2Position));
 }

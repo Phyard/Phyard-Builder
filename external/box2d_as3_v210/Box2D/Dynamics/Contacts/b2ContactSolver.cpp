@@ -44,6 +44,7 @@ public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2St
 
 	m_constraintCount = contactCount;
 	//m_constraints = (b2ContactConstraint*)m_allocator->Allocate(m_constraintCount * sizeof(b2ContactConstraint));
+	//>>hacking
 	if (m_ConstraintsArray.length < m_constraintCount)
 	{
 		var oldCount:int = m_ConstraintsArray.length;
@@ -55,6 +56,8 @@ public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2St
 			m_ConstraintsArray [i] = cc;
 		}
 	}
+	m_constraints = m_ConstraintsArray;
+	//<<
 
 	for (i = 0; i < m_constraintCount; ++i)
 	{	
@@ -92,10 +95,10 @@ public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2St
 		cc.pointCount = manifold.pointCount;
 		cc.friction = friction;
 
-		//cc.localPlaneNormal.CopyFrom (manifold.m_localPlaneNormal);
-		cc.localNormal = manifold.localNormal;
+		//cc.localNormal.CopyFrom (manifold.localNormal);
+		cc.localNormal = manifold.localNormal; // hacking
 		//cc.localPoint.CopyFrom (manifold.localPoint);
-		cc.localPoint = manifold.localPoint;
+		cc.localPoint = manifold.localPoint; // hacking
 		cc.radius = radiusA + radiusB;
 		cc.type = manifold.type;
 
@@ -274,7 +277,7 @@ public function SolveVelocityConstraints():void
 		var invIA:Number = bodyA.m_invI;
 		var invMassB:Number = bodyB.m_invMass;
 		var invIB:Number = bodyB.m_invI;
-		var normal:b2Vec2 = c.normal; // .Clone ()
+		var normal:b2Vec2 = c.normal; // .Clone () // hacking
 		//var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (normal, 1.0); 
 		b2Math.b2Cross_Vector2AndScalar_Output (normal, 1.0, tangent); 
 		var friction:Number = c.friction;
@@ -667,6 +670,8 @@ public function StoreImpulses():void
 private static var rA:b2Vec2 = new b2Vec2 ();
 private static var rB:b2Vec2 = new b2Vec2 ();
 
+private static var sPositionSolverManifold:b2PositionSolverManifold = new b2PositionSolverManifold ();
+
 // Sequential solver.
 public function SolvePositionConstraints(baumgarte:Number):Boolean
 {
@@ -681,8 +686,6 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 	//var P:b2Vec2 = new b2Vec2 ();
 	var tF:Number;
 	
-	var psm:b2PositionSolverManifold = new b2PositionSolverManifold ();
-
 	for (i = 0; i < m_constraintCount; ++i)
 	{
 		var c:b2ContactConstraint = m_constraints [i];
@@ -698,6 +701,7 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 		for (j = 0; j < c.pointCount; ++j)
 		{
 			//b2PositionSolverManifold psm;
+			var psm:b2PositionSolverManifold = sPositionSolverManifold; // hacking
 			psm.Initialize(c, j);
 			var normal:b2Vec2 = psm.normal; // .Clone ()
 

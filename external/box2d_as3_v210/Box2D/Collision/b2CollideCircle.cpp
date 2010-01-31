@@ -27,6 +27,7 @@ private static var c:b2Vec2 = new b2Vec2 ();
 private static var cLocal:b2Vec2 = new b2Vec2 ();
 private static var temp1:b2Vec2 = new b2Vec2 ();
 private static var temp2:b2Vec2 = new b2Vec2 ();
+private static var faceCenter:b2Vec2 = new b2Vec2 ();
 
 public static function b2CollideCircles(
 	manifold:b2Manifold,
@@ -163,7 +164,6 @@ circleB:b2CircleShape, xfB:b2Transform):void
 	{
 		//b2Vec2 faceCenter = 0.5f * (v1 + v2);
 		//float32 separation = b2Math.b2Dot2(cLocal - faceCenter, normals[vertIndex1]);
-		var faceCenter:b2Vec2 = temp1;
 		faceCenter.x = 0.5 * (v1.x + v2.x);
 		faceCenter.y = 0.5 * (v1.y + v2.y);
 		temp2.x = cLocal.x - faceCenter.x;

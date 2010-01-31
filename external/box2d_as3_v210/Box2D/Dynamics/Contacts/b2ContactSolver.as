@@ -68,7 +68,7 @@ package Box2D.Dynamics.Contacts
 
 		public var m_allocator:b2StackAllocator;
 		//b2ContactConstraint* m_constraints;
-		public var m_constraints:Array = m_ConstraintsArray;
+		public var m_constraints:Array;
 		public var m_constraintCount:int = 0;
 	} // class
 } // package

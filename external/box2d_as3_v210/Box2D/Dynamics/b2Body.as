@@ -688,7 +688,9 @@ package Box2D.Dynamics
 			m_force.x += force.x;
 			m_force.y += force.y;
 			//m_torque += b2Math.b2Cross2(point - m_sweep.c, force);
-			m_torque += b2Math.b2Cross2 (b2Math.b2Subtract_Vector2 (point, m_sweep.c), force);
+			tempV.x = point.x - m_sweep.c.x;
+			tempV.y = point.y - m_sweep.c.y;
+			m_torque += b2Math.b2Cross2 (tempV, force);
 		}
 
 		public function ApplyTorque(torque:Number):void
@@ -722,16 +724,18 @@ package Box2D.Dynamics
 			m_linearVelocity.x += m_invMass * impulse.x;
 			m_linearVelocity.y += m_invMass * impulse.y;
 			//m_angularVelocity += m_invI * b2Math.b2Cross2(point - m_sweep.c, impulse);
-			m_angularVelocity += m_invI * b2Math.b2Cross2 (b2Math.b2Subtract_Vector2 (point, m_sweep.c), impulse);
+			tempV.x = point.x - m_sweep.c.x;
+			tempV.y = point.y - m_sweep.c.y;
+			m_angularVelocity += m_invI * b2Math.b2Cross2 (tempV, impulse);
 		}
 
 		public function SynchronizeTransform():void
 		{
 			m_xf.R.SetFromAngle (m_sweep.a);
 			//m_xf.position = m_sweep.c - b2Mul(m_xf.R, m_sweep.localCenter);
-			var temp:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2(m_xf.R, m_sweep.localCenter);
-			m_xf.position.x = m_sweep.c.x - temp.x;
-			m_xf.position.y = m_sweep.c.y - temp.y;
+			b2Math.b2Mul_Matrix22AndVector2_Output (m_xf.R, m_sweep.localCenter, tempV);
+			m_xf.position.x = m_sweep.c.x - tempV.x;
+			m_xf.position.y = m_sweep.c.y - tempV.y;
 		}
 
 		public function Advance(t:Number):void

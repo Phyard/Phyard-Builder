@@ -146,6 +146,9 @@ private static var mTempAABB:b2AABB = new b2AABB ();
 private static var mTempVec2:b2Vec2 = new b2Vec2 ();
 private static var delta1:b2Vec2 = new b2Vec2 ();
 private static var delta2:b2Vec2 = new b2Vec2 ();
+private static var center:b2Vec2 = new b2Vec2 ();
+private static var center1:b2Vec2 = new b2Vec2 ();
+private static var center2:b2Vec2 = new b2Vec2 ();
 
 public function MoveProxy(proxyId:int, aabb:b2AABB, displacement:b2Vec2):Boolean
 {
@@ -213,11 +216,11 @@ public function InsertLeaf(leaf:int):void
 		(m_nodes[m_root] as b2DynamicTreeNode).parent = b2_nullNode;
 		return;
 	}
-	
+
 	var node:b2DynamicTreeNode;
 
 	// Find the best sibling for this node.
-	var center:b2Vec2 = (m_nodes[leaf] as b2DynamicTreeNode).aabb.GetCenter();
+	(m_nodes[leaf] as b2DynamicTreeNode).aabb.GetCenter_Output (center);
 	var sibling:int = m_root;
 	if ((m_nodes[sibling] as b2DynamicTreeNode).IsLeaf() == false)
 	{
@@ -231,9 +234,11 @@ public function InsertLeaf(leaf:int):void
 
 			//b2Vec2 delta1 = b2Abs(m_nodes[child1].aabb.GetCenter() - center);
 			//b2Vec2 delta2 = b2Abs(m_nodes[child2].aabb.GetCenter() - center);
-			b2Math.b2Subtract_Vector2_Output ((m_nodes[child1] as b2DynamicTreeNode).aabb.GetCenter(), center, delta1);
+			(m_nodes[child1] as b2DynamicTreeNode).aabb.GetCenter_Output (center1);
+			b2Math.b2Subtract_Vector2_Output (center1, center, delta1);
 			b2Math.b2Abs_Vector2_Self (delta1);
-			b2Math.b2Subtract_Vector2_Output ((m_nodes[child2] as b2DynamicTreeNode).aabb.GetCenter(), center, delta2);
+			(m_nodes[child2] as b2DynamicTreeNode).aabb.GetCenter_Output (center2);
+			b2Math.b2Subtract_Vector2_Output (center2, center, delta2);
 			b2Math.b2Abs_Vector2_Self (delta2);
 
 			var norm1:Number = delta1.x + delta1.y;
@@ -350,7 +355,7 @@ public function RemoveLeaf(leaf:int):void
 		{
 			node = m_nodes[node1] as b2DynamicTreeNode;
 			
-			oldAABB.CopyFrom ((m_nodes[node1] as b2DynamicTreeNode).aabb);
+			oldAABB.CopyFrom (node.aabb);
 			node.aabb.Combine((m_nodes[node.child1] as b2DynamicTreeNode).aabb, (m_nodes[node.child2] as b2DynamicTreeNode).aabb);
 
 			if (oldAABB.Contains(node.aabb))
@@ -387,7 +392,7 @@ public function Rebalance(iterations:int):void
 			//int32* children = &m_nodes[node].child1;
 			//node = children[(m_path >> bit) & 1];
 			//bit = (bit + 1) & (8* sizeof(uint32) - 1);
-			node = (m_path >> bit) & 1 == 0 ? treeNode.child1 : treeNode.child2;
+			node = ((m_path >> bit) & 1) == 0 ? treeNode.child1 : treeNode.child2;
 			treeNode = m_nodes[node] as b2DynamicTreeNode;
 			bit = (bit + 1) & 31;
 		}

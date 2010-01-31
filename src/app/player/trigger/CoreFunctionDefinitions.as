@@ -1101,8 +1101,7 @@ package player.trigger {
          valueSource = valueSource.mNextValueSourceInList;
          var radians:Number = (valueSource.EvalateValueObject () as Number) % 360.0;
          
-         var physics_engine:PhysicsEngine = Global.GetCurrentWorld ().GetPhysicsEngine ();
-         physics_engine.SetGravity (magnitude, radians);
+         Global.GetCurrentWorld ().SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
       }
       
       public static function SetWorldGravityAcceleration_Degrees (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1112,8 +1111,7 @@ package player.trigger {
          valueSource = valueSource.mNextValueSourceInList;
          var radians:Number = ((valueSource.EvalateValueObject () as Number) % 360.0) * Define.kDegrees2Radians;
          
-         var physics_engine:PhysicsEngine = Global.GetCurrentWorld ().GetPhysicsEngine ();
-         physics_engine.SetGravity (magnitude, radians);
+         Global.GetCurrentWorld ().SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
       }
       
       public static function SetWorldGravityAcceleration_Vector (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1123,8 +1121,7 @@ package player.trigger {
          valueSource = valueSource.mNextValueSourceInList;
          var gaY:Number = valueSource.EvalateValueObject () as Number;
          
-         var physics_engine:PhysicsEngine = Global.GetCurrentWorld ().GetPhysicsEngine ();
-         physics_engine.SetGravityByVector (gaX, gaY);
+         Global.GetCurrentWorld ().SetCurrentGravityAcceleration (gaX, gaY);
       }
       
       public static function FollowCameraWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void

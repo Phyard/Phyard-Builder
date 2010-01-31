@@ -79,6 +79,10 @@ public static var b2_gjkCalls:int, b2_gjkIters:int, b2_gjkMaxIters:int;
 //}
 
 private static var mSimplex:b2Simplex = new b2Simplex ();
+private static var saveA:Array = [0, 0, 0], saveB:Array = [0, 0, 0];
+private static var d:b2Vec2 = new b2Vec2 ();
+private static var p:b2Vec2 = new b2Vec2 ();
+private static var closestPoint:b2Vec2 = new b2Vec2 ();
 
 public static function b2Distance_(output:b2DistanceOutput,
 				cache:b2SimplexCache,
@@ -97,16 +101,17 @@ public static function b2Distance_(output:b2DistanceOutput,
 	simplex.ReadCache(cache, proxyA, transformA, proxyB, transformB);
 
 	// Get simplex vertices as an array.
-	//var vertices:b2SimplexVertex = simplex.m_v1; // use simplex.GetSimplexVertex (index) instead
+	//var vertices:b2SimplexVertex = simplex.m_v1; 
+	var vertices:Array = simplex.m_vertices;
 	const k_maxIters:int = 20;
 
 	// These store the vertices of the last simplex so that we
 	// can check for duplicates and prevent cycling.
 	//int32 saveA[3], saveB[3];
-	var saveA:Array = [0, 0, 0], saveB:Array = [0, 0, 0];
+	//var saveA:Array = [0, 0, 0], saveB:Array = [0, 0, 0]; // hacking, static now
 	var saveCount:int = 0;
 
-	var closestPoint:b2Vec2 = simplex.GetClosestPoint();//.Clone ();
+	simplex.GetClosestPoint_Output (closestPoint);//.hacking
 	var distanceSqr1:Number = closestPoint.LengthSquared();
 	var distanceSqr2:Number = distanceSqr1;
 
@@ -121,8 +126,8 @@ public static function b2Distance_(output:b2DistanceOutput,
 		{
 			//saveA[i] = vertices[i].indexA;
 			//saveB[i] = vertices[i].indexB;
-			saveA[i] = simplex.GetSimplexVertex (i).indexA;
-			saveB[i] = simplex.GetSimplexVertex (i).indexB;
+			saveA[i] = (vertices[i] as b2SimplexVertex).indexA;
+			saveB[i] = (vertices[i] as b2SimplexVertex).indexB;
 		}
 
 		switch (simplex.m_count)
@@ -150,7 +155,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 		}
 
 		// Compute closest point.
-		var p:b2Vec2 = simplex.GetClosestPoint();//.Clone ();
+		simplex.GetClosestPoint_Output (p);//.hacking
 		distanceSqr2 = p.LengthSquared();
 
 		// Ensure progress
@@ -161,7 +166,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 		distanceSqr1 = distanceSqr2;
 
 		// Get search direction.
-		var d:b2Vec2 = simplex.GetSearchDirection();//.Clone ();
+		simplex.GetSearchDirection_Output(d); // hacking
 
 		// Ensure the search direction is numerically fit.
 		if (d.LengthSquared() < b2Settings.b2_epsilon * b2Settings.b2_epsilon)
@@ -184,7 +189,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 		//vertex->wB = b2Mul(transformB, proxyB->GetVertex(vertex->indexB));
 		//vertex->w = vertex->wB - vertex->wA;
 
-		var vertex:b2SimplexVertex = simplex.GetSimplexVertex (simplex.m_count);
+		var vertex:b2SimplexVertex = vertices [simplex.m_count];
 		vertex.indexA = proxyA.GetSupport(b2Math.b2MulT_Matrix22AndVector2(transformA.R, d.GetNegative ()));
 		b2Math.b2Mul_TransformAndVector2_Output (transformA, proxyA.GetVertex(vertex.indexA), vertex.wA);
 		vertex.indexB = proxyB.GetSupport(b2Math.b2MulT_Matrix22AndVector2(transformB.R, d));
@@ -255,11 +260,11 @@ public static function b2Distance_(output:b2DistanceOutput,
 			var px:Number = 0.5 * (output.pointA.x + output.pointB.x);
 			var py:Number = 0.5 * (output.pointA.y + output.pointB.y);
 			//output->pointA = p;
-			output.pointA.x = p.x;
-			output.pointA.y = p.y;
+			output.pointA.x = px; // don't p.x !!!
+			output.pointA.y = py; // don't p.y !!!
 			//output->pointB = p;
-			output.pointB.x = p.x;
-			output.pointB.y = p.y;
+			output.pointB.x = px; // don't p.x !!!
+			output.pointB.y = py; // don't p.y !!!
 			output.distance = 0.0;
 		}
 	}

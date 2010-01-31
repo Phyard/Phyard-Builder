@@ -184,7 +184,7 @@ public function Update(listener:b2ContactListener
 	
 	//b2Manifold oldManifold = m_manifold;
 	//var oldManifold:b2Manifold = m_manifold.Clone ();
-	// hacking, optimization
+	//>> hacking, optimization
 	var oldManifold:b2Manifold = mOldManifold;
 	
 	if (preSolveLinster == null)
@@ -205,6 +205,7 @@ public function Update(listener:b2ContactListener
 	{
 		oldManifold.CopyFrom (m_manifold);
 	}
+	//<<
 
 	// Re-enable this contact.
 	m_flags |= e_enabledFlag;
@@ -288,8 +289,11 @@ public function Update(listener:b2ContactListener
 		listener.EndContact(this);
 	}
 
-	if (preSolveLinster != null && sensor == false)
+	if (sensor == false)
 	{
-		preSolveLinster.PreSolve(this, oldManifold);
+		if (preSolveLinster != null) // hacking
+		{
+			preSolveLinster.PreSolve(this, oldManifold);
+		}
 	}
 }

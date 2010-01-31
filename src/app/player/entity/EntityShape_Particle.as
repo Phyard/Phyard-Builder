@@ -45,6 +45,9 @@ package player.entity {
       {
          super.UpdateInternal (dt);
          
+if (mBody.GetPositionY () > 16.0)
+   trace ("> 555 y = " + mBody.GetPositionY ());
+         
          mLife += dt;
          
          SetVisible (mLife > 0);

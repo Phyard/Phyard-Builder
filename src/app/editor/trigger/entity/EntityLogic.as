@@ -39,6 +39,8 @@ package editor.trigger.entity {
       public function EntityLogic (world:World)
       {
          super (world);
+         
+         alpha = 0.78;
       }
       
       override public function GetTypeName ():String

@@ -20,6 +20,7 @@ package editor.world {
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeTextButton;
    import editor.entity.EntityShapeGravityController;
+   import editor.entity.EntityUtility;
    import editor.entity.EntityUtilityCamera;
    
    import editor.entity.EntityJoint;
@@ -30,6 +31,7 @@ package editor.world {
    
    import editor.entity.SubEntityJointAnchor;
    
+   import editor.trigger.entity.EntityLogic;
    import editor.trigger.entity.EntityBasicCondition;
    import editor.trigger.entity.EntityConditionDoor;
    import editor.trigger.entity.EntityTask;
@@ -898,6 +900,78 @@ package editor.world {
          addChild (action);
          
          return action;
+      }
+      
+//=================================================================================
+//   queries
+//=================================================================================
+      
+      private var mShapesVisible:Boolean = true;
+      private var mJointsVisible:Boolean = true;
+      private var mTriggersVisible:Boolean = true;
+      
+      public function MakeAllEntitiesVisible ():void
+      {
+         mShapesVisible = true;
+         mJointsVisible = true;
+         mTriggersVisible = true;
+         
+         UpdateEntityVisibility ();
+      }
+      
+      public function ToggleShapesVisibility ():void
+      {
+         mShapesVisible = ! mShapesVisible;
+         
+         UpdateEntityVisibility ();
+      }
+      
+      public function ToggleJointsVisibility ():void
+      {
+         mJointsVisible = ! mJointsVisible;
+         
+         UpdateEntityVisibility ();
+      }
+      
+      public function ToggleTriggersVisibility ():void
+      {
+         mTriggersVisible = ! mTriggersVisible;
+         
+         UpdateEntityVisibility ();
+      }
+      
+      private function UpdateEntityVisibility ():void
+      {
+         var entity:Entity;
+         
+         var numEntities:int = mEntitiesSortedByCreationId.length;
+         if (numEntities != numChildren)
+            trace ("!!! numEntities != numChildren");
+         
+         for (var i:int = 0; i < numEntities; ++ i)
+         {
+            entity = mEntitiesSortedByCreationId [i] as Entity;
+            if (entity == null)
+               continue; // should not
+            
+            if (entity is EntityShape || entity is EntityUtility)
+            {
+               entity.visible = mShapesVisible;
+            }
+            else if (entity is EntityJoint || entity is SubEntityJointAnchor)
+            {
+               entity.visible = mJointsVisible;
+            }
+            else if (entity is EntityLogic)
+            {
+               entity.visible = mTriggersVisible;
+            }
+            
+            if ( (! entity.visible) && entity.IsSelected ())
+            {
+               mSelectionListManager.RemoveSelectedEntity (entity);
+            }
+         }
       }
       
 //=================================================================================

@@ -1,11 +1,21 @@
 
-public function IsForbidMouseAndKeyboardEventHandling ():Boolean
+private var mEnabledInteractiveWhenPaused:Boolean = false;
+
+public function SetInteractiveEnabledWhenPaused (enable:Boolean):void
+{
+   mEnabledInteractiveWhenPaused = enable;
+}
+
+public function IsInteractiveEnabledNow ():Boolean
 {
    // not a good ideas:
    // assume: mouse down before fading, release mosue when fading, then make some confused.
    // it is best provide a function IsCameraFading () for user convienience.
    
-   return true;
+   if (mIsPaused)
+      return mEnabledInteractiveWhenPaused;
+   else
+      return true;
 }
 
 //=============================================================
@@ -106,8 +116,11 @@ private function OnRemovedFromStage (event:Event):void
 
 public function OnMouseClick (event:MouseEvent):void
 {
-   MouseEvent2ValueSourceList (event);
-   HandleEventById (CoreEventIds.ID_OnWorldMouseClick, mWorldMouseEventHandlerValueSourceList);
+   if (IsInteractiveEnabledNow ())
+   {
+      MouseEvent2ValueSourceList (event);
+      HandleEventById (CoreEventIds.ID_OnWorldMouseClick, mWorldMouseEventHandlerValueSourceList);
+   }
 }
 
 public function OnMouseDown (event:MouseEvent):void
@@ -118,27 +131,30 @@ public function OnMouseDown (event:MouseEvent):void
    if (mCurrentMode != null)
       mCurrentMode.OnMouseDown (event.stageX, event.stageY);
    
-   // ...
-   MouseEvent2ValueSourceList (event);
-   HandleEventById (CoreEventIds.ID_OnWorldMouseDown, mWorldMouseEventHandlerValueSourceList);
-   
-   // ...
-   if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
+   if (IsInteractiveEnabledNow ())
    {
-      var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
-      var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
-      var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
+      // ...
+      MouseEvent2ValueSourceList (event);
+      HandleEventById (CoreEventIds.ID_OnWorldMouseDown, mWorldMouseEventHandlerValueSourceList);
       
-      var shape:EntityShape;
-      var num:int = shapeArray.length;
-      for (var i:int = 0; i < num; ++ i)
+      // ...
+      if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
       {
-         shape = shapeArray [i] as EntityShape;
+         var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+         var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
+         var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
          
-         MouseEvent2ValueSourceList (event);
-         mMouseEventHandlerValueSource0.mValueObject = shape;
-         
-         shape.OnPhysicsShapeMouseDown (mEntityMouseEventHandlerValueSourceList);
+         var shape:EntityShape;
+         var num:int = shapeArray.length;
+         for (var i:int = 0; i < num; ++ i)
+         {
+            shape = shapeArray [i] as EntityShape;
+            
+            MouseEvent2ValueSourceList (event);
+            mMouseEventHandlerValueSource0.mValueObject = shape;
+            
+            shape.OnPhysicsShapeMouseDown (mEntityMouseEventHandlerValueSourceList);
+         }
       }
    }
 }
@@ -149,31 +165,34 @@ public function OnMouseUp (event:MouseEvent):void
    if (mCurrentMode != null)
       mCurrentMode.OnMouseUp (event.stageX, event.stageY);
    
-   // ...
-   MouseEvent2ValueSourceList (event);
-   HandleEventById (CoreEventIds.ID_OnWorldMouseUp, mWorldMouseEventHandlerValueSourceList);
-   
-   // ...
-   var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
-   var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
-   var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
-      
-   if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
+   if (IsInteractiveEnabledNow ())
    {
-      var shape:EntityShape;
-      var num:int = shapeArray.length;
-      for (var i:int = 0; i < num; ++ i)
+      // ...
+      MouseEvent2ValueSourceList (event);
+      HandleEventById (CoreEventIds.ID_OnWorldMouseUp, mWorldMouseEventHandlerValueSourceList);
+      
+      // ...
+      var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+      var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
+      var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
+         
+      if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
       {
-         shape = shapeArray [i] as EntityShape;
-         
-         MouseEvent2ValueSourceList (event);
-         mMouseEventHandlerValueSource0.mValueObject = shape;
-         
-         shape.OnPhysicsShapeMousUp (mEntityMouseEventHandlerValueSourceList);
+         var shape:EntityShape;
+         var num:int = shapeArray.length;
+         for (var i:int = 0; i < num; ++ i)
+         {
+            shape = shapeArray [i] as EntityShape;
+            
+            MouseEvent2ValueSourceList (event);
+            mMouseEventHandlerValueSource0.mValueObject = shape;
+            
+            shape.OnPhysicsShapeMousUp (mEntityMouseEventHandlerValueSourceList);
+         }
       }
+      
+      RemoveBombsAndRemovableShapes (shapeArray);
    }
-   
-   RemoveBombsAndRemovableShapes (shapeArray);
 }
 
 public function OnMouseMove (event:MouseEvent):void
@@ -182,9 +201,12 @@ public function OnMouseMove (event:MouseEvent):void
    if (mCurrentMode != null)
       mCurrentMode.OnMouseMove (event.stageX, event.stageY, event.buttonDown);
    
-   //
-   MouseEvent2ValueSourceList (event);
-   HandleEventById (CoreEventIds.ID_OnWorldMouseMove, mWorldMouseEventHandlerValueSourceList);
+   if (IsInteractiveEnabledNow ())
+   {
+      //
+      MouseEvent2ValueSourceList (event);
+      HandleEventById (CoreEventIds.ID_OnWorldMouseMove, mWorldMouseEventHandlerValueSourceList);
+   }
 }
 
 private var mMouseEventHandlerValueSource7:ValueSource_Direct = new ValueSource_Direct (null); // is overlapped by some entities
@@ -230,8 +252,11 @@ public function OnKeyDown (event:KeyboardEvent):void
    if (IsKeyHold (event.keyCode))
       return;
    
-   KeyPressed (event.keyCode, event.charCode);
-   HandleKeyEventByKeyCode (event, true);
+   if (IsInteractiveEnabledNow ())
+   {
+      KeyPressed (event.keyCode, event.charCode);
+      HandleKeyEventByKeyCode (event, true);
+   }
    
    //trace ("Pressed: " + String.fromCharCode (event.charCode));
 }
@@ -244,8 +269,12 @@ public function OnKeyUp (event:KeyboardEvent):void
    if (! IsKeyHold (event.keyCode))
       return;
    
-   HandleKeyEventByKeyCode (event, false);
-   KeyReleased (event.keyCode);
+   // commented off, because it seems not a good idea to ...
+   // if (IsInteractiveEnabledNow ())
+   {
+      HandleKeyEventByKeyCode (event, false);
+      KeyReleased (event.keyCode);
+   }
    
    //trace ("Released: " + String.fromCharCode (event.charCode));
 }

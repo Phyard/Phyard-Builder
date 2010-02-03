@@ -11,7 +11,7 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_SourceCode" width="100%" height="250" editable="true">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="350" editable="true">
          <mx:text>
          </mx:text>
       </mx:TextArea>

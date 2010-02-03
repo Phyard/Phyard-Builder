@@ -267,15 +267,15 @@
                                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
                                  horizontalGap="0" verticalGap="0" borderThickness="1">
                         <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
-                        <mx:Label id="Label_EntityDisplayPosition" text=""/>
+                        <mx:Label id="Label_EntityDisplayPosition" text="" width="150"/>
                         <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
-                        <mx:Label id="Label_EntityPhysicsPosition" text=""/>
+                        <mx:Label id="Label_EntityPhysicsPosition" text="" width="150"/>
                         <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
                         <!--
                         <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
                         <mx:Label text="Map" click="ShowMiniMap ();"/>
                         -->
-                        <mx:ViewStack id="ViewStack_WorldInfo" borderStyle="none" creationPolicy="all" width="100%" height="100%">
+                        <mx:ViewStack id="ViewStack_WorldInfo" borderStyle="none" creationPolicy="all" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" height="100%">
                            <mx:HBox id="Box_EditingWorldInfo" borderStyle="none" height="100%" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                               <mx:Label id="Label_MainSelectedEntityInfo" text="" width="100%"/>
                               <mx:Spacer width="100%"/>

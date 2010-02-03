@@ -320,11 +320,10 @@ package wrapper {
          {
             var paused:Boolean = (! IsPlaying ()) || mHelpDialog.visible;
             
+            mPlayerWorld.SetPaused (paused);
+            
             if ( (! paused) || singleStepMode )
             {
-               mPlayerWorld.SetPaused (paused);
-               mPlayerWorld.SetSingleStepMode (singleStepMode);
-               
                mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
                
                if (mPlayControlBar != null)
@@ -581,6 +580,7 @@ package wrapper {
             }
             
             mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (worldDefine);
+            mPlayerWorld.SetInteractiveEnabledWhenPaused (GetWorldBinaryData != null || GetWorldDefine != null);
          }
          catch (error:Error)
          {

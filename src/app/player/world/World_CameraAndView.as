@@ -209,6 +209,9 @@ public function MouseMoveCamera (offsetX:Number, offsetY:Number):void
 {
    mCameraMovedOffsetX_ByMouse += offsetX;
    mCameraMovedOffsetY_ByMouse += offsetY;
+   
+   if (mIsPaused)
+      UpdateCamera ();
 }
 
 //=====================================================================================

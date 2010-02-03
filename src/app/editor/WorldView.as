@@ -153,6 +153,7 @@ package editor {
    import common.ValueAdjuster;
    
    import common.trigger.CoreEventIds;
+   import common.KeyCodes;
    
    import misc.Analytics;
    
@@ -588,8 +589,8 @@ package editor {
             return;
          }
          
-         var typeName:String = mLastSelectedEntity.GetTypeName ();
-         var infoText:String = mLastSelectedEntity.GetInfoText ();
+         var typeName:String = mLastSelectedEntity.GetMainEntity ().GetTypeName ();
+         var infoText:String = mLastSelectedEntity.GetMainEntity ().GetInfoText ();
          
          StatusBar_SetMainSelectedEntityInfo ("<b>&lt;" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + "&gt; " + typeName + "</b>: " + infoText);
       }
@@ -2515,7 +2516,13 @@ package editor {
          switch (event.keyCode)
          {
             case Keyboard.ESCAPE:
-               CancelCurrentCreatingMode ();
+               if (mCurrentCreatMode != null)
+                  CancelCurrentCreatingMode ();
+               else
+               {
+                  mEditorWorld.ClearSelectedEntities ();
+                  OnSelectedEntitiesChanged ();
+               }
                break;
             case Keyboard.SPACE:
                if (IsEditing ())
@@ -2523,10 +2530,25 @@ package editor {
                else if (IsPlayingPaused ())
                   mDesignPlayer.Step (true);
                break;
-            //case 49: // 1
-            //case Keyboard.NUMPAD_1:
-            //   OpenCollisionGroupManageDialog ();
-            //   break;
+            case KeyCodes.Key_0:
+            case Keyboard.NUMPAD_0:
+               mEditorWorld.MakeAllEntitiesVisible ();
+               break;
+            case KeyCodes.Key_1:
+            case Keyboard.NUMPAD_1:
+               mEditorWorld.ToggleShapesVisibility ();
+               OnSelectedEntitiesChanged ();
+               break;
+            case KeyCodes.Key_2:
+            case Keyboard.NUMPAD_2:
+               mEditorWorld.ToggleJointsVisibility ();
+               OnSelectedEntitiesChanged ();
+               break;
+            case KeyCodes.Key_3:
+            case Keyboard.NUMPAD_3:
+               mEditorWorld.ToggleTriggersVisibility ();
+               OnSelectedEntitiesChanged ();
+               break;
             case Keyboard.DELETE:
                if (event.ctrlKey)
                   DeleteSelectedVertexController ();
@@ -3021,6 +3043,11 @@ package editor {
          if (mCurrentMouseMode == MouseMode_SelectGlued)
             mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
          
+         OnSelectedEntitiesChanged ();
+      }
+      
+      public function OnSelectedEntitiesChanged ():void
+      {
          CalSelectedEntitiesCenterPoint ();
          
          var selecteds:Array = mEditorWorld.GetSelectedEntities ();

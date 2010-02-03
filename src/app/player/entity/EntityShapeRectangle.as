@@ -104,9 +104,18 @@ package player.entity {
          {
             mNeedRebuildAppearanceObjects = false;
             
-            var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth) + 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
-            var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight) + 0.5;
+            var displayHalfWidth :Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth);
+            var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
             var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
+            if (mBuildInterior || displayBorderThickness < Number.MIN_VALUE)
+            {
+               displayHalfWidth += 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+               displayHalfHeight += 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+            }
+            else
+            {
+               displayBorderThickness += 1.0; // + 1.0 to avoid the visual leaps between contacting shapes sometimes
+            }
             
             RebuildBackgroundAndBorder (displayHalfWidth, displayHalfHeight, displayBorderThickness);
          }

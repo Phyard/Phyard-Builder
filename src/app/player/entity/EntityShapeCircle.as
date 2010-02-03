@@ -87,8 +87,16 @@ package player.entity {
          {
             mNeedRebuildAppearanceObjects = false;
             
-            var displayRadius:Number = mWorld.GetCoordinateSystem ().P2D_Length (mRadius) + 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+            var displayRadius:Number = mWorld.GetCoordinateSystem ().P2D_Length (mRadius);
             var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
+            if (mBuildInterior || displayBorderThickness < Number.MIN_VALUE)
+            {
+               displayRadius += 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+            }
+            else
+            {
+               displayBorderThickness += 1.0; // + 1.0 to avoid the visual leaps between contacting shapes sometimes
+            }
             
          // background
             

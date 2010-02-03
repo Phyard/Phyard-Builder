@@ -260,6 +260,58 @@ package editor.world {
       }
       
 //=================================================================================
+//   entity sorter
+//=================================================================================
+      
+      public function GetObjectEntityAncestor (displayObject:DisplayObject):Entity
+      {
+         while (displayObject != null)
+         {
+            if (displayObject is Entity)
+               return displayObject as Entity;
+            else
+               displayObject = displayObject.parent;
+         }
+         
+         return null;
+      }
+      
+      public function EntitySorter_ByAppearanceId (o1:Object, o2:Object):int
+      {
+         var id1:int = -1;
+         var id2:int = -1;
+         
+         var entity:Entity;
+         
+         entity = o1 as Entity;
+         if (entity != null)
+            id1 = entity.GetAppearanceLayerId ();
+         else
+         {
+            entity = GetObjectEntityAncestor (o1 as DisplayObject);
+            if (entity != null)
+               id1 = entity.GetAppearanceLayerId ();
+         }
+         
+         entity = o2 as Entity;
+         if (entity != null)
+            id2 = entity.GetAppearanceLayerId ();
+         else
+         {
+            entity = GetObjectEntityAncestor (o2 as DisplayObject);
+            if (entity != null)
+               id2 = entity.GetAppearanceLayerId ();
+         }
+         
+         if (id1 > id2)
+            return -1;
+         else if (id1 < id2)
+            return 1;
+         else
+            return 0;
+      }
+      
+//=================================================================================
 //   select
 //=================================================================================
       
@@ -275,6 +327,7 @@ package editor.world {
          var objectArray:Array = mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
          
          var entityArray:Array = ConvertObjectArrayToEntityArray (objectArray);
+         entityArray.sort (EntitySorter_ByAppearanceId);
          
          if (lastSelectedEntity != null)
          {
@@ -315,7 +368,7 @@ package editor.world {
          
          for (var i:uint = 0; i < objectArray.length; ++ i)
          {
-            if (objectArray [i] is Entity)
+            if (objectArray [i] is Entity && objectArray [i].visible)
                entityArray.push (objectArray [i]);
          }
          
@@ -325,14 +378,17 @@ package editor.world {
       public function GetFirstLinkablesAtPoint (displayX:Number, displayY:Number):Linkable
       {
          var objectArray:Array = mSelectionEngine.GetObjectsAtPoint (displayX, displayY);
+         objectArray.sort (EntitySorter_ByAppearanceId);
          var linkable:Linkable = null;
          for (var i:uint = 0; i < objectArray.length; ++ i)
          {
-            if (objectArray [i] is Linkable && objectArray [i] is DisplayObject)
+            if (objectArray [i] is Linkable && objectArray [i] is DisplayObject && (objectArray [i] as DisplayObject).visible)
             {
                linkable = objectArray [i] as Linkable;
                if (linkable.CanStartCreatingLink (displayX, displayY))
                   return linkable;
+               else
+                  return null;
             }
          }
          

@@ -560,10 +560,6 @@ public function Solve(step:b2TimeStep):void
 
 		// Update fixtures (for broad-phase).
 		b.SynchronizeFixtures();
-		
-if (b.GetPosition ().y > 16.0)
-   trace ("&&&&& y = " + b.GetPosition ().y);
-
 	}
 
 	// Look for new contacts.
@@ -659,13 +655,8 @@ public function SolveTOI_Body (body:b2Body):void
 			input.sweepB = bodyB.m_sweep;
 			input.tMax = toi;
 
-var oldY:Number = body.GetPosition ().y;
-
 			var output:b2TOIOutput = sTOIOutput;
 			b2TimeOfImpact.b2TimeOfImpact_ (output, input);
-
-if (body.GetPosition ().y > 16.0)
-   trace ("!!!!! 000 y = " + body.GetPosition ().y + ", oldY = " + oldY);
 
 			if (output.state == b2TOIOutput.e_touching && output.t < toi)
 			{
@@ -689,9 +680,6 @@ if (body.GetPosition ().y > 16.0)
 	var backup:b2Sweep = sSweep;
 	backup.CopyFrom (body.m_sweep);
 	body.Advance(toi);
-
-if (body.GetPosition ().y > 16.0)
-   trace ("111 y = " + body.GetPosition ().y);
 
 	++toiContact.m_toiCount;
 
@@ -753,9 +741,6 @@ if (body.GetPosition ().y > 16.0)
 				// Recurse because the TOI has been invalidated.
 				SolveTOI_Body (body);
 				
-if (body.GetPosition ().y > 16.0)
-   trace ("aaa y = " + body.GetPosition ().y);
-				
 				return;
 			}
 
@@ -781,18 +766,11 @@ if (body.GetPosition ().y > 16.0)
 	var solver:b2TOISolver = sTOISolver;
 	solver.Initialize(contacts, count, body);
 
-if (body.GetPosition ().y > 16.0)
-   trace ("222 y = " + body.GetPosition ().y);
-
 	const k_toiBaumgarte:Number = 0.75;
 	var solved:Boolean = false;
 	for (var i:int = 0; i < 20; ++i)
 	{
 		var contactsOkay:Boolean = solver.Solve(k_toiBaumgarte);
-		
-if (body.GetPosition ().y > 16.0)
-   trace (i + "> 333 y = " + body.GetPosition ().y);
-
 		
 		if (contactsOkay)
 		{

@@ -667,6 +667,9 @@ package player.entity {
       
       private function HandleMouseEvent (event:MouseEvent, listElement:ListElement_EventHandler):void
       {
+         if (! mWorld.IsInteractiveEnabledNow ())
+            return;
+         
          var valueSourceList:ValueSource_Direct = mWorld.MouseEvent2ValueSourceList (event);
          
          valueSourceList.mValueObject = this;

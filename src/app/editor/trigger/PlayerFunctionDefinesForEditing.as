@@ -227,14 +227,14 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Target Boolean"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Invert, bool_package, "! (Invert)", 
-                     [
-                             new VariableDefinitionBoolean ("Source Boolean"), 
-                     ],
-                     [
-                             new VariableDefinitionBoolean ("Source Boolean"), 
-                     ]
-                  );
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Invert, bool_package, "! (Invert)", 
+         //            [
+         //                    new VariableDefinitionBoolean ("Source Boolean"), 
+         //            ],
+         //            [
+         //                    new VariableDefinitionBoolean ("Source Boolean"), 
+         //            ]
+         //         );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsTrue, bool_package, "IsTrue?", 
                      [
                              new VariableDefinitionBoolean ("Input Bool Value"), 
@@ -771,6 +771,12 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Mouee Y"), 
                      ]
                   );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold, world_general_package, "IsMouseButtonHold", 
+                     null,
+                     [
+                        new VariableDefinitionBoolean ("Is Mouse Button Hold"), 
+                     ]
+                  );
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus, level_package, "SetLevelStatus", 
                      [
@@ -1302,6 +1308,46 @@ package editor.trigger {
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionBoolean ("Sleeping?", null, {mDefaultValue: false}), 
+                     ],
+                     null
+                  );
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForce, shape_physics_package, "ApplyStepForce", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Force X"), 
+                             new VariableDefinitionNumber ("Force Y"), 
+                             new VariableDefinitionBoolean ("Is Local Force", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Apply on Center of Brothers", null, {mDefaultValue: false}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint, shape_physics_package, "ApplyStepForceAtLocalPoint", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Force X"), 
+                             new VariableDefinitionNumber ("Force Y"), 
+                             new VariableDefinitionBoolean ("Is Local Force", null, {mDefaultValue: true}), 
+                             new VariableDefinitionNumber ("Local Point X"), 
+                             new VariableDefinitionNumber ("Local Point Y"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint, shape_physics_package, "ApplyStepForceAtWorldPoint", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Force X"), 
+                             new VariableDefinitionNumber ("Force Y"), 
+                             new VariableDefinitionBoolean ("Is Local Force", null, {mDefaultValue: true}), 
+                             new VariableDefinitionNumber ("World Point X"), 
+                             new VariableDefinitionNumber ("World Point Y"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepTorque, shape_physics_package, "ApplyStepTorque", 
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Torque"), 
                      ],
                      null
                   );

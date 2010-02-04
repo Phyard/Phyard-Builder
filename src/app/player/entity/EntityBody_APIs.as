@@ -22,3 +22,19 @@ public function DestroyAllBreakableShapes ():void
       OnPhysicsShapeListChanged ();
    }
 }
+
+public function ApplyForceAtPoint (forceX:Number, forceY:Number, pointX:Number, pointY:Number):void
+{
+   if (mPhysicsProxy == null)
+      return;
+   
+   mPhysicsProxyBody.AddForceAtPoint (forceX, forceY, pointX, pointY);
+}
+
+public function ApplyTorque (torque:Number):void
+{
+   if (mPhysicsProxy == null)
+      return;
+   
+   mPhysicsProxyBody.AddTorque (torque);
+}

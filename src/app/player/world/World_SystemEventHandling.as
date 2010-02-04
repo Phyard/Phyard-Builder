@@ -24,6 +24,7 @@ public function IsInteractiveEnabledNow ():Boolean
 
 private var mCurrentMouseX:Number = 0;
 private var mCurrentMouseY:Number = 0;
+private var mIsMouseButtonDown:Boolean = false;
 
 public function GetCurrentMouseX ():Number
 {
@@ -33,6 +34,11 @@ public function GetCurrentMouseX ():Number
 public function GetCurrentMouseY ():Number
 {
    return mCurrentMouseY;
+}
+
+public function IsMouseButtonDown ():Boolean
+{
+   return mIsMouseButtonDown;
 }
 
 //=============================================================
@@ -64,11 +70,11 @@ private function OnAddedToStage (event:Event):void
    addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
    addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
    addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
-   //addEventListener (MouseEvent.MOUSE_OVER, OnMouseOver);
-   //addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
+   addEventListener (MouseEvent.MOUSE_OVER, OnOtherMouseEvents);
+   addEventListener (MouseEvent.MOUSE_OUT, OnOtherMouseEvents);
+   addEventListener (MouseEvent.ROLL_OVER, OnOtherMouseEvents);
+   addEventListener (MouseEvent.ROLL_OUT, OnOtherMouseEvents);
    //addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
-   //addEventListener (MouseEvent.ROLL_OVER, OnRollOver);
-   //addEventListener (MouseEvent.ROLL_OUT, OnRollOut);
    
    // ...
    stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
@@ -116,6 +122,8 @@ private function OnRemovedFromStage (event:Event):void
 
 public function OnMouseClick (event:MouseEvent):void
 {
+   UpdateMousePositionAndHoldInfo (event);
+   
    if (IsInteractiveEnabledNow ())
    {
       MouseEvent2ValueSourceList (event);
@@ -130,6 +138,8 @@ public function OnMouseDown (event:MouseEvent):void
    
    if (mCurrentMode != null)
       mCurrentMode.OnMouseDown (event.stageX, event.stageY);
+   
+   UpdateMousePositionAndHoldInfo (event);
    
    if (IsInteractiveEnabledNow ())
    {
@@ -164,6 +174,8 @@ public function OnMouseUp (event:MouseEvent):void
    // ...
    if (mCurrentMode != null)
       mCurrentMode.OnMouseUp (event.stageX, event.stageY);
+   
+   UpdateMousePositionAndHoldInfo (event);
    
    if (IsInteractiveEnabledNow ())
    {
@@ -201,11 +213,26 @@ public function OnMouseMove (event:MouseEvent):void
    if (mCurrentMode != null)
       mCurrentMode.OnMouseMove (event.stageX, event.stageY, event.buttonDown);
    
+   UpdateMousePositionAndHoldInfo (event);
+   
    if (IsInteractiveEnabledNow ())
    {
       //
       MouseEvent2ValueSourceList (event);
       HandleEventById (CoreEventIds.ID_OnWorldMouseMove, mWorldMouseEventHandlerValueSourceList);
+   }
+}
+
+public function OnOtherMouseEvents (event:MouseEvent):void
+{
+   // ...
+   if (mCurrentMode != null)
+      mCurrentMode.OnMouseMove (event.stageX, event.stageY, event.buttonDown);
+   
+   UpdateMousePositionAndHoldInfo (event);
+   
+   if (IsInteractiveEnabledNow ())
+   {
    }
 }
 
@@ -222,13 +249,6 @@ private var mWorldMouseEventHandlerValueSourceList:ValueSource_Direct = mMouseEv
 
 public function MouseEvent2ValueSourceList (event:MouseEvent):ValueSource_Direct
 {
-   var point:Point = new Point (event.stageX, event.stageY);
-   point = globalToLocal (point);
-   point = mCoordinateSystem.DisplayPoint2PhysicsPosition (point.x, point.y);
-   
-   mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
-   mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
-   
    mMouseEventHandlerValueSource1.mValueObject = mCurrentMouseX;
    mMouseEventHandlerValueSource2.mValueObject = mCurrentMouseY;
    mMouseEventHandlerValueSource3.mValueObject = event.buttonDown;
@@ -238,6 +258,18 @@ public function MouseEvent2ValueSourceList (event:MouseEvent):ValueSource_Direct
    mMouseEventHandlerValueSource7.mValueObject = IsContentLayerContains (event.target as DisplayObject); // for world event only
    
    return mEntityMouseEventHandlerValueSourceList; // for entities
+}
+
+public function UpdateMousePositionAndHoldInfo (event:MouseEvent):void
+{
+   var point:Point = new Point (event.stageX, event.stageY);
+   point = globalToLocal (point);
+   point = mCoordinateSystem.DisplayPoint2PhysicsPosition (point.x, point.y);
+   
+   mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
+   mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
+   
+   mIsMouseButtonDown = event.buttonDown;
 }
 
 //=============================================================

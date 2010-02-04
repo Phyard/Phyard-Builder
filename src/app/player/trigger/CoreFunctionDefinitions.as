@@ -26,6 +26,15 @@ package player.trigger {
    
    public class CoreFunctionDefinitions
    {
+//=============================
+// to avoid create objects frequently
+//=============================
+      
+      private static var sPoint :Point = new Point ();
+      private static var sVector:Point = new Point ();
+      
+//=============================
+      
       public static var sCoreFunctionDefinitions:Array = new Array (CoreFunctionIds.NumPlayerFunctions);
       
       public static function Initialize ():void
@@ -145,6 +154,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelMilliseconds,             GetLevelMilliseconds);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelSteps,                    GetLevelSteps);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetMousePosition,                 GetWorldMousePosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_IsMouseButtonHold,                IsMouseButtonHold);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelStatus,                   SetLevelStatus);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelSuccessed,                 IsLevelSuccessed);
@@ -238,6 +248,11 @@ package player.trigger {
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                  SetShapeDensity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetSleeping,                 SetShapeSleeping);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepForce,                        ApplyStepForceOnShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint,            ApplyStepForceAtLocalPointOnShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint,            ApplyStepForceAtWorldPointOnShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepTorque,                       ApplyStepTorque);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
@@ -1057,6 +1072,11 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseY ());
       }
       
+      public static function IsMouseButtonHold (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsMouseButtonDown ());
+      }
+      
       public static function SetLevelStatus (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          switch (int (valueSource.EvalateValueObject ()))
@@ -1546,12 +1566,13 @@ package player.trigger {
       
       public static function WorldPoint2EntityLocalPoint (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var localPoint:Point;
+         var localPoint:Point = sPoint;
          
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          if (shape == null)
          {
-            localPoint = new Point (0.0, 0.0);
+            localPoint.x = 0.0;
+            localPoint.y = 0.0;
          }
          else
          {
@@ -1561,7 +1582,7 @@ package player.trigger {
             valueSource = valueSource.mNextValueSourceInList;
             var world_y:Number = valueSource.EvalateValueObject () as Number;
             
-            localPoint = shape.WorldPoint2LocalPoint (world_x, world_y);
+            shape.WorldPoint2LocalPoint (world_x, world_y, localPoint);
          }
          
          // ...
@@ -1574,12 +1595,13 @@ package player.trigger {
       
       public static function EntityLocalPoint2WorldPoint (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var worldPoint:Point;
+         var worldPoint:Point = sPoint;
          
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
          if (shape == null)
          {
-            worldPoint = new Point (0.0 ,0.0);
+            worldPoint.x = 0.0;
+            worldPoint.y = 0.0;
          }
          else
          {
@@ -1589,7 +1611,7 @@ package player.trigger {
             valueSource = valueSource.mNextValueSourceInList;
             var local_y:Number = valueSource.EvalateValueObject () as Number;
             
-            worldPoint = shape.LocalPoint2WorldPoint (local_x, local_y);
+            shape.LocalPoint2WorldPoint (local_x, local_y, worldPoint);
          }
          
          // ...
@@ -1948,6 +1970,92 @@ package player.trigger {
          var sleeping:Boolean = valueSource.EvalateValueObject () as Boolean;
          
          shape.GetBody ().SetSleeping (sleeping);
+      }
+      
+      public static function ApplyStepForceOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         _ApplyStepForceOnShape (valueSource, valueTarget);
+      }
+      
+      public static function ApplyStepForceAtLocalPointOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         _ApplyStepForceOnShape (valueSource, valueTarget, true);
+      }
+      
+      public static function ApplyStepForceAtWorldPointOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         _ApplyStepForceOnShape (valueSource, valueTarget, false);
+      }
+      
+      public static function _ApplyStepForceOnShape (valueSource:ValueSource, valueTarget:ValueTarget, isLocalPoint:Boolean = false):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var forceX:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var forceY:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var isLocalForce:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         if (isLocalForce)
+         {
+            shape.LocalVector2WorldVector (forceX, forceY, sVector);
+            forceX = sVector.x;
+            forceY = sVector.y;
+         }
+         
+         var body:EntityBody = shape.GetBody ();
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         
+         if (valueSource.mNextValueSourceInList == null)
+         {
+            var onBodyCenter:Boolean = valueSource.EvalateValueObject () as Boolean;
+            
+            if (onBodyCenter)
+               body.ApplyForceAtPoint (forceX, forceY, body.GetPositionX (), body.GetPositionY ());
+            else
+               body.ApplyForceAtPoint (forceX, forceY, shape.GetPositionX (), shape.GetPositionY ());
+         }
+         else
+         {
+            var pointX:Number = valueSource.EvalateValueObject () as Number;
+            
+            valueSource = valueSource.mNextValueSourceInList;
+            var pointY:Number = valueSource.EvalateValueObject () as Number;
+            
+            if (isLocalPoint)
+            {
+               shape.LocalPoint2WorldPoint (pointX, pointY, sPoint);
+               pointX = sPoint.x;
+               pointY = sPoint.y;
+            }
+            
+            body.ApplyForceAtPoint (forceX, forceY, pointX, pointY);
+         }
+      }
+      
+      public static function ApplyStepTorque (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var torque:Number = valueSource.EvalateValueObject () as Number;
+         
+         shape.GetBody ().ApplyTorque (torque);
       }
       
       public static function TeleportShape (valueSource:ValueSource, valueTarget:ValueTarget):void

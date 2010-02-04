@@ -79,7 +79,8 @@ package player.entity {
          {
             mShape.UpdateSinCos ();
             
-            var point:Point = mShape.LocalPoint2WorldPoint (mLocalPositionX, mLocalPositionY);
+            var point:Point = new Point ();
+            mShape.LocalPoint2WorldPoint (mLocalPositionX, mLocalPositionY, point);
             mPositionX = point.x;
             mPositionY = point.y;
             mRotation  = mShape.mRotation + mRelativeRotation;

@@ -1054,43 +1054,35 @@ package player.entity {
          }
       }
       
-      public function LocalPoint2WorldPoint (localX:Number, localY:Number):Point
+      public function LocalPoint2WorldPoint (localX:Number, localY:Number, worldPoint:Point):void
       {
          UpdateSinCos ();
          
-         return new Point (
-               mPositionX + localX * mCosRotation - localY * mSinRotation,
-               mPositionY + localX * mSinRotation + localY * mCosRotation
-            );
+         worldPoint.x = mPositionX + localX * mCosRotation - localY * mSinRotation;
+         worldPoint.y = mPositionY + localX * mSinRotation + localY * mCosRotation;
       }
       
-      public function WorldPoint2LocalPoint (worldX:Number, worldY:Number):Point
+      public function WorldPoint2LocalPoint (worldX:Number, worldY:Number, localPoint:Point):void
       {
          UpdateSinCos ();
          
          worldX -= mPositionX;
          worldY -= mPositionY;
          
-         return new Point (
-                 worldX * mCosRotation + worldY * mSinRotation,
-               - worldX * mSinRotation + worldY * mCosRotation
-            );
+         localPoint.x =   worldX * mCosRotation + worldY * mSinRotation;
+         localPoint.y = - worldX * mSinRotation + worldY * mCosRotation;
       }
       
-      internal function LocalVector2WorldVector (localVX:Number, localVY:Number):Point
+      public function LocalVector2WorldVector (localVX:Number, localVY:Number, worldVector:Point):void
       {
-         return new Point (
-               localVX * mCosRotation - localVY * mSinRotation,
-               localVX * mSinRotation + localVY * mCosRotation
-            );
+         worldVector.x = localVX * mCosRotation - localVY * mSinRotation;
+         worldVector.y = localVX * mSinRotation + localVY * mCosRotation;
       }
       
-      internal function WorldVector2LocalVector (worldVX:Number, worldlVY:Number):Point
+      public function WorldVector2LocalVector (worldVX:Number, worldlVY:Number, localVector:Point):void
       {
-         return new Point (
-                 worldVX * mCosRotation + worldlVY * mSinRotation,
-               - worldVX * mSinRotation + worldlVY * mCosRotation
-            );
+         localVector.x =   worldVX * mCosRotation + worldlVY * mSinRotation;
+         localVector.y = - worldVX * mSinRotation + worldlVY * mCosRotation;
       }
       
 //=============================================================

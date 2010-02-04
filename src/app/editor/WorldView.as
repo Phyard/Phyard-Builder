@@ -4,10 +4,9 @@ package editor {
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.KeyboardEvent;
-   import flash.ui.Keyboard;
    import flash.events.EventPhase;
-   import flash.utils.Dictionary;
    
+   import flash.utils.Dictionary;
    import flash.utils.ByteArray;
    
    import flash.display.LoaderInfo;
@@ -21,8 +20,11 @@ package editor {
    import flash.geom.Matrix;
    import flash.geom.Rectangle;
    
-   import flash.ui.Mouse;
    import flash.system.System;
+   
+   import flash.ui.Keyboard;
+   import flash.ui.Mouse;
+   //import flash.ui.MouseCursor;
    
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
@@ -2105,6 +2107,8 @@ package editor {
             mButtonMouseSelectSingle.selected = true;
          else if (mCurrentMouseMode == MouseMode_MoveScene)
             mButtonMouseMoveScene.selected = true;
+         
+         //Mouse.cursor = mCurrentMouseMode == MouseMode_MoveScene ? MouseCursor.HAND : MouseCursor.ARROW;
       }
       
       private function ToggleMouseMode ():void

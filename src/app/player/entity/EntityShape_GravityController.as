@@ -106,6 +106,7 @@ package player.entity {
          
          OnMouseDown (event);
          
+         mWorld.UpdateMousePositionAndHoldInfo (event);
          event.stopPropagation (); // prevent mWorld recieving this event
       }
 
@@ -118,6 +119,7 @@ package player.entity {
          
          OnMouseUp (event);
          
+         mWorld.UpdateMousePositionAndHoldInfo (event);
          event.stopPropagation (); // prevent mWorld recieving this event
       }
 
@@ -130,6 +132,7 @@ package player.entity {
          
          OnMouseMove (event);
          
+         mWorld.UpdateMousePositionAndHoldInfo (event);
          event.stopPropagation (); // prevent mWorld recieving this event
       }
 

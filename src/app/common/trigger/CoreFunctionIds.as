@@ -139,6 +139,7 @@ package common.trigger {
       public static const ID_Design_GetLevelMilliseconds:int                    = 600; // design
       public static const ID_Design_GetLevelSteps:int                           = 601; // design
       public static const ID_Design_GetMousePosition:int                        = 602; // design
+      public static const ID_Design_IsMouseButtonHold:int                       = 603; // design
       
       public static const ID_Design_SetLevelStatus:int                           = 609; // design
       public static const ID_Design_IsLevelSuccessed:int                         = 610; // design
@@ -274,19 +275,26 @@ package common.trigger {
       //public static const ID_EntityShape_SetLinearVelocity:int                          = 1101; // entity.shape physics
       //public static const ID_EntityShape_GetAngularVelocity:int                         = 1102; // entity.shape physics
       //public static const ID_EntityShape_SetAngularVelocity:int                         = 1103; // entity.shape physics
+      
+      public static const ID_EntityShape_ApplyStepForce:int                                   = 1104; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepForceAtLocalPoint:int                       = 1105; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepForceAtWorldPoint:int                       = 1106; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepTorque:int                                  = 1107; // entity.shape physics
+      
       //public static const ID_EntityShape_ApplyStepForce:int                             = 1104; // entity.shape physics
       //public static const ID_EntityShape_ApplyStepForceAtPoint:int                      = 1105; // entity.shape physics
       //public static const ID_EntityShape_ApplyStepForceAtLocalPoint:int                 = 1106; // entity.shape physics
       //public static const ID_EntityShape_ApplyStepLocalForce:int                        = 1107; // entity.shape physics
       //public static const ID_EntityShape_ApplyStepLocalForceAtPoint:int                 = 1108; // entity.shape physics
       //public static const ID_EntityShape_ApplyStepLocalForceAtLocalPoint:int            = 1109; // entity.shape physics
+      
       //public static const ID_EntityShape_ApplyPermanentForce:int                        = 1110; // entity.shape physics
       //public static const ID_EntityShape_ApplyPermanentForceAtPoint:int                 = 1111; // entity.shape physics
       //public static const ID_EntityShape_ApplyPermanentForceAtLocalPoint:int            = 1112; // entity.shape physics
       //public static const ID_EntityShape_ApplyPermanentLocalForce:int                   = 1113; // entity.shape physics
       //public static const ID_EntityShape_ApplyPermanentLocalForceAtPoint:int            = 1114; // entity.shape physics
       //public static const ID_EntityShape_ApplyPermanentLocalForceAtLocalPoint:int       = 1115; // entity.shape physics
-      //public static const ID_EntityShape_ApplyStepTorque:int                            = 1116; // entity.shape physics
+      
       //public static const ID_EntityShape_ApplyPermanentTorque:int                       = 1117; // entity.shape physics
       //impulse and angular impulse
       

@@ -267,9 +267,9 @@
                                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
                                  horizontalGap="0" verticalGap="0" borderThickness="1">
                         <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
-                        <mx:Label id="Label_EntityDisplayPosition" text="" width="150"/>
+                        <mx:Label id="Label_EntityDisplayPosition" text="" minWidth="100"/>
                         <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
-                        <mx:Label id="Label_EntityPhysicsPosition" text="" width="150"/>
+                        <mx:Label id="Label_EntityPhysicsPosition" text="" minWidth="116"/>
                         <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
                         <!--
                         <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>

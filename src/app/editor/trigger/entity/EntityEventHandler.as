@@ -416,6 +416,9 @@ package editor.trigger.entity {
       {
          ValidateEntityLinks ();
          
+         if (!visible)
+            return;
+         
          if (mExternalCondition.mConditionEntity != null)
          {
             var point:Point = mExternalCondition.mConditionEntity.GetTargetValueZoneWorldCenter (mExternalCondition.mTargetValue);

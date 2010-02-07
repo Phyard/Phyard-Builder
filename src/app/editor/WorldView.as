@@ -299,6 +299,7 @@ package editor {
          addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
          addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
+         addEventListener (MouseEvent.ROLL_OVER, OnMouseOut);
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
          
          // ...

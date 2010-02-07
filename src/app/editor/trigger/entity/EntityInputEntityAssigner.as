@@ -279,6 +279,9 @@ package editor.trigger.entity {
          
          ValidateEntityLinks ();
          
+         if (!visible)
+            return;
+         
          if (mInputEntities.length > 0)
          {
             if (mInputEntitySelector is InputEntitySelector_Many)

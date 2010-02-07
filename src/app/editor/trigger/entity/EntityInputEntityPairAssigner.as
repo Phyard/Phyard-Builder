@@ -719,6 +719,9 @@ package editor.trigger.entity {
          if (! AreInternalComponentsVisible ())
             return;
          
+         if (!visible)
+            return;
+         
          if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
          {
             var num_selector_pairs:int;

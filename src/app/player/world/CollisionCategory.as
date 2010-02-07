@@ -13,6 +13,11 @@ package player.world
       
       internal var mEnemyTable:Array;
       
+      public function GetIndexInEditor ():int
+      {
+         return mCategoryIndex;
+      }
+      
       internal function SetTableLength (length:int):void
       {
          mEnemyTable = new Array (length);

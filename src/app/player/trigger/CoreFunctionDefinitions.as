@@ -439,9 +439,9 @@ package player.trigger {
       
       public static function CollisionCategoryToString (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var ccat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
          
-         valueTarget.AssignValueObject ("CollisionCategory#" + value);
+         valueTarget.AssignValueObject ("CollisionCategory#" + (ccat == null ? -1 : ccat.GetIndexInEditor ()));
       }
       
    //************************************************

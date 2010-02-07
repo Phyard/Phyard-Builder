@@ -38,6 +38,8 @@ package editor.entity {
             mEntityContainer.OnEntityCreated (this);
          
          //SetName (null);
+         
+         mouseChildren = false;
       }
       
       public function GetContainer ():EntityContainer

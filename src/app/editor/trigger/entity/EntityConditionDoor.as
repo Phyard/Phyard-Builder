@@ -430,6 +430,9 @@ package editor.trigger.entity {
       {
          ValidateEntityLinks ();
          
+         if (!visible)
+            return;
+         
          if (mInputConditions.length > 0)
          {
             var point1:Point = DisplayObjectUtil.LocalToLocal (this, mWorld, new Point (- kBandWidth - kBandWidth, 0));

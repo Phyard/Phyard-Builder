@@ -26,7 +26,7 @@
             <mx:VBox width="38%">
                <mx:HBox width="100%">
                   <mx:Spacer width="2"/>
-                  <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limit"/>
+                  <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limits"/>
                </mx:HBox>
                <mx:HBox width="100%">
                   <mx:Spacer width="100%"/>

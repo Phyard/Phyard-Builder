@@ -210,6 +210,9 @@ package editor.trigger.entity {
          {
             ValidateEntityLinks ();
             
+            if (!visible)
+               return;
+            
             for (var i:int = 0; i < mEntityAssignerList.length; ++ i)
             {
                var entity:Entity = mEntityAssignerList [i] as Entity;

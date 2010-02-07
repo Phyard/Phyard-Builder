@@ -352,19 +352,14 @@ package editor {
       private var mFpsStat:FpsStat = new FpsStat ();
       private var mStepTimeSpan:TimeSpan = new TimeSpan ();
       
-      public var mActive:Boolean = true;
-      
       private function OnEnterFrame (event:Event):void 
       {
          mStepTimeSpan.End ();
          mStepTimeSpan.Start ();
-
+         
          mFpsStat.Step (mStepTimeSpan.GetLastSpan ());
          
          //
-         if ( ! Runtime.HasSettingDialogOpened () && mActive)
-            stage.focus = stage;
-         
          var newScale:Number;
          
          if ( IsPlaying () )
@@ -1327,8 +1322,6 @@ package editor {
          
          if (Runtime.mCollisionCategoryView != null)
             Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
-         if (Runtime.mSynchronizeWorldSettingPanelWithWorld != null)
-            Runtime.mSynchronizeWorldSettingPanelWithWorld (mEditorWorld);
          
          if (! firstTime)
          {
@@ -1910,9 +1903,6 @@ package editor {
          
          try
          {
-            if (Runtime.mSynchronizeWorldWithWorldSettingPanel != null)
-               Runtime.mSynchronizeWorldWithWorldSettingPanel (mEditorWorld);
-            
             var values:Object = new Object ();
             
             values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
@@ -2503,140 +2493,144 @@ package editor {
       
       public function OnKeyDown (event:KeyboardEvent):void
       {
-         if (Runtime.HasSettingDialogOpened ())
+         if (! Runtime.IsActiveView (this))
             return;
          
-         // temp code
-         if (event.keyCode == Keyboard.ESCAPE)
-         {
-            if (Runtime.mCollisionCategoryView != null)
-               Runtime.mCollisionCategoryView.CancelCurrentCreatingMode ();
-         }
-         
-         if (! mActive) // in other tab panels
+         if (Runtime.HasSettingDialogOpened ())
             return;
          
          //trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
          
-         switch (event.keyCode)
+         if (IsEditing ())
          {
-            case Keyboard.ESCAPE:
-               if (mCurrentCreatMode != null)
-                  CancelCurrentCreatingMode ();
-               else
-               {
-                  mEditorWorld.ClearSelectedEntities ();
-                  OnSelectedEntitiesChanged ();
-               }
-               break;
-            case Keyboard.SPACE:
-               if (IsEditing ())
+            switch (event.keyCode)
+            {
+               case Keyboard.ESCAPE:
+                  if (mCurrentCreatMode != null)
+                     CancelCurrentCreatingMode ();
+                  else
+                  {
+                     mEditorWorld.ClearSelectedEntities ();
+                     OnSelectedEntitiesChanged ();
+                  }
+                  break;
+               case Keyboard.SPACE:
                   OpenEntitySettingDialog ();
-               else if (IsPlayingPaused ())
-                  mDesignPlayer.Step (true);
-               break;
-            case KeyCodes.Key_0:
-            case Keyboard.NUMPAD_0:
-               mEditorWorld.MakeAllEntitiesVisible ();
-               break;
-            case KeyCodes.Key_1:
-            case Keyboard.NUMPAD_1:
-               mEditorWorld.ToggleShapesVisibility ();
-               OnSelectedEntitiesChanged ();
-               break;
-            case KeyCodes.Key_2:
-            case Keyboard.NUMPAD_2:
-               mEditorWorld.ToggleJointsVisibility ();
-               OnSelectedEntitiesChanged ();
-               break;
-            case KeyCodes.Key_3:
-            case Keyboard.NUMPAD_3:
-               mEditorWorld.ToggleTriggersVisibility ();
-               OnSelectedEntitiesChanged ();
-               break;
-            case Keyboard.DELETE:
-               if (event.ctrlKey)
-                  DeleteSelectedVertexController ();
-               else
+                  break;
+               case KeyCodes.Key_0:
+               case Keyboard.NUMPAD_0:
+                  mEditorWorld.MakeAllEntitiesVisible ();
+                  break;
+               case KeyCodes.Key_1:
+               case Keyboard.NUMPAD_1:
+                  mEditorWorld.ToggleShapesVisibility ();
+                  OnSelectedEntitiesChanged ();
+                  break;
+               case KeyCodes.Key_2:
+               case Keyboard.NUMPAD_2:
+                  mEditorWorld.ToggleJointsVisibility ();
+                  OnSelectedEntitiesChanged ();
+                  break;
+               case KeyCodes.Key_3:
+               case Keyboard.NUMPAD_3:
+                  mEditorWorld.ToggleTriggersVisibility ();
+                  OnSelectedEntitiesChanged ();
+                  break;
+               case Keyboard.DELETE:
+                  if (event.ctrlKey)
+                     DeleteSelectedVertexController ();
+                  else
+                     DeleteSelectedEntities ();
+                  break;
+               case Keyboard.INSERT:
+                  if (event.ctrlKey)
+                     InsertVertexController ();
+                  else
+                     CloneSelectedEntities ();
+                  break;
+               case 68: // D
                   DeleteSelectedEntities ();
-               break;
-            case Keyboard.INSERT:
-               if (event.ctrlKey)
-                  InsertVertexController ();
-               else
+                  break;
+               case 67: // C
                   CloneSelectedEntities ();
-               break;
-            case 68: // D
-               DeleteSelectedEntities ();
-               break;
-            case 67: // C
-               CloneSelectedEntities ();
-               break;
-            case Keyboard.PAGE_UP:
-            case 88: // X
-               FlipSelectedEntitiesHorizontally ();
-               break;
-            case Keyboard.PAGE_DOWN:
-            case 89: // Y
-               FlipSelectedEntitiesVertically ();
-               break;
-            case 85: // U
-               Undo ();
-               break;
-            case 82: // R
-               Redo ();
-               break;
-            case 71: // G
-               GlueSelectedEntities ();
-               break;
-            case 66: // B
-               BreakApartSelectedEntities ();
-               break;
-            //case 76: // L // cancelled
-            //   OpenPlayCodeLoadingDialog ();
-            //   break;
-            case 192: // ~
-               ToggleMouseEditLocked ();
-               break;
-            case Keyboard.TAB:
-               ToggleMouseMode ();
-               break;
-            case Keyboard.LEFT:
-               if (event.shiftKey)
-                  RotateSelectedEntities (- 0.5 * Define.kDegrees2Radians, true, false);
-               else
-                  MoveSelectedEntities (-1, 0, true, false);
-               break;
-            case Keyboard.RIGHT:
-               if (event.shiftKey)
-                  RotateSelectedEntities (0.5 * Define.kDegrees2Radians, true, false);
-               else
-                  MoveSelectedEntities (1, 0, true, false);
-               break;
-            case Keyboard.UP:
-               if (event.shiftKey)
-                  RotateSelectedEntities (- 5 * Define.kDegrees2Radians, true, false);
-               else
-                  MoveSelectedEntities (0, -1, true, false);
-               break;
-            case Keyboard.DOWN:
-               if (event.shiftKey)
-                  RotateSelectedEntities (5* Define.kDegrees2Radians, true, false);
-               else
-                  MoveSelectedEntities (0, 1, true, false);
-               break;
-            case 187:// +
-            case Keyboard.NUMPAD_ADD:
-               AlignCenterSelectedEntities ();
-               break;
-            case 189:// -
-            case Keyboard.NUMPAD_SUBTRACT:
-               RoundPositionForSelectedEntities ();
-               break;
-            default:
-               break;
+                  break;
+               case Keyboard.PAGE_UP:
+               case 88: // X
+                  FlipSelectedEntitiesHorizontally ();
+                  break;
+               case Keyboard.PAGE_DOWN:
+               case 89: // Y
+                  FlipSelectedEntitiesVertically ();
+                  break;
+               case 85: // U
+                  Undo ();
+                  break;
+               case 82: // R
+                  Redo ();
+                  break;
+               case 71: // G
+                  GlueSelectedEntities ();
+                  break;
+               case 66: // B
+                  BreakApartSelectedEntities ();
+                  break;
+               //case 76: // L // cancelled
+               //   OpenPlayCodeLoadingDialog ();
+               //   break;
+               case 192: // ~
+                  ToggleMouseEditLocked ();
+                  break;
+               case Keyboard.TAB:
+                  ToggleMouseMode ();
+                  break;
+               case Keyboard.LEFT:
+                  if (event.shiftKey)
+                     RotateSelectedEntities (- 0.5 * Define.kDegrees2Radians, true, false);
+                  else
+                     MoveSelectedEntities (-1, 0, true, false);
+                  break;
+               case Keyboard.RIGHT:
+                  if (event.shiftKey)
+                     RotateSelectedEntities (0.5 * Define.kDegrees2Radians, true, false);
+                  else
+                     MoveSelectedEntities (1, 0, true, false);
+                  break;
+               case Keyboard.UP:
+                  if (event.shiftKey)
+                     RotateSelectedEntities (- 5 * Define.kDegrees2Radians, true, false);
+                  else
+                     MoveSelectedEntities (0, -1, true, false);
+                  break;
+               case Keyboard.DOWN:
+                  if (event.shiftKey)
+                     RotateSelectedEntities (5* Define.kDegrees2Radians, true, false);
+                  else
+                     MoveSelectedEntities (0, 1, true, false);
+                  break;
+               case 187:// +
+               case Keyboard.NUMPAD_ADD:
+                  AlignCenterSelectedEntities ();
+                  break;
+               case 189:// -
+               case Keyboard.NUMPAD_SUBTRACT:
+                  RoundPositionForSelectedEntities ();
+                  break;
+               default:
+                  break;
+            }
          }
-      }
+         else // playing
+         {
+            switch (event.keyCode)
+            {
+               case Keyboard.SPACE:
+                  mDesignPlayer.Step (true);
+                  break;
+               default:
+                  break;
+            }
+         }
+    }
       
       
 //============================================================================
@@ -3248,10 +3242,7 @@ package editor {
             
             CalSelectedEntitiesCenterPoint ();
             
-            if (Runtime.mCollisionCategoryView != null)
-               Runtime.mCollisionCategoryView.UpdateFriendLinkLines ();
-            if (Runtime.mSynchronizeWorldSettingPanelWithWorld != null)
-               Runtime.mSynchronizeWorldSettingPanelWithWorld (mEditorWorld);
+            Runtime.mCollisionCategoryView.UpdateFriendLinkLines ();
          }
       }
       

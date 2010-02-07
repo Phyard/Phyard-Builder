@@ -11,6 +11,11 @@ package editor.trigger {
          
       }
       
+      public function ToCodeString ():String
+      {
+         return "null";
+      }
+      
 //=============================================================
 // override
 //=============================================================

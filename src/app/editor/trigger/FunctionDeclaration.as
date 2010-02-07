@@ -16,7 +16,9 @@ package editor.trigger {
       protected var mInputParamDefinitions:Array; // input variable defines
       protected var mOutputParamDefinitions:Array; // returns
       
-      public function FunctionDeclaration (id:int, name:String, inputDefinitions:Array = null, description:String = null, returnDefinitions:Array = null) //returnValueType:int=0) //ValueTypeDefine.ValueType_Void)
+      protected var mCodeName:String = null;
+      
+      public function FunctionDeclaration (id:int, name:String, codeName:String, inputDefinitions:Array = null, description:String = null, returnDefinitions:Array = null) //returnValueType:int=0) //ValueTypeDefine.ValueType_Void)
       {
          mId = id;
          mName = name;
@@ -24,6 +26,10 @@ package editor.trigger {
          mInputParamDefinitions = inputDefinitions;
          
          mOutputParamDefinitions = returnDefinitions;
+         
+         mCodeName = codeName;
+         if (mCodeName == null || mCodeName.length == 0)
+            mCodeName = mName;
       }
       
       public function GetID ():int
@@ -39,6 +45,11 @@ package editor.trigger {
       public function GetName ():String
       {
          return mName;
+      }
+      
+      public function GetCodeName ():String
+      {
+         return mCodeName;
       }
       
       public function GetDescription ():String

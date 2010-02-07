@@ -38,6 +38,36 @@ package editor.trigger {
             mName = variableName;
             SetValueObject (intialValue);
          }
+         
+         if (variableDefinition != null && (mName == null || mName.length == 0))
+         {
+            mName = variableDefinition.GetName ();
+         }
+      }
+      
+      public function ToCodeString_ForSource ():String
+      {
+         return ToCodeStringForSourceOrTarget (false);
+      }
+      
+      public function ToCodeString_ForTarget ():String
+      {
+         return ToCodeStringForSourceOrTarget (true);
+      }
+      
+      private function ToCodeStringForSourceOrTarget (forTarget:Boolean):String
+      {
+         if (mIndex < 0)
+            return forTarget ? "void" : "null";
+         else if (mName == null || mName.length == 0)
+            return mVariableSpace.GetCodeName () + "[" + mIndex + "]";
+         else
+            return mVariableSpace.GetCodeName () + "[\"" + mName + "\"]";
+      }
+      
+      public function ToCodeString ():String
+      {
+         return null;
       }
       
       public function GetVariableSpace ():VariableSpace
@@ -76,7 +106,7 @@ package editor.trigger {
       
       public function GetLongName ():String
       {
-         return mVariableSpace.GetSpaceShortName () + "[" + mIndex + "] " + GetName ();
+         return mVariableSpace.GetShortName () + " [" + mIndex + "] " + GetName ();
       }
       
       public function GetValueType ():int

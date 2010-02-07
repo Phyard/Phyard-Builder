@@ -144,6 +144,8 @@ package editor {
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
          addEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
          addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
+         
+         stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
       }
       
       private var mContentMaskSprite:Shape = null;
@@ -210,9 +212,6 @@ package editor {
          //
          mStepTimeSpan.End ();
          mStepTimeSpan.Start ();
-         
-         //if ( ! Runtime.HasSettingDialogOpened () )
-         //   stage.focus = stage;
          
          if (mCollisionManager != null)
             mCollisionManager.Update (mStepTimeSpan.GetLastSpan ());
@@ -740,6 +739,24 @@ package editor {
          
          if (IsEditing ())
          {
+         }
+      }
+      
+      public function OnKeyDown (event:KeyboardEvent):void
+      {
+         if (! Runtime.IsActiveView (this))
+            return;
+         
+         if (Runtime.HasSettingDialogOpened ())
+            return;
+         
+         switch (event.keyCode)
+         {
+            case Keyboard.ESCAPE:
+               CancelCurrentCreatingMode ();
+               break;
+            default:
+               break;
          }
       }
       

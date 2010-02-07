@@ -35,6 +35,11 @@ package editor.entity {
          mCollisionManager = cm;
       }
       
+      override public function ToCodeString ():String
+      {
+         return "CCat#" + mCreationOrderId;
+      }
+      
       public function IsDefaultCategory ():Boolean
       {
          return mCollisionManager.GetDefaultCollisionCategory () == this;

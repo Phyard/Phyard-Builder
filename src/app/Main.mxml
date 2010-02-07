@@ -102,7 +102,7 @@
                paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" 
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0"
-               show="OnEntityDesignViewShow(event);" hide="OnEntityDesignViewHide(event);" >
+               >
             <mx:VBox borderStyle="none" width="100%" height="100%"
                         paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                         horizontalGap="0" verticalGap="0">
@@ -300,7 +300,7 @@
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0"
-                  show="OnCCatEditViewShow(event);" hide="OnCCatEditViewHide(event);" >
+                  >
             <ed:CollisionManagerView id="CollisionManagerView" height="100%" width="100%"/>
          </mx:HBox>
       </mx:ViewStack>
@@ -330,6 +330,7 @@
             import mx.events.MenuEvent;
             import mx.events.IndexChangedEvent;
             import mx.controls.Menu;
+             import mx.controls.ToolTip;
             
             import com.tapirgames.util.UrlUtil;
             import editor.WorldView;
@@ -374,7 +375,15 @@
             
             private function InitApp ():void
             {
+               Runtime.SetActiveView (MainView);
                Runtime.mEditorWorldView = MainView;
+               Runtime.mCollisionCategoryView = CollisionManagerView;
+               
+            //===================================================================================================
+               
+               ToolTip.maxWidth = 800;
+               
+            //===================================================================================================
                
                //SelectList_WorldScale.dataProvider = Lists.mWorldPresetScaleList;
                //SelectList_WorldScale.selectedIndex = Lists.SelectedValue2SelectedIndex (Lists.mWorldPresetScaleList, 1.0);
@@ -647,8 +656,6 @@
          //  Collision Manager
          //===============================================================================================================
                
-               Runtime.mCollisionCategoryView = CollisionManagerView;
-               
                //
                CollisionManagerView.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;
                CollisionManagerView.mButtonCreateCollisionCategoryFriendLink = Button_CreateCollisionCategoryFriendLink;
@@ -744,38 +751,22 @@
                {
                   ViewStack_EditView.selectedChild = CCatDesignView;
                   ViewStack_ViewEditCommands.selectedChild = Box_CCatEditViewCommands;
+                  
+                  Runtime.SetActiveView (CollisionManagerView);
                   CollisionManagerView.SetCollisionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetCollisionManager ());
                }
                else
                {
                   ViewStack_EditView.selectedChild = EntityDesignView;
+                  
+                  Runtime.SetActiveView (MainView);
                   ViewStack_ViewEditCommands.selectedChild = Box_EntityEditViewCommands;
                }
-            }
-            
-            private function OnCCatEditViewShow (event:Event):void
-            {
-               //CCatEditPanel.mActive = false;
-            }
-            
-            private function OnCCatEditViewHide (event:Event):void
-            {
-               //CCatEditPanel.mActive = true;
             }
             
 //========================================================================================
 // 
 //========================================================================================
-            
-            private function OnEntityDesignViewHide (event:Event):void
-            {
-               MainView.mActive = false;
-            }
-            
-            private function OnEntityDesignViewShow (event:Event):void
-            {
-               MainView.mActive = true;
-            }
             
             private function OnClickTutorialLink (event:Event):void
             {
@@ -917,6 +908,7 @@
             private function OnCloseDialog ():void
             {
                Runtime.SetHasSettingDialogOpened (false);
+               stage.focus = stage;
             }
             
             private function ShowShapeRectangleSettingDialog (initialValues:Object, onConfirmFunc:Function):void

@@ -13,6 +13,11 @@ package editor.trigger {
          mValueObject = valueObject;
       }
       
+      public function ToCodeString ():String
+      {
+         return "this";
+      }
+      
 //======================================================
 // override
 //======================================================

@@ -15,6 +15,8 @@ package editor.trigger {
       
       function ValidateSource ():void;
       
+      function ToCodeString ():String;
+      
       /*
       public function GetValueSourceType ():int
       {

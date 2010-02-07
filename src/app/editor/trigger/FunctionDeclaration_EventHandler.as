@@ -10,9 +10,9 @@ package editor.trigger {
    public class FunctionDeclaration_EventHandler extends FunctionDeclaration
    {
       
-      public function FunctionDeclaration_EventHandler (id:int, name:String, paramDefines:Array = null, description:String = null):void
+      public function FunctionDeclaration_EventHandler (id:int, name:String, codeName:String, paramDefines:Array = null, description:String = null):void
       {
-         super (id, name, paramDefines, description);
+         super (id, name, codeName, paramDefines, description);
          
          if ( ! CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id) ) )
             throw new Error ("not consistent! event id = " + id);

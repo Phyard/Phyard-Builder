@@ -11,6 +11,11 @@ package editor.trigger {
          return ValueTargetTypeDefine.ValueTarget_Null;
       }
       
+      public function ToCodeString ():String
+      {
+         return "void";
+      }
+      
       public function AssignValue (source:ValueSource):void
       {
       }

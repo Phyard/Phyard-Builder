@@ -60,14 +60,11 @@ package editor.trigger {
       public function AssignInputValueSources (valueSources:Array):void
       {
          mInputValueSources = valueSources; // best to clone
+         
+         mSourcesOrTargetsChanged = true;
       }
       
       public function GetInputValueSource (inputId:int):ValueSource
-      {
-         return mInputValueSources [inputId];
-      }
-      
-      public function InputValueSource (inputId:int):ValueSource
       {
          return mInputValueSources [inputId];
       }
@@ -80,6 +77,8 @@ package editor.trigger {
       public function AssignOutputValueTargets (valueTargets:Array):void
       {
          mReturnValueTargets = valueTargets; // best to clone
+         
+         mSourcesOrTargetsChanged = true;
       }
       
       public function GetReturnValueTarget (returnId:int):ValueTarget
@@ -99,7 +98,74 @@ package editor.trigger {
       }
       
 //====================================================================
-//
+// 
+//====================================================================
+      
+      public static function CreateCodeString (functionDeclaration:FunctionDeclaration, valueSources:Array, valueTargets:Array):String
+      {
+         var i:int;
+         var vi:VariableInstance;
+         
+         var numInputs:int = (valueSources == null ? 0 : valueSources.length);
+         var source:ValueSource;
+         
+         var sourcesString:String = " (";
+         if (numInputs > 0)
+         {
+            source = valueSources [0] as ValueSource;
+            sourcesString = sourcesString + source.ToCodeString ();
+         }
+         for (i = 1; i < numInputs; ++ i)
+         {
+            source = valueSources [i] as ValueSource;
+            sourcesString = sourcesString + ", " + source.ToCodeString ();
+         }
+         sourcesString = sourcesString + ")";
+         
+         var numOutputs:int = (valueTargets == null ? 0 : valueTargets.length);
+         var target:ValueTarget;
+         
+         if (numOutputs == 0)
+            return functionDeclaration.GetCodeName () + sourcesString;
+         
+         target = valueTargets [0] as ValueTarget;
+         var targetString:String = target.ToCodeString ();
+         
+         if (numOutputs == 1)
+         {
+            targetString = targetString + " = ";
+         }
+         else
+         {
+            targetString = "{" + targetString;
+            
+            for (i = 1; i < numOutputs; ++ i)
+            {
+               target = valueTargets [i] as ValueTarget;
+               targetString = targetString + ", " + target.ToCodeString ();
+            }
+            targetString = targetString + "} = ";
+         }
+         
+         return targetString + functionDeclaration.GetCodeName () + sourcesString;
+      }
+      
+      private var mSourcesOrTargetsChanged:Boolean = true;
+      private var mCacheCodeString:String = null;
+      public function ToCodeString ():String
+      {
+         if (mSourcesOrTargetsChanged)
+         {
+            mSourcesOrTargetsChanged = false;
+            
+            mCacheCodeString = CreateCodeString (mFunctionDeclaration, mInputValueSources, mReturnValueTargets);
+         }
+         
+         return mCacheCodeString;
+      }
+      
+//====================================================================
+// 
 //====================================================================
       
       public function Clone (ownerFunctionDefinition:FunctionDefinition):FunctionCalling

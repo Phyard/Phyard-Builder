@@ -4,9 +4,9 @@ package editor.trigger {
    
    public class FunctionDeclaration_Custom extends FunctionDeclaration
    {
-      public function FunctionDeclaration_Custom (id:int, name:String, inputDefinitions:Array = null, returnDefinitions:Array = null, description:String = null) //ValueTypeDefine.ValueType_Void)
+      public function FunctionDeclaration_Custom (id:int, name:String, codeName:String, inputDefinitions:Array = null, returnDefinitions:Array = null, description:String = null) //ValueTypeDefine.ValueType_Void)
       {
-         super (id, name, inputDefinitions, description, returnValueType);
+         super (id, name, codeName, inputDefinitions, description, returnValueType);
       }
       
       override public function GetType ():int 

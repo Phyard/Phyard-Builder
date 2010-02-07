@@ -23,9 +23,14 @@ package editor.trigger {
          return "Local Variable Space";
       }
       
-      override public function GetSpaceShortName ():String
+      override public function GetShortName ():String
       {
          return "Local";
+      }
+      
+      override public function GetCodeName ():String
+      {
+         return "local";
       }
       
    }

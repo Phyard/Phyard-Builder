@@ -13,6 +13,8 @@ package editor.trigger {
       function CloneTarget ():ValueTarget;
       
       function ValidateTarget ():void;
+      
+      function ToCodeString ():String;
    }
 }
 

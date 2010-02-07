@@ -28,9 +28,14 @@ package editor.trigger {
          return "Variable Space";
       }
       
-      public function GetSpaceShortName ():String
+      public function GetCodeName ():String
       {
-         return "";
+         return "unknown";
+      }
+      
+      public function GetShortName ():String
+      {
+         return "Unknown Space";
       }
       
       public function GetNumVariableInstances ():int

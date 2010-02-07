@@ -34,9 +34,14 @@ package editor.trigger {
          return "Register Variable Space";
       }
       
-      override public function GetSpaceShortName ():String
+      override public function GetShortName ():String
       {
-         return VariableDefinition.GetValueTypeName (mValueType) + " Reg";
+         return VariableDefinition.GetValueTypeName (mValueType) + " Register";
+      }
+      
+      override public function GetCodeName ():String
+      {
+         return "reg" + VariableDefinition.GetValueTypeName (mValueType);
       }
       
       override public function CreateVariableInstanceFromDefinition (variableDefinition:VariableDefinition):VariableInstance

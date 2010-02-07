@@ -12,6 +12,11 @@ package editor.trigger {
       {
       }
       
+      public function ToCodeString ():String
+      {
+         return "property (not supproted now)";
+      }
+      
 //======================================================
 // override
 //======================================================

@@ -26,6 +26,29 @@ package editor.trigger {
          mValueObject = valueObject;
       }
       
+      public function ToCodeString ():String
+      {
+         if (mValueObject == null)
+            return "null";
+         
+         if (mValueObject is String)
+         {
+            var str:String = mValueObject as String;
+            var pattern:RegExp;
+            pattern  = /\\/g;
+            str = str.replace(pattern, "\\\\");
+            pattern = /"/g;
+            str = str.replace(pattern, "\\\"");
+            
+            return "\"" + str + "\"";
+         }
+         
+         if (mValueObject.hasOwnProperty ("ToCodeString"))
+            return mValueObject.ToCodeString ();
+         
+         return  mValueObject.toString ();
+      }
+      
 //=============================================================
 // override
 //=============================================================

@@ -48,15 +48,15 @@ package editor.trigger {
          switch (valueType)
          {
             case ValueTypeDefine.ValueType_Boolean:
-               return "bool";
+               return "Bool";
             case ValueTypeDefine.ValueType_String:
-               return "text";
+               return "Text";
             case ValueTypeDefine.ValueType_Number:
-               return "number";
+               return "Number";
             case ValueTypeDefine.ValueType_Entity:
-               return "entity";
+               return "Entity";
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return "ccat";
+               return "CCat";
             default:
                return "void";
          }
@@ -186,7 +186,7 @@ package editor.trigger {
       public function CreateControlForNullValueTarget (valueTargetNull:ValueTarget_Null):UIComponent
       {
          var label:Label = new Label ();
-         label.text = "(nothing)";
+         label.text = "(void)";
          
          return label;
       }

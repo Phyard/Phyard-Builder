@@ -23,7 +23,7 @@
          </mx:HBox>
       </mx:HBox>
       <mx:HBox id="Box_Commands" height="156" width="100%">
-         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
+         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" showDataTips="true" dataTipField="mDataTip" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
       </mx:HBox>
       <mx:HBox height="186" width="100%">
          <mx:ViewStack borderStyle="solid" width="100%" height="100%">
@@ -150,6 +150,8 @@
                var initialReturnTargets:Array = new Array ();
                var currentReturnTargets:Array = new Array ();
                
+               var codeLine:String = func_calling.ToCodeString ();
+               
                for (j = 0; j < func_declaration.GetNumInputs (); ++ j)
                {
                   value_source = func_calling.GetInputValueSource (j);
@@ -166,7 +168,7 @@
                   currentReturnTargets.push (value_target.CloneTarget ());
                }
                
-               List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
+               List_Commands.dataProvider.addItemAt ({mName:codeLine, mID:func_id, mDataTip: codeLine,
                                                       mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources,
                                                       mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
                                                       },
@@ -605,6 +607,11 @@
                else
                   trace ("? unknow target type");
             }
+            
+            var codeLine:String = FunctionCalling.CreateCodeString (func_declaration, currentValueSources, currentReturnTargets);
+            mCurrentEditingItem.mName = codeLine;
+            mCurrentEditingItem.mDataTip = codeLine;
+            List_Commands.invalidateList ();
          }
          
          private function AppendContextMenuItem (sprite:InteractiveObject, caption:String, selectedListener:Function, addSaperator:Boolean = false, isEnabled:Boolean = true):void

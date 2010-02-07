@@ -18,6 +18,11 @@ package editor.trigger {
          SetVariableInstance (variableInstacne);
       }
       
+      public function ToCodeString ():String
+      {
+         return mVariableInstance == null ? "null" : mVariableInstance.ToCodeString_ForSource ();
+      }
+      
       public function GetVariableInstance ():VariableInstance
       {
          return mVariableInstance;

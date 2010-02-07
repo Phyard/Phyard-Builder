@@ -12,9 +12,9 @@ package editor.trigger {
    {
       protected var mFunctionDeclaration_Common :common.trigger.FunctionDeclaration;
       
-      public function FunctionDeclaration_Core (id:int, name:String, inputDefinitions:Array = null, returnDefinitions:Array = null, description:String = null)
+      public function FunctionDeclaration_Core (id:int, name:String, codeName:String, inputDefinitions:Array = null, returnDefinitions:Array = null, description:String = null)
       {
-         super (id, name, inputDefinitions, description, returnDefinitions);
+         super (id, name, codeName, inputDefinitions, description, returnDefinitions);
          
          mFunctionDeclaration_Common = CoreFunctionDeclarations.GetCoreFunctionDeclaration (id);
          

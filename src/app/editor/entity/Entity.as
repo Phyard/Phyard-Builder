@@ -57,6 +57,11 @@ package editor.entity {
          return "Entity";
       }
       
+      public function ToCodeString ():String
+      {
+         return "Entity#" + mCreationOrderId;
+      }
+      
 //======================================================
 // 
 //======================================================

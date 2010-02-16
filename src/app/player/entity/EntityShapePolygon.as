@@ -138,9 +138,9 @@ package player.entity {
      
       override protected function RebuildShapePhysicsInternal ():void
       {
-         if (mProxyShape != null)
+         if (mPhysicsShapeProxy != null)
          {
-            mProxyShape.AddPolygon (mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
+            mPhysicsShapeProxy.AddPolygon (mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
          }
       }
       

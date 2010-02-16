@@ -23,7 +23,7 @@
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:TextArea id="TextArea_SourceCode" width="100%" height="256" editable="true" wordWrap="false">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="266" editable="true" wordWrap="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
@@ -36,7 +36,7 @@
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_PlayCode" width="100%" height="30" editable="false">
+      <mx:TextArea id="TextArea_PlayCode" width="100%" height="19" editable="false" wordWrap="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
@@ -81,8 +81,12 @@
          
          private var OnClose:Function = null;
          
+         private var mInputValues:Object;
+         
          public function SetValues (values:Object):void
          {
+            mInputValues = values;
+            
             TextArea_SourceCode.text = values.mXmlString;
             TextArea_PlayCode.text = values.mHexString;
             
@@ -133,7 +137,10 @@
          
          private function OnClickCopySourceCode ():void
          {
-            System.setClipboard(TextArea_SourceCode.text);
+            var pattern:RegExp = />([\s]*)</g;
+            var newStr:String = ">\n$1<";
+            
+            System.setClipboard(TextArea_SourceCode.text.replace(pattern, newStr));
          }
          
          private function OnClickCopyPlayCode ():void

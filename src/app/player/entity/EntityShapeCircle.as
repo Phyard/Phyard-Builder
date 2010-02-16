@@ -176,9 +176,9 @@ package player.entity {
 
       override protected function RebuildShapePhysicsInternal ():void
       {
-         if (mProxyShape != null)
+         if (mPhysicsShapeProxy != null)
          {
-            mProxyShape.AddCircle (0, 0, mRadius, mBuildInterior, mBuildBorder, mBorderThickness);
+            mPhysicsShapeProxy.AddCircle (0, 0, mRadius, mBuildInterior, mBuildBorder, mBorderThickness);
          }
       }
 

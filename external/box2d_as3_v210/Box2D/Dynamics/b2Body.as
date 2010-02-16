@@ -821,26 +821,14 @@ package Box2D.Dynamics
 			return true; //new b2Vec2.b2Vec2_From2Numbers (dx, dy);
 		}
 
-		// just a minor optimization to SetTransform
-		public function SetPosition (x:Number, y:Number):void
+		public function ApplyAngularImpulse (angularImpulse:Number):void
 		{
-			//b2Assert(m_world->IsLocked() == false);
-			if (m_world.IsLocked() == true)
+			if (m_type != b2_dynamicBody)
 			{
 				return;
 			}
 
-			//m_xf.R.SetFromAngle (angle);
-			//m_xf.position = position;
-			m_xf.position.x = x;
-			m_xf.position.y = y;
-
-			NotifyTransformChangedManually (m_sweep.a);
-		}
-
-		public function ApplyAngularImpulse (angularImpulse:Number):void
-		{
-			if (m_type != b2_dynamicBody)
+			if (IsFixedRotation ())
 			{
 				return;
 			}
@@ -849,6 +837,7 @@ package Box2D.Dynamics
 			{
 				SetAwake(true);
 			}
+
 			m_angularVelocity += m_invI * angularImpulse;
 		}
 

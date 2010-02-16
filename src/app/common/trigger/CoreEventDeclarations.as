@@ -5,7 +5,7 @@ package common.trigger {
    {
       //public static const 
       
-      public static var sEventHandlerDeclarations:Array = new Array (CoreEventIds.NumEventTypes);
+      public static var sEventHandlerDeclarations:Array = new Array (IdPool.NumEventTypes);
       
       private static var mInitialized:Boolean = false;
       
@@ -81,6 +81,7 @@ package common.trigger {
                     [
                         ValueTypeDefine.ValueType_Entity, 
                         ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number, 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting,
                     [
@@ -92,6 +93,7 @@ package common.trigger {
                     [
                         ValueTypeDefine.ValueType_Entity, 
                         ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number, 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityPairTimer,
                     [
@@ -259,7 +261,7 @@ package common.trigger {
       
       private static function RegisterEventDeclatation (eventId:int, paramValueTypes:Array):void
       {
-         if (eventId < 0 || eventId >= CoreEventIds.NumEventTypes)
+         if (eventId < 0 || eventId >= IdPool.NumEventTypes)
             return;
          
          var func_decl:FunctionDeclaration = new FunctionDeclaration (eventId, paramValueTypes);
@@ -269,7 +271,7 @@ package common.trigger {
       
       public static function GetCoreEventHandlerDeclarationById (eventId:int):FunctionDeclaration
       {
-         if (eventId < 0 || eventId >= CoreEventIds.NumEventTypes)
+         if (eventId < 0 || eventId >= IdPool.NumEventTypes)
             return null;
          
          if (! mInitialized)

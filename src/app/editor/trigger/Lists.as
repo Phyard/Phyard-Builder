@@ -38,13 +38,13 @@ package editor.trigger {
       
       public static const mLevelStatusList:Array = [
             {label:"Failed", data:ValueDefine.TaskStatus_Failed},
-            {label:"Successed", data:ValueDefine.TaskStatus_Successed},
+            {label:"Succeeded", data:ValueDefine.TaskStatus_Successed},
             {label:"Unfinished", data:ValueDefine.TaskStatus_Unfinished},
          ];
       
       public static const mEntityTaskStatusList:Array = [
             {label:"Failed", data:ValueDefine.LevelStatus_Failed},
-            {label:"Successed", data:ValueDefine.LevelStatus_Successed},
+            {label:"Succeeded", data:ValueDefine.LevelStatus_Successed},
             {label:"Unfinished", data:ValueDefine.LevelStatus_Unfinished},
          ];
       

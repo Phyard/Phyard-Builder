@@ -160,6 +160,7 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
       while (anotherShape != null)
       {
          anotherShape.SynchronizeWithPhysicsProxy ();
+         anotherShape.FlagWorldCentroidSynchronized (false);
          
          anotherShape = anotherShape.mNextShapeInBody;
       }
@@ -178,21 +179,25 @@ public function MoveTo (targetX:Number, targetY:Number):void
 
 public function Detach ():void
 {
-   var oldBody:EntityBody = mBody;
-   if (oldBody.mNumShapes == 1 && oldBody.mShapeListHead == this)
+   if (IsTheOnlyShapeInBody ())
       return;
+   
+   var oldBody:EntityBody = mBody;
    
    var isPhysicsShape:Boolean = IsPhysicsShape ();
    
 // crete a new body
    
    if (isPhysicsShape)
-      UpdateVelocityAndWorldCentroid ();
+   {
+      SynchronizeVelocityAndWorldCentroid ();
+   }
    
    var newBody:EntityBody = new EntityBody (mWorld);
    mWorld.RegisterEntity (newBody);
    
    SetBody (newBody);
+   
    if (isPhysicsShape)
    {
       RebuildShapePhysics ();
@@ -214,7 +219,7 @@ public function Detach ():void
    newBody.OnPhysicsShapeListChanged ();
    
    if (isPhysicsShape)
-      AddMomentumToBody ();
+      AddSelfMomentumToBody ();
    
 // ..
    
@@ -313,7 +318,7 @@ public function DetachThenAttachWith (anotherShape:EntityShape):void
    
    var oldBody:EntityBody = mBody;
    
-   UpdateVelocityAndWorldCentroid ();
+   SynchronizeVelocityAndWorldCentroid ();
    
    SetBody (anotherBody);
    if (isPhysicsShape)
@@ -335,7 +340,7 @@ public function DetachThenAttachWith (anotherShape:EntityShape):void
    anotherBody.OnPhysicsShapeListChanged ();
    
    if (isPhysicsShape)
-      AddMomentumToBody ();
+      AddSelfMomentumToBody ();
    
 // ...
    
@@ -358,7 +363,7 @@ public function BreakupBrothers ():void
       isPhysicsShape = shape.IsPhysicsShape ();
       
       if (isPhysicsShape)
-         shape.UpdateVelocityAndWorldCentroid ();
+         shape.SynchronizeVelocityAndWorldCentroid ();
       
       newBody = new EntityBody (mWorld);
       mWorld.RegisterEntity (newBody);
@@ -380,7 +385,7 @@ public function BreakupBrothers ():void
       newBody.OnPhysicsShapeListChanged ();
       
       if (isPhysicsShape)
-         shape.AddMomentumToBody ();
+         shape.AddSelfMomentumToBody ();
    }
    
 // ..
@@ -404,6 +409,88 @@ public function BreakAllJointsOfBrothers ():void
 public function BreakAllJointsOfIsland ():void
 {
    
+}
+
+//================================================================
+// power 
+//================================================================
+
+// AddMomentumByLinearVelocity
+public function  AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity:Boolean = false, onBodyCenter:Boolean = false):void
+{
+   var worldX:Number;
+   var worldY:Number;
+   
+   if (onBodyCenter)
+   {
+      if (mBody.mNumPhysicsShapes == 0)
+         return;
+   }
+   else
+   {
+      if (mPhysicsProxy == null)
+         return;
+      
+      //mBody.mNumPhysicsShapes > 0
+   }
+   
+   if (IsTheOnlyPhysicsShapeInBody ())
+   {
+      worldX = mBody.mPositionX;
+      worldY = mBody.mPositionY;
+   }
+   else
+   {
+      SynchronizeWorldCentroid ();
+      worldX = mWorldCentroidX;
+      worldY = mWorldCentroidY;
+   }
+   
+   var momentumX:Number;
+   var momentumY:Number;
+   
+   if (valueIsVelocity)
+   {
+      // mMass is possible zero for many reasons
+      momentumX = mMass * valueX;
+      momentumY = mMass * valueY;
+   }
+   else
+   {
+      momentumX = valueX;
+      momentumY = valueY;
+   }
+   
+   mBody.ApplyLinearImpulse (momentumX, momentumY, worldX, worldY);
+   
+   FlagVelocitySynchronized (false);
+   mBody.FlagVelocitySynchronized (false)
+}
+
+public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = false):void
+{
+   // non-physics will also be valid
+   //if (mPhysicsProxy == null)
+   //   return;
+   
+   if (mBody.mNumPhysicsShapes == 0)
+      return;
+   
+   var momentum:Number;
+   
+   if (valueIsVelocity)
+   {
+      momentum = mInertia * value;
+   }
+   else
+   {
+      momentum = value;
+   }
+   
+   mBody.ApplyAngularImpulse (momentum);
+   
+   FlagAngularVelocitySynchronized (false);
+   mBody.FlagVelocitySynchronized (false)
 }
 
 //================================================================
@@ -433,7 +520,7 @@ public static function CreateParticle (world:World, posX:Number, posY:Number, ve
    // for circle, postion == centroid
    particle.mWorldCentroidX = posX;
    particle.mWorldCentroidY = posY;
-   particle.AddMomentumToBody ();
+   particle.AddSelfMomentumToBody ();
    
    // ...
    return particle;

@@ -8,6 +8,7 @@ package player.trigger
    import common.trigger.CoreFunctionDeclarations;
    import common.trigger.CoreEventDeclarations;
    import common.trigger.ValueTypeDefine;
+   import common.trigger.IdPool;
    
    public class TriggerEngine
    {
@@ -49,7 +50,7 @@ package player.trigger
       
       public static function GetCoreFunctionDefinition (functionId:int):FunctionDefinition_Core
       {
-         if (functionId < 0 || functionId >= CoreFunctionIds.NumPlayerFunctions)
+         if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return null;
          
          return CoreFunctionDefinitions.sCoreFunctionDefinitions [functionId];

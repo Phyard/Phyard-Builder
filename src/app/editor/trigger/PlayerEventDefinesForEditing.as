@@ -75,23 +75,25 @@ package editor.trigger {
          //           [
          //              new VariableDefinitionEntity ("Physics Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
          //              new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-         //              new VariableDefinitionNumber ("Seconds") 
+         //              new VariableDefinitionNumber ("Steps") 
          //           ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, "OnTwoPhysicsShapesStartContacting", "When 2 physics shapes start contacting",
                     [
                        new VariableDefinitionEntity ("Physics Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                       new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses})
+                       new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                       new VariableDefinitionNumber ("Steps") 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, "OnTwoPhysicsShapesKeepContacting", "When 2 physics shapes are contacting with each other",
                     [
                        new VariableDefinitionEntity ("Physics Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                        new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                       new VariableDefinitionNumber ("Seconds") 
+                       new VariableDefinitionNumber ("Steps") 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, "OnTwoPhysicsShapesStopContacting", "When 2 physics shapes stop contacting",
                     [
                        new VariableDefinitionEntity ("Physics Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                       new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses})
+                       new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                       new VariableDefinitionNumber ("Steps") 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityPairTimer, "OnEntityPairTimer", "OnEntityPairTimer",
                     [
@@ -104,7 +106,7 @@ package editor.trigger {
          
          RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseDown, "OnPhysicsShapeMouseDown", "Presss mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Physics Shape", null, EntityShape.prototype), 
+                        new VariableDefinitionEntity ("The Physics Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -114,7 +116,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseUp, "OnPhysicsShapeMouseUp", "Release mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Physics Shape", null, EntityShape.prototype), 
+                        new VariableDefinitionEntity ("The Physics Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -124,7 +126,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseClick, "OnShapeMouseClick", "Click mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -134,7 +136,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseDown, "OnShapeMouseDown", "Press mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -144,7 +146,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseUp, "OnShapeMouseUp", "Release mouse on an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -154,7 +156,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseMove, "OnShapeMouseMove", "Move mouse in an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -164,7 +166,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseEnter, "OnShapeMouseEnter", "Mouse enters an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -174,7 +176,7 @@ package editor.trigger {
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseOut, "OnShapeMouseOut", "Move mouse out of an entity",
                     [
-                        new VariableDefinitionEntity ("The Shape", null, EntityShape.prototype), 
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -272,7 +274,7 @@ package editor.trigger {
          if (event_id < 0)
             return;
          
-         sEventDeclarations [event_id] = new FunctionDeclaration_EventHandler (event_id, event_name, event_name, param_definitions, event_description);
+         sEventDeclarations [event_id] = new FunctionDeclaration_EventHandler (event_id, event_name, event_name, event_name, param_definitions, event_description);
       }
       
       public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler

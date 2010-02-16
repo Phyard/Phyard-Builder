@@ -22,8 +22,8 @@ package editor.entity {
       public var mAnchor:SubEntityHingeAnchor;
       
       protected var mEnableLimits:Boolean = false;
-      protected var mLowerAngle:Number = 0;
-      protected var mUpperAngle:Number = 0;
+      protected var mLowerAngle:Number = -30;
+      protected var mUpperAngle:Number = 30;
       public var mEnableMotor:Boolean = false;
       public var mMotorSpeed:Number = Define.DefaultHingeMotorSpeed;
       public var mBackAndForth:Boolean = false;

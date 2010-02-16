@@ -23,12 +23,12 @@ public function DestroyAllBreakableShapes ():void
    }
 }
 
-public function ApplyForceAtPoint (forceX:Number, forceY:Number, pointX:Number, pointY:Number):void
+public function ApplyForceAtPoint (worldForceX:Number, worldForceY:Number, worldPointX:Number, worldPointY:Number):void
 {
    if (mPhysicsProxy == null)
       return;
    
-   mPhysicsProxyBody.AddForceAtPoint (forceX, forceY, pointX, pointY);
+   mPhysicsProxyBody.AddForceAtPoint (worldForceX, worldForceY, worldPointX, worldPointY);
 }
 
 public function ApplyTorque (torque:Number):void
@@ -38,3 +38,20 @@ public function ApplyTorque (torque:Number):void
    
    mPhysicsProxyBody.AddTorque (torque);
 }
+
+public function ApplyLinearImpulse (worldPulseX:Number, worldPulseY:Number, worldPointX:Number, worldPointY:Number):void
+{
+   if (mPhysicsProxy == null)
+      return;
+   
+   mPhysicsProxyBody.AddLinearImpulseAtPoint (worldPulseX, worldPulseY, worldPointX, worldPointY);
+}
+
+public function ApplyAngularImpulse (angularImpulse:Number):void
+{
+   if (mPhysicsProxy == null)
+      return;
+   
+   mPhysicsProxyBody.AddAngularImpulse (angularImpulse);
+}
+

@@ -1,9 +1,9 @@
 
-   protected var mEventHandlers:Array = new Array (CoreEventIds.NumEventTypes);
+   protected var mEventHandlers:Array = new Array (IdPool.NumEventTypes);
 
    public function RegisterEventHandler (eventId:int, eventHandler:EntityEventHandler):void
    {
-      if (eventId < 0 || eventId >= CoreEventIds.NumEventTypes || eventHandler == null)
+      if (eventId < 0 || eventId >= IdPool.NumEventTypes || eventHandler == null)
          return;
       
       eventHandler.mNextEntityEventHandlerOfTheSameType = mEventHandlers [eventId];

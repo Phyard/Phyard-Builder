@@ -57,7 +57,7 @@ package player.entity {
          {
             SetAlpha ((mLifeDuration - mLife) / mLifeDuration);
             
-            mBody.mPhysicsProxyBody.AddForceAtPoint (- mMass * mWorld.GetLastStepGravityAccelerationX (), - mMass * mWorld.GetLastStepGravityAccelerationY (), mPositionX, mPositionY);
+            mBody.ApplyForceAtPoint (- mMass * mWorld.GetLastStepGravityAccelerationX (), - mMass * mWorld.GetLastStepGravityAccelerationY (), mPositionX, mPositionY);
          }
       }
       

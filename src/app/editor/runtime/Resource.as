@@ -12,6 +12,14 @@ package editor.runtime {
       [Embed("../../res/create/camera.png")]
       public static var IconCamera:Class;
       
+   // conditon and action
+      
+      [Embed("../../res/create/condition.png")]
+      public static var IconBasicCondition:Class;
+      
+      [Embed("../../res/create/action.png")]
+      public static var IconTriggerAction:Class;
+      
    // event icons
       
       // entity init / update / destroy

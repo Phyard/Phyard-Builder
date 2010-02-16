@@ -101,55 +101,6 @@ package editor.trigger {
 // 
 //====================================================================
       
-      public static function CreateCodeString (functionDeclaration:FunctionDeclaration, valueSources:Array, valueTargets:Array):String
-      {
-         var i:int;
-         var vi:VariableInstance;
-         
-         var numInputs:int = (valueSources == null ? 0 : valueSources.length);
-         var source:ValueSource;
-         
-         var sourcesString:String = " (";
-         if (numInputs > 0)
-         {
-            source = valueSources [0] as ValueSource;
-            sourcesString = sourcesString + source.ToCodeString ();
-         }
-         for (i = 1; i < numInputs; ++ i)
-         {
-            source = valueSources [i] as ValueSource;
-            sourcesString = sourcesString + ", " + source.ToCodeString ();
-         }
-         sourcesString = sourcesString + ")";
-         
-         var numOutputs:int = (valueTargets == null ? 0 : valueTargets.length);
-         var target:ValueTarget;
-         
-         if (numOutputs == 0)
-            return functionDeclaration.GetCodeName () + sourcesString;
-         
-         target = valueTargets [0] as ValueTarget;
-         var targetString:String = target.ToCodeString ();
-         
-         if (numOutputs == 1)
-         {
-            targetString = targetString + " = ";
-         }
-         else
-         {
-            targetString = "{" + targetString;
-            
-            for (i = 1; i < numOutputs; ++ i)
-            {
-               target = valueTargets [i] as ValueTarget;
-               targetString = targetString + ", " + target.ToCodeString ();
-            }
-            targetString = targetString + "} = ";
-         }
-         
-         return targetString + functionDeclaration.GetCodeName () + sourcesString;
-      }
-      
       private var mSourcesOrTargetsChanged:Boolean = true;
       private var mCacheCodeString:String = null;
       public function ToCodeString ():String
@@ -158,7 +109,7 @@ package editor.trigger {
          {
             mSourcesOrTargetsChanged = false;
             
-            mCacheCodeString = CreateCodeString (mFunctionDeclaration, mInputValueSources, mReturnValueTargets);
+            mCacheCodeString = mFunctionDeclaration.CreateFormattedCallingText (mInputValueSources, mReturnValueTargets);
          }
          
          return mCacheCodeString;

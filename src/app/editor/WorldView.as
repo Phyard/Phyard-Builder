@@ -590,7 +590,7 @@ package editor {
          var typeName:String = mLastSelectedEntity.GetMainEntity ().GetTypeName ();
          var infoText:String = mLastSelectedEntity.GetMainEntity ().GetInfoText ();
          
-         StatusBar_SetMainSelectedEntityInfo ("<b>&lt;" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + "&gt; " + typeName + "</b>: " + infoText);
+         StatusBar_SetMainSelectedEntityInfo ("<b>&lt;" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity.GetMainEntity ()) + "&gt; " + typeName + "</b>: " + infoText);
       }
       
       private function UpdateMousePointInfo (stagePoint:Point):void
@@ -834,6 +834,7 @@ package editor {
       public var mButtonCreateJointSlider:Button;
       public var mButtonCreateJointDistance:Button;
       public var mButtonCreateJointSpring:Button;
+      public var mButtonCreateJointWeld:Button;
       
       public var mButtonCreateText:Button;
       public var mButtonCreateGravityController:Button;
@@ -872,7 +873,18 @@ package editor {
          if ( ! event.target is Button)
             return;
          
-         SetCurrentCreateMode (null);
+         if (mCurrentCreatMode != null)
+         {
+            SetCurrentCreateMode (null);
+            
+            if (mLastSelectedCreateButton == event.target as Button)
+            {
+               mLastSelectedCreateButton.selected = false;
+               mLastSelectedCreateButton = null;
+               return;
+            }
+         }
+         
          mLastSelectedCreateButton = (event.target as Button);
          
          switch (event.target)
@@ -996,6 +1008,8 @@ package editor {
             case mButtonCreateJointSpring:
                SetCurrentCreateMode ( new ModeCreateSpring (this) );
                break;
+            //case mButtonCreateJointWeld:
+            //   break;
             
          // others
             
@@ -2501,18 +2515,38 @@ package editor {
          
          //trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
          
-         if (IsEditing ())
+         if (IsPlaying ()) // playing
+         {
+            switch (event.keyCode)
+            {
+               case Keyboard.SPACE:
+                  mDesignPlayer.Step (true);
+                  break;
+               default:
+                  break;
+            }
+         }
+         else if (IsCreating ())
          {
             switch (event.keyCode)
             {
                case Keyboard.ESCAPE:
                   if (mCurrentCreatMode != null)
-                     CancelCurrentCreatingMode ();
-                  else
                   {
-                     mEditorWorld.ClearSelectedEntities ();
-                     OnSelectedEntitiesChanged ();
+                     CancelCurrentCreatingMode ();
                   }
+                  break;
+               default:
+                  break;
+            }
+         }
+         else if (IsEditing ())
+         {
+            switch (event.keyCode)
+            {
+               case Keyboard.ESCAPE:
+                  mEditorWorld.ClearSelectedEntities ();
+                  OnSelectedEntitiesChanged ();
                   break;
                case Keyboard.SPACE:
                   OpenEntitySettingDialog ();
@@ -2619,18 +2653,7 @@ package editor {
                   break;
             }
          }
-         else // playing
-         {
-            switch (event.keyCode)
-            {
-               case Keyboard.SPACE:
-                  mDesignPlayer.Step (true);
-                  break;
-               default:
-                  break;
-            }
-         }
-    }
+      }
       
       
 //============================================================================
@@ -2725,7 +2748,7 @@ package editor {
          return polyline;
       }
       
-      public function CreateHinge (posX:Number, posY:Number):EntityJointHinge
+      public function CreateHinge ():EntityJointHinge
       {
          var hinge:EntityJointHinge = mEditorWorld.CreateEntityJointHinge ();
          if (hinge == null)

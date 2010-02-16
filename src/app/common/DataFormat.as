@@ -678,9 +678,6 @@ package common {
                editorWorld.SetWorldBorderTopThickness (worldDefine.mSettings.mWorldBorderTopThickness);
                editorWorld.SetWorldBorderRightThickness (worldDefine.mSettings.mWorldBorderRightThickness);
                editorWorld.SetWorldBorderBottomThickness (worldDefine.mSettings.mWorldBorderBottomThickness);
-         trace ("###########################");
-         trace ("worldDefine.mSettings.mWorldBorderLeftThickness = " + worldDefine.mSettings.mWorldBorderLeftThickness);
-         trace ("worldDefine.mSettings.mWorldBorderTopThickness = " + worldDefine.mSettings.mWorldBorderTopThickness);
                
                editorWorld.SetDefaultGravityAccelerationMagnitude (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
                editorWorld.SetDefaultGravityAccelerationAngle (worldDefine.mSettings.mDefaultGravityAccelerationAngle);

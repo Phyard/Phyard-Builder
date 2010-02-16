@@ -83,9 +83,14 @@ package player.physics {
          var i:int;
          var num:int = _b2Fixtures.length;
          var fixture:b2Fixture;
-         for (i = 0; i < num; ++ i)
+         for (i = num - 1; i >= 0; -- i)
          {
             fixture = _b2Fixtures [i] as b2Fixture;
+            
+            if (fixture.m_density == 0.0)
+            {
+               continue;
+            }
             
             fixture.GetMassData(massData);
             
@@ -99,7 +104,7 @@ package player.physics {
          }
          
          var invMass:Number;
-         if (mMass > 0)
+         if (mass > 0)
          {
             invMass = 1.0 / mass;
             centroidX = centroidX * invMass;

@@ -23,6 +23,7 @@ package player.trigger {
    
    import common.Define;
    import common.trigger.ValueDefine;
+   import common.trigger.IdPool;
    
    public class CoreFunctionDefinitions
    {
@@ -35,7 +36,7 @@ package player.trigger {
       
 //=============================
       
-      public static var sCoreFunctionDefinitions:Array = new Array (CoreFunctionIds.NumPlayerFunctions);
+      public static var sCoreFunctionDefinitions:Array = new Array (IdPool.NumPlayerFunctions);
       
       public static function Initialize ():void
       {
@@ -249,10 +250,21 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetSleeping,                 SetShapeSleeping);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetMass,                        GetShapeMass);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetInertia,                     GetShapeInertia);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetLinearVelocity,                        GetShapeLinearVelocity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,       AddLinearImpulseByVelocityVector);
+         
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepForce,                        ApplyStepForceOnShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint,            ApplyStepForceAtLocalPointOnShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint,            ApplyStepForceAtWorldPointOnShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepTorque,                       ApplyStepTorque);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulse,                        ApplyLinearImpulseOnShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint,            ApplyLinearImpulseAtLocalPointOnShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,            ApplyLinearImpulseAtWorldPointOnShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,                       ApplyAngularImpulse);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
@@ -273,6 +285,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendNewLine,            AppendNewLineToTextComponent);
          
       // game / entity / joint
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,                      SetJointMotorEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,                     SetJointLimitsEnabled);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,                      GetHingeLimitsByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,                      SetHingeLimitsByDegrees);
@@ -298,7 +313,7 @@ package player.trigger {
       
       private static function RegisterCoreFunction (functionId:int, callback:Function):void
       {
-         if (functionId < 0 || functionId >= CoreFunctionIds.NumPlayerFunctions)
+         if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return;
          
          var func_decl:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
@@ -1972,6 +1987,191 @@ package player.trigger {
          shape.GetBody ().SetSleeping (sleeping);
       }
       
+      public static function GetShapeMass (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         if (shape == null || shape.IsDestroyedAlready ())
+            valueTarget.AssignValueObject (0.0);
+         else
+         {
+            valueSource = valueSource.mNextValueSourceInList;
+            var isBodyValue:Boolean = valueSource.EvalateValueObject () as Boolean;
+            
+            if (isBodyValue)
+            {
+               valueTarget.AssignValueObject (shape.GetBody ().GetMass ());
+            }
+            else
+            {
+               valueTarget.AssignValueObject (shape.GetMass ());
+            }
+         }
+      }
+      
+      public static function GetShapeInertia (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         if (shape == null || shape.IsDestroyedAlready ())
+            valueTarget.AssignValueObject (0.0);
+         else
+         {
+            valueSource = valueSource.mNextValueSourceInList;
+            var isBodyValue:Boolean = valueSource.EvalateValueObject () as Boolean;
+            
+            if (isBodyValue)
+            {
+               valueTarget.AssignValueObject (shape.GetBody ().GetInertia ());
+            }
+            else
+            {
+               valueTarget.AssignValueObject (shape.GetInertia ());
+            }
+         }
+      }
+      
+      public static function SetShapeLinearVelocity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var velocityX:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var velocityY:Number = valueSource.EvalateValueObject () as Number;
+         
+         shape.AddLinearMomentum (velocityX - shape.GetLinearVelocityX (), velocityY - shape.GetLinearVelocityY (), true, false);
+      }
+      
+      public static function GetShapeLinearVelocity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null || shape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetLinearVelocityX ());
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (shape.GetLinearVelocityY ());
+         }
+      }
+      
+      public static function AddLinearImpulseByVelocityVector (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var velocityX:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var velocityY:Number = valueSource.EvalateValueObject () as Number;
+         
+         shape.AddLinearMomentum (velocityX, velocityY, true, false);
+      }
+      
+      public static function ApplyLinearImpulseOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         _ApplyLinearImpulseOnShape (valueSource, valueTarget);
+      }
+      
+      public static function ApplyLinearImpulseAtLocalPointOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         _ApplyLinearImpulseOnShape (valueSource, valueTarget, true);
+      }
+      
+      public static function ApplyLinearImpulseAtWorldPointOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         _ApplyLinearImpulseOnShape (valueSource, valueTarget, false);
+      }
+      
+      public static function _ApplyLinearImpulseOnShape (valueSource:ValueSource, valueTarget:ValueTarget, isLocalPoint:Boolean = false):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var impulseX:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var impulseY:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var isLocalImpulse:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         if (isLocalImpulse)
+         {
+            shape.LocalVector2WorldVector (impulseX, impulseY, sVector);
+            impulseX = sVector.x;
+            impulseY = sVector.y;
+         }
+         
+         var body:EntityBody = shape.GetBody ();
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         
+         if (valueSource.mNextValueSourceInList == null)
+         {
+            var onBodyCenter:Boolean = valueSource.EvalateValueObject () as Boolean;
+            
+            if (onBodyCenter)
+               body.ApplyLinearImpulse (impulseX, impulseY, body.GetPositionX (), body.GetPositionY ());
+            else
+               body.ApplyLinearImpulse (impulseX, impulseY, shape.GetWorldCentroidX (), shape.GetWorldCentroidY ());
+         }
+         else
+         {
+            var pointX:Number = valueSource.EvalateValueObject () as Number;
+            
+            valueSource = valueSource.mNextValueSourceInList;
+            var pointY:Number = valueSource.EvalateValueObject () as Number;
+            
+            if (isLocalPoint)
+            {
+               shape.LocalPoint2WorldPoint (pointX, pointY, sPoint);
+               pointX = sPoint.x;
+               pointY = sPoint.y;
+            }
+            
+            body.ApplyLinearImpulse (impulseX, impulseY, pointX, pointY);
+         }
+      }
+      
+      public static function ApplyAngularImpulse (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var angularImpulse:Number = valueSource.EvalateValueObject () as Number;
+         
+         shape.GetBody ().ApplyAngularImpulse (angularImpulse);
+      }
+      
       public static function ApplyStepForceOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          _ApplyStepForceOnShape (valueSource, valueTarget);
@@ -2021,9 +2221,16 @@ package player.trigger {
             var onBodyCenter:Boolean = valueSource.EvalateValueObject () as Boolean;
             
             if (onBodyCenter)
+            {
+            trace ("body position: " + body.GetPositionX () + ", " + body.GetPositionY ());
                body.ApplyForceAtPoint (forceX, forceY, body.GetPositionX (), body.GetPositionY ());
+            }
             else
-               body.ApplyForceAtPoint (forceX, forceY, shape.GetPositionX (), shape.GetPositionY ());
+            {
+            trace ("centroid: " + shape.GetWorldCentroidX () + ", " + shape.GetWorldCentroidY ());
+            trace ("shape position: " + shape.GetPositionX () + ", " + shape.GetPositionY ());
+               body.ApplyForceAtPoint (forceX, forceY, shape.GetWorldCentroidX (), shape.GetWorldCentroidY ());
+            }
          }
          else
          {
@@ -2249,7 +2456,33 @@ package player.trigger {
    // entity / joint
    //*******************************************************************
       
-     public static function GetHingeLimitsByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetJointMotorEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var joint:EntityJoint = valueSource.EvalateValueObject () as EntityJoint;
+         
+         if (joint == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var enabled:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         joint.SetEnableMotor (enabled);
+      }
+      
+      public static function SetJointLimitsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var joint:EntityJoint = valueSource.EvalateValueObject () as EntityJoint;
+         
+         if (joint == null)
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var enabled:Boolean = valueSource.EvalateValueObject () as Boolean;
+         
+         joint.SetEnableLimits (enabled);
+      }
+      
+      public static function GetHingeLimitsByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
          

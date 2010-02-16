@@ -102,10 +102,21 @@ package player.physics {
          
          return Math.sqrt (vec2.x * vec2.x + vec2.y * vec2.y);
       }
-
+      
       public function GetReactionTorque(inv_dt:Number):Number
       {
          return _b2RevoluteJoint.GetReactionTorque (inv_dt);
+      }
+      
+      
+      public function SetMotorEnabled (enabled:Boolean):void
+      {
+         _b2RevoluteJoint.EnableMotor (enabled);
+      }
+      
+      public function SetLimitsEnabled (enabled:Boolean):void
+      {
+         _b2RevoluteJoint.EnableLimit (enabled);
       }
    }
    

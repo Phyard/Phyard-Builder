@@ -338,7 +338,7 @@ public function ResetMassData():void
 	}
 
 	//b2Assert(m_type == b2_dynamicBody);
-
+var nn:int = 0;
 	// Accumulate mass over all fixtures.
 	for (f = m_fixtureList; f != null; f = f.m_next)
 	{
@@ -493,11 +493,6 @@ public function SetTransform(position:b2Vec2, angle:Number):void
 		m_xf.position.y = position.y;
 	}
 
-	NotifyTransformChangedManually (angle);
-}
-// some hacking here
-private function NotifyTransformChangedManually (angle:Number):void
-{
 	//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 	b2Math.b2Mul_TransformAndVector2_Output(m_xf, m_sweep.localCenter, m_sweep.c);
 	m_sweep.c0.x = m_sweep.c.x;
@@ -514,16 +509,16 @@ private function NotifyTransformChangedManually (angle:Number):void
 }
 
 private static var xf1:b2Transform = new b2Transform ();
-private static var temp:b2Vec2 = new b2Vec2 ();
+private static var tempVv:b2Vec2 = new b2Vec2 ();
 public function SynchronizeFixtures():void
 {
 	//var xf1:b2Transform = new b2Transform ();
 	xf1.R.SetFromAngle (m_sweep.a0);
 	//xf1.position = m_sweep.c0 - b2Mul(xf1.R, m_sweep.localCenter);
 	//var temp:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf1.R, m_sweep.localCenter);
-	b2Math.b2Mul_Matrix22AndVector2_Output (xf1.R, m_sweep.localCenter, temp);
-	xf1.position.x = m_sweep.c0.x - temp.x;
-	xf1.position.y = m_sweep.c0.y - temp.y;
+	b2Math.b2Mul_Matrix22AndVector2_Output (xf1.R, m_sweep.localCenter, tempVv);
+	xf1.position.x = m_sweep.c0.x - tempVv.x;
+	xf1.position.y = m_sweep.c0.y - tempVv.y;
 
 	var broadPhase:b2BroadPhase = m_world.m_contactManager.m_broadPhase;
 	for (var f:b2Fixture = m_fixtureList; f != null; f = f.m_next)

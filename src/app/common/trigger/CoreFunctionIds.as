@@ -14,335 +14,330 @@ package common.trigger {
       
    // the id < 8196 will be reserved for officeial core apis
       
-      public static const ID_ForDebug:int                    = 0; // 
+      public static const ID_ForDebug:int                    = IdPool.CoreApiId_0; // 
       
    // some specail
       
-      public static const ID_Void:int                        = 10; // 
-      public static const ID_Bool:int                        = 11; // 
+      public static const ID_Void:int                        = IdPool.CoreApiId_10; // 
+      public static const ID_Bool:int                        = IdPool.CoreApiId_11; // 
       
    // global
       
-      public static const ID_Return:int                       = 20; //
-      public static const ID_ReturnIfTrue:int                 = 21; //
-      public static const ID_ReturnIfFalse:int                = 22; //
+      public static const ID_Return:int                       = IdPool.CoreApiId_20; //
+      public static const ID_ReturnIfTrue:int                 = IdPool.CoreApiId_21; //
+      public static const ID_ReturnIfFalse:int                = IdPool.CoreApiId_22; //
       
    // system
       
-      public static const ID_GetProgramMilliseconds:int           = 70; //
-      public static const ID_GetCurrentDateTime:int               = 71; //
-      public static const ID_IsKeyHold:int                        = 72; //
+      public static const ID_GetProgramMilliseconds:int           = IdPool.CoreApiId_70; //
+      public static const ID_GetCurrentDateTime:int               = IdPool.CoreApiId_71; //
+      public static const ID_IsKeyHold:int                        = IdPool.CoreApiId_72; //
       
    // string
       
-      public static const ID_String_Assign:int                    = 120; // 
-      public static const ID_String_Add:int                       = 121; // to exchange with 122
-      public static const ID_String_ConditionAssign:int           = 122; //
+      public static const ID_String_Assign:int                    = IdPool.CoreApiId_120; // 
+      public static const ID_String_Add:int                       = IdPool.CoreApiId_121; // to exchange with 122
+      public static const ID_String_ConditionAssign:int           = IdPool.CoreApiId_122; //
       
-      public static const ID_String_NumberToString:int            = 150; // 
-      public static const ID_String_BooleanToString:int           = 151; // 
-      public static const ID_String_EntityToString:int            = 152; // 
-      public static const ID_String_CollisionCategoryToString:int = 153; // 
+      public static const ID_String_NumberToString:int            = IdPool.CoreApiId_150; // 
+      public static const ID_String_BooleanToString:int           = IdPool.CoreApiId_151; // 
+      public static const ID_String_EntityToString:int            = IdPool.CoreApiId_152; // 
+      public static const ID_String_CollisionCategoryToString:int = IdPool.CoreApiId_153; // 
       
    // bool
       
-      public static const ID_Bool_Assign :int                    = 170; // 
-      public static const ID_Bool_Invert :int                    = 171; // 
-      public static const ID_Bool_IsTrue :int                    = 172; // 
-      public static const ID_Bool_IsFalse:int                    = 173; // 
-      public static const ID_Bool_ConditionAssign:int            = 174; // // to put after ID_Bool_Assign
+      public static const ID_Bool_Assign :int                    = IdPool.CoreApiId_170; // 
+      public static const ID_Bool_Invert :int                    = IdPool.CoreApiId_171; // 
+      public static const ID_Bool_IsTrue :int                    = IdPool.CoreApiId_172; // 
+      public static const ID_Bool_IsFalse:int                    = IdPool.CoreApiId_173; // 
+      public static const ID_Bool_ConditionAssign:int            = IdPool.CoreApiId_174; // // to put after ID_Bool_Assign
       
-      public static const ID_Bool_EqualsNumber:int               = 180; // 
-      public static const ID_Bool_EqualsBoolean:int              = 181; // 
-      public static const ID_Bool_EqualsEntity:int               = 182; // 
-      public static const ID_Bool_EqualsString:int               = 183; // 
-      public static const ID_Bool_EqualsCCat:int                 = 184; // 
+      public static const ID_Bool_EqualsNumber:int               = IdPool.CoreApiId_180; // 
+      public static const ID_Bool_EqualsBoolean:int              = IdPool.CoreApiId_181; // 
+      public static const ID_Bool_EqualsEntity:int               = IdPool.CoreApiId_182; // 
+      public static const ID_Bool_EqualsString:int               = IdPool.CoreApiId_183; // 
+      public static const ID_Bool_EqualsCCat:int                 = IdPool.CoreApiId_184; // 
       
-      public static const ID_Bool_Larger:int                     = 210; // 
-      public static const ID_Bool_Less:int                       = 211; // 
+      public static const ID_Bool_Larger:int                     = IdPool.CoreApiId_210; // 
+      public static const ID_Bool_Less:int                       = IdPool.CoreApiId_211; // 
       
-      public static const ID_Bool_And:int                        = 230; // 
-      public static const ID_Bool_Or:int                         = 231; // 
-      public static const ID_Bool_Not:int                        = 232; // 
-      public static const ID_Bool_Xor:int                        = 233; // 
+      public static const ID_Bool_And:int                        = IdPool.CoreApiId_230; // 
+      public static const ID_Bool_Or:int                         = IdPool.CoreApiId_231; // 
+      public static const ID_Bool_Not:int                        = IdPool.CoreApiId_232; // 
+      public static const ID_Bool_Xor:int                        = IdPool.CoreApiId_233; // 
       
    // math basic op 
       
-      public static const ID_Math_Assign:int                      = 300; // 
-      public static const ID_Math_Negative:int                    = 301; // 
-      public static const ID_Math_ConditionAssign:int             = 302; //
+      public static const ID_Math_Assign:int                      = IdPool.CoreApiId_300; // 
+      public static const ID_Math_Negative:int                    = IdPool.CoreApiId_301; // 
+      public static const ID_Math_ConditionAssign:int             = IdPool.CoreApiId_302; //
       
       
-      public static const ID_Math_Add:int                         = 306; // 
-      public static const ID_Math_Subtract:int                    = 307; // 
-      public static const ID_Math_Multiply:int                    = 308; // 
-      public static const ID_Math_Divide:int                      = 309; // 
-      public static const ID_Math_Modulo:int                      = 310; // 
+      public static const ID_Math_Add:int                         = IdPool.CoreApiId_306; // 
+      public static const ID_Math_Subtract:int                    = IdPool.CoreApiId_307; // 
+      public static const ID_Math_Multiply:int                    = IdPool.CoreApiId_308; // 
+      public static const ID_Math_Divide:int                      = IdPool.CoreApiId_309; // 
+      public static const ID_Math_Modulo:int                      = IdPool.CoreApiId_310; // 
       
    // math / bitwise 
       
-      public static const ID_Bitwise_ShiftLeft :int               = 315; // 
-      public static const ID_Bitwise_ShiftRight :int              = 316; // 
-      public static const ID_Bitwise_ShiftRightUnsigned :int      = 317; // 
-      public static const ID_Bitwise_And :int                     = 318; // 
-      public static const ID_Bitwise_Or :int                      = 319; // 
-      public static const ID_Bitwise_Not :int                     = 320; // 
-      public static const ID_Bitwise_Xor :int                     = 321; // 
+      public static const ID_Bitwise_ShiftLeft :int               = IdPool.CoreApiId_315; // 
+      public static const ID_Bitwise_ShiftRight :int              = IdPool.CoreApiId_316; // 
+      public static const ID_Bitwise_ShiftRightUnsigned :int      = IdPool.CoreApiId_317; // 
+      public static const ID_Bitwise_And :int                     = IdPool.CoreApiId_318; // 
+      public static const ID_Bitwise_Or :int                      = IdPool.CoreApiId_319; // 
+      public static const ID_Bitwise_Not :int                     = IdPool.CoreApiId_320; // 
+      public static const ID_Bitwise_Xor :int                     = IdPool.CoreApiId_321; // 
       
   // math / trigonometry
       
-      public static const ID_Math_SinRadians:int                  = 350; // 
-      public static const ID_Math_CosRadians:int                  = 351; // 
-      public static const ID_Math_TanRadians:int                  = 352; // 
-      public static const ID_Math_ArcSinRadians:int               = 353; // 
-      public static const ID_Math_ArcCosRadians:int               = 354; // 
-      public static const ID_Math_ArcTanRadians:int               = 355; // 
-      public static const ID_Math_ArcTan2Radians:int              = 356; // 
+      public static const ID_Math_SinRadians:int                  = IdPool.CoreApiId_350; // 
+      public static const ID_Math_CosRadians:int                  = IdPool.CoreApiId_351; // 
+      public static const ID_Math_TanRadians:int                  = IdPool.CoreApiId_352; // 
+      public static const ID_Math_ArcSinRadians:int               = IdPool.CoreApiId_353; // 
+      public static const ID_Math_ArcCosRadians:int               = IdPool.CoreApiId_354; // 
+      public static const ID_Math_ArcTanRadians:int               = IdPool.CoreApiId_355; // 
+      public static const ID_Math_ArcTan2Radians:int              = IdPool.CoreApiId_356; // 
       
   // math / random
       
-      public static const ID_Math_Random:int                      = 380; // 
-      public static const ID_Math_RandomRange:int                 = 381; // 
-      public static const ID_Math_RandomIntRange:int              = 382; // 
+      public static const ID_Math_Random:int                      = IdPool.CoreApiId_380; // 
+      public static const ID_Math_RandomRange:int                 = IdPool.CoreApiId_381; // 
+      public static const ID_Math_RandomIntRange:int              = IdPool.CoreApiId_382; // 
       
    // math number convert
       
-      public static const ID_Math_Degrees2Radians:int            = 400; // 
-      public static const ID_Math_Radians2Degrees:int            = 401; // 
-      public static const ID_Math_Number2RGB:int                 = 402; // 
-      public static const ID_Math_RGB2Number:int                 = 403; // 
-      public static const ID_MillisecondsToMinutesSeconds:int    = 404; //
-      //public static const ID_MillisecondsToMinutesSeconds:int    = 405; //
+      public static const ID_Math_Degrees2Radians:int            = IdPool.CoreApiId_400; // 
+      public static const ID_Math_Radians2Degrees:int            = IdPool.CoreApiId_401; // 
+      public static const ID_Math_Number2RGB:int                 = IdPool.CoreApiId_402; // 
+      public static const ID_Math_RGB2Number:int                 = IdPool.CoreApiId_403; // 
+      public static const ID_MillisecondsToMinutesSeconds:int    = IdPool.CoreApiId_404; //
+      //public static const ID_MillisecondsToMinutesSeconds:int    = IdPool.CoreApiId_405; //
       
    // math more ...
       
-      public static const ID_Math_Max:int                         = 500; // 
-      public static const ID_Math_Min:int                         = 501; // 
+      public static const ID_Math_Max:int                         = IdPool.CoreApiId_500; // 
+      public static const ID_Math_Min:int                         = IdPool.CoreApiId_501; // 
       
-      public static const ID_Math_Inverse:int                     = 510; // 
-      public static const ID_Math_Abs:int                         = 511; // 
-      public static const ID_Math_Sqrt:int                        = 512; // 
-      public static const ID_Math_Ceil:int                        = 513; // 
-      public static const ID_Math_Floor:int                       = 514; // 
-      public static const ID_Math_Round:int                       = 515; // 
-      public static const ID_Math_Log:int                         = 516; // 
-      public static const ID_Math_Exp:int                         = 517; // 
-      public static const ID_Math_Power:int                       = 518; // 
-      public static const ID_Math_Clamp:int                       = 519; // 
+      public static const ID_Math_Inverse:int                     = IdPool.CoreApiId_510; // 
+      public static const ID_Math_Abs:int                         = IdPool.CoreApiId_511; // 
+      public static const ID_Math_Sqrt:int                        = IdPool.CoreApiId_512; // 
+      public static const ID_Math_Ceil:int                        = IdPool.CoreApiId_513; // 
+      public static const ID_Math_Floor:int                       = IdPool.CoreApiId_514; // 
+      public static const ID_Math_Round:int                       = IdPool.CoreApiId_515; // 
+      public static const ID_Math_Log:int                         = IdPool.CoreApiId_516; // 
+      public static const ID_Math_Exp:int                         = IdPool.CoreApiId_517; // 
+      public static const ID_Math_Power:int                       = IdPool.CoreApiId_518; // 
+      public static const ID_Math_Clamp:int                       = IdPool.CoreApiId_519; // 
       
-      public static const Id_Math_LinearInterpolation:int                  = 530; //
-      public static const Id_Math_LinearInterpolationColor:int             = 531; //
+      public static const Id_Math_LinearInterpolation:int                  = IdPool.CoreApiId_530; //
+      public static const Id_Math_LinearInterpolationColor:int             = IdPool.CoreApiId_531; //
       
       
    // game / design
       
-      public static const ID_Design_GetLevelMilliseconds:int                    = 600; // design
-      public static const ID_Design_GetLevelSteps:int                           = 601; // design
-      public static const ID_Design_GetMousePosition:int                        = 602; // design
-      public static const ID_Design_IsMouseButtonHold:int                       = 603; // design
+      public static const ID_Design_GetLevelMilliseconds:int                    = IdPool.CoreApiId_600; // design
+      public static const ID_Design_GetLevelSteps:int                           = IdPool.CoreApiId_601; // design
+      public static const ID_Design_GetMousePosition:int                        = IdPool.CoreApiId_602; // design
+      public static const ID_Design_IsMouseButtonHold:int                       = IdPool.CoreApiId_603; // design
       
-      public static const ID_Design_SetLevelStatus:int                           = 609; // design
-      public static const ID_Design_IsLevelSuccessed:int                         = 610; // design
-      public static const ID_Design_IsLevelFailed:int                            = 612; // design
-      public static const ID_Design_IsLevelUnfinished:int                        = 614; // design
+      public static const ID_Design_SetLevelStatus:int                           = IdPool.CoreApiId_609; // design
+      public static const ID_Design_IsLevelSuccessed:int                         = IdPool.CoreApiId_610; // design
+      public static const ID_Design_IsLevelFailed:int                            = IdPool.CoreApiId_612; // design
+      public static const ID_Design_IsLevelUnfinished:int                        = IdPool.CoreApiId_614; // design
       
    // game / world
       
-      //public static const ID_World_GetLevelMilliseconds:int               = 700; // world
+      //public static const ID_World_GetLevelMilliseconds:int               = IdPool.CoreApiId_700; // world
       
-      public static const ID_World_SetGravityAcceleration_Radians:int       = 710; // world
-      public static const ID_World_SetGravityAcceleration_Degrees:int       = 711; // world
-      public static const ID_World_SetGravityAcceleration_Vector:int        = 712; // world
+      public static const ID_World_SetGravityAcceleration_Radians:int       = IdPool.CoreApiId_710; // world
+      public static const ID_World_SetGravityAcceleration_Degrees:int       = IdPool.CoreApiId_711; // world
+      public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712; // world
       
-      public static const ID_World_FollowCameraWithShape:int                         = 720; // world
-      public static const ID_World_FollowCameraCenterXWithShape:int                  = 721; // world
-      public static const ID_World_FollowCameraCenterYWithShape:int                  = 722; // world
-      //public static const ID_World_FollowCameraRotationWithShape:int               = 723; // world
-      public static const ID_World_CameraFadeOutThenFadeIn:int                       = 725; // world
-      //public static const ID_World_CameraFadeOut:int                       = 725; // world
-      //public static const ID_World_CameraFadeIn:int                        = 725; // world
-      //public static const ID_World_CameraCloseThenOpen:int                           = 726; // world
+      public static const ID_World_FollowCameraWithShape:int                         = IdPool.CoreApiId_720; // world
+      public static const ID_World_FollowCameraCenterXWithShape:int                  = IdPool.CoreApiId_721; // world
+      public static const ID_World_FollowCameraCenterYWithShape:int                  = IdPool.CoreApiId_722; // world
+      //public static const ID_World_FollowCameraRotationWithShape:int               = IdPool.CoreApiId_723; // world
+      public static const ID_World_CameraFadeOutThenFadeIn:int                       = IdPool.CoreApiId_725; // world
+      //public static const ID_World_CameraFadeOut:int
+      //public static const ID_World_CameraFadeIn:int
+      //public static const ID_World_CameraCloseThenOpen:int
       
-      public static const ID_World_CallScript:int                               = 750; // world
-      public static const ID_World_ConditionCallScript:int                      = 751; // world
-      public static const ID_World_CallBoolFunction:int                         = 752; // world
-      public static const ID_World_ConditionCallBoolFunction:int                = 753; // world
-      public static const ID_World_CallScriptMultiTimes:int                   = 754; // world      
-      public static const ID_World_CallBoolFunctionMultiTimes:int             = 755; // world      
+      public static const ID_World_CallScript:int                               = IdPool.CoreApiId_750; // world
+      public static const ID_World_ConditionCallScript:int                      = IdPool.CoreApiId_751; // world
+      public static const ID_World_CallBoolFunction:int                         = IdPool.CoreApiId_752; // world
+      public static const ID_World_ConditionCallBoolFunction:int                = IdPool.CoreApiId_753; // world
+      public static const ID_World_CallScriptMultiTimes:int                   = IdPool.CoreApiId_754; // world      
+      public static const ID_World_CallBoolFunctionMultiTimes:int             = IdPool.CoreApiId_755; // world      
       
       // VirtualClickOnEntityCenter (entity)
       
    // game / collision category
       
-      public static const ID_CCat_Assign:int                              = 850; // CCat
-      public static const ID_CCat_SetCollideInternally:int                = 851; // CCat
-      public static const ID_CCat_SetAsFriends:int                        = 852; // CCat
-      public static const ID_CCat_ConditionAssign:int                     = 853; // CCat, to ptu after ID_CCat_Assign
+      public static const ID_CCat_Assign:int                              = IdPool.CoreApiId_850; // CCat
+      public static const ID_CCat_SetCollideInternally:int                = IdPool.CoreApiId_851; // CCat
+      public static const ID_CCat_SetAsFriends:int                        = IdPool.CoreApiId_852; // CCat
+      public static const ID_CCat_ConditionAssign:int                     = IdPool.CoreApiId_853; // CCat, to ptu after ID_CCat_Assign
       
    // game / entity
       
-      public static const ID_Entity_Assign:int                         = 900; // entity.shape
-      public static const ID_Entity_ConditionAssign:int                = 901; // entity.shape
+      public static const ID_Entity_Assign:int                         = IdPool.CoreApiId_900; // entity.shape
+      public static const ID_Entity_ConditionAssign:int                = IdPool.CoreApiId_901; // entity.shape
       
-      public static const ID_Entity_IsTaskSuccessed:int                = 910; // entity.shape
-      public static const ID_Entity_SetTaskSuccessed:int               = 911; // entity.shape
-      public static const ID_Entity_IsTaskFailed:int                   = 912; // entity.shape
-      public static const ID_Entity_SetTaskFailed:int                  = 913; // entity.shape
-      public static const ID_Entity_IsTaskUnfinished:int               = 914; // entity.shape
-      public static const ID_Entity_SetTaskUnfinished:int              = 915; // entity.shape
-      public static const ID_Entity_SetTaskStatus:int                  = 916; // entity.shape
+      public static const ID_Entity_IsTaskSuccessed:int                = IdPool.CoreApiId_910; // entity.shape
+      public static const ID_Entity_SetTaskSuccessed:int               = IdPool.CoreApiId_911; // entity.shape
+      public static const ID_Entity_IsTaskFailed:int                   = IdPool.CoreApiId_912; // entity.shape
+      public static const ID_Entity_SetTaskFailed:int                  = IdPool.CoreApiId_913; // entity.shape
+      public static const ID_Entity_IsTaskUnfinished:int               = IdPool.CoreApiId_914; // entity.shape
+      public static const ID_Entity_SetTaskUnfinished:int              = IdPool.CoreApiId_915; // entity.shape
+      public static const ID_Entity_SetTaskStatus:int                  = IdPool.CoreApiId_916; // entity.shape
       
-      //public static const ID_Entity_IsShapeEntity:int                  = 920; // entity.shape
-      //public static const ID_Entity_IsJointEntity:int                  = 951; // entity.shape
+      //public static const ID_Entity_IsShapeEntity:int
+      //public static const ID_Entity_IsJointEntity:int
       
       
-      public static const ID_Entity_IsVisible:int                      = 980; // entity 
-      public static const ID_Entity_SetVisible:int                     = 981; // entity 
-      public static const ID_Entity_GetAlpha:int                       = 982; // entity 
-      public static const ID_Entity_SetAlpha:int                       = 983; // entity 
-      public static const ID_Entity_IsEnabled:int                      = 984; // entity 
-      public static const ID_Entity_SetEnabled:int                     = 985; // entity 
+      public static const ID_Entity_IsVisible:int                      = IdPool.CoreApiId_980; // entity 
+      public static const ID_Entity_SetVisible:int                     = IdPool.CoreApiId_981; // entity 
+      public static const ID_Entity_GetAlpha:int                       = IdPool.CoreApiId_982; // entity 
+      public static const ID_Entity_SetAlpha:int                       = IdPool.CoreApiId_983; // entity 
+      public static const ID_Entity_IsEnabled:int                      = IdPool.CoreApiId_984; // entity 
+      public static const ID_Entity_SetEnabled:int                     = IdPool.CoreApiId_985; // entity 
       
-      public static const ID_Entity_GetPosition:int                    = 1001; // entity 
-      //public static const ID_Entity_SetPosition:int                    = 1002; // entity 
-      //public static const ID_Entity_GetLocalPosition:int               = 1003; // entity 
-      //public static const ID_Entity_SetLocalPosition:int             = 1004; // entity 
-      public static const ID_Entity_GetRotationByRadians:int           = 1005; // entity 
-      //public static const ID_Entity_SetRotationByRadians:int         = 1006; // entity 
-      public static const ID_Entity_GetRotationByDegrees:int           = 1007; // entity 
-      //public static const ID_Entity_SetRotationByDegrees:int         = 1008; // entity 
-      public static const ID_Entity_WorldPoint2LocalPoint:int          = 1010; // entity 
-      public static const ID_Entity_LocalPoint2WorldPoint:int          = 1011; // entity 
+      public static const ID_Entity_GetPosition:int                    = IdPool.CoreApiId_1001; // entity 
+      //public static const ID_Entity_SetPosition:int                    = IdPool.CoreApiId_1002; // entity 
+      //public static const ID_Entity_GetLocalPosition:int               = IdPool.CoreApiId_1003; // entity 
+      //public static const ID_Entity_SetLocalPosition:int             = IdPool.CoreApiId_1004; // entity 
+      public static const ID_Entity_GetRotationByRadians:int           = IdPool.CoreApiId_1005; // entity 
+      //public static const ID_Entity_SetRotationByRadians:int         = IdPool.CoreApiId_1006; // entity 
+      public static const ID_Entity_GetRotationByDegrees:int           = IdPool.CoreApiId_1007; // entity 
+      //public static const ID_Entity_SetRotationByDegrees:int         = IdPool.CoreApiId_1008; // entity 
+      public static const ID_Entity_WorldPoint2LocalPoint:int          = IdPool.CoreApiId_1010; // entity 
+      public static const ID_Entity_LocalPoint2WorldPoint:int          = IdPool.CoreApiId_1011; // entity 
       
-      public static const ID_Entity_IsDestroyed:int                    = 1049; // entity 
-      public static const ID_Entity_Destroy:int                        = 1050; // entity 
+      public static const ID_Entity_IsDestroyed:int                    = IdPool.CoreApiId_1049; // entity 
+      public static const ID_Entity_Destroy:int                        = IdPool.CoreApiId_1050; // entity 
       
-      public static const ID_Entity_Overlapped:int                     = 1060; // entity 
+      public static const ID_Entity_Overlapped:int                     = IdPool.CoreApiId_1060; // entity 
       
    // game / entity / shape
       
-      public static const ID_EntityShape_GetCIType:int            = 1100; // entity.shape
-      public static const ID_EntityShape_SetCIType:int            = 1101; // entity.shape
+      public static const ID_EntityShape_GetCIType:int            = IdPool.CoreApiId_1100; // entity.shape
+      public static const ID_EntityShape_SetCIType:int            = IdPool.CoreApiId_1101; // entity.shape
       
-      public static const ID_EntityShape_GetFilledColor:int            = 1110; // entity.shape
-      public static const ID_EntityShape_SetFilledColor:int            = 1111; // entity.shape
-      public static const ID_EntityShape_GetFilledColorRGB:int         = 1112; // entity.shape
-      public static const ID_EntityShape_SetFilledColorRGB:int         = 1113; // entity.shape
-      //public static const ID_EntityShape_GetFilledOpacity:int          = 1114; // entity.shape
-      //public static const ID_EntityShape_SetFilledOpacity:int          = 1115; // entity.shape
-      //public static const ID_EntityShape_IsShowBorder:int              = 1116; // entity.shape
-      //public static const ID_EntityShape_SetShowBorder:int             = 1117; // entity.shape
-      //public static const ID_EntityShape_GetBorderThickness:int        = 1118; // entity.shape
-      //public static const ID_EntityShape_SetBorderThickness:int        = 1119; // entity.shape
-      //public static const ID_EntityShape_GetBorderColor:int            = 1120; // entity.shape
-      //public static const ID_EntityShape_SetBorderColor:int            = 1121; // entity.shape
-      //public static const ID_EntityShape_GetBorderColorRGB:int         = 1122; // entity.shape
-      //public static const ID_EntityShape_SetBorderColorRGB:int         = 1123; // entity.shape
-      //public static const ID_EntityShape_GetBorderOpacity:int          = 1124; // entity.shape
-      //public static const ID_EntityShape_SetBorderOpacity:int          = 1125; // entity.shape
-      
-      
-      
-      public static const ID_EntityShape_IsPhysicsEnabled:int          = 1150; // entity.shape physics
-      //public static const ID_EntityShape_SetPhysicsEnabled:int       = 1151; // entity.shape physics
-      public static const ID_EntityShape_GetCollisionCategory:int      = 1152; // entity.shape physics
-      public static const ID_EntityShape_SetCollisionCategory:int      = 1153; // entity.shape physics
-      //public static const ID_EntityShape_SetPhysicsEnabled:int       = 1154; // entity.shape physics
-      public static const ID_EntityShape_IsStatic:int                  = 1155; // entity.shape physics
-      public static const ID_EntityShape_SetStatic:int                 = 1156; // entity.shape physics
-      public static const ID_EntityShape_IsSensor:int                  = 1157; // entity.shape physics
-      public static const ID_EntityShape_SetAsSensor:int               = 1158; // entity.shape physics
-      //public static const ID_EntityShape_IsBullet:int                  = 1159; // entity.shape physics
-      //public static const ID_EntityShape_SetAsBullet:int               = 1160; // entity.shape physics
-      public static const ID_EntityShape_IsSleeping:int                  = 1161; // entity.shape physics
-      public static const ID_EntityShape_SetSleeping:int                 = 1162; // entity.shape physics
-      
-      //public static const ID_EntityShape_GetLocalCentroid:int          = 1070; // entity.shape physics
-      //public static const ID_EntityShape_GetWorldCentroid:int          = 1071; // entity.shape physics
-      //public static const ID_EntityShape_AutoSetMassInertia:int        = 1072; // entity.shape physics
-      //public static const ID_EntityShape_GetMass:int                   = 1073; // entity.shape physics
-      //public static const ID_EntityShape_SetMass:int                   = 1074; // entity.shape physics
-      //public static const ID_EntityShape_GetInertia:int                = 1075; // entity.shape physics
-      //public static const ID_EntityShape_SetInertia:int                = 1076; // entity.shape physics
-      //public static const ID_EntityShape_GetDensity:int                = 1077; // entity.shape physics
-      //public static const ID_EntityShape_SetDensity:int                = 1078; // entity.shape physics
-      //public static const ID_EntityShape_GetFriction:int               = 1079; // entity.shape physics
-      //public static const ID_EntityShape_SetFriction:int               = 1080; // entity.shape physics
-      //public static const ID_EntityShape_GetRestitution:int            = 1081; // entity.shape physics
-      //public static const ID_EntityShape_SetRestitution:int            = 1082; // entity.shape physics
-      
-      //public static const ID_EntityShape_GetLinearVelocity:int                          = 1100; // entity.shape physics
-      //public static const ID_EntityShape_SetLinearVelocity:int                          = 1101; // entity.shape physics
-      //public static const ID_EntityShape_GetAngularVelocity:int                         = 1102; // entity.shape physics
-      //public static const ID_EntityShape_SetAngularVelocity:int                         = 1103; // entity.shape physics
-      
-      public static const ID_EntityShape_ApplyStepForce:int                                   = 1104; // entity.shape physics
-      public static const ID_EntityShape_ApplyStepForceAtLocalPoint:int                       = 1105; // entity.shape physics
-      public static const ID_EntityShape_ApplyStepForceAtWorldPoint:int                       = 1106; // entity.shape physics
-      public static const ID_EntityShape_ApplyStepTorque:int                                  = 1107; // entity.shape physics
-      
-      //public static const ID_EntityShape_ApplyStepForce:int                             = 1104; // entity.shape physics
-      //public static const ID_EntityShape_ApplyStepForceAtPoint:int                      = 1105; // entity.shape physics
-      //public static const ID_EntityShape_ApplyStepForceAtLocalPoint:int                 = 1106; // entity.shape physics
-      //public static const ID_EntityShape_ApplyStepLocalForce:int                        = 1107; // entity.shape physics
-      //public static const ID_EntityShape_ApplyStepLocalForceAtPoint:int                 = 1108; // entity.shape physics
-      //public static const ID_EntityShape_ApplyStepLocalForceAtLocalPoint:int            = 1109; // entity.shape physics
-      
-      //public static const ID_EntityShape_ApplyPermanentForce:int                        = 1110; // entity.shape physics
-      //public static const ID_EntityShape_ApplyPermanentForceAtPoint:int                 = 1111; // entity.shape physics
-      //public static const ID_EntityShape_ApplyPermanentForceAtLocalPoint:int            = 1112; // entity.shape physics
-      //public static const ID_EntityShape_ApplyPermanentLocalForce:int                   = 1113; // entity.shape physics
-      //public static const ID_EntityShape_ApplyPermanentLocalForceAtPoint:int            = 1114; // entity.shape physics
-      //public static const ID_EntityShape_ApplyPermanentLocalForceAtLocalPoint:int       = 1115; // entity.shape physics
-      
-      //public static const ID_EntityShape_ApplyPermanentTorque:int                       = 1117; // entity.shape physics
-      //impulse and angular impulse
+      public static const ID_EntityShape_GetFilledColor:int            = IdPool.CoreApiId_1110; // entity.shape
+      public static const ID_EntityShape_SetFilledColor:int            = IdPool.CoreApiId_1111; // entity.shape
+      public static const ID_EntityShape_GetFilledColorRGB:int         = IdPool.CoreApiId_1112; // entity.shape
+      public static const ID_EntityShape_SetFilledColorRGB:int         = IdPool.CoreApiId_1113; // entity.shape
+      //public static const ID_EntityShape_GetFilledOpacity:int          = IdPool.CoreApiId_1114; // entity.shape
+      //public static const ID_EntityShape_SetFilledOpacity:int          = IdPool.CoreApiId_1115; // entity.shape
+      //public static const ID_EntityShape_IsShowBorder:int              = IdPool.CoreApiId_1116; // entity.shape
+      //public static const ID_EntityShape_SetShowBorder:int             = IdPool.CoreApiId_1117; // entity.shape
+      //public static const ID_EntityShape_GetBorderThickness:int        = IdPool.CoreApiId_1118; // entity.shape
+      //public static const ID_EntityShape_SetBorderThickness:int        = IdPool.CoreApiId_1119; // entity.shape
+      //public static const ID_EntityShape_GetBorderColor:int            = IdPool.CoreApiId_1120; // entity.shape
+      //public static const ID_EntityShape_SetBorderColor:int            = IdPool.CoreApiId_1121; // entity.shape
+      //public static const ID_EntityShape_GetBorderColorRGB:int         = IdPool.CoreApiId_1122; // entity.shape
+      //public static const ID_EntityShape_SetBorderColorRGB:int         = IdPool.CoreApiId_1123; // entity.shape
+      //public static const ID_EntityShape_GetBorderOpacity:int          = IdPool.CoreApiId_1124; // entity.shape
+      //public static const ID_EntityShape_SetBorderOpacity:int          = IdPool.CoreApiId_1125; // entity.shape
       
       
       
-      public static const ID_EntityShape_Teleport:int                         = 1252;
-      public static const ID_EntityShape_TeleportOffsets:int                  = 1253;
-      //public static const ID_EntityShape_Clone:int                          = 1255;
+      public static const ID_EntityShape_IsPhysicsEnabled:int          = IdPool.CoreApiId_1150; // entity.shape physics
+      //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1151; // entity.shape physics
+      public static const ID_EntityShape_GetCollisionCategory:int      = IdPool.CoreApiId_1152; // entity.shape physics
+      public static const ID_EntityShape_SetCollisionCategory:int      = IdPool.CoreApiId_1153; // entity.shape physics
+      //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1154; // entity.shape physics
+      public static const ID_EntityShape_IsStatic:int                  = IdPool.CoreApiId_1155; // entity.shape physics
+      public static const ID_EntityShape_SetStatic:int                 = IdPool.CoreApiId_1156; // entity.shape physics
+      public static const ID_EntityShape_IsSensor:int                  = IdPool.CoreApiId_1157; // entity.shape physics
+      public static const ID_EntityShape_SetAsSensor:int               = IdPool.CoreApiId_1158; // entity.shape physics
+      //public static const ID_EntityShape_IsBullet:int                  = IdPool.CoreApiId_1159; // entity.shape physics
+      //public static const ID_EntityShape_SetAsBullet:int               = IdPool.CoreApiId_1160; // entity.shape physics
+      public static const ID_EntityShape_IsSleeping:int                  = IdPool.CoreApiId_1161; // entity.shape physics
+      public static const ID_EntityShape_SetSleeping:int                 = IdPool.CoreApiId_1162; // entity.shape physics
       
-      public static const ID_EntityShape_Detach:int                         = 1260;
-      public static const ID_EntityShape_AttachWith:int                     = 1261;
-      public static const ID_EntityShape_DetachThenAttachWith:int           = 1262;
-      public static const ID_EntityShape_BreakupBrothers:int                = 1263;
+      //public static const ID_EntityShape_GetLocalCentroid:int          = IdPool.CoreApiId_1070; // entity.shape physics
+      //public static const ID_EntityShape_GetWorldCentroid:int          = IdPool.CoreApiId_1071; // entity.shape physics
+      //public static const ID_EntityShape_AutoSetMassInertia:int        = IdPool.CoreApiId_1072; // entity.shape physics
       
-      public static const ID_EntityShape_BreakAllJoints:int                 = 1280;
+      public static const ID_EntityShape_GetMass:int                     = IdPool.CoreApiId_1130; // entity.shape physics
+      //public static const ID_EntityShape_SetMass:int                     = IdPool.CoreApiId_1131; // entity.shape physics
+      public static const ID_EntityShape_GetInertia:int                  = IdPool.CoreApiId_1132; // entity.shape physics
+      //public static const ID_EntityShape_SetInertia:int                  = IdPool.CoreApiId_1133; // entity.shape physics
+      //public static const ID_EntityShape_GetDensity:int                  = IdPool.CoreApiId_1134; // entity.shape physics
+      //public static const ID_EntityShape_SetDensity:int                  = IdPool.CoreApiId_1135; // entity.shape physics
+      //public static const ID_EntityShape_GetFriction:int                 = IdPool.CoreApiId_1136; // entity.shape physics
+      //public static const ID_EntityShape_SetFriction:int                 = IdPool.CoreApiId_1137; // entity.shape physics
+      //public static const ID_EntityShape_GetRestitution:int              = IdPool.CoreApiId_1138; // entity.shape physics
+      //public static const ID_EntityShape_SetRestitution:int              = IdPool.CoreApiId_1139; // entity.shape physics
+      
+      public static const ID_EntityShape_SetLinearVelocity:int                          = IdPool.CoreApiId_1095; // entity.shape physics
+      public static const ID_EntityShape_GetLinearVelocity:int                          = IdPool.CoreApiId_1096; // entity.shape physics
+      public static const ID_EntityShape_ApplyLinearImpulseByVelocityVector:int         = IdPool.CoreApiId_1097; // entity.shape physics
+      //public static const ID_EntityShape_SetLinearVelocityByRadians:int
+      //public static const ID_EntityShape_SetLinearVelocityByDegrees:int
+      //public static const ID_EntityShape_GetAngularVelocityByRadians:int
+      //public static const ID_EntityShape_SetAngularVelocityByRadians:int
+      //public static const ID_EntityShape_GetAngularVelocityByDegrees:int
+      //public static const ID_EntityShape_SetAngularVelocityByDegrees:int
+      
+      public static const ID_EntityShape_ApplyStepForce:int                                   = IdPool.CoreApiId_1104; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepForceAtLocalPoint:int                       = IdPool.CoreApiId_1105; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepForceAtWorldPoint:int                       = IdPool.CoreApiId_1106; // entity.shape physics
+      public static const ID_EntityShape_ApplyStepTorque:int                                  = IdPool.CoreApiId_1107; // entity.shape physics
+      
+      public static const ID_EntityShape_ApplyLinearImpulse:int                               = IdPool.CoreApiId_1102; // entity.shape physics
+      public static const ID_EntityShape_ApplyLinearImpulseAtLocalPoint:int                   = IdPool.CoreApiId_1103; // entity.shape physics
+      public static const ID_EntityShape_ApplyLinearImpulseAtWorldPoint:int                   = IdPool.CoreApiId_1108; // entity.shape physics
+      public static const ID_EntityShape_ApplyAngularImpulse:int                              = IdPool.CoreApiId_1109; // entity.shape physics
+      
+      public static const ID_EntityShape_Teleport:int                         = IdPool.CoreApiId_1252;
+      public static const ID_EntityShape_TeleportOffsets:int                  = IdPool.CoreApiId_1253;
+      //public static const ID_EntityShape_Clone:int;
+      
+      public static const ID_EntityShape_Detach:int                         = IdPool.CoreApiId_1260;
+      public static const ID_EntityShape_AttachWith:int                     = IdPool.CoreApiId_1261;
+      public static const ID_EntityShape_DetachThenAttachWith:int           = IdPool.CoreApiId_1262;
+      public static const ID_EntityShape_BreakupBrothers:int                = IdPool.CoreApiId_1263;
+      
+      public static const ID_EntityShape_BreakAllJoints:int                 = IdPool.CoreApiId_1280;
       
    // game / shape / is a 
       
-      public static const ID_Entity_IsCircleShapeEntity:int            = 1400; // entity.shape
-      public static const ID_Entity_IsRectangleShapeEntity:int         = 1401; // entity.shape
-      public static const ID_Entity_IsPolygonShapeEntity:int           = 1402; // entity.shape
-      public static const ID_Entity_IsPolylineShapeEntity:int          = 1403; // entity.shape
-      public static const ID_Entity_IsBombShapeEntitiy:int             = 1404; // entity.shape
-      public static const ID_Entity_IsWorldBorderShapeEntitiy:int      = 1405; // entity.shape
+      public static const ID_Entity_IsCircleShapeEntity:int            = IdPool.CoreApiId_1400; // entity.shape
+      public static const ID_Entity_IsRectangleShapeEntity:int         = IdPool.CoreApiId_1401; // entity.shape
+      public static const ID_Entity_IsPolygonShapeEntity:int           = IdPool.CoreApiId_1402; // entity.shape
+      public static const ID_Entity_IsPolylineShapeEntity:int          = IdPool.CoreApiId_1403; // entity.shape
+      public static const ID_Entity_IsBombShapeEntitiy:int             = IdPool.CoreApiId_1404; // entity.shape
+      public static const ID_Entity_IsWorldBorderShapeEntitiy:int      = IdPool.CoreApiId_1405; // entity.shape
 
       
    // game / entity / shape / text
       
-      public static const ID_EntityText_GetText:int                   = 1550; // entity.text
-      public static const ID_EntityText_SetText:int                   = 1551; // entity.text
-      public static const ID_EntityText_AppendText:int                = 1552; // entity.text
-      public static const ID_EntityText_AppendNewLine:int             = 1553; // entity.text
+      public static const ID_EntityText_GetText:int                   = IdPool.CoreApiId_1550; // entity.text
+      public static const ID_EntityText_SetText:int                   = IdPool.CoreApiId_1551; // entity.text
+      public static const ID_EntityText_AppendText:int                = IdPool.CoreApiId_1552; // entity.text
+      public static const ID_EntityText_AppendNewLine:int             = IdPool.CoreApiId_1553; // entity.text
       
    // game / entity / joint
       
       // from 2000
       
-      public static const ID_EntityJoint_GetHingeLimitsByDegrees:int                   = 2000; // joint.hinge
-      //public static const ID_EntityJoint_GetHingeLimitsByRadians:int                   = 2001; // joint.hinge
-      public static const ID_EntityJoint_SetHingeLimitsByDegrees:int                       = 2004; // joint.hinge
-      //public static const ID_EntityJoint_SetHingeAngleLimitsByRadians:int                              = 2005; // joint.hinge
-      public static const ID_EntityJoint_GetHingeMotorSpeed:int                      = 2006; // joint.slider
-      public static const ID_EntityJoint_SetHingeMotorSpeed:int                      = 2007; // joint.slider
+      public static const ID_EntityJoint_SetJointMotorEnabled:int                   = IdPool.CoreApiId_1990; // joint.slider
+      public static const ID_EntityJoint_SetJointLimitsEnabled:int                  = IdPool.CoreApiId_1991; // joint.slider
       
-      public static const ID_EntityJoint_GetSliderLimits:int                      = 2030; // joint.slider
-      public static const ID_EntityJoint_GetSliderMotorSpeed:int                  = 2031; // joint.slider
-      public static const ID_EntityJoint_SetSliderLimits:int                      = 2032; // joint.slider
-      public static const ID_EntityJoint_SetSliderMotorSpeed:int                  = 2033; // joint.slider
+      public static const ID_EntityJoint_GetHingeLimitsByDegrees:int                 = IdPool.CoreApiId_2000; // joint.hinge
+      //public static const ID_EntityJoint_GetHingeLimitsByRadians:int                 = IdPool.CoreApiId_2001; // joint.hinge
+      public static const ID_EntityJoint_SetHingeLimitsByDegrees:int                 = IdPool.CoreApiId_2004; // joint.hinge
+      //public static const ID_EntityJoint_SetHingeAngleLimitsByRadians:int            = IdPool.CoreApiId_2005; // joint.hinge
+      public static const ID_EntityJoint_GetHingeMotorSpeed:int                      = IdPool.CoreApiId_2006; // joint.slider
+      public static const ID_EntityJoint_SetHingeMotorSpeed:int                      = IdPool.CoreApiId_2007; // joint.slider
+      
+      public static const ID_EntityJoint_GetSliderLimits:int                      = IdPool.CoreApiId_2030; // joint.slider
+      public static const ID_EntityJoint_GetSliderMotorSpeed:int                  = IdPool.CoreApiId_2031; // joint.slider
+      public static const ID_EntityJoint_SetSliderLimits:int                      = IdPool.CoreApiId_2032; // joint.slider
+      public static const ID_EntityJoint_SetSliderMotorSpeed:int                  = IdPool.CoreApiId_2033; // joint.slider
       
    // game / entity / field
       
@@ -350,15 +345,12 @@ package common.trigger {
       
    // game / entity / event handler
       
-      //public static const ID_EntityTrigger_GetTimerTicks:int                       = 2500; // trigger.timer
-      public static const ID_EntityTrigger_ResetTimer:int                          = 2501; // trigger.timer
-      //public static const ID_EntityTrigger_IsTimerPaused:int                       = 2502; // trigger.timer
-      public static const ID_EntityTrigger_SetTimerPaused:int                      = 2503; // trigger.timer
-      //public static const ID_EntityTrigger_GetTimerInterval:int                    = 2504; // trigger.timer
-      //public static const ID_EntityTrigger_SetTimerInterval:int                    = 2505; // trigger.timer
+      //public static const ID_EntityTrigger_GetTimerTicks:int                       = IdPool.CoreApiId_2500; // trigger.timer
+      public static const ID_EntityTrigger_ResetTimer:int                          = IdPool.CoreApiId_2501; // trigger.timer
+      //public static const ID_EntityTrigger_IsTimerPaused:int                       = IdPool.CoreApiId_2502; // trigger.timer
+      public static const ID_EntityTrigger_SetTimerPaused:int                      = IdPool.CoreApiId_2503; // trigger.timer
+      //public static const ID_EntityTrigger_GetTimerInterval:int                    = IdPool.CoreApiId_2504; // trigger.timer
+      //public static const ID_EntityTrigger_SetTimerInterval:int                    = IdPool.CoreApiId_2505; // trigger.timer
       
-   //=============================================================
-      
-      public static const NumPlayerFunctions:int = 4096;
    }
 }

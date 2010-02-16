@@ -406,12 +406,18 @@ package common
 
       public function D2P_Torque (dt:Number):Number
       {
-         return dt * mLengthScale_Display2Physics_4;
+         if (mIsRightHand)
+            return - dt * mLengthScale_Display2Physics_4;
+         else
+            return dt * mLengthScale_Display2Physics_4;
       }
 
       public function P2D_Torque (pt:Number):Number
       {
-         return pt * mLengthScale_Physics2Display_4;
+         if (mIsRightHand)
+            return - pt * mLengthScale_Physics2Display_4;
+         else
+            return pt * mLengthScale_Physics2Display_4;
       }
       
 // momentum
@@ -455,17 +461,17 @@ package common
       public function D2P_AngularMomentum (dam:Number):Number
       {
          if (mIsRightHand)
-            return - dam;
+            return - dam * mLengthScale_Display2Physics_4;
          else
-            return dam;
+            return dam * mLengthScale_Display2Physics_4;
       }
 
       public function P2D_AngularMomentum (pam:Number):Number
       {
          if (mIsRightHand)
-            return - pam;
+            return - pam * mLengthScale_Physics2Display_4;
          else
-            return pam;
+            return pam * mLengthScale_Physics2Display_4;
       }
 
       public function D2P_ImpulseX (dm:Number):Number
@@ -507,17 +513,17 @@ package common
       public function D2P_AngularImpulse (dam:Number):Number
       {
          if (mIsRightHand)
-            return -dam;
+            return - dam * mLengthScale_Display2Physics_4;
          else
-            return dam;
+            return dam * mLengthScale_Display2Physics_4;
       }
 
       public function P2D_AngularImpulse (pam:Number):Number
       {
          if (mIsRightHand)
-            return - pam;
+            return - pam * mLengthScale_Physics2Display_4;
          else
-            return pam;
+            return pam * mLengthScale_Physics2Display_4;
       }
 
 // ..

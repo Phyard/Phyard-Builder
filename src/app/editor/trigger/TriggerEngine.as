@@ -105,9 +105,14 @@ package editor.trigger {
          return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (func_id);
       }
       
-      public static function GetCoreApiFunctionsMenuBarDataProvider ():XML
+      public static function GetCoreApiFunctionsMenuBarDataProvider_Shorter ():XML
       {
-         return PlayerFunctionDefinesForEditing.sMenuBarDataProvider;
+         return PlayerFunctionDefinesForEditing.sMenuBarDataProvider_Shorter;
+      }
+      
+      public static function GetCoreApiFunctionsMenuBarDataProvider_Longer ():XML
+      {
+         return PlayerFunctionDefinesForEditing.sMenuBarDataProvider_Longer;
       }
       
       public static function GetVoidFunctionDeclaration ():FunctionDeclaration_Core

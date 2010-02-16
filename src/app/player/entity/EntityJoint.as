@@ -16,6 +16,12 @@ package player.entity {
    
    public class EntityJoint extends Entity
    {
+      include "EntityJoint_APIs.as";
+      
+//=============================================================
+//   create
+//=============================================================
+      
       // the two anchors
       protected var mAnchor1:SubEntityJointAnchor = null; // will attach to mShape1
       protected var mAnchor2:SubEntityJointAnchor = null; // will attach to mShape2

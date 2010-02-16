@@ -73,6 +73,7 @@ package player.world {
    import common.CoordinateSystem;
    
    import common.trigger.CoreEventIds;
+   import common.trigger.IdPool;
    import common.trigger.ValueDefine;
    
    import common.Define;

@@ -10,18 +10,19 @@ package editor.trigger {
    import common.trigger.ValueTypeDefine;
    import editor.trigger.Lists;
    
+   import common.trigger.IdPool;
+   
    public class PlayerFunctionDefinesForEditing
    {
       
-      private static var sFunctionDeclarations:Array = new Array (CoreFunctionIds.NumPlayerFunctions);
+      private static var sFunctionDeclarations:Array = new Array (IdPool.NumPlayerFunctions);
       
-      public static const sToppestPackage:FunctionPackage = new FunctionPackage ("");
+      public static const sGlobalPackage:FunctionPackage = new FunctionPackage ("Global");
+      public static const sWorldPackage:FunctionPackage = new FunctionPackage ("World");
+      public static const sEntityPackage:FunctionPackage = new FunctionPackage ("Entity");
       
-      public static const sGlobalPackage:FunctionPackage = new FunctionPackage ("Global", sToppestPackage);
-      public static const sWorldPackage:FunctionPackage = new FunctionPackage ("World", sToppestPackage);
-      public static const sEntityPackage:FunctionPackage = new FunctionPackage ("Entity", sToppestPackage);
-      
-      public static var sMenuBarDataProvider:XML = null;
+      public static var sMenuBarDataProvider_Shorter:XML = null;
+      public static var sMenuBarDataProvider_Longer:XML = null;
       
       public static function Initialize ():void
       {
@@ -51,12 +52,12 @@ package editor.trigger {
          var world_script_package:FunctionPackage    = new FunctionPackage ("Script", sWorldPackage);
          
          var entity_package:FunctionPackage = new FunctionPackage ("Common", sEntityPackage);
-                var entity_as_task_package:FunctionPackage    = new FunctionPackage ("- Task Status", sEntityPackage);
+                var entity_as_task_package:FunctionPackage    = new FunctionPackage ("Task Status", sEntityPackage);
             var entity_shape_package:FunctionPackage = new FunctionPackage ("Shape", sEntityPackage);
                 var shape_is_subtype_package:FunctionPackage    = new FunctionPackage ("Is a *?", entity_shape_package);
                 var shape_appearance_package:FunctionPackage = new FunctionPackage ("Appearance", entity_shape_package);
                 var shape_physics_package:FunctionPackage = new FunctionPackage ("Physics", entity_shape_package);
-               var shape_text_package:FunctionPackage  = new FunctionPackage (" - Text", sEntityPackage);
+               var shape_text_package:FunctionPackage  = new FunctionPackage ("Shape Text", sEntityPackage);
             var entity_joint_package:FunctionPackage  = new FunctionPackage ("Joint", sEntityPackage);
             var entity_trigger_package:FunctionPackage  = new FunctionPackage ("Trigger", sEntityPackage);
          
@@ -66,7 +67,7 @@ package editor.trigger {
          
          if (Compile::Is_Debugging)
          {
-            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, basic_package, "ForDevDebug", "ForDevDebug", 
+            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, basic_package, "ForDevDebug", "@(&0, &1, &2, &3, &4) = ForDevDebug ($0, $1, $2, $3, $4)", null,
                           [
                              new VariableDefinitionEntity ("Shape"), 
                              new VariableDefinitionNumber ("Gravity Angle"), 
@@ -86,11 +87,11 @@ package editor.trigger {
          
       // special
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Void, null, "Action", "Action",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Void, null, "Action", "Action", null,
                      null,
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool, null, "Condition", "Condition",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool, null, "Condition", "Condition", null,
                      null,
                      [
                               new VariableDefinitionBoolean ("Bool Value"), 
@@ -99,17 +100,17 @@ package editor.trigger {
        
       // global
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Return, basic_package, "Return", "Return", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Return, basic_package, "Return", "Return", null,
                      null,
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfTrue, basic_package, "ReturnIfTrue", "ReturnIfTrue", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfTrue, basic_package, "Return If True", "@Return if $0 is true", null,
                      [
                              new VariableDefinitionBoolean ("Bool Value"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfFalse, basic_package, "ReturnIfFalse", "ReturnIfFalse", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_ReturnIfFalse, basic_package, "Return If False", "@Return if $0 is false", null,
                      [
                              new VariableDefinitionBoolean ("Bool Value"), 
                      ],
@@ -118,13 +119,13 @@ package editor.trigger {
          
       // system / time
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_GetProgramMilliseconds, system_package, "GetProgramMilliseconds", "GetProgramMilliseconds", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_GetProgramMilliseconds, system_package, "Get Program Milliseconds", null, null,
                      null,
                      [
                              new VariableDefinitionNumber ("Milliseconds"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_GetCurrentDateTime, system_package, "GetCurrentDateTime", "GetCurrentDateTime", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_GetCurrentDateTime, system_package, "Get Current Date Time", null, null,
                      null,
                      [
                              new VariableDefinitionNumber ("Year"), 
@@ -136,7 +137,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Milliseconds"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_IsKeyHold, system_package, "IsKeyHold", "IsKeyHold", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_IsKeyHold, system_package, "Is Key Hold", "@&0 = Is the key (key code is $0) hold?", null,
                      [
                              new VariableDefinitionNumber ("The Key", null, {mValueLists: Lists.mKeyCodeList}), 
                      ],
@@ -147,7 +148,7 @@ package editor.trigger {
          
       // string
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", "AssignedWith", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", "@&0 = $0", null,
                      [
                              new VariableDefinitionString ("Source String"), 
                      ],
@@ -155,7 +156,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Target String"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "ConditionAssignedWith", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "@&0 = ($0 is true) ? $1 : $2", null,
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                              new VariableDefinitionString ("Source String 1"), 
@@ -165,7 +166,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Target String"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Add, string_package, "String + String", "ConcatenateStrings", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Add, string_package, "String + String", "@&0 = $0 + $1", "@&0 = $0 + $1",
                      [
                              new VariableDefinitionString ("Source String 1"), 
                              new VariableDefinitionString ("Source String 2"), 
@@ -174,7 +175,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Target String"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_NumberToString, string_package, "Number -> String", "Number2String", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_NumberToString, string_package, "Number -> String", "@$0 -> &0", "NumberToString",
                      [
                              new VariableDefinitionNumber ("The Number"), 
                      ],
@@ -182,7 +183,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_BooleanToString, string_package, "Bool -> String", "Bool2String", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_BooleanToString, string_package, "Bool -> String", "@$0 -> &0", "BoolToString",
                      [
                              new VariableDefinitionBoolean ("The Bool"), 
                      ],
@@ -190,7 +191,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_EntityToString, string_package, "Entity -> String", "Entity2String", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_EntityToString, string_package, "Entity -> String", "@$0 -> &0", "EntityToString",
                      [
                              new VariableDefinitionEntity ("The Entity"), 
                      ],
@@ -198,7 +199,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_CollisionCategoryToString, string_package, "CCat -> String", "CCat2String", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_CollisionCategoryToString, string_package, "CCat -> String", "@$0 -> &0", "CCatToString",
                      [
                              new VariableDefinitionCollisionCategory ("The CCat"), 
                      ],
@@ -209,7 +210,7 @@ package editor.trigger {
          
        // bool
           
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Assign, bool_package, "= (Assign Boolean)", "AssignedWith", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Assign, bool_package, "= (Assign Boolean)", "@&0 = $0", "@&0 = $0",
                      [
                              new VariableDefinitionBoolean ("Source Boolean"), 
                      ],
@@ -217,7 +218,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Target Boolean"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign, bool_package, "=? (Condition Assign Boolean)", "ConditionAssignedWith", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign, bool_package, "=? (Condition Assign Boolean)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                              new VariableDefinitionBoolean ("Source Boolean 1"), 
@@ -227,7 +228,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Target Boolean"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Invert, bool_package, "! (Invert)", "Invert", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Invert, bool_package, "! (Invert)", "@&0 = ! $0", "@&0 = ! $0",
                      [
                              new VariableDefinitionBoolean ("Source Boolean"), 
                      ],
@@ -235,7 +236,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Source Boolean"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsTrue, bool_package, "IsTrue?", "IsTrue", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsTrue, bool_package, "IsTrue?", "@&0 = ($0 == true)", null,
                      [
                              new VariableDefinitionBoolean ("Input Bool Value"), 
                      ],
@@ -243,7 +244,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsFalse, bool_package, "IsFalse?", "IsFalse", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsFalse, bool_package, "IsFalse?", "@&0 = ($0 == false)", null,
                      [
                              new VariableDefinitionBoolean ("Input Bool Value"), 
                      ],
@@ -251,7 +252,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsNumber, bool_package, "Number == Number?", "Equals", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsNumber, bool_package, "Number == Number?", "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -260,7 +261,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Boolean == Boolean?",  "Equals", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Boolean == Boolean?",  "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
                      [
                              new VariableDefinitionBoolean ("Bool 1"), 
                              new VariableDefinitionBoolean ("Bool 2"), 
@@ -269,7 +270,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsString, bool_package, "String == String?", "Equals", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsString, bool_package, "String == String?", "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
                      [
                              new VariableDefinitionString ("String 1"), 
                              new VariableDefinitionString ("String 2"), 
@@ -278,7 +279,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsEntity, bool_package, "Entity == Entity?",  "Equals", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsEntity, bool_package, "Entity == Entity?",  "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
                      [
                              new VariableDefinitionEntity ("Entity 1"), 
                              new VariableDefinitionEntity ("Entity 2"), 
@@ -287,7 +288,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsCCat, bool_package, "CCat == CCat?",  "Equals", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsCCat, bool_package, "CCat == CCat?",  "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
                      [
                              new VariableDefinitionCollisionCategory ("CCat 1"), 
                              new VariableDefinitionCollisionCategory ("CCat 2"), 
@@ -296,7 +297,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Larger, bool_package, "Number > Number?", "LargerThan", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Larger, bool_package, "Number > Number?", "@&0 = ($0 > $1)", "@&0 = ($0 > $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -305,7 +306,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Less, bool_package, "Number < Number?", "LessThan", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Less, bool_package, "Number < Number?", "@&0 = ($0 < $1)", "@&0 = ($0 < $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -314,7 +315,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_And, bool_package, "x && y (Bool And)", "And", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_And, bool_package, "x && y (Bool And)", "@&0 = ($0 && $1)", "@&0 = ($0 && $1)",
                      [
                              new VariableDefinitionBoolean ("Bool 1"), 
                              new VariableDefinitionBoolean ("Bool 2"), 
@@ -323,7 +324,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Or, bool_package, "x || y (Bool Or)", "Or", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Or, bool_package, "x || y (Bool Or)", "@&0 = ($0 || $1)", "@&0 = ($0 || $1)",
                      [
                              new VariableDefinitionBoolean ("Boolean 1"), 
                              new VariableDefinitionBoolean ("Boolean 2"), 
@@ -332,7 +333,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Not, bool_package, "! x (Bool Not)", "Not", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Not, bool_package, "! (Bool Not)", "@&0 = (! $0)", "@&0 = (! $0)",
                      [
                              new VariableDefinitionBoolean ("Input Boolean Value"), 
                      ],
@@ -340,7 +341,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Xor, bool_package, "^ (Bool Xor)", "Xor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Xor, bool_package, "!= (Bool Xor)", "@&0 = ($0 != $1)", "@&0 = ($0 != $1)",
                      [
                              new VariableDefinitionBoolean ("Boolean 1"), 
                              new VariableDefinitionBoolean ("Boolean 2"), 
@@ -352,7 +353,7 @@ package editor.trigger {
           
        // math basic ops
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Assign, math_package, "= (Number Assign)", "Assign", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Assign, math_package, "= (Number Assign)", "@&0 = $0", "@&0 = $0",
                      [
                              new VariableDefinitionNumber ("Source"), 
                      ],
@@ -360,7 +361,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ConditionAssign, math_package, "=? (Condition Assign)", "CondtionAssign", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ConditionAssign, math_package, "=? (Condition Assign)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                              new VariableDefinitionNumber ("True Source"), 
@@ -370,7 +371,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Negative, math_package, "- x (Negative)", "Negative", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Negative, math_package, "- x (Negative)", "@&0 = (- $0)", "@&0 = (- $0)",
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -378,7 +379,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Inverse, math_package, "1.0 / x (Inverse)", "Inverse", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Inverse, math_package, "1.0 / x (Inverse)", "@&0 = (1.0 / $0)", "@&0 = (1.0 / $0)",
                      [
                              new VariableDefinitionNumber ("Number", null, {mDefaultValue: 1.0}), 
                      ],
@@ -386,7 +387,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Add, math_package, "x + y", "Add", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Add, math_package, "x + y", "@&0 = $0 + $1", "@&0 = $0 + $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -395,7 +396,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Subtract, math_package, "x - y", "Subtract", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Subtract, math_package, "x - y", "@&0 = $0 - $1", "@&0 = $0 - $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -404,7 +405,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Multiply, math_package, "x * y (Multiply)", "Multiply", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Multiply, math_package, "x * y (Multiply)", "@&0 = $0 * $1", "@&0 = $0 * $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -413,7 +414,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Divide, math_package, "x / y (Divide)", "Divide", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Divide, math_package, "x / y (Divide)", "@&0 = $0 / $1", "@&0 = $0 / $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -422,7 +423,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Modulo, math_package, "x % y (Modulo)", "Modulo", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Modulo, math_package, "x % y (Modulo)", "@&0 = $0 % $1", "@&0 = $0 % $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -434,7 +435,7 @@ package editor.trigger {
          
       // math / bitwise
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft, bitwise_package, "<< (ShiftLeft)", "<<", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft, bitwise_package, "<< (ShiftLeft)", "@&0 = ($0 << $1)", "@&0 = ($0 << $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -443,7 +444,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight, bitwise_package, ">> (ShiftRight)", ">>", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight, bitwise_package, ">> (ShiftRight)", "@&0 = ($0 >> $1)", "@&0 = ($0 >> $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -452,7 +453,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned, bitwise_package, ">>> (ShiftRightUnsignedly)",  ">>>", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned, bitwise_package, ">>> (ShiftRightUnsignedly)", "@&0 = ($0 >>> $1)", "@&0 = ($0 >>> $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -461,7 +462,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_And, bitwise_package, "x & y (Bitwise And)", "BitwiseAnd", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_And, bitwise_package, "x & y (Bitwise And)", "@&0 = ($0 & $1)", "@&0 = ($0 & $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -470,7 +471,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Or, bitwise_package, "x | y (Bitwise Or)", "BitwiseOr", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Or, bitwise_package, "x | y (Bitwise Or)", "@&0 = ($0 | $1)", "@&0 = ($0 | $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -479,7 +480,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Not, bitwise_package, "~ x (Bitwise Not)", "BitwiseMot", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Not, bitwise_package, "~ x (Bitwise Not)", "@&0 = (~ $0)", "@&0 = (~ $0)",
                      [
                              new VariableDefinitionNumber ("Inout Number"), 
                      ],
@@ -487,7 +488,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Xor, bitwise_package, "x ^ y (Bitwise Xor)", "BitwiseXor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Xor, bitwise_package, "x ^ y (Bitwise Xor)", "@&0 = ($0 ^ $1)", "@&0 = ($0 ^ $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -499,7 +500,7 @@ package editor.trigger {
          
       // math / number trinomogetry
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_SinRadians, trigonometry_package, "Sin", "Sin", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_SinRadians, trigonometry_package, "Sin", "@&0 = Sin (Radians ($0))", "@&0 = Sin (Radians ($0))",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -507,7 +508,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Sin (Radians)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_CosRadians, trigonometry_package, "Cos", "Cos", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_CosRadians, trigonometry_package, "Cos", "@&0 = Cos (Radians ($0))", "@&0 = Cos (Radians ($0))",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -515,7 +516,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Cos (Radians)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_TanRadians, trigonometry_package, "Tan", "Tan", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_TanRadians, trigonometry_package, "Tan", "@&0 = Tan (Radians ($0))", "@&0 = Tan (Radians ($0))",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -523,7 +524,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Tan (Radians)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ArcSinRadians, trigonometry_package, "ArcSin_Radians", "ArcSin", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ArcSinRadians, trigonometry_package, "ArcSin_Radians", "@Radians (&0) = ArcSin ($0)", "@Radians (&0) = ArcSin ($0)",
                      [
                              new VariableDefinitionNumber ("Sin (Radians)"), 
                      ],
@@ -531,7 +532,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ArcCosRadians, trigonometry_package, "ArcCos_Radians", "ArcCos", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ArcCosRadians, trigonometry_package, "ArcCos_Radians", "@Radians (&0) = ArcCos ($0)", "@Radians (&0) = ArcCos ($0)",
                      [
                              new VariableDefinitionNumber ("Cos (Radians)"), 
                      ],
@@ -539,7 +540,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ArcTanRadians, trigonometry_package, "ArcTan_Radians", "ArcTan", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ArcTanRadians, trigonometry_package, "ArcTan_Radians", "@Radians (&0) = ArcTan ($0)", "@Radians (&0) = ArcTan ($0)",
                      [
                              new VariableDefinitionNumber ("Tan (Radians)"), 
                      ],
@@ -547,7 +548,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ArcTan2Radians, trigonometry_package, "ArcTan2_Radians", "ArcTan2", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_ArcTan2Radians, trigonometry_package, "ArcTan2_Radians", "@Radians (&0) = ArcTan2 ($0, $1)", "@Radians (&0) = ArcTan2 ($0, $1)",
                      [
                              new VariableDefinitionNumber ("y"), 
                              new VariableDefinitionNumber ("x"), 
@@ -559,13 +560,13 @@ package editor.trigger {
          
       // math / random
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Random, random_package, "Random", "Random", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Random, random_package, "Random", null, null,
                      null,
                      [
                              new VariableDefinitionNumber ("Random Number"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_RandomRange, random_package, "RandomBetween", "RandomBetween", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_RandomRange, random_package, "Random Between", null, null,
                      [
                              new VariableDefinitionNumber ("Min Number"), 
                              new VariableDefinitionNumber ("Max Number"), 
@@ -574,7 +575,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Random Number"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_RandomIntRange, random_package, "IntegerRandomBetween", "IntegerRandomBetween", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_RandomIntRange, random_package, "Integer Random Between", null, null,
                      [
                              new VariableDefinitionNumber ("Min Integer Number"), 
                              new VariableDefinitionNumber ("Max Integer Number"), 
@@ -586,7 +587,7 @@ package editor.trigger {
           
        // math / number convert
           
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Degrees2Radians, convert_package, "Degrees -> Radians", "Degrees2Radians", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Degrees2Radians, convert_package, "Degrees -> Radians", "@Degrees ($0) -> Radians (&0)", "DegreesToRadians",
                      [
                              new VariableDefinitionNumber ("Degrees"), 
                      ],
@@ -594,7 +595,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Radians2Degrees, convert_package, "Radians -> Degrees", "Radians2Degrees", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Radians2Degrees, convert_package, "Radians -> Degrees", "@Radians ($0) -> Degrees (&0)", "RadiansToDegrees",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -602,7 +603,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Degrees"), 
                      ]
                   );
-          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Number2RGB, convert_package, "Color -> RGB", "Color2RGB", 
+          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Number2RGB, convert_package, "Color -> RGB", "@Color ($0) -> RGB (&0, &1, &2)", "Color2Rgb",
                      [
                              new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
                      ],
@@ -612,7 +613,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Blue"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_RGB2Number, convert_package, "RGB -> Color", "RGB2olor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_RGB2Number, convert_package, "RGB -> Color", "@RGB ($0, $1, $2) -> Color (&0)", "RgbToColor",
                      [
                              new VariableDefinitionNumber ("Red (0-255)"), 
                              new VariableDefinitionNumber ("Green (0-255)"), 
@@ -622,7 +623,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -> Minutes : Seconds", "Milliseconds2MinutesAndSeconds", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -> Minutes : Seconds", "@Milliseconds ($0) -> Minutes (&0) : Seconds (&1) : Milliseconds (&2)", "MillisecondsToMinutesAndSeconds",
                      [
                              new VariableDefinitionNumber ("Milliseconds", null, {mMinValue: 0.0}), 
                      ],
@@ -635,7 +636,7 @@ package editor.trigger {
          
      // math / usual
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Abs, usual_math_package, "Abs", "Abs", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Abs, usual_math_package, "Abs", "Abs", null,
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -643,7 +644,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Max, usual_math_package, "Max", "Max", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Max, usual_math_package, "Max", "Max", null,
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -652,7 +653,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Min, usual_math_package, "Min", "Min", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Min, usual_math_package, "Min", "Min", null,
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -661,7 +662,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result 1"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Clamp, usual_math_package, "Clamp", "Clamp", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Clamp, usual_math_package, "Clamp", "@Clamp $0 Between $1 and $2", null,
                      [
                              new VariableDefinitionNumber ("Number to Clamp"), 
                              new VariableDefinitionNumber ("Lower Limit"), 
@@ -671,7 +672,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Sqrt, usual_math_package, "Sqrt", "Sqrt", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Sqrt, usual_math_package, "Sqrt", "Sqrt", null,
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -679,7 +680,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Ceil, usual_math_package, "Ceil", "Ceil", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Ceil, usual_math_package, "Ceil", "Ceil", null,
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -687,7 +688,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Floor, usual_math_package, "Floor", "Floor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Floor, usual_math_package, "Floor", "Floor", null,
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -695,7 +696,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Round, usual_math_package, "Round", "Round", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Round, usual_math_package, "Round", "Round", null,
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -703,7 +704,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Log, usual_math_package, "Log", "Log", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Log, usual_math_package, "Log", "Log", null,
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -711,7 +712,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Exp, usual_math_package, "Exp", "Exp", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Exp, usual_math_package, "Exp", "Exp", null,
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -719,7 +720,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Power, usual_math_package, "Power", "Power", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Power, usual_math_package, "Power", "Power", null,
                      [
                              new VariableDefinitionNumber ("Number"), 
                              new VariableDefinitionNumber ("Power"), 
@@ -729,7 +730,7 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolation, interpolation_package, "Linear Interpolation", "LinearInterpolation", 
+         RegisterFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolation, interpolation_package, "Linear Interpolation", null, null,
                      [
                              new VariableDefinitionNumber ("Number x1"), 
                              new VariableDefinitionNumber ("Number x2"), 
@@ -739,7 +740,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result (x1 * t + (1.0 - t) * x2)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor, interpolation_package, "Color Linear Interpolation", "ColorLinearInterpolation", 
+         RegisterFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor, interpolation_package, "Color Linear Interpolation", null, null,
                      [
                              new VariableDefinitionNumber ("Color c1", null, {mIsColorValue: true}), 
                              new VariableDefinitionNumber ("Color c2", null, {mIsColorValue: true}), 
@@ -752,51 +753,51 @@ package editor.trigger {
          
       // game / design
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds, world_general_package, "GetLevelRunningMilliseconds", "GetLevelRunningMilliseconds", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds, world_general_package, "Get Level Running Milliseconds", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Running Milliseconds"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps, world_general_package, "GetLevelSimulationSteps", "GetLevelSimulationSteps", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps, world_general_package, "Get Level Simulation Steps", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Simulation Steps"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetMousePosition, world_general_package, "GetMousePosition", "GetMousePosition", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetMousePosition, world_general_package, "Get Mouse Position", null, null,
                      null,
                      [
                         new VariableDefinitionNumber ("Mouse X"), 
                         new VariableDefinitionNumber ("Mouee Y"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold, world_general_package, "IsMouseButtonHold", "IsMouseButtonHold", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold, world_general_package, "Is Mouse Button Hold?", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Hold?"), 
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus, level_package, "SetLevelStatus", "SetLevelStatus", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus, level_package, "Set Level Status", null, null,
                      [
                         new VariableDefinitionNumber ("Status", null, {mValueLists: Lists.mLevelStatusList}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed, level_package, "IsLevelSuccessed", "IsLevelSuccessed", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed, level_package, "Is Level Successed?", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Finshied?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed, level_package, "IsLevelFailed", "IsLevelFailed", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed, level_package, "Is Level Failed", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Failed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished, level_package, "IsLevelUnfinished", "IsLevelUnfinished", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished, level_package, "Is Level Unfinished", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Unfinished?"), 
@@ -805,21 +806,21 @@ package editor.trigger {
          
       // game / world
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_physics_package, "SetGravityAcceleration_ByRadians", "SetGravityAcceleration_ByRadians", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_physics_package, "Set Gravity Acceleration by Radians", "@&0 = SetGravityAcceleration (Radians($0))", null,
                      [
                              new VariableDefinitionNumber ("Magnitude"), 
                              new VariableDefinitionNumber ("Angle Radians"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees, world_physics_package, "SetGravityAcceleration_ByDegrees", "SetGravityAcceleration_ByDegrees", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees, world_physics_package, "Set Gravity Acceleration by Degrees", "@&0 = SetGravityAcceleration (Degrees($0))", null,
                      [
                              new VariableDefinitionNumber ("Magnitude"), 
                              new VariableDefinitionNumber ("Angle Degrees"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector, world_physics_package, "SetGravityAcceleration_ByVector", "SetGravityAcceleration_ByVector", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector, world_physics_package, "Set Gravity Acceleration by Vector", "@SetGravityAcceleration (Vector($0, $1))", null,
                      [
                              new VariableDefinitionNumber ("gX"), 
                              new VariableDefinitionNumber ("gY"), 
@@ -827,7 +828,7 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape, world_camera_package, "FollowCameraWithShape", "FollowCameraWithShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape, world_camera_package, "Follow Camera With Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
                              new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
@@ -835,28 +836,28 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape, world_camera_package, "FollowCameraCenterXWithShape", "FollowCameraCenterXWithShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape, world_camera_package, "Follow Camera Center X With Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
                              new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape, world_camera_package, "FollowCameraCenterYWithShape", "FollowCameraCenterYWithShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape, world_camera_package, "Follow Camera Center Y With Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
                              new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape, world_camera_package, "FollowCameraRotationWithShape", "FollowCameraRotationWithShape", 
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape, world_camera_package, "Follow Camera Rotation With Shape", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Followed Shape"), 
          //                    new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
          //            ],
          //            null
          //         );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn, world_camera_package, "FadeOutThenFadeIn", "FadeOutThenFadeIn", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn, world_camera_package, "Fade Out Then Fade In", null, null,
                      [
                              new VariableDefinitionNumber ("Fade Color", null, {mIsColorValue: true}), 
                              new VariableDefinitionNumber ("Fade Out Steps", null, {mMinValue: 0}), 
@@ -867,13 +868,13 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallScript, world_script_package, "CallScript", "CallScript", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallScript, world_script_package, "Call Script", null, null,
                      [
                              new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sScriptHolderEntityClasses}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallScript, world_script_package, "Condition CallScript", "ConditionCallScript", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallScript, world_script_package, "Condition Call Script", "@If $0 is true, call $1, otherwise, call $2", null,
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionEntity ("Script 1 to Call", null, {mValidClasses: Filters.sScriptHolderEntityClasses}), 
@@ -881,7 +882,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunction, world_script_package, "CallBooleanFunction", "CallBooleanFunction", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunction, world_script_package, "Call Boolean Function", null, null,
                      [
                              new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
                      ],
@@ -889,7 +890,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Return Boolean Result"),
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction, world_script_package, "Condition CallBooleanFunction", "ConditionCallBooleanFunction", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction, world_script_package, "Condition Call Boolean Function", "@&0 = If $0 is true, call $1, otherwise, call $2", null,
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionEntity ("Script 1 to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
@@ -899,14 +900,14 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Return Bool Result"),
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallScriptMultiTimes, world_script_package, "CallScriptMultiTimes", "CallScriptMultiTimes", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallScriptMultiTimes, world_script_package, "Call Script Multi Times", "@Call Script ($0) $1 Times", null,
                      [
                              new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sScriptHolderEntityClasses}), 
                              new VariableDefinitionNumber ("Calling Times", null, {mMinValue: 0}),  // dengerous
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes, world_script_package, "CallBoolFunctionMultiTimes", "CallBoolFunctionMultiTimes", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes, world_script_package, "Call Bool Function Multi Times", "@Call Bool Function ($0) Multi Times", null,
                      [
                              new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
                      ],
@@ -915,7 +916,7 @@ package editor.trigger {
          
      // game / collision category
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_Assign, ccat_package, "= (Assign CCat)", "Assign", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_Assign, ccat_package, "= (Assign CCat)", "@&0 = $0", "@&0 = $0",
                      [
                              new VariableDefinitionCollisionCategory ("Source Collision Category"), 
                      ],
@@ -923,7 +924,7 @@ package editor.trigger {
                              new VariableDefinitionCollisionCategory ("Target Collision Category"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign, ccat_package, "?= (Condition Assign CCat)", "ConditionAssign", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign, ccat_package, "?= (Condition Assign CCat)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionCollisionCategory ("Collision Category 1"), 
@@ -933,14 +934,14 @@ package editor.trigger {
                              new VariableDefinitionCollisionCategory ("Target Collision Category"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally, ccat_package, "SetCollisionCategoryCollideInternally", "SetCollisionCategoryCollideInternally", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally, ccat_package, "Set Collision Category Collide Internally", "@Set Collision Category ($0) Collide Internally ($1)", null,
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category"), 
                              new VariableDefinitionBoolean ("Collide Internally?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SetAsFriends, ccat_package, "SetCollisionCategoriesAsFriends", "SetCollisionCategoriesAsFriends", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SetAsFriends, ccat_package, "Set Collision Categories As Friends or Not", "@Set Collision Categories ($0, $1) As Friends ($2)", null,
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category 1"), 
                              new VariableDefinitionCollisionCategory ("Collision Category 2"), 
@@ -951,7 +952,7 @@ package editor.trigger {
          
      // game /entity
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Assign, entity_package, "= (Assign Entity)", "Assign", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Assign, entity_package, "= (Assign Entity)", "@&0 = $0", "@&0 = $0",
                      [
                              new VariableDefinitionEntity ("Source Entity"), 
                      ],
@@ -959,7 +960,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Terget"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign, entity_package, "?= (Condition Assign Entity)", "ConditionAssign", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign, entity_package, "?= (Condition Assign Entity)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionEntity ("Source Entity 1"), 
@@ -970,14 +971,14 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,  entity_as_task_package, "SetTaskStatus", "SetTaskStatus", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,  entity_as_task_package, "Set Entity Task Status", "@Set Entity ($0) Task Status ($1)", null,
                      [
                         new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sTaskEntityClasses}), 
                         new VariableDefinitionNumber ("Task Status", null, {mValueLists: Lists.mEntityTaskStatusList}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed, entity_as_task_package, "IsTaskFailed", "IsTaskFailed", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed, entity_as_task_package, "Is Entity Task Failed?", "@&0 = Is Entity ($0) Task Failed?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sTaskEntityClasses}), 
                      ],
@@ -985,7 +986,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Failed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_as_task_package, "IsTaskSuccessed", "IsTaskSuccessed", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_as_task_package, "Is Entity Task Successed", "@&0 = Is Entity ($0) Task Successed?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sTaskEntityClasses}), 
                      ],
@@ -993,7 +994,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Successed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished, entity_as_task_package, "IsTaskUnfinished", "IsTaskUnfinished", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished, entity_as_task_package, "Is Entity Task Unfinished", "@&0 = Is Entity ($0) Task Unfinished?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sTaskEntityClasses}), 
                      ],
@@ -1002,7 +1003,7 @@ package editor.trigger {
                      ]
                   );
          
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity, entity_is_subtype_package, "IsShape", "IsShape", 
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity, entity_is_subtype_package, "Is Shape", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Entity"), 
          //            ],
@@ -1010,7 +1011,7 @@ package editor.trigger {
          //                    new VariableDefinitionBoolean ("Visible?"), 
          //            ]
          //         );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsVisible, entity_package, "IsVisible", "IsVisible", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsVisible, entity_package, "Is Visible", "@&0 = Is $0 Visible?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}), 
                      ],
@@ -1018,14 +1019,14 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Visible?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetVisible, entity_package, "SetVisible", "SetVisible", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetVisible, entity_package, "Set Visible", "@Set Visibility ($1) of $0", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}), 
                              new VariableDefinitionBoolean ("Visible?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetAlpha, entity_package, "GetAlpha", "GetAlpha", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetAlpha, entity_package, "Get Alpha", "@&0 = Get Alpha of $0", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}), 
                      ],
@@ -1033,14 +1034,14 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Alpha"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetAlpha, entity_package, "SetAlpha", "SetAlpha", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetAlpha, entity_package, "Set Alpha", "@Set Alpha ($1) of $0", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}), 
                              new VariableDefinitionNumber ("Alpha (0-1)", null, {mMinValue: 0.0, mMaxValue:1.0}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsEnabled, entity_trigger_package, "IsEventHandlerEnabled", "IsEventHandlerEnabled", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsEnabled, entity_trigger_package, "Is Event Handler Enabled",  "@&0 = Is Event Handler ($0) Enabled?", null,
                      [
                              new VariableDefinitionEntity ("The Event Handler", null, {mValidClasses: Filters.sCanBeDisabledEntityClasses}), 
                      ],
@@ -1048,7 +1049,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Enabled?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetEnabled, entity_trigger_package, "SetEventHandlerEnabled", "SetEventHandlerEnabled", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetEnabled, entity_trigger_package, "Set Event Handler Enabled", "@Set Event Handler ($0) Enabled ($1)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sCanBeDisabledEntityClasses}), 
                              new VariableDefinitionBoolean ("Enabled?", null, {mDefaultValue: true}), 
@@ -1056,7 +1057,7 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetPosition, entity_package, "GetPosition", "GetPosition", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetPosition, entity_package, "Get Position", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
                      ],
@@ -1065,7 +1066,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("y"), 
                      ]
                   );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetPosition, entity_package, "SetPosition", "SetPosition", 
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SetPosition, entity_package, "Set Position", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
          //                    new VariableDefinitionNumber ("x"), 
@@ -1073,7 +1074,7 @@ package editor.trigger {
          //            ],
          //            null
          //         );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians, entity_package, "GetRotationByRadians", "GetRotationByRadians", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians, entity_package, "Get Rotation by Radians", "@Radians (&0) = Get Rotation ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
                      ],
@@ -1081,7 +1082,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Rotation (radians)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees, entity_package, "GetRotationByDegrees", "GetRotationByDegrees", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees, entity_package, "Get Rotation by Degrees", "@Degrees (&0) = Get Rotation ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
                      ],
@@ -1090,7 +1091,7 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint, entity_shape_package, "WorldPoint2LocalPoint", "WorldPoint2LocalPoint", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint, entity_shape_package, "World Point -> Local Point", "@World Point ($0, $1) -> Local Point (&0, &1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
                              new VariableDefinitionNumber ("World Point X"), 
@@ -1101,7 +1102,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Local Point Y"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint, entity_shape_package, "LocalPoint2WorldPoint", "LocalPoint2WorldPoint", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint, entity_shape_package, "Local Point -> World Point", "@Local Point ($0, $1) -> World Point (&0, &1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
                              new VariableDefinitionNumber ("Local Point X"), 
@@ -1113,7 +1114,7 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed, entity_package, "IsDestroyed", "IsDestroyed", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed, entity_package, "Is Destroyed", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mExceptClasses: Filters.sLogicEntityClasses}), 
                      ],
@@ -1121,14 +1122,14 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Already Destroyed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Destroy, entity_package, "Destroy", "Destroy", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Destroy, entity_package, "Destroy", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mExceptClasses: Filters.sLogicEntityClasses}), 
                      ],
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Overlapped, entity_package, "Two Entities Superimposed?", "AreTwoEntitiesSuperimposed", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Overlapped, entity_package, "Two Entities Superimposed?", "@Are Two Entities ($0, $1) Superimposed with Tolerances ($2, $3, $4)", null,
                      [
                         new VariableDefinitionEntity ("The Entity 1", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
                         new VariableDefinitionEntity ("The Entity 2", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
@@ -1143,7 +1144,7 @@ package editor.trigger {
          
       // game / entity / shape
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsCircleShapeEntity, shape_is_subtype_package, "Is a Circle Shape?", "IsCircleShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsCircleShapeEntity, shape_is_subtype_package, "Is a Circle Shape?", null, "IsCircleShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1151,7 +1152,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Circle?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity, shape_is_subtype_package, "Is a Rectangle Shape?", "IsRectangleShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity, shape_is_subtype_package, "Is a Rectangle Shape?", null, "IsRectangleShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1159,7 +1160,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Rectangle?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity, shape_is_subtype_package, "Is a Polygon Shape?", "IsPolygonShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity, shape_is_subtype_package, "Is a Polygon Shape?", null, "IsPolygonShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1167,7 +1168,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Polygon?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity, shape_is_subtype_package, "Is a Polyline Shape?", "IsPolylineShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity, shape_is_subtype_package, "Is a Polyline Shape?", null, "IsPolylineShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1175,7 +1176,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Polyline?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy, shape_is_subtype_package, "Is a Bomb Shape?", "IsBombShape?", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy, shape_is_subtype_package, "Is a Bomb Shape?", null, "IsBombShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1183,7 +1184,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Bomb?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy, shape_is_subtype_package, "Is a World Border?", "IsWorldBorder?", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy, shape_is_subtype_package, "Is a World Border?", null, "IsWorldBorder",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1192,7 +1193,7 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType, shape_appearance_package, "Get C.I. Type", "GetCIType", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType, shape_appearance_package, "Get C.I. Type", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1200,7 +1201,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("CI Type"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType, shape_appearance_package, "Set C.I. Type", "SetCIType", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType, shape_appearance_package, "Set C.I. Type", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("CI Type", null, {mValueLists: Lists.mAiTypeList}), 
@@ -1208,7 +1209,7 @@ package editor.trigger {
                      null
                   );
          
-          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "GetBackgroundColor", "GetBackgroundColor", 
+          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Background Color", "@Color (&0) = Set Background Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                      ],
@@ -1216,14 +1217,14 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "SetBackgroundColor", "SetBackgroundColor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "Set Background Color", "@Get Background Color ($0, Color ($1))", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "GetBackgroundColorRGB", "GetBackgroundColorRGB", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "Get Background Color RGB", "@RGB (&0, &1, &2) = Get Background Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                      ],
@@ -1233,7 +1234,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Blue"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB, shape_appearance_package, "SetBackgroundColorRGB", "SetBackgroundColorRGB", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB, shape_appearance_package, "Set Background Color RGB", "@Set Background Color ($0, RGB ($1, $2, $3))", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                              new VariableDefinitionNumber ("Red"), 
@@ -1243,7 +1244,7 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled, shape_physics_package, "IsPhysicsEnabled", "IsPhysicsEnabled", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled, shape_physics_package, "Is Physics Enabled", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1251,7 +1252,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Physics Enabled?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory, shape_physics_package, "GetCollisionCategory", "GetCollisionCategory", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory, shape_physics_package, "Get Collision Category", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1259,14 +1260,14 @@ package editor.trigger {
                              new VariableDefinitionCollisionCategory ("Collision Category (ccat)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory, shape_physics_package, "SetCollisionCategory", "SetCollisionCategory", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory, shape_physics_package, "Set Collision Category", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionCollisionCategory ("Collision Category (ccat)"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor, shape_physics_package, "IsSensor", "IsSensor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor, shape_physics_package, "Is Sensor", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1274,14 +1275,14 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Sensor?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, shape_physics_package, "SetSensor", "SetSensor", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, shape_physics_package, "Set Sensor", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionBoolean ("Is Sensor?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity, entity_shape_package, "GetDensity", "GetDensity", 
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity, entity_shape_package, "Get Density", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Shape"), 
          //            ],
@@ -1289,14 +1290,14 @@ package editor.trigger {
          //                    new VariableDefinitionNumber ("Density"), 
          //            ]
          //         );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, entity_shape_package, "SetDensity", "SetDensity", 
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, entity_shape_package, "Set Density", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Shape"), 
          //                    new VariableDefinitionNumber ("Density", null, {mMinValue: 0.0}), 
          //            ],
          //            null
          //         );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping, shape_physics_package, "IsSleeping", "IsSleeping", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping, shape_physics_package, "Is Sleeping", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1304,7 +1305,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Sleeping?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping, shape_physics_package, "SetSleeping", "SetSleeping", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping, shape_physics_package, "Set Sleeping", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionBoolean ("Sleeping?", null, {mDefaultValue: false}), 
@@ -1312,39 +1313,84 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForce, shape_physics_package, "ApplyStepForce", "ApplyStepForce", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetMass, shape_physics_package, "Get Mass", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionBoolean ("Mass of Brothers?", null, {mDefaultValue: false}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("The Mass"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia, shape_physics_package, "Get Inertia", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionBoolean ("Inertia of Brothers?", null, {mDefaultValue: false}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("The Mass"), 
+                     ]
+                  );
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetLinearVelocity, shape_physics_package, "Set Linear Velocity", "@Set Linear Velocity of $0 by Vector ($1, $2)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("New Velocity X"), 
+                             new VariableDefinitionNumber ("New Velocity Y"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetLinearVelocity, shape_physics_package, "Get Linear Velocity", "@Vector (&0, &1) = Get Linear Velocity ($0)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Velocity X"), 
+                             new VariableDefinitionNumber ("Velocity Y"), 
+                     ]
+               );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector, shape_physics_package, "Change Linear Velocity by Vector", "@Change Linear Velocity of $0 by Vector ($1, $2)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Delta Velocity X"), 
+                             new VariableDefinitionNumber ("Delta Velocity Y"), 
+                     ],
+                     null
+                  );
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForce, shape_physics_package, "Apply Step Force", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Force X"), 
                              new VariableDefinitionNumber ("Force Y"), 
-                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: false}), 
                              new VariableDefinitionBoolean ("Apply on Center of Brothers?", null, {mDefaultValue: false}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint, shape_physics_package, "ApplyStepForceAtLocalPoint", "ApplyStepForceAtLocalPoint", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint, shape_physics_package, "Apply Step Force At Local Point", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Force X"), 
                              new VariableDefinitionNumber ("Force Y"), 
-                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: false}), 
                              new VariableDefinitionNumber ("Local Point X"), 
                              new VariableDefinitionNumber ("Local Point Y"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint, shape_physics_package, "ApplyStepForceAtWorldPoint", "ApplyStepForceAtWorldPoint", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint, shape_physics_package, "Apply Step Force At World Point", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Force X"), 
                              new VariableDefinitionNumber ("Force Y"), 
-                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: false}), 
                              new VariableDefinitionNumber ("World Point X"), 
                              new VariableDefinitionNumber ("World Point Y"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepTorque, shape_physics_package, "ApplyStepTorque", "ApplyStepTorque", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepTorque, shape_physics_package, "Apply Step Torque", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Torque"), 
@@ -1352,7 +1398,47 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Teleport, entity_shape_package, "TeleportShape", "TeleportShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulse, shape_physics_package, "Apply Impulse", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Impulse X"), 
+                             new VariableDefinitionNumber ("Impulse Y"), 
+                             new VariableDefinitionBoolean ("Is Local Impulse?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Apply on Center of Brothers?", null, {mDefaultValue: false}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint, shape_physics_package, "Apply Impulse At Local Point", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Impulse X"), 
+                             new VariableDefinitionNumber ("Impulse Y"), 
+                             new VariableDefinitionBoolean ("Is Local Impulse?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionNumber ("Local Point X"), 
+                             new VariableDefinitionNumber ("Local Point Y"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint, shape_physics_package, "Apply Impulse At World Point", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Impulse X"), 
+                             new VariableDefinitionNumber ("Impulse Y"), 
+                             new VariableDefinitionBoolean ("Is Local Impulse?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionNumber ("World Point X"), 
+                             new VariableDefinitionNumber ("World Point Y"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse, shape_physics_package, "Apply Angular Impulse", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Angular Impulse"), 
+                     ],
+                     null
+                  );
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Teleport, entity_shape_package, "Teleport Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Target Position X"), 
@@ -1364,7 +1450,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets, entity_shape_package, "TeleportShape_Offsets", "TeleportShape_Offsets", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets, entity_shape_package, "Teleport Shape by Offsets", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Offset X"), 
@@ -1376,7 +1462,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, entity_shape_package, "CloneShape", "CloneShape", 
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, entity_shape_package, "Clone Shape", null, 
          //            [
          //                    new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
          //                    new VariableDefinitionNumber ("Target PositionX"), 
@@ -1388,34 +1474,34 @@ package editor.trigger {
          //            null
          //         );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_package, "DetachShape", "DetachShape", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_package, "Detach Shape", null, null, 
                      [
-                             new VariableDefinitionEntity ("The Shape to Be Detached", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionEntity ("The Shape to Be Detached", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith, entity_shape_package, "AttachShapes", "AttachShapes", 
-                     [
-                             new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                             new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                     ],
-                     null
-                  );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith, entity_shape_package, "DetachThenAttach", "DetachThenAttach", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith, entity_shape_package, "Attach Shapes", null, null,
                      [
                              new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers, entity_shape_package, "BreakupBrothers", "BreakupBrothers", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith, entity_shape_package, "Detach Then Attach", null, null,
+                     [
+                             new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers, entity_shape_package, "Breakup Brothers", null, null,
                      [
                              new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
                      null
                   );
 	     
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_package, "BreakAllJoints", "BreakAllJoints",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_package, "Break All Joints", null, null,
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),  
                      ],
@@ -1426,7 +1512,7 @@ package editor.trigger {
          
       // game / entity / shape / text
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetText, shape_text_package, "GetText", "GetText", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetText, shape_text_package, "Get Text", "@&0 = Get Text of $0", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}), 
                      ],
@@ -1434,21 +1520,21 @@ package editor.trigger {
                              new VariableDefinitionString ("The Text String"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetText, shape_text_package, "SetText", "SetText", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetText, shape_text_package, "Set Text", "@Set Text ($1) of $0", null,
                      [
                              new VariableDefinitionEntity ("The Text Component", null, {mValidClasses: Filters.sTextEntityClasses}), 
                              new VariableDefinitionString ("New Text String"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendText, shape_text_package, "AppendText", "AppendText", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendText, shape_text_package, "Append Text", "@Append Text ($1) to $0", null,
                      [
                              new VariableDefinitionEntity ("The Text Component", null, {mValidClasses: Filters.sTextEntityClasses}), 
                              new VariableDefinitionString ("Text to Append"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendNewLine, shape_text_package, "AppendNewLine", "AppendNewLine", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendNewLine, shape_text_package, "Append New Line", "@Append New Line to $0", null,
                      [
                              new VariableDefinitionEntity ("The Text Component", null, {mValidClasses: Filters.sTextEntityClasses}), 
                      ],
@@ -1457,7 +1543,15 @@ package editor.trigger {
          
        // game / entity / joint
          
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees, entity_joint_package, "GetHingeLimits (By Degrees)", "GetHingeLimits_Degrees", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled, entity_joint_package, "Set Joint Limits Enabled", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Joints", null, {mValidClasses: Filters.sJointEntityClasses}), 
+                        new VariableDefinitionBoolean ("Enabled?", null, {mDefaultValue: true}), 
+                     ],
+                     null
+                  );
+         
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees, entity_joint_package, "Get Hinge Limits by Degrees", "@Degrees (&0, &1) = Get Limits of Hinge ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                      ],
@@ -1466,7 +1560,7 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Upper Angle (degrees)"), 
                      ]
                   );
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees, entity_joint_package, "SetHingeLimits (By Degrees)", "SetHingeLimits_Degrees", 
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees, entity_joint_package, "Set Hinge Limits by Degrees", "@Set Hinge ($0) Limits by Degrees ($1, $2)", null,
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                         new VariableDefinitionNumber ("Lower Angle (degrees)"), 
@@ -1474,7 +1568,7 @@ package editor.trigger {
                      ],
                      null
                   );
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed, entity_joint_package, "GetHingeMotorSpeed (By Degrees)", "GetHingeMotorSpeed_Degrees", 
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed, entity_joint_package, "Get Hinge Motor Speed by Degrees", "@Degrees/s (&0) = Get Motor Speed of Hinge ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                      ],
@@ -1482,7 +1576,7 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Motor Speed (degrees/s)"), 
                      ]
                   );
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed, entity_joint_package, "SetHingeMotorSpeed (By Degrees)", "SetHingeMotorSpeed_Degrees", 
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed, entity_joint_package, "Set Hinge Motor Speed by Degrees", "@Set Hinge ($0) Motor Speed by Degrees ($1) /s", null,
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                         new VariableDefinitionNumber ("Motor Speed (degrees/s)"), 
@@ -1490,7 +1584,7 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits, entity_joint_package, "GetSliderLimits", "GetSliderLimits", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits, entity_joint_package, "Get Slider Limits", "@&0 = Get Limits of Slider ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
                      ],
@@ -1499,7 +1593,7 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Upper Translation"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderLimits, entity_joint_package, "SetSliderLimits", "SetSliderLimits", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderLimits, entity_joint_package, "Set Slider Limits", "@Set Slider ($0) Limits ($1)", null,
                      [
                         new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
                         new VariableDefinitionNumber ("Lower Translation"), 
@@ -1507,7 +1601,14 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed, entity_joint_package, "GetSliderMotorSpeed", "GetSliderMotorSpeed", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled, entity_joint_package, "Set Joint Motor Enabled", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sJointEntityClasses}), 
+                        new VariableDefinitionBoolean ("Enabled?", null, {mDefaultValue: true}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed, entity_joint_package, "Get Slider Motor Speed", "@&0 = Get Motor Speed of Slider ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
                      ],
@@ -1515,7 +1616,7 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Motor Speed (m/s)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed, entity_joint_package, "SetSliderMotorSpeed", "SetSliderMotorSpeed", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed, entity_joint_package, "Set Slider Motor Speed", "@Set Slider ($0) Motor Speed ($1)", null,
                      [
                         new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
                         new VariableDefinitionNumber ("Motor Speed (m/s)"), 
@@ -1525,20 +1626,20 @@ package editor.trigger {
          
       // trigger
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_ResetTimer, entity_trigger_package, "ResetTimer", "ResetTimer", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_ResetTimer, entity_trigger_package, "Reset Timer", null, null,
                      [
                         new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused, entity_trigger_package, "SetTimerPaused", "SetTimerPaused", 
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused, entity_trigger_package, "Set Timer Paused", null, null,
                      [
                         new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
                         new VariableDefinitionBoolean ("Paused?", null, {mDefaultValue: true}), 
                      ],
                      null
                   );
-         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval, entity_trigger_package, "SetTimerInterval", "SetTimerInterval", 
+         //RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval, entity_trigger_package, "Set Timer Interval", null, null,
          //            [
          //               new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
          //               new VariableDefinitionNumber ("Interval", null, {mMinValue: 0.0}),
@@ -1549,19 +1650,20 @@ package editor.trigger {
          
       // ...
          
-         sMenuBarDataProvider = AddPackageToXML (sToppestPackage, null)
+         sMenuBarDataProvider_Shorter = CreateXmlFromPackages ([sGlobalPackage, sWorldPackage, sEntityPackage])
+         sMenuBarDataProvider_Longer = CreateXmlFromPackages ([sGlobalPackage, math_package, sWorldPackage, sEntityPackage, entity_shape_package])
      }
       
 //===========================================================
 // util functions
 //===========================================================
       
-      private static function RegisterFunctionDeclaration (function_id:int, functionPackage:FunctionPackage, function_name:String, code_name:String, param_defines:Array, return_defines:Array):void
+      private static function RegisterFunctionDeclaration (function_id:int, functionPackage:FunctionPackage, function_name:String, poemCallingFormat:String, traditionalCallingFormat:String, param_defines:Array, return_defines:Array):void
       {
          if (function_id < 0)
             return;
          
-         sFunctionDeclarations [function_id] = new FunctionDeclaration_Core (function_id, function_name, code_name, param_defines, return_defines, null);
+         sFunctionDeclarations [function_id] = new FunctionDeclaration_Core (function_id, function_name, poemCallingFormat, traditionalCallingFormat, param_defines, return_defines, null);
          
          if (functionPackage != null)
             functionPackage.AddFunctionDeclaration (sFunctionDeclarations [function_id]);
@@ -1575,30 +1677,36 @@ package editor.trigger {
          return sFunctionDeclarations [function_id];
       }
       
-      private static function AddPackageToXML (functionPackage:FunctionPackage, xml:XML):XML
+      // top leel
+      private static function CreateXmlFromPackages (packages:Array):XML
       {
-         var package_element:XML;
+         var xml:XML = <root />;
          
-         if (xml == null)
+         for each (var functionPackage:FunctionPackage in packages)
          {
-            package_element = <root />;
-            xml = package_element;
+            AddPackageToXML (functionPackage, xml, packages);
          }
-         else
-         {
-            package_element = <menuitem />;
-            package_element.@name = functionPackage.GetName ();
-            xml.appendChild (package_element);
-         }
+         
+         return xml;
+      }
+      
+      private static function AddPackageToXML (functionPackage:FunctionPackage, parentXml:XML, topPackages:Array):void
+      {
+         var package_element:XML = <menuitem />;
+         package_element.@name = functionPackage.GetName ();
+         parentXml.appendChild (package_element);
          
          var num_items:int = 0;
          
          var child_packages:Array = functionPackage.GetChildPackages ();
          for (var i:int = 0; i < child_packages.length; ++ i)
          {
-            AddPackageToXML (child_packages [i] as FunctionPackage, package_element);
-            
-            ++ num_items;
+            if (topPackages.indexOf (child_packages [i]) < 0)
+            {
+               AddPackageToXML (child_packages [i] as FunctionPackage, package_element, topPackages);
+               
+               ++ num_items;
+            }
          }
          
          var declarations:Array = functionPackage.GetFunctionDeclarations ();
@@ -1625,8 +1733,6 @@ package editor.trigger {
             
             package_element.appendChild (function_element);
          }
-         
-         return xml;
       }
    }
 }

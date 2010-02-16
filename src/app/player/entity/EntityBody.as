@@ -198,6 +198,11 @@ package player.entity {
 //   postion, rotation
 //=============================================================
       
+      /*
+         Not like the velocity, there is no the FlagPositionSynchronized () function.
+         The physics proxy position and this entity postion should be always synchronized.
+      */
+      
       internal var mCosRotation:Number = 1.0;
       internal var mSinRotation:Number = 0.0;
       private var mLastRotation:Number = 0.0;
@@ -226,6 +231,7 @@ package player.entity {
          }
       }
       
+      // before use sin and cos, call this function.
       internal function UpdateSinCos ():void
       {
          if (mRotation != mLastRotation)
@@ -251,7 +257,7 @@ package player.entity {
 //   mass, inertia
 //=============================================================
       
-      internal function GetMass ():Number
+      public function GetMass ():Number
       {
          if (mPhysicsProxy == null)
             return 0.0;
@@ -259,7 +265,7 @@ package player.entity {
             return mPhysicsProxyBody.GetMass ();
       }
       
-      internal function GetInertia ():Number
+      public function GetInertia ():Number
       {
          if (mPhysicsProxy == null)
             return 0.0;
@@ -274,16 +280,20 @@ package player.entity {
       // for judging if this condition is evaluated already in current step.
       private var mLastVelocityUpdatedStep:int = -1;
       
+      internal function FlagVelocitySynchronized (syned:Boolean):void
+      {
+         mLastVelocityUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
+      }
+      
       internal var mLinearVelocityX:Number = 0.0;
       internal var mLinearVelocityY:Number = 0.0;
       internal var mAngularVelocity:Number = 0.0;
       
       internal function SynchronizeVelocityWithPhysicsProxy ():void
       {
-         var worldSimulateSteps:int = mWorld.GetSimulatedSteps ();
-         if (mLastVelocityUpdatedStep < worldSimulateSteps)
+         if (mLastVelocityUpdatedStep < mWorld.GetSimulatedSteps ())
          {
-            mLastVelocityUpdatedStep = worldSimulateSteps;
+            FlagVelocitySynchronized (true);
             
             if (mPhysicsProxy == null)
             {
@@ -384,14 +394,6 @@ package player.entity {
          mPhysicsProxyBody.ResetMass ();
       }
       
-      public function UpdateMass ():void
-      {
-         if (mPhysicsProxy == null)
-            return;
-         
-         mPhysicsProxyBody.ResetMass ();
-      }
-      
       public function CoincideWithCentroid ():void
       {
          var newX:Number;
@@ -446,8 +448,8 @@ package player.entity {
             newY = mPhysicsProxyBody.GetPositionY ();
          }
          
-         if (newX == mPositionX && newY == mPositionY)
-            return;
+         //if (newX == mPositionX && newY == mPositionY)
+         //   return;
          
          //var dx:Number = mPositionX - newX
          //var dy:Number = mPositionY - newY;
@@ -461,7 +463,8 @@ package player.entity {
          while (shape != null)
          {
             shape.UpdatelLocalPosition ();
-            shape.UpdateMassAndInertiaAndCentroid ();
+            shape.UpdateMassAndInertiaAndLocalCentroid ();
+            shape.FlagWorldCentroidSynchronized (false);
             
             shape = shape.mNextShapeInBody;
          }
@@ -473,8 +476,8 @@ package player.entity {
          
          while (shape != null)
          {
-            shape.UpdateWorldCentroid (); // UpdateVelocityAndWorldCentroid will clear shape velocity
-            shape.AddMomentumToBody ();
+            shape.SynchronizeWorldCentroid (); // SynchronizeVelocityAndWorldCentroid will clear shape velocity
+            shape.AddSelfMomentumToBody ();
             
             shape = shape.mNextPhysicsShapeInBody;
          }

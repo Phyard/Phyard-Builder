@@ -132,5 +132,14 @@ package player.physics {
          _b2PrismaticJoint.SetMotorSpeed (morotSpeed);
       }
       
+      public function SetMotorEnabled (enabled:Boolean):void
+      {
+         _b2PrismaticJoint.EnableMotor (enabled);
+      }
+      
+      public function SetLimitsEnabled (enabled:Boolean):void
+      {
+         _b2PrismaticJoint.EnableLimit (enabled);
+      }
    }
 }

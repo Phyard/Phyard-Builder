@@ -55,6 +55,12 @@ package editor.runtime {
          return mEditorWorldView.GetEditorWorld ();
       }
       
+//=====================================================================
+//
+//=====================================================================
+      
+      public static var mLongerCodeEditorMenuBar:Boolean = false;
+      public static var mPoemCodingFormat:Boolean = false;
    }
    
 }

@@ -177,7 +177,7 @@ protected function UpdateCamera ():void
    if (mFollowedEntityCameraCenterX != null && mFollowedEntityCameraCenterX.IsDestroyedAlready ())
       mFollowedEntityCameraCenterX = null;
    
-   if (mFollowedEntityCameraCenterX != null)
+   if (! mIsPaused && mFollowedEntityCameraCenterX != null)
       targetX = mCoordinateSystem.P2D_PositionX (mFollowedEntityCameraCenterX.GetPositionX ());
    else
       targetX = mCameraCenterX + mCameraMovedOffsetX_ByMouse;
@@ -185,7 +185,7 @@ protected function UpdateCamera ():void
    if (mFollowedEntityCameraCenterY != null && mFollowedEntityCameraCenterY.IsDestroyedAlready ())
       mFollowedEntityCameraCenterY = null;
    
-   if (mFollowedEntityCameraCenterY != null)
+   if (! mIsPaused && mFollowedEntityCameraCenterY != null)
       targetY = mCoordinateSystem.P2D_PositionY (mFollowedEntityCameraCenterY.GetPositionY ());
    else
       targetY = mCameraCenterY + mCameraMovedOffsetY_ByMouse;
@@ -199,7 +199,7 @@ protected function UpdateCamera ():void
 }
 
 //=====================================================================================
-//
+// 
 //=====================================================================================
 
 protected var mCameraMovedOffsetX_ByMouse:Number = 0;

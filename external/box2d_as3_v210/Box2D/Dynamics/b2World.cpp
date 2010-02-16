@@ -29,8 +29,31 @@
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 //#include <new>
 
-//public function b2World(gravity:b2Vec2, doSleep:Boolean)
-public function b2World(worldDef:b2WorldDef = null)
+public static function b2World_FromWorldDefine (worldDef:b2WorldDef):b2World
+{
+	var world:b2World = new b2World (null, false, false);
+	world.Create (worldDef);
+	
+	return world;
+}
+
+public function b2World(gravity:b2Vec2, doSleep:Boolean, createNow:Boolean = true)
+{
+	if (! createNow)
+		return;
+	
+	var worldDef:b2WorldDef = new b2WorldDef ();
+	if (gravity != null)
+	{
+		worldDef.gravity.x = gravity.x;
+		worldDef.gravity.y = gravity.y;
+	}
+	worldDef.doSleep = doSleep;
+	
+	Create (worldDef);
+}
+
+private function Create (worldDef:b2WorldDef = null):void
 {
 	if (worldDef == null)
 	{

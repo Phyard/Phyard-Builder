@@ -90,14 +90,24 @@ package player.entity {
          return mUpperTranslation;
       }
       
-      public function SetEnableLimits (enableLimits:Boolean):void
+      override public function SetEnableLimits (enableLimits:Boolean):void
       {
          mEnableLimits = enableLimits;
+         
+         if (mPhysicsProxy != null)
+         {
+            mProxyJointSlider.SetLimitsEnabled (mEnableLimits);
+         }
       }
       
-      public function SetEnableMotor (enableMotor:Boolean):void
+      override public function SetEnableMotor (enableMotor:Boolean):void
       {
          mEnableMotor = enableMotor;
+         
+         if (mPhysicsProxy != null)
+         {
+            mProxyJointSlider.SetMotorEnabled (mEnableMotor);
+         }
       }
       
       public function GetMotorSpeed ():Number

@@ -31,6 +31,11 @@ package editor.mode {
          StartSession ();
       }
       
+      override public function Destroy ():void
+      {
+         ResetSession (true);
+      }
+      
       override public function Reset ():void
       {
          ResetSession (true);

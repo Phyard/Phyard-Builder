@@ -131,7 +131,7 @@ package player.entity {
             
             if (entityDefine.mLinearVelocityMagnitude != undefined && entityDefine.mLinearVelocityAngle != undefined)
             {
-               SetLinearVelocity (mWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (entityDefine.mLinearVelocityMagnitude), 
+               SetLinearVelocityByMagnitudeAndAngle (mWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (entityDefine.mLinearVelocityMagnitude), 
                                  mWorld.GetCoordinateSystem ().D2P_RotationRadians (entityDefine.mLinearVelocityAngle * Define.kDegrees2Radians));
             }
             if (entityDefine.mAngularVelocity != undefined)
@@ -465,8 +465,8 @@ package player.entity {
          {
             mIsSensor = sensor;
             
-            if (mProxyShape != null)
-               mProxyShape.SetSensor (sensor);
+            if (mPhysicsShapeProxy != null)
+               mPhysicsShapeProxy.SetSensor (sensor);
          }
       }
       
@@ -486,7 +486,7 @@ package player.entity {
       
       public function GetLinearVelocityX ():Number
       {
-         UpdateVelocityAndWorldCentroid ();
+         SynchronizeVelocityAndWorldCentroid ();
          
          return mLinearVelocityX;
       }
@@ -498,12 +498,12 @@ package player.entity {
       
       public function GetLinearVelocityY ():Number
       {
-         UpdateVelocityAndWorldCentroid ();
+         SynchronizeVelocityAndWorldCentroid ();
          
          return mLinearVelocityY;
       }
       
-      public function SetLinearVelocity (magnitude:Number, angle:Number):void
+      public function SetLinearVelocityByMagnitudeAndAngle (magnitude:Number, angle:Number):void
       {
          SetLinearVelocityX (magnitude *  Math.cos (angle));
          SetLinearVelocityY (magnitude *  Math.sin (angle));
@@ -516,7 +516,7 @@ package player.entity {
       
       public function GetAngularVelocity ():Number
       {
-         UpdateVelocityAndWorldCentroid ();
+         SynchronizeAngularVelocityAndWorldCentroid ();
          
          return mAngularVelocity;
       }
@@ -576,6 +576,8 @@ package player.entity {
       
       override public function RegisterEventHandler (eventId:int, eventHandler:EntityEventHandler):void
       {
+         super.RegisterEventHandler (eventId, eventHandler);
+         
          switch (eventId)
          {
             case CoreEventIds.ID_OnPhysicsShapeMouseDown:
@@ -737,6 +739,19 @@ package player.entity {
             mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
       }
       
+      // call this function after calling mBody.OnPhysicsShapeListChanged () so that mBody.mPosition is the centroid of mBody.
+      internal function AddSelfMomentumToBody ():void
+      {
+         if (mPhysicsProxy == null)
+            return;
+         
+         if (IsStatic ())
+            return;
+         
+         AddLinearMomentum (mLinearVelocityX, mLinearVelocityY, true, false);
+         AddAngularMomentum (mAngularVelocity, true);
+      }
+      
 //=============================================================
 //   destroy
 //=============================================================
@@ -780,6 +795,11 @@ package player.entity {
 //   update position rotation
 //=============================================================
       
+      /*
+         Not like the velocity, the FlagPositionSynchronized () function.
+         The physics proxy position and this entity postion should be always synchronized.
+      */
+      
       override public function SynchronizeWithPhysicsProxy ():void
       {
          //if (mBody != null) // should no be null
@@ -798,6 +818,11 @@ package player.entity {
 //   mass, interia, centroid
 //=============================================================
       
+      /*
+         Not like the velocity, there is no the FlagMassSynchronized () function.
+         The mass and local centroid should be always synchronized.
+      */
+      
       internal var mMass:Number = 0.0;
       internal var mInertia:Number = 0.0;
       
@@ -805,16 +830,26 @@ package player.entity {
       internal var mLocalCentroidX:Number = 0.0;
       internal var mLocalCentroidY:Number = 0.0;
       
-   // the following setter functions should be only called by mProxyShape
+   // the following setter functions should be only called by mPhysicsShapeProxy
       
       public function SetMass (mass:Number):void
       {
          mMass = mass;
       }
       
+      public function GetMass ():Number
+      {
+         return mMass;
+      }
+      
       public function SetInertia (inertia:Number):void
       {
          mInertia = inertia;
+      }
+      
+      public function GetInertia ():Number
+      {
+         return mInertia;
       }
       
       public function SetCentroid (centroidX:Number, centroidY:Number):void
@@ -823,11 +858,11 @@ package player.entity {
          mLocalCentroidY = centroidY;
       }
       
-      public function UpdateMassAndInertiaAndCentroid ():void
+      public function UpdateMassAndInertiaAndLocalCentroid ():void
       {
          if (mPhysicsProxy != null)
          {
-            mProxyShape.UpdateMass ();
+            mPhysicsShapeProxy.UpdateMass (); // which will call SetMass, SetInertia and SetCentroid. Seems not a good design. Better to pass these function in?
          }
          else
          {
@@ -839,33 +874,69 @@ package player.entity {
       }
       
 //=============================================================
-//   update velocity
+//   synchronize velocity, world, centroid
 //=============================================================
+      
+      // for judging if this condition is evaluated already in current step.
+      private var mLastVelocityUpdatedStep:int = -1;
+      private var mLastAngularVelocityUpdatedStep:int = -1;
+      private var mLastWorldCentroidUpdatedStep:int = -1;
       
       // ..
       internal var mWorldCentroidX:Number = 0.0;
       internal var mWorldCentroidY:Number = 0.0;
+      internal var mWorldLocalCentroidX:Number = 0.0;
+      internal var mWorldLocalCentroidY:Number = 0.0;
       
-      // for judging if this condition is evaluated already in current step.
-      private var mLastVelocityUpdatedStep:int = -1;
-      
-      internal function UpdateWorldCentroid ():void
+      public function GetWorldCentroidX ():Number
       {
-         mBody.SynchronizeVelocityWithPhysicsProxy ();
+         SynchronizeWorldCentroid ();
          
-         var worldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
-         var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
-         
-         mWorldCentroidX = mBody.mPositionX + worldLocalCentroidX;
-         mWorldCentroidY = mBody.mPositionY + worldLocalCentroidY;
+         return mWorldCentroidX;
       }
       
-      internal function UpdateVelocityAndWorldCentroid (forcely:Boolean = false):void
+      public function GetWorldCentroidY ():Number
       {
-         var worldSimulateSteps:int = mWorld.GetSimulatedSteps ();
-         if (mLastVelocityUpdatedStep < worldSimulateSteps || forcely)
+         SynchronizeWorldCentroid ();
+         
+         return mWorldCentroidY;
+      }
+      
+      internal function FlagWorldCentroidSynchronized (syned:Boolean = true):void
+      {
+         mLastWorldCentroidUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
+      }
+      
+      internal function SynchronizeWorldCentroid ():void
+      {
+         if (mLastWorldCentroidUpdatedStep <  mWorld.GetSimulatedSteps ())
          {
-            mLastVelocityUpdatedStep = worldSimulateSteps;
+            FlagWorldCentroidSynchronized (true);
+            
+            mBody.SynchronizeVelocityWithPhysicsProxy ();
+            
+            var mWorldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
+            var mWorldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
+            
+            mWorldCentroidX = mBody.mPositionX + mWorldLocalCentroidX;
+            mWorldCentroidY = mBody.mPositionY + mWorldLocalCentroidY;
+         }
+      }
+      
+      internal function FlagVelocitySynchronized (syned:Boolean):void
+      {
+         mLastVelocityUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
+         
+         FlagAngularVelocitySynchronized (syned);
+      }
+      
+      internal function SynchronizeVelocityAndWorldCentroid ():void
+      {
+         if (mLastVelocityUpdatedStep <  mWorld.GetSimulatedSteps ())
+         {
+            FlagVelocitySynchronized (true);
+            
+            SynchronizeWorldCentroid ();
             
             mBody.SynchronizeVelocityWithPhysicsProxy ();
             
@@ -873,34 +944,28 @@ package player.entity {
             var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
             
             mAngularVelocity = mBody.mAngularVelocity;
-            mLinearVelocityX = mBody.mLinearVelocityX - mAngularVelocity * worldLocalCentroidY;
-            mLinearVelocityY = mBody.mLinearVelocityY + mAngularVelocity * worldLocalCentroidX;
+            mLinearVelocityX = mBody.mLinearVelocityX - mAngularVelocity * mWorldLocalCentroidY;
+            mLinearVelocityY = mBody.mLinearVelocityY + mAngularVelocity * mWorldLocalCentroidX;
             
             mWorldCentroidX = mBody.mPositionX + worldLocalCentroidX;
             mWorldCentroidY = mBody.mPositionY + worldLocalCentroidY;
          }
       }
       
-      // call this function after calling mBody.OnPhysicsShapeListChanged () so that mBody.mPosition is the centroid of mBody.
-      internal function AddMomentumToBody ():void
+      internal function FlagAngularVelocitySynchronized (syned:Boolean):void
       {
-         if (mPhysicsProxy == null)
-            return;
-         
-         if (IsStatic ())
-            return;
-         
-         var momentumX:Number = mMass * mLinearVelocityX;
-         var momentumY:Number = mMass * mLinearVelocityY;
-         mBody.mPhysicsProxyBody.AddLinearImpulseAtPoint (momentumX, momentumY, mWorldCentroidX, mWorldCentroidY);
-         
-         if (IsRotationFixed ())
+         mLastAngularVelocityUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
+      }
+      
+      internal function SynchronizeAngularVelocityAndWorldCentroid ():void
+      {
+         if (mLastAngularVelocityUpdatedStep <  mWorld.GetSimulatedSteps ())
          {
-            mBody.mPhysicsProxyBody.AddAngularImpulse ((mWorldCentroidX - mBody.mPositionX) * momentumY - (mWorldCentroidY - mBody.mPositionY) * momentumX);
-         }
-         else
-         {
-            mBody.mPhysicsProxyBody.AddAngularImpulse (mInertia * mAngularVelocity + (mWorldCentroidX - mBody.mPositionX) * momentumY - (mWorldCentroidY - mBody.mPositionY) * momentumX);
+            FlagAngularVelocitySynchronized (true);
+            
+            mBody.SynchronizeVelocityWithPhysicsProxy ();
+            
+            mAngularVelocity = mBody.mAngularVelocity;
          }
       }
       
@@ -965,6 +1030,7 @@ package player.entity {
          }
       }
       
+      // the local position should be always synchronized
       public function UpdatelLocalPosition ():void
       {
          if (mBody != null)
@@ -975,6 +1041,16 @@ package player.entity {
             mLocalPositionY = - tempX * mBody.mSinRotation + tempY * mBody.mCosRotation;
             mRelativeRotation  = mRotation  - mBody.GetRotation  ();
          }
+      }
+      
+      public function IsTheOnlyShapeInBody ():Boolean
+      {
+         return mBody.mNumShapes == 1 && mBody.mShapeListHead == this;
+      }
+      
+      public function IsTheOnlyPhysicsShapeInBody ():Boolean
+      {
+         return mBody.mNumPhysicsShapes == 1 && mBody.mPhysicsShapeListHead == this;
       }
       
 //=============================================================
@@ -1043,6 +1119,7 @@ package player.entity {
       internal var mSinRotation:Number = 0.0;
       private  var mLastRotation:Number = 0.0; // last rotation -> sin, cos
       
+      // before use sin and cos, call this function.
       internal function UpdateSinCos ():void
       {
          if (mRotation != mLastRotation)
@@ -1075,12 +1152,16 @@ package player.entity {
       
       public function LocalVector2WorldVector (localVX:Number, localVY:Number, worldVector:Point):void
       {
+         UpdateSinCos ();
+         
          worldVector.x = localVX * mCosRotation - localVY * mSinRotation;
          worldVector.y = localVX * mSinRotation + localVY * mCosRotation;
       }
       
       public function WorldVector2LocalVector (worldVX:Number, worldlVY:Number, localVector:Point):void
       {
+         UpdateSinCos ();
+         
          localVector.x =   worldVX * mCosRotation + worldlVY * mSinRotation;
          localVector.y = - worldVX * mSinRotation + worldlVY * mCosRotation;
       }
@@ -1091,7 +1172,7 @@ package player.entity {
      
       protected var mPhysicsShapePotentially:Boolean = false;
       
-      protected var mProxyShape:PhysicsProxyShape = null;
+      protected var mPhysicsShapeProxy:PhysicsProxyShape = null;
       
       //>> from v1.07
       protected var mPhysicsValuesValidFlags:int = 0x7FFFFFFF;
@@ -1132,7 +1213,7 @@ package player.entity {
          if (mPhysicsProxy == null)
             return;
          
-         mProxyShape = null;
+         mPhysicsShapeProxy = null;
          
          super.DestroyPhysicsProxy ();
       }
@@ -1158,12 +1239,12 @@ package player.entity {
          
          var proxyShape:PhysicsProxyShape = mPhysicsProxy as PhysicsProxyShape;
          
-         if (mProxyShape == null)
+         if (mPhysicsShapeProxy == null)
          {
-            mProxyShape = new PhysicsProxyShape (mBody.mPhysicsProxy as PhysicsProxyBody, this);
+            mPhysicsShapeProxy = new PhysicsProxyShape (mBody.mPhysicsProxy as PhysicsProxyBody, this);
             //mPhysicsProxy.SetUserData (this);
             
-            mPhysicsProxy = mProxyShape;
+            mPhysicsProxy = mPhysicsShapeProxy;
          }
          
       // ...

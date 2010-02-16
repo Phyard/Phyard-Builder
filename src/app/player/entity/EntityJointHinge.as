@@ -88,9 +88,14 @@ package player.entity {
          return mUpperAngle;
       }
       
-      public function SetEnableLimits (enableLimits:Boolean):void
+      override public function SetEnableLimits (enableLimits:Boolean):void
       {
          mEnableLimits = enableLimits;
+         
+         if (mPhysicsProxy != null)
+         {
+            mProxyJointHinge.SetLimitsEnabled (mEnableLimits);
+         }
       }
       
       public function IsLimitsEnabled ():Boolean
@@ -98,9 +103,14 @@ package player.entity {
          return mEnableLimits;
       }
       
-      public function SetEnableMotor (enableMotor:Boolean):void
+      override public function SetEnableMotor (enableMotor:Boolean):void
       {
          mEnableMotor = enableMotor;
+         
+         if (mPhysicsProxy != null)
+         {
+            mProxyJointHinge.SetMotorEnabled (mEnableMotor);
+         }
       }
       
       public function IsMotorEnabled ():Boolean

@@ -3,7 +3,7 @@ package common.trigger {
    
    public class CoreFunctionDeclarations
    {
-      public static var sCoreFunctionDeclarations:Array = new Array (CoreFunctionIds.NumPlayerFunctions);
+      public static var sCoreFunctionDeclarations:Array = new Array (IdPool.NumPlayerFunctions);
       
       private static var mInitialized:Boolean = false;
       
@@ -1272,6 +1272,67 @@ package common.trigger {
                      null
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetMass,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Mass, 
+                     ]
+                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetMass,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Mass, 
+         //               ValueTypeDefine.ValueType_Boolean, 
+         //            ],
+         //            null
+         //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Inertia, 
+                     ]
+                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetInertia,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Inertia, 
+         //               ValueTypeDefine.ValueType_Boolean, 
+         //            ],
+         //            null
+         //         );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetLinearVelocity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY, 
+                     ],
+                     null
+                  );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForce,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -1312,6 +1373,45 @@ package common.trigger {
                      null
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulse,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularImpulse, 
+                     ],
+                     null
+                  );
          
          // ...
          
@@ -1421,6 +1521,21 @@ package common.trigger {
       
       // game / entity / joint
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -1516,7 +1631,7 @@ package common.trigger {
       
       private static function RegisterCoreDeclaration (functionId:int, paramValueTypes:Array, returnValueTypes:Array):void
       {
-         if (functionId < 0 || functionId >= CoreFunctionIds.NumPlayerFunctions)
+         if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return;
          
          sCoreFunctionDeclarations [functionId] = new FunctionDeclaration (functionId, paramValueTypes, returnValueTypes);
@@ -1524,7 +1639,7 @@ package common.trigger {
       
       public static function GetCoreFunctionDeclaration (functionId:int):FunctionDeclaration
       {
-         if (functionId < 0 || functionId >= CoreFunctionIds.NumPlayerFunctions)
+         if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return null;
          
          if (! mInitialized)

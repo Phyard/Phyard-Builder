@@ -23,7 +23,7 @@ package Box2D {
          worldDef.collisionBroadPhase = null;
          //worldDef.collisionBroadPhase = new b2eBroadPhase_SweepAndPrune ();
          
-         var b2world:b2World = new b2World(worldDef);
+         var b2world:b2World = b2World.b2World_FromWorldDefine (worldDef);
          
          return b2world;
       }

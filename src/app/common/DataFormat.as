@@ -21,6 +21,8 @@ package common {
    import editor.entity.EntityJointHinge;
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointDistance;
+   import editor.entity.EntityJointSpring;
+   import editor.entity.EntityJointWeld;
    
    import editor.entity.SubEntityJointAnchor;
    
@@ -526,6 +528,13 @@ package common {
                   entityDefine.mSpringConstant = spring.GetSpringConstant ();
                   entityDefine.mBreakExtendedLength = spring.GetBreakExtendedLength ();
                   //<<
+               }
+               else  if (editorEntity is editor.entity.EntityJointWeld)
+               {
+                  var weld:editor.entity.EntityJointWeld = editorEntity as editor.entity.EntityJointWeld;
+                  
+                  entityDefine.mEntityType = Define.EntityType_JointWeld;
+                  entityDefine.mAnchorEntityIndex = editorWorld.GetEntityCreationId ( weld.GetAnchor () );
                }
                
                if (joint != null)

@@ -110,6 +110,12 @@ public static function Create(def:b2JointDef, allocator:b2BlockAllocator = null)
 
 	default:
 		//b2Assert(false);
+		//>>hacking
+		if (mCustomJointCreateFunction != null)
+		{
+			joint = mCustomJointCreateFunction (def);
+		}
+		//<
 		break;
 	}
 
@@ -160,6 +166,12 @@ public static function Destroy (joint:b2Joint, allocator:b2BlockAllocator = null
 
 	default:
 		//b2Assert(false);
+		//>>hacking
+		if (mCustomJointDestroyFunction != null)
+		{
+			mCustomJointDestroyFunction (joint);
+		}
+		//<<
 		break;
 	}
 }

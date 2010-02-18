@@ -167,6 +167,10 @@ package player.entity {
          {
             mRebuildAppearanceFunc = RebuildAppearance_Fixed;
          }
+         else if (mJoint is EntityJointWeld)
+         {
+            mRebuildAppearanceFunc = RebuildAppearance_Fixed;
+         }
          else 
          {
             mRebuildAppearanceFunc = RebuildAppearance_General;
@@ -185,7 +189,10 @@ package player.entity {
 
       private function RebuildAppearance_Fixed ():void
       {
-         //DrawCircle (5);
+         DrawCircle (5, true);
+         var xy:Number = 5 * 0.707;
+         DrawLine (-xy, -xy, xy, xy);
+         DrawLine (-xy, xy, xy, -xy);
       }
 
       private function RebuildAppearance_General ():void
@@ -204,6 +211,19 @@ package player.entity {
                   1, // border thickness
                   filled, // draw background
                   0xFFFFFF // filled color
+               );
+      }
+
+      private function DrawLine (x1:Number, y1:Number, x2:Number, y2:Number):void
+      {
+         GraphicsUtil.DrawLine (
+                  mAnchorShape,
+                  x1,
+                  y1,
+                  x2,
+                  y2,
+                  0x0, 
+                  1
                );
       }
    }

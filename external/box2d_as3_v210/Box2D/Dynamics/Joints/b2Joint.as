@@ -340,6 +340,9 @@ package Box2D.Dynamics.Joints
 			}
 		}
 		
+		public static var mCustomJointCreateFunction:Function = null;
+		public static var mCustomJointDestroyFunction:Function = null;
+		
 	} // class
 } // package
 //#endif

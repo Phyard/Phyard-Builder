@@ -130,7 +130,7 @@ package player.entity {
       
       override public function ConfirmConnectedShapes ():void
       {
-         ConfirmConnectedShapes_NonHinge (mAnchor1.GetPositionX (), mAnchor1.GetPositionY (), mAnchor2.GetPositionX (), mAnchor2.GetPositionY ());
+         ConfirmConnectedShapes_TwoAnchors (mAnchor1.GetPositionX (), mAnchor1.GetPositionY (), mAnchor2.GetPositionX (), mAnchor2.GetPositionY ());
       }
       
       override protected function RebuildJointPhysicsInternal ():void

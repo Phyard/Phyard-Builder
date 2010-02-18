@@ -25,6 +25,7 @@ package common {
    import player.entity.EntityJointSlider;
    import player.entity.EntityJointDistance;
    import player.entity.EntityJointSpring;
+   import player.entity.EntityJointWeld;
    
    import player.entity.SubEntity;
    import player.entity.SubEntityJointAnchor;
@@ -187,6 +188,9 @@ package common {
                   break;
                case Define.EntityType_JointSpring:
                   entity = new EntityJointSpring (playerWorld);
+                  break;
+               case Define.EntityType_JointWeld:
+                  entity = new EntityJointWeld (playerWorld);
                   break;
                
             // joint anchor

@@ -7,23 +7,27 @@ package editor.mode {
    import editor.WorldView;
    
    
-   import editor.entity.EntityJointSlider;
-   import editor.entity.SubEntitySliderAnchor;
+   import editor.entity.EntityJoint;
+   import editor.entity.SubEntityJointAnchor;
    
    import common.Define;
    
-   public class ModeCreateSlider extends Mode
+   public class ModeCreateJoint extends Mode
    {
-      public function ModeCreateSlider (mainView:WorldView)
+      private var mEntityCreateFunction:Function = null;
+      
+      public function ModeCreateJoint (mainView:WorldView, createFunc:Function)
       {
          super (mainView);
+         
+         mEntityCreateFunction = createFunc;
       }
       
       private var mCurrrentStep:int = 0;
       private var mStartX:Number = 0;
       private var mStartY:Number = 0;
       
-      private var mEntityJointSlider:EntityJointSlider = null;
+      private var mEntityJoint:EntityJoint = null;
       
       override public function Initialize ():void
       {
@@ -39,48 +43,68 @@ package editor.mode {
       
       protected function ResetSession (isCancelled:Boolean):void
       {
-         if (isCancelled && mEntityJointSlider != null)
-            mMainView.DestroyEntity (mEntityJointSlider);
+         if (isCancelled && mEntityJoint != null)
+            mMainView.DestroyEntity (mEntityJoint);
          
-         mEntityJointSlider = null;
+         mEntityJoint = null;
       }
       
       protected function StartSession ():void
       {
          ResetSession (true);
          
-         mEntityJointSlider = mMainView.CreateSlider (0, 0, 0, 0);
-         if (mEntityJointSlider == null)
+         mEntityJoint = mEntityCreateFunction ();
+         if (mEntityJoint == null)
          {
             Reset ();
-            return
+            return;
          }
          
-         mEntityJointSlider.GetAnchor1 ().visible = false;
-         mEntityJointSlider.GetAnchor2 ().visible = false;
-         mEntityJointSlider.visible = false;
+         var anchors:Array = mEntityJoint.GetSubEntities ();
+         var anchor1:SubEntityJointAnchor = anchors [0] as SubEntityJointAnchor;
+         var anchor2:SubEntityJointAnchor = anchors.length < 2 ? null : anchors [1] as SubEntityJointAnchor;
+         
+         mEntityJoint.visible = false;
+         anchor1.visible = false;
+         if (anchor2 != null)
+         {
+           anchor2.visible = false;
+         }
       }
       
       protected function UpdateSession (posX:Number, posY:Number):void
       {
+         var anchors:Array = mEntityJoint.GetSubEntities ();
+         var anchor1:SubEntityJointAnchor = anchors [0] as SubEntityJointAnchor;
+         var anchor2:SubEntityJointAnchor = anchors.length < 2 ? null : anchors [1] as SubEntityJointAnchor;
+         
          if (mCurrrentStep == 0)
          {
-            mEntityJointSlider.GetAnchor1 ().visible = true;
-            mEntityJointSlider.GetAnchor2 ().visible = false;
-            mEntityJointSlider.visible = false;
+            mEntityJoint.visible = false;
+            anchor1.visible = true;
+            if (anchor2 != null)
+            {
+               anchor2.visible = false;
+            }
             
-            mEntityJointSlider.GetAnchor1 ().SetPosition (posX, posY);
+            anchor1.SetPosition (posX, posY);
          }
          else
          {
-            mEntityJointSlider.GetAnchor1 ().visible = true;
-            mEntityJointSlider.GetAnchor2 ().visible = true;
-            mEntityJointSlider.visible = true;
-            
-            mEntityJointSlider.GetAnchor2 ().SetPosition (posX, posY);
+            mEntityJoint.visible = true;
+            anchor1.visible = true;
+            if (anchor2 != null)
+            {
+               anchor2.visible = true;
+               anchor2.SetPosition (posX, posY);
+            }
+            else
+            {
+               anchor1.SetPosition (posX, posY);
+            }
          }
          
-         mEntityJointSlider.NotifyAnchorPositionChanged ();
+         mEntityJoint.NotifyAnchorPositionChanged ();
          
          mMainView.UpdateSelectedEntityInfo ();
       }
@@ -89,8 +113,15 @@ package editor.mode {
       {
          UpdateSession (endX, endY);
          
-         mEntityJointSlider.GetAnchor1 ().UpdateSelectionProxy ();
-         mEntityJointSlider.GetAnchor2 ().UpdateSelectionProxy ();
+         var anchors:Array = mEntityJoint.GetSubEntities ();
+         var anchor1:SubEntityJointAnchor = anchors [0] as SubEntityJointAnchor;
+         var anchor2:SubEntityJointAnchor = anchors.length < 2 ? null : anchors [1] as SubEntityJointAnchor;
+         
+         anchor1.UpdateSelectionProxy ();
+         if (anchor2 != null)
+         {
+            anchor2.UpdateSelectionProxy ();
+         }
          
          ResetSession (false);
          
@@ -115,7 +146,7 @@ package editor.mode {
       
       override public function OnMouseMove (mouseX:Number, mouseY:Number):void
       {
-         if (mEntityJointSlider == null)
+         if (mEntityJoint == null)
             return;
          
          UpdateSession (mouseX, mouseY);
@@ -123,7 +154,7 @@ package editor.mode {
       
       override public function OnMouseUp (mouseX:Number, mouseY:Number):void
       {
-         if (mEntityJointSlider == null)
+         if (mEntityJoint == null)
             return;
          
          if (mCurrrentStep == 0) // this is caused by dragging mouse from out of world field.

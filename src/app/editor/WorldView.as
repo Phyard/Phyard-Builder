@@ -63,10 +63,7 @@ package editor {
    import editor.mode.ModeCreatePolygon;
    import editor.mode.ModeCreatePolyline;
    
-   import editor.mode.ModeCreateHinge;
-   import editor.mode.ModeCreateDistance;
-   import editor.mode.ModeCreateSlider;
-   import editor.mode.ModeCreateSpring;
+   import editor.mode.ModeCreateJoint;
    
    import editor.mode.ModePlaceCreateEntitiy;
    
@@ -102,6 +99,7 @@ package editor {
    import editor.entity.EntityJointHinge;
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointSpring;
+   import editor.entity.EntityJointWeld;
    
    import editor.entity.SubEntityJointAnchor;
    import editor.entity.SubEntityHingeAnchor;
@@ -835,6 +833,7 @@ package editor {
       public var mButtonCreateJointDistance:Button;
       public var mButtonCreateJointSpring:Button;
       public var mButtonCreateJointWeld:Button;
+      public var mButtonCreateJointDummy:Button;
       
       public var mButtonCreateText:Button;
       public var mButtonCreateGravityController:Button;
@@ -997,19 +996,20 @@ package editor {
          // joints
             
             case mButtonCreateJointHinge:
-               SetCurrentCreateMode ( new ModeCreateHinge (this) );
+               SetCurrentCreateMode ( new ModeCreateJoint (this, CreateHinge) );
                break;
             case mButtonCreateJointSlider:
-               SetCurrentCreateMode ( new ModeCreateSlider (this) );
+               SetCurrentCreateMode ( new ModeCreateJoint (this, CreateSlider) );
                break;
             case mButtonCreateJointDistance:
-               SetCurrentCreateMode ( new ModeCreateDistance (this) );
+               SetCurrentCreateMode ( new ModeCreateJoint (this, CreateDistance) );
                break;
             case mButtonCreateJointSpring:
-               SetCurrentCreateMode ( new ModeCreateSpring (this) );
+               SetCurrentCreateMode ( new ModeCreateJoint (this, CreateSpring) );
                break;
-            //case mButtonCreateJointWeld:
-            //   break;
+            case mButtonCreateJointWeld:
+               SetCurrentCreateMode ( new ModeCreateJoint (this, CreateWeld) );
+               break;
             
          // others
             
@@ -1454,7 +1454,16 @@ package editor {
          
          DestroyDesignPlayer ();
          
-         var useQuickMethod:Boolean = false;
+         var useQuickMethod:Boolean;
+         
+         if (Compile::Is_Debugging)
+         {
+            useQuickMethod = true;
+         }
+         else
+         {
+            useQuickMethod = false;
+         }
          
          if (useQuickMethod)
             SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine));
@@ -2754,53 +2763,53 @@ package editor {
          if (hinge == null)
             return null;
             
-         hinge.GetAnchor ().SetPosition (posX, posY);
-         
          SetTheOnlySelectedEntity (hinge.GetAnchor ());
          
          return hinge;
       }
       
-      public function CreateDistance (posX1:Number, posY1:Number, posX2:Number, posY2:Number):EntityJointDistance
+      public function CreateDistance ():EntityJointDistance
       {
          var distaneJoint:EntityJointDistance = mEditorWorld.CreateEntityJointDistance ();
          if (distaneJoint == null)
             return null;
-         
-         distaneJoint.GetAnchor1 ().SetPosition (posX1, posY1);
-         distaneJoint.GetAnchor2 ().SetPosition (posX2, posY2);
          
          SetTheOnlySelectedEntity (distaneJoint.GetAnchor2 ());
          
          return distaneJoint;
       }
       
-      public function CreateSlider (posX1:Number, posY1:Number, posX2:Number, posY2:Number):EntityJointSlider
+      public function CreateSlider ():EntityJointSlider
       {
          var slider:EntityJointSlider = mEditorWorld.CreateEntityJointSlider ();
          if (slider == null)
             return null;
-         
-         slider.GetAnchor1 ().SetPosition (posX1, posY1);
-         slider.GetAnchor2 ().SetPosition (posX2, posY2);
          
          SetTheOnlySelectedEntity (slider.GetAnchor2 ());
          
          return slider;
       }
       
-      public function CreateSpring (posX1:Number, posY1:Number, posX2:Number, posY2:Number):EntityJointSpring
+      public function CreateSpring ():EntityJointSpring
       {
          var spring:EntityJointSpring = mEditorWorld.CreateEntityJointSpring ();
          if (spring == null)
             return null;
          
-         spring.GetAnchor1 ().SetPosition (posX1, posY1);
-         spring.GetAnchor2 ().SetPosition (posX2, posY2);
-         
          SetTheOnlySelectedEntity (spring.GetAnchor2 ());
          
          return spring;
+      }
+      
+      public function CreateWeld ():EntityJointWeld
+      {
+         var weld:EntityJointWeld = mEditorWorld.CreateEntityJointWeld ();
+         if (weld == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (weld.GetAnchor ());
+         
+         return weld;
       }
       
       public function CreateText (options:Object = null):EntityShapeText

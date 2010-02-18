@@ -155,14 +155,14 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 
 	// Solve point-to-point constraint
 	//b2Vec2 Cdot1 = vB + b2Cross(wB, rB) - vA - b2Cross(wA, rA);
-	Cdot.x = vB.x - vA.x;
-	Cdot.y = vB.y - vA.y;
+	Cdot1.x = vB.x - vA.x;
+	Cdot1.y = vB.y - vA.y;
 	b2Math.b2Cross_ScalarAndVector2_Output (wB, rB, tempV);
-	Cdot.x += tempV.x;
-	Cdot.y += tempV.y;
+	Cdot1.x += tempV.x;
+	Cdot1.y += tempV.y;
 	b2Math.b2Cross_ScalarAndVector2_Output (wA, rA, tempV);
-	Cdot.x -= tempV.x;
-	Cdot.y -= tempV.y;
+	Cdot1.x -= tempV.x;
+	Cdot1.y -= tempV.y;
 	var Cdot2:Number = wB - wA;
 	//b2Vec3 Cdot(Cdot1.x, Cdot1.y, Cdot2);
 	Cdot.Set  (-Cdot1.x, -Cdot1.y, -Cdot2); // here already negatived, so below will not

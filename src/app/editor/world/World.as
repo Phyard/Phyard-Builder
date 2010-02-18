@@ -28,6 +28,7 @@ package editor.world {
    import editor.entity.EntityJointHinge;
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointSpring;
+   import editor.entity.EntityJointWeld;
    
    import editor.entity.SubEntityJointAnchor;
    
@@ -735,6 +736,17 @@ package editor.world {
          addChild (spring);
          
          return spring;
+      }
+      
+      public function CreateEntityJointWeld():EntityJointWeld
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+            
+         var weld:EntityJointWeld = new EntityJointWeld (this);
+         addChild (weld);
+         
+         return weld;
       }
       
       public function CreateEntityShapeText ():EntityShapeText

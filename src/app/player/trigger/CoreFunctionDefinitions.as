@@ -1162,8 +1162,8 @@ package player.trigger {
       public static function FollowCameraWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-            return;
+         //if (shape == null)
+         //   return;
          
          valueSource = valueSource.mNextValueSourceInList;
          var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
@@ -1178,8 +1178,8 @@ package player.trigger {
       public static function FollowCameraCenterXWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-            return;
+         //if (shape == null)
+         //   return;
          
          valueSource = valueSource.mNextValueSourceInList;
          var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
@@ -1190,8 +1190,8 @@ package player.trigger {
       public static function FollowCameraCenterYWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-         if (shape == null)
-            return;
+         //if (shape == null)
+         //   return;
          
          valueSource = valueSource.mNextValueSourceInList;
          var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
@@ -1913,10 +1913,13 @@ package player.trigger {
          if (shape == null)
             return;
          
+         //if (shape.IsDestroyedAlready ())
+         //   return;
+         
          valueSource = valueSource.mNextValueSourceInList;
          var ccat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
-         if (ccat == null)
-            return;
+         //if (ccat == null)
+         //   return;
          
          shape.SetCollisionCategory (ccat);
       }

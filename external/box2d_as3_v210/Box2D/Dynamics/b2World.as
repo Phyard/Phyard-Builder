@@ -21,7 +21,6 @@
 
 package Box2D.Dynamics
 {
-
 	//#include <Box2D/Common/b2Math.h>
 	//#include <Box2D/Common/b2BlockAllocator.h>
 	//#include <Box2D/Common/b2StackAllocator.h>
@@ -404,6 +403,13 @@ package Box2D.Dynamics
 		public function GetAutoClearForces():Boolean
 		{
 			return (m_flags & e_clearForces) == e_clearForces;
+		}
+
+		// ...
+		public static function SetCustomJointCreateAndDestroyFunction (createFunc:Function, destroyFunc:Function):void
+		{
+			b2Joint.mCustomJointCreateFunction  = createFunc;
+			b2Joint.mCustomJointDestroyFunction = destroyFunc;
 		}
 
 	} // class

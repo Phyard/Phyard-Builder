@@ -297,6 +297,7 @@ package common {
       public static const EntityType_JointSlider:int = 61;
       public static const EntityType_JointDistance:int = 62;
       public static const EntityType_JointSpring:int = 63; // from v1.01
+      public static const EntityType_JointWeld:int = 64; // from v1.09
       
       public static const SubEntityType_JointAnchor:int = 100;
       
@@ -340,8 +341,9 @@ package common {
       {
          return   entityType == EntityType_JointHinge 
                || entityType == EntityType_JointSlider 
-               || entityType == EntityType_JointDistance
+               || entityType == EntityType_JointDistance 
                || entityType == EntityType_JointSpring 
+               || entityType == EntityType_JointWeld 
                ;
       }
       

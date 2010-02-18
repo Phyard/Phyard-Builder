@@ -99,15 +99,15 @@ package editor.entity {
          super.Destroy ();
       }
       
-      public function GetAnchor ():SubEntityHingeAnchor
-      {
-         return mAnchor;
-      }
-      
       override public function UpdateJointPosition ():void
       {
          SetPosition (mAnchor.x, mAnchor.y);
          SetRotation (0.0);
+      }
+      
+      public function GetAnchor ():SubEntityHingeAnchor
+      {
+         return mAnchor;
       }
       
 //====================================================================

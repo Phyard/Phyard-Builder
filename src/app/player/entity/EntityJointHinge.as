@@ -182,17 +182,11 @@ package player.entity {
       {
          if (mPhysicsProxy != null)
          {
-         //trace ("---------------");
-         //trace ("mProxyJointHinge.GetReactionForce (mWorld.GetLastSimulatedStepInterval_Inv ()) = " + mProxyJointHinge.GetReactionForce (mWorld.GetLastSimulatedStepInterval_Inv ()));
-         //trace ("mProxyJointHinge.GetReactionTorque (mWorld.GetLastSimulatedStepInterval_Inv ()) = " + mProxyJointHinge.GetReactionTorque (mWorld.GetLastSimulatedStepInterval_Inv ()));
-         //trace ("mWorld.GetLastSimulatedStepInterval_Inv () = " + mWorld.GetLastSimulatedStepInterval_Inv ());
-         //trace ("mMaxMotorTorque = " + mMaxMotorTorque);
-            
-            if (mBreakable && mProxyJointHinge.GetReactionTorque (mWorld.GetLastSimulatedStepInterval_Inv ()) > mMaxMotorTorque)
-            {
-               Destroy ();
-               return;
-             }
+            //if (mBreakable && mProxyJointHinge.GetReactionTorque (mWorld.GetLastSimulatedStepInterval_Inv ()) > mMaxMotorTorque)
+            //{
+            //   Destroy ();
+            //   return;
+            //}
          }
          
          DelayUpdateAppearance ();
@@ -246,7 +240,7 @@ package player.entity {
       
       override public function ConfirmConnectedShapes ():void
       {
-         ConfirmConnectedShapes_Hinge (mAnchor1.GetPositionX (), mAnchor1.GetPositionY ());
+         ConfirmConnectedShapes_OneAnchor (mAnchor1.GetPositionX (), mAnchor1.GetPositionY ());
       }
 
       override protected function RebuildJointPhysicsInternal ():void

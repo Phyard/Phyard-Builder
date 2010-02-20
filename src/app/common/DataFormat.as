@@ -23,6 +23,7 @@ package common {
    import editor.entity.EntityJointDistance;
    import editor.entity.EntityJointSpring;
    import editor.entity.EntityJointWeld;
+   import editor.entity.EntityJointDummy;
    
    import editor.entity.SubEntityJointAnchor;
    
@@ -535,6 +536,14 @@ package common {
                   
                   entityDefine.mEntityType = Define.EntityType_JointWeld;
                   entityDefine.mAnchorEntityIndex = editorWorld.GetEntityCreationId ( weld.GetAnchor () );
+               }
+               else  if (editorEntity is editor.entity.EntityJointDummy)
+               {
+                  var dummy:editor.entity.EntityJointDummy = editorEntity as editor.entity.EntityJointDummy;
+                  
+                  entityDefine.mEntityType = Define.EntityType_JointDummy;
+                  entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( dummy.GetAnchor1 () );
+                  entityDefine.mAnchor2EntityIndex = editorWorld.GetEntityCreationId ( dummy.GetAnchor2 () );
                }
                
                if (joint != null)

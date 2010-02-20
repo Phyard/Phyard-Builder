@@ -417,7 +417,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Divide, math_package, "x / y (Divide)", "@&0 = $0 / $1", "@&0 = $0 / $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2"), 
+                             new VariableDefinitionNumber ("Number 2", null, {mDefaultValue: 1.0}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result 1"), 
@@ -426,7 +426,7 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Math_Modulo, math_package, "x % y (Modulo)", "@&0 = $0 % $1", "@&0 = $0 % $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2"), 
+                             new VariableDefinitionNumber ("Number 2", null, {mDefaultValue: 1.0}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result 1"), 
@@ -1209,7 +1209,7 @@ package editor.trigger {
                      null
                   );
          
-          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Background Color", "@Color (&0) = Set Background Color ($0)", null,
+          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Background Color", "@Color (&0) = Get Background Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                      ],
@@ -1217,7 +1217,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "Set Background Color", "@Get Background Color ($0, Color ($1))", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor, shape_appearance_package, "Set Background Color", "@Set Background Color ($0, Color ($1))", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                              new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
@@ -1551,7 +1551,7 @@ package editor.trigger {
                      null
                   );
          
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees, entity_joint_package, "Get Hinge Limits by Degrees", "@Degrees (&0, &1) = Get Limits of Hinge ($0)", null,
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees, entity_joint_package, "Get Hinge Limits By Degrees", "@Degrees (&0, &1) = Get Limits of Hinge ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                      ],

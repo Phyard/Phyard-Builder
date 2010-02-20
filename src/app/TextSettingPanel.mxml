@@ -9,20 +9,18 @@
       creationComplete="OnInitPanel()"
       >
       <mx:VBox height="100%" width="100%">
-         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/>
-            <mx:CheckBox id="CheckBox_Bold" label="Bold"/>
-            <mx:CheckBox id="CheckBox_Italic" label="Italic"/>
-            <mx:Label text="Font Size:"/>
-            <mx:ComboBox id="SelectList_FontSize"/>
-            <mx:Label text="Text Color:"/>
-            <mx:ColorPicker id="ColorPicker_TextColor" showTextField="true" selectedColor="0x000000"/>
-         </mx:HBox>
-         <mx:HBox width="100%">
-            <mx:Label text="The text:"/>
-            <mx:Spacer width="100%"/>
+         <mx:HBox width="550">
             <mx:CheckBox id="CheckBox_AdaptiveBackgroundSize" label="Adaptive Background Size" click="OnChangeAdaptiveBackgroundSize ()"/>
             <mx:CheckBox id="CheckBox_WordWrap" label="Word Wrap"/>
+            <mx:Spacer width="5"/>
+            <mx:ComboBox id="SelectList_FontSize"/>
+            <mx:ColorPicker id="ColorPicker_TextColor" showTextField="true" selectedColor="0x000000"/>
+            <mx:Button id="Button_Bold" toolTip="Bold" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('res/dialog/text_bold.png')" downIcon="@Embed('res/dialog/text_bold-sel.png')" overIcon="@Embed('res/dialog/text_bold.png')" selectedUpIcon="@Embed('res/dialog/text_bold-sel.png')" selectedOverIcon="@Embed('res/dialog/text_bold-sel.png')" selectedDownIcon="@Embed('res/dialog/text_bold.png')" />
+            <mx:Button id="Button_Italic" toolTip="Italic" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('res/dialog/text_italic.png')" downIcon="@Embed('res/dialog/text_italic-sel.png')" overIcon="@Embed('res/dialog/text_italic.png')" selectedUpIcon="@Embed('res/dialog/text_italic-sel.png')" selectedOverIcon="@Embed('res/dialog/text_italic-sel.png')" selectedDownIcon="@Embed('res/dialog/text_italic.png')" />
+            <mx:Button id="Button_Underlined" toolTip="Italic" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('res/dialog/text_underlined.png')" downIcon="@Embed('res/dialog/text_underlined-sel.png')" overIcon="@Embed('res/dialog/text_underlined.png')" selectedUpIcon="@Embed('res/dialog/text_underlined-sel.png')" selectedOverIcon="@Embed('res/dialog/text_underlined-sel.png')" selectedDownIcon="@Embed('res/dialog/text_underlined.png')" />
+            <mx:Button id="Button_AlignLeft" change="OnTextAlignChanged (event);" toolTip="Align Left" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('res/dialog/text_align_left.png')" downIcon="@Embed('res/dialog/text_align_left-sel.png')" overIcon="@Embed('res/dialog/text_align_left.png')" selectedUpIcon="@Embed('res/dialog/text_align_left-sel.png')" selectedOverIcon="@Embed('res/dialog/text_align_left-sel.png')" selectedDownIcon="@Embed('res/dialog/text_align_left.png')" />
+            <mx:Button id="Button_AlignCenter" change="OnTextAlignChanged (event);" toolTip="Align Center" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('res/dialog/text_align_center.png')" downIcon="@Embed('res/dialog/text_align_center-sel.png')" overIcon="@Embed('res/dialog/text_align_center.png')" selectedUpIcon="@Embed('res/dialog/text_align_center-sel.png')" selectedOverIcon="@Embed('res/dialog/text_align_center-sel.png')" selectedDownIcon="@Embed('res/dialog/text_align_center.png')" />
+            <mx:Button id="Button_AlignRight" change="OnTextAlignChanged (event);" toolTip="Align Right" toggle="true" focusEnabled="false" fontSize="8" width="20" height="20" cornerRadius="0" upIcon="@Embed('res/dialog/text_align_right.png')" downIcon="@Embed('res/dialog/text_align_right-sel.png')" overIcon="@Embed('res/dialog/text_align_right.png')" selectedUpIcon="@Embed('res/dialog/text_align_right-sel.png')" selectedOverIcon="@Embed('res/dialog/text_align_right-sel.png')" selectedDownIcon="@Embed('res/dialog/text_align_right.png')" />
          </mx:HBox>
          <mx:HBox width="100%">
             <mx:TextArea id="TextArea_Text" width="100%" height="200" editable="true" wordWrap="true">
@@ -35,6 +33,8 @@
 
    <mx:Script>
      <![CDATA[       
+         
+         import flash.events.Event;
          
          import common.Define;
          
@@ -76,6 +76,28 @@
             }
          }
          
+         private function OnTextAlignChanged (event:Event):void
+         {
+            if (event.target == Button_AlignRight)
+            {
+               Button_AlignLeft.selected = false;
+               Button_AlignCenter.selected = false;
+               Button_AlignRight.selected = true;
+            }
+            else if (event.target == Button_AlignCenter)
+            {
+               Button_AlignLeft.selected = false;
+               Button_AlignCenter.selected = true;
+               Button_AlignRight.selected = false;
+            }
+            else
+            {
+               Button_AlignLeft.selected = true;
+               Button_AlignCenter.selected = false;
+               Button_AlignRight.selected = false;
+            }
+         }
+         
          public function SetValues (inputValues:Object):void
          {
             var selectedIndex:int = 2;
@@ -88,11 +110,19 @@
             SelectList_FontSize.dataProvider = mFontSizes;
             SelectList_FontSize.selectedIndex = selectedIndex;
 
-            CheckBox_Bold.selected = inputValues.mIsBold;
-            CheckBox_Italic.selected = inputValues.mIsItalic;
+            Button_Bold.selected = inputValues.mIsBold;
+            Button_Italic.selected = inputValues.mIsItalic;
+            Button_Underlined.selected = inputValues.mIsUnderlined;
             CheckBox_WordWrap.selected = inputValues.mWordWrap;
             ColorPicker_TextColor.selectedColor = inputValues.mTextColor;
             CheckBox_AdaptiveBackgroundSize.selected = inputValues.mAdaptiveBackgroundSize;
+            
+            if (inputValues.mTextAlign == Define.TextAlign_Right)
+               Button_AlignRight.selected = true;
+            else if (inputValues.mTextAlign == Define.TextAlign_Center)
+               Button_AlignCenter.selected = true;
+            else
+               Button_AlignLeft.selected = true;
             
             TextArea_Text.text = inputValues.mText;
 
@@ -105,8 +135,16 @@
             returnValues.mWordWrap = CheckBox_WordWrap.selected;
             returnValues.mTextColor = ColorPicker_TextColor.selectedColor;
             returnValues.mFontSize = mFontSizes [SelectList_FontSize.selectedIndex].label;
-            returnValues.mIsBold = CheckBox_Bold.selected;
-            returnValues.mIsItalic = CheckBox_Italic.selected;
+            returnValues.mIsBold = Button_Bold.selected;
+            returnValues.mIsItalic = Button_Italic.selected;
+            returnValues.mIsUnderlined = Button_Underlined.selected;
+            
+            if (Button_AlignRight.selected)
+               returnValues.mTextAlign = Define.TextAlign_Right;
+            else if (Button_AlignCenter.selected)
+               returnValues.mTextAlign = Define.TextAlign_Center;
+            else
+               returnValues.mTextAlign = Define.TextAlign_Left;
             
             returnValues.mText = TextArea_Text.text;
          }

@@ -64,6 +64,8 @@ package player.entity {
       private var mFontSize:uint = 10;
       private var mIsBold:Boolean = false;
       private var mIsItalic:Boolean = false;
+      private var mIsUnderlined:Boolean = false;
+      private var mTextAlign:int = Define.TextAlign_Left;
       
       public function GetText ():String
       {
@@ -145,6 +147,26 @@ package player.entity {
          mAdaptiveBackgroundSize = adapt;
       }
       
+      public function IsUnderlined ():Boolean
+      {
+         return mIsUnderlined;
+      }
+      
+      public function SetUnderlined (underlined:Boolean):void
+      {
+         mIsUnderlined = underlined;
+      }
+      
+      public function GetTextAlign ():int
+      {
+         return mTextAlign;
+      }
+      
+      public function SetTextAlign (align:int):void
+      {
+         mTextAlign = align;
+      }
+      
 //=============================================================
 //   update
 //=============================================================
@@ -217,7 +239,7 @@ package player.entity {
          var infoText:String = mText;
          
          if (infoText == null)
-            return null;
+            return "";
          
          infoText = TextUtil.GetHtmlEscapedText (infoText);
          infoText = TextUtil.ParseWikiString (infoText);
@@ -226,8 +248,10 @@ package player.entity {
             infoText = "<b>" + infoText + "</b>";
          if (mIsItalic)
             infoText = "<i>" + infoText + "</i>";
+         if (mIsUnderlined)
+            infoText = "<u>" + infoText + "</u>";
          
-         return "<font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font>";
+         return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
       }
    }
    

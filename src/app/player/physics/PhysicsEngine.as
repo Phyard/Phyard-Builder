@@ -20,7 +20,6 @@ package player.physics {
    import Box2D.b2WorldPool;
    
    import Box2dEx.Helper.b2eWorldAABBQueryCallback;
-   import Box2dEx.Helper.b2eWorldHelper;
    
    import player.entity.EntityShape;
    
@@ -49,6 +48,8 @@ package player.physics {
          
          mContactFilter = new _ContactFilter ();
          _b2World.SetContactFilter (mContactFilter);
+         
+         b2World.SetCustomJointCreateAndDestroyFunction (_JointFactory.Create, _JointFactory.Destroy);
       }
       
       public function SetShapeCollideFilterFunctions (shouldCollide:Function):void

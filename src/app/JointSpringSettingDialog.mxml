@@ -183,7 +183,7 @@
          {
             mParams.mJointValues.mPositionNonSense = true;
             mParams.mJointValues.mRotationNonSense = true;
-            mParams.mEnabledNonsense = true;
+            mParams.mJointValues.mEnabledNonsense = true;
             JointBasicSettingPanel.SetValues (mParams.mJointValues);
          }
          

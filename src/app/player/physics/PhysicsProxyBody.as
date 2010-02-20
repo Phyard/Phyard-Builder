@@ -8,8 +8,6 @@ package player.physics {
    import Box2D.Common.b2Vec2;
    import Box2D.Common.b2Settings;
    
-   import Box2dEx.Helper.b2eBodyHelper;
-   
    import player.entity.EntityBody;
    
    public class PhysicsProxyBody extends PhysicsProxy
@@ -26,7 +24,7 @@ package player.physics {
          bodyDef.position.Set (entityBody.GetPositionX (), entityBody.GetPositionY ());
          bodyDef.angle = entityBody.GetRotation ();
          
-         _b2Body = mPhysicsEngine._b2World.CreateBody (bodyDef);b2eBodyHelper;
+         _b2Body = mPhysicsEngine._b2World.CreateBody (bodyDef);
          
          _b2Body.SetUserData (this);
       }

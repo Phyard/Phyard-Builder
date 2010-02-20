@@ -20,7 +20,6 @@ package player.physics {
          super (phyEngine);
       }
       
-      
       override public function Destroy ():void
       {
          if (_b2DistanceJoint != null)

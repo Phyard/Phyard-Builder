@@ -36,6 +36,7 @@ package editor.entity {
          SetFontSize (12);
          SetTextColor (Define.ColorTextButtonText);
          SetAdaptiveBackgroundSize (true);
+         SetTextAlign (Define.TextAlign_Center);
          
          SetDrawBorder (true);
          SetDrawBackground (true);
@@ -64,13 +65,6 @@ package editor.entity {
             SetHalfWidth  (0.5 * mTextSprite.width + 15);
             SetHalfHeight (0.5 * mTextSprite.height + 3);
          }
-      }
-      
-      override protected function GetDisplayText ():String
-      {
-         var infoText:String = super.GetDisplayText ();
-         
-         return "<p align='center'>" + infoText + "</p>";;
       }
       
       public function UsingHandCursor ():Boolean

@@ -4,66 +4,20 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Slider Setting" width="600" creationComplete="OnInitPanel()">
+    title="Dummy Joint Setting" width="600">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Joint" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnMainSettingPanelCreationComplete()">
+         <mx:VBox width="100%">
 
-         <mx:HBox width="100%">
-            <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
-         </mx:HBox>
+            <mx:HBox width="100%">
+               <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
+            </mx:HBox>
 
-         <mx:Spacer height="6"/>
-         <mx:HBox width="100%">
-            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
-         </mx:HBox>
-         <mx:Spacer height="6"/>
-
-         <mx:HBox width="100%">
-            <mx:VBox width="38%">
-               <mx:HBox width="100%">
-                  <mx:Spacer width="2"/>
-                  <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limits"/>
-               </mx:HBox>
-               <mx:HBox width="100%">
-                  <mx:Spacer width="100%"/>
-                  <mx:Label id="Label_LowerTranslation" text="Lower Translation:" textAlign="right" width="120"/>
-                  <mx:TextInput id="Text_LowerTranslation" text="" width="60"/>
-                  <mx:Label text="(m)" textAlign="left"/>
-               </mx:HBox>
-               <mx:HBox width="100%">
-                  <mx:Spacer width="100%"/>
-                  <mx:Label id="Label_UpperTranslation" text="Upper Translation:" textAlign="right"/>
-                  <mx:TextInput id="Text_UpperTranslation" text="" width="60"/>
-                  <mx:Label text="(m)" textAlign="left"/>
-               </mx:HBox>
-               <mx:HBox width="100%">
-                  <mx:Spacer width="2"/>
-                  <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth between Limits"/>
-               </mx:HBox>
-            </mx:VBox>
-
-            <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%" width="2%"/>
-
-            <mx:VBox width="56%">
-               <mx:HBox width="100%">
-                  <mx:CheckBox id="CheckBox_MotorEnabled" label="Enable Motor"/>
-               </mx:HBox>
-               <mx:HBox width="100%">
-                  <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="120"/>
-                  <mx:TextInput id="Text_MotorSpeed" text="" width="100"/>
-                  <mx:Label text="(m/s)" textAlign="left"/>
-               </mx:HBox>
-               <mx:HBox width="100%">
-                  <mx:Label id="Label_MaxMotorFore" text="Max Motor Force:" textAlign="right" width="120"/>
-                  <mx:TextInput id="Text_MaxMotorForce" text="" width="100"/>
-                  <mx:Label text="   " textAlign="left"/>
-               </mx:HBox>
-            </mx:VBox>
-         </mx:HBox>
+         </mx:VBox>
       </mx:VBox>
 
       <mx:VBox label="Joint Basic" borderStyle="solid" height="100%" width="100%"
@@ -83,6 +37,7 @@
       </mx:VBox>
    </mx:TabNavigator>
 
+
    <mx:Spacer height="10"/>
 
    <mx:HBox width="100%">
@@ -97,21 +52,15 @@
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
-
    <mx:Script>
       <![CDATA[       
          import mx.managers.PopUpManager;
-         
          import common.Define;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          
          private var mParams:Object;
-         
-         private function OnInitPanel ():void
-         {
-         }
          
          public function SetValues (initialValues:Object):void
          {
@@ -125,17 +74,11 @@
             jointParams.mDisableBrealable = true;
             CommonSettingPanel.SetValues (jointParams);
             
-            CheckBox_LimitEnabled.selected = jointParams.mEnableLimit;
-            
-            Text_LowerTranslation.text = jointParams.mLowerTranslation;
-            Text_UpperTranslation.text = jointParams.mUpperTranslation;
-            
-            CheckBox_MotorEnabled.selected = jointParams.mEnableMotor;
-            Text_MotorSpeed.text = jointParams.mMotorSpeed;
-            
-            CheckBox_BackAndForth.selected = jointParams.mBackAndForth;
-            
-            Text_MaxMotorForce.text = jointParams.mMaxMotorForce;
+            OnUpdateComponents ();
+         }
+         
+         private function OnUpdateComponents ():void
+         {
          }
          
          private function OnJointBasicSettingPanelCreationComplete ():void
@@ -169,28 +112,6 @@
             var jointParams:Object = mParams.mJointValues;
             
             CommonSettingPanel.GetValues (jointParams);
-             
-            jointParams.mEnableLimit = CheckBox_LimitEnabled.selected;
-             
-            var lowerTranslation:Number = parseFloat (Text_LowerTranslation.text);
-            if ( ! isNaN (lowerTranslation) )
-               jointParams.mLowerTranslation = lowerTranslation;
-            
-            var upperTranslation:Number = parseFloat (Text_UpperTranslation.text);
-            if ( ! isNaN (upperTranslation) )
-               jointParams.mUpperTranslation = upperTranslation;
-            
-            jointParams.mEnableMotor = CheckBox_MotorEnabled.selected;
-             
-            var motorSpeeed:Number = parseFloat (Text_MotorSpeed.text);
-            if ( ! isNaN (motorSpeeed) )
-               jointParams.mMotorSpeed = motorSpeeed;
-            
-            jointParams.mBackAndForth = CheckBox_BackAndForth.selected;
-             
-            var maxMorptFore:Number = parseFloat (Text_MaxMotorForce.text);
-            if ( ! isNaN (maxMorptFore) )
-               jointParams.mMaxMotorForce = maxMorptFore;
             
             if (JointBasicSettingPanel != null)
             {
@@ -202,14 +123,12 @@
                BasicSettingPanel.GetValues (mParams);
             }
             
-            //
-             
              PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose ();
              
-            if (OnConfirm != null)
+             if (OnConfirm != null)
                OnConfirm (mParams);
          }
          

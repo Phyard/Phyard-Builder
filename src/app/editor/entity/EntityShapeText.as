@@ -26,10 +26,15 @@ package editor.entity {
       private var mText:String;
       private var mWordWrap:Boolean = true;
       
+      // from v1.07
       private var mTextColor:uint = 0x000000;
       private var mFontSize:uint = 10;
       private var mIsBold:Boolean = false;
       private var mIsItalic:Boolean = false;
+      
+      // from v1.09
+      private var mIsUnderlined:Boolean = false;
+      private var mTextAlign:int = Define.TextAlign_Left;
       
       private var mAdaptiveBackgroundSize:Boolean = false;
       
@@ -100,8 +105,10 @@ package editor.entity {
             infoText = "<b>" + infoText + "</b>";
          if (mIsItalic)
             infoText = "<i>" + infoText + "</i>";
+         if (mIsUnderlined)
+            infoText = "<u>" + infoText + "</u>";
          
-         return "<font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font>";;
+         return "<p align='" + Define.GetTextAlignText (mTextAlign) + "'><font face='Verdana' size='" + mFontSize + "'>" + infoText + "</font></p>";
       }
       
       protected function RebuildTextSprite ():void
@@ -195,6 +202,26 @@ package editor.entity {
          mIsItalic = italic;
       }
       
+      public function IsUnderlined ():Boolean
+      {
+         return mIsUnderlined;
+      }
+      
+      public function SetUnderlined (underlined:Boolean):void
+      {
+         mIsUnderlined = underlined;
+      }
+      
+      public function GetTextAlign ():int
+      {
+         return mTextAlign;
+      }
+      
+      public function SetTextAlign (align:int):void
+      {
+         mTextAlign = align;
+      }
+      
       public function IsAdaptiveBackgroundSize ():Boolean
       {
          return mAdaptiveBackgroundSize;
@@ -231,6 +258,8 @@ package editor.entity {
          text.SetBold (IsBold ());
          text.SetItalic (IsItalic ());
          text.SetAdaptiveBackgroundSize (IsAdaptiveBackgroundSize ());
+         text.SetTextAlign (GetTextAlign ());
+         text.SetUnderlined (IsUnderlined ());
       }
       
    }

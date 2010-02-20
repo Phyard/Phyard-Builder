@@ -180,6 +180,9 @@
                            <mx:Button id="Button_CreateJoint_Distance" toolTip="Create Distance Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_distance.png')" downIcon="@Embed('res/create/joint-sel_distance.png')" overIcon="@Embed('res/create/joint_distance.png')" selectedUpIcon="@Embed('res/create/joint-sel_distance.png')" selectedOverIcon="@Embed('res/create/joint-sel_distance.png')" selectedDownIcon="@Embed('res/create/joint_distance.png')"   />
                            <mx:Button id="Button_CreateJoint_Spring" toolTip="Create Spring Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_spring.png')" downIcon="@Embed('res/create/joint-sel_spring.png')" overIcon="@Embed('res/create/joint_spring.png')" selectedUpIcon="@Embed('res/create/joint-sel_spring.png')" selectedOverIcon="@Embed('res/create/joint-sel_spring.png')" selectedDownIcon="@Embed('res/create/joint_spring.png')"   />
                            <mx:Button id="Button_CreateJoint_Weld" toolTip="Create Weld Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_weld.png')" downIcon="@Embed('res/create/joint-sel_weld.png')" overIcon="@Embed('res/create/joint_weld.png')" selectedUpIcon="@Embed('res/create/joint-sel_weld.png')" selectedOverIcon="@Embed('res/create/joint-sel_weld.png')" selectedDownIcon="@Embed('res/create/joint_weld.png')"   />
+                           <!--
+                           <mx:Button id="Button_CreateJoint_HingeSlider" toolTip="Create Slider Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_hinge_slider.png')" downIcon="@Embed('res/create/joint-sel_hinge_slider.png')" overIcon="@Embed('res/create/joint_hinge_slider.png')" selectedUpIcon="@Embed('res/create/joint-sel_hinge_slider.png')" selectedOverIcon="@Embed('res/create/joint-sel_hinge_slider.png')" selectedDownIcon="@Embed('res/create/joint_hinge_slider.png')"   />
+                           -->
                            <mx:Button id="Button_CreateJoint_Dummy" toolTip="Create Dummy Joint" focusEnabled="false" fontSize="8" left="5" top="5" width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_dummy.png')" downIcon="@Embed('res/create/joint-sel_dummy.png')" overIcon="@Embed('res/create/joint_dummy.png')" selectedUpIcon="@Embed('res/create/joint-sel_dummy.png')" selectedOverIcon="@Embed('res/create/joint-sel_dummy.png')" selectedDownIcon="@Embed('res/create/joint_dummy.png')"   />
                         </mx:Tile>
                         <mx:Spacer height="10"/>
@@ -433,6 +436,7 @@
                MainView.mButtonCreateJointDistance = Button_CreateJoint_Distance;
                MainView.mButtonCreateJointSpring = Button_CreateJoint_Spring;
                MainView.mButtonCreateJointWeld = Button_CreateJoint_Weld;
+               //MainView.mButtonCreateJointHingeSlider = Button_CreateJoint_HingeSlider;
                MainView.mButtonCreateJointDummy = Button_CreateJoint_Dummy;
                
                MainView.mButtonCreateText = Button_CreateText;
@@ -502,6 +506,7 @@
                Button_CreateJoint_Distance.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Spring.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Weld.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               //Button_CreateJoint_HingeSlider.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateJoint_Dummy.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
                Button_CreateText.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -601,6 +606,8 @@
                MainView.ShowSliderSettingDialog = ShowSliderSettingDialog;
                MainView.ShowSpringSettingDialog = ShowSpringSettingDialog;
                MainView.ShowDistanceSettingDialog = ShowDistanceSettingDialog;
+               MainView.ShowWeldSettingDialog = ShowWeldSettingDialog;
+               MainView.ShowDummySettingDialog = ShowDummySettingDialog;
                
                MainView.ShowCameraSettingDialog = ShowCameraSettingDialog;
                
@@ -1066,6 +1073,30 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:JointDistanceSettingDialog = new JointDistanceSettingDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowWeldSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:JointWeldSettingDialog = new JointWeldSettingDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowDummySettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:JointDummySettingDialog = new JointDummySettingDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (OnCloseDialog);

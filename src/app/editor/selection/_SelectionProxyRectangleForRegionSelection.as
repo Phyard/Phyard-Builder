@@ -10,8 +10,6 @@ package editor.selection {
    import Box2D.Collision.Shapes.*;
    import Box2D.Common.*;
    
-   import Box2dEx.Helper.b2eFixtureHelper;
-   
    public class _SelectionProxyRectangleForRegionSelection extends SelectionProxyRectangle 
    {
       public function _SelectionProxyRectangleForRegionSelection (selEngine:SelectionEngine):void

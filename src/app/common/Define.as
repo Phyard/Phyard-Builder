@@ -173,6 +173,20 @@ package common {
       
       public static const ColorTextBackground:uint = 0xFFFEFEFE; // if set as FFFFFF, no bakcground is painted, why?
       
+      public static const TextAlign_Left:int = 0;
+      public static const TextAlign_Center:int = 1;
+      public static const TextAlign_Right:int = 2;
+      
+      public static function GetTextAlignText (align:int):String
+      {
+         if (align == TextAlign_Right)
+            return "right";
+         else if (align == TextAlign_Center)
+            return "center";
+         else
+            return "left";
+      }
+      
 //===========================================================================
 // text button
 //===========================================================================
@@ -298,6 +312,7 @@ package common {
       public static const EntityType_JointDistance:int = 62;
       public static const EntityType_JointSpring:int = 63; // from v1.01
       public static const EntityType_JointWeld:int = 64; // from v1.09
+      public static const EntityType_JointDummy:int = 65; // from v1.09
       
       public static const SubEntityType_JointAnchor:int = 100;
       
@@ -344,6 +359,7 @@ package common {
                || entityType == EntityType_JointDistance 
                || entityType == EntityType_JointSpring 
                || entityType == EntityType_JointWeld 
+               || entityType == EntityType_JointDummy 
                ;
       }
       

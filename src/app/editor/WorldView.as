@@ -100,12 +100,15 @@ package editor {
    import editor.entity.EntityJointSlider;
    import editor.entity.EntityJointSpring;
    import editor.entity.EntityJointWeld;
+   import editor.entity.EntityJointDummy;
    
    import editor.entity.SubEntityJointAnchor;
    import editor.entity.SubEntityHingeAnchor;
    import editor.entity.SubEntitySliderAnchor;
    import editor.entity.SubEntityDistanceAnchor;
    import editor.entity.SubEntitySpringAnchor;
+   import editor.entity.SubEntityWeldAnchor;
+   import editor.entity.SubEntityDummyAnchor;
    
    import editor.entity.EntityUtility;
    import editor.entity.EntityUtilityCamera;
@@ -833,6 +836,7 @@ package editor {
       public var mButtonCreateJointDistance:Button;
       public var mButtonCreateJointSpring:Button;
       public var mButtonCreateJointWeld:Button;
+      public var mButtonCreateJointHingeSlider:Button;
       public var mButtonCreateJointDummy:Button;
       
       public var mButtonCreateText:Button;
@@ -1008,7 +1012,12 @@ package editor {
                SetCurrentCreateMode ( new ModeCreateJoint (this, CreateSpring) );
                break;
             case mButtonCreateJointWeld:
-               SetCurrentCreateMode ( new ModeCreateJoint (this, CreateWeld) );
+               SetCurrentCreateMode ( new ModeCreateJoint (this, CreateWeldJoint) );
+               break;
+            case mButtonCreateJointHingeSlider:
+               break;
+            case mButtonCreateJointDummy:
+               SetCurrentCreateMode ( new ModeCreateJoint (this, CreateDummyJoint) );
                break;
             
          // others
@@ -1504,10 +1513,14 @@ package editor {
       public var ShowShapeCircleSettingDialog:Function = null;
       public var ShowShapePolygonSettingDialog:Function = null;
       public var ShowShapePolylineSettingDialog:Function = null;
+      
       public var ShowHingeSettingDialog:Function = null;
       public var ShowSliderSettingDialog:Function = null;
       public var ShowSpringSettingDialog:Function = null;
       public var ShowDistanceSettingDialog:Function = null;
+      public var ShowWeldSettingDialog:Function = null;
+      public var ShowDummySettingDialog:Function = null;
+      
       public var ShowShapeTextSettingDialog:Function = null;
       public var ShowShapeTextButtonSettingDialog:Function = null;
       public var ShowShapeGravityControllerSettingDialog:Function = null;
@@ -1729,6 +1742,9 @@ package editor {
                   values.mIsBold = (shape as EntityShapeText).IsBold ();
                   values.mIsItalic = (shape as EntityShapeText).IsItalic ();
                   
+                  values.mIsUnderlined = (shape as EntityShapeText).IsUnderlined ();
+                  values.mTextAlign = (shape as EntityShapeText).GetTextAlign ();
+                  
                   values.mWordWrap = (shape as EntityShapeText).IsWordWrap ();
                   values.mAdaptiveBackgroundSize = (shape as EntityShapeText).IsAdaptiveBackgroundSize ();
                   
@@ -1874,6 +1890,18 @@ package editor {
                //<<
                
                ShowDistanceSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is SubEntityWeldAnchor)
+            {
+               var weld:EntityJointWeld = joint as EntityJointWeld;
+               
+               ShowWeldSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is SubEntityDummyAnchor)
+            {
+               var dummy:EntityJointDummy = joint as EntityJointDummy;
+               
+               ShowDummySettingDialog (values, SetEntityProperties);
             }
          }
          else if (entity is EntityUtility)
@@ -2801,7 +2829,7 @@ package editor {
          return spring;
       }
       
-      public function CreateWeld ():EntityJointWeld
+      public function CreateWeldJoint ():EntityJointWeld
       {
          var weld:EntityJointWeld = mEditorWorld.CreateEntityJointWeld ();
          if (weld == null)
@@ -2810,6 +2838,17 @@ package editor {
          SetTheOnlySelectedEntity (weld.GetAnchor ());
          
          return weld;
+      }
+      
+      public function CreateDummyJoint ():EntityJointDummy
+      {
+         var dummy:EntityJointDummy = mEditorWorld.CreateEntityJointDummy ();
+         if (dummy == null)
+            return null;
+         
+         SetTheOnlySelectedEntity (dummy.GetAnchor2 ());
+         
+         return dummy;
       }
       
       public function CreateText (options:Object = null):EntityShapeText
@@ -3614,6 +3653,9 @@ package editor {
                   (shape as EntityShapeText).SetWordWrap (params.mWordWrap);
                   (shape as EntityShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
                   
+                  (shape as EntityShapeText).SetUnderlined (params.mIsUnderlined);
+                  (shape as EntityShapeText).SetTextAlign (params.mTextAlign);
+                  
                   (shape as EntityShapeText).SetText (params.mText);
                   (shape as EntityShapeText).SetTextColor (params.mTextColor);
                   (shape as EntityShapeText).SetFontSize (params.mFontSize);
@@ -3763,6 +3805,14 @@ package editor {
                // 
                distance.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
                distance.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
+            }
+            else if (entity is SubEntityWeldAnchor)
+            {
+               var weld:EntityJointWeld = joint as EntityJointWeld;
+            }
+            else if (entity is SubEntityDummyAnchor)
+            {
+               var dummy:EntityJointDummy = joint as EntityJointDummy;
             }
             
             jointAnchor.GetMainEntity ().UpdateAppearance ();

@@ -32,6 +32,7 @@ package player.entity {
          SetBorderColor (Define.ColorTextButtonBorder);
          SetBorderThickness (2);
          SetTextColor (Define.ColorTextButtonText);
+         SetTextAlign (Define.TextAlign_Center);
          
          mAppearanceObjectsContainer.removeChild (mBackgroundShape); // added in rect
          mAppearanceObjectsContainer.removeChild (mBorderShape); // added in rect
@@ -180,13 +181,6 @@ package player.entity {
          mTextBitmap_MouseDown.bitmapData = mTextBitmap.bitmapData;
          mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseOver.width;
          mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseOver.height + 1;
-      }
-      
-      override protected function GetDisplayText ():String
-      {
-         var infoText:String = super.GetDisplayText ();
-         
-         return "<p align='center'>" + infoText + "</p>";;
       }
       
       override protected function RebuildBackgroundAndBorder (displayHalfWidth:Number, displayHalfHeight:Number, displayBorderThickness:Number):void

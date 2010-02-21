@@ -66,12 +66,21 @@ public function b2DistanceJoint (def:b2DistanceJointDef)
 	//<
 }
 
+private static var r1:b2Vec2 = new b2Vec2 ();
+private static var r2:b2Vec2 = new b2Vec2 ();
+private static var tempV:b2Vec2 = new b2Vec2 ();
+private static var P:b2Vec2 = new b2Vec2 ();
+
+private static var v1:b2Vec2 = new b2Vec2 ();
+private static var v2:b2Vec2 = new b2Vec2 ();
+private static var d:b2Vec2 = new b2Vec2 ();
+
 override public function InitVelocityConstraints (step:b2TimeStep):void
 {
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
 	
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
@@ -180,12 +189,12 @@ override public function InitVelocityConstraints (step:b2TimeStep):void
 
 override public function SolveVelocityConstraints (step:b2TimeStep):void
 {
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
-	var v1:b2Vec2 = new b2Vec2 ();
-	var v2:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
+	//var v1:b2Vec2 = new b2Vec2 ();
+	//var v2:b2Vec2 = new b2Vec2 ();
 	
 	//B2_NOT_USED(step);
 
@@ -226,11 +235,11 @@ override public function SolveVelocityConstraints (step:b2TimeStep):void
 
 override public function SolvePositionConstraints(baumgarte:Number):Boolean
 {
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var d:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var d:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
 
 	//B2_NOT_USED(baumgarte);
 

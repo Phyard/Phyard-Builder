@@ -76,7 +76,7 @@ package editor.trigger.entity {
             if (entity != null)
             {
                point = GetWorldPosition ();
-               GraphicsUtil.DrawLine (canvasSprite, point.x, point.y, entity.GetPositionX (), entity.GetPositionY ());
+               GraphicsUtil.DrawLine (canvasSprite, point.x, point.y, entity.GetLinkPointX (), entity.GetLinkPointY ());
             }
          }
       }

@@ -130,6 +130,17 @@ public function CreateProxy(aabb:b2AABB, userData:Object):int
 
 	InsertLeaf(proxyId);
 
+	// Rebalance if necessary.
+	var iterationCount:int = m_nodeCount >> 4;
+	var tryCount:int = 0;
+	var height:int = ComputeTreeHeight();
+	while (height > 64 && tryCount < 10)
+	{
+		Rebalance(iterationCount);
+		height = ComputeTreeHeight();
+		++tryCount;
+	}
+
 	return proxyId;
 }
 

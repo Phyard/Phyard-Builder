@@ -58,8 +58,6 @@ package player.entity {
          
          mSimpleButton.enabled = IsEnabled ();
          mSimpleButton.useHandCursor = true;
-         
-      trace ("mSimpleButton.enabled = " + mSimpleButton.enabled);
       }
       
 //=============================================================

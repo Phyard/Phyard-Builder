@@ -240,6 +240,9 @@ package Box2D.Collision
 					++i;
 				}
 			}
+
+			// Try to keep the tree balanced.
+			m_tree.Rebalance(4);
 		}
 
 		//template <typename T>

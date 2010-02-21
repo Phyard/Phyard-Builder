@@ -36,14 +36,14 @@ package editor.entity {
       {
          super.Rotate (centerX, centerY, dRadians, updateSelectionProxy);
          
-         GetMainEntity ().UpdateAppearance ();
+         (GetMainEntity () as EntityJoint).NotifyAnchorPositionChanged ();
       }
       
       override public function Scale (centerX:Number, centerY:Number, ratio:Number, updateSelectionProxy:Boolean = true):void
       {
          super.Scale (centerX, centerY, ratio, updateSelectionProxy);
          
-         GetMainEntity ().UpdateAppearance ();
+         (GetMainEntity () as EntityJoint).NotifyAnchorPositionChanged ();
       }
       
       

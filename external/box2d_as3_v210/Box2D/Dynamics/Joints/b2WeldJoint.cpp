@@ -55,12 +55,25 @@ public function b2WeldJoint(def:b2WeldJointDef)
 	m_impulse.SetZero();
 }
 
+private static var rA:b2Vec2 = new b2Vec2 ();
+private static var rB:b2Vec2 = new b2Vec2 ();
+private static var tempV:b2Vec2 = new b2Vec2 ();
+private static var P:b2Vec2 = new b2Vec2 ();
+
+private static var vA:b2Vec2 = new b2Vec2 ();
+private static var vB:b2Vec2 = new b2Vec2 ();
+private static var Cdot1:b2Vec2 = new b2Vec2 ();
+private static var Cdot:b2Vec3 = new b2Vec3 ();
+
+private static var C1:b2Vec2 = new b2Vec2 ();
+private static var C:b2Vec3 = new b2Vec3 ();
+
 override public function InitVelocityConstraints (step:b2TimeStep):void
 {
-	var rA:b2Vec2 = new b2Vec2 ();
-	var rB:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
+	//var rA:b2Vec2 = new b2Vec2 ();
+	//var rB:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
 
 	var bA:b2Body = m_bodyA;
 	var bB:b2Body = m_bodyB;
@@ -126,14 +139,14 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 {
 	//B2_NOT_USED(step);
 
-	var vA:b2Vec2 = new b2Vec2 ();
-	var vB:b2Vec2 = new b2Vec2 ();
-	var rA:b2Vec2 = new b2Vec2 ();
-	var rB:b2Vec2 = new b2Vec2 ();
-	var Cdot1:b2Vec2 = new b2Vec2 ();
-	var Cdot:b2Vec3 = new b2Vec3 ();
-	var P:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
+	//var vA:b2Vec2 = new b2Vec2 ();
+	//var vB:b2Vec2 = new b2Vec2 ();
+	//var rA:b2Vec2 = new b2Vec2 ();
+	//var rB:b2Vec2 = new b2Vec2 ();
+	//var Cdot1:b2Vec2 = new b2Vec2 ();
+	//var Cdot:b2Vec3 = new b2Vec3 ();
+	//var P:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
 
 	var bA:b2Body = m_bodyA;
 	var bB:b2Body = m_bodyB;
@@ -201,12 +214,12 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 {
 	//B2_NOT_USED(baumgarte);
 
-	var rA:b2Vec2 = new b2Vec2 ();
-	var rB:b2Vec2 = new b2Vec2 ();
-	var C1:b2Vec2 = new b2Vec2 ();
-	var C:b2Vec3 = new b2Vec3 ();
-	var P:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
+	//var rA:b2Vec2 = new b2Vec2 ();
+	//var rB:b2Vec2 = new b2Vec2 ();
+	//var C1:b2Vec2 = new b2Vec2 ();
+	//var C:b2Vec3 = new b2Vec3 ();
+	//var P:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
 
 	var bA:b2Body = m_bodyA;
 	var bB:b2Body = m_bodyB;

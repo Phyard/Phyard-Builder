@@ -25,7 +25,7 @@ package Box2D.Collision
 						proxyA:b2DistanceProxy, transformA:b2Transform,
 						proxyB:b2DistanceProxy, transformB:b2Transform):void
 		{
-			//b2Assert(0 <= cache->count && cache->count <= 3);
+			//b2Assert(0cache->count <= 3);
 			
 			// Copy data from cache.
 			m_count = cache.count;

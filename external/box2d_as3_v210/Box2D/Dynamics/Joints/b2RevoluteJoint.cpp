@@ -63,12 +63,33 @@ public function b2RevoluteJoint(def:b2RevoluteJointDef)
 	m_limitState = e_inactiveLimit;
 }
 
+private static var r1:b2Vec2 = new b2Vec2 ();
+private static var r2:b2Vec2 = new b2Vec2 ();
+private static var tempV:b2Vec2 = new b2Vec2 ();
+private static var P:b2Vec2 = new b2Vec2 ();
+
+private static var v1:b2Vec2 = new b2Vec2 ();
+private static var v2:b2Vec2 = new b2Vec2 ();
+private static var Cdot1:b2Vec2 = new b2Vec2 ();
+private static var CdotVec3:b2Vec3 = new b2Vec3 ();
+private static var CdotVec2:b2Vec2 = new b2Vec2 ();
+
+private static var CVec2:b2Vec2 = new b2Vec2 ();
+private static var impulse:b2Vec2 = new b2Vec2 ();
+private static var u:b2Vec2 = new b2Vec2 ();
+
+private static var K1:b2Mat22 = new b2Mat22 ();
+private static var K2:b2Mat22 = new b2Mat22 ();
+private static var K3:b2Mat22 = new b2Mat22 ();
+private static var K:b2Mat22 = new b2Mat22 ();
+
+
 override public function InitVelocityConstraints(step:b2TimeStep):void
 {
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
 	
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
@@ -110,7 +131,11 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	m_mass.col2.z = m_mass.col3.y;
 	m_mass.col3.z = i1 + i2;
 
-	m_motorMass = 1.0 / (i1 + i2);
+	m_motorMass = i1 + i2;
+	if (m_motorMass > 0.0)
+	{
+		m_motorMass = 1.0 / m_motorMass;
+	}
 
 	if (m_enableMotor == false)
 	{
@@ -181,19 +206,19 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 
 override public function SolveVelocityConstraints(step:b2TimeStep):void
 {
-	var v1:b2Vec2 = new b2Vec2 ();
-	var v2:b2Vec2 = new b2Vec2 ();
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
+	//var v1:b2Vec2 = new b2Vec2 ();
+	//var v2:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
 	
-	var P:b2Vec2 = new b2Vec2 ();
-	var Cdot1:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
+	//var Cdot1:b2Vec2 = new b2Vec2 ();
 	
-	var CdotVec3:b2Vec3 = new b2Vec3 ();
+	//var CdotVec3:b2Vec3 = new b2Vec3 ();
 	var impulseVec3:b2Vec3;
 	
-	var CdotVec2:b2Vec2 = new b2Vec2 ();
+	//var CdotVec2:b2Vec2 = new b2Vec2 ();
 	var impulseVec2:b2Vec2;
 	var reduce:b2Vec2;
 
@@ -347,12 +372,12 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 
 override public function SolvePositionConstraints(baumgarte:Number):Boolean
 {
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var CVec2:b2Vec2 = new b2Vec2 ();
-	var impulse:b2Vec2 = new b2Vec2 ();
-	var u:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var CVec2:b2Vec2 = new b2Vec2 ();
+	//var impulse:b2Vec2 = new b2Vec2 ();
+	//var u:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
 	
 	// TODO_ERIN block solve with limit.
 
@@ -428,9 +453,11 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 		{
 			// Use a particle solution (no rotation).
 			u.CopyFrom (CVec2); u.Normalize();
-			var k:Number = invMass1 + invMass2;
-			//b2Assert(k > b2_epsilon);
-			var m:Number = 1.0 / k;
+			var m:Number = invMass1 + invMass2;
+			if (m > 0.0)
+			{
+				m = 1.0 / m;
+			}
 			//b2Vec2 impulse = m * (-C);
 			impulse.x = m * (-CVec2.x);
 			impulse.y = m * (-CVec2.y);
@@ -447,10 +474,10 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 			CVec2.y = b2.m_sweep.c.y + r2.y - b1.m_sweep.c.y - r1.y;
 		}
 		
-		var K1:b2Mat22 = new b2Mat22 ();
-		var K2:b2Mat22 = new b2Mat22 ();
-		var K3:b2Mat22 = new b2Mat22 ();
-		var K:b2Mat22 = new b2Mat22 ();
+		//var K1:b2Mat22 = new b2Mat22 ();
+		//var K2:b2Mat22 = new b2Mat22 ();
+		//var K3:b2Mat22 = new b2Mat22 ();
+		//var K:b2Mat22 = new b2Mat22 ();
 
 		//b2Mat22 K1;
 		K1.col1.x = invMass1 + invMass2;	K1.col2.x = 0.0;

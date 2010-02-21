@@ -1546,6 +1546,8 @@ package editor {
       public var ShowMouseEventHandlerSettingDialog:Function = null;
       public var ShowContactEventHandlerSettingDialog:Function = null;
       public var ShowActionSettingDialog:Function = null;
+      public var ShowEntityAssignerSettingDialog:Function = null;
+      public var ShowEntityPairAssignerSettingDialog:Function = null;
       
       public function IsEntitySettingable (entity:Entity):Boolean
       {
@@ -1657,6 +1659,14 @@ package editor {
             else if (entity is EntityTask)
             {
                ShowTaskSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityInputEntityAssigner)
+            {
+               ShowEntityAssignerSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityInputEntityPairAssigner)
+            {
+               ShowEntityPairAssignerSettingDialog (values, SetEntityProperties);
             }
          }
          else if (entity is EntityShape)
@@ -3580,7 +3590,12 @@ package editor {
             else if (entity is EntityTask)
             {
             }
-
+            else if (entity is EntityInputEntityAssigner)
+            {
+            }
+            else if (entity is EntityInputEntityPairAssigner)
+            {
+            }
          }
          else if (entity is EntityShape)
          {

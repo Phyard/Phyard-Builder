@@ -527,6 +527,16 @@ package editor.entity {
          
       }
       
+      public function GetLinkPointX ():Number
+      {
+         return mPosX;
+      }
+      
+      public function GetLinkPointY ():Number
+      {
+         return mPosY;
+      }
+      
 //====================================================================
 //   properties
 //====================================================================

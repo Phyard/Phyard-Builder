@@ -622,6 +622,8 @@
                
                MainView.ShowConditionSettingDialog = ShowConditionSettingDialog;
                MainView.ShowActionSettingDialog = ShowActionSettingDialog;
+               MainView.ShowEntityAssignerSettingDialog = ShowEntityAssignerSettingDialog;
+               MainView.ShowEntityPairAssignerSettingDialog = ShowEntityPairAssignerSettingDialog;
                MainView.ShowEventHandlerSettingDialog = ShowEventHandlerSettingDialog;
                MainView.ShowTimerEventHandlerSettingDialog = ShowTimerEventHandlerSettingDialog;
                MainView.ShowKeyboardEventHandlerSettingDialog = ShowKeyboardEventHandlerSettingDialog;
@@ -1217,6 +1219,30 @@
                Runtime.SetHasSettingDialogOpened (true);
                
                var settingDialog:LogicTaskEditDialog = new LogicTaskEditDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowEntityAssignerSettingDialog(initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:LogicEntityAssignerEditDialog = new LogicEntityAssignerEditDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowEntityPairAssignerSettingDialog(initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:LogicEntityPairAssignerEditDialog = new LogicEntityPairAssignerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (OnCloseDialog);

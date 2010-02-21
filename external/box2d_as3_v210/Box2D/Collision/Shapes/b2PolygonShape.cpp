@@ -292,8 +292,8 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 	var p2:b2Vec2 = new b2Vec2 ();
 	var d:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
-	
-	var lower:Number = 0.0, upper:Number = input.maxFraction;
+	var q:b2Vec2 = new b2Vec2 ();
+	var r:b2Vec2 = new b2Vec2 ();
 
 	// Put the ray into the polygon's frame of reference.
 	//b2Vec2 p1 = b2MulT(xf.R, input.p1 - xf.position);
@@ -307,60 +307,120 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 	//b2Vec2 d = p2 - p1;
 	d.x = p2.x - p1.x;
 	d.y = p2.y - p1.y;
-	var index:int = -1;
 
-	for (var i:int = 0; i < m_vertexCount; ++i)
+	var numerator:Number;
+	var denominator:Number;
+
+	if (m_vertexCount == 2)
 	{
-		// p = p1 + a * d
-		// dot(normal, p - v) = 0
-		// dot(normal, p1 - v) + a * dot(normal, d) = 0
-		//float32 numerator = b2Math.b2Dot2(m_normals[i], m_vertices[i] - p1);
-		b2Math.b2Subtract_Vector2_Output (m_vertices[i] as b2Vec2, p1, tempV);
-		var numerator:Number = b2Math.b2Dot2 (m_normals[i] as b2Vec2, tempV);
-		var denominator:Number = b2Math.b2Dot2 (m_normals[i] as b2Vec2, d);
+		var v1:b2Vec2 = m_vertices[0];
+		var v2:b2Vec2 = m_vertices[1];
+		var normal:b2Vec2 = m_normals[0];
+
+		// q = p1 + t * d
+		// dot(normal, q - v1) = 0
+		// dot(normal, p1 - v1) + t * dot(normal, d) = 0
+		tempV.x = v1.x - p1.x;
+		tempV.y = v1.y - p1.y;
+		numerator = b2Math.b2Dot2 (normal, tempV);
+		denominator = b2Math.b2Dot2 (normal, d);
 
 		if (denominator == 0.0)
-		{	
-			if (numerator < 0.0)
+		{
+			return false;
+		}
+	
+		var t:Number = numerator / denominator;
+		if (t < 0.0 || 1.0 < t)
+		{
+			return false;
+		}
+
+		q.x = p1.x + t * d.x;
+		q.y = p1.y + t * d.y;
+
+		// q = v1 + s * r
+		// s = dot(q - v1, r) / dot(r, r)
+		r.x = v2.x - v1.x;
+		r.y = v2.y - v1.y;
+		var rr:Number = b2Math.b2Dot2 (r, r);
+		if (rr == 0.0)
+		{
+			return false;
+		}
+
+		tempV.x = q.x - v1.x;
+		tempV.y = q.y - v1.y;
+		var s:Number = b2Math.b2Dot2 (tempV, r) / rr;
+		if (s < 0.0 || 1.0 < s)
+		{
+			return false;
+		}
+
+		output.fraction = t;
+		output.normal.x = normal.x;
+		output.normal.y = normal.y;
+		return true;
+	}
+	else
+	{
+		var lower:Number = 0.0, upper:Number = input.maxFraction;
+
+		var index:int = -1;
+
+		for (var i:int = 0; i < m_vertexCount; ++i)
+		{
+			// p = p1 + a * d
+			// dot(normal, p - v) = 0
+			// dot(normal, p1 - v) + a * dot(normal, d) = 0
+			//float32 numerator = b2Math.b2Dot2(m_normals[i], m_vertices[i] - p1);
+			b2Math.b2Subtract_Vector2_Output (m_vertices[i] as b2Vec2, p1, tempV);
+			numerator = b2Math.b2Dot2 (m_normals[i] as b2Vec2, tempV);
+			denominator = b2Math.b2Dot2 (m_normals[i] as b2Vec2, d);
+
+			if (denominator == 0.0)
+			{	
+				if (numerator < 0.0)
+				{
+					return false;
+				}
+			}
+			else
+			{
+				// Note: we want this predicate without division:
+				// lower < numerator / denominator, where denominator < 0
+				// Since denominator < 0, we have to flip the inequality:
+				// lower < numerator / denominator <==> denominator * lower > numerator.
+				if (denominator < 0.0 && numerator < lower * denominator)
+				{
+					// Increase lower.
+					// The segment enters this half-space.
+					lower = numerator / denominator;
+					index = i;
+				}
+				else if (denominator > 0.0 && numerator < upper * denominator)
+				{
+					// Decrease upper.
+					// The segment exits this half-space.
+					upper = numerator / denominator;
+				}
+			}
+
+			if (upper < lower - b2Settings.b2_epsilon)
 			{
 				return false;
 			}
 		}
-		else
+
+		//b2Assert(0.0f <= lower && lower <= input.maxFraction);
+
+		if (index >= 0)
 		{
-			// Note: we want this predicate without division:
-			// lower < numerator / denominator, where denominator < 0
-			// Since denominator < 0, we have to flip the inequality:
-			// lower < numerator / denominator <==> denominator * lower > numerator.
-			if (denominator < 0.0 && numerator < lower * denominator)
-			{
-				// Increase lower.
-				// The segment enters this half-space.
-				lower = numerator / denominator;
-				index = i;
-			}
-			else if (denominator > 0.0 && numerator < upper * denominator)
-			{
-				// Decrease upper.
-				// The segment exits this half-space.
-				upper = numerator / denominator;
-			}
+			output.fraction = lower;
+			//output->normal = b2Mul(xf.R, m_normals[index]);
+			b2Math.b2Mul_Matrix22AndVector2_Output (xf.R, m_normals[index] as b2Vec2, output.normal)
+			return true;
 		}
-
-		if (upper < lower - b2Settings.b2_epsilon)
-		{
-			return false;
-		}
-	}
-
-	//b2Assert(0.0f <= lower && lower <= input.maxFraction);
-
-	if (index >= 0)
-	{
-		output.fraction = lower;
-		//output->normal = b2Mul(xf.R, m_normals[index]);
-		b2Math.b2Mul_Matrix22AndVector2_Output (xf.R, m_normals[index] as b2Vec2, output.normal)
-		return true;
 	}
 	
 	return false;

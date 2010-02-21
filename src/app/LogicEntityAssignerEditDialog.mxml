@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-    title="Condition Door Setting" width="600">
+    title="Entity Assigner Setting" width="600">
 
    <mx:TabNavigator width="100%" height="100%">
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"

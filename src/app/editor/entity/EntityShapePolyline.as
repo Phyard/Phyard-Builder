@@ -518,7 +518,7 @@ package editor.entity {
             var vcVisible:Boolean = AreInternalComponentsVisible (); // should be true
             SetInternalComponentsVisible (false);
             
-            if (mVertexPoints.length <= 3)
+            if (mVertexPoints.length <= 2)
             {
                mWorld.DestroyEntity (this);
             }
@@ -677,6 +677,24 @@ package editor.entity {
       
       override public function FlipSelfVertically ():void
       {
+      }
+      
+//====================================================================
+//   entity links
+//====================================================================
+      
+      override public function GetLinkPointX ():Number
+      {
+         var index2:int = Math.round (mVertexPoints.length / 2);
+         var index1:int = index2 - 1;
+         return 0.5 * ((mVertexPoints [index1] as Point).x + (mVertexPoints [index2] as Point).x);
+      }
+      
+      override public function GetLinkPointY ():Number
+      {
+         var index2:int = Math.round (mVertexPoints.length / 2);
+         var index1:int = index2 - 1;
+         return 0.5 * ((mVertexPoints [index1] as Point).y + (mVertexPoints [index2] as Point).y);
       }
       
    }

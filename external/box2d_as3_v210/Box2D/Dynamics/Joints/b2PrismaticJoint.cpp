@@ -124,13 +124,41 @@ public function b2PrismaticJoint(def:b2PrismaticJointDef)
 	m_perp.SetZero();
 }
 
+private static var r1:b2Vec2 = new b2Vec2 ();
+private static var r2:b2Vec2 = new b2Vec2 ();
+private static var tempV:b2Vec2 = new b2Vec2 ();
+private static var d:b2Vec2 = new b2Vec2 ();
+private static var P:b2Vec2 = new b2Vec2 ();
+
+private static var v1:b2Vec2 = new b2Vec2 ();
+private static var v2:b2Vec2 = new b2Vec2 ();
+private static var tempVec3:b2Vec3 = new b2Vec3 ();
+private static var Cdot1:b2Vec2 = new b2Vec2 ();
+private static var CdotVec3:b2Vec3 = new b2Vec3 ();
+private static var f1:b2Vec3 = new b2Vec3 ();
+private static var b:b2Vec2 = new b2Vec2 ();
+private static var p:b2Vec2 = new b2Vec2 ();
+
+private static var c1:b2Vec2 = new b2Vec2 ();
+private static var c2:b2Vec2 = new b2Vec2 ();
+private static var R1:b2Mat22 = new b2Mat22 ();
+private static var R2:b2Mat22 = new b2Mat22 ();
+private static var C1:b2Vec2 = new b2Vec2 ();
+
+private static var axis:b2Vec2 = new b2Vec2 ();
+
+private static var p1:b2Vec2 = new b2Vec2 ();
+private static var p2:b2Vec2 = new b2Vec2 ();
+private static var tempV1:b2Vec2 = new b2Vec2 ();
+private static var tempV2:b2Vec2 = new b2Vec2 ();
+
 override public function InitVelocityConstraints(step:b2TimeStep):void
 {
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var d:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var d:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
 	
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
@@ -232,6 +260,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	else
 	{
 		m_limitState = b2Joint.e_inactiveLimit;
+		m_impulse.z = 0.0;
 	}
 
 	if (m_enableMotor == false)
@@ -273,22 +302,22 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 
 override public function SolveVelocityConstraints(step:b2TimeStep):void
 {
-	var v1:b2Vec2 = new b2Vec2 ();
-	var v2:b2Vec2 = new b2Vec2 ();
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var tempVec3:b2Vec3 = new b2Vec3 ();
-	var Cdot1:b2Vec2 = new b2Vec2 ();
+	//var v1:b2Vec2 = new b2Vec2 ();
+	//var v2:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var tempVec3:b2Vec3 = new b2Vec3 ();
+	//var Cdot1:b2Vec2 = new b2Vec2 ();
 	
-	var CdotVec3:b2Vec3 = new b2Vec3 ();
-	var f1:b2Vec3 = new b2Vec3 ();
+	//var CdotVec3:b2Vec3 = new b2Vec3 ();
+	//var f1:b2Vec3 = new b2Vec3 ();
 	var dfVec3:b2Vec3;// = new b2Vec3 ();
 	var dfVec2:b2Vec2;// = new b2Vec2 ();
 	
-	var b:b2Vec2 = new b2Vec2 ();
-	var p:b2Vec2 = new b2Vec2 ();
+	//var b:b2Vec2 = new b2Vec2 ();
+	//var p:b2Vec2 = new b2Vec2 ();
 	
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
@@ -433,22 +462,22 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 
 override public function SolvePositionConstraints(baumgarte:Number):Boolean
 {
-	var c1:b2Vec2 = new b2Vec2 ();
-	var c2:b2Vec2 = new b2Vec2 ();
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var P:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var tempVec3:b2Vec3 = new b2Vec3 ();
+	//var c1:b2Vec2 = new b2Vec2 ();
+	//var c2:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var P:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var tempVec3:b2Vec3 = new b2Vec3 ();
 	
-	var d:b2Vec2 = new b2Vec2 ();
+	//var d:b2Vec2 = new b2Vec2 ();
 	
-	var R1:b2Mat22 = new b2Mat22 ();
-	var R2:b2Mat22 = new b2Mat22 ();
+	//var R1:b2Mat22 = new b2Mat22 ();
+	//var R2:b2Mat22 = new b2Mat22 ();
 	
 	var impulse:b2Vec3;// = new b2Vec3 ();
 	var impulse1:b2Vec2;
-	var C1:b2Vec2 = new b2Vec2 ();
+	//var C1:b2Vec2 = new b2Vec2 ();
 	
 	//B2_NOT_USED(baumgarte);
 
@@ -641,10 +670,9 @@ override public function GetReactionTorque(inv_dt:Number):Number
 	return inv_dt * m_impulse.y;
 }
 
-private static var axis:b2Vec2 = new b2Vec2 ();
 public function GetJointTranslation():Number
 {
-	var d:b2Vec2 = new b2Vec2 ();
+	//var d:b2Vec2 = new b2Vec2 ();
 	
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
@@ -662,14 +690,14 @@ public function GetJointTranslation():Number
 
 public function GetJointSpeed():Number
 {
-	var r1:b2Vec2 = new b2Vec2 ();
-	var r2:b2Vec2 = new b2Vec2 ();
-	var p1:b2Vec2 = new b2Vec2 ();
-	var p2:b2Vec2 = new b2Vec2 ();
-	var d:b2Vec2 = new b2Vec2 ();
-	var tempV:b2Vec2 = new b2Vec2 ();
-	var tempV1:b2Vec2 = new b2Vec2 ();
-	var tempV2:b2Vec2 = new b2Vec2 ();
+	//var r1:b2Vec2 = new b2Vec2 ();
+	//var r2:b2Vec2 = new b2Vec2 ();
+	//var p1:b2Vec2 = new b2Vec2 ();
+	//var p2:b2Vec2 = new b2Vec2 ();
+	//var d:b2Vec2 = new b2Vec2 ();
+	//var tempV:b2Vec2 = new b2Vec2 ();
+	//var tempV1:b2Vec2 = new b2Vec2 ();
+	//var tempV2:b2Vec2 = new b2Vec2 ();
 	
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;

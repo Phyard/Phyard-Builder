@@ -6,9 +6,18 @@ package editor.runtime {
    import editor.WorldView;
    import editor.world.World;
    
+   import editor.trigger.CodeSnippet;
+   
    public class Runtime
    {
    
+//=====================================================================
+//
+//=====================================================================
+      
+      // used in loading editor world
+      public static var mPauseCreateShapeProxy:Boolean = false;
+      
 //=====================================================================
 //
 //=====================================================================
@@ -61,6 +70,12 @@ package editor.runtime {
       
       public static var mLongerCodeEditorMenuBar:Boolean = false;
       public static var mPoemCodingFormat:Boolean = false;
+      
+//=====================================================================
+//
+//=====================================================================
+      
+      public static var mCopiedCodeSnippet:CodeSnippet = null;
    }
    
 }

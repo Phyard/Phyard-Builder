@@ -59,6 +59,14 @@ package wrapper {
       private var GetWorldDefine:Function = null;
       private var GetWorldBinaryData:Function = null;
       
+      private var ExternelErrorHandler:Function = null;
+      
+      private var mExternalPaused:Boolean = false;
+      public function SetExternalPaused (paused:Boolean):void
+      {
+         mExternalPaused = paused;
+      }
+      
       private var mWorldPlayCode:String = null;
       private var mWorldDataForPlaying:ByteArray = null;
       private var mWorldSourceCode:String = null;
@@ -89,7 +97,7 @@ package wrapper {
 //
 //======================================================================
       
-      public function ColorInfectionPlayer (start:Boolean = false, getWorldDefine:Function = null, getWorldBinaryData:Function = null)
+      public function ColorInfectionPlayer (start:Boolean = false, errorHandler:Function = null, getWorldDefine:Function = null, getWorldBinaryData:Function = null)
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
@@ -104,6 +112,7 @@ package wrapper {
          mStartRightNow = start;
          GetWorldDefine = getWorldDefine;
          GetWorldBinaryData = getWorldBinaryData;
+         ExternelErrorHandler = errorHandler;
       }
       
       public function GetPlayerWorld ():World
@@ -322,9 +331,22 @@ package wrapper {
             
             mPlayerWorld.SetPaused (paused);
             
-            if ( (! paused) || singleStepMode )
+            if ( (! mExternalPaused) && ((! paused) || singleStepMode) )
             {
-               mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+               try
+               {
+                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+               }
+               catch (error:Error)
+               {
+                  if (ExternelErrorHandler != null)
+                  {
+                     ExternelErrorHandler (error);
+                  }
+                  else
+                  {
+                  }
+               }
                
                if (mPlayControlBar != null)
                   mPlayControlBar.NotifyStepped ();

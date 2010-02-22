@@ -9,6 +9,7 @@
          height="100%"
          borderStyle="solid"
          borderThickness="1"
+         scriptTimeLimit="6"
          creationComplete="InitApp()">
    
    <mx:ApplicationControlBar dock="true" paddingTop="2" paddingBottom="1">
@@ -335,8 +336,9 @@
             import mx.events.MenuEvent;
             import mx.events.IndexChangedEvent;
             import mx.controls.Menu;
-             import mx.controls.ToolTip;
+            import mx.controls.ToolTip;
             
+            import com.tapirgames.util.DisplayObjectUtil;
             import com.tapirgames.util.UrlUtil;
             import editor.WorldView;
             import editor.runtime.Runtime;
@@ -614,6 +616,7 @@
                //MainView.ShowWorldSettingDialog = ShowWorldSettingDialog;
                MainView.ShowWorldSavingDialog = ShowWorldSavingDialog;
                MainView.ShowWorldLoadingDialog = ShowWorldLoadingDialog;
+               MainView.ShowWorldQuickLoadingDialog = ShowWorldQuickLoadingDialog;
                
                MainView.ShowPlayCodeLoadingDialog = ShowPlayCodeLoadingDialog;
                MainView.ShowImportSourceCodeDialog = ShowImportSourceCodeDialog;
@@ -650,22 +653,22 @@
             
             //===================================================================================================
                
-               AppendContextMenuItem (Button_MouseMove, "Move Accurately ...", ShowDialog_MoveSelectedEntitiesAccurately);
+               DisplayObjectUtil.AppendContextMenuItem (Button_MouseMove, "Move Accurately ...", ShowDialog_MoveSelectedEntitiesAccurately);
                
-               AppendContextMenuItem (Button_MouseRotate, "Rotate Accurately ...", ShowDialog_RotateSelectedEntitiesAccurately);
+               DisplayObjectUtil.AppendContextMenuItem (Button_MouseRotate, "Rotate Accurately ...", ShowDialog_RotateSelectedEntitiesAccurately);
                
-               AppendContextMenuItem (Button_MouseScale, "Scale Accurately ...", ShowDialog_ScaleSelectedEntitiesAccurately);
+               DisplayObjectUtil.AppendContextMenuItem (Button_MouseScale, "Scale Accurately ...", ShowDialog_ScaleSelectedEntitiesAccurately);
                
-               AppendContextMenuItem (Button_MouseMoveScene, "Move Scene Accurately ...", ShowDialog_MoveSceneAccurately);
+               DisplayObjectUtil.AppendContextMenuItem (Button_MouseMoveScene, "Move Scene Accurately ...", ShowDialog_MoveSceneAccurately);
                
             //===================================================================================================
                
-               AppendContextMenuItem (Button_NewDesign, "Clear All Entities", ClearAllEntities);
-               AppendContextMenuItem (Button_NewDesign, "Clear All Entities and Reset Scene", ClearAllEntitiesAndResetScene);
+               DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities", ClearAllEntities);
+               DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities and Reset Scene", ClearAllEntitiesAndResetScene);
                
-               AppendContextMenuItem (Button_OpenDesign, "Load Lastest Version Online ...", OnLoadSourceCodeOnline);
+               DisplayObjectUtil.AppendContextMenuItem (Button_OpenDesign, "Load Lastest Version Online ...", OnLoadSourceCodeOnline);
                
-               AppendContextMenuItem (Button_SaveDesign, "Save Online ...", ShowWorldOnlineSavingDialog);
+               DisplayObjectUtil.AppendContextMenuItem (Button_SaveDesign, "Save Online ...", ShowWorldOnlineSavingDialog);
                
          //===============================================================================================================
          //  Collision Manager
@@ -693,20 +696,6 @@
                Text_CollisionCategoryName.addEventListener (FlexEvent.ENTER, CollisionManagerView.OnTextInputEnter);
             }
             
-            private function AppendContextMenuItem (sprite:InteractiveObject, caption:String, selectedListener:Function):void
-            {
-               if (sprite.contextMenu == null)
-               {
-                  sprite.contextMenu = new ContextMenu ();
-                  sprite.contextMenu.hideBuiltInItems ();
-               }
-               
-               var menuItem:ContextMenuItem = new ContextMenuItem(caption, false);
-               if (selectedListener != null)
-                  menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
-               sprite.contextMenu.customItems.push (menuItem);
-            }
-            
             private var mCustomTriggerdButtons:Array = new Array ();
             private function OnCustomTriggerButtonCreated (event:FlexEvent):void
             {
@@ -714,7 +703,7 @@
                {
                   mCustomTriggerdButtons.push (event.target);
                   
-                  AppendContextMenuItem (event.target as InteractiveObject, "Load / Replace ...", MainView.OnClickEditorCustomCommand);
+                  DisplayObjectUtil.AppendContextMenuItem (event.target as InteractiveObject, "Load / Replace ...", MainView.OnClickEditorCustomCommand);
                }
             }
             
@@ -1280,6 +1269,18 @@
                var dialog:WorldLoadingDialog = new WorldLoadingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (onConfirmFunc);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowWorldQuickLoadingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var dialog:WorldQuickLoadingDialog = new WorldQuickLoadingDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetValues (initialValues);
                dialog.SetConfirmFunc (onConfirmFunc);
                dialog.SetCloseFunc (OnCloseDialog);
             }

@@ -148,7 +148,7 @@ package editor.trigger {
          
       // string
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", "@&0 = $0", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", "@&0 = $0", "@&0 = $0",
                      [
                              new VariableDefinitionString ("Source String"), 
                      ],
@@ -156,7 +156,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Target String"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "@&0 = ($0 is true) ? $1 : $2", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                              new VariableDefinitionString ("Source String 1"), 

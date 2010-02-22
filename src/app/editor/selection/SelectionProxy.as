@@ -14,6 +14,8 @@ package editor.selection {
    
    import com.tapirgames.util.GraphicsUtil;
    
+   import editor.runtime.Runtime;
+   
    public class SelectionProxy 
    {
       public var mSelectionEngine:SelectionEngine; // used within package
@@ -170,6 +172,9 @@ package editor.selection {
       
       public function CreateCircleZone (localX:Number, localY:Number, radius:Number):void
       {
+         if (Runtime.mPauseCreateShapeProxy)
+            return;
+         
       //trace ("------------------- circle");
       //
          var circle_shape:b2CircleShape = new b2CircleShape ();
@@ -185,6 +190,9 @@ package editor.selection {
       
       public function CreateConvexPolygonZone (localPoints:Array):void
       {
+         if (Runtime.mPauseCreateShapeProxy)
+            return;
+         
       //trace ("------------------- rect");
       //
          var localVertices:Array = new Array (localPoints.length);
@@ -208,6 +216,9 @@ package editor.selection {
       
       public function CreateConcavePolygonZone (localPoints:Array):void
       {
+         if (Runtime.mPauseCreateShapeProxy)
+            return;
+         
       //trace ("------------------- polygon");
          var vertexCount:uint = localPoints.length;
          
@@ -250,6 +261,9 @@ package editor.selection {
       
       public function CreateLineSegmentZone (localX1:Number, localY1:Number, localX2:Number, localY2:Number, thinkness:Number = 1):void
       {
+         if (Runtime.mPauseCreateShapeProxy)
+            return;
+         
          var dx:Number = localX2 - localX1;
          var dy:Number = localY2 - localY1;
          

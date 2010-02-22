@@ -38,6 +38,10 @@ package editor {
    import flash.net.URLLoaderDataFormat;
    import flash.net.navigateToURL;
    
+   import flash.events.NetStatusEvent;
+   import flash.net.SharedObject;
+   import flash.net.SharedObjectFlushStatus;
+   
    import mx.core.UIComponent;
    import mx.controls.Button;
    import mx.controls.Label;
@@ -1277,8 +1281,10 @@ package editor {
    // context menu
       
       private var mMenuItemAbout:ContextMenuItem;
+      
       private var mMenuItemExportSelectedsToSystemMemory:ContextMenuItem;
       private var mMenuItemImport:ContextMenuItem;
+      private var mMenuItemQuickLoad:ContextMenuItem;
       
       private function BuildContextMenu ():void
       {
@@ -1306,6 +1312,10 @@ package editor {
          theContextMenu.customItems.push (mMenuItemImport);
          mMenuItemImport.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
+         mMenuItemQuickLoad = new ContextMenuItem ("Load Quick Save Data ...", false);
+         theContextMenu.customItems.push (mMenuItemQuickLoad);
+         mMenuItemQuickLoad.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         
          var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
          var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
          
@@ -1323,6 +1333,9 @@ package editor {
                break;
             case mMenuItemImport:
                OpenImportSourceCodeDialog ();
+               break;
+            case mMenuItemQuickLoad:
+               QuickLoad ();
                break;
             case mMenuItemAbout:
                OpenAboutLink ();
@@ -1475,9 +1488,9 @@ package editor {
          }
          
          if (useQuickMethod)
-            SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine));
+            SetDesignPlayer (new ColorInfectionPlayer (true, PlayingErrorHandler, GetWorldDefine, null));
          else
-            SetDesignPlayer (new ColorInfectionPlayer (true, null, GetWorldBinaryData));
+            SetDesignPlayer (new ColorInfectionPlayer (true, PlayingErrorHandler, null, GetWorldBinaryData));
          
          mIsPlaying = true;
          
@@ -1486,6 +1499,8 @@ package editor {
          
          if (OnPlayingStarted != null)
             OnPlayingStarted ();
+         
+         mAlreadySavedWhenPlayingError = false;
       }
       
       public function Play_Stop ():void
@@ -1503,6 +1518,37 @@ package editor {
       
       private function SetPlayingSpeed (speed:Number):void
       {
+      }
+      
+      private function PlayingErrorHandler (error:Error):void
+      {
+         mDesignPlayer.SetExternalPaused (true);
+         
+         if (! mAlreadySavedWhenPlayingError)
+         {
+            QuickSave ("Auto Save when playing error.");
+            mAlreadySavedWhenPlayingError = true;
+         }
+         
+         Alert.show (error.message + "\n\nDo you stop the simulation?", "Playing Error! ", 
+                     Alert.YES | Alert.NO, 
+                     this, 
+                     OnPlayingErrorAlertClickHandler
+                     );
+      }
+      
+      private var mAlreadySavedWhenPlayingError:Boolean = false;
+      
+      private function OnPlayingErrorAlertClickHandler (event:CloseEvent):void 
+      {
+          if (event.detail == Alert.YES)
+          {
+             Play_Stop ();
+          }
+          else if (event.detail == Alert.NO)
+          {
+             mDesignPlayer.SetExternalPaused (false);
+          }
       }
       
 //============================================================================
@@ -1529,6 +1575,7 @@ package editor {
       public var ShowWorldSettingDialog:Function = null;
       public var ShowWorldSavingDialog:Function = null;
       public var ShowWorldLoadingDialog:Function = null;
+      public var ShowWorldQuickLoadingDialog:Function = null;
       public var ShowImportSourceCodeDialog:Function = null;
       
       public var ShowCollisionGroupManageDialog:Function = null;
@@ -2648,6 +2695,10 @@ package editor {
                   break;
                case 82: // R
                   Redo ();
+                  break;
+               case 83: // S
+                  if (event.ctrlKey)
+                     QuickSave ();
                   break;
                case 71: // G
                   GlueSelectedEntities ();
@@ -4310,6 +4361,121 @@ package editor {
          var worldState:WorldState = mWorldHistoryManager.RedoHistory ();
          
          RestoreWorld (worldState);
+      }
+      
+//============================================================================
+// quick save and load 
+//============================================================================
+      
+      public static const kQuickSaveFileName:String = "cieditor-quicksave";
+      public static const kAutoSaveName:String = "quick save";
+      public static const kMaxQickSaveFileSize:uint = 1000000; // 1M bytes
+      
+      public function QuickSave (saveName:String = null):void
+      {
+         var so:SharedObject;
+         try
+         {
+            so = SharedObject.getLocal(kQuickSaveFileName);
+            
+            var designDataForEditing:ByteArray = DataFormat.WorldDefine2ByteArray (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+            designDataForEditing.compress ();
+            designDataForEditing.position = 0;
+            
+            if (saveName == null)
+               saveName = kAutoSaveName;
+            
+            var timeText:String = new Date ().toLocaleString ();
+            
+            var theSave:Object = {mName: saveName, mTime: timeText, mData: designDataForEditing};
+            
+            if (so.data.mQuickSaves == null)
+               so.data.mQuickSaves = [theSave];
+            else
+               so.data.mQuickSaves.unshift (theSave);
+            
+            while (so.size > kMaxQickSaveFileSize && so.data.mQuickSaves.length > 1)
+            {
+               so.data.mQuickSaves.pop ();
+            }
+            
+            var flushStatus:String = so.flush ();
+            if (flushStatus != null) 
+            {
+                //switch (flushStatus) {
+                //    case SharedObjectFlushStatus.PENDING:
+                //        output.appendText("Requesting permission to save object...\n");
+                //        mySo.addEventListener(NetStatusEvent.NET_STATUS, onFlushStatus);
+                //        break;
+                //    case SharedObjectFlushStatus.FLUSHED:
+                //        output.appendText("Value flushed to disk.\n");
+                //        break;
+                //}
+            }
+         }
+         catch (error:Error)
+         {
+            Alert.show("Sorry, quick saving error! " + error, "Error");
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
+      }
+      
+      public function QuickLoad ():void
+      {
+         var values:Object = new Object ();
+         
+         try
+         {
+            var so:SharedObject = SharedObject.getLocal(kQuickSaveFileName);
+            
+            values.mQuickSaves = so.data.mQuickSaves;
+         }
+         catch (error:Error)
+         {
+            values.mQuickSaves = null;
+         }
+         
+         if (values.mQuickSaves == null)
+         {
+            values.mQuickSaves = new Array ();
+         }
+         
+         ShowWorldQuickLoadingDialog (values, OnLoadQuickSaveData);
+      }
+      
+      public function OnLoadQuickSaveData (params:Object):void
+      {
+         if (params.mLoadQuickSaveId == undefined || params.mLoadQuickSaveId < 0 || params.mLoadQuickSaveId >= params.mQuickSaves.length)
+            return;
+         
+         try
+         {
+            var quickSave:Object = params.mQuickSaves [params.mLoadQuickSaveId];
+            var designDataForEditing:ByteArray = new ByteArray ();
+            quickSave.mData.readBytes (designDataForEditing, 0, quickSave.mData.length);
+            
+            designDataForEditing.position = 0;
+            designDataForEditing.uncompress ();
+            
+            var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (DataFormat2.ByteArray2WorldDefine (designDataForEditing));
+            
+            mWorldHistoryManager.ClearHistories ();
+            
+            SetEditorWorld (newEditorWorld);
+            
+            CreateUndoPoint ();
+            
+            Alert.show("Loading Scuessed!", "Scuessed");
+         }
+         catch (error:Error)
+         {
+            Alert.show("Sorry, quick loading error!", "Error");
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
       }
       
 //============================================================================

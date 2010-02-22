@@ -29,7 +29,7 @@
          </mx:HBox>
       </mx:HBox>
       <mx:HBox id="Box_Commands" height="156" width="100%">
-         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" showDataTips="true" dataTipField="mDataTip" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
+         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" showDataTips="true" dataTipField="mDataTip" allowMultipleSelection="true" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
       </mx:HBox>
       <mx:HBox height="186" width="100%">
          <mx:ViewStack borderStyle="solid" width="100%" height="100%">
@@ -75,6 +75,7 @@
          import common.trigger.ValueSpaceTypeDefine;
          import common.trigger.ValueSourceTypeDefine;
          
+         import com.tapirgames.util.DisplayObjectUtil;
          import com.tapirgames.util.TextUtil;
          
          import editor.runtime.Runtime;
@@ -110,6 +111,11 @@
          [Bindable]
          private var mCommandListDataProvider:Object = [];
          
+         private var mCopySelectedMenuItem:ContextMenuItem = null;
+         private var mCopyAllMenuItem:ContextMenuItem = null;
+         private var mPasteBeforeMenuItem:ContextMenuItem = null;
+         private var mPasteAfterMenuItem:ContextMenuItem = null;
+         
          private function OnInitPanel ():void
          {
             MenuBar_Api.labelField="@name"
@@ -119,6 +125,13 @@
             OnSwitchMenuBar ();
             
             Button_CodeFormatSwitch.selected = Runtime.mPoemCodingFormat;
+            
+            mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Command(s)", null);
+            mCopyAllMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy All Commands", null);
+            mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Commands Before", null);
+            mPasteAfterMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Commands After", null);
+            
+            UpdateInterface ();
          }
          
          private function OnSwitchMenuBar ():void
@@ -379,6 +392,11 @@
             Button_DeleteCommmand.enabled = List_Commands.selectedIndex >= 0;
             Button_MoveUpCommmand.enabled = List_Commands.selectedIndex >= 1;
             Button_MoveDownCommmand.enabled = List_Commands.selectedIndex >= 0 && List_Commands.selectedIndex < List_Commands.dataProvider.length - 1;
+            
+            mCopySelectedMenuItem.enabled = List_Commands.selectedIndices.length > 0;
+            mCopyAllMenuItem.enabled = List_Commands.dataProvider.length > 0;
+            mPasteBeforeMenuItem.enabled = List_Commands.dataProvider.length > 0 && Runtime.mCopiedCodeSnippet != null;
+            mPasteAfterMenuItem.enabled = Runtime.mCopiedCodeSnippet != null;
          }
          
          private function OnCurrentCommandChanged ():void
@@ -393,6 +411,8 @@
          // ...
          //===========================
             
+            UpdateInterface ();
+            
             if (List_Commands.selectedItem == null)
                return;
             
@@ -401,8 +421,6 @@
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
             var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
             var currentValueTargets:Array = mCurrentEditingItem.mCurrentValueTargets;
-            
-            UpdateInterface ();
             
          //===========================
          // create new controls

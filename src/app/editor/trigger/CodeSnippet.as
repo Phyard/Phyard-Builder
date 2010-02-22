@@ -130,7 +130,7 @@ package editor.trigger {
 //
 //====================================================================
       
-      public function Clone (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
+      public function Clone (ownerFunctionDefinition:FunctionDefinition, callingIds:Array = null):CodeSnippet
       {
          if (ownerFunctionDefinition == null)
             ownerFunctionDefinition = mOwnerFunctionDefinition;
@@ -141,10 +141,25 @@ package editor.trigger {
          
          var i:int;
          var num:int = mFunctionCallings.length;
-         var callingsArray:Array = new Array (num);
-         for (i = 0; i < num; ++ i)
+         if (callingIds == null)
          {
-            callingsArray [i] = (mFunctionCallings [i] as FunctionCalling).Clone (ownerFunctionDefinition);
+            callingIds = new Array (num);
+            for (i = 0; i < num; ++ i)
+            {
+               callingIds [i] = i;
+            }
+         }
+         
+         var numToClone:int = callingIds.length;
+         var callingsArray:Array = new Array ();
+         var callingId:int;
+         for (i = 0; i < numToClone; ++ i)
+         {
+            callingId = callingIds [i];
+            if (callingId >= 0 && callingId < num)
+            {
+               callingsArray.push ((mFunctionCallings [callingId] as FunctionCalling).Clone (ownerFunctionDefinition));
+            }
          }
          codeSnippet.AssignFunctionCallings (callingsArray);
          

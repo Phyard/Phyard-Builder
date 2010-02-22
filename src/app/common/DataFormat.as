@@ -43,6 +43,8 @@ package common {
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
    
+   import editor.runtime.Runtime;
+   
    import common.trigger.CoreEventIds;
    
    public class DataFormat
@@ -765,6 +767,8 @@ package common {
          
          editorWorld.SetCreationEntityArrayLocked (true);
          
+         Runtime.mPauseCreateShapeProxy = true;
+         
          for (createId = 0; createId < numEntities; ++ createId)
          {
             entityDefine = worldDefine.mEntityDefines [createId];
@@ -1202,6 +1206,8 @@ package common {
          //<<<
          
          // modify, 2nd round
+         
+         Runtime.mPauseCreateShapeProxy = false;
          
          for (createId = 0; createId < numEntities; ++ createId)
          {

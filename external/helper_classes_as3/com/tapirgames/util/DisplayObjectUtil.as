@@ -2,8 +2,12 @@
 package com.tapirgames.util {
    
    import flash.display.DisplayObject;
+   import flash.display.InteractiveObject;
    import flash.display.Sprite;
    import flash.display.Shape;
+   import flash.events.ContextMenuEvent;
+   import flash.ui.ContextMenu;
+   import flash.ui.ContextMenuItem;
    
    import flash.display.BitmapData;
    import flash.display.Bitmap;
@@ -19,7 +23,22 @@ package com.tapirgames.util {
    
    public class DisplayObjectUtil
    {
-   
+      public static function AppendContextMenuItem (sprite:InteractiveObject, caption:String, selectedListener:Function):ContextMenuItem
+      {
+         if (sprite.contextMenu == null)
+         {
+            sprite.contextMenu = new ContextMenu ();
+            sprite.contextMenu.hideBuiltInItems ();
+         }
+         
+         var menuItem:ContextMenuItem = new ContextMenuItem(caption, false);
+         if (selectedListener != null)
+            menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
+         sprite.contextMenu.customItems.push (menuItem);
+         
+         return menuItem;
+      }
+
       public static function CreateCacheDisplayObject (displayObject:DisplayObject):Bitmap
       {
          var cachedBitmap:Bitmap = new Bitmap ();

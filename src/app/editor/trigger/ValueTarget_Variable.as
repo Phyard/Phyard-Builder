@@ -16,7 +16,7 @@ package editor.trigger {
       
       public function ToCodeString ():String
       {
-         return mVariableInstance == null ? "void" : mVariableInstance.ToCodeString_ForTarget ();
+         return mVariableInstance.ToCodeString_ForTarget ();
       }
       
       public function GetVariableInstance ():VariableInstance
@@ -31,17 +31,11 @@ package editor.trigger {
       
       public function GetVariableSpaceType ():int
       {
-         if (mVariableInstance == null)
-            return ValueSpaceTypeDefine.ValueSpace_Global;
-         
          return mVariableInstance.GetSpaceType ();
       }
       
       public function GetVariableIndex ():int
       {
-         if (mVariableInstance == null)
-            return -1;
-         
          return mVariableInstance.GetIndex ();
       }
       
@@ -56,8 +50,7 @@ package editor.trigger {
       
       public function AssignValue (source:ValueSource):void
       {
-         if (mVariableInstance != null)
-            mVariableInstance.AssignValue (source);
+         mVariableInstance.AssignValue (source);
       }
       
       public function CloneTarget ():ValueTarget

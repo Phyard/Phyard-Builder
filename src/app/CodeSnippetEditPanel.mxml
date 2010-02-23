@@ -126,12 +126,66 @@
             
             Button_CodeFormatSwitch.selected = Runtime.mPoemCodingFormat;
             
-            mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Command(s)", null);
-            mCopyAllMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy All Commands", null);
-            mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Commands Before", null);
-            mPasteAfterMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Commands After", null);
+            mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Calling(s)", OnCopySelectedCallings);
+            mCopyAllMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy All Callings", OnCopyAllCallings);
+            mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Callings Before The Selected", OnPasteCallingsBefore);
+            mPasteAfterMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Callings After The Selected", OnPasteCallingsAfter);
             
             UpdateInterface ();
+         }
+         
+         private function OnCopySelectedCallings (event:ContextMenuEvent):void
+         {
+            var selectedIndices:Array = List_Commands.selectedIndices;
+            selectedIndices.sort ();
+            CopyCallings (selectedIndices);
+         }
+         
+         private function OnCopyAllCallings (event:ContextMenuEvent):void
+         {
+            CopyCallings (null);
+         }
+         
+         private function CopyCallings (ids:Array):void
+         {
+            var copiedCallings:Array = GetFunctionCallings (ids);
+            if (copiedCallings.length == 0)
+            {
+               Runtime.mCopiedCodeSnippet = null;
+            }
+            else
+            {
+               Runtime.mCopiedCodeSnippet = new CodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition ());
+               Runtime.mCopiedCodeSnippet.AssignFunctionCallings (copiedCallings);
+            }
+            
+            UpdateInterface ();
+         }
+         
+         private function OnPasteCallingsBefore (event:ContextMenuEvent):void
+         {
+            if (List_Commands.selectedIndex >= 0)
+            {
+               PasteCallingsAt (List_Commands.selectedIndex);
+            }
+         }
+         
+         private function OnPasteCallingsAfter (event:ContextMenuEvent):void
+         {
+            if (List_Commands.dataProvider.length > 0 && List_Commands.selectedIndex < 0)
+               return;
+            
+            PasteCallingsAt (List_Commands.selectedIndex + 1);
+         }
+         
+         private function PasteCallingsAt (insertAt:int):void
+         {
+            if (Runtime.mCopiedCodeSnippet == null)
+               return;
+            
+            var codeSnippet:CodeSnippet = Runtime.mCopiedCodeSnippet.Clone (mCodeSnippet.GetOwnerFunctionDefinition ());
+            
+            AddFunctionCallingsFromCodeSnippet (codeSnippet, insertAt);
          }
          
          private function OnSwitchMenuBar ():void
@@ -193,6 +247,11 @@
             if (mCodeSnippet == null)
                return;
             
+            AddFunctionCallingsFromCodeSnippet (mCodeSnippet, 0);
+         }
+         
+         private function AddFunctionCallingsFromCodeSnippet (codeSnippet:CodeSnippet, insertAt:int):void
+         {
             var i:int;
             var j:int;
             var func_calling:FunctionCalling;
@@ -200,9 +259,25 @@
             var value_source:ValueSource;
             var value_target:ValueTarget;
             
-            for (i = 0; i < mCodeSnippet.GetNumFunctionCallings (); ++ i)
+            var count:int = codeSnippet.GetNumFunctionCallings ();
+            
+            if (insertAt < 0)
+               insertAt = 0;
+            else if (insertAt > List_Commands.dataProvider.length)
+               insertAt = List_Commands.dataProvider.length;
+            
+            var oldSelectedIndex:int = List_Commands.selectedIndex;
+            var newSelectedIndex:int;
+            if (List_Commands.selectedIndex < 0 && count > 0)
+               newSelectedIndex = insertAt;
+            else if (List_Commands.selectedIndex >= insertAt)
+               newSelectedIndex = List_Commands.selectedIndex + count;
+            else
+               newSelectedIndex = List_Commands.selectedIndex;
+            
+            for (i = 0; i < count; ++ i)
             {
-               func_calling = mCodeSnippet.GetFunctionCallingAt (i);
+               func_calling = codeSnippet.GetFunctionCallingAt (i);
                func_declaration = func_calling.GetFunctionDeclaration ();
                
                var func_name:String = func_declaration.GetName ();
@@ -234,19 +309,25 @@
                                                       mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources,
                                                       mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
                                                       },
-                                                      i);
+                                                      insertAt ++);
             }
             
-            if (mCodeSnippet.GetNumFunctionCallings () > 0)
+            if (oldSelectedIndex != newSelectedIndex)
             {
-               List_Commands.selectedIndex = 0;
+               List_Commands.selectedIndex = newSelectedIndex;
+               OnCurrentCommandChanged ();
+            }
+            
+            if (codeSnippet.GetNumFunctionCallings () > 0)
+            {
+               List_Commands.validateNow ();
                OnCurrentCommandChanged ();
             }
             
             UpdateInterface ();
          }
          
-         public function GetFunctionCallings ():Array
+         public function GetFunctionCallings (callingIds:Array = null):Array
          {
             RetrieveCurrentCommandValueSourcesFromControls ();
             
@@ -258,17 +339,36 @@
             var i:int;
             var j:int;
             var item_array:Array = List_Commands.dataProvider.toArray ();
-            for (i = 0; i < item_array.length; ++ i)
+            
+            var count:int = item_array.length;
+            
+            if (callingIds == null)
             {
-               var item:Object = item_array [i];
+               callingIds = new Array (count);
+               for (i = 0; i < count; ++ i)
+               {
+                  callingIds [i] = i;
+               }
+            }
+            
+            var callingId:int;
+            
+            for (i = 0; i < callingIds.length; ++ i)
+            {
+               callingId = callingIds [i];
                
-               var func_id:int = item.mID;
-               var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
-               var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
-               func_calling.AssignInputValueSources (item.mCurrentValueSources)
-               func_calling.AssignOutputValueTargets (item.mCurrentValueTargets)
-               
-               func_calling_list.push (func_calling);
+               if (callingId >= 0 && callingId < count)
+               {
+                  var item:Object = item_array [callingId];
+                  
+                  var func_id:int = item.mID;
+                  var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+                  var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
+                  func_calling.AssignInputValueSources (item.mCurrentValueSources);
+                  func_calling.AssignOutputValueTargets (item.mCurrentValueTargets);
+                  
+                  func_calling_list.push (func_calling);
+               }
             }
             
             return func_calling_list;
@@ -308,7 +408,7 @@
             
             for (j = 0; j < func_declaration.GetNumOutputs (); ++ j)
             {
-               variable_def = func_declaration.GetOuputParamDefinitionAt (j);
+               variable_def = func_declaration.GetOutputParamDefinitionAt (j);
                value_target = variable_def.GetDefaultValueTarget ();
                initialReturnTargets.push (value_target.CloneTarget ());
                currentReturnTargets.push (value_target.CloneTarget ());
@@ -332,19 +432,41 @@
          
          private function OnDeleteCalling ():void
          {
-            if (List_Commands.selectedIndex >= 0)
+            var selectedIndices:Array = List_Commands.selectedIndices;
+            selectedIndices.sort (Array.DESCENDING);
+            var selectedIndex:int = List_Commands.selectedIndex;
+            var index:int;
+            for (var i:int = 0; i < selectedIndices.length; ++ i)
             {
-               var index:int = List_Commands.selectedIndex;
-               
-               List_Commands.dataProvider.removeItemAt (index);
+               index = selectedIndices [i];
+               if (index == selectedIndex)
+               {
+               }
+               else
+               {
+                  if (index < selectedIndex)
+                  {
+                     -- selectedIndex;
+                  }
+                  
+                  List_Commands.dataProvider.removeItemAt (index);
+               }
+            }
+            
+            if (selectedIndex >= 0)
+            {
+               List_Commands.dataProvider.removeItemAt (selectedIndex);
                mCurrentEditingItem = null;
                
-               if (index >= List_Commands.dataProvider.length)
-                  -- index;
+               if (selectedIndex >= List_Commands.dataProvider.length)
+                  -- selectedIndex;
                
-               if (index >= 0)
-                  List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index);
-               
+               if (selectedIndex >= 0)
+                  List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (selectedIndex);
+            }
+            
+            if (selectedIndices.length > 0)
+            {
                OnCurrentCommandChanged ();
                
                List_Commands.validateNow ();
@@ -395,8 +517,8 @@
             
             mCopySelectedMenuItem.enabled = List_Commands.selectedIndices.length > 0;
             mCopyAllMenuItem.enabled = List_Commands.dataProvider.length > 0;
-            mPasteBeforeMenuItem.enabled = List_Commands.dataProvider.length > 0 && Runtime.mCopiedCodeSnippet != null;
-            mPasteAfterMenuItem.enabled = Runtime.mCopiedCodeSnippet != null;
+            mPasteBeforeMenuItem.enabled = Runtime.mCopiedCodeSnippet != null &&  List_Commands.selectedIndex >= 0 && List_Commands.dataProvider.length > 0;
+            mPasteAfterMenuItem .enabled = Runtime.mCopiedCodeSnippet != null && (List_Commands.selectedIndex >= 0 || List_Commands.dataProvider.length == 0);
          }
          
          private function OnCurrentCommandChanged ():void
@@ -512,7 +634,7 @@
             {
                value_target = currentValueTargets [j];
                
-               variable_def = func_declaration.GetOuputParamDefinitionAt (j);
+               variable_def = func_declaration.GetOutputParamDefinitionAt (j);
                
                form_item = new FormItem ();
                form_item.percentWidth = 100;
@@ -591,7 +713,7 @@
                valueControls [returnId] = null;
             }
             
-            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (returnId);
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (returnId);
             var value_target:ValueTarget= currentValueTargets [returnId];
             
             var value_control:UIComponent = null;
@@ -608,7 +730,7 @@
                   validVariableIndexes = ownerFuncDeclaration.GetOutputVariableIndexesSatisfiedBy (variable_def);
                }
                
-               value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable, validVariableIndexes)
+               value_control = variable_def.CreateControlForVariableValueTarget (value_target as ValueTarget_Variable, validVariableIndexes);
             }
             
             if (value_control != null)
@@ -665,7 +787,7 @@
             {
                value_target = currentReturnTargets [j];
                target_control = target_value_controls [j];
-               variable_def = func_declaration.GetOuputParamDefinitionAt (j);
+               variable_def = func_declaration.GetOutputParamDefinitionAt (j);
                
                if (value_target is ValueTarget_Null)
                   variable_def.RetrieveNullValueTargetFromControl (value_target as ValueTarget_Null, target_control);
@@ -891,7 +1013,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (return_index);
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = mCurrentEditingItem.mInitialValueTargets [return_index];
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
@@ -913,7 +1035,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (return_index);
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultNullValueTarget ();
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
@@ -937,7 +1059,7 @@
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (return_index);
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (ownerFuncDefinition.GetReturnVariableSpace ());
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
@@ -959,7 +1081,7 @@
                return;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
-            var variable_def:VariableDefinition = func_declaration.GetOuputParamDefinitionAt (return_index);
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (TriggerEngine.GetRegisterVariableSpace (variable_def.GetValueType()));
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;

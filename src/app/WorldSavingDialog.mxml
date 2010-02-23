@@ -137,8 +137,8 @@
          
          private function OnClickCopySourceCode ():void
          {
-            var pattern:RegExp = />([\s]*)</g;
-            var newStr:String = ">\n$1<";
+            var pattern:RegExp = />\r([\s]*)</g;
+            var newStr:String = ">\r\n$1<";
             
             System.setClipboard(TextArea_SourceCode.text.replace(pattern, newStr));
          }

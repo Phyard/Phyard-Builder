@@ -169,28 +169,125 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
    }
 }
 
+
+
 protected function UpdateCamera ():void
 {
-   var targetX:Number = mCameraCenterX;
-   var targetY:Number = mCameraCenterY;
+   var targetX:Number;
+   var targetY:Number
+   
+   var smoothX:Boolean;
+   var smoothY:Boolean;
    
    if (mFollowedEntityCameraCenterX != null && mFollowedEntityCameraCenterX.IsDestroyedAlready ())
       mFollowedEntityCameraCenterX = null;
    
    if (! mIsPaused && mFollowedEntityCameraCenterX != null)
+   {
+      smoothX = mSmoothFollowingCameraCenterX;
       targetX = mCoordinateSystem.P2D_PositionX (mFollowedEntityCameraCenterX.GetPositionX ());
+   }
    else
+   {
+      smoothX = false;
       targetX = mCameraCenterX + mCameraMovedOffsetX_ByMouse;
+   }
    
    if (mFollowedEntityCameraCenterY != null && mFollowedEntityCameraCenterY.IsDestroyedAlready ())
       mFollowedEntityCameraCenterY = null;
    
    if (! mIsPaused && mFollowedEntityCameraCenterY != null)
+   {
+      smoothY = mSmoothFollowingCameraCenterY;
       targetY = mCoordinateSystem.P2D_PositionY (mFollowedEntityCameraCenterY.GetPositionY ());
+   }
    else
+   {
+      smoothY = false;
       targetY = mCameraCenterY + mCameraMovedOffsetY_ByMouse;
+   }
    
-   MoveCameraCenterTo_DisplayPoint (targetX, targetY);
+   var nextX:Number;
+   var nextY:Number;
+   
+   var dx:Number;
+   var dy:Number;
+   var distance:Number;
+   
+   var criteria1:Number = 300;
+   var criteria2:Number = 1;
+   
+   var maxSpeed:Number = 8;
+   
+   if (smoothX && smoothY)
+   {
+      dx = targetX - mCameraCenterX;
+      dy = targetY - mCameraCenterY;
+      distance = Math.sqrt (dx * dx + dy * dy);
+      
+      if (distance <= criteria2)
+      {
+         nextX = targetX;
+         nextY = targetY;
+      }
+      else if (distance > criteria1)
+      {
+         nextX = mCameraCenterX + maxSpeed * dx / distance;
+         nextY = mCameraCenterY + maxSpeed * dy / distance;
+      }
+      else
+      {
+         nextX = mCameraCenterX + maxSpeed * dx / criteria1;
+         nextY = mCameraCenterY + maxSpeed * dy / criteria1;
+      }
+   }
+   else if (smoothX)
+   {
+      nextY = targetY;
+      
+      dx = targetX - mCameraCenterX;
+      distance = Math.abs (dx);
+      
+      if (distance <= criteria2)
+      {
+         nextX = targetX;
+      }
+      else if (distance > criteria1)
+      {
+         nextX = mCameraCenterX + maxSpeed * dx / distance;
+      }
+      else
+      {
+         nextX = mCameraCenterX + maxSpeed * dx / criteria1;
+      }
+   }
+   else if (smoothY)
+   {
+      nextX = targetX;
+      
+      dy = targetY - mCameraCenterY;
+      distance = Math.abs (dy);
+      
+      if (distance <= criteria2)
+      {
+         nextY = targetY;
+      }
+      else if (distance > criteria1)
+      {
+         nextY = mCameraCenterY + maxSpeed * dy / distance;
+      }
+      else
+      {
+         nextY = mCameraCenterY + maxSpeed * dy / criteria1;
+      }
+   }
+   else
+   {
+      nextX = targetX;
+      nextY = targetY;
+   }
+   
+   MoveCameraCenterTo_DisplayPoint (nextX, nextY);
    
    mCameraMovedOffsetX_ByMouse = 0;
    mCameraMovedOffsetY_ByMouse = 0;

@@ -139,29 +139,7 @@ package editor.trigger {
          
          codeSnippet.SetName (mName);
          
-         var i:int;
-         var num:int = mFunctionCallings.length;
-         if (callingIds == null)
-         {
-            callingIds = new Array (num);
-            for (i = 0; i < num; ++ i)
-            {
-               callingIds [i] = i;
-            }
-         }
-         
-         var numToClone:int = callingIds.length;
-         var callingsArray:Array = new Array ();
-         var callingId:int;
-         for (i = 0; i < numToClone; ++ i)
-         {
-            callingId = callingIds [i];
-            if (callingId >= 0 && callingId < num)
-            {
-               callingsArray.push ((mFunctionCallings [callingId] as FunctionCalling).Clone (ownerFunctionDefinition));
-            }
-         }
-         codeSnippet.AssignFunctionCallings (callingsArray);
+         codeSnippet.CopyCallingsFrom (this, 0, callingIds);
          
          return codeSnippet;
       }

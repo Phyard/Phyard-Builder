@@ -74,7 +74,7 @@ package editor.trigger {
          return mOutputParamDefinitions.length;
       }
       
-      public function GetOuputParamDefinitionAt (returnId:int):VariableDefinition
+      public function GetOutputParamDefinitionAt (returnId:int):VariableDefinition
       {
          if (mOutputParamDefinitions == null)
             return null;
@@ -87,7 +87,7 @@ package editor.trigger {
       
       public function GetOutputParamValueType (returnId:int):int
       {
-         var vd:VariableDefinition = GetOuputParamDefinitionAt (returnId);
+         var vd:VariableDefinition = GetOutputParamDefinitionAt (returnId);
          
          if (vd == null)
             return ValueTypeDefine.ValueType_Void;
@@ -174,7 +174,7 @@ package editor.trigger {
          {
             for (var i:int = 0; i < mOutputParamDefinitions.length; ++ i)
             {
-               if (variableDefinition.IsCompatibleWith (GetOuputParamDefinitionAt (i)))
+               if (variableDefinition.IsCompatibleWith (GetOutputParamDefinitionAt (i)))
                   return true;
             }
          }
@@ -190,7 +190,7 @@ package editor.trigger {
          {
             for (var i:int = 0; i < mOutputParamDefinitions.length; ++ i)
             {
-               if (variableDefinition.IsCompatibleWith (GetOuputParamDefinitionAt (i)))
+               if (variableDefinition.IsCompatibleWith (GetOutputParamDefinitionAt (i)))
                   indexes.push (i);
             }
          }

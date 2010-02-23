@@ -32,7 +32,7 @@ package editor.trigger {
          {
             var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
             for (var j:int = 0; j < num_returns; ++ j)
-               mReturnVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOuputParamDefinitionAt (j));
+               mReturnVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOutputParamDefinitionAt (j));
          }
       }
       
@@ -121,6 +121,30 @@ package editor.trigger {
             return ValueTypeDefine.ValueType_Void;;
          
          return mFunctionDeclaration.GetInputParamValueType (inputId);
+      }
+      
+      public function GetNumOutputs ():int
+      {
+         if (mFunctionDeclaration == null)
+            return 0;
+         
+         return mFunctionDeclaration.GetNumOutputs ();
+      }
+      
+      public function GetOutputParamDefinitionAt (outputId:int):VariableDefinition
+      {
+         if (mFunctionDeclaration == null)
+            return null;
+         
+         return mFunctionDeclaration.GetOutputParamDefinitionAt (outputId);
+      }
+      
+      public function GetOutputParamValueType (outputId:int):int
+      {
+         if (mFunctionDeclaration == null)
+            return ValueTypeDefine.ValueType_Void;;
+         
+         return mFunctionDeclaration.GetOutputParamValueType (outputId);
       }
       
       public function HasInputsWithValueTypeOf (valueType:int):Boolean

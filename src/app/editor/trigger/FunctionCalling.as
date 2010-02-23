@@ -36,7 +36,7 @@ package editor.trigger {
             
             for (i = 0; i < num_returns; ++ i)
             {
-               variable_def = mFunctionDeclaration.GetOuputParamDefinitionAt (i);
+               variable_def = mFunctionDeclaration.GetOutputParamDefinitionAt (i);
                mReturnValueTargets [i] = variable_def.GetDefaultValueTarget ();
             }
          }
@@ -126,9 +126,13 @@ package editor.trigger {
          var i:int;
          var vi:VariableInstance;
          
+         var variableDefinition:VariableDefinition;
+         var done:Boolean;
+         
          var numInputs:int = mInputValueSources.length;
          var sourcesArray:Array = new Array (numInputs);
          var source:ValueSource;
+         
          for (i = 0; i < numInputs; ++ i)
          {
             source = mInputValueSources [i] as ValueSource;
@@ -140,19 +144,45 @@ package editor.trigger {
             else if (source is ValueSource_Variable)
             {
                vi = (source as ValueSource_Variable).GetVariableInstance ();
+               
+               done = false;
+               
                switch (vi.GetSpaceType ())
                {
                   case ValueSpaceTypeDefine.ValueSpace_Input:
-                     vi = ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
+                     variableDefinition = ownerFunctionDefinition.GetInputParamDefinitionAt (vi.GetIndex ());
+                     
+                     if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
+                     {
+                        done = true;
+                        sourcesArray [i] = mFunctionDeclaration.GetInputParamDefinitionAt (i).GetDefaultValueSource ();
+                     }
+                     else
+                     {
+                        vi = ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
+                     }
                      break;
                   case ValueSpaceTypeDefine.ValueSpace_Output:
-                     vi = ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
+                     variableDefinition = ownerFunctionDefinition.GetOutputParamDefinitionAt (vi.GetIndex ());
+                     
+                     if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
+                     {
+                        done = true;
+                        sourcesArray [i] = mFunctionDeclaration.GetOutputParamDefinitionAt (i).GetDefaultNullValueTarget ();
+                     }
+                     else
+                     {
+                        vi = ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
+                     }
                      break;
                   default:
                      break;
                }
                
-               sourcesArray [i] = new ValueSource_Variable (vi);
+               if (! done)
+               {
+                  sourcesArray [i] = new ValueSource_Variable (vi);
+               }
             }
             else
             {
@@ -171,19 +201,45 @@ package editor.trigger {
             if (target is ValueTarget_Variable)
             {
                vi = (target as ValueTarget_Variable).GetVariableInstance ();
+               
+               done = false;
+               
                switch (vi.GetSpaceType ())
                {
                   case ValueSpaceTypeDefine.ValueSpace_Input:
-                     vi = ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
+                     variableDefinition = ownerFunctionDefinition.GetInputParamDefinitionAt (vi.GetIndex ());
+                     
+                     if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
+                     {
+                        done = true;
+                        targetsArray [i] = mFunctionDeclaration.GetInputParamDefinitionAt (i).GetDefaultValueSource ();
+                     }
+                     else
+                     {
+                        vi = ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
+                     }
                      break;
                   case ValueSpaceTypeDefine.ValueSpace_Output:
-                     vi = ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
+                     variableDefinition = ownerFunctionDefinition.GetOutputParamDefinitionAt (vi.GetIndex ());
+                     
+                     if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
+                     {
+                        done = true;
+                        targetsArray [i] = mFunctionDeclaration.GetOutputParamDefinitionAt (i).GetDefaultNullValueTarget ();
+                     }
+                     else
+                     {
+                        vi = ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
+                     }
                      break;
                   default:
                      break;
                }
                
-               targetsArray [i] = new ValueTarget_Variable (vi);
+               if (! done)
+               {
+                  targetsArray [i] = new ValueTarget_Variable (vi);
+               }
             }
             else
             {

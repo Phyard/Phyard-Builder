@@ -11,16 +11,16 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      private var mVariableInstance:VariableInstance;
+      private var mVariableInstance:VariableInstance; // should not be null
       
-      public function ValueSource_Variable (variableInstacne:VariableInstance = null)
+      public function ValueSource_Variable (variableInstacne:VariableInstance)
       {
          SetVariableInstance (variableInstacne);
       }
       
       public function ToCodeString ():String
       {
-         return mVariableInstance == null ? "null" : mVariableInstance.ToCodeString_ForSource ();
+         return mVariableInstance.ToCodeString_ForSource ();
       }
       
       public function GetVariableInstance ():VariableInstance
@@ -35,17 +35,11 @@ package editor.trigger {
       
       public function GetVariableSpaceType ():int
       {
-         if (mVariableInstance == null)
-            return ValueSpaceTypeDefine.ValueSpace_Global;
-         
          return mVariableInstance.GetSpaceType ();
       }
       
       public function GetVariableIndex ():int
       {
-         if (mVariableInstance == null)
-            return -1;
-         
          return mVariableInstance.GetIndex ();
       }
       
@@ -60,9 +54,6 @@ package editor.trigger {
       
       public function GetValueObject ():Object
       {
-         if (mVariableInstance == null)
-            return undefined;
-         
          return mVariableInstance.GetValueObject ();
       }
       

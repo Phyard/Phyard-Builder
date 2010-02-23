@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+    title="Quick Load World" width="600">
+
+   <mx:HBox width="100%">
+      <mx:Label id="Label_SourceCode" text="Please select the quick save data to load:"/>
+   </mx:HBox>
+
+   <mx:ViewStack id="theViewStack" borderStyle="solid" width="100%" height="300">
+      <mx:VBox id="View_List" width="100%" height="100%">
+         <mx:List id="List_QuickSaves" dataProvider="{mQuckSaveListDataProvider}" labelField="mLabel" showDataTips="true" dataTipField="mDataTip" width="100%" height="100%" editable="false" />
+      </mx:VBox>
+      <mx:VBox id="View_Lable" width="100%" height="100%">
+         <mx:Spacer height="100%" />
+         <mx:Label text="No quick save data available!" textAlign="center" width="100%" />
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+   </mx:ViewStack>
+
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="Load" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   
+   <mx:Script>
+     <![CDATA[       
+         import mx.managers.PopUpManager;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mInputValues:Object;
+         
+         [Bindable]
+         private var mQuckSaveListDataProvider:Object = [];
+         
+         public function SetValues (values:Object):void
+         {
+            mInputValues = values;
+            
+            var quickSaves:Array = values.mQuickSaves;
+            
+            if (quickSaves.length == 0)
+            {
+               theViewStack.selectedChild = View_Lable;
+            }
+            else
+            {
+               for (var i:int = 0; i < quickSaves.length; ++ i)
+               {
+                  var quickSave:Object = quickSaves [i];
+                  var item:String = quickSave.mName + " (" + quickSave.mTime + ")";
+                  List_QuickSaves.dataProvider.addItemAt ({mLabel: item, mDataTip: item}, i);
+                  List_QuickSaves.selectedIndex = 0;
+               }
+            }
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            PopUpManager.removePopUp(this);
+            
+            mInputValues.mLoadQuickSaveId = List_QuickSaves.selectedIndex;
+            
+            if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (mInputValues);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

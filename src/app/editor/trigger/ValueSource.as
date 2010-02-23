@@ -16,28 +16,6 @@ package editor.trigger {
       function ValidateSource ():void;
       
       function ToCodeString ():String;
-      
-      /*
-      public function GetValueSourceType ():int
-      {
-         return ValueSourceTypeDefine.ValueSource_Null;
-      }
-      
-      public function GetValueObject ():Object
-      {
-         return null;
-      }
-      
-      // to override
-      public function Clone ():ValueSource
-      {
-         return null;
-      }
-      
-      public function Validate ():void
-      {
-      }
-      */
    }
 }
 

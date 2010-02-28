@@ -58,7 +58,8 @@
 			var u : Number = (dot11*dot02 - dot01*dot12)*invDenom;
 			var v : Number = (dot00*dot12 - dot01*dot02)*invDenom;
 			
-			return ((u>=0.0)&&(v>=0.0)&&(u+v<=1.0));    
+			//return ((u>=0.0)&&(v>=0.0)&&(u+v<=1.0));
+			return ((u>0.0)&&(v>0.0)&&(u+v<1.0));
 		}
 		
 		

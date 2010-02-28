@@ -129,7 +129,7 @@
             mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Calling(s)", OnCopySelectedCallings);
             mCopyAllMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy All Callings", OnCopyAllCallings);
             mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Callings Before The Selected", OnPasteCallingsBefore);
-            mPasteAfterMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Callings After The Selected", OnPasteCallingsAfter);
+            mPasteAfterMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "", OnPasteCallingsAfter);
             
             UpdateInterface ();
          }
@@ -519,6 +519,8 @@
             mCopyAllMenuItem.enabled = List_Commands.dataProvider.length > 0;
             mPasteBeforeMenuItem.enabled = Runtime.mCopiedCodeSnippet != null &&  List_Commands.selectedIndex >= 0 && List_Commands.dataProvider.length > 0;
             mPasteAfterMenuItem .enabled = Runtime.mCopiedCodeSnippet != null && (List_Commands.selectedIndex >= 0 || List_Commands.dataProvider.length == 0);
+            
+            mPasteAfterMenuItem.caption = List_Commands.dataProvider.length == 0 ? "Paste Copied Callings" : "Insert Callings After The Selected";
          }
          
          private function OnCurrentCommandChanged ():void

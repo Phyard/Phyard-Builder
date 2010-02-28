@@ -2,7 +2,6 @@
 {
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Vec2;
-	import Box2D.Dynamics.b2BodyDef;
 	
 	/**
 	* ...
@@ -42,7 +41,6 @@
 		 */
 		public function intersect(a0:b2Vec2, a1:b2Vec2, b0:b2Vec2, b1:b2Vec2) : b2Vec2
 		{
-
 			var x1 : Number = a0.x; var y1 : Number = a0.y;
 			var x2 : Number = a1.x; var y2 : Number = a1.y;
 			var x3 : Number = b0.x; var y3 : Number = b0.y;
@@ -307,8 +305,17 @@
 			}
 
 			// Centroid
-			c.x *= 1.0 / area;
-			c.y *= 1.0 / area;
+			if (area > FLT_EPSILON)
+			{
+				c.x *= 1.0 / area;
+				c.y *= 1.0 / area;
+			}
+			else if (count > 0)
+			{
+				c.x *= 1.0 / count;
+				c.y *= 1.0 / count;
+			}
+
 			return c;
 		}
 		
@@ -404,34 +411,7 @@
 
 				return result;
 		}
-		
-		/**
-		 * Adds this polygon to a PolyDef.
-		 */
-		 /*
-		public function AddTo(pd:b2PolygonDef) :void
-		{
-			var vecs : Array = GetVertexVecs();
-			
-			b2Settings.b2Assert(nVertices <= b2Settings.b2_maxPolygonVertices);
-			
-			var offset:int = 0;
-			for (var i : int = 0; i < nVertices; ++i) 
-			{
-				//Omit identical neighbors (including wraparound)
-				var ind:int = i - offset;
-				if (vecs[i].x==vecs[remainder(i+1,nVertices)].x &&
-					vecs[i].y==vecs[remainder(i+1,nVertices)].y){
-						offset++;
-						continue;
-				}
-				//pd.vertices[i] = vecs[i]; // bug
-				pd.vertices[ind] = vecs[i];
-			}
-			
-			pd.vertexCount = nVertices;
-		}
-		*/
+
 		public function GetQuanlifiedVertices () :Array
 		{
 			var quanlifiedVertices:Array = new Array ();
@@ -509,6 +489,7 @@
 				{
 					if (IsEar(i, xrem, yrem, vNum)) {
 						earIndex = i;
+						//trace ("IsEar");
 						break;
 					}
 				}
@@ -519,7 +500,10 @@
 				// they won't bother to check the return value.
 				// At this we shall laugh, heartily and with great gusto.
 				if (earIndex == -1)
+				{
+					//trace ("earIndex == -1");
 					return -1;
+				}
 				
 				// Clip off the ear:
 				// - remove the ear tip from the list
@@ -563,7 +547,9 @@
 				results[i] = new b2Triangle();
 				results[i].Set(buffer[i]);
 			}
-						
+			
+			//trace ("bufferSize = " + bufferSize);
+			
 			return bufferSize;
 		}
 		
@@ -712,20 +698,22 @@
 		}
 		
 		
-		public static function ReversePolygon(_x:Array, _y:Array, n:int) : void
+		public function Reverse() : void
 		{
-				if (n == 1)
+				if (nVertices == 1)
 					return;
 				var low : int = 0;
-				var high : int = n - 1;
+				var high : int = nVertices - 1;
 				while (low < high) 
 				{
-					var buffer : Number = _x[low];
-					_x[low] = _x[high];
-					_x[high] = buffer;
-					buffer = _y[low];
-					_y[low] = _y[high];
-					_y[high] = buffer;
+					var buffer : Number = x[low];
+					x[low] = x[high];
+					x[high] = buffer;
+					
+					buffer = y[low];
+					y[low] = y[high];
+					y[high] = buffer;
+					
 					++low;
 					--high;
 				}
@@ -745,35 +733,33 @@
 		*/
 		public static function DecomposeConvex(p : b2Polygon, results:Array, maxPolys : int) : int
 		{
-				if (p.nVertices < 3) return 0;
-            
-            if (p.CheckSelfIntersects ())
-            {
-               //trace ("SelfIntersects");
-               return -1;
+				if (p.nVertices < 3)
+					return 0;
+
+				if (p.CheckSelfIntersects ())
+				{
+					//trace ("SelfIntersects");
+					return -1;
 				}
-            
+
 				var triangulated :Array = [];
 				var nTri : int;
 				
 				if (p.IsCCW()) {
-					//printf("It is ccw");
-					var tempP : b2Polygon = new b2Polygon([0],[0],0);
-					tempP.Set(p);
-					ReversePolygon(tempP.x, tempP.y, tempP.nVertices);
-					nTri = TriangulatePolygon(tempP.x, tempP.y, tempP.nVertices, triangulated);			
-		//			ReversePolygon(p->x, p->y, p->nVertices); //reset orientation
-				} else {
-					//printf("It is not ccw");
-					nTri = TriangulatePolygon(p.x, p.y, p.nVertices, triangulated);
+					//trace("It is ccw");
+					p.Reverse ();
 				}
+				nTri = TriangulatePolygon(p.x, p.y, p.nVertices, triangulated);
+				
 				if (nTri < 1) {
 					//trace("Failed triangulation.  Dumping polygon:");
 					//p.print();
-					//Still no luck?  Oh well...
+					//Still no luck?  Oh well
+					//trace ("nTri = " + nTri);
 					return -1;
 				}
-				var nPolys :int = PolygonizeTriangles(triangulated, nTri, results, maxPolys);			
+				var nPolys :int = PolygonizeTriangles(triangulated, nTri, results, maxPolys);
+				
 				return nPolys;
 		}
 		 

@@ -2914,111 +2914,176 @@ package editor {
       
       public function CreateText (options:Object = null):EntityShapeText
       {
-         var shapeText:EntityShapeText = mEditorWorld.CreateEntityShapeText ();
-         if (shapeText == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
             return null;
-         
-         var halfWidth :Number = 50;
-         var halfHeight:Number = 25;
-         
-         shapeText.SetHalfWidth  (halfWidth);
-         shapeText.SetHalfHeight (halfHeight);
-         
-         shapeText.SetFilledColor (Define.ColorTextBackground);
-         shapeText.SetStatic (true);
-         
-         SetTheOnlySelectedEntity (shapeText);
-         
-         return shapeText;
+         }
+         else
+         {
+            var shapeText:EntityShapeText = mEditorWorld.CreateEntityShapeText ();
+            if (shapeText == null)
+               return null;
+            
+            var halfWidth :Number = 50;
+            var halfHeight:Number = 25;
+            
+            shapeText.SetHalfWidth  (halfWidth);
+            shapeText.SetHalfHeight (halfHeight);
+            
+            shapeText.SetFilledColor (Define.ColorTextBackground);
+            shapeText.SetStatic (true);
+            
+            SetTheOnlySelectedEntity (shapeText);
+            
+            return shapeText;
+         }
       }
       
       public function CreateEntityTextButton (options:Object = null):EntityShapeTextButton
       {
-         var button:EntityShapeTextButton = mEditorWorld.CreateEntityShapeTextButton ();
-         if (button == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
             return null;
-         
-         button.SetStatic (true);
-         
-         SetTheOnlySelectedEntity (button);
-         
-         return button;
+         }
+         else
+         {
+            var button:EntityShapeTextButton = mEditorWorld.CreateEntityShapeTextButton ();
+            if (button == null)
+               return null;
+            
+            button.SetStatic (true);
+            
+            SetTheOnlySelectedEntity (button);
+            
+            return button;
+         }
       }
       
       public function CreateGravityController (options:Object = null):EntityShapeGravityController
       {
-         var gController:EntityShapeGravityController = mEditorWorld.CreateEntityShapeGravityController ();
-         if (gController == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
             return null;
-         
-         var radius:Number = 50;
-         
-         gController.SetRadius (radius);
-         
-         gController.SetStatic (true);
-         
-         SetTheOnlySelectedEntity (gController);
-         
-         return gController;
+         }
+         else
+         {
+            var gController:EntityShapeGravityController = mEditorWorld.CreateEntityShapeGravityController ();
+            if (gController == null)
+               return null;
+            
+            var radius:Number = 50;
+            
+            gController.SetRadius (radius);
+            
+            gController.SetStatic (true);
+            
+            SetTheOnlySelectedEntity (gController);
+            
+            return gController;
+         }
       }
       
       public function CreateEntityUtilityCamera (options:Object = null):EntityUtilityCamera
       {
-         var camera:EntityUtilityCamera = mEditorWorld.CreateEntityUtilityCamera ();
-         if (camera == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
             return null;
-         
-         SetTheOnlySelectedEntity (camera);
-         
-         return camera;
+         }
+         else
+         {
+            var camera:EntityUtilityCamera = mEditorWorld.CreateEntityUtilityCamera ();
+            if (camera == null)
+               return null;
+            
+            SetTheOnlySelectedEntity (camera);
+            
+            return camera;
+         }
       }
       
       public function CreateEntityCondition (options:Object = null):EntityBasicCondition
       {
-         var condition:EntityBasicCondition = mEditorWorld.CreateEntityCondition ();
-         if (condition == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
             return null;
-         
-         SetTheOnlySelectedEntity (condition);
-         
-         return condition;
+         }
+         else
+         {
+            var condition:EntityBasicCondition = mEditorWorld.CreateEntityCondition ();
+            if (condition == null)
+               return null;
+            
+            SetTheOnlySelectedEntity (condition);
+            
+            return condition;
+         }
       }
       
       public function CreateEntityConditionDoor (options:Object = null):EntityConditionDoor
       {
-         var condition_door:EntityConditionDoor = mEditorWorld.CreateEntityConditionDoor ();
-         if (condition_door == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
             return null;
-         
-         SetTheOnlySelectedEntity (condition_door);
-         
-         return condition_door;
+         }
+         else
+         {
+            var condition_door:EntityConditionDoor = mEditorWorld.CreateEntityConditionDoor ();
+            if (condition_door == null)
+               return null;
+            
+            SetTheOnlySelectedEntity (condition_door);
+            
+            return condition_door;
+         }
       }
       
       public function CreateEntityTask (options:Object = null):EntityTask
       {
-         var task:EntityTask = mEditorWorld.CreateEntityTask ();
-         if (task == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
             return null;
-         
-         SetTheOnlySelectedEntity (task);
-         
-         return task;
+         }
+         else
+         {
+            var task:EntityTask = mEditorWorld.CreateEntityTask ();
+            if (task == null)
+               return null;
+            
+            SetTheOnlySelectedEntity (task);
+            
+            return task;
+         }
       }
       
       public function CreateEntityInputEntityAssigner (options:Object = null):EntityInputEntityAssigner
       {
-         var entity_assigner:EntityInputEntityAssigner = mEditorWorld.CreateEntityInputEntityAssigner ();
-         if (entity_assigner == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
+            // show the entity selector
+            (options.entity as EntityInputEntityAssigner).SetInternalComponentsVisible (true);
             return null;
-         
-         SetTheOnlySelectedEntity (entity_assigner);
-         
-         return entity_assigner;
+         }
+         else
+         {
+            var entity_assigner:EntityInputEntityAssigner = mEditorWorld.CreateEntityInputEntityAssigner ();
+            if (entity_assigner == null)
+               return null;
+            
+            SetTheOnlySelectedEntity (entity_assigner);
+            
+            return entity_assigner;
+         }
       }
       
       public function CreateEntityInputEntityPairAssigner (options:Object = null):EntityInputEntityPairAssigner
       {
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
+            // show the entity selector
+            (options.entity as EntityInputEntityPairAssigner).SetInternalComponentsVisible (true);
+            return null;
+         }
+         
          var entity_pair_assigner:EntityInputEntityPairAssigner = mEditorWorld.CreateEntityInputEntityPairAssigner ();
          if (entity_pair_assigner == null)
             return null;
@@ -3030,64 +3095,76 @@ package editor {
       
       public function CreateEntityEventHandler (options:Object = null):EntityEventHandler
       {
-         var handler:EntityEventHandler
-         
-         switch (options.mDefaultEventId)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
          {
-            case CoreEventIds.ID_OnWorldTimer:
-            case CoreEventIds.ID_OnEntityTimer:
-            case CoreEventIds.ID_OnEntityPairTimer:
-               handler = mEditorWorld.CreateEntityEventHandler_Timer (int(options.mDefaultEventId), options.mPotientialEventIds);
-               break;
-            case CoreEventIds.ID_OnPhysicsShapeMouseDown:
-            case CoreEventIds.ID_OnPhysicsShapeMouseUp:
-            case CoreEventIds.ID_OnEntityMouseClick:
-            case CoreEventIds.ID_OnEntityMouseDown:
-            case CoreEventIds.ID_OnEntityMouseUp:
-            case CoreEventIds.ID_OnEntityMouseMove:
-            case CoreEventIds.ID_OnEntityMouseEnter:
-            case CoreEventIds.ID_OnEntityMouseOut:
-            case CoreEventIds.ID_OnWorldMouseClick:
-            case CoreEventIds.ID_OnWorldMouseDown:
-            case CoreEventIds.ID_OnWorldMouseUp:
-            case CoreEventIds.ID_OnWorldMouseMove:
-               handler = mEditorWorld.CreateEntityEventHandler_Mouse (int(options.mDefaultEventId), options.mPotientialEventIds);
-               break;
-            case CoreEventIds.ID_OnWorldKeyDown:
-            case CoreEventIds.ID_OnWorldKeyUp:
-            case CoreEventIds.ID_OnWorldKeyHold:
-               handler = mEditorWorld.CreateEntityEventHandler_Keyboard (int(options.mDefaultEventId), options.mPotientialEventIds);
-               break;
-            case CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting:
-            case CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting:
-            case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
-               handler = mEditorWorld.CreateEntityEventHandler_Contact (int(options.mDefaultEventId), options.mPotientialEventIds);
-               break;
-            default:
-               handler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
-               break;
-         }
-         
-         if (handler == null)
             return null;
-         
-         SetTheOnlySelectedEntity (handler);
-         
-         return handler;
+         }
+         else
+         {
+            var handler:EntityEventHandler
+            
+            switch (options.mDefaultEventId)
+            {
+               case CoreEventIds.ID_OnWorldTimer:
+               case CoreEventIds.ID_OnEntityTimer:
+               case CoreEventIds.ID_OnEntityPairTimer:
+                  handler = mEditorWorld.CreateEntityEventHandler_Timer (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  break;
+               case CoreEventIds.ID_OnPhysicsShapeMouseDown:
+               case CoreEventIds.ID_OnPhysicsShapeMouseUp:
+               case CoreEventIds.ID_OnEntityMouseClick:
+               case CoreEventIds.ID_OnEntityMouseDown:
+               case CoreEventIds.ID_OnEntityMouseUp:
+               case CoreEventIds.ID_OnEntityMouseMove:
+               case CoreEventIds.ID_OnEntityMouseEnter:
+               case CoreEventIds.ID_OnEntityMouseOut:
+               case CoreEventIds.ID_OnWorldMouseClick:
+               case CoreEventIds.ID_OnWorldMouseDown:
+               case CoreEventIds.ID_OnWorldMouseUp:
+               case CoreEventIds.ID_OnWorldMouseMove:
+                  handler = mEditorWorld.CreateEntityEventHandler_Mouse (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  break;
+               case CoreEventIds.ID_OnWorldKeyDown:
+               case CoreEventIds.ID_OnWorldKeyUp:
+               case CoreEventIds.ID_OnWorldKeyHold:
+                  handler = mEditorWorld.CreateEntityEventHandler_Keyboard (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  break;
+               case CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting:
+               case CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting:
+               case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
+                  handler = mEditorWorld.CreateEntityEventHandler_Contact (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  break;
+               default:
+                  handler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  break;
+            }
+            
+            if (handler == null)
+               return null;
+            
+            SetTheOnlySelectedEntity (handler);
+            
+            return handler;
+         }
       }
       
       public function CreateEntityAction (options:Object = null):EntityAction
       {
-         var action:EntityAction = mEditorWorld.CreateEntityAction ();
-         if (action == null)
+         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         {
             return null;
-         
-         SetTheOnlySelectedEntity (action);
-         
-         return action;
+         }
+         else
+         {
+            var action:EntityAction = mEditorWorld.CreateEntityAction ();
+            if (action == null)
+               return null;
+            
+            SetTheOnlySelectedEntity (action);
+            
+            return action;
+         }
       }
-      
-      
       
 //============================================================================
 //    

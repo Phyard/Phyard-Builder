@@ -7,6 +7,12 @@ package editor.trigger.entity {
    import flash.display.Bitmap;
    import flash.geom.Point;
    
+   import flash.ui.ContextMenu;
+   import flash.ui.ContextMenuItem;
+   import flash.ui.ContextMenuBuiltInItems;
+   //import flash.ui.ContextMenuClipboardItems; // flash 10
+   import flash.events.ContextMenuEvent;
+   
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.TextUtil;
    import com.tapirgames.util.DisplayObjectUtil;
@@ -28,6 +34,18 @@ package editor.trigger.entity {
       public static var kRadius2:Number = 12;
       public static var kOffsetY:Number = 26;
       
+      protected static var sContextMenu:ContextMenu;
+      protected static var sContextMenuItems:Array = [
+               new ContextMenuItem ("One", false),
+               new ContextMenuItem ("Many", false),
+               new ContextMenuItem ("Any", false),
+            ];
+      protected static var sContextMenuItemValues:Array = [
+               Define.EntityAssignerType_Single,
+               Define.EntityAssignerType_Many,
+               Define.EntityAssignerType_Any,
+            ];
+      
       public var mBorderThickness:Number = 1;
       
       protected var mSelectorLayer:Sprite;
@@ -35,7 +53,7 @@ package editor.trigger.entity {
       
       // ...
       protected var mEntityAssignerType:int = Define.EntityAssignerType_Many;
-      protected var mInputEntities:Array = new Array ();
+      protected var mInputEntities:Array;
       
       public function EntityInputEntityAssigner (world:World)
       {
@@ -44,6 +62,12 @@ package editor.trigger.entity {
          mSelectorLayer = new Sprite ();
          mSelectorLayer.x = 0;
          mSelectorLayer.y = - kOffsetY;
+         
+         addChild (mSelectorLayer);
+         
+         RebuildEntityArray ();
+         
+         BuildContextMenu ();
       }
       
       override public function GetTypeName ():String
@@ -54,17 +78,6 @@ package editor.trigger.entity {
       public function GetSelectorType ():int
       {
          return mEntityAssignerType;
-      }
-      
-      public function SetSelectorType (newType:int):void
-      {
-         var oldType:int = mEntityAssignerType;
-         mEntityAssignerType = newType;
-         
-         if (AreInternalComponentsVisible () && oldType != newType)
-         {
-            // todo
-         }
       }
       
       public function GetInputEntities ():Array
@@ -117,9 +130,25 @@ package editor.trigger.entity {
          }
       }
       
+      private function RebuildEntityArray ():void
+      {
+         mInputEntities = new Array ();
+      }
+      
       public function ValidateEntityLinks ():void
       {
-         InputEntitySelector_Many.ValidateLinkedEntities (mInputEntities);
+         if (mEntityAssignerType == Define.EntityAssignerType_Single)
+         {
+            InputEntitySelector_Single.ValidateSingleEntity (mInputEntities);
+         }
+         else if (mEntityAssignerType == Define.EntityAssignerType_Any)
+         {
+            mInputEntities.length = 0;
+         }
+         else
+         {
+            InputEntitySelector_Many.ValidateLinkedEntities (mInputEntities);
+         }
       }
       
       override public function UpdateAppearance ():void
@@ -168,6 +197,40 @@ package editor.trigger.entity {
          (mSelectionProxy as SelectionProxyCircle).RebuildCircle( GetRotation (), GetPositionX (), GetPositionY (), kRadius2 );
       }
       
+      
+//==============================================================================================================
+//
+//==============================================================================================================
+      
+      private function BuildContextMenu ():void
+      {
+         if (sContextMenu != null)
+            return;
+         
+         sContextMenu = new ContextMenu ();
+         sContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = sContextMenu.builtInItems;
+         defaultItems.print = false;
+         
+         for (var i:int = 0; i < sContextMenuItems.length; ++ i)
+         {
+            sContextMenu.customItems.push (sContextMenuItems [i] as ContextMenuItem);
+            (sContextMenuItems [i] as ContextMenuItem).addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         }
+      }
+      
+      private static function OnContextMenuEvent (event:ContextMenuEvent):void
+      {
+         var assigner:EntityInputEntityAssigner = event.mouseTarget as EntityInputEntityAssigner;
+         if (assigner == null)
+            return;
+         
+         var index:int = sContextMenuItems.indexOf (event.target);
+         
+         if (index >= 0)
+            assigner.SetSelectorType (sContextMenuItemValues[index]);
+      }
+      
 //==============================================================================================================
 //
 //==============================================================================================================
@@ -177,33 +240,87 @@ package editor.trigger.entity {
          if (mSelectionProxy == null)
             return; // this happens when creating this entity
          
+         mouseChildren = true;
+         
          super.SetInternalComponentsVisible (visible);
          
-         mSelectorLayer.visible = AreInternalComponentsVisible ();
-         
-         GraphicsUtil.Clear (mSelectorLayer);
-         while (mSelectorLayer.numChildren > 0)
-            mSelectorLayer.removeChildAt (0);
+         if (AreInternalComponentsVisible ())
+         {
+            mSelectorLayer.visible = true;
+            
+            contextMenu = sContextMenu;
+            
+            for (var i:int = 0; i < sContextMenuItems.length; ++ i)
+               (sContextMenuItems [i] as ContextMenuItem).enabled = (sContextMenuItemValues[i] != mEntityAssignerType);
+         }
+         else
+         {
+            mSelectorLayer.visible = false;
+            
+            contextMenu = null;
+         }
          
          if (! visible && mInputEntitySelector != null)
+         {
+            DestroyInternalComponents ();
+         }
+         
+         if (visible && mInputEntitySelector == null)
+         {
+            CreateInternalComponents ();
+         }
+         
+         if (mInputEntities.length > 0)
+            InputEntitySelector.NotifyEntityLinksModified ();
+      }
+      
+      public function SetSelectorType (newType:int):void
+      {
+         var oldType:int = mEntityAssignerType;
+         mEntityAssignerType = newType;
+         
+         for (var i:int = 0; i < sContextMenuItems.length; ++ i)
+            (sContextMenuItems [i] as ContextMenuItem).enabled = (sContextMenuItemValues [i] != mEntityAssignerType);
+         
+         if (AreInternalComponentsVisible () && oldType != newType)
+         {
+            DestroyInternalComponents ();
+            RebuildEntityArray ();
+            CreateInternalComponents ();
+            InputEntitySelector.NotifyEntityLinksModified ();
+         }
+      }
+      
+      protected function CreateInternalComponents ():void
+      {
+         DestroyInternalComponents ();
+         
+         if (mEntityAssignerType == Define.EntityAssignerType_Single)
+            mInputEntitySelector = new InputEntitySelector_Single (mWorld, this, 0, 0, OnSelectEntity, OnClearEntities);
+         else if (mEntityAssignerType == Define.EntityAssignerType_Any)
+            mInputEntitySelector = new InputEntitySelector_Any (mWorld, this);
+         else
+            mInputEntitySelector = new InputEntitySelector_Many (mWorld, this, 0, 0, OnSelectEntity, OnClearEntities);
+            
+         mInputEntitySelector.UpdateAppearance ();
+         mSelectorLayer.addChild (mInputEntitySelector);
+         mInputEntitySelector.UpdateSelectionProxy ();
+         
+         // ...
+         GraphicsUtil.DrawLine (mSelectorLayer, 0, (kOffsetY - kRadius2), 0, 0, 0x0, 0);
+      }
+      
+      protected function DestroyInternalComponents ():void
+      {
+         if (mInputEntitySelector != null)
          {
             mInputEntitySelector.Destroy ();
             mInputEntitySelector = null;
          }
          
-         if (visible && mInputEntitySelector == null)
-         {
-            mInputEntitySelector = new InputEntitySelector_Many (mWorld, this, 0, 0, OnSelectEntity, OnClearEntities);
-            mInputEntitySelector.UpdateAppearance ();
-            mSelectorLayer.addChild (mInputEntitySelector);
-            mInputEntitySelector.UpdateSelectionProxy ();
-            
-         // ...
-            GraphicsUtil.DrawLine (mSelectorLayer, 0, (kOffsetY - kRadius2), 0, 0, 0x0, 0);
-         }
-         
-         if (mInputEntities.length > 0)
-            InputEntitySelector.NotifyEntityLinksModified ();
+         GraphicsUtil.Clear (mSelectorLayer);
+         while (mSelectorLayer.numChildren > 0)
+            mSelectorLayer.removeChildAt (0);
       }
       
       protected function UpdateInternalComponents (updateSelectionProxy:Boolean = true):void
@@ -250,11 +367,28 @@ package editor.trigger.entity {
             
             return true;
          }
-         else if (mInputEntities.length < Define.MaxEntitiesCountEachAssigner)
+         else
          {
-            mInputEntities.push (entity);
-            
-            return true;
+            if (mEntityAssignerType == Define.EntityAssignerType_Single)
+            {
+               mInputEntities [0] = entity;
+               mInputEntities.length = 1;
+               
+               return true;
+            }
+            else if (mEntityAssignerType == Define.EntityAssignerType_Any)
+            {
+               mInputEntities.length = 0;
+            }
+            else
+            {
+               if (mInputEntities.length < Define.MaxEntitiesCountEachAssigner)
+               {
+                  mInputEntities.push (entity);
+                  
+                  return true;
+               }
+            }
          }
          
          return false;
@@ -287,6 +421,10 @@ package editor.trigger.entity {
             if (mInputEntitySelector is InputEntitySelector_Many)
             {
                (mInputEntitySelector as InputEntitySelector_Many).DrawEntityLinkLines (canvasSprite, mInputEntities);
+            }
+            else if (mInputEntitySelector is InputEntitySelector_Single)
+            {
+               (mInputEntitySelector as InputEntitySelector_Single).DrawEntityLinkLine (canvasSprite, mInputEntities [0]);
             }
          }
       }

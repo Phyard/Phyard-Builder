@@ -69,6 +69,8 @@ package editor.trigger.entity {
          mSelectorLayer.x = 0;
          mSelectorLayer.y = - kOffsetY;
          
+         addChild (mSelectorLayer);
+         
          RebuildEntityArrays ();
          
          BuildContextMenu ();
@@ -277,35 +279,6 @@ package editor.trigger.entity {
          }
       }
       
-      private static function BuildContextMenu ():void
-      {
-         if (sContextMenu != null)
-            return;
-         
-         sContextMenu = new ContextMenu ();
-         sContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = sContextMenu.builtInItems;
-         defaultItems.print = false;
-         
-         for (var i:int = 0; i < sContextMenuItems.length; ++ i)
-         {
-            sContextMenu.customItems.push (sContextMenuItems [i] as ContextMenuItem);
-            (sContextMenuItems [i] as ContextMenuItem).addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         }
-      }
-      
-      private static function OnContextMenuEvent (event:ContextMenuEvent):void
-      {
-         var pair_assigner:EntityInputEntityPairAssigner = event.mouseTarget as EntityInputEntityPairAssigner;
-         if (pair_assigner == null)
-            return;
-         
-         var index:int = sContextMenuItems.indexOf (event.target);
-         
-         if (index >= 0)
-            pair_assigner.SetPairingType (index);
-      }
-      
       override public function UpdateAppearance ():void
       {
          while (numChildren > 0)
@@ -357,6 +330,35 @@ package editor.trigger.entity {
 //
 //==============================================================================================================
       
+      private static function BuildContextMenu ():void
+      {
+         if (sContextMenu != null)
+            return;
+         
+         sContextMenu = new ContextMenu ();
+         sContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = sContextMenu.builtInItems;
+         defaultItems.print = false;
+         
+         for (var i:int = 0; i < sContextMenuItems.length; ++ i)
+         {
+            sContextMenu.customItems.push (sContextMenuItems [i] as ContextMenuItem);
+            (sContextMenuItems [i] as ContextMenuItem).addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         }
+      }
+      
+      private static function OnContextMenuEvent (event:ContextMenuEvent):void
+      {
+         var pair_assigner:EntityInputEntityPairAssigner = event.mouseTarget as EntityInputEntityPairAssigner;
+         if (pair_assigner == null)
+            return;
+         
+         var index:int = sContextMenuItems.indexOf (event.target);
+         
+         if (index >= 0)
+            pair_assigner.SetPairingType (index);
+      }
+      
       override public function SetInternalComponentsVisible (visible:Boolean):void
       {
          if (mSelectionProxy == null)
@@ -368,13 +370,19 @@ package editor.trigger.entity {
          
          if (AreInternalComponentsVisible ())
          {
+            mSelectorLayer.visible = true;
+            
             contextMenu = sContextMenu;
             
             for (var i:int = 0; i < sContextMenuItems.length; ++ i)
                (sContextMenuItems [i] as ContextMenuItem).enabled = (i != mEntityPairAssignerType);
          }
          else
+         {
+            mSelectorLayer.visible = false;
+            
             contextMenu = null;
+         }
          
          if (! visible && mInputEntitySelectors != null)
          {
@@ -442,17 +450,17 @@ package editor.trigger.entity {
                   mInputEntitySelectors [i] = selector;
                   selector.x = - offset_x;
                   selector.y = pair_y;
+                  mSelectorLayer.addChild (selector);
                   selector.UpdateAppearance ();
                   selector.UpdateSelectionProxy ();
-                  mSelectorLayer.addChild (selector);
                   
                   selector = new InputEntitySelector_Single (mWorld, this, 1, selectorId, OnSelectEntity, OnClearEntities);
                   mInputEntitySelectors [i+1] = selector;
                   selector.x = offset_x;
                   selector.y = pair_y;
+                  mSelectorLayer.addChild (selector);
                   selector.UpdateAppearance ();
                   selector.UpdateSelectionProxy ();
-                  mSelectorLayer.addChild (selector);
                   
                   GraphicsUtil.DrawLine (mSelectorLayer, - offset_x, pair_y, offset_x, pair_y, 0x0, 0);
                   
@@ -481,9 +489,9 @@ package editor.trigger.entity {
                mInputEntitySelectors [0] = selector;
                selector.x = - offset_x;
                selector.y = 0;
+               mSelectorLayer.addChild (selector);
                selector.UpdateAppearance ();
                selector.UpdateSelectionProxy ();
-               mSelectorLayer.addChild (selector);
                
                if (mEntityPairAssignerType == Define.EntityPairAssignerType_ManyToMany || mEntityPairAssignerType == Define.EntityPairAssignerType_AnyToMany)
                {
@@ -497,9 +505,9 @@ package editor.trigger.entity {
                mInputEntitySelectors [1] = selector;
                selector.x = offset_x;
                selector.y = 0;
+               mSelectorLayer.addChild (selector);
                selector.UpdateAppearance ();
                selector.UpdateSelectionProxy ();
-               mSelectorLayer.addChild (selector);
                
                GraphicsUtil.DrawLine (mSelectorLayer, - offset_x, 0, offset_x, 0, 0x0, 0);
                
@@ -513,9 +521,9 @@ package editor.trigger.entity {
                mInputEntitySelectors [0] = selector;
                selector.x = 0;
                selector.y = 0;
+               mSelectorLayer.addChild (selector);
                selector.UpdateAppearance ();
                selector.UpdateSelectionProxy ();
-               mSelectorLayer.addChild (selector);
                
                break;
             }

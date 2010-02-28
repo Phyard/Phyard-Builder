@@ -30,9 +30,6 @@ package editor.trigger.entity {
    {
       public static var kRadius:Number = 5.0;
       
-      protected static var sContextMenu:ContextMenu;
-      protected static var sContextMenuItem_Clear:ContextMenuItem;
-      
       public static var sNotifyEntityLinksModified:Function = null;
       
       public static function NotifyEntityLinksModified ():void
@@ -72,8 +69,6 @@ package editor.trigger.entity {
          mSelectorId = selectorId;
          
          BuildContextMenu ();
-         
-         contextMenu = sContextMenu;
       }
       
       public function SetSelectable (selectable:Boolean):void
@@ -221,29 +216,29 @@ package editor.trigger.entity {
 //   context menu
 //====================================================================
       
-      private static function BuildContextMenu ():void
+      protected var mContextMenuItem_Clear:ContextMenuItem;
+      
+      private function BuildContextMenu ():void
       {
-         if (sContextMenu != null)
-            return;
+         contextMenu = new ContextMenu ();
          
-         sContextMenu = new ContextMenu ();
-         sContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = sContextMenu.builtInItems;
+         contextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
          defaultItems.print = false;
          
-         sContextMenuItem_Clear = new ContextMenuItem ("Clear", false),
+         mContextMenuItem_Clear = new ContextMenuItem ("Clear", false),
          
-         sContextMenu.customItems.push (sContextMenuItem_Clear);
-         sContextMenuItem_Clear.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         contextMenu.customItems.push (mContextMenuItem_Clear);
+         mContextMenuItem_Clear.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
       }
       
-      private static function OnContextMenuEvent (event:ContextMenuEvent):void
+      private function OnContextMenuEvent (event:ContextMenuEvent):void
       {
          var selector:InputEntitySelector = event.mouseTarget as InputEntitySelector;
-         if (selector == null)
+         if (selector != this)
             return;
          
-         if (event.target == sContextMenuItem_Clear)
+         if (event.target == mContextMenuItem_Clear)
          {
             selector.ClearEntities ();
          }

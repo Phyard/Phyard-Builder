@@ -105,7 +105,10 @@ package editor.mode {
          }
          
          if (created)
+         {
+            mMainView.CreateUndoPoint ();
             mMainView.RepaintEntityLinks ();
+         }
       }
       
       override public function OnMouseDown (mouseX:Number, mouseY:Number):void

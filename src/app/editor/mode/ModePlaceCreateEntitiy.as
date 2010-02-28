@@ -13,6 +13,11 @@ package editor.mode {
    
    public class ModePlaceCreateEntitiy extends Mode
    {
+      public static const StageStart:int = 0;
+      public static const StageFinished:int = 1;
+      
+   //================================
+      
       private var mEntityCreateFunction:Function = null;
       private var mEntityCreateOptions:Object = null;
       
@@ -22,6 +27,8 @@ package editor.mode {
          
          mEntityCreateFunction = createFunc;
          mEntityCreateOptions = createOptions;
+         if (mEntityCreateOptions == null)
+            mEntityCreateOptions = new Object ();
       }
       
       private var mEntity:Entity = null;
@@ -57,6 +64,7 @@ package editor.mode {
          
          if (mEntityCreateFunction != null)
          {
+            mEntityCreateOptions.stage = StageStart;
             mEntity = mEntityCreateFunction (mEntityCreateOptions);
          }
          
@@ -84,9 +92,18 @@ package editor.mode {
          
          mEntity.UpdateSelectionProxy ();
          
+         if (mEntityCreateFunction != null)
+         {
+            mEntityCreateOptions.entity = mEntity;
+            mEntityCreateOptions.stage = StageFinished;
+            mEntityCreateFunction (mEntityCreateOptions);
+         }
+         
          ResetSession (false);
          
          mMainView.CalSelectedEntitiesCenterPoint ();
+         
+         mMainView.CreateUndoPoint ();
          mMainView.SetCurrentCreateMode (null);
       }
       

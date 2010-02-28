@@ -41,9 +41,9 @@ package editor.trigger.entity {
       public static const kText_AddNot:String = "Add \"Not\" Door";
       public static const kText_ClearNot:String = "Clear \"Not\" Door";
       
-      protected static var sContextMenu:ContextMenu;
-      protected static var sContextMenuItem_ToggleAndOr:ContextMenuItem;
-      protected static var sContextMenuItem_ToggleNot:ContextMenuItem;
+      protected var mContextMenu:ContextMenu;
+      protected var mContextMenuItem_ToggleAndOr:ContextMenuItem;
+      protected var mContextMenuItem_ToggleNot:ContextMenuItem;
       
       protected var mBorderThickness:Number = 1;
       
@@ -229,46 +229,52 @@ package editor.trigger.entity {
 //
 //==============================================================================================================
       
-      private static function BuildContextMenu ():void
+      private function BuildContextMenu ():void
       {
-         if (sContextMenu != null)
-            return;
+         //if (mContextMenu != null)
+         //   return;
          
-         sContextMenu = new ContextMenu ();
-         sContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = sContextMenu.builtInItems;
+         mContextMenu = new ContextMenu ();
+         mContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = mContextMenu.builtInItems;
          defaultItems.print = false;
          
-         sContextMenuItem_ToggleAndOr = new ContextMenuItem (kText_SetAsAnd, false),
-         sContextMenu.customItems.push (sContextMenuItem_ToggleAndOr);
-         sContextMenuItem_ToggleAndOr.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         mContextMenuItem_ToggleAndOr = new ContextMenuItem (kText_SetAsAnd, false),
+         mContextMenu.customItems.push (mContextMenuItem_ToggleAndOr);
+         mContextMenuItem_ToggleAndOr.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         sContextMenuItem_ToggleNot = new ContextMenuItem (kText_AddNot, false),
-         sContextMenu.customItems.push (sContextMenuItem_ToggleNot);
-         sContextMenuItem_ToggleNot.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         mContextMenuItem_ToggleNot = new ContextMenuItem (kText_AddNot, false),
+         mContextMenu.customItems.push (mContextMenuItem_ToggleNot);
+         mContextMenuItem_ToggleNot.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         
+         contextMenu = mContextMenu;
+         
+         UpdateMenuItems ();
       }
       
-      private static function OnContextMenuEvent (event:ContextMenuEvent):void
+      private function OnContextMenuEvent (event:ContextMenuEvent):void
       {
          var door:EntityConditionDoor = event.mouseTarget as EntityConditionDoor;
-         if (door == null)
+         //if (door == null)
+         //   return;
+         if (door != this)
             return;
          
-         if (event.target == sContextMenuItem_ToggleAndOr)
+         if (event.target == mContextMenuItem_ToggleAndOr)
          {
-            door.SetAsAnd (sContextMenuItem_ToggleAndOr.caption == kText_SetAsAnd);
+            door.SetAsAnd (mContextMenuItem_ToggleAndOr.caption == kText_SetAsAnd);
             door.UpdateAppearance ();
             
-            sContextMenuItem_ToggleAndOr.caption = door.IsAnd () ? kText_SetAsOr : kText_SetAsAnd;
-            sContextMenuItem_ToggleNot.caption = door.IsNot () ? kText_ClearNot : kText_AddNot;
+            mContextMenuItem_ToggleAndOr.caption = door.IsAnd () ? kText_SetAsOr : kText_SetAsAnd;
+            mContextMenuItem_ToggleNot.caption = door.IsNot () ? kText_ClearNot : kText_AddNot;
          }
-         else if (event.target == sContextMenuItem_ToggleNot)
+         else if (event.target == mContextMenuItem_ToggleNot)
          {
-            door.SetAsNot (sContextMenuItem_ToggleNot.caption == kText_AddNot);
+            door.SetAsNot (mContextMenuItem_ToggleNot.caption == kText_AddNot);
             door.UpdateAppearance ();
             
-            sContextMenuItem_ToggleAndOr.caption = door.IsAnd () ? kText_SetAsOr : kText_SetAsAnd;
-            sContextMenuItem_ToggleNot.caption = door.IsNot () ? kText_ClearNot : kText_AddNot;
+            mContextMenuItem_ToggleAndOr.caption = door.IsAnd () ? kText_SetAsOr : kText_SetAsAnd;
+            mContextMenuItem_ToggleNot.caption = door.IsNot () ? kText_ClearNot : kText_AddNot;
          }
       }
       
@@ -278,13 +284,18 @@ package editor.trigger.entity {
          
          if (AreInternalComponentsVisible ())
          {
-            contextMenu = sContextMenu;
+            //contextMenu = mContextMenu;
             
-            sContextMenuItem_ToggleAndOr.caption = IsAnd () ? kText_SetAsOr : kText_SetAsAnd;
-            sContextMenuItem_ToggleNot.caption = IsNot () ? kText_ClearNot : kText_AddNot;
+            UpdateMenuItems ();
          }
-         else
-            contextMenu = null;
+         //else
+         //   contextMenu = null;
+      }
+      
+      private function UpdateMenuItems ():void
+      {
+         mContextMenuItem_ToggleAndOr.caption = IsAnd () ? kText_SetAsOr : kText_SetAsAnd;
+         mContextMenuItem_ToggleNot.caption = IsNot () ? kText_ClearNot : kText_AddNot;
       }
       
 //====================================================================

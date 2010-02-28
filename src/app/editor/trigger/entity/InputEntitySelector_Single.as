@@ -24,6 +24,20 @@ package editor.trigger.entity {
    public class InputEntitySelector_Single extends InputEntitySelector 
    {
       
+      public static function ValidateSingleEntity (entities:Array):void
+      {
+         var entity:Entity = entities [0];
+         
+         if (entity == null || entity.GetCreationOrderId () < 0)
+         {
+            entities.length = 0;
+         }
+         else
+         {
+            entities.length = 1;
+         }
+      }
+      
       public static function ValidateLinkedEntities (entities1:Array, entities2:Array):void
       {
          if (entities1.length < entities2.length)

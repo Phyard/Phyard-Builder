@@ -370,7 +370,7 @@ package player.trigger {
          valueTarget.AssignValueObject (date.getFullYear ());
          
          valueTarget = valueTarget.mNextValueTargetInList;
-         valueTarget.AssignValueObject (date.getMonth ());
+         valueTarget.AssignValueObject (date.getMonth () + 1);
          
          valueTarget = valueTarget.mNextValueTargetInList;
          valueTarget.AssignValueObject (date.getDate ());

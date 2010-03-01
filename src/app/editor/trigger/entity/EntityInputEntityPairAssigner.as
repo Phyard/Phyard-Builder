@@ -364,6 +364,8 @@ package editor.trigger.entity {
          if (mSelectionProxy == null)
             return; // this happens when creating this entity
          
+         mouseChildren = true;
+         
          super.SetInternalComponentsVisible (visible);
          
          mSelectorLayer.visible = AreInternalComponentsVisible ();

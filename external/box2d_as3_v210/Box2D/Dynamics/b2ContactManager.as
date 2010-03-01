@@ -49,7 +49,6 @@ package Box2D.Dynamics
 		//void Collide();
 				
 		public var m_broadPhase:b2BroadPhase;// = new b2BroadPhase_DynamicTree ();
-		//public var m_broadPhase:b2BroadPhase = new b2eBroadPhase_SweepAndPrune ();
 		public var m_contactList:b2Contact;
 		public var m_contactCount:int;
 		public var m_contactFilter:b2ContactFilter;

@@ -57,6 +57,11 @@ package editor.trigger.entity {
          text_field.y = - 0.5 * text_field.height;
       }
       
+      override internal function GetClearMenuText ():String
+      {
+         return "Break Link(s)";
+      }
+      
 //====================================================================
 //   entity links
 //====================================================================

@@ -218,15 +218,24 @@ package editor.trigger.entity {
       
       protected var mContextMenuItem_Clear:ContextMenuItem;
       
+      internal function GetClearMenuText ():String
+      {
+         return null;
+      }
+      
       private function BuildContextMenu ():void
       {
          contextMenu = new ContextMenu ();
+         
+         var clearText:String = GetClearMenuText ();
+         if (clearText == null)
+            return;
          
          contextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
          defaultItems.print = false;
          
-         mContextMenuItem_Clear = new ContextMenuItem ("Clear", false),
+         mContextMenuItem_Clear = new ContextMenuItem (clearText, false),
          
          contextMenu.customItems.push (mContextMenuItem_Clear);
          mContextMenuItem_Clear.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);

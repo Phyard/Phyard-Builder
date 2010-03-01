@@ -245,7 +245,6 @@ package Box2D.Dynamics.Joints
 //***********************************************************************
 		
 		// call by b2Body
-		// this function should  NOT change the world position
 		public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
 		{
 			// to override

@@ -69,7 +69,11 @@ package Box2D.Collision
 		public var type:int;
 		public var pointCount:int;								///< the number of manifold points
 		
-		// hacking
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
 		public var mNextManifoldInPool:b2Manifold = null;
+		
 	} // class
 } // package

@@ -17,6 +17,12 @@ package Box2D.Collision
 		{
 			return (contact_id && 0xFFFFFF00) | (flip && 0xFF);
 		}
+		
+		public static function ContactID_GetFlip (contact_id:uint):uint
+		{
+			return (contact_id && 0xFF);
+		}
+		
 		//<<
 		
 		

@@ -75,6 +75,11 @@ package editor.trigger.entity {
          //return someRemoved;
       }
       
+      override internal function GetClearMenuText ():String
+      {
+         return "Break Link";
+      }
+      
 //=================================================================================================
 //   
 //=================================================================================================

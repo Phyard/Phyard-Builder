@@ -776,6 +776,7 @@ package Box2D.Dynamics
 
 		public function CoincideWithCentroid ():Boolean//b2Vec2
 		{
+		trace ("CoincideWithCentroid 111");
 			//b2Assert(m_world->IsLocked() == false);
 			if (m_world.IsLocked() == true)
 			{
@@ -797,7 +798,7 @@ package Box2D.Dynamics
 			m_sweep.localCenter.x = 0.0;
 			m_sweep.localCenter.y = 0.0;
 			
-		// adjust local coordinates for shapes
+		// adjust shapes local vertices
 			
 			var fixture:b2Fixture = m_fixtureList;
 			while (fixture != null)
@@ -807,6 +808,8 @@ package Box2D.Dynamics
 				fixture = fixture.m_next;
 			}
 			
+		// adjust local anchor points
+			
 			var jn:b2JointEdge = m_jointList;
 			while (jn != null)
 			{
@@ -815,7 +818,15 @@ package Box2D.Dynamics
 				jn = jn.next;
 			}
 			
-			//todo: contact list
+		// adjust contact m points manifoild local points
+			
+			var ce:b2ContactEdge = m_contactList;
+			while (ce != null)
+			{
+				ce.contact.OnBodyLocalCenterChanged (dx, dy, this);
+				
+				ce = ce.next;
+			}
 			
 			// ...
 			return true; //new b2Vec2.b2Vec2_From2Numbers (dx, dy);

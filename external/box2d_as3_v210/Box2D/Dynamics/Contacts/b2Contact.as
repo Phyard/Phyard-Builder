@@ -251,6 +251,42 @@ package Box2D.Dynamics.Contacts
 		{
 			m_flags |= e_filterFlag;
 		}
+		
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
+		// hacking
+		public var mNextManifoldInPool:b2Manifold = null;
+		
+		// call by b2Body
+		public function OnBodyLocalCenterChanged (dx:Number, dy:Number, body:b2Body):void
+		{
+			if (m_manifold.pointCount <= 0)
+				return;
+			
+			var manifoldPoint:Array = m_manifold.points;
+			
+			var flip:Boolean = b2ContactID.ContactID_GetFlip (manifoldPoint [0].id) != 0;
+			var isBodyA:Boolean = body == m_fixtureA.GetBody ();
+			
+			var firstBodyIsBodyA:Boolean = (isBodyA != flip);
+			
+			if (firstBodyIsBodyA)
+			{
+				m_manifold.localPoint.x += dx;
+				m_manifold.localPoint.y += dy;
+			}
+			else
+			{
+				for (var i:int = 0; i < m_manifold.pointCount; ++ i)
+				{
+					manifoldPoint [i].localPoint.x += dx;
+					manifoldPoint [i].localPoint.y += dy;
+				}
+			}
+		}
+		
 	} // class
 } // package
 //#endif

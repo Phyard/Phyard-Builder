@@ -221,7 +221,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsDestroyed,        IsEntityDestroyed);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Overlapped,        AreTwoEntitiesOverlppped);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Coincided,        AreTwoEntitiesOverlppped);
          
       // game / entity / shape
          
@@ -1675,7 +1675,7 @@ package player.trigger {
          }
       }
       
-      public static function AreTwoEntitiesOverlppped(valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AreTwoEntitiesCoincided (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity1:Entity = valueSource.EvalateValueObject () as Entity;
          if (entity1 == null)
@@ -1701,11 +1701,12 @@ package player.trigger {
          if (dx < 0) dx = -dx;
          if (dy < 0) dy = -dy;
          if (dr < 0) dr = -dr;
+         if (dr < 0) dr = -dr;
          if (dr > 180) dr = 360 - dr;
          
-         var overlapped:Boolean = dx < toleranceDx && dy < toleranceDy && dr < toleranceDr;
+         var coincided:Boolean = dx < toleranceDx && dy < toleranceDy && dr < toleranceDr;
          
-         valueTarget.AssignValueObject (overlapped);
+         valueTarget.AssignValueObject (coincided);
       }
       
    //*******************************************************************

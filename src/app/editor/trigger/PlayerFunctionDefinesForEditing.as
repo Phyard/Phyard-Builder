@@ -1129,7 +1129,7 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Overlapped, entity_package, "Two Entities Superimposed?", "@Are Two Entities ($0, $1) Superimposed with Tolerances ($2, $3, $4)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Coincided, entity_package, "Are Two Entities Coincided?", "@Are Two Entities ($0, $1) Superimposed with Tolerances ($2, $3, $4)", null,
                      [
                         new VariableDefinitionEntity ("The Entity 1", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
                         new VariableDefinitionEntity ("The Entity 2", null, {mValidClasses: Filters.sMoveableEntityClasses}), 

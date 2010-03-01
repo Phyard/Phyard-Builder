@@ -217,7 +217,7 @@ package common.trigger {
       public static const ID_Entity_IsDestroyed:int                    = IdPool.CoreApiId_1049; // entity 
       public static const ID_Entity_Destroy:int                        = IdPool.CoreApiId_1050; // entity 
       
-      public static const ID_Entity_Overlapped:int                     = IdPool.CoreApiId_1060; // entity 
+      public static const ID_Entity_Coincided:int                     = IdPool.CoreApiId_1060; // entity 
       
    // game / entity / shape
       

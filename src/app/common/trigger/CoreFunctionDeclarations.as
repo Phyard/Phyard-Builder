@@ -1088,7 +1088,7 @@ package common.trigger {
                      null
                   );
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Overlapped,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Coincided,
                      [
                         ValueTypeDefine.ValueType_Entity, 
                         ValueTypeDefine.ValueType_Entity, 

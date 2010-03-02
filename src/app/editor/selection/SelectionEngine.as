@@ -78,7 +78,7 @@ package editor.selection {
          var halfWidth:Number = (x2 - x1) * 0.5; if (halfWidth < 0) halfWidth = - halfWidth;
          var halfHeight:Number = (y2 - y1) * 0.5; if (halfHeight < 0) halfHeight = - halfHeight;
          
-       // ...
+      // ...
          var oldContactListener:b2ContactListener = _b2World.GetContactListener ();
          
          var selProxyRect:_SelectionProxyRectangleForRegionSelection = new _SelectionProxyRectangleForRegionSelection (this);

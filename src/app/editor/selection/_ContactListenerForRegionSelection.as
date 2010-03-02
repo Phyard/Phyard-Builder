@@ -75,18 +75,25 @@ package editor.selection {
       {
          //trace (new Error ("------------------- BeginContact").getStackTrace ());
          
+          var body1:b2Body = contact.m_fixtureA.GetBody();
+          var body2:b2Body = contact.m_fixtureB.GetBody();
+         
+         if (body1 != mCollideWithBody && body2 != mCollideWithBody)
+            return;
+         
          if (Compile::Is_Debugging)// && false)
          {
             mContacts.push (contact);
          }
          
-          var body1:b2Body = contact.m_fixtureA.GetBody();
-          var body2:b2Body = contact.m_fixtureB.GetBody();
-         
          if (body1 == mCollideWithBody && mIntersectedBodies.indexOf (body2) < 0)
+         {
             mIntersectedBodies.push (body2);
+          }
          if (body2 == mCollideWithBody && mIntersectedBodies.indexOf (body1) < 0)
+         {
             mIntersectedBodies.push (body1);
+         }
       }
 
       /// Called when two fixtures cease to touch.

@@ -29,13 +29,14 @@ package editor {
    
    import editor.entity.EntityCollisionCategory;
    
+   import editor.trigger.entity.Linkable;
+   
    import editor.entity.Entity;
    
    import editor.mode.CollisionCategoryMode;
    
    import editor.mode.CollisionCategoryModeCreateCategory;
    import editor.mode.CollisionCategoryModeCreateCategoryFriendLink;
-   import editor.mode.CollisionCategoryModeBreakCategoryFriendLink;
    
    import editor.mode.CollisionCategoryModeRegionSelectEntities;
    import editor.mode.CollisionCategoryModeMoveSelectedEntities;
@@ -113,13 +114,17 @@ package editor {
       public function SetCollisionManager (cm:CollisionManager):void
       {
          if (mCollisionManager != null && contains (mCollisionManager))
+         {
+            mCollisionManager.SetFriendLinksChangedCallback (null);
             removeChild (mCollisionManager);
+         }
          
          mCollisionManager = cm;
          
          if (mCollisionManager != null)
          {
             addChildAt (mCollisionManager, getChildIndex (mForegroundSprite));
+            mCollisionManager.SetFriendLinksChangedCallback (UpdateFriendLinkLines);
             
             mask = mContentMaskSprite;
          }
@@ -340,8 +345,6 @@ package editor {
 //==================================================================================
       
       public var mButtonCreateCollisionCategory:Button;
-      public var mButtonCreateCollisionCategoryFriendLink:Button;
-      public var mButtonBreakCollisionCategoryFriendLink:Button;
       
       public function OnCreateButtonClick (event:MouseEvent):void
       {
@@ -355,14 +358,6 @@ package editor {
          {
             case mButtonCreateCollisionCategory:
                SetCurrentCreateMode ( new CollisionCategoryModeCreateCategory (this) );
-               break;
-            
-            case mButtonCreateCollisionCategoryFriendLink:
-               SetCurrentCreateMode ( new CollisionCategoryModeCreateCategoryFriendLink (this) );
-               break;
-            
-            case mButtonBreakCollisionCategoryFriendLink:
-               SetCurrentCreateMode ( new CollisionCategoryModeBreakCategoryFriendLink (this) );
                break;
          // ...
             default:
@@ -424,8 +419,6 @@ package editor {
          }
          
          mButtonCreateCollisionCategory.enabled = notNull && numCategories < Define.MaxCollisionCategoriesCount - 1;
-         mButtonCreateCollisionCategoryFriendLink.enabled = numCategories >= 2;
-         mButtonBreakCollisionCategoryFriendLink.enabled = numCategories >= 2;
          
          mButtonDelete.enabled = numSelecteds > 0;
          
@@ -519,6 +512,20 @@ package editor {
          
          if (IsEditing ())
          {
+         // create / break logic link
+            
+            var linkable:Linkable = mCollisionManager.GetFirstLinkablesAtPoint (worldPoint.x, worldPoint.y);
+            if (linkable != null && linkable.CanStartCreatingLink (worldPoint.x, worldPoint.y))
+            {
+               if (linkable is EntityCollisionCategory)
+               {
+                  SetCurrentEditMode (new CollisionCategoryModeCreateCategoryFriendLink (this, linkable as EntityCollisionCategory));
+                  mCurrentEditMode.OnMouseDown (worldPoint.x, worldPoint.y);
+               }
+               
+               return;
+            }
+            
          // entities
             
             var entityArray:Array = mCollisionManager.GetEntitiesAtPoint (worldPoint.x, worldPoint.y, mLastSelectedEntity);
@@ -860,61 +867,33 @@ package editor {
          return category;
       }
       
-      public function CreateCollisionCategoryFriendLink (posX1:Number, posY1:Number, posX2:Number, posY2:Number):void
-      {
-         HandleCollisionCategoryFriendLink (posX1, posY1, posX2, posY2, true);
-      }
-      
-      public function BreakCollisionCategoryFriendLink (posX1:Number, posY1:Number, posX2:Number, posY2:Number):void
-      {
-         HandleCollisionCategoryFriendLink (posX1, posY1, posX2, posY2, false);
-      }
-      
-      public function HandleCollisionCategoryFriendLink (posX1:Number, posY1:Number, posX2:Number, posY2:Number, isCreate:Boolean):void
+      public function CreateOrBreakCollisionCategoryFriendLink (fromCategory:EntityCollisionCategory, posX2:Number, posY2:Number):void
       {
          if (mCollisionManager == null)
             return;
          
-         var entityArray1:Array = mCollisionManager.GetEntitiesAtPoint (posX1, posY1);
-         var entityArray2:Array = mCollisionManager.GetEntitiesAtPoint (posX2, posY2);
-         
-         //trace ("entityArray1.length = " + entityArray1.length);
-         //trace ("entityArray2.length = " + entityArray2.length);
-         
-         var category1:EntityCollisionCategory;
-         var category2:EntityCollisionCategory;
-         var i:int;
-         
-         for (i = 0; i < entityArray1.length; ++ i)
-         {
-            if (entityArray1[i] is EntityCollisionCategory)
-            {
-               category1 = entityArray1[i] as EntityCollisionCategory;
-               break;
-            }
-         }
-         
-         if (category1 == null)
+         if (fromCategory == null)
             return;
             
-         for (i = 0; i < entityArray2.length; ++ i)
+         var toEntityArray:Array = mCollisionManager.GetEntitiesAtPoint (posX2, posY2);
+         
+         var toCategory:EntityCollisionCategory = null;
+         
+         for (var i:int = 0; i < toEntityArray.length; ++ i)
          {
-            if (entityArray2[i] is EntityCollisionCategory)
+            if (toEntityArray[i] is EntityCollisionCategory)
             {
-               category2 = entityArray2[i] as EntityCollisionCategory;
+               toCategory = toEntityArray[i] as EntityCollisionCategory;
                break;
             }
          }
          
-         if (category2 == null || category2 == category1)
+         if (toCategory == null || toCategory == fromCategory)
+         {
             return;
+         }
          
-         if (isCreate)
-            mCollisionManager.CreateEntityCollisionCategoryFriendLink (category1, category2);
-         else
-            mCollisionManager.BreakEntityCollisionCategoryFriendLink (category1, category2);
-         
-          UpdateFriendLinkLines ();
+         mCollisionManager.CreateOrBreakEntityCollisionCategoryFriendLink (fromCategory, toCategory);
       }
       
       public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean):void

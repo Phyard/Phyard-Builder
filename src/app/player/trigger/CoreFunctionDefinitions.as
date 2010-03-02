@@ -221,7 +221,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsDestroyed,        IsEntityDestroyed);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Coincided,        AreTwoEntitiesOverlppped);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Coincided,        AreTwoEntitiesCoincided);
          
       // game / entity / shape
          

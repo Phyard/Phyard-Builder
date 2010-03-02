@@ -67,11 +67,9 @@
          <mx:HBox id="Box_CCatEditViewCommands" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="1">
             <mx:Spacer width="5"/>
             <mx:Button id="Button_CreateCollisionCategory" toolTip="Create Collision Category" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/create-category-disabled.png')" selectedDisabledIcon="@Embed('res/collision/create-category-disabled.png')" upIcon="@Embed('res/collision/create-category.png')" downIcon="@Embed('res/collision/create-category-sel.png')" overIcon="@Embed('res/collision/create-category.png')" selectedUpIcon="@Embed('res/collision/create-category-sel.png')" selectedOverIcon="@Embed('res/collision/create-category-sel.png')" selectedDownIcon="@Embed('res/collision/create-category.png')"   />
-            <mx:Button id="Button_CreateCollisionCategoryFriendLink" toolTip="Create Friend Link" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/create-link-disabled.png')" upIcon="@Embed('res/collision/create-link.png')" downIcon="@Embed('res/collision/create-link-sel.png')" overIcon="@Embed('res/collision/create-link.png')" selectedUpIcon="@Embed('res/collision/create-link-sel.png')" selectedOverIcon="@Embed('res/collision/create-link-sel.png')" selectedDownIcon="@Embed('res/collision/create-link.png')"   />
-            <mx:Button id="Button_BreakCollisionCategoryFriendLink" toolTip="Break Friend Link" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/break-link-disabled.png')" upIcon="@Embed('res/collision/break-link.png')" downIcon="@Embed('res/collision/break-link-sel.png')" overIcon="@Embed('res/collision/break-link.png')" selectedUpIcon="@Embed('res/collision/break-link-sel.png')" selectedOverIcon="@Embed('res/collision/break-link-sel.png')" selectedDownIcon="@Embed('res/collision/break-link.png')"   />
-            <mx:Spacer width="10"/>
+            <mx:Spacer width="20"/>
             <mx:Button id="Button_DeleteCollisionCategory" toolTip="Delete Collision Category" focusEnabled="false" fontSize="8" left="5" top="5" width="30" height="30" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-delete.png')" disabledIcon="@Embed('res/command/command-delete-disabled.png')" />
-            <mx:Spacer width="10"/>
+            <mx:Spacer width="15"/>
             <mx:Label id="Label_CollisionCategoryName" text="Name:" textAlign="right"/>
             <mx:TextInput id="Text_CollisionCategoryName" text="" width="100%"/>
             <mx:Spacer width="10"/>
@@ -676,14 +674,11 @@
                
                //
                CollisionManagerView.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;
-               CollisionManagerView.mButtonCreateCollisionCategoryFriendLink = Button_CreateCollisionCategoryFriendLink;
-               CollisionManagerView.mButtonBreakCollisionCategoryFriendLink = Button_BreakCollisionCategoryFriendLink;
                
                Button_CreateCollisionCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnCreateButtonClick);
-               Button_CreateCollisionCategoryFriendLink.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnCreateButtonClick);
-               Button_BreakCollisionCategoryFriendLink.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnCreateButtonClick);
                
                CollisionManagerView.mButtonDelete = Button_DeleteCollisionCategory;
+               
                CollisionManagerView.mCheckBoxCollideInternally = CheckBox_CollisionCategory_CollideInternally;
                CollisionManagerView.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
                

@@ -231,23 +231,18 @@ package editor.trigger.entity {
       
       private function BuildContextMenu ():void
       {
-         //if (mContextMenu != null)
-         //   return;
-         
-         mContextMenu = new ContextMenu ();
-         mContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = mContextMenu.builtInItems;
+         contextMenu = new ContextMenu ();
+         contextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
          defaultItems.print = false;
          
          mContextMenuItem_ToggleAndOr = new ContextMenuItem (kText_SetAsAnd, false),
-         mContextMenu.customItems.push (mContextMenuItem_ToggleAndOr);
+         contextMenu.customItems.push (mContextMenuItem_ToggleAndOr);
          mContextMenuItem_ToggleAndOr.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
          mContextMenuItem_ToggleNot = new ContextMenuItem (kText_AddNot, false),
-         mContextMenu.customItems.push (mContextMenuItem_ToggleNot);
+         contextMenu.customItems.push (mContextMenuItem_ToggleNot);
          mContextMenuItem_ToggleNot.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
-         
-         contextMenu = mContextMenu;
          
          UpdateMenuItems ();
       }

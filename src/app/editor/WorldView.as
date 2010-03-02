@@ -2639,8 +2639,15 @@ package editor {
             switch (event.keyCode)
             {
                case Keyboard.ESCAPE:
-                  mEditorWorld.ClearSelectedEntities ();
-                  OnSelectedEntitiesChanged ();
+                  //if (mCurrentCreatMode != null)
+                  //{
+                  //   CancelCurrentEditingMode ();
+                  //}
+                  //else
+                  {
+                     mEditorWorld.ClearSelectedEntities ();
+                     OnSelectedEntitiesChanged ();
+                  }
                   break;
                case Keyboard.SPACE:
                   OpenEntitySettingDialog ();

@@ -5,21 +5,26 @@ package editor.mode {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.CollisionManagerView;
+   import editor.entity.EntityCollisionCategory;
    
+   import editor.CollisionManagerView;
    
    import common.Define;
    
    public class CollisionCategoryModeCreateCategoryFriendLink extends CollisionCategoryMode
    {
-      public function CollisionCategoryModeCreateCategoryFriendLink (mainView:CollisionManagerView)
+      public function CollisionCategoryModeCreateCategoryFriendLink (mainView:CollisionManagerView, ccat:EntityCollisionCategory)
       {
          super (mainView);
+         
+         mFromCategory = ccat;
       }
       
+      private var mFromCategory:EntityCollisionCategory = null;
+      private var mFromManagerDisplayX:Number = 0;
+      private var mFromManagerDisplayY:Number = 0;
+      
       private var mLineShape:Shape = null;
-      private var mStartX:Number = 0;
-      private var mStartY:Number = 0;
       
       override public function Initialize ():void
       {
@@ -44,16 +49,16 @@ package editor.mode {
       {
          ResetSession ();
          
+         mFromManagerDisplayX = posX;
+         mFromManagerDisplayY = posY;
+         
          mLineShape = new Shape ();
          mMainView.mForegroundSprite.addChild (mLineShape);
-         
-         mStartX = posX;
-         mStartY = posY;
       }
       
       protected function UpdateSession (posX:Number, posY:Number):void
       {
-         var point1:Point = mMainView.ManagerToView ( new Point (mStartX, mStartY) );
+         var point1:Point = mMainView.ManagerToView ( new Point (mFromManagerDisplayX, mFromManagerDisplayY) );
          var point2:Point = mMainView.ManagerToView ( new Point (posX, posY) );
          
          GraphicsUtil.ClearAndDrawLine (mLineShape, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
@@ -65,12 +70,7 @@ package editor.mode {
          
          mMainView.SetCurrentCreateMode (null);
          
-         mMainView.CreateCollisionCategoryFriendLink (mStartX, mStartY, endX, endY);
-      }
-      
-      override public function Update (escapedTime:Number):void
-      {
-         
+         mMainView.CreateOrBreakCollisionCategoryFriendLink (mFromCategory, endX, endY);
       }
       
       override public function OnMouseDown (mouseX:Number, mouseY:Number):void

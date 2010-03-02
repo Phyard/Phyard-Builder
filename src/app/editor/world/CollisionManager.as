@@ -102,17 +102,6 @@ package editor.world {
          return GetEntityByAppearanceId (index) as EntityCollisionCategory;
       }
       
-      public function CreateEntityCollisionCategoryFriendLink (category1:EntityCollisionCategory, category2:EntityCollisionCategory):void
-      {
-         BreakEntityCollisionCategoryFriendLink (category1, category2);
-         
-         var friends:Object = new Object;
-         friends.mCategory1 = category1;
-         friends.mCategory2 = category2;
-         
-         mCollisionGroupFriendPairs.push (friends);
-      }
-      
       public function CreateEntityCollisionCategory (ccName:String = null):EntityCollisionCategory
       {
          if (numChildren >= Define.MaxCollisionCategoriesCount - 1)
@@ -157,30 +146,35 @@ package editor.world {
          category.SetCategoryName (newName, false);
       }
       
-      public function BreakEntityCollisionCategoryFriendLink (category1:EntityCollisionCategory, category2:EntityCollisionCategory):void
+      public function CreateEntityCollisionCategoryFriendLink (category1:EntityCollisionCategory, category2:EntityCollisionCategory):void
       {
+         CreateOrBreakEntityCollisionCategoryFriendLink (category1, category2, true);
+      }
+      
+      public function BreakEntityCollisionCategoryFriendLink (category1:EntityCollisionCategory, category2:EntityCollisionCategory):Boolean
+      {
+         var exist:Boolean= false;
+         
          for (var i:int = mCollisionGroupFriendPairs.length - 1; i >= 0; -- i)
          {
             var friends:Object = mCollisionGroupFriendPairs [i];
-            if (friends.mCategory1 == category1 && friends.mCategory2 == category2)
+            if (friends.mCategory1 == category1 && friends.mCategory2 == category2
+               || friends.mCategory1 == category2 && friends.mCategory2 == category1
+               )
             {
+               exist = true;
                mCollisionGroupFriendPairs.splice (i, 1);
             }
          }
+         
+         return exist;
       }
       
       override public function DestroyEntity (entity:Entity):void
       {
          if (entity is EntityCollisionCategory)
          {
-            for (var i:int = mCollisionGroupFriendPairs.length - 1; i >= 0; -- i)
-            {
-               var friends:Object = mCollisionGroupFriendPairs [i];
-               if (friends.mCategory1 == entity || friends.mCategory2 == entity)
-               {
-                  mCollisionGroupFriendPairs.splice (i, 1);
-               }
-            }
+            BreakFriendLinks (entity as EntityCollisionCategory);
             
             delete mLookupTable[ (entity as EntityCollisionCategory).GetCategoryName () ];
          }
@@ -188,5 +182,63 @@ package editor.world {
          super.DestroyEntity (entity);
       }
       
+//=========================================================
+// the 2 are called from view
+//=========================================================
+      
+      private var mFriendLinksChangedCallback:Function = null;
+      
+      public function SetFriendLinksChangedCallback (callback:Function):void
+      {
+         mFriendLinksChangedCallback = callback;
+      }
+      
+      public function CreateOrBreakEntityCollisionCategoryFriendLink (category1:EntityCollisionCategory, category2:EntityCollisionCategory, alwaysCreate:Boolean = false):void
+      {
+         if (category1 == null || category2 == null)
+            return;
+         
+         if (BreakEntityCollisionCategoryFriendLink (category1, category2))
+         {
+            if (! alwaysCreate)
+            {
+               if (mFriendLinksChangedCallback != null)
+                  mFriendLinksChangedCallback ();
+               
+               return;
+            }
+         }
+         
+         var friends:Object = new Object;
+         friends.mCategory1 = category1;
+         friends.mCategory2 = category2;
+         
+         mCollisionGroupFriendPairs.push (friends);
+         
+         if (mFriendLinksChangedCallback != null)
+            mFriendLinksChangedCallback ();
+      }
+      
+      public function BreakFriendLinks (ccat:EntityCollisionCategory):Boolean
+      {
+         var changed:Boolean = false;
+         for (var i:int = mCollisionGroupFriendPairs.length - 1; i >= 0; -- i)
+         {
+            var friends:Object = mCollisionGroupFriendPairs [i];
+            if (friends.mCategory1 == ccat || friends.mCategory2 == ccat)
+            {
+               changed = true;
+               mCollisionGroupFriendPairs.splice (i, 1);
+            }
+         }
+         
+         if (changed)
+         {
+            if (mFriendLinksChangedCallback != null)
+               mFriendLinksChangedCallback ();
+         }
+         
+         return changed;
+      }
    }
 }

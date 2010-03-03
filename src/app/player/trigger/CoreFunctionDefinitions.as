@@ -2226,13 +2226,10 @@ package player.trigger {
             
             if (onBodyCenter)
             {
-            trace ("body position: " + body.GetPositionX () + ", " + body.GetPositionY ());
                body.ApplyForceAtPoint (forceX, forceY, body.GetPositionX (), body.GetPositionY ());
             }
             else
             {
-            trace ("centroid: " + shape.GetWorldCentroidX () + ", " + shape.GetWorldCentroidY ());
-            trace ("shape position: " + shape.GetPositionX () + ", " + shape.GetPositionY ());
                body.ApplyForceAtPoint (forceX, forceY, shape.GetWorldCentroidX (), shape.GetWorldCentroidY ());
             }
          }

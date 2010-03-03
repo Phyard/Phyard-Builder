@@ -400,6 +400,11 @@ package common {
                      entityDefine.mIsItalic = (shape as EntityShapeText).IsItalic ();
                      //<<
                      
+                     //from v1.09
+                     entityDefine.mTextAlign = (shape as EntityShapeText).GetTextAlign ();
+                     entityDefine.mIsUnderlined = (shape as EntityShapeText).IsUnderlined ();
+                     //<<
+                     
                      // from v1.08
                      if (editorEntity is EntityShapeTextButton) 
                      {
@@ -532,14 +537,14 @@ package common {
                   entityDefine.mBreakExtendedLength = spring.GetBreakExtendedLength ();
                   //<<
                }
-               else  if (editorEntity is editor.entity.EntityJointWeld)
+               else if (editorEntity is editor.entity.EntityJointWeld)
                {
                   var weld:editor.entity.EntityJointWeld = editorEntity as editor.entity.EntityJointWeld;
                   
                   entityDefine.mEntityType = Define.EntityType_JointWeld;
                   entityDefine.mAnchorEntityIndex = editorWorld.GetEntityCreationId ( weld.GetAnchor () );
                }
-               else  if (editorEntity is editor.entity.EntityJointDummy)
+               else if (editorEntity is editor.entity.EntityJointDummy)
                {
                   var dummy:editor.entity.EntityJointDummy = editorEntity as editor.entity.EntityJointDummy;
                   
@@ -977,7 +982,7 @@ package common {
                         
                         var mouseOverShape:EntityShape = textButton.GetMouseOverShape ();
                         
-                        mouseOverShape.SetDrawBackground (entityDefine.mDrawBackground_MouseOve);
+                        mouseOverShape.SetDrawBackground (entityDefine.mDrawBackground_MouseOver);
                         mouseOverShape.SetFilledColor (entityDefine.mBackgroundColor_MouseOver);
                         mouseOverShape.SetTransparency (entityDefine.mBackgroundTransparency_MouseOver);
                         
@@ -1003,6 +1008,11 @@ package common {
                      text.SetFontSize (entityDefine.mFontSize);
                      text.SetBold (entityDefine.mIsBold);
                      text.SetItalic (entityDefine.mIsItalic);
+                     //<<
+                     
+                     //from v1.09
+                     text.SetTextAlign (entityDefine.mTextAlign);
+                     text.SetUnderlined (entityDefine.mIsUnderlined);
                      //<<
                      
                      text.SetHalfWidth (entityDefine.mHalfWidth);
@@ -1144,6 +1154,29 @@ package common {
                   //<<
                   
                   entity = joint = spring;
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
+               {
+                  var weld:editor.entity.EntityJointWeld = editorWorld.CreateEntityJointWeld ();
+                  
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
+                  //anchorDefine.mNewIndex = editorWorld.getChildIndex (hinge.GetAnchor ());
+                  anchorDefine.mEntity = weld.GetAnchor ();
+                  
+                  entity = joint = weld;
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
+               {
+                  var dummy:editor.entity.EntityJointDummy = editorWorld.CreateEntityJointDummy ();
+                  
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
+                  //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor1 ());
+                  anchorDefine.mEntity = spring.GetAnchor1 ();
+                  anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
+                  //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor2 ());
+                  anchorDefine.mEntity = spring.GetAnchor2 ();
+                  
+                  entity = joint = dummy;
                }
                
                if (joint != null)
@@ -1826,6 +1859,12 @@ package common {
                      entityDefine.mIsItalic = parseInt (element.@italic) != 0;
                   }
                   
+                  if (worldDefine.mVersion >= 0x0109)
+                  {
+                     entityDefine.mTextAlign = parseInt (element.@align) != 0;;
+                     entityDefine.mIsUnderlined = parseInt (element.@underlined) != 0;;
+                  }
+                  
                   if (worldDefine.mVersion >= 0x0108)
                   {
                      if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
@@ -1949,6 +1988,15 @@ package common {
                   entityDefine.mSpringConstant = parseFloat (element.@spring_constant);
                   entityDefine.mBreakExtendedLength = parseFloat (element.@break_extended_length);
                }
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
+            {
+               entityDefine.mAnchorEntityIndex = parseInt (element.@anchor_index);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
+            {
+               entityDefine.mAnchor1EntityIndex = parseInt (element.@anchor1_index);
+               entityDefine.mAnchor2EntityIndex = parseInt (element.@anchor2_index);
             }
          }
          
@@ -2332,6 +2380,12 @@ package common {
                         byteArray.writeByte (entityDefine.mIsItalic ? 1 : 0);
                      }
                      
+                     if (worldDefine.mVersion >= 0x0109)
+                     {
+                        byteArray.writeByte (entityDefine.mTextAlign);
+                        byteArray.writeByte (entityDefine.mIsUnderlined ? 1 : 0);
+                     }
+                     
                      if (worldDefine.mVersion >= 0x0108)
                      {
                         if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
@@ -2457,6 +2511,15 @@ package common {
                      byteArray.writeFloat (entityDefine.mSpringConstant);
                      byteArray.writeFloat (entityDefine.mBreakExtendedLength);
                   }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
+               {
+                  byteArray.writeShort (entityDefine.mAnchorEntityIndex);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
+               {
+                  byteArray.writeShort (entityDefine.mAnchor1EntityIndex);
+                  byteArray.writeShort (entityDefine.mAnchor2EntityIndex);
                }
             }
          }

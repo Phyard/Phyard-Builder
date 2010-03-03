@@ -993,7 +993,7 @@ package player.world {
          ClearGlobalForces ();
          SetCurrentGravityAcceleration (mDefaultGravityAccelerationMagnitude * Math.cos (mDefaultGravityAccelerationAngle), mDefaultGravityAccelerationMagnitude * Math.sin (mDefaultGravityAccelerationAngle));
          
-         mPhysicsEngine = new PhysicsEngine ();
+         mPhysicsEngine = new PhysicsEngine (mCoordinateSystem.GetScale ());
          
          mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
          mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished);

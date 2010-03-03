@@ -943,23 +943,23 @@ package editor.world {
          UpdateEntityVisibility ();
       }
       
-      public function ToggleShapesVisibility ():void
+      public function SetShapesVisible (visible:Boolean):void
       {
-         mShapesVisible = ! mShapesVisible;
+         mShapesVisible = visible;
          
          UpdateEntityVisibility ();
       }
       
-      public function ToggleJointsVisibility ():void
+      public function SetJointsVisible (visible:Boolean):void
       {
-         mJointsVisible = ! mJointsVisible;
+         mJointsVisible = visible;
          
          UpdateEntityVisibility ();
       }
       
-      public function ToggleTriggersVisibility ():void
+      public function SetTriggerVisible (visible:Boolean):void
       {
-         mTriggersVisible = ! mTriggersVisible;
+         mTriggersVisible = visible;
          
          UpdateEntityVisibility ();
       }

@@ -4,7 +4,7 @@ package common {
    public class Config
    {
       
-      public static const VersionNumber:int = 0x0108;
+      public static const VersionNumber:int = 0x0109;
       
       public static const EnablePageAnalytics:Boolean = false;
       

@@ -83,8 +83,8 @@ package player.entity {
                mBorderThickness_MouseOver = mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mBorderThickness_MouseOver);
             if (entityDefine.mBackgroundColor_MouseOver != undefined)
                mBackgroundColor_MouseOver = entityDefine.mBackgroundColor_MouseOver;
-            if (entityDefine.mTransparency_MouseOver != undefined)
-               mTransparency_MouseOver = entityDefine.mTransparency_MouseOver;
+            if (entityDefine.mBackgroundTransparency_MouseOver != undefined)
+               mTransparency_MouseOver = entityDefine.mBackgroundTransparency_MouseOver;
             if (entityDefine.mBorderTransparency_MouseOver != undefined)
                mBorderTransparency_MouseOver = entityDefine.mBorderTransparency_MouseOver;
          }
@@ -238,6 +238,12 @@ package player.entity {
                   0x0, // invald bg color
                   mIsRoundCornors
                );
+         
+         mBackgroundShape_MouseOver.visible = mBackgroundShape_MouseDown.visible = mDrawBackground_MouseOver;
+         mBackgroundShape_MouseOver.alpha = mBackgroundShape_MouseDown.alpha = mTransparency_MouseOver * 0.01;
+         
+         mBorderShape_MouseOver.visible = mBorderShape_MouseDown.visible = mDrawBorder_MouseOver;
+         mBorderShape_MouseOver.alpha = mBorderShape_MouseDown.alpha = mBorderTransparency_MouseOver * 0.01;
       }
    }
    

@@ -732,6 +732,12 @@ package common {
                         entityDefine.mIsItalic = byteArray.readByte () != 0;
                      }
                      
+                     if (worldDefine.mVersion >= 0x0109)
+                     {
+                        entityDefine.mTextAlign = byteArray.readByte ();
+                        entityDefine.mIsUnderlined = byteArray.readByte () != 0;
+                     }
+                     
                      if (worldDefine.mVersion >= 0x0108)
                      {
                         if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
@@ -859,6 +865,15 @@ package common {
                      entityDefine.mSpringConstant = byteArray.readFloat ();
                      entityDefine.mBreakExtendedLength = byteArray.readFloat ();
                   }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
+               {
+                  entityDefine.mAnchorEntityIndex = byteArray.readShort ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
+               {
+                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
+                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
                }
             }
             
@@ -1529,6 +1544,12 @@ package common {
                      element.@italic = entityDefine.mIsItalic ? 1 : 0;
                   }
                   
+                  if (worldDefine.mVersion >= 0x0109)
+                  {
+                     element.@align = entityDefine.mTextAlign ;
+                     element.@underlined = entityDefine.mIsUnderlined ? 1 : 0;
+                  }
+                  
                   if (worldDefine.mVersion >= 0x0108)
                   {
                      if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
@@ -1645,6 +1666,15 @@ package common {
                   element.@spring_constant = entityDefine.mSpringConstant;
                   element.@break_extended_length = entityDefine.mBreakExtendedLength;
                }
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
+            {
+               element.@anchor_index = entityDefine.mAnchorEntityIndex;
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
+            {
+               element.@anchor1_index = entityDefine.mAnchor1EntityIndex;
+               element.@anchor2_index = entityDefine.mAnchor2EntityIndex;
             }
          }
          
@@ -2072,6 +2102,13 @@ package common {
                         entityDefine.mIsBold = false;
                         entityDefine.mIsItalic = false;
                      }
+                     
+                     if (worldDefine.mVersion < 0x0109)
+                     {
+                        entityDefine.mTextAlign = entityDefine.mEntityType == Define.EntityType_ShapeTextButton ? Define.TextAlign_Center : Define.TextAlign_Left;
+                        entityDefine.mIsUnderlined = false;
+                     }
+                  
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
                   {

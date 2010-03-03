@@ -47,9 +47,14 @@ package player.entity {
                SetItalic (entityDefine.mIsItalic);
             if (entityDefine.mAdaptiveBackgroundSize != undefined)
                SetAdaptiveBackgroundSize (entityDefine.mAdaptiveBackgroundSize);
+            if (entityDefine.mTextAlign != undefined)
+               SetTextAlign (entityDefine.mTextAlign);
+            if (entityDefine.mIsUnderlined != undefined)
+               SetUnderlined (entityDefine.mIsUnderlined);
             
+            // commected off from r128. ? why force 50?!
             // force 50
-            SetTransparency (50);
+            //SetTransparency (50);
          }
       }
       

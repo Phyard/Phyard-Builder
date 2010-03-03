@@ -6,21 +6,29 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
     title="Gravity Acceleration Setting" width="600"  creationComplete="OnInitPanel()">
 
-    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
-      <mx:Spacer width="100%"/>
-      <mx:VBox>
-         <mx:Label text="Gravity Acceleation Magnitude:" textAlign="right"/>
-         <mx:Label text="Gravity Acceleration Angle:" textAlign="right"/>
-      </mx:VBox>
-      <mx:VBox>
-         <mx:HBox>
-            <mx:TextInput id="Text_GravityAccelerationMagnitude" width="100" />
-         </mx:HBox>
-         <mx:HBox>
-            <mx:TextInput id="Text_GravityAccelerationAngle" width="100" />
-         </mx:HBox>
-      </mx:VBox>
-      <mx:Spacer width="100%"/>
+    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10" horizontalAlign="center">
+
+       <mx:Grid>
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Gravity Acceleation Magnitude:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:TextInput id="Text_GravityAccelerationMagnitude" width="100" />
+             </mx:GridItem>
+          </mx:GridRow>
+
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Gravity Acceleration Angle:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:TextInput id="Text_GravityAccelerationAngle" width="100" />
+                <mx:Label text="(pixels/m)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+       </mx:Grid>
+
    </mx:HBox>
    
    <mx:HBox width="100%">

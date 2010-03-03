@@ -1141,7 +1141,9 @@ package editor {
       public var mButtonSaveWorld:Button;
       public var mButtonLoadWorld:Button;
       
-      
+      public var mButtonHideShapes:Button;
+      public var mButtonHideJoints:Button;
+      public var mButtonHideTriggers:Button;
       
       private function UpdateUiButtonsEnabledStatus ():void
       {
@@ -1262,6 +1264,19 @@ package editor {
                break;
             case mButton_Stop:
                Play_Stop ();
+               break;
+            
+            case mButtonHideShapes:
+               mEditorWorld.SetShapesVisible (! mButtonHideShapes.selected);
+               OnSelectedEntitiesChanged ();
+               break;
+            case mButtonHideJoints:
+               mEditorWorld.SetJointsVisible (! mButtonHideJoints.selected);
+               OnSelectedEntitiesChanged ();
+               break;
+            case mButtonHideTriggers:
+               mEditorWorld.SetTriggerVisible (! mButtonHideTriggers.selected);
+               OnSelectedEntitiesChanged ();
                break;
             
             default:
@@ -2651,25 +2666,6 @@ package editor {
                   break;
                case Keyboard.SPACE:
                   OpenEntitySettingDialog ();
-                  break;
-               case KeyCodes.Key_0:
-               case Keyboard.NUMPAD_0:
-                  mEditorWorld.MakeAllEntitiesVisible ();
-                  break;
-               case KeyCodes.Key_1:
-               case Keyboard.NUMPAD_1:
-                  mEditorWorld.ToggleShapesVisibility ();
-                  OnSelectedEntitiesChanged ();
-                  break;
-               case KeyCodes.Key_2:
-               case Keyboard.NUMPAD_2:
-                  mEditorWorld.ToggleJointsVisibility ();
-                  OnSelectedEntitiesChanged ();
-                  break;
-               case KeyCodes.Key_3:
-               case Keyboard.NUMPAD_3:
-                  mEditorWorld.ToggleTriggersVisibility ();
-                  OnSelectedEntitiesChanged ();
                   break;
                case Keyboard.DELETE:
                   if (event.ctrlKey)

@@ -9,7 +9,7 @@
       creationComplete="OnInitPanel()"
       >
       <mx:VBox height="100%" width="100%">
-         <mx:HBox width="550">
+         <mx:HBox width="550" verticalAlign="middle">
             <mx:CheckBox id="CheckBox_AdaptiveBackgroundSize" label="Adaptive Background Size" click="OnChangeAdaptiveBackgroundSize ()"/>
             <mx:CheckBox id="CheckBox_WordWrap" label="Word Wrap"/>
             <mx:Spacer width="5"/>

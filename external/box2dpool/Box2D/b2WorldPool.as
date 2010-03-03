@@ -13,7 +13,7 @@ package Box2D {
    
    public class b2WorldPool 
    {
-      public static function AllocB2World (gravity:b2Vec2):b2World
+      public static function AllocB2World (gravity:b2Vec2, pixelsPerMeter:Number):b2World
       {
          var worldDef:b2WorldDef = new b2WorldDef ();
          

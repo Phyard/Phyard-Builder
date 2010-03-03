@@ -6,30 +6,49 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
     title="Coordinate System Setting" width="600"  creationComplete="OnInitPanel()">
 
-    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
-      <mx:Spacer width="100%"/>
-      <mx:VBox>
-         <mx:CheckBox label=" " visible="false"/>
-         <mx:Label text="Scale:" textAlign="right"/>
-         <mx:Label text="Origin X:" textAlign="right"/>
-         <mx:Label text="Origin Y:" textAlign="right"/>
-      </mx:VBox>
-      <mx:VBox>
-         <mx:CheckBox id="CheckBox_CoordinatesRightHand" label="Right Hand (axis y upwards)"/>
-         <mx:HBox>
-            <mx:NumericStepper id="NumericStepper_CoordinatesScale" stepSize="1" width="80" />
-            <mx:Label text="(pixels/m)"/>
-         </mx:HBox>
-         <mx:HBox>
-            <mx:NumericStepper id="NumericStepper_CoordinatesOriginX" stepSize="1" width="80" />
-            <mx:Label text="(pixels)"/>
-         </mx:HBox>
-         <mx:HBox>
-            <mx:NumericStepper id="NumericStepper_CoordinatesOriginY" stepSize="1" width="80" />
-            <mx:Label text="(pixels)"/>
-         </mx:HBox>
-      </mx:VBox>
-      <mx:Spacer width="100%"/>
+    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10" horizontalAlign="center">
+
+       <mx:Grid>
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:CheckBox label=" " visible="false"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:CheckBox id="CheckBox_CoordinatesRightHand" label="Right Hand (axis y upwards)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Scale:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:NumericStepper id="NumericStepper_CoordinatesScale" stepSize="1" width="80" />
+                <mx:Label text="(pixels/m)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Origin X:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:NumericStepper id="NumericStepper_CoordinatesOriginX" stepSize="1" width="80" />
+                <mx:Label text="(pixels)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Origin Y:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:NumericStepper id="NumericStepper_CoordinatesOriginY" stepSize="1" width="80" />
+                <mx:Label text="(pixels)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+       </mx:Grid>
+
    </mx:HBox>
    
    <mx:Spacer height="5"/>

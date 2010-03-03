@@ -776,7 +776,6 @@ package Box2D.Dynamics
 
 		public function CoincideWithCentroid ():Boolean//b2Vec2
 		{
-		trace ("CoincideWithCentroid 111");
 			//b2Assert(m_world->IsLocked() == false);
 			if (m_world.IsLocked() == true)
 			{

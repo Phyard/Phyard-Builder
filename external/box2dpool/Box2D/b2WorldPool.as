@@ -13,14 +13,19 @@ package Box2D {
    
    public class b2WorldPool 
    {
-      public static function AllocB2World (gravity:b2Vec2, pixelsPerMeter:Number):b2World
+      public static function AllocB2World (gravity:b2Vec2, pixelsPerMeter:Number = 0.0):b2World
       {
          var worldDef:b2WorldDef = new b2WorldDef ();
          
          worldDef.gravity.CopyFrom (gravity);
          worldDef.doSleep = true;
-         worldDef.collisionBroadPhase = null;
+         
          //worldDef.collisionBroadPhase = new b2eBroadPhase_SweepAndPrune ();
+         
+         if (pixelsPerMeter != 0)
+         {
+            worldDef.maxTranslation = b2Settings.b2_maxTranslation * 20.0 / pixelsPerMeter; // default pixelsPerMeter is 20.0
+         }
          
          var b2world:b2World = b2World.b2World_FromWorldDefine (worldDef);
          

@@ -120,6 +120,13 @@ package Box2D.Dynamics
 		public var m_jointCapacity:int;
 
 		public var m_positionIterationCount:int;
+
+//====================================================================================
+// hacking
+//====================================================================================
+		
+		public var mWorld:b2World = null;
+		
 	} // class
 } // package
 //#endif

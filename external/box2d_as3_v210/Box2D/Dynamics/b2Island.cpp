@@ -290,9 +290,9 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		//b2Vec2 translation = step.dt * b->m_linearVelocity;
 		var translation:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (step.dt * b.m_linearVelocity.x, step.dt * b.m_linearVelocity.y);
 		
-		if (b2Math.b2Dot2(translation, translation) > b2Settings.b2_maxTranslationSquared)
+		if (b2Math.b2Dot2(translation, translation) > mWorld.b2_maxTranslationSquared)
 		{
-			ratio = b2Settings.b2_maxTranslation / translation.Length();
+			ratio = mWorld.b2_maxTranslation / translation.Length();
 			b.m_linearVelocity.x *= ratio;
 			b.m_linearVelocity.y *= ratio;
 		}

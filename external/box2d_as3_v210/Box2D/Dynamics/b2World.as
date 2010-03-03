@@ -337,6 +337,7 @@ package Box2D.Dynamics
 										m_stackAllocator,
 										m_contactManager.m_contactPostSolveListener //m_contactManager.m_contactListener
 										);
+				mIsland.mWorld = this;
 			}
 			else
 			{
@@ -400,7 +401,7 @@ package Box2D.Dynamics
 		}
 
 		/// Get the flag that controls automatic clearing of forces after each time step.
-		public function GetAutoClearForces():Boolean
+		public function IsAutoClearForces():Boolean
 		{
 			return (m_flags & e_clearForces) == e_clearForces;
 		}
@@ -411,6 +412,10 @@ package Box2D.Dynamics
 			b2Joint.mCustomJointCreateFunction  = createFunc;
 			b2Joint.mCustomJointDestroyFunction = destroyFunc;
 		}
+		
+		//
+		public var b2_maxTranslation:Number = b2Settings.b2_maxTranslation;
+		public var b2_maxTranslationSquared:Number = b2Settings.b2_maxTranslationSquared;
 
 	} // class
 } // package

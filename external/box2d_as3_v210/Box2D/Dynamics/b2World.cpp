@@ -77,6 +77,11 @@ private function Create (worldDef:b2WorldDef = null):void
 	m_gravity.x = worldDef.gravity.x;
 	m_gravity.y = worldDef.gravity.y;
 
+	//>> hacking
+	b2_maxTranslation = worldDef.maxTranslation;
+	b2_maxTranslationSquared = worldDef.maxTranslation * worldDef.maxTranslation;
+	//<<
+
 	m_flags = e_clearForces;
 
 	m_inv_dt0 = 0.0;

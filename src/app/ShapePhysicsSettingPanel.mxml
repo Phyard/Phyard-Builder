@@ -162,6 +162,8 @@
          {
             mInputValues = inputValues;
             
+            CheckBox_EnablePhysics.enabled = inputValues.mEnablePhysicsChangeable == undefined || inputValues.mEnablePhysicsChangeable;
+            
             CheckBox_EnablePhysics.selected = inputValues.mIsPhysicsEnabled;
             CheckBox_IsStatic.selected = inputValues.mIsStatic;
             CheckBox_IsBullet.selected = inputValues.mIsBullet;

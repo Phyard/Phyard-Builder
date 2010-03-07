@@ -118,6 +118,15 @@ package common.trigger {
                         ValueTypeDefine.ValueType_String, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Equals,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_Add,
                      [
                         ValueTypeDefine.ValueType_String, 
@@ -127,36 +136,12 @@ package common.trigger {
                         ValueTypeDefine.ValueType_String, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_NumberToString,
-                     [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                     ],
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetLength,
                      [
                         ValueTypeDefine.ValueType_String, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_BooleanToString,
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_String, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_EntityToString,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_String, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_CollisionCategoryToString,
-                     [
-                        ValueTypeDefine.ValueType_CollisionCategory, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_String, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
          
@@ -175,6 +160,23 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Boolean, 
                         ValueTypeDefine.ValueType_Boolean,
                         ValueTypeDefine.ValueType_Boolean,
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Boolean_ToString,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Boolean, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Boolean, 
@@ -199,69 +201,6 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_IsFalse,
                      [
                         ValueTypeDefine.ValueType_Boolean, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsNumber,
-                     [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean,
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsEntity,
-                     [
-                        ValueTypeDefine.ValueType_Entity, 
-                        ValueTypeDefine.ValueType_Entity, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsString,
-                     [
-                        ValueTypeDefine.ValueType_String, 
-                        ValueTypeDefine.ValueType_String, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsCCat,
-                     [
-                        ValueTypeDefine.ValueType_CollisionCategory, 
-                        ValueTypeDefine.ValueType_CollisionCategory, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Larger,
-                     [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Boolean, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Less,
-                     [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Boolean, 
@@ -305,7 +244,7 @@ package common.trigger {
           
        // math basic op
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Assign,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Assign,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -313,7 +252,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ConditionAssign,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ConditionAssign,
                      [
                         ValueTypeDefine.ValueType_Boolean,
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -323,7 +262,50 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Negative,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Equals,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_LargerThan,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_LessThan,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_IsNaN,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_IsInfinity,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Negative,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -332,7 +314,7 @@ package common.trigger {
                      ]
                   );
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Add,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Add,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -341,7 +323,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Subtract,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Subtract,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -350,7 +332,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Multiply,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Multiply,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -359,7 +341,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Divide,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Divide,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -368,19 +350,67 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Modulo,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Modulo,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         
+      // math / toString
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToString,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         // disabled for flex bug
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToExponential,
+         //            [
+         //               ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+         //               ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+         //            ],
+         //            [
+         //               ValueTypeDefine.ValueType_String, 
+         //            ]
+         //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToFixed,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToPrecision,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
                      ]
                   );
          
       // math / trogonomotry
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_SinRadians,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_SinRadians,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians, 
                      ],
@@ -388,7 +418,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_CosRadians,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_CosRadians,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians, 
                      ],
@@ -396,7 +426,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_TanRadians,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_TanRadians,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians, 
                      ],
@@ -404,7 +434,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcSinRadians,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcSinRadians,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -412,7 +442,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcCosRadians,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcCosRadians,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -420,7 +450,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcTanRadians,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcTanRadians,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDyDx, 
                      ],
@@ -428,7 +458,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_ArcTan2Radians,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcTan2Radians,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX, 
@@ -505,13 +535,13 @@ package common.trigger {
          
       // math / random
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Random,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Random,
                      null,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RandomRange,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RandomRange,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -520,7 +550,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RandomIntRange,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RandomIntRange,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
@@ -532,7 +562,7 @@ package common.trigger {
          
       // math / number convert
          
-          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Degrees2Radians,
+          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians, 
                      ],
@@ -540,7 +570,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Radians2Degrees,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Radians2Degrees,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
                      ],
@@ -548,7 +578,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians, 
                      ]
                   );
-          RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Number2RGB,
+          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Number2RGB,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -558,7 +588,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_RGB2Number,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RGB2Number,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
@@ -581,7 +611,7 @@ package common.trigger {
         
       // math / more
          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Inverse,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Inverse,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -589,16 +619,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Max,
-                     [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                     ],
-                     [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Min,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Max,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -607,7 +628,16 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Abs,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Min,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Abs,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -615,7 +645,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Sqrt,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Sqrt,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -623,7 +653,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Ceil,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Ceil,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -631,7 +661,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,  
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Floor,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Floor,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -639,7 +669,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Round,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Round,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -647,7 +677,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Log,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Log,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -655,7 +685,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Exp,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Exp,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ],
@@ -663,7 +693,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Power,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Power,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
@@ -693,7 +723,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Math_Clamp,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Clamp,
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
@@ -891,6 +921,23 @@ package common.trigger {
                         ValueTypeDefine.ValueType_CollisionCategory, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ToString,
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_Equals,
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally,
                      [
                         ValueTypeDefine.ValueType_CollisionCategory, 
@@ -925,6 +972,33 @@ package common.trigger {
                      ],
                      [
                         ValueTypeDefine.ValueType_Entity, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset,
+                     [
+                        ValueTypeDefine.ValueType_Entity,
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Entity,
+                     ]
+                  );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_ToString,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Equals,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
          

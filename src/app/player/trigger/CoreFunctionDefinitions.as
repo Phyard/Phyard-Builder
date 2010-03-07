@@ -22,6 +22,8 @@ package player.trigger {
    import common.trigger.CoreFunctionDeclarations;
    
    import common.Define;
+   import common.ValueAdjuster;
+   
    import common.trigger.ValueDefine;
    import common.trigger.IdPool;
    
@@ -65,29 +67,22 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_String_Assign,                      AssignString);
          RegisterCoreFunction (CoreFunctionIds.ID_String_ConditionAssign,             ConditionAssignString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_Equals,                      EqualsWith_Strings);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Add,                         AddTwoStrings);
-         
-         RegisterCoreFunction (CoreFunctionIds.ID_String_NumberToString,              NumberToString);
-         RegisterCoreFunction (CoreFunctionIds.ID_String_BooleanToString,             BooleanToString);
-         RegisterCoreFunction (CoreFunctionIds.ID_String_EntityToString,              EntityToString);
-         RegisterCoreFunction (CoreFunctionIds.ID_String_CollisionCategoryToString,   CollisionCategoryToString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_GetLength,                   GetStringLength);
          
       // bool
          
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Assign,                AssignBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_ConditionAssign,       ConditionAssignBoolean);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsBoolean,     EqualsWith_Booleans);
+         RegisterCoreFunction (CoreFunctionIds.ID_Boolean_ToString,             BooleanToString);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Invert,                BooleanInvert);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsTrue,                IsTrue);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsFalse,               IsFalse);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsNumber,      EqualsWith_Numbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsBoolean,     EqualsWith_Booleans);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsEntity,      EqualsWith_Entities);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsString,      EqualsWith_Strings);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsCCat,        EqualsWith_CollisiontCategories);
-         
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Larger,            LargerThan);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_Less,              LessThan);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_LargerThan,            LargerThan);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_LessThan,              LessThan);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_And,               BoolAnd);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Or,                BoolOr);
@@ -96,14 +91,25 @@ package player.trigger {
          
          // math ops
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Assign,                     AssignNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_ConditionAssign,            ConditionAssignNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Negative,                   NegativeNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Add,                        AddTwoNumbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Subtract,                   SubtractTwoNumbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Multiply,                   MultiplyTwoNumbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Divide,                     DivideTwoNumbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Modulo,                     ModuloTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Assign,                     AssignNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ConditionAssign,            ConditionAssignNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Equals,      EqualsWith_Numbers);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_IsNaN,               IsNaN);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_IsInfinity,          IsInfinity);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ToString,             NumberToString);
+         //RegisterCoreFunction (CoreFunctionIds.ID_Number_ToExponential,        NumberToExponentialString);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ToFixed,              NumberToFixedString);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ToPrecision,          NumberToPrecisionString);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ToStringByRadix,      NumberToStringByRadix);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Negative,                   NegativeNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Add,                        AddTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Subtract,                   SubtractTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Multiply,                   MultiplyTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Divide,                     DivideTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Modulo,                     ModuloTwoNumbers);
          
          // math / bitwise
          
@@ -116,36 +122,36 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Bitwise_Not,                   BitwiseNot);
          RegisterCoreFunction (CoreFunctionIds.ID_Bitwise_Xor,                   BitwiseXor);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_SinRadians,                SinRadian);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_CosRadians,                CosRadian);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_TanRadians,                TanRadian);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_ArcSinRadians,             AsinRadian);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_ArcCosRadians,             AcosRadian);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_ArcTanRadians,             AtanRadian);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_ArcTan2Radians,            AtanRadianTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_SinRadians,                SinRadian);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_CosRadians,                CosRadian);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_TanRadians,                TanRadian);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ArcSinRadians,             AsinRadian);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ArcCosRadians,             AcosRadian);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ArcTanRadians,             AtanRadian);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ArcTan2Radians,            AtanRadianTwoNumbers);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Random,                     RandomNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_RandomRange,                RandomNumberRange);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_RandomIntRange,             RandomIntegerRange);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Random,                     RandomNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_RandomRange,                RandomNumberRange);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_RandomIntRange,             RandomIntegerRange);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Degrees2Radians,             Degrees2Radians);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Radians2Degrees,             Radians2Degrees);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Number2RGB,                  Number2RGB);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_RGB2Number,                  RGB2Number);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Degrees2Radians,             Degrees2Radians);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Radians2Degrees,             Radians2Degrees);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Number2RGB,                  Number2RGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_RGB2Number,                  RGB2Number);
          RegisterCoreFunction (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,     MillisecondsToMinutesSeconds);
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Inverse,                   InverseNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Max,                        MaxOfTwoNumbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Min,                        MinOfTwoNumbers);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Abs,                       AbsNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Sqrt,                      SqrtNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Ceil,                      CeilNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Floor,                     FloorNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Round,                     RoundNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Log,                       LogNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Exp,                       ExpNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Power,                     Power);
-         RegisterCoreFunction (CoreFunctionIds.ID_Math_Clamp,                     Clamp);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Inverse,                   InverseNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Max,                        MaxOfTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Min,                        MinOfTwoNumbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Abs,                       AbsNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Sqrt,                      SqrtNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Ceil,                      CeilNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Floor,                     FloorNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Round,                     RoundNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Log,                       LogNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Exp,                       ExpNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Power,                     Power);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Clamp,                     Clamp);
          
          RegisterCoreFunction (CoreFunctionIds.Id_Math_LinearInterpolation,               LinearInterpolation);
          RegisterCoreFunction (CoreFunctionIds.Id_Math_LinearInterpolationColor,          LinearInterpolationColor);
@@ -186,6 +192,8 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_Assign,                                       AssignCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_ConditionAssign,                              ConditionAssignCollisionCategory);
+         RegisterCoreFunction (CoreFunctionIds.ID_CCat_Equals,                                       EqualsWith_CollisiontCategories);
+         RegisterCoreFunction (CoreFunctionIds.ID_CCat_ToString,                                     CollisionCategoryToString);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_SetCollideInternally,                         SetCollisionCategoryCollideInternally);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_SetAsFriends,                                 SetCollisionCategoriesAsFriends);
          
@@ -193,6 +201,11 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Assign,                      AssignEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_ConditionAssign,             ConditionAssignEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_Equals,                      EqualsWith_Entities);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_ToString,                    EntityToString);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetEntityByIdOffset,         GetAnotherEntityByIdOffset);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskStatus,                         SetEntityTaskStatus);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskSuccessed,                       IsEntityTaskSuccessed);
@@ -429,13 +442,81 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 + value2);
       }
       
+      public static function GetStringLength (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:String = valueSource.EvalateValueObject () as String;
+         
+         valueTarget.AssignValueObject (value == null ? 0 : value.length);
+      }
+      
+      
       public static function NumberToString (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var value:Number = valueSource.EvalateValueObject () as Number;
          
-         valueTarget.AssignValueObject ("" + value);
+         valueTarget.AssignValueObject (value.toString (10));
+      }
+      
+      //public static function NumberToExponentialString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var value:Number = valueSource.EvalateValueObject () as Number;
+      //   
+      //   valueSource = valueSource.mNextValueSourceInList;
+      //   var fractionDigits:int = int (valueSource.EvalateValueObject ());
+      //   
+      //   if (fractionDigits < 0 || fractionDigits > 20)
+      //      valueTarget.AssignValueObject (null);
+      //   else
+      //   {
+      //      trace ("value = " + value);
+      //      trace ("value.toExponential (fractionDigits) = " + value.toExponential (fractionDigits));
+      //      valueTarget.AssignValueObject (value.toExponential (fractionDigits));
+      //   }
+      //}
+      
+      public static function NumberToFixedString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
          
-         //throw new Error ();
+         valueSource = valueSource.mNextValueSourceInList;
+         var fractionDigits:int = int (valueSource.EvalateValueObject ());
+         
+         if (fractionDigits < 0 || fractionDigits > 20)
+            valueTarget.AssignValueObject (null);
+         else
+         {
+            //valueTarget.AssignValueObject (value.toFixed (fractionDigits));
+            valueTarget.AssignValueObject (ValueAdjuster.Number2FixedString (value, fractionDigits));
+         }
+      }
+      
+      public static function NumberToPrecisionString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var precision:int = int (valueSource.EvalateValueObject ());
+         
+         if (precision < 1 || precision > 21)
+            valueTarget.AssignValueObject (null);
+         else
+         {
+            //valueTarget.AssignValueObject (value.toPrecision (precision));
+            valueTarget.AssignValueObject (ValueAdjuster.Number2PrecisionString (value, precision));
+         }
+      }
+      
+      public static function NumberToStringByRadix (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var radix:int = int (valueSource.EvalateValueObject ());
+         
+         if (radix < 2 || radix > 36)
+            valueTarget.AssignValueObject (null);
+         else
+            valueTarget.AssignValueObject (value.toString (radix));
       }
       
       public static function BooleanToString (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -641,6 +722,20 @@ package player.trigger {
          var falseValue:Number = valueSource.EvalateValueObject () as Number;
          
          valueTarget.AssignValueObject (contionResult ? trueValue : falseValue);
+      }
+      
+      public static function IsNaN (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (isNaN (value));
+      }
+      
+      public static function IsInfinity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var value:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (! isFinite (value));
       }
       
       public static function NegativeNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1373,6 +1468,22 @@ package player.trigger {
          var entity2:Entity = valueSource.EvalateValueObject () as Entity;
          
          valueTarget.AssignValueObject (condition ? entity1 : entity2);
+      }
+      
+      public static function GetAnotherEntityByIdOffset (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var baseEntity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (baseEntity == null || baseEntity.GetCreationId () < 0)
+         {
+            valueTarget.AssignValueObject (null);
+         }
+         else
+         {
+            valueSource = valueSource.mNextValueSourceInList;
+            var idOffset:int = int (valueSource.EvalateValueObject ());
+            
+            valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetEntityByCreationId (baseEntity.GetCreationId () + idOffset));
+         }
       }
       
       public static function SetEntityTaskStatus (valueSource:ValueSource, valueTarget:ValueTarget):void

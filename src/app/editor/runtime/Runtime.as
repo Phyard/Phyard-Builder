@@ -8,6 +8,8 @@ package editor.runtime {
    
    import editor.trigger.CodeSnippet;
    
+   import common.Define;
+   
    public class Runtime
    {
    
@@ -76,6 +78,22 @@ package editor.runtime {
 //=====================================================================
       
       public static var mCopiedCodeSnippet:CodeSnippet = null;
+      
+//=====================================================================
+// create initial properties
+//=====================================================================
+      
+   // shapes
+      
+      //public static var mShape_EnablePhysics:Boolean = true;
+      //public static var mShape_IsStatic:Boolean = false;
+      //public static var mShape_IsSensor:Boolean = false;
+      //
+      //public static var mShape_DrawBackground:Boolean = true;
+      //public static var mShape_BackgroundColor:uint = Define.ColorMovableObject;
+      //
+      //public static var mShape_DrawBorder:Boolean = true;
+      //public static var mShape_BorderColor:uint = Define.ColorObjectBorder;
    }
    
 }

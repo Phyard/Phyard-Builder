@@ -52,7 +52,7 @@
             <mx:CheckBox id="CheckBox_BuildBorderAboveEntities" label="Build Border Above Entities"/>
          </mx:HBox>
          <mx:VBox width="100%">
-            <mx:Label text="Border Thincknesses:"/>
+            <mx:Label text="Border Thincknesses (pixels):"/>
          </mx:VBox>
          <mx:HBox id="Box_BorderThickness1" width="100%">
             <mx:Spacer width="100%"/>

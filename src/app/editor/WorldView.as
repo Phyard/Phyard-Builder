@@ -494,8 +494,8 @@ package editor {
          var worldViewWidth:Number  = sceneWidth  * mEditorWorld.scaleX;
          var worldViewHeight:Number = sceneHeight * mEditorWorld.scaleY;
          
-         mEditorWorld.x = worldOriginViewX;
-         mEditorWorld.y = worldOriginViewY;
+         mEditorWorld.x = Math.round (worldOriginViewX);
+         mEditorWorld.y = Math.round (worldOriginViewY);
          
          //>>
          var adjustDx:Number = Math.round (worldOriginViewX) - worldOriginViewX;
@@ -989,16 +989,16 @@ package editor {
           // general box, ball, polygons, polyline
             
             case mButtonCreateBox:
-               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Unknown, Define.ColorStaticObject, true ) );
+               SetCurrentCreateMode ( new ModeCreateRectangle (this, Define.ShapeAiType_Unknown, Define.ColorMovableObject, false ) );
                break;
             case mButtonCreateBall:
                SetCurrentCreateMode ( new ModeCreateCircle (this, Define.ShapeAiType_Unknown, Define.ColorMovableObject, false ) );
                break;
             case mButtonCreatePolygon:
-               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Unknown, 0xFFFFFF, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolygon (this, Define.ShapeAiType_Unknown, Define.ColorStaticObject, true ) );
                break;
             case mButtonCreatePolyline:
-               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Unknown, Define.ColorStaticObject, true ) );
+               SetCurrentCreateMode ( new ModeCreatePolyline (this, Define.ShapeAiType_Unknown,Define.ColorStaticObject, true ) );
                break;
                
          // joints
@@ -1459,8 +1459,8 @@ package editor {
       {
          if (mDesignPlayer != null)
          {
-            mDesignPlayer.x = (mViewWidth - Define.DefaultPlayerWidth) / 2;
-            mDesignPlayer.y = (mViewHeight - Define.DefaultPlayerHeight - Define.PlayerPlayBarThickness) / 2;
+            mDesignPlayer.x = Math.round ((mViewWidth - Define.DefaultPlayerWidth) / 2);
+            mDesignPlayer.y = Math.round ((mViewHeight - Define.DefaultPlayerHeight - Define.PlayerPlayBarThickness) / 2);
          }
       }
       
@@ -2768,6 +2768,17 @@ package editor {
          CalSelectedEntitiesCenterPoint ();
       }
       
+      public function SetShapeInitialProperties (shape:EntityShape):void
+      {
+         //shape.SetPhysicsEnabled (Runtime.mShape_EnablePhysics);
+         //shape.SetStatic (Runtime.mShape_IsStatic);
+         //shape.SetAsSensor (Runtime.mShape_IsSensor);
+         //shape.SetDrawBackground (Runtime.mShape_DrawBackground);
+         //shape.SetFilledColor (Runtime.mShape_BackgroundColor);
+         //shape.SetDrawBorder (Runtime.mShape_DrawBorder);
+         //shape.SetBorderColor (Runtime.mShape_BorderColor);
+      }
+      
       public function CreateCircle (centerX:Number, centerY:Number, radius:Number, filledColor:uint, isStatic:Boolean):EntityShapeCircle
       {
          var centerPoint:Point = new Point (centerX, centerY);
@@ -2785,8 +2796,11 @@ package editor {
          circle.SetFilledColor (filledColor);
          circle.SetStatic (isStatic);
          circle.SetDrawBorder (filledColor != Define.ColorStaticObject);
+         circle.SetBuildBorder (circle.IsDrawBorder ());
          
          SetTheOnlySelectedEntity (circle);
+         
+         SetShapeInitialProperties (circle);
          
          return circle;
       }
@@ -2813,8 +2827,11 @@ package editor {
          rect.SetFilledColor (filledColor);
          rect.SetStatic (isStatic);
          rect.SetDrawBorder (filledColor != Define.ColorStaticObject);
+         rect.SetBuildBorder (rect.IsDrawBorder ());
          
          SetTheOnlySelectedEntity (rect);
+         
+         SetShapeInitialProperties (rect);
          
          return rect;
       }
@@ -2828,8 +2845,11 @@ package editor {
          polygon.SetFilledColor (filledColor);
          polygon.SetStatic (isStatic);
          polygon.SetDrawBorder (filledColor != Define.ColorStaticObject);
+         polygon.SetBuildBorder (polygon.IsDrawBorder ());
          
          SetTheOnlySelectedEntity (polygon);
+         
+         SetShapeInitialProperties (polygon);
          
          return polygon;
       }
@@ -2843,8 +2863,11 @@ package editor {
          polyline.SetFilledColor (filledColor);
          polyline.SetStatic (isStatic);
          polyline.SetDrawBorder (filledColor != Define.ColorStaticObject);
+         polyline.SetBuildBorder (polyline.IsDrawBorder ());
          
          SetTheOnlySelectedEntity (polyline);
+         
+         SetShapeInitialProperties (polyline);
          
          return polyline;
       }
@@ -2938,6 +2961,8 @@ package editor {
             
             SetTheOnlySelectedEntity (shapeText);
             
+            SetShapeInitialProperties (shapeText);
+            
             return shapeText;
          }
       }
@@ -2957,6 +2982,8 @@ package editor {
             button.SetStatic (true);
             
             SetTheOnlySelectedEntity (button);
+            
+            SetShapeInitialProperties (button);
             
             return button;
          }

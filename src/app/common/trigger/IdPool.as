@@ -102,6 +102,7 @@ package common.trigger {
       public static const CoreApiId_182:int = 182; // 
       public static const CoreApiId_183:int = 183; // 
       public static const CoreApiId_184:int = 184; // 
+      public static const CoreApiId_185:int = 185; // 
       
       public static const CoreApiId_210:int = 210; // 
       public static const CoreApiId_211:int = 211; // 
@@ -114,12 +115,18 @@ package common.trigger {
       public static const CoreApiId_300:int = 300; // 
       public static const CoreApiId_301:int = 301; // 
       public static const CoreApiId_302:int = 302; //
+      public static const CoreApiId_303:int = 303; //
+      public static const CoreApiId_304:int = 304; //
       
       public static const CoreApiId_306:int = 306; // 
       public static const CoreApiId_307:int = 307; // 
       public static const CoreApiId_308:int = 308; // 
       public static const CoreApiId_309:int = 309; // 
       public static const CoreApiId_310:int = 310; // 
+      public static const CoreApiId_311:int = 311; // 
+      public static const CoreApiId_312:int = 312; // 
+      public static const CoreApiId_313:int = 313; // 
+      public static const CoreApiId_314:int = 314; // 
       
       public static const CoreApiId_315:int = 315; // 
       public static const CoreApiId_316:int = 316; // 
@@ -175,7 +182,7 @@ package common.trigger {
       public static const CoreApiId_612:int = 612; // design
       public static const CoreApiId_614:int = 614; // design
       
-      //public static const CoreApiId_700:int = 700; // world
+      public static const CoreApiId_700:int = 700; // world
       
       public static const CoreApiId_710:int = 710; // world
       public static const CoreApiId_711:int = 711; // world
@@ -201,6 +208,7 @@ package common.trigger {
       
       public static const CoreApiId_900:int = 900; // entity.shape
       public static const CoreApiId_901:int = 901; // entity.shape
+      public static const CoreApiId_902:int = 902; // entity.shape
       
       public static const CoreApiId_910:int = 910; // entity.shape
       public static const CoreApiId_911:int = 911; // entity.shape

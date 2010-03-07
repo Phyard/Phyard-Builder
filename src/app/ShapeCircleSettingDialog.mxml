@@ -84,6 +84,7 @@
          
          private function OnPhysicsSettingPanelCreationComplete ():void
          {
+            mParams.mEnablePhysicsChangeable = mParams.mAiType < 0;
             PhysicsSettingPanel.SetValues (mParams);
          }
          

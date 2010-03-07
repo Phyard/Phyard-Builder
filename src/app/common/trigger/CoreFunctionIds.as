@@ -38,28 +38,18 @@ package common.trigger {
       public static const ID_String_Assign:int                    = IdPool.CoreApiId_120; // 
       public static const ID_String_Add:int                       = IdPool.CoreApiId_121; // to exchange with 122
       public static const ID_String_ConditionAssign:int           = IdPool.CoreApiId_122; //
-      
-      public static const ID_String_NumberToString:int            = IdPool.CoreApiId_150; // 
-      public static const ID_String_BooleanToString:int           = IdPool.CoreApiId_151; // 
-      public static const ID_String_EntityToString:int            = IdPool.CoreApiId_152; // 
-      public static const ID_String_CollisionCategoryToString:int = IdPool.CoreApiId_153; // 
+      public static const ID_String_Equals:int                    = IdPool.CoreApiId_183; // 
+      public static const ID_String_GetLength:int                 = IdPool.CoreApiId_185; // 
       
    // bool
       
       public static const ID_Bool_Assign :int                    = IdPool.CoreApiId_170; // 
+      public static const ID_Bool_ConditionAssign:int            = IdPool.CoreApiId_174; // // to put after ID_Bool_Assign
+      public static const ID_Boolean_ToString:int                = IdPool.CoreApiId_151; // 
+      public static const ID_Bool_EqualsBoolean:int              = IdPool.CoreApiId_181; // 
       public static const ID_Bool_Invert :int                    = IdPool.CoreApiId_171; // 
       public static const ID_Bool_IsTrue :int                    = IdPool.CoreApiId_172; // 
       public static const ID_Bool_IsFalse:int                    = IdPool.CoreApiId_173; // 
-      public static const ID_Bool_ConditionAssign:int            = IdPool.CoreApiId_174; // // to put after ID_Bool_Assign
-      
-      public static const ID_Bool_EqualsNumber:int               = IdPool.CoreApiId_180; // 
-      public static const ID_Bool_EqualsBoolean:int              = IdPool.CoreApiId_181; // 
-      public static const ID_Bool_EqualsEntity:int               = IdPool.CoreApiId_182; // 
-      public static const ID_Bool_EqualsString:int               = IdPool.CoreApiId_183; // 
-      public static const ID_Bool_EqualsCCat:int                 = IdPool.CoreApiId_184; // 
-      
-      public static const ID_Bool_Larger:int                     = IdPool.CoreApiId_210; // 
-      public static const ID_Bool_Less:int                       = IdPool.CoreApiId_211; // 
       
       public static const ID_Bool_And:int                        = IdPool.CoreApiId_230; // 
       public static const ID_Bool_Or:int                         = IdPool.CoreApiId_231; // 
@@ -68,16 +58,28 @@ package common.trigger {
       
    // math basic op 
       
-      public static const ID_Math_Assign:int                      = IdPool.CoreApiId_300; // 
-      public static const ID_Math_Negative:int                    = IdPool.CoreApiId_301; // 
-      public static const ID_Math_ConditionAssign:int             = IdPool.CoreApiId_302; //
+      public static const ID_Number_Assign:int                      = IdPool.CoreApiId_300; // 
+      public static const ID_Number_Negative:int                    = IdPool.CoreApiId_301; // 
+      public static const ID_Number_ConditionAssign:int             = IdPool.CoreApiId_302; //
+      public static const ID_Number_Equals:int                      = IdPool.CoreApiId_180; // 
+      public static const ID_Number_LargerThan:int                  = IdPool.CoreApiId_210; // 
+      public static const ID_Number_LessThan:int                    = IdPool.CoreApiId_211; // 
+      public static const ID_Number_IsNaN:int                       = IdPool.CoreApiId_303; // 
+      public static const ID_Number_IsInfinity :int                   = IdPool.CoreApiId_304; // 
       
+      public static const ID_Number_Add:int                         = IdPool.CoreApiId_306; // 
+      public static const ID_Number_Subtract:int                    = IdPool.CoreApiId_307; // 
+      public static const ID_Number_Multiply:int                    = IdPool.CoreApiId_308; // 
+      public static const ID_Number_Divide:int                      = IdPool.CoreApiId_309; // 
+      public static const ID_Number_Modulo:int                      = IdPool.CoreApiId_310; // 
       
-      public static const ID_Math_Add:int                         = IdPool.CoreApiId_306; // 
-      public static const ID_Math_Subtract:int                    = IdPool.CoreApiId_307; // 
-      public static const ID_Math_Multiply:int                    = IdPool.CoreApiId_308; // 
-      public static const ID_Math_Divide:int                      = IdPool.CoreApiId_309; // 
-      public static const ID_Math_Modulo:int                      = IdPool.CoreApiId_310; // 
+   // math / toString 
+      
+      public static const ID_Number_ToString:int                    = IdPool.CoreApiId_150; // 
+      public static const ID_Number_ToExponential:int               = IdPool.CoreApiId_311; // 
+      public static const ID_Number_ToFixed:int                     = IdPool.CoreApiId_312; // 
+      public static const ID_Number_ToPrecision:int                 = IdPool.CoreApiId_313; // 
+      public static const ID_Number_ToStringByRadix:int             = IdPool.CoreApiId_314; // 
       
    // math / bitwise 
       
@@ -91,44 +93,44 @@ package common.trigger {
       
   // math / trigonometry
       
-      public static const ID_Math_SinRadians:int                  = IdPool.CoreApiId_350; // 
-      public static const ID_Math_CosRadians:int                  = IdPool.CoreApiId_351; // 
-      public static const ID_Math_TanRadians:int                  = IdPool.CoreApiId_352; // 
-      public static const ID_Math_ArcSinRadians:int               = IdPool.CoreApiId_353; // 
-      public static const ID_Math_ArcCosRadians:int               = IdPool.CoreApiId_354; // 
-      public static const ID_Math_ArcTanRadians:int               = IdPool.CoreApiId_355; // 
-      public static const ID_Math_ArcTan2Radians:int              = IdPool.CoreApiId_356; // 
+      public static const ID_Number_SinRadians:int                  = IdPool.CoreApiId_350; // 
+      public static const ID_Number_CosRadians:int                  = IdPool.CoreApiId_351; // 
+      public static const ID_Number_TanRadians:int                  = IdPool.CoreApiId_352; // 
+      public static const ID_Number_ArcSinRadians:int               = IdPool.CoreApiId_353; // 
+      public static const ID_Number_ArcCosRadians:int               = IdPool.CoreApiId_354; // 
+      public static const ID_Number_ArcTanRadians:int               = IdPool.CoreApiId_355; // 
+      public static const ID_Number_ArcTan2Radians:int              = IdPool.CoreApiId_356; // 
       
   // math / random
       
-      public static const ID_Math_Random:int                      = IdPool.CoreApiId_380; // 
-      public static const ID_Math_RandomRange:int                 = IdPool.CoreApiId_381; // 
-      public static const ID_Math_RandomIntRange:int              = IdPool.CoreApiId_382; // 
+      public static const ID_Number_Random:int                      = IdPool.CoreApiId_380; // 
+      public static const ID_Number_RandomRange:int                 = IdPool.CoreApiId_381; // 
+      public static const ID_Number_RandomIntRange:int              = IdPool.CoreApiId_382; // 
       
    // math number convert
       
-      public static const ID_Math_Degrees2Radians:int            = IdPool.CoreApiId_400; // 
-      public static const ID_Math_Radians2Degrees:int            = IdPool.CoreApiId_401; // 
-      public static const ID_Math_Number2RGB:int                 = IdPool.CoreApiId_402; // 
-      public static const ID_Math_RGB2Number:int                 = IdPool.CoreApiId_403; // 
+      public static const ID_Number_Degrees2Radians:int            = IdPool.CoreApiId_400; // 
+      public static const ID_Number_Radians2Degrees:int            = IdPool.CoreApiId_401; // 
+      public static const ID_Number_Number2RGB:int                 = IdPool.CoreApiId_402; // 
+      public static const ID_Number_RGB2Number:int                 = IdPool.CoreApiId_403; // 
       public static const ID_MillisecondsToMinutesSeconds:int    = IdPool.CoreApiId_404; //
       //public static const ID_MillisecondsToMinutesSeconds:int    = IdPool.CoreApiId_405; //
       
    // math more ...
       
-      public static const ID_Math_Max:int                         = IdPool.CoreApiId_500; // 
-      public static const ID_Math_Min:int                         = IdPool.CoreApiId_501; // 
+      public static const ID_Number_Max:int                         = IdPool.CoreApiId_500; // 
+      public static const ID_Number_Min:int                         = IdPool.CoreApiId_501; // 
       
-      public static const ID_Math_Inverse:int                     = IdPool.CoreApiId_510; // 
-      public static const ID_Math_Abs:int                         = IdPool.CoreApiId_511; // 
-      public static const ID_Math_Sqrt:int                        = IdPool.CoreApiId_512; // 
-      public static const ID_Math_Ceil:int                        = IdPool.CoreApiId_513; // 
-      public static const ID_Math_Floor:int                       = IdPool.CoreApiId_514; // 
-      public static const ID_Math_Round:int                       = IdPool.CoreApiId_515; // 
-      public static const ID_Math_Log:int                         = IdPool.CoreApiId_516; // 
-      public static const ID_Math_Exp:int                         = IdPool.CoreApiId_517; // 
-      public static const ID_Math_Power:int                       = IdPool.CoreApiId_518; // 
-      public static const ID_Math_Clamp:int                       = IdPool.CoreApiId_519; // 
+      public static const ID_Number_Inverse:int                     = IdPool.CoreApiId_510; // 
+      public static const ID_Number_Abs:int                         = IdPool.CoreApiId_511; // 
+      public static const ID_Number_Sqrt:int                        = IdPool.CoreApiId_512; // 
+      public static const ID_Number_Ceil:int                        = IdPool.CoreApiId_513; // 
+      public static const ID_Number_Floor:int                       = IdPool.CoreApiId_514; // 
+      public static const ID_Number_Round:int                       = IdPool.CoreApiId_515; // 
+      public static const ID_Number_Log:int                         = IdPool.CoreApiId_516; // 
+      public static const ID_Number_Exp:int                         = IdPool.CoreApiId_517; // 
+      public static const ID_Number_Power:int                       = IdPool.CoreApiId_518; // 
+      public static const ID_Number_Clamp:int                       = IdPool.CoreApiId_519; // 
       
       public static const Id_Math_LinearInterpolation:int                  = IdPool.CoreApiId_530; //
       public static const Id_Math_LinearInterpolationColor:int             = IdPool.CoreApiId_531; //
@@ -147,8 +149,6 @@ package common.trigger {
       public static const ID_Design_IsLevelUnfinished:int                        = IdPool.CoreApiId_614; // design
       
    // game / world
-      
-      //public static const ID_World_GetLevelMilliseconds:int               = IdPool.CoreApiId_700; // world
       
       public static const ID_World_SetGravityAcceleration_Radians:int       = IdPool.CoreApiId_710; // world
       public static const ID_World_SetGravityAcceleration_Degrees:int       = IdPool.CoreApiId_711; // world
@@ -176,6 +176,8 @@ package common.trigger {
       
       public static const ID_CCat_Assign:int                              = IdPool.CoreApiId_850; // CCat
       public static const ID_CCat_SetCollideInternally:int                = IdPool.CoreApiId_851; // CCat
+      public static const ID_CCat_ToString:int                            = IdPool.CoreApiId_153; // 
+      public static const ID_CCat_Equals:int                              = IdPool.CoreApiId_184; // 
       public static const ID_CCat_SetAsFriends:int                        = IdPool.CoreApiId_852; // CCat
       public static const ID_CCat_ConditionAssign:int                     = IdPool.CoreApiId_853; // CCat, to ptu after ID_CCat_Assign
       
@@ -183,6 +185,9 @@ package common.trigger {
       
       public static const ID_Entity_Assign:int                         = IdPool.CoreApiId_900; // entity.shape
       public static const ID_Entity_ConditionAssign:int                = IdPool.CoreApiId_901; // entity.shape
+      public static const ID_Entity_GetEntityByIdOffset:int            = IdPool.CoreApiId_902; // entity.shape
+      public static const ID_Entity_ToString:int                       = IdPool.CoreApiId_152; // 
+      public static const ID_Entity_Equals:int                         = IdPool.CoreApiId_182; // 
       
       public static const ID_Entity_IsTaskSuccessed:int                = IdPool.CoreApiId_910; // entity.shape
       public static const ID_Entity_SetTaskSuccessed:int               = IdPool.CoreApiId_911; // entity.shape

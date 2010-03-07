@@ -38,10 +38,10 @@ package player.design
          
          //
          mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false);
-         mRegisterVariableSpace_String            = CreateRegisterVariableSpace (false);
-         mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (false);
-         mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (false);
-         mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (false);
+         mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null);
+         mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0);
+         mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null);
+         mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null);
       }
       
       public static function SetCurrentDesign (design:Design):void

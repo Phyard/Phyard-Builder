@@ -290,11 +290,11 @@ package player.world {
          entity.mEntityList.RemoveEntity (entity);
          
          // an entity defined in editor will never removed from the 2 arrays to make the reference in api callings always be accessable.
-         if (! entity.IsDefinedInEditor ())
-         {
-            mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
-            mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;
-         }
+         //if (! entity.IsDefinedInEditor ())
+         //{
+         //   mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
+         //   mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;
+         //}
       }
       
       public function GetNumEntitiesInEditor ():int
@@ -304,7 +304,7 @@ package player.world {
       
       public function GetEntityByCreationId (createId:int):Entity
       {
-         if (createId >= 0)
+         if (createId >= 0 && createId < mNumEntitiesInEditor)
          {
             return mEntityArrayOrderByCreationId [createId];
          }
@@ -316,7 +316,7 @@ package player.world {
       
       public function GetEntityByAppearanceId (appearanceId:int):Entity
       {
-         if (appearanceId >= 0)
+         if (appearanceId >= 0 && appearanceId < mNumEntitiesInEditor)
          {
             return mEntityArrayOrderByAppearanceId [appearanceId];
          }

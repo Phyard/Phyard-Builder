@@ -38,7 +38,7 @@ package editor.trigger.entity {
             
             mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
             
-            mEventIconBitmap = Resource.EventId2IconBitmap (mEventId);
+            mIconBitmap = Resource.EventId2IconBitmap (mEventId);
          }
       }
       

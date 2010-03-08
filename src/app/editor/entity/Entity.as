@@ -127,7 +127,7 @@ package editor.entity {
       {
          return     "x = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionX (mPosX), 6) 
                 + ", y = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_PositionY (mPosY), 6) 
-                + ", angle = " + ValueAdjuster.Number2Precision ((mRotation * Define.kRadians2Degrees), 6);
+                + ", angle = " + ValueAdjuster.Number2Precision ((mEntityContainer.GetCoordinateSystem ().D2P_RotationRadians (mRotation) * Define.kRadians2Degrees), 6);
       }
       
       public function GetPhysicsShapesCount ():uint

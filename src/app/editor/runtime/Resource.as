@@ -12,13 +12,35 @@ package editor.runtime {
       [Embed("../../res/create/camera.png")]
       public static var IconCamera:Class;
       
-   // conditon and action
+      [Embed("../../res/create/force-linear.png")]
+      public static var IconForce:Class;
+      [Embed("../../res/create/force-angular.png")]
+      public static var IconTorque:Class;
+      [Embed("../../res/create/impulse-linear.png")]
+      public static var IconLinearImpulse:Class;
+      [Embed("../../res/create/impulse-angular.png")]
+      public static var IconAngularImpulse:Class;
+      [Embed("../../res/create/velocity-linear.png")]
+      public static var IconLinearVelocity:Class;
+      [Embed("../../res/create/velocity-angular.png")]
+      public static var IconAngularVelocity:Class;
+      
+   // conditon and action, entity limiters
       
       [Embed("../../res/create/condition.png")]
       public static var IconBasicCondition:Class;
-      
       [Embed("../../res/create/action.png")]
       public static var IconTriggerAction:Class;
+      [Embed("../../res/create/input_entity_limiter.png")]
+      public static var IconInputEntityManualAssigner:Class;
+      [Embed("../../res/create/input_entity_pair_limiter.png")]
+      public static var IconInputEntityPairManualAssigner:Class;
+      [Embed("../../res/create/input_entity_region_selector.png")]
+      public static var IconInputEntityRegionSelector:Class;
+      [Embed("../../res/create/input_entity_filter.png")]
+      public static var IconInputEntityScriptFilter:Class;
+      [Embed("../../res/create/input_entity_pair_filter.png")]
+      public static var IconInputEntityPairScriptFilter:Class;
       
    // event icons
       

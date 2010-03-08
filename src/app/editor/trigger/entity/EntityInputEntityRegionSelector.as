@@ -28,21 +28,18 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityBasicCondition extends EntityCodeSnippetHolder implements EntityCondition 
+   public class EntityInputEntityRegionSelector extends EntityIconInsider 
    {
-      public function EntityBasicCondition (world:World)
+      public function EntityInputEntityRegionSelector (world:World)
       {
          super (world);
          
-         mCodeSnippet = new CodeSnippet (new FunctionDefinition (TriggerEngine.GetBoolFunctionDeclaration ()));
-         mIconBitmap = new Resource.IconBasicCondition ();
-         mBackgroundColor = 0xA0FFA0;
+         mIconBitmap = new Resource.IconInputEntityRegionSelector ();
+         mBackgroundColor = 0xFFC000;
       }
       
       override public function ValidateEntityLinks ():void
       {
-         //mCodeSnippet.ValidateValueSources ();
-         super.ValidateEntityLinks ();
       }
       
       override public function GetTypeName ():String
@@ -56,33 +53,19 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityBasicCondition (mWorld);
+         return new EntityInputEntityRegionSelector (mWorld);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
       {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
-         var basicCondition:EntityBasicCondition = entity as EntityBasicCondition;
+         var entityFilter:EntityInputEntityRegionSelector = entity as EntityInputEntityRegionSelector;
       }
       
 //====================================================================
 //   linkable
 //====================================================================
-      
-//====================================================================
-//   as EntityCondition
-//====================================================================
-      
-      public function GetTargetValueByLinkZoneId (zoneId:int):int
-      {
-         return ValueDefine.BoolValue_True;
-      }
-      
-      public function GetTargetValueZoneWorldCenter (targetValue:int):Point
-      {
-         return new Point (GetPositionX (), GetPositionY ());
-      }
       
    }
 }

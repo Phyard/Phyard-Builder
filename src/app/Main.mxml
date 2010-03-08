@@ -92,7 +92,7 @@
    </mx:ApplicationControlBar>
 
 
-   <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0">
+   <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 
       <mx:Spacer height="3"/>
 
@@ -134,6 +134,18 @@
                      </mx:HBox>
                      -->
                      <mx:Spacer height="5"/>
+                     <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="110"
+                            tileWidth="36" tileHeight="36"
+                            horizontalGap="1" verticalGap="1"
+                            paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+                        <mx:Button id="Button_CreateLinearForce" toolTip="Create Force Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/force-linear.png')" downIcon="@Embed('res/create/force-linear-sel.png')" overIcon="@Embed('res/create/force-linear.png')" selectedUpIcon="@Embed('res/create/force-linear-sel.png')" selectedOverIcon="@Embed('res/create/force-linear-sel.png')" selectedDownIcon="@Embed('res/create/force-linear.png')"   />
+                        <mx:Button id="Button_CreateAngularForce" toolTip="Create Torque Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/force-angular.png')" downIcon="@Embed('res/create/force-angular-sel.png')" overIcon="@Embed('res/create/force-angular.png')" selectedUpIcon="@Embed('res/create/force-angular-sel.png')" selectedOverIcon="@Embed('res/create/force-angular-sel.png')" selectedDownIcon="@Embed('res/create/force-angular.png')"   />
+                        <mx:Button id="Button_CreateLinearImpulse" toolTip="Create Linear Impulse Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/impulse-linear.png')" downIcon="@Embed('res/create/impulse-linear-sel.png')" overIcon="@Embed('res/create/impulse-linear.png')" selectedUpIcon="@Embed('res/create/impulse-linear-sel.png')" selectedOverIcon="@Embed('res/create/impulse-linear-sel.png')" selectedDownIcon="@Embed('res/create/impulse-linear.png')"   />
+                        <mx:Button id="Button_CreateAngularImpulse" toolTip="Create Angular Impulse Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/impulse-angular.png')" downIcon="@Embed('res/create/impulse-angular-sel.png')" overIcon="@Embed('res/create/impulse-angular.png')" selectedUpIcon="@Embed('res/create/impulse-angular-sel.png')" selectedOverIcon="@Embed('res/create/impulse-angular-sel.png')" selectedDownIcon="@Embed('res/create/impulse-angular.png')"   />
+                        <mx:Button id="Button_CreateLinearVelocity" toolTip="Create Linear Velocity  Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/velocity-linear.png')" downIcon="@Embed('res/create/velocity-linear-sel.png')" overIcon="@Embed('res/create/velocity-linear.png')" selectedUpIcon="@Embed('res/create/velocity-linear-sel.png')" selectedOverIcon="@Embed('res/create/velocity-linear-sel.png')" selectedDownIcon="@Embed('res/create/velocity-linear.png')"   />
+                        <mx:Button id="Button_CreateAngularVelocity" toolTip="Create Angular Velocity Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/velocity-angular.png')" downIcon="@Embed('res/create/velocity-angular-sel.png')" overIcon="@Embed('res/create/velocity-angular.png')" selectedUpIcon="@Embed('res/create/velocity-angular-sel.png')" selectedOverIcon="@Embed('res/create/velocity-angular-sel.png')" selectedDownIcon="@Embed('res/create/velocity-angular.png')"   />
+                     </mx:Tile>
+                     <mx:Spacer height="10"/>
                      <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="37"
                             tileWidth="36" tileHeight="36"
                             horizontalGap="1" verticalGap="1"
@@ -243,15 +255,18 @@
                            paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
                            horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
                      <mx:VBox verticalAlign="middle" width="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="none">
-                        <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="110" 
+                        <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="185" 
                                horizontalGap="1" verticalGap="1" 
                                paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+                           <mx:Button id="Button_CreateAction" toolTip="Create Function" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/action.png')" downIcon="@Embed('res/create/action-sel.png')" overIcon="@Embed('res/create/action.png')" selectedUpIcon="@Embed('res/create/action-sel.png')" selectedOverIcon="@Embed('res/create/action-sel.png')" selectedDownIcon="@Embed('res/create/action.png')"   />
+                           <mx:Button id="Button_CreateTask" toolTip="Create Task" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/task.png')" downIcon="@Embed('res/create/task-sel.png')" overIcon="@Embed('res/create/task.png')" selectedUpIcon="@Embed('res/create/task-sel.png')" selectedOverIcon="@Embed('res/create/task-sel.png')" selectedDownIcon="@Embed('res/create/task.png')"   />
                            <mx:Button id="Button_CreateCondition" toolTip="Create Basic Condition" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/condition.png')" downIcon="@Embed('res/create/condition-sel.png')" overIcon="@Embed('res/create/condition.png')" selectedUpIcon="@Embed('res/create/condition-sel.png')" selectedOverIcon="@Embed('res/create/condition-sel.png')" selectedDownIcon="@Embed('res/create/condition.png')"   />
                            <mx:Button id="Button_CreateConditionDoor" toolTip="Create Condition Door" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/condition_door.png')" downIcon="@Embed('res/create/condition_door-sel.png')" overIcon="@Embed('res/create/condition_door.png')" selectedUpIcon="@Embed('res/create/condition_door-sel.png')" selectedOverIcon="@Embed('res/create/condition_door-sel.png')" selectedDownIcon="@Embed('res/create/condition_door.png')"   />
-                           <mx:Button id="Button_CreateTask" toolTip="Create Task" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/task.png')" downIcon="@Embed('res/create/task-sel.png')" overIcon="@Embed('res/create/task.png')" selectedUpIcon="@Embed('res/create/task-sel.png')" selectedOverIcon="@Embed('res/create/task-sel.png')" selectedDownIcon="@Embed('res/create/task.png')"   />
-                           <mx:Button id="Button_CreateAction" toolTip="Create Function" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/action.png')" downIcon="@Embed('res/create/action-sel.png')" overIcon="@Embed('res/create/action.png')" selectedUpIcon="@Embed('res/create/action-sel.png')" selectedOverIcon="@Embed('res/create/action-sel.png')" selectedDownIcon="@Embed('res/create/action.png')"   />
-                           <mx:Button id="Button_CreateInputEntityAssigner" toolTip="Create Input Entitiy Limiter" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_limiter.png')" downIcon="@Embed('res/create/input_entity_limiter-sel.png')" overIcon="@Embed('res/create/input_entity_limiter.png')" selectedUpIcon="@Embed('res/create/input_entity_limiter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_limiter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_limiter.png')"   />
-                           <mx:Button id="Button_CreateInputEntityPairAssigner" toolTip="Create Input Entitiy Pair Limiter" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_pair_limiter.png')" downIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" overIcon="@Embed('res/create/input_entity_pair_limiter.png')" selectedUpIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_pair_limiter.png')"   />
+                           <mx:Button id="Button_CreateInputEntityAssigner" toolTip="Create Input Entitiy Manual Assigner" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_limiter.png')" downIcon="@Embed('res/create/input_entity_limiter-sel.png')" overIcon="@Embed('res/create/input_entity_limiter.png')" selectedUpIcon="@Embed('res/create/input_entity_limiter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_limiter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_limiter.png')"   />
+                           <mx:Button id="Button_CreateInputEntityPairAssigner" toolTip="Create Input Entitiy Pair Manual Assigner" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_pair_limiter.png')" downIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" overIcon="@Embed('res/create/input_entity_pair_limiter.png')" selectedUpIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_pair_limiter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_pair_limiter.png')"   />
+                           <mx:Button id="Button_CreateInputEntityScriptFilter" toolTip="Create Input Entitiy Script Filter" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_filter.png')" downIcon="@Embed('res/create/input_entity_filter-sel.png')" overIcon="@Embed('res/create/input_entity_filter.png')" selectedUpIcon="@Embed('res/create/input_entity_filter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_filter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_filter.png')"   />
+                           <mx:Button id="Button_CreateInputEntityPairScriptFilter" toolTip="Create Input Entitiy Pair Script Filter" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_pair_filter.png')" downIcon="@Embed('res/create/input_entity_pair_filter-sel.png')" overIcon="@Embed('res/create/input_entity_pair_filter.png')" selectedUpIcon="@Embed('res/create/input_entity_pair_filter-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_pair_filter-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_pair_filter.png')"   />
+                           <mx:Button id="Button_CreateInputEntityRegionSelector" toolTip="Create Input Entitiy Region Selector" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/input_entity_region_selector.png')" downIcon="@Embed('res/create/input_entity_region_selector-sel.png')" overIcon="@Embed('res/create/input_entity_region_selector.png')" selectedUpIcon="@Embed('res/create/input_entity_region_selector-sel.png')" selectedOverIcon="@Embed('res/create/input_entity_region_selector-sel.png')" selectedDownIcon="@Embed('res/create/input_entity_region_selector.png')"   />
                         </mx:Tile>
                         <mx:Spacer height="10"/>
                         <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="332" 
@@ -436,10 +451,40 @@
                {
                   ShowWorldAppearanceEditDialog ();
                }
-            } 
+            }
+            
+            private function DesignNotSaved ():Boolean
+            {
+               return true;
+            }
             
             private function InitApp ():void
             {
+            //===================================================================================================
+               
+               
+               if (flash.external.ExternalInterface.available)
+               {
+                   try
+                   {
+                       flash.external.ExternalInterface.addCallback("DesignNotSaved", DesignNotSaved);
+                   }
+                   catch (error:SecurityError)
+                   {
+                      trace ("A SecurityError occurred: " + error.message + "\n");
+                   }
+                   catch (error:Error)
+                   {
+                      trace ("An Error occurred: " + error.message + "\n");
+                   }
+               }
+               else
+               {
+                   trace ("External interface is not available for this container.");
+               }
+               
+            //===================================================================================================
+               
                Runtime.SetActiveView (MainView);
                Runtime.mEditorWorldView = MainView;
                Runtime.mCollisionCategoryView = CollisionManagerView;
@@ -508,28 +553,39 @@
                MainView.mButtonCreateCamera = Button_CreateCamera;
                MainView.mButtonCreateTextButton = Button_CreateTextButton;
                
-               MainView.mButton_CreateCondition = Button_CreateCondition;
-               MainView.mButton_CreateConditionDoor = Button_CreateConditionDoor;
-               MainView.mButton_CreateTask = Button_CreateTask;
-               MainView.mButton_CreateEntityAssigner = Button_CreateInputEntityAssigner;
-               MainView.mButton_CreateEntityPairAssigner = Button_CreateInputEntityPairAssigner;
-               MainView.mButton_CreateAction = Button_CreateAction;
-               MainView.mButton_CreateEventHandler0 = Button_CreateEventHandler0;
-               MainView.mButton_CreateEventHandler1 = Button_CreateEventHandler1;
-               MainView.mButton_CreateEventHandler2 = Button_CreateEventHandler2;
-               MainView.mButton_CreateEventHandler3 = Button_CreateEventHandler3
-               MainView.mButton_CreateEventHandler4 = Button_CreateEventHandler4;
-               MainView.mButton_CreateEventHandler5 = Button_CreateEventHandler5;
-               MainView.mButton_CreateEventHandler6 = Button_CreateEventHandler6;
-               MainView.mButton_CreateEventHandler7 = Button_CreateEventHandler7;
-               MainView.mButton_CreateEventHandler8 = Button_CreateEventHandler8;
-               MainView.mButton_CreateEventHandler50 = Button_CreateEventHandler50;
-               MainView.mButton_CreateEventHandler51 = Button_CreateEventHandler51;
-               MainView.mButton_CreateEventHandler52 = Button_CreateEventHandler52;
-               MainView.mButton_CreateEventHandler53 = Button_CreateEventHandler53
-               MainView.mButton_CreateEventHandler56 = Button_CreateEventHandler56;
-               MainView.mButton_CreateEventHandler57 = Button_CreateEventHandler57;
-               MainView.mButton_CreateEventHandler58 = Button_CreateEventHandler58;
+               MainView.mButtonCreateLinearForce = Button_CreateLinearForce;
+               MainView.mButtonCreateAngularForce = Button_CreateAngularForce;
+               MainView.mButtonCreateLinearImpulse = Button_CreateLinearImpulse;
+               MainView.mButtonCreateAngularImpulse = Button_CreateAngularImpulse;
+               MainView.mButtonCreateLinearVelocity = Button_CreateLinearVelocity;
+               MainView.mButtonCreateAngularVelocity = Button_CreateAngularVelocity;
+               
+               MainView.mButtonCreateCondition = Button_CreateCondition;
+               MainView.mButtonCreateConditionDoor = Button_CreateConditionDoor;
+               MainView.mButtonCreateTask = Button_CreateTask;
+               MainView.mButtonCreateEntityAssigner = Button_CreateInputEntityAssigner;
+               MainView.mButtonCreateEntityPairAssigner = Button_CreateInputEntityPairAssigner;
+               MainView.mButtonCreateEntityRegionSelector = Button_CreateInputEntityRegionSelector;
+               MainView.mButtonCreateEntityFilter = Button_CreateInputEntityScriptFilter;
+               MainView.mButtonCreateEntityPairFilter = Button_CreateInputEntityPairScriptFilter;
+
+               MainView.mButtonCreateAction = Button_CreateAction;
+               MainView.mButtonCreateEventHandler0 = Button_CreateEventHandler0;
+               MainView.mButtonCreateEventHandler1 = Button_CreateEventHandler1;
+               MainView.mButtonCreateEventHandler2 = Button_CreateEventHandler2;
+               MainView.mButtonCreateEventHandler3 = Button_CreateEventHandler3
+               MainView.mButtonCreateEventHandler4 = Button_CreateEventHandler4;
+               MainView.mButtonCreateEventHandler5 = Button_CreateEventHandler5;
+               MainView.mButtonCreateEventHandler6 = Button_CreateEventHandler6;
+               MainView.mButtonCreateEventHandler7 = Button_CreateEventHandler7;
+               MainView.mButtonCreateEventHandler8 = Button_CreateEventHandler8;
+               MainView.mButtonCreateEventHandler50 = Button_CreateEventHandler50;
+               MainView.mButtonCreateEventHandler51 = Button_CreateEventHandler51;
+               MainView.mButtonCreateEventHandler52 = Button_CreateEventHandler52;
+               MainView.mButtonCreateEventHandler53 = Button_CreateEventHandler53
+               MainView.mButtonCreateEventHandler56 = Button_CreateEventHandler56;
+               MainView.mButtonCreateEventHandler57 = Button_CreateEventHandler57;
+               MainView.mButtonCreateEventHandler58 = Button_CreateEventHandler58;
                
                Button_CreateBox_Static.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateBox_Movable.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
@@ -578,11 +634,21 @@
                Button_CreateCamera.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateTextButton.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                
+               Button_CreateLinearForce.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateAngularForce.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateLinearImpulse.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateAngularImpulse.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateLinearVelocity.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateAngularVelocity.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               
                Button_CreateCondition.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateConditionDoor.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateTask.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateInputEntityAssigner.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateInputEntityPairAssigner.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateInputEntityRegionSelector.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateInputEntityScriptFilter.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               Button_CreateInputEntityPairScriptFilter.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateAction.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler0.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateEventHandler1.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);

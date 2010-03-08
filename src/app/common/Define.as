@@ -231,6 +231,17 @@ package common {
       public static const Camera_FollowingStyle_Default :int = Camera_FollowingStyle_X | Camera_FollowingStyle_Y; // don't change it 
       
 //===========================================================================
+// power source
+//===========================================================================
+      
+      public static const PowerSource_Force          :int = 0;
+      public static const PowerSource_Torque         :int = 1;
+      public static const PowerSource_LinearImpusle  :int = 2;
+      public static const PowerSource_AngularImpulse :int = 3;
+      public static const PowerSource_LinearVelocity :int = 4;
+      public static const PowerSource_AngularVelocity:int = 5;
+      
+//===========================================================================
 // Logic
 //===========================================================================
       

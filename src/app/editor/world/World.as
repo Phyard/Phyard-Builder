@@ -20,8 +20,10 @@ package editor.world {
    import editor.entity.EntityShapeText;
    import editor.entity.EntityShapeTextButton;
    import editor.entity.EntityShapeGravityController;
+   
    import editor.entity.EntityUtility;
    import editor.entity.EntityUtilityCamera;
+   import editor.entity.EntityUtilityPowerSource;
    
    import editor.entity.EntityJoint;
    import editor.entity.EntityJointDistance;
@@ -39,6 +41,9 @@ package editor.world {
    import editor.trigger.entity.EntityTask;
    import editor.trigger.entity.EntityInputEntityAssigner;
    import editor.trigger.entity.EntityInputEntityPairAssigner;
+   import editor.trigger.entity.EntityInputEntityScriptFilter;
+   import editor.trigger.entity.EntityInputEntityPairScriptFilter;
+   import editor.trigger.entity.EntityInputEntityRegionSelector;
    import editor.trigger.entity.EntityEventHandler;
    import editor.trigger.entity.EntityEventHandler_Timer;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
@@ -805,6 +810,17 @@ package editor.world {
          return camera;
       }
       
+      public function CreateEntityUtilityPowerSource ():EntityUtilityPowerSource
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var power_source:EntityUtilityPowerSource = new EntityUtilityPowerSource (this);
+         addChild (power_source);
+         
+         return power_source;
+      }
+      
       public function CreateEntityCondition ():EntityBasicCondition
       {
          if (numChildren >= Define.MaxEntitiesCount)
@@ -858,6 +874,39 @@ package editor.world {
          addChild (entity_pair_assigner);
          
          return entity_pair_assigner;
+      }
+      
+      public function CreateEntityInputEntityFilter ():EntityInputEntityScriptFilter
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var entity_filter:EntityInputEntityScriptFilter = new EntityInputEntityScriptFilter(this);
+         addChild (entity_filter);
+         
+         return entity_filter;
+      }
+      
+      public function CreateEntityInputEntityPairFilter ():EntityInputEntityPairScriptFilter
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var entity_pair_filter:EntityInputEntityPairScriptFilter = new EntityInputEntityPairScriptFilter(this);
+         addChild (entity_pair_filter);
+         
+         return entity_pair_filter;
+      }
+      
+      public function CreateEntityInputEntityRegionSelector ():EntityInputEntityRegionSelector
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var entity_region_selector:EntityInputEntityRegionSelector = new EntityInputEntityRegionSelector(this);
+         addChild (entity_region_selector);
+         
+         return entity_region_selector;
       }
       
       public function CreateEntityEventHandler (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler

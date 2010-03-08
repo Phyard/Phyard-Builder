@@ -28,15 +28,15 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityBasicCondition extends EntityCodeSnippetHolder implements EntityCondition 
+   public class EntityInputEntityScriptFilter extends EntityCodeSnippetHolder 
    {
-      public function EntityBasicCondition (world:World)
+      public function EntityInputEntityScriptFilter (world:World)
       {
          super (world);
          
          mCodeSnippet = new CodeSnippet (new FunctionDefinition (TriggerEngine.GetBoolFunctionDeclaration ()));
-         mIconBitmap = new Resource.IconBasicCondition ();
-         mBackgroundColor = 0xA0FFA0;
+         mIconBitmap = new Resource.IconInputEntityScriptFilter ();
+         mBackgroundColor = 0xFFC000;
       }
       
       override public function ValidateEntityLinks ():void
@@ -56,33 +56,19 @@ package editor.trigger.entity {
       
       override protected function CreateCloneShell ():Entity
       {
-         return new EntityBasicCondition (mWorld);
+         return new EntityInputEntityScriptFilter (mWorld);
       }
       
       override public function SetPropertiesForClonedEntity (entity:Entity, displayOffsetX:Number, displayOffsetY:Number):void // used internally
       {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
-         var basicCondition:EntityBasicCondition = entity as EntityBasicCondition;
+         var entityFilter:EntityInputEntityScriptFilter = entity as EntityInputEntityScriptFilter;
       }
       
 //====================================================================
 //   linkable
 //====================================================================
-      
-//====================================================================
-//   as EntityCondition
-//====================================================================
-      
-      public function GetTargetValueByLinkZoneId (zoneId:int):int
-      {
-         return ValueDefine.BoolValue_True;
-      }
-      
-      public function GetTargetValueZoneWorldCenter (targetValue:int):Point
-      {
-         return new Point (GetPositionX (), GetPositionY ());
-      }
       
    }
 }

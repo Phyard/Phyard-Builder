@@ -65,7 +65,7 @@ package editor.trigger.entity {
          mCodeSnippet = new CodeSnippet (mEventHandlerDefinition);
          mBackgroundColor = 0xB0B0FF;
          
-         mEventIconBitmap = Resource.EventId2IconBitmap (mEventId);
+         mIconBitmap = Resource.EventId2IconBitmap (mEventId);
          
          var i:int;
          mNumEntityParams = 0;

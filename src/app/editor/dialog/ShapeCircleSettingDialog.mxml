@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+     
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
+    title="Circle Setting" width="600" creationComplete="OnInitPanel()">
+
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:VBox label="Physics" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <ShapePhysicsSettingPanel id="PhysicsSettingPanel" creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
+      </mx:VBox>
+      <mx:VBox label="Appearance" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <ShapeAppearanceSettingPanel id="AppearanceSettingPanel" creationComplete="OnAppearanceSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:Spacer height="100%" />
+         <mx:HBox id="AppearanceOtherSettingsPanel" width="100%" creationComplete="OnAppearanceOtherSettingsCreationComplete()">
+            <mx:Spacer width="60"/>
+            <mx:Label text="Appearance Type:" textAlign="right" width="22%"/>
+            <mx:ComboBox id="SelectList_AppearanceType"/>
+         </mx:HBox>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="100%"/>
+         <EntityRadiusSettingPanel id="RadiusSettingPanel" creationComplete="OnEntityRadiusSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+   </mx:TabNavigator>
+
+   <mx:Spacer height="20"/>
+   
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   
+   <mx:Script>
+     <![CDATA[       
+         
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+         
+         import common.Define;
+         import editor.trigger.Lists;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         private function OnPhysicsSettingPanelCreationComplete ():void
+         {
+            mParams.mEnablePhysicsChangeable = mParams.mAiType < 0;
+            PhysicsSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnAppearanceSettingPanelCreationComplete ():void
+         {
+            mParams.mCiTypeSelectable = true;
+            AppearanceSettingPanel.SetValues (mParams);
+            
+            SelectList_AppearanceType.selectedIndex = mParams.mAppearanceTypeListSelectedIndex;
+         }
+         
+         private function OnAppearanceOtherSettingsCreationComplete():void
+         {
+            SelectList_AppearanceType.dataProvider = Lists.GetListWithDataInLabel (Lists.mCircleAppearanceList);
+         }
+         
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            mParams.mEnabledNonsense = true;
+            BasicSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnEntityRadiusSettingPanelCreationComplete ():void
+         {
+            RadiusSettingPanel.SetValues (mParams);
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            if (PhysicsSettingPanel != null)
+            {
+               PhysicsSettingPanel.GetValues (mParams);
+            }
+            
+            if (AppearanceSettingPanel != null)
+            {
+               AppearanceSettingPanel.GetValues (mParams);
+            }
+
+            if (AppearanceOtherSettingsPanel != null)
+            {
+               mParams.mAppearanceType = SelectList_AppearanceType.selectedItem.data;
+            }
+            
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+            
+            if (RadiusSettingPanel != null)
+            {
+               RadiusSettingPanel.GetValues (mParams);
+            }
+            
+            PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+     ]]>
+   </mx:Script>
+   
+   
+
+</mx:TitleWindow>

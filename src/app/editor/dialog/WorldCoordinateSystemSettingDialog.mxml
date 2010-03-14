@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
+    title="Coordinate System Setting" width="600"  creationComplete="OnInitPanel()">
+
+    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10" horizontalAlign="center">
+
+       <mx:Grid>
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:CheckBox label=" " visible="false"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:CheckBox id="CheckBox_CoordinatesRightHand" label="Right Hand (axis y upwards)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Scale:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:NumericStepper id="NumericStepper_CoordinatesScale" stepSize="1" width="80" />
+                <mx:Label text="(pixels/m)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Origin X:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:NumericStepper id="NumericStepper_CoordinatesOriginX" stepSize="1" width="80" />
+                <mx:Label text="(pixels)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Origin Y:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+                <mx:NumericStepper id="NumericStepper_CoordinatesOriginY" stepSize="1" width="80" />
+                <mx:Label text="(pixels)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+       </mx:Grid>
+
+   </mx:HBox>
+   
+   <mx:Spacer height="5"/>
+   
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[       
+         
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+         
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;            
+         }
+         
+         private function OnInitPanel ():void
+         {
+            NumericStepper_CoordinatesScale.minimum = 1;
+            NumericStepper_CoordinatesScale.maximum = Number.MAX_VALUE;
+            NumericStepper_CoordinatesOriginX.minimum = - Number.MAX_VALUE;
+            NumericStepper_CoordinatesOriginX.maximum = Number.MAX_VALUE;
+            NumericStepper_CoordinatesOriginY.minimum = - Number.MAX_VALUE;
+            NumericStepper_CoordinatesOriginY.maximum = Number.MAX_VALUE;
+            
+            CheckBox_CoordinatesRightHand.selected = mParams.mIsRightHand;
+            NumericStepper_CoordinatesScale.value = 1.0 / mParams.mScale;
+            NumericStepper_CoordinatesOriginX.value = mParams.mOriginX;
+            NumericStepper_CoordinatesOriginY.value = mParams.mOroginY;
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            mParams.mIsRightHand = CheckBox_CoordinatesRightHand.selected;
+            mParams.mScale = 1.0 / NumericStepper_CoordinatesScale.value;
+            mParams.mOriginX = NumericStepper_CoordinatesOriginX.value;
+            mParams.mOroginY = NumericStepper_CoordinatesOriginY.value;
+            
+            PopUpManager.removePopUp(this);
+             
+            if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

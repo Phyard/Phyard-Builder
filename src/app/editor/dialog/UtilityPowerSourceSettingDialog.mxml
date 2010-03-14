@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*" xmlns:ed="editor.controls.*"
+    title="Power Source Setting" width="600" creationComplete="OnInitPanel()">
+
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:VBox label="Main" borderStyle="solid" height="286" width="100%"
+               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center"
+               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnMainPanelCreationComplete()">
+
+         <mx:HBox width="100%">
+            <mx:Spacer width="100%" />
+            <mx:Label id="Label_PowerSourceMagnitude" text="             "/>
+            <mx:TextInput id="Text_PowerSourceMagnitude" text="" width="150"/>
+            <mx:Spacer width="100%" />
+         </mx:HBox>
+
+         <mx:Spacer height="10" />
+         <mx:HRule strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:Spacer height="10" />
+
+         <KeyboardEventHandlerSettingPanel id="KeyboardSettingPanel" creationComplete="OnKeyboardSettingPanelCreationComplete()"/>
+         <mx:Label text="(If no keys are selected, the power source will be always applied.)"/>
+         <mx:Spacer height="10" />
+
+      </mx:VBox>
+      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%"/>
+      </mx:VBox>
+   </mx:TabNavigator>
+
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:Script>
+      <![CDATA[       
+         import mx.managers.PopUpManager;
+         import common.Define;
+         import common.KeyCodes;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
+         
+         private function OnMainPanelCreationComplete ():void
+         {
+            InitMainPanel (mParams);
+         }
+         
+         private function InitMainPanel (initialValues:Object):void
+         {
+            Label_PowerSourceMagnitude.text = mParams.mPowerLabel + ":";
+            Text_PowerSourceMagnitude.text = mParams.mPowerMagnitude;
+         }
+         
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            mParams.mVisibleNonsense = true;
+            BasicSettingPanel.SetValues (mParams);
+         }
+         
+         private function OnKeyboardSettingPanelCreationComplete ():void
+         {
+            KeyboardSettingPanel.SetValues (mParams);
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            var magnitude:Number = parseFloat (Text_PowerSourceMagnitude.text);
+            if ( ! isNaN (magnitude) )
+               mParams.mPowerMagnitude = magnitude;
+            
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+            
+            if (KeyboardSettingPanel != null)
+            {
+               KeyboardSettingPanel.GetValues (mParams);
+            }
+            
+            PopUpManager.removePopUp(this);
+            
+            if (OnClose != null)
+              OnClose ();
+            
+            if (OnConfirm != null)
+              OnConfirm (mParams);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+         
+         private function OnClickDefaultButton ():void
+         {
+            var values:Object = new Object ();
+            
+            // ...
+            
+            SetValues (values);
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

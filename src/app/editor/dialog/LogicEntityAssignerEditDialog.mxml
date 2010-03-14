@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
+    title="Entity Assigner Setting" width="600">
+
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+   </mx:TabNavigator>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[       
+         
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+         
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
+         
+         public function GetValues (returnValues:Object):void
+         {
+         }
+         
+         private function OnInitPanel ():void
+         {
+         }
+         
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            mParams.mRotationNonSense = true;
+            mParams.mVisibleNonsense = true;
+            mParams.mEnabledNonsense = true;
+            BasicSettingPanel.SetValues (mParams);
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            GetValues (mParams);
+            
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+            
+            PopUpManager.removePopUp(this);
+             
+            if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

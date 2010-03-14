@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
+    title="Scene Appearance Setting" width="600"  creationComplete="OnInitPanel()">
+
+    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
+      <mx:Spacer width="100%"/>
+      <mx:VBox>
+         <mx:VBox width="100%">
+            <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnCustomSizeRationClick ()"/>
+            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_NormalSize" value="normal"
+                label="Normal Scene Size (left:0, top:0, width:600, height:600)" />
+            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_InfinteSize" value="infinite"
+                label="Infinte Scene Size"/>
+            <mx:HBox width="100%">
+               <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_CustomSize" value="custom"
+                   label="Custom:"/>
+               <mx:Label text=" (Minimum size: 600px x 600px)" color="0x0000FF"/>
+            </mx:HBox>
+         </mx:VBox>
+         <mx:HBox id="Box_CustomSceneSize1" width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_CustomLeft" text="Left:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomLeft" stepSize="1" width="80" />
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_CustomRight" text="Width:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomWidth" stepSize="1" width="80" />
+         </mx:HBox>
+         <mx:HBox id="Box_CustomSceneSize2" width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_CustomTop" text="Top:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomTop" stepSize="1" width="80" />
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_CustomBottom" text="Height:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomHeight" stepSize="1" width="80" />
+         </mx:HBox>
+         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:HBox width="100%">
+            <mx:Label text="Background Color:" textAlign="right" width="30%"/>
+            <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xDDDDA0"/>
+            <mx:Spacer width="100%"/>
+            <mx:Label text="Scene Border Color:" textAlign="right" width="31%"/>
+            <mx:ColorPicker id="ColorPicker_BorderColor" showTextField="true" selectedColor="0x606060"/>
+         </mx:HBox>
+         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_BuildBorder" label="Build Border" click="OnBuildBorderClick ()"/>
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_BuildBorderAboveEntities" label="Build Border Above Entities"/>
+         </mx:HBox>
+         <mx:VBox width="100%">
+            <mx:Label text="Border Thincknesses (pixels):"/>
+         </mx:VBox>
+         <mx:HBox id="Box_BorderThickness1" width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_LeftBorderThickness" text="Left:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_LeftBorderThickness" stepSize="1" width="80" />
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_RightBorderThickness" text="Right:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_RightBorderThickness" stepSize="1" width="80" />
+         </mx:HBox>
+         <mx:HBox id="Box_BorderThickness2" width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_TopBorderThickness" text="Top:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_TopBorderThickness" stepSize="1" width="80" />
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_BottomBorderThickness" text="Bottom:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_BottomBorderThickness" stepSize="1" width="80" />
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   <mx:Spacer height="5"/>
+   
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[       
+         
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+         
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;            
+         }
+         
+         private function OnInitPanel ():void
+         {
+            NumericStepper_CustomLeft.minimum = - Number.MAX_VALUE;
+            NumericStepper_CustomLeft.maximum = Number.MAX_VALUE;
+            NumericStepper_CustomTop.minimum = - Number.MAX_VALUE;
+            NumericStepper_CustomTop.maximum = Number.MAX_VALUE;
+            NumericStepper_CustomWidth.minimum = 600
+            NumericStepper_CustomWidth.maximum = Number.MAX_VALUE;
+            NumericStepper_CustomHeight.minimum = 600;
+            NumericStepper_CustomHeight.maximum = Number.MAX_VALUE;
+            
+            NumericStepper_LeftBorderThickness.minimum = 0;
+            NumericStepper_LeftBorderThickness.maximum = Number.MAX_VALUE;
+            NumericStepper_RightBorderThickness.minimum = 0;
+            NumericStepper_RightBorderThickness.maximum = Number.MAX_VALUE;
+            NumericStepper_TopBorderThickness.minimum = 0;
+            NumericStepper_TopBorderThickness.maximum = Number.MAX_VALUE;
+            NumericStepper_BottomBorderThickness.minimum = 0;
+            NumericStepper_BottomBorderThickness.maximum = Number.MAX_VALUE;
+            
+            if (mParams.mIsInfiniteSceneSize)
+            {
+               RadioButton_NormalSize.selected = false;
+               RadioButton_InfinteSize.selected = true;
+               RadioButton_CustomSize.selected = false;
+            }
+            else if (Define.IsNormalScene (mParams.mWorldLeft, mParams.mWorldTop, mParams.mWorldWidth, mParams.mWorldHeight))
+            {
+               RadioButton_NormalSize.selected = true;
+               RadioButton_InfinteSize.selected = false;
+               RadioButton_CustomSize.selected = false;
+            }
+            else
+            {
+               RadioButton_NormalSize.selected = false;
+               RadioButton_InfinteSize.selected = false;
+               RadioButton_CustomSize.selected = true;
+            }
+            
+            NumericStepper_CustomLeft.value = mParams.mWorldLeft;
+            NumericStepper_CustomTop.value = mParams.mWorldTop;
+            NumericStepper_CustomWidth.value = mParams.mWorldWidth;
+            NumericStepper_CustomHeight.value = mParams.mWorldHeight;
+            
+            ColorPicker_BackgroundColor.selectedColor = mParams.mBackgroundColor;
+            ColorPicker_BorderColor.selectedColor = mParams.mBorderColor;
+            
+            CheckBox_BuildBorder.selected = mParams.mIsBuildBorder;
+            CheckBox_BuildBorderAboveEntities.selected = mParams.mIsBorderAtTopLayer;
+            
+            NumericStepper_LeftBorderThickness.value = mParams.mWorldBorderLeftThickness;
+            NumericStepper_RightBorderThickness.value = mParams.mWorldBorderRightThickness;
+            NumericStepper_TopBorderThickness.value = mParams.mWorldBorderTopThickness;
+            NumericStepper_BottomBorderThickness.value = mParams.mWorldBorderBottomThickness;
+            
+            OnCustomSizeRationClick ();
+            OnBuildBorderClick ();
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnCustomSizeRationClick ():void
+         {
+            Box_CustomSceneSize1.enabled = RadioButton_CustomSize.selected;
+            Box_CustomSceneSize2.enabled = RadioButton_CustomSize.selected;
+         }
+         
+         private function OnBuildBorderClick ():void
+         {
+            Box_BorderThickness1.enabled = CheckBox_BuildBorder.selected;
+            Box_BorderThickness2.enabled = CheckBox_BuildBorder.selected;
+            CheckBox_BuildBorderAboveEntities.enabled = CheckBox_BuildBorder.selected;
+         }
+
+         private function OnClickOkButton():void 
+         {
+            mParams.mIsInfiniteSceneSize = RadioButton_InfinteSize.selected;
+            if (RadioButton_NormalSize.selected)
+            {
+               mParams.mWorldLeft = 0;
+               mParams.mWorldTop = 0;
+               mParams.mWorldWidth = Define.DefaultWorldWidth;
+               mParams.mWorldHeight = Define.DefaultWorldHeight;
+            }
+            else
+            {
+               mParams.mWorldLeft = NumericStepper_CustomLeft.value;
+               mParams.mWorldTop = NumericStepper_CustomTop.value;
+               mParams.mWorldWidth = NumericStepper_CustomWidth.value;
+               mParams.mWorldHeight = NumericStepper_CustomHeight.value;
+            }
+            
+            mParams.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
+            mParams.mBorderColor = ColorPicker_BorderColor.selectedColor;
+            
+            mParams.mIsBuildBorder = CheckBox_BuildBorder.selected;
+            mParams.mIsBorderAtTopLayer = CheckBox_BuildBorderAboveEntities.selected;
+            
+            mParams.mWorldBorderLeftThickness = NumericStepper_LeftBorderThickness.value;
+            mParams.mWorldBorderRightThickness = NumericStepper_RightBorderThickness.value;
+            mParams.mWorldBorderTopThickness = NumericStepper_TopBorderThickness.value;
+            mParams.mWorldBorderBottomThickness = NumericStepper_BottomBorderThickness.value;
+                     
+            PopUpManager.removePopUp(this);
+             
+            if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

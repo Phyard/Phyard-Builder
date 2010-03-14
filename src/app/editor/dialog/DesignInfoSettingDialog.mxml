@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component. 
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
+    title="Desing Info Setting" width="600"  creationComplete="OnInitPanel()">
+
+    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
+      <mx:Spacer width="100%"/>
+      <mx:VBox>
+         <!--
+         <mx:CheckBox id="CheckBox_PermitPublishing" label="Permit Other Websites to Publish"/>
+         -->
+         <mx:CheckBox label=" " visible="false"/>
+         <mx:Label text="Your Name:" textAlign="right" width="30%"/>
+         <mx:Label text="Your Homepage:" textAlign="right" width="30%"/>
+      </mx:VBox>
+      <mx:VBox>
+         <!--
+         <mx:CheckBox id="CheckBox_PermitPublishing" label="Permit Other Websites to Publish"/>
+         -->
+         <mx:CheckBox id="CheckBox_ShareSourceCode" label="Share Source Code"/>
+         <mx:TextInput id="Text_AuthorName" width="200" />
+         <mx:TextInput id="Text_AuthorHomePage" width="368" />
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+   
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[       
+         
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+         
+         import common.Define;
+         
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+         
+         private var mParams:Object;
+         
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;            
+         }
+         
+         private function OnInitPanel ():void
+         {
+            CheckBox_ShareSourceCode.selected = mParams.mShareSoureCode;
+            Text_AuthorName.text = mParams.mAuthorName;
+            Text_AuthorHomePage.text = mParams.mAuthorHomepage;
+         }
+         
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+         
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+         
+         private function OnClickOkButton():void 
+         {
+            mParams.mShareSoureCode = CheckBox_ShareSourceCode.selected;
+            mParams.mAuthorName = Text_AuthorName.text;
+            mParams.mAuthorHomepage = Text_AuthorHomePage.text;
+            
+            PopUpManager.removePopUp(this);
+             
+            if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+         
+         private function OnClickCancelButton():void 
+         {
+             PopUpManager.removePopUp(this);
+             
+             if (OnClose != null)
+               OnClose ();
+         }
+         
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

@@ -846,14 +846,16 @@
                
             //===================================================================================================
                
-               DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Modify Shape Flags ...", null);
-               DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Modify Shape Collision Categories ...", null);
-               DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Modify Shape Velocities ...", null);
-               DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Modify Shape Other Physics Properties ...", null);
-               DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Modify Shape Flags 1 ...", null, true);
-               DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Modify Shape Collision Categories 1 ...", null);
-               DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Modify Shape Velocities 1 ...", null);
-               DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Modify Shape Other Physics Properties 1 ...", null);
+               mEntityCommonContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Entity Common Basic Properties ...", ShowModifyEntityCommonDialog);
+               
+               mShapePhysicsFlagsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Flags ...", ShowModifyShapeFlagsDialog, true);
+               mShapePhysicsCCatContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Collision Categories ...", ShowModifyShapeCollisionCategoryDialog);
+               mShapePhysicsVelocityContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Velocities ...", ShowModifyShapeVelocityDialog);
+               mShapePhysicsFixtureContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Other Physics Properties ...", ShowModifyShapeFixtureDialog);
+               
+               mJointCollideConnectedsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Joint \"Collide Connecteds\" Property ...", ShowModifyJointCollideConnectedsDialog, true);
+               
+               MainView.SetBatchSettingMenuItemsEnabled = SetBatchSettingMenuItemsEnabled;
                
          //===============================================================================================================
          //  Collision Manager
@@ -1528,6 +1530,106 @@
                
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (onConfirmFunc);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+//========================================================================================
+// 
+//========================================================================================
+            
+            private var mEntityCommonContextMenuItem:ContextMenuItem;
+            
+            private var mShapePhysicsFlagsContextMenuItem:ContextMenuItem;
+            private var mShapePhysicsCCatContextMenuItem:ContextMenuItem;
+            private var mShapePhysicsVelocityContextMenuItem:ContextMenuItem;
+            private var mShapePhysicsFixtureContextMenuItem:ContextMenuItem;
+            
+            private var mJointCollideConnectedsContextMenuItem:ContextMenuItem;
+            
+            private function SetBatchSettingMenuItemsEnabled (
+                              entityCommonEnabled:Boolean,
+                              
+                              shapePhysicsFlagsEnabled:Boolean,
+                              shapePhysicsCCatEnabled:Boolean,
+                              shapePhysicsVelocityEnabled:Boolean,
+                              shapePhysicsFixtureEnabled:Boolean,
+                              
+                              jointCollideConnectedsEnabled:Boolean
+                        ):void
+            {
+               mEntityCommonContextMenuItem.enabled = entityCommonEnabled;
+               
+               mShapePhysicsFlagsContextMenuItem.enabled = shapePhysicsFlagsEnabled;
+               mShapePhysicsCCatContextMenuItem.enabled = shapePhysicsCCatEnabled;
+               mShapePhysicsVelocityContextMenuItem.enabled = shapePhysicsVelocityEnabled;
+               mShapePhysicsFixtureContextMenuItem.enabled = shapePhysicsFixtureEnabled;
+               
+               mJointCollideConnectedsContextMenuItem.enabled = jointCollideConnectedsEnabled;
+            }
+            
+            private function ShowModifyEntityCommonDialog (event:ContextMenuEvent):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var dialog:BatchEntityCommonPropertyModifyDialog = new BatchEntityCommonPropertyModifyDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyEntityCommonProperties);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowModifyShapeFlagsDialog (event:ContextMenuEvent):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var dialog:BatchShapePhysicsFlagsModifyDialog = new BatchShapePhysicsFlagsModifyDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFlags);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowModifyShapeCollisionCategoryDialog (event:ContextMenuEvent):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var dialog:BatchShapePhysicsCollisionCategoryModifyDialog = new BatchShapePhysicsCollisionCategoryModifyDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsCollisionCategory);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowModifyShapeVelocityDialog (event:ContextMenuEvent):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var dialog:BatchShapePhysicsVelocityModifyDialog = new BatchShapePhysicsVelocityModifyDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsVelocity);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowModifyShapeFixtureDialog (event:ContextMenuEvent):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var dialog:BatchShapePhysicsFixtureModifyDialog = new BatchShapePhysicsFixtureModifyDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFixture);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            private function ShowModifyJointCollideConnectedsDialog  (event:ContextMenuEvent):void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var dialog:BatchJointCollideConnectedsModifyDialog = new BatchJointCollideConnectedsModifyDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyJointCollideConnectedsProperty);
                dialog.SetCloseFunc (OnCloseDialog);
             }
             

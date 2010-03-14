@@ -256,6 +256,11 @@ package player.entity {
          }
       }
       
+      public function GetOriginalShapeAiType ():int
+      {
+         return mOriginalAiType;
+      }
+      
       public function SetShapeAiType (aiType:int):void
       {
          if (mAiType != aiType)

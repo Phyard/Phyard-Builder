@@ -6,42 +6,45 @@ package common {
    
    import editor.world.World;
    
-   import editor.entity.Entity;
+   import editor.entity. Entity;
    
-   import editor.entity.EntityShape
-   import editor.entity.EntityShapeCircle;
-   import editor.entity.EntityShapeRectangle;
-   import editor.entity.EntityShapePolygon;
-   import editor.entity.EntityShapePolyline;
-   import editor.entity.EntityShapeText;
-   import editor.entity.EntityShapeTextButton;
-   import editor.entity.EntityShapeGravityController;
+   import editor.entity. EntityShape
+   import editor.entity. EntityShapeCircle;
+   import editor.entity. EntityShapeRectangle;
+   import editor.entity. EntityShapePolygon;
+   import editor.entity. EntityShapePolyline;
+   import editor.entity. EntityShapeText;
+   import editor.entity. EntityShapeTextButton;
+   import editor.entity. EntityShapeGravityController;
    
-   import editor.entity.EntityJoint;
-   import editor.entity.EntityJointHinge;
-   import editor.entity.EntityJointSlider;
-   import editor.entity.EntityJointDistance;
-   import editor.entity.EntityJointSpring;
-   import editor.entity.EntityJointWeld;
-   import editor.entity.EntityJointDummy;
+   import editor.entity. EntityJoint;
+   import editor.entity. EntityJointHinge;
+   import editor.entity. EntityJointSlider;
+   import editor.entity. EntityJointDistance;
+   import editor.entity. EntityJointSpring;
+   import editor.entity. EntityJointWeld;
+   import editor.entity. EntityJointDummy;
    
-   import editor.entity.SubEntityJointAnchor;
+   import editor.entity. SubEntityJointAnchor;
    
-   import editor.entity.EntityUtility;
-   import editor.entity.EntityUtilityCamera;
+   import editor.entity. EntityUtility;
+   import editor.entity. EntityUtilityCamera;
+   import editor.entity. EntityUtilityPowerSource;
    
-   import editor.trigger.entity.EntityLogic;
-   import editor.trigger.entity.EntityTask;
-   import editor.trigger.entity.EntityBasicCondition;
-   import editor.trigger.entity.EntityConditionDoor;
-   import editor.trigger.entity.EntityInputEntityAssigner;
-   import editor.trigger.entity.EntityInputEntityPairAssigner;
-   import editor.trigger.entity.EntityAction;
-   import editor.trigger.entity.EntityEventHandler;
-   import editor.trigger.entity.EntityEventHandler_Timer;
-   import editor.trigger.entity.EntityEventHandler_Keyboard;
-   import editor.trigger.entity.EntityEventHandler_Mouse;
-   import editor.trigger.entity.EntityEventHandler_Contact;
+   import editor.entity.EntityCollisionCategory;
+   
+   import editor.trigger.entity. EntityLogic;
+   import editor.trigger.entity. EntityTask;
+   import editor.trigger.entity. EntityBasicCondition;
+   import editor.trigger.entity. EntityConditionDoor;
+   import editor.trigger.entity. EntityInputEntityAssigner;
+   import editor.trigger.entity. EntityInputEntityPairAssigner;
+   import editor.trigger.entity. EntityAction;
+   import editor.trigger.entity. EntityEventHandler;
+   import editor.trigger.entity. EntityEventHandler_Timer;
+   import editor.trigger.entity. EntityEventHandler_Keyboard;
+   import editor.trigger.entity. EntityEventHandler_Mouse;
+   import editor.trigger.entity. EntityEventHandler_Contact;
    
    import editor.runtime.Runtime;
    
@@ -146,14 +149,14 @@ package common {
             entityDefine.mIsEnabled = editorEntity.IsEnabled ();
             //<<
             
-            if (editorEntity is editor.entity.EntityUtility)
+            if (editorEntity is EntityUtility)
             {
                //>>from v1.05
-                if (editorEntity is editor.entity.EntityUtilityCamera)
+                if (editorEntity is EntityUtilityCamera)
                {
                   entityDefine.mEntityType = Define.EntityType_UtilityCamera;
                   
-                  var camera:editor.entity.EntityUtilityCamera = editorEntity as editor.entity.EntityUtilityCamera;
+                  var camera:EntityUtilityCamera = editorEntity as EntityUtilityCamera;
                   
                   //>>from v.108
                   entityDefine.mFollowedTarget = camera.GetFollowedTarget ();
@@ -161,54 +164,67 @@ package common {
                   //<<
                }
                //<<
+               //>>from v1.10
+               else if (editorEntity is EntityUtilityPowerSource)
+               {
+                  entityDefine.mEntityType = Define.EntityType_UtilityPowerSource;
+                  
+                  var powerSource:EntityUtilityPowerSource = editorEntity as EntityUtilityPowerSource;
+                  
+                  entityDefine.mPowerSourceType = powerSource.GetPowerSourceType ();
+                  entityDefine.mPowerMagnitude = powerSource.GetPowerMagnitude ();
+                  entityDefine.mKeyboardEventId = powerSource.GetKeyboardEventId ();
+                  entityDefine.mKeyCodes = powerSource.GetKeyCodes ();
+               }
+               //<<
             }
-            else if (editorEntity is editor.trigger.entity.EntityLogic) // from v1.07
+            else if (editorEntity is EntityLogic) // from v1.07
             {
                var entityIndexArray:Array;
                
-               if (editorEntity is editor.trigger.entity.EntityBasicCondition)
+               if (editorEntity is EntityBasicCondition)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicCondition;
                   
-                  var basicCondition:editor.trigger.entity.EntityBasicCondition = editorEntity as editor.trigger.entity.EntityBasicCondition;
+                  var basicCondition:EntityBasicCondition = editorEntity as EntityBasicCondition;
                   
                   entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, basicCondition.GetCodeSnippet ());
                }
-               else if (editorEntity is editor.trigger.entity.EntityTask)
+               else if (editorEntity is EntityTask)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicTask;
                   
-                  var task:editor.trigger.entity.EntityTask = editorEntity as editor.trigger.entity.EntityTask;
+                  var task:EntityTask = editorEntity as EntityTask;
                   entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (task.GetEntityAssigners ());
                   
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                }
-               else if (editorEntity is editor.trigger.entity.EntityConditionDoor)
+               else if (editorEntity is EntityConditionDoor)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicConditionDoor;
                   
-                  var conditionDoor:editor.trigger.entity.EntityConditionDoor = editorEntity as editor.trigger.entity.EntityConditionDoor;
+                  var conditionDoor:EntityConditionDoor = editorEntity as EntityConditionDoor;
                   
                   entityDefine.mIsAnd = conditionDoor.IsAnd ();
                   entityDefine.mIsNot = conditionDoor.IsNot ();
                   TriggerFormatHelper.ConditionAndTargetValueArray2EntityDefineProperties (editorWorld, conditionDoor.GetInputConditions (), entityDefine);
                }
-               else if (editorEntity is editor.trigger.entity.EntityInputEntityAssigner)
+               else if (editorEntity is EntityInputEntityAssigner)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicInputEntityAssigner;
                   
-                  var entityAssigner:editor.trigger.entity.EntityInputEntityAssigner = editorEntity as editor.trigger.entity.EntityInputEntityAssigner;
+                  var entityAssigner:EntityInputEntityAssigner = editorEntity as EntityInputEntityAssigner;
                   entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (entityAssigner.GetInputEntities ());
                   
                   entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
                   entityDefine.mNumEntities = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds = entityIndexArray;
                }
-               else if (editorEntity is editor.trigger.entity.EntityInputEntityPairAssigner)
+               else if (editorEntity is EntityInputEntityPairAssigner)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicInputEntityPairAssigner;
                   
-                  var pairAssigner:editor.trigger.entity.EntityInputEntityPairAssigner = editorEntity as editor.trigger.entity.EntityInputEntityPairAssigner;
+                  var pairAssigner:EntityInputEntityPairAssigner = editorEntity as EntityInputEntityPairAssigner;
                   
                   entityDefine.mPairingType = pairAssigner.GetPairingType ();
                   
@@ -223,11 +239,11 @@ package common {
                   entityDefine.mNumEntities2 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds2 = entityIndexArray;
                }
-               else if (editorEntity is editor.trigger.entity.EntityEventHandler)
+               else if (editorEntity is EntityEventHandler)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicEventHandler;
                   
-                  var eventHandler:editor.trigger.entity.EntityEventHandler = editorEntity as editor.trigger.entity.EntityEventHandler;
+                  var eventHandler:EntityEventHandler = editorEntity as EntityEventHandler;
                   entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (eventHandler.GetEntityAssigners ());
                   
                   entityDefine.mEventId = eventHandler.GetEventId ();
@@ -240,24 +256,24 @@ package common {
                   //>>v1.08
                   entityDefine.mExternalActionEntityCreationId = editorWorld.GetEntityCreationId (eventHandler.GetExternalAction ());
                   
-                  if (editorEntity is editor.trigger.entity.EntityEventHandler_Timer)
+                  if (editorEntity is EntityEventHandler_Timer)
                   {
                      var timerEventHandler:EntityEventHandler_Timer = eventHandler as EntityEventHandler_Timer;
                      
                      entityDefine.mRunningInterval = timerEventHandler.GetRunningInterval ();
                      entityDefine.mOnlyRunOnce = timerEventHandler.IsOnlyRunOnce ();
                   }
-                  else if (editorEntity is editor.trigger.entity.EntityEventHandler_Keyboard)
+                  else if (editorEntity is EntityEventHandler_Keyboard)
                   {
                      var keyboardEventHandler:EntityEventHandler_Keyboard = eventHandler as EntityEventHandler_Keyboard;
                      
                      entityDefine.mKeyCodes = keyboardEventHandler.GetKeyCodes ();
                   }
-                  else if (editorEntity is editor.trigger.entity.EntityEventHandler_Mouse)
+                  else if (editorEntity is EntityEventHandler_Mouse)
                   {
                      var mouseEventHandler:EntityEventHandler_Mouse = eventHandler as EntityEventHandler_Mouse;
                   }
-                  else if (editorEntity is editor.trigger.entity.EntityEventHandler_Contact)
+                  else if (editorEntity is EntityEventHandler_Contact)
                   {
                      var contactEventHandler:EntityEventHandler_Contact = eventHandler as EntityEventHandler_Contact;
                   }
@@ -265,18 +281,18 @@ package common {
                   
                   entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet ());
                }
-               else if (editorEntity is editor.trigger.entity.EntityAction)
+               else if (editorEntity is EntityAction)
                {
                   entityDefine.mEntityType = Define.EntityType_LogicAction;
                   
-                  var action:editor.trigger.entity.EntityAction = editorEntity as editor.trigger.entity.EntityAction;
+                  var action:EntityAction = editorEntity as EntityAction;
                   
                   entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, action.GetCodeSnippet ());
                }
             }
-            else if (editorEntity is editor.entity.EntityShape)
+            else if (editorEntity is EntityShape)
             {
-               var shape:editor.entity.EntityShape = editorEntity as editor.entity.EntityShape;
+               var shape:EntityShape = editorEntity as EntityShape;
                
                //>>from v1.02
                entityDefine.mDrawBorder = shape.IsDrawBorder ();
@@ -338,57 +354,57 @@ package common {
                      //<<
                   }
                   
-                  if (editorEntity is editor.entity.EntityShapeCircle)
+                  if (editorEntity is EntityShapeCircle)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeCircle;
                      
-                     entityDefine.mRadius = (shape as editor.entity.EntityShapeCircle).GetRadius ();
+                     entityDefine.mRadius = (shape as EntityShapeCircle).GetRadius ();
                      
-                     entityDefine.mAppearanceType = (shape as editor.entity.EntityShapeCircle).GetAppearanceType ();
+                     entityDefine.mAppearanceType = (shape as EntityShapeCircle).GetAppearanceType ();
                   }
-                  else if (editorEntity is editor.entity.EntityShapeRectangle)
+                  else if (editorEntity is EntityShapeRectangle)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
                      
-                     entityDefine.mHalfWidth = (shape as editor.entity.EntityShapeRectangle).GetHalfWidth ();
-                     entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
+                     entityDefine.mHalfWidth = (shape as EntityShapeRectangle).GetHalfWidth ();
+                     entityDefine.mHalfHeight = (shape as EntityShapeRectangle).GetHalfHeight ();
                      
                      //from v1.08
                      entityDefine.mIsRoundCorners = (shape as EntityShapeRectangle).IsRoundCorners ();
                      //<<
                   }
                   //>>from v1.04
-                  else if (editorEntity is editor.entity.EntityShapePolygon)
+                  else if (editorEntity is EntityShapePolygon)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolygon;
                      
-                     entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolygon).GetLocalVertexPoints ();
+                     entityDefine.mLocalPoints = (shape as EntityShapePolygon).GetLocalVertexPoints ();
                   }
                   //<<
                   //>>from v1.05
-                  else if (editorEntity is editor.entity.EntityShapePolyline)
+                  else if (editorEntity is EntityShapePolyline)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapePolyline;
                      
-                     entityDefine.mCurveThickness = (shape as editor.entity.EntityShapePolyline).GetCurveThickness ();
+                     entityDefine.mCurveThickness = (shape as EntityShapePolyline).GetCurveThickness ();
                      
                      //>> from v1.08
-                     entityDefine.mIsRoundEnds = (shape as editor.entity.EntityShapePolyline).IsRoundEnds ();
+                     entityDefine.mIsRoundEnds = (shape as EntityShapePolyline).IsRoundEnds ();
                      //<<
                      
-                     entityDefine.mLocalPoints = (shape as editor.entity.EntityShapePolyline).GetLocalVertexPoints ();
+                     entityDefine.mLocalPoints = (shape as EntityShapePolyline).GetLocalVertexPoints ();
                   }
                   //<<
                }
                else // not physics entity
                {
                   //>>from v1.02
-                  if (editorEntity is editor.entity.EntityShapeText)
+                  if (editorEntity is EntityShapeText)
                   {
                      entityDefine.mText = (shape as EntityShapeText).GetText ();
                      
-                     entityDefine.mHalfWidth = (shape as editor.entity.EntityShapeRectangle).GetHalfWidth ();
-                     entityDefine.mHalfHeight = (shape as editor.entity.EntityShapeRectangle).GetHalfHeight ();
+                     entityDefine.mHalfWidth = (shape as EntityShapeRectangle).GetHalfWidth ();
+                     entityDefine.mHalfHeight = (shape as EntityShapeRectangle).GetHalfHeight ();
                      
                      entityDefine.mWordWrap = (shape as EntityShapeText).IsWordWrap ();
                      
@@ -429,33 +445,33 @@ package common {
                         entityDefine.mEntityType = Define.EntityType_ShapeText;
                      }
                   }
-                  else if (editorEntity is editor.entity.EntityShapeGravityController)
+                  else if (editorEntity is EntityShapeGravityController)
                   {
                      entityDefine.mEntityType = Define.EntityType_ShapeGravityController;
                      
-                     entityDefine.mRadius = (shape as editor.entity.EntityShapeCircle).GetRadius ();
+                     entityDefine.mRadius = (shape as EntityShapeCircle).GetRadius ();
                      
                      // removed from v1.05
-                     /////entityDefine.mIsInteractive = (shape as editor.entity.EntityShapeGravityController).IsInteractive ();
+                     /////entityDefine.mIsInteractive = (shape as EntityShapeGravityController).IsInteractive ();
                      
                      // added in v1,05
-                     entityDefine.mInteractiveZones = (shape as editor.entity.EntityShapeGravityController).GetInteractiveZones ();
-                     entityDefine.mInteractiveConditions = (shape as editor.entity.EntityShapeGravityController).mInteractiveConditions;
+                     entityDefine.mInteractiveZones = (shape as EntityShapeGravityController).GetInteractiveZones ();
+                     entityDefine.mInteractiveConditions = (shape as EntityShapeGravityController).mInteractiveConditions;
                      
                      // ...
-                     entityDefine.mInitialGravityAcceleration = (shape as editor.entity.EntityShapeGravityController).GetInitialGravityAcceleration ();
-                     entityDefine.mInitialGravityAngle = (shape as editor.entity.EntityShapeGravityController).GetInitialGravityAngle ();
+                     entityDefine.mInitialGravityAcceleration = (shape as EntityShapeGravityController).GetInitialGravityAcceleration ();
+                     entityDefine.mInitialGravityAngle = (shape as EntityShapeGravityController).GetInitialGravityAngle ();
                      
                      //>> from v1,08
-                     entityDefine.mMaximalGravityAcceleration = (shape as editor.entity.EntityShapeGravityController).GetMaximalGravityAcceleration ();
+                     entityDefine.mMaximalGravityAcceleration = (shape as EntityShapeGravityController).GetMaximalGravityAcceleration ();
                      //<<
                   }
                   //<<
                }
             }
-            else if (editorEntity is editor.entity.EntityJoint)
+            else if (editorEntity is EntityJoint)
             {
-               var joint:editor.entity.EntityJoint = (editorEntity as editor.entity.EntityJoint);
+               var joint:EntityJoint = (editorEntity as EntityJoint);
                
                entityDefine.mCollideConnected = joint.mCollideConnected;
                
@@ -468,9 +484,9 @@ package common {
                entityDefine.mBreakable = joint.IsBreakable ();
                //<<
                
-               if (editorEntity is editor.entity.EntityJointHinge)
+               if (editorEntity is EntityJointHinge)
                {
-                  var hinge:editor.entity.EntityJointHinge = editorEntity as editor.entity.EntityJointHinge;
+                  var hinge:EntityJointHinge = editorEntity as EntityJointHinge;
                   
                   entityDefine.mEntityType = Define.EntityType_JointHinge;
                   entityDefine.mAnchorEntityIndex = editorWorld.GetEntityCreationId ( hinge.GetAnchor () );
@@ -486,9 +502,9 @@ package common {
                   entityDefine.mMaxMotorTorque = hinge.GetMaxMotorTorque ();
                   //<<
                }
-               else if (editorEntity is editor.entity.EntityJointSlider)
+               else if (editorEntity is EntityJointSlider)
                {
-                  var slider:editor.entity.EntityJointSlider = editorEntity as editor.entity.EntityJointSlider;
+                  var slider:EntityJointSlider = editorEntity as EntityJointSlider;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSlider;
                   entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( slider.GetAnchor1 () );
@@ -505,9 +521,9 @@ package common {
                   entityDefine.mMaxMotorForce = slider.GetMaxMotorForce ();
                   //<<
                }
-               else if (editorEntity is editor.entity.EntityJointDistance)
+               else if (editorEntity is EntityJointDistance)
                {
-                  var distanceJoint:editor.entity.EntityJointDistance = editorEntity as editor.entity.EntityJointDistance;
+                  var distanceJoint:EntityJointDistance = editorEntity as EntityJointDistance;
                   
                   entityDefine.mEntityType = Define.EntityType_JointDistance;
                   entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( distanceJoint.GetAnchor1 () );
@@ -517,9 +533,9 @@ package common {
                   entityDefine.mBreakDeltaLength = distanceJoint.GetBreakDeltaLength ();
                   //<<
                }
-               else if (editorEntity is editor.entity.EntityJointSpring)
+               else if (editorEntity is EntityJointSpring)
                {
-                  var spring:editor.entity.EntityJointSpring = editorEntity as editor.entity.EntityJointSpring;
+                  var spring:EntityJointSpring = editorEntity as EntityJointSpring;
                   
                   entityDefine.mEntityType = Define.EntityType_JointSpring;
                   entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( spring.GetAnchor1 () );
@@ -537,16 +553,16 @@ package common {
                   entityDefine.mBreakExtendedLength = spring.GetBreakExtendedLength ();
                   //<<
                }
-               else if (editorEntity is editor.entity.EntityJointWeld)
+               else if (editorEntity is EntityJointWeld)
                {
-                  var weld:editor.entity.EntityJointWeld = editorEntity as editor.entity.EntityJointWeld;
+                  var weld:EntityJointWeld = editorEntity as EntityJointWeld;
                   
                   entityDefine.mEntityType = Define.EntityType_JointWeld;
                   entityDefine.mAnchorEntityIndex = editorWorld.GetEntityCreationId ( weld.GetAnchor () );
                }
-               else if (editorEntity is editor.entity.EntityJointDummy)
+               else if (editorEntity is EntityJointDummy)
                {
-                  var dummy:editor.entity.EntityJointDummy = editorEntity as editor.entity.EntityJointDummy;
+                  var dummy:EntityJointDummy = editorEntity as EntityJointDummy;
                   
                   entityDefine.mEntityType = Define.EntityType_JointDummy;
                   entityDefine.mAnchor1EntityIndex = editorWorld.GetEntityCreationId ( dummy.GetAnchor1 () );
@@ -558,7 +574,7 @@ package common {
                   joint.UpdateJointPosition ();
                }
             }
-            else if (editorEntity is editor.entity.SubEntityJointAnchor)
+            else if (editorEntity is SubEntityJointAnchor)
             {
                entityDefine.mEntityType = Define.SubEntityType_JointAnchor;
             }
@@ -606,7 +622,7 @@ package common {
             var brotherIDs:Array = new Array (brotherGroup.length);
             for (brotherId = 0; brotherId < brotherGroup.length; ++ brotherId)
             {
-               editorEntity = brotherGroup [brotherId] as editor.entity.Entity;
+               editorEntity = brotherGroup [brotherId] as Entity;
                brotherIDs [brotherId] = editorWorld.GetEntityCreationId (editorEntity);
             }
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
@@ -619,7 +635,7 @@ package common {
             
             for (var ccId:int = 0; ccId < numCats; ++ ccId)
             {
-               var collisionCategory:editor.entity.EntityCollisionCategory = editorWorld.GetCollisionCategoryByIndex (ccId);
+               var collisionCategory:EntityCollisionCategory = editorWorld.GetCollisionCategoryByIndex (ccId);
                
                var ccDefine:Object = new Object ();
                
@@ -725,7 +741,7 @@ package common {
          
          if (worldDefine.mVersion >= 0x0102)
          {
-            var collisionCategory:editor.entity.EntityCollisionCategory;
+            var collisionCategory:EntityCollisionCategory;
             
             for (var ccId:int = 0; ccId < worldDefine.mCollisionCategoryDefines.length; ++ ccId)
             {
@@ -787,7 +803,7 @@ package common {
                //>>from v1.05
                if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
                {
-                  var camera:editor.entity.EntityUtilityCamera = editorWorld.CreateEntityUtilityCamera ();
+                  var camera:EntityUtilityCamera = editorWorld.CreateEntityUtilityCamera ();
                   
                   //>>from v.108
                   camera.SetFollowedTarget (entityDefine.mFollowedTarget);
@@ -873,7 +889,7 @@ package common {
                {
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
-                     var circle:editor.entity.EntityShapeCircle = editorWorld.CreateEntityShapeCircle ();
+                     var circle:EntityShapeCircle = editorWorld.CreateEntityShapeCircle ();
                      circle.SetAppearanceType (entityDefine.mAppearanceType);
                      circle.SetRadius (entityDefine.mRadius);
                      
@@ -881,7 +897,7 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
-                     var rect:editor.entity.EntityShapeRectangle = editorWorld.CreateEntityShapeRectangle ();
+                     var rect:EntityShapeRectangle = editorWorld.CreateEntityShapeRectangle ();
                      rect.SetHalfWidth (entityDefine.mHalfWidth);
                      rect.SetHalfHeight (entityDefine.mHalfHeight);
                      
@@ -894,7 +910,7 @@ package common {
                   //>> from v1.04
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
                   {
-                     var polygon:editor.entity.EntityShapePolygon = editorWorld.CreateEntityShapePolygon ();
+                     var polygon:EntityShapePolygon = editorWorld.CreateEntityShapePolygon ();
                      
                      // commented off, do it in the 2nd round below
                      //   polygon.SetPosition (entityDefine.mPosX, entityDefine.mPosY); // the position and rotation are set again below, 
@@ -907,7 +923,7 @@ package common {
                   //>>from v1.05
                   else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
                   {
-                     var polyline:editor.entity.EntityShapePolyline = editorWorld.CreateEntityShapePolyline ();
+                     var polyline:EntityShapePolyline = editorWorld.CreateEntityShapePolyline ();
                      
                      polyline.SetCurveThickness (entityDefine.mCurveThickness);
                      
@@ -1022,7 +1038,7 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
                   {
-                     var gController:editor.entity.EntityShapeGravityController = editorWorld.CreateEntityShapeGravityController ();
+                     var gController:EntityShapeGravityController = editorWorld.CreateEntityShapeGravityController ();
                      
                      gController.SetRadius (entityDefine.mRadius)
                      
@@ -1071,7 +1087,7 @@ package common {
                
                if (entityDefine.mEntityType == Define.EntityType_JointHinge)
                {
-                  var hinge:editor.entity.EntityJointHinge = editorWorld.CreateEntityJointHinge ();
+                  var hinge:EntityJointHinge = editorWorld.CreateEntityJointHinge ();
                   
                   anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (hinge.GetAnchor ());
@@ -1091,7 +1107,7 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
                {
-                  var slider:editor.entity.EntityJointSlider = editorWorld.CreateEntityJointSlider ();
+                  var slider:EntityJointSlider = editorWorld.CreateEntityJointSlider ();
                   
                   anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (slider.GetAnchor1 ());
@@ -1114,7 +1130,7 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
                {
-                  var distanceJoint:editor.entity.EntityJointDistance = editorWorld.CreateEntityJointDistance ();
+                  var distanceJoint:EntityJointDistance = editorWorld.CreateEntityJointDistance ();
                   
                   anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (distanceJoint.GetAnchor1 ());
@@ -1131,7 +1147,7 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
                {
-                  var spring:editor.entity.EntityJointSpring = editorWorld.CreateEntityJointSpring ();
+                  var spring:EntityJointSpring = editorWorld.CreateEntityJointSpring ();
                   
                   anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor1 ());
@@ -1157,7 +1173,7 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
                {
-                  var weld:editor.entity.EntityJointWeld = editorWorld.CreateEntityJointWeld ();
+                  var weld:EntityJointWeld = editorWorld.CreateEntityJointWeld ();
                   
                   anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchorEntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (hinge.GetAnchor ());
@@ -1167,7 +1183,7 @@ package common {
                }
                else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
                {
-                  var dummy:editor.entity.EntityJointDummy = editorWorld.CreateEntityJointDummy ();
+                  var dummy:EntityJointDummy = editorWorld.CreateEntityJointDummy ();
                   
                   anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor1 ());
@@ -1271,7 +1287,7 @@ package common {
             {
                //trace ("entityDefine.mPosX = " + entityDefine.mPosX + ", entityDefine.mPosY = " + entityDefine.mPosY);
                
-               entity = entityDefine.mEntity as editor.entity.Entity;
+               entity = entityDefine.mEntity as Entity;
                entity.SetPosition (entityDefine.mPosX, entityDefine.mPosY);
                entity.SetRotation (entityDefine.mRotation);
                entity.SetVisible (entityDefine.mIsVisible);
@@ -1361,20 +1377,20 @@ package common {
                   
                   if (worldDefine.mVersion >= 0x0108)
                   {
-                     if (eventHandler is editor.trigger.entity.EntityEventHandler_Timer)
+                     if (eventHandler is EntityEventHandler_Timer)
                      {
                         var timerEventHandler:EntityEventHandler_Timer = eventHandler as EntityEventHandler_Timer;
                         
                         timerEventHandler.SetRunningInterval (entityDefine.mRunningInterval);
                         timerEventHandler.SetOnlyRunOnce (entityDefine.mOnlyRunOnce);
                      }
-                     else if (eventHandler is editor.trigger.entity.EntityEventHandler_Keyboard)
+                     else if (eventHandler is EntityEventHandler_Keyboard)
                      {
                         var keyboardEventHandler:EntityEventHandler_Keyboard = eventHandler as EntityEventHandler_Keyboard;
                         
                         keyboardEventHandler.SetKeyCodes (entityDefine.mKeyCodes);
                      }
-                     else if (eventHandler is editor.trigger.entity.EntityEventHandler_Mouse)
+                     else if (eventHandler is EntityEventHandler_Mouse)
                      {
                         var mouseEventHandler:EntityEventHandler_Mouse = eventHandler as EntityEventHandler_Mouse;
                      }

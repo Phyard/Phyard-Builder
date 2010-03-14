@@ -94,7 +94,25 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool, null, "Condition", "Condition", null,
                      null,
                      [
-                              new VariableDefinitionBoolean ("Bool Value"), 
+                              new VariableDefinitionBoolean ("Evaluation Result"), 
+                     ]
+                  );
+       
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityFilter, null, "Entity Filter", "Entity Filter", null,
+                     [
+                              new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     [
+                              new VariableDefinitionBoolean ("Filter Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityPairFilter, null, "Entity Pair Filter", "Entity Pair Filter", null,
+                     [
+                              new VariableDefinitionEntity ("Entity 1"), 
+                              new VariableDefinitionEntity ("Entity 2"), 
+                     ],
+                     [
+                              new VariableDefinitionBoolean ("Filter Result"), 
                      ]
                   );
        
@@ -1265,6 +1283,21 @@ package editor.trigger {
                      ]
                   );
          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetOriginalCIType, shape_appearance_package, "Get Original C.I. Type", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Original CI Type"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetOriginalCIType, shape_appearance_package, "Set Original C.I. Type", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("New Original CI Type", null, {mValueLists: Lists.mAiTypeList}), 
+                     ],
+                     null
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType, shape_appearance_package, "Get C.I. Type", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 

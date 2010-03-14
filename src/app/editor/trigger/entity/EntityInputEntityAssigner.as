@@ -28,7 +28,7 @@ package editor.trigger.entity {
    
    import common.Define;
    
-   public class EntityInputEntityAssigner extends EntityLogic 
+   public class EntityInputEntityAssigner extends EntityLogic implements IEntityLimiter 
    {
       public static var kRadius:Number = 6;
       public static var kRadius2:Number = 12;
@@ -452,6 +452,15 @@ package editor.trigger.entity {
          super.Scale (centerX, centerY, ratio, updateSelectionProxy);
          
          UpdateInternalComponents (updateSelectionProxy);
+      }
+      
+//====================================================================
+//   as IEntityLimiter
+//====================================================================
+      
+      public function IsPairLimiter ():Boolean
+      {
+         return false;
       }
       
 //====================================================================

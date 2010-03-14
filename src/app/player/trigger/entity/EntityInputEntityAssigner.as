@@ -14,10 +14,8 @@ package player.trigger.entity
    
    import common.Define;
    
-   public class EntityInputEntityAssigner extends EntityLogic
+   public class EntityInputEntityAssigner extends EntityInputEntityLimiter
    {
-      protected var mIsPairAssigner:Boolean = false;
-      
       protected var mAssignerType:int = Define.EntitySelectorType_Many; // if isPair, pair type, if not pair, selector type
       
       // the indexes are indexes in editor
@@ -33,9 +31,9 @@ package player.trigger.entity
       protected var mPairHashtable_IgnorePairOrder:Dictionary = null;
       
       // 
-      public function EntityInputEntityAssigner (world:World)
+      public function EntityInputEntityAssigner (world:World, isPairAssigner:Boolean)
       {
-         super (world);
+         super (world, isPairAssigner);
       }
       
 //=============================================================
@@ -50,9 +48,7 @@ package player.trigger.entity
          
          if (createStageId == 0)
          {
-            mIsPairAssigner = (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner);
-            
-            if (mIsPairAssigner)
+            if (mIsPairLimiter)
             {
                if (entityDefine.mPairingType != undefined)
                   mAssignerType = entityDefine.mPairingType;
@@ -101,7 +97,7 @@ package player.trigger.entity
                   }
                }
             }
-            else // not mIsPairAssigner
+            else // not mIsPairLimiter
             {
                if (entityDefine.mSelectorType != undefined)
                   mAssignerType = entityDefine.mSelectorType;
@@ -148,7 +144,7 @@ package player.trigger.entity
       
       public function ContainsEntity (entityIndex:int):Boolean
       {
-         if (mIsPairAssigner)
+         if (mIsPairLimiter)
             return false;
          
          switch (mAssignerType)
@@ -172,7 +168,7 @@ package player.trigger.entity
       
       public function ContainsEntityPair (entityIndex1:int, entityIndex2:int, ignorePairOrder:Boolean):int
       {
-         if ( ! mIsPairAssigner)
+         if ( ! mIsPairLimiter)
             return ContainingResult_False;
          
          var p1:int;
@@ -283,7 +279,7 @@ package player.trigger.entity
       // as input of an event handler
       public function RegisterEventHandlerForEntities (eventId:int, eventHandler:EntityEventHandler):void
       {
-         if (mIsPairAssigner)
+         if (mIsPairLimiter)
             return;
          
          var i:int;
@@ -394,7 +390,7 @@ package player.trigger.entity
       
       public function HandleTimerEventForEntities (timerEventHandler:EntityEventHandler_Timer, valueSourceList:ValueSource):void
       {
-         if (mIsPairAssigner)
+         if (mIsPairLimiter)
             return;
          
          var valueSourceEntity:ValueSource_Direct = valueSourceList.mNextValueSourceInList as ValueSource_Direct;
@@ -423,7 +419,7 @@ package player.trigger.entity
       
       public function HandleTimerEventForEntityPairs (timerEventHandler:EntityEventHandler_Timer, valueSourceList:ValueSource):void
       {
-         if (! mIsPairAssigner)
+         if (! mIsPairLimiter)
             return;
          
          var valueSourceEntity1:ValueSource_Direct = valueSourceList.mNextValueSourceInList as ValueSource_Direct;

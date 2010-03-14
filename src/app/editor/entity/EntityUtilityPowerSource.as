@@ -19,8 +19,9 @@ package editor.entity {
    
    import editor.runtime.Resource;
    
-   
    import common.Define;
+   import common.KeyCodes;
+   import common.trigger.CoreEventIds;
    
    public class EntityUtilityPowerSource extends EntityUtility 
    {
@@ -55,6 +56,9 @@ package editor.entity {
       protected var mPowerSourceType:int = -1;
       protected var mPowerMagnitude:Number = 0.0;
       
+      protected var mKeyboardEventId:int = CoreEventIds.ID_OnWorldKeyHold;
+      protected var mKeyCodes:Array = new Array ();
+      
       public function SetPowerSourceType (type:int):void
       {
          if (mPowerSourceType == type)
@@ -76,12 +80,18 @@ package editor.entity {
             case Define.PowerSource_AngularImpulse:
                mPowerSourceBitmap = new Resource.IconAngularImpulse ();
                break;
-            case Define.PowerSource_LinearVelocity:
-               mPowerSourceBitmap = new Resource.IconLinearVelocity ();
+            case Define.PowerSource_AngularAcceleration:
+               mPowerSourceBitmap = new Resource.IconAngularAcceleration ();
                break;
             case Define.PowerSource_AngularVelocity:
                mPowerSourceBitmap = new Resource.IconAngularVelocity ();
                break;
+            //case Define.PowerSource_LinearAcceleration:
+            //   mPowerSourceBitmap = new Resource.IconLinearAcceleration ();
+            //   break;
+            //case Define.PowerSource_LinearVelocity:
+            //   mPowerSourceBitmap = new Resource.IconLinearVelocity ();
+            //   break;
             case Define.PowerSource_Force:
             default:
                mPowerSourceType = Define.PowerSource_Force;
@@ -110,6 +120,49 @@ package editor.entity {
       public function GetPowerMagnitude ():Number
       {
          return mPowerMagnitude;
+      }
+      
+      public function SetKeyboardEventId (eventId:int):void
+      {
+         switch (eventId)
+         {
+            case CoreEventIds.ID_OnWorldKeyDown:
+            case CoreEventIds.ID_OnWorldKeyUp:
+            case CoreEventIds.ID_OnWorldKeyHold:
+               mKeyboardEventId = eventId;
+               break;
+            default:
+               mKeyboardEventId = CoreEventIds.ID_OnWorldKeyHold;
+               break;
+         }
+      }
+      
+      public function GetKeyboardEventId ():int
+      {
+         return mKeyboardEventId;
+      }
+      
+      public function SetKeyCodes (keyCodes:Array):void
+      {
+         mKeyCodes.splice (0, mKeyCodes.length);
+         
+         if (keyCodes == null)
+            return;
+         
+         var keyCode:int;
+         for (var i:int = 0; i < keyCodes.length; ++ i)
+         {
+            keyCode = keyCodes [i];
+            if (keyCode >= 0 && keyCode < KeyCodes.kNumKeys && mKeyCodes.indexOf (keyCode) < 0)
+            {
+               mKeyCodes.push (keyCode);
+            }
+         }
+      }
+      
+      public function GetKeyCodes ():Array
+      {
+         return mKeyCodes.slice ();
       }
       
 //=============================================================

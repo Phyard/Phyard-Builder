@@ -21,6 +21,9 @@ package common.trigger {
       public static const ID_Void:int                        = IdPool.CoreApiId_10; // 
       public static const ID_Bool:int                        = IdPool.CoreApiId_11; // 
       
+      public static const ID_EntityFilter:int                = IdPool.CoreApiId_12; // 
+      public static const ID_EntityPairFilter:int            = IdPool.CoreApiId_13; // 
+      
    // global
       
       public static const ID_Return:int                       = IdPool.CoreApiId_20; //
@@ -226,8 +229,10 @@ package common.trigger {
       
    // game / entity / shape
       
-      public static const ID_EntityShape_GetCIType:int            = IdPool.CoreApiId_1100; // entity.shape
-      public static const ID_EntityShape_SetCIType:int            = IdPool.CoreApiId_1101; // entity.shape
+      public static const ID_EntityShape_GetOriginalCIType:int            = IdPool.CoreApiId_1098; // entity.shape
+      public static const ID_EntityShape_SetOriginalCIType:int            = IdPool.CoreApiId_1099; // entity.shape
+      public static const ID_EntityShape_GetCIType:int                    = IdPool.CoreApiId_1100; // entity.shape
+      public static const ID_EntityShape_SetCIType:int                    = IdPool.CoreApiId_1101; // entity.shape
       
       public static const ID_EntityShape_GetFilledColor:int            = IdPool.CoreApiId_1110; // entity.shape
       public static const ID_EntityShape_SetFilledColor:int            = IdPool.CoreApiId_1111; // entity.shape

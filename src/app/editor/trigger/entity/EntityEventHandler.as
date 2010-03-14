@@ -98,7 +98,7 @@ package editor.trigger.entity {
          return mEventId;
       }
       
-      public function GetInputConditionEntity ():EntityCondition
+      public function GetInputConditionEntity ():ICondition
       {
          return mExternalCondition.mConditionEntity;
       }
@@ -108,7 +108,7 @@ package editor.trigger.entity {
          return mExternalCondition.mTargetValue;
       }
       
-      public function SetInputCondition (condition:EntityCondition, inputConditionTargetValue:int):void
+      public function SetInputCondition (condition:ICondition, inputConditionTargetValue:int):void
       {
          mExternalCondition.mConditionEntity = condition;
          mExternalCondition.mTargetValue = inputConditionTargetValue;
@@ -116,7 +116,7 @@ package editor.trigger.entity {
       
       public function SetInputConditionByCreationId (inputConditionEntityCreationId:int, inputConditionTargetValue:int):void
       {
-         var condition:EntityCondition = mWorld.GetEntityByCreationId (inputConditionEntityCreationId) as EntityCondition;
+         var condition:ICondition = mWorld.GetEntityByCreationId (inputConditionEntityCreationId) as ICondition;
          
          if (condition != null)
          {
@@ -242,11 +242,11 @@ package editor.trigger.entity {
       {
          ValidateEntityLinks ();
          
-         if (toEntity is EntityCondition)
+         if (toEntity is ICondition)
          {
             var point:Point = DisplayObjectUtil.LocalToLocal (mWorld, toEntity as Entity, new Point (toWorldDisplayX, toWorldDisplayY));
             var zone_id:int = (toEntity as EntityLogic).GetLinkZoneId (point.x, point.y);
-            var target_value:int = (toEntity as EntityCondition).GetTargetValueByLinkZoneId (zone_id);
+            var target_value:int = (toEntity as ICondition).GetTargetValueByLinkZoneId (zone_id);
             
             var to_remove:Boolean =  mExternalCondition.mConditionEntity == toEntity && ( (!(toEntity is EntityTask)) || (target_value ==  mExternalCondition.mTargetValue) );
             
@@ -254,7 +254,7 @@ package editor.trigger.entity {
                mExternalCondition.mConditionEntity = null;
             else
             {
-               mExternalCondition.mConditionEntity = toEntity as EntityCondition;
+               mExternalCondition.mConditionEntity = toEntity as ICondition;
                mExternalCondition.mTargetValue = target_value;
             }
             
@@ -269,29 +269,37 @@ package editor.trigger.entity {
             
             return true;
          }
-         else 
+         else if (toEntity is IEntityLimiter)
          {
+            var limitor:IEntityLimiter = toEntity as IEntityLimiter;
+            
             var index:int;
             
-            if (mNumEntityParams == 1 && toEntity is EntityInputEntityAssigner)
+            if (mNumEntityParams == 1)
             {
-               index = mEntityAssignerList.indexOf (toEntity);
-               if (index >= 0)
-                  mEntityAssignerList.splice (index, 1);
-               else
-                  mEntityAssignerList.push (toEntity);
-               
-               return true;
+               if (! limitor.IsPairLimiter ())
+               {
+                  index = mEntityAssignerList.indexOf (toEntity);
+                  if (index >= 0)
+                     mEntityAssignerList.splice (index, 1);
+                  else
+                     mEntityAssignerList.push (toEntity);
+                  
+                  return true;
+               }
             }
-            else if (mNumEntityParams == 2 && toEntity is EntityInputEntityPairAssigner)
+            else if (mNumEntityParams == 2)
             {
-               index = mEntityAssignerList.indexOf (toEntity);
-               if (index >= 0)
-                  mEntityAssignerList.splice (index, 1);
-               else
-                  mEntityAssignerList.push (toEntity);
-               
-               return true;
+               if (limitor.IsPairLimiter ())
+               {
+                  index = mEntityAssignerList.indexOf (toEntity);
+                  if (index >= 0)
+                     mEntityAssignerList.splice (index, 1);
+                  else
+                     mEntityAssignerList.push (toEntity);
+                  
+                  return true;
+               }
             }
          }
          

@@ -860,17 +860,19 @@ package editor {
       public var mButtonCreateAngularForce:Button;
       public var mButtonCreateLinearImpulse:Button;
       public var mButtonCreateAngularImpulse:Button;
-      public var mButtonCreateLinearVelocity:Button;
+      public var mButtonCreateAngularAcceleration:Button;
       public var mButtonCreateAngularVelocity:Button;
+      //public var mButtonCreateLinearAcceleration:Button;
+      //public var mButtonCreateLinearVelocity:Button;
       
       public var mButtonCreateCondition:Button;
       public var mButtonCreateConditionDoor:Button;
       public var mButtonCreateTask:Button;
       public var mButtonCreateEntityAssigner:Button;
       public var mButtonCreateEntityPairAssigner:Button;
-      public var mButtonCreateEntityRegionSelector:Button;
-      public var mButtonCreateEntityFilter:Button;
-      public var mButtonCreateEntityPairFilter:Button;
+      //public var mButtonCreateEntityRegionSelector:Button;
+      //public var mButtonCreateEntityFilter:Button;
+      //public var mButtonCreateEntityPairFilter:Button;
       public var mButtonCreateAction:Button;
       public var mButtonCreateEventHandler0:Button;
       public var mButtonCreateEventHandler1:Button;
@@ -1045,6 +1047,7 @@ package editor {
                break;
             case mButtonCreateTextButton:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTextButton));
+               break;
             case mButtonCreateGravityController:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateGravityController));
                break;
@@ -1064,12 +1067,18 @@ package editor {
             case mButtonCreateAngularImpulse:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularImpulse}));
                break;
-            case mButtonCreateLinearVelocity:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearVelocity}));
+            case mButtonCreateAngularAcceleration:
+               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularAcceleration}));
                break;
             case mButtonCreateAngularVelocity:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularVelocity}));
                break;
+            //case mButtonCreateLinearAcceleration:
+            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearAcceleration}));
+            //   break;
+            //case mButtonCreateLinearVelocity:
+            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearVelocity}));
+            //   break;
             
           // logic
           
@@ -1091,15 +1100,15 @@ package editor {
             case mButtonCreateEntityPairAssigner:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityPairAssigner) );
                break;
-            case mButtonCreateEntityRegionSelector:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityRegionSelector) );
-               break;
-            case mButtonCreateEntityFilter:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityFilter) );
-               break;
-            case mButtonCreateEntityPairFilter:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityPairFilter) );
-               break;
+            //case mButtonCreateEntityRegionSelector:
+            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityRegionSelector) );
+            //   break;
+            //case mButtonCreateEntityFilter:
+            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityFilter) );
+            //   break;
+            //case mButtonCreateEntityPairFilter:
+            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityPairFilter) );
+            //   break;
                
             case mButtonCreateEventHandler0:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldBeforeInitializing, mPotientialEventIds:null}) );
@@ -1628,6 +1637,7 @@ package editor {
       public var ShowShapeTextButtonSettingDialog:Function = null;
       public var ShowShapeGravityControllerSettingDialog:Function = null;
       public var ShowCameraSettingDialog:Function = null;
+      public var ShowPowerSourceSettingDialog:Function = null;
       
       public var ShowWorldSettingDialog:Function = null;
       public var ShowWorldSavingDialog:Function = null;
@@ -1652,6 +1662,8 @@ package editor {
       public var ShowActionSettingDialog:Function = null;
       public var ShowEntityAssignerSettingDialog:Function = null;
       public var ShowEntityPairAssignerSettingDialog:Function = null;
+      public var ShowEntityPairFilterSettingDialog:Function = null;
+      public var ShowEntityFilterSettingDialog:Function = null;
       
       public function IsEntitySettingable (entity:Entity):Boolean
       {
@@ -1755,6 +1767,26 @@ package editor {
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
                
                ShowActionSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityInputEntityScriptFilter)
+            {
+               var entityFilter:EntityInputEntityScriptFilter = entity as EntityInputEntityScriptFilter;
+               
+               values.mCodeSnippetName = entityFilter.GetCodeSnippetName ();
+               values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
+               
+               ShowEntityFilterSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityInputEntityPairScriptFilter)
+            {
+               var pairFilter:EntityInputEntityPairScriptFilter = entity as EntityInputEntityPairScriptFilter;
+               
+               values.mCodeSnippetName = pairFilter.GetCodeSnippetName ();
+               values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (null);
+               (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
+               
+               ShowEntityPairFilterSettingDialog (values, SetEntityProperties);
             }
             else if (entity is EntityConditionDoor)
             {
@@ -2032,6 +2064,55 @@ package editor {
                //<<
                
                ShowCameraSettingDialog (values, SetEntityProperties);
+            }
+            else if (entity is EntityUtilityPowerSource)
+            {
+               var powerSource:EntityUtilityPowerSource = entity as EntityUtilityPowerSource;
+               
+               values.mEventId = powerSource.GetKeyboardEventId ();
+               values.mKeyCodes = powerSource.GetKeyCodes ();
+               values.mPowerSourceType = powerSource.GetPowerSourceType ();
+               values.mPowerMagnitude = powerSource.GetPowerMagnitude ();
+               
+               switch (powerSource.GetPowerSourceType ())
+               {
+                  case Define.PowerSource_Torque:
+                     values.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().D2P_Torque (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Torque";
+                     break;
+                  case Define.PowerSource_LinearImpusle:
+                     values.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().D2P_ImpulseMagnitude (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Linear Impulse";
+                     break;
+                  case Define.PowerSource_AngularImpulse:
+                     values.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().D2P_AngularImpulse (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Angular Impulse";
+                     break;
+                  case Define.PowerSource_AngularAcceleration:
+                     values.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().D2P_AngularAcceleration (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Angular Acceleration";
+                     break;
+                  case Define.PowerSource_AngularVelocity:
+                     values.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().D2P_AngularVelocity (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Angular Velocity";
+                     break;
+                  //case Define.PowerSource_LinearAcceleration:
+                  //   values.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (values.mPowerMagnitude);
+                  //   values.mPowerLabel = "Step Linear Acceleration";
+                  //   break;
+                  //case Define.PowerSource_LinearVelocity:
+                  //   values.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().D2P_LinearVelocityMagnitude (values.mPowerMagnitude);
+                  //   values.mPowerLabel = "Step Linear Velocity";
+                  //   break;
+                  case Define.PowerSource_Force:
+                  default:
+                     values.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().D2P_ForceMagnitude (values.mPowerMagnitude);
+                     values.mPowerLabel = "Step Force";
+                     break;
+               }
+               values.mPowerMagnitude = ValueAdjuster.Number2Precision (values.mPowerMagnitude, 6);
+               
+               ShowPowerSourceSettingDialog (values, SetEntityProperties);
             }
          }
       }
@@ -3859,6 +3940,32 @@ package editor {
                action.UpdateAppearance ();
                action.UpdateSelectionProxy ();
             }
+            else if (entity is EntityInputEntityScriptFilter)
+            {
+               var entityFilter:EntityInputEntityScriptFilter = entity as EntityInputEntityScriptFilter;
+               
+               entityFilter.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = entityFilter.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+               
+               entityFilter.UpdateAppearance ();
+               entityFilter.UpdateSelectionProxy ();
+            }
+            else if (entity is EntityInputEntityPairScriptFilter)
+            {
+               var pairFilter:EntityInputEntityPairScriptFilter = entity as EntityInputEntityPairScriptFilter;
+               
+               pairFilter.SetCodeSnippetName (params.mCodeSnippetName);
+               
+               code_snippet = pairFilter.GetCodeSnippet ();
+               code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
+               code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+               
+               pairFilter.UpdateAppearance ();
+               pairFilter.UpdateSelectionProxy ();
+            }
             else if (entity is EntityConditionDoor)
             {
             }
@@ -4120,6 +4227,43 @@ package editor {
                camera.SetFollowedTarget (params.mFollowedTarget);
                camera.SetFollowingStyle (params.mFollowingStyle);
                //<<
+            }
+            else if (entity is EntityUtilityPowerSource)
+            {
+               var powerSource:EntityUtilityPowerSource = entity as EntityUtilityPowerSource;
+               
+               powerSource.SetKeyboardEventId (params.mEventId);
+               powerSource.SetKeyCodes (params.mKeyCodes);
+               
+               switch (powerSource.GetPowerSourceType ())
+               {
+                  case Define.PowerSource_Torque:
+                     params.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().P2D_Torque (params.mPowerMagnitude);
+                     break;
+                  case Define.PowerSource_LinearImpusle:
+                     params.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().P2D_ImpulseMagnitude (params.mPowerMagnitude);
+                     break;
+                  case Define.PowerSource_AngularImpulse:
+                     params.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().P2D_AngularImpulse (params.mPowerMagnitude);
+                     break;
+                  case Define.PowerSource_AngularAcceleration:
+                     params.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().P2D_AngularAcceleration (params.mPowerMagnitude);
+                     break;
+                  case Define.PowerSource_AngularVelocity:
+                     params.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().P2D_AngularVelocity (params.mPowerMagnitude);
+                     break;
+                  //case Define.PowerSource_LinearAcceleration:
+                  //   params.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (params.mPowerMagnitude);
+                  //   break;
+                  //case Define.PowerSource_LinearVelocity:
+                  //   params.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mPowerMagnitude);
+                  //   break;
+                  case Define.PowerSource_Force:
+                  default:
+                     params.mPowerMagnitude = mEditorWorld.GetCoordinateSystem ().P2D_ForceMagnitude (params.mPowerMagnitude);
+                     break;
+               }
+               powerSource.SetPowerMagnitude (params.mPowerMagnitude);
             }
          }
          

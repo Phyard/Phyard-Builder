@@ -23,7 +23,7 @@ package com.tapirgames.util {
    
    public class DisplayObjectUtil
    {
-      public static function AppendContextMenuItem (sprite:InteractiveObject, caption:String, selectedListener:Function):ContextMenuItem
+      public static function AppendContextMenuItem (sprite:InteractiveObject, caption:String, selectedListener:Function, addSeperator:Boolean = false):ContextMenuItem
       {
          if (sprite.contextMenu == null)
          {
@@ -31,7 +31,7 @@ package com.tapirgames.util {
             sprite.contextMenu.hideBuiltInItems ();
          }
          
-         var menuItem:ContextMenuItem = new ContextMenuItem(caption, false);
+         var menuItem:ContextMenuItem = new ContextMenuItem(caption, addSeperator);
          if (selectedListener != null)
             menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
          sprite.contextMenu.customItems.push (menuItem);

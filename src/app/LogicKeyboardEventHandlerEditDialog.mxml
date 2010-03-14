@@ -21,18 +21,7 @@
          <mx:Spacer height="100%" />
          <mx:HRule strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
          <mx:Spacer height="100%" />
-         <mx:HBox width="100%" id="HanlderBasicSettingPanel" creationComplete="OnHanlderBasicSettingPanelCreationComplete()">
-            <mx:Spacer width="100%"/>
-            <mx:RadioButton groupName="EventType" id="RadioButton_Down" value="Down" label="Key Down" />
-            <mx:Spacer width="100%"/>
-            <mx:RadioButton groupName="EventType" id="RadioButton_Up" value="Up" label="Key Up" />
-            <mx:Spacer width="100%"/>
-            <mx:RadioButton groupName="EventType" id="RadioButton_Hold" value="Hold" label="Key Hold" />
-            <mx:Spacer width="100%"/>
-         </mx:HBox>
-         <mx:HBox width="100%" height="167">
-            <ed:KeyboardForSelecting id="KeyboardPanel"/>
-         </mx:HBox>
+         <KeyboardEventHandlerSettingPanel id="KeyboardSettingPanel" creationComplete="OnKeyboardSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%" />
       </mx:VBox>
    </mx:TabNavigator>
@@ -58,6 +47,7 @@
          import mx.controls.Menu;
          
          import common.Define;
+         import common.KeyCodes;
          import common.trigger.CoreEventIds;
          
          private var OnConfirm:Function = null;
@@ -94,23 +84,9 @@
             BasicSettingPanel.SetValues (mParams);
          }
          
-         private function OnHanlderBasicSettingPanelCreationComplete ():void
+         private function OnKeyboardSettingPanelCreationComplete ():void
          {
-            KeyboardPanel.selectedKeyCodes = mParams.mKeyCodes;
-            
-            switch (mParams.mEventId)
-            {
-               case CoreEventIds.ID_OnWorldKeyUp:
-                  RadioButton_Up.selected = true;
-                  break;
-               case CoreEventIds.ID_OnWorldKeyHold:
-                  RadioButton_Hold.selected = true;
-                  break;
-               case CoreEventIds.ID_OnWorldKeyDown:
-               default:
-                  RadioButton_Down.selected = true;
-                  break;
-            }
+            KeyboardSettingPanel.SetValues (mParams);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -132,19 +108,9 @@
                BasicSettingPanel.GetValues (mParams);
             }
             
-            if (HanlderBasicSettingPanel != null)
+            if (KeyboardSettingPanel != null)
             {
-               if (RadioButton_Up.selected)
-                  mParams.mEventId = CoreEventIds.ID_OnWorldKeyUp;
-               else if (RadioButton_Hold.selected)
-                  mParams.mEventId = CoreEventIds.ID_OnWorldKeyHold;
-               else //if (RadioButton_Down.selected)
-                  mParams.mEventId = CoreEventIds.ID_OnWorldKeyDown;
-            }
-            
-            if (KeyboardPanel != null)
-            {
-               mParams.mKeyCodes = KeyboardPanel.selectedKeyCodes;
+               KeyboardSettingPanel.GetValues (mParams);
             }
             
             PopUpManager.removePopUp(this);

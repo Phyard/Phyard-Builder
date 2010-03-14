@@ -73,6 +73,8 @@ package common.trigger {
       
       public static const CoreApiId_10:int = 10; // 
       public static const CoreApiId_11:int = 11; // 
+      public static const CoreApiId_12:int = 12; // 
+      public static const CoreApiId_13:int = 13; // 
       
       public static const CoreApiId_20:int = 20; //
       public static const CoreApiId_21:int = 21; //
@@ -244,7 +246,8 @@ package common.trigger {
       public static const CoreApiId_1095:int = 1095; // entity.shape physics
       public static const CoreApiId_1096:int = 1096; // entity.shape physics
       public static const CoreApiId_1097:int = 1097; // entity.shape physics
-      
+      public static const CoreApiId_1098:int = 1098; // entity.shape
+      public static const CoreApiId_1099:int = 1099; // entity.shape
       public static const CoreApiId_1100:int = 1100; // entity.shape
       public static const CoreApiId_1101:int = 1101; // entity.shape
       public static const CoreApiId_1102:int = 1102; // entity.shape physics

@@ -234,18 +234,21 @@ package common {
 // power source
 //===========================================================================
       
-      public static const PowerSource_Force          :int = 0;
-      public static const PowerSource_Torque         :int = 1;
-      public static const PowerSource_LinearImpusle  :int = 2;
-      public static const PowerSource_AngularImpulse :int = 3;
-      public static const PowerSource_LinearVelocity :int = 4;
-      public static const PowerSource_AngularVelocity:int = 5;
+      public static const PowerSource_Force              :int = 0;
+      public static const PowerSource_Torque             :int = 1;
+      public static const PowerSource_LinearImpusle      :int = 2;
+      public static const PowerSource_AngularImpulse     :int = 3;
+      public static const PowerSource_AngularAcceleration:int = 4;
+      public static const PowerSource_AngularVelocity    :int = 5;
+      //public static const PowerSource_LinearAcceleration :int = 6;
+      //public static const PowerSource_LinearVelocity     :int = 7;
       
 //===========================================================================
 // Logic
 //===========================================================================
       
-      public static const NumRegistersPerVariableType:int = 16;
+      //public static const NumRegistersPerVariableType:int = 16;
+      public static const NumRegistersPerVariableType:int = 32; // from v1.10
       
       public static const MaxLogicComponentNameLength:int = 32;
       public static const TriggerComponentRadius:int = 10;
@@ -338,6 +341,9 @@ package common {
       public static const EntityType_LogicInputEntityAssigner:int = 214;
       public static const EntityType_LogicInputEntityPairAssigner:int = 215;
       public static const EntityType_LogicAction:int = 216; // from v1.08
+      public static const EntityType_UtilityPowerSource:int = 217; // from v1.10
+      //public static const EntityType_LogicInputEntityFilter:int = 218; // from v1.10
+      //public static const EntityType_LogicInputEntityPairFilter:int = 219; // from v1.10
       
       // from v1.07, folloing functions should only be used in packaging./ loading
       // they should NOT used in player pacakge, use EntityShape.mPhysicsShapePotentially instead

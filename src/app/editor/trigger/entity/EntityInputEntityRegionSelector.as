@@ -28,7 +28,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityInputEntityRegionSelector extends EntityIconInsider 
+   public class EntityInputEntityRegionSelector extends EntityIconInsider implements IEntityLimiter 
    {
       public function EntityInputEntityRegionSelector (world:World)
       {
@@ -44,7 +44,7 @@ package editor.trigger.entity {
       
       override public function GetTypeName ():String
       {
-         return "Condition";
+         return "Entity Region Selector";
       }
       
 //====================================================================
@@ -61,6 +61,15 @@ package editor.trigger.entity {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
          var entityFilter:EntityInputEntityRegionSelector = entity as EntityInputEntityRegionSelector;
+      }
+      
+//====================================================================
+//   as IEntityLimiter
+//====================================================================
+      
+      public function IsPairLimiter ():Boolean
+      {
+         return false;
       }
       
 //====================================================================

@@ -16,6 +16,10 @@ package editor.runtime {
       public static var IconForce:Class;
       [Embed("../../res/create/force-angular.png")]
       public static var IconTorque:Class;
+      [Embed("../../res/create/acceleration-linear.png")]
+      public static var IconLinearAcceleration:Class;
+      [Embed("../../res/create/acceleration-angular.png")]
+      public static var IconAngularAcceleration:Class;
       [Embed("../../res/create/impulse-linear.png")]
       public static var IconLinearImpulse:Class;
       [Embed("../../res/create/impulse-angular.png")]

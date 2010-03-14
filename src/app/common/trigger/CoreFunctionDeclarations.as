@@ -49,6 +49,24 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityFilter,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityPairFilter,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
        
       // global
          
@@ -1226,6 +1244,21 @@ package common.trigger {
                      ]
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetOriginalCIType,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType,
                      [
                         ValueTypeDefine.ValueType_Entity, 

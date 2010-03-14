@@ -28,14 +28,14 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityInputEntityPairScriptFilter extends EntityCodeSnippetHolder 
+   public class EntityInputEntityPairScriptFilter extends EntityCodeSnippetHolder implements IEntityLimiter 
    {
       public function EntityInputEntityPairScriptFilter (world:World)
       {
          super (world);
          
-         mCodeSnippet = new CodeSnippet (new FunctionDefinition (TriggerEngine.GetBoolFunctionDeclaration ()));
-         mIconBitmap = new Resource.IconInputEntityScriptFilter ();
+         mCodeSnippet = new CodeSnippet (new FunctionDefinition (TriggerEngine.GetEntityPairFilterFunctionDeclaration ()));
+         mIconBitmap = new Resource.IconInputEntityPairScriptFilter ();
          mBackgroundColor = 0xFFC000;
       }
       
@@ -46,7 +46,7 @@ package editor.trigger.entity {
       
       override public function GetTypeName ():String
       {
-         return "Condition";
+         return "Entity Pair Filter";
       }
       
 //====================================================================
@@ -63,6 +63,15 @@ package editor.trigger.entity {
          super.SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
          
          var entityFilter:EntityInputEntityPairScriptFilter = entity as EntityInputEntityPairScriptFilter;
+      }
+      
+//====================================================================
+//   as IEntityLimiter
+//====================================================================
+      
+      public function IsPairLimiter ():Boolean
+      {
+         return true;
       }
       
 //====================================================================

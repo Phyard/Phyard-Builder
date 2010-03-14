@@ -245,6 +245,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy,               IsBombShapeEntitiy);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy,        IsWorldBorderEntitiy);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetOriginalCIType,           GetShapeOriginalCIType);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,           SetShapeOriginalCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCIType,                   GetShapeCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColor,              GetShapeFilledColor);
@@ -1867,6 +1869,32 @@ package player.trigger {
       }
       
       // ...
+      
+      public static function GetShapeOriginalCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         var aiType:int = shape == null ? Define.ShapeAiType_Unknown : shape.GetOriginalShapeAiType ();
+         valueTarget.AssignValueObject (aiType);
+      }
+      
+      public static function SetShapeOriginalCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         if (! shape.IsAiTypeChangeable ())
+            return;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var ciType:int = uint (valueSource.EvalateValueObject ());
+         
+         shape.SetOriginalShapeAiType (ciType);
+      }
       
       public static function GetShapeCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
       {

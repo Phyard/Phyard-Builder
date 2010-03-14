@@ -34,6 +34,7 @@ package common {
    import player.entity.EntityShape_Text;
    import player.entity.EntityShape_TextButton;
    import player.entity.EntityShape_Camera;
+   import player.entity.EntityShape_PowerSource;
    import player.entity.EntityShape_GravityController;
    import player.entity.EntityShape_CircleBomb;
    import player.entity.EntityShape_RectangleBomb;
@@ -43,6 +44,7 @@ package common {
    import player.trigger.entity.EntityTask;
    import player.trigger.entity.EntityConditionDoor;
    import player.trigger.entity.EntityInputEntityAssigner;
+   //import player.trigger.entity.EntityInputEntityFilter;
    import player.trigger.entity.EntityAction;
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.entity.EntityEventHandler_Timer;
@@ -172,6 +174,9 @@ package common {
                case Define.EntityType_UtilityCamera:
                   entity = new EntityShape_Camera (playerWorld);
                   break;
+               case Define.EntityType_UtilityPowerSource:
+                  entity = new EntityShape_PowerSource (playerWorld);
+                  break;
                case Define.EntityType_ShapeGravityController:
                   entity = new EntityShape_GravityController (playerWorld);
                   break;
@@ -215,9 +220,17 @@ package common {
                   entity = new EntityConditionDoor (playerWorld);
                   break;
                case Define.EntityType_LogicInputEntityAssigner:
-               case Define.EntityType_LogicInputEntityPairAssigner:
-                  entity = new EntityInputEntityAssigner (playerWorld);
+                  entity = new EntityInputEntityAssigner (playerWorld, false);
                   break;
+               case Define.EntityType_LogicInputEntityPairAssigner:
+                  entity = new EntityInputEntityAssigner (playerWorld, true);
+                  break;
+               //case Define.EntityType_LogicInputEntityFilter:
+               //   entity = new EntityInputEntityFilter (playerWorld, false);
+               //   break;
+               //case Define.EntityType_LogicInputEntityPairFilter:
+               //   entity = new EntityInputEntityFilter (playerWorld, true);
+               //   break;
                case Define.EntityType_LogicAction:
                   entity = new EntityAction (playerWorld);
                   break;

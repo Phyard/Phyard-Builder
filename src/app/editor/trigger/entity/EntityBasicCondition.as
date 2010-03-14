@@ -28,7 +28,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityBasicCondition extends EntityCodeSnippetHolder implements EntityCondition 
+   public class EntityBasicCondition extends EntityCodeSnippetHolder implements ICondition 
    {
       public function EntityBasicCondition (world:World)
       {

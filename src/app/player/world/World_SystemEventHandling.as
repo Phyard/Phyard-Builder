@@ -131,6 +131,9 @@ public function OnMouseClick (event:MouseEvent):void
    }
 }
 
+private var _KeyboardDownEvent:KeyboardEvent = new KeyboardEvent (KeyboardEvent.KEY_DOWN);
+private var _KeyboardUpEvent:KeyboardEvent = new KeyboardEvent (KeyboardEvent.KEY_UP);
+
 public function OnMouseDown (event:MouseEvent):void
 {
    // ...
@@ -143,6 +146,15 @@ public function OnMouseDown (event:MouseEvent):void
    
    if (IsInteractiveEnabledNow ())
    {
+      // as a key
+      _KeyboardDownEvent.keyCode = KeyCodes.LeftMouseButton;
+      _KeyboardDownEvent.charCode = 0;
+      _KeyboardDownEvent.ctrlKey = event.ctrlKey;
+      _KeyboardDownEvent.shiftKey = event.shiftKey;
+      _KeyboardDownEvent.altKey = event.altKey;
+      KeyPressed (KeyCodes.LeftMouseButton, -1);
+      HandleKeyEventByKeyCode (_KeyboardDownEvent, true);
+      
       // ...
       MouseEvent2ValueSourceList (event);
       HandleEventById (CoreEventIds.ID_OnWorldMouseDown, mWorldMouseEventHandlerValueSourceList);
@@ -176,6 +188,15 @@ public function OnMouseUp (event:MouseEvent):void
       mCurrentMode.OnMouseUp (event.stageX, event.stageY);
    
    UpdateMousePositionAndHoldInfo (event);
+   
+   // as a key
+   _KeyboardUpEvent.keyCode = KeyCodes.LeftMouseButton;
+   _KeyboardUpEvent.charCode = 0;
+   _KeyboardUpEvent.ctrlKey = event.ctrlKey;
+   _KeyboardUpEvent.shiftKey = event.shiftKey;
+   _KeyboardUpEvent.altKey = event.altKey;
+   HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
+   KeyReleased (KeyCodes.LeftMouseButton);
    
    if (IsInteractiveEnabledNow ())
    {

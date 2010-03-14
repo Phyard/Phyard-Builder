@@ -25,7 +25,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityTask extends EntityLogic implements EntityCondition 
+   public class EntityTask extends EntityLogic implements ICondition 
    {
       public static var kRadius:Number = 16;
       public static var kRadius1:Number = 6;
@@ -186,15 +186,20 @@ package editor.trigger.entity {
       
       override public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
       {
-         if (toEntity is EntityInputEntityAssigner)
+         if (toEntity is IEntityLimiter)
          {
-            var index:int = mEntityAssignerList.indexOf (toEntity);
-            if (index >= 0)
-               mEntityAssignerList.splice (index, 1);
-            else
-               mEntityAssignerList.push (toEntity);
+            var limitor:IEntityLimiter = toEntity as IEntityLimiter;
             
-            return true;
+            if (! limitor.IsPairLimiter ())
+            {
+               var index:int = mEntityAssignerList.indexOf (toEntity);
+               if (index >= 0)
+                  mEntityAssignerList.splice (index, 1);
+               else
+                  mEntityAssignerList.push (toEntity);
+               
+               return true;
+            }
          }
          
          return false;

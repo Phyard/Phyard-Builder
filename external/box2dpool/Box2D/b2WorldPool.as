@@ -9,7 +9,7 @@ package Box2D {
    import Box2D.Collision.Shapes.*;
    import Box2D.Common.*;
    
-   import Box2dEx.BroadPhase.SweepAndPrune.b2eBroadPhase_SweepAndPrune;
+   //import Box2dEx.BroadPhase.SweepAndPrune.b2eBroadPhase_SweepAndPrune;
    
    public class b2WorldPool 
    {

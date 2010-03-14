@@ -30,7 +30,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityConditionDoor extends EntityLogic implements EntityCondition 
+   public class EntityConditionDoor extends EntityLogic implements ICondition 
    {
       public static const kHalfWidth:Number = 12;
       public static const kHalfHeight:Number = 12;
@@ -131,10 +131,10 @@ package editor.trigger.entity {
             if (num > conditionTargetValues.length)
                num = conditionTargetValues.length;
             
-            var condition:EntityCondition;
+            var condition:ICondition;
             for (var i:int = 0; i < num; ++ i)
             {
-               condition = mWorld.GetEntityByCreationId (conditionEntityCreationIds [i]) as EntityCondition;
+               condition = mWorld.GetEntityByCreationId (conditionEntityCreationIds [i]) as ICondition;
                
                if (condition != null)
                   mInputConditions.push (new ConditionAndTargetValue (condition, conditionTargetValues [i]));
@@ -330,9 +330,9 @@ package editor.trigger.entity {
       {
          ValidateEntityLinks ();
          
-         if (toEntity is EntityCondition)
+         if (toEntity is ICondition)
          {
-            var condition:EntityCondition = toEntity as EntityCondition;
+            var condition:ICondition = toEntity as ICondition;
             var point1:Point;
             var point2:Point;
             var zone_id1:int;
@@ -350,7 +350,7 @@ package editor.trigger.entity {
                
                if (zone_id1 == ZoneId_In && zone_id2 == ZoneId_Out)
                {
-                  if (HasDirectInput (toEntity as EntityCondition, target_value, true))
+                  if (HasDirectInput (toEntity as ICondition, target_value, true))
                      return true;
                   
                   if (! IsInputOf (condition as EntityConditionDoor) )
@@ -363,7 +363,7 @@ package editor.trigger.entity {
             }
             else // basic condition
             {
-               if (HasDirectInput (toEntity as EntityCondition, target_value, true))
+               if (HasDirectInput (toEntity as ICondition, target_value, true))
                   return true;
                
                mInputConditions.push (new ConditionAndTargetValue (condition, target_value));
@@ -375,7 +375,7 @@ package editor.trigger.entity {
          return false;
       }
       
-      private function HasDirectInput (condition:EntityCondition, targetValue:int, removeInputIfTrue:Boolean=false):Boolean
+      private function HasDirectInput (condition:ICondition, targetValue:int, removeInputIfTrue:Boolean=false):Boolean
       {
          var condition_and_target:ConditionAndTargetValue;
          var input_conditions:Array = GetInputConditions ();

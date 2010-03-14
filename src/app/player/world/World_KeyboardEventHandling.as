@@ -2,9 +2,9 @@
 // keyboard event handler
 //==================================
    
-   protected var mKeyDownEventHandlerLists:Array = new Array (256);
-   protected var mKeyUpEventHandlerLists:Array = new Array (256);
-   protected var mKeyHoldEventHandlerLists:Array = new Array (256);
+   protected var mKeyDownEventHandlerLists:Array = new Array (KeyCodes.kNumKeys);
+   protected var mKeyUpEventHandlerLists:Array = new Array (KeyCodes.kNumKeys);
+   protected var mKeyHoldEventHandlerLists:Array = new Array (KeyCodes.kNumKeys);
    
    public function RegisterKeyboardEventHandler (keyboardEventHandler:EntityEventHandler_Keyboard, keyCodes:Array):void
    {
@@ -32,7 +32,7 @@
       for (var i:int = 0; i < keyCodes.length; ++ i)
       {
          var keyCode:int = keyCodes [i];
-         if (keyCode < 0 || keyCode >= 256)
+         if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
             continue;
          
          var listHead:ListElement_EventHandler = keyEventHandlerLists [keyCode];
@@ -54,7 +54,7 @@
    {
       var keyCode:int = event.keyCode;
       
-      if (keyCode < 0 || keyCode >= 256)
+      if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return;
       
       // ...
@@ -125,7 +125,7 @@
 
    private function KeyPressed (keyCode:int, charCode:int):void
    {
-      if (keyCode < 0 || keyCode >= 256)
+      if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return;
       
       var info:Array = mKeyHoldInfo [keyCode];
@@ -146,7 +146,7 @@
 
    private function KeyReleased (keyCode:int):void
    {
-      if (keyCode < 0 || keyCode >= 256)
+      if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return;
       
       var info:Array = mKeyHoldInfo [keyCode];
@@ -183,7 +183,7 @@
 
    public function IsKeyHold (keyCode:int):Boolean
    {
-      if (keyCode < 0 || keyCode >= 256)
+      if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return false;
       
       return mKeyHoldInfo [keyCode][KeyHoldInfo_IsHold];
@@ -194,9 +194,9 @@
       if (mKeyHoldInfo != null)
          return;
       
-      mKeyHoldInfo = new Array (256)
+      mKeyHoldInfo = new Array (KeyCodes.kNumKeys)
       
-      for (var keyCode:int = 0; keyCode < 256; ++ keyCode)
+      for (var keyCode:int = 0; keyCode < KeyCodes.kNumKeys; ++ keyCode)
       {
          var info:Array = new Array (4);
          mKeyHoldInfo [keyCode] = info;

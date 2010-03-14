@@ -17,6 +17,7 @@ package editor.trigger.entity {
    import editor.runtime.Resource;
    
    import common.Define;
+   import common.KeyCodes;
    
    import common.trigger.ValueDefine;
    
@@ -55,7 +56,7 @@ package editor.trigger.entity {
          for (var i:int = 0; i < keyCodes.length; ++ i)
          {
             keyCode = keyCodes [i];
-            if (keyCode >= 0 && keyCode < 256 && mKeyCodes.indexOf (keyCode) < 0)
+            if (keyCode >= 0 && keyCode < KeyCodes.kNumKeys && mKeyCodes.indexOf (keyCode) < 0)
             {
                mKeyCodes.push (keyCode);
             }

@@ -3,10 +3,10 @@ package editor.trigger.entity {
    
    public class ConditionAndTargetValue
    {
-      public var mConditionEntity:EntityCondition;
+      public var mConditionEntity:ICondition;
       public var mTargetValue:int;
       
-      public function ConditionAndTargetValue (conditionEntity:EntityCondition, targetValue:int)
+      public function ConditionAndTargetValue (conditionEntity:ICondition, targetValue:int)
       {
          mConditionEntity = conditionEntity;
          mTargetValue = targetValue;

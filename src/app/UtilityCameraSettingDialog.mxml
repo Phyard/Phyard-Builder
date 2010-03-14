@@ -12,7 +12,6 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnMainPanelCreationComplete()">
 
-
          <mx:HBox width="50%">
             <mx:Spacer width="100%" />
             <mx:VBox>
@@ -48,9 +47,6 @@
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%"/>
-         <mx:HBox width="100%">
-            <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
-         </mx:HBox>
       </mx:VBox>
    </mx:TabNavigator>
 

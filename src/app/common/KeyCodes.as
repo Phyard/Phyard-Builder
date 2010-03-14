@@ -53,5 +53,12 @@ package common {
       public static const BackSlash:int = 220; // ;
       public static const RightSquareBracket:int = 221; // ;
       public static const Quote:int = 222; // ;
+      
+     
+      // mouse
+      public static const LeftMouseButton:int = 256;
+      
+      //
+      public static const kNumKeys:int = 257;
    }
 }

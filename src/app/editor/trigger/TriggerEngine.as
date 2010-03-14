@@ -124,5 +124,15 @@ package editor.trigger {
       {
          return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_Bool);
       }
+      
+      public static function GetEntityFilterFunctionDeclaration ():FunctionDeclaration_Core
+      {
+         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_EntityFilter);
+      }
+      
+      public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration_Core
+      {
+         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_EntityPairFilter);
+      }
    }
 }

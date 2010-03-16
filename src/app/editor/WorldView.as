@@ -1192,9 +1192,12 @@ package editor {
       public var mButtonSaveWorld:Button;
       public var mButtonLoadWorld:Button;
       
+      public var mButtonHideVisibleEntities:Button;
+      public var mButtonHideInvisibleEntities:Button;
       public var mButtonHideShapes:Button;
       public var mButtonHideJoints:Button;
       public var mButtonHideTriggers:Button;
+      public var mButtonHideLinks:Button;
       
       public var SetBatchSettingMenuItemsEnabled:Function;
       
@@ -1352,6 +1355,14 @@ package editor {
                Play_Stop ();
                break;
             
+            case mButtonHideVisibleEntities:
+               mEditorWorld.SetVisiblesVisible (! mButtonHideVisibleEntities.selected);
+               OnSelectedEntitiesChanged ();
+               break;
+            case mButtonHideInvisibleEntities:
+               mEditorWorld.SetInvisiblesVisible (! mButtonHideInvisibleEntities.selected);
+               OnSelectedEntitiesChanged ();
+               break;
             case mButtonHideShapes:
                mEditorWorld.SetShapesVisible (! mButtonHideShapes.selected);
                OnSelectedEntitiesChanged ();
@@ -1361,7 +1372,11 @@ package editor {
                OnSelectedEntitiesChanged ();
                break;
             case mButtonHideTriggers:
-               mEditorWorld.SetTriggerVisible (! mButtonHideTriggers.selected);
+               mEditorWorld.SetTriggersVisible (! mButtonHideTriggers.selected);
+               OnSelectedEntitiesChanged ();
+               break;
+            case mButtonHideLinks:
+               mEditorWorld.SetLinksVisible (! mButtonHideLinks.selected);
                OnSelectedEntitiesChanged ();
                break;
             
@@ -2250,7 +2265,7 @@ package editor {
       }
       
 //==================================================================================
-// trigger setting
+// editing trigger setting
 //==================================================================================
       
       //public var mStatusMessageBar:Label;
@@ -2293,9 +2308,9 @@ package editor {
          
          if (mLastSelectedEntity != null)
          {
-            var func:Function = (mLastSelectedEntity as EntityShape).SetDensity;
-            
-            func.apply (mLastSelectedEntity, [5.0]);
+            //var func:Function = (mLastSelectedEntity as EntityShape).SetDensity;
+            //
+            //func.apply (mLastSelectedEntity, [5.0]);
          }
       }
       
@@ -4038,6 +4053,9 @@ package editor {
                shape.SetAsBullet (params.mIsBullet);
                shape.SetHollow (params.mIsHollow);
                shape.SetBuildBorder (params.mBuildBorder);
+               shape.SetDensity (params.mDensity);
+               shape.SetFriction (params.mFriction);
+               shape.SetRestitution (params.mRestitution);
                
                if (params.mLinearVelocityMagnitude < 0)
                {
@@ -4803,7 +4821,7 @@ package editor {
          object.mSelectedVertexControllerId = -1;
          object.mViewCenterWorldX = mViewCenterWorldX;
          object.mViewCenterWorldY = mViewCenterWorldY;
-         object.mEditorWorldZoomScale = mEditorWorldZoomScale;
+         //object.mEditorWorldZoomScale = mEditorWorldZoomScale;
          
          for (var i:int = 0; i < entityArray.length; ++ i)
          {
@@ -4840,8 +4858,8 @@ package editor {
          mViewCenterWorldX = object.mViewCenterWorldX;
          mViewCenterWorldY = object.mViewCenterWorldY;
          
-         mEditorWorldZoomScale = object.mEditorWorldZoomScale;
-         mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
+         //mEditorWorldZoomScale = object.mEditorWorldZoomScale;
+         //mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
          
          SetEditorWorld (mEditorWorld);
          

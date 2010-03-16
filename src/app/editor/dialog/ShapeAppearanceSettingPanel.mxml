@@ -16,7 +16,7 @@
       <mx:ComboBox id="SelectList_AiType" rowCount="10"/>
    </mx:HBox>
 
-   <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+   <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
 
    <mx:HBox width="100%">
       <mx:Spacer width="60"/>

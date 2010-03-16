@@ -10,6 +10,7 @@ package player.entity {
    {
       private var mLifeDuration:Number = 1.2; // seconds
       private var mLife:Number = 0.0;
+      private var mApplyAntiGravity:Boolean = true;
       
       // ...
       
@@ -23,7 +24,7 @@ package player.entity {
          mLife = 0.0;
          SetVisible (false);
          
-         SetShapeAiType (Define.ShapeAiType_BombParticle);
+         SetShapeAiType (-1); //Define.ShapeAiType_BombParticle);
          SetRadius (mWorld.GetCoordinateSystem ().D2P_Length (0.5));//1.0));
          
          SetPhysicsEnabled (true);
@@ -35,6 +36,12 @@ package player.entity {
          SetAppearanceType (Define.EntityType_ShapeCircle);
          SetDrawBorder (false);
          SetFilledColor (0x0);
+         SetAlpha (0.0);
+      }
+      
+      public function SetAffectedByGravity (affected:Boolean):void
+      {
+         mApplyAntiGravity = affected;
       }
       
 //=============================================================
@@ -47,19 +54,28 @@ package player.entity {
          
          mLife += dt;
          
-         SetVisible (mLife > 0);
-         
-         if (mLife > mLifeDuration)
+         if (mLifeDuration > 0.0)
          {
-            Destroy ();
+            if (mLife > mLifeDuration)
+            {
+               mWorld.NotifyParticleDestroy ();
+               Destroy ();
+               return;
+            }
+            else
+            {
+               SetAlpha ((mLifeDuration - mLife) / mLifeDuration);
+            }
          }
          else
          {
-            SetAlpha ((mLifeDuration - mLife) / mLifeDuration);
-            
+            SetAlpha (1.0);
+         }
+         
+         if (mApplyAntiGravity)
+         {
             mBody.ApplyForceAtPoint (- mMass * mWorld.GetLastStepGravityAccelerationX (), - mMass * mWorld.GetLastStepGravityAccelerationY (), mPositionX, mPositionY);
          }
       }
-      
    }
 }

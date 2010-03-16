@@ -497,7 +497,7 @@ public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = fals
 // misc 
 //================================================================
 
-public static function CreateParticle (world:World, posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, lifeDuration:Number, ccat:CollisionCategory):EntityShape_Particle
+public static function CreateParticle (world:World, posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, restitution:Number, lifeDuration:Number, color:uint, isVisible:Boolean, ccat:CollisionCategory):EntityShape_Particle
 {
    var body:EntityBody = new EntityBody (world);
    world.RegisterEntity (body);
@@ -510,6 +510,9 @@ public static function CreateParticle (world:World, posX:Number, posY:Number, ve
    particle.SetLinearVelocityX (velocityX);
    particle.SetLinearVelocityY (velocityY);
    particle.SetDensity (density);
+   particle.SetRestitution (restitution);
+   particle.SetFilledColor (color);
+   particle.SetVisible (isVisible);
    particle.SetBody (body);
    particle.SetCollisionCategory (ccat);
    

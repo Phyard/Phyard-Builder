@@ -37,7 +37,7 @@
             <mx:Label id="Label_CustomBottom" text="Height:" textAlign="right" width="60"/>
             <mx:NumericStepper id="NumericStepper_CustomHeight" stepSize="1" width="80" />
          </mx:HBox>
-         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
          <mx:HBox width="100%">
             <mx:Label text="Background Color:" textAlign="right" width="30%"/>
             <mx:ColorPicker id="ColorPicker_BackgroundColor" showTextField="true" selectedColor="0xDDDDA0"/>
@@ -45,7 +45,7 @@
             <mx:Label text="Scene Border Color:" textAlign="right" width="31%"/>
             <mx:ColorPicker id="ColorPicker_BorderColor" showTextField="true" selectedColor="0x606060"/>
          </mx:HBox>
-         <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
          <mx:HBox width="100%">
             <mx:CheckBox id="CheckBox_BuildBorder" label="Build Border" click="OnBuildBorderClick ()"/>
             <mx:Spacer width="100%"/>

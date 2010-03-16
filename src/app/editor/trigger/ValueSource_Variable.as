@@ -18,9 +18,9 @@ package editor.trigger {
          SetVariableInstance (variableInstacne);
       }
       
-      public function ToCodeString ():String
+      public function SourceToCodeString (vd:VariableDefinition):String
       {
-         return mVariableInstance.ToCodeString_ForSource ();
+         return mVariableInstance.SourceToCodeString (vd);
       }
       
       public function GetVariableInstance ():VariableInstance

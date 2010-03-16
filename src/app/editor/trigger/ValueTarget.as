@@ -14,7 +14,7 @@ package editor.trigger {
       
       function ValidateTarget ():void;
       
-      function ToCodeString ():String;
+      function TargetToCodeString ():String;
    }
 }
 

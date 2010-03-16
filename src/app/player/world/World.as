@@ -330,6 +330,8 @@ package player.world {
 //   some world data
 //==============================================================================
       
+   // ...
+      
       private var mNumSimulatedSteps:int = 0;
       
       public function GetSimulatedSteps ():int
@@ -337,12 +339,16 @@ package player.world {
          return mNumSimulatedSteps;
       }
       
+   // ...
+      
       private var mLevelSimulatedTime:Number = 0.0;
       
       public function GetLevelMilliseconds ():Number
       {
          return mLevelSimulatedTime * 1000.0;
       }
+      
+   // ...
       
       private var mLastSimulatedStepInterval:Number = 0.0;
       
@@ -358,12 +364,16 @@ package player.world {
          return mLastSimulatedStepInterval_Inv;
       }
       
+   // ...
+      
       private var mIsPaused:Boolean = false;
       
       public function SetPaused (paused:Boolean):void
       {
          mIsPaused = paused;
       }
+      
+   // ...
       
 //=============================================================
 //   init
@@ -410,8 +420,6 @@ package player.world {
       //------------------------------------
          
          InitPhysics ();
-         
-         mNumSimulatedSteps = 0;
          
       //------------------------------------
       // ai init
@@ -508,7 +516,7 @@ package player.world {
          
       // ...
          
-         var dt:Number = Define.WorldStepTimeInterval * 0.5;
+         var dt:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5;
          
          if (escapedTime1 == 0)
             dt = 0;

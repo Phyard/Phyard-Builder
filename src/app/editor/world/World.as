@@ -979,15 +979,23 @@ package editor.world {
 //   queries
 //=================================================================================
       
+      private var mVisiblesVisible:Boolean = true;
+      private var mInvisiblesVisible:Boolean = true;
       private var mShapesVisible:Boolean = true;
       private var mJointsVisible:Boolean = true;
       private var mTriggersVisible:Boolean = true;
+      private var mLinksVisible:Boolean = true;
       
-      public function MakeAllEntitiesVisible ():void
+      public function SetVisiblesVisible (visible:Boolean):void
       {
-         mShapesVisible = true;
-         mJointsVisible = true;
-         mTriggersVisible = true;
+         mVisiblesVisible = visible;
+         
+         UpdateEntityVisibility ();
+      }
+      
+      public function SetInvisiblesVisible (visible:Boolean):void
+      {
+         mInvisiblesVisible = visible;
          
          UpdateEntityVisibility ();
       }
@@ -1006,9 +1014,16 @@ package editor.world {
          UpdateEntityVisibility ();
       }
       
-      public function SetTriggerVisible (visible:Boolean):void
+      public function SetTriggersVisible (visible:Boolean):void
       {
          mTriggersVisible = visible;
+         
+         UpdateEntityVisibility ();
+      }
+      
+      public function SetLinksVisible (visible:Boolean):void
+      {
+         mLinksVisible = visible;
          
          UpdateEntityVisibility ();
       }
@@ -1027,17 +1042,29 @@ package editor.world {
             if (entity == null)
                continue; // should not
             
-            if (entity is EntityShape || entity is EntityUtility)
+            if (entity.IsVisible ())
             {
-               entity.visible = mShapesVisible;
+               entity.visible = mVisiblesVisible;
             }
-            else if (entity is EntityJoint || entity is SubEntityJointAnchor)
+            else
             {
-               entity.visible = mJointsVisible;
+               entity.visible = mInvisiblesVisible;
             }
-            else if (entity is EntityLogic)
+            
+            if (entity.visible)
             {
-               entity.visible = mTriggersVisible;
+               if (entity is EntityShape || entity is EntityUtility)
+               {
+                  entity.visible = mShapesVisible;
+               }
+               else if (entity is EntityJoint || entity is SubEntityJointAnchor)
+               {
+                  entity.visible = mJointsVisible;
+               }
+               else if (entity is EntityLogic)
+               {
+                  entity.visible = mTriggersVisible;
+               }
             }
             
             if ( (! entity.visible) && entity.IsSelected ())

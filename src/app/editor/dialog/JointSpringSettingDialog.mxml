@@ -19,7 +19,7 @@
 
             <mx:Spacer height="6"/>
             <mx:HBox width="100%">
-               <mx:HRule  strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+               <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
             </mx:HBox>
             <mx:Spacer height="6"/>
 

@@ -774,6 +774,13 @@ package Box2D.Dynamics
 				ResetMassData ();
 		}
 
+		private var mViewZeroMassAsStatic:Boolean = false;
+		
+		public function SetViewZeroMassAsStatic (asStatic:Boolean):void
+		{
+			mViewZeroMassAsStatic = asStatic;
+		}
+
 		public function CoincideWithCentroid ():Boolean//b2Vec2
 		{
 			//b2Assert(m_world->IsLocked() == false);

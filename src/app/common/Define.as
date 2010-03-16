@@ -51,7 +51,8 @@ package common {
       public static const DefaultPlayerWidth:int = 600;
       public static const DefaultPlayerHeight:int = 600;
       
-      public static const WorldStepTimeInterval:Number = 1.0 / 30;
+      public static const WorldStepTimeInterval_SpeedX2:Number = 1.0 / 30;
+      public static const WorldStepTimeInterval_SpeedX1:Number = 0.5 * WorldStepTimeInterval_SpeedX2;
       
       public static function IsNormalScene (sceneLeft:int, sceneTop:int, sceneWidth:int, sceneHeight:int):Boolean
       {
@@ -122,6 +123,9 @@ package common {
       public static const MinBombSquareSideLength:uint = MinBombRadius * 2; // don't change
       public static const MaxBombSquareSideLength:uint = MaxBombRadius * 2;
       public static const DefaultBombSquareSideLength:uint = 16;
+      
+      public static const MinNumParticls_CreateExplosion:int = 4;
+      public static const MaxNumParticls_CreateExplosion:int = 100;
       
 //===========================================================================
 // hinge

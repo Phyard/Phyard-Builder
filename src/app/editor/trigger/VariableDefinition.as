@@ -303,8 +303,9 @@ package editor.trigger {
             return null;
          }
          
-         public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
+         public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
          {
+            return null;
          }
       
    //==============================================================================

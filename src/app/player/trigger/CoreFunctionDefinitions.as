@@ -188,6 +188,10 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_CallScriptMultiTimes,                    CallScriptMultiTimes);
          RegisterCoreFunction (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes,              CallBoolFunctionMultiTimes);
          
+      // game / world / create
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_World_CreateExplosion,                            CreateExplosion);
+         
       // game / collision category
          
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_Assign,                                       AssignCollisionCategory);
@@ -1399,6 +1403,56 @@ package player.trigger {
          {
             while (boolFunction.RunBoolFunction ());
          }
+      }
+      
+   //*******************************************************************
+   // game / world / create
+   //*******************************************************************
+      
+      public static function CreateExplosion (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var worldX:Number = Number (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var worldY:Number = Number (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var numParticles:int = int (valueSource.EvalateValueObject ());
+         if (numParticles > Define.MaxNumParticls_CreateExplosion)
+            numParticles = Define.MaxNumParticls_CreateExplosion;
+         else if (numParticles < Define.MinNumParticls_CreateExplosion)
+            numParticles = Define.MinNumParticls_CreateExplosion;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var lifeSteps:int = int (valueSource.EvalateValueObject ());
+         if (lifeSteps < 0)
+            lifeSteps = 0;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var density:Number = Number (valueSource.EvalateValueObject ());
+         if (density < 0.0)
+            density = 0.0;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var restitution:Number = Number (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var speed:Number = Number (valueSource.EvalateValueObject ());
+         if (speed < 0.0)
+            speed = - speed;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var color:uint = uint (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var visible:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var cat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         numParticles = Global.GetCurrentWorld ().CreateExplosion (worldX, worldY, cat, numParticles, lifeSteps * Define.WorldStepTimeInterval_SpeedX1, density, restitution, speed, 1.0, color, visible);
+         
+         valueTarget.AssignValueObject (numParticles);
       }
       
    //*******************************************************************

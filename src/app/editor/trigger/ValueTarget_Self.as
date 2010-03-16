@@ -13,7 +13,7 @@ package editor.trigger {
          mValueObject = valueObject;
       }
       
-      public function ToCodeString ():String
+      public function TargetToCodeString ():String
       {
          return "this";
       }

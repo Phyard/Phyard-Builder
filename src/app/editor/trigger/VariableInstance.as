@@ -45,16 +45,6 @@ package editor.trigger {
          }
       }
       
-      public function ToCodeString_ForSource ():String
-      {
-         return ToCodeStringForSourceOrTarget (false);
-      }
-      
-      public function ToCodeString_ForTarget ():String
-      {
-         return ToCodeStringForSourceOrTarget (true);
-      }
-      
       private function ToCodeStringForSourceOrTarget (forTarget:Boolean):String
       {
          if (mIndex < 0)
@@ -65,9 +55,14 @@ package editor.trigger {
             return mVariableSpace.GetCodeName () + "[\"" + mName + "\"]";
       }
       
-      public function ToCodeString ():String
+      public function SourceToCodeString (vd:VariableDefinition):String
       {
-         return null;
+         return ToCodeStringForSourceOrTarget (false);
+      }
+      
+      public function TargetToCodeString ():String
+      {
+         return ToCodeStringForSourceOrTarget (true);
       }
       
       public function GetVariableSpace ():VariableSpace

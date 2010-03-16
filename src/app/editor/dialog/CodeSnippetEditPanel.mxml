@@ -205,6 +205,8 @@
          
          private function OnSwitchCodeFormat ():void
          {
+            RetrieveCurrentCommandValueSourcesFromControls ();
+            
             Runtime.mPoemCodingFormat = Button_CodeFormatSwitch.selected;
             if (Button_CodeFormatSwitch.selected)
             {
@@ -775,11 +777,19 @@
                variable_def = func_declaration.GetInputParamDefinitionAt (j);
                
                if (value_source is ValueSource_Direct)
-                  variable_def.RetrieveDirectValueSourceFromControl (value_source as ValueSource_Direct, source_control);
+               {
+                  var newValueSource:ValueSource = variable_def.RetrieveDirectValueSourceFromControl (value_source as ValueSource_Direct, source_control);
+                  if (newValueSource != null)
+                     currentValueSources [j] = newValueSource;
+               }
                else if (value_source is ValueSource_Variable)
+               {
                   variable_def.RetrieveVariableValueSourceFromControl (value_source as ValueSource_Variable, source_control);
+               }
                else
+               {
                   trace ("? unknow source type");
+               }
             }
             
             var value_target:ValueTarget;

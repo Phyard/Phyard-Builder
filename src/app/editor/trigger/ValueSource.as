@@ -15,7 +15,7 @@ package editor.trigger {
       
       function ValidateSource ():void;
       
-      function ToCodeString ():String;
+      function SourceToCodeString (vd:VariableDefinition):String;
    }
 }
 

@@ -4,7 +4,7 @@
 //=============================================================
 
 public static const NumParticlesToCreatedEachStep:int = 8;
-public static const ParticlesCreateingStepInterval:Number = Define.WorldStepTimeInterval * 0.5 * 0.99;
+public static const ParticlesCreateingStepInterval:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5 * 0.99;
 
 //=============================================================
 //    
@@ -13,47 +13,68 @@ public static const ParticlesCreateingStepInterval:Number = Define.WorldStepTime
 private var mBombs:Array = new Array ();
 private var mNumBombs:int = 0;
 
-private var mParticlesToCreate:int;
+private var mNumParticles:int; // include the ready to be createds
 
 public function ParticleManager_Initialize ():void
 {
    mNumBombs = 0;
+   mNumParticles = 0;
 }
 
-public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number, density:Number, ccat:CollisionCategory):void
+public function NotifyParticleDestroy ():void
+{
+   -- mNumParticles;
+}
+
+public function ExplodeBomb (posX:Number, posY:Number, radius:Number, density:Number, ccat:CollisionCategory):void
 {
    var worldDisplayRadius:Number = mCoordinateSystem.P2D_Length (radius);
    
    var numParticles:int = 32 * ( 0.5 + worldDisplayRadius * 2.0 * worldDisplayRadius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength) );
    
-   if (mParticlesToCreate + numParticles > Define.MaxCoexistParticles)
-   {
-      trace ("Too many particles to create");
-      return;
-   }
-   
-   var bomb:Object = new Object ();
-   mBombs [mNumBombs ++] = bomb;
-   
    var particleDisplaySpeed:Number = 800.0 * ( 0.20 + 2.6 * worldDisplayRadius / Number (Define.DefaultBombSquareSideLength) );
+   var particlePhysicsSpeed:Number = mCoordinateSystem.D2P_LinearVelocityMagnitude (particleDisplaySpeed);
+   
    var particleDensity:Number = 5.0 * density;
-   var particleLifeTime:Number = Define.WorldStepTimeInterval * 18 * ( 0.5 + 1.5 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
+   var particleLifeTime:Number = Define.WorldStepTimeInterval_SpeedX2 * 18 * ( 0.5 + 1.5 * worldDisplayRadius * 2.0 / Number (Define.DefaultBombSquareSideLength) );
    
    worldDisplayRadius = worldDisplayRadius - 1;
    if (worldDisplayRadius < 1)
       worldDisplayRadius = 1;
    
-   bomb.mPosX = posX;
-   bomb.mPosY = posY;
-   bomb.mRadius = mCoordinateSystem.D2P_Length (worldDisplayRadius);
-   bomb.mCollisionCategory = ccat;
+   CreateExplosion (posX, posY, ccat, numParticles, particleLifeTime, particleDensity, 0.8, particlePhysicsSpeed, worldDisplayRadius, Define.ColorBombObject, true);
+}
+
+public function CreateExplosion (posX:Number, posY:Number, ccat:CollisionCategory, numParticles:int, lifeDuration:Number, density:Number, restitution:Number, physicsSpeed:Number, worldDisplayRadius:Number, color:uint, isVisible:Boolean):int
+{
+   if (mNumParticles + numParticles > Define.MaxCoexistParticles)
+   {
+      trace ("Too many particles to create");
+      return 0;
+   }
+   
+   var wavePhysicsRadius:Number = mCoordinateSystem.D2P_Length (worldDisplayRadius);
    
    var minCountEachStep:int = NumParticlesToCreatedEachStep / 2;
-   bomb.mNumParticles = int ((numParticles + minCountEachStep - 1) / minCountEachStep) * minCountEachStep;
-   bomb.mParticleSpeed = mCoordinateSystem.D2P_LinearVelocityMagnitude (particleDisplaySpeed);
-   bomb.mParticelDensity = particleDensity;
-   bomb.mParticelLifeDuration = particleLifeTime;
+   numParticles = int ((numParticles + minCountEachStep - 1) / minCountEachStep) * minCountEachStep;
+   mNumParticles += numParticles;
+   
+   var bomb:Object = new Object ();
+   mBombs [mNumBombs ++] = bomb;
+   
+   bomb.mPosX = posX;
+   bomb.mPosY = posY;
+   bomb.mRadius = wavePhysicsRadius;
+   bomb.mCollisionCategory = ccat;
+   
+   bomb.mNumParticles = numParticles;
+   bomb.mParticleSpeed = physicsSpeed;
+   bomb.mParticleDensity = density;
+   bomb.mParticleRestitution = restitution;
+   bomb.mParticleLifeDuration = lifeDuration;
    bomb.mParticleStartIdInterval = GetParticleStartIdInterval (bomb.mNumParticles);
+   bomb.mParticleColor = color;
+   bomb.mParticleVisible = isVisible;
    
    bomb.mParticleIdCreateInterval = bomb.mNumParticles / NumParticlesToCreatedEachStep;
    bomb.mBornTime = 0;
@@ -61,11 +82,7 @@ public function ParticleManager_AddBomb (posX:Number, posY:Number, radius:Number
    bomb.mNumCreateParticles = 0;
    bomb.mParticleStartId = 0;
    
-   mParticlesToCreate += bomb.mNumParticles;
-}
-
-public function CreateExplosion ():void
-{
+   return numParticles;
 }
 
 public function ParticleManager_Update (dt:Number):void
@@ -95,8 +112,6 @@ public function ParticleManager_Update (dt:Number):void
          count = NumParticlesToCreatedEachStep;
       var idInterval:int = int (bomb.mParticleIdCreateInterval * NumParticlesToCreatedEachStep / count + 0.5);
       
-      mParticlesToCreate -= count;
-      
       var angle:Number;
       var cos:Number;
       var sin:Number;
@@ -112,8 +127,11 @@ public function ParticleManager_Update (dt:Number):void
                   bomb.mPosY + bomb.mRadius * sin, 
                   bomb.mParticleSpeed * cos, 
                   bomb.mParticleSpeed * sin, 
-                  bomb.mParticelDensity, 
-                  bomb.mParticelLifeDuration,
+                  bomb.mParticleDensity, 
+                  bomb.mParticleRestitution, 
+                  bomb.mParticleLifeDuration,
+                  bomb.mParticleColor,
+                  bomb.mParticleVisible,
                   bomb.mCollisionCategory
                );
          
@@ -127,8 +145,6 @@ public function ParticleManager_Update (dt:Number):void
          if (mNumBombs <= 0)
          {
             mNumBombs = 0;
-            //trace ("mParticlesToCreate = " + mParticlesToCreate);
-            mParticlesToCreate = 0; // remove this line when new particle type objects are intruduced in later versions
          }
          
          mBombs [mNumBombs] = null;

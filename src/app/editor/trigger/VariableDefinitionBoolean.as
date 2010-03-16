@@ -70,7 +70,7 @@ package editor.trigger {
          return box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
       {
          if (control is HBox)
          {
@@ -80,6 +80,8 @@ package editor.trigger {
             
             valueSourceDirect.SetValueObject (button_true.selected);
          }
+         
+         return null;
       }
       
       

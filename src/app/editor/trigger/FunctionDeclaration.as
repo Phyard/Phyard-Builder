@@ -493,10 +493,10 @@ package editor.trigger {
             switch (segment [0])
             {
                case kSegmentType_InputParam:
-                  callingText = callingText + (valueSources [segment [1]] as ValueSource).ToCodeString ();
+                  callingText = callingText + (valueSources [segment [1]] as ValueSource).SourceToCodeString (GetInputParamDefinitionAt(segment [1]));
                   break;
                case kSegmentType_OutputParam:
-                  callingText = callingText + (valueTargets [segment [1]] as ValueTarget).ToCodeString ();
+                  callingText = callingText + (valueTargets [segment [1]] as ValueTarget).TargetToCodeString ();
                   break;
                case kSegmentType_PlainText:
                   callingText = callingText + segment [1];

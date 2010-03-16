@@ -2,6 +2,7 @@ package editor.trigger {
    
    import common.trigger.ValueTypeDefine;
    import common.trigger.ValueSourceTypeDefine;
+   import common.DataFormat2;
    
    import editor.entity.Entity;
    import editor.entity.EntityCollisionCategory;
@@ -26,12 +27,12 @@ package editor.trigger {
          mValueObject = valueObject;
       }
       
-      public function ToCodeString ():String
+      public function SourceToCodeString (vd:VariableDefinition):String
       {
          if (mValueObject == null)
             return "null";
          
-         if (mValueObject is String)
+         if (vd is VariableDefinitionString)
          {
             var str:String = mValueObject as String;
             var pattern:RegExp;
@@ -41,6 +42,14 @@ package editor.trigger {
             str = str.replace(pattern, "\\\"");
             
             return "\"" + str + "\"";
+         }
+         else if (vd is VariableDefinitionNumber)
+         {
+            var vdn:VariableDefinitionNumber = vd as VariableDefinitionNumber;
+            if (vdn.mIsColorValue)
+            {
+               return DataFormat2.Int2ColorString (uint (mValueObject));
+            }
          }
          
          if (mValueObject.hasOwnProperty ("ToCodeString"))

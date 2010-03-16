@@ -19,7 +19,7 @@
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
          <mx:Spacer height="100%" />
-         <mx:HRule strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:HRule strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
          <mx:Spacer height="100%" />
          <mx:HBox width="100%" id="HanlderBasicSettingPanel" creationComplete="OnHanlderBasicSettingPanelCreationComplete()">
             <mx:Spacer width="100%" />

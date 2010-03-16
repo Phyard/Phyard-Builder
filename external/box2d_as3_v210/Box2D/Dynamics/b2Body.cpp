@@ -338,7 +338,6 @@ public function ResetMassData():void
 	}
 
 	//b2Assert(m_type == b2_dynamicBody);
-var nn:int = 0;
 	// Accumulate mass over all fixtures.
 	for (f = m_fixtureList; f != null; f = f.m_next)
 	{
@@ -365,6 +364,18 @@ var nn:int = 0;
 	}
 	else
 	{
+		//>>hacking
+		if (mViewZeroMassAsStatic)
+		{
+			SetType (b2_staticBody);
+			if (! mAutoUpdateMass)
+			{
+				ResetMassData ();
+			}
+			return;
+		}
+		//<<
+		
 		// Force all dynamic bodies to have a positive mass.
 		m_mass = 1.0;
 		m_invMass = 1.0;
@@ -425,6 +436,18 @@ public function SetMassData (massData:b2MassData):void
 
 	if (m_mass <= 0.0)
 	{
+		//>>hacking
+		if (mViewZeroMassAsStatic)
+		{
+			SetType (b2_staticBody);
+			if (! mAutoUpdateMass)
+			{
+				ResetMassData ();
+			}
+			return;
+		}
+		//<<
+		
 		m_mass = 1.0;
 	}
 

@@ -20,7 +20,7 @@
          </mx:HBox>
 
          <mx:Spacer height="10" />
-         <mx:HRule strokeWidth="1" strokeColor="#C0C0C0" width="100%"/>
+         <mx:HRule strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
          <mx:Spacer height="10" />
 
          <KeyboardEventHandlerSettingPanel id="KeyboardSettingPanel" creationComplete="OnKeyboardSettingPanelCreationComplete()"/>

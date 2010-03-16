@@ -4,6 +4,8 @@ package editor.trigger {
    import mx.controls.TextInput;
    import mx.controls.ComboBox;
    
+   import com.tapirgames.util.TextUtil;
+   
    import common.trigger.ValueTypeDefine;
    
    public class VariableDefinitionNumber extends VariableDefinition
@@ -17,7 +19,7 @@ package editor.trigger {
       protected var mMinValue:Number = - Number.MAX_VALUE;
       protected var mMaxValue:Number = Number.MAX_VALUE;
       
-      protected var mIsColorValue:Boolean = false;
+      internal var mIsColorValue:Boolean = false;
       
       protected var mValueLists:Array = null;
       
@@ -121,7 +123,7 @@ package editor.trigger {
          }
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
       {
          var value:Number = mDefaultValue;
          
@@ -141,17 +143,37 @@ package editor.trigger {
             {
                var text_input:TextInput = control as TextInput;
                var text:String = text_input.text;
+               text = TextUtil.TrimString (text);
                
                if (text.length > 2 && text.substr (0, 2).toLowerCase() == "0x")
+               {
                   value = parseInt (text.substr (2), 16);
+               }
+               else if (text.length > 1 && text.substr (0, 1).toLowerCase() == "#")
+               {
+                  value = parseInt (text.substr (1));
+                  if (isNaN (value))
+                  {
+                     value = mDefaultValue;
+                  }
+                  else
+                  {
+                     var vi:VariableInstance = TriggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
+                     return new ValueSource_Variable (vi);
+                  }
+               }
                else
+               {
                   value = parseFloat (text);
+               }
             }
          }
          
          value = ValidateValue (value);
          
          valueSourceDirect.SetValueObject (value);
+         
+         return null;
       }
    }
 }

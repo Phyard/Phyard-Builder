@@ -359,6 +359,7 @@ package player.entity {
          mPhysicsProxy = mPhysicsProxyBody = new PhysicsProxyBody (mWorld.GetPhysicsEngine (), this);
          //mPhysicsProxyBody.SetUserData (this);
          mPhysicsProxyBody.SetAutoUpdateMass (false);
+         mPhysicsProxyBody.SetViewZeroMassAsStatic (true);
       }
       
       public function UpdateBodyPhysicsProperties ():void

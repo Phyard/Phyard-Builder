@@ -11,7 +11,7 @@ package editor.trigger {
          return ValueTargetTypeDefine.ValueTarget_Null;
       }
       
-      public function ToCodeString ():String
+      public function TargetToCodeString ():String
       {
          return "void";
       }

@@ -63,7 +63,7 @@ package editor.trigger {
          return text_input;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
       {
          if (control is TextInput)
          {
@@ -74,6 +74,8 @@ package editor.trigger {
             
             valueSourceDirect.SetValueObject (text);
          }
+         
+         return null;
       }
    }
 }

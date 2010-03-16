@@ -4,7 +4,7 @@ package editor.undo {
    
    public class WorldHistoryManager
    {
-      private static const MaxHistories:int = 10;
+      private static const MaxHistories:int = 32;
       
       private var mCurrentWorldState:WorldState = null;
       

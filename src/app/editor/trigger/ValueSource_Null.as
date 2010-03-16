@@ -11,7 +11,7 @@ package editor.trigger {
          
       }
       
-      public function ToCodeString ():String
+      public function SourceToCodeString (vd:VariableDefinition):String
       {
          return "null";
       }

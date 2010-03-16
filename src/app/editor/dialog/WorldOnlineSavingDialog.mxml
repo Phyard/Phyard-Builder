@@ -16,7 +16,7 @@
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_IsImportant" label="Is Important" click="UpdateSaveButton ()"/>
-      <mx:Label text="(Comment can't be blank if revision is important)" textAlign="left" color="#0000FF"/>
+      <mx:Label text="(Comment can't be blank if revision is important)" textAlign="left" color="0x0000FF"/>
       <mx:Spacer width="100%"/>
    </mx:HBox>
 

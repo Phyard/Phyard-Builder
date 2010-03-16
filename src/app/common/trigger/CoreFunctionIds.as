@@ -173,6 +173,8 @@ package common.trigger {
       public static const ID_World_CallScriptMultiTimes:int                   = IdPool.CoreApiId_754; // world      
       public static const ID_World_CallBoolFunctionMultiTimes:int             = IdPool.CoreApiId_755; // world      
       
+      public static const ID_World_CreateExplosion:int                = IdPool.CoreApiId_770; // world
+      
       // VirtualClickOnEntityCenter (entity)
       
    // game / collision category

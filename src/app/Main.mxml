@@ -339,21 +339,27 @@
                               horizontalScrollPolicy="off" verticalScrollPolicy="off"
                               horizontalGap="0" verticalGap="0" borderThickness="0">
                         <mx:Spacer width="2"/>
-                        <mx:Label text="Find Entity#" textAlign="right"/>
+                        <mx:Label text="Go To Entity#" textAlign="right"/>
                         <mx:TextInput id="Text_FindEntityId" text="" width="56"/>
-                        <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
-                          <mx:Spacer width="10"/>
+                        <mx:Spacer width="5"/>
+                        <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
+                        <mx:Spacer width="5"/>
                         <mx:Label text="Show: "/>
-                        <mx:CheckBox selected="false" id="CheckBox_ShowEntityIDs" label="Entity IDs" click=";"/>
-                        <mx:CheckBox selected="true" id="CheckBox_ShowVisibleEntities" label="Visibles" click=";"/>
-                        <mx:CheckBox selected="true" id="CheckBox_ShowInVisibleEntities" label="Invisibles" click=";"/>
-                        <mx:CheckBox selected="true" id="CheckBox_ShowShapes" label="Shape" click=";"/>
-                        <mx:CheckBox selected="true" id="CheckBox_ShowStaticShapes" label="Statics" click=";"/>
-                        <mx:CheckBox selected="true" id="CheckBox_ShowMovablesShapes" label="Movables" click=";"/>
-                        <mx:CheckBox selected="true" id="CheckBox_ShowJoints" label="Joints" click=";"/>
-                        <mx:CheckBox selected="true" id="CheckBox_ShowTriggers" label="Triggers" click=";"/>
-                        <mx:CheckBox selected="true" id="CheckBox_ShowLinks" label="Links" click=";"/>
-                          <mx:Spacer width="100%"/>
+                        <mx:CheckBox selected="false" id="CheckBox_HideEntityIDs" label="Entity IDs" click=";"/>
+                        <mx:CheckBox selected="false" id="CheckBox_HideLinks" label="Links" click=";"/>
+                        <mx:Spacer width="5"/>
+                        <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
+                        <mx:Spacer width="5"/>
+                        <mx:Label text="Hide: "/>
+                        <mx:CheckBox selected="false" id="CheckBox_HideVisibleEntities" label="Visibles" click=";"/>
+                        <mx:CheckBox selected="false" id="CheckBox_HideInvisibleEntities" label="Invisibles" click=";"/>
+                        <mx:CheckBox selected="false" id="CheckBox_HideShapes" label="Shapes" click=";"/>
+                        <mx:CheckBox selected="false" id="CheckBox_HideJoints" label="Joints" click=";"/>
+                        <mx:CheckBox selected="false" id="CheckBox_HideTriggers" label="Triggers" click=";"/>
+                        <mx:Spacer width="5"/>
+                        <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
+                        <mx:Spacer width="5"/>
+                        <mx:Spacer width="100%"/>
                         <mx:Button id="Button_ZoomOut" click="ZoomOut ()" focusEnabled="false" fontSize="8"  width="17" height="17" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-out.png')" />
                         <mx:Button id="Button_ZoomIn" click="ZoomIn ()" focusEnabled="false" fontSize="8"  width="17" height="17" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-in.png')" />
                         <mx:Spacer width="2"/>
@@ -375,22 +381,22 @@
                            <mx:Spacer width="100%"/>
                         </mx:HBox>
                         <mx:HBox id="Box_PlayingWorldInfo" borderStyle="none" height="100%" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
-                           <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
+                           <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
                            <mx:Label id="Label_RunningFps" text="fps: 30.01"/>
-                           <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
+                           <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
                            <mx:Label id="Label_RunningSteps" text="step: 100"/>
-                           <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
+                           <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
                            <mx:Spacer width="100%"/>
                         </mx:HBox>
                      </mx:ViewStack>
                      <mx:Spacer width="1"/>
-                     <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
                      <mx:Label id="Label_EntityDisplayPosition" text="" minWidth="100"/>
-                     <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
                      <mx:Label id="Label_EntityPhysicsPosition" text="" minWidth="116"/>
-                     <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
                      <!--
-                     <mx:VRule strokeWidth="1" strokeColor="#C0C0C0" height="100%"/>
+                     <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%"/>
                      <mx:Label text="Map" click="ShowMiniMap ();"/>
                      -->
                   </mx:Box>
@@ -728,9 +734,12 @@
                MainView.mButtonSaveWorld = Button_SaveDesign;
                MainView.mButtonLoadWorld = Button_OpenDesign;
                
-               MainView.mButtonHideShapes = CheckBox_ShowShapes;
-               MainView.mButtonHideJoints = CheckBox_ShowJoints;
-               MainView.mButtonHideTriggers = CheckBox_ShowTriggers;
+               MainView.mButtonHideVisibleEntities = CheckBox_HideVisibleEntities;
+               MainView.mButtonHideInvisibleEntities = CheckBox_HideInvisibleEntities;
+               MainView.mButtonHideShapes = CheckBox_HideShapes;
+               MainView.mButtonHideJoints = CheckBox_HideJoints;
+               MainView.mButtonHideTriggers = CheckBox_HideTriggers;
+               MainView.mButtonHideLinks = CheckBox_HideLinks;
                
                MainView.mButton_Play = Button_Play;
                MainView.mButton_Stop = Button_Stop;
@@ -759,9 +768,12 @@
                Button_SaveDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_OpenDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                
-               CheckBox_ShowShapes.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               CheckBox_ShowJoints.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               CheckBox_ShowTriggers.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               CheckBox_HideVisibleEntities.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               CheckBox_HideInvisibleEntities.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               CheckBox_HideShapes.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               CheckBox_HideJoints.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               CheckBox_HideTriggers.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               CheckBox_HideLinks.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                
                Button_Play.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_Stop.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);

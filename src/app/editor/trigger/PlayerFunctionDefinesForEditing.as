@@ -5,12 +5,13 @@ package editor.trigger {
    import editor.entity.EntityShape;
    import editor.entity.EntityJoint;
    import editor.entity.EntityShapeText;
+   import editor.trigger.Lists;
    
    import common.trigger.CoreFunctionIds;
    import common.trigger.ValueTypeDefine;
-   import editor.trigger.Lists;
    
    import common.trigger.IdPool;
+   import common.Define;
    
    public class PlayerFunctionDefinesForEditing
    {
@@ -51,6 +52,7 @@ package editor.trigger {
          //var world_appearance_package:FunctionPackage    = new FunctionPackage ("Appearance", sWorldPackage);
          var world_camera_package:FunctionPackage    = new FunctionPackage ("Camera", sWorldPackage);
          var world_script_package:FunctionPackage    = new FunctionPackage ("Script", sWorldPackage);
+         var world_create_entity_package:FunctionPackage    = new FunctionPackage ("Create", sWorldPackage);
          
          var entity_as_task_package:FunctionPackage    = new FunctionPackage ("Task Status", sEntityPackage);
          var entity_shape_package:FunctionPackage = new FunctionPackage ("Shape", sEntityPackage);
@@ -960,6 +962,27 @@ package editor.trigger {
                      ],
                      null
                   );
+         
+     // game / world / create ...
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CreateExplosion, world_create_entity_package, "Create Explosion", null, null,
+                     [
+                              new VariableDefinitionNumber ("Explosion World X", null, {mDefaultValue: 0}), 
+                              new VariableDefinitionNumber ("Explosion World Y", null, {mDefaultValue: 0}), 
+                              new VariableDefinitionNumber ("Number of Particles (4-100)", null, {mDefaultValue: 64, mMinValue: Define.MinNumParticls_CreateExplosion, mMaxValue: Define.MaxNumParticls_CreateExplosion}), 
+                              new VariableDefinitionNumber ("Life (steps)", null, {mDefaultValue: 60, mMinValue:0}), 
+                              new VariableDefinitionNumber ("Particle Density", null, {mDefaultValue: 25.0, mMinValue: 0.0}), 
+                              new VariableDefinitionNumber ("Particle Restitution", null, {mDefaultValue: 0.8, mMinValue: 0.0, mMaxValue:1.0}), 
+                              new VariableDefinitionNumber ("Particle Speed", null, {mDefaultValue: 50.0, mMinValue: 0.0}), 
+                              new VariableDefinitionNumber ("Particle Color", null, {mDefaultValue: 0x0, mIsColorValue: true}), 
+                              new VariableDefinitionBoolean ("Is Particle Visible?", null, {mDefaultValue: true}),
+                              new VariableDefinitionCollisionCategory ("Particle Collision Category"), 
+                     ],
+                     [
+                              new VariableDefinitionNumber ("Number of Created Particles"), 
+                     ]
+                  );
+         
          
      // game / collision category
          

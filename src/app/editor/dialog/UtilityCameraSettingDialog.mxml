@@ -28,7 +28,7 @@
             <mx:Spacer width="30" />
          </mx:HBox>
          
-         <mx:VRule  strokeWidth="1" strokeColor="#C0C0C0" height="100%" width="2%"/>
+         <mx:VRule  strokeWidth="1" strokeColor="0xC0C0C0" height="100%" width="2%"/>
          
          <mx:HBox width="50%">
             <mx:Spacer width="30" />

@@ -12,7 +12,7 @@ package editor.trigger {
       {
       }
       
-      public function ToCodeString ():String
+      public function TargetToCodeString ():String
       {
          return "property (not supproted now)";
       }

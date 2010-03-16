@@ -53,6 +53,11 @@ package player.physics {
          _b2Body.SetAutoUpdateMass (auto);
       }
       
+      public function SetViewZeroMassAsStatic (asStatic:Boolean):void
+      {
+         _b2Body.SetViewZeroMassAsStatic (asStatic);
+      }
+      
       public function ResetMass ():void
       {
          _b2Body.ResetMassData ();

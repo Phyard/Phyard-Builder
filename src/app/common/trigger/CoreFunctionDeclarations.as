@@ -915,6 +915,26 @@ package common.trigger {
                      null
                   );
          
+     // game / world / create ...
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CreateExplosion,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,  
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         
      // game / world / appearance
          
          
@@ -1113,7 +1133,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Entity, 
                      ],
                      [
-                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,  
                      ]
                   );
@@ -1414,6 +1434,7 @@ package common.trigger {
          //            null
          //         );
          
+         // todo: use single instead of double
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -1431,6 +1452,7 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY, 
                      ]
                   );
+         // todo: use single instead of double
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,
                      [
                         ValueTypeDefine.ValueType_Entity, 

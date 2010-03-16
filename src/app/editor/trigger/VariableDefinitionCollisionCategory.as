@@ -60,7 +60,7 @@ package editor.trigger {
          return combo_box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):void
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
       {
          if (control is ComboBox)
          {
@@ -78,6 +78,8 @@ package editor.trigger {
                   valueSourceDirect.SetValueObject (world.GetCollisionCategoryByIndex (category_index));
             }
          }
+         
+         return null;
       }
    }
 }

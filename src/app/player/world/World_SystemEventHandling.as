@@ -122,10 +122,10 @@ private function OnAddedToStage (event:Event):void
    addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
    addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
    addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
-   addEventListener (MouseEvent.MOUSE_OVER, OnOtherMouseEvents);
-   addEventListener (MouseEvent.MOUSE_OUT, OnOtherMouseEvents);
-   addEventListener (MouseEvent.ROLL_OVER, OnOtherMouseEvents);
-   addEventListener (MouseEvent.ROLL_OUT, OnOtherMouseEvents);
+   //addEventListener (MouseEvent.MOUSE_OVER, OnOtherMouseEvents);
+   //addEventListener (MouseEvent.MOUSE_OUT, OnOtherMouseEvents);
+   //addEventListener (MouseEvent.ROLL_OVER, OnOtherMouseEvents);
+   //addEventListener (MouseEvent.ROLL_OUT, OnOtherMouseEvents);
    //addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
    
    // ...
@@ -310,6 +310,9 @@ public function OnOtherMouseEvents (event:MouseEvent):void
 
 public function RegisterMouseEvent (event:MouseEvent, handlerList:ListElement_EventHandler, shape:EntityShape = null):void
 {
+   if (handlerList == null)
+      return;
+   
    var valueSource7:ValueSource_Direct = new ValueSource_Direct (null); // is overlapped by some entities
    var valueSource6:ValueSource_Direct = new ValueSource_Direct (null, valueSource7); // alt down
    var valueSource5:ValueSource_Direct = new ValueSource_Direct (null, valueSource6); // shift down
@@ -327,6 +330,7 @@ public function RegisterMouseEvent (event:MouseEvent, handlerList:ListElement_Ev
    
    if (shape == null)
    {
+      valueSource7.mValueObject = IsContentLayerContains (event.target as DisplayObject); // for world event only
       mCachedSystemEvents.push ([CachedEventType_General, handlerList, valueSource1]);
    }
    else
@@ -385,6 +389,10 @@ public function RegisterKeyboardEvent (event:KeyboardEvent, handleListArray:Arra
    if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
       return;
    
+   var handlerList:ListElement_EventHandler = handleListArray [keyCode];
+   if (handlerList == null)
+      return;
+   
    var valueSource4:ValueSource_Direct = new ValueSource_Direct (null);
    var valueSource3:ValueSource_Direct = new ValueSource_Direct (null, valueSource4);
    var valueSource2:ValueSource_Direct = new ValueSource_Direct (null, valueSource3);
@@ -397,7 +405,7 @@ public function RegisterKeyboardEvent (event:KeyboardEvent, handleListArray:Arra
    valueSource3.mValueObject = event.shiftKey;
    valueSource4.mValueObject = mKeyHoldInfo [keyCode][KeyHoldInfo_Ticks];
    
-   mCachedSystemEvents.push ([CachedEventType_General, handleListArray [keyCode], valueSource0]);
+   mCachedSystemEvents.push ([CachedEventType_General, handlerList, valueSource0]);
 }
 
 //=============================================================

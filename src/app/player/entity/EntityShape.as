@@ -285,8 +285,7 @@ package player.entity {
       
       public function IsStatic ():Boolean
       {
-         //return mIsStatic;
-         return mBody.IsStatic ();
+         return mIsStatic; // this value may be different with mBody.IsStatic ()
       }
       
       public function SetAsBullet (bullet:Boolean):void

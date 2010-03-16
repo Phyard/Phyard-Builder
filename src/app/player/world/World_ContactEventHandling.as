@@ -220,25 +220,26 @@ private function FindEventHandlerForEntityPair (eventId:int, entityId1:int, enti
 {
    // assume all params are valid
    
-   var event_handler:EntityEventHandler = mEventHandlers [eventId];
    var result:int;
    var list_head:ListElement_EventHandler;
    var list_element:ListElement_EventHandler;
    
-   while (event_handler != null)
+   var handler_element:ListElement_EventHandler = mEventHandlers [eventId];
+   
+   while (handler_element != null)
    {
-      result = EntityInputEntityAssigner.GetContainingEntityPairResult (event_handler.mFirstEntityAssigner, entityId1, entityId2, ignorePairOrder);
+      result = EntityInputEntityAssigner.GetContainingEntityPairResult (handler_element.mEventHandler.mFirstEntityAssigner, entityId1, entityId2, ignorePairOrder);
       
       if (result != EntityInputEntityAssigner.ContainingResult_False)
       {
-         list_element = new ListElement_EventHandler (event_handler);
+         list_element = new ListElement_EventHandler (handler_element.mEventHandler);
          list_element.mNeedExchangePairOrder = result == EntityInputEntityAssigner.ContainingResult_TrueButNeedExchangePairOrder;
          
          list_element.mNextListElement = list_head;
          list_head = list_element;
       }
       
-      event_handler = event_handler.mNextEntityEventHandlerOfTheSameType;
+      handler_element = handler_element.mNextListElement;
    }
    
    return list_head;

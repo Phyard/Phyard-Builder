@@ -15,7 +15,7 @@ package player.trigger.entity
    
    public class EntityEventHandler extends EntityLogic
    {
-      public var mNextEntityEventHandlerOfTheSameType:EntityEventHandler = null;
+      //public var mNextEntityEventHandlerOfTheSameType:EntityEventHandler = null;
       
       public var mExternalCondition:ConditionAndTargetValue = null;
       

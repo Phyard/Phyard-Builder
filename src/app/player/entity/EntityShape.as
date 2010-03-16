@@ -615,33 +615,19 @@ package player.entity {
          }
       }
       
-   // for physics shapes
+   // for physics shapes, called by world
       
-      public function OnPhysicsShapeMouseDown(valueSourceList:ValueSource):void
+      public function OnPhysicsShapeMouseDown (event:MouseEvent):void
       {
-         var listElement:ListElement_EventHandler = mPhyicsShapeMouseDownEventHandlerList;
-         
-         while (listElement != null)
-         {
-            listElement.mEventHandler.HandleEvent (valueSourceList);
-            
-            listElement = listElement.mNextListElement;
-         }
+         HandleMouseEvent (event, mPhyicsShapeMouseDownEventHandlerList, false);
       }
       
-      public function OnPhysicsShapeMousUp(valueSourceList:ValueSource):void
+      public function OnPhysicsShapeMousUp (event:MouseEvent):void
       {
-         var listElement:ListElement_EventHandler = mPhyicsShapeMouseUpEventHandlerList;
-         
-         while (listElement != null)
-         {
-            listElement.mEventHandler.HandleEvent (valueSourceList);
-            
-            listElement = listElement.mNextListElement;
-         }
+         HandleMouseEvent (event, mPhyicsShapeMouseUpEventHandlerList, false);
       }
       
-   // ...
+   // for all shape, called by flex framework
       
       protected function OnMouseClick (event:MouseEvent):void
       {
@@ -673,20 +659,16 @@ package player.entity {
          HandleMouseEvent (event, mMouseOutEventHandlerList);
       }
       
-      private function HandleMouseEvent (event:MouseEvent, listElement:ListElement_EventHandler):void
+      private function HandleMouseEvent (event:MouseEvent, listElement:ListElement_EventHandler, updateWorldMouseInfo:Boolean = true):void
       {
-         if (! mWorld.IsInteractiveEnabledNow ())
-            return;
-         
-         var valueSourceList:ValueSource_Direct = mWorld.MouseEvent2ValueSourceList (event);
-         
-         valueSourceList.mValueObject = this;
-         
-         while (listElement != null)
+         if (updateWorldMouseInfo)
          {
-            listElement.mEventHandler.HandleEvent (valueSourceList);
-            
-            listElement = listElement.mNextListElement;
+            mWorld.UpdateMousePositionAndHoldInfo (event);
+         }
+         
+         if (mWorld.IsInteractiveEnabledNow ())
+         {
+            mWorld.RegisterMouseEvent (event, listElement, this);
          }
       }
       

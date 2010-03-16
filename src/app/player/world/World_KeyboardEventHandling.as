@@ -50,34 +50,12 @@
    private var mKeyboardEventHandlerValueSource0:ValueSource_Direct = new ValueSource_Direct (null, mKeyboardEventHandlerValueSource1);
    private var mKeyboardEventHandlerValueSourceList:ValueSource = mKeyboardEventHandlerValueSource0;
    
-   public function HandleKeyEventByKeyCode (event:KeyboardEvent, isDownEvent:Boolean):void
-   {
-      var keyCode:int = event.keyCode;
-      
-      if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
-         return;
-      
-      // ...
-      mKeyboardEventHandlerValueSource0.mValueObject = keyCode;
-      mKeyboardEventHandlerValueSource1.mValueObject = event.charCode;
-      mKeyboardEventHandlerValueSource2.mValueObject = event.ctrlKey;
-      mKeyboardEventHandlerValueSource3.mValueObject = event.shiftKey;
-      mKeyboardEventHandlerValueSource4.mValueObject = mKeyHoldInfo [keyCode][KeyHoldInfo_Ticks];
-      
-      // ...
-      var listElement:ListElement_EventHandler = isDownEvent ? mKeyDownEventHandlerLists [keyCode] : mKeyUpEventHandlerLists [keyCode];
-      
-      while (listElement != null)
-      {
-         listElement.mEventHandler.HandleEvent (mKeyboardEventHandlerValueSourceList);
-         
-         listElement = listElement.mNextListElement;
-      }
-   }
-   
    // key down and up events have already handled when they are triggered.
    private function HandleKeyHoldEvents ():void
    {
+      if (! IsInteractiveEnabledNow ())
+         return;
+      
       var info:Array;
       var ticks:int;
       var listElement:ListElement_EventHandler;
@@ -211,9 +189,6 @@
       var ticks:int;
       var listElement:ListElement_EventHandler;
       
-      mKeyboardEventHandlerValueSource2.mValueObject = IsKeyHold (Keyboard.CONTROL);
-      mKeyboardEventHandlerValueSource3.mValueObject = IsKeyHold (Keyboard.SHIFT);
-      
       var keyCode:int = mKeyHoldListHead;
       mKeyHoldListHead = -1;
       
@@ -223,18 +198,12 @@
          
          if (fireKeyReleasedEvents)
          {
-            mKeyboardEventHandlerValueSource0.mValueObject = keyCode;
-            mKeyboardEventHandlerValueSource1.mValueObject = info [KeyHoldInfo_CharCode];
-            mKeyboardEventHandlerValueSource4.mValueObject = info [KeyHoldInfo_Ticks ];
-            
-            listElement = mKeyUpEventHandlerLists [keyCode];
-            
-            while (listElement != null)
-            {
-               listElement.mEventHandler.HandleEvent (mKeyboardEventHandlerValueSourceList);
-               
-               listElement = listElement.mNextListElement;
-            }
+            _KeyboardUpEvent.keyCode  = keyCode;
+            _KeyboardUpEvent.charCode = info [KeyHoldInfo_CharCode];
+            _KeyboardUpEvent.ctrlKey  = IsKeyHold (Keyboard.CONTROL);;
+            _KeyboardUpEvent.shiftKey = IsKeyHold (Keyboard.SHIFT);;
+            //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
+            RegisterKeyboardEvent (_KeyboardUpEvent, mKeyUpEventHandlerLists);
          }
          
          keyCode = info [KeyHoldInfo_Next];

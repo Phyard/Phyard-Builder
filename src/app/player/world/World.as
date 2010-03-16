@@ -390,6 +390,12 @@ package player.world {
          
          InitKeyHoldInfo ();
          
+      //-----------------------------
+      // clear handle system events
+      //-----------------------------
+         
+         HandleAndClearCachedSystemEvent ();
+         
       //------------------------------------
       // create display layers, borders
       //------------------------------------
@@ -482,7 +488,13 @@ package player.world {
       //-----------------------------
          
          DelayRemoveDisplayObjectFromContentLayer ();
-            
+         
+      //-----------------------------
+      // delay handle system events
+      //-----------------------------
+         
+         HandleAndClearCachedSystemEvent ();
+         
       //-----------------------------
       // update
       //-----------------------------

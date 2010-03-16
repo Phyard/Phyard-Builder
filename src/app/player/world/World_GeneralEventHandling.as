@@ -6,8 +6,10 @@
       if (eventId < 0 || eventId >= IdPool.NumEventTypes || eventHandler == null)
          return;
       
-      eventHandler.mNextEntityEventHandlerOfTheSameType = mEventHandlers [eventId];
-      mEventHandlers [eventId] = eventHandler;
+      var new_element:ListElement_EventHandler = new ListElement_EventHandler (eventHandler);
+      new_element.mNextListElement = mEventHandlers [eventId];
+      
+      mEventHandlers [eventId] = new_element;
    }
 
 //==================================
@@ -16,13 +18,13 @@
 
    public function HandleEventById (eventId:int, valueSourceList:ValueSource = null):void
    {
-      var event_handler:EntityEventHandler = mEventHandlers [eventId];
+      var handler_element:ListElement_EventHandler = mEventHandlers [eventId];
       
-      while (event_handler != null)
+      while (handler_element != null)
       {
-         event_handler.HandleEvent (valueSourceList);
+         handler_element.mEventHandler.HandleEvent (valueSourceList);
          
-         event_handler = event_handler.mNextEntityEventHandlerOfTheSameType;
+         handler_element = handler_element.mNextListElement;
       }
    }
 

@@ -22,6 +22,63 @@ public function IsInteractiveEnabledNow ():Boolean
 //   
 //=============================================================
 
+private var mCurrentMode:Mode = null;
+
+public function SetCurrentMode (mode:Mode):void
+{
+   if (mCurrentMode != null)
+      mCurrentMode.Destroy ();
+   
+   mCurrentMode = mode;
+   
+   if (mCurrentMode != null)
+      mCurrentMode.Initialize ();
+}
+
+//=============================================================
+//   
+//=============================================================
+
+public static const CachedEventType_General:int = 0;
+public static const CachedEventType_RemoveBombsAndRemovableShapes:int = 1;
+
+private var mCachedSystemEvents:Array = new Array ();
+
+private function HandleAndClearCachedSystemEvent ():void
+{
+   var numEvents:int = mCachedSystemEvents.length;
+   
+   for (var i:int = 0; i < numEvents; ++ i)
+   {
+      var eventInfo:Array = mCachedSystemEvents [i];
+      if (eventInfo [0] == CachedEventType_RemoveBombsAndRemovableShapes)
+      {
+         RemoveBombsAndRemovableShapes (eventInfo [1] as Array);
+      }
+      else
+      {
+         var handlerElement:ListElement_EventHandler = eventInfo [1] as ListElement_EventHandler;
+         var valueSourceList:ValueSource = eventInfo [2] as ValueSource;
+         
+         while (handlerElement != null)
+         {
+            handlerElement.mEventHandler.HandleEvent (valueSourceList);
+            
+            handlerElement = handlerElement.mNextListElement;
+         }
+      }
+   }
+   
+   if (numEvents > 0)
+   {
+      mCachedSystemEvents.splice (0, numEvents);
+   }
+}
+
+//=============================================================
+//   
+//=============================================================
+
 private var mCurrentMouseX:Number = 0;
 private var mCurrentMouseY:Number = 0;
 private var mIsMouseButtonDown:Boolean = false;
@@ -41,21 +98,16 @@ public function IsMouseButtonDown ():Boolean
    return mIsMouseButtonDown;
 }
 
-//=============================================================
-//   
-//=============================================================
-
-private var mCurrentMode:Mode = null;
-
-public function SetCurrentMode (mode:Mode):void
+public function UpdateMousePositionAndHoldInfo (event:MouseEvent):void
 {
-   if (mCurrentMode != null)
-      mCurrentMode.Destroy ();
+   var point:Point = new Point (event.stageX, event.stageY);
+   point = globalToLocal (point);
+   point = mCoordinateSystem.DisplayPoint2PhysicsPosition (point.x, point.y);
    
-   mCurrentMode = mode;
+   mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
+   mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
    
-   if (mCurrentMode != null)
-      mCurrentMode.Initialize ();
+   mIsMouseButtonDown = event.buttonDown;
 }
 
 //=============================================================
@@ -126,8 +178,8 @@ public function OnMouseClick (event:MouseEvent):void
    
    if (IsInteractiveEnabledNow ())
    {
-      MouseEvent2ValueSourceList (event);
-      HandleEventById (CoreEventIds.ID_OnWorldMouseClick, mWorldMouseEventHandlerValueSourceList);
+      // ...
+      RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseClick]);
    }
 }
 
@@ -144,6 +196,8 @@ public function OnMouseDown (event:MouseEvent):void
    
    UpdateMousePositionAndHoldInfo (event);
    
+   KeyPressed (KeyCodes.LeftMouseButton, -1);
+   
    if (IsInteractiveEnabledNow ())
    {
       // as a key
@@ -152,12 +206,11 @@ public function OnMouseDown (event:MouseEvent):void
       _KeyboardDownEvent.ctrlKey = event.ctrlKey;
       _KeyboardDownEvent.shiftKey = event.shiftKey;
       _KeyboardDownEvent.altKey = event.altKey;
-      KeyPressed (KeyCodes.LeftMouseButton, -1);
-      HandleKeyEventByKeyCode (_KeyboardDownEvent, true);
+      //HandleKeyEventByKeyCode (_KeyboardDownEvent, true);
+      RegisterKeyboardEvent (_KeyboardDownEvent, mKeyDownEventHandlerLists);
       
       // ...
-      MouseEvent2ValueSourceList (event);
-      HandleEventById (CoreEventIds.ID_OnWorldMouseDown, mWorldMouseEventHandlerValueSourceList);
+      RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseDown]);
       
       // ...
       if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
@@ -172,10 +225,7 @@ public function OnMouseDown (event:MouseEvent):void
          {
             shape = shapeArray [i] as EntityShape;
             
-            MouseEvent2ValueSourceList (event);
-            mMouseEventHandlerValueSource0.mValueObject = shape;
-            
-            shape.OnPhysicsShapeMouseDown (mEntityMouseEventHandlerValueSourceList);
+            shape.OnPhysicsShapeMouseDown (event);
          }
       }
    }
@@ -189,26 +239,28 @@ public function OnMouseUp (event:MouseEvent):void
    
    UpdateMousePositionAndHoldInfo (event);
    
-   // as a key
-   _KeyboardUpEvent.keyCode = KeyCodes.LeftMouseButton;
-   _KeyboardUpEvent.charCode = 0;
-   _KeyboardUpEvent.ctrlKey = event.ctrlKey;
-   _KeyboardUpEvent.shiftKey = event.shiftKey;
-   _KeyboardUpEvent.altKey = event.altKey;
-   HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
-   KeyReleased (KeyCodes.LeftMouseButton);
+   // moved to bottom
+   //KeyReleased (KeyCodes.LeftMouseButton);
    
    if (IsInteractiveEnabledNow ())
    {
+      // as a key
+      _KeyboardUpEvent.keyCode = KeyCodes.LeftMouseButton;
+      _KeyboardUpEvent.charCode = 0;
+      _KeyboardUpEvent.ctrlKey = event.ctrlKey;
+      _KeyboardUpEvent.shiftKey = event.shiftKey;
+      _KeyboardUpEvent.altKey = event.altKey;
+      //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
+      RegisterKeyboardEvent (_KeyboardUpEvent, mKeyUpEventHandlerLists);
+      
       // ...
-      MouseEvent2ValueSourceList (event);
-      HandleEventById (CoreEventIds.ID_OnWorldMouseUp, mWorldMouseEventHandlerValueSourceList);
+      RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseUp]);
       
       // ...
       var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
       var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
       var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
-         
+      
       if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
       {
          var shape:EntityShape;
@@ -217,15 +269,15 @@ public function OnMouseUp (event:MouseEvent):void
          {
             shape = shapeArray [i] as EntityShape;
             
-            MouseEvent2ValueSourceList (event);
-            mMouseEventHandlerValueSource0.mValueObject = shape;
-            
-            shape.OnPhysicsShapeMousUp (mEntityMouseEventHandlerValueSourceList);
+            shape.OnPhysicsShapeMousUp (event);
          }
       }
       
-      RemoveBombsAndRemovableShapes (shapeArray);
+      //RemoveBombsAndRemovableShapes (shapeArray);
+      mCachedSystemEvents.push ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
    }
+   
+   KeyReleased (KeyCodes.LeftMouseButton);
 }
 
 public function OnMouseMove (event:MouseEvent):void
@@ -239,8 +291,7 @@ public function OnMouseMove (event:MouseEvent):void
    if (IsInteractiveEnabledNow ())
    {
       //
-      MouseEvent2ValueSourceList (event);
-      HandleEventById (CoreEventIds.ID_OnWorldMouseMove, mWorldMouseEventHandlerValueSourceList);
+      RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseMove]);
    }
 }
 
@@ -257,40 +308,33 @@ public function OnOtherMouseEvents (event:MouseEvent):void
    }
 }
 
-private var mMouseEventHandlerValueSource7:ValueSource_Direct = new ValueSource_Direct (null); // is overlapped by some entities
-private var mMouseEventHandlerValueSource6:ValueSource_Direct = new ValueSource_Direct (null, mMouseEventHandlerValueSource7); // alt down
-private var mMouseEventHandlerValueSource5:ValueSource_Direct = new ValueSource_Direct (null, mMouseEventHandlerValueSource6); // shift down
-private var mMouseEventHandlerValueSource4:ValueSource_Direct = new ValueSource_Direct (null, mMouseEventHandlerValueSource5); // ctrl down
-private var mMouseEventHandlerValueSource3:ValueSource_Direct = new ValueSource_Direct (null, mMouseEventHandlerValueSource4); // button down
-private var mMouseEventHandlerValueSource2:ValueSource_Direct = new ValueSource_Direct (null, mMouseEventHandlerValueSource3); // world physics y
-private var mMouseEventHandlerValueSource1:ValueSource_Direct = new ValueSource_Direct (null, mMouseEventHandlerValueSource2); // world physics x
-private var mMouseEventHandlerValueSource0:ValueSource_Direct = new ValueSource_Direct (null, mMouseEventHandlerValueSource1); // entity
-private var mEntityMouseEventHandlerValueSourceList:ValueSource_Direct = mMouseEventHandlerValueSource0;
-private var mWorldMouseEventHandlerValueSourceList:ValueSource_Direct = mMouseEventHandlerValueSource1;
-
-public function MouseEvent2ValueSourceList (event:MouseEvent):ValueSource_Direct
+public function RegisterMouseEvent (event:MouseEvent, handlerList:ListElement_EventHandler, shape:EntityShape = null):void
 {
-   mMouseEventHandlerValueSource1.mValueObject = mCurrentMouseX;
-   mMouseEventHandlerValueSource2.mValueObject = mCurrentMouseY;
-   mMouseEventHandlerValueSource3.mValueObject = event.buttonDown;
-   mMouseEventHandlerValueSource4.mValueObject = event.ctrlKey;
-   mMouseEventHandlerValueSource5.mValueObject = event.shiftKey;
-   mMouseEventHandlerValueSource6.mValueObject = event.altKey;
-   mMouseEventHandlerValueSource7.mValueObject = IsContentLayerContains (event.target as DisplayObject); // for world event only
+   var valueSource7:ValueSource_Direct = new ValueSource_Direct (null); // is overlapped by some entities
+   var valueSource6:ValueSource_Direct = new ValueSource_Direct (null, valueSource7); // alt down
+   var valueSource5:ValueSource_Direct = new ValueSource_Direct (null, valueSource6); // shift down
+   var valueSource4:ValueSource_Direct = new ValueSource_Direct (null, valueSource5); // ctrl down
+   var valueSource3:ValueSource_Direct = new ValueSource_Direct (null, valueSource4); // button down
+   var valueSource2:ValueSource_Direct = new ValueSource_Direct (null, valueSource3); // world physics y
+   var valueSource1:ValueSource_Direct = new ValueSource_Direct (null, valueSource2); // world physics x
    
-   return mEntityMouseEventHandlerValueSourceList; // for entities
-}
-
-public function UpdateMousePositionAndHoldInfo (event:MouseEvent):void
-{
-   var point:Point = new Point (event.stageX, event.stageY);
-   point = globalToLocal (point);
-   point = mCoordinateSystem.DisplayPoint2PhysicsPosition (point.x, point.y);
+   valueSource1.mValueObject = mCurrentMouseX;
+   valueSource2.mValueObject = mCurrentMouseY;
+   valueSource3.mValueObject = event.buttonDown;
+   valueSource4.mValueObject = event.ctrlKey;
+   valueSource5.mValueObject = event.shiftKey;
+   valueSource6.mValueObject = event.altKey;
    
-   mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
-   mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
-   
-   mIsMouseButtonDown = event.buttonDown;
+   if (shape == null)
+   {
+      mCachedSystemEvents.push ([CachedEventType_General, handlerList, valueSource1]);
+   }
+   else
+   {
+      var valueSource0:ValueSource_Direct = new ValueSource_Direct (null, valueSource1); // entity
+      valueSource0.mValueObject = shape;
+      mCachedSystemEvents.push ([CachedEventType_General, handlerList, valueSource0]);
+   }
 }
 
 //=============================================================
@@ -308,7 +352,8 @@ public function OnKeyDown (event:KeyboardEvent):void
    if (IsInteractiveEnabledNow ())
    {
       KeyPressed (event.keyCode, event.charCode);
-      HandleKeyEventByKeyCode (event, true);
+      RegisterKeyboardEvent (event, mKeyDownEventHandlerLists);
+      //HandleKeyEventByKeyCode (event, true);
    }
    
    //trace ("Pressed: " + String.fromCharCode (event.charCode));
@@ -325,11 +370,34 @@ public function OnKeyUp (event:KeyboardEvent):void
    // commented off, because it seems not a good idea to ...
    // if (IsInteractiveEnabledNow ())
    {
-      HandleKeyEventByKeyCode (event, false);
+      //HandleKeyEventByKeyCode (event, false);
+      RegisterKeyboardEvent (event, mKeyUpEventHandlerLists);
       KeyReleased (event.keyCode);
    }
    
    //trace ("Released: " + String.fromCharCode (event.charCode));
+}
+
+public function RegisterKeyboardEvent (event:KeyboardEvent, handleListArray:Array):void
+{
+   var keyCode:int = event.keyCode;
+   
+   if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
+      return;
+   
+   var valueSource4:ValueSource_Direct = new ValueSource_Direct (null);
+   var valueSource3:ValueSource_Direct = new ValueSource_Direct (null, valueSource4);
+   var valueSource2:ValueSource_Direct = new ValueSource_Direct (null, valueSource3);
+   var valueSource1:ValueSource_Direct = new ValueSource_Direct (null, valueSource2);
+   var valueSource0:ValueSource_Direct = new ValueSource_Direct (null, valueSource1);
+   
+   valueSource0.mValueObject = keyCode;
+   valueSource1.mValueObject = event.charCode;
+   valueSource2.mValueObject = event.ctrlKey;
+   valueSource3.mValueObject = event.shiftKey;
+   valueSource4.mValueObject = mKeyHoldInfo [keyCode][KeyHoldInfo_Ticks];
+   
+   mCachedSystemEvents.push ([CachedEventType_General, handleListArray [keyCode], valueSource0]);
 }
 
 //=============================================================

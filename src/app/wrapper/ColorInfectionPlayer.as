@@ -346,6 +346,11 @@ package wrapper {
                   else
                   {
                   }
+                  
+                  if (Compile::Is_Debugging)
+                  {
+                     throw error;
+                  }
                }
                
                if (mPlayControlBar != null)

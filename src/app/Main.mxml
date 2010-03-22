@@ -22,9 +22,9 @@
          <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="ShowDesignInfoSettingDialog ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-info.png')" />
       </mx:HBox>
       <mx:ViewStack id="ViewStack_ViewEditCommands" borderStyle="none" creationPolicy="all" height="31" width="100%">
-         <mx:HBox id="Box_EntityEditViewCommands" backgroundColor="0xE0E0E0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+         <mx:HBox id="Box_EntityEditViewCommands" backgroundColor="0xD0D0D0" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
             <mx:Spacer width="100%"/>
-            <mx:HBox id="Box_EntityEditViewCommands_1" backgroundColor="0xE0E0E0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
+            <mx:HBox id="Box_EntityEditViewCommands_1" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                <mx:Spacer width="5"/>
                <mx:Button id="Button_NewDesign" toolTip="New Design" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-new.png')" />
                <mx:Button id="Button_ConfigDesign" toolTip="Config Design" click="OnClickConfigDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-config.png')" />
@@ -42,7 +42,7 @@
                <mx:Button id="Button_Setting" label="Setting..." toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/command/command-setting.png')" disabledIcon="@Embed('res/command/command-setting-disabled.png')" />
                <mx:Spacer width="10"/>
             </mx:HBox>
-            <mx:ViewStack id="ViewStack_PlayStop" backgroundColor="0xE0E0E0" borderStyle="none" creationPolicy="all" height="30">
+            <mx:ViewStack id="ViewStack_PlayStop" backgroundColor="0xD0D0D0" borderStyle="none" creationPolicy="all" height="30">
                <mx:HBox id="Box_Play" verticalAlign="middle" borderStyle="none" height="100%" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                   <mx:Button id="Button_Play" toolTip="Play" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/play/play-run.png')" />
                </mx:HBox>
@@ -50,7 +50,7 @@
                   <mx:Button id="Button_Stop" toolTip="Stop" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/play/play-stop.png')" />
                </mx:HBox>
             </mx:ViewStack>
-            <mx:HBox id="Box_EntityEditViewCommands_2" backgroundColor="0xE0E0E0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
+            <mx:HBox id="Box_EntityEditViewCommands_2" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                <mx:Spacer width="10"/>
                <mx:Button id="Button_MouseMoveScene" selected="false" toolTip="Move Scene Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-move-scene.png')" selectedDownIcon="@Embed('res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('res/command/command-move-scene-sel.png')" />
                <mx:Button id="Button_MouseSelectGlued" selected="true" toolTip="Select Glued Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-select-glued.png')" selectedDownIcon="@Embed('res/command/command-select-glued-sel.png')" selectedOverIcon="@Embed('res/command/command-select-glued-sel.png')" selectedUpIcon="@Embed('res/command/command-select-glued-sel.png')" />
@@ -63,7 +63,7 @@
             </mx:HBox>
             <mx:Spacer width="100%"/>
          </mx:HBox>
-         <mx:HBox id="Box_CCatEditViewCommands" backgroundColor="0xE0E0E0" verticalAlign="middle" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+         <mx:HBox id="Box_CCatEditViewCommands" backgroundColor="0xD0D0D0" verticalAlign="middle" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
             <mx:Spacer width="100%"/>
             <mx:Button id="Button_CreateCollisionCategory" toolTip="Create Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/create-category-disabled.png')" selectedDisabledIcon="@Embed('res/collision/create-category-disabled.png')" upIcon="@Embed('res/collision/create-category.png')" downIcon="@Embed('res/collision/create-category-sel.png')" overIcon="@Embed('res/collision/create-category.png')" selectedUpIcon="@Embed('res/collision/create-category-sel.png')" selectedOverIcon="@Embed('res/collision/create-category-sel.png')" selectedDownIcon="@Embed('res/collision/create-category.png')"   />
             <mx:Spacer width="20"/>
@@ -88,7 +88,7 @@
             <mx:Spacer width="100%"/>
          </mx:HBox>
       </mx:ViewStack>
-      <mx:HBox id="Box_SwitchViewCommands" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
+      <mx:HBox id="Box_SwitchViewCommands" backgroundColor="0xD0D0D0" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
          <mx:Button id="Button_Undo" toolTip="Undo" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-undo.png')" disabledIcon="@Embed('res/command/command-undo-disabled.png')" />
          <mx:Button id="Button_Redo" toolTip="Redo" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-redo.png')" disabledIcon="@Embed('res/command/command-redo-disabled.png')" />
          <mx:Spacer width="20"/>

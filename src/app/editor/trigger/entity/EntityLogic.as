@@ -32,6 +32,11 @@ package editor.trigger.entity {
          }
       }
       
+      override public function GetVisibleAlpha ():Number
+      {
+         return 0.78;
+      }
+      
 //====================================================================
 //   
 //====================================================================
@@ -86,6 +91,11 @@ package editor.trigger.entity {
 //====================================================================
 //   linkable
 //====================================================================
+      
+      override public function GetDrawLinksOrder ():int
+      {
+         return DrawLinksOrder_Logic;
+      }
       
       public function GetLinkZoneId (localX:Number, localY:Number, checkActiveZones:Boolean = true, checkPassiveZones:Boolean = true):int
       {

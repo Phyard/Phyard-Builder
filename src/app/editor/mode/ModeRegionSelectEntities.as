@@ -36,8 +36,8 @@ package editor.mode {
       
       protected function ResetSession ():void
       {
-         if ( mBoxShape != null && mMainView.mContentContainer.contains (mBoxShape) )
-            mMainView.mContentContainer.removeChild (mBoxShape);
+         if ( mBoxShape != null && mMainView.mContentLayer.contains (mBoxShape) )
+            mMainView.mContentLayer.removeChild (mBoxShape);
          
          mBoxShape = null;
       }
@@ -47,7 +47,7 @@ package editor.mode {
          ResetSession ();
          
          mBoxShape = new Shape ();
-         mMainView.mContentContainer.addChild (mBoxShape);
+         mMainView.mContentLayer.addChild (mBoxShape);
          
           mStartX = startX;
           mStartY = startY;

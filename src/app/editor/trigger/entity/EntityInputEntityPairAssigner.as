@@ -36,17 +36,6 @@ package editor.trigger.entity {
       public static var kOffsetX2:Number = 15;
       public static var kOffsetY2:Number = 15;
       
-      protected static var sContextMenu:ContextMenu;
-      protected static var sContextMenuItems:Array = [
-               new ContextMenuItem ("Change Pairing Type to \"One to One\"", false),
-               new ContextMenuItem ("Change Pairing Type to \"Many to Many\"", false),
-               new ContextMenuItem ("Change Pairing Type to \"Many to Any\"", false),
-               new ContextMenuItem ("Change Pairing Type to \"Any to Many\"", false),
-               new ContextMenuItem ("Change Pairing Type to \"Any to Any\"", false),
-               new ContextMenuItem ("Change Pairing Type to \"Either in Many\"", false),
-               new ContextMenuItem ("Change Pairing Type to \"Both in Many\"", false),
-            ];
-      
       //...
       
       public var mBorderThickness:Number = 1;
@@ -330,7 +319,18 @@ package editor.trigger.entity {
 //
 //==============================================================================================================
       
-      private static function BuildContextMenu ():void
+      protected /*static*/ var sContextMenu:ContextMenu = null;
+      protected /*static*/ var sContextMenuItems:Array = [
+               new ContextMenuItem ("Change Pairing Type to \"One to One\"", false),
+               new ContextMenuItem ("Change Pairing Type to \"Many to Many\"", false),
+               new ContextMenuItem ("Change Pairing Type to \"Many to Any\"", false),
+               new ContextMenuItem ("Change Pairing Type to \"Any to Many\"", false),
+               new ContextMenuItem ("Change Pairing Type to \"Any to Any\"", false),
+               new ContextMenuItem ("Change Pairing Type to \"Either in Many\"", false),
+               new ContextMenuItem ("Change Pairing Type to \"Both in Many\"", false),
+            ];
+      
+      private /*static*/ function BuildContextMenu ():void
       {
          if (sContextMenu != null)
             return;
@@ -347,7 +347,7 @@ package editor.trigger.entity {
          }
       }
       
-      private static function OnContextMenuEvent (event:ContextMenuEvent):void
+      private /*static*/ function OnContextMenuEvent (event:ContextMenuEvent):void
       {
          var pair_assigner:EntityInputEntityPairAssigner = event.mouseTarget as EntityInputEntityPairAssigner;
          if (pair_assigner == null)
@@ -368,8 +368,6 @@ package editor.trigger.entity {
          
          super.SetInternalComponentsVisible (visible);
          
-         mSelectorLayer.visible = AreInternalComponentsVisible ();
-         
          if (AreInternalComponentsVisible ())
          {
             mSelectorLayer.visible = true;
@@ -386,6 +384,7 @@ package editor.trigger.entity {
             contextMenu = null;
          }
          
+         
          if (! visible && mInputEntitySelectors != null)
          {
             DestroyInternalComponents ();
@@ -395,9 +394,6 @@ package editor.trigger.entity {
          {
             CreateInternalComponents ();
          }
-         
-         if (mInputEntities1 != null && mInputEntities1.length > 0 || mInputEntities2 != null && mInputEntities2.length > 0)
-            InputEntitySelector.NotifyEntityLinksModified ();
       }
       
       public function SetPairingType (newType:int):void
@@ -722,14 +718,26 @@ package editor.trigger.entity {
          return false;
       }
       
-      override public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          ValidateEntityLinks ();
          
-         if (! AreInternalComponentsVisible ())
-            return;
+         if (forceDraw || isExpanding)
+         {
+            if (! AreInternalComponentsVisible ())
+            {
+               SetInternalComponentsVisible (true);
+            }
+         }
+         else if (! IsSelected ())
+         {
+            if (AreInternalComponentsVisible ())
+            {
+               SetInternalComponentsVisible (false);
+            }
+         }
          
-         if (!visible)
+         if (! AreInternalComponentsVisible ())
             return;
          
          if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
@@ -766,12 +774,12 @@ package editor.trigger.entity {
          {
             if (mInputEntities1 != null && mInputEntities1.length > 0)
             {
-               (mInputEntitySelectors [0] as InputEntitySelector_Many).DrawEntityLinkLines (canvasSprite, mInputEntities1);
+               (mInputEntitySelectors [0] as InputEntitySelector_Many).DrawEntityLinks (canvasSprite, mInputEntities1);
             }
             
             if (mInputEntities2 != null && mInputEntities2.length > 0)
             {
-               (mInputEntitySelectors [1] as InputEntitySelector_Many).DrawEntityLinkLines (canvasSprite, mInputEntities2);
+               (mInputEntitySelectors [1] as InputEntitySelector_Many).DrawEntityLinks (canvasSprite, mInputEntities2);
             }
          }
       }

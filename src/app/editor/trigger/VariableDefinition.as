@@ -327,6 +327,7 @@ package editor.trigger {
             var combo_box:ComboBox = new ComboBox ();
             combo_box.dataProvider = variable_list;
             combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);;
+            combo_box.rowCount = 11;
             
             return combo_box;
          }

@@ -86,6 +86,11 @@ package editor.entity {
          super (world);
       }
       
+      override public function GetVisibleAlpha ():Number
+      {
+         return 0.39 + GetTransparency () * 0.01 * 0.40;
+      }
+      
       override public function GetTypeName ():String
       {
          return "Shape";

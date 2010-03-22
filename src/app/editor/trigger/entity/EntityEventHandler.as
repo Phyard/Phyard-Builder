@@ -310,17 +310,22 @@ package editor.trigger.entity {
 //   entity links
 //====================================================================
       
-      override public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      override public function GetDrawLinksOrder ():int
+      {
+         return DrawLinksOrder_EventHandler;
+      }
+      
+      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          ValidateEntityLinks ();
          
-         if (!visible)
-            return;
-         
          if (mExternalCondition.mConditionEntity != null)
          {
-            var point:Point = mExternalCondition.mConditionEntity.GetTargetValueZoneWorldCenter (mExternalCondition.mTargetValue);
-            GraphicsUtil.DrawLine (canvasSprite, GetPositionX () - mHalfWidth, GetPositionY (), point.x, point.y);
+            //if (IsSelected () || (mExternalCondition.mConditionEntity as Entity).IsSelected ())
+            {
+               var point:Point = mExternalCondition.mConditionEntity.GetTargetValueZoneWorldCenter (mExternalCondition.mTargetValue);
+               GraphicsUtil.DrawLine (canvasSprite, GetPositionX () - mHalfWidth, GetPositionY (), point.x, point.y, 0x0, 0);
+            }
          }
          
          if (mEntityAssignerList.length > 0)
@@ -330,13 +335,25 @@ package editor.trigger.entity {
             for (var i:int = 0; i < mEntityAssignerList.length; ++ i)
             {
                entity = mEntityAssignerList [i] as Entity;
-               GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY ());
+               
+               //if (IsSelected () || entity.IsSelected ())
+               {
+                  GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY (), 0x0, 0);
+               }
+               
+               if ((! forceDraw) && IsSelected ())
+               {
+                  entity.DrawEntityLinks (canvasSprite, false, true);
+               }
             }
          }
          
          if (mExternalActionEntity != null)
          {
-            GraphicsUtil.DrawLine (canvasSprite, GetPositionX () + mHalfWidth, GetPositionY (), mExternalActionEntity.GetPositionX (), mExternalActionEntity.GetPositionY ());
+            //if (IsSelected () || mExternalActionEntity.IsSelected ())
+            {
+               GraphicsUtil.DrawLine (canvasSprite, GetPositionX () + mHalfWidth, GetPositionY (), mExternalActionEntity.GetPositionX (), mExternalActionEntity.GetPositionY (), 0x0, 0);
+            }
          }
       }
    }

@@ -209,19 +209,30 @@ package editor.trigger.entity {
 //   entity links
 //====================================================================
       
-      override public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      override public function GetDrawLinksOrder ():int
+      {
+         return DrawLinksOrder_Task;
+      }
+      
+      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          if (mEntityAssignerList.length > 0)
          {
             ValidateEntityLinks ();
             
-            if (!visible)
-               return;
-            
             for (var i:int = 0; i < mEntityAssignerList.length; ++ i)
             {
                var entity:Entity = mEntityAssignerList [i] as Entity;
-               GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY ());
+               
+               //if (IsSelected () || entity.IsSelected ())
+               {
+                  GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY (), 0x0, 0);
+               }
+               
+               if ((! forceDraw) && IsSelected ())
+               {
+                  entity.DrawEntityLinks (canvasSprite, false, true);
+               }
             }
          }
       }

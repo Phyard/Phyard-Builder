@@ -43,6 +43,11 @@ package editor.entity {
          mInitialGravityAngle = mWorld.GetDefaultGravityAccelerationAngle ();
       }
       
+      override public function GetVisibleAlpha ():Number
+      {
+         return 0.70;
+      }
+      
       override public function IsBasicShapeEntity ():Boolean
       {
          return false;
@@ -144,8 +149,6 @@ package editor.entity {
          var backgroundColor:uint = allAeraInteractive ? Define.kInteractiveColor : Define.kUninteractiveColor;
          var lightBackgroundColor:uint = GraphicsUtil.BlendColor (backgroundColor, 0xFFFFFF, allAeraInteractive ? 0.5 : 0.5);
          var lightInteractiveBackgroundColor:uint = GraphicsUtil.BlendColor (Define.kInteractiveColor, 0xFFFFFF, 0.75);
-         
-         alpha = 0.7;
          
          var radius_0b:Number = Define.GravityControllerZeroRegionRadius;
          if (radius_0b > mRadius)

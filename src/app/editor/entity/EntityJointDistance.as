@@ -53,8 +53,6 @@ package editor.entity {
       
       override public function UpdateAppearance ():void
       {
-         alpha = 0.7;
-         
          var x1:Number = mAnchor1.x - x;
          var y1:Number = mAnchor1.y - y;
          var x2:Number = mAnchor2.x - x;

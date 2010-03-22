@@ -45,8 +45,6 @@ package editor.entity {
             borderSize  = 1;
          }
          
-         alpha = 0.7;
-         
          GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, filledColor);
          var xy:Number = mRadius * Math.cos (Math.PI / 4.0);
          GraphicsUtil.DrawLine (this, - xy, - xy,   xy, xy, 0x0, 1);

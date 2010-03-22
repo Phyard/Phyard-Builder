@@ -28,6 +28,11 @@ package editor.entity {
          super (world);
       }
       
+      override public function GetVisibleAlpha ():Number
+      {
+         return 0.70;
+      }
+      
       public function SetConnectedShape1Index (index:int):void
       {
          if (index == Define.EntityId_Ground)

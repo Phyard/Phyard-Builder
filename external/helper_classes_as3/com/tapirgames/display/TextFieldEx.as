@@ -36,7 +36,7 @@ package com.tapirgames.display {
       }
       
       
-      public static function CreateTextField (htmlText:String, hasBg:Boolean = false, bgColor:uint = 0xFFFFFF, textColor:uint = 0x0, wordWrap:Boolean = false, fixedWidth:int = 300, selectable:Boolean = false):TextFieldEx
+      public static function CreateTextField (htmlText:String, hasBg:Boolean = false, bgColor:uint = 0xFFFFFF, textColor:uint = 0x0, wordWrap:Boolean = false, fixedWidth:int = 300, selectable:Boolean = false, drawBorder:Boolean = false, borderColor:uint = 0x0):TextFieldEx
       {
          if (fixedWidth < 10)
             fixedWidth = 10;
@@ -46,6 +46,8 @@ package com.tapirgames.display {
          textField.htmlText = htmlText;
          textField.background = hasBg;
          textField.backgroundColor = bgColor;
+         textField.border = drawBorder;
+         textField.borderColor = borderColor;
          textField.wordWrap = wordWrap;
          if (wordWrap)
             textField.width = fixedWidth;

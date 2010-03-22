@@ -45,8 +45,6 @@ package editor.entity {
             borderSize  = 1;
          }
          
-         alpha = 0.7;
-         
          GraphicsUtil.ClearAndDrawEllipse (this, - mRadius, - mRadius, mRadius + mRadius, mRadius + mRadius, borderColor, borderSize, true, filledColor);
          GraphicsUtil.DrawLine (this, - 3, - 3, 3, 3);
          GraphicsUtil.DrawLine (this, - 3,  3, 3, -3);

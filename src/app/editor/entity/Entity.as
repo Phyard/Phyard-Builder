@@ -3,6 +3,8 @@ package editor.entity {
    
    import flash.display.Sprite;
    
+   import com.tapirgames.display.TextFieldEx;
+   
    import editor.world.EntityContainer;
    //import editor.world.World;
    
@@ -39,6 +41,8 @@ package editor.entity {
          
          //SetName (null);
          
+         SetVisibleInEditor (true);
+         
          mouseChildren = false;
       }
       
@@ -60,6 +64,34 @@ package editor.entity {
       public function ToCodeString ():String
       {
          return "Entity#" + mCreationOrderId;
+      }
+      
+//======================================================
+// 
+//======================================================
+      
+      protected var mVisibleInEditor:Boolean = true;
+      
+      public function SetVisibleInEditor (visibleInEditor:Boolean):void
+      {
+         mVisibleInEditor = visibleInEditor;
+         
+         alpha = mVisibleInEditor ? GetVisibleAlpha () : GetInvisibleAlpha ();
+      }
+      
+      public function IsVisibleInEditor ():Boolean
+      {
+         return mVisibleInEditor;
+      }
+      
+      public function GetVisibleAlpha ():Number
+      {
+         return 1.0;
+      }
+      
+      public function GetInvisibleAlpha ():Number
+      {
+         return 0.2;
       }
       
 //======================================================
@@ -97,6 +129,8 @@ package editor.entity {
       public function Destroy ():void
       {
          SetInternalComponentsVisible (false);
+         
+         RemoveIdText ();
          
          if (mSelectionProxy != null)
             mSelectionProxy.Destroy ();
@@ -149,9 +183,9 @@ package editor.entity {
          return mIsVisible;
       }
       
-      public function SetAlpha (alpha:Number):void
+      public function SetAlpha (playingAlpha:Number):void
       {
-         mAlpha = alpha;
+         mAlpha = playingAlpha;
       }
       
       public function GetAlpha ():Number
@@ -519,12 +553,22 @@ package editor.entity {
       }
       
 //====================================================================
-//   entity links
+//   draw entity links
 //====================================================================
       
-      public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      public static const DrawLinksOrder_Normal:int = 10;
+      public static const DrawLinksOrder_Logic:int = 20;
+      public static const DrawLinksOrder_Task:int = 30;
+      public static const DrawLinksOrder_EventHandler:int = 50;
+      
+      public function GetDrawLinksOrder ():int
       {
-         
+         return DrawLinksOrder_Normal;
+      }
+      
+      public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
+      {
+         // to override
       }
       
       public function GetLinkPointX ():Number
@@ -535,6 +579,50 @@ package editor.entity {
       public function GetLinkPointY ():Number
       {
          return mPosY;
+      }
+      
+//====================================================================
+//   draw entity id
+//====================================================================
+      
+      private var mIdText:TextFieldEx = null;
+      private var mLasteId:int = -1;
+      
+      public function DrawEntityId (canvasSprite:Sprite):void
+      {
+         if (canvasSprite == null)
+            return;
+         
+         if (mLasteId != mCreationOrderId)// || mIdText == null)
+         {
+            RemoveIdText ();
+            
+            mLasteId = mCreationOrderId;
+            mIdText = TextFieldEx.CreateTextField (mLasteId.toString (), true, 0xFFFFFF, 0x0, false, 0, false, true, 0x0);
+         }
+         
+         if (mIdText.parent != canvasSprite)
+         {
+            canvasSprite.addChild (mIdText);
+         }
+         
+         mIdText.scaleX = 1.0 / mEntityContainer.scaleX;
+         mIdText.scaleY = 1.0 / mEntityContainer.scaleY;
+         mIdText.x = GetLinkPointX () - 0.5 * mIdText.width;
+         mIdText.y = GetLinkPointY () - 0.5 * mIdText.height;
+      }
+      
+      public function RemoveIdText ():void
+      {
+         if (mIdText != null)
+         {
+            if (mIdText.parent != null)
+            {
+               mIdText.parent.removeChild (mIdText);
+            }
+            
+            mIdText = null;
+         }
       }
       
 //====================================================================

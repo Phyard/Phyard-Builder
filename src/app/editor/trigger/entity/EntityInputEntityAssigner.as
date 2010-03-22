@@ -34,18 +34,6 @@ package editor.trigger.entity {
       public static var kRadius2:Number = 12;
       public static var kOffsetY:Number = 26;
       
-      protected static var sContextMenu:ContextMenu;
-      protected static var sContextMenuItems:Array = [
-               new ContextMenuItem ("One", false),
-               new ContextMenuItem ("Many", false),
-               new ContextMenuItem ("Any", false),
-            ];
-      protected static var sContextMenuItemValues:Array = [
-               Define.EntityAssignerType_Single,
-               Define.EntityAssignerType_Many,
-               Define.EntityAssignerType_Any,
-            ];
-      
       public var mBorderThickness:Number = 1;
       
       protected var mSelectorLayer:Sprite;
@@ -202,7 +190,19 @@ package editor.trigger.entity {
 //
 //==============================================================================================================
       
-      private function BuildContextMenu ():void
+      protected /*static*/ var sContextMenu:ContextMenu = null;
+      protected /*static*/ var sContextMenuItems:Array = [
+               new ContextMenuItem ("One", false),
+               new ContextMenuItem ("Many", false),
+               new ContextMenuItem ("Any", false),
+            ];
+      protected static var sContextMenuItemValues:Array = [
+               Define.EntityAssignerType_Single,
+               Define.EntityAssignerType_Many,
+               Define.EntityAssignerType_Any,
+            ];
+      
+      private /*static*/ function BuildContextMenu ():void
       {
          if (sContextMenu != null)
             return;
@@ -219,7 +219,7 @@ package editor.trigger.entity {
          }
       }
       
-      private static function OnContextMenuEvent (event:ContextMenuEvent):void
+      private /*static*/ function OnContextMenuEvent (event:ContextMenuEvent):void
       {
          var assigner:EntityInputEntityAssigner = event.mouseTarget as EntityInputEntityAssigner;
          if (assigner == null)
@@ -269,9 +269,6 @@ package editor.trigger.entity {
          {
             CreateInternalComponents ();
          }
-         
-         if (mInputEntities.length > 0)
-            InputEntitySelector.NotifyEntityLinksModified ();
       }
       
       public function SetSelectorType (newType:int):void
@@ -406,21 +403,33 @@ package editor.trigger.entity {
          return false;
       }
       
-      override public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
+         if (forceDraw || isExpanding)
+         {
+            if (! AreInternalComponentsVisible ())
+            {
+               SetInternalComponentsVisible (true);
+            }
+         }
+         else if (! IsSelected ())
+         {
+            if (AreInternalComponentsVisible ())
+            {
+               SetInternalComponentsVisible (false);
+            }
+         }
+         
          if (! AreInternalComponentsVisible ())
             return;
          
          ValidateEntityLinks ();
          
-         if (!visible)
-            return;
-         
          if (mInputEntities.length > 0)
          {
             if (mInputEntitySelector is InputEntitySelector_Many)
             {
-               (mInputEntitySelector as InputEntitySelector_Many).DrawEntityLinkLines (canvasSprite, mInputEntities);
+               (mInputEntitySelector as InputEntitySelector_Many).DrawEntityLinks (canvasSprite, mInputEntities);
             }
             else if (mInputEntitySelector is InputEntitySelector_Single)
             {

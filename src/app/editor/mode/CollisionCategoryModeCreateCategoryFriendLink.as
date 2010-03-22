@@ -39,8 +39,8 @@ package editor.mode {
       
       protected function ResetSession ():void
       {
-         if (mLineShape != null && mMainView.mForegroundSprite.contains (mLineShape))
-            mMainView.mForegroundSprite.removeChild (mLineShape);
+         if (mLineShape != null && mMainView.mForegroundLayer.contains (mLineShape))
+            mMainView.mForegroundLayer.removeChild (mLineShape);
          
          mLineShape = null;
       }
@@ -53,7 +53,7 @@ package editor.mode {
          mFromManagerDisplayY = posY;
          
          mLineShape = new Shape ();
-         mMainView.mForegroundSprite.addChild (mLineShape);
+         mMainView.mForegroundLayer.addChild (mLineShape);
       }
       
       protected function UpdateSession (posX:Number, posY:Number):void

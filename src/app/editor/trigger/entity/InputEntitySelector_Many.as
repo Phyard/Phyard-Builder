@@ -66,7 +66,7 @@ package editor.trigger.entity {
 //   entity links
 //====================================================================
       
-      public function DrawEntityLinkLines (canvasSprite:Sprite, entityArray:Array):void
+      public function DrawEntityLinks (canvasSprite:Sprite, entityArray:Array):void
       {
          if (entityArray == null)
             return;
@@ -81,7 +81,7 @@ package editor.trigger.entity {
             if (entity != null)
             {
                point = GetWorldPosition ();
-               GraphicsUtil.DrawLine (canvasSprite, point.x, point.y, entity.GetLinkPointX (), entity.GetLinkPointY ());
+               GraphicsUtil.DrawLine (canvasSprite, point.x, point.y, entity.GetLinkPointX (), entity.GetLinkPointY (), 0x0, 0);
             }
          }
       }

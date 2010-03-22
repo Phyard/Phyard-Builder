@@ -117,7 +117,7 @@ package editor.trigger.entity {
             return;
          
          var point:Point = GetWorldPosition ();
-         GraphicsUtil.DrawLine (canvasSprite, point.x, point.y, entity.GetLinkPointX (), entity.GetLinkPointY ());
+         GraphicsUtil.DrawLine (canvasSprite, point.x, point.y, entity.GetLinkPointX (), entity.GetLinkPointY (), 0x0, 0);
       }
       
       

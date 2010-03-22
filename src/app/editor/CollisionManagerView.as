@@ -52,9 +52,9 @@ package editor {
       
       public var mViewBackgroundSprite:Sprite = null;
       
-      public var mBackgroundSprite:Sprite;
-      public var mFriendLinksSprite:Sprite;
-      public var mForegroundSprite:Sprite;
+      public var mBackgroundLayer:Sprite;
+      public var mFriendLinksLayer:Sprite;
+      public var mForegroundLayer:Sprite;
       
       private var mCollisionManager:CollisionManager = null;
       
@@ -71,44 +71,44 @@ package editor {
          addChild (mViewBackgroundSprite);
          
          //
-         mBackgroundSprite = new Sprite ();
-         mBackgroundSprite.graphics.clear ();
+         mBackgroundLayer = new Sprite ();
+         mBackgroundLayer.graphics.clear ();
          
-         mBackgroundSprite.graphics.beginFill(0xDDDDA0);
-         mBackgroundSprite.graphics.drawRect (0, 0, ViewWidth, ViewHeight);
-         mBackgroundSprite.graphics.endFill ();
+         mBackgroundLayer.graphics.beginFill(0xDDDDA0);
+         mBackgroundLayer.graphics.drawRect (0, 0, ViewWidth, ViewHeight);
+         mBackgroundLayer.graphics.endFill ();
          
-         mBackgroundSprite.graphics.lineStyle (1, 0xA0A0A0);
+         mBackgroundLayer.graphics.lineStyle (1, 0xA0A0A0);
          var gridSize:int = 50 * 2;
          for (var lineX:int = gridSize; lineX < ViewWidth; lineX += gridSize)
          {
-            mBackgroundSprite.graphics.moveTo (lineX, 0);
-            mBackgroundSprite.graphics.lineTo (lineX, ViewHeight);
+            mBackgroundLayer.graphics.moveTo (lineX, 0);
+            mBackgroundLayer.graphics.lineTo (lineX, ViewHeight);
          }
          for (var lineY:int = gridSize; lineY < ViewHeight; lineY += gridSize)
          {
-            mBackgroundSprite.graphics.moveTo (0, lineY);
-            mBackgroundSprite.graphics.lineTo (ViewWidth, lineY);
+            mBackgroundLayer.graphics.moveTo (0, lineY);
+            mBackgroundLayer.graphics.lineTo (ViewWidth, lineY);
          }
-         mBackgroundSprite.graphics.lineStyle ();
+         mBackgroundLayer.graphics.lineStyle ();
          
-         mBackgroundSprite.graphics.beginFill(0x606060);
-         mBackgroundSprite.graphics.drawRect (0, 0, ViewBorderThinknessLR, ViewHeight);
-         mBackgroundSprite.graphics.drawRect (ViewWidth - ViewBorderThinknessLR, 0, ViewBorderThinknessLR, ViewHeight);
-         mBackgroundSprite.graphics.endFill ();
+         mBackgroundLayer.graphics.beginFill(0x606060);
+         mBackgroundLayer.graphics.drawRect (0, 0, ViewBorderThinknessLR, ViewHeight);
+         mBackgroundLayer.graphics.drawRect (ViewWidth - ViewBorderThinknessLR, 0, ViewBorderThinknessLR, ViewHeight);
+         mBackgroundLayer.graphics.endFill ();
          
-         mBackgroundSprite.graphics.beginFill(0x606060);
-         mBackgroundSprite.graphics.drawRect (0, 0, ViewWidth, ViewBorderThinknessTB);
-         mBackgroundSprite.graphics.drawRect (0, ViewHeight - ViewBorderThinknessTB, ViewWidth, ViewBorderThinknessTB);
-         mBackgroundSprite.graphics.endFill ();
+         mBackgroundLayer.graphics.beginFill(0x606060);
+         mBackgroundLayer.graphics.drawRect (0, 0, ViewWidth, ViewBorderThinknessTB);
+         mBackgroundLayer.graphics.drawRect (0, ViewHeight - ViewBorderThinknessTB, ViewWidth, ViewBorderThinknessTB);
+         mBackgroundLayer.graphics.endFill ();
          
-         addChild (mBackgroundSprite);
+         addChild (mBackgroundLayer);
          
-         mFriendLinksSprite = new Sprite ();
-         addChild (mFriendLinksSprite);
+         mFriendLinksLayer = new Sprite ();
+         addChild (mFriendLinksLayer);
          
-         mForegroundSprite = new Sprite ();
-         addChild (mForegroundSprite);
+         mForegroundLayer = new Sprite ();
+         addChild (mForegroundLayer);
       }
       
       public function SetCollisionManager (cm:CollisionManager):void
@@ -123,7 +123,7 @@ package editor {
          
          if (mCollisionManager != null)
          {
-            addChildAt (mCollisionManager, getChildIndex (mForegroundSprite));
+            addChildAt (mCollisionManager, getChildIndex (mForegroundLayer));
             mCollisionManager.SetFriendLinksChangedCallback (UpdateFriendLinkLines);
             
             mask = mContentMaskSprite;
@@ -184,27 +184,27 @@ package editor {
          if (parentWidth / ViewWidth < parentHeight / ViewHeight)
          {
             if (parentWidth < ViewWidth)
-               mBackgroundSprite.scaleX = mBackgroundSprite.scaleY = parentWidth / ViewWidth;
+               mBackgroundLayer.scaleX = mBackgroundLayer.scaleY = parentWidth / ViewWidth;
             else
-               mBackgroundSprite.scaleX = mBackgroundSprite.scaleY = 1;
+               mBackgroundLayer.scaleX = mBackgroundLayer.scaleY = 1;
          }
          else
          {
             if (parentHeight < ViewHeight)
-               mBackgroundSprite.scaleX = mBackgroundSprite.scaleY = parentHeight / ViewHeight;
+               mBackgroundLayer.scaleX = mBackgroundLayer.scaleY = parentHeight / ViewHeight;
             else
-               mBackgroundSprite.scaleX = mBackgroundSprite.scaleY = 1;
+               mBackgroundLayer.scaleX = mBackgroundLayer.scaleY = 1;
          }
          
-         mBackgroundSprite.x = (parentWidth - ViewWidth * mBackgroundSprite.scaleX) * 0.5;
-         mBackgroundSprite.y = (parentHeight - ViewHeight * mBackgroundSprite.scaleY) * 0.5;
+         mBackgroundLayer.x = (parentWidth - ViewWidth * mBackgroundLayer.scaleX) * 0.5;
+         mBackgroundLayer.y = (parentHeight - ViewHeight * mBackgroundLayer.scaleY) * 0.5;
          
          if (mCollisionManager != null)
          {
-            mCollisionManager.x = mBackgroundSprite.x;
-            mCollisionManager.y = mBackgroundSprite.y;
-            mCollisionManager.scaleX = mBackgroundSprite.scaleX;
-            mCollisionManager.scaleY = mBackgroundSprite.scaleY;
+            mCollisionManager.x = mBackgroundLayer.x;
+            mCollisionManager.y = mBackgroundLayer.y;
+            mCollisionManager.scaleX = mBackgroundLayer.scaleX;
+            mCollisionManager.scaleY = mBackgroundLayer.scaleY;
             
             UpdateFriendLinkLines ();
          }
@@ -227,7 +227,7 @@ package editor {
          if (mCollisionManager == null)
             return;
          
-         GraphicsUtil.Clear (mFriendLinksSprite);
+         GraphicsUtil.Clear (mFriendLinksLayer);
          
          var friendPairs:Array = mCollisionManager.GetCollisionCategoryFriendPairs ();
          var point1:Point;
@@ -240,10 +240,10 @@ package editor {
             friend1 = friendPairs [i].mCategory1;
             friend2 = friendPairs [i].mCategory2;
             
-            point1 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksSprite, new Point (friend1.x, friend1.y) );
-            point2 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksSprite, new Point (friend2.x, friend2.y) );
+            point1 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksLayer, new Point (friend1.x, friend1.y) );
+            point2 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksLayer, new Point (friend2.x, friend2.y) );
             
-            GraphicsUtil.DrawLine (mFriendLinksSprite, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
+            GraphicsUtil.DrawLine (mFriendLinksLayer, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
          }
       }
       
@@ -276,24 +276,12 @@ package editor {
          {
             mIsCreating = true;
             mLastSelectedCreateButton.selected = true;
-            
-            //mCursorLayer.addChild (mCursorCreating);
-            //mCursorCreating.visible = true;
-            
-            //Mouse.hide();
          }
          else
          {
             mIsCreating = false;
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
-            
-            //if ( mCursorLayer.contains (mCursorCreating) )
-            //   mCursorLayer.removeChild (mCursorCreating);
-            
-            //mCursorCreating.visible = false;
-            
-            //Mouse.show();
          }
          
          if (mCurrentCreatMode != null)

@@ -368,7 +368,7 @@ package editor.world {
          
          for (var i:uint = 0; i < objectArray.length; ++ i)
          {
-            if (objectArray [i] is Entity && objectArray [i].visible)
+            if (objectArray [i] is Entity && objectArray [i].IsVisibleInEditor ())
                entityArray.push (objectArray [i]);
          }
          
@@ -382,13 +382,16 @@ package editor.world {
          var linkable:Linkable = null;
          for (var i:uint = 0; i < objectArray.length; ++ i)
          {
-            if (objectArray [i] is Linkable && objectArray [i] is DisplayObject && (objectArray [i] as DisplayObject).visible)
+            if (objectArray [i] is Linkable && objectArray [i] is DisplayObject)
             {
-               linkable = objectArray [i] as Linkable;
-               if (linkable.CanStartCreatingLink (displayX, displayY))
-                  return linkable;
-               else
-                  return null;
+               if ( (! (objectArray [i] is Entity)) || (objectArray [i] as Entity).IsVisibleInEditor ())
+               {
+                  linkable = objectArray [i] as Linkable;
+                  if (linkable.CanStartCreatingLink (displayX, displayY))
+                     return linkable;
+                  else
+                     return null;
+               }
             }
          }
          
@@ -665,10 +668,10 @@ package editor.world {
       }
       
 //=================================================================================
-//   links
+//   draw ids
 //=================================================================================
       
-      public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      public function DrawEntityIds (canvasSprite:Sprite):void
       {
          var entity:Entity;
          var i:int;
@@ -678,7 +681,7 @@ package editor.world {
             entity = GetEntityByCreationId (i);
             if (entity != null)
             {
-               entity.DrawEntityLinkLines (canvasSprite);
+               entity.DrawEntityId (canvasSprite);
             }
          }
       }

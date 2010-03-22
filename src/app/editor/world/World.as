@@ -976,7 +976,7 @@ package editor.world {
       }
       
 //=================================================================================
-//   queries
+//   visibility in editing, not playing
 //=================================================================================
       
       private var mVisiblesVisible:Boolean = true;
@@ -1021,13 +1021,6 @@ package editor.world {
          UpdateEntityVisibility ();
       }
       
-      public function SetLinksVisible (visible:Boolean):void
-      {
-         mLinksVisible = visible;
-         
-         UpdateEntityVisibility ();
-      }
-      
       private function UpdateEntityVisibility ():void
       {
          var entity:Entity;
@@ -1035,6 +1028,8 @@ package editor.world {
          var numEntities:int = mEntitiesSortedByCreationId.length;
          if (numEntities != numChildren)
             trace ("!!! numEntities != numChildren");
+         
+         var ildVisible:Boolean;
          
          for (var i:int = 0; i < numEntities; ++ i)
          {
@@ -1044,30 +1039,30 @@ package editor.world {
             
             if (entity.IsVisible ())
             {
-               entity.visible = mVisiblesVisible;
+               entity.SetVisibleInEditor (mVisiblesVisible);
             }
             else
             {
-               entity.visible = mInvisiblesVisible;
+               entity.SetVisibleInEditor (mInvisiblesVisible);
             }
             
-            if (entity.visible)
+            if (entity.IsVisibleInEditor ())
             {
                if (entity is EntityShape || entity is EntityUtility)
                {
-                  entity.visible = mShapesVisible;
+                  entity.SetVisibleInEditor (mShapesVisible);
                }
                else if (entity is EntityJoint || entity is SubEntityJointAnchor)
                {
-                  entity.visible = mJointsVisible;
+                  entity.SetVisibleInEditor (mJointsVisible);
                }
                else if (entity is EntityLogic)
                {
-                  entity.visible = mTriggersVisible;
+                  entity.SetVisibleInEditor (mTriggersVisible);
                }
             }
             
-            if ( (! entity.visible) && entity.IsSelected ())
+            if ((! entity.IsVisibleInEditor ()) && entity.IsSelected ())
             {
                mSelectionListManager.RemoveSelectedEntity (entity);
             }
@@ -1310,6 +1305,41 @@ package editor.world {
       public function CreateEntityCollisionCategory (ccName:String):EntityCollisionCategory
       {
          return mCollisionManager.CreateEntityCollisionCategory (ccName);
+      }
+      
+//=================================================================================
+//   draw links
+//=================================================================================
+      
+      private static function SortEntitiesByDrawLinksOrder (entity1:Entity, entity2:Entity):int
+      {
+         var drawLinksOrder1:int = entity1.GetDrawLinksOrder ();
+         var drawLinksOrder2:int = entity2.GetDrawLinksOrder ();
+         
+         if (drawLinksOrder1 < drawLinksOrder2)
+            return -1;
+         else if (drawLinksOrder1 > drawLinksOrder2)
+            return 1;
+         else
+            return 0;
+      }
+      
+      public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean):void
+      {
+         var entityArray:Array = mEntitiesSortedByCreationId.slice ();
+         entityArray.sort (SortEntitiesByDrawLinksOrder);
+         
+         var entity:Entity;
+         var i:int;
+         var numEntities:int = entityArray.length;
+         for (i = 0; i < numEntities; ++ i)
+         {
+            entity = entityArray [i];
+            if (entity != null)
+            {
+               entity.DrawEntityLinks (canvasSprite, forceDraw);
+            }
+         }
       }
       
 //=================================================================================

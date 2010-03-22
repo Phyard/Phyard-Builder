@@ -85,7 +85,7 @@ package editor.entity {
                borderThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
-         alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
+         SetVisibleInEditor (mVisibleInEditor); //  recal alpha
          
          if (GetVertexPointsCount () == 1)
          {

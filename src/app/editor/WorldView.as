@@ -88,6 +88,10 @@ package editor {
    
    import editor.display.CursorCrossingLine;
    
+   import editor.display.EditingEffect
+   import editor.display.EffectCrossingAiming;
+   import editor.display.EffectMessagePopup;
+   
    import editor.entity.Entity;
    import editor.entity.EntityShape;
    import editor.entity.EntityShapeCircle;
@@ -181,18 +185,18 @@ package editor {
       
       private var mEditorElementsContainer:Sprite;
       
-         public var mEditorBackgroundSprite:Sprite = null;
-            public var mEntityLinksSprite:Sprite = null;
-         public var mContentContainer:Sprite;
-         public var mWorldDebugInfoSprite:Sprite;
-         public var mForegroundSprite:Sprite;
+         public var mEditorBackgroundLayer:Sprite = null;
+            public var mEntityLinksLayer:Sprite = null;
+         public var mContentLayer:Sprite;
+         public var mForegroundLayer:Sprite;
+            public var mWorldDebugInfoLayer:Sprite;
+            private var mEntityIdsLayer:Sprite;
+            private var mSelectedEntitiesCenterSprite:Sprite;
+         private var mEditingEffectLayer:Sprite;
          public var mCursorLayer:Sprite;
          
-         private var mSelectedEntitiesCenterSprite:Sprite;
-         private var mStatusBarEntityInfoSprite:Sprite;
-         
       private var mPlayerElementsContainer:Sprite;
-      private var mTopLayerContainer:Sprite;
+      private var mFloatingMessageLayer:Sprite;
          
       //
       
@@ -235,15 +239,18 @@ package editor {
          addChild (mEditorElementsContainer);
          
          //
-         mContentContainer = new Sprite ();
-         mEditorElementsContainer.addChild (mContentContainer);
+         mContentLayer = new Sprite ();
+         mEditorElementsContainer.addChild (mContentLayer);
          
-         mWorldDebugInfoSprite = new Sprite ();
-         mEditorElementsContainer.addChild (mWorldDebugInfoSprite);
-         
-         mForegroundSprite = new Sprite ();
-         mEditorElementsContainer.addChild (mForegroundSprite);
-         
+         mForegroundLayer = new Sprite ();
+         mEditorElementsContainer.addChild (mForegroundLayer);
+            
+            mWorldDebugInfoLayer = new Sprite ();
+            mForegroundLayer.addChild (mWorldDebugInfoLayer);
+            
+            mEntityIdsLayer = new Sprite ();
+            mForegroundLayer.addChild (mEntityIdsLayer);
+            
             mSelectedEntitiesCenterSprite = new Sprite ();
             mSelectedEntitiesCenterSprite.alpha = 0.25;
             mSelectedEntitiesCenterSprite.visible = false;
@@ -256,11 +263,11 @@ package editor {
             mSelectedEntitiesCenterSprite.graphics.beginFill(0x000000);
             mSelectedEntitiesCenterSprite.graphics.drawCircle (0, 0, 2);
             mSelectedEntitiesCenterSprite.graphics.endFill ();
-            mForegroundSprite.addChild (mSelectedEntitiesCenterSprite);
+            mForegroundLayer.addChild (mSelectedEntitiesCenterSprite);
             
-            mStatusBarEntityInfoSprite = new Sprite ();
-            mForegroundSprite.addChild (mStatusBarEntityInfoSprite);
-            
+         mEditingEffectLayer = new Sprite ();
+         mEditorElementsContainer.addChild (mEditingEffectLayer);
+         
          mCursorLayer = new Sprite ();
          mEditorElementsContainer.addChild (mCursorLayer);
          
@@ -269,9 +276,9 @@ package editor {
          mPlayerElementsContainer.visible = false;
          addChild (mPlayerElementsContainer);
          
-         mTopLayerContainer = new Sprite ();
-         mTopLayerContainer.visible = true;
-         addChild (mTopLayerContainer);
+         mFloatingMessageLayer = new Sprite ();
+         mFloatingMessageLayer.visible = true;
+         addChild (mFloatingMessageLayer);
          
          //
          
@@ -292,6 +299,11 @@ package editor {
       public function GetEditorWorld ():editor.world.World
       {
          return mEditorWorld;
+      }
+      
+      private function RegisterNotifyFunctions ():void
+      {
+         InputEntitySelector.sNotifyEntityLinksModified = NotifyEntityLinksModified;
       }
       
 //============================================================================
@@ -349,7 +361,7 @@ package editor {
             mContentMaskSprite.graphics.beginFill(0x0);
             mContentMaskSprite.graphics.drawRect (0, 0, mViewWidth, mViewHeight);
             mContentMaskSprite.graphics.endFill ();
-            mContentContainer.addChild (mContentMaskSprite);
+            mContentLayer.addChild (mContentMaskSprite);
             
             this.mask = mContentMaskSprite;
          }
@@ -396,7 +408,11 @@ package editor {
                   mEditorWorld.scaleY = mEditorWorld.scaleX = newScale;
                   
                   if (mEditorWorld.scaleX >= mEditorWorldZoomScale)
+                  {
                      mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
+                     NotifyEntityLinksModified ();
+                     NotifyEntityIdsModified ();
+                  }
                }
                else
                {
@@ -407,26 +423,44 @@ package editor {
                   mEditorWorld.scaleY = mEditorWorld.scaleX = newScale;
                   
                   if (mEditorWorld.scaleX <= mEditorWorldZoomScale)
+                  {
                      mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
+                     NotifyEntityLinksModified ();
+                     NotifyEntityIdsModified ();
+                  }
                }
                
                UpdateBackgroundAndWorldPosition ();
             }
             
-            if (mEntityLinksSprite.scaleX != mEditorWorld.scaleX)
-               mEntityLinksSprite.scaleX = mEditorWorld.scaleX;
-            if (mEntityLinksSprite.scaleY != mEditorWorld.scaleY)
-               mEntityLinksSprite.scaleY = mEditorWorld.scaleY;
-            if (mEntityLinksSprite.x != mEditorWorld.x)
-               mEntityLinksSprite.x = mEditorWorld.x;
-            if (mEntityLinksSprite.y != mEditorWorld.y)
-               mEntityLinksSprite.y = mEditorWorld.y;
+            mEntityLinksLayer.scaleX = mEditorWorld.scaleX;
+            mEntityLinksLayer.scaleY = mEditorWorld.scaleY;
+            mEntityLinksLayer.x = mEditorWorld.x;
+            mEntityLinksLayer.y = mEditorWorld.y;
+            
+            mEntityIdsLayer.scaleX = mEditorWorld.scaleX;
+            mEntityIdsLayer.scaleY = mEditorWorld.scaleY;
+            mEntityIdsLayer.x = mEditorWorld.x;
+            mEntityIdsLayer.y = mEditorWorld.y;
             
             mEditorWorld.Update (mStepTimeSpan.GetLastSpan ());
+            
+            RepaintEntityLinks ();
+            RepaintEntityIds ();
          }
+         
+         UpdateEffects ();
          
          // ...
          mAnalytics.TrackTime (Config.VirtualPageName_EditorTimePrefix);
+      }
+      
+      private function SynchronizePositionAndScaleWithEditorWorld (sprite:Sprite):void
+      {
+            sprite.scaleX = mEditorWorld.scaleX;
+            sprite.scaleY = mEditorWorld.scaleY;
+            sprite.x = mEditorWorld.x;
+            sprite.y = mEditorWorld.y;
       }
       
 //==================================================================================
@@ -442,13 +476,13 @@ package editor {
       
       public function UpdateBackgroundAndWorldPosition ():void
       {
-         if (mEditorBackgroundSprite == null)
+         if (mEditorBackgroundLayer == null)
          {
-            mEditorBackgroundSprite = new Sprite ();
-            mEditorElementsContainer.addChildAt (mEditorBackgroundSprite, 0);
+            mEditorBackgroundLayer = new Sprite ();
+            mEditorElementsContainer.addChildAt (mEditorBackgroundLayer, 0);
             
-            mEntityLinksSprite = new Sprite ();
-            mEditorBackgroundSprite.addChild (mEntityLinksSprite);
+            mEntityLinksLayer = new Sprite ();
+            mEditorBackgroundLayer.addChild (mEntityLinksLayer);
          }
          
          var sceneLeft  :Number;
@@ -542,27 +576,27 @@ package editor {
          
       // paint
          
-         mEditorBackgroundSprite.graphics.clear ();
+         mEditorBackgroundLayer.graphics.clear ();
          
-         mEditorBackgroundSprite.graphics.beginFill(bgColor);
-         mEditorBackgroundSprite.graphics.drawRect (bgLeft, bgTop, bgWidth, bgHeight);
-         mEditorBackgroundSprite.graphics.endFill ();
+         mEditorBackgroundLayer.graphics.beginFill(bgColor);
+         mEditorBackgroundLayer.graphics.drawRect (bgLeft, bgTop, bgWidth, bgHeight);
+         mEditorBackgroundLayer.graphics.endFill ();
          
-         mEditorBackgroundSprite.graphics.lineStyle (1, 0xA0A0A0);
+         mEditorBackgroundLayer.graphics.lineStyle (1, 0xA0A0A0);
          while (gridX <= bgRight)
          {
-            mEditorBackgroundSprite.graphics.moveTo (gridX, bgTop);
-            mEditorBackgroundSprite.graphics.lineTo (gridX, bgBottom);
+            mEditorBackgroundLayer.graphics.moveTo (gridX, bgTop);
+            mEditorBackgroundLayer.graphics.lineTo (gridX, bgBottom);
             gridX += gridWidth;
          }
          
          while (gridY <= bgBottom)
          {
-            mEditorBackgroundSprite.graphics.moveTo (bgLeft, gridY);
-            mEditorBackgroundSprite.graphics.lineTo (bgRight, gridY);
+            mEditorBackgroundLayer.graphics.moveTo (bgLeft, gridY);
+            mEditorBackgroundLayer.graphics.lineTo (bgRight, gridY);
             gridY += gridHeight;
          }
-         mEditorBackgroundSprite.graphics.lineStyle ();
+         mEditorBackgroundLayer.graphics.lineStyle ();
          
          if (drawBorder)
          {
@@ -571,15 +605,15 @@ package editor {
             var borderThinknessT:Number = mEditorWorld.GetWorldBorderTopThickness () * mEditorWorld.scaleY;
             var borderThinknessB:Number = mEditorWorld.GetWorldBorderBottomThickness () * mEditorWorld.scaleY;
             
-            mEditorBackgroundSprite.graphics.beginFill(borderColor);
-            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewTop, borderThinknessL, worldViewHeight);
-            mEditorBackgroundSprite.graphics.drawRect (worldViewRight - borderThinknessR, worldViewTop, borderThinknessR, worldViewHeight);
-            mEditorBackgroundSprite.graphics.endFill ();
+            mEditorBackgroundLayer.graphics.beginFill(borderColor);
+            mEditorBackgroundLayer.graphics.drawRect (worldViewLeft, worldViewTop, borderThinknessL, worldViewHeight);
+            mEditorBackgroundLayer.graphics.drawRect (worldViewRight - borderThinknessR, worldViewTop, borderThinknessR, worldViewHeight);
+            mEditorBackgroundLayer.graphics.endFill ();
             
-            mEditorBackgroundSprite.graphics.beginFill(borderColor);
-            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewTop, worldViewWidth, borderThinknessT);
-            mEditorBackgroundSprite.graphics.drawRect (worldViewLeft, worldViewBottom - borderThinknessB, worldViewWidth, borderThinknessB);
-            mEditorBackgroundSprite.graphics.endFill ();
+            mEditorBackgroundLayer.graphics.beginFill(borderColor);
+            mEditorBackgroundLayer.graphics.drawRect (worldViewLeft, worldViewTop, worldViewWidth, borderThinknessT);
+            mEditorBackgroundLayer.graphics.drawRect (worldViewLeft, worldViewBottom - borderThinknessB, worldViewWidth, borderThinknessB);
+            mEditorBackgroundLayer.graphics.endFill ();
          }
       }
       
@@ -642,47 +676,98 @@ package editor {
       private function UpdateSelectedEntitiesCenterSprite ():void
       {
          //var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, _SelectedEntitiesCenterPoint );
-         var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, mForegroundSprite, _SelectedEntitiesCenterPoint );
+         var point:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, mForegroundLayer, _SelectedEntitiesCenterPoint );
          mSelectedEntitiesCenterSprite.x = point.x;
          mSelectedEntitiesCenterSprite.y = point.y;
       }
       
-      public function RepaintEntityLinks ():void
+      private var mEntityLinksModified:Boolean = false;
+      
+      public function NotifyEntityLinksModified ():void
       {
-         mEntityLinksSprite.graphics.clear ();
-         
-         if (mEditorWorld != null)
-            mEditorWorld.DrawEntityLinkLines (mEntityLinksSprite);
+         mEntityLinksModified = true;
+      }
+      
+      private var mShowAllEntityLinks:Boolean = false;
+      
+      private function RepaintEntityLinks ():void
+      {
+         if (mEntityLinksModified)
+         {
+            mEntityLinksModified = false;
+            mEntityLinksLayer.graphics.clear ();
+            mEditorWorld.DrawEntityLinks (mEntityLinksLayer, mShowAllEntityLinks);
+         }
+      }
+      
+      private var mEntityIdsModified:Boolean = false;
+      
+      private function NotifyEntityIdsModified ():void
+      {
+         mEntityIdsModified = true;
+      }
+      
+      private var mShowAllEntityIds:Boolean = false;
+      
+      private function RepaintEntityIds ():void
+      {
+         if (mEntityIdsModified)
+         {
+            mEntityIdsModified = false;
+            
+            mEntityIdsLayer.visible = mShowAllEntityIds;
+            
+            if (! mShowAllEntityIds)
+               return;
+            
+            mEditorWorld.DrawEntityIds (mEntityIdsLayer);
+        }
       }
       
       public function RepaintWorldDebugInfo ():void
       {
          if (Compile::Is_Debugging)// && false)
          {
-            mWorldDebugInfoSprite.x = mEditorWorld.x;
-            mWorldDebugInfoSprite.y = mEditorWorld.y;
-            mWorldDebugInfoSprite.scaleX = mEditorWorld.scaleX;
-            mWorldDebugInfoSprite.scaleY = mEditorWorld.scaleY;
+            mWorldDebugInfoLayer.x = mEditorWorld.x;
+            mWorldDebugInfoLayer.y = mEditorWorld.y;
+            mWorldDebugInfoLayer.scaleX = mEditorWorld.scaleX;
+            mWorldDebugInfoLayer.scaleY = mEditorWorld.scaleY;
             
-            while (mWorldDebugInfoSprite.numChildren > 0)
-               mWorldDebugInfoSprite.removeChildAt (0);
+            while (mWorldDebugInfoLayer.numChildren > 0)
+               mWorldDebugInfoLayer.removeChildAt (0);
             
-            mEditorWorld.RepaintContactsInLastRegionSelecting (mWorldDebugInfoSprite);
+            mEditorWorld.RepaintContactsInLastRegionSelecting (mWorldDebugInfoLayer);
          }
       }
       
-//==================================================================================
-// reponse to some world modififactions
-//==================================================================================
-      
-      private function RegisterNotifyFunctions ():void
+      public function UpdateEffects ():void
       {
-         InputEntitySelector.sNotifyEntityLinksModified = NotifyEntityLinksModified;
-      }
-      
-      private function NotifyEntityLinksModified ():void
-      {
-         RepaintEntityLinks ();
+         // reverse order for some effects will remove itself
+         var effect:EditingEffect;
+         var i:int;
+         
+         if (! IsPlaying ())
+         {
+            for (i = mEditingEffectLayer.numChildren - 1; i >= 0; -- i)
+            {
+               effect = mEditingEffectLayer.getChildAt (i) as EditingEffect
+               if (effect != null)
+               {
+                  effect.Update ();
+               }
+            }
+         }
+         
+         for (i = mFloatingMessageLayer.numChildren - 1; i >= 0; -- i)
+         {
+            effect = mFloatingMessageLayer.getChildAt (i) as EditingEffect
+            if (effect != null)
+            {
+               effect.Update ();
+            }
+         }
+         
+         EffectMessagePopup.UpdateMessagesPosition ();
       }
       
 //==================================================================================
@@ -720,24 +805,12 @@ package editor {
          {
             mIsCreating = true;
             mLastSelectedCreateButton.selected = true;
-            
-            //mCursorLayer.addChild (mCursorCreating);
-            //mCursorCreating.visible = true;
-            
-            //Mouse.hide();
          }
          else
          {
             mIsCreating = false;
             if (mLastSelectedCreateButton != null)
                mLastSelectedCreateButton.selected = false;
-            
-            //if ( mCursorLayer.contains (mCursorCreating) )
-            //   mCursorLayer.removeChild (mCursorCreating);
-            
-            //mCursorCreating.visible = false;
-            
-            //Mouse.show();
          }
          
          UpdateUiButtonsEnabledStatus ();
@@ -1192,12 +1265,12 @@ package editor {
       public var mButtonSaveWorld:Button;
       public var mButtonLoadWorld:Button;
       
-      public var mButtonHideVisibleEntities:Button;
+      public var mButtonShowEntityIds:Button;
+      public var mButtonShowLinks:Button;
+      
       public var mButtonHideInvisibleEntities:Button;
-      public var mButtonHideShapes:Button;
-      public var mButtonHideJoints:Button;
+      public var mButtonHideShapesAndJoints:Button;
       public var mButtonHideTriggers:Button;
-      public var mButtonHideLinks:Button;
       
       public var SetBatchSettingMenuItemsEnabled:Function;
       
@@ -1355,28 +1428,26 @@ package editor {
                Play_Stop ();
                break;
             
-            case mButtonHideVisibleEntities:
-               mEditorWorld.SetVisiblesVisible (! mButtonHideVisibleEntities.selected);
-               OnSelectedEntitiesChanged ();
+            case mButtonShowEntityIds:
+               mShowAllEntityIds = mButtonShowEntityIds.selected;
+               NotifyEntityIdsModified ();
                break;
+            case mButtonShowLinks:
+               mShowAllEntityLinks = mButtonShowLinks.selected;
+               NotifyEntityLinksModified ();
+               break;
+            
             case mButtonHideInvisibleEntities:
                mEditorWorld.SetInvisiblesVisible (! mButtonHideInvisibleEntities.selected);
                OnSelectedEntitiesChanged ();
                break;
-            case mButtonHideShapes:
-               mEditorWorld.SetShapesVisible (! mButtonHideShapes.selected);
-               OnSelectedEntitiesChanged ();
-               break;
-            case mButtonHideJoints:
-               mEditorWorld.SetJointsVisible (! mButtonHideJoints.selected);
+            case mButtonHideShapesAndJoints:
+               mEditorWorld.SetShapesVisible (! mButtonHideShapesAndJoints.selected);
+               mEditorWorld.SetJointsVisible (! mButtonHideShapesAndJoints.selected);
                OnSelectedEntitiesChanged ();
                break;
             case mButtonHideTriggers:
                mEditorWorld.SetTriggersVisible (! mButtonHideTriggers.selected);
-               OnSelectedEntitiesChanged ();
-               break;
-            case mButtonHideLinks:
-               mEditorWorld.SetLinksVisible (! mButtonHideLinks.selected);
                OnSelectedEntitiesChanged ();
                break;
             
@@ -1466,11 +1537,13 @@ package editor {
          if (newEditorWorld == null || newEditorWorld == mEditorWorld)
             return;
          
+         NotifyEntityLinksModified ();
+         
          DestroyEditorWorld ();
          
          mEditorWorld = newEditorWorld;
          
-         mContentContainer.addChild (mEditorWorld);
+         mContentLayer.addChild (mEditorWorld);
          
          if (Runtime.mCollisionCategoryView != null)
             Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
@@ -1493,8 +1566,8 @@ package editor {
          {
             mEditorWorld.Destroy ();
             
-            if ( mContentContainer.contains (mEditorWorld) )
-               mContentContainer.removeChild (mEditorWorld);
+            if ( mContentLayer.contains (mEditorWorld) )
+               mContentLayer.removeChild (mEditorWorld);
          }
          
          mEditorWorld = null;
@@ -2735,7 +2808,7 @@ package editor {
                mCurrentEditMode.OnMouseUp (worldPoint.x, worldPoint.y);
             }
             
-            if ( _isZeroMove && (! _mouseEventCtrlDown) && mCurrentMouseMode == MouseMode_SelectSingle )
+            if (_isZeroMove && (! _mouseEventCtrlDown) && mCurrentMouseMode == MouseMode_SelectSingle)
             {
                mEditorWorld.ClearSelectedEntities ();
             }
@@ -3458,10 +3531,12 @@ package editor {
          mLastSelectedEntity = entity;
          
          if (mLastSelectedEntity != null)
-            entity.SetInternalComponentsVisible (true);
+            mLastSelectedEntity.SetInternalComponentsVisible (true);
          
          UpdateUiButtonsEnabledStatus ();
          UpdateSelectedEntityInfo ();
+         
+         NotifyEntityLinksModified ();
       }
       
       public function SetTheOnlySelectedEntity (entity:Entity):void
@@ -3605,7 +3680,9 @@ package editor {
          
          UpdateSelectedEntityInfo ();
          
-         RepaintEntityLinks ();
+         NotifyEntityLinksModified ();
+         
+         NotifyEntityIdsModified ();
       }
       
       public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean, byMouse:Boolean = true):void
@@ -3717,6 +3794,9 @@ package editor {
                mViewCenterWorldX = DefaultWorldWidth * 0.5;
                mViewCenterWorldY = DefaultWorldHeight * 0.5;
                mEditorWorldZoomScale = 1.0;
+               
+               mShowAllEntityLinks = false;
+               mShowAllEntityIds = false;
                
                UpdateChildComponents ();
             }
@@ -4798,6 +4878,34 @@ package editor {
          UpdateBackgroundAndWorldPosition ();
       }
       
+      public function GoToEntity (entityId:int):void
+      {
+         if (entityId < 0 || entityId > mEditorWorld.GetNumEntities ())
+            return;
+         
+         var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);
+         
+         var posX:Number = entity.GetPositionX ();
+         var posY:Number = entity.GetPositionY ();
+         
+         var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, new Point (posX, posY) );
+         if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
+            posX = mViewCenterWorldX;
+         if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
+            posY = mViewCenterWorldY;
+         
+         var dx:Number = mViewCenterWorldX - posX;
+         var dy:Number = mViewCenterWorldY - posY;
+         
+         if (dx != 0 || dy != 0)
+         {
+            MoveWorldScene (dx, dy);
+         }
+         
+         // aiming effect
+         mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
+      }
+      
 //============================================================================
 // undo / redo 
 //============================================================================
@@ -4838,6 +4946,8 @@ package editor {
          }
          
          mWorldHistoryManager.AddHistory (worldState);
+         
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo point created.", EffectMessagePopup.kColorDesignChanged));
       }
       
       private function RestoreWorld (worldState:WorldState):void
@@ -4877,7 +4987,7 @@ package editor {
                
                if (entityId == object.mMainSelectedEntityId)
                {
-                  entity.SetInternalComponentsVisible (true);
+                  //entity.SetInternalComponentsVisible (true);
                   SetLastSelectedEntities (entity);
                   
                   if (object.mSelectedVertexControllerId >= 0)

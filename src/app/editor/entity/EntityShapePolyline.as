@@ -67,7 +67,7 @@ package editor.entity {
                curveThickness  = 3.0 / mWorld.GetZoomScale ();
          }
          
-         alpha = 0.30 + GetTransparency () * 0.01 * 0.40;
+         SetVisibleInEditor (mVisibleInEditor); //  recal alpha
          
          GraphicsUtil.ClearAndDrawPolyline (this, mLocalPoints, bgColor, curveThickness, mRoundEnds);
       }
@@ -687,14 +687,22 @@ package editor.entity {
       {
          var index2:int = Math.round (mVertexPoints.length / 2);
          var index1:int = index2 - 1;
-         return 0.5 * ((mVertexPoints [index1] as Point).x + (mVertexPoints [index2] as Point).x);
+         
+         if (index1 < 0)
+            return GetPositionX ();
+         else
+            return 0.5 * ((mVertexPoints [index1] as Point).x + (mVertexPoints [index2] as Point).x);
       }
       
       override public function GetLinkPointY ():Number
       {
          var index2:int = Math.round (mVertexPoints.length / 2);
          var index1:int = index2 - 1;
-         return 0.5 * ((mVertexPoints [index1] as Point).y + (mVertexPoints [index2] as Point).y);
+         
+         if (index1 < 0)
+            return GetPositionY ();
+         else
+            return 0.5 * ((mVertexPoints [index1] as Point).y + (mVertexPoints [index2] as Point).y);
       }
       
    }

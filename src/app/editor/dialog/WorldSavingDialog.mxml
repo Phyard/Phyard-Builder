@@ -30,16 +30,10 @@
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Label id="Label_PlayCode" text="Play Code:" fontWeight="bold"/>
+      <mx:Label id="Label_PlayCode" text="Play Code" fontWeight="bold"/>
+      <mx:Label id="Label_PlayCodeLength" text="" />
       <mx:Spacer width="100%"/>
       <mx:Button label="Copy Play Code" click="OnClickCopyPlayCode ();"/>
-   </mx:HBox>
-
-   <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_PlayCode" width="100%" height="30" editable="false" wordWrap="false">
-         <mx:text>
-         </mx:text>
-      </mx:TextArea>
    </mx:HBox>
 
    <!--
@@ -88,7 +82,7 @@
             mInputValues = values;
             
             TextArea_SourceCode.text = values.mXmlString;
-            TextArea_PlayCode.text = values.mHexString;
+            Label_PlayCodeLength.text = "(" + values.mHexString.length +" bytes)";
             
             /*
             var embedCode:String = 
@@ -145,7 +139,8 @@
          
          private function OnClickCopyPlayCode ():void
          {
-            System.setClipboard(TextArea_PlayCode.text);
+            //System.setClipboard (TextArea_PlayCode.text);
+            System.setClipboard (mInputValues.mHexString);
          }
          
          //private function OnClickCopyEmbedCode ():void

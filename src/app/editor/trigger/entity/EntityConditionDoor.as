@@ -432,12 +432,9 @@ package editor.trigger.entity {
 //   entity links
 //====================================================================
       
-      override public function DrawEntityLinkLines (canvasSprite:Sprite):void
+      override public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean, isExpanding:Boolean = false):void
       {
          ValidateEntityLinks ();
-         
-         if (!visible)
-            return;
          
          if (mInputConditions.length > 0)
          {
@@ -445,8 +442,12 @@ package editor.trigger.entity {
             for (var i:int = 0; i < mInputConditions.length; ++ i)
             {
                var condition_target:ConditionAndTargetValue = mInputConditions [i] as ConditionAndTargetValue;
-               var point2:Point = condition_target.mConditionEntity.GetTargetValueZoneWorldCenter (condition_target.mTargetValue);
-               GraphicsUtil.DrawLine (canvasSprite, point1.x, point1.y, point2.x, point2.y);
+               
+               //if (IsSelected () || (condition_target.mConditionEntity as Entity).IsSelected ())
+               {
+                  var point2:Point = condition_target.mConditionEntity.GetTargetValueZoneWorldCenter (condition_target.mTargetValue);
+                  GraphicsUtil.DrawLine (canvasSprite, point1.x, point1.y, point2.x, point2.y, 0x0, 0);
+               }
             }
          }
       }

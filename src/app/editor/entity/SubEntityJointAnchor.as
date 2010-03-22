@@ -19,6 +19,11 @@ package editor.entity {
          super (world, mainEntity, anchorIndex);
       }
       
+      override public function GetVisibleAlpha ():Number
+      {
+         return 0.70;
+      }
+      
       public function GetAnchorIndex ():int
       {
          //return mAnchorIndex;

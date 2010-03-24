@@ -36,8 +36,8 @@
                <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top Layer" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-to-top.png')" disabledIcon="@Embed('res/command/command-to-top-disabled.png')" />
                <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom Layer" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-to-bottom.png')" disabledIcon="@Embed('res/command/command-to-bottom-disabled.png')" />
                <mx:Spacer width="10"/>
-               <mx:Button id="Button_Glue" toolTip="(G) Glue Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-glue.png')" disabledIcon="@Embed('res/command/command-glue-disabled.png')" />
-               <mx:Button id="Button_BreakApart" toolTip="(B) Break Apart Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-glue-break.png')" disabledIcon="@Embed('res/command/command-glue-break-disabled.png')" />
+               <mx:Button id="Button_Glue" toolTip="Make Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-make.png')" disabledIcon="@Embed('res/command/command-brothers-make-disabled.png')" />
+               <mx:Button id="Button_BreakApart" toolTip="Break Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-break.png')" disabledIcon="@Embed('res/command/command-brothers-break-disabled.png')" />
                <mx:Spacer width="10"/>
                <mx:Button id="Button_Setting" label="Setting..." toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/command/command-setting.png')" disabledIcon="@Embed('res/command/command-setting-disabled.png')" />
                <mx:Spacer width="10"/>
@@ -365,8 +365,8 @@
                         <mx:CheckBox selected="false" id="CheckBox_HideTriggers" label="Triggers" click=";"/>
                         <mx:Spacer width="3"/>
                         <mx:HBox width="100%" backgroundColor="0xE0E0E0" height="100%"/>
-                        <mx:Button id="Button_ZoomOut" click="ZoomOut ()" focusEnabled="false" fontSize="8"  width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-out.png')" />
-                        <mx:Button id="Button_ZoomIn" click="ZoomIn ()" focusEnabled="false" fontSize="8"  width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-in.png')" />
+                        <mx:Button id="Button_ZoomOut" click="ZoomOut ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-out.png')" disabledIcon="@Embed('res/edit/zoom-out-disabled.png')" />
+                        <mx:Button id="Button_ZoomIn" click="ZoomIn ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-in.png')" disabledIcon="@Embed('res/edit/zoom-in-disabled.png')" />
                         <mx:HBox width="3" backgroundColor="0xE0E0E0" height="100%"/>
                      </mx:Box>
                      <mx:Box direction="horizontal" borderStyle="solid" height="100%" width="100%"
@@ -385,12 +385,16 @@
                            <mx:Label id="Label_MainSelectedEntityInfo" text="" width="100%"/>
                            <mx:Spacer width="100%"/>
                         </mx:HBox>
-                        <mx:HBox id="Box_PlayingWorldInfo" borderStyle="none" height="100%" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
+                        <mx:HBox id="Box_PlayingWorldInfo" verticalAlign="middle" borderStyle="none" height="100%" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0" horizontalScrollPolicy="off">
                            <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                           <mx:Label id="Label_RunningFps" text="fps: 30.01"/>
+                           <mx:Label id="Label_RunningFps" text="fps: 30.01" minWidth="76"/>
                            <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
-                           <mx:Label id="Label_RunningSteps" text="step: 100"/>
+                           <mx:Label id="Label_RunningSteps" text="step: 100" minWidth="86"/>
                            <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                           <mx:Spacer width="100%"/>
+                           <mx:Button id="Button_PlaySlower" click="PlaySlower ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-slower.png')" disabledIcon="@Embed('res/edit/play-slower-disabled.png')"/>
+                           <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
+                           <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-faster.png')" disabledIcon="@Embed('res/edit/play-faster-disabled.png')"/>
                            <mx:Spacer width="100%"/>
                         </mx:HBox>
                      </mx:ViewStack>
@@ -953,6 +957,12 @@
                Box_CreateCommands.enabled = false;
                
                ViewStack_WorldInfo.selectedChild = Box_PlayingWorldInfo;
+               
+               Button_PlayFaster.enabled = MainView.PlayFaster (0)
+               Button_PlaySlower.enabled = MainView.PlaySlower (0);
+               UpdatePlaySpeedxLableText ();
+               
+               MainView.SetOnSpeedChangedFunction (UpdatePlaySpeedxLableText);
             }
             
             public function OnPlayingStopped ():void
@@ -1078,6 +1088,27 @@
                }
                
                Button_ZoomIn.enabled = true;
+            }
+            
+            public function PlayFaster ():void
+            {
+               Button_PlayFaster.enabled = MainView.PlayFaster (1);
+               
+               Button_PlaySlower.enabled = true;
+               UpdatePlaySpeedxLableText ();
+            }
+            
+            public function PlaySlower ():void
+            {
+               Button_PlaySlower.enabled = MainView.PlaySlower (1);
+               
+               Button_PlayFaster.enabled = true;
+               UpdatePlaySpeedxLableText ();
+            }
+            
+            public function UpdatePlaySpeedxLableText ():void
+            {
+               Label_PlaySpeed.text = "Speed X" + MainView.GetPlayingSpeedX ();
             }
             
 //========================================================================================

@@ -12,7 +12,7 @@ package editor.world {
       
       public function GetSelectedEntities ():Array
       {
-         return mSelectedEntities.slice ();
+         return mSelectedEntities.concat ();
       }
       
       public function ClearSelectedEntities ():void

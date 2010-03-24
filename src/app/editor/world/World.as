@@ -1326,7 +1326,7 @@ package editor.world {
       
       public function DrawEntityLinks (canvasSprite:Sprite, forceDraw:Boolean):void
       {
-         var entityArray:Array = mEntitiesSortedByCreationId.slice ();
+         var entityArray:Array = mEntitiesSortedByCreationId.concat ();
          entityArray.sort (SortEntitiesByDrawLinksOrder);
          
          var entity:Entity;

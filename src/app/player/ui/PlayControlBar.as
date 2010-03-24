@@ -158,14 +158,20 @@ package player.ui {
       // speed
          
          mButtonSpeeds = new Array (5);
+         
          for (i = 0; i < NumButtonSpeed; ++ i)
          {
             mButtonSpeeds [i] = new ImageButton (mBitmapDataSpeed, i);
-            mButtonSpeeds [i].SetClickEventHandler (OnClickSpeed);
-            addChild (mButtonSpeeds[i]);
             
-            mButtonSpeeds[i].x = buttonX; 
-            buttonX += mButtonSpeeds[i].width - 1;
+            if (mButtonShown [i])
+            {
+               mButtonSpeeds [i].SetClickEventHandler (OnClickSpeed);
+               
+               addChild (mButtonSpeeds[i]);
+               
+               mButtonSpeeds[i].x = buttonX; 
+               buttonX += mButtonSpeeds[i].width - 1;
+            }
          }
          
          buttonX += ButtonMargin;
@@ -198,7 +204,7 @@ package player.ui {
          
       // 
          
-         OnClickSpeed (1);
+         OnClickSpeed (1); // speed X2
       }
       
       public function IsPlaying ():Boolean
@@ -339,22 +345,31 @@ package player.ui {
       }
       
       private static const ButtonIndex2SpeedXTable:Array = [1, 2, 3, 4, 5];
+      private static var mButtonShown:Array = [true, true, false, true, false];
       
-      private function OnClickSpeed (data:Object):void
+      public function OnClickSpeed (data:Object):void
       {
          var index:int = int (data);
          if (index < 0) index = 0;
          if (index >= NumButtonSpeed) index = NumButtonSpeed - 1;
          
+         SetPlayingSpeedX (ButtonIndex2SpeedXTable [index]);
+      }
+      
+      public function SetPlayingSpeedX (speedX:int):void
+      {
+         if (speedX < 0)
+            speedX = 0;
+         
+         mPlayingSpeedX = speedX;
+         
          for (var i:int = 0; i < NumButtonSpeed; ++ i)
          {
-            if (i == index)
-               mButtonSpeeds [i].SetBitmapData ( mBitmapDataSpeedSelected );
+            if (ButtonIndex2SpeedXTable [i] == speedX)
+               mButtonSpeeds [i].SetBitmapData (mBitmapDataSpeedSelected);
             else
-               mButtonSpeeds [i].SetBitmapData ( mBitmapDataSpeed );
+               mButtonSpeeds [i].SetBitmapData (mBitmapDataSpeed);
          }
-         
-         mPlayingSpeedX = ButtonIndex2SpeedXTable [index];
          
          if (_OnSpeed != null)
             _OnSpeed ();

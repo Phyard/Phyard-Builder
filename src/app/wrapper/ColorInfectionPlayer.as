@@ -59,8 +59,6 @@ package wrapper {
       private var GetWorldDefine:Function = null;
       private var GetWorldBinaryData:Function = null;
       
-      private var ExternelErrorHandler:Function = null;
-      
       private var mExternalPaused:Boolean = false;
       public function SetExternalPaused (paused:Boolean):void
       {
@@ -97,7 +95,7 @@ package wrapper {
 //
 //======================================================================
       
-      public function ColorInfectionPlayer (start:Boolean = false, errorHandler:Function = null, getWorldDefine:Function = null, getWorldBinaryData:Function = null)
+      public function ColorInfectionPlayer (start:Boolean = false, getWorldDefine:Function = null, getWorldBinaryData:Function = null)
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
@@ -112,7 +110,6 @@ package wrapper {
          mStartRightNow = start;
          GetWorldDefine = getWorldDefine;
          GetWorldBinaryData = getWorldBinaryData;
-         ExternelErrorHandler = errorHandler;
       }
       
       public function GetPlayerWorld ():World
@@ -339,17 +336,14 @@ package wrapper {
                }
                catch (error:Error)
                {
-                  if (ExternelErrorHandler != null)
+                  if (GetWorldBinaryData != null || GetWorldDefine != null)
                   {
-                     ExternelErrorHandler (error);
+                     throw error; // let editor to handle it
                   }
                   else
                   {
-                  }
-                  
-                  if (Compile::Is_Debugging)
-                  {
-                     throw error;
+                     // todo show dialog: "stop" or "continue";
+                     // write log of send message to server
                   }
                }
                
@@ -843,7 +837,7 @@ package wrapper {
          return mPlayControlBar.IsPlaying ();
       }
       
-      private function GetPlayingSpeedX ():int
+      public function GetPlayingSpeedX ():int
       {
          if(mPlayControlBar == null)
             return 2;
@@ -870,6 +864,8 @@ package wrapper {
       
       private function OnSpeed (data:Object = null):void
       {
+         if (_OnSpeed != null)
+            _OnSpeed ();
       }
       
       private function OnZoom (data:Object = null):void
@@ -890,5 +886,30 @@ package wrapper {
          OpenHelpDialog ();
       }
       
+      public function PlayFaster (delta:uint):Boolean
+      {
+         if (mPlayControlBar == null)
+            return true;
+         
+         mPlayControlBar.SetPlayingSpeedX (GetPlayingSpeedX () + delta);
+         
+         return true;
+      }
+      
+      public function PlaySlower (delta:uint):Boolean
+      {
+         if (mPlayControlBar == null)
+            return true;
+         
+         mPlayControlBar.SetPlayingSpeedX (GetPlayingSpeedX () - delta);
+         
+          return GetPlayingSpeedX () > 0;
+      }
+      
+      private var _OnSpeed:Function = null;
+      public function SetOnSpeedChangedFunction (onSpeed:Function):void
+      {
+         _OnSpeed = onSpeed;
+      }
    }
 }

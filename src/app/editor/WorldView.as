@@ -392,75 +392,86 @@ package editor {
          mFpsStat.Step (mStepTimeSpan.GetLastSpan ());
          
          //
-         var newScale:Number;
-         
-         if ( IsPlaying () )
+         try
          {
-            // mDesignPlayer.Update
-            // will call mDesignPlayer.EnterFrame ()
+            var newScale:Number;
             
-            //
-            UpdateDesignPalyerPosition ();
-            var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld ();
-            var playingSteps:int = playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
-            StatusBar_SetRunningSteps ("Step#" + playingSteps);
-            StatusBar_SetRunningFPS ("FPS: " + mFpsStat.GetFps ().toFixed (2));
-         }
-         else
-         {
-            if (mEditorWorld.scaleX != mEditorWorldZoomScale)
+            
+            if ( IsPlaying () )
             {
-               if (mEditorWorld.scaleX < mEditorWorldZoomScale)
+               // mDesignPlayer.Update
+               // will call mDesignPlayer.EnterFrame ()
+               
+               //
+               UpdateDesignPalyerPosition ();
+               var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld ();
+               var playingSteps:int = playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
+               StatusBar_SetRunningSteps ("Step#" + playingSteps);
+               StatusBar_SetRunningFPS ("FPS: " + mFpsStat.GetFps ().toFixed (2));
+            }
+            else
+            {
+               if (mEditorWorld.scaleX != mEditorWorldZoomScale)
                {
-                  if (mEditorWorldZoomScaleChangedSpeed < 0)
-                     mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
-                  
-                  newScale = mEditorWorld.scaleX + mEditorWorldZoomScaleChangedSpeed;
-                  mEditorWorld.scaleY = mEditorWorld.scaleX = newScale;
-                  
-                  if (mEditorWorld.scaleX >= mEditorWorldZoomScale)
+                  if (mEditorWorld.scaleX < mEditorWorldZoomScale)
                   {
-                     mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
-                     NotifyEntityLinksModified ();
-                     NotifyEntityIdsModified ();
+                     if (mEditorWorldZoomScaleChangedSpeed < 0)
+                        mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
+                     
+                     newScale = mEditorWorld.scaleX + mEditorWorldZoomScaleChangedSpeed;
+                     mEditorWorld.scaleY = mEditorWorld.scaleX = newScale;
+                     
+                     if (mEditorWorld.scaleX >= mEditorWorldZoomScale)
+                     {
+                        mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
+                        NotifyEntityLinksModified ();
+                        NotifyEntityIdsModified ();
+                     }
                   }
-               }
-               else
-               {
-                  if (mEditorWorldZoomScaleChangedSpeed > 0)
-                     mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
-                  
-                  newScale = mEditorWorld.scaleX + mEditorWorldZoomScaleChangedSpeed;
-                  mEditorWorld.scaleY = mEditorWorld.scaleX = newScale;
-                  
-                  if (mEditorWorld.scaleX <= mEditorWorldZoomScale)
+                  else
                   {
-                     mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
-                     NotifyEntityLinksModified ();
-                     NotifyEntityIdsModified ();
+                     if (mEditorWorldZoomScaleChangedSpeed > 0)
+                        mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
+                     
+                     newScale = mEditorWorld.scaleX + mEditorWorldZoomScaleChangedSpeed;
+                     mEditorWorld.scaleY = mEditorWorld.scaleX = newScale;
+                     
+                     if (mEditorWorld.scaleX <= mEditorWorldZoomScale)
+                     {
+                        mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
+                        NotifyEntityLinksModified ();
+                        NotifyEntityIdsModified ();
+                     }
                   }
+                  
+                  UpdateBackgroundAndWorldPosition ();
                }
                
-               UpdateBackgroundAndWorldPosition ();
+               mEntityLinksLayer.scaleX = mEditorWorld.scaleX;
+               mEntityLinksLayer.scaleY = mEditorWorld.scaleY;
+               mEntityLinksLayer.x = mEditorWorld.x;
+               mEntityLinksLayer.y = mEditorWorld.y;
+               
+               mEntityIdsLayer.scaleX = mEditorWorld.scaleX;
+               mEntityIdsLayer.scaleY = mEditorWorld.scaleY;
+               mEntityIdsLayer.x = mEditorWorld.x;
+               mEntityIdsLayer.y = mEditorWorld.y;
+               
+               mEditorWorld.Update (mStepTimeSpan.GetLastSpan ());
+               
+               RepaintEntityLinks ();
+               RepaintEntityIds ();
+               
+               UpdateEffects ();
             }
-            
-            mEntityLinksLayer.scaleX = mEditorWorld.scaleX;
-            mEntityLinksLayer.scaleY = mEditorWorld.scaleY;
-            mEntityLinksLayer.x = mEditorWorld.x;
-            mEntityLinksLayer.y = mEditorWorld.y;
-            
-            mEntityIdsLayer.scaleX = mEditorWorld.scaleX;
-            mEntityIdsLayer.scaleY = mEditorWorld.scaleY;
-            mEntityIdsLayer.x = mEditorWorld.x;
-            mEntityIdsLayer.y = mEditorWorld.y;
-            
-            mEditorWorld.Update (mStepTimeSpan.GetLastSpan ());
-            
-            RepaintEntityLinks ();
-            RepaintEntityIds ();
          }
-         
-         UpdateEffects ();
+         catch (error:Error)
+         {
+            if (IsPlaying ())
+               HandlePlayingError (error);
+            else
+               HandleEditingError (error);
+         }
          
          // ...
          mAnalytics.TrackTime (Config.VirtualPageName_EditorTimePrefix);
@@ -1650,6 +1661,10 @@ package editor {
          }
       }
       
+      private function HandleEditingError (error:Error):void 
+      {
+      }
+      
 //============================================================================
 // playing
 //============================================================================
@@ -1689,9 +1704,9 @@ package editor {
          }
          
          if (useQuickMethod)
-            SetDesignPlayer (new ColorInfectionPlayer (true, PlayingErrorHandler, GetWorldDefine, null));
+            SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine, null));
          else
-            SetDesignPlayer (new ColorInfectionPlayer (true, PlayingErrorHandler, null, GetWorldBinaryData));
+            SetDesignPlayer (new ColorInfectionPlayer (true, null, GetWorldBinaryData));
          
          mIsPlaying = true;
          
@@ -1706,6 +1721,8 @@ package editor {
       
       public function Play_Stop ():void
       {
+         mAlreadySavedWhenPlayingError = false;
+         
          DestroyDesignPlayer ();
          
          mIsPlaying = false;
@@ -1721,7 +1738,7 @@ package editor {
       {
       }
       
-      private function PlayingErrorHandler (error:Error):void
+      private function HandlePlayingError (error:Error):void
       {
          mDesignPlayer.SetExternalPaused (true);
          
@@ -1750,6 +1767,44 @@ package editor {
           {
              mDesignPlayer.SetExternalPaused (false);
           }
+      }
+      
+      public function PlayFaster (delta:uint):Boolean
+      {
+         if (IsPlaying ())
+         {
+            return mDesignPlayer.PlayFaster (delta);
+         }
+         
+         return true;
+      }
+      
+      public function PlaySlower (delta:uint):Boolean
+      {
+         if (IsPlaying ())
+         {
+            return mDesignPlayer.PlaySlower (delta);
+         }
+         
+          return true;
+      }
+      
+      public function GetPlayingSpeedX ():int
+      {
+         if (IsPlaying ())
+         {
+            return mDesignPlayer.GetPlayingSpeedX ();
+         }
+         
+         return 0;
+      }
+      
+      public function SetOnSpeedChangedFunction (onSpeed:Function):void
+      {
+         if (IsPlaying ())
+         {
+            return mDesignPlayer.SetOnSpeedChangedFunction (onSpeed);
+         }
       }
       
 //============================================================================
@@ -2974,12 +3029,12 @@ package editor {
                   if (event.ctrlKey)
                      QuickSave ();
                   break;
-               case 71: // G
-                  GlueSelectedEntities ();
-                  break;
-               case 66: // B
-                  BreakApartSelectedEntities ();
-                  break;
+               //case 71: // G // cancelled
+               //   GlueSelectedEntities ();
+               //   break;
+               //case 66: // B // cancelled
+               //   BreakApartSelectedEntities ();
+               //   break;
                //case 76: // L // cancelled
                //   OpenPlayCodeLoadingDialog ();
                //   break;
@@ -3804,11 +3859,15 @@ package editor {
       public function GlueSelectedEntities ():void
       {
          mEditorWorld.GlueSelectedEntities ();
+         
+         CreateUndoPoint ("Make brothers");
       }
       
       public function BreakApartSelectedEntities ():void
       {
          mEditorWorld.BreakApartSelectedEntities ();
+         
+         CreateUndoPoint ("Break brothers");
       }
       
       public function ClearAllEntities (showAlert:Boolean = true, resetScene:Boolean = false):void
@@ -4909,7 +4968,7 @@ package editor {
       
       public function GoToEntity (entityId:int):void
       {
-         if (entityId < 0 || entityId > mEditorWorld.GetNumEntities ())
+         if (entityId < 0 || entityId >= mEditorWorld.GetNumEntities ())
             return;
          
          var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);

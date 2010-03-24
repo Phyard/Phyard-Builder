@@ -18,7 +18,7 @@ package editor.world {
       
       public function MakeBrothers (entityArray:Array):void
       {
-         var brothers:Array = entityArray.slice ();
+         var brothers:Array = entityArray.concat ();
          
          BreakApartBrothers (entityArray);
          

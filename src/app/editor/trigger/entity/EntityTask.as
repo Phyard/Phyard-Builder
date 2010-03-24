@@ -60,7 +60,7 @@ package editor.trigger.entity {
       
       public function GetEntityAssigners ():Array
       {
-         return mEntityAssignerList; //.slice ();
+         return mEntityAssignerList; //.concat ();
       }
       
       public function SetEntityAssigners (assigners:Array):void

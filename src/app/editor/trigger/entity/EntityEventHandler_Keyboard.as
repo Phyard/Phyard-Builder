@@ -65,7 +65,7 @@ package editor.trigger.entity {
       
       public function GetKeyCodes ():Array
       {
-         return mKeyCodes.slice ();
+         return mKeyCodes.concat ();
       }
       
 //====================================================================

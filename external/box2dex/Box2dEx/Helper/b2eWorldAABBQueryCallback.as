@@ -16,7 +16,7 @@ package Box2dEx.Helper {
          
          world.QueryAABB (callback, aabb);
          
-         return callback.GetHits (); // .slice ()
+         return callback.GetHits (); // .concat ()
       }
 
       public static function GetFixturesContainPoint (world:b2World, point:b2Vec2, maxHits:int = 0):Array
@@ -30,7 +30,7 @@ package Box2dEx.Helper {
          
          world.QueryAABB (callback, aabb);
          
-         return callback.GetHits (); // .slice ()
+         return callback.GetHits (); // .concat ()
       }
 
 //================================================================================

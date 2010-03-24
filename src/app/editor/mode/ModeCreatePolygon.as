@@ -169,7 +169,7 @@ package editor.mode {
          mPolygonEntity.UpdateAppearance ();
          mPolygonEntity.UpdateSelectionProxy ();
          
-         mMainView.CreateUndoPoint ();
+         mMainView.CreateUndoPoint ("New polygon");
          
          ResetSession (false);
          

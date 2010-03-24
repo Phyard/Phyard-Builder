@@ -140,7 +140,7 @@ package editor.trigger.entity {
       {
          ValidateEntityLinks ();
          
-         return [mInputEntities1, mInputEntities2];
+         return [mInputEntities1 == null ? [] : mInputEntities1, mInputEntities2 == null ? [] : mInputEntities2];
       }
       
       public function SetInputPairEntities (entities1:Array, entities2:Array):void

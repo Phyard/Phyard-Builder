@@ -125,7 +125,7 @@ package editor.mode {
          
          ResetSession (false);
          
-         mMainView.CreateUndoPoint ();
+         mMainView.CreateUndoPoint ("New joint");
          
          mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);

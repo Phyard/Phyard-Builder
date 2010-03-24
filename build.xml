@@ -6,8 +6,8 @@
    <property name="dir.webhost"        value="F:/__WebApps/_homepage/colorinfection_test" />
    <property name="dir.phyard"        value="D:/projects/PhysicsEditor/googleapp/phyards/trunk/src/__statics/swfs" />
    
-   <property name="editor-width" value="938" />
-   <property name="editor-height" value="682" />
+   <property name="editor-width" value="958" />
+   <property name="editor-height" value="678" />
    
    <property name="player-width" value="600" />
    <property name="player-height" value="620" />

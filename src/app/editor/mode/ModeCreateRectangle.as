@@ -147,7 +147,7 @@ package editor.mode {
             return;
          }
          
-         mMainView.CreateUndoPoint ();
+         mMainView.CreateUndoPoint ("New rectangle");
          
          mRectEntity.UpdateSelectionProxy ();
          ResetSession (false);

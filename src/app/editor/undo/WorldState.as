@@ -7,13 +7,20 @@ package editor.undo {
       private var mPrevWorldState:WorldState = null;
       private var mNextWorldState:WorldState = null;
       
+      private var mDescription:String;
       private var mEditActions:Array = null;
       
       public var mUserData:Object = null; // temp
       
-      public function WorldState (editActions:Array)
+      public function WorldState (description:String, editActions:Array)
       {
+         mDescription = description;
          mEditActions = editActions;
+      }
+      
+      public function GetDescription ():String
+      {
+         return mDescription;
       }
       
       public function GetPrevWorldState ():WorldState

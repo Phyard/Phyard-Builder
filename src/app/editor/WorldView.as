@@ -181,22 +181,26 @@ package editor {
       
       public static const BackgroundGridSize:int = 50;
       
-      public var mViewBackgroundSprite:Sprite = null;
       
-      private var mEditorElementsContainer:Sprite;
+      private var mEditiingViewContainer:Sprite;
+      private var mPlayingViewContainer:Sprite;
       
-         public var mEditorBackgroundLayer:Sprite = null;
-            public var mEntityLinksLayer:Sprite = null;
-         public var mContentLayer:Sprite;
-         public var mForegroundLayer:Sprite;
-            public var mWorldDebugInfoLayer:Sprite;
-            private var mEntityIdsLayer:Sprite;
-            private var mSelectedEntitiesCenterSprite:Sprite;
-         private var mEditingEffectLayer:Sprite;
-         public var mCursorLayer:Sprite;
+         public var mViewBackgroundSprite:Sprite = null;
          
-      private var mPlayerElementsContainer:Sprite;
-      private var mFloatingMessageLayer:Sprite;
+         private var mEditorElementsContainer:Sprite;
+         
+            public var mEditorBackgroundLayer:Sprite = null;
+               public var mEntityLinksLayer:Sprite = null;
+            public var mContentLayer:Sprite;
+            public var mForegroundLayer:Sprite;
+               public var mWorldDebugInfoLayer:Sprite;
+               private var mEntityIdsLayer:Sprite;
+               private var mSelectedEntitiesCenterSprite:Sprite;
+            private var mEditingEffectLayer:Sprite;
+            public var mCursorLayer:Sprite;
+            
+         private var mPlayerElementsContainer:Sprite;
+         private var mFloatingMessageLayer:Sprite;
          
       //
       
@@ -231,12 +235,19 @@ package editor {
          addEventListener(Event.RESIZE, OnResize);
          
          //
+         mEditiingViewContainer = new Sprite ();
+         mPlayingViewContainer = new Sprite ();
+         addChild (mEditiingViewContainer);
+         addChild (mPlayingViewContainer);
+         mPlayingViewContainer.visible = false;
+         
+         //
          mViewBackgroundSprite = new Sprite ();
-         addChild (mViewBackgroundSprite);
+         mEditiingViewContainer.addChild (mViewBackgroundSprite);
          
          //
          mEditorElementsContainer = new Sprite ();
-         addChild (mEditorElementsContainer);
+         mEditiingViewContainer.addChild (mEditorElementsContainer);
          
          //
          mContentLayer = new Sprite ();
@@ -272,19 +283,19 @@ package editor {
          mEditorElementsContainer.addChild (mCursorLayer);
          
          //
-         mPlayerElementsContainer = new Sprite ();
-         mPlayerElementsContainer.visible = false;
-         addChild (mPlayerElementsContainer);
-         
          mFloatingMessageLayer = new Sprite ();
          mFloatingMessageLayer.visible = true;
-         addChild (mFloatingMessageLayer);
+         mEditiingViewContainer.addChild (mFloatingMessageLayer);
+         
+         //
+         mPlayerElementsContainer = new Sprite ();
+         mPlayingViewContainer.addChild (mPlayerElementsContainer);
          
          //
          
          mWorldHistoryManager = new WorldHistoryManager ();
          SetEditorWorld (new editor.world.World (), true);
-         CreateUndoPoint ();
+         CreateUndoPoint ("Startup");
          
          //
          UpdateChildComponents ();
@@ -1542,6 +1553,7 @@ package editor {
          DestroyEditorWorld ();
          
          mEditorWorld = newEditorWorld;
+         mEditorWorld.GetCollisionManager ().SetChanged (false);
          
          mContentLayer.addChild (mEditorWorld);
          
@@ -1683,8 +1695,8 @@ package editor {
          
          mIsPlaying = true;
          
-         mPlayerElementsContainer.visible = true;
-         mEditorElementsContainer.visible = false;
+         mEditiingViewContainer.visible = false;
+         mPlayingViewContainer.visible = true;
          
          if (OnPlayingStarted != null)
             OnPlayingStarted ();
@@ -1698,8 +1710,8 @@ package editor {
          
          mIsPlaying = false;
          
-         mPlayerElementsContainer.visible = false;
-         mEditorElementsContainer.visible = true;
+         mEditiingViewContainer.visible = true;
+         mPlayingViewContainer.visible = false;
          
          if (OnPlayingStopped != null)
             OnPlayingStopped ();
@@ -1738,6 +1750,19 @@ package editor {
           {
              mDesignPlayer.SetExternalPaused (false);
           }
+      }
+      
+//============================================================================
+//    
+//============================================================================
+      
+      public function OnFinishedCCatEditing ():void
+      {
+         if (mEditorWorld.GetCollisionManager ().IsChanged ())
+         {
+            mEditorWorld.GetCollisionManager ().SetChanged (false);
+            CreateUndoPoint ("Modify collision categories");
+         }
       }
       
 //============================================================================
@@ -3530,7 +3555,7 @@ package editor {
       {
          mLastSelectedEntity = entity;
          
-         if (mLastSelectedEntity != null)
+         if (mLastSelectedEntity != null && mEditorWorld.IsEntitySelected (mLastSelectedEntity))
             mLastSelectedEntity.SetInternalComponentsVisible (true);
          
          UpdateUiButtonsEnabledStatus ();
@@ -3571,6 +3596,10 @@ package editor {
                mLastSelectedEntity.SetInternalComponentsVisible (false);
             
             entity.SetInternalComponentsVisible (true);
+         }
+         else
+         {
+            entity.SetInternalComponentsVisible (false);
          }
          
          SetLastSelectedEntities (entity);
@@ -3720,7 +3749,7 @@ package editor {
       {
          mEditorWorld.DeleteSelectedEntities ();
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Delete");
          
          CalSelectedEntitiesCenterPoint ();
       }
@@ -3749,7 +3778,7 @@ package editor {
             SetLastSelectedEntities (selectedEntities [0]);
          }
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Clone");
          
          CalSelectedEntitiesCenterPoint ();
       }
@@ -3758,7 +3787,7 @@ package editor {
       {
          mEditorWorld.FlipSelectedEntitiesHorizontally (GetSelectedEntitiesCenterX ());
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Horizontal flip");
          
          CalSelectedEntitiesCenterPoint ();
       }
@@ -3767,7 +3796,7 @@ package editor {
       {
          mEditorWorld.FlipSelectedEntitiesVertically (GetSelectedEntitiesCenterY ());
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Vertical flip");
          
          CalSelectedEntitiesCenterPoint ();
       }
@@ -3805,7 +3834,7 @@ package editor {
                mEditorWorld.DestroyAllEntities ();
             }
             
-            CreateUndoPoint ();
+            CreateUndoPoint ("Clear world");
             
             CalSelectedEntitiesCenterPoint ();
             
@@ -3833,7 +3862,7 @@ package editor {
       {
          mEditorWorld.MoveSelectedEntitiesToTop ();
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Move entities to the most top layer");
          
          UpdateSelectedEntityInfo ();
       }
@@ -3842,7 +3871,7 @@ package editor {
       {
          mEditorWorld.MoveSelectedEntitiesToBottom ();
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Move entities to the most bottom layer");
          
          UpdateSelectedEntityInfo ();
       }
@@ -3910,7 +3939,7 @@ package editor {
                   entity.Move (centerX - entity.GetPositionX (), centerY - entity.GetPositionY (), true);
             }
             
-            CreateUndoPoint ();
+            CreateUndoPoint ("Coincide entity centers");
             
             CalSelectedEntitiesCenterPoint ();
          }
@@ -3955,7 +3984,7 @@ package editor {
          {
             mEditorWorld.DeleteSelectedVertexControllers ();
             
-            CreateUndoPoint ();
+            CreateUndoPoint ("Delete a vertex");
             
             CalSelectedEntitiesCenterPoint ();
          }
@@ -3967,7 +3996,7 @@ package editor {
          {
             mEditorWorld.InsertVertexControllerBeforeSelectedVertexControllers ();
             
-            CreateUndoPoint ();
+            CreateUndoPoint ("Insert a vertex");
             
             CalSelectedEntitiesCenterPoint ();
          }
@@ -4397,7 +4426,7 @@ package editor {
             }
          }
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Entity preproties are changed");
       }
       
       public function OnBatchModifyEntityCommonProperties (params:Object):void
@@ -4553,7 +4582,7 @@ package editor {
          mEditorWorld.SetAuthorName (info.mAuthorName);
          mEditorWorld.SetAuthorHomepage (info.mAuthorHomepage);
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Author info is modified");
       }
       
       public function GetCurrentWorldCoordinateSystemInfo ():Object
@@ -4579,7 +4608,7 @@ package editor {
          
          UpdateSelectedEntityInfo ();
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Coordinate system is modified");
       }
       
       public function GetCurrentWorldLevelRulesInfo ():Object
@@ -4595,7 +4624,7 @@ package editor {
       {
          mEditorWorld.SetCiRulesEnabled (info.mIsCiRulesEnabled);
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("World rules are changed");
       }
       
       public function GetCurrentWorldGravityInfo ():Object
@@ -4613,7 +4642,7 @@ package editor {
          mEditorWorld.SetDefaultGravityAccelerationMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (info.mDefaultGravityAccelerationMagnitude));
          mEditorWorld.SetDefaultGravityAccelerationAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (info.mDefaultGravityAccelerationAngle));
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("Default gravity is changed");
       }
       
       public function GetCurrentWorldAppearanceInfo ():Object
@@ -4658,7 +4687,7 @@ package editor {
          
          UpdateChildComponents ();
          
-         CreateUndoPoint ();
+         CreateUndoPoint ("World appearance is changed");
       }
       
 //=================================================================================
@@ -4686,7 +4715,7 @@ package editor {
             SetEditorWorld (newWorld);
             
             mWorldHistoryManager.ClearHistories ();
-            CreateUndoPoint ();
+            CreateUndoPoint ("Local data is loaded");
          }
          catch (error:Error)
          {
@@ -4850,7 +4879,7 @@ package editor {
                MoveSelectedEntities (mViewCenterWorldX - centerX, mViewCenterWorldY - centerY, true, false);
             }
             
-            CreateUndoPoint ();
+            CreateUndoPoint ("Import");
          }
          catch (error:Error)
          {
@@ -4910,12 +4939,12 @@ package editor {
 // undo / redo 
 //============================================================================
       
-      public function CreateUndoPoint (editActions:Array = null):void
+      public function CreateUndoPoint (description:String, editActions:Array = null):void
       {
          if (mEditorWorld == null)
             return;
          
-         var worldState:WorldState = new WorldState (editActions);
+         var worldState:WorldState = new WorldState (description, editActions);
          
          var object:Object = new Object ();
          worldState.mUserData = object;
@@ -5023,6 +5052,9 @@ package editor {
          RestoreWorld (worldState);
       }
       
+      public var mUndoButtonContextMenu:ContextMenu = new ContextMenu ();
+      public var mRedoButtonContextMenu:ContextMenu = new ContextMenu ();
+      
 //============================================================================
 // quick save and load 
 //============================================================================
@@ -5125,7 +5157,7 @@ package editor {
             
             SetEditorWorld (newEditorWorld);
             
-            CreateUndoPoint ();
+            CreateUndoPoint ("Quick save data is loaed");
             
             Alert.show("Loading Scuessed!", "Scuessed");
          }
@@ -5349,7 +5381,7 @@ package editor {
                
                SetEditorWorld (newEditorWorld);
                
-               CreateUndoPoint ();
+               CreateUndoPoint ("Online data is loaded");
                
                Alert.show("Loading Scuessed!", "Scuessed");
             }

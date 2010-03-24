@@ -45,13 +45,6 @@ package editor {
    
    public class CollisionManagerView extends UIComponent 
    {
-      public static const ViewWidth:int = Define.CategoryViewWidth;
-      public static const ViewHeight:int = Define.CategoryViewHeight;
-      public static const ViewBorderThinknessLR:int = Define.WorldBorderThinknessLR;
-      public static const ViewBorderThinknessTB:int = Define.WorldBorderThinknessTB;
-      
-      public var mViewBackgroundSprite:Sprite = null;
-      
       public var mBackgroundLayer:Sprite;
       public var mFriendLinksLayer:Sprite;
       public var mForegroundLayer:Sprite;
@@ -67,41 +60,7 @@ package editor {
          addEventListener(Event.RESIZE, OnResize);
          
          //
-         mViewBackgroundSprite = new Sprite ();
-         addChild (mViewBackgroundSprite);
-         
-         //
          mBackgroundLayer = new Sprite ();
-         mBackgroundLayer.graphics.clear ();
-         
-         mBackgroundLayer.graphics.beginFill(0xDDDDA0);
-         mBackgroundLayer.graphics.drawRect (0, 0, ViewWidth, ViewHeight);
-         mBackgroundLayer.graphics.endFill ();
-         
-         mBackgroundLayer.graphics.lineStyle (1, 0xA0A0A0);
-         var gridSize:int = 50 * 2;
-         for (var lineX:int = gridSize; lineX < ViewWidth; lineX += gridSize)
-         {
-            mBackgroundLayer.graphics.moveTo (lineX, 0);
-            mBackgroundLayer.graphics.lineTo (lineX, ViewHeight);
-         }
-         for (var lineY:int = gridSize; lineY < ViewHeight; lineY += gridSize)
-         {
-            mBackgroundLayer.graphics.moveTo (0, lineY);
-            mBackgroundLayer.graphics.lineTo (ViewWidth, lineY);
-         }
-         mBackgroundLayer.graphics.lineStyle ();
-         
-         mBackgroundLayer.graphics.beginFill(0x606060);
-         mBackgroundLayer.graphics.drawRect (0, 0, ViewBorderThinknessLR, ViewHeight);
-         mBackgroundLayer.graphics.drawRect (ViewWidth - ViewBorderThinknessLR, 0, ViewBorderThinknessLR, ViewHeight);
-         mBackgroundLayer.graphics.endFill ();
-         
-         mBackgroundLayer.graphics.beginFill(0x606060);
-         mBackgroundLayer.graphics.drawRect (0, 0, ViewWidth, ViewBorderThinknessTB);
-         mBackgroundLayer.graphics.drawRect (0, ViewHeight - ViewBorderThinknessTB, ViewWidth, ViewBorderThinknessTB);
-         mBackgroundLayer.graphics.endFill ();
-         
          addChild (mBackgroundLayer);
          
          mFriendLinksLayer = new Sprite ();
@@ -160,10 +119,7 @@ package editor {
          var parentWidth :Number = parent.width;
          var parentHeight:Number = parent.height;
          
-         mViewBackgroundSprite.graphics.clear ();
-         mViewBackgroundSprite.graphics.beginFill(0xFFFFFF);
-         mViewBackgroundSprite.graphics.drawRect (0, 0, parentWidth, parentHeight);
-         mViewBackgroundSprite.graphics.endFill ();
+         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, parentWidth - 1, parentHeight - 1, 0x0, 1, true, 0xDDDDA0);
          
          // mask
          {
@@ -180,24 +136,6 @@ package editor {
             
             mask = mContentMaskSprite;
          }
-         
-         if (parentWidth / ViewWidth < parentHeight / ViewHeight)
-         {
-            if (parentWidth < ViewWidth)
-               mBackgroundLayer.scaleX = mBackgroundLayer.scaleY = parentWidth / ViewWidth;
-            else
-               mBackgroundLayer.scaleX = mBackgroundLayer.scaleY = 1;
-         }
-         else
-         {
-            if (parentHeight < ViewHeight)
-               mBackgroundLayer.scaleX = mBackgroundLayer.scaleY = parentHeight / ViewHeight;
-            else
-               mBackgroundLayer.scaleX = mBackgroundLayer.scaleY = 1;
-         }
-         
-         mBackgroundLayer.x = (parentWidth - ViewWidth * mBackgroundLayer.scaleX) * 0.5;
-         mBackgroundLayer.y = (parentHeight - ViewHeight * mBackgroundLayer.scaleY) * 0.5;
          
          if (mCollisionManager != null)
          {

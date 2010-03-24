@@ -497,12 +497,12 @@ package editor.world {
          {
             params = new Object ();
             params.mOldArrayIndex = i;
-            params.mEntityIndex = GetEntityCreationId (mainEntities [i]);
+            params.mCreateOrderId = GetEntityCreationId (mainEntities [i]);
             params.mMainEntity = mainEntities [i];
             mainEntities [i] = params;
          }
          
-         mainEntities.sortOn("mEntityIndex", Array.NUMERIC);
+         mainEntities.sortOn("mCreateOrderId", Array.NUMERIC);
          
          mSelectionListManager.ClearSelectedEntities ();
          
@@ -550,7 +550,7 @@ package editor.world {
                      
                      object = new Object ();
                      object.mClonedEntity = newSubEntities [j];
-                     object.mEntityLayer = GetEntityAppearanceId (oldSubEntities [j]);
+                     object.mAppearOrderId = GetEntityAppearanceId (oldSubEntities [j]);
                      
                      newEntitiesSortedByLayerId.push (object);
                   }
@@ -561,7 +561,7 @@ package editor.world {
          while (numChildren > oldNumChildren)
             removeChildAt (oldNumChildren); // remvoe then re-add
          
-         newEntitiesSortedByLayerId.sortOn("mEntityLayer", Array.NUMERIC);
+         newEntitiesSortedByLayerId.sortOn("mAppearOrderId", Array.NUMERIC);
          for (i = 0; i < newEntitiesSortedByLayerId.length; ++ i)
          {
             object = newEntitiesSortedByLayerId [i];
@@ -619,9 +619,15 @@ package editor.world {
          }
       }
       
+      public function EntitySorter_ByEntityAppearanceId (entity1:Entity, entity2:Entity):int
+      {
+         return entity1.GetAppearanceLayerId () < entity2.GetAppearanceLayerId () ? - 1 : 1;
+      }
+      
       public function MoveSelectedEntitiesToTop ():void
       {
          var entityArray:Array = GetSelectedEntities ();
+         entityArray.sort (EntitySorter_ByEntityAppearanceId);
          
          var entity:Entity;
          
@@ -629,11 +635,11 @@ package editor.world {
          {
             entity = entityArray [i];
             
-            if ( entity.GetMainEntity () != null && contains (entity.GetMainEntity ()) )
-            {
-               removeChild (entity.GetMainEntity ());
-               addChild (entity.GetMainEntity ());
-            }
+            //if ( entity.GetMainEntity () != null && contains (entity.GetMainEntity ()) )
+            //{
+            //   removeChild (entity.GetMainEntity ());
+            //   addChild (entity.GetMainEntity ());
+            //}
             
             if ( entity != null && contains (entity) )
             {
@@ -646,10 +652,11 @@ package editor.world {
       public function MoveSelectedEntitiesToBottom ():void
       {
          var entityArray:Array = GetSelectedEntities ();
+         entityArray.sort (EntitySorter_ByEntityAppearanceId);
          
          var entity:Entity;
          
-         for (var i:int = 0; i < entityArray.length; ++ i)
+         for (var i:int = entityArray.length - 1; i >= 0; -- i)
          {
             entity = entityArray [i];
             
@@ -659,11 +666,11 @@ package editor.world {
                addChildAt (entity, 0);
             }
             
-            if ( entity.GetMainEntity () != null && contains (entity.GetMainEntity ()) )
-            {
-               removeChild (entity.GetMainEntity ());
-               addChildAt (entity.GetMainEntity (), 0);
-            }
+            //if ( entity.GetMainEntity () != null && contains (entity.GetMainEntity ()) )
+            //{
+            //   removeChild (entity.GetMainEntity ());
+            //   addChildAt (entity.GetMainEntity (), 0);
+            //}
          }
       }
       

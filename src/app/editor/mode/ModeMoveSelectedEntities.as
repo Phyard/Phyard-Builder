@@ -36,12 +36,14 @@ package editor.mode {
          mIsStarted = false;
       }
       
+      private var mOriginalStartX:Number;
+      private var mOriginalStartY:Number;
       protected function StartSession (startX:Number, startY:Number):void
       {
          ResetSession ();
          
-         mStartX = startX;
-         mStartY = startY;
+         mOriginalStartX = mStartX = startX;
+         mOriginalStartY = mStartY = startY;
          
          mIsStarted = true;
       }
@@ -63,7 +65,10 @@ package editor.mode {
          
          ResetSession ();
          
-         mMainView.CreateUndoPoint ();
+         if (mOriginalStartX != endX || mOriginalStartY != endY)
+         {
+            mMainView.CreateUndoPoint ("Move entities");
+         }
          
          mMainView.SetCurrentEditMode (null);
       }

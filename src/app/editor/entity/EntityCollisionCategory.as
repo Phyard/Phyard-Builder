@@ -98,6 +98,8 @@ package editor.entity {
       public function SetCollideInternally (collide:Boolean):void
       {
          mCollideInternally = collide;
+         
+         mCollisionManager.SetChanged (true);
       }
       
       override public function UpdateAppearance ():void

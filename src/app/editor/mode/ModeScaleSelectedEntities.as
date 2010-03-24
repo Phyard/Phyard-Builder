@@ -35,12 +35,14 @@ package editor.mode {
          mIsStarted = false;
       }
       
+      private var mOriginalStartX:Number;
+      private var mOriginalStartY:Number;
       protected function StartSession (startX:Number, startY:Number):void
       {
          ResetSession ();
          
-         mStartX = startX;
-         mStartY = startY;
+         mOriginalStartX = mStartX = startX;
+         mOriginalStartY = mStartY = startY;
          
          mIsStarted = true;
       }
@@ -51,14 +53,14 @@ package editor.mode {
          var dy1:Number = mStartY - mMainView.GetSelectedEntitiesCenterY ();
          var dx2:Number = endX - mMainView.GetSelectedEntitiesCenterX ();
          var dy2:Number = endY - mMainView.GetSelectedEntitiesCenterY ();
-         mStartX = endX;
-         mStartY = endY;
          
          var distance1:Number = Math.sqrt (dy1 * dy1 + dx1 * dx1);
          var distance2:Number = Math.sqrt (dy2 * dy2 + dx2 * dx2);
          
-         if (distance1 > 0)
-            mMainView.ScaleSelectedEntities (distance2 / distance1, updateSelectionProxy);
+         mStartX = endX;
+         mStartY = endY;
+         
+         mMainView.ScaleSelectedEntities (distance2 / distance1, updateSelectionProxy);
       }
       
       protected function FinishSession (endX:Number, endY:Number):void
@@ -67,7 +69,10 @@ package editor.mode {
          
          ResetSession ();
          
-         mMainView.CreateUndoPoint ();
+         if (mOriginalStartX != endX || mOriginalStartY != endY)
+         {
+            mMainView.CreateUndoPoint ("Scale");
+         }
          
          mMainView.SetCurrentEditMode (null);
       }

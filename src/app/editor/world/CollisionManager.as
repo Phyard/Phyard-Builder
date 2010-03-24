@@ -62,6 +62,8 @@ package editor.world {
          
          if (oldCategory != null)
             oldCategory.UpdateAppearance ();
+         
+         SetChanged (true);
       }
       
       private function GetRecommendName (groupName:String):String
@@ -117,6 +119,8 @@ package editor.world {
          
          mLookupTable [category.GetCategoryName ()] = category;
          
+         SetChanged (true);
+         
          return category;
       }
       
@@ -143,7 +147,14 @@ package editor.world {
          
          mLookupTable [newName] = category;
          
+         if (newName == oldName)
+         {
+            return;
+         }
+         
          category.SetCategoryName (newName, false);
+         
+         SetChanged (true);
       }
       
       public function CreateEntityCollisionCategoryFriendLink (category1:EntityCollisionCategory, category2:EntityCollisionCategory):void
@@ -167,6 +178,11 @@ package editor.world {
             }
          }
          
+         if (exist)
+         {
+            SetChanged (true);
+         }
+         
          return exist;
       }
       
@@ -178,6 +194,8 @@ package editor.world {
             
             delete mLookupTable[ (entity as EntityCollisionCategory).GetCategoryName () ];
          }
+         
+         SetChanged (true);
          
          super.DestroyEntity (entity);
       }
@@ -215,6 +233,8 @@ package editor.world {
          
          mCollisionGroupFriendPairs.push (friends);
          
+         SetChanged (true);
+         
          if (mFriendLinksChangedCallback != null)
             mFriendLinksChangedCallback ();
       }
@@ -234,11 +254,29 @@ package editor.world {
          
          if (changed)
          {
+            SetChanged (true);
+            
             if (mFriendLinksChangedCallback != null)
                mFriendLinksChangedCallback ();
          }
          
          return changed;
+      }
+      
+//=============================================
+// for undo point
+//=============================================
+      
+      private var mIsChanged:Boolean = false;
+      
+      public function SetChanged (changed:Boolean):void
+      {
+         mIsChanged = changed;
+      }
+      
+      public function IsChanged ():Boolean
+      {
+         return mIsChanged;
       }
    }
 }

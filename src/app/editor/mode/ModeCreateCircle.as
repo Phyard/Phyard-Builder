@@ -100,7 +100,7 @@ package editor.mode {
          mCircleEntity.UpdateSelectionProxy ();
          ResetSession (false);
          
-         mMainView.CreateUndoPoint ();
+         mMainView.CreateUndoPoint ("Create circle");
          
          mMainView.SetCurrentCreateMode (null);
       }

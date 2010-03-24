@@ -106,7 +106,7 @@ package editor.mode {
          
          if (created)
          {
-            mMainView.CreateUndoPoint ();
+            mMainView.CreateUndoPoint ("Create link");
             mMainView.NotifyEntityLinksModified ();
          }
       }

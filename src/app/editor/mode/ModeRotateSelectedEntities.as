@@ -35,6 +35,7 @@ package editor.mode {
          mIsStarted = false;
       }
       
+      private var mStartRotation:Number;
       protected function StartSession (startX:Number, startY:Number):void
       {
          ResetSession ();
@@ -43,19 +44,28 @@ package editor.mode {
          mStartY = startY;
          
          mIsStarted = true;
+         
+         var dx1:Number = mStartX - mMainView.GetSelectedEntitiesCenterX ();
+         var dy1:Number = mStartY - mMainView.GetSelectedEntitiesCenterY ();
+         
+         mStartRotation = Math.atan2 (dy1, dx1);
       }
       
+      private var mLastRotation:Number = 0.0;
       protected function UpdateSession (endX:Number, endY:Number, updateSelectionProxy:Boolean):void
       {
          var dx1:Number = mStartX - mMainView.GetSelectedEntitiesCenterX ();
          var dy1:Number = mStartY - mMainView.GetSelectedEntitiesCenterY ();
          var dx2:Number = endX - mMainView.GetSelectedEntitiesCenterX ();
          var dy2:Number = endY - mMainView.GetSelectedEntitiesCenterY ();
-         mStartX = endX;
-         mStartY = endY;
          
          var radians1:Number = Math.atan2 (dy1, dx1);
          var radians2:Number = Math.atan2 (dy2, dx2);
+         
+         mStartX = endX;
+         mStartY = endY;
+         
+         mLastRotation = radians2;
          
          mMainView.RotateSelectedEntities (radians2 - radians1, updateSelectionProxy);
       }
@@ -66,7 +76,10 @@ package editor.mode {
          
          ResetSession ();
          
-         mMainView.CreateUndoPoint ();
+         if (mLastRotation != mStartRotation)
+         {
+            mMainView.CreateUndoPoint ("Rotate");
+         }
          
          mMainView.SetCurrentEditMode (null);
       }

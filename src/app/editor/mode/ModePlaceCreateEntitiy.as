@@ -103,7 +103,7 @@ package editor.mode {
          
          mMainView.CalSelectedEntitiesCenterPoint ();
          
-         mMainView.CreateUndoPoint ();
+         mMainView.CreateUndoPoint ("Create new entity");
          mMainView.SetCurrentCreateMode (null);
       }
       

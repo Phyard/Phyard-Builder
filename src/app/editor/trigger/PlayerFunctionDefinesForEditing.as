@@ -59,7 +59,11 @@ package editor.trigger {
              var shape_is_subtype_package:FunctionPackage    = new FunctionPackage ("Is a *?", entity_shape_package);
              var shape_appearance_package:FunctionPackage = new FunctionPackage ("Appearance", entity_shape_package);
              var shape_physics_package:FunctionPackage = new FunctionPackage ("Physics", entity_shape_package);
-            var shape_text_package:FunctionPackage  = new FunctionPackage ("Shape Text", sEntityPackage);
+             var shape_text_package:FunctionPackage  = new FunctionPackage ("Text", entity_shape_package);
+             var shape_circle_package:FunctionPackage  = new FunctionPackage ("Circle", entity_shape_package);
+             var shape_rectangle_package:FunctionPackage  = new FunctionPackage ("Rectangle", entity_shape_package);
+             //var shape_polygon_package:FunctionPackage  = new FunctionPackage ("Polygon", entity_shape_package);
+             //var shape_polyline_package:FunctionPackage  = new FunctionPackage ("Polyline", entity_shape_package);
          var entity_joint_package:FunctionPackage  = new FunctionPackage ("Joint", sEntityPackage);
          var entity_trigger_package:FunctionPackage  = new FunctionPackage ("Trigger", sEntityPackage);
          

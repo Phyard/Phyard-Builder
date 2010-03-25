@@ -332,6 +332,8 @@ package common.trigger {
       public static const ID_EntityText_AppendText:int                = IdPool.CoreApiId_1552; // entity.text
       public static const ID_EntityText_AppendNewLine:int             = IdPool.CoreApiId_1553; // entity.text
       
+   // game / entity / shape / circle
+      
    // game / entity / joint
       
       // from 2000

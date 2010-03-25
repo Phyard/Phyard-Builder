@@ -1,5 +1,7 @@
 
 
+private var mFreeContactInfoListHead:ShapeContactInfo = null;
+
 private var mNumContactInfos:int = 0;
 private var mShapeContactInfoHashtable:Dictionary = null;
 private var mFirstShapeContactInfo:ShapeContactInfo = null;
@@ -43,7 +45,18 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    }
    else
    {
-      contact_info = new ShapeContactInfo ();
+      if (mFreeContactInfoListHead != null)
+      {
+         contact_info = mFreeContactInfoListHead;
+         mFreeContactInfoListHead = mFreeContactInfoListHead.mNextFreeContactInfo;
+         
+         contact_info.mNextFreeContactInfo = null;
+      }
+      else
+      {
+         contact_info = new ShapeContactInfo ();
+      }
+      
       contact_info.mContactId = contact_id;
       contact_info.mEntityId1 = id1;
       contact_info.mEntityId2 = id2;
@@ -62,7 +75,9 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
       //if (shape2.IsSensor () && shape1.IsShapeCenterPoint ())
       //   FindEventHandlerForEntityPair (CoreEventIds.ID_OnSensorContainsPhysicsShape, );
       
+      contact_info.mPrevContactInfo = null;
       contact_info.mNextContactInfo = mFirstShapeContactInfo;
+      
       if (mFirstShapeContactInfo != null)
          mFirstShapeContactInfo.mPrevContactInfo = contact_info;
       mFirstShapeContactInfo = contact_info;
@@ -195,6 +210,14 @@ private function HandleShapeContactEvents ():void
          
          -- mNumContactInfos;
          //trace (" --- mNumContactInfos = " + mNumContactInfos);
+         
+         // mvoe to free list
+         
+         contact_info.mNextFreeContactInfo = mFreeContactInfoListHead;
+         mFreeContactInfoListHead = contact_info;
+         
+         //contact_info.mPrevContactInfo = null;
+         //contact_info.mNextContactInfo = null;
       }
       
       if (isContactContinued)

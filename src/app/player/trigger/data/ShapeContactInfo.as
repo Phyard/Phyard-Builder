@@ -4,6 +4,12 @@ package player.trigger.data
    
    public class ShapeContactInfo
    {
+   // next free contact_info structure
+      
+      public var mNextFreeContactInfo:ShapeContactInfo = null;
+      
+   //
+      
       public var mPrevContactInfo:ShapeContactInfo = null;
       public var mNextContactInfo:ShapeContactInfo = null;
       

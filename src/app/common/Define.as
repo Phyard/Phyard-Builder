@@ -173,7 +173,7 @@ package common {
       
       public static const MinTextSideLength:uint = 10;
       
-      public static const MaxTextLength:uint = 1000;
+      public static const MaxTextLength:uint = 4096;
       
       public static const ColorTextBackground:uint = 0xFFFEFEFE; // if set as FFFFFF, no bakcground is painted, why?
       

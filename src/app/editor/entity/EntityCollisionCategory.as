@@ -51,6 +51,8 @@ package editor.entity {
          mCollisionManager = cm;
          
          BuildContextMenu ();
+         
+         mouseChildren = false;
       }
       
       override public function ToCodeString ():String

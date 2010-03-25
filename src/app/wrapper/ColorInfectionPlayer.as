@@ -100,8 +100,8 @@ package wrapper {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
          addChild (mWorldLayer);
-         addChild (mTopBarLayer);
          //addChild (mBottomBarLayer);
+         addChild (mTopBarLayer);
          addChild (mBorderLineBarLayer);
          addChild (mErrorMessageLayer);
          addChild (mFinishedTextLayer);
@@ -223,6 +223,7 @@ package wrapper {
       private static const StateId_BuildWorld:int = 2;
       private static const StateId_Play:int = 3;
       private static const StateId_OnlineLoad:int = 4;
+      private static const StateId_RunningError:int = 5;
       
       private var mStateId:int = StateId_None;
       
@@ -312,6 +313,8 @@ package wrapper {
                   CloseFinishedDialog ();
                break;
             }
+            case StateId_RunningError:
+               break;
             default:
                break;
          }
@@ -336,14 +339,16 @@ package wrapper {
                }
                catch (error:Error)
                {
-                  if (GetWorldBinaryData != null || GetWorldDefine != null)
-                  {
-                     throw error; // let editor to handle it
-                  }
-                  else
+                  //if (GetWorldBinaryData != null || GetWorldDefine != null)
+                  //{
+                  //   throw error; // let editor to handle it
+                  //}
+                  //else
                   {
                      // todo show dialog: "stop" or "continue";
                      // write log of send message to server
+                     
+                     ChangeState (StateId_RunningError);
                   }
                }
                
@@ -358,33 +363,13 @@ package wrapper {
          switch (newStateId)
          {
             case StateId_Load:
-               while (mErrorMessageLayer.numChildren > 0)
-                  mErrorMessageLayer.removeChildAt (0);
-               
-               var initText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Initializing ..."));
-               initText.x = (Define.DefaultWorldWidth  - initText.width ) * 0.5;
-               initText.y = (Define.DefaultWorldHeight - initText.height) * 0.5;
-               mErrorMessageLayer.addChild (initText);
-               
+               BuildErrorMessage ("Initializing ...");
                break;
             case StateId_OnlineLoad:
-               while (mErrorMessageLayer.numChildren > 0)
-                  mErrorMessageLayer.removeChildAt (0);
-               
-               var loadingText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Loading ..."));
-               loadingText.x = (Define.DefaultWorldWidth  - loadingText.width ) * 0.5;
-               loadingText.y = (Define.DefaultWorldHeight - loadingText.height) * 0.5;
-               mErrorMessageLayer.addChild (loadingText);
-               
+               BuildErrorMessage ("Loading ...");
                break;
             case StateId_LoadFailed:
-               while (mErrorMessageLayer.numChildren > 0)
-                  mErrorMessageLayer.removeChildAt (0);
-               
-               var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Fail to parse play code."));
-               errorText.x = (Define.DefaultWorldWidth  - errorText.width ) * 0.5;
-               errorText.y = (Define.DefaultWorldHeight - errorText.height) * 0.5;
-               mErrorMessageLayer.addChild (errorText);
+               BuildErrorMessage ("Fail to parse play code.");
                
                var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='10' color='#0000ff'><u><a href='http://forum.colorinfection.com' target='_blank'>ColorInfection.com</a></u></font>"));
                linkText.x = (Define.DefaultWorldWidth  - linkText.width ) * 0.5;
@@ -393,19 +378,9 @@ package wrapper {
                
                break;
             case StateId_BuildWorld:
-               while (mErrorMessageLayer.numChildren > 0)
-                  mErrorMessageLayer.removeChildAt (0);
-               
-               var buildingText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("Building ..."));
-               buildingText.x = (Define.DefaultWorldWidth  - buildingText.width ) * 0.5;
-               buildingText.y = (Define.DefaultWorldHeight - buildingText.height) * 0.5;
-               mErrorMessageLayer.addChild (buildingText);
-               
+               BuildErrorMessage ("Building ...");
                break;
             case StateId_Play:
-               while (mErrorMessageLayer.numChildren > 0)
-                  mErrorMessageLayer.removeChildAt (0);
-               
                BuildContextMenu ();
                
                CreateTopBar ();
@@ -426,11 +401,40 @@ package wrapper {
                CreateBorderLineLayer ();
                
                break;
+            case StateId_RunningError:
+               //if (mPlayControlBar != null)
+               //{
+               //   mPlayControlBar.OnClickPause ();
+               //   mPlayControlBar.OnClickRestart ();
+               //}
+               
+               BuildErrorMessage ("Runtime error!");
+               
+               break;
             default:
                break;
          }
          
          mStateId = newStateId;
+      }
+      
+      private function ClearErrorMessage ():void
+      {
+         while (mErrorMessageLayer.numChildren > 0)
+            mErrorMessageLayer.removeChildAt (0);
+         GraphicsUtil.Clear (mErrorMessageLayer);
+      }
+      
+      private function BuildErrorMessage (message:String):void
+      {
+         ClearErrorMessage ();
+         
+         GraphicsUtil.DrawRect (mErrorMessageLayer, 0, 0, Define.DefaultPlayerWidth, Define.DefaultPlayerHeight + Define.PlayerPlayBarThickness, 0xDDDDA0, 1, true, 0xDDDDA0);
+         
+         var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (message));
+         errorText.x = (Define.DefaultWorldWidth  - errorText.width ) * 0.5;
+         errorText.y = (Define.DefaultWorldHeight - errorText.height) * 0.5;
+         mErrorMessageLayer.addChild (errorText);
       }
       
 //======================================================================
@@ -572,6 +576,8 @@ package wrapper {
       
       private function RebuildPlayerWorld ():void
       {
+         ClearErrorMessage ();
+         
          if (mPlayerWorld != null)
          {
             mPlayerWorld.Destroy ();

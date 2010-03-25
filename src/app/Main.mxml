@@ -63,7 +63,7 @@
          </mx:HBox>
          <mx:HBox id="Box_CCatEditViewCommands" backgroundColor="0xD0D0D0" verticalAlign="middle" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
             <mx:Spacer width="100%"/>
-            <mx:Button id="Button_CreateCollisionCategory" toolTip="Create Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/create-category-disabled.png')" selectedDisabledIcon="@Embed('res/collision/create-category-disabled.png')" upIcon="@Embed('res/collision/create-category.png')" downIcon="@Embed('res/collision/create-category-sel.png')" overIcon="@Embed('res/collision/create-category.png')" selectedUpIcon="@Embed('res/collision/create-category-sel.png')" selectedOverIcon="@Embed('res/collision/create-category-sel.png')" selectedDownIcon="@Embed('res/collision/create-category.png')"   />
+            <mx:Button id="Button_CreateCollisionCategory" toolTip="New Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/collision/create-category-disabled.png')" selectedDisabledIcon="@Embed('res/collision/create-category-disabled.png')" upIcon="@Embed('res/collision/create-category.png')" downIcon="@Embed('res/collision/create-category-sel.png')" overIcon="@Embed('res/collision/create-category.png')" selectedUpIcon="@Embed('res/collision/create-category-sel.png')" selectedOverIcon="@Embed('res/collision/create-category-sel.png')" selectedDownIcon="@Embed('res/collision/create-category.png')"   />
             <mx:Spacer width="20"/>
             <mx:Button id="Button_DeleteCollisionCategory" toolTip="Delete Collision Category" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-delete.png')" disabledIcon="@Embed('res/command/command-delete-disabled.png')" />
             <mx:Spacer width="36"/>
@@ -72,7 +72,7 @@
                      horizontalScrollPolicy="off" verticalScrollPolicy="off"
                      horizontalGap="0" verticalGap="0" borderThickness="0">
                <mx:Spacer width="3"/>
-               <mx:CheckBox id="CheckBox_CollisionCategory_CollideInternally" label="Collide Internally"/>
+               <mx:CheckBox id="CheckBox_CollisionCategory_HarmoniousCategory" label="Harmonious Category"/>
                <mx:Spacer width="6"/>
                <mx:CheckBox id="CheckBox_CollisionCategory_DefaultCategory" label="Default Category"/>
             </mx:HBox>
@@ -365,8 +365,9 @@
                         <mx:CheckBox selected="false" id="CheckBox_HideTriggers" label="Triggers" click=";"/>
                         <mx:Spacer width="3"/>
                         <mx:HBox width="100%" backgroundColor="0xE0E0E0" height="100%"/>
-                        <mx:Button id="Button_ZoomOut" click="ZoomOut ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-out.png')" disabledIcon="@Embed('res/edit/zoom-out-disabled.png')" />
-                        <mx:Button id="Button_ZoomIn" click="ZoomIn ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-in.png')" disabledIcon="@Embed('res/edit/zoom-in-disabled.png')" />
+                           <mx:Button id="Button_ZoomOut" click="ZoomOut ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-out.png')" disabledIcon="@Embed('res/edit/zoom-out-disabled.png')" />
+                           <mx:Label id="Label_ZoomScale" textAlign="center" text="1.00"/>
+                           <mx:Button id="Button_ZoomIn" click="ZoomIn ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-in.png')" disabledIcon="@Embed('res/edit/zoom-in-disabled.png')" />
                         <mx:HBox width="3" backgroundColor="0xE0E0E0" height="100%"/>
                      </mx:Box>
                      <mx:Box direction="horizontal" borderStyle="solid" height="100%" width="100%"
@@ -477,6 +478,7 @@
             import editor.runtime.Runtime;
             import editor.trigger.Lists;
             import common.Define;
+            import common.ValueAdjuster;
             
             private var mConfigDesignMenu:Menu = null;
             private function OnClickConfigDesignButton ():void
@@ -856,6 +858,8 @@
                MainView.OnPlayingStarted = OnPlayingStarted;
                MainView.OnPlayingStopped = OnPlayingStopped;
                
+               MainView.NotifyEditingScaleChanged = UpdateZoomScaleLabelText;
+               
             //===================================================================================================
                
                DisplayObjectUtil.AppendContextMenuItem (Button_MouseMove, "Move Accurately ...", ShowDialog_MoveSelectedEntitiesAccurately);
@@ -907,11 +911,11 @@
                
                CollisionManagerView.mButtonDelete = Button_DeleteCollisionCategory;
                
-               CollisionManagerView.mCheckBoxCollideInternally = CheckBox_CollisionCategory_CollideInternally;
+               CollisionManagerView.mCheckBoxHarmoniousCategory = CheckBox_CollisionCategory_HarmoniousCategory;
                CollisionManagerView.mCheckBoxDefaultCategory = CheckBox_CollisionCategory_DefaultCategory;
                
                Button_DeleteCollisionCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
-               CheckBox_CollisionCategory_CollideInternally.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
+               CheckBox_CollisionCategory_HarmoniousCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
                CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
                
                CollisionManagerView.mTextInputName = Text_CollisionCategoryName;
@@ -1088,6 +1092,14 @@
                }
                
                Button_ZoomIn.enabled = true;
+            }
+            
+            private function UpdateZoomScaleLabelText ():void
+            {
+               var label:String = ValueAdjuster.Number2PrecisionString (MainView.GetEditorWorldZoomScale (), 3);;
+               if (label.charAt (0) == "0")
+                  label = label.substr (1);
+               Label_ZoomScale.text = label;
             }
             
             public function PlayFaster ():void

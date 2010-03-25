@@ -170,7 +170,7 @@ package editor {
    import common.trigger.CoreEventIds;
    import common.KeyCodes;
    
-   import misc.Analytics;
+   //import misc.Analytics;
    
    public class WorldView extends UIComponent 
    {
@@ -224,7 +224,7 @@ package editor {
          
       // ...
       private var mAnalyticsDurations:Array = [0.5, 1, 2, 5, 10, 15, 20, 30];
-      private var mAnalytics:Analytics;
+      //private var mAnalytics:Analytics;
       
       public function WorldView ()
       {
@@ -341,8 +341,8 @@ package editor {
          UpdateUiButtonsEnabledStatus ();
          
          //
-         mAnalytics = new Analytics (this, mAnalyticsDurations);
-         mAnalytics.TrackPageview (Config.VirtualPageName_EditorJustLoaded);
+         //mAnalytics = new Analytics (this, mAnalyticsDurations);
+         //mAnalytics.TrackPageview (Config.VirtualPageName_EditorJustLoaded);
          
          //
          OnlineLoad (true);
@@ -427,8 +427,11 @@ package editor {
                         NotifyEntityLinksModified ();
                         NotifyEntityIdsModified ();
                      }
+                     
+                     if (NotifyEditingScaleChanged != null)
+                        NotifyEditingScaleChanged ();
                   }
-                  else
+                  else if (mEditorWorld.scaleX > mEditorWorldZoomScale)
                   {
                      if (mEditorWorldZoomScaleChangedSpeed > 0)
                         mEditorWorldZoomScaleChangedSpeed = - mEditorWorldZoomScaleChangedSpeed;
@@ -442,6 +445,9 @@ package editor {
                         NotifyEntityLinksModified ();
                         NotifyEntityIdsModified ();
                      }
+                     
+                     if (NotifyEditingScaleChanged != null)
+                        NotifyEditingScaleChanged ();
                   }
                   
                   UpdateBackgroundAndWorldPosition ();
@@ -474,7 +480,7 @@ package editor {
          }
          
          // ...
-         mAnalytics.TrackTime (Config.VirtualPageName_EditorTimePrefix);
+         //mAnalytics.TrackTime (Config.VirtualPageName_EditorTimePrefix);
       }
       
       private function SynchronizePositionAndScaleWithEditorWorld (sprite:Sprite):void
@@ -1618,9 +1624,20 @@ package editor {
             mEditorWorldZoomScaleChangedSpeed = (mEditorWorldZoomScale - mEditorWorld.scaleX) * 0.03;
             
             //UpdateBackgroundAndWorldPosition ();
+            
+            if (NotifyEditingScaleChanged != null)
+               NotifyEditingScaleChanged ();
          }
          
          return reachLimit;
+      }
+      
+      public var NotifyEditingScaleChanged:Function = null;
+      
+      public function GetEditorWorldZoomScale ():Number
+      {
+         //return mEditorWorld.GetZoomScale ();
+         return mEditorWorld.scaleX;
       }
       
       private function SetDesignPlayer (newPlayer:ColorInfectionPlayer):void
@@ -3887,6 +3904,9 @@ package editor {
                mShowAllEntityIds = false;
                
                UpdateChildComponents ();
+               
+               if (NotifyEditingScaleChanged != null)
+                  NotifyEditingScaleChanged ();
             }
             else
             {

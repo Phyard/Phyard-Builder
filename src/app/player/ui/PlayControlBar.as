@@ -296,7 +296,7 @@ package player.ui {
             _OnStart ();
       }
       
-      private function OnClickRestart (data:Object = null):void
+      public function OnClickRestart (data:Object = null):void
       {
          if (mIsPlaying)
          {

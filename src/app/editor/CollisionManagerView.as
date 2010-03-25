@@ -294,7 +294,7 @@ package editor {
       }
       
       public var mButtonDelete:Button;
-      public var mCheckBoxCollideInternally:CheckBox;
+      public var mCheckBoxHarmoniousCategory:CheckBox;
       public var mCheckBoxDefaultCategory:CheckBox;
       
       public function OnEditButtonClick (event:MouseEvent):void
@@ -304,8 +304,8 @@ package editor {
             case mButtonDelete:
                DeleteSelectedEntities ();
                break;
-            case mCheckBoxCollideInternally:
-               SetTheSelectedCategoryCollideInternally (mCheckBoxCollideInternally.selected);
+            case mCheckBoxHarmoniousCategory:
+               SetTheSelectedCategoryCollideInternally (! mCheckBoxHarmoniousCategory.selected);
                break;
             case mCheckBoxDefaultCategory:
                SetTheSelectedCategoryDefaultCategory (mCheckBoxDefaultCategory.selected);
@@ -349,18 +349,18 @@ package editor {
          mButtonDelete.enabled = numSelecteds > 0;
          
          mTextInputName.enabled = numSelecteds == 1;
-         mCheckBoxCollideInternally.enabled = numSelecteds == 1;
+         mCheckBoxHarmoniousCategory.enabled = numSelecteds == 1;
          mCheckBoxDefaultCategory.enabled = numSelecteds == 1;
          
          if (numSelecteds == 1)
          {
-            mCheckBoxCollideInternally.selected = onlySelected.IsCollideInternally ();
+            mCheckBoxHarmoniousCategory.selected = ! onlySelected.IsCollideInternally ();
             mCheckBoxDefaultCategory.selected = onlySelected.IsDefaultCategory ();
             mTextInputName.text = onlySelected.GetCategoryName ();
          }
          else
          {
-            mCheckBoxCollideInternally.selected = false;
+            mCheckBoxHarmoniousCategory.selected = false;
             mCheckBoxDefaultCategory.selected = false;
             mTextInputName.text = "";
          }

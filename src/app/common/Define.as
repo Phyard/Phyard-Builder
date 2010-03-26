@@ -171,7 +171,7 @@ package common {
 // text
 //===========================================================================
       
-      public static const MinTextSideLength:uint = 10;
+      //public static const MinTextSideLength:uint = 10;
       
       public static const MaxTextLength:uint = 4096;
       

@@ -49,13 +49,12 @@
             <mx:HBox id="Box_EntityEditViewCommands_2" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                <mx:Spacer width="10"/>
                <mx:Button id="Button_MouseMoveScene" selected="false" toolTip="Move Scene Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-move-scene.png')" selectedDownIcon="@Embed('res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('res/command/command-move-scene-sel.png')" />
-               <mx:Button id="Button_MouseSelectGlued" selected="true" toolTip="Select Glued Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-select-glued.png')" selectedDownIcon="@Embed('res/command/command-select-glued-sel.png')" selectedOverIcon="@Embed('res/command/command-select-glued-sel.png')" selectedUpIcon="@Embed('res/command/command-select-glued-sel.png')" />
-               <mx:Button id="Button_MouseSelectSingle" selected="false" toolTip="Select Single Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-select-single.png')" selectedDownIcon="@Embed('res/command/command-select-single-sel.png')" selectedOverIcon="@Embed('res/command/command-select-single-sel.png')" selectedUpIcon="@Embed('res/command/command-select-single-sel.png')" />
-               <mx:Spacer width="10"/>
                <mx:Button id="Button_MouseMove" selected="true" toolTip="Move Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-move.png')" selectedDownIcon="@Embed('res/command/command-move-sel.png')" selectedOverIcon="@Embed('res/command/command-move-sel.png')" selectedUpIcon="@Embed('res/command/command-move-sel.png')" />
                <mx:Button id="Button_MouseRotate" toolTip="Rotate Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-rotate.png')" selectedDownIcon="@Embed('res/command/command-rotate-sel.png')" selectedOverIcon="@Embed('res/command/command-rotate-sel.png')" selectedUpIcon="@Embed('res/command/command-rotate-sel.png')" />
                <mx:Button id="Button_MouseScale" toolTip="Scale Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-scale.png')" selectedDownIcon="@Embed('res/command/command-scale-sel.png')" selectedOverIcon="@Embed('res/command/command-scale-sel.png')" selectedUpIcon="@Embed('res/command/command-scale-sel.png')" />
-               <mx:Spacer width="25"/>
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('res/command/command-cookie-mode-sel.png')" />
+               <mx:Spacer width="56"/>
                <mx:Button id="Button_Undo" toolTip="Undo" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-undo.png')" disabledIcon="@Embed('res/command/command-undo-disabled.png')" />
                <mx:Button id="Button_Redo" toolTip="Redo" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-redo.png')" disabledIcon="@Embed('res/command/command-redo-disabled.png')" />
             </mx:HBox>
@@ -744,9 +743,8 @@
                MainView.mButtonMoveToBottom = Button_MoveToBottom;
                MainView.mButtonUndo = Button_Undo;
                MainView.mButtonRedo = Button_Redo;
+               MainView.mButtonMouseCookieMode = Button_MouseCookieMode;
                MainView.mButtonMouseMoveScene = Button_MouseMoveScene;
-               MainView.mButtonMouseSelectGlued = Button_MouseSelectGlued;
-               MainView.mButtonMouseSelectSingle = Button_MouseSelectSingle;
                MainView.mButtonMouseMove = Button_MouseMove;
                MainView.mButtonMouseRotate = Button_MouseRotate;
                MainView.mButtonMouseScale = Button_MouseScale;
@@ -778,9 +776,8 @@
                Button_MoveToBottom.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_Undo.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_Redo.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               Button_MouseCookieMode.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_MouseMoveScene.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MouseSelectGlued.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_MouseSelectSingle.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_MouseMove.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_MouseRotate.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_MouseScale.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);

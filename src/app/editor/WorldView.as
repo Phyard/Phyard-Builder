@@ -1279,9 +1279,8 @@ package editor {
       public var mButtonMoveToBottom:Button;
       public var mButtonUndo:Button;
       public var mButtonRedo:Button;
+      public var mButtonMouseCookieMode:Button;
       public var mButtonMouseMoveScene:Button;
-      public var mButtonMouseSelectGlued:Button;
-      public var mButtonMouseSelectSingle:Button;
       public var mButtonMouseMove:Button;
       public var mButtonMouseRotate:Button;
       public var mButtonMouseScale:Button;
@@ -1431,22 +1430,19 @@ package editor {
                Redo ();
                break;
             case mButtonMouseMoveScene:
-               SetMouseMode (MouseMode_MoveScene);
-               break;
-            case mButtonMouseSelectGlued:
-               SetMouseMode (MouseMode_SelectGlued);
-               break;
-            case mButtonMouseSelectSingle:
-               SetMouseMode (MouseMode_SelectSingle);
+               SetMouseEditModeEnabled (MouseEditMode_MoveWorld, mButtonMouseMoveScene.selected);
                break;
             case mButtonMouseMove:
-               SetMouseEditModeEnabled (MouseEditMode_Move, mButtonMouseMove.selected);
+               SetMouseEditModeEnabled (MouseEditMode_MoveSelecteds, mButtonMouseMove.selected);
                break;
             case mButtonMouseRotate:
-               SetMouseEditModeEnabled (MouseEditMode_Rotate, mButtonMouseRotate.selected);
+               SetMouseEditModeEnabled (MouseEditMode_RotateSelecteds, mButtonMouseRotate.selected);
                break;
             case mButtonMouseScale:
-               SetMouseEditModeEnabled (MouseEditMode_Scale, mButtonMouseScale.selected);
+               SetMouseEditModeEnabled (MouseEditMode_ScaleSelecteds, mButtonMouseScale.selected);
+               break;
+            case mButtonMouseCookieMode:
+               SetCookieModeEnabled (mButtonMouseCookieMode.selected);
                break;
             
             case mButton_Play:
@@ -2536,46 +2532,20 @@ package editor {
          _mouseEventAltDown     = event.altKey;
       }
       
-      public static const MouseMode_SelectGlued:int = 0;
-      public static const MouseMode_SelectSingle:int = 1;
-      public static const MouseMode_MoveScene:int = 2;
-      
-      public var mCurrentMouseMode:int = MouseMode_SelectGlued;
-      
       public static const MouseEditMode_None:int = -1;
-      public static const MouseEditMode_Move:int = 0;
-      public static const MouseEditMode_Rotate:int = 1;
-      public static const MouseEditMode_Scale:int = 2;
+      public static const MouseEditMode_MoveWorld:int = 0;
+      public static const MouseEditMode_MoveSelecteds:int = 1;
+      public static const MouseEditMode_RotateSelecteds:int = 2;
+      public static const MouseEditMode_ScaleSelecteds:int = 3;
       
-      public var mCurrentMouseEditMode:int = MouseEditMode_Move;
-      public var mLastMouseEditMode:int = MouseEditMode_Move;
+      public var mCurrentMouseEditMode:int = MouseEditMode_MoveSelecteds;
+      public var mLastMouseEditMode:int = MouseEditMode_MoveSelecteds;
       
-      public function SetMouseMode (mode:int):void
+      private var mCookieModeEnabled:Boolean = false;
+      
+      public function SetCookieModeEnabled (enabled:Boolean):void
       {
-         mCurrentMouseMode = mode;
-         
-         mButtonMouseSelectGlued.selected = false;
-         mButtonMouseSelectSingle.selected = false;
-         mButtonMouseMoveScene.selected = false;
-         
-         if (mCurrentMouseMode == MouseMode_SelectGlued)
-             mButtonMouseSelectGlued.selected = true;
-         else if (mCurrentMouseMode == MouseMode_SelectSingle)
-            mButtonMouseSelectSingle.selected = true;
-         else if (mCurrentMouseMode == MouseMode_MoveScene)
-            mButtonMouseMoveScene.selected = true;
-         
-         //Mouse.cursor = mCurrentMouseMode == MouseMode_MoveScene ? MouseCursor.HAND : MouseCursor.ARROW;
-      }
-      
-      private function ToggleMouseMode ():void
-      {
-         if (mCurrentMouseMode == MouseMode_SelectGlued)
-             SetMouseMode (MouseMode_SelectSingle);
-         else if (mCurrentMouseMode == MouseMode_SelectSingle)
-             SetMouseMode (MouseMode_MoveScene);
-         else if (mCurrentMouseMode == MouseMode_MoveScene)
-             SetMouseMode (MouseMode_SelectGlued);
+         mCookieModeEnabled = enabled;
       }
       
       public function SetMouseEditModeEnabled (mode:int, modeEnabled:Boolean = false):void
@@ -2588,21 +2558,26 @@ package editor {
          if (modeEnabled)
             mLastMouseEditMode = mCurrentMouseEditMode;
          
+         mButtonMouseMoveScene.selected = false;
          mButtonMouseMove.selected = false;
          mButtonMouseRotate.selected = false;
          mButtonMouseScale.selected = false;
          
          if (modeEnabled)
          {
-            if (mCurrentMouseEditMode == MouseEditMode_Move)
+            if (mCurrentMouseEditMode == MouseEditMode_MoveWorld)
+            {
+               mButtonMouseMoveScene.selected = true;
+            }
+            else if (mCurrentMouseEditMode == MouseEditMode_MoveSelecteds)
             {
                mButtonMouseMove.selected = true;
             }
-            else if (mCurrentMouseEditMode == MouseEditMode_Rotate)
+            else if (mCurrentMouseEditMode == MouseEditMode_RotateSelecteds)
             {
                mButtonMouseRotate.selected = true;
             }
-            else if (mCurrentMouseEditMode == MouseEditMode_Scale)
+            else if (mCurrentMouseEditMode == MouseEditMode_ScaleSelecteds)
             {
                mButtonMouseScale.selected = true;
             }
@@ -2619,7 +2594,7 @@ package editor {
       
       private function IsEntityMouseMoveEnabled ():Boolean
       {
-         return mCurrentMouseMode != MouseMode_MoveScene && mCurrentMouseEditMode == MouseEditMode_Move;
+         return mCurrentMouseEditMode != MouseEditMode_MoveWorld && mCurrentMouseEditMode == MouseEditMode_MoveSelecteds;
       }
       
       private function IsEntityMouseRotateEnabled ():Boolean
@@ -2627,7 +2602,7 @@ package editor {
          if (_mouseEventShiftDown && ! IsEntityMouseEditLocked ())
             return true;
          
-         return mCurrentMouseMode != MouseMode_MoveScene && mCurrentMouseEditMode == MouseEditMode_Rotate;
+         return mCurrentMouseEditMode != MouseEditMode_MoveWorld && mCurrentMouseEditMode == MouseEditMode_RotateSelecteds;
       }
       
       private function IsEntityMouseScaleEnabled ():Boolean
@@ -2635,12 +2610,12 @@ package editor {
          if (_mouseEventCtrlDown && ! IsEntityMouseEditLocked ())
             return true;
          
-         return mCurrentMouseMode != MouseMode_MoveScene && mCurrentMouseEditMode == MouseEditMode_Scale;
+         return mCurrentMouseEditMode != MouseEditMode_MoveWorld && mCurrentMouseEditMode == MouseEditMode_ScaleSelecteds;
       }
       
       private function IsEntityMouseEditLocked ():Boolean
       {
-         return mCurrentMouseMode == MouseMode_MoveScene || mCurrentMouseEditMode == MouseEditMode_None;
+         return mCurrentMouseEditMode == MouseEditMode_MoveWorld || mCurrentMouseEditMode == MouseEditMode_None;
       }
       
       private function StartMouseEditMode ():void
@@ -2703,7 +2678,7 @@ package editor {
             
          // move scene
             
-            if (mCurrentMouseMode == MouseMode_MoveScene || (_mouseEventShiftDown && entityArray.length == 0))
+            if (mCurrentMouseEditMode == MouseEditMode_MoveWorld || (_mouseEventShiftDown && entityArray.length == 0))
             {
                SetCurrentEditMode (new ModeMoveWorldScene (this));
                mCurrentEditMode.OnMouseDown (worldPoint.x, worldPoint.y);
@@ -2761,7 +2736,7 @@ package editor {
             {
                entity = (entityArray[0] as Entity);
                
-               if ( (! _mouseEventCtrlDown) && (mCurrentMouseMode == MouseMode_SelectGlued) )
+               if ( (! _mouseEventCtrlDown) && ((! mCookieModeEnabled)) )
                {
                   SetTheOnlySelectedEntity (entity);
                   
@@ -2782,7 +2757,7 @@ package editor {
                }
             }
             
-            if (_mouseEventCtrlDown || mCurrentMouseMode == MouseMode_SelectSingle)
+            if (_mouseEventCtrlDown || mCookieModeEnabled)
                mLastSelectedEntities = mEditorWorld.GetSelectedEntities ();
             else
                mEditorWorld.ClearSelectedEntities ();
@@ -2886,7 +2861,7 @@ package editor {
                   {
                      entity = (entityArray[0] as Entity);
                      
-                     if ( _mouseEventCtrlDown || mCurrentMouseMode == MouseMode_SelectSingle )
+                     if ( _mouseEventCtrlDown || mCookieModeEnabled )
                      {
                         ToggleEntitySelected (entity);
                      }
@@ -2905,7 +2880,7 @@ package editor {
                mCurrentEditMode.OnMouseUp (worldPoint.x, worldPoint.y);
             }
             
-            if (_isZeroMove && (! _mouseEventCtrlDown) && mCurrentMouseMode == MouseMode_SelectSingle)
+            if (_isZeroMove && (! _mouseEventCtrlDown) && mCookieModeEnabled)
             {
                mEditorWorld.ClearSelectedEntities ();
             }
@@ -3057,9 +3032,6 @@ package editor {
                //   break;
                case 192: // ~
                   ToggleMouseEditLocked ();
-                  break;
-               case Keyboard.TAB:
-                  ToggleMouseMode ();
                   break;
                case Keyboard.LEFT:
                   if (event.shiftKey)
@@ -3652,7 +3624,7 @@ package editor {
          
          SetLastSelectedEntities (entity);
          
-         if (mCurrentMouseMode == MouseMode_SelectGlued)
+         if ((! mCookieModeEnabled))
             mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
          
          CalSelectedEntitiesCenterPoint ();
@@ -3688,7 +3660,7 @@ package editor {
          
          mEditorWorld.ClearSelectedEntities ();
          
-         if (_mouseEventCtrlDown || mCurrentMouseMode == MouseMode_SelectSingle)
+         if (_mouseEventCtrlDown || mCookieModeEnabled)
          {
             if (mLastSelectedEntities != null)
                mEditorWorld.SelectEntities (mLastSelectedEntities);
@@ -3702,7 +3674,7 @@ package editor {
          else
             mEditorWorld.SelectEntities (entities);
          
-         if (mCurrentMouseMode == MouseMode_SelectGlued)
+         if ((! mCookieModeEnabled))
             mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
          
          OnSelectedEntitiesChanged ();

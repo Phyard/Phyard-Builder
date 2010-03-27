@@ -527,7 +527,7 @@ package common {
                //>>from v1.10
                else if (entityDefine.mEntityType == Define.EntityType_UtilityPowerSource)
                {
-                  entityDefine.mPowerSourceTyp = byteArray.readByte ();
+                  entityDefine.mPowerSourceType = byteArray.readByte ();
                   entityDefine.mPowerMagnitude = byteArray.readFloat ();
                   entityDefine.mKeyboardEventId = byteArray.readShort ();
                   entityDefine.mKeyCodes = ReadShortArrayFromBinFile (byteArray);

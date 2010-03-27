@@ -1709,7 +1709,7 @@ package editor {
          
          if (Compile::Is_Debugging)
          {
-            useQuickMethod = true;
+            useQuickMethod = false;
          }
          else
          {

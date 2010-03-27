@@ -154,6 +154,9 @@ package player.entity {
                
                mEventHandler.SetEnabled (IsEnabled ());
                mEventHandler.Create (createStageId, entityDefine.mEventHandlerDefine);
+               
+               trace ("mEventHandler = " + mEventHandler);
+               trace ("mEventHandler.IsEnabled () = " + mEventHandler.IsEnabled ());
             }
          }
          else if (createStageId == 1) 

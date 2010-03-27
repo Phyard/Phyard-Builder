@@ -822,6 +822,8 @@ package common {
                   power_source.SetPowerMagnitude (entityDefine.mPowerMagnitude);
                   power_source.SetKeyboardEventId (entityDefine.mKeyboardEventId)
                   power_source.SetKeyCodes (entityDefine.mKeyCodes);
+                  
+                  entity = utility = power_source;
                }
                //<<
             }
@@ -1239,7 +1241,7 @@ package common {
             }
             else
             {
-               trace ("!!! entity is null");
+               trace ("!!! entity is null, id = " + createId);
             }
          }
          

@@ -155,6 +155,18 @@ package player.entity {
       }
       
 //=============================================================
+//   runtime info
+//=============================================================
+      
+      public function GetCurrentAngle ():Number
+      {
+         if (mPhysicsProxy == null)
+            return 0.0;
+         else
+            return mProxyJointHinge.GetJointAngle ();
+      }
+      
+//=============================================================
 //   initialize
 //=============================================================
       

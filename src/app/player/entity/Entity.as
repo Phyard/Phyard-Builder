@@ -169,12 +169,20 @@ package player.entity {
       
       public function SetEnabled (enabled:Boolean):void
       {
-         mIsEnabled = enabled;
+         if (CanBeDisabled ())
+         {
+            mIsEnabled = enabled;
+         }
       }
       
       public function IsEnabled ():Boolean
       {
          return mIsEnabled;
+      }
+      
+      protected function CanBeDisabled ():Boolean
+      {
+         return false;
       }
       
 //====================================================================================================

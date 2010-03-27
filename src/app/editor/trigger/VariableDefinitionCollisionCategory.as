@@ -20,7 +20,7 @@ package editor.trigger {
       
       public function VariableDefinitionCollisionCategory (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_CollisionCategory, name, description);
+         super (ValueTypeDefine.ValueType_CollisionCategory, name, description, options);
       }
       
 //==============================================================================

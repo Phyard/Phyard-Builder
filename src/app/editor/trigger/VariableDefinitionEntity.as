@@ -27,7 +27,7 @@ package editor.trigger {
       
       public function VariableDefinitionEntity (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Entity, name, description);
+         super (ValueTypeDefine.ValueType_Entity, name, description, options);
          
          if (options != null)
          {

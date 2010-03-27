@@ -136,6 +136,21 @@ package common.trigger {
                         ValueTypeDefine.ValueType_String, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_SwapValues,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_IsNull,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_Equals,
                      [
                         ValueTypeDefine.ValueType_String, 
@@ -162,6 +177,32 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharAt,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_CharCode2Char,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
          
        // bool
           
@@ -182,6 +223,13 @@ package common.trigger {
                      [
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_SwapValues,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                        ValueTypeDefine.ValueType_Boolean,
+                     ],
+                     null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Boolean_ToString,
                      [
@@ -279,6 +327,13 @@ package common.trigger {
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_SwapValues,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Equals,
                      [
@@ -829,6 +884,13 @@ package common.trigger {
                      null
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraCenter,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,  
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -959,6 +1021,21 @@ package common.trigger {
                         ValueTypeDefine.ValueType_CollisionCategory, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SwapValues,
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_IsNull,
+                     [
+                        ValueTypeDefine.ValueType_CollisionCategory, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ToString,
                      [
                         ValueTypeDefine.ValueType_CollisionCategory, 
@@ -1010,6 +1087,21 @@ package common.trigger {
                      ],
                      [
                         ValueTypeDefine.ValueType_Entity, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SwapValues,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsNull,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset,
@@ -1073,14 +1165,30 @@ package common.trigger {
                      ]
                   );
          
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,
-         //            [
-         //               ValueTypeDefine.ValueType_Entity, 
-         //            ],
-         //            [
-         //               ValueTypeDefine.ValueType_Boolean, 
-         //            ]
-         //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsJointEntity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTriggerEntity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ]
+                  );
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsVisible,
                      [
@@ -1433,6 +1541,22 @@ package common.trigger {
          //            ],
          //            null
          //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
+         //            [
+         //               ValueTypeDefine.ValueType_Entity, 
+         //               ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General, 
+         //            ],
+         //            null
+         //         );
+         
          
          // todo: use single instead of double
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,
@@ -1646,8 +1770,30 @@ package common.trigger {
                      ],
                      null
                   );
-      }
-      
+         
+      // game / entity / shape / circle
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeCircle_GetRadius,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                     ]
+                  );
+         
+      // game / entity / shape / rectangle
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_GetSize,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                     ]
+                  );
+         
       // game / entity / joint
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,
@@ -1665,6 +1811,14 @@ package common.trigger {
                      null
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeAngleByDegrees,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -1698,6 +1852,14 @@ package common.trigger {
                      null
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderTranslation,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,
                      [
                         ValueTypeDefine.ValueType_Entity, 
@@ -1753,6 +1915,9 @@ package common.trigger {
          //            ],
          //            null
          //         );
+      
+      
+      } // initialze
          
 //===========================================================
 // util functions

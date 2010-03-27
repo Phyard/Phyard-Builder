@@ -16,7 +16,7 @@ package editor.trigger {
       
       public function VariableDefinitionString (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_String, name, description);
+         super (ValueTypeDefine.ValueType_String, name, description, options);
          
          if (options != null)
          {

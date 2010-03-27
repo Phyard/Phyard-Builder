@@ -39,15 +39,21 @@ package common.trigger {
    // string
       
       public static const ID_String_Assign:int                    = IdPool.CoreApiId_120; // 
-      public static const ID_String_Add:int                       = IdPool.CoreApiId_121; // to exchange with 122
       public static const ID_String_ConditionAssign:int           = IdPool.CoreApiId_122; //
+      public static const ID_String_SwapValues:int                = IdPool.CoreApiId_126; //
+      public static const ID_String_IsNull:int                    = IdPool.CoreApiId_127; //
       public static const ID_String_Equals:int                    = IdPool.CoreApiId_183; // 
+      public static const ID_String_Add:int                       = IdPool.CoreApiId_121; //
       public static const ID_String_GetLength:int                 = IdPool.CoreApiId_185; // 
+      public static const ID_String_GetCharAt:int                 = IdPool.CoreApiId_123; // 
+      public static const ID_String_GetCharCodeAt:int             = IdPool.CoreApiId_124; // 
+      public static const ID_String_CharCode2Char:int             = IdPool.CoreApiId_125; // 
       
    // bool
       
       public static const ID_Bool_Assign :int                    = IdPool.CoreApiId_170; // 
-      public static const ID_Bool_ConditionAssign:int            = IdPool.CoreApiId_174; // // to put after ID_Bool_Assign
+      public static const ID_Bool_ConditionAssign:int            = IdPool.CoreApiId_174; //
+      public static const ID_Bool_SwapValues:int                 = IdPool.CoreApiId_175; //
       public static const ID_Boolean_ToString:int                = IdPool.CoreApiId_151; // 
       public static const ID_Bool_EqualsBoolean:int              = IdPool.CoreApiId_181; // 
       public static const ID_Bool_Invert :int                    = IdPool.CoreApiId_171; // 
@@ -64,6 +70,7 @@ package common.trigger {
       public static const ID_Number_Assign:int                      = IdPool.CoreApiId_300; // 
       public static const ID_Number_Negative:int                    = IdPool.CoreApiId_301; // 
       public static const ID_Number_ConditionAssign:int             = IdPool.CoreApiId_302; //
+      public static const ID_Number_SwapValues:int                  = IdPool.CoreApiId_299; //
       public static const ID_Number_Equals:int                      = IdPool.CoreApiId_180; // 
       public static const ID_Number_LargerThan:int                  = IdPool.CoreApiId_210; // 
       public static const ID_Number_LessThan:int                    = IdPool.CoreApiId_211; // 
@@ -157,6 +164,7 @@ package common.trigger {
       public static const ID_World_SetGravityAcceleration_Degrees:int       = IdPool.CoreApiId_711; // world
       public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712; // world
       
+      public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719; // world
       public static const ID_World_FollowCameraWithShape:int                         = IdPool.CoreApiId_720; // world
       public static const ID_World_FollowCameraCenterXWithShape:int                  = IdPool.CoreApiId_721; // world
       public static const ID_World_FollowCameraCenterYWithShape:int                  = IdPool.CoreApiId_722; // world
@@ -180,31 +188,32 @@ package common.trigger {
    // game / collision category
       
       public static const ID_CCat_Assign:int                              = IdPool.CoreApiId_850; // CCat
-      public static const ID_CCat_SetCollideInternally:int                = IdPool.CoreApiId_851; // CCat
-      public static const ID_CCat_ToString:int                            = IdPool.CoreApiId_153; // 
+      public static const ID_CCat_ConditionAssign:int                     = IdPool.CoreApiId_853; // CCat
+      public static const ID_CCat_SwapValues:int                          = IdPool.CoreApiId_855;
+      public static const ID_CCat_IsNull:int                              = IdPool.CoreApiId_856;
       public static const ID_CCat_Equals:int                              = IdPool.CoreApiId_184; // 
+      public static const ID_CCat_ToString:int                            = IdPool.CoreApiId_153; // 
+      public static const ID_CCat_SetCollideInternally:int                = IdPool.CoreApiId_851; // CCat
       public static const ID_CCat_SetAsFriends:int                        = IdPool.CoreApiId_852; // CCat
-      public static const ID_CCat_ConditionAssign:int                     = IdPool.CoreApiId_853; // CCat, to ptu after ID_CCat_Assign
       
    // game / entity
       
-      public static const ID_Entity_Assign:int                         = IdPool.CoreApiId_900; // entity.shape
-      public static const ID_Entity_ConditionAssign:int                = IdPool.CoreApiId_901; // entity.shape
-      public static const ID_Entity_GetEntityByIdOffset:int            = IdPool.CoreApiId_902; // entity.shape
+      public static const ID_Entity_Assign:int                         = IdPool.CoreApiId_900; // entity
+      public static const ID_Entity_ConditionAssign:int                = IdPool.CoreApiId_901; // entity
+      public static const ID_Entity_SwapValues:int                     = IdPool.CoreApiId_903; // entity
+      public static const ID_Entity_IsNull:int                         = IdPool.CoreApiId_904; // entity
+      public static const ID_Entity_GetEntityByIdOffset:int            = IdPool.CoreApiId_902; // entity
       public static const ID_Entity_ToString:int                       = IdPool.CoreApiId_152; // 
       public static const ID_Entity_Equals:int                         = IdPool.CoreApiId_182; // 
       
-      public static const ID_Entity_IsTaskSuccessed:int                = IdPool.CoreApiId_910; // entity.shape
-      public static const ID_Entity_SetTaskSuccessed:int               = IdPool.CoreApiId_911; // entity.shape
-      public static const ID_Entity_IsTaskFailed:int                   = IdPool.CoreApiId_912; // entity.shape
-      public static const ID_Entity_SetTaskFailed:int                  = IdPool.CoreApiId_913; // entity.shape
-      public static const ID_Entity_IsTaskUnfinished:int               = IdPool.CoreApiId_914; // entity.shape
-      public static const ID_Entity_SetTaskUnfinished:int              = IdPool.CoreApiId_915; // entity.shape
-      public static const ID_Entity_SetTaskStatus:int                  = IdPool.CoreApiId_916; // entity.shape
+      public static const ID_Entity_IsTaskSuccessed:int                = IdPool.CoreApiId_910; // entity
+      public static const ID_Entity_IsTaskFailed:int                   = IdPool.CoreApiId_912; // entity
+      public static const ID_Entity_IsTaskUnfinished:int               = IdPool.CoreApiId_914; // entity
+      public static const ID_Entity_SetTaskStatus:int                  = IdPool.CoreApiId_916; // entity
       
-      //public static const ID_Entity_IsShapeEntity:int
-      //public static const ID_Entity_IsJointEntity:int
-      
+      public static const ID_Entity_IsShapeEntity:int                  = IdPool.CoreApiId_960; // entity
+      public static const ID_Entity_IsJointEntity:int                  = IdPool.CoreApiId_961; // entity
+      public static const ID_Entity_IsTriggerEntity:int                = IdPool.CoreApiId_962; // entity
       
       public static const ID_Entity_IsVisible:int                      = IdPool.CoreApiId_980; // entity 
       public static const ID_Entity_SetVisible:int                     = IdPool.CoreApiId_981; // entity 
@@ -277,7 +286,7 @@ package common.trigger {
       //public static const ID_EntityShape_SetMass:int                     = IdPool.CoreApiId_1131; // entity.shape physics
       public static const ID_EntityShape_GetInertia:int                  = IdPool.CoreApiId_1132; // entity.shape physics
       //public static const ID_EntityShape_SetInertia:int                  = IdPool.CoreApiId_1133; // entity.shape physics
-      //public static const ID_EntityShape_GetDensity:int                  = IdPool.CoreApiId_1134; // entity.shape physics
+      public static const ID_EntityShape_GetDensity:int                  = IdPool.CoreApiId_1134; // entity.shape physics
       //public static const ID_EntityShape_SetDensity:int                  = IdPool.CoreApiId_1135; // entity.shape physics
       //public static const ID_EntityShape_GetFriction:int                 = IdPool.CoreApiId_1136; // entity.shape physics
       //public static const ID_EntityShape_SetFriction:int                 = IdPool.CoreApiId_1137; // entity.shape physics
@@ -327,12 +336,22 @@ package common.trigger {
       
    // game / entity / shape / text
       
-      public static const ID_EntityText_GetText:int                   = IdPool.CoreApiId_1550; // entity.text
-      public static const ID_EntityText_SetText:int                   = IdPool.CoreApiId_1551; // entity.text
-      public static const ID_EntityText_AppendText:int                = IdPool.CoreApiId_1552; // entity.text
-      public static const ID_EntityText_AppendNewLine:int             = IdPool.CoreApiId_1553; // entity.text
+      public static const ID_EntityText_GetText:int                   = IdPool.CoreApiId_1550; // entity.shape.text
+      public static const ID_EntityText_SetText:int                   = IdPool.CoreApiId_1551; // entity.shape.text
+      public static const ID_EntityText_AppendText:int                = IdPool.CoreApiId_1552; // entity.shape.text
+      public static const ID_EntityText_AppendNewLine:int             = IdPool.CoreApiId_1553; // entity.shape.text
       
    // game / entity / shape / circle
+      
+      public static const ID_EntityShapeCircle_GetRadius:int                   = IdPool.CoreApiId_1554; // entity.shape.text
+      //public static const ID_EntityShapeCircle_SetRadius:int                   = IdPool.CoreApiId_1555; // entity.shape.text
+      
+   // game / entity / shape / rectangle
+      
+      public static const ID_EntityShapeRectangle_GetSize:int                   = IdPool.CoreApiId_1556; // entity.shape.rectangle
+      //public static const ID_EntityShapeRectangle_SetSize:int                   = IdPool.CoreApiId_1557; // entity.shape.rectangle
+      //public static const ID_EntityShapeRectangle_SetWidth:int                  = IdPool.CoreApiId_1558; // entity.shape.rectangle
+      //public static const ID_EntityShapeRectangle_SetHeight:int                 = IdPool.CoreApiId_1559; // entity.shape.rectangle
       
    // game / entity / joint
       
@@ -341,16 +360,19 @@ package common.trigger {
       public static const ID_EntityJoint_SetJointMotorEnabled:int                   = IdPool.CoreApiId_1990; // joint.slider
       public static const ID_EntityJoint_SetJointLimitsEnabled:int                  = IdPool.CoreApiId_1991; // joint.slider
       
+      public static const ID_EntityJoint_GetHingeAngleByDegrees:int                 = IdPool.CoreApiId_2008; // joint.hinge
       public static const ID_EntityJoint_GetHingeLimitsByDegrees:int                 = IdPool.CoreApiId_2000; // joint.hinge
-      //public static const ID_EntityJoint_GetHingeLimitsByRadians:int                 = IdPool.CoreApiId_2001; // joint.hinge
       public static const ID_EntityJoint_SetHingeLimitsByDegrees:int                 = IdPool.CoreApiId_2004; // joint.hinge
+      //public static const ID_EntityJoint_GetHingeAngleByRadians:int                 = IdPool.CoreApiId_2009; // joint.hinge
+      //public static const ID_EntityJoint_GetHingeLimitsByRadians:int                 = IdPool.CoreApiId_2001; // joint.hinge
       //public static const ID_EntityJoint_SetHingeAngleLimitsByRadians:int            = IdPool.CoreApiId_2005; // joint.hinge
       public static const ID_EntityJoint_GetHingeMotorSpeed:int                      = IdPool.CoreApiId_2006; // joint.slider
       public static const ID_EntityJoint_SetHingeMotorSpeed:int                      = IdPool.CoreApiId_2007; // joint.slider
       
+      public static const ID_EntityJoint_GetSliderTranslation:int                 = IdPool.CoreApiId_2034; // joint.slider
       public static const ID_EntityJoint_GetSliderLimits:int                      = IdPool.CoreApiId_2030; // joint.slider
-      public static const ID_EntityJoint_GetSliderMotorSpeed:int                  = IdPool.CoreApiId_2031; // joint.slider
       public static const ID_EntityJoint_SetSliderLimits:int                      = IdPool.CoreApiId_2032; // joint.slider
+      public static const ID_EntityJoint_GetSliderMotorSpeed:int                  = IdPool.CoreApiId_2031; // joint.slider
       public static const ID_EntityJoint_SetSliderMotorSpeed:int                  = IdPool.CoreApiId_2033; // joint.slider
       
    // game / entity / field

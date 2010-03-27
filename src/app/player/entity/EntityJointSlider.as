@@ -137,6 +137,18 @@ package player.entity {
       }
       
 //=============================================================
+//   runtime info
+//=============================================================
+      
+      public function GetCurrentTranslation ():Number
+      {
+         if (mPhysicsProxy == null)
+            return 0.0;
+         else
+            return mProxyJointSlider.GetJointTranslation ();
+      }
+      
+//=============================================================
 //   initialize
 //=============================================================
       

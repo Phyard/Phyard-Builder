@@ -25,7 +25,7 @@ package editor.trigger {
       
       public function VariableDefinitionNumber (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Number, name, description);
+         super (ValueTypeDefine.ValueType_Number, name, description, options);
          
          if (options != null)
          {

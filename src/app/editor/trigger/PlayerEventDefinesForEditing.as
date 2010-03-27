@@ -62,11 +62,11 @@ package editor.trigger {
          
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachLowerLimit, "OnJointReachLowerLimit", "OnJointReachLowerLimit",
                     [
-                       new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sJointEntityClasses}), 
+                       new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sLimitsConfigureableJointEntityClasses}), 
                     ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnJointReachUpperLimit, "OnJointReachUpperLimit", "OnJointReachUpperLimit",
                     [
-                       new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sJointEntityClasses}), 
+                       new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sLimitsConfigureableJointEntityClasses}), 
                     ]);
          
       // ...

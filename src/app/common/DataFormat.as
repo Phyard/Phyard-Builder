@@ -1187,10 +1187,10 @@ package common {
                   
                   anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor1EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor1 ());
-                  anchorDefine.mEntity = spring.GetAnchor1 ();
+                  anchorDefine.mEntity = dummy.GetAnchor1 ();
                   anchorDefine = worldDefine.mEntityDefines [entityDefine.mAnchor2EntityIndex];
                   //anchorDefine.mNewIndex = editorWorld.getChildIndex (spring.GetAnchor2 ());
-                  anchorDefine.mEntity = spring.GetAnchor2 ();
+                  anchorDefine.mEntity = dummy.GetAnchor2 ();
                   
                   entity = joint = dummy;
                }
@@ -1225,6 +1225,10 @@ package common {
                entity.SetAlpha (entityDefine.mAlpha);
                entity.SetEnabled (entityDefine.mIsEnabled);
                //<<
+            }
+            else
+            {
+               trace ("!!! entity is null");
             }
          }
          

@@ -336,6 +336,7 @@ package common {
       
       // preset shapes, for history reason, the id jumps to here
       public static const EntityType_UtilityCamera:int = 110;
+      public static const EntityType_UtilityPowerSource:int = 111; // from v1.10
       
       // logic // from v1.07
       public static const EntityType_LogicCondition:int = 210;
@@ -345,9 +346,8 @@ package common {
       public static const EntityType_LogicInputEntityAssigner:int = 214;
       public static const EntityType_LogicInputEntityPairAssigner:int = 215;
       public static const EntityType_LogicAction:int = 216; // from v1.08
-      public static const EntityType_UtilityPowerSource:int = 217; // from v1.10
-      //public static const EntityType_LogicInputEntityFilter:int = 218; // from v1.10
-      //public static const EntityType_LogicInputEntityPairFilter:int = 219; // from v1.10
+      //public static const EntityType_LogicInputEntityFilter:int = 217; // from v1.10
+      //public static const EntityType_LogicInputEntityPairFilter:int = 218; // from v1.10
       
       // from v1.07, folloing functions should only be used in packaging./ loading
       // they should NOT used in player pacakge, use EntityShape.mPhysicsShapePotentially instead

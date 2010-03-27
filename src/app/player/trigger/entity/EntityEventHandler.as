@@ -36,6 +36,11 @@ package player.trigger.entity
          return mEventId;
       }
       
+      override protected function CanBeDisabled ():Boolean
+      {
+         return true;
+      }
+      
 //=============================================================
 //   create
 //=============================================================

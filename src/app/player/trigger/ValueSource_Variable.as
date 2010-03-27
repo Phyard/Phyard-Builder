@@ -15,5 +15,11 @@ package player.trigger
       {
          return mVariableInstance.GetValueObject ();
       }
+      
+      // this function is for some special apis
+      public function GetVariableInstance ():VariableInstance
+      {
+         return mVariableInstance;
+      }
    }
 }

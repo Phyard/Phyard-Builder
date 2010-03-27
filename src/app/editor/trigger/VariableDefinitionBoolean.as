@@ -19,7 +19,7 @@ package editor.trigger {
       
       public function VariableDefinitionBoolean (name:String, description:String = null, options:Object = null)
       {
-         super (ValueTypeDefine.ValueType_Boolean, name, description);
+         super (ValueTypeDefine.ValueType_Boolean, name, description, options);
          
          if (options != null)
          {

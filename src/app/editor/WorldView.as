@@ -961,8 +961,8 @@ package editor {
       public var mButtonCreateAngularForce:Button;
       public var mButtonCreateLinearImpulse:Button;
       public var mButtonCreateAngularImpulse:Button;
-      public var mButtonCreateAngularAcceleration:Button;
-      public var mButtonCreateAngularVelocity:Button;
+      //public var mButtonCreateAngularAcceleration:Button;
+      //public var mButtonCreateAngularVelocity:Button;
       //public var mButtonCreateLinearAcceleration:Button;
       //public var mButtonCreateLinearVelocity:Button;
       
@@ -1168,12 +1168,12 @@ package editor {
             case mButtonCreateAngularImpulse:
                SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularImpulse}));
                break;
-            case mButtonCreateAngularAcceleration:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularAcceleration}));
-               break;
-            case mButtonCreateAngularVelocity:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularVelocity}));
-               break;
+            //case mButtonCreateAngularAcceleration:
+            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularAcceleration}));
+            //   break;
+            //case mButtonCreateAngularVelocity:
+            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularVelocity}));
+            //   break;
             //case mButtonCreateLinearAcceleration:
             //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearAcceleration}));
             //   break;

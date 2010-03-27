@@ -47,6 +47,11 @@ package player.entity {
             mEventHandler.SetEnabled (IsEnabled ());
       }
       
+      override protected function CanBeDisabled ():Boolean
+      {
+         return true;
+      }
+      
 //=============================================================
 //   create
 //=============================================================

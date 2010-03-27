@@ -11,6 +11,7 @@ package editor.trigger {
    import editor.runtime.Runtime;
    
    import common.trigger.ValueTypeDefine;
+   import common.trigger.ValueSourceTypeDefine;
    
    public class VariableDefinition
    {
@@ -114,11 +115,21 @@ package editor.trigger {
       
       private var mDescription:String = null;
       
-      public function VariableDefinition (valueType:int, name:String, description:String = null)
+      // options
+      
+      private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
+      
+      public function VariableDefinition (valueType:int, name:String, description:String = null, options:Object = null)
       {
          mValueType = valueType;
          mName = name;
          mDescription = description;
+         
+         if (options != null)
+         {
+            if (options.mDefaultSourceType != undefined)
+               mDefaultSourceType = int (options.mDefaultSourceType);
+         }
       }
       
       public function GetName ():String
@@ -213,6 +224,7 @@ package editor.trigger {
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = variable_list;
+         combo_box.rowCount = 11;
          
          combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);;
          
@@ -256,7 +268,14 @@ package editor.trigger {
       
       public function GetDefaultValueSource ():ValueSource
       {
-         return GetDefaultDirectValueSource ();
+         switch (mDefaultSourceType)
+         {
+            case ValueSourceTypeDefine.ValueSource_Variable:
+               return GetDefaultVariableValueSource (TriggerEngine.GetRegisterVariableSpace (mValueType));
+            case ValueSourceTypeDefine.ValueSource_Direct:
+            default:
+               return GetDefaultDirectValueSource ();
+         }
       }
       
       public function CreateControlForValueSource (valueSource:ValueSource):UIComponent

@@ -40,7 +40,7 @@
                <mx:Button id="Button_BreakApart" toolTip="Break Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-break.png')" disabledIcon="@Embed('res/command/command-brothers-break-disabled.png')" />
                <mx:Spacer width="10"/>
                <mx:Button id="Button_Setting" label="Setting..." toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/command/command-setting.png')" disabledIcon="@Embed('res/command/command-setting-disabled.png')" />
-               <mx:Spacer width="10"/>
+               <mx:Spacer width="11"/>
             </mx:HBox>
             <mx:HBox backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" height="100%" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                <mx:Button id="Button_Play" toolTip="Play" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/play/play-run.png')" disabledIcon="@Embed('res/play/play-run-disabled.png')" />
@@ -289,9 +289,15 @@
                      </mx:VBox>
                      
                   </mx:Box>
-                  <mx:Box icon="@Embed('res/create/create-panel-preset.png')" toolTip="More Components" direction="vertical" borderStyle="solid" width="83" height="100%"
+                  <mx:Box icon="@Embed('res/create/create-panel-preset.png')" toolTip="More Predefined Components (Empty now, what do you want?)" direction="vertical" borderStyle="solid" width="83" height="100%"
                            paddingTop="5" paddingLeft="1" paddingRight="1" paddingBottom="1" textAlign="center"
                            horizontalGap="0" verticalGap="0" verticalScrollPolicy="off">
+                     <mx:Text selectable="false" width="100%">
+                        <mx:text>
+                           This panel is for predefined components. It is empty now. What do you want here?
+                        </mx:text>
+                     </mx:Text>
+
                      <!--
                      <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="73"
                             tileWidth="36" tileHeight="36"
@@ -303,17 +309,17 @@
                      </mx:Tile>
                      <mx:Spacer height="10"/>
                      -->
-                     <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="36"
+                     <!--
+                     <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="73"
                             tileWidth="36" tileHeight="36"
                             horizontalGap="1" verticalGap="1"
                             paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
                         <mx:Button id="Button_CreateAngularAcceleration" toolTip="Create Angular Acceleration Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/acceleration-angular.png')" downIcon="@Embed('res/create/acceleration-angular-sel.png')" overIcon="@Embed('res/create/acceleration-angular.png')" selectedUpIcon="@Embed('res/create/acceleration-angular-sel.png')" selectedOverIcon="@Embed('res/create/acceleration-angular-sel.png')" selectedDownIcon="@Embed('res/create/acceleration-angular.png')"   />
                         <mx:Button id="Button_CreateAngularVelocity" toolTip="Create Angular Velocity Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/velocity-angular.png')" downIcon="@Embed('res/create/velocity-angular-sel.png')" overIcon="@Embed('res/create/velocity-angular.png')" selectedUpIcon="@Embed('res/create/velocity-angular-sel.png')" selectedOverIcon="@Embed('res/create/velocity-angular-sel.png')" selectedDownIcon="@Embed('res/create/velocity-angular.png')"   />
-                        <!--
                         <mx:Button id="Button_CreateLinearAcceleration" toolTip="Create Linear Acceleration Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/acceleration-linear.png')" downIcon="@Embed('res/create/acceleration-linear-sel.png')" overIcon="@Embed('res/create/acceleration-linear.png')" selectedUpIcon="@Embed('res/create/acceleration-linear-sel.png')" selectedOverIcon="@Embed('res/create/acceleration-linear-sel.png')" selectedDownIcon="@Embed('res/create/acceleration-linear.png')"   />
                         <mx:Button id="Button_CreateLinearVelocity" toolTip="Create Linear Velocity Power Source" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/velocity-linear.png')" downIcon="@Embed('res/create/velocity-linear-sel.png')" overIcon="@Embed('res/create/velocity-linear.png')" selectedUpIcon="@Embed('res/create/velocity-linear-sel.png')" selectedOverIcon="@Embed('res/create/velocity-linear-sel.png')" selectedDownIcon="@Embed('res/create/velocity-linear.png')"   />
-                        -->
                      </mx:Tile>
+                     -->
                      <mx:Spacer height="10"/>
                      <!--
                      <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="73"
@@ -618,8 +624,8 @@
                MainView.mButtonCreateAngularForce = Button_CreateAngularForce;
                MainView.mButtonCreateLinearImpulse = Button_CreateLinearImpulse;
                MainView.mButtonCreateAngularImpulse = Button_CreateAngularImpulse;
-               MainView.mButtonCreateAngularAcceleration = Button_CreateAngularAcceleration;
-               MainView.mButtonCreateAngularVelocity = Button_CreateAngularVelocity;
+               //MainView.mButtonCreateAngularAcceleration = Button_CreateAngularAcceleration;
+               //MainView.mButtonCreateAngularVelocity = Button_CreateAngularVelocity;
                //MainView.mButtonCreateLinearAcceleration = Button_CreateLinearAcceleration;
                //MainView.mButtonCreateLinearVelocity = Button_CreateLinearVelocity;
                
@@ -701,8 +707,8 @@
                Button_CreateAngularForce.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateLinearImpulse.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                Button_CreateAngularImpulse.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateAngularAcceleration.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
-               Button_CreateAngularVelocity.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               //Button_CreateAngularAcceleration.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
+               //Button_CreateAngularVelocity.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                //Button_CreateLinearAcceleration.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                //Button_CreateLinearVelocity.addEventListener (MouseEvent.CLICK, MainView.OnCreateButtonClick);
                

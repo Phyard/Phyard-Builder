@@ -85,8 +85,13 @@ package common.trigger {
       public static const CoreApiId_72:int = 72; //
       
       public static const CoreApiId_120:int = 120; // 
-      public static const CoreApiId_121:int = 121; // to exchange with 122
+      public static const CoreApiId_121:int = 121; // 
       public static const CoreApiId_122:int = 122; //
+      public static const CoreApiId_123:int = 123; //
+      public static const CoreApiId_124:int = 124; //
+      public static const CoreApiId_125:int = 125; //
+      public static const CoreApiId_126:int = 126; //
+      public static const CoreApiId_127:int = 127; //
       
       public static const CoreApiId_150:int = 150; // 
       public static const CoreApiId_151:int = 151; // 
@@ -97,7 +102,8 @@ package common.trigger {
       public static const CoreApiId_171:int = 171; // 
       public static const CoreApiId_172:int = 172; // 
       public static const CoreApiId_173:int = 173; // 
-      public static const CoreApiId_174:int = 174; // // to put after ID_Bool_Assign
+      public static const CoreApiId_174:int = 174; //
+      public static const CoreApiId_175:int = 175; //
       
       public static const CoreApiId_180:int = 180; // 
       public static const CoreApiId_181:int = 181; // 
@@ -114,6 +120,7 @@ package common.trigger {
       public static const CoreApiId_232:int = 232; // 
       public static const CoreApiId_233:int = 233; // 
       
+      public static const CoreApiId_299:int = 299; // 
       public static const CoreApiId_300:int = 300; // 
       public static const CoreApiId_301:int = 301; // 
       public static const CoreApiId_302:int = 302; //
@@ -190,6 +197,7 @@ package common.trigger {
       public static const CoreApiId_711:int = 711; // world
       public static const CoreApiId_712:int = 712; // world
       
+      public static const CoreApiId_719:int = 719; // world
       public static const CoreApiId_720:int = 720; // world
       public static const CoreApiId_721:int = 721; // world
       public static const CoreApiId_722:int = 722; // world
@@ -208,19 +216,25 @@ package common.trigger {
       public static const CoreApiId_850:int = 850; // CCat
       public static const CoreApiId_851:int = 851; // CCat
       public static const CoreApiId_852:int = 852; // CCat
-      public static const CoreApiId_853:int = 853; // CCat, to ptu after ID_CCat_Assign
+      public static const CoreApiId_853:int = 853; // CCat
       
-      public static const CoreApiId_900:int = 900; // entity.shape
-      public static const CoreApiId_901:int = 901; // entity.shape
-      public static const CoreApiId_902:int = 902; // entity.shape
+      public static const CoreApiId_855:int = 855; // CCat
+      public static const CoreApiId_856:int = 856; // CCat
       
-      public static const CoreApiId_910:int = 910; // entity.shape
-      public static const CoreApiId_911:int = 911; // entity.shape
-      public static const CoreApiId_912:int = 912; // entity.shape
-      public static const CoreApiId_913:int = 913; // entity.shape
-      public static const CoreApiId_914:int = 914; // entity.shape
-      public static const CoreApiId_915:int = 915; // entity.shape
-      public static const CoreApiId_916:int = 916; // entity.shape
+      public static const CoreApiId_900:int = 900; // entity
+      public static const CoreApiId_901:int = 901; // entity
+      public static const CoreApiId_902:int = 902; // entity
+      public static const CoreApiId_903:int = 903; // entity
+      public static const CoreApiId_904:int = 904; // entity
+      
+      public static const CoreApiId_910:int = 910; // entity
+      public static const CoreApiId_912:int = 912; // entity
+      public static const CoreApiId_914:int = 914; // entity
+      public static const CoreApiId_916:int = 916; // entity
+      
+      public static const CoreApiId_960:int = 960; // entity
+      public static const CoreApiId_961:int = 961; // entity
+      public static const CoreApiId_962:int = 962; // entity
       
       public static const CoreApiId_980:int = 980; // entity 
       public static const CoreApiId_981:int = 981; // entity 
@@ -308,10 +322,17 @@ package common.trigger {
       public static const CoreApiId_1405:int = 1405; // entity.shape
 
       
-      public static const CoreApiId_1550:int = 1550; // entity.text
-      public static const CoreApiId_1551:int = 1551; // entity.text
-      public static const CoreApiId_1552:int = 1552; // entity.text
-      public static const CoreApiId_1553:int = 1553; // entity.text
+      public static const CoreApiId_1550:int = 1550; // entity.shape.text
+      public static const CoreApiId_1551:int = 1551; // entity.shape.text
+      public static const CoreApiId_1552:int = 1552; // entity.shape.text
+      public static const CoreApiId_1553:int = 1553; // entity.shape.text
+      
+      public static const CoreApiId_1554:int = 1554; // entity.shape.circle
+      public static const CoreApiId_1555:int = 1555; // entity.shape.circle
+      public static const CoreApiId_1556:int = 1556; // entity.shape.rectangle
+      public static const CoreApiId_1557:int = 1557; // entity.shape.rectangle
+      public static const CoreApiId_1558:int = 1558; // entity.shape.rectangle
+      public static const CoreApiId_1559:int = 1559; // entity.shape.rectangle
       
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint
@@ -320,13 +341,16 @@ package common.trigger {
       //public static const CoreApiId_2001:int = 2001; // joint.hinge
       public static const CoreApiId_2004:int = 2004; // joint.hinge
       //public static const CoreApiId_2005:int = 2005; // joint.hinge
-      public static const CoreApiId_2006:int = 2006; // joint.slider
-      public static const CoreApiId_2007:int = 2007; // joint.slider
+      public static const CoreApiId_2006:int = 2006; // joint.hinge
+      public static const CoreApiId_2007:int = 2007; // joint.hinge
+      public static const CoreApiId_2008:int = 2008; // joint.hinge
+      public static const CoreApiId_2009:int = 2009; // joint.hinge
       
       public static const CoreApiId_2030:int = 2030; // joint.slider
       public static const CoreApiId_2031:int = 2031; // joint.slider
       public static const CoreApiId_2032:int = 2032; // joint.slider
       public static const CoreApiId_2033:int = 2033; // joint.slider
+      public static const CoreApiId_2034:int = 2034; // joint.slider
       
       //public static const CoreApiId_2500:int = 2500; // trigger.timer
       public static const CoreApiId_2501:int = 2501; // trigger.timer

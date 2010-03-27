@@ -47,6 +47,16 @@ package editor.trigger {
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
+      public static const sCircleShapeEntityClasses:Array = [
+                  EntityShapeCircle,
+            ];
+      
+      // object can be an Entity subclass.prototype or a subclass instance
+      public static const sRectangleShapeEntityClasses:Array = [
+                  EntityShapeRectangle,
+            ];
+      
+      // object can be an Entity subclass.prototype or a subclass instance
       public static const sTextEntityClasses:Array = [
                   EntityShapeText,
             ];
@@ -64,6 +74,18 @@ package editor.trigger {
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sJointEntityClasses:Array = [
                   EntityJoint,
+            ];
+      
+      // object can be an Entity subclass.prototype or a subclass instance
+      public static const sLimitsConfigureableJointEntityClasses:Array = [
+                  EntityJointHinge,
+                  EntityJointSlider,
+            ];
+      
+      // object can be an Entity subclass.prototype or a subclass instance
+      public static const sMotorConfigureableJointEntityClasses:Array = [
+                  EntityJointHinge,
+                  EntityJointSlider,
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
@@ -100,6 +122,7 @@ package editor.trigger {
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sCanBeDisabledEntityClasses:Array = [
                   EntityEventHandler,
+                  EntityUtilityPowerSource,
             ];
    }
 }

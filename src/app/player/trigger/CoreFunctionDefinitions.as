@@ -67,16 +67,22 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_String_Assign,                      AssignString);
          RegisterCoreFunction (CoreFunctionIds.ID_String_ConditionAssign,             ConditionAssignString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_SwapValues,                  SwapStringValues);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_IsNull,                      IsNullString);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Equals,                      EqualsWith_Strings);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Add,                         AddTwoStrings);
          RegisterCoreFunction (CoreFunctionIds.ID_String_GetLength,                   GetStringLength);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_GetCharAt,                   StringCharAt);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_GetCharCodeAt,               StringCharCodeAt);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_CharCode2Char,               CharCode2Char);
          
       // bool
          
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Assign,                AssignBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_ConditionAssign,       ConditionAssignBoolean);
-         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsBoolean,     EqualsWith_Booleans);
-         RegisterCoreFunction (CoreFunctionIds.ID_Boolean_ToString,             BooleanToString);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_SwapValues,    SwapBooleanValues);
+         RegisterCoreFunction (CoreFunctionIds.ID_Bool_EqualsBoolean,         EqualsWith_Booleans);
+         RegisterCoreFunction (CoreFunctionIds.ID_Boolean_ToString,           BooleanToString);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Invert,                BooleanInvert);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsTrue,                IsTrue);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_IsFalse,               IsFalse);
@@ -93,6 +99,7 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Assign,                     AssignNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_ConditionAssign,            ConditionAssignNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_SwapValues,           SwapNumberValues);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Equals,      EqualsWith_Numbers);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Number_IsNaN,               IsNaN);
@@ -174,6 +181,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraWithShape,                       FollowCameraWithShape);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,                FollowCameraCenterXWithShape);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,                FollowCameraCenterYWithShape);
@@ -196,6 +204,8 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_Assign,                                       AssignCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_ConditionAssign,                              ConditionAssignCollisionCategory);
+         RegisterCoreFunction (CoreFunctionIds.ID_CCat_SwapValues,                                   SwapCCatValues);
+         RegisterCoreFunction (CoreFunctionIds.ID_CCat_IsNull,                                       IsNullCCat);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_Equals,                                       EqualsWith_CollisiontCategories);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_ToString,                                     CollisionCategoryToString);
          RegisterCoreFunction (CoreFunctionIds.ID_CCat_SetCollideInternally,                         SetCollisionCategoryCollideInternally);
@@ -205,6 +215,8 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Assign,                      AssignEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_ConditionAssign,             ConditionAssignEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_SwapValues,                  SwapEntityValues);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsNull,                      IsNullEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Equals,                      EqualsWith_Entities);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_ToString,                    EntityToString);
@@ -216,7 +228,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskFailed,                          IsEntityTaskFailed);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTaskUnfinished,                      IsEntityTaskUnfinished);
          
-         //RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsShapeEntity,                    IsShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsJointEntity,                    IsJointEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsTriggerEntity,                  IsTriggerEntity);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsVisible,                   IsEntityVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetVisible,                  SetEntityVisible);
@@ -264,13 +278,12 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                  GetShapeDensity);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                  SetShapeDensity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetSleeping,                 SetShapeSleeping);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetMass,                        GetShapeMass);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetInertia,                     GetShapeInertia);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                     GetShapeDensity);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetLinearVelocity,                        GetShapeLinearVelocity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,       AddLinearImpulseByVelocityVector);
@@ -303,16 +316,26 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendText,               AppendTextToTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendNewLine,            AppendNewLineToTextComponent);
          
+      // game / entity / shape / circle
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeCircle_GetRadius,            GetShapeCircleRadius);
+         
+      // game / entity / shape / rectangle
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeRectangle_GetSize,            GetShapeRectangleSize);
+         
       // game / entity / joint
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,                      SetJointMotorEnabled);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,                     SetJointLimitsEnabled);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetHingeAngleByDegrees,                      GetHingeAngleByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,                      GetHingeLimitsByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,                      SetHingeLimitsByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed,                      GetHingeMotorSpeed);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed,                      SetHingeMotorSpeed);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetSliderTranslation,                     GetSliderTranslation);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,                     GetSliderLimits);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,                     SetSliderLimits);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed,                     GetSliderMotorSpeed);
@@ -438,6 +461,29 @@ package player.trigger {
          valueTarget.AssignValueObject (condtion ? string1 : string2);
       }
       
+      public static function SwapStringValues (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var text1:String = valueSource.EvalateValueObject () as String;
+         
+         var source1:ValueSource = valueSource;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var text2:String = valueSource.EvalateValueObject () as String;
+         
+         if (source1 is ValueSource_Variable)
+            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (text2);
+         
+         if (valueSource is ValueSource_Variable)
+            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (text1);
+      }
+      
+      public static function IsNullString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var text:String = valueSource.EvalateValueObject () as String;
+         
+         valueTarget.AssignValueObject (text == null);
+      }
+      
       public static function AddTwoStrings (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var value1:String = valueSource.EvalateValueObject () as String;
@@ -455,6 +501,44 @@ package player.trigger {
          valueTarget.AssignValueObject (value == null ? 0 : value.length);
       }
       
+      public static function StringCharAt (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var text:String = valueSource.EvalateValueObject () as String;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var index:int = int (valueSource.EvalateValueObject ());
+         
+         if (text == null || index < 0 || index >= text.length)
+         {
+            valueTarget.AssignValueObject (null);
+            return;
+         }
+         
+         valueTarget.AssignValueObject (text.charAt (index));
+      }
+      
+      public static function StringCharCodeAt (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var text:String = valueSource.EvalateValueObject () as String;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var index:int = int (valueSource.EvalateValueObject ());
+         
+         if (text == null || index < 0 || index >= text.length)
+         {
+            valueTarget.AssignValueObject (0);
+            return;
+         }
+         
+         valueTarget.AssignValueObject (text.charCodeAt (index));
+      }
+      
+      public static function CharCode2Char (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var char_code:int = int (valueSource.EvalateValueObject ());
+         
+         valueTarget.AssignValueObject (String.fromCharCode (char_code));
+      }
       
       public static function NumberToString (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -568,6 +652,22 @@ package player.trigger {
          var bool2:Boolean = valueSource.EvalateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (condtion ? bool1 : bool2);
+      }
+      
+      public static function SwapBooleanValues (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var bool1:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         var source1:ValueSource = valueSource;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var bool2:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         if (source1 is ValueSource_Variable)
+            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (bool2);
+         
+         if (valueSource is ValueSource_Variable)
+            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (bool1);
       }
       
       public static function BooleanInvert (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -728,6 +828,22 @@ package player.trigger {
          var falseValue:Number = valueSource.EvalateValueObject () as Number;
          
          valueTarget.AssignValueObject (contionResult ? trueValue : falseValue);
+      }
+      
+      public static function SwapNumberValues (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var number1:Number = Number (valueSource.EvalateValueObject ());
+         
+         var source1:ValueSource = valueSource;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var number2:Number = Number (valueSource.EvalateValueObject ());
+         
+         if (source1 is ValueSource_Variable)
+            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (number2);
+         
+         if (valueSource is ValueSource_Variable)
+            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (number1);
       }
       
       public static function IsNaN (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1260,6 +1376,14 @@ package player.trigger {
          Global.GetCurrentWorld ().SetCurrentGravityAcceleration (gaX, gaY);
       }
       
+      public static function GetCameraCenter (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterX ());
+         
+         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterY ());
+      }
+      
       public static function FollowCameraWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
@@ -1479,6 +1603,29 @@ package player.trigger {
          valueTarget.AssignValueObject (condtion ? cat1 : cat2);
       }
       
+      public static function SwapCCatValues (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var ccat1:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         var source1:ValueSource = valueSource;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var ccat2:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         if (source1 is ValueSource_Variable)
+            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (ccat2);
+         
+         if (valueSource is ValueSource_Variable)
+            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (ccat1);
+      }
+      
+      public static function IsNullCCat (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var ccat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         
+         valueTarget.AssignValueObject (ccat == null);
+      }
+      
       public static function SetCollisionCategoryCollideInternally (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var cat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
@@ -1524,6 +1671,29 @@ package player.trigger {
          var entity2:Entity = valueSource.EvalateValueObject () as Entity;
          
          valueTarget.AssignValueObject (condition ? entity1 : entity2);
+      }
+      
+      public static function SwapEntityValues(valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity1:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         var source1:ValueSource = valueSource;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var entity2:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         if (source1 is ValueSource_Variable)
+            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (entity2);
+         
+         if (valueSource is ValueSource_Variable)
+            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (entity1);
+      }
+      
+      public static function IsNullEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         
+         valueTarget.AssignValueObject (entity == null);
       }
       
       public static function GetAnotherEntityByIdOffset (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1592,12 +1762,26 @@ package player.trigger {
          valueTarget.AssignValueObject (unfinished);
       }
       
-      //public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
-      //   
-      //   valueTarget.AssignValueObject (shape != null);
-      //}
+      public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         valueTarget.AssignValueObject (shape != null);
+      }
+      
+      public static function IsJointEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var joint:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         valueTarget.AssignValueObject (joint != null);
+      }
+      
+      public static function IsTriggerEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var trigger:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         valueTarget.AssignValueObject (trigger != null);
+      }
       
       public static function IsEntityVisible (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
@@ -1653,6 +1837,10 @@ package player.trigger {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
          if (entity == null)
             return;
+         
+         // move into SetEnabled
+         // if (! entity.CanBeDisabled ())
+         //    return;
          
          valueSource = valueSource.mNextValueSourceInList;
          var enabled:Boolean = valueSource.EvalateValueObject () as Boolean;
@@ -2141,20 +2329,6 @@ package player.trigger {
          shape.SetAsSensor (sensor);
       }
       
-      //public static function GetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-         //if (shape.IsDestroyedAlready ())
-         //   return;
-         //
-      //}
-      
-      //public static function SetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
-      //{
-         //if (shape.IsDestroyedAlready ())
-         //   return;
-         //
-      //}
-      
       public static function IsShapeSleeping (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
@@ -2225,6 +2399,18 @@ package player.trigger {
             {
                valueTarget.AssignValueObject (shape.GetInertia ());
             }
+         }
+      }
+      
+      public static function GetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         
+         if (shape == null) // || shape.IsDestroyedAlready ())
+            valueTarget.AssignValueObject (0.0);
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetDensity ());
          }
       }
       
@@ -2647,6 +2833,46 @@ package player.trigger {
       }
       
    //*******************************************************************
+   // entity / shape / circle
+   //*******************************************************************
+      
+      public static function GetShapeCircleRadius (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var circle:EntityShapeCircle = valueSource.EvalateValueObject () as EntityShapeCircle;
+         if (circle == null || circle.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (circle.GetRadius ());
+         }
+      }
+      
+   //*******************************************************************
+   // entity / shape / circle
+   //*******************************************************************
+      
+      public static function GetShapeRectangleSize (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var rect:EntityShapeRectangle = valueSource.EvalateValueObject () as EntityShapeRectangle;
+         if (rect == null || rect.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (2.0 * rect.GetHalfWidth ());
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (2.0 * rect.GetHalfHeight ());
+         }
+      }
+      
+   //*******************************************************************
    // entity / joint
    //*******************************************************************
       
@@ -2674,6 +2900,20 @@ package player.trigger {
          var enabled:Boolean = valueSource.EvalateValueObject () as Boolean;
          
          joint.SetEnableLimits (enabled);
+      }
+      
+      public static function GetHingeAngleByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         
+         if (hinge == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (hinge.GetCurrentAngle () * Define.kRadians2Degrees);
+         }
       }
       
       public static function GetHingeLimitsByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -2735,6 +2975,20 @@ package player.trigger {
          var motorSpeed:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
          
          hinge.SetMotorSpeed (motorSpeed);
+      }
+      
+      public static function GetSliderTranslation (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         
+         if (slider == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (slider.GetCurrentTranslation ());
+         }
       }
       
       public static function GetSliderLimits (valueSource:ValueSource, valueTarget:ValueTarget):void

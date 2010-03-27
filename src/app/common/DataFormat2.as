@@ -512,8 +512,9 @@ package common {
                entityDefine.mIsEnabled = byteArray.readByte () != 0;
             }
             
-            if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
+            if ( Define.IsUtilityEntity (entityDefine.mEntityType) )
             {
+               // from v1.05
                if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
                {
                   if (worldDefine.mVersion >= 0x0108)
@@ -522,6 +523,16 @@ package common {
                      entityDefine.mFollowingStyle = byteArray.readByte ();
                   }
                }
+               //<<
+               //>>from v1.10
+               else if (entityDefine.mEntityType == Define.EntityType_UtilityPowerSource)
+               {
+                  entityDefine.mPowerSourceTyp = byteArray.readByte ();
+                  entityDefine.mPowerMagnitude = byteArray.readFloat ();
+                  entityDefine.mKeyboardEventId = byteArray.readShort ();
+                  entityDefine.mKeyCodes = ReadShortArrayFromBinFile (byteArray);
+               }
+               //<<
             }
             else if ( Define.IsLogicEntity (entityDefine.mEntityType) ) // from v1.07
             {
@@ -1320,8 +1331,9 @@ package common {
             element.@active = entityDefine.mIsEnabled ? 1 : 0;
          }
          
-         if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
+         if ( Define.IsUtilityEntity (entityDefine.mEntityType) )
          {
+            // from v1.05
             if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
             {
                if (worldDefine.mVersion >= 0x0108)
@@ -1330,6 +1342,16 @@ package common {
                   element.@following_style = entityDefine.mFollowingStyle;
                }
             }
+            //<<
+            //>>from v1.10
+            else if (entityDefine.mEntityType == Define.EntityType_UtilityPowerSource)
+            {
+               element.@power_source_type = entityDefine.mPowerSourceType;
+               element.@power_magnitude = entityDefine.mPowerMagnitude;
+               element.@keyboard_event_id = entityDefine.mKeyboardEventId;
+               element.@key_codes = IntegerArray2IndicesString (entityDefine.mKeyCodes);
+            }
+            //<<
          }
          else if ( Define.IsLogicEntity (entityDefine.mEntityType) )
          {
@@ -1769,6 +1791,13 @@ package common {
             
             entityDefine.mAlpha = ValueAdjuster.Number2Precision (entityDefine.mAlpha, 6);
             
+            if ( Define.IsUtilityEntity (entityDefine.mEntityType) )
+            {
+               if (entityDefine.mEntityType == Define.EntityType_UtilityPowerSource)
+               {
+                  entityDefine.mPowerMagnitude = ValueAdjuster.Number2Precision (entityDefine.mPowerMagnitude, 6);
+               }
+            }
             if ( Define.IsLogicEntity (entityDefine.mEntityType) )
             {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
@@ -2043,7 +2072,7 @@ package common {
                entityDefine.mIsEnabled = true;
             }
             
-            if ( Define.IsUtilityEntity (entityDefine.mEntityType) ) // from v1.05
+            if ( Define.IsUtilityEntity (entityDefine.mEntityType) )
             {
                if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
                {

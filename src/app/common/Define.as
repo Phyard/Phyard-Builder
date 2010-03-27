@@ -391,7 +391,8 @@ package common {
       
       public static function IsUtilityEntity (entityType:int):Boolean
       {
-         return entityType == EntityType_UtilityCamera;
+         return entityType == EntityType_UtilityCamera
+               || entityType == EntityType_UtilityPowerSource;
       }
       
       public static function IsLogicEntity (entityType:int):Boolean

@@ -1709,7 +1709,7 @@ package editor {
          
          if (Compile::Is_Debugging)
          {
-            useQuickMethod = false;
+            useQuickMethod = true;
          }
          else
          {
@@ -4084,6 +4084,8 @@ package editor {
          
          if (entity is EntityLogic)
          {
+            var logic:EntityLogic = entity as EntityLogic;
+            
             var code_snippet:CodeSnippet;
             
             if (entity is EntityEventHandler)
@@ -4120,9 +4122,6 @@ package editor {
                   
                   contact_event_handler.ChangeContactEventId (params.mEventId);
                }
-               
-               event_handler.UpdateAppearance ();
-               event_handler.UpdateSelectionProxy ();
             }
             else if (entity is EntityBasicCondition)
             {
@@ -4133,9 +4132,6 @@ package editor {
                code_snippet = condition.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
                code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
-               
-               condition.UpdateAppearance ();
-               condition.UpdateSelectionProxy ();
             }
             else if (entity is EntityAction)
             {
@@ -4146,9 +4142,6 @@ package editor {
                code_snippet = action.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
                code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
-               
-               action.UpdateAppearance ();
-               action.UpdateSelectionProxy ();
             }
             else if (entity is EntityInputEntityScriptFilter)
             {
@@ -4159,9 +4152,6 @@ package editor {
                code_snippet = entityFilter.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
                code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
-               
-               entityFilter.UpdateAppearance ();
-               entityFilter.UpdateSelectionProxy ();
             }
             else if (entity is EntityInputEntityPairScriptFilter)
             {
@@ -4172,9 +4162,6 @@ package editor {
                code_snippet = pairFilter.GetCodeSnippet ();
                code_snippet.AssignFunctionCallings (params.mReturnFunctionCallings);
                code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
-               
-               pairFilter.UpdateAppearance ();
-               pairFilter.UpdateSelectionProxy ();
             }
             else if (entity is EntityConditionDoor)
             {
@@ -4188,6 +4175,9 @@ package editor {
             else if (entity is EntityInputEntityPairAssigner)
             {
             }
+            
+            logic.UpdateAppearance ();
+            logic.UpdateSelectionProxy ();
          }
          else if (entity is EntityShape)
          {
@@ -4475,6 +4465,9 @@ package editor {
                }
                powerSource.SetPowerMagnitude (params.mPowerMagnitude);
             }
+            
+            utility.UpdateAppearance ();
+            utility.UpdateSelectionProxy ();
          }
          
          CreateUndoPoint ("Entity preproties are changed");

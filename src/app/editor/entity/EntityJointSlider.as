@@ -115,7 +115,7 @@ package editor.entity {
          var distance:Number = Math.sqrt (dx * dx + dy * dy);
          var halfDistancle:Number = 0.5 * distance;
          
-         GraphicsUtil.ClearAndDrawLine (this, - halfDistancle, 0, distance, 0);
+         GraphicsUtil.ClearAndDrawLine (this, - halfDistancle, 0, distance, 0, 0x0, 0);
          
          
          if (distance < 0.01)

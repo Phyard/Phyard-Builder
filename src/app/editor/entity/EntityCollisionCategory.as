@@ -118,7 +118,7 @@ package editor.entity {
          if (! IsCollideInternally ())
             ccName = "<i><u><b>" + ccName + "</b></u></i>";
          
-         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>" + ccName + "</font>", false, 0xFFFFFF, 0x0);
+         var textField:TextFieldEx = TextFieldEx.CreateTextField ("<font face='Verdana' size='10'>&lt;" + mCollisionManager.GetCollisionCategoryIndex (this) + "&gt; " + ccName + "</font>", false, 0xFFFFFF, 0x0);
             
          addChild (textField);
          

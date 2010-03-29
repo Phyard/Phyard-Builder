@@ -1241,7 +1241,7 @@ package common {
             }
             else
             {
-               trace ("!!! entity is null, id = " + createId);
+               //trace ("!!! entity is null, id = " + createId);
             }
          }
          

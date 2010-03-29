@@ -201,6 +201,18 @@ package player.entity {
       }
       
 //=============================================================
+//   destroy
+//=============================================================
+      
+      override protected function DestroyInternal ():void
+      {
+         SetEnabled (false);
+         
+         // todo: remove event handler
+         // now it is just disbled but this is not very effective.
+      }
+      
+//=============================================================
 //   update
 //=============================================================
       

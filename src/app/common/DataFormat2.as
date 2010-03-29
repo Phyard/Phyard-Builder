@@ -1162,7 +1162,7 @@ package common {
          for (createId = 0; createId < numEntities; ++ createId)
          {
             var entityDefine:Object = worldDefine.mEntityDefines [createId];
-            element = EntityDefine2XmlElement (entityDefine, worldDefine);
+            element = EntityDefine2XmlElement (entityDefine, worldDefine, createId);
             
             xml.Entities.appendChild (element);
          }
@@ -1304,7 +1304,7 @@ package common {
          return element;
       }
       
-      public static function EntityDefine2XmlElement (entityDefine:Object, worldDefine:WorldDefine):Object
+      public static function EntityDefine2XmlElement (entityDefine:Object, worldDefine:WorldDefine, createId:int):Object
       {
          var vertexId:int;
          var i:int;
@@ -1314,6 +1314,7 @@ package common {
          var elementLocalVertex:Object;
          
          var element:Object = <Entity />;
+         element.@id = createId; // for debug using only
          element.@entity_type = entityDefine.mEntityType;
          element.@x = entityDefine.mPosX;
          element.@y = entityDefine.mPosY;

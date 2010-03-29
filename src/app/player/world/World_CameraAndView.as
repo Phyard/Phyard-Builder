@@ -69,14 +69,24 @@ private var mViewportHeight:Number  = Define.DefaultWorldHeight;
 private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
 private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
 
-public function GetCameraCenterX ():Number
+public function GetCameraCenterDisplayX ():Number
 {
    return mCameraCenterX;
 }
 
-public function GetCameraCenterY ():Number
+public function GetCameraCenterDisplayY ():Number
 {
    return mCameraCenterY;
+}
+
+public function GetCameraCenterPhysicsX ():Number
+{
+   return mCoordinateSystem.D2P_PositionX (mCameraCenterX);
+}
+
+public function GetCameraCenterPhysicsY ():Number
+{
+   return mCoordinateSystem.D2P_PositionY (mCameraCenterY);
 }
 
 public function SetCameraWidth (width:Number):void

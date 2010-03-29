@@ -1378,10 +1378,10 @@ package player.trigger {
       
       public static function GetCameraCenter (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterX ());
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterPhysicsX ());
          
          valueTarget = valueTarget.mNextValueTargetInList;
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterY ());
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterPhysicsY ());
       }
       
       public static function FollowCameraWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1473,13 +1473,16 @@ package player.trigger {
          valueSource = valueSource.mNextValueSourceInList;
          var script2:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
          
+      trace ("condtion = " + condtion);
          if (condtion)
          {
+      trace ("script1 = " + script1);
             if (script1 != null)
                script1.RunScript ();
          }
          else
          {
+      trace ("script2 = " + script2);
             if (script2 != null)
                script2.RunScript ();
          }
@@ -1835,7 +1838,7 @@ package player.trigger {
       public static function SetEntityEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
-         if (entity == null)
+         if (entity == null || entity.IsDestroyedAlready ())
             return;
          
          // move into SetEnabled

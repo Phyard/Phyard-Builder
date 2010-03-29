@@ -198,6 +198,16 @@ package editor.world {
          SetChanged (true);
          
          super.DestroyEntity (entity);
+         
+         var ccat:EntityCollisionCategory;
+         for (var i:int = 0; i < numChildren; ++ i)
+         {
+            ccat = getChildAt (i) as EntityCollisionCategory;
+            if (ccat != null) // should be
+            {
+               ccat.UpdateAppearance ();
+            }
+         }
       }
       
 //=========================================================

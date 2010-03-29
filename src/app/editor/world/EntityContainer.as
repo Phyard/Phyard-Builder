@@ -807,7 +807,7 @@ package editor.world {
          }
       }
       
-      public function OnEntityDestroyed (entity:Entity):void
+      final public function OnEntityDestroyed (entity:Entity):void
       {
          mNeedToCorrectEntityCreationIds = true;
          

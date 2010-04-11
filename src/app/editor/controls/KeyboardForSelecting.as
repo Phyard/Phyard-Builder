@@ -32,9 +32,31 @@ package editor.controls {
          sKeyBitmapClasses = new Array (256);
          
          sKeyBitmapClasses [KeyCodes.Key_A] = Resource.KeyA;
+         sKeyBitmapClasses [KeyCodes.Key_B] = Resource.KeyB;
+         sKeyBitmapClasses [KeyCodes.Key_C] = Resource.KeyC;
          sKeyBitmapClasses [KeyCodes.Key_D] = Resource.KeyD;
+         sKeyBitmapClasses [KeyCodes.Key_E] = Resource.KeyE;
+         sKeyBitmapClasses [KeyCodes.Key_F] = Resource.KeyF;
+         sKeyBitmapClasses [KeyCodes.Key_G] = Resource.KeyG;
+         sKeyBitmapClasses [KeyCodes.Key_H] = Resource.KeyH;
+         sKeyBitmapClasses [KeyCodes.Key_I] = Resource.KeyI;
+         sKeyBitmapClasses [KeyCodes.Key_J] = Resource.KeyJ;
+         sKeyBitmapClasses [KeyCodes.Key_K] = Resource.KeyK;
+         sKeyBitmapClasses [KeyCodes.Key_L] = Resource.KeyL;
+         sKeyBitmapClasses [KeyCodes.Key_M] = Resource.KeyM;
+         sKeyBitmapClasses [KeyCodes.Key_N] = Resource.KeyN;
+         sKeyBitmapClasses [KeyCodes.Key_O] = Resource.KeyO;
+         sKeyBitmapClasses [KeyCodes.Key_P] = Resource.KeyP;
+         sKeyBitmapClasses [KeyCodes.Key_Q] = Resource.KeyQ;
+         sKeyBitmapClasses [KeyCodes.Key_R] = Resource.KeyR;
          sKeyBitmapClasses [KeyCodes.Key_S] = Resource.KeyS;
+         sKeyBitmapClasses [KeyCodes.Key_T] = Resource.KeyT;
+         sKeyBitmapClasses [KeyCodes.Key_U] = Resource.KeyU;
+         sKeyBitmapClasses [KeyCodes.Key_V] = Resource.KeyV;
          sKeyBitmapClasses [KeyCodes.Key_W] = Resource.KeyW;
+         sKeyBitmapClasses [KeyCodes.Key_X] = Resource.KeyX;
+         sKeyBitmapClasses [KeyCodes.Key_Y] = Resource.KeyY;
+         sKeyBitmapClasses [KeyCodes.Key_Z] = Resource.KeyZ;
          sKeyBitmapClasses [Keyboard.UP   ] = Resource.KeyUp;
          sKeyBitmapClasses [Keyboard.DOWN ] = Resource.KeyDown;
          sKeyBitmapClasses [Keyboard.LEFT ] = Resource.KeyLeft;
@@ -44,10 +66,36 @@ package editor.controls {
       // ...
          
          sKeyRegions = new Array (256);
-         sKeyRegions [KeyCodes.Key_A] = [52, 72, 22, 22];
-         sKeyRegions [KeyCodes.Key_D] = [102, 72, 22, 22];
-         sKeyRegions [KeyCodes.Key_S] = [77, 72, 22, 22];
+         
+         sKeyRegions [KeyCodes.Key_Q] = [46, 48, 22, 22];
          sKeyRegions [KeyCodes.Key_W] = [71, 48, 22, 22];
+         sKeyRegions [KeyCodes.Key_E] = [95, 48, 22, 22];
+         sKeyRegions [KeyCodes.Key_R] = [120, 48, 22, 22];
+         sKeyRegions [KeyCodes.Key_T] = [145, 48, 22, 22];
+         sKeyRegions [KeyCodes.Key_Y] = [169, 48, 22, 22];
+         sKeyRegions [KeyCodes.Key_U] = [194, 48, 22, 22];
+         sKeyRegions [KeyCodes.Key_I] = [219, 48, 22, 22];
+         sKeyRegions [KeyCodes.Key_O] = [243, 48, 22, 22];
+         sKeyRegions [KeyCodes.Key_P] = [268, 48, 22, 22];
+         
+         sKeyRegions [KeyCodes.Key_A] = [52, 72, 22, 22];
+         sKeyRegions [KeyCodes.Key_S] = [77, 72, 22, 22];
+         sKeyRegions [KeyCodes.Key_D] = [102, 72, 22, 22];
+         sKeyRegions [KeyCodes.Key_F] = [126, 72, 22, 22];
+         sKeyRegions [KeyCodes.Key_G] = [151, 72, 22, 22];
+         sKeyRegions [KeyCodes.Key_H] = [176, 72, 22, 22];
+         sKeyRegions [KeyCodes.Key_J] = [200, 72, 22, 22];
+         sKeyRegions [KeyCodes.Key_K] = [225, 72, 22, 22];
+         sKeyRegions [KeyCodes.Key_L] = [250, 72, 22, 22];
+         
+         sKeyRegions [KeyCodes.Key_Z] = [65, 96, 22, 22];
+         sKeyRegions [KeyCodes.Key_X] = [89, 96, 22, 22];
+         sKeyRegions [KeyCodes.Key_C] = [114, 96, 22, 22];
+         sKeyRegions [KeyCodes.Key_V] = [139, 96, 22, 22];
+         sKeyRegions [KeyCodes.Key_B] = [163, 96, 22, 22];
+         sKeyRegions [KeyCodes.Key_N] = [188, 96, 22, 22];
+         sKeyRegions [KeyCodes.Key_M] = [213, 96, 22, 22];
+         
          sKeyRegions [Keyboard.UP   ] = [401, 97, 22, 22];
          sKeyRegions [Keyboard.DOWN ] = [401, 121, 22, 22];
          sKeyRegions [Keyboard.LEFT ] = [377, 121, 22, 22];
@@ -57,7 +105,7 @@ package editor.controls {
       
    // ...
       
-      private var mKeyboardBitmap:Bitmap = new Resource.KeyboardSpaceAndWASD ();
+      private var mKeyboardBitmap:Bitmap = new Resource.Keyboard ();
       private var mSelectedKeyBitmaps:Array = new Array (256);
       
    // ...

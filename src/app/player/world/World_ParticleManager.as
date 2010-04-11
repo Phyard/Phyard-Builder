@@ -68,6 +68,9 @@ public function CreateExplosion (posX:Number, posY:Number, ccat:CollisionCategor
    bomb.mCollisionCategory = ccat;
    
    bomb.mNumParticles = numParticles;
+   bomb.mNumWaves = int (Math.floor (numParticles / NumParticlesToCreatedEachStep));
+   bomb.mAngleInterval = numParticles < NumParticlesToCreatedEachStep ? 0.0 : (Define.kPI_x_2 / Number (Math.floor(numParticles / NumParticlesToCreatedEachStep) * NumParticlesToCreatedEachStep));
+   
    bomb.mParticleSpeed = physicsSpeed;
    bomb.mParticleDensity = density;
    bomb.mParticleRestitution = restitution;
@@ -76,10 +79,10 @@ public function CreateExplosion (posX:Number, posY:Number, ccat:CollisionCategor
    bomb.mParticleColor = color;
    bomb.mParticleVisible = isVisible;
    
-   bomb.mParticleIdCreateInterval = bomb.mNumParticles / NumParticlesToCreatedEachStep;
    bomb.mBornTime = 0;
    bomb.mLastTimeStamp = 0;
-   bomb.mNumCreateParticles = 0;
+   bomb.mNumCreatedWaves = 0;
+   bomb.mNumCreatedParticles = 0;
    bomb.mParticleStartId = 0;
    
    return numParticles;
@@ -103,23 +106,44 @@ public function ParticleManager_Update (dt:Number):void
       
       bomb.mLastTimeStamp = bomb.mBornTime;
       
-      bomb.mParticleStartId += bomb.mParticleStartIdInterval;
-      bomb.mParticleStartId %= bomb.mNumParticles;
+      var particleId:int;
+      var idInterval:int;
       
-      var particleId:int = bomb.mParticleStartId;// ++;
-      var count:int = bomb.mNumParticles - bomb.mNumCreateParticles;
-      if (count > NumParticlesToCreatedEachStep) 
-         count = NumParticlesToCreatedEachStep;
-      var idInterval:int = int (bomb.mParticleIdCreateInterval * NumParticlesToCreatedEachStep / count + 0.5);
-      
+      var angleInterval:Number;
       var angle:Number;
+      
+      var count:int = bomb.mNumParticles - bomb.mNumCreatedParticles;
+      if (count >= NumParticlesToCreatedEachStep)
+      {
+         count = NumParticlesToCreatedEachStep;
+         
+         particleId = bomb.mParticleStartId % bomb.mNumWaves;
+         idInterval = bomb.mNumWaves;
+         
+         angleInterval = bomb.mAngleInterval;
+         angle = particleId * angleInterval;
+         angleInterval = angleInterval * idInterval;
+      }
+      else
+      {
+         particleId = 0;
+         idInterval = 1;
+         
+         angle = 0.0;
+         angleInterval = Define.kPI_x_2 / count;
+      }
+      
+      var a:Number;
       var cos:Number;
       var sin:Number;
+      
       for (var i:int = 0; i < count; ++ i)
       {
-         angle = mCoordinateSystem.P2D_RotationRadians (particleId * Define.kPI_x_2 / bomb.mNumParticles);
-         cos = Math.cos (angle);
-         sin = Math.sin (angle);
+         a = mCoordinateSystem.D2P_RotationRadians (angle);
+         angle += angleInterval;
+         
+         cos = Math.cos (a);
+         sin = Math.sin (a);
          
          EntityShape.CreateParticle (
                   this,
@@ -136,10 +160,10 @@ public function ParticleManager_Update (dt:Number):void
                );
          
          particleId += idInterval;
-         ++ bomb.mNumCreateParticles;
       }
       
-      if (bomb.mNumCreateParticles >= bomb.mNumParticles)
+      bomb.mNumCreatedParticles += count;
+      if (bomb.mNumCreatedParticles >= bomb.mNumParticles)
       {
          mBombs [bombId --] = mBombs [-- mNumBombs];
          if (mNumBombs <= 0)
@@ -149,22 +173,31 @@ public function ParticleManager_Update (dt:Number):void
          
          mBombs [mNumBombs] = null;
       }
+      else
+      {
+         ++ bomb.mNumCreatedWaves;
+         bomb.mParticleStartId += bomb.mParticleStartIdInterval;
+      }
    }
 }
 
 private static const kPrimeNumbers:Array = [
    3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 
    109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 
-   227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 
-   347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 
-   461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 
-   599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 
-   727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 
-   859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 
+   //227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 
+   //347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 
+   //461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 
+   //599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 
+   //727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 
+   //859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 
 ]
 private function GetParticleStartIdInterval (numParticles:int):int
 {
-   var n:int = numParticles / (NumParticlesToCreatedEachStep + NumParticlesToCreatedEachStep);
+   var nWaves:int = numParticles / NumParticlesToCreatedEachStep;
+   if (nWaves == 0)
+      return 0;
+   
+   var n:int = nWaves / 2;
    
    var lower:int = 0;
    var upper:int = kPrimeNumbers.length;
@@ -180,10 +213,17 @@ private function GetParticleStartIdInterval (numParticles:int):int
       else if (prime > n)
          upper = mid - 1;
       else
-         return prime;
+         break;
    }
    
-   return kPrimeNumbers [lower];
+   prime = kPrimeNumbers [lower];
+   
+   if ( Math.floor (nWaves / prime) * prime == nWaves)
+   {
+      prime = kPrimeNumbers [lower + 1];
+   }
+   
+   return prime;
 }
 
 //==============================================================

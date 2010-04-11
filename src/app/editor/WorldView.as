@@ -1289,8 +1289,8 @@ package editor {
       public var mButton_Stop:Button;
       
       public var mButtonNewDesign:Button;
-      public var mButtonSaveWorld:Button;
-      public var mButtonLoadWorld:Button;
+      //public var mButtonSaveWorld:Button;
+      //public var mButtonLoadWorld:Button;
       
       public var mButtonShowEntityIds:Button;
       public var mButtonShowLinks:Button;
@@ -1345,7 +1345,7 @@ package editor {
          
       // context menu
          
-         mMenuItemExportSelectedsToSystemMemory.enabled = selectedEntities.length > 0;
+         //mMenuItemExportSelectedsToSystemMemory.enabled = selectedEntities.length > 0;
          
       // context menu of entity setting button
          
@@ -1386,15 +1386,15 @@ package editor {
       {
          switch (event.target)
          {
-            case mButtonNewDesign:
-               ClearAllEntities ();
-               break;
-            case mButtonSaveWorld:
-               OpenWorldSavingDialog ();
-               break;
-            case mButtonLoadWorld:
-               OpenWorldLoadingDialog ();
-               break;
+            //case mButtonNewDesign:
+            //   ClearAllEntities ();
+            //   break;
+            //case mButtonSaveWorld:
+            //   OpenWorldSavingDialog ();
+            //   break;
+            //case mButtonLoadWorld:
+            //   OpenWorldLoadingDialog ();
+            //   break;
             
             case mButtonClone:
                CloneSelectedEntities ();
@@ -1493,9 +1493,9 @@ package editor {
       
       private var mMenuItemAbout:ContextMenuItem;
       
-      private var mMenuItemExportSelectedsToSystemMemory:ContextMenuItem;
-      private var mMenuItemImport:ContextMenuItem;
-      private var mMenuItemQuickLoad:ContextMenuItem;
+      //private var mMenuItemExportSelectedsToSystemMemory:ContextMenuItem;
+      //private var mMenuItemImport:ContextMenuItem;
+      //private var mMenuItemQuickLoad:ContextMenuItem;
       
       private function BuildContextMenu ():void
       {
@@ -1515,17 +1515,17 @@ package editor {
          //clipboardItems.selectAll = false;
             
          
-         mMenuItemExportSelectedsToSystemMemory = new ContextMenuItem ("Export Selected(s) to System Memory", true);
-         theContextMenu.customItems.push (mMenuItemExportSelectedsToSystemMemory);
-         mMenuItemExportSelectedsToSystemMemory.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         //mMenuItemExportSelectedsToSystemMemory = new ContextMenuItem ("Export Selected(s) to System Memory", true);
+         //theContextMenu.customItems.push (mMenuItemExportSelectedsToSystemMemory);
+         //mMenuItemExportSelectedsToSystemMemory.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         mMenuItemImport = new ContextMenuItem ("Import ...", false);
-         theContextMenu.customItems.push (mMenuItemImport);
-         mMenuItemImport.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         //mMenuItemImport = new ContextMenuItem ("Import ...", false);
+         //theContextMenu.customItems.push (mMenuItemImport);
+         //mMenuItemImport.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         mMenuItemQuickLoad = new ContextMenuItem ("Load Quick Save Data ...", false);
-         theContextMenu.customItems.push (mMenuItemQuickLoad);
-         mMenuItemQuickLoad.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         //mMenuItemQuickLoad = new ContextMenuItem ("Load Quick Save Data ...", false);
+         //theContextMenu.customItems.push (mMenuItemQuickLoad);
+         //mMenuItemQuickLoad.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
          var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
          var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
@@ -1539,15 +1539,15 @@ package editor {
       {
          switch (event.target)
          {
-            case mMenuItemExportSelectedsToSystemMemory:
-               ExportSelectedsToSystemMemory ();
-               break;
-            case mMenuItemImport:
-               OpenImportSourceCodeDialog ();
-               break;
-            case mMenuItemQuickLoad:
-               QuickLoad ();
-               break;
+            //case mMenuItemExportSelectedsToSystemMemory:
+            //   ExportSelectedsToSystemMemory ();
+            //   break;
+            //case mMenuItemImport:
+            //   OpenImportSourceCodeDialog ();
+            //   break;
+            //case mMenuItemQuickLoad:
+            //   QuickLoad ();
+            //   break;
             case mMenuItemAbout:
                OpenAboutLink ();
                break;
@@ -2355,7 +2355,7 @@ package editor {
       //   ShowWorldSettingDialog (values, SetWorldProperties);
       //}
       
-      private function OpenWorldSavingDialog ():void
+      public function OpenWorldSavingDialog ():void
       {
          if (! IsEditing ())
             return;
@@ -2381,7 +2381,7 @@ package editor {
          }
       }
       
-      private function OpenWorldLoadingDialog ():void
+      public function OpenWorldLoadingDialog ():void
       {
          if (! IsEditing ())
             return;
@@ -2419,7 +2419,7 @@ package editor {
       //   ShowPlayCodeLoadingDialog (LoadPlayerWorldFromHexString);
       //}
       
-      private function  OpenImportSourceCodeDialog ():void
+      public function  OpenImportSourceCodeDialog ():void
       {
          if (! IsEditing ())
             return;
@@ -4406,10 +4406,17 @@ package editor {
             else if (entity is SubEntityWeldAnchor)
             {
                var weld:EntityJointWeld = joint as EntityJointWeld;
+               
+               // 
+               weld.GetAnchor ().SetVisible (jointParams.mIsVisible);
             }
             else if (entity is SubEntityDummyAnchor)
             {
                var dummy:EntityJointDummy = joint as EntityJointDummy;
+               
+               // 
+               dummy.GetAnchor1 ().SetVisible (jointParams.mIsVisible);
+               dummy.GetAnchor2 ().SetVisible (jointParams.mIsVisible);
             }
             
             jointAnchor.GetMainEntity ().UpdateAppearance ();
@@ -4470,7 +4477,10 @@ package editor {
             utility.UpdateSelectionProxy ();
          }
          
-         CreateUndoPoint ("Entity preproties are changed");
+         if (entity != null)
+         {
+            CreateUndoPoint ("The properties of entity [" + entity.GetTypeName ().toLowerCase () + "] are changed", null, entity);
+         }
       }
       
       public function OnBatchModifyEntityCommonProperties (params:Object):void
@@ -4759,16 +4769,21 @@ package editor {
             SetEditorWorld (newWorld);
             
             mWorldHistoryManager.ClearHistories ();
-            CreateUndoPoint ("Local data is loaded");
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            
+            CreateUndoPoint ("Offline loading");
          }
          catch (error:Error)
          {
             SetEditorWorld (new editor.world.World ());
             
-            Alert.show("Sorry, loading error!", "Error");
+            //Alert.show("Sorry, loading error!", "Error");
             
             if (Compile::Is_Debugging)
                throw error;
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
          }
       }
       
@@ -4850,13 +4865,16 @@ package editor {
             
             System.setClipboard(DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (newWorld)));
             
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
          }
          catch (error:Error)
          {
-            Alert.show("Sorry, export  error!", "Error");
+            //Alert.show("Sorry, export  error!", "Error");
             
             if (Compile::Is_Debugging)
                throw error;
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
          }
          //finally // comment off for bug of secureSWF 
          {
@@ -4923,14 +4941,18 @@ package editor {
                MoveSelectedEntities (mViewCenterWorldX - centerX, mViewCenterWorldY - centerY, true, false);
             }
             
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            
             CreateUndoPoint ("Import");
          }
          catch (error:Error)
          {
-            Alert.show("Sorry, import error!", "Error");
+            //Alert.show("Sorry, import error!", "Error");
             
             if (Compile::Is_Debugging)
                throw error;
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
          }
       }
       
@@ -4983,7 +5005,7 @@ package editor {
 // undo / redo 
 //============================================================================
       
-      public function CreateUndoPoint (description:String, editActions:Array = null):void
+      public function CreateUndoPoint (description:String, editActions:Array = null, targetEntity:Entity = null):void
       {
          if (mEditorWorld == null)
             return;
@@ -5020,7 +5042,23 @@ package editor {
          
          mWorldHistoryManager.AddHistory (worldState);
          
-         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo point created.", EffectMessagePopup.kColorDesignChanged));
+         var msgX:Number;
+         var msgY:Number;
+         
+         if (targetEntity == null)
+         {
+            msgX =  mViewWidth * 0.5;
+            msgY = mViewHeight * 0.5;
+         }
+         else
+         {
+            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, mFloatingMessageLayer, new Point (targetEntity.GetLinkPointX (), targetEntity.GetLinkPointY ()));
+            
+            msgX = viewPoint.x;
+            msgY = viewPoint.y;
+         }
+         
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo point created (" + description + ")", msgX, msgY, EffectMessagePopup.kBgColor_General, true));
       }
       
       private function RestoreWorld (worldState:WorldState):void
@@ -5083,7 +5121,19 @@ package editor {
          
          var worldState:WorldState = mWorldHistoryManager.UndoHistory ();
          
+         if (worldState == null)
+         {
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No undo points available", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_General, true));
+            return;
+         }
+         
          RestoreWorld (worldState);
+         
+         worldState = worldState.GetNextWorldState ();
+         if (worldState != null) // should not
+         {
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo (" + worldState.GetDescription () + ")", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+         }
       }
       
       public function Redo ():void
@@ -5093,7 +5143,15 @@ package editor {
          
          var worldState:WorldState = mWorldHistoryManager.RedoHistory ();
          
+         if (worldState == null)
+         {
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No redo points available", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_General, true));
+            return;
+         }
+         
          RestoreWorld (worldState);
+         
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Redo (" + worldState.GetDescription () + ")", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
       }
       
       public var mUndoButtonContextMenu:ContextMenu = new ContextMenu ();
@@ -5148,13 +5206,17 @@ package editor {
                 //        break;
                 //}
             }
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
          }
          catch (error:Error)
          {
-            Alert.show("Sorry, quick saving error! " + error, "Error");
+            //Alert.show("Sorry, quick saving error! " + error, "Error");
             
             if (Compile::Is_Debugging)
                throw error;
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
          }
       }
       
@@ -5203,14 +5265,14 @@ package editor {
             
             CreateUndoPoint ("Quick save data is loaed");
             
-            Alert.show("Loading Scuessed!", "Scuessed");
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load Successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
          }
          catch (error:Error)
          {
-            Alert.show("Sorry, quick loading error!", "Error");
-            
             if (Compile::Is_Debugging)
                throw error;
+               
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
          }
       }
       
@@ -5296,15 +5358,26 @@ package editor {
          
          designDataAll.writeInt (Config.VersionNumber);
          
+         //>> from v1.07 (in fact, the code added in v0110 r003)
+         var shareSourceCode:Boolean = mEditorWorld.IsShareSourceCode ();
+         designDataAll.writeShort (600); // view width
+         designDataAll.writeShort (600); // view height
+         designDataAll.writeByte  (1); // show play bar?
+         designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
+         //<<
+         
          designDataAll.writeByte (isImportant ? 1 : 0);
          
          designDataAll.writeInt (designDataRevisionComment.length);
          designDataAll.writeInt (designDataForEditing.length);
-         designDataAll.writeInt (designDataForPlaying.length);
+         designDataAll.writeInt (shareSourceCode ? 0 : designDataForPlaying.length);
          
          designDataAll.writeBytes (designDataRevisionComment);
          designDataAll.writeBytes (designDataForEditing);
-         designDataAll.writeBytes (designDataForPlaying);
+         if (! shareSourceCode)
+         {
+            designDataAll.writeBytes (designDataForPlaying);
+         }
          
          //trace ("designDataForEditing.length = " + designDataForEditing.length)
          //trace ("designDataForPlaying.length = " + designDataForPlaying.length)
@@ -5349,16 +5422,24 @@ package editor {
             }
             
             if (returnCode == k_ReturnCode_Successed)
-               Alert.show("Saving Scuessed!", "Scuessed");
+            {
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save Successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            }
             else
-               Alert.show("Some errors in saving! returnCode = " + returnCode + ", returnMessage = " + returnMessage, "Error");
+            {
+               //Alert.show("Some errors in saving! returnCode = " + returnCode + ", returnMessage = " + returnMessage, "Error");
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save failed,  returnCode = " + returnCode + ", returnMessage = " + returnMessage, 
+                                               mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            }
          }
          catch (error:Error)
          {
-            Alert.show("Sorry, online saving error! " + loader.data + " " + error, "Error");
+            //Alert.show("Sorry, online saving error! " + loader.data + " " + error, "Error");
             
             if (Compile::Is_Debugging)
                throw error;
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
          }
       }
       
@@ -5427,20 +5508,26 @@ package editor {
                
                CreateUndoPoint ("Online data is loaded");
                
-               Alert.show("Loading Scuessed!", "Scuessed");
+               //Alert.show("Loading Scuessed!", "Scuessed");
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
             }
             else
-               Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
+            {
+               //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            }
          }
          catch (error:Error)
          {
             if (returnCode == k_ReturnCode_Successed)
                SetEditorWorld (new editor.world.World ());
             
-            Alert.show("Sorry, online loading error!", "Error");
+            //Alert.show("Sorry, online loading error!", "Error");
             
             if (Compile::Is_Debugging)
                throw error;
+            
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
          }
       }
    }

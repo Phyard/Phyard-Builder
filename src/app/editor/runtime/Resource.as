@@ -189,16 +189,60 @@ package editor.runtime {
       
    // keyboard icons
       
-      [Embed("../../res/keyboard/keyboard-wasd-space.png")]
-      public static var KeyboardSpaceAndWASD:Class;
+      [Embed("../../res/keyboard/keyboard.png")]
+      public static var Keyboard:Class;
       [Embed("../../res/keyboard/key-a-sel.png")]
       public static var KeyA:Class;
+      [Embed("../../res/keyboard/key-b-sel.png")]
+      public static var KeyB:Class;
+      [Embed("../../res/keyboard/key-c-sel.png")]
+      public static var KeyC:Class;
       [Embed("../../res/keyboard/key-d-sel.png")]
       public static var KeyD:Class;
+      [Embed("../../res/keyboard/key-e-sel.png")]
+      public static var KeyE:Class;
+      [Embed("../../res/keyboard/key-f-sel.png")]
+      public static var KeyF:Class;
+      [Embed("../../res/keyboard/key-g-sel.png")]
+      public static var KeyG:Class;
+      [Embed("../../res/keyboard/key-h-sel.png")]
+      public static var KeyH:Class;
+      [Embed("../../res/keyboard/key-i-sel.png")]
+      public static var KeyI:Class;
+      [Embed("../../res/keyboard/key-j-sel.png")]
+      public static var KeyJ:Class;
+      [Embed("../../res/keyboard/key-k-sel.png")]
+      public static var KeyK:Class;
+      [Embed("../../res/keyboard/key-l-sel.png")]
+      public static var KeyL:Class;
+      [Embed("../../res/keyboard/key-m-sel.png")]
+      public static var KeyM:Class;
+      [Embed("../../res/keyboard/key-n-sel.png")]
+      public static var KeyN:Class;
+      [Embed("../../res/keyboard/key-o-sel.png")]
+      public static var KeyO:Class;
+      [Embed("../../res/keyboard/key-p-sel.png")]
+      public static var KeyP:Class;
+      [Embed("../../res/keyboard/key-q-sel.png")]
+      public static var KeyQ:Class;
+      [Embed("../../res/keyboard/key-r-sel.png")]
+      public static var KeyR:Class;
       [Embed("../../res/keyboard/key-s-sel.png")]
       public static var KeyS:Class;
+      [Embed("../../res/keyboard/key-t-sel.png")]
+      public static var KeyT:Class;
+      [Embed("../../res/keyboard/key-u-sel.png")]
+      public static var KeyU:Class;
+      [Embed("../../res/keyboard/key-v-sel.png")]
+      public static var KeyV:Class;
       [Embed("../../res/keyboard/key-w-sel.png")]
       public static var KeyW:Class;
+      [Embed("../../res/keyboard/key-x-sel.png")]
+      public static var KeyX:Class;
+      [Embed("../../res/keyboard/key-y-sel.png")]
+      public static var KeyY:Class;
+      [Embed("../../res/keyboard/key-z-sel.png")]
+      public static var KeyZ:Class;
       [Embed("../../res/keyboard/key-up-sel.png")]
       public static var KeyUp:Class;
       [Embed("../../res/keyboard/key-down-sel.png")]

@@ -58,7 +58,7 @@ package editor.entity {
       
       public function GetDefaultName ():String
       {
-         return "Entity";
+         return GetTypeName ();
       }
       
       public function ToCodeString ():String

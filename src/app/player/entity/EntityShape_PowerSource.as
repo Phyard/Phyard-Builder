@@ -23,6 +23,7 @@ package player.entity {
    import common.trigger.define.FunctionCallingDefine;
    import common.trigger.define.ValueSourceDefine_Direct;
    
+   import common.KeyCodes;
    import common.Define;
    
    public class EntityShape_PowerSource extends EntityShape
@@ -144,7 +145,11 @@ package player.entity {
                {
                   mEventHandler = new EntityEventHandler_Keyboard (mWorld);
                   eventHandlerDefine.mEventId = entityDefine.mKeyboardEventId != undefined ? entityDefine.mKeyboardEventId : CoreEventIds.ID_OnWorldKeyHold;
-                  eventHandlerDefine.mKeyCodes = entityDefine.mKeyCodes;
+                  
+                  if (entityDefine.mKeyCodes.indexOf (KeyCodes.VirtualAnyKeys) < 0)
+                     eventHandlerDefine.mKeyCodes = entityDefine.mKeyCodes;
+                  else
+                     eventHandlerDefine.mKeyCodes = KeyCodes.GetAnyKeyCodes ();
                }
                else
                {

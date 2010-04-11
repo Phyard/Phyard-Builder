@@ -13,6 +13,7 @@ package player.trigger.entity
    
    import common.trigger.CoreEventIds;
    import common.trigger.CoreEventDeclarations;
+   import common.KeyCodes;
    
    public class EntityEventHandler_Keyboard extends EntityEventHandler
    {
@@ -33,7 +34,11 @@ package player.trigger.entity
          {
             if (entityDefine.mKeyCodes != undefined)
             {
-               mKeyCodes = entityDefine.mKeyCodes as Array;
+               if (entityDefine.mKeyCodes.indexOf (KeyCodes.VirtualAnyKeys) < 0)
+                  mKeyCodes = entityDefine.mKeyCodes;
+               else
+                  mKeyCodes = KeyCodes.GetAnyKeyCodes ();
+               
                mWorld.RegisterKeyboardEventHandler (this, mKeyCodes);
             }
          }

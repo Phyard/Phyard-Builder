@@ -148,7 +148,7 @@
          
          private function CopyCallings (ids:Array):void
          {
-            var copiedCallings:Array = GetFunctionCallings (ids);
+            var copiedCallings:Array = GetFunctionCallings (ids, false);
             if (copiedCallings.length == 0)
             {
                Runtime.mCopiedCodeSnippet = null;
@@ -205,7 +205,7 @@
          
          private function OnSwitchCodeFormat ():void
          {
-            RetrieveCurrentCommandValueSourcesFromControls ();
+            RetrieveCurrentCommandValueSourcesFromControls (false);
             
             Runtime.mPoemCodingFormat = Button_CodeFormatSwitch.selected;
             if (Button_CodeFormatSwitch.selected)
@@ -241,7 +241,7 @@
          
          public function GetCommandListDefinition ():Array
          {
-            return GetFunctionCallings ();
+            return GetFunctionCallings (null, true);
          }
          
          private function Initialize ():void
@@ -329,9 +329,9 @@
             UpdateInterface ();
          }
          
-         public function GetFunctionCallings (callingIds:Array = null):Array
+         public function GetFunctionCallings (callingIds:Array = null, clearContextMenus:Boolean = false):Array
          {
-            RetrieveCurrentCommandValueSourcesFromControls ();
+            RetrieveCurrentCommandValueSourcesFromControls (clearContextMenus);
             
             var func_calling_list:Array = new Array ();
             
@@ -527,7 +527,7 @@
          
          private function OnCurrentCommandChanged ():void
          {
-            RetrieveCurrentCommandValueSourcesFromControls ();
+            RetrieveCurrentCommandValueSourcesFromControls (true);
             mCurrentEditingItem = null;
             
             while (Box_ParamsAndReturns.numChildren > 0)
@@ -751,7 +751,7 @@
             return value_control;
          }
          
-         private function RetrieveCurrentCommandValueSourcesFromControls ():void
+         private function RetrieveCurrentCommandValueSourcesFromControls (clearContextMenus:Boolean):void
          {
             if (mCurrentEditingItem == null)
                return;
@@ -790,6 +790,11 @@
                {
                   trace ("? unknow source type");
                }
+               
+               if (clearContextMenus)
+               {
+                  ClearCustomContextMenus (source_control, true);
+               }
             }
             
             var value_target:ValueTarget;
@@ -807,6 +812,11 @@
                   variable_def.RetrieveVariableValueTargetFromControl (value_target as ValueTarget_Variable, target_control);
                else
                   trace ("? unknow target type");
+               
+               if (clearContextMenus)
+               {
+                  ClearCustomContextMenus (target_control, true);
+               }
             }
             
             var codeLine:String = func_declaration.CreateFormattedCallingText (currentValueSources, currentReturnTargets);
@@ -828,6 +838,20 @@
             if (selectedListener != null)
                menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
             sprite.contextMenu.customItems.push (menuItem);
+         }
+         
+         private function ClearCustomContextMenus (sprite:InteractiveObject, alsoSetNull:Boolean):void
+         {
+            if (sprite.contextMenu == null)
+               return;
+            
+            sprite.contextMenu.customItems.splice (0, sprite.contextMenu.customItems.length);
+            sprite.contextMenu.customItems = null;
+            
+            if (alsoSetNull)
+            {
+               sprite.contextMenu = null;
+            }
          }
          
    //================================================================================================

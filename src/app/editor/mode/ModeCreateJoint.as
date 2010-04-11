@@ -123,9 +123,9 @@ package editor.mode {
             anchor2.UpdateSelectionProxy ();
          }
          
-         ResetSession (false);
+         mMainView.CreateUndoPoint ("New " + mEntityJoint.GetTypeName ().toLowerCase (), null, mEntityJoint);
          
-         mMainView.CreateUndoPoint ("New joint");
+         ResetSession (false);
          
          mMainView.CalSelectedEntitiesCenterPoint ();
          mMainView.SetCurrentCreateMode (null);

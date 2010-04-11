@@ -285,6 +285,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetInertia,                     GetShapeInertia);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                     GetShapeDensity);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,                        SetShapeLinearVelocity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetLinearVelocity,                        GetShapeLinearVelocity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,       AddLinearImpulseByVelocityVector);
          
@@ -1473,16 +1474,13 @@ package player.trigger {
          valueSource = valueSource.mNextValueSourceInList;
          var script2:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
          
-      trace ("condtion = " + condtion);
          if (condtion)
          {
-      trace ("script1 = " + script1);
             if (script1 != null)
                script1.RunScript ();
          }
          else
          {
-      trace ("script2 = " + script2);
             if (script2 != null)
                script2.RunScript ();
          }

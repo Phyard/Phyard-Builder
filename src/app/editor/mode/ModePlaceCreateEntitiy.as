@@ -99,11 +99,12 @@ package editor.mode {
             mEntityCreateFunction (mEntityCreateOptions);
          }
          
+         mMainView.CreateUndoPoint ("Create new " + mEntity.GetTypeName ().toLowerCase ());
+         
          ResetSession (false);
          
          mMainView.CalSelectedEntitiesCenterPoint ();
          
-         mMainView.CreateUndoPoint ("Create new entity");
          mMainView.SetCurrentCreateMode (null);
       }
       

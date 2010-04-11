@@ -23,6 +23,8 @@
    </mx:HBox>
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
+      <mx:CheckBox id="CheckBox_AnyKeys" label="Any Keys"/>
+      <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_MouseButton" label="Left Mouse Button"/>
       <mx:Spacer width="100%"/>
    </mx:HBox>
@@ -53,6 +55,7 @@
             
             KeyboardPanel.selectedKeyCodes = initialValues.mKeyCodes;
             CheckBox_MouseButton.selected = initialValues.mKeyCodes.indexOf (KeyCodes.LeftMouseButton) >= 0;
+            CheckBox_AnyKeys.selected = initialValues.mKeyCodes.indexOf (KeyCodes.VirtualAnyKeys) >= 0;
             
             switch (initialValues.mEventId)
             {
@@ -83,6 +86,11 @@
             if (CheckBox_MouseButton.selected)
             {
                 mParams.mKeyCodes.push (KeyCodes.LeftMouseButton);
+            }
+            
+            if (CheckBox_AnyKeys.selected)
+            {
+               mParams.mKeyCodes.push (KeyCodes.VirtualAnyKeys);
             }
          }
          

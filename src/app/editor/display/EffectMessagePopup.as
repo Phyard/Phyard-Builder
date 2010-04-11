@@ -11,12 +11,15 @@ package editor.display {
    
    public class EffectMessagePopup extends EditingEffect 
    {
+      
+      public static const kBgColor_General:uint = 0xFFFFC0;
+      public static const kBgColor_OK:uint = 0xC0FFC0;
+      public static const kBgColor_Error:uint = 0xFFC0C0;
+      
       //
       public static const kMessageBoxHeightInterval:Number = 26.0;
       public static const kDeltaFadeAlpha:Number = 0.006;
       public static const kToppestY:Number = 3.0;
-      
-      public static const kColorDesignChanged:uint = 0xFFDDDD;
       
 //======================================================
 //
@@ -38,16 +41,16 @@ package editor.display {
             effect = sEffectMessages [i] as EffectMessagePopup;
             if (effect != null)
             {
-               if (effect.y > finalY)
+               if (effect.mTargetY > finalY)
                {
-                  effect.y -= 2;
-                  if (effect.y < finalY)
+                  effect.mTargetY -= 2;
+                  if (effect.mTargetY < finalY)
                   {
-                     effect.y = finalY;
+                     effect.mTargetY = finalY;
                   }
                }
                
-               finalY = effect.y + kMessageBoxHeightInterval;
+               finalY = effect.mTargetY + kMessageBoxHeightInterval;
             }
          }
       }
@@ -56,10 +59,13 @@ package editor.display {
 //
 //======================================================
       
-      public function EffectMessagePopup (text:String, bgColor:uint, textColor:uint = 0x0):void
+      internal var mTargetX:Number;
+      internal var mTargetY:Number;
+      
+      public function EffectMessagePopup (text:String, initX:Number, initY:Number, bgColor:uint, yIsCenter:Boolean = true, textColor:uint = 0x0):void
       {
          // creating a bitmap instead of text filed os for the alpha of text field is unchangeable.
-         var textBitemp:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (TextFieldEx.CreateTextField (text, true, bgColor, textColor, false, 0, false, false))
+         var textBitemp:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (TextFieldEx.CreateTextField (text, true, bgColor, textColor, false, 0, false, false));
          GraphicsUtil.ClearAndDrawRect (this, 0, 0, textBitemp.width + 1, textBitemp.height + 1, 0, 1, true, bgColor);
          addChild (textBitemp);
          textBitemp.x = 1;
@@ -85,12 +91,39 @@ package editor.display {
             sEffectMessages [i] = this;
          }
          
-         x = 3;
-         y = (i == 0) ? kToppestY : (sEffectMessages [i - 1] as EffectMessagePopup).y + kMessageBoxHeightInterval;
+         mTargetX = 3;
+         mTargetY = (i == 0) ? kToppestY : (sEffectMessages [i - 1] as EffectMessagePopup).mTargetY + kMessageBoxHeightInterval;
+         
+         x = initX - 0.5 * textBitemp.width;
+         y = initY;
+         if (yIsCenter)
+         {
+            y -= 0.5 * textBitemp.height;
+         }
       }
       
       override public function Update ():void
       {
+         if (alpha < 1.0)
+         {
+            var dx:Number = mTargetX - x;
+            var dy:Number = mTargetY - y;
+            var length:Number = Math.sqrt (dx * dx + dy * dy);
+            
+            var speed:Number = 32;
+            
+            if (length < speed)
+            {
+               x = mTargetX;
+               y = mTargetY;
+            }
+            else
+            {
+               x += dx * speed / length;
+               y += dy * speed / length;
+            }
+         }
+         
          alpha -= kDeltaFadeAlpha;
          if (alpha <= 0.0 )
          {

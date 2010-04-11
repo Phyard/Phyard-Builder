@@ -1,6 +1,8 @@
 
 package common {
    
+   import flash.ui.Keyboard;
+   
    public class KeyCodes
    {
       public static const Key_A:int = 65;
@@ -57,8 +59,43 @@ package common {
      
       // mouse
       public static const LeftMouseButton:int = 256;
+      public static const VirtualAnyKeys:int = 257;
       
       //
-      public static const kNumKeys:int = 257;
+      public static const kNumKeys:int = 258;
+      
+      //
+      private static var sAnyKeyCodes:Array = null;
+      public static function GetAnyKeyCodes ():Array
+      {
+         if (sAnyKeyCodes == null)
+         {
+            sAnyKeyCodes = new Array ();
+            
+            var key:int;
+            for (key = Keyboard.SPACE; key <= Keyboard.DOWN; ++ key) // 32 - 40
+               sAnyKeyCodes.push (key);
+            for (key = Key_0; key <= Key_9; ++ key) // 48 - 57
+               sAnyKeyCodes.push (key);
+            for (key = Key_A; key <= Key_Z; ++ key) // 65 - 90
+               sAnyKeyCodes.push (key);
+            for (key = Keyboard.NUMPAD_0; key <= Keyboard.NUMPAD_DIVIDE; ++ key) // 96 - 111
+               sAnyKeyCodes.push (key);
+            for (key = Keyboard.F1; key <= Keyboard.F12; ++ key) // 112 - 123
+               sAnyKeyCodes.push (key);
+            
+            sAnyKeyCodes.push (Keyboard.BACKSPACE); // 8
+            sAnyKeyCodes.push (Keyboard.TAB); // 9
+            sAnyKeyCodes.push (Keyboard.ENTER); // 13
+            sAnyKeyCodes.push (Keyboard.SHIFT); // 16
+            sAnyKeyCodes.push (Keyboard.CONTROL); // 17
+            sAnyKeyCodes.push (Keyboard.CAPS_LOCK); // 20
+            sAnyKeyCodes.push (Keyboard.ESCAPE); // 27
+            sAnyKeyCodes.push (Keyboard.INSERT); // 45
+            sAnyKeyCodes.push (Keyboard.DELETE); // 46
+         }
+         
+         return sAnyKeyCodes;
+      }
    }
 }

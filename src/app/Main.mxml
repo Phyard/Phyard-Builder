@@ -17,8 +17,8 @@
 
       <mx:HBox id="Box_DesignCommands" backgroundColor="0xA0A0A0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
          <mx:Spacer width="2"/>
-         <mx:Button id="Button_OpenDesign" toolTip="Open Design" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-open.png')" />
-         <mx:Button id="Button_SaveDesign" toolTip="Save Design" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-save.png')" />
+         <mx:Button id="Button_OpenDesign" toolTip="Open Design" click="OnClicLoadDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-open.png')" />
+         <mx:Button id="Button_SaveDesign" toolTip="Save Design" click="OnClicSaveDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-save.png')" />
          <mx:Button id="Button_DesignInfo" toolTip="Design Info" click="ShowDesignInfoSettingDialog ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-info.png')" />
       </mx:HBox>
       <mx:ViewStack id="ViewStack_ViewEditCommands" borderStyle="none" creationPolicy="all" width="100%">
@@ -26,7 +26,7 @@
             <mx:Spacer width="100%"/>
             <mx:HBox id="Box_EntityEditViewCommands_1" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="1" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
                <mx:Spacer width="5"/>
-               <mx:Button id="Button_NewDesign" toolTip="New Design" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-new.png')" />
+               <mx:Button id="Button_NewDesign" toolTip="New Design" click="OnClickNewDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-new.png')" />
                <mx:Button id="Button_ConfigDesign" toolTip="Config Design" click="OnClickConfigDesignButton ();" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/file/design-config.png')" />
                <mx:Spacer width="10"/>
                <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-clone.png')" disabledIcon="@Embed('res/command/command-clone-disabled.png')" />
@@ -36,7 +36,7 @@
                <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top Layer" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-to-top.png')" disabledIcon="@Embed('res/command/command-to-top-disabled.png')" />
                <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom Layer" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-to-bottom.png')" disabledIcon="@Embed('res/command/command-to-bottom-disabled.png')" />
                <mx:Spacer width="10"/>
-               <mx:Button id="Button_Glue" toolTip="Make Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-make.png')" disabledIcon="@Embed('res/command/command-brothers-make-disabled.png')" />
+               <mx:Button id="Button_Glue" toolTip="Become Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-make.png')" disabledIcon="@Embed('res/command/command-brothers-make-disabled.png')" />
                <mx:Button id="Button_BreakApart" toolTip="Break Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-break.png')" disabledIcon="@Embed('res/command/command-brothers-break-disabled.png')" />
                <mx:Spacer width="10"/>
                <mx:Button id="Button_Setting" label="Setting..." toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/command/command-setting.png')" disabledIcon="@Embed('res/command/command-setting-disabled.png')" />
@@ -460,6 +460,33 @@
       </root>
    </mx:XML>
 
+   <mx:XML id="NewDesignMenuData">
+      <root>
+         <menuitem label="Clear All Entities" data="clear_all"/>
+         <menuitem label="Clear All Entities and Reset Scene" data="clear_all_and_reset"/>
+      </root>
+   </mx:XML>
+
+   <mx:XML id="SaveDesignMenuData">
+      <root>
+         <menuitem label="Save Online ..." data="save_online"/>
+         <menuitem label="Save Offline ..." data="save_offline"/>
+         <!--menuitem label="Save Local ..." data="save_local"/-->
+         <menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/>
+         <menuitem label="Export Selected(s) to System Clipborad" data="export_selecteds"/>
+      </root>
+   </mx:XML>
+
+   <mx:XML id="LoadDesignMenuData">
+      <root>
+         <menuitem label="Load Online ..." data="load_online"/>
+         <menuitem label="Load Offline (xml) ..." data="load_offline"/>
+         <!--menuitem label="Save Local ..." data="save_local"/-->
+         <menuitem label="Quick Load" data="load_cookie"/>
+         <menuitem label="Import from System Clipborad ..." data="import"/>
+      </root>
+   </mx:XML>
+
    <mx:Script>
         <![CDATA[
             
@@ -484,41 +511,6 @@
             import editor.trigger.Lists;
             import common.Define;
             import common.ValueAdjuster;
-            
-            private var mConfigDesignMenu:Menu = null;
-            private function OnClickConfigDesignButton ():void
-            {
-               if (mConfigDesignMenu == null)
-               {
-                  mConfigDesignMenu = Menu.createMenu(Button_ConfigDesign, ConfigDesignMenuData, false);
-                  mConfigDesignMenu.labelField="@label";
-                  mConfigDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedConfigDesignMemu);
-               }
-               
-               var point:Point = Button_ConfigDesign.localToGlobal (new Point (0, Button_ConfigDesign.height));
-               
-               mConfigDesignMenu.show(point.x, point.y);
-            }
-            
-            private function OnSelectedConfigDesignMemu (event:MenuEvent):void
-            {
-               if (event.item.@data == "rules")
-               {
-                  ShowLevelRulesEditDialog ();
-               }
-               else if (event.item.@data == "coordinate")
-               {
-                  ShowCoordinateSystemEditDialog ();
-               }
-               else if (event.item.@data == "gravity")
-               {
-                  ShowWorldGravityEditDialog ();
-               }
-               else if (event.item.@data == "appearance")
-               {
-                  ShowWorldAppearanceEditDialog ();
-               }
-            }
             
             private function DesignNotSaved ():Boolean
             {
@@ -756,8 +748,8 @@
                MainView.mButtonMouseScale = Button_MouseScale;
                
                MainView.mButtonNewDesign = Button_NewDesign;
-               MainView.mButtonSaveWorld = Button_SaveDesign;
-               MainView.mButtonLoadWorld = Button_OpenDesign;
+               //MainView.mButtonSaveWorld = Button_SaveDesign;
+               //MainView.mButtonLoadWorld = Button_OpenDesign;
                
                MainView.mButtonShowEntityIds = CheckBox_ShowEntityIDs;
                MainView.mButtonShowLinks = CheckBox_ShowLinks;
@@ -788,9 +780,8 @@
                Button_MouseRotate.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                Button_MouseScale.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                
-               Button_NewDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_SaveDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
-               Button_OpenDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               //Button_SaveDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
+               //Button_OpenDesign.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                
                CheckBox_ShowEntityIDs.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
                CheckBox_ShowLinks.addEventListener (MouseEvent.CLICK, MainView.OnEditButtonClick);
@@ -875,12 +866,12 @@
                
             //===================================================================================================
                
-               DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities", ClearAllEntities);
-               DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities and Reset Scene", ClearAllEntitiesAndResetScene);
+               //DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities", ClearAllEntities);
+               //DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities and Reset Scene", ClearAllEntitiesAndResetScene);
                
-               DisplayObjectUtil.AppendContextMenuItem (Button_OpenDesign, "Load Lastest Version Online ...", OnLoadSourceCodeOnline);
+               //DisplayObjectUtil.AppendContextMenuItem (Button_OpenDesign, "Load Lastest Version Online ...", OnLoadSourceCodeOnline);
                
-               DisplayObjectUtil.AppendContextMenuItem (Button_SaveDesign, "Save Online ...", ShowWorldOnlineSavingDialog);
+               //DisplayObjectUtil.AppendContextMenuItem (Button_SaveDesign, "Save Online ...", ShowWorldOnlineSavingDialog);
                
             //===================================================================================================
                
@@ -942,8 +933,148 @@
             }
             
 //========================================================================================
-// initial properties
+// drop menus
 //========================================================================================
+            
+            private var mConfigDesignMenu:Menu = null;
+            private function OnClickConfigDesignButton ():void
+            {
+               if (mConfigDesignMenu == null)
+               {
+                  mConfigDesignMenu = Menu.createMenu(Button_ConfigDesign, ConfigDesignMenuData, false);
+                  mConfigDesignMenu.labelField="@label";
+                  mConfigDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedConfigDesignMemu);
+               }
+               
+               var point:Point = Button_ConfigDesign.localToGlobal (new Point (0, Button_ConfigDesign.height));
+               
+               mConfigDesignMenu.show(point.x, point.y);
+            }
+            
+            private function OnSelectedConfigDesignMemu (event:MenuEvent):void
+            {
+               if (event.item.@data == "rules")
+               {
+                  ShowLevelRulesEditDialog ();
+               }
+               else if (event.item.@data == "coordinate")
+               {
+                  ShowCoordinateSystemEditDialog ();
+               }
+               else if (event.item.@data == "gravity")
+               {
+                  ShowWorldGravityEditDialog ();
+               }
+               else if (event.item.@data == "appearance")
+               {
+                  ShowWorldAppearanceEditDialog ();
+               }
+            }
+            
+            private var mNewDesignMenu:Menu = null;
+            private function OnClickNewDesignButton ():void
+            {
+               if (mNewDesignMenu == null)
+               {
+                  mNewDesignMenu = Menu.createMenu(Button_NewDesign, NewDesignMenuData, false);
+                  mNewDesignMenu.labelField="@label";
+                  mNewDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedNewDesignMemu);
+               }
+               
+               var point:Point = Button_NewDesign.localToGlobal (new Point (0, Button_NewDesign.height));
+               
+               mNewDesignMenu.show(point.x, point.y);
+            }
+            
+            private function OnSelectedNewDesignMemu (event:MenuEvent):void
+            {
+               if (event.item.@data == "clear_all")
+               {
+                  MainView.ClearAllEntities (true, false);
+               }
+               else if (event.item.@data == "clear_all_and_reset")
+               {
+                  MainView.ClearAllEntities (true, true);
+               }
+            }
+            
+            private var mSaveDesignMenu:Menu = null;
+            private function OnClicSaveDesignButton ():void
+            {
+               if (mSaveDesignMenu == null)
+               {
+                  mSaveDesignMenu = Menu.createMenu(Button_SaveDesign, SaveDesignMenuData, false);
+                  mSaveDesignMenu.labelField="@label";
+                  mSaveDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedSaveDesignMemu);
+               }
+               
+               var point:Point = Button_SaveDesign.localToGlobal (new Point (0, Button_SaveDesign.height));
+               
+               mSaveDesignMenu.show(point.x, point.y);
+            }
+            
+            private function OnSelectedSaveDesignMemu (event:MenuEvent):void
+            {
+               if (event.item.@data == "save_online")
+               {
+                  ShowWorldOnlineSavingDialog ();
+               }
+               else if (event.item.@data == "save_offline")
+               {
+                  MainView.OpenWorldSavingDialog ();
+               }
+               else if (event.item.@data == "save_local")
+               {
+               }
+               else if (event.item.@data == "save_cookie")
+               {
+                  MainView.QuickSave ();
+               }
+               else if (event.item.@data  == "export_selecteds")
+               {
+                  MainView.ExportSelectedsToSystemMemory ();
+               }
+            }
+            
+            private var mLoadDesignMenu:Menu = null;
+            private function OnClicLoadDesignButton ():void
+            {
+               if (mLoadDesignMenu == null)
+               {
+                  mLoadDesignMenu = Menu.createMenu(Button_OpenDesign, LoadDesignMenuData, false);
+                  mLoadDesignMenu.labelField="@label";
+                  mLoadDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedLoadDesignMemu);
+               }
+               
+               var point:Point = Button_OpenDesign.localToGlobal (new Point (0, Button_OpenDesign.height));
+               
+               mLoadDesignMenu.show(point.x, point.y);
+            }
+            
+            private function OnSelectedLoadDesignMemu (event:MenuEvent):void
+            {
+               if (event.item.@data == "load_online")
+               {
+                  MainView.OnlineLoad ();
+               }
+               else if (event.item.@data == "load_offline")
+               {
+                  MainView.OpenWorldLoadingDialog ();
+               }
+               else if (event.item.@data == "load_local")
+               {
+               }
+               else if (event.item.@data == "load_cookie")
+               {
+                  MainView.QuickLoad ();
+               }
+               else if (event.item.@data  == "import")
+               {
+                  MainView.OpenImportSourceCodeDialog ();
+               }
+            }
+            
+             
             
 //========================================================================================
 // play / stop
@@ -1799,7 +1930,7 @@
                MainView.MoveWorldScene (params.mOffsetX, params.mOffsetY);
             }
             
-            private function ShowWorldOnlineSavingDialog (event:ContextMenuEvent):void
+            private function ShowWorldOnlineSavingDialog (/*event:ContextMenuEvent*/):void
             {
                Runtime.SetHasSettingDialogOpened (true);
                
@@ -1815,20 +1946,20 @@
             //   MainView.OnlineSave ();
             //}
             
-            private function OnLoadSourceCodeOnline (event:ContextMenuEvent):void
-            {
-               MainView.OnlineLoad ();
-            }
+            //private function OnLoadSourceCodeOnline (event:ContextMenuEvent):void
+            //{
+            //   MainView.OnlineLoad ();
+            //}
             
-            private function ClearAllEntities (event:ContextMenuEvent):void
-            {
-               MainView.ClearAllEntities (true, false);
-            }
-            
-            private function ClearAllEntitiesAndResetScene (event:ContextMenuEvent):void
-            {
-               MainView.ClearAllEntities (true, true);
-            }
+            //private function ClearAllEntities (event:ContextMenuEvent):void
+            //{
+            //   MainView.ClearAllEntities (true, false);
+            //}
+            //
+            //private function ClearAllEntitiesAndResetScene (event:ContextMenuEvent):void
+            //{
+            //   MainView.ClearAllEntities (true, true);
+            //}
             
 //========================================================================================
 // 

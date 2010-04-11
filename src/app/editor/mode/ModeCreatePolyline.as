@@ -174,7 +174,7 @@ package editor.mode {
          mPolylineEntity.UpdateAppearance ();
          mPolylineEntity.UpdateSelectionProxy ();
          
-         mMainView.CreateUndoPoint ("New polyline");
+         mMainView.CreateUndoPoint ("New polyline", null, mPolylineEntity);
          
          ResetSession (false);
          

@@ -102,8 +102,8 @@ package wrapper {
          addChild (mWorldLayer);
          //addChild (mBottomBarLayer);
          addChild (mTopBarLayer);
-         addChild (mBorderLineBarLayer);
          addChild (mErrorMessageLayer);
+         addChild (mBorderLineBarLayer);
          addChild (mFinishedTextLayer);
          addChild (mDialogLayer);
          
@@ -349,6 +349,11 @@ package wrapper {
                      // write log of send message to server
                      
                      ChangeState (StateId_RunningError);
+                  }
+                  
+                  if (Compile::Is_Debugging)
+                  {
+                     throw error;
                   }
                }
                

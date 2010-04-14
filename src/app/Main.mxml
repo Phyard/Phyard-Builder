@@ -467,27 +467,7 @@
       </root>
    </mx:XML>
 
-   <mx:XML id="SaveDesignMenuData">
-      <root>
-         <menuitem label="Save Online ..." data="save_online"/>
-         <menuitem label="Save Offline ..." data="save_offline"/>
-         <!--menuitem label="Save Local ..." data="save_local"/-->
-         <menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/>
-         <menuitem label="Export Selected(s) to System Clipborad" data="export_selecteds"/>
-      </root>
-   </mx:XML>
-
-   <mx:XML id="LoadDesignMenuData">
-      <root>
-         <menuitem label="Load Online ..." data="load_online"/>
-         <menuitem label="Load Offline (xml) ..." data="load_offline"/>
-         <!--menuitem label="Save Local ..." data="save_local"/-->
-         <menuitem label="Quick Load" data="load_cookie"/>
-         <menuitem label="Import from System Clipborad ..." data="import"/>
-      </root>
-   </mx:XML>
-
-   <mx:Script>
+  <mx:Script>
         <![CDATA[
             
             import flash.display.InteractiveObject;
@@ -1003,7 +983,17 @@
             {
                if (mSaveDesignMenu == null)
                {
-                  mSaveDesignMenu = Menu.createMenu(Button_SaveDesign, SaveDesignMenuData, false);
+                  var xml:XML = <SaveDesignMenuData />;
+                  if (MainView.IsOnlineEditing ())
+                  {
+                     xml.appendChild (<menuitem label="Save Online ..." data="save_online"/>);
+                  }
+                  xml.appendChild (<menuitem label="Save Offline (xml) ..." data="save_offline"/>);
+                  //xml.appendChild (<menuitem label="Save Local ..." data="save_local"/>);
+                  xml.appendChild (<menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/>);
+                  xml.appendChild (<menuitem label="Export Selected(s) to System Clipborad" data="export_selecteds"/>);
+                  
+                  mSaveDesignMenu = Menu.createMenu(Button_SaveDesign, xml, false);
                   mSaveDesignMenu.labelField="@label";
                   mSaveDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedSaveDesignMemu);
                }
@@ -1041,7 +1031,17 @@
             {
                if (mLoadDesignMenu == null)
                {
-                  mLoadDesignMenu = Menu.createMenu(Button_OpenDesign, LoadDesignMenuData, false);
+                  var xml:XML = <SaveDesignMenuData />;
+                  if (MainView.IsOnlineEditing ())
+                  {
+                     xml.appendChild (<menuitem label="Load Online ..." data="load_online"/>);
+                  }
+                  xml.appendChild (<menuitem label="Load Offline (xml) ..." data="load_offline"/>);
+                  //xml.appendChild (<menuitem label="Load Local ..." data="load_local"/>);
+                  xml.appendChild (<menuitem label="Quick Load" data="load_cookie"/>);
+                  xml.appendChild (<menuitem label="Import from System Clipborad ..." data="import"/>);
+                  
+                  mLoadDesignMenu = Menu.createMenu(Button_OpenDesign, xml, false);
                   mLoadDesignMenu.labelField="@label";
                   mLoadDesignMenu.addEventListener(MenuEvent.ITEM_CLICK, OnSelectedLoadDesignMemu);
                }

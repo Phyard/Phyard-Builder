@@ -49,6 +49,9 @@ package player.physics {
          mContactFilter = new _ContactFilter ();
          _b2World.SetContactFilter (mContactFilter);
          
+         //_b2World.SetContactPreSolveListener (new _ContactPreSolveListener ());
+         //_b2World.SetContactPostSolveListener (new _ContactPostSolveListener ());
+         
          b2World.SetCustomJointCreateAndDestroyFunction (_JointFactory.Create, _JointFactory.Destroy);
       }
       

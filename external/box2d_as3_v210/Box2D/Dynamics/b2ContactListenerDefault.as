@@ -31,7 +31,7 @@ package Box2D.Dynamics
 		/// Note: if you set the number of contact points to zero, you will not
 		/// get an EndContact callback. However, you may get a BeginContact callback
 		/// the next step.
-		public function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void {};
+		//public function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void {};
 
 		/// This lets you inspect a contact after the solver is finished. This is useful
 		/// for inspecting impulses.
@@ -39,7 +39,7 @@ package Box2D.Dynamics
 		/// arbitrarily large if the sub-step is small. Hence the impulse is provided explicitly
 		/// in a separate data structure.
 		/// Note: this is only called for contacts that are touching, solid, and awake.
-		public function PostSolve(contact:b2Contact, impulseb:b2ContactImpulse):void {};
+		//public function PostSolve(contact:b2Contact, impulseb:b2ContactImpulse):void {};
 			
 	} // class
 } // package

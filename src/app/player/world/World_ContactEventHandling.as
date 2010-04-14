@@ -102,11 +102,11 @@ private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxySha
       return;
    
    var id1:int = shape1.GetCreationId ();
-   if (id1 < 0 || id1 > 0x7F)
+   if (id1 < 0 || id1 > 0x7FFF)
       return;
    
    var id2:int = shape2.GetCreationId ();
-   if (id2 < 0 || id2 > 0x7F)
+   if (id2 < 0 || id2 > 0x7FFF)
       return;
    
    var contact_id:int = id1 > id2 ? (id2 << 16) | (id1) : (id1 << 16) | (id2);

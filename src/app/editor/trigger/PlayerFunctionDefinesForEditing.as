@@ -1134,7 +1134,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Source Entity"), 
                      ],
                      [
-                             new VariableDefinitionEntity ("Terget"), 
+                             new VariableDefinitionEntity ("Target"), 
                      ]
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign, entity_general_package, "?= (Condition Assign Entity)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",

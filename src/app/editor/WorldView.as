@@ -318,8 +318,15 @@ package editor {
       }
       
 //============================================================================
-//   stage event
+//   online save . load
 //============================================================================
+      
+      private var mIsOnlineEditing:Boolean = false;
+      
+      public function IsOnlineEditing ():Boolean
+      {
+         return mIsOnlineEditing;
+      }
       
       private function OnAddedToStage (event:Event):void 
       {
@@ -345,7 +352,7 @@ package editor {
          //mAnalytics.TrackPageview (Config.VirtualPageName_EditorJustLoaded);
          
          //
-         OnlineLoad (true);
+         mIsOnlineEditing = OnlineLoad (true);
       }
       
       private var mContentMaskSprite:Shape = null;
@@ -5443,7 +5450,8 @@ package editor {
          }
       }
       
-      public function OnlineLoad (isFirstTime:Boolean = false):void
+      // return: online or not
+      public function OnlineLoad (isFirstTime:Boolean = false):Boolean
       {
          var params:Object = GetFlashParams ();
          
@@ -5451,10 +5459,10 @@ package editor {
          //trace ("params.mSlotID = " + params.mSlotID)
          
          if (params.mRootUrl == null || params.mAction == null || params.mAuthorName == null || params.mSlotID == null || params.mRevisionID == null)
-            return;
+            return false;
          
          if (isFirstTime && params.mAction == "create")
-            return;
+            return true;
          
          var designLoadUrl:String = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/revision/" + params.mRevisionID + "/loadsc";
          var request:URLRequest = new URLRequest (designLoadUrl);
@@ -5468,6 +5476,8 @@ package editor {
          loader.addEventListener(Event.COMPLETE, OnOnlineLoadCompleted);
          
          loader.load ( request );
+         
+         return true;
       }
       
       private function OnOnlineLoadCompleted(event:Event):void 

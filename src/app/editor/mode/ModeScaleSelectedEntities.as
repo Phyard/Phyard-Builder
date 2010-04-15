@@ -57,10 +57,13 @@ package editor.mode {
          var distance1:Number = Math.sqrt (dy1 * dy1 + dx1 * dx1);
          var distance2:Number = Math.sqrt (dy2 * dy2 + dx2 * dx2);
          
-         mStartX = endX;
-         mStartY = endY;
-         
-         mMainView.ScaleSelectedEntities (distance2 / distance1, updateSelectionProxy);
+         if (distance1 > Number.MIN_VALUE && distance2 > Number.MIN_VALUE)
+         {
+            mStartX = endX;
+            mStartY = endY;
+            
+            mMainView.ScaleSelectedEntities (distance2 / distance1, updateSelectionProxy);
+         }
       }
       
       protected function FinishSession (endX:Number, endY:Number):void

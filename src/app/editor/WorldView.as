@@ -665,10 +665,22 @@ package editor {
             return;
          }
          
-         var typeName:String = mLastSelectedEntity.GetMainEntity ().GetTypeName ();
-         var infoText:String = mLastSelectedEntity.GetMainEntity ().GetInfoText ();
+         var mainEntity:Entity = mLastSelectedEntity.GetMainEntity ();
+         var typeName:String = mLastSelectedEntity.GetTypeName ();
+         var infoText:String = mLastSelectedEntity.GetInfoText ();
          
-         StatusBar_SetMainSelectedEntityInfo ("<b>&lt;" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity.GetMainEntity ()) + "&gt; " + typeName + "</b>: " + infoText);
+         if (infoText == null || infoText.length == 0)
+            infoText = "</b>";
+         else
+            infoText = "</b>: " + infoText;
+         
+         if (mainEntity != mLastSelectedEntity)
+         {
+            infoText = " (of &lt;" + mEditorWorld.GetEntityCreationId (mainEntity) + "&gt; " + mainEntity.GetTypeName () + ")" + infoText;
+         }
+         infoText = "<b>&lt;" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + "&gt; " + mLastSelectedEntity.GetTypeName () + infoText;
+         
+         StatusBar_SetMainSelectedEntityInfo (infoText);
       }
       
       private function UpdateMousePointInfo (stagePoint:Point):void
@@ -732,6 +744,8 @@ package editor {
             mEntityLinksModified = false;
             mEntityLinksLayer.graphics.clear ();
             mEditorWorld.DrawEntityLinks (mEntityLinksLayer, mShowAllEntityLinks);
+            
+            UpdateSelectedEntityInfo ();
          }
       }
       
@@ -1537,7 +1551,7 @@ package editor {
          var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
          var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
          
-         mMenuItemAbout = new ContextMenuItem("About Color Infection Editor v" + majorVersion + "." + (minorVersion >= 10 ? "" : "0") + minorVersion, true);
+         mMenuItemAbout = new ContextMenuItem("About Color Infection Editor v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), true);
          theContextMenu.customItems.push (mMenuItemAbout);
          mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
       }
@@ -2947,6 +2961,9 @@ package editor {
          if (Runtime.HasSettingDialogOpened ())
             return;
          
+         if (Runtime.HasInputFocused ())
+            return;
+         
          //trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
          
          if (IsPlaying ()) // playing
@@ -3663,9 +3680,15 @@ package editor {
       
       public function RegionSelectEntities (left:Number, top:Number, right:Number, bottom:Number):void
       {
-         var entities:Array = mEditorWorld.GetEntitiesIntersectWithRegion (left, top, right, bottom);
-         
-         mEditorWorld.ClearSelectedEntities ();
+         SelectedEntities (mEditorWorld.GetEntitiesIntersectWithRegion (left, top, right, bottom), true, ! mCookieModeEnabled);
+      }
+      
+      public function SelectedEntities (entities:Array, clearOlds:Boolean, selectBorthers:Boolean):void
+      {
+         if (clearOlds)
+         {
+            mEditorWorld.ClearSelectedEntities ();
+         }
          
          if (_mouseEventCtrlDown || mCookieModeEnabled)
          {
@@ -3681,8 +3704,10 @@ package editor {
          else
             mEditorWorld.SelectEntities (entities);
          
-         if ((! mCookieModeEnabled))
+         if (selectBorthers)
+         {
             mEditorWorld.SelectGluedEntitiesOfSelectedEntities ();
+         }
          
          OnSelectedEntitiesChanged ();
       }
@@ -4980,32 +5005,86 @@ package editor {
          UpdateBackgroundAndWorldPosition ();
       }
       
-      public function GoToEntity (entityId:int):void
+      public function GoToEntity (entityIds:Array):void
       {
-         if (entityId < 0 || entityId >= mEditorWorld.GetNumEntities ())
-            return;
+         var first:Boolean = true;
          
-         var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);
-         
-         var posX:Number = entity.GetPositionX ();
-         var posY:Number = entity.GetPositionY ();
-         
-         var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, new Point (posX, posY) );
-         if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
-            posX = mViewCenterWorldX;
-         if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
-            posY = mViewCenterWorldY;
-         
-         var dx:Number = mViewCenterWorldX - posX;
-         var dy:Number = mViewCenterWorldY - posY;
-         
-         if (dx != 0 || dy != 0)
+         for each (var entityId:int in entityIds)
          {
-            MoveWorldScene (dx, dy);
+            if (entityId < 0 || entityId >= mEditorWorld.GetNumEntities ())
+               continue;
+            
+            var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);
+            
+            var posX:Number = entity.GetPositionX ();
+            var posY:Number = entity.GetPositionY ();
+            
+            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, new Point (posX, posY) );
+            if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
+               posX = mViewCenterWorldX;
+            if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
+               posY = mViewCenterWorldY;
+            
+            var dx:Number = mViewCenterWorldX - posX;
+            var dy:Number = mViewCenterWorldY - posY;
+            
+            if (first)
+            {
+               first = false;
+               
+               if (dx != 0 || dy != 0)
+               {
+                  MoveWorldScene (dx, dy);
+               }
+            }
+            
+            // aiming effect
+            mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
+         }
+      }
+      
+      public function SelectEntityByIds (entityIds:Array, clearOldSelecteds:Boolean = true, selectBoothers:Boolean = false):void
+      {
+         var entites:Array = new Array ();
+         
+         for each (var entityId:int in entityIds)
+         {
+            if (entityId < 0 || entityId >= mEditorWorld.GetNumEntities ())
+               continue;
+            
+            var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);
+            
+            var posX:Number = entity.GetPositionX ();
+            var posY:Number = entity.GetPositionY ();
+            
+            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, new Point (posX, posY) );
+            if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
+               posX = mViewCenterWorldX;
+            if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
+               posY = mViewCenterWorldY;
+            
+            var dx:Number = mViewCenterWorldX - posX;
+            var dy:Number = mViewCenterWorldY - posY;
+            
+            // aiming effect
+            mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
+            
+            //
+            if (entity is EntityJoint)
+            {
+               var subEntities:Array = (entity as EntityJoint).GetSubEntities ();
+               for each (var subEntity:Entity in subEntities)
+               {
+                  entites.push (subEntity);
+               }
+            }
+            else
+            {
+               entites.push (entity);
+            }
          }
          
-         // aiming effect
-         mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
+         SelectedEntities (entites, clearOldSelecteds, selectBoothers);
       }
       
 //============================================================================

@@ -63,6 +63,11 @@ package editor.trigger.entity {
          return "Entity Assigner";
       }
       
+      override public function GetInfoText ():String
+      {
+         return mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities).toString ();
+      }
+      
       public function GetSelectorType ():int
       {
          return mEntityAssignerType;

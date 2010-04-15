@@ -57,9 +57,42 @@ package editor.trigger.entity {
          text_field.y = - 0.5 * text_field.height;
       }
       
+      override internal function SupportContextMenu ():Boolean
+      {
+         return true;
+      }
+      
       override internal function GetClearMenuText ():String
       {
          return "Break Link(s)";
+      }
+      
+      override internal function GetAppendSelectedsMenuText ():String
+      {
+         return "Link Selected(s)";
+      }
+      
+      override protected function LinkSelectedEntities ():void
+      {
+         var entities:Array = mWorld.GetSelectedEntities ();
+         var entity:Entity;
+         
+         var mainEntities:Array = new Array ();
+         var mainEntity:Entity;
+         
+         for each (entity in entities)
+         {
+            mainEntity = entity.GetMainEntity ();
+            if (mainEntities.indexOf (mainEntity) < 0)
+            {
+               mainEntities.push (mainEntity);
+            }
+         }
+         
+         for each (mainEntity in mainEntities)
+         {
+            LinkEntity (mainEntity);
+         }
       }
       
 //====================================================================

@@ -68,6 +68,11 @@ package editor.trigger.entity {
          return mKeyCodes.concat ();
       }
       
+      override public function GetInfoText ():String
+      {
+         return mKeyCodes.toString (); // todo: used key names instead
+      }
+      
 //====================================================================
 //   clone
 //====================================================================

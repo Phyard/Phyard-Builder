@@ -217,28 +217,57 @@ package editor.trigger.entity {
 //====================================================================
       
       protected var mContextMenuItem_Clear:ContextMenuItem;
+      protected var mContextMenuItem_AppendSelecteds:ContextMenuItem;
+      
+      internal function SupportContextMenu ():Boolean
+      {
+         return false;
+      }
       
       internal function GetClearMenuText ():String
       {
          return null;
       }
       
+      internal function GetAppendSelectedsMenuText ():String
+      {
+         return null;
+      }
+      
+      protected function LinkSelectedEntities ():void
+      {
+      }
+      
       private function BuildContextMenu ():void
       {
-         contextMenu = new ContextMenu ();
-         
-         var clearText:String = GetClearMenuText ();
-         if (clearText == null)
+         if (! SupportContextMenu ())
             return;
+         
+         contextMenu = new ContextMenu ();
          
          contextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
          defaultItems.print = false;
          
-         mContextMenuItem_Clear = new ContextMenuItem (clearText, false),
+         var clearText:String = GetClearMenuText ();
          
-         contextMenu.customItems.push (mContextMenuItem_Clear);
-         mContextMenuItem_Clear.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         if (clearText != null)
+         {
+            mContextMenuItem_Clear = new ContextMenuItem (clearText, false),
+            
+            contextMenu.customItems.push (mContextMenuItem_Clear);
+            mContextMenuItem_Clear.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         }
+         
+         var appendText:String = GetAppendSelectedsMenuText ();
+         
+         if (appendText != null)
+         {
+            mContextMenuItem_AppendSelecteds = new ContextMenuItem (appendText, false),
+            
+            contextMenu.customItems.push (mContextMenuItem_AppendSelecteds);
+            mContextMenuItem_AppendSelecteds.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+         }
       }
       
       private function OnContextMenuEvent (event:ContextMenuEvent):void
@@ -249,16 +278,17 @@ package editor.trigger.entity {
          
          if (event.target == mContextMenuItem_Clear)
          {
-            selector.ClearEntities ();
+            if (mOnClearEntities != null)
+            {
+               if (mOnClearEntities (mParamId, mSelectorId))
+                  NotifyEntityLinksModified ();
+            }
          }
-      }
-      
-      public function ClearEntities ():void
-      {
-         if (mOnClearEntities != null)
+         else if (event.target == mContextMenuItem_AppendSelecteds)
          {
-            if (mOnClearEntities (mParamId, mSelectorId))
-               NotifyEntityLinksModified ();
+            LinkSelectedEntities ();
+            
+            NotifyEntityLinksModified ();
          }
       }
       
@@ -277,6 +307,11 @@ package editor.trigger.entity {
       }
       
       public function TryToCreateLink (fromWorldDisplayX:Number, fromWorldDisplayY:Number, toEntity:Entity, toWorldDisplayX:Number, toWorldDisplayY:Number):Boolean
+      {
+         return LinkEntity (toEntity);
+      }
+      
+      protected function LinkEntity (toEntity:Entity):Boolean
       {
          if ( (toEntity is WorldEntity || toEntity is WorldSubEntity) && ! (toEntity is EntityLogic) )
          {

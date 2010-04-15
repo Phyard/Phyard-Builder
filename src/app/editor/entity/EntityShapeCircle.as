@@ -195,6 +195,7 @@ package editor.entity {
       override public function ScaleSelf (ratio:Number):void
       {
          var radius:Number = mRadius * ratio;
+      trace ("ratio = " + ratio + ", radius = " + radius);
          
          SetRadius (radius);
       }

@@ -20,6 +20,7 @@
    {
       var handler_element:ListElement_EventHandler = mEventHandlers [eventId];
       
+      IncStepStage ();
       while (handler_element != null)
       {
          handler_element.mEventHandler.HandleEvent (valueSourceList);
@@ -65,6 +66,7 @@
       
       timerHandler = mHandlerToDelayRunListHead_EntityTimer;
       mHandlerToDelayRunListHead_EntityTimer = null;
+      IncStepStage ();
       while (timerHandler != null)
       {
          next = timerHandler.mNextTimerHandlerToRun;;
@@ -76,6 +78,7 @@
       
       timerHandler = mHandlerToDelayRunListHead_EntityPairTimer;
       mHandlerToDelayRunListHead_EntityPairTimer = null;
+      IncStepStage ();
       while (timerHandler != null)
       {
          next = timerHandler.mNextTimerHandlerToRun;;
@@ -87,6 +90,7 @@
       
       timerHandler = mHandlerToDelayRunListHead_WorldTimer;
       mHandlerToDelayRunListHead_WorldTimer = null;
+      IncStepStage ();
       while (timerHandler != null)
       {
          next = timerHandler.mNextTimerHandlerToRun;;

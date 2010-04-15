@@ -341,6 +341,20 @@ package player.world {
       
    // ...
       
+      private var mStepStage:int = 0;
+      
+      public function IncStepStage ():void
+      {
+         ++ mStepStage;
+      }
+      
+      public function GetStepStage ():int
+      {
+         return mStepStage;
+      }
+      
+   // ...
+      
       private var mLevelSimulatedTime:Number = 0.0;
       
       public function GetLevelMilliseconds ():Number
@@ -381,20 +395,11 @@ package player.world {
       
       public function Initialize ():void
       {
-         var entity:Entity;
-         var tail:Entity;
-         
       //------------------------------------
       // init some structures
       //------------------------------------
          
          InitKeyHoldInfo ();
-         
-      //-----------------------------
-      // clear handle system events
-      //-----------------------------
-         
-         HandleAndClearCachedSystemEvent ();
          
       //------------------------------------
       // create display layers, borders
@@ -407,6 +412,7 @@ package player.world {
       //------------------------------------
          
          mNumSimulatedSteps = 0;
+         mStepStage = 0;
          mLevelSimulatedTime = 0.0;
          
       //------------------------------------
@@ -458,10 +464,14 @@ package player.world {
          mDelayRemoveDisplayObjectFromContentLayer = true;
          
       //-----------------------------
-      // system dispatchs mouse, keyboard and other events
+      // clear system events
       //-----------------------------
          
-         // ...
+         ClearCachedSystemEvent ();
+         
+      //-----------------------------
+      // system dispatchs mouse, keyboard and other events
+      //-----------------------------
       }
       
 //=============================================================
@@ -490,12 +500,6 @@ package player.world {
          DelayRemoveDisplayObjectFromContentLayer ();
          
       //-----------------------------
-      // delay handle system events
-      //-----------------------------
-         
-         HandleAndClearCachedSystemEvent ();
-         
-      //-----------------------------
       // update
       //-----------------------------
          
@@ -517,15 +521,10 @@ package player.world {
       //-----------------------------
       // system dispatchs mouse, keyboard and other events
       //-----------------------------
-         
-         // ...
       }
       
       public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int):void
       {
-         var entity:Entity;
-         var tail:Entity;
-         
       // ...
          
          var dt:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5;
@@ -539,6 +538,14 @@ package player.world {
          
          for (k = 0; k < speedX; ++ k)
          {
+         //-----------------------------
+         // delay handle system events
+         // In flash, only valid when k==0 in fact
+         //-----------------------------
+            
+            HandleCachedSystemEvent ();
+            ClearCachedSystemEvent ();
+            
          //-----------------------------
          // on level to update
          //-----------------------------
@@ -555,6 +562,7 @@ package player.world {
             mLastSimulatedStepInterval_Inv = dt == 0 ? 0 : 1.0 / dt;
             
             ++ mNumSimulatedSteps;
+            mStepStage = 0;
             mLevelSimulatedTime += dt;
             
          //-----------------------------

@@ -70,6 +70,26 @@ package editor.trigger.entity {
          return mEntityPairAssignerType;
       }
       
+      override public function GetInfoText ():String
+      {
+         if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
+         {
+            var info:String = "";
+            var count:int = mInputEntities1.length < mInputEntities2.length ? mInputEntities1.length : mInputEntities2.length;
+            for (var i:int = 0; i < count; ++ i)
+            {
+               if (i > 0)
+               info = info + ",";
+               info = info + "(" + ( mInputEntities1 [i] as Entity).GetCreationOrderId () + "-" + ( mInputEntities2 [i] as Entity).GetCreationOrderId () + ")";
+            }
+            return info;
+         }
+         else
+         {
+            return "(" + mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities1).toString () + ")-(" + mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities2).toString () + ")";
+         }
+      }
+      
       //public function GetInputEntities1 ():Array
       //{
       //   //return mInputEntities1;
@@ -631,7 +651,7 @@ package editor.trigger.entity {
                      mInputEntities1.splice (index, 1);
                      return true;
                   }
-                  else (mInputEntities1.length < Define.MaxEntitiesCountEachAssigner)
+                  else if (mInputEntities1.length < Define.MaxEntitiesCountEachAssigner)
                   {
                      mInputEntities1.push (entity);
                      return true;
@@ -664,7 +684,7 @@ package editor.trigger.entity {
                      mInputEntities2.splice (index, 1);
                      return true;
                   }
-                  else (mInputEntities2.length < Define.MaxEntitiesCountEachAssigner)
+                  else if (mInputEntities2.length < Define.MaxEntitiesCountEachAssigner)
                   {
                      mInputEntities2.push (entity);
                      return true;

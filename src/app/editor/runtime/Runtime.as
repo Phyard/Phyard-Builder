@@ -30,9 +30,22 @@ package editor.runtime {
       {
          mHasSettingDialogOpened = has;
       }
+      
       public static function HasSettingDialogOpened ():Boolean
       {
          return mHasSettingDialogOpened;
+      }
+      
+      private static var mHasInputFocused:Boolean = false;
+      
+      public static function SetHasInputFocused (has:Boolean):void
+      {
+         mHasInputFocused = has;
+      }
+      
+      public static function HasInputFocused ():Boolean
+      {
+         return mHasInputFocused;
       }
       
 //=====================================================================

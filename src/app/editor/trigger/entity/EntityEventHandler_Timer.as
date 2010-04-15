@@ -51,6 +51,11 @@ package editor.trigger.entity {
          return mOnlyRunOnce;
       }
       
+      override public function GetInfoText ():String
+      {
+         return "Run Once: " + mOnlyRunOnce + ", Interval = " + mRunningInterval;
+      }
+      
 //====================================================================
 //   clone
 //====================================================================

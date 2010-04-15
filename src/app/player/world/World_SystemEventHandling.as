@@ -44,7 +44,7 @@ public static const CachedEventType_RemoveBombsAndRemovableShapes:int = 1;
 
 private var mCachedSystemEvents:Array = new Array ();
 
-private function HandleAndClearCachedSystemEvent ():void
+private function HandleCachedSystemEvent ():void
 {
    var numEvents:int = mCachedSystemEvents.length;
    
@@ -60,6 +60,7 @@ private function HandleAndClearCachedSystemEvent ():void
          var handlerElement:ListElement_EventHandler = eventInfo [1] as ListElement_EventHandler;
          var valueSourceList:ValueSource = eventInfo [2] as ValueSource;
          
+         IncStepStage ();
          while (handlerElement != null)
          {
             handlerElement.mEventHandler.HandleEvent (valueSourceList);
@@ -68,6 +69,11 @@ private function HandleAndClearCachedSystemEvent ():void
          }
       }
    }
+}
+
+private function ClearCachedSystemEvent ():void
+{
+   var numEvents:int = mCachedSystemEvents.length;
    
    if (numEvents > 0)
    {

@@ -95,12 +95,14 @@ package editor.mode {
          
          // second round, link general entity with a linkable
          
-         for (i = 0; !created && i < entities.length; ++ i)
+         for (i = 0; i < entities.length; ++ i)
          {
             entity = (entities [i] as Entity).GetMainEntity ();
             if (! (entity is Linkable) )
             {
                created = mFromLinkable.TryToCreateLink (mFromWorldDisplayX, mFromWorldDisplayY, entity, endX, endY);
+               if (created)
+                  break;
             }
          }
          

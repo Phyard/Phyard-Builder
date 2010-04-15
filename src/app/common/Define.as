@@ -273,8 +273,8 @@ package common {
       public static const EntityPairAssignerType_EitherInMany:int = 5;
       public static const EntityPairAssignerType_BothInMany:int = 6;
       
-      public static const MaxEntitiesCountEachAssigner:int = 20; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
-      public static const MaxEntityPairesCountEachOneToOnePairAssigner:int = 10; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
+      public static const MaxEntitiesCountEachAssigner:int = 32; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
+      public static const MaxEntityPairesCountEachOneToOnePairAssigner:int = 16; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
       
 //===========================================================================
 // colors

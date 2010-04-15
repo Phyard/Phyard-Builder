@@ -256,6 +256,7 @@ package player.entity {
          
          mEventHandlerValueSource0.mValueObject = this;
          
+         mWorld.IncStepStage ();
          while (list_element != null)
          {
             list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
@@ -284,6 +285,7 @@ package player.entity {
          
          mEventHandlerValueSource0.mValueObject = this;
          
+         mWorld.IncStepStage ();
          while (list_element != null)
          {
             list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);
@@ -333,6 +335,7 @@ package player.entity {
          
          mEventHandlerValueSource0.mValueObject = this;
          
+         mWorld.IncStepStage ();
          while (list_element != null)
          {
             list_element.mEventHandler.HandleEvent (mEventHandlerValueSourceList);

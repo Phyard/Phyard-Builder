@@ -75,9 +75,33 @@ package editor.trigger.entity {
          //return someRemoved;
       }
       
+      override internal function SupportContextMenu ():Boolean
+      {
+         return true;
+      }
+      
       override internal function GetClearMenuText ():String
       {
          return "Break Link";
+      }
+      
+      override internal function GetAppendSelectedsMenuText ():String
+      {
+         return "Link The Selected";
+      }
+      
+      override protected function LinkSelectedEntities ():void
+      {
+         var entities:Array = mWorld.GetSelectedEntities ();
+         var entity:Entity;
+         var mainEntity:Entity;
+         
+         for each (entity in entities)
+         {
+            mainEntity = entity.GetMainEntity ();
+            if (LinkEntity (mainEntity))
+               break
+         }
       }
       
 //=================================================================================================

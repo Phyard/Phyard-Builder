@@ -340,36 +340,35 @@
                            paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                            horizontalScrollPolicy="off" verticalScrollPolicy="off"
                            horizontalGap="0" verticalGap="0" borderThickness="0">
-                     <mx:Box id="Box_CustomCommands" backgroundColor="0xFFFFFF" direction="horizontal" verticalAlign="middle" borderStyle="solid" height="22" width="100%"
+                     <mx:Box id="Box_CustomCommands" backgroundColor="0xE0E0E0" direction="horizontal" verticalAlign="middle" borderStyle="solid" height="22" width="100%"
                               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                               horizontalScrollPolicy="off" verticalScrollPolicy="off"
                               horizontalGap="0" verticalGap="0" borderThickness="0">
                         <mx:HBox backgroundColor="0xE0E0E0" height="100%" verticalAlign="middle">
                            <mx:Spacer width="3"/>
-                           <mx:Label text="Go To Entity#" textAlign="right"/>
+                           <mx:Label id="Label_GoToEntity" text="Go To Entity#" textAlign="right" click="SelectNewEntitiesWithoutBrothers (null);"/>
                         </mx:HBox>
-                        <mx:TextInput id="Text_FindEntityId" text="" width="56" enter="OnGoToEntity()"/>
-                        <mx:HBox backgroundColor="0xE0E0E0" height="100%" verticalAlign="middle">
-                           <mx:Spacer width="35"/>
-                           <mx:Label text="Show:"/>
+                        <mx:TextInput id="Text_FindEntityId" text="" width="76" enter="OnGoToEntity();" focusIn="Runtime.SetHasInputFocused (true);" focusOut="Runtime.SetHasInputFocused (false);"/>
+                        <mx:Spacer width="100%" />
+                        <mx:Spacer width="16"/>
+                        <mx:Label text="Show:"/>
+                        <mx:HBox backgroundColor="0xFFFFFF" height="100%" verticalAlign="middle">
+                           <mx:Spacer width="3"/>
+                           <mx:CheckBox selected="false" id="CheckBox_ShowEntityIDs" label="Entity IDs" click=";"/>
+                           <mx:CheckBox selected="false" id="CheckBox_ShowLinks" label="Links" click=";"/>
                         </mx:HBox>
-                        <mx:Spacer width="3"/>
-                        <mx:CheckBox selected="false" id="CheckBox_ShowEntityIDs" label="Entity IDs" click=";"/>
-                        <mx:Spacer width="6"/>
-                        <mx:CheckBox selected="false" id="CheckBox_ShowLinks" label="Links" click=";"/>
-                        <mx:Spacer width="3"/>
-                        <mx:HBox backgroundColor="0xE0E0E0" height="100%" verticalAlign="middle">
-                           <mx:Spacer width="35"/>
-                           <mx:Label text="Hide: "/>
+                        <mx:Spacer width="26"/>
+                        <mx:Label text="Hide: "/>
+                        <mx:HBox backgroundColor="0xFFFFFF" height="100%" verticalAlign="middle">
+                           <mx:Spacer width="3"/>
+                           <mx:CheckBox selected="false" id="CheckBox_HideInvisibleEntities" label="Invisibles" click=";"/>
+                           <mx:CheckBox selected="false" id="CheckBox_HideShapesAndJoints" label="Shapes &amp; Joints" click=";"/>
+                           <mx:CheckBox selected="false" id="CheckBox_HideTriggers" label="Triggers" click=";"/>
                         </mx:HBox>
-                        <mx:Spacer width="3"/>
-                        <mx:CheckBox selected="false" id="CheckBox_HideInvisibleEntities" label="Invisibles" click=";"/>
-                        <mx:Spacer width="6"/>
-                        <mx:CheckBox selected="false" id="CheckBox_HideShapesAndJoints" label="Shapes &amp; Joints" click=";"/>
-                        <mx:Spacer width="6"/>
-                        <mx:CheckBox selected="false" id="CheckBox_HideTriggers" label="Triggers" click=";"/>
-                        <mx:Spacer width="3"/>
-                        <mx:HBox width="100%" backgroundColor="0xE0E0E0" height="100%"/>
+                        <mx:Spacer width="16"/>
+                        <mx:Spacer width="100%" />
+                        <mx:Spacer width="36" />
+                        <mx:HBox backgroundColor="0xE0E0E0" height="100%"/>
                            <mx:Button id="Button_ZoomOut" click="ZoomOut ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-out.png')" disabledIcon="@Embed('res/edit/zoom-out-disabled.png')" />
                            <mx:Label id="Label_ZoomScale" textAlign="center" text="1.00"/>
                            <mx:Button id="Button_ZoomIn" click="ZoomIn ()" focusEnabled="false" fontSize="8" width="22" height="22" toggle="false" cornerRadius="0" icon="@Embed('res/edit/zoom-in.png')" disabledIcon="@Embed('res/edit/zoom-in-disabled.png')" />
@@ -844,6 +843,11 @@
                
                DisplayObjectUtil.AppendContextMenuItem (Button_MouseMoveScene, "Move Scene Accurately ...", ShowDialog_MoveSceneAccurately);
                
+               DisplayObjectUtil.AppendContextMenuItem (Label_GoToEntity, "Select New (without Brothers)", SelectNewEntitiesWithoutBrothers);
+               DisplayObjectUtil.AppendContextMenuItem (Label_GoToEntity, "Select New (with Brothers)", SelectNewEntitiesWithBrothers);
+               DisplayObjectUtil.AppendContextMenuItem (Label_GoToEntity, "Select More (without Brothers)", SelectMoreEntitiesWithoutBrothers);
+               DisplayObjectUtil.AppendContextMenuItem (Label_GoToEntity, "Select More (with Brothers)", SelectMoreEntitiesWithBrothers);
+               
             //===================================================================================================
                
                //DisplayObjectUtil.AppendContextMenuItem (Button_NewDesign, "Clear All Entities", ClearAllEntities);
@@ -1173,14 +1177,64 @@
 // 
 //========================================================================================
             
+            private function GetEntityIdsFromInputText (text:String):Array
+            {
+               if (text == null)
+                  return null;
+               
+               var idStrs:Array = text.split (/\s+/);
+               if (idStrs == null || idStrs.length == 0)
+                  return null;
+               
+               var entityIds:Array = new Array ();
+               for each (var idStr:String in idStrs)
+               {
+                  var entityId:int = parseInt (idStr);
+                  if (! isNaN (entityId))
+                  {
+                     entityIds.push (entityId);
+                  }
+               }
+               
+               if (entityIds.length == 0)
+                  return null;
+               
+               return entityIds;
+            }
+            
             private function OnGoToEntity ():void
             {
-               var entityId:int = parseInt (Text_FindEntityId.text);
+               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
                
-               if (! isNaN (entityId))
-               {
-                  MainView.GoToEntity (entityId);
-               }
+               MainView.GoToEntity (ids);
+            }
+            
+            private function SelectNewEntitiesWithoutBrothers (event:ContextMenuEvent):void
+            {
+               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
+               
+               MainView.SelectEntityByIds (ids, true, false);
+            }
+            
+            private function SelectNewEntitiesWithBrothers (event:ContextMenuEvent):void
+            {
+               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
+               
+               MainView.SelectEntityByIds (ids, true, true);
+            }
+            
+            private function SelectMoreEntitiesWithoutBrothers (event:ContextMenuEvent):void
+            {
+               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
+               
+               MainView.SelectEntityByIds (ids, false, false);
+            }
+            
+            private function SelectMoreEntitiesWithBrothers (event:ContextMenuEvent):void
+            {
+               var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
+               
+               MainView.SelectEntityByIds (ids, false, true);
             }
             
             private function StatusBar_SetMainSelectedEntityInfo (info:String):void

@@ -155,16 +155,34 @@ package player.trigger.entity
 //
 //======================================================================================================
       
+      protected var mEnabledChangedStep:int = 0;
+      protected var mEnabledChangedStepStage:int = 0;
+      
+      override public function SetEnabled (enabled:Boolean):void
+      {
+         if (mIsEnabled != enabled)
+         {
+            mEnabledChangedStep      = mWorld.GetSimulatedSteps ();
+            mEnabledChangedStepStage = mWorld.GetStepStage ();
+            
+            super.SetEnabled (enabled);
+         }
+      }
+      
       public function HandleEvent (valueSourceList:ValueSource):void
       {
          if (mIsEnabled == false || mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
             return;
          
-         //mEventHandlerDefinition.DoCall (valueSourceList, null);
-         mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
-         
-         if (mExternalAction != null)
-            mExternalAction.Perform ();
+         // only excute event handler when the event handler is enabled before the event happens.
+         if (mEnabledChangedStep < mWorld.GetSimulatedSteps () || mEnabledChangedStepStage < mWorld.GetStepStage ())
+         {
+            //mEventHandlerDefinition.DoCall (valueSourceList, null);
+            mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
+            
+            if (mExternalAction != null)
+               mExternalAction.Perform ();
+         }
       }     
    }
 }

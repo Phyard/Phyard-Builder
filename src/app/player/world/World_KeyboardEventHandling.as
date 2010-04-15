@@ -76,6 +76,7 @@
             
             listElement = mKeyHoldEventHandlerLists [keyCode];
             
+            IncStepStage ();
             while (listElement != null)
             {
                listElement.mEventHandler.HandleEvent (mKeyboardEventHandlerValueSourceList);

@@ -62,6 +62,10 @@ package editor.controls {
          sKeyBitmapClasses [Keyboard.LEFT ] = Resource.KeyLeft;
          sKeyBitmapClasses [Keyboard.RIGHT] = Resource.KeyRight;
          sKeyBitmapClasses [Keyboard.SPACE] = Resource.KeySpace;
+         sKeyBitmapClasses [Keyboard.CONTROL] = Resource.KeyCtrl;
+         sKeyBitmapClasses [Keyboard.SHIFT] = Resource.KeyShift;
+         sKeyBitmapClasses [Keyboard.CAPS_LOCK] = Resource.KeyCaps;
+         sKeyBitmapClasses [Keyboard.TAB] = Resource.KeyTab;
          
       // ...
          
@@ -101,6 +105,11 @@ package editor.controls {
          sKeyRegions [Keyboard.LEFT ] = [377, 121, 22, 22];
          sKeyRegions [Keyboard.RIGHT] = [426, 121, 22, 22];
          sKeyRegions [Keyboard.SPACE] = [114, 120, 146, 22];
+         
+         sKeyRegions [Keyboard.CONTROL] = [9, 120, 35, 23];
+         sKeyRegions [Keyboard.SHIFT] = [9, 96, 54, 23];
+         sKeyRegions [Keyboard.CAPS_LOCK] = [9, 72, 41, 23];
+         sKeyRegions [Keyboard.TAB] = [9, 49, 35, 23];
       }
       
    // ...

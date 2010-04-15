@@ -251,7 +251,15 @@ package editor.runtime {
       public static var KeyLeft:Class;
       [Embed("../../res/keyboard/key-right-sel.png")]
       public static var KeyRight:Class;
-      [Embed("../../res/keyboard/key-SPACE-sel.png")]
+      [Embed("../../res/keyboard/key-space-sel.png")]
       public static var KeySpace:Class;
+      [Embed("../../res/keyboard/key-ctrl-sel.png")]
+      public static var KeyCtrl:Class;
+      [Embed("../../res/keyboard/key-shift-sel.png")]
+      public static var KeyShift:Class;
+      [Embed("../../res/keyboard/key-caps-sel.png")]
+      public static var KeyCaps:Class;
+      [Embed("../../res/keyboard/key-tab-sel.png")]
+      public static var KeyTab:Class;
    }
 }

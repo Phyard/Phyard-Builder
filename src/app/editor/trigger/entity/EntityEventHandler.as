@@ -88,6 +88,11 @@ package editor.trigger.entity {
          }
       }
       
+      override public function GetInfoText ():String
+      {
+         return " (" + GetEventName () + ")";
+      }
+      
       public function GetEventName ():String
       {
          return mEventHandlerDefinition.GetName ();

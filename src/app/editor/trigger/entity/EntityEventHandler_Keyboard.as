@@ -70,7 +70,7 @@ package editor.trigger.entity {
       
       override public function GetInfoText ():String
       {
-         return mKeyCodes.toString (); // todo: used key names instead
+         return super.GetInfoText () + ", " + mKeyCodes.toString (); // todo: used key names instead
       }
       
 //====================================================================

@@ -18,7 +18,6 @@
             <mx:HBox width="100%">
                <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_CustomSize" value="custom"
                    label="Custom:"/>
-               <mx:Label text=" (Minimum size: 600px x 600px)" color="0x0000FF"/>
             </mx:HBox>
          </mx:VBox>
          <mx:HBox id="Box_CustomSceneSize1" width="100%">

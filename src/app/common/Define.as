@@ -44,12 +44,11 @@ package common {
       public static const LargeWorldHalfWidth:int = 12000; 
       public static const LargeWorldHalfHeight:int = 12000; 
       
-      public static const CategoryViewWidth:int = 680; 
-      public static const CategoryViewHeight:int = 630; 
-      
       public static const PlayerPlayBarThickness:int = 20;
       public static const DefaultPlayerWidth:int = 600;
       public static const DefaultPlayerHeight:int = 600;
+      
+      public static const WorldFieldMargin:int = 300; // how much the entites can be put outside of the player field.
       
       public static const WorldStepTimeInterval_SpeedX2:Number = 1.0 / 30;
       public static const WorldStepTimeInterval_SpeedX1:Number = 0.5 * WorldStepTimeInterval_SpeedX2;
@@ -289,7 +288,7 @@ package common {
       
       public static const ColorBreakableObject:uint = 0xFFFF00FF; // 0xFF6600; // 
       
-      public static const ColorInfectedObject:uint = 0xFF804000;;
+      public static const ColorInfectedObject:uint = 0xFF804000;
       public static const ColorUninfectedObject:uint = 0xFFFFFF00;
       public static const ColorDontInfectObject:uint = 0xFF60FF60;
       

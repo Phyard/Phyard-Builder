@@ -3770,7 +3770,7 @@ package editor {
          
          var showCenter:Boolean = count > 1;
          
-         if (count ==1)
+         if (count == 1)
          {
             entity = selectedEntities [0];
             if (entity is EntityShapePolygon)
@@ -4104,8 +4104,8 @@ package editor {
          var newPosY:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionY (params.mPosY);
          if (! mEditorWorld.IsInfiniteSceneSize ())
          {
-            newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetWorldLeft (), mEditorWorld.GetWorldRight ());
-            newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetWorldTop (), mEditorWorld.GetWorldBottom ());
+            newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetWorldLeft () - Define.WorldFieldMargin, mEditorWorld.GetWorldRight () + Define.WorldFieldMargin);
+            newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetWorldTop () - Define.WorldFieldMargin, mEditorWorld.GetWorldBottom () + Define.WorldFieldMargin);
          }
          
          entity.SetPosition (newPosX, newPosY);
@@ -4512,6 +4512,8 @@ package editor {
          if (entity != null)
          {
             CreateUndoPoint ("The properties of entity [" + entity.GetTypeName ().toLowerCase () + "] are changed", null, entity);
+            
+            UpdateSelectedEntityInfo ();
          }
       }
       

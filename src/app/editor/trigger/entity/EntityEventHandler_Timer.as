@@ -53,7 +53,7 @@ package editor.trigger.entity {
       
       override public function GetInfoText ():String
       {
-         return "Run Once: " + mOnlyRunOnce + ", Interval = " + mRunningInterval;
+         return super.GetInfoText () + ", Run Once: " + mOnlyRunOnce + ", Interval: " + mRunningInterval;
       }
       
 //====================================================================

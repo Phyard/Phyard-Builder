@@ -135,8 +135,8 @@ package wrapper {
       
       private function OnAddedToStage (e:Event):void
       {
-         addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
+         addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          
          if (GetWorldDefine != null || GetWorldBinaryData != null )
             ChangeState (StateId_BuildWorld);

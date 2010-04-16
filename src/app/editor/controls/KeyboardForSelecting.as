@@ -29,7 +29,7 @@ package editor.controls {
          if (sKeyBitmapClasses != null)
             return;
          
-         sKeyBitmapClasses = new Array (256);
+         sKeyBitmapClasses = new Array (KeyCodes.kNumKeys);
          
          sKeyBitmapClasses [KeyCodes.Key_A] = Resource.KeyA;
          sKeyBitmapClasses [KeyCodes.Key_B] = Resource.KeyB;
@@ -62,14 +62,48 @@ package editor.controls {
          sKeyBitmapClasses [Keyboard.LEFT ] = Resource.KeyLeft;
          sKeyBitmapClasses [Keyboard.RIGHT] = Resource.KeyRight;
          sKeyBitmapClasses [Keyboard.SPACE] = Resource.KeySpace;
-         sKeyBitmapClasses [Keyboard.CONTROL] = Resource.KeyCtrl;
-         sKeyBitmapClasses [Keyboard.SHIFT] = Resource.KeyShift;
+         sKeyBitmapClasses [Keyboard.BACKSPACE] = Resource.KeyBackspace;
+         //sKeyBitmapClasses [KeyCodes.ControlLeft] = Resource.KeyCtrl;
+         //sKeyBitmapClasses [KeyCodes.ControlRight] = Resource.KeyCtrl;
+         //sKeyBitmapClasses [KeyCodes.ShiftLeft] = Resource.KeyShift;
+         //sKeyBitmapClasses [KeyCodes.ShiftRight] = Resource.KeyShift;
          sKeyBitmapClasses [Keyboard.CAPS_LOCK] = Resource.KeyCaps;
          sKeyBitmapClasses [Keyboard.TAB] = Resource.KeyTab;
+         sKeyBitmapClasses [Keyboard.ENTER] = Resource.KeyEnter;
+         
+         sKeyBitmapClasses [KeyCodes.Key_0] = Resource.Key0;
+         sKeyBitmapClasses [KeyCodes.Key_1] = Resource.Key1;
+         sKeyBitmapClasses [KeyCodes.Key_2] = Resource.Key2;
+         sKeyBitmapClasses [KeyCodes.Key_3] = Resource.Key3;
+         sKeyBitmapClasses [KeyCodes.Key_4] = Resource.Key4;
+         sKeyBitmapClasses [KeyCodes.Key_5] = Resource.Key5;
+         sKeyBitmapClasses [KeyCodes.Key_6] = Resource.Key6;
+         sKeyBitmapClasses [KeyCodes.Key_7] = Resource.Key7;
+         sKeyBitmapClasses [KeyCodes.Key_8] = Resource.Key8;
+         sKeyBitmapClasses [KeyCodes.Key_9] = Resource.Key9;
+         
+         sKeyBitmapClasses [KeyCodes.Quote] = Resource.KeyQuote;
+         sKeyBitmapClasses [KeyCodes.BackQuote] = Resource.KeyBackquote;
+         sKeyBitmapClasses [KeyCodes.Slash] = Resource.KeySlash;
+         sKeyBitmapClasses [KeyCodes.BackSlash] = Resource.KeyBackslash;
+         sKeyBitmapClasses [KeyCodes.Comma] = Resource.KeyComma;
+         sKeyBitmapClasses [KeyCodes.Period] = Resource.KeyPeriod;
+         sKeyBitmapClasses [KeyCodes.Semicolon] = Resource.KeySemicolon;
+         sKeyBitmapClasses [KeyCodes.Add] = Resource.KeyAdd;
+         sKeyBitmapClasses [KeyCodes.Subtract] = Resource.KeySubtract;
+         sKeyBitmapClasses [KeyCodes.SquareBracketLeft] = Resource.KeySquareBracketLeft;
+         sKeyBitmapClasses [KeyCodes.SquareBracketRight] = Resource.KeySquareBracketRight;
+         
+         sKeyBitmapClasses [Keyboard.INSERT] = Resource.KeyInsert;
+         sKeyBitmapClasses [Keyboard.DELETE] = Resource.KeyDel;
+         sKeyBitmapClasses [Keyboard.HOME] = Resource.KeyHome;
+         sKeyBitmapClasses [Keyboard.END] = Resource.KeyEnd;
+         sKeyBitmapClasses [Keyboard.PAGE_UP] = Resource.KeyPageup;
+         sKeyBitmapClasses [Keyboard.PAGE_DOWN] = Resource.KeyPagedown;
          
       // ...
          
-         sKeyRegions = new Array (256);
+         sKeyRegions = new Array (KeyCodes.kNumKeys);
          
          sKeyRegions [KeyCodes.Key_Q] = [46, 48, 22, 22];
          sKeyRegions [KeyCodes.Key_W] = [71, 48, 22, 22];
@@ -92,7 +126,7 @@ package editor.controls {
          sKeyRegions [KeyCodes.Key_K] = [225, 72, 22, 22];
          sKeyRegions [KeyCodes.Key_L] = [250, 72, 22, 22];
          
-         sKeyRegions [KeyCodes.Key_Z] = [65, 96, 22, 22];
+         sKeyRegions [KeyCodes.Key_Z] = [64, 96, 22, 22];
          sKeyRegions [KeyCodes.Key_X] = [89, 96, 22, 22];
          sKeyRegions [KeyCodes.Key_C] = [114, 96, 22, 22];
          sKeyRegions [KeyCodes.Key_V] = [139, 96, 22, 22];
@@ -105,17 +139,52 @@ package editor.controls {
          sKeyRegions [Keyboard.LEFT ] = [377, 121, 22, 22];
          sKeyRegions [Keyboard.RIGHT] = [426, 121, 22, 22];
          sKeyRegions [Keyboard.SPACE] = [114, 120, 146, 22];
+         sKeyRegions [Keyboard.BACKSPACE] = [330, 24, 35, 23];
          
-         sKeyRegions [Keyboard.CONTROL] = [9, 120, 35, 23];
-         sKeyRegions [Keyboard.SHIFT] = [9, 96, 54, 23];
+         //sKeyRegions [KeyCodes.ControlLeft] = [9, 120, 35, 23];
+         //sKeyRegions [KeyCodes.ControlRight] = [330, 120, 35, 23];
+         //sKeyRegions [KeyCodes.ShiftLeft] = [9, 96, 54, 23];
+         //sKeyRegions [KeyCodes.ShiftRight] = [311, 96, 54, 23];
          sKeyRegions [Keyboard.CAPS_LOCK] = [9, 72, 41, 23];
          sKeyRegions [Keyboard.TAB] = [9, 49, 35, 23];
+         sKeyRegions [Keyboard.ENTER] = [323, 72, 42, 23];
+         
+         
+         sKeyRegions [KeyCodes.Key_0] = [256, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_1] = [34, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_2] = [60, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_3] = [83, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_4] = [108, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_5] = [132, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_6] = [157, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_7] = [182, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_8] = [208, 24, 22, 22];
+         sKeyRegions [KeyCodes.Key_9] = [232, 24, 22, 22];
+         
+         sKeyRegions [KeyCodes.Quote]     = [299, 72, 22, 22];
+         sKeyRegions [KeyCodes.BackQuote] = [9, 24, 22, 22];
+         sKeyRegions [KeyCodes.Slash]     = [342, 49, 22, 22];
+         sKeyRegions [KeyCodes.BackSlash] = [287, 96, 22, 22];
+         sKeyRegions [KeyCodes.Comma]     = [237, 96, 22, 22];
+         sKeyRegions [KeyCodes.Period]    = [262, 96, 22, 22];
+         sKeyRegions [KeyCodes.Semicolon]    = [274, 72, 22, 22];
+         sKeyRegions [KeyCodes.Add]       = [280, 24, 22, 22];
+         sKeyRegions [KeyCodes.Subtract]  = [305, 24, 22, 22];
+         sKeyRegions [KeyCodes.SquareBracketLeft]  = [293, 49, 22, 22];
+         sKeyRegions [KeyCodes.SquareBracketRight] = [317, 49, 22, 22];
+         
+         sKeyRegions [Keyboard.INSERT] = [377, 24, 22, 22];
+         sKeyRegions [Keyboard.DELETE] = [377, 48, 22, 22];
+         sKeyRegions [Keyboard.HOME] = [401, 24, 22, 22];
+         sKeyRegions [Keyboard.END] = [401, 48, 22, 22];
+         sKeyRegions [Keyboard.PAGE_UP] = [426, 24, 22, 22];
+         sKeyRegions [Keyboard.PAGE_DOWN] = [426, 48, 22, 22];
       }
       
    // ...
       
       private var mKeyboardBitmap:Bitmap = new Resource.Keyboard ();
-      private var mSelectedKeyBitmaps:Array = new Array (256);
+      private var mSelectedKeyBitmaps:Array = new Array (KeyCodes.kNumKeys);
       
    // ...
       
@@ -160,7 +229,7 @@ package editor.controls {
          var bitmap:Bitmap;
          var region:Array;
          
-         for (keyCode = 0; keyCode < 256; ++ keyCode)
+         for (keyCode = 0; keyCode < KeyCodes.kNumKeys; ++ keyCode)
          {
             if (mSelectedKeyBitmaps [keyCode] != null)
                mSelectedKeyBitmaps [keyCode].visible = false;
@@ -193,7 +262,7 @@ package editor.controls {
          for (i = 0; i < keyCodes.length; ++ i)
          {
             keyCode = int (keyCodes [i]);
-            if (keyCode >= 0 && keyCode < 256 && mSelectedKeyCodes.indexOf (keyCode) < 0)
+            if (keyCode >= 0 && keyCode < KeyCodes.kNumKeys && mSelectedKeyCodes.indexOf (keyCode) < 0)
             {
                mSelectedKeyCodes.push (keyCode);
             }
@@ -218,7 +287,7 @@ package editor.controls {
          var top:Number;
          var bottom:Number;
          
-         for (var i:int = 0; i < 256; ++ i)
+         for (var i:int = 0; i < KeyCodes.kNumKeys; ++ i)
          {
             region = sKeyRegions [i];
             if (region == null)

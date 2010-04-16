@@ -448,18 +448,24 @@ package editor.world {
          }
       }
       
-      public function DeleteSelectedEntities ():void
+      public function DeleteSelectedEntities ():Boolean
       {
          var entityArray:Array = mSelectionListManager.GetSelectedMainEntities ();
          
          var entity:Entity;
+         
+         var count:int = 0;
          
          for (var i:int = 0; i < entityArray.length; ++ i)
          {
             entity = entityArray [i] as Entity;
             
             DestroyEntity (entity);
+            
+            ++ count;
          }
+         
+         return count > 0;
       }
       
       public function CloneSelectedEntities (offsetX:Number, offsetY:Number, cloningInfo:Array = null):void

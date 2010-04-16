@@ -253,6 +253,8 @@ package editor.runtime {
       public static var KeyRight:Class;
       [Embed("../../res/keyboard/key-space-sel.png")]
       public static var KeySpace:Class;
+      [Embed("../../res/keyboard/key-backspace-sel.png")]
+      public static var KeyBackspace:Class;
       [Embed("../../res/keyboard/key-ctrl-sel.png")]
       public static var KeyCtrl:Class;
       [Embed("../../res/keyboard/key-shift-sel.png")]
@@ -261,5 +263,61 @@ package editor.runtime {
       public static var KeyCaps:Class;
       [Embed("../../res/keyboard/key-tab-sel.png")]
       public static var KeyTab:Class;
+      [Embed("../../res/keyboard/key-0-sel.png")]
+      public static var Key0:Class;
+      [Embed("../../res/keyboard/key-1-sel.png")]
+      public static var Key1:Class;
+      [Embed("../../res/keyboard/key-2-sel.png")]
+      public static var Key2:Class;
+      [Embed("../../res/keyboard/key-3-sel.png")]
+      public static var Key3:Class;
+      [Embed("../../res/keyboard/key-4-sel.png")]
+      public static var Key4:Class;
+      [Embed("../../res/keyboard/key-5-sel.png")]
+      public static var Key5:Class;
+      [Embed("../../res/keyboard/key-6-sel.png")]
+      public static var Key6:Class;
+      [Embed("../../res/keyboard/key-7-sel.png")]
+      public static var Key7:Class;
+      [Embed("../../res/keyboard/key-8-sel.png")]
+      public static var Key8:Class;
+      [Embed("../../res/keyboard/key-9-sel.png")]
+      public static var Key9:Class;
+      [Embed("../../res/keyboard/key-enter-sel.png")]
+      public static var KeyEnter:Class;
+      [Embed("../../res/keyboard/key-quote-sel.png")]
+      public static var KeyQuote:Class;
+      [Embed("../../res/keyboard/key-backquote-sel.png")]
+      public static var KeyBackquote:Class;
+      [Embed("../../res/keyboard/key-slash-sel.png")]
+      public static var KeySlash:Class;
+      [Embed("../../res/keyboard/key-backslash-sel.png")]
+      public static var KeyBackslash:Class;
+      [Embed("../../res/keyboard/key-comma-sel.png")]
+      public static var KeyComma:Class;
+      [Embed("../../res/keyboard/key-period-sel.png")]
+      public static var KeyPeriod:Class;
+      [Embed("../../res/keyboard/key-semicolon-sel.png")]
+      public static var KeySemicolon:Class;
+      [Embed("../../res/keyboard/key-square-bracket-left-sel.png")]
+      public static var KeySquareBracketLeft:Class;
+      [Embed("../../res/keyboard/key-square-bracket-right-sel.png")]
+      public static var KeySquareBracketRight:Class;
+      [Embed("../../res/keyboard/key-add-sel.png")]
+      public static var KeyAdd:Class;
+      [Embed("../../res/keyboard/key-subtract-sel.png")]
+      public static var KeySubtract:Class;
+      [Embed("../../res/keyboard/key-pageup-sel.png")]
+      public static var KeyPageup:Class;
+      [Embed("../../res/keyboard/key-pagedown-sel.png")]
+      public static var KeyPagedown:Class;
+      [Embed("../../res/keyboard/key-home-sel.png")]
+      public static var KeyHome:Class;
+      [Embed("../../res/keyboard/key-end-sel.png")]
+      public static var KeyEnd:Class;
+      [Embed("../../res/keyboard/key-insert-sel.png")]
+      public static var KeyInsert:Class;
+      [Embed("../../res/keyboard/key-del-sel.png")]
+      public static var KeyDel:Class;
    }
 }

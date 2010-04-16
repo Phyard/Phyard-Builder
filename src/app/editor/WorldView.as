@@ -3823,11 +3823,12 @@ package editor {
       
       public function DeleteSelectedEntities ():void
       {
-         mEditorWorld.DeleteSelectedEntities ();
-         
-         CreateUndoPoint ("Delete");
-         
-         CalSelectedEntitiesCenterPoint ();
+         if (mEditorWorld.DeleteSelectedEntities ())
+         {
+            CreateUndoPoint ("Delete");
+            
+            CalSelectedEntitiesCenterPoint ();
+         }
       }
       
       public function CloneSelectedEntities ():void

@@ -144,10 +144,16 @@ private function OnAddedToStage (event:Event):void
    
    //
    MoveWorldScene_DisplayOffset (0, 0);
+   
+   // 
+   IME.enabled = false; // seems no effects
 }
 
 private function OnRemovedFromStage (event:Event):void 
 {
+   // 
+   IME.enabled = true;
+   
    // must remove this listeners, to avoid memory leak
    
    removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
@@ -202,7 +208,7 @@ public function OnMouseDown (event:MouseEvent):void
    
    UpdateMousePositionAndHoldInfo (event);
    
-   KeyPressed (KeyCodes.LeftMouseButton, -1);
+   KeyPressed (KeyCodes.LeftMouseButton, 0);
    
    if (IsInteractiveEnabledNow ())
    {
@@ -213,7 +219,7 @@ public function OnMouseDown (event:MouseEvent):void
       _KeyboardDownEvent.shiftKey = event.shiftKey;
       _KeyboardDownEvent.altKey = event.altKey;
       //HandleKeyEventByKeyCode (_KeyboardDownEvent, true);
-      RegisterKeyboardEvent (_KeyboardDownEvent, mKeyDownEventHandlerLists);
+      RegisterKeyboardEvent (KeyCodes.LeftMouseButton, _KeyboardDownEvent, mKeyDownEventHandlerLists);
       
       // ...
       RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseDown]);
@@ -257,7 +263,7 @@ public function OnMouseUp (event:MouseEvent):void
       _KeyboardUpEvent.shiftKey = event.shiftKey;
       _KeyboardUpEvent.altKey = event.altKey;
       //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
-      RegisterKeyboardEvent (_KeyboardUpEvent, mKeyUpEventHandlerLists);
+      RegisterKeyboardEvent (KeyCodes.LeftMouseButton, _KeyboardUpEvent, mKeyUpEventHandlerLists);
       
       // ...
       RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseUp]);
@@ -283,7 +289,7 @@ public function OnMouseUp (event:MouseEvent):void
       mCachedSystemEvents.push ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
    }
    
-   KeyReleased (KeyCodes.LeftMouseButton);
+   KeyReleased (KeyCodes.LeftMouseButton, 0);
 }
 
 public function OnMouseMove (event:MouseEvent):void
@@ -356,13 +362,16 @@ public function OnKeyDown (event:KeyboardEvent):void
    // event handling can't be run simutaniously with PhysicsEngine.Step ().
    // in flash, this is not a problem. Be careful when porting to other platforms.
    
-   if (IsKeyHold (event.keyCode))
+   var exactKeyCode:int = GetExactKeyCode (event);
+   
+   if (IsKeyHold (exactKeyCode))
       return;
    
+trace ("down event.keyLocation = " + event.keyLocation);
    if (IsInteractiveEnabledNow ())
    {
-      KeyPressed (event.keyCode, event.charCode);
-      RegisterKeyboardEvent (event, mKeyDownEventHandlerLists);
+      KeyPressed (exactKeyCode, event.charCode);
+      RegisterKeyboardEvent (exactKeyCode, event, mKeyDownEventHandlerLists);
       //HandleKeyEventByKeyCode (event, true);
    }
    
@@ -374,28 +383,59 @@ public function OnKeyUp (event:KeyboardEvent):void
    // event handling can't be run simutaniously with PhysicsEngine.Step ().
    // in flash, this is not a problem. Be careful when porting to other platforms.
    
-   if (! IsKeyHold (event.keyCode))
+   var exactKeyCode:int = GetExactKeyCode (event);
+   
+trace ("up event.keyLocation = " + event.keyLocation + ", exactKeyCode = " + exactKeyCode);
+   if (! IsKeyHold (exactKeyCode))
       return;
    
    // commented off, because it seems not a good idea to ...
    // if (IsInteractiveEnabledNow ())
    {
       //HandleKeyEventByKeyCode (event, false);
-      RegisterKeyboardEvent (event, mKeyUpEventHandlerLists);
-      KeyReleased (event.keyCode);
+      RegisterKeyboardEvent (exactKeyCode, event, mKeyUpEventHandlerLists);
+      KeyReleased (exactKeyCode, event.charCode);
    }
    
    //trace ("Released: " + String.fromCharCode (event.charCode));
 }
 
-public function RegisterKeyboardEvent (event:KeyboardEvent, handleListArray:Array):void
+private function GetExactKeyCode (event:KeyboardEvent):int
 {
-   var keyCode:int = event.keyCode;
+   if (event.keyCode == Keyboard.CONTROL)
+   {
+      if (event.keyLocation == KeyLocation.RIGHT)
+      {
+         return KeyCodes.ControlRight;
+      }
+      else
+      {
+         return KeyCodes.ControlLeft;
+      }
+   }
+   if (event.keyCode == Keyboard.SHIFT)
+   {
+      if (event.keyLocation == KeyLocation.RIGHT)
+      {
+         return KeyCodes.ShiftRight;
+      }
+      else
+      {
+         return KeyCodes.ShiftLeft;
+      }
+   }
    
-   if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
+   return event.keyCode;
+}
+
+public function RegisterKeyboardEvent (exactKeyCode:int, event:KeyboardEvent, handleListArray:Array):void
+{
+   if (exactKeyCode < 0 || exactKeyCode >= KeyCodes.kNumKeys)
       return;
    
-   var handlerList:ListElement_EventHandler = handleListArray [keyCode];
+   // special for ctrl and shift
+   
+   var handlerList:ListElement_EventHandler = handleListArray [exactKeyCode];
    if (handlerList == null)
       return;
    
@@ -405,11 +445,11 @@ public function RegisterKeyboardEvent (event:KeyboardEvent, handleListArray:Arra
    var valueSource1:ValueSource_Direct = new ValueSource_Direct (null, valueSource2);
    var valueSource0:ValueSource_Direct = new ValueSource_Direct (null, valueSource1);
    
-   valueSource0.mValueObject = keyCode;
+   valueSource0.mValueObject = exactKeyCode;
    valueSource1.mValueObject = event.charCode;
    valueSource2.mValueObject = event.ctrlKey;
    valueSource3.mValueObject = event.shiftKey;
-   valueSource4.mValueObject = mKeyHoldInfo [keyCode][KeyHoldInfo_Ticks];
+   valueSource4.mValueObject = mKeyHoldInfo [exactKeyCode][KeyHoldInfo_Ticks];
    
    mCachedSystemEvents.push ([CachedEventType_General, handlerList, valueSource0]);
 }

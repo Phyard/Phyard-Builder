@@ -51,18 +51,26 @@ package common {
       public static const Slash:int = 191; // ;
       public static const BackQuote:int = 192; // ;
       
-      public static const LeftSquareBracket:int = 219; // ;
+      public static const SquareBracketLeft:int = 219; // ;
       public static const BackSlash:int = 220; // ;
-      public static const RightSquareBracket:int = 221; // ;
+      public static const SquareBracketRight:int = 221; // ;
       public static const Quote:int = 222; // ;
       
      
       // mouse
       public static const LeftMouseButton:int = 256;
+      
+      // virtual any key
       public static const VirtualAnyKeys:int = 257;
       
+      // virtual any key
+      public static const ControlLeft:int = 258;
+      public static const ControlRight:int = 259;
+      public static const ShiftLeft:int = 260;
+      public static const ShiftRight:int = 261;
+      
       //
-      public static const kNumKeys:int = 258;
+      public static const kNumKeys:int = 262;
       
       //
       private static var sAnyKeyCodes:Array = null;

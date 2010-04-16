@@ -1,5 +1,7 @@
 package player.world {
    
+   import flash.system.IME;
+   
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
@@ -11,6 +13,7 @@ package player.world {
    import flash.events.MouseEvent;
    import flash.events.KeyboardEvent;
    import flash.ui.Keyboard;
+   import flash.ui.KeyLocation;
    import flash.events.FocusEvent;
    
    import flash.utils.Dictionary;

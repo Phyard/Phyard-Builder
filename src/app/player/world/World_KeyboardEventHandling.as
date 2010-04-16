@@ -123,7 +123,7 @@
       mKeyHoldListHead = keyCode;
    }
 
-   private function KeyReleased (keyCode:int):void
+   private function KeyReleased (keyCode:int, charCode:int):void
    {
       if (keyCode < 0 || keyCode >= KeyCodes.kNumKeys)
          return;
@@ -137,7 +137,7 @@
       var prev:int = info [KeyHoldInfo_Prev   ];
       
       info [KeyHoldInfo_IsHold  ] = false;
-      info [KeyHoldInfo_CharCode] = 0;
+      info [KeyHoldInfo_CharCode] = charCode;
       info [KeyHoldInfo_Ticks   ] = 0;
       info [KeyHoldInfo_Next    ] = -1;
       info [KeyHoldInfo_Prev    ] = -1;
@@ -204,7 +204,7 @@
             _KeyboardUpEvent.ctrlKey  = IsKeyHold (Keyboard.CONTROL);;
             _KeyboardUpEvent.shiftKey = IsKeyHold (Keyboard.SHIFT);;
             //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
-            RegisterKeyboardEvent (_KeyboardUpEvent, mKeyUpEventHandlerLists);
+            RegisterKeyboardEvent (keyCode, _KeyboardUpEvent, mKeyUpEventHandlerLists);
          }
          
          keyCode = info [KeyHoldInfo_Next];

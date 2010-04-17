@@ -9,6 +9,8 @@ package editor.display {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
+   import editor.runtime.Runtime;
+   
    public class EffectMessagePopup extends EditingEffect 
    {
       
@@ -18,40 +20,39 @@ package editor.display {
       
       //
       public static const kMessageBoxHeightInterval:Number = 26.0;
-      public static const kDeltaFadeAlpha:Number = 0.006;
+      public static const kDeltaFadeAlpha:Number = 0.0025;
       public static const kToppestY:Number = 3.0;
+      public static const kLeftestX:Number = 3.0;
       
 //======================================================
 //
 //======================================================
       
-      //
-      private static var sEffectMessages:Array = new Array (20); //
-      
-      public static function UpdateMessagesPosition ():void
+      public static function UpdateMessagesPosition (container:Sprite):void
       {
+         var len:int = container.numChildren;
+         
+         if (len == 0)
+            return;
+         
          var i:int;
-         var len:int = sEffectMessages.length;
          var effect:EffectMessagePopup;
          
-         var finalY:Number = kToppestY;
+         var finalY:Number = kToppestY + kMessageBoxHeightInterval;
          
-         for (i = 0; i < len; ++ i)
+         for (i = len - 2; i >= 0; -- i)
          {
-            effect = sEffectMessages [i] as EffectMessagePopup;
-            if (effect != null)
+            effect = container.getChildAt (i) as EffectMessagePopup;
+            if (effect.mTargetY < finalY)
             {
+               effect.mTargetY += 5;
                if (effect.mTargetY > finalY)
                {
-                  effect.mTargetY -= 2;
-                  if (effect.mTargetY < finalY)
-                  {
-                     effect.mTargetY = finalY;
-                  }
+                  effect.mTargetY = finalY;
                }
-               
-               finalY = effect.mTargetY + kMessageBoxHeightInterval;
             }
+            
+            finalY = effect.mTargetY + kMessageBoxHeightInterval;
          }
       }
       
@@ -62,7 +63,7 @@ package editor.display {
       internal var mTargetX:Number;
       internal var mTargetY:Number;
       
-      public function EffectMessagePopup (text:String, initX:Number, initY:Number, bgColor:uint, yIsCenter:Boolean = true, textColor:uint = 0x0):void
+      public function EffectMessagePopup (text:String, bgColor:uint, textColor:uint = 0x0):void
       {
          // creating a bitmap instead of text filed os for the alpha of text field is unchangeable.
          var textBitemp:Bitmap = DisplayObjectUtil.CreateCacheDisplayObject (TextFieldEx.CreateTextField (text, true, bgColor, textColor, false, 0, false, false));
@@ -71,71 +72,43 @@ package editor.display {
          textBitemp.x = 1;
          textBitemp.y = 1;
          
-         var i:int;
-         var len:int = sEffectMessages.length;
-         for (i = len - 1; i >= 0; -- i)
-         {
-            if (sEffectMessages [i] != null)
-            {
-               break;
-            }
-         }
+         mTargetX = kLeftestX;
+         mTargetY = kToppestY;
          
-         ++ i;
-         if (i == len)
-         {
-            sEffectMessages.push (this);
-         }
+         if (Runtime.mEditorWorldView == null)
+            x = 300;
          else
-         {
-            sEffectMessages [i] = this;
-         }
-         
-         mTargetX = 3;
-         mTargetY = (i == 0) ? kToppestY : (sEffectMessages [i - 1] as EffectMessagePopup).mTargetY + kMessageBoxHeightInterval;
-         
-         x = initX - 0.5 * textBitemp.width;
-         y = initY;
-         if (yIsCenter)
-         {
-            y -= 0.5 * textBitemp.height;
-         }
+            x = 0.5 * Runtime.mEditorWorldView.GetViewWidth ();
+         x -= 0.5 * textBitemp.width;
+         y = kToppestY;
       }
       
       override public function Update ():void
       {
-         if (alpha < 1.0)
+         var dx:Number = mTargetX - x;
+         var dy:Number = mTargetY - y;
+         var length:Number = Math.sqrt (dx * dx + dy * dy);
+         
+         var speed:Number = 32;
+         
+         if (length < speed)
          {
-            var dx:Number = mTargetX - x;
-            var dy:Number = mTargetY - y;
-            var length:Number = Math.sqrt (dx * dx + dy * dy);
-            
-            var speed:Number = 32;
-            
-            if (length < speed)
-            {
-               x = mTargetX;
-               y = mTargetY;
-            }
-            else
-            {
-               x += dx * speed / length;
-               y += dy * speed / length;
-            }
+            x = mTargetX;
+            y = mTargetY;
+         }
+         else
+         {
+            x += dx * speed / length;
+            y += dy * speed / length;
          }
          
          alpha -= kDeltaFadeAlpha;
          if (alpha <= 0.0 )
          {
-            var index:int = sEffectMessages.indexOf (this);
-            if (index >= 0)
-            {
-               sEffectMessages [index] = null;
-            }
-            
             parent.removeChild (this);
          }
       }
+      
    }
    
 }

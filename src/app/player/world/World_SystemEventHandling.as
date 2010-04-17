@@ -364,10 +364,11 @@ public function OnKeyDown (event:KeyboardEvent):void
    
    var exactKeyCode:int = GetExactKeyCode (event);
    
+   trace ("exactKeyCode = " + exactKeyCode);
    if (IsKeyHold (exactKeyCode))
       return;
+   trace ("aaa");
    
-trace ("down event.keyLocation = " + event.keyLocation);
    if (IsInteractiveEnabledNow ())
    {
       KeyPressed (exactKeyCode, event.charCode);
@@ -385,7 +386,6 @@ public function OnKeyUp (event:KeyboardEvent):void
    
    var exactKeyCode:int = GetExactKeyCode (event);
    
-trace ("up event.keyLocation = " + event.keyLocation + ", exactKeyCode = " + exactKeyCode);
    if (! IsKeyHold (exactKeyCode))
       return;
    
@@ -402,28 +402,28 @@ trace ("up event.keyLocation = " + event.keyLocation + ", exactKeyCode = " + exa
 
 private function GetExactKeyCode (event:KeyboardEvent):int
 {
-   if (event.keyCode == Keyboard.CONTROL)
-   {
-      if (event.keyLocation == KeyLocation.RIGHT)
-      {
-         return KeyCodes.ControlRight;
-      }
-      else
-      {
-         return KeyCodes.ControlLeft;
-      }
-   }
-   if (event.keyCode == Keyboard.SHIFT)
-   {
-      if (event.keyLocation == KeyLocation.RIGHT)
-      {
-         return KeyCodes.ShiftRight;
-      }
-      else
-      {
-         return KeyCodes.ShiftLeft;
-      }
-   }
+   //if (event.keyCode == Keyboard.CONTROL)
+   //{
+   //   if (event.keyLocation == KeyLocation.RIGHT)
+   //   {
+   //      return KeyCodes.ControlRight;
+   //   }
+   //   else
+   //   {
+   //      return KeyCodes.ControlLeft;
+   //   }
+   //}
+   //if (event.keyCode == Keyboard.SHIFT)
+   //{
+   //   if (event.keyLocation == KeyLocation.RIGHT)
+   //   {
+   //      return KeyCodes.ShiftRight;
+   //   }
+   //   else
+   //   {
+   //      return KeyCodes.ShiftLeft;
+   //   }
+   //}
    
    return event.keyCode;
 }

@@ -502,6 +502,16 @@ package editor {
 // painted interfaces
 //==================================================================================
       
+      public function GetViewWidth ():Number
+      {
+         return mViewWidth;
+      }
+      
+      public function GetViewHeight ():Number
+      {
+         return mViewHeight;
+      }
+      
       public function UpdateChildComponents ():void
       {
          UpdateBackgroundAndWorldPosition ();
@@ -816,7 +826,7 @@ package editor {
             }
          }
          
-         EffectMessagePopup.UpdateMessagesPosition ();
+         EffectMessagePopup.UpdateMessagesPosition (mFloatingMessageLayer);
       }
       
 //==================================================================================
@@ -4805,7 +4815,7 @@ package editor {
             
             mWorldHistoryManager.ClearHistories ();
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading successed", EffectMessagePopup.kBgColor_OK));
             
             CreateUndoPoint ("Offline loading");
          }
@@ -4818,7 +4828,7 @@ package editor {
             if (Compile::Is_Debugging)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading failed", EffectMessagePopup.kBgColor_Error));
          }
       }
       
@@ -4900,7 +4910,7 @@ package editor {
             
             System.setClipboard(DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (newWorld)));
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export successed", EffectMessagePopup.kBgColor_OK));
          }
          catch (error:Error)
          {
@@ -4909,7 +4919,7 @@ package editor {
             if (Compile::Is_Debugging)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export failed", EffectMessagePopup.kBgColor_Error));
          }
          //finally // comment off for bug of secureSWF 
          {
@@ -4976,7 +4986,7 @@ package editor {
                MoveSelectedEntities (mViewCenterWorldX - centerX, mViewCenterWorldY - centerY, true, false);
             }
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import successed", EffectMessagePopup.kBgColor_OK));
             
             CreateUndoPoint ("Import");
          }
@@ -4987,7 +4997,7 @@ package editor {
             if (Compile::Is_Debugging)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error));
          }
       }
       
@@ -5147,7 +5157,7 @@ package editor {
             msgY = viewPoint.y;
          }
          
-         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo point created (" + description + ")", msgX, msgY, EffectMessagePopup.kBgColor_General, true));
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo point created (" + description + ")", EffectMessagePopup.kBgColor_General));
       }
       
       private function RestoreWorld (worldState:WorldState):void
@@ -5212,7 +5222,7 @@ package editor {
          
          if (worldState == null)
          {
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No undo points available", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_General, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No undo points available", EffectMessagePopup.kBgColor_General));
             return;
          }
          
@@ -5221,7 +5231,7 @@ package editor {
          worldState = worldState.GetNextWorldState ();
          if (worldState != null) // should not
          {
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo (" + worldState.GetDescription () + ")", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Undo (" + worldState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK));
          }
       }
       
@@ -5234,13 +5244,13 @@ package editor {
          
          if (worldState == null)
          {
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No redo points available", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_General, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("No redo points available", EffectMessagePopup.kBgColor_General));
             return;
          }
          
          RestoreWorld (worldState);
          
-         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Redo (" + worldState.GetDescription () + ")", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+         mFloatingMessageLayer.addChild (new EffectMessagePopup ("Redo (" + worldState.GetDescription () + ")", EffectMessagePopup.kBgColor_OK));
       }
       
       public var mUndoButtonContextMenu:ContextMenu = new ContextMenu ();
@@ -5296,7 +5306,7 @@ package editor {
                 //}
             }
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save", EffectMessagePopup.kBgColor_OK));
          }
          catch (error:Error)
          {
@@ -5305,7 +5315,7 @@ package editor {
             if (Compile::Is_Debugging)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick save failed", EffectMessagePopup.kBgColor_Error));
          }
       }
       
@@ -5354,14 +5364,14 @@ package editor {
             
             CreateUndoPoint ("Quick save data is loaed");
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load Successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load Successed", EffectMessagePopup.kBgColor_OK));
          }
          catch (error:Error)
          {
             if (Compile::Is_Debugging)
                throw error;
                
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load failed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load failed", EffectMessagePopup.kBgColor_Error));
          }
       }
       
@@ -5512,13 +5522,12 @@ package editor {
             
             if (returnCode == k_ReturnCode_Successed)
             {
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save Successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save Successed", EffectMessagePopup.kBgColor_OK));
             }
             else
             {
                //Alert.show("Some errors in saving! returnCode = " + returnCode + ", returnMessage = " + returnMessage, "Error");
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save failed,  returnCode = " + returnCode + ", returnMessage = " + returnMessage, 
-                                               mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save failed,  returnCode = " + returnCode + ", returnMessage = " + returnMessage,EffectMessagePopup.kBgColor_Error));
             }
          }
          catch (error:Error)
@@ -5528,7 +5537,7 @@ package editor {
             if (Compile::Is_Debugging)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error));
          }
       }
       
@@ -5601,12 +5610,12 @@ package editor {
                CreateUndoPoint ("Online data is loaded");
                
                //Alert.show("Loading Scuessed!", "Scuessed");
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load successed", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_OK, true));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load successed", EffectMessagePopup.kBgColor_OK));
             }
             else
             {
                //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error));
             }
          }
          catch (error:Error)
@@ -5619,7 +5628,7 @@ package editor {
             if (Compile::Is_Debugging)
                throw error;
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", mViewWidth * 0.5,mViewHeight * 0.5, EffectMessagePopup.kBgColor_Error, true));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error));
          }
       }
    }

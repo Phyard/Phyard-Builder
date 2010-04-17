@@ -63,47 +63,76 @@ package common {
       // virtual any key
       public static const VirtualAnyKeys:int = 257;
       
-      // virtual any key
-      public static const ControlLeft:int = 258;
-      public static const ControlRight:int = 259;
-      public static const ShiftLeft:int = 260;
-      public static const ShiftRight:int = 261;
+      // virtual ctrl and shift
+      //public static const ControlLeft:int = 258;
+      //public static const ControlRight:int = 259;
+      //public static const ShiftLeft:int = 260;
+      //public static const ShiftRight:int = 261;
       
       //
       public static const kNumKeys:int = 262;
       
       //
       private static var sAnyKeyCodes:Array = null;
-      public static function GetAnyKeyCodes ():Array
+      public static function GetKeyCodesFromSelectedKeyCodes (selectedKeys:Array):Array
       {
-         if (sAnyKeyCodes == null)
+         var returnKeyCodes:Array;
+         
+         if (selectedKeys == null)
          {
-            sAnyKeyCodes = new Array ();
+            returnKeyCodes = [];
+         }
+         else if (selectedKeys.indexOf (VirtualAnyKeys) < 0)
+         {
+            returnKeyCodes = selectedKeys.concat ();
+         }
+         else
+         {
+            if (sAnyKeyCodes == null)
+            {
+               sAnyKeyCodes = new Array ();
+               
+               var key:int;
+               for (key = Keyboard.SPACE; key <= Keyboard.DOWN; ++ key) // 32 - 40
+                  sAnyKeyCodes.push (key);
+               for (key = Key_0; key <= Key_9; ++ key) // 48 - 57
+                  sAnyKeyCodes.push (key);
+               for (key = Key_A; key <= Key_Z; ++ key) // 65 - 90
+                  sAnyKeyCodes.push (key);
+               for (key = Keyboard.NUMPAD_0; key <= Keyboard.NUMPAD_DIVIDE; ++ key) // 96 - 111
+                  sAnyKeyCodes.push (key);
+               for (key = Keyboard.F1; key <= Keyboard.F12; ++ key) // 112 - 123
+                  sAnyKeyCodes.push (key);
+               for (key = Semicolon; key <= BackQuote; ++ key) // 186 - 192
+                  sAnyKeyCodes.push (key);
+               for (key = SquareBracketLeft; key <= Quote; ++ key) // 219 - 222
+                  sAnyKeyCodes.push (key);
+               
+               sAnyKeyCodes.push (Keyboard.BACKSPACE); // 8
+               sAnyKeyCodes.push (Keyboard.TAB); // 9
+               sAnyKeyCodes.push (Keyboard.ENTER); // 13
+               sAnyKeyCodes.push (Keyboard.CAPS_LOCK); // 20
+               sAnyKeyCodes.push (Keyboard.ESCAPE); // 27
+               sAnyKeyCodes.push (Keyboard.INSERT); // 45
+               sAnyKeyCodes.push (Keyboard.DELETE); // 46
+               
+               //sAnyKeyCodes.push (Keyboard.SHIFT); // 16
+               //sAnyKeyCodes.push (Keyboard.CONTROL); // 17
+               //sAnyKeyCodes.push (ControlLeft); // 258
+               //sAnyKeyCodes.push (ControlRight); // 259
+               //sAnyKeyCodes.push (ShiftLeft); // 260
+               //sAnyKeyCodes.push (ShiftRight); // 261
+            }
             
-            var key:int;
-            for (key = Keyboard.SPACE; key <= Keyboard.DOWN; ++ key) // 32 - 40
-               sAnyKeyCodes.push (key);
-            for (key = Key_0; key <= Key_9; ++ key) // 48 - 57
-               sAnyKeyCodes.push (key);
-            for (key = Key_A; key <= Key_Z; ++ key) // 65 - 90
-               sAnyKeyCodes.push (key);
-            for (key = Keyboard.NUMPAD_0; key <= Keyboard.NUMPAD_DIVIDE; ++ key) // 96 - 111
-               sAnyKeyCodes.push (key);
-            for (key = Keyboard.F1; key <= Keyboard.F12; ++ key) // 112 - 123
-               sAnyKeyCodes.push (key);
+            returnKeyCodes = sAnyKeyCodes.concat ();
             
-            sAnyKeyCodes.push (Keyboard.BACKSPACE); // 8
-            sAnyKeyCodes.push (Keyboard.TAB); // 9
-            sAnyKeyCodes.push (Keyboard.ENTER); // 13
-            sAnyKeyCodes.push (Keyboard.SHIFT); // 16
-            sAnyKeyCodes.push (Keyboard.CONTROL); // 17
-            sAnyKeyCodes.push (Keyboard.CAPS_LOCK); // 20
-            sAnyKeyCodes.push (Keyboard.ESCAPE); // 27
-            sAnyKeyCodes.push (Keyboard.INSERT); // 45
-            sAnyKeyCodes.push (Keyboard.DELETE); // 46
+            if (selectedKeys.indexOf (LeftMouseButton) >= 0)
+            {
+               returnKeyCodes.push (LeftMouseButton);
+            }
          }
          
-         return sAnyKeyCodes;
+         return returnKeyCodes;
       }
    }
 }

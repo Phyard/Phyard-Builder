@@ -238,7 +238,7 @@ package editor.controls {
          for (i = 0; i < mSelectedKeyCodes.length; ++ i)
          {
             keyCode = mSelectedKeyCodes [i];
-            if (mSelectedKeyBitmaps [keyCode] == null)
+            if (mSelectedKeyBitmaps [keyCode] == null && sKeyBitmapClasses [keyCode] != null)
             {
                bitmap = new sKeyBitmapClasses [keyCode] ();
                mSelectedKeyBitmaps [keyCode] = bitmap;
@@ -248,7 +248,8 @@ package editor.controls {
                bitmap.y += mKeyboardBitmap.y + region [1];
             }
             
-            mSelectedKeyBitmaps [keyCode].visible = true;
+            if (mSelectedKeyBitmaps [keyCode] != null)
+               mSelectedKeyBitmaps [keyCode].visible = true;
          }
       }
       

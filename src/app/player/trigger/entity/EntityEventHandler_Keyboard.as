@@ -34,11 +34,8 @@ package player.trigger.entity
          {
             if (entityDefine.mKeyCodes != undefined)
             {
-               if (entityDefine.mKeyCodes.indexOf (KeyCodes.VirtualAnyKeys) < 0)
-                  mKeyCodes = entityDefine.mKeyCodes;
-               else
-                  mKeyCodes = KeyCodes.GetAnyKeyCodes ();
-               
+               mKeyCodes = KeyCodes.GetKeyCodesFromSelectedKeyCodes (entityDefine.mKeyCodes)
+               //trace ("mKeyCodes = " + mKeyCodes);
                mWorld.RegisterKeyboardEventHandler (this, mKeyCodes);
             }
          }

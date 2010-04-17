@@ -201,8 +201,8 @@
          {
             _KeyboardUpEvent.keyCode  = keyCode;
             _KeyboardUpEvent.charCode = info [KeyHoldInfo_CharCode];
-            _KeyboardUpEvent.ctrlKey  = IsKeyHold (Keyboard.CONTROL);;
-            _KeyboardUpEvent.shiftKey = IsKeyHold (Keyboard.SHIFT);;
+            _KeyboardUpEvent.ctrlKey  = IsKeyHold (Keyboard.CONTROL);
+            _KeyboardUpEvent.shiftKey = IsKeyHold (Keyboard.SHIFT);
             //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
             RegisterKeyboardEvent (keyCode, _KeyboardUpEvent, mKeyUpEventHandlerLists);
          }

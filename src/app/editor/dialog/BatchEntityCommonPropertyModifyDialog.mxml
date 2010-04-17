@@ -14,14 +14,14 @@
                <mx:Spacer width="100%"/>
                <mx:Label id="Label_Angle" enabled="false" text="Angle:" textAlign="right"/>
                <mx:TextInput id="Text_Angle" enabled="false" text="" width="100"/>
-               <mx:Label id="Label_AngleUnit" enabled="false" text="(degrees)" width="66" textAlign="right"/>
+               <mx:Label id="Label_AngleUnit" enabled="false" text="(degrees)" width="88" textAlign="left"/>
             </mx:HBox>
             <mx:HBox width="100%" verticalAlign="bottom">
                <mx:CheckBox id="CheckBox_Alpha_Modify" label="" click="Label_AlphaRangle.enabled=Label_Alpha.enabled=Text_Alpha.enabled=CheckBox_Alpha_Modify.selected;"/>
                <mx:Spacer width="100%"/>
                <mx:Label id="Label_Alpha" enabled="false" text="Alpha:" textAlign="right"/>
                <mx:TextInput id="Text_Alpha" enabled="false" text="" width="100"/>
-               <mx:Label id="Label_AlphaRangle" enabled="false" text="([0.0, 1.0])" width="66" textAlign="right"/>
+               <mx:Label id="Label_AlphaRangle" enabled="false" text="([0.0, 1.0])" width="88" textAlign="left"/>
             </mx:HBox>
             <mx:HBox width="100%" verticalAlign="bottom">
                <mx:CheckBox id="CheckBox_Visible_Modify" label="" click="CheckBox_Visible.enabled=CheckBox_Visible_Modify.selected;"/>

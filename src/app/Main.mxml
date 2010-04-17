@@ -1189,52 +1189,53 @@
                var entityIds:Array = new Array ();
                for each (var idStr:String in idStrs)
                {
-                  var entityId:int = parseInt (idStr);
+                  var entityId:Number = parseInt (idStr);
                   if (! isNaN (entityId))
                   {
-                     entityIds.push (entityId);
+                     entityIds.push (int(entityId));
                   }
                }
                
                if (entityIds.length == 0)
                   return null;
                
+               trace ("entityIds = " + entityIds);
                return entityIds;
             }
             
             private function OnGoToEntity ():void
             {
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               
-               MainView.GoToEntity (ids);
+               if (ids != null)
+                  MainView.GoToEntity (ids);
             }
             
             private function SelectNewEntitiesWithoutBrothers (event:ContextMenuEvent):void
             {
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               
-               MainView.SelectEntityByIds (ids, true, false);
+               if (ids != null)
+                  MainView.SelectEntityByIds (ids, true, false);
             }
             
             private function SelectNewEntitiesWithBrothers (event:ContextMenuEvent):void
             {
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               
-               MainView.SelectEntityByIds (ids, true, true);
+               if (ids != null)
+                  MainView.SelectEntityByIds (ids, true, true);
             }
             
             private function SelectMoreEntitiesWithoutBrothers (event:ContextMenuEvent):void
             {
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               
-               MainView.SelectEntityByIds (ids, false, false);
+               if (ids != null)
+                  MainView.SelectEntityByIds (ids, false, false);
             }
             
             private function SelectMoreEntitiesWithBrothers (event:ContextMenuEvent):void
             {
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
-               
-               MainView.SelectEntityByIds (ids, false, true);
+               if (ids != null)
+                  MainView.SelectEntityByIds (ids, false, true);
             }
             
             private function StatusBar_SetMainSelectedEntityInfo (info:String):void

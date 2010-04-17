@@ -145,11 +145,7 @@ package player.entity {
                {
                   mEventHandler = new EntityEventHandler_Keyboard (mWorld);
                   eventHandlerDefine.mEventId = entityDefine.mKeyboardEventId != undefined ? entityDefine.mKeyboardEventId : CoreEventIds.ID_OnWorldKeyHold;
-                  
-                  if (entityDefine.mKeyCodes.indexOf (KeyCodes.VirtualAnyKeys) < 0)
-                     eventHandlerDefine.mKeyCodes = entityDefine.mKeyCodes;
-                  else
-                     eventHandlerDefine.mKeyCodes = KeyCodes.GetAnyKeyCodes ();
+                  eventHandlerDefine.mKeyCodes = entityDefine.mKeyCodes;
                }
                else
                {

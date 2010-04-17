@@ -538,7 +538,7 @@ package player.trigger {
       {
          var char_code:int = int (valueSource.EvalateValueObject ());
          
-         valueTarget.AssignValueObject (String.fromCharCode (char_code));
+         valueTarget.AssignValueObject (char_code == 0 ? "" : String.fromCharCode (char_code));
       }
       
       public static function NumberToString (valueSource:ValueSource, valueTarget:ValueTarget):void

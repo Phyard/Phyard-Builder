@@ -41,7 +41,7 @@ package editor.entity {
       
       override public function GetTypeName ():String
       {
-         return "Powner Source";
+         return "Power Source";
       }
       
       override public function GetPhysicsShapesCount ():uint

@@ -45,6 +45,8 @@ public function ApplyLinearImpulse (worldPulseX:Number, worldPulseY:Number, worl
       return;
    
    mPhysicsProxyBody.AddLinearImpulseAtPoint (worldPulseX, worldPulseY, worldPointX, worldPointY);
+   
+   FlagVelocitySynchronized (false);
 }
 
 public function ApplyAngularImpulse (angularImpulse:Number):void
@@ -53,5 +55,6 @@ public function ApplyAngularImpulse (angularImpulse:Number):void
       return;
    
    mPhysicsProxyBody.AddAngularImpulse (angularImpulse);
+   
+   FlagVelocitySynchronized (false);
 }
-

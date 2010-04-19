@@ -76,17 +76,40 @@ package editor.trigger.entity {
          {
             var info:String = "";
             var count:int = mInputEntities1.length < mInputEntities2.length ? mInputEntities1.length : mInputEntities2.length;
+            var entity1:Entity;
+            var entity2:Entity;
             for (var i:int = 0; i < count; ++ i)
             {
                if (i > 0)
-               info = info + ",";
-               info = info + "(" + ( mInputEntities1 [i] as Entity).GetCreationOrderId () + "-" + ( mInputEntities2 [i] as Entity).GetCreationOrderId () + ")";
+               {
+                  info = info + ",";
+               }
+               
+               info = info + "(";
+               
+               entity1 = mInputEntities1 [i] as Entity;
+               if (entity1 != null)
+               {
+                  info = info + entity1.GetCreationOrderId ();
+               }
+               
+               info = info + "-";
+               
+               entity2 = mInputEntities2 [i] as Entity;
+               if (entity2 != null)
+               {
+                  info = info + entity2.GetCreationOrderId ();
+               }
+               
+               info = info + ")";
             }
             return info;
          }
          else
          {
-            return "(" + mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities1).toString () + ")-(" + mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities2).toString () + ")";
+            var ids1:Array = mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities1);
+            var ids2:Array = mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities2);
+            return "(" + (ids1 == null ? "" : ids1.toString ()) + ")-(" + (ids2 == null ? "" : ids2.toString ()) + ")";
          }
       }
       

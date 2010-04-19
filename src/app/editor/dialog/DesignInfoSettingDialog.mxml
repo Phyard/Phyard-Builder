@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
-    title="Desing Info Setting" width="600"  creationComplete="OnInitPanel()">
+    title="Design Info Setting" width="600"  creationComplete="OnInitPanel()">
 
     <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
       <mx:Spacer width="100%"/>

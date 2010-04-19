@@ -48,7 +48,7 @@ package common {
       public static const DefaultPlayerWidth:int = 600;
       public static const DefaultPlayerHeight:int = 600;
       
-      public static const WorldFieldMargin:int = 300; // how much the entites can be put outside of the player field.
+      public static const WorldFieldMargin:int = 516; // how much the entites can be put outside of the player field.
       
       public static const WorldStepTimeInterval_SpeedX2:Number = 1.0 / 30;
       public static const WorldStepTimeInterval_SpeedX1:Number = 0.5 * WorldStepTimeInterval_SpeedX2;

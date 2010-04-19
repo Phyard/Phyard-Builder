@@ -283,6 +283,17 @@ package player.entity {
       internal function FlagVelocitySynchronized (syned:Boolean):void
       {
          mLastVelocityUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
+         
+         if (! syned)
+         {
+            var shape:EntityShape = mShapeListHead;
+            while (shape != null)
+            {
+               shape.FlagVelocitySynchronized (syned);
+               
+               shape = shape.mNextShapeInBody;
+            }
+         }
       }
       
       internal var mLinearVelocityX:Number = 0.0;

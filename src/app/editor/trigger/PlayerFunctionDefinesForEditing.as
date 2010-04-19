@@ -170,7 +170,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Milliseconds"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_IsKeyHold, system_package, "Is Key Hold", "@&0 = Is the key (key code is $0) hold?", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_IsKeyHold, system_package, "Is Key Held", "@&0 = Is the key (key code is $0) held?", null,
                      [
                              new VariableDefinitionNumber ("The Key", null, {mValueLists: Lists.mKeyCodeList}), 
                      ],

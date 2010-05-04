@@ -50,7 +50,7 @@ package editor.trigger.entity {
       
       override public function GetTypeName ():String
       {
-         return "Task";
+         return "Task Aggregator";
       }
       
       public function ValidateEntityLinks ():void

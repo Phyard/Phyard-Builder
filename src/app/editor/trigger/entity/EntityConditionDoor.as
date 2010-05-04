@@ -63,7 +63,7 @@ package editor.trigger.entity {
       
       override public function GetTypeName ():String
       {
-         return "Condition Door";
+         return "Condition Gate";
       }
       
       public function SetAsAnd (isAnd:Boolean):void

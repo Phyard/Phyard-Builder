@@ -454,10 +454,10 @@ package player.trigger {
          var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
          
          valueSource = valueSource.mNextValueSourceInList;
-         var string1:Boolean = valueSource.EvalateValueObject () as String;
+         var string1:String = valueSource.EvalateValueObject () as String;
          
          valueSource = valueSource.mNextValueSourceInList;
-         var string2:Boolean = valueSource.EvalateValueObject () as String;
+         var string2:String = valueSource.EvalateValueObject () as String;
          
          valueTarget.AssignValueObject (condtion ? string1 : string2);
       }

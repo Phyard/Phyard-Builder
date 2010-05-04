@@ -18,7 +18,7 @@ package editor.entity {
       public var mAnchor1:SubEntityDistanceAnchor;
       public var mAnchor2:SubEntityDistanceAnchor;
       
-      protected var mBreakDeltaLength:Number = 0.0;
+      protected var mBreakDeltaLength:Number = 0.00005;
       
       public function EntityJointDistance (world:World)
       {

@@ -1734,6 +1734,9 @@ package editor {
          if (Runtime.HasSettingDialogOpened ())
             return;
          
+         Runtime.SetHasInputFocused (false);
+         stage.focus = this;
+         
          DestroyDesignPlayer ();
          
          var useQuickMethod:Boolean;
@@ -1862,6 +1865,9 @@ package editor {
             mEditorWorld.GetCollisionManager ().SetChanged (false);
             CreateUndoPoint ("Modify collision categories");
          }
+         
+         Runtime.SetHasInputFocused (false);
+         stage.focus = this;
       }
       
 //============================================================================
@@ -2688,6 +2694,9 @@ package editor {
       {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
+         
+         Runtime.SetHasInputFocused (false);
+         stage.focus = this;
          
          CheckModifierKeys (event);
          _isZeroMove = true;
@@ -5433,7 +5442,8 @@ package editor {
             revisionComment = options.mRevisionComment.substr (0, 100);
          }
          var designDataRevisionComment:ByteArray = new ByteArray ();
-         designDataRevisionComment.writeMultiByte (revisionComment, "utf-8");
+         //designDataRevisionComment.writeMultiByte (revisionComment, "utf-8"); // has bug on linux
+         designDataRevisionComment.writeUTFBytes (revisionComment);
          designDataRevisionComment.position = 0;
          
          //

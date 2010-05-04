@@ -80,12 +80,18 @@ package common {
       public static function Number2FixedString (number:Number, numFractionDigits:uint):String
       {
          var min:Number = sMinimumValues_Fixed [numFractionDigits];
-         if (number < min)
+         var abs_number:Number = Math.abs (number);
+         if (abs_number < min)
          {
             if (number >= sHalfMinimumValues_Fixed [numFractionDigits])
-               number = min;
+               abs_number = min;
             else
-               number = kZero;
+               abs_number = kZero;
+            
+            if (number < 0)
+               number = - abs_number;
+            else
+               number = abs_number;
          }
          return number.toFixed (numFractionDigits);
       }

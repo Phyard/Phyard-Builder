@@ -42,7 +42,7 @@
                </mx:HBox>
                <mx:HBox width="100%">
                   <mx:Spacer width="2"/>
-                  <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth between Limits"/>
+                  <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth Between Limits"/>
                </mx:HBox>
             </mx:VBox>
 

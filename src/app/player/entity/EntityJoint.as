@@ -88,6 +88,8 @@ package player.entity {
             }
 
             // both anchors should not be null now
+            mAnchor1.SetMainEntity (this);
+            mAnchor2.SetMainEntity (this);
             mAnchor1.mJoint = this;
             mAnchor2.mJoint = this;
             mAnchor1.mAnotherJointAnchor = mAnchor2;

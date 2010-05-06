@@ -279,21 +279,18 @@ public function Update(listener:b2ContactListener
 		m_flags &= ~e_touchingFlag;
 	}
 
-	if (wasTouching == false && touching == true)
+	if (wasTouching == false && touching == true && listener != null)
 	{
 		listener.BeginContact(this);
 	}
 
-	if (wasTouching == true && touching == false)
+	if (wasTouching == true && touching == false && listener != null)
 	{
 		listener.EndContact(this);
 	}
 
-	if (sensor == false)
+	if (sensor == false && preSolveLinster != null)
 	{
-		if (preSolveLinster != null) // hacking
-		{
-			preSolveLinster.PreSolve(this, oldManifold);
-		}
+		preSolveLinster.PreSolve(this, oldManifold);
 	}
 }

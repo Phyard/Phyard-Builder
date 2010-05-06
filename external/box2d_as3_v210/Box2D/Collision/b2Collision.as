@@ -130,12 +130,6 @@ package Box2D.Collision
 			//@see b2RayCastOutput.as
 		//};
 
-		/// A line segment.
-		//struct b2Segment
-		//{
-			//@see b2Segment.as
-		//};
-
 		/// An axis aligned bounding box.
 		//struct b2AABB
 		//{

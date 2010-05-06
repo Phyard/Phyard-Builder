@@ -49,7 +49,7 @@ public function Destroy(c:b2Contact):void
 	var bodyA:b2Body = fixtureA.GetBody();
 	var bodyB:b2Body = fixtureB.GetBody();
 
-	if (c.IsTouching())
+	if (m_contactListener != null && c.IsTouching())
 	{
 		m_contactListener.EndContact(c);
 	}
@@ -140,7 +140,7 @@ public function Collide():void
 			}
 
 			// Check user filtering.
-			if (m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
+			if (m_contactFilter != null && m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
 			{
 				var cNuke3:b2Contact = c;
 				c = cNuke3.GetNext();
@@ -221,7 +221,7 @@ public function AddPair(proxyUserDataA:Object, proxyUserDataB:Object):void
 	}
 
 	// Check user filtering.
-	if (m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
+	if (m_contactFilter != null && m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
 	{
 		return;
 	}

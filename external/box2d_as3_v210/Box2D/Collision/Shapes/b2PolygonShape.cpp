@@ -358,8 +358,16 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 		}
 
 		output.fraction = t;
-		output.normal.x = normal.x;
-		output.normal.y = normal.y;
+		if (numerator > 0.0)
+		{
+			output.normal.x = - normal.x;
+			output.normal.y = - normal.y;
+		}
+		else
+		{
+			output.normal.x = normal.x;
+			output.normal.y = normal.y;
+		}
 		return true;
 	}
 	else
@@ -406,7 +414,11 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 				}
 			}
 
-			if (upper < lower - b2Settings.b2_epsilon)
+			// The use of epsilon here causes the assert on lower to trip
+			// in some cases. Apparently the use of epsilon was to make edge
+			// shapes work, but now those are handled separately.
+			//if (upper < lower - b2_epsilon)
+			if (upper < lower)
 			{
 				return false;
 			}

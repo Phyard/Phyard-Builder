@@ -16,25 +16,18 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-//#ifndef B2_NULL_CONTACT_H
-//#define B2_NULL_CONTACT_H
+//#include <Box2D/Common/b2Settings.h>
+//#include <cstdlib>
 
-package Box2D.Dynamics.Contacts
-{
-	//#include <Box2D/Dynamics/Contacts/b2Contact.h>
-	import Box2D.Common.b2Sweep;
+public static const b2_version:b2Version = new b2Version (2, 1, 3);
 
-	public class b2NullContact extends b2Contact
-	{
-	//public:
-		public function b2NullContact() {super (null, null);}
-		override public function Evaluate():void {}
-		override public function ComputeTOI(sweepA:b2Sweep, sweepB:b2Sweep):Number
-		{
-			//B2_NOT_USED(sweepA);
-			//B2_NOT_USED(sweepB);
-			return 1.0;
-		}
-	} // class
-} // package
-//#endif
+// Memory allocators. Modify these to use your own allocator.
+//void* b2Alloc(int32 size)
+//{
+//	return malloc(size);
+//}
+//
+//void b2Free(void* mem)
+//{
+//	free(mem);
+//}

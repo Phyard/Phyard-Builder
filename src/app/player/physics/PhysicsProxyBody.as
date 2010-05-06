@@ -189,7 +189,7 @@ package player.physics {
 
       public function AddLinearImpulseAtPoint (worldLinearImpulseX:Number, worldLinearImpulseY:Number, worldX:Number, worldY:Number):void
       {
-         _b2Body.ApplyImpulse (
+         _b2Body.ApplyLinearImpulse (
                   b2Vec2.b2Vec2_From2Numbers (worldLinearImpulseX, worldLinearImpulseY),
                   b2Vec2.b2Vec2_From2Numbers (worldX, worldY)
                );

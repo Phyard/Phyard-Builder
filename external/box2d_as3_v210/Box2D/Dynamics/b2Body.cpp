@@ -103,8 +103,6 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 	m_I = 0.0;
 	m_invI = 0.0;
 
-	m_inertiaScale = bd.inertiaScale;
-
 	m_userData = bd.userData;
 
 	m_fixtureList = null;
@@ -308,7 +306,9 @@ public function ResetMassData():void
 	// Static and kinematic bodies have zero mass.
 	if (m_type == b2_staticBody || m_type == b2_kinematicBody)
 	{
-		//>> hacking
+		//m_sweep.c0 = m_sweep.c = m_xf.position;
+		
+		//>> hacking, in c++, here only one above calling
 		var num:int = 0;
 		for (f = m_fixtureList; f != null; f = f.m_next)
 		{
@@ -385,7 +385,6 @@ public function ResetMassData():void
  	{
 		// Center the inertia about the center of mass.
 		m_I -= m_mass * b2Math.b2Dot2 (center, center);
-		m_I *= m_inertiaScale;
 		//b2Assert(m_I > 0.0f);
 		m_invI = 1.0 / m_I;
 	}

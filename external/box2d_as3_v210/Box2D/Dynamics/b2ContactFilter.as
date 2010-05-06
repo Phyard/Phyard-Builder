@@ -21,17 +21,6 @@ package Box2D.Dynamics
 			return collide;
 		}
 
-		/// Return true if the given shape should be considered for ray intersection
-		public function RayCollide(userData:Object, fixture:b2Fixture):Boolean
-		{
-			// By default, cast userData as a fixture, and then collide if the shapes would collide
-			if (userData == null)
-			{
-				return true;
-			}
-
-			return ShouldCollide(userData as b2Fixture,fixture);
-		}
 		
 	} // class
 } // package

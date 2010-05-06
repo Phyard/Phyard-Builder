@@ -62,7 +62,7 @@ package Box2D.Dynamics
 		/// @param shape the shape to be cloned.
 		/// @param density the shape density (set to zero for static bodies).
 		/// @warning This function is locked during callbacks.
-		//b2Fixture* CreateFixture(const b2Shape* shape, float32 density = 0.0f);
+		//b2Fixture* CreateFixture(const b2Shape* shape, float32 density);
 
 		/// Destroy a fixture. This removes the fixture from the broad-phase and
 		/// destroys all contacts associated with this fixture. This will
@@ -75,6 +75,7 @@ package Box2D.Dynamics
 
 		/// Set the position of the body's origin and rotation.
 		/// This breaks any contacts and wakes the other bodies.
+		/// Manipulating a body's transform may cause non-physical behavior.
 		/// @param position the world position of the body's local origin.
 		/// @param angle the world rotation in radians.
 		//void SetTransform(const b2Vec2& position, float32 angle);
@@ -131,7 +132,11 @@ package Box2D.Dynamics
 		/// is not at the center of mass. This wakes up the body.
 		/// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
 		/// @param point the world position of the point of application.
-		//void ApplyImpulse(const b2Vec2& impulse, const b2Vec2& point);
+		//void ApplyLinearImpulse(const b2Vec2& impulse, const b2Vec2& point);
+
+		/// Apply an angular impulse.
+		/// @param impulse the angular impulse in units of kg*m*m/s
+		//void ApplyAngularImpulse(float32 impulse);
 
 		/// Get the total mass of the body.
 		/// @return the mass, usually in kilograms (kg).
@@ -141,8 +146,7 @@ package Box2D.Dynamics
 		/// @return the rotational inertia, usually in kg-m^2.
 		//float32 GetInertia() const;
 
-		/// Get the mass data of the body. The rotational inertia is relative
-		/// to the center of mass.
+		/// Get the mass data of the body.
 		/// @return a struct containing the mass, inertia and center of the body.
 		//void GetMassData(b2MassData* data) const;
 
@@ -150,7 +154,6 @@ package Box2D.Dynamics
 		/// Note that this changes the center of mass position.
 		/// Note that creating or destroying fixtures can also alter the mass.
 		/// This function has no effect if the body isn't dynamic.
-		/// @warning The supplied rotational inertia is assumed to be relative to the center of mass.
 		/// @param massData the mass properties.
 		//void SetMassData(const b2MassData* data);
 
@@ -329,8 +332,6 @@ package Box2D.Dynamics
 		public var m_xf:b2Transform = new b2Transform ();		// the body origin transform
 		public var m_sweep:b2Sweep = new b2Sweep ();	// the swept motion for CCD
 
-		public var m_inertiaScale:Number;
-
 		public var m_linearVelocity:b2Vec2 = new b2Vec2 ();
 		public var m_angularVelocity:Number;
 
@@ -348,6 +349,8 @@ package Box2D.Dynamics
 		public var m_contactList:b2ContactEdge;
 
 		public var m_mass:Number, m_invMass:Number;
+		
+		// Rotational inertia about the center of mass.
 		public var m_I:Number, m_invI:Number;
 
 		public var m_linearDamping:Number;
@@ -441,13 +444,13 @@ package Box2D.Dynamics
 
 		public function GetInertia():Number
 		{
-			return m_I;
+			return m_I + m_mass * b2Math.b2Dot2(m_sweep.localCenter, m_sweep.localCenter);
 		}
 
 		public function GetMassData(data:b2MassData):void
 		{
 			data.mass = m_mass;
-			data.I = m_I;
+			data.I = m_I + m_mass * b2Math.b2Dot2(m_sweep.localCenter, m_sweep.localCenter);
 			//data->center = m_sweep.localCenter;
 			data.center.x = m_sweep.localCenter.x;
 			data.center.y = m_sweep.localCenter.y;
@@ -708,7 +711,7 @@ package Box2D.Dynamics
 			m_torque += torque;
 		}
 
-		public function ApplyImpulse(impulse:b2Vec2, point:b2Vec2):void
+		public function ApplyLinearImpulse(impulse:b2Vec2, point:b2Vec2):void
 		{
 			if (m_type != b2_dynamicBody)
 			{
@@ -727,6 +730,26 @@ package Box2D.Dynamics
 			tempV.x = point.x - m_sweep.c.x;
 			tempV.y = point.y - m_sweep.c.y;
 			m_angularVelocity += m_invI * b2Math.b2Cross2 (tempV, impulse);
+		}
+
+		public function ApplyAngularImpulse (impulse:Number):void
+		{
+			if (m_type != b2_dynamicBody)
+			{
+				return;
+			}
+
+			if (IsFixedRotation ())
+			{
+				return;
+			}
+
+			if (IsAwake() == false)
+			{
+				SetAwake(true);
+			}
+
+			m_angularVelocity += m_invI * impulse;
 		}
 
 		public function SynchronizeTransform():void
@@ -836,26 +859,6 @@ package Box2D.Dynamics
 			
 			// ...
 			return true; //new b2Vec2.b2Vec2_From2Numbers (dx, dy);
-		}
-
-		public function ApplyAngularImpulse (angularImpulse:Number):void
-		{
-			if (m_type != b2_dynamicBody)
-			{
-				return;
-			}
-
-			if (IsFixedRotation ())
-			{
-				return;
-			}
-
-			if (IsAwake() == false)
-			{
-				SetAwake(true);
-			}
-
-			m_angularVelocity += m_invI * angularImpulse;
 		}
 
 	} // class

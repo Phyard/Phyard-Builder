@@ -4,7 +4,7 @@ package common {
    public class Config
    {
       // the version number is a hex number, but there is no 0x010A, only 0x0110
-      public static const VersionNumber:int = 0x0110;
+      public static const VersionNumber:int = 0x0150;
       
       public static const EnablePageAnalytics:Boolean = false;
       

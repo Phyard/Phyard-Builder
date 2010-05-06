@@ -56,16 +56,23 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 	const proxyA:b2DistanceProxy = input.proxyA;
 	const proxyB:b2DistanceProxy = input.proxyB;
 
-	var sweepA:b2Sweep = input.sweepA; //.Clone ();
-	var sweepB:b2Sweep = input.sweepB; //.Clone ();
+	var sweepA:b2Sweep = input.sweepA.Clone ();
+	var sweepB:b2Sweep = input.sweepB.Clone ();
+
+	// Large rotations can make the root finder fail, so we normalize the
+	// sweep angles.
+	sweepA.Normalize();
+	sweepB.Normalize();
+
 	var tMax:Number = input.tMax;
 
-	var target:Number = b2Settings.b2_linearSlop;
+	var totalRadius:Number = proxyA.m_radius + proxyB.m_radius;
+	var target:Number = Math.max(b2Settings.b2_linearSlop, totalRadius - 3.0 * b2Settings.b2_linearSlop);
 	var tolerance:Number = 0.25 * b2Settings.b2_linearSlop;
 	//b2Assert(target > tolerance);
 
 	var t1:Number = 0.0;
-	const k_maxIterations:int = 1000;	// TODO_ERIN b2Settings
+	const k_maxIterations:int = 20;	// TODO_ERIN b2Settings
 	var iter:int = 0;
 
 	// Prepare input for distance query.
@@ -99,9 +106,17 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 			break;
 		}
 
+		if (distanceOutput.distance < target + tolerance)
+		{
+			// Victory!
+			output.state = b2TOIOutput.e_touching;
+			output.t = t1;
+			break;
+		}
+
 		// Initialize the separating axis.
 		var fcn:b2SeparationFunction = sSeparationFunction;
-		fcn.Initialize(cache, proxyA, sweepA, proxyB, sweepB);
+		fcn.Initialize(cache, proxyA, sweepA, proxyB, sweepB, t1);
 
 //#if 0
 //		// Dump the curve seen by the root finder
@@ -133,6 +148,7 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 		// resolving the deepest point. This loop is bounded by the number of vertices.
 		var done:Boolean = false;
 		var t2:Number = tMax;
+		var pushBackIter:int = 0;
 		for (;;)
 		{
 			// Find the deepest point at t2. Store the witness point indices.
@@ -151,13 +167,11 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 				break;
 			}
 
-			// Is the final configuration touching?
+			// Has the separation reached tolerance?
 			if (s2 > target - tolerance)
 			{
-				// Victory!
-				output.state = b2TOIOutput.e_touching;
-				output.t = t2;
-				done = true;
+				// Advance the sweeps
+				t1 = t2;
 				break;
 			}
 
@@ -233,6 +247,13 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 			}
 
 			b2_toiMaxRootIters = Math.max (b2_toiMaxRootIters, rootIterCount);
+
+			++pushBackIter;
+
+			if (pushBackIter == b2Settings.b2_maxPolygonVertices)
+			{
+				break;
+			}
 		}
 
 		++iter;

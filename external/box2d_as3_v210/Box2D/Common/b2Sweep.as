@@ -47,6 +47,15 @@ package Box2D.Common
 			xf.position.y -= vec2.y;
 		}
 
+		/// Normalize an angle in radians to be between -pi and pi
+		public function Normalize():void
+		{
+			const twoPi:Number = 2.0 * Math.PI;
+			var d:Number =  twoPi * Math.floor (a0 / twoPi);
+			a0 -= d;
+			a -= d;
+		}
+
 		/// Advance the sweep forward, yielding a new initial state.
 		/// @param t the new initial time.
 		public function Advance(t:Number):void

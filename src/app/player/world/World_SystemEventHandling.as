@@ -200,6 +200,12 @@ private var _KeyboardUpEvent:KeyboardEvent = new KeyboardEvent (KeyboardEvent.KE
 
 public function OnMouseDown (event:MouseEvent):void
 {
+   // sometime, user release mouse out of world, ...
+   if (IsKeyHold (KeyCodes.LeftMouseButton))
+   {
+      OnMouseUp (event);
+   }
+   
    // ...
    SetCurrentMode (new ModeMoveWorldScene (this));
    
@@ -250,6 +256,9 @@ public function OnMouseUp (event:MouseEvent):void
       mCurrentMode.OnMouseUp (event.stageX, event.stageY);
    
    UpdateMousePositionAndHoldInfo (event);
+   
+   if (! IsKeyHold (KeyCodes.LeftMouseButton))
+      return;
    
    // moved to bottom
    //KeyReleased (KeyCodes.LeftMouseButton);
@@ -364,10 +373,8 @@ public function OnKeyDown (event:KeyboardEvent):void
    
    var exactKeyCode:int = GetExactKeyCode (event);
    
-   trace ("exactKeyCode = " + exactKeyCode);
    if (IsKeyHold (exactKeyCode))
       return;
-   trace ("aaa");
    
    if (IsInteractiveEnabledNow ())
    {

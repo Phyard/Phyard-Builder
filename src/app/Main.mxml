@@ -10,7 +10,6 @@
          height="100%"
          borderStyle="solid"
          borderThickness="1"
-         scriptTimeLimit="6"
          creationComplete="InitApp()">
 
    <mx:ApplicationControlBar backgroundColor="0xA0A0A0" dock="true" paddingTop="1" paddingBottom="1" verticalAlign="bottom">
@@ -1201,7 +1200,6 @@
                if (entityIds.length == 0)
                   return null;
                
-               trace ("entityIds = " + entityIds);
                return entityIds;
             }
             

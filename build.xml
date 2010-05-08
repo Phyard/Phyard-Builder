@@ -132,6 +132,7 @@
       
       <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
          <arg line="-debug=${--debug}"/>
+         <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
          <arg line="-define+=App::Default_Width,${--width}" />
          <arg line="-define+=App::Default_Height,${--height}" />
@@ -228,6 +229,7 @@
       
       <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
          <arg line="-debug=${--debug}"/>
+         <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
          <arg line="-define+=App::Default_Width,${--width}" />
          <arg line="-define+=App::Default_Height,${--height}" />
@@ -327,6 +329,7 @@
       
       <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
          <arg line="-debug=${--debug}"/>
+         <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
          <arg line="-define+=App::Default_Width,${--width}" />
          <arg line="-define+=App::Default_Height,${--height}" />
@@ -417,6 +420,7 @@
       
       <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
          <arg line="-debug=${--debug}"/>
+         <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
          <arg line="-define+=App::Default_Width,${--width}" />
          <arg line="-define+=App::Default_Height,${--height}" />
@@ -523,6 +527,7 @@
       
       <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
          <arg line="-debug=${--debug}"/>
+         <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
          <arg line="-define+=App::Default_Width,${--width}" />
          <arg line="-define+=App::Default_Height,${--height}" />

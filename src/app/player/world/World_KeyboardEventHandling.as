@@ -63,9 +63,12 @@
       mKeyboardEventHandlerValueSource2.mValueObject = IsKeyHold (Keyboard.CONTROL);
       mKeyboardEventHandlerValueSource3.mValueObject = IsKeyHold (Keyboard.SHIFT);
       
+  var num:int = 0;
       var keyCode:int = mKeyHoldListHead;
       while (keyCode >= 0)
       {
+  if (++ num > 1)
+    trace (num + ", keyCode = " + keyCode);
          info = mKeyHoldInfo [keyCode];
          ticks = info [KeyHoldInfo_Ticks];
          if (ticks > 0)
@@ -157,7 +160,6 @@
       {
          mKeyHoldListHead = next;
       }
-      
    }
 
    public function IsKeyHold (keyCode:int):Boolean

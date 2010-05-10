@@ -144,6 +144,8 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
    {
       body = bodiesToTeleport [i] as EntityBody;
       
+      body.SetSleeping (false);
+      
       dx = body.mPositionX - oldPositionX;
       dy = body.mPositionY - oldPositionY;
       

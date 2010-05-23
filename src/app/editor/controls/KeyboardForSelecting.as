@@ -163,8 +163,8 @@ package editor.controls {
          
          sKeyRegions [KeyCodes.Quote]     = [299, 72, 22, 22];
          sKeyRegions [KeyCodes.BackQuote] = [9, 24, 22, 22];
-         sKeyRegions [KeyCodes.Slash]     = [342, 49, 22, 22];
-         sKeyRegions [KeyCodes.BackSlash] = [287, 96, 22, 22];
+         sKeyRegions [KeyCodes.Slash]     = [287, 96, 22, 22];
+         sKeyRegions [KeyCodes.BackSlash] = [342, 49, 22, 22];
          sKeyRegions [KeyCodes.Comma]     = [237, 96, 22, 22];
          sKeyRegions [KeyCodes.Period]    = [262, 96, 22, 22];
          sKeyRegions [KeyCodes.Semicolon]    = [274, 72, 22, 22];

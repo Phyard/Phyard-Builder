@@ -5488,6 +5488,15 @@ package editor {
             designDataAll.writeBytes (designDataForPlaying);
          }
          
+//infoString =  designDataForEditing[0] + ", " + designDataForEditing[1] + ", " + designDataForEditing[2]
+//      + ", ..., " + designDataForEditing [designDataForEditing.length - 3]
+//           + ", " + designDataForEditing [designDataForEditing.length - 2]
+//           + ", " + designDataForEditing [designDataForEditing.length - 1];
+//      + "  |||  " + designDataForPlaying[0] + ", " + designDataForPlaying[1] + ", " + designDataForPlaying[2]
+//      + ", ..., " + designDataForPlaying [designDataForPlaying.length - 3]
+//           + ", " + designDataForPlaying [designDataForPlaying.length - 2]
+//           + ", " + designDataForPlaying [designDataForPlaying.length - 1];
+         
          //trace ("designDataForEditing.length = " + designDataForEditing.length)
          //trace ("designDataForPlaying.length = " + designDataForPlaying.length)
          
@@ -5514,6 +5523,9 @@ package editor {
          //navigateToURL ( request )
       }
       
+// to debug a bug. seems there is a bug in ByteArray.compress () on linux
+//private var infoString:String = "";
+      
       private function OnOnlineSaveCompleted(event:Event):void 
       {
          var loader:URLLoader = URLLoader(event.target);
@@ -5537,7 +5549,8 @@ package editor {
             else
             {
                //Alert.show("Some errors in saving! returnCode = " + returnCode + ", returnMessage = " + returnMessage, "Error");
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save failed,  returnCode = " + returnCode + ", returnMessage = " + returnMessage,EffectMessagePopup.kBgColor_Error));
+               var errorMessage:String = "Online save failed,  returnCode = " + returnCode + ",  returnMessage = " + returnMessage;
+               mFloatingMessageLayer.addChild (new EffectMessagePopup (errorMessage, EffectMessagePopup.kBgColor_Error));
             }
          }
          catch (error:Error)

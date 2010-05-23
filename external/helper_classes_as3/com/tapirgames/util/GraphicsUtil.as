@@ -192,7 +192,11 @@ package com.tapirgames.util {
             var i:int = 2;
             if (vertexCount > 3)
             {
-               shape.graphics.lineStyle(thickness, color, 1.0, false, LineScaleMode.NORMAL, CapsStyle.ROUND);
+               if (! roundEnds)
+               {
+                  shape.graphics.lineStyle(thickness, color, 1.0, false, LineScaleMode.NORMAL, CapsStyle.ROUND);
+               }
+               
                var secondLast:int = vertexCount - 2;
                
                for (; i <= secondLast; ++ i)
@@ -202,7 +206,9 @@ package com.tapirgames.util {
                }
                
                if (! roundEnds)
+               {
                   shape.graphics.lineStyle(thickness, color, 1.0, false, LineScaleMode.NORMAL, CapsStyle.NONE);
+               }
             }
             
             p2 = points [i];

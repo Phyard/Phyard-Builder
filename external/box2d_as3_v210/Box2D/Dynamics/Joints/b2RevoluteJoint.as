@@ -144,7 +144,7 @@ package Box2D.Dynamics.Joints
 			}
 		}
 
-		private static var worldAnchor:b2Vec2;
+		private static var worldAnchor:b2Vec2 = new b2Vec2 ();
 			
 		override protected function NotifyBodyChanged (oldBody:b2Body, isBodyA:Boolean):void
 		{

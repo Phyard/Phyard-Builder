@@ -633,6 +633,51 @@ package common.trigger {
                      ]
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngCreate,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     null
+                  );
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngSetSeed,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandom,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandomRange,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandomIntRange,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         
       // math / number convert
          
           RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians,
@@ -1791,6 +1836,37 @@ package common.trigger {
                      [
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
                         ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length, 
+                     ]
+                  );
+         
+      // game / entity / shape / poly
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexCount,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,  
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,
+                     [
+                        ValueTypeDefine.ValueType_Entity, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,  
                      ]
                   );
          

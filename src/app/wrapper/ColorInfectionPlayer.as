@@ -3,6 +3,7 @@ package wrapper {
 
    import flash.utils.ByteArray;
    
+   import flash.geom.Point;
    import flash.display.DisplayObject;
    import flash.display.Sprite;
    import flash.display.Bitmap;
@@ -58,6 +59,7 @@ package wrapper {
       private var mStartRightNow:Boolean = false;
       private var GetWorldDefine:Function = null;
       private var GetWorldBinaryData:Function = null;
+      private var GetViewportSize:Function = null;
       
       private var mExternalPaused:Boolean = false;
       public function SetExternalPaused (paused:Boolean):void
@@ -95,7 +97,7 @@ package wrapper {
 //
 //======================================================================
       
-      public function ColorInfectionPlayer (start:Boolean = false, getWorldDefine:Function = null, getWorldBinaryData:Function = null)
+      public function ColorInfectionPlayer (start:Boolean = false, getWorldDefine:Function = null, getWorldBinaryData:Function = null, getViewportSize:Function = null)
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
@@ -110,6 +112,7 @@ package wrapper {
          mStartRightNow = start;
          GetWorldDefine = getWorldDefine;
          GetWorldBinaryData = getWorldBinaryData;
+         GetViewportSize = getViewportSize;
       }
       
       public function GetPlayerWorld ():World
@@ -392,8 +395,6 @@ package wrapper {
                if (mStartRightNow)
                   mPlayControlBar.OnClickStart ();
                
-               mWorldLayer.y = mTopBarLayer.y + mTopBarLayer.height;
-               
                OnPause (null);
                
                CreateHelpDialog ();
@@ -402,8 +403,6 @@ package wrapper {
                CreateFinishedDialog ();
                
                //CreateBottomBar ();
-               
-               CreateBorderLineLayer ();
                
                break;
             case StateId_RunningError:
@@ -434,7 +433,21 @@ package wrapper {
       {
          ClearErrorMessage ();
          
-         GraphicsUtil.DrawRect (mErrorMessageLayer, 0, 0, Define.DefaultPlayerWidth, Define.DefaultPlayerHeight + Define.PlayerPlayBarThickness, 0xDDDDA0, 1, true, 0xDDDDA0);
+         var w:int;
+         var h:int;
+         if (GetViewportSize == null)
+         {
+            w = stage.stageWidth;
+            h = stage.stageHeight;
+         }
+         else
+         {
+            var size:Point = GetViewportSize ();
+            w = size.x;
+            h = size.y;
+         }
+         
+         GraphicsUtil.DrawRect (mErrorMessageLayer, 0, 0, w, h, 0xDDDDA0, 1, true, 0xDDDDA0);
          
          var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (message));
          errorText.x = (Define.DefaultWorldWidth  - errorText.width ) * 0.5;
@@ -702,11 +715,6 @@ package wrapper {
       }
       */
       
-      public function CreateBorderLineLayer ():void
-      {
-         GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, -1, 0, Define.DefaultPlayerWidth + 1, Define.DefaultPlayerHeight + Define.PlayerPlayBarThickness, 0x606060);
-      }
-      
       private var mFinishedDialog:Sprite;
       
       private var mTextFinished:TextFieldEx;
@@ -826,14 +834,28 @@ package wrapper {
       
       private function CreateTopBar ():void
       {
-         mTopBarLayer.x= 0;
+         var playBarColor:uint = mPlayerWorld == null ? 0x606060 : mPlayerWorld.GetPlayBarColor ();
+         var showPlayBar:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
+         var showSpeedAdjustor:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
+         var showScaleAdjustor:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
+         var showHelpButton:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
+         var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mPlayerWorld.GetViewportWidth ();
+         var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mPlayerWorld.GetViewportHeight ();
+         var viewerWidth:int = viewportWidth;
+         var viewerHeight:int = showPlayBar ? (Define.PlayerPlayBarThickness + viewportHeight) : viewportHeight;
          
-         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, Define.DefaultPlayerWidth, Define.PlayerPlayBarThickness, 0x606060, 1, true, 0x606060);
+         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth, Define.PlayerPlayBarThickness, 0x606060, 1, true, playBarColor);
          
-         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, OnSpeed, OnHelp, mMainMenuCallback, OnZoom);
+         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, mMainMenuCallback, showScaleAdjustor ? OnZoom : null);
          mTopBarLayer.addChild (mPlayControlBar); 
          mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
          mPlayControlBar.y = 2;
+         
+         GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, 0, 0, viewerWidth - 1, viewerHeight - 1, 0x606060);
+         
+         mTopBarLayer.visible = showPlayBar;
+         mTopBarLayer.x= 0;
+         mWorldLayer.y = showPlayBar ? Define.PlayerPlayBarThickness : 0;
       }
       
 //======================================================================

@@ -396,6 +396,15 @@ package common {
          
          // more settings
          {
+            if (worldDefine.mVersion >= 0x0151)
+            {
+               worldDefine.mSettings.mViewerUiFlags = byteArray.readInt ();
+               worldDefine.mSettings.mPlayBarColor  = byteArray.readUnsignedInt ();
+               worldDefine.mSettings.mViewportWidth  = byteArray.readShort ();
+               worldDefine.mSettings.mViewportHeight  = byteArray.readShort ();
+               worldDefine.mSettings.mZoomScale = byteArray.readFloat ();
+            }
+            
             if (worldDefine.mVersion >= 0x0104)
             {
                worldDefine.mSettings.mCameraCenterX = byteArray.readInt ();
@@ -1077,6 +1086,20 @@ package common {
          var Setting:Object;
          
          // settings
+         if (worldDefine.mVersion >= 0x0151)
+         {
+            element = IntSetting2XmlElement ("ui_flags", worldDefine.mSettings.mViewerUiFlags);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("play_bar_color", worldDefine.mSettings.mPlayBarColor, true);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("viewport_width", worldDefine.mSettings.mViewportWidth);
+            xml.Settings.appendChild (element);
+            element = IntSetting2XmlElement ("viewport_height", worldDefine.mSettings.mViewportHeight);
+            xml.Settings.appendChild (element);
+            element = FloatSetting2XmlElement ("zoom_scale", worldDefine.mSettings.mZoomScale, true);
+            xml.Settings.appendChild (element);
+         }
+         
          if (worldDefine.mVersion >= 0x0104)
          {
             element = IntSetting2XmlElement ("camera_center_x", worldDefine.mSettings.mCameraCenterX);
@@ -1747,6 +1770,8 @@ package common {
       {
          // world settings
          
+         worldDefine.mSettings.mZoomScale = ValueAdjuster.Number2Precision (worldDefine.mSettings.mZoomScale, 6)
+         
          worldDefine.mSettings.mWorldBorderLeftThickness = ValueAdjuster.Number2Precision (worldDefine.mSettings.mWorldBorderLeftThickness, 6)
          worldDefine.mSettings.mWorldBorderTopThickness = ValueAdjuster.Number2Precision (worldDefine.mSettings.mWorldBorderTopThickness, 6)
          worldDefine.mSettings.mWorldBorderRightThickness = ValueAdjuster.Number2Precision (worldDefine.mSettings.mWorldBorderRightThickness, 6)
@@ -1997,6 +2022,15 @@ package common {
          {
             worldDefine.mShareSourceCode = false;
             worldDefine.mPermitPublishing = false;
+         }
+         
+         if (worldDefine.mVersion < 0x0151)
+         {
+            worldDefine.mSettings.mViewerUiFlags = Define.PlayerUiFlags_BeforeV0151;
+            worldDefine.mSettings.mPlayBarColor = 0x606060;
+            worldDefine.mSettings.mViewportWidth = 600;
+            worldDefine.mSettings.mViewportHeight = 600;
+            worldDefine.mSettings.mZoomScale = 1.0;
          }
          
          if (worldDefine.mVersion < 0x0104)

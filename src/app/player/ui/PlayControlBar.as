@@ -163,7 +163,7 @@ package player.ui {
          {
             mButtonSpeeds [i] = new ImageButton (mBitmapDataSpeed, i);
             
-            if (mButtonShown [i])
+            if (mButtonShown [i] && onSpeed != null)
             {
                mButtonSpeeds [i].SetClickEventHandler (OnClickSpeed);
                
@@ -179,28 +179,39 @@ package player.ui {
       // zoom
          
          mButtonZoomIn = new ImageButton (mBitmapDataZoomIn);
-         mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
-         addChild (mButtonZoomIn);
-         
          mButtonZoomOut = new ImageButton (mBitmapDataZoomOut);
-         mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
-         addChild (mButtonZoomOut);
          
-         mButtonZoomIn.x = buttonX;
-         buttonX += mButtonZoomIn.width;
-         mButtonZoomOut.x = buttonX;
-         buttonX += mButtonZoomOut.width;
-         buttonX += ButtonMargin;
+         if (onZoom != null)
+         {
+            mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
+            addChild (mButtonZoomIn);
+            
+            mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
+            addChild (mButtonZoomOut);
+         }
+         
+         if (onZoom != null)
+         {
+            mButtonZoomIn.x = buttonX;
+            buttonX += mButtonZoomIn.width;
+            mButtonZoomOut.x = buttonX;
+            buttonX += mButtonZoomOut.width;
+            buttonX += ButtonMargin;
+         }
          
       // help
          
          mButtonHelp = new ImageButton (mBitmapDataHelp);
-         mButtonHelp.SetClickEventHandler (OnClickHelp);
-         addChild (mButtonHelp);
          
-         mButtonHelp.x = buttonX;
-         buttonX += mButtonHelp.width;
-         buttonX += ButtonMargin;
+         if (onHelp != null)
+         {
+            mButtonHelp.SetClickEventHandler (OnClickHelp);
+            addChild (mButtonHelp);
+            
+            mButtonHelp.x = buttonX;
+            buttonX += mButtonHelp.width;
+            buttonX += ButtonMargin;
+         }
          
       // 
          

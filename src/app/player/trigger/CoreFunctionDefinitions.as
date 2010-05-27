@@ -16,6 +16,8 @@ package player.trigger {
    import player.trigger.ValueSource;
    import player.trigger.ValueTarget;
    
+   import actionscript.util.RandomNumberGenerator;
+   
    import common.trigger.ValueTypeDefine;
    import common.trigger.CoreFunctionIds;
    import common.trigger.FunctionDeclaration;
@@ -140,6 +142,12 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Random,                     RandomNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_RandomRange,                RandomNumberRange);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_RandomIntRange,             RandomIntegerRange);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_RngCreate,                  RngCreate);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_RngSetSeed,                 RngSetSeed);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_RngRandom,                  RngRandom);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_RngRandomRange,             RngRandomNumberRange);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_RngRandomIntRange,          RngRandomIntegerRange);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Degrees2Radians,             Degrees2Radians);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Radians2Degrees,             Radians2Degrees);
@@ -324,6 +332,12 @@ package player.trigger {
       // game / entity / shape / rectangle
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeRectangle_GetSize,            GetShapeRectangleSize);
+         
+      // game / entity / shape / rectangle
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexCount,                    GetVertexCount);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,            GetVertexLocalPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,            GetVertexWorldPosition);
          
       // game / entity / joint
          
@@ -1063,12 +1077,69 @@ package player.trigger {
       
       public static function RandomIntegerRange (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         var value1:Number = Math.round (valueSource.EvalateValueObject () as Number);
+         var value1:int = Math.round (valueSource.EvalateValueObject () as Number);
          
          valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = Math.round (valueSource.EvalateValueObject () as Number);
+         var value2:int = Math.round (valueSource.EvalateValueObject () as Number);
          
-         valueTarget.AssignValueObject (Math.floor (value1 + (value2 - value1) * Math.random ()));
+         var r:Number = value1 + (value2 - value1) * Math.random ();
+         valueTarget.AssignValueObject (value1 < value2 ? Math.floor (r) : Math.ceil (r));
+      }
+      
+      public static function RngCreate (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var rngMethod:int = int (valueSource.EvalateValueObject ());
+         
+         Global.CreateRandomNumberGenerator (rngSlot, rngMethod);
+      }
+      
+      public static function RngSetSeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var seedId:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var seed:uint = uint (valueSource.EvalateValueObject ());
+         
+         Global.GetRandomNumberGenerator (rngSlot).SetSeed (seedId, seed);
+      }
+      
+      public static function RngRandom (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         
+         valueTarget.AssignValueObject (Global.GetRandomNumberGenerator (rngSlot).NextFloat ());
+      }
+      
+      public static function RngRandomNumberRange (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value1:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:Number = valueSource.EvalateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (value1 + (value2 - value1) * Global.GetRandomNumberGenerator (rngSlot).NextFloat ());
+      }
+      
+      public static function RngRandomIntegerRange (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value1:int = int (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var value2:int = int (valueSource.EvalateValueObject ());
+         
+         valueTarget.AssignValueObject (Global.GetRandomNumberGenerator (rngSlot).NextIntegerBetween (value1, value2));
       }
       
       // degree <-> radian
@@ -2840,7 +2911,7 @@ package player.trigger {
       public static function GetShapeCircleRadius (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var circle:EntityShapeCircle = valueSource.EvalateValueObject () as EntityShapeCircle;
-         if (circle == null || circle.IsDestroyedAlready ())
+         if (circle == null)// || circle.IsDestroyedAlready ())
          {
             valueTarget.AssignValueObject (0.0);
          }
@@ -2851,13 +2922,13 @@ package player.trigger {
       }
       
    //*******************************************************************
-   // entity / shape / circle
+   // entity / shape / rectangle
    //*******************************************************************
       
       public static function GetShapeRectangleSize (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var rect:EntityShapeRectangle = valueSource.EvalateValueObject () as EntityShapeRectangle;
-         if (rect == null || rect.IsDestroyedAlready ())
+         if (rect == null)// || rect.IsDestroyedAlready ())
          {
             valueTarget.AssignValueObject (0.0);
             
@@ -2870,6 +2941,63 @@ package player.trigger {
             
             valueTarget = valueTarget.mNextValueTargetInList;
             valueTarget.AssignValueObject (2.0 * rect.GetHalfHeight ());
+         }
+      }
+      
+   //*******************************************************************
+   // entity / shape / poly shape
+   //*******************************************************************
+      
+      public static function GetVertexCount (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var polyShape:EntityShapePolyShape = valueSource.EvalateValueObject () as EntityShapePolyShape;
+         
+         if (polyShape == null)// || polyShape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (polyShape.GetVertexPointsCount ());
+         }
+      }
+      
+      public static function GetVertexLocalPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         GetVertexPosition (valueSource, valueTarget, false);
+      }
+      
+      public static function GetVertexWorldPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         GetVertexPosition (valueSource, valueTarget, true);
+      }
+      
+      public static function GetVertexPosition (valueSource:ValueSource, valueTarget:ValueTarget, isWorldPoint:Boolean):void
+      {
+         var polyShape:EntityShapePolyShape = valueSource.EvalateValueObject () as EntityShapePolyShape;
+         
+         if (polyShape == null)// || polyShape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueSource = valueSource.mNextValueSourceInList;
+            var vertexIndex:int = int (valueSource.EvalateValueObject ());
+            
+            var point:Point = polyShape.GetLocalVertex (vertexIndex);
+            if (isWorldPoint)
+            {
+               polyShape.LocalPoint2WorldPoint (point.x, point.y, point);
+            }
+            
+            valueTarget.AssignValueObject (point.x);
+            
+            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget.AssignValueObject (point.y);
          }
       }
       

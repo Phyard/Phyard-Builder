@@ -117,6 +117,12 @@ package common.trigger {
       public static const ID_Number_RandomRange:int                 = IdPool.CoreApiId_381; // 
       public static const ID_Number_RandomIntRange:int              = IdPool.CoreApiId_382; // 
       
+      public static const ID_Number_RngCreate:int                      = IdPool.CoreApiId_383; // 
+      public static const ID_Number_RngSetSeed:int                     = IdPool.CoreApiId_384; // 
+      public static const ID_Number_RngRandom:int                      = IdPool.CoreApiId_385; // 
+      public static const ID_Number_RngRandomRange:int                 = IdPool.CoreApiId_386; // 
+      public static const ID_Number_RngRandomIntRange:int              = IdPool.CoreApiId_387; // 
+      
    // math number convert
       
       public static const ID_Number_Degrees2Radians:int            = IdPool.CoreApiId_400; // 
@@ -350,8 +356,14 @@ package common.trigger {
       
       public static const ID_EntityShapeRectangle_GetSize:int                   = IdPool.CoreApiId_1556; // entity.shape.rectangle
       //public static const ID_EntityShapeRectangle_SetSize:int                   = IdPool.CoreApiId_1557; // entity.shape.rectangle
-      //public static const ID_EntityShapeRectangle_SetWidth:int                  = IdPool.CoreApiId_1558; // entity.shape.rectangle
-      //public static const ID_EntityShapeRectangle_SetHeight:int                 = IdPool.CoreApiId_1559; // entity.shape.rectangle
+      
+   // game /entity / shape / poly
+      
+      public static const ID_EntityShapePoly_GetVertexCount:int                          = IdPool.CoreApiId_1558; // entity.shape.poly
+      public static const ID_EntityShapePoly_GetVertexLocalPosition:int                  = IdPool.CoreApiId_1559; // entity.shape.poly
+      //public static const ID_EntityShapePoly_SetVertexLocalPosition:int                 = IdPool.CoreApiId_1560; // entity.shape.poly
+      public static const ID_EntityShapePoly_GetVertexWorldPosition:int                  = IdPool.CoreApiId_1561; // entity.shape.poly
+      //public static const ID_EntityShapePoly_SetVertexWorldPosition:int                 = IdPool.CoreApiId_1562; // entity.shape.poly
       
    // game / entity / joint
       

@@ -84,6 +84,14 @@ package common {
          
          // settings
          {
+            //>>from v1.51
+            worldDefine.mSettings.mViewerUiFlags = editorWorld.GetViewerUiFlags ();
+            worldDefine.mSettings.mPlayBarColor = editorWorld.GetPlayBarColor ();
+            worldDefine.mSettings.mViewportWidth = editorWorld.GetViewportWidth ();
+            worldDefine.mSettings.mViewportHeight = editorWorld.GetViewportHeight ();
+            worldDefine.mSettings.mZoomScale = editorWorld.GetZoomScale ();
+            //<<
+            
             //>>from v1.04
             worldDefine.mSettings.mCameraCenterX = editorWorld.GetCameraCenterX ();
             worldDefine.mSettings.mCameraCenterY = editorWorld.GetCameraCenterY ();
@@ -693,6 +701,14 @@ package common {
             
             // settings
             {
+               //>>from v1.51
+               editorWorld.SetViewerUiFlags (worldDefine.mSettings.mViewerUiFlags);
+               editorWorld.SetPlayBarColor (worldDefine.mSettings.mPlayBarColor);
+               editorWorld.SetViewportWidth (worldDefine.mSettings.mViewportWidth);
+               editorWorld.SetViewportHeight (worldDefine.mSettings.mViewportHeight);
+               editorWorld.SetZoomScale (worldDefine.mSettings.mZoomScale);
+               //<<
+               
                //>> from v1.04
                editorWorld.SetCameraCenterX (worldDefine.mSettings.mCameraCenterX);
                editorWorld.SetCameraCenterY (worldDefine.mSettings.mCameraCenterY);
@@ -1504,7 +1520,20 @@ package common {
          {
             for each (element in worldXml.Settings.Setting)
             {
-               if (element.@name == "camera_center_x")
+               //>>from v1.51
+               if (element.@name == "ui_flags")
+                  worldDefine.mSettings.mViewerUiFlags = parseInt (element.@value);
+               else if (element.@name == "play_bar_color")
+                  worldDefine.mSettings.mPlayBarColor = parseInt ( (element.@value).substr (2), 16);
+               else if (element.@name == "viewport_width")
+                  worldDefine.mSettings.mViewportWidth = parseInt (element.@value)
+               else if (element.@name == "viewport_height")
+                  worldDefine.mSettings.mViewportHeight = parseInt (element.@value)
+               else if (element.@name == "zoom_scale")
+                  worldDefine.mSettings.mZoomScale = parseFloat (element.@value);
+               //<<
+               
+               else if (element.@name == "camera_center_x")
                   worldDefine.mSettings.mCameraCenterX = parseInt (element.@value);
                else if (element.@name == "camera_center_y")
                   worldDefine.mSettings.mCameraCenterY = parseInt (element.@value);
@@ -2090,6 +2119,15 @@ package common {
          
          // settings
          {
+            if (worldDefine.mVersion >= 0x0151)
+            {
+               byteArray.writeInt (worldDefine.mSettings.mViewerUiFlags);
+               byteArray.writeUnsignedInt (worldDefine.mSettings.mPlayBarColor);
+               byteArray.writeShort (worldDefine.mSettings.mViewportWidth);
+               byteArray.writeShort (worldDefine.mSettings.mViewportHeight);
+               byteArray.writeFloat (worldDefine.mSettings.mZoomScale);
+            }
+            
             if (worldDefine.mVersion >= 0x0104)
             {
                byteArray.writeInt (worldDefine.mSettings.mCameraCenterX);

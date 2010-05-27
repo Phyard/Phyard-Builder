@@ -57,6 +57,12 @@ package editor.trigger {
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance
+      public static const sPolyShapeEntityClasses:Array = [
+                  EntityShapePolygon,
+                  EntityShapePolyline,
+            ];
+      
+      // object can be an Entity subclass.prototype or a subclass instance
       public static const sTextEntityClasses:Array = [
                   EntityShapeText,
             ];

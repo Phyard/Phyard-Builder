@@ -138,6 +138,15 @@ package player.world {
          
          // ...
          
+         mViewerUiFlags = worldDefine.mSettings.mViewerUiFlags;
+         mPlayBarColor = worldDefine.mSettings.mPlayBarColor;
+         
+         mViewportWidth = worldDefine.mSettings.mViewportWidth;
+         mViewportHeight = worldDefine.mSettings.mViewportHeight;
+         mZoomScale = worldDefine.mSettings.mZoomScale;
+         
+         // ...
+         
          SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
          SetBorderColor (worldDefine.mSettings.mBorderColor);
          
@@ -428,6 +437,7 @@ package player.world {
       // init camera
       //------------------------------------
          
+         SetZoomScale (mZoomScale);
          MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY);
          
       //------------------------------------
@@ -721,7 +731,7 @@ package player.world {
          mBackgroundSprite.graphics.clear ();
          mBackgroundSprite.graphics.beginFill(mBackgroundColor);
          //mBackgroundSprite.graphics.drawRect (mWorldLeft, mWorldTop, mWorldWidth, mWorldHeight); // sometimes, it is too large to build
-         mBackgroundSprite.graphics.drawRect (- 0.5 * Define.DefaultPlayerWidth, - 0.5 * Define.DefaultPlayerHeight, Define.DefaultPlayerWidth, Define.DefaultPlayerHeight); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
+         mBackgroundSprite.graphics.drawRect (- 0.5 * mViewportWidth, - 0.5 * mViewportHeight, mViewportWidth, mViewportHeight); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
          mBackgroundSprite.graphics.endFill ();
       }
       

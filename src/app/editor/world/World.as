@@ -183,6 +183,18 @@ package editor.world {
       private var mDefaultGravityAccelerationAngle:Number = 90; // degrees in left hand coordinates
       //<<
       
+      //>>1.51
+      private var mViewerUiFlags:int = Define.PlayerUiFlag_ShowPlayBar
+                                         | Define.PlayerUiFlag_ShowSpeedAdjustor
+                                         | Define.PlayerUiFlag_ShowScaleAdjustor
+                                         | Define.PlayerUiFlag_ShowHelpButton
+                                         ;
+      private var mPlayBarColor:uint = 0x606060;
+      
+      private var mViewportWidth:int = Define.DefaultPlayerWidth;
+      private var mViewportHeight:int = Define.DefaultPlayerHeight;
+      //<<
+      
       //
       private var mCiRulesEnabled:Boolean = true;
       
@@ -495,6 +507,46 @@ package editor.world {
       public function IsCiRulesEnabled ():Boolean
       {
          return mCiRulesEnabled;
+      }
+      
+      public function SetViewerUiFlags (flags:int):void
+      {
+         mViewerUiFlags = flags;
+      }
+      
+      public function GetViewerUiFlags ():int
+      {
+         return mViewerUiFlags;
+      }
+      
+      public function SetPlayBarColor (color:uint):void
+      {
+         mPlayBarColor = color;
+      }
+      
+      public function GetPlayBarColor ():uint
+      {
+         return mPlayBarColor;
+      }
+      
+      public function SetViewportWidth (width:int):void
+      {
+         mViewportWidth = width;
+      }
+      
+      public function GetViewportWidth ():int
+      {
+         return mViewportWidth;
+      }
+      
+      public function SetViewportHeight (height:int):void
+      {
+         mViewportHeight = height;
+      }
+      
+      public function GetViewportHeight ():int
+      {
+         return mViewportHeight;
       }
       
 //=================================================================================

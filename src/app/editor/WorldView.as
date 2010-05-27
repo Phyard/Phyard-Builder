@@ -623,6 +623,7 @@ package editor {
          
          mEditorBackgroundLayer.graphics.clear ();
          
+      trace ("bgLeft = " + bgLeft + ", bgTop = " + bgTop + ", bgWidth = " + bgWidth + ", bgHeight = " + bgHeight + ", bgColor = " + bgColor);
          mEditorBackgroundLayer.graphics.beginFill(bgColor);
          mEditorBackgroundLayer.graphics.drawRect (bgLeft, bgTop, bgWidth, bgHeight);
          mEditorBackgroundLayer.graphics.endFill ();
@@ -1700,8 +1701,10 @@ package editor {
       {
          if (mDesignPlayer != null)
          {
-            mDesignPlayer.x = Math.round ((mViewWidth - Define.DefaultPlayerWidth) / 2);
-            mDesignPlayer.y = Math.round ((mViewHeight - Define.DefaultPlayerHeight - Define.PlayerPlayBarThickness) / 2);
+            var playerSize:Point = GetViewportSize ();
+            
+            mDesignPlayer.x = Math.round ((mViewWidth - playerSize.x) / 2);
+            mDesignPlayer.y = Math.round ((mViewHeight - playerSize.y) / 2);
          }
       }
       
@@ -1727,6 +1730,22 @@ package editor {
          byteArray.position = 0;
          
          return byteArray;
+      }
+      
+      private function GetViewportSize ():Point
+      {
+         var viewerUiFlags:int = mEditorWorld.GetViewerUiFlags ();
+         var viewportWidth:int = mEditorWorld.GetViewportWidth ();
+         var viewportHeight:int = mEditorWorld.GetViewportHeight ();
+         
+         if ((viewerUiFlags & Define.PlayerUiFlag_ShowPlayBar) != 0)
+         {
+            return new Point (viewportWidth, viewportHeight + Define.PlayerPlayBarThickness);
+         }
+         else
+         {
+            return new Point (viewportWidth, viewportHeight);
+         }
       }
       
       public function Play_RunRestart (keepPauseStatus:Boolean = false):void
@@ -4794,6 +4813,30 @@ package editor {
          mEditorWorld.SetWorldBorderBottomThickness (info.mWorldBorderBottomThickness);
          
          UpdateChildComponents ();
+         
+         CreateUndoPoint ("World appearance is changed");
+      }
+      
+      public function GetViewportInfo ():Object
+      {
+         var info:Object = new Object ();
+         
+         info.mViewerUiFlags = mEditorWorld.GetViewerUiFlags ();
+         info.mPlayBarColor = mEditorWorld.GetPlayBarColor ();
+         
+         info.mViewportWidth = mEditorWorld.GetViewportWidth ();
+         info.mViewportHeight = mEditorWorld.GetViewportHeight ();
+         
+         return info;
+      }
+      
+      public function SetViewportInfo (info:Object):void
+      {
+         mEditorWorld.SetViewerUiFlags (info.mViewerUiFlags);
+         mEditorWorld.SetPlayBarColor (info.mPlayBarColor);
+         
+         mEditorWorld.SetViewportWidth (info.mViewportWidth);
+         mEditorWorld.SetViewportHeight (info.mViewportHeight);
          
          CreateUndoPoint ("World appearance is changed");
       }

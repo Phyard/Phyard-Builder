@@ -4,6 +4,39 @@
 //
 //=====================================================================================
 
+private var mViewerUiFlags:int = Define.PlayerUiFlag_ShowPlayBar
+                               | Define.PlayerUiFlag_ShowSpeedAdjustor
+                               | Define.PlayerUiFlag_ShowScaleAdjustor
+                               | Define.PlayerUiFlag_ShowHelpButton
+                               ;
+private var mPlayBarColor:uint = 0x606060;
+private var mViewportWidth:int = Define.DefaultPlayerWidth;
+private var mViewportHeight:int = Define.DefaultPlayerHeight;
+
+public function GetViewerUiFlags ():int
+{
+   return mViewerUiFlags;
+}
+
+public function GetPlayBarColor ():uint
+{
+   return mPlayBarColor;
+}
+
+public function GetViewportWidth ():int
+{
+   return mViewportWidth;
+}
+
+public function GetViewportHeight ():int
+{
+   return mViewportHeight;
+}
+
+//=====================================================================================
+//
+//=====================================================================================
+
 private var mIsInfiniteWorldSize:Boolean = false;
 
 // these values are in display space
@@ -64,8 +97,6 @@ public function SetZoomScale (zoomScale:Number):void
 //=====================================================================================
 
 // these values are in display world space, pixels, assume scale = 1
-private var mViewportWidth:Number   = Define.DefaultWorldWidth;
-private var mViewportHeight:Number  = Define.DefaultWorldHeight;
 private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
 private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
 
@@ -87,16 +118,6 @@ public function GetCameraCenterPhysicsX ():Number
 public function GetCameraCenterPhysicsY ():Number
 {
    return mCoordinateSystem.D2P_PositionY (mCameraCenterY);
-}
-
-public function SetCameraWidth (width:Number):void
-{
-   mViewportWidth = width;
-}
-
-public function SetCameraHeight (height:Number):void
-{
-   mViewportHeight = height;
 }
 
 public function MoveWorldScene_PhysicsOffset (physicsDx:Number, physicsDy:Number):void

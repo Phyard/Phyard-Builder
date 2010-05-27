@@ -7,6 +7,9 @@ package player.design
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
    
+   import actionscript.util.RandomNumberGenerator;
+   import com.stephencalenderblog.MersenneTwisterRNG;
+   
    import common.trigger.ValueTypeDefine;
    import common.Define;
    
@@ -23,6 +26,8 @@ package player.design
       public static var mRegisterVariableSpace_Number :VariableSpace;
       public static var mRegisterVariableSpace_Entity :VariableSpace;
       public static var mRegisterVariableSpace_CollisionCategory:VariableSpace;
+      
+      public static var mRandomNumberGenerators:Array;
       
 //==============================================================================
 // static values
@@ -42,6 +47,8 @@ package player.design
          mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0);
          mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null);
          mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null);
+         
+         mRandomNumberGenerators = new Array (Define.NumRngSlots);
       }
       
       public static function SetCurrentDesign (design:Design):void
@@ -99,6 +106,25 @@ package player.design
       public static function SetPropertyValue (propertyId:int, value:Object):void
       {
          sTheGlobal.SetPropertyValue (propertyId, value);
+      }
+      
+      public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void
+      {
+         if (rngSlot < 0 || rngSlot >= Define.NumRngSlots)
+            throw new Error ("Invalid RNG slot " + rngSlot);
+         
+         if (rngMethod < 0 || rngMethod >= Define.NumRngMethods)
+            throw new Error ("Invalid RNG method " + rngMethod);
+         
+         if (rngMethod == 0)
+         {
+            mRandomNumberGenerators [rngSlot] = new MersenneTwisterRNG ();
+         }
+      }
+      
+      public static function GetRandomNumberGenerator (rngSlot:int):RandomNumberGenerator
+      {
+         return mRandomNumberGenerators [rngSlot];
       }
       
 //==============================================================================

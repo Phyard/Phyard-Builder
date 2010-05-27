@@ -38,11 +38,11 @@ package editor.trigger {
          var number_package:FunctionPackage   = new FunctionPackage ("Number", sGlobalPackage);
             var numbe_general_package:FunctionPackage         = new FunctionPackage ("General", number_package);
             var to_string_package:FunctionPackage      = new FunctionPackage ("To String", number_package);
+            var bitwise_package:FunctionPackage            = new FunctionPackage ("Bitwise", number_package);
             var usual_number_package:FunctionPackage         = new FunctionPackage ("Usual", number_package);
             var interpolation_package:FunctionPackage      = new FunctionPackage ("Interpolation", number_package);
             var trigonometry_package:FunctionPackage = new FunctionPackage ("Trigonometry", number_package);
             var random_package:FunctionPackage             = new FunctionPackage ("Random", number_package);
-            var bitwise_package:FunctionPackage            = new FunctionPackage ("Bitwise", number_package);
             var convert_package:FunctionPackage            = new FunctionPackage ("Conversion", number_package);
          var string_package:FunctionPackage = new FunctionPackage ("String", sGlobalPackage);
          var bool_package:FunctionPackage   = new FunctionPackage ("Boolean", sGlobalPackage);
@@ -71,6 +71,7 @@ package editor.trigger {
              var shape_text_package:FunctionPackage  = new FunctionPackage ("Text", entity_shape_package);
              var shape_circle_package:FunctionPackage  = new FunctionPackage ("Circle", entity_shape_package);
              var shape_rectangle_package:FunctionPackage  = new FunctionPackage ("Rectangle", entity_shape_package);
+             var shape_poly_package:FunctionPackage  = new FunctionPackage ("Poly Shape", entity_shape_package);
              //var shape_polygon_package:FunctionPackage  = new FunctionPackage ("Polygon", entity_shape_package);
              //var shape_polyline_package:FunctionPackage  = new FunctionPackage ("Polyline", entity_shape_package);
          var entity_joint_package:FunctionPackage  = new FunctionPackage ("Joint", sEntityPackage);
@@ -677,25 +678,69 @@ package editor.trigger {
          
       // math / random
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Random, random_package, "Random", null, null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Random, random_package, "Quick Float Random", null, null,
                      null,
                      [
-                             new VariableDefinitionNumber ("Random Number"), 
+                             new VariableDefinitionNumber ("Random Number [0.0, 1.0)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RandomRange, random_package, "Random Between", null, null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RandomRange, random_package, "Quick Float Random Between", null, null,
                      [
-                             new VariableDefinitionNumber ("Min Number"), 
-                             new VariableDefinitionNumber ("Max Number"), 
+                             new VariableDefinitionNumber ("Min Number", null, {mDefaultValue: 0.0}), 
+                             new VariableDefinitionNumber ("Max Number", null, {mDefaultValue: 1.0}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Random Number"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RandomIntRange, random_package, "Integer Random Between", null, null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RandomIntRange, random_package, "Quick Integer Random Between", null, null,
                      [
-                             new VariableDefinitionNumber ("Min Integer Number"), 
-                             new VariableDefinitionNumber ("Max Integer Number"), 
+                             new VariableDefinitionNumber ("Min Integer Number", null, {mDefaultValue: 0}), 
+                             new VariableDefinitionNumber ("Max Integer Number", null, {mDefaultValue: 0x7FFFFFFF}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Random Ingeter Number"), 
+                     ]
+                  );
+          
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RngCreate, random_package, "Create Random Generator", null, null,
+                     [
+                             new VariableDefinitionNumber ("Random Generator Slot", null, {mValueLists: Lists.mRngIdList}), 
+                             new VariableDefinitionNumber ("Random Generator Method", null, {mValueLists: Lists.mRngMethodList}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RngSetSeed, random_package, "Set Random Generator Seed", null, null,
+                     [
+                             new VariableDefinitionNumber ("Random Generator Slot", null, {mValueLists: Lists.mRngIdList}), 
+                             new VariableDefinitionNumber ("Seed ID"), 
+                             new VariableDefinitionNumber ("The Seed"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RngRandom, random_package, "Next Float Random", null, null,
+                     [
+                             new VariableDefinitionNumber ("Random Generator Slot", null, {mValueLists: Lists.mRngIdList}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Random Number [0.1, 1.0)"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RngRandomRange, random_package, "Next Float Random Between", null, null,
+                     [
+                             new VariableDefinitionNumber ("Random Generator Slot", null, {mValueLists: Lists.mRngIdList}), 
+                             new VariableDefinitionNumber ("Min Number", null, {mDefaultValue: 0.0}), 
+                             new VariableDefinitionNumber ("Max Number", null, {mDefaultValue: 1.0}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Random Number"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RngRandomIntRange, random_package, "Next Integer Random Between", null, null,
+                     [
+                             new VariableDefinitionNumber ("Random Generator Slot", null, {mValueLists: Lists.mRngIdList}), 
+                             new VariableDefinitionNumber ("Min Integer Number", null, {mDefaultValue: 0}), 
+                             new VariableDefinitionNumber ("Max Integer Number", null, {mDefaultValue: 0x7FFFFFFF}), 
                      ],
                      [
                              new VariableDefinitionNumber ("Random Ingeter Number"), 
@@ -1804,6 +1849,37 @@ package editor.trigger {
                      [
                              new VariableDefinitionNumber ("Width"),
                              new VariableDefinitionNumber ("Height"),
+                     ]
+                  );
+         
+      // game / entity / shape / poly
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexCount, shape_poly_package, "Get Vertex Count", null, null, 
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Vertex Count"),
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition, shape_poly_package, "Get Vertex Local Position", null, null, 
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Vertex ID"),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Local X"),
+                             new VariableDefinitionNumber ("Local Y"),
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition, shape_poly_package, "Get Vertex World Position", null, null, 
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Vertex ID"),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("World X"),
+                             new VariableDefinitionNumber ("World Y"),
                      ]
                   );
          

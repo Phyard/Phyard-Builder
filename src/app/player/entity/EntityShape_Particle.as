@@ -1,6 +1,6 @@
 package player.entity {
    
-   import player.world.World;   
+   import player.world.World;
    
    import player.physics.PhysicsProxyShape;
    

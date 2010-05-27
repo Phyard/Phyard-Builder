@@ -33,8 +33,8 @@ package common {
       //public static const MaxEntitiesCount:int = 1024 * 3;
       public static const MaxEntitiesCount:int = 0x7FFFFFFF; // unlimited
       
-      public static const DefaultWorldWidth:int = 600; //600; 
-      public static const DefaultWorldHeight:int = 600; //600; 
+      public static const DefaultWorldWidth:int = 500; //600; 
+      public static const DefaultWorldHeight:int = 500; //600; 
       public static const WorldBorderThinknessLR:int = 10; 
       public static const WorldBorderThinknessTB:int = 10; // 20; // 20 is before v1.08
       
@@ -45,10 +45,19 @@ package common {
       public static const LargeWorldHalfHeight:int = 12000; 
       
       public static const PlayerPlayBarThickness:int = 20;
-      public static const DefaultPlayerWidth:int = 600;
-      public static const DefaultPlayerHeight:int = 600;
+      public static const DefaultPlayerWidth:int = 500; //600; 
+      public static const DefaultPlayerHeight:int = 500; //600; 
       
-      public static const WorldFieldMargin:int = 516; // how much the entites can be put outside of the player field.
+      public static const PlayerUiFlag_ShowPlayBar:int       = 1 << 0;
+      public static const PlayerUiFlag_ShowSpeedAdjustor:int = 1 << 1;
+      public static const PlayerUiFlag_ShowScaleAdjustor:int = 1 << 2;
+      public static const PlayerUiFlag_ShowHelpButton:int    = 1 << 3;
+      
+      public static const PlayerUiFlags_BeforeV0151:int = PlayerUiFlag_ShowPlayBar | PlayerUiFlag_ShowSpeedAdjustor
+                                                     | PlayerUiFlag_ShowScaleAdjustor | PlayerUiFlag_ShowHelpButton
+                                                     ;
+      
+      public static const WorldFieldMargin:int = 1024; // how much the entites can be put outside of the player field.
       
       public static const WorldStepTimeInterval_SpeedX2:Number = 1.0 / 30;
       public static const WorldStepTimeInterval_SpeedX1:Number = 0.5 * WorldStepTimeInterval_SpeedX2;
@@ -306,6 +315,16 @@ package common {
       public static const CircleAppearanceType_Ball:int = 0;
       public static const CircleAppearanceType_Column:int = 1;
       public static const CircleAppearanceType_Circle:int = 2;
+      
+//===========================================================================
+// random number generator methods
+//===========================================================================
+      
+      public static const NumRngSlots:int = 4;
+      
+      public static const NumRngMethods:int = 1;
+      
+      public static const RngMethod_MersenneTwister:int = 0;
       
 //===========================================================================
 // entity types

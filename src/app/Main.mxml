@@ -457,6 +457,7 @@
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
          <menuitem label="Config World Gravity ..." data="gravity"/>
          <menuitem label="Config World Appearance ..." data="appearance"/>
+         <menuitem label="Config Viewport ..." data="viewport"/>
       </root>
    </mx:XML>
 
@@ -954,6 +955,10 @@
                {
                   ShowWorldAppearanceEditDialog ();
                }
+               else if (event.item.@data == "viewport")
+               {
+                  ShowViewportEditDialog ();
+               }
             }
             
             private var mNewDesignMenu:Menu = null;
@@ -1371,6 +1376,18 @@
                var settingDialog:WorldAppearanceSettingDialog = new WorldAppearanceSettingDialog ();
                settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldAppearanceInfo ());
                settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetCurrentWorldAppearanceInfo);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowViewportEditDialog ():void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               
+               var settingDialog:ViewportSettingDialog = new ViewportSettingDialog ();
+               settingDialog.SetValues (Runtime.mEditorWorldView.GetViewportInfo ());
+               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetViewportInfo);
                settingDialog.SetCloseFunc (OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);

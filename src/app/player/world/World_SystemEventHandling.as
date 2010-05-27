@@ -145,14 +145,14 @@ private function OnAddedToStage (event:Event):void
    //
    MoveWorldScene_DisplayOffset (0, 0);
    
-   // 
-   IME.enabled = false; // seems no effects
+   // commented off for exceptions on some latin system
+   //IME.enabled = false; // seems no effects
 }
 
 private function OnRemovedFromStage (event:Event):void 
 {
    // 
-   IME.enabled = true;
+   //IME.enabled = true;
    
    // must remove this listeners, to avoid memory leak
    

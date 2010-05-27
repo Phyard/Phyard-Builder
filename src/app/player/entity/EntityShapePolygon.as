@@ -6,13 +6,13 @@ package player.entity {
 
    import flash.geom.Point;
    
-   import player.world.World;   
+   import player.world.World;
    
    import player.physics.PhysicsProxyShape;
    
    import common.Define;
    
-   public class EntityShapePolygon extends EntityShape
+   public class EntityShapePolygon extends EntityShapePolyShape
    {
       public function EntityShapePolygon (world:World)
       {
@@ -36,52 +36,6 @@ package player.entity {
          {
             if (entityDefine.mLocalPoints != undefined)
                SetLocalDisplayVertexPoints (entityDefine.mLocalPoints);
-         }
-      }
-      
-//=============================================================
-//   
-//=============================================================
-      
-      protected var mLocalPoints:Array = null;
-      protected var mLocalDisplayPoints:Array = null;
-
-      public function GetVertexPointsCount ():int
-      {
-         if (mLocalPoints == null)
-            return 0;
-         else
-            return mLocalPoints.length;
-      }
-      
-      public function SetLocalDisplayVertexPoints (points:Array):void
-      {
-			var i:int;
-			var inputDisplayPoint:Point;
-			var displayPoint:Point;
-			var physicsPoint:Point;
-         if (mLocalPoints == null || mLocalPoints.length != points.length)
-         {
-            mLocalPoints = new Array (points.length);
-            mLocalDisplayPoints = new Array (points.length);
-            for (i = 0; i < mLocalPoints.length; ++ i)
-            {
-               mLocalPoints        [i] = new Point ();
-               mLocalDisplayPoints [i] = new Point ();
-            }
-         }
-         
-         for (i = 0; i < mLocalPoints.length; ++ i)
-         {
-				inputDisplayPoint = points [i];
-				
-				displayPoint = mLocalDisplayPoints [i];
-				displayPoint.x = inputDisplayPoint.x;
-				displayPoint.y = inputDisplayPoint.y;
-				
-				physicsPoint = mLocalPoints [i];
-            physicsPoint.x =  mWorld.GetCoordinateSystem ().D2P_PositionX (inputDisplayPoint.x);
-            physicsPoint.y =  mWorld.GetCoordinateSystem ().D2P_PositionY (inputDisplayPoint.y);
          }
       }
       

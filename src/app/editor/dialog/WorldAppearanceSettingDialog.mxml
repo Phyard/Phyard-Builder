@@ -12,7 +12,7 @@
          <mx:VBox width="100%">
             <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnCustomSizeRationClick ()"/>
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_NormalSize" value="normal"
-                label="Normal Scene Size (left:0, top:0, width:600, height:600)" />
+                label="Normal Scene Size (left:0, top:0, width:500, height:500)" />
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_InfinteSize" value="infinite"
                 label="Infinte Scene Size"/>
             <mx:HBox width="100%">
@@ -113,9 +113,9 @@
             NumericStepper_CustomLeft.maximum = Number.MAX_VALUE;
             NumericStepper_CustomTop.minimum = - Number.MAX_VALUE;
             NumericStepper_CustomTop.maximum = Number.MAX_VALUE;
-            NumericStepper_CustomWidth.minimum = 600
+            NumericStepper_CustomWidth.minimum = 50
             NumericStepper_CustomWidth.maximum = Number.MAX_VALUE;
-            NumericStepper_CustomHeight.minimum = 600;
+            NumericStepper_CustomHeight.minimum = 50;
             NumericStepper_CustomHeight.maximum = Number.MAX_VALUE;
             
             NumericStepper_LeftBorderThickness.minimum = 0;

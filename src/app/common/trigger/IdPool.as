@@ -156,6 +156,11 @@ package common.trigger {
       public static const CoreApiId_380:int = 380; // 
       public static const CoreApiId_381:int = 381; // 
       public static const CoreApiId_382:int = 382; // 
+      public static const CoreApiId_383:int = 383; // 
+      public static const CoreApiId_384:int = 384; // 
+      public static const CoreApiId_385:int = 385; // 
+      public static const CoreApiId_386:int = 386; // 
+      public static const CoreApiId_387:int = 387; // 
       
       public static const CoreApiId_400:int = 400; // 
       public static const CoreApiId_401:int = 401; // 
@@ -331,8 +336,11 @@ package common.trigger {
       public static const CoreApiId_1555:int = 1555; // entity.shape.circle
       public static const CoreApiId_1556:int = 1556; // entity.shape.rectangle
       public static const CoreApiId_1557:int = 1557; // entity.shape.rectangle
-      public static const CoreApiId_1558:int = 1558; // entity.shape.rectangle
-      public static const CoreApiId_1559:int = 1559; // entity.shape.rectangle
+      public static const CoreApiId_1558:int = 1558; // entity.shape.poly
+      public static const CoreApiId_1559:int = 1559; // entity.shape.poly
+      public static const CoreApiId_1560:int = 1560; // entity.shape.poly
+      public static const CoreApiId_1561:int = 1561; // entity.shape.poly
+      public static const CoreApiId_1562:int = 1562; // entity.shape.poly
       
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint

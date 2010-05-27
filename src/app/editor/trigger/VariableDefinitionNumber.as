@@ -99,6 +99,7 @@ package editor.trigger {
             
             combo_box.dataProvider = Lists.GetListWithDataInLabel (mValueLists);
             combo_box.selectedIndex = Lists.SelectedValue2SelectedIndex (mValueLists, directValue);
+            combo_box.rowCount = 11;
             
             return combo_box;
          }

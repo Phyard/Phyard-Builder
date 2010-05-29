@@ -60,9 +60,6 @@ package player.ui {
             }
          }
          
-         dialog.x = (Define.DefaultWorldWidth - dialog.width) * 0.5;
-         dialog.y = (Define.DefaultWorldHeight - dialog.height) * 0.5;
-         
          return dialog;
       }
       

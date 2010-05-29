@@ -623,7 +623,6 @@ package editor {
          
          mEditorBackgroundLayer.graphics.clear ();
          
-      trace ("bgLeft = " + bgLeft + ", bgTop = " + bgTop + ", bgWidth = " + bgWidth + ", bgHeight = " + bgHeight + ", bgColor = " + bgColor);
          mEditorBackgroundLayer.graphics.beginFill(bgColor);
          mEditorBackgroundLayer.graphics.drawRect (bgLeft, bgTop, bgWidth, bgHeight);
          mEditorBackgroundLayer.graphics.endFill ();
@@ -1770,9 +1769,9 @@ package editor {
          }
          
          if (useQuickMethod)
-            SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine, null));
+            SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine, null, GetViewportSize));
          else
-            SetDesignPlayer (new ColorInfectionPlayer (true, null, GetWorldBinaryData));
+            SetDesignPlayer (new ColorInfectionPlayer (true, null, GetWorldBinaryData, GetViewportSize));
          
          mIsPlaying = true;
          
@@ -4838,6 +4837,8 @@ package editor {
          mEditorWorld.SetViewportWidth (info.mViewportWidth);
          mEditorWorld.SetViewportHeight (info.mViewportHeight);
          
+         mEditorWorld.ValidateViewportSize ();
+         
          CreateUndoPoint ("World appearance is changed");
       }
       
@@ -5512,9 +5513,9 @@ package editor {
          
          //>> from v1.07 (in fact, the code added in v0110 r003)
          var shareSourceCode:Boolean = mEditorWorld.IsShareSourceCode ();
-         designDataAll.writeShort (600); // view width
-         designDataAll.writeShort (600); // view height
-         designDataAll.writeByte  (1); // show play bar?
+         designDataAll.writeShort (mEditorWorld.GetViewportWidth ()); // view width
+         designDataAll.writeShort (mEditorWorld.GetViewportHeight ()); // view height
+         designDataAll.writeByte  ((mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
          designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
          //<<
          

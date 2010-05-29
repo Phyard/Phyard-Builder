@@ -140,7 +140,7 @@
             }
             else if (width == 600 && height == 600)
             {
-               RadioButton_600x600.selected == true;
+               RadioButton_600x600.selected = true;
             }
             else if (width == 480 && height == 320)
             {

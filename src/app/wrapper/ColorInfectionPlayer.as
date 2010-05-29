@@ -12,6 +12,7 @@ package wrapper {
    import flash.display.Stage;
    import flash.events.Event;
    import flash.display.LoaderInfo;
+   import flash.display.StageScaleMode;
    
    import flash.system.System;
    
@@ -113,6 +114,10 @@ package wrapper {
          GetWorldDefine = getWorldDefine;
          GetWorldBinaryData = getWorldBinaryData;
          GetViewportSize = getViewportSize;
+         //if (GetViewportSize == null)
+         //{
+         //   stage.scaleMode = StageScaleMode.NO_SCALE;
+         //}
       }
       
       public function GetPlayerWorld ():World
@@ -770,6 +775,7 @@ package wrapper {
          mTextAuthorInfo = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, 0x0);
          
          mFinishedDialog = UiUtil.CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, buttonContainer]);
+         CenterSprite (mFinishedDialog);
          mFinishedDialog.visible = false;
          mFinishedDialog.alpha = 0.9;
          
@@ -811,6 +817,8 @@ package wrapper {
       private function CreateHelpDialog ():void
       {
          mHelpDialog = new PlayHelpDialog (CloseHelpDialog);
+         CenterSprite (mHelpDialog);
+         
          mHelpDialog.visible = false;
          
          mDialogLayer.addChild (mHelpDialog);
@@ -841,21 +849,83 @@ package wrapper {
          var showHelpButton:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
          var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mPlayerWorld.GetViewportWidth ();
          var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mPlayerWorld.GetViewportHeight ();
-         var viewerWidth:int = viewportWidth;
-         var viewerHeight:int = showPlayBar ? (Define.PlayerPlayBarThickness + viewportHeight) : viewportHeight;
+         var viewerWidth:Number = viewportWidth;
+         var viewerHeight:Number = showPlayBar ? (Define.PlayerPlayBarThickness + viewportHeight) : viewportHeight;
+         
+         if (GetViewportSize == null)
+         {
+            var defaultRatio:Number = Number (App::Default_Height) / Number (App::Default_Width);
+            var stageRatio:Number = stage.stageHeight / stage.stageWidth;
+            var marginTop:Number; // default unit
+            var marginLeft:Number; // default unit
+            var scaleStageToDefault:Number;
+            if (defaultRatio < stageRatio)
+            {
+               marginLeft = 0;
+               marginTop = 0.5 * (Number (App::Default_Width) * stageRatio - Number (App::Default_Height));
+               scaleStageToDefault = Number (App::Default_Width) / stage.stageWidth;
+            }
+            else
+            {
+               marginLeft = 0.5 * (Number (App::Default_Height) / stageRatio - Number (App::Default_Width));
+               marginTop = 0;
+               scaleStageToDefault = Number (App::Default_Height) / stage.stageHeight;
+            }
+            var ratio:Number = viewerHeight / viewerWidth;
+            var availableWidth:Number; // stage unit
+            var availableHeight:Number; // stage unit
+            var scale:Number;
+            var topY:Number; // stage unit
+            var leftX:Number; // stage unit
+            if (ratio < stageRatio)
+            {
+               availableWidth = stage.stageWidth;
+               availableHeight = availableWidth * ratio;
+               scale = availableWidth / viewerWidth;
+               leftX = 0;
+               topY = 0.5 * (stage.stageHeight - availableHeight);
+            }
+            else
+            {
+               availableHeight = stage.stageHeight;
+               availableWidth = availableHeight / ratio;
+               scale = availableHeight / viewerHeight;
+               leftX = 0.5 * (stage.stageWidth - availableWidth);
+               topY = 0;
+            }
+            leftX *= scaleStageToDefault;
+            topY *= scaleStageToDefault;
+            scale *= scaleStageToDefault;
+            
+            this.scaleX = this.scaleY = scale;
+            this.x =  leftX - marginLeft;
+            this.y = topY - marginTop;
+         }
          
          GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth, Define.PlayerPlayBarThickness, 0x606060, 1, true, playBarColor);
          
          mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, mMainMenuCallback, showScaleAdjustor ? OnZoom : null);
-         mTopBarLayer.addChild (mPlayControlBar); 
+         mTopBarLayer.addChild (mPlayControlBar);
          mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
          mPlayControlBar.y = 2;
          
-         GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, 0, 0, viewerWidth - 1, viewerHeight - 1, 0x606060);
+         GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, 0, 0, viewerWidth, viewerHeight, 0x606060);
          
          mTopBarLayer.visible = showPlayBar;
-         mTopBarLayer.x= 0;
-         mWorldLayer.y = showPlayBar ? Define.PlayerPlayBarThickness : 0;
+         mTopBarLayer.x = 0;
+         mTopBarLayer.y = 0;
+         
+         mWorldLayer.x = 0;
+         mWorldLayer.y = mTopBarLayer.y + (showPlayBar ? mTopBarLayer.height : 0);
+      }
+      
+      private function CenterSprite (sprite:Sprite):void
+      {
+         var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mPlayerWorld.GetViewportWidth ();
+         var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mPlayerWorld.GetViewportHeight ();
+         
+         sprite.x = mWorldLayer.x + 0.5 * (viewportWidth - sprite.width);
+         sprite.y = mWorldLayer.y + 0.5 * (viewportHeight - sprite.height);
       }
       
 //======================================================================

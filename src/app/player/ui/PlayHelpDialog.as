@@ -3,6 +3,8 @@ package player.ui {
    import flash.display.DisplayObject;
    import flash.display.Sprite;
    
+   import flash.events.Event;
+   
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.display.TextFieldEx;
    import com.tapirgames.display.TextButton;
@@ -34,8 +36,8 @@ package player.ui {
          
          mTextTutorial = TextFieldEx.CreateTextField (tutorialText, false, 0xFFFFFF, 0x0, true, Define.DefaultWorldWidth / 2);
          
-         var box2dText:String =  "<font size='10' face='Verdana' color='#000000'>(This player is based on fbox2d, which is an actionscript<br/>"
-                                                                                + "porting of the famous box2d c++ physics engine.)</font>";
+         var box2dText:String =  "<font size='10' face='Verdana' color='#000000'>(This player is based on fbox2d, an actionscript<br/>"
+                                                                                + "port of the famous box2d c++ physics engine.)</font>";
          mBox2dText = TextFieldEx.CreateTextField (box2dText);
          
          mButtonCloseHelpDialog = new TextButton ("<font face='Verdana' size='16' color='#0000FF'>   Close   </font>", OnClickClose);

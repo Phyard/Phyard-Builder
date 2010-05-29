@@ -549,6 +549,28 @@ package editor.world {
          return mViewportHeight;
       }
       
+      public function ValidateViewportSize ():void
+      {
+         if (mViewportWidth> 750)
+            mViewportWidth = 750;
+         if (mViewportWidth < 50)
+            mViewportWidth = 50;
+         
+         if (mViewportHeight < 50)
+            mViewportHeight = 50;
+         
+         if (mViewportWidth > 600)
+         {
+            if (mViewportHeight > 500)
+               mViewportHeight = 500;
+         }
+         else
+         {
+            if (mViewportHeight > 600)
+               mViewportHeight = 600;
+         }
+      }
+      
 //=================================================================================
 //   clone
 //=================================================================================

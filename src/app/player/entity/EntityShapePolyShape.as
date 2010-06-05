@@ -68,8 +68,8 @@ package player.entity {
             displayPoint.y = inputDisplayPoint.y;
 
             physicsPoint = mLocalPoints [i];
-            physicsPoint.x =  mWorld.GetCoordinateSystem ().D2P_PositionX (inputDisplayPoint.x);
-            physicsPoint.y =  mWorld.GetCoordinateSystem ().D2P_PositionY (inputDisplayPoint.y);
+            physicsPoint.x =  mWorld.GetCoordinateSystem ().D2P_LinearDeltaX (inputDisplayPoint.x);
+            physicsPoint.y =  mWorld.GetCoordinateSystem ().D2P_LinearDeltaY (inputDisplayPoint.y);
          }
       }
    }

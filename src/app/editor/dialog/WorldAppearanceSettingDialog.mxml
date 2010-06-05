@@ -10,22 +10,38 @@
       <mx:Spacer width="100%"/>
       <mx:VBox>
          <mx:VBox width="100%">
-            <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnCustomSizeRationClick ()"/>
-            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_NormalSize" value="normal"
-                label="Normal Scene Size (left:0, top:0, width:500, height:500)" />
+            <mx:Label text="Scene Field Setting (unit: pixel):"/>
+         </mx:VBox>
+         <mx:RadioButtonGroup id="RadioButtonGroup_SceneSize" itemClick="OnSceneSizeRationClick ()"/>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
             <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_InfinteSize" value="infinite"
                 label="Infinte Scene Size"/>
-            <mx:HBox width="100%">
-               <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_CustomSize" value="custom"
-                   label="Custom (pixels):"/>
-            </mx:HBox>
-         </mx:VBox>
-         <mx:HBox id="Box_CustomSceneSize1" width="100%">
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_ViewportSize" value="viewport"
+                label="Viewport Size"/>
+         </mx:HBox>
+         <mx:HBox id="Box_CustomViewportSize1" width="100%">
             <mx:Spacer width="100%"/>
             <mx:Label id="Label_CustomLeft" text="Left:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomLeft_ViewportSize" stepSize="1" width="80" />
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_CustomRight" text="Top:" textAlign="right" width="60"/>
+            <mx:NumericStepper id="NumericStepper_CustomTop_ViewportSize" stepSize="1" width="80" />
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:Spacer width="10"/>
+            <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_CustomSize" value="custom"
+                label="Custom (pixels):"/>
+         </mx:HBox>
+         <mx:HBox id="Box_CustomSceneSize1" width="100%">
+            <mx:Spacer width="100%"/>
+            <mx:Label id="Label_CustomLeft_ViewportSize" text="Left:" textAlign="right" width="60"/>
             <mx:NumericStepper id="NumericStepper_CustomLeft" stepSize="1" width="80" />
             <mx:Spacer width="100%"/>
-            <mx:Label id="Label_CustomRight" text="Width:" textAlign="right" width="60"/>
+            <mx:Label id="Label_CustomRight_ViewportSize" text="Width:" textAlign="right" width="60"/>
             <mx:NumericStepper id="NumericStepper_CustomWidth" stepSize="1" width="80" />
          </mx:HBox>
          <mx:HBox id="Box_CustomSceneSize2" width="100%">
@@ -104,7 +120,7 @@
          
          public function SetValues (initialValues:Object):void
          {
-            mParams = initialValues;            
+            mParams = initialValues;
          }
          
          private function OnInitPanel ():void
@@ -129,23 +145,27 @@
             
             if (mParams.mIsInfiniteSceneSize)
             {
-               RadioButton_NormalSize.selected = false;
+               RadioButton_ViewportSize.selected = false;
                RadioButton_InfinteSize.selected = true;
                RadioButton_CustomSize.selected = false;
             }
-            else if (Define.IsNormalScene (mParams.mWorldLeft, mParams.mWorldTop, mParams.mWorldWidth, mParams.mWorldHeight))
+            else if (mParams.mWorldWidth == mParams.mViewportWidth || mParams.mWorldHeight == mParams.mViewportHeight)
             {
-               RadioButton_NormalSize.selected = true;
+               RadioButton_ViewportSize.selected = true;
                RadioButton_InfinteSize.selected = false;
                RadioButton_CustomSize.selected = false;
             }
             else
             {
-               RadioButton_NormalSize.selected = false;
+               RadioButton_ViewportSize.selected = false;
                RadioButton_InfinteSize.selected = false;
                RadioButton_CustomSize.selected = true;
             }
             
+            RadioButton_ViewportSize.label = "Viewport Size (width: " + mParams.mViewportWidth + ", height: "+ mParams.mViewportHeight + ")";
+            
+            NumericStepper_CustomLeft_ViewportSize.value = mParams.mWorldLeft;
+            NumericStepper_CustomTop_ViewportSize.value = mParams.mWorldTop;
             NumericStepper_CustomLeft.value = mParams.mWorldLeft;
             NumericStepper_CustomTop.value = mParams.mWorldTop;
             NumericStepper_CustomWidth.value = mParams.mWorldWidth;
@@ -162,7 +182,7 @@
             NumericStepper_TopBorderThickness.value = mParams.mWorldBorderTopThickness;
             NumericStepper_BottomBorderThickness.value = mParams.mWorldBorderBottomThickness;
             
-            OnCustomSizeRationClick ();
+            OnSceneSizeRationClick ();
             OnBuildBorderClick ();
          }
          
@@ -176,8 +196,9 @@
             OnClose = onClose;
          }
          
-         private function OnCustomSizeRationClick ():void
+         private function OnSceneSizeRationClick ():void
          {
+            Box_CustomViewportSize1.enabled = RadioButton_ViewportSize.selected;
             Box_CustomSceneSize1.enabled = RadioButton_CustomSize.selected;
             Box_CustomSceneSize2.enabled = RadioButton_CustomSize.selected;
          }
@@ -192,12 +213,12 @@
          private function OnClickOkButton():void 
          {
             mParams.mIsInfiniteSceneSize = RadioButton_InfinteSize.selected;
-            if (RadioButton_NormalSize.selected)
+            if (RadioButton_ViewportSize.selected)
             {
-               mParams.mWorldLeft = 0;
-               mParams.mWorldTop = 0;
-               mParams.mWorldWidth = Define.DefaultWorldWidth;
-               mParams.mWorldHeight = Define.DefaultWorldHeight;
+               mParams.mWorldLeft = NumericStepper_CustomLeft_ViewportSize.value;
+               mParams.mWorldTop = NumericStepper_CustomTop_ViewportSize.value;
+               mParams.mWorldWidth = mParams.mViewportWidth;
+               mParams.mWorldHeight = mParams.mViewportHeight;
             }
             else
             {

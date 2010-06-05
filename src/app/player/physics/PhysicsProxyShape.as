@@ -278,6 +278,9 @@ package player.physics {
          
          var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
          
+      trace ("AddPolyline: shapeLocalPoints = " + shapeLocalPoints);
+      trace ("AddPolyline: bodyLocalVertexes = " + bodyLocalVertexes);
+         
          CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * curveThickness, false, true, roundEnds);
       }
       
@@ -565,7 +568,10 @@ package player.physics {
                tx = - halfWidth_b; ty =   halfHeight_b; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
                
                bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
-               
+         
+      trace ("AddRectangle: shapeLocalPoints = " + shapeLocalPoints);
+      trace ("AddRectangle: bodyLocalVertexes = " + bodyLocalVertexes);
+         
                // ...
                polygon_shape.Set (bodyLocalVertexes, 4);
                

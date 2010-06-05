@@ -4790,6 +4790,8 @@ package editor {
          info.mWorldBorderRightThickness  = mEditorWorld.GetWorldBorderRightThickness ();
          info.mWorldBorderBottomThickness = mEditorWorld.GetWorldBorderBottomThickness ();
          
+         info.mViewportWidth = mEditorWorld.GetViewportWidth ();
+         info.mViewportHeight = mEditorWorld.GetViewportHeight ();
          
          return info;
       }

@@ -77,6 +77,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_String_GetCharAt,                   StringCharAt);
          RegisterCoreFunction (CoreFunctionIds.ID_String_GetCharCodeAt,               StringCharCodeAt);
          RegisterCoreFunction (CoreFunctionIds.ID_String_CharCode2Char,               CharCode2Char);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_ToLowerCase,                 ToLowerCase);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_ToUpperCase,                 ToUpperCase);
          
       // bool
          
@@ -108,10 +110,12 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Number_IsInfinity,          IsInfinity);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Number_ToString,             NumberToString);
-         //RegisterCoreFunction (CoreFunctionIds.ID_Number_ToExponential,        NumberToExponentialString);
+         //RegisterCoreFunction (CoreFunctionIds.ID_Number_ToExponential,      NumberToExponentialString);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_ToFixed,              NumberToFixedString);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_ToPrecision,          NumberToPrecisionString);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_ToStringByRadix,      NumberToStringByRadix);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ParseFloat,           ParseFloat);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ParseInteger,         ParseInteger);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Negative,                   NegativeNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Add,                        AddTwoNumbers);
@@ -172,6 +176,14 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.Id_Math_LinearInterpolationColor,          LinearInterpolationColor);
          
       // game / design
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_RestartLevel,              RestartLevel);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_IsLevelPaused,             IsLevelPaused);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetLevelPaused,            SetLevelPaused);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetPlaySpeedX,             GetPlaySpeedX);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetPlaySpeedX,             SetPlaySpeedX);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_GetWorldScale,             GetWorldScale);
+         RegisterCoreFunction (CoreFunctionIds.ID_Design_SetWorldScale,             SetWorldScale);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelMilliseconds,             GetLevelMilliseconds);
          RegisterCoreFunction (CoreFunctionIds.ID_Design_GetLevelSteps,                    GetLevelSteps);
@@ -555,6 +567,20 @@ package player.trigger {
          valueTarget.AssignValueObject (char_code == 0 ? "" : String.fromCharCode (char_code));
       }
       
+      public static function ToLowerCase (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var text:String = valueSource.EvalateValueObject () as String;
+         
+         valueTarget.AssignValueObject (text == null ? null : text.toLowerCase ());
+      }
+      
+      public static function ToUpperCase (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var text:String = valueSource.EvalateValueObject () as String;
+         
+         valueTarget.AssignValueObject (text == null ? null : text.toUpperCase ());
+      }
+      
       public static function NumberToString (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var value:Number = valueSource.EvalateValueObject () as Number;
@@ -622,6 +648,26 @@ package player.trigger {
             valueTarget.AssignValueObject (null);
          else
             valueTarget.AssignValueObject (value.toString (radix));
+      }
+      
+      public static function ParseFloat (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var text:String = String (valueSource.EvalateValueObject ());
+         
+         valueTarget.AssignValueObject (parseFloat (text));
+      }
+      
+      public static function ParseInteger (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var text:String = String (valueSource.EvalateValueObject ());
+         
+         valueSource = valueSource.mNextValueSourceInList;
+         var radix:int = int (valueSource.EvalateValueObject ());
+         
+         if (radix < 2 || radix > 36)
+            valueTarget.AssignValueObject (NaN);
+         else
+            valueTarget.AssignValueObject (parseInt (text, radix));
       }
       
       public static function BooleanToString (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1357,6 +1403,55 @@ package player.trigger {
    //*******************************************************************
    // game / design
    //*******************************************************************
+      
+      public static function RestartLevel (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         Global.RestartPlay ();
+      }
+      
+      public static function IsLevelPaused (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (! Global.IsPlaying ());
+      }
+      
+      public static function SetLevelPaused (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var paused:Boolean = Boolean (valueSource.EvalateValueObject ());
+         
+         Global.SetPlaying (! paused);
+      }
+      
+      public static function GetPlaySpeedX (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetSpeedX ());
+      }
+      
+      public static function SetPlaySpeedX (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var speedX:int = int (valueSource.EvalateValueObject ());
+         if (speedX < 0)
+            speedX = 0;
+         else if (speedX > 9)
+            speedX = 9;
+         
+         Global.SetSpeedX (speedX);
+      }
+      
+      public static function GetWorldScale (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         valueTarget.AssignValueObject (Global.GetScale());
+      }
+      
+      public static function SetWorldScale (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var scale:Number = Number (valueSource.EvalateValueObject ());
+         if (scale < 0.0625)
+            scale = 0.0625;
+         else if (scale > 16.0)
+            scale = 16.0;
+         
+         Global.SetScale (scale);
+      }
       
       public static function GetLevelMilliseconds (valueSource:ValueSource, valueTarget:ValueTarget):void
       {

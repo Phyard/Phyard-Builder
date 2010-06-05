@@ -42,36 +42,65 @@ public function SetCurrentMode (mode:Mode):void
 public static const CachedEventType_General:int = 0;
 public static const CachedEventType_RemoveBombsAndRemovableShapes:int = 1;
 
+private var mCacheSystemEvents:Boolean = true;
+
+public function SetCacheSystemEvent (cache:Boolean):void
+{
+   mCacheSystemEvents = cache;
+   
+   if (! mCacheSystemEvents)
+   {
+      HandleAllCachedSystemEvents ();
+      ClearAllCachedSystemEvents ();
+   }
+}
+
 private var mCachedSystemEvents:Array = new Array ();
 
-private function HandleCachedSystemEvent ():void
+private function RegisterCachedSystemEvent (eventInfo:Array):void
+{
+   if (mCacheSystemEvents)
+   {
+      mCachedSystemEvents.push (eventInfo);
+   }
+   else
+   {
+      HandleCachedSystemEvent (eventInfo);
+   }
+}
+
+private function HandleAllCachedSystemEvents ():void
 {
    var numEvents:int = mCachedSystemEvents.length;
    
    for (var i:int = 0; i < numEvents; ++ i)
    {
-      var eventInfo:Array = mCachedSystemEvents [i];
-      if (eventInfo [0] == CachedEventType_RemoveBombsAndRemovableShapes)
+      HandleCachedSystemEvent (mCachedSystemEvents [i] as Array);
+   }
+}
+
+private function HandleCachedSystemEvent (eventInfo:Array):void
+{
+   if (eventInfo [0] == CachedEventType_RemoveBombsAndRemovableShapes)
+   {
+      RemoveBombsAndRemovableShapes (eventInfo [1] as Array);
+   }
+   else
+   {
+      var handlerElement:ListElement_EventHandler = eventInfo [1] as ListElement_EventHandler;
+      var valueSourceList:ValueSource = eventInfo [2] as ValueSource;
+      
+      IncStepStage ();
+      while (handlerElement != null)
       {
-         RemoveBombsAndRemovableShapes (eventInfo [1] as Array);
-      }
-      else
-      {
-         var handlerElement:ListElement_EventHandler = eventInfo [1] as ListElement_EventHandler;
-         var valueSourceList:ValueSource = eventInfo [2] as ValueSource;
+         handlerElement.mEventHandler.HandleEvent (valueSourceList);
          
-         IncStepStage ();
-         while (handlerElement != null)
-         {
-            handlerElement.mEventHandler.HandleEvent (valueSourceList);
-            
-            handlerElement = handlerElement.mNextListElement;
-         }
+         handlerElement = handlerElement.mNextListElement;
       }
    }
 }
 
-private function ClearCachedSystemEvent ():void
+private function ClearAllCachedSystemEvents ():void
 {
    var numEvents:int = mCachedSystemEvents.length;
    
@@ -295,7 +324,7 @@ public function OnMouseUp (event:MouseEvent):void
       }
       
       //RemoveBombsAndRemovableShapes (shapeArray);
-      mCachedSystemEvents.push ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
+      RegisterCachedSystemEvent ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
    }
    
    KeyReleased (KeyCodes.LeftMouseButton, 0);
@@ -352,13 +381,13 @@ public function RegisterMouseEvent (event:MouseEvent, handlerList:ListElement_Ev
    if (shape == null)
    {
       valueSource7.mValueObject = IsContentLayerContains (event.target as DisplayObject); // for world event only
-      mCachedSystemEvents.push ([CachedEventType_General, handlerList, valueSource1]);
+      RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource1]);
    }
    else
    {
       var valueSource0:ValueSource_Direct = new ValueSource_Direct (null, valueSource1); // entity
       valueSource0.mValueObject = shape;
-      mCachedSystemEvents.push ([CachedEventType_General, handlerList, valueSource0]);
+      RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
    }
 }
 
@@ -458,7 +487,7 @@ public function RegisterKeyboardEvent (exactKeyCode:int, event:KeyboardEvent, ha
    valueSource3.mValueObject = event.shiftKey;
    valueSource4.mValueObject = mKeyHoldInfo [exactKeyCode][KeyHoldInfo_Ticks];
    
-   mCachedSystemEvents.push ([CachedEventType_General, handlerList, valueSource0]);
+   RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
 }
 
 //=============================================================

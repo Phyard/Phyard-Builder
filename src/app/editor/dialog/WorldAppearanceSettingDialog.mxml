@@ -17,7 +17,7 @@
                 label="Infinte Scene Size"/>
             <mx:HBox width="100%">
                <mx:RadioButton groupName="RadioButtonGroup_SceneSize" id="RadioButton_CustomSize" value="custom"
-                   label="Custom:"/>
+                   label="Custom (pixels):"/>
             </mx:HBox>
          </mx:VBox>
          <mx:HBox id="Box_CustomSceneSize1" width="100%">

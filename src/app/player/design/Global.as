@@ -144,7 +144,17 @@ package player.design
       {
       }
       
+//==============================================================================
+// callbacks
+//==============================================================================
       
+      public static var RestartPlay:Function = null;
+      public static var IsPlaying:Function = null;
+      public static var SetPlaying:Function = null;
+      public static var GetSpeedX:Function = null;
+      public static var SetSpeedX:Function = null;
+      public static var GetScale:Function = null;
+      public static var SetScale:Function = null;
       
    }
 }

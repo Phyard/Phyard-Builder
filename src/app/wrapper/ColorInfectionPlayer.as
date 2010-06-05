@@ -42,6 +42,7 @@ package wrapper {
    import player.ui.UiUtil;
    import player.ui.PlayHelpDialog;
    import player.ui.PlayControlBar;
+   import player.design.Global;
    
    import common.DataFormat2;
    import common.Define;
@@ -57,10 +58,12 @@ package wrapper {
 //
 //======================================================================
       
+      private var mParamsFromEditor:Object = null;
+         private var GetWorldDefine:Function = null;
+         private var GetWorldBinaryData:Function = null;
+         private var GetViewportSize:Function = null;
+      
       private var mStartRightNow:Boolean = false;
-      private var GetWorldDefine:Function = null;
-      private var GetWorldBinaryData:Function = null;
-      private var GetViewportSize:Function = null;
       
       private var mExternalPaused:Boolean = false;
       public function SetExternalPaused (paused:Boolean):void
@@ -98,7 +101,7 @@ package wrapper {
 //
 //======================================================================
       
-      public function ColorInfectionPlayer (start:Boolean = false, getWorldDefine:Function = null, getWorldBinaryData:Function = null, getViewportSize:Function = null)
+      public function ColorInfectionPlayer (start:Boolean = false, paramsFromEditor:Object = null)
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
@@ -111,13 +114,14 @@ package wrapper {
          addChild (mDialogLayer);
          
          mStartRightNow = start;
-         GetWorldDefine = getWorldDefine;
-         GetWorldBinaryData = getWorldBinaryData;
-         GetViewportSize = getViewportSize;
-         //if (GetViewportSize == null)
-         //{
-         //   stage.scaleMode = StageScaleMode.NO_SCALE;
-         //}
+         
+         mParamsFromEditor = paramsFromEditor
+         if (paramsFromEditor != null)
+         {
+            GetWorldDefine = paramsFromEditor.getWorldDefine;
+            GetWorldBinaryData = paramsFromEditor.getWorldBinaryData;
+            GetViewportSize = paramsFromEditor.getViewportSize;
+         }
       }
       
       public function GetPlayerWorld ():World
@@ -143,10 +147,15 @@ package wrapper {
       
       private function OnAddedToStage (e:Event):void
       {
+         if (GetViewportSize == null)
+         {
+            CheckStageSize (Number (App::Default_Width),  Number (App::Default_Height));
+         }
+         
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
          addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          
-         if (GetWorldDefine != null || GetWorldBinaryData != null )
+         if (mParamsFromEditor != null) //(GetWorldDefine != null || GetWorldBinaryData != null )
             ChangeState (StateId_BuildWorld);
          else
             ChangeState (StateId_Load);
@@ -214,7 +223,9 @@ package wrapper {
             }
          }
          
-         var aboutItem:ContextMenuItem = new ContextMenuItem("About Color Infection Player", addSeperaor);
+         var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
+         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), addSeperaor);
          theContextMenu.customItems.push (aboutItem);
          aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
          
@@ -347,7 +358,7 @@ package wrapper {
                }
                catch (error:Error)
                {
-                  //if (GetWorldBinaryData != null || GetWorldDefine != null)
+                  //if (mParamsFromEditor != null) //(GetWorldBinaryData != null || GetWorldDefine != null)
                   //{
                   //   throw error; // let editor to handle it
                   //}
@@ -382,13 +393,7 @@ package wrapper {
                BuildErrorMessage ("Loading ...");
                break;
             case StateId_LoadFailed:
-               BuildErrorMessage ("Fail to parse play code.");
-               
-               var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='10' color='#0000ff'><u><a href='http://forum.colorinfection.com' target='_blank'>ColorInfection.com</a></u></font>"));
-               linkText.x = (Define.DefaultWorldWidth  - linkText.width ) * 0.5;
-               linkText.y = Define.DefaultWorldHeight - linkText.height - 20;
-               mErrorMessageLayer.addChild (linkText);
-               
+               BuildErrorMessage ("Fail to parse play code.", "http://www.phyard.com");
                break;
             case StateId_BuildWorld:
                BuildErrorMessage ("Building ...");
@@ -434,7 +439,7 @@ package wrapper {
          GraphicsUtil.Clear (mErrorMessageLayer);
       }
       
-      private function BuildErrorMessage (message:String):void
+      private function BuildErrorMessage (message:String, linkUrl:String = null):void
       {
          ClearErrorMessage ();
          
@@ -442,8 +447,8 @@ package wrapper {
          var h:int;
          if (GetViewportSize == null)
          {
-            w = stage.stageWidth;
-            h = stage.stageHeight;
+            w = App::Default_Width;
+            h = App::Default_Height;
          }
          else
          {
@@ -452,12 +457,75 @@ package wrapper {
             h = size.y;
          }
          
-         GraphicsUtil.DrawRect (mErrorMessageLayer, 0, 0, w, h, 0xDDDDA0, 1, true, 0xDDDDA0);
-         
          var errorText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText (message));
-         errorText.x = (Define.DefaultWorldWidth  - errorText.width ) * 0.5;
-         errorText.y = (Define.DefaultWorldHeight - errorText.height) * 0.5;
+         errorText.x = (w  - errorText.width ) * 0.5;
+         errorText.y = (h - errorText.height) * 0.5;
          mErrorMessageLayer.addChild (errorText);
+         
+         if (linkUrl != null)
+         {
+            var linkText:TextFieldEx = TextFieldEx.CreateTextField (TextUtil.CreateHtmlText ("<font size='10' color='#0000ff'><u><a href='" + linkUrl + "' target='_blank'>ColorInfection.com</a></u></font>"));
+            linkText.x = (w  - linkText.width ) * 0.5;
+            linkText.y = h - linkText.height - 20;
+            mErrorMessageLayer.addChild (linkText);
+         }
+      }
+      
+      private function CheckStageSize (contentWidth:Number, contentHeight:Number):void
+      {
+         // in fact, I still don't know why this code work.
+         // weird flash.
+         
+         var defaultRatio:Number;
+         var stageRatio:Number;
+         var marginTop:Number; // default unit
+         var marginLeft:Number; // default unit
+         var scaleStageToDefault:Number;
+         
+         defaultRatio = Number (App::Default_Height) / Number (App::Default_Width);
+         stageRatio = stage.stageHeight / stage.stageWidth;
+         if (defaultRatio < stageRatio)
+         {
+            marginLeft = 0;
+            marginTop = 0.5 * (Number (App::Default_Width) * stageRatio - Number (App::Default_Height));
+            scaleStageToDefault = Number (App::Default_Width) / stage.stageWidth;
+         }
+         else
+         {
+            marginLeft = 0.5 * (Number (App::Default_Height) / stageRatio - Number (App::Default_Width));
+            marginTop = 0;
+            scaleStageToDefault = Number (App::Default_Height) / stage.stageHeight;
+         }
+         
+         var ratio:Number = contentHeight / contentWidth;
+         var availableWidth:Number; // stage unit
+         var availableHeight:Number; // stage unit
+         var scale:Number;
+         var topY:Number; // stage unit
+         var leftX:Number; // stage unit
+         if (ratio < stageRatio)
+         {
+            availableWidth = stage.stageWidth;
+            availableHeight = availableWidth * ratio;
+            scale = availableWidth / contentWidth;
+            leftX = 0;
+            topY = 0.5 * (stage.stageHeight - availableHeight);
+         }
+         else
+         {
+            availableHeight = stage.stageHeight;
+            availableWidth = availableHeight / ratio;
+            scale = availableHeight / contentHeight;
+            leftX = 0.5 * (stage.stageWidth - availableWidth);
+            topY = 0;
+         }
+         leftX *= scaleStageToDefault;
+         topY *= scaleStageToDefault;
+         scale *= scaleStageToDefault;
+         
+         this.scaleX = this.scaleY = scale;
+         this.x =  leftX - marginLeft;
+         this.y = topY - marginTop;
       }
       
 //======================================================================
@@ -630,7 +698,6 @@ package wrapper {
             }
             
             mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (worldDefine);
-            mPlayerWorld.SetInteractiveEnabledWhenPaused (GetWorldBinaryData != null || GetWorldDefine != null);
          }
          catch (error:Error)
          {
@@ -642,6 +709,11 @@ package wrapper {
          
          if (mPlayerWorld != null)
          {
+            var hidePlayBar:Boolean = (mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0;
+            
+            mPlayerWorld.SetCacheSystemEvent (! hidePlayBar);
+            mPlayerWorld.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null); //GetWorldBinaryData != null || GetWorldDefine != null);
+            
             mWorldLayer.addChild (mPlayerWorld);
             
             mEverFinished = false;
@@ -854,62 +926,17 @@ package wrapper {
          
          if (GetViewportSize == null)
          {
-            var defaultRatio:Number = Number (App::Default_Height) / Number (App::Default_Width);
-            var stageRatio:Number = stage.stageHeight / stage.stageWidth;
-            var marginTop:Number; // default unit
-            var marginLeft:Number; // default unit
-            var scaleStageToDefault:Number;
-            if (defaultRatio < stageRatio)
-            {
-               marginLeft = 0;
-               marginTop = 0.5 * (Number (App::Default_Width) * stageRatio - Number (App::Default_Height));
-               scaleStageToDefault = Number (App::Default_Width) / stage.stageWidth;
-            }
-            else
-            {
-               marginLeft = 0.5 * (Number (App::Default_Height) / stageRatio - Number (App::Default_Width));
-               marginTop = 0;
-               scaleStageToDefault = Number (App::Default_Height) / stage.stageHeight;
-            }
-            var ratio:Number = viewerHeight / viewerWidth;
-            var availableWidth:Number; // stage unit
-            var availableHeight:Number; // stage unit
-            var scale:Number;
-            var topY:Number; // stage unit
-            var leftX:Number; // stage unit
-            if (ratio < stageRatio)
-            {
-               availableWidth = stage.stageWidth;
-               availableHeight = availableWidth * ratio;
-               scale = availableWidth / viewerWidth;
-               leftX = 0;
-               topY = 0.5 * (stage.stageHeight - availableHeight);
-            }
-            else
-            {
-               availableHeight = stage.stageHeight;
-               availableWidth = availableHeight / ratio;
-               scale = availableHeight / viewerHeight;
-               leftX = 0.5 * (stage.stageWidth - availableWidth);
-               topY = 0;
-            }
-            leftX *= scaleStageToDefault;
-            topY *= scaleStageToDefault;
-            scale *= scaleStageToDefault;
-            
-            this.scaleX = this.scaleY = scale;
-            this.x =  leftX - marginLeft;
-            this.y = topY - marginTop;
+            CheckStageSize (viewerWidth, viewerHeight);
          }
          
-         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth, Define.PlayerPlayBarThickness, 0x606060, 1, true, playBarColor);
+         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth - 1, Define.PlayerPlayBarThickness, playBarColor, 1, true, playBarColor);
          
          mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, mMainMenuCallback, showScaleAdjustor ? OnZoom : null);
          mTopBarLayer.addChild (mPlayControlBar);
          mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
          mPlayControlBar.y = 2;
          
-         GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, 0, 0, viewerWidth, viewerHeight, 0x606060);
+         //GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, 0, 0, viewerWidth - 1, viewerHeight - 1, 0x606060);
          
          mTopBarLayer.visible = showPlayBar;
          mTopBarLayer.x = 0;
@@ -917,6 +944,15 @@ package wrapper {
          
          mWorldLayer.x = 0;
          mWorldLayer.y = mTopBarLayer.y + (showPlayBar ? mTopBarLayer.height : 0);
+         
+         //
+         Global.RestartPlay = mPlayControlBar.OnClickRestart;
+         Global.IsPlaying = mPlayControlBar.IsPlaying;
+         Global.SetPlaying = mPlayControlBar.SetPlaying;
+         Global.GetSpeedX = mPlayControlBar.GetPlayingSpeedX;
+         Global.SetSpeedX = mPlayControlBar.SetPlayingSpeedX;
+         Global.GetScale = mPlayControlBar.GetZoomScale;
+         Global.SetScale = mPlayControlBar.SetZoomScale;
       }
       
       private function CenterSprite (sprite:Sprite):void
@@ -1014,5 +1050,6 @@ package wrapper {
       {
          _OnSpeed = onSpeed;
       }
+      
    }
 }

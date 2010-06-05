@@ -37,7 +37,7 @@ package editor.trigger {
          var basic_package:FunctionPackage = new FunctionPackage ("Basic", sGlobalPackage);
          var number_package:FunctionPackage   = new FunctionPackage ("Number", sGlobalPackage);
             var numbe_general_package:FunctionPackage         = new FunctionPackage ("General", number_package);
-            var to_string_package:FunctionPackage      = new FunctionPackage ("To String", number_package);
+            var to_string_package:FunctionPackage      = new FunctionPackage ("To/From String", number_package);
             var bitwise_package:FunctionPackage            = new FunctionPackage ("Bitwise", number_package);
             var usual_number_package:FunctionPackage         = new FunctionPackage ("Usual", number_package);
             var interpolation_package:FunctionPackage      = new FunctionPackage ("Interpolation", number_package);
@@ -241,7 +241,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("String Length"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_GetCharAt, string_package, "Get Char At", "@&0 = The ($1)th Char in String($0)", "@&0 = StringCharAt ($0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_GetCharAt, string_package, "Get Char At", "@&0 = The ($1)th Char in String($0)", "@&0 = StringCharAt ($0, $1)",
                      [
                              new VariableDefinitionString ("The String"), 
                              new VariableDefinitionNumber ("Char Index", null, {mMinValue: 0}), 
@@ -265,6 +265,22 @@ package editor.trigger {
                      ],
                      [
                              new VariableDefinitionString ("The String"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ToLowerCase, string_package, "ToLowerCase", null, null,
+                     [
+                             new VariableDefinitionString ("The Original String"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Lower Case String"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ToUpperCase, string_package, "ToUpperCase", null, null,
+                     [
+                             new VariableDefinitionString ("The Original String"), 
+                     ],
+                     [
+                             new VariableDefinitionString ("Upper Case String"), 
                      ]
                   );
          
@@ -548,6 +564,23 @@ package editor.trigger {
                      ],
                      [
                              new VariableDefinitionString ("Result"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ParseFloat, to_string_package, "Number <- String", "@$0 <- &0", "StringToNumber",
+                     [
+                             new VariableDefinitionString ("String"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("The Number"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ParseInteger, to_string_package, "Integer <- String", "@$0 <- &0 by radix $1", "StringToInteger",
+                     [
+                             new VariableDefinitionString ("String"), 
+                             new VariableDefinitionNumber ("The Radix ([2, 36])", null, {mDefaultValue: 10}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("The Integer"), 
                      ]
                   );
          
@@ -914,6 +947,47 @@ package editor.trigger {
                   );
          
       // game / design
+         
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_RestartLevel, world_general_package, "Restart Level", null, null,
+                     null,
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused, world_general_package, "Is Level Paused", null, null,
+                     null,
+                     [
+                        new VariableDefinitionBoolean ("Paused (false for playing)"), 
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused, world_general_package, "Set Level Paused?", null, null,
+                     [
+                        new VariableDefinitionBoolean ("Paused (false for playing)", null, {mDefaultValue: true}), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetPlaySpeedX, world_general_package, "Get Play SpeedX", null, null,
+                     null,
+                     [
+                        new VariableDefinitionNumber ("Speed X"),
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetPlaySpeedX, world_general_package, "Set Play SpeedX", null, null,
+                     [
+                        new VariableDefinitionNumber ("Speed X ([0-9])", null, {mDefaultValue: 2, mMinValue: 0, mMaxValue: 9}),
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetWorldScale, world_general_package, "Get World Scale", null, null,
+                     null,
+                     [
+                        new VariableDefinitionNumber ("World Scale"),
+                     ]
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetWorldScale, world_general_package, "Set World Scale", null, null,
+                     [
+                        new VariableDefinitionNumber ("World Scale ([0.0625-16.0])", null, {mDefaultValue: 1.0, mMinValue: 0.0625, mMaxValue: 16.0}),
+                     ],
+                     null
+                  );
          
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds, world_general_package, "Get Level Running Milliseconds", null, null,
                      null,

@@ -480,7 +480,14 @@ package player.world {
       // clear system events
       //-----------------------------
          
-         ClearCachedSystemEvent ();
+         ClearAllCachedSystemEvents ();
+         
+      //-----------------------------
+      // destroy
+      //-----------------------------
+         
+         if (mDestroyed)
+            DestroyReally ();
          
       //-----------------------------
       // system dispatchs mouse, keyboard and other events
@@ -506,6 +513,9 @@ package player.world {
       
       public function Update (escapedTime:Number, speedX:int):void
       {
+         if (mDestroyed)
+            return;
+         
       //-----------------------------
       // remove the delay removeds
       //-----------------------------
@@ -532,14 +542,19 @@ package player.world {
          mDelayRemoveDisplayObjectFromContentLayer = true;
          
       //-----------------------------
+      // destroy
+      //-----------------------------
+         
+         if (mDestroyed)
+            DestroyReally ();
+         
+      //-----------------------------
       // system dispatchs mouse, keyboard and other events
       //-----------------------------
       }
       
       public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int):void
       {
-      // ...
-         
          var dt:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5;
          
          if (escapedTime1 == 0)
@@ -549,16 +564,16 @@ package player.world {
          var i:uint;
          var displayObject:Object;
          
-         for (k = 0; k < speedX; ++ k)
-         {
          //-----------------------------
          // delay handle system events
          // In flash, only valid when k==0 in fact
          //-----------------------------
-            
-            HandleCachedSystemEvent ();
-            ClearCachedSystemEvent ();
-            
+         
+         HandleAllCachedSystemEvents ();
+         ClearAllCachedSystemEvents ();
+         
+         for (k = 0; k < speedX; ++ k)
+         {
          //-----------------------------
          // on level to update
          //-----------------------------
@@ -818,6 +833,8 @@ package player.world {
                   border.UpdatelLocalPosition ();
                   
                   border.SetFilledColor (mBorderColor);
+                  border.SetDrawBorder (false);
+                  border.SetBorderThickness (0);
                }
             }
          }
@@ -928,14 +945,34 @@ package player.world {
 //   destroy 
 //====================================================================================================
 
+      private var mDestroyed:Boolean = false;
+      
       //
       public function Destroy ():void
       {
+         mDestroyed = true;
+      }
+      
+      public function IsDestroyed ():Boolean
+      {
+         return mDestroyed;
+      }
+      
+      private var mDestroyedReally:Boolean = false;
+      
+      private function DestroyReally ():void
+      {
+         if (mDestroyedReally)
+            return;
+         
          // todo
          
          // 
          if (mPhysicsEngine != null)
             mPhysicsEngine.Destroy ();
+         
+         //
+         mDestroyedReally = true;
       }
       
 //====================================================================================================

@@ -43,11 +43,13 @@ package common.trigger {
       public static const ID_String_SwapValues:int                = IdPool.CoreApiId_126; //
       public static const ID_String_IsNull:int                    = IdPool.CoreApiId_127; //
       public static const ID_String_Equals:int                    = IdPool.CoreApiId_183; // 
-      public static const ID_String_Add:int                       = IdPool.CoreApiId_121; //
+      public static const ID_String_Add:int                       = IdPool.CoreApiId_121; // 
       public static const ID_String_GetLength:int                 = IdPool.CoreApiId_185; // 
       public static const ID_String_GetCharAt:int                 = IdPool.CoreApiId_123; // 
       public static const ID_String_GetCharCodeAt:int             = IdPool.CoreApiId_124; // 
       public static const ID_String_CharCode2Char:int             = IdPool.CoreApiId_125; // 
+      public static const ID_String_ToLowerCase:int               = IdPool.CoreApiId_128; // 
+      public static const ID_String_ToUpperCase:int               = IdPool.CoreApiId_129; // 
       
    // bool
       
@@ -90,6 +92,8 @@ package common.trigger {
       public static const ID_Number_ToFixed:int                     = IdPool.CoreApiId_312; // 
       public static const ID_Number_ToPrecision:int                 = IdPool.CoreApiId_313; // 
       public static const ID_Number_ToStringByRadix:int             = IdPool.CoreApiId_314; // 
+      public static const ID_Number_ParseFloat:int                  = IdPool.CoreApiId_297; // 
+      public static const ID_Number_ParseInteger:int                = IdPool.CoreApiId_298; // 
       
    // math / bitwise 
       
@@ -154,6 +158,14 @@ package common.trigger {
       
    // game / design
       
+      public static const ID_Design_RestartLevel:int                     = IdPool.CoreApiId_593; // design
+      public static const ID_Design_IsLevelPaused:int                    = IdPool.CoreApiId_594; // design
+      public static const ID_Design_SetLevelPaused:int                   = IdPool.CoreApiId_595; // design
+      public static const ID_Design_GetPlaySpeedX:int                    = IdPool.CoreApiId_596; // design
+      public static const ID_Design_SetPlaySpeedX:int                    = IdPool.CoreApiId_597; // design
+      public static const ID_Design_GetWorldScale:int                    = IdPool.CoreApiId_598; // design
+      public static const ID_Design_SetWorldScale:int                    = IdPool.CoreApiId_599; // design
+
       public static const ID_Design_GetLevelMilliseconds:int                    = IdPool.CoreApiId_600; // design
       public static const ID_Design_GetLevelSteps:int                           = IdPool.CoreApiId_601; // design
       public static const ID_Design_GetMousePosition:int                        = IdPool.CoreApiId_602; // design

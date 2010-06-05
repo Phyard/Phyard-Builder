@@ -203,6 +203,22 @@ package common.trigger {
                         ValueTypeDefine.ValueType_String, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ToLowerCase,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ToUpperCase,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
          
        // bool
           
@@ -478,6 +494,23 @@ package common.trigger {
                      ],
                      [
                         ValueTypeDefine.ValueType_String, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ParseFloat,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ParseInteger,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
                      ]
                   );
          
@@ -853,6 +886,47 @@ package common.trigger {
                   );
          
       // game / design
+         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused,
+                     [
+                        ValueTypeDefine.ValueType_Boolean,
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetPlaySpeedX,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetPlaySpeedX,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetWorldScale,
+                     null,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetWorldScale,
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,
+                     ],
+                     null
+                  );
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds,
                      null,

@@ -275,6 +275,9 @@ package player.ui {
             mButtonZoomIn.SetBitmapData (mBitmapDataZoomIn);
             mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
          }
+         
+         if (_OnZoom != null)
+            _OnZoom ();
       }
       
       public function NotifyStepped ():void
@@ -389,17 +392,11 @@ package player.ui {
       private function OnClickZoomIn (data:Object):void
       {
          SetZoomScale (mZoomScale * 2.0);
-         
-         if (_OnZoom != null)
-            _OnZoom ();
       }
       
       private function OnClickZoomOut (data:Object):void
       {
          SetZoomScale (mZoomScale * 0.5);
-         
-         if (_OnZoom != null)
-            _OnZoom ();
       }
       
       private function OnClickHelp (data:Object):void

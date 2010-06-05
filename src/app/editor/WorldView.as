@@ -1561,7 +1561,7 @@ package editor {
          var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
          var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
          
-         mMenuItemAbout = new ContextMenuItem("About Color Infection Editor v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), true);
+         mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16)); //, true);
          theContextMenu.customItems.push (mMenuItemAbout);
          mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
       }
@@ -1769,9 +1769,9 @@ package editor {
          }
          
          if (useQuickMethod)
-            SetDesignPlayer (new ColorInfectionPlayer (true, GetWorldDefine, null, GetViewportSize));
+            SetDesignPlayer (new ColorInfectionPlayer (true, {getWorldDefine:GetWorldDefine, getWorldBinaryData:null, getViewportSize:GetViewportSize}));
          else
-            SetDesignPlayer (new ColorInfectionPlayer (true, null, GetWorldBinaryData, GetViewportSize));
+            SetDesignPlayer (new ColorInfectionPlayer (true, {getWorldDefine:null, getWorldBinaryData:GetWorldBinaryData, getViewportSize:GetViewportSize}));
          
          mIsPlaying = true;
          
@@ -5223,18 +5223,19 @@ package editor {
          
          var object:Object = worldState.mUserData;
           
-         //var cm:CollisionManager = mEditorWorld.GetCollisionManager ();
-         mEditorWorld.DestroyAllEntities ();
-         DataFormat.WorldDefine2EditorWorld (object.mWorldDefine, false, mEditorWorld);
-         //mEditorWorld.SetCollisionManager (cm);
+         ////var cm:CollisionManager = mEditorWorld.GetCollisionManager ();
+         //mEditorWorld.DestroyAllEntities ();
+         //DataFormat.WorldDefine2EditorWorld (object.mWorldDefine, false, mEditorWorld);
+         ////mEditorWorld.SetCollisionManager (cm);
+         
+         var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (object.mWorldDefine, false);
+         SetEditorWorld (newEditorWorld);
          
          mViewCenterWorldX = object.mViewCenterWorldX;
          mViewCenterWorldY = object.mViewCenterWorldY;
          
          //mEditorWorldZoomScale = object.mEditorWorldZoomScale;
          //mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
-         
-         SetEditorWorld (mEditorWorld);
          
          var numEntities:int = mEditorWorld.GetNumEntities ();
          var entityId:int;

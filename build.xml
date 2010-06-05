@@ -234,7 +234,7 @@
          <arg line="-define+=App::Default_Width,${--width}" />
          <arg line="-define+=App::Default_Height,${--height}" />
          <arg line="-output=${dir.release.player}/player_unsecure.swf"/>
-         <arg line="-default-background-color 0xFFFFFF"/>
+         <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
          <arg line="-use-network" />

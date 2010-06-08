@@ -200,9 +200,9 @@ package player.entity {
       override public function UpdateAppearance ():void
       {
          var x1:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.mPositionX);
-         var y1:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.mPositionY);
+         var y1:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor1.mPositionY);
          var x2:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.mPositionX);
-         var y2:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.mPositionY);
+         var y2:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor2.mPositionY);
          var dx:Number = x2 - x1;
          var dy:Number = y2 - y1;
          

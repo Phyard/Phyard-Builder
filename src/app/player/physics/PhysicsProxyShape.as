@@ -57,6 +57,11 @@ package player.physics {
 // commands
 //==============================================================================
       
+      public function FlagForFilteringForAllContacts ():void
+      {
+         mProxyBody._b2Body.FlagForFilteringForAllContacts ();
+      }
+      
       public function SetSensor (sensor:Boolean):void
       {
          var fixture:b2Fixture;
@@ -569,8 +574,8 @@ package player.physics {
                
                bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
          
-      trace ("AddRectangle: shapeLocalPoints = " + shapeLocalPoints);
-      trace ("AddRectangle: bodyLocalVertexes = " + bodyLocalVertexes);
+      //trace ("AddRectangle: shapeLocalPoints = " + shapeLocalPoints);
+      //trace ("AddRectangle: bodyLocalVertexes = " + bodyLocalVertexes);
          
                // ...
                polygon_shape.Set (bodyLocalVertexes, 4);

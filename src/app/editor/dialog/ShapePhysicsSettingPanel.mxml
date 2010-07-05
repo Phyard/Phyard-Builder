@@ -12,7 +12,7 @@
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
       <mx:VBox>
-         <mx:CheckBox id="CheckBox_EnablePhysics" label="Enable Physics" click="OnUpdateComponents()"/>
+         <mx:CheckBox id="CheckBox_EnablePhysics" label="Enable Physics" click="OnUpdateComponents(true)"/>
          <mx:CheckBox id="CheckBox_IsSensor" label="Sensor" click="OnUpdateComponents()"/>
       </mx:VBox>
       <mx:Spacer width="100%"/>
@@ -107,8 +107,12 @@
          {
          }
          
-         private function OnUpdateComponents ():void
+         private function OnUpdateComponents (userSelected:Boolean = false):void
          {
+            if (userSelected) {
+               mEnablePhysicsValueUserSelected = CheckBox_EnablePhysics.selected;
+            }
+            
             if (CheckBox_EnablePhysics.selected)
             {
                CheckBox_IsStatic.enabled = true;
@@ -158,12 +162,22 @@
             }
          }
          
+         private var mEnablePhysicsValueUserSelected:Boolean;
+         public function OnCiTypeChanged (isCiShape:Boolean):void
+         {
+            CheckBox_EnablePhysics.enabled = ! isCiShape;
+            CheckBox_EnablePhysics.selected = isCiShape ? true : mEnablePhysicsValueUserSelected;
+            
+            OnUpdateComponents ();
+         }
+         
          public function SetValues (inputValues:Object):void
          {
             mInputValues = inputValues;
             
             CheckBox_EnablePhysics.enabled = inputValues.mEnablePhysicsChangeable == undefined || inputValues.mEnablePhysicsChangeable;
             
+            mEnablePhysicsValueUserSelected = inputValues.mIsPhysicsEnabled;
             CheckBox_EnablePhysics.selected = inputValues.mIsPhysicsEnabled;
             CheckBox_IsStatic.selected = inputValues.mIsStatic;
             CheckBox_IsBullet.selected = inputValues.mIsBullet;

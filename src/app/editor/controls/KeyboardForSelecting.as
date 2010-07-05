@@ -167,9 +167,9 @@ package editor.controls {
          sKeyRegions [KeyCodes.BackSlash] = [342, 49, 22, 22];
          sKeyRegions [KeyCodes.Comma]     = [237, 96, 22, 22];
          sKeyRegions [KeyCodes.Period]    = [262, 96, 22, 22];
-         sKeyRegions [KeyCodes.Semicolon]    = [274, 72, 22, 22];
-         sKeyRegions [KeyCodes.Add]       = [280, 24, 22, 22];
-         sKeyRegions [KeyCodes.Subtract]  = [305, 24, 22, 22];
+         sKeyRegions [KeyCodes.Semicolon] = [274, 72, 22, 22];
+         sKeyRegions [KeyCodes.Add]       = [305, 24, 22, 22];
+         sKeyRegions [KeyCodes.Subtract]  = [280, 24, 22, 22];
          sKeyRegions [KeyCodes.SquareBracketLeft]  = [293, 49, 22, 22];
          sKeyRegions [KeyCodes.SquareBracketRight] = [317, 49, 22, 22];
          

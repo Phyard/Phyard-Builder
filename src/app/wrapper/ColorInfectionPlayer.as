@@ -503,7 +503,15 @@ package wrapper {
          var scale:Number;
          var topY:Number; // stage unit
          var leftX:Number; // stage unit
-         if (ratio < stageRatio)
+         if (Math.abs (ratio - stageRatio) < 1e-12)
+         {
+            availableWidth = stage.stageWidth;
+            availableHeight = stage.stageHeight;
+            scale = contentWidth >= contentHeight ? availableWidth / contentWidth : availableHeight / contentHeight;
+            leftX = 0;
+            topY = 0;
+         }
+         else if (ratio < stageRatio)
          {
             availableWidth = stage.stageWidth;
             availableHeight = availableWidth * ratio;

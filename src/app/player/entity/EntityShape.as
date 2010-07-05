@@ -184,6 +184,11 @@ package player.entity {
             SetCollisionCategoryById (Define.CollisionCategoryId_HiddenCategory);
          else
             mCollisionCategory = ccat;
+         
+         if (mPhysicsProxy != null)
+         {
+            mPhysicsShapeProxy.FlagForFilteringForAllContacts ();
+         }
       }
       
       public function GetCollisionCategory ():CollisionCategory

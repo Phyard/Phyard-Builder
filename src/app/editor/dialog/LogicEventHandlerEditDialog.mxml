@@ -21,6 +21,13 @@
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnCodeSnippetSettingPanelCreationComplete()">
          <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
       </mx:VBox>
+      <!--
+      <mx:VBox label="Local Variables" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnCodeSnippetSettingPanelCreationComplete()">
+      </mx:VBox>
+      -->
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"

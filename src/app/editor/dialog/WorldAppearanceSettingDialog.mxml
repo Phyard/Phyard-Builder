@@ -149,7 +149,7 @@
                RadioButton_InfinteSize.selected = true;
                RadioButton_CustomSize.selected = false;
             }
-            else if (mParams.mWorldWidth == mParams.mViewportWidth || mParams.mWorldHeight == mParams.mViewportHeight)
+            else if (mParams.mWorldWidth == mParams.mViewportWidth && mParams.mWorldHeight == mParams.mViewportHeight)
             {
                RadioButton_ViewportSize.selected = true;
                RadioButton_InfinteSize.selected = false;

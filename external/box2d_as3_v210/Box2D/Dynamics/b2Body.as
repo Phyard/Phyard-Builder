@@ -860,6 +860,15 @@ package Box2D.Dynamics
 			// ...
 			return true; //new b2Vec2.b2Vec2_From2Numbers (dx, dy);
 		}
+		
+		public function FlagForFilteringForAllContacts ():void
+		{
+			// Since the body type changed, we need to flag contacts for filtering.
+			for (var ce:b2ContactEdge = m_contactList; ce != null; ce = ce.next)
+			{
+				ce.contact.FlagForFiltering();
+			}
+		}
 
 	} // class
 } // package

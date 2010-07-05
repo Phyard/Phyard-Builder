@@ -3001,7 +3001,7 @@ package editor {
          if (Runtime.HasInputFocused ())
             return;
          
-         //trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
+         trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
          
          if (IsPlaying ()) // playing
          {
@@ -4552,6 +4552,7 @@ package editor {
             CreateUndoPoint ("The properties of entity [" + entity.GetTypeName ().toLowerCase () + "] are changed", null, entity);
             
             UpdateSelectedEntityInfo ();
+            CalSelectedEntitiesCenterPoint ();
          }
       }
       

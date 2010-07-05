@@ -91,6 +91,7 @@
          private function OnAppearanceSettingPanelCreationComplete ():void
          {
             mParams.mCiTypeSelectable = true;
+            mParams.mOnCiTypeChanged = PhysicsSettingPanel.OnCiTypeChanged;
             AppearanceSettingPanel.SetValues (mParams);
             
             SelectList_AppearanceType.selectedIndex = mParams.mAppearanceTypeListSelectedIndex;

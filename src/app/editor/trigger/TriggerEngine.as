@@ -30,11 +30,19 @@ package editor.trigger {
    
    public class TriggerEngine
    {
+      // register variables
       public static var mRegisterVariableSpace_Boolean          :VariableSpaceRegister;
       public static var mRegisterVariableSpace_String           :VariableSpaceRegister;
       public static var mRegisterVariableSpace_Number           :VariableSpaceRegister;
       public static var mRegisterVariableSpace_Entity           :VariableSpaceRegister;
       public static var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
+      
+      // custom global variables
+      public static var mCustomGlobalVariables:VariableSpaceGlobal;
+      
+      // custom entity properties
+      
+      // custom functions
       
    //========================================================================================================
    //

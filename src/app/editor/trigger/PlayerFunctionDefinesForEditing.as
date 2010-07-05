@@ -1263,7 +1263,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Source Entity 2"), 
                      ],
                      [
-                             new VariableDefinitionEntity ("Terget"), 
+                             new VariableDefinitionEntity ("Target"), 
                      ]
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SwapValues, entity_general_package, "Swap Values", "@$0 <-> $1", "SwapEntityValues",

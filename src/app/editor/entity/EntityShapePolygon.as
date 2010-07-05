@@ -579,6 +579,24 @@ package editor.entity {
       }
       
 //====================================================================
+//  SetRotation / SetPosition
+//====================================================================
+      
+      override public function SetPosition (posX:Number, posY:Number):void
+      {
+         super.SetPosition (posX, posY);
+         
+         SynchronizeWithLocalPoints ();
+      }
+      
+      override  public function SetRotation (rot:Number):void
+      {
+         super.SetRotation (rot);
+         
+         SynchronizeWithLocalPoints ();
+      }
+      
+//====================================================================
 //   move, rotate, scale
 //====================================================================
       

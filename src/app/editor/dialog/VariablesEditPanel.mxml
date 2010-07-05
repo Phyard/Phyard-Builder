@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+      width="100%" height="100%"
+      creationComplete="OnInitPanel()"
+      >
+   <mx:HBox height="100%" width="100%">
+      <mx:VBox width="186" height="100%">
+         <mx:HBox id="Box_Toolbar" width="100%" borderStyle="solid" borderThickness="1">
+            <mx:Spacer width="100%" />
+            <mx:Button id="Button_AddCommmand" click=";" toolTip="New Variable" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_add.png')" disabledIcon="@Embed('../../res/action/command_add-disabled.png')" />
+            <mx:Button id="Button_MoveUpCommmand" click=";" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_moveup.png')" disabledIcon="@Embed('../../res/action/command_moveup-disabled.png')" />
+            <mx:Button id="Button_MoveDownCommmand" click=";" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_movedown.png')" disabledIcon="@Embed('../../res/action/command_movedown-disabled.png')" />
+            <mx:Button id="Button_DeleteCommmand" click=";" toolTip="Delete Selected(s)" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_delete.png')" disabledIcon="@Embed('../../res/action/command_delete-disabled.png')" />
+            <mx:Spacer width="100%" />
+         </mx:HBox>
+         <mx:List id="List_Variables" width="100%" height="100%"/>
+      </mx:VBox>
+      <mx:VBox width="100%" height="100%" borderStyle="solid" borderThickness="1">
+      </mx:VBox>
+   </mx:HBox>
+
+   <mx:Script>
+        <![CDATA[
+            
+            import editor.runtime.Runtime;
+            
+            private function OnInitPanel ():void
+            {
+            }
+            
+            private function OnAdd ():void
+            {
+            }
+            
+       ]]>
+   </mx:Script>
+   
+</mx:VBox>

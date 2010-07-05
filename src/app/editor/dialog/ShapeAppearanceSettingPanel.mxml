@@ -11,9 +11,9 @@
 
    <mx:HBox width="100%" id="Box_CiType">
       <mx:Spacer width="60"/>
-      <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="22%" click="OnAiTypeSelectListClick()"/>
+      <mx:CheckBox id="CheckBox_IsCiShape" label="Is C.I. Shape" width="22%" click="OnCiTypeSelectListClick()"/>
       <mx:Label id="Label_AiType" text="C.I. Shape Type:" textAlign="right"/>
-      <mx:ComboBox id="SelectList_AiType" rowCount="10"/>
+      <mx:ComboBox id="SelectList_AiType" rowCount="10" change="OnCiTypeSelectListClick ()"/>
    </mx:HBox>
 
    <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
@@ -63,13 +63,14 @@
          import editor.trigger.Lists;
          
          private var mInputValues:Object;
+         private var mOnCiTypeChanged:Function = null;
          
          private function OnInitPanel ():void
          {
             SelectList_AiType.dataProvider = Lists.GetListWithDataInLabel (Lists.mAiTypeList);
          }
          
-         private function OnAiTypeSelectListClick ():void
+         private function OnCiTypeSelectListClick ():void
          {
             if (CheckBox_IsCiShape.selected)
             {
@@ -119,11 +120,18 @@
                Label_BorderOpacity.enabled = true;
                NumericStepper_BorderOpacity.enabled = true;
             }
+            
+            if (mOnCiTypeChanged != null)
+            {
+               mOnCiTypeChanged (CheckBox_IsCiShape.selected && SelectList_AiType.selectedItem.data != Define.ShapeAiType_Unknown);
+            }
          }
          
          public function SetValues (inputValues:Object):void
          {
             mInputValues = inputValues;
+            
+            mOnCiTypeChanged = inputValues.mOnCiTypeChanged;
             
             CheckBox_IsCiShape.selected = inputValues.mAiType >= 0;
             SelectList_AiType.selectedIndex = Lists.SelectedValue2SelectedIndex (Lists.mAiTypeList, inputValues.mAiType);
@@ -143,7 +151,7 @@
                SelectList_AiType.enabled = false;
             }
             
-            OnAiTypeSelectListClick ();
+            OnCiTypeSelectListClick ();
          }
          
          public function GetValues (returnValues:Object):void

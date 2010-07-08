@@ -44,7 +44,7 @@ package Box2D.Dynamics.Contacts
 	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2ContactListener;
-	import Box2D.Dynamics.b2ContactPreSolveListener;
+	//import Box2D.Dynamics.b2ContactPreSolveListener;
 
 	//class b2Body;
 	//class b2Contact;
@@ -112,6 +112,9 @@ package Box2D.Dynamics.Contacts
 		//b2Fixture* GetFixtureB();
 		//const b2Fixture* GetFixtureB() const;
 
+		/// Flag this contact for filtering. Filtering will occur the next time step.
+		//void FlagForFiltering();
+
 		/// Evaluate this contact with your own manifold and transforms.
 		//virtual void Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB) = 0;
 		public function Evaluate(manifold:b2Manifold, xfA:b2Transform, xfB:b2Transform):void {}
@@ -132,12 +135,7 @@ package Box2D.Dynamics.Contacts
 			public static const e_enabledFlag:int		= 0x0004;
 			// This contact needs filtering because a fixture filter was changed.
 			public static const e_filterFlag:int		= 0x0008;
-			// This bullet contact had a TOI event
-			public static const e_bulletHitFlag:int     = 0x0010;
 		//};
-
-		/// Flag this contact for filtering. Filtering will occur the next time step.
-		//void FlagForFiltering();
 
 		//static void AddType(b2ContactCreateFcn* createFcn, b2ContactDestroyFcn* destroyFcn,
 		//					b2Shape::Type typeA, b2Shape::Type typeB);

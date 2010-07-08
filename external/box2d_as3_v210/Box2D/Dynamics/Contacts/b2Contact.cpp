@@ -174,7 +174,7 @@ private static var mOldManifold:b2Manifold = new b2Manifold ();
 // Note: do not assume the fixture AABBs are overlapping or are valid.
 
 public function Update(listener:b2ContactListener
-	, preSolveLinster:b2ContactPreSolveListener // hacking
+	//, preSolveLinster:b2ContactPreSolveListener // hacking
 	):void 
 {
 	var i:int;
@@ -187,24 +187,24 @@ public function Update(listener:b2ContactListener
 	//>> hacking, optimization
 	var oldManifold:b2Manifold = mOldManifold;
 	
-	if (preSolveLinster == null)
-	{
-		oldManifold.pointCount = m_manifold.pointCount;
-		for (i = 0; i < m_manifold.pointCount; ++i)
-		{
-			//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
-			mp2 = m_manifold.points [i] as b2ManifoldPoint;
-			mp1 = oldManifold.points [i] as b2ManifoldPoint;
-			//mp1.m_id.key = mp2.m_id.key;
-			mp1.id = mp2.id;
-			mp1.normalImpulse = mp2.normalImpulse;
-			mp1.tangentImpulse = mp2.tangentImpulse;
-		}
-	}
-	else
-	{
-		oldManifold.CopyFrom (m_manifold);
-	}
+	//if (preSolveLinster == null)
+	//{
+	//	oldManifold.pointCount = m_manifold.pointCount;
+	//	for (i = 0; i < m_manifold.pointCount; ++i)
+	//	{
+	//		//b2ManifoldPoint* mp2 = m_manifold.m_points + i;
+	//		mp2 = m_manifold.points [i] as b2ManifoldPoint;
+	//		mp1 = oldManifold.points [i] as b2ManifoldPoint;
+	//		//mp1.m_id.key = mp2.m_id.key;
+	//		mp1.id = mp2.id;
+	//		mp1.normalImpulse = mp2.normalImpulse;
+	//		mp1.tangentImpulse = mp2.tangentImpulse;
+	//	}
+	//}
+	//else
+	//{
+	oldManifold.CopyFrom (m_manifold);
+	//}
 	//<<
 
 	// Re-enable this contact.
@@ -279,18 +279,22 @@ public function Update(listener:b2ContactListener
 		m_flags &= ~e_touchingFlag;
 	}
 
-	if (wasTouching == false && touching == true && listener != null)
+	if (wasTouching == false && touching == true)
 	{
 		listener.BeginContact(this);
 	}
 
-	if (wasTouching == true && touching == false && listener != null)
+	if (wasTouching == true && touching == false)
 	{
 		listener.EndContact(this);
 	}
 
-	if (sensor == false && preSolveLinster != null)
+	if (sensor == false)
 	{
-		preSolveLinster.PreSolve(this, oldManifold);
+		//if (preSolveLinster != null) // hacking
+		//{
+		//	preSolveLinster.PreSolve(this, oldManifold);
+		listener.PreSolve(this, oldManifold);
+		//}
 	}
 }

@@ -56,8 +56,8 @@ package Box2D.Dynamics
 		public var m_allocator:b2BlockAllocator;
 		
 		// hacking
-		public var m_contactPreSolveListener:b2ContactPreSolveListener = null;
-		public var m_contactPostSolveListener:b2ContactPostSolveListener = null;
+		//public var m_contactPreSolveListener:b2ContactPreSolveListener = null;
+		//public var m_contactPostSolveListener:b2ContactPostSolveListener = null;
 	} // class
 } // pacakge
 //#endif

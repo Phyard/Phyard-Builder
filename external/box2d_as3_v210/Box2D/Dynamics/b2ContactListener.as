@@ -13,13 +13,13 @@ package Box2D.Dynamics
 	/// You should strive to make your callbacks efficient because there may be
 	/// many callbacks per time step.
 	/// @warning You cannot create/destroy Box2D entities inside these callbacks.
-	public interface b2ContactListener
+	public class b2ContactListener
 	{
 		/// Called when two fixtures begin to touch.
-		function BeginContact(contact:b2Contact):void ;
+		public function BeginContact(contact:b2Contact):void {};
 
 		/// Called when two fixtures cease to touch.
-		function EndContact(contact:b2Contact):void ;
+		public function EndContact(contact:b2Contact):void {};
 
 		/// This is called after a contact is updated. This allows you to inspect a
 		/// contact before it goes to the solver. If you are careful, you can modify the
@@ -31,7 +31,7 @@ package Box2D.Dynamics
 		/// Note: if you set the number of contact points to zero, you will not
 		/// get an EndContact callback. However, you may get a BeginContact callback
 		/// the next step.
-		//function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void;
+		public function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void {};
 
 		/// This lets you inspect a contact after the solver is finished. This is useful
 		/// for inspecting impulses.
@@ -39,7 +39,7 @@ package Box2D.Dynamics
 		/// arbitrarily large if the sub-step is small. Hence the impulse is provided explicitly
 		/// in a separate data structure.
 		/// Note: this is only called for contacts that are touching, solid, and awake.
-		//function PostSolve(contact:b2Contact, impulseb:b2ContactImpulse):void;
+		public function PostSolve(contact:b2Contact, impulseb:b2ContactImpulse):void {};
 			
 	} // class
 } // package

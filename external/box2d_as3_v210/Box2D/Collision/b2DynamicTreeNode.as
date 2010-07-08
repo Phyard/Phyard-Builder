@@ -13,6 +13,7 @@ package Box2D.Collision
 		/// This is the fattened AABB.
 		public var aabb:b2AABB = new b2AABB ();
 
+		//int32 userData;
 		public var userData:Object;
 
 		//union
@@ -31,6 +32,5 @@ package Box2D.Collision
 
 		public var child1:int;
 		public var child2:int;
-		public var leafCount:int;
 	} // class
 } // package

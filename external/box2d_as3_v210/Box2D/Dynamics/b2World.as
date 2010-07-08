@@ -74,22 +74,19 @@ package Box2D.Dynamics
 		/// Destruct the world. All physics entities are destroyed and all heap memory is released.
 		//~b2World();
 
-		/// Register a destruction listener. The listener is owned by you and must
-		/// remain in scope.
+		/// Register a destruction listener.
 		//void SetDestructionListener(b2DestructionListener* listener);
 
 		/// Register a contact filter to provide specific control over collision.
-		/// Otherwise the default filter is used (b2_defaultFilter). The listener is
-		/// owned by you and must remain in scope. 
+		/// Otherwise the default filter is used (b2_defaultFilter).
 		//void SetContactFilter(b2ContactFilter* filter);
 
-		/// Register a contact event listener. The listener is owned by you and must
-		/// remain in scope.
+		/// Register a contact event listener
 		//void SetContactListener(b2ContactListener* listener);
 
 		/// Register a routine for debug drawing. The debug draw functions are called
-		/// inside with b2World::DrawDebugData method. The debug draw object is owned
-		/// by you and must remain in scope.
+		/// inside the b2World::Step method, so make sure your renderer is ready to
+		/// consume draw commands when you call Step().
 		//void SetDebugDraw(b2DebugDraw* debugDraw);
 
 		/// Create a rigid body given a definition. No reference to the definition
@@ -194,9 +191,6 @@ package Box2D.Dynamics
 		/// Get the flag that controls automatic clearing of forces after each time step.
 		//bool GetAutoClearForces() const;
 
-		/// Get the contact manager for testing.
-		//const b2ContactManager& GetContactManager() const;
-
 	//private:
 
 		// m_flags
@@ -294,29 +288,7 @@ package Box2D.Dynamics
 		{
 			return (m_flags & e_locked) == e_locked;
 		}
-
-		public function SetAutoClearForces(flag:Boolean):void
-		{
-			if (flag)
-			{
-				m_flags |= e_clearForces;
-			}
-			else
-			{
-				m_flags &= ~e_clearForces;
-			}
-		}
-
-		public function GetAutoClearForces():Boolean
-		{
-			return (m_flags & e_clearForces) == e_clearForces;
-		}
-
-		public function GetContactManager():b2ContactManager
-		{
-			return m_contactManager;
-		}
-
+		
 //====================================================================================
 // hacking
 //====================================================================================
@@ -330,8 +302,8 @@ package Box2D.Dynamics
 			if (bodyCount < 128)
 				bodyCount = 128;
 			
-			if (contactCount < b2Settings.b2_maxTOIContacts)
-				contactCount = b2Settings.b2_maxTOIContacts;
+			if (contactCount < b2Settings.b2_maxTOIContactsPerIsland)
+				contactCount = b2Settings.b2_maxTOIContactsPerIsland;
 			
 			if (mIsland != null)
 			{
@@ -363,13 +335,15 @@ package Box2D.Dynamics
 			{
 				mIsland = new b2Island (bodyCount, contactCount, jointCount,
 										m_stackAllocator,
-										m_contactManager.m_contactPostSolveListener //m_contactManager.m_contactListener
+										m_contactManager.m_contactListener
+										//m_contactManager.m_contactPostSolveListener
 										);
 				mIsland.mWorld = this;
 			}
 			else
 			{
-				mIsland.m_listener = m_contactManager.m_contactPostSolveListener;
+				mIsland.m_listener = m_contactManager.m_contactListener;
+				//mIsland.m_listener = m_contactManager.m_contactPostSolveListener;
 				
 				mIsland.Clear ();
 			}
@@ -396,24 +370,42 @@ package Box2D.Dynamics
 			}
 		}
 
-		public function SetContactPreSolveListener(listener:b2ContactPreSolveListener):void
+		//public function SetContactPreSolveListener(listener:b2ContactPreSolveListener):void
+		//{
+		//	m_contactManager.m_contactPreSolveListener = listener;
+		//}
+
+		//public function GetContactPreSolveListener():b2ContactPreSolveListener
+		//{
+		//	return m_contactManager.m_contactPreSolveListener;
+		//}
+
+		//public function SetContactPostSolveListener(listener:b2ContactPostSolveListener):void
+		//{
+		//	m_contactManager.m_contactPostSolveListener = listener;
+		//}
+
+		//public function GetContactPostSolveListener():b2ContactPostSolveListener
+		//{
+		//	return m_contactManager.m_contactPostSolveListener;
+		//}
+
+		public function SetAutoClearForces(flag:Boolean):void
 		{
-			m_contactManager.m_contactPreSolveListener = listener;
+			if (flag)
+			{
+				m_flags |= e_clearForces;
+			}
+			else
+			{
+				m_flags &= ~e_clearForces;
+			}
 		}
 
-		public function GetContactPreSolveListener():b2ContactPreSolveListener
+		/// Get the flag that controls automatic clearing of forces after each time step.
+		public function IsAutoClearForces():Boolean
 		{
-			return m_contactManager.m_contactPreSolveListener;
-		}
-
-		public function SetContactPostSolveListener(listener:b2ContactPostSolveListener):void
-		{
-			m_contactManager.m_contactPostSolveListener = listener;
-		}
-
-		public function GetContactPostSolveListener():b2ContactPostSolveListener
-		{
-			return m_contactManager.m_contactPostSolveListener;
+			return (m_flags & e_clearForces) == e_clearForces;
 		}
 
 		// ...

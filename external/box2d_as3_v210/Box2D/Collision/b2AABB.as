@@ -55,26 +55,8 @@ package Box2D.Collision
 			outputV.y = 0.5 * (upperBound.y - lowerBound.y);
 		}
 
-		/// Get the perimeter length
-		public function GetPerimeter():Number
-		{
-			var wx:Number = upperBound.x - lowerBound.x;
-			var wy:Number = upperBound.y - lowerBound.y;
-			return 2.0 * (wx + wy);
-		}
-
-		/// Combine an AABB into this one.
-		public function Combine(aabb:b2AABB):void
-		{
-			//lowerBound = b2Min(lowerBound, aabb.lowerBound);
-			//upperBound = b2Max(upperBound, aabb.upperBound);
-			
-			b2Math.b2Min_Vector2_Output (lowerBound, aabb.lowerBound, lowerBound);
-			b2Math.b2Max_Vector2_Output (upperBound, aabb.upperBound, upperBound);
-		}
-
 		/// Combine two AABBs into this one.
-		public function CombineTwo(aabb1:b2AABB, aabb2:b2AABB):void
+		public function Combine(aabb1:b2AABB, aabb2:b2AABB):void
 		{
 			//lowerBound = b2Min(aabb1.lowerBound, aabb2.lowerBound);
 			//upperBound = b2Max(aabb1.upperBound, aabb2.upperBound);

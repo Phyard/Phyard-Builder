@@ -95,7 +95,6 @@ public function AllocateNode():int
 	node.parent = b2_nullNode;
 	node.child1 = b2_nullNode;
 	node.child2 = b2_nullNode;
-	node.leafCount = 0;
 	++m_nodeCount;
 	return nodeId;
 }
@@ -128,9 +127,19 @@ public function CreateProxy(aabb:b2AABB, userData:Object):int
 	node.aabb.upperBound.x = aabb.upperBound.x + b2Settings.b2_aabbExtension;
 	node.aabb.upperBound.y = aabb.upperBound.y + b2Settings.b2_aabbExtension;
 	node.userData = userData;
-	node.leafCount = 1;
 
 	InsertLeaf(proxyId);
+
+	// Rebalance if necessary.
+	var iterationCount:int = m_nodeCount >> 4;
+	var tryCount:int = 0;
+	var height:int = ComputeTreeHeight();
+	while (height > 64 && tryCount < 10)
+	{
+		Rebalance(iterationCount);
+		height = ComputeTreeHeight();
+		++tryCount;
+	}
 
 	return proxyId;
 }
@@ -148,11 +157,9 @@ private static var mTempAABB:b2AABB = new b2AABB ();
 private static var mTempVec2:b2Vec2 = new b2Vec2 ();
 private static var delta1:b2Vec2 = new b2Vec2 ();
 private static var delta2:b2Vec2 = new b2Vec2 ();
-private static var leafCenter:b2Vec2 = new b2Vec2 ();
+private static var center:b2Vec2 = new b2Vec2 ();
 private static var center1:b2Vec2 = new b2Vec2 ();
 private static var center2:b2Vec2 = new b2Vec2 ();
-private static var aabb1:b2AABB = new b2AABB ();
-private static var aabb2:b2AABB = new b2AABB ();
 
 public function MoveProxy(proxyId:int, aabb:b2AABB, displacement:b2Vec2):Boolean
 {
@@ -221,105 +228,93 @@ public function InsertLeaf(leaf:int):void
 		return;
 	}
 
+	var node:b2DynamicTreeNode;
+
 	// Find the best sibling for this node.
-	var nodeLeaf:b2DynamicTreeNode = m_nodes[leaf] as b2DynamicTreeNode;
-	var leafAABB:b2AABB = nodeLeaf.aabb; // .Clone ();
-	leafAABB.GetCenter_Output (leafCenter); // seems not used in c++
+	(m_nodes[leaf] as b2DynamicTreeNode).aabb.GetCenter_Output (center);
 	var sibling:int = m_root;
-
-	var nodeSibling:b2DynamicTreeNode = m_nodes[sibling] as b2DynamicTreeNode;
-	while (nodeSibling.IsLeaf() == false)
+	if ((m_nodes[sibling] as b2DynamicTreeNode).IsLeaf() == false)
 	{
-		// Expand the node's AABB.
-		nodeSibling.aabb.Combine(leafAABB);
-		nodeSibling.leafCount += 1;
-
-		var child1:int = nodeSibling.child1;
-		var child2:int = nodeSibling.child2;
-
-//#if 0
-//		// This seems to create imbalanced trees
-//		b2Vec2 delta1 = b2Abs(m_nodes[child1].aabb.GetCenter() - leafCenter);
-//		b2Vec2 delta2 = b2Abs(m_nodes[child2].aabb.GetCenter() - leafCenter);
-//
-//		float32 norm1 = delta1.x + delta1.y;
-//		float32 norm2 = delta2.x + delta2.y;
-
-	//	//b2Vec2 delta1 = b2Abs(m_nodes[child1].aabb.GetCenter() - center);
-	//	//b2Vec2 delta2 = b2Abs(m_nodes[child2].aabb.GetCenter() - center);
-	//	(m_nodes[child1] as b2DynamicTreeNode).aabb.GetCenter_Output (center1);
-	//	b2Math.b2Subtract_Vector2_Output (center1, center, delta1);
-	//	b2Math.b2Abs_Vector2_Self (delta1);
-	//	(m_nodes[child2] as b2DynamicTreeNode).aabb.GetCenter_Output (center2);
-	//	b2Math.b2Subtract_Vector2_Output (center2, center, delta2);
-	//	b2Math.b2Abs_Vector2_Self (delta2);
-
-	//	var norm1:Number = delta1.x + delta1.y;
-	//	var norm2:Number = delta2.x + delta2.y;
-
-//#else
-		// Surface area heuristic
-		//b2AABB aabb1, aabb2;
-		//aabb1.Combine(leafAABB, m_nodes[child1].aabb);
-		//aabb2.Combine(leafAABB, m_nodes[child2].aabb);
-		//float32 norm1 = (m_nodes[child1].leafCount + 1) * aabb1.GetPerimeter();
-		//float32 norm2 = (m_nodes[child2].leafCount + 1) * aabb2.GetPerimeter();
-
-		var nodeChild1:b2DynamicTreeNode = m_nodes[child1] as b2DynamicTreeNode;
-		var nodeChild2:b2DynamicTreeNode = m_nodes[child2] as b2DynamicTreeNode;
-		aabb1.CombineTwo(leafAABB, nodeChild1.aabb);
-		aabb2.CombineTwo(leafAABB, nodeChild2.aabb);
-		var norm1:Number = (nodeChild1.leafCount + 1) * aabb1.GetPerimeter();
-		var norm2:Number = (nodeChild2.leafCount + 1) * aabb2.GetPerimeter();
-//#endif
-
-		if (norm1 < norm2)
+		do 
 		{
-			sibling = child1;
+			node = m_nodes[sibling] as b2DynamicTreeNode;
+			var child1:int = node.child1;
+			var child2:int = node.child2;
+
+			//b2Vec2 delta1 = b2Abs(m_nodes[child1].aabb.GetCenter() - center);
+			//b2Vec2 delta2 = b2Abs(m_nodes[child2].aabb.GetCenter() - center);
+			(m_nodes[child1] as b2DynamicTreeNode).aabb.GetCenter_Output (center1);
+			b2Math.b2Subtract_Vector2_Output (center1, center, delta1);
+			b2Math.b2Abs_Vector2_Self (delta1);
+			(m_nodes[child2] as b2DynamicTreeNode).aabb.GetCenter_Output (center2);
+			b2Math.b2Subtract_Vector2_Output (center2, center, delta2);
+			b2Math.b2Abs_Vector2_Self (delta2);
+
+			var norm1:Number = delta1.x + delta1.y;
+			var norm2:Number = delta2.x + delta2.y;
+
+			if (norm1 < norm2)
+			{
+				sibling = child1;
+			}
+			else
+			{
+				sibling = child2;
+			}
+
 		}
-		else
-		{
-			sibling = child2;
-		}
-		
-		nodeSibling = m_nodes[sibling] as b2DynamicTreeNode;
+		while((m_nodes[sibling] as b2DynamicTreeNode).IsLeaf() == false);
 	}
 
-	// Create a new parent for the siblings.
-	var oldParent:int = nodeSibling.parent;
-	var newParent:int = AllocateNode();
-	var nodeNewParent:b2DynamicTreeNode = m_nodes[newParent] as b2DynamicTreeNode;
-	nodeNewParent.parent = oldParent;
-	nodeNewParent.userData = null;
-	nodeNewParent.aabb.CombineTwo(leafAABB, nodeSibling.aabb);
-	nodeNewParent.leafCount = nodeSibling.leafCount + 1;
+	// Create a parent for the siblings.
+	var node1:int = (m_nodes[sibling] as b2DynamicTreeNode).parent;
+	var node2:int = AllocateNode();
+	node = m_nodes[node2] as b2DynamicTreeNode;
+	node.parent = node1;
+	node.userData = null;
+	node.aabb.Combine((m_nodes[leaf] as b2DynamicTreeNode).aabb, (m_nodes[sibling] as b2DynamicTreeNode).aabb);
 
-	var nodeOldParent:b2DynamicTreeNode = m_nodes[oldParent] as b2DynamicTreeNode;
-	if (oldParent != b2_nullNode)
+	if (node1 != b2_nullNode)
 	{
-		// The sibling was not the root.
-		if (nodeOldParent.child1 == sibling)
+		if ((m_nodes[(m_nodes[sibling] as b2DynamicTreeNode).parent] as b2DynamicTreeNode).child1 == sibling)
 		{
-			nodeOldParent.child1 = newParent;
+			(m_nodes[node1] as b2DynamicTreeNode).child1 = node2;
 		}
 		else
 		{
-			nodeOldParent.child2 = newParent;
+			(m_nodes[node1] as b2DynamicTreeNode).child2 = node2;
 		}
 
-		nodeNewParent.child1 = sibling;
-		nodeNewParent.child2 = leaf;
-		nodeSibling.parent = newParent;
-		nodeLeaf.parent = newParent;
+		node = m_nodes[node2] as b2DynamicTreeNode
+		node.child1 = sibling;
+		node.child2 = leaf;
+		(m_nodes[sibling] as b2DynamicTreeNode).parent = node2;
+		(m_nodes[leaf] as b2DynamicTreeNode).parent = node2;
+
+		do 
+		{
+			if ( (m_nodes[node1] as b2DynamicTreeNode).aabb.Contains( (m_nodes[node2] as b2DynamicTreeNode).aabb))
+			{
+				break;
+			}
+
+			(m_nodes[node1] as b2DynamicTreeNode).aabb.Combine(
+																				(m_nodes[(m_nodes[node1] as b2DynamicTreeNode).child1] as b2DynamicTreeNode).aabb, 
+																				(m_nodes[(m_nodes[node1] as b2DynamicTreeNode).child2] as b2DynamicTreeNode).aabb
+																				);
+			node2 = node1;
+			node1 = (m_nodes[node1] as b2DynamicTreeNode).parent;
+		}
+		while(node1 != b2_nullNode);
 	}
 	else
 	{
-		// The sibling was the root.
-		nodeNewParent.child1 = sibling;
-		nodeNewParent.child2 = leaf;
-		nodeSibling.parent = newParent;
-		nodeLeaf.parent = newParent;
-		m_root = newParent;
+		node = m_nodes[node2] as b2DynamicTreeNode
+		node.child1 = sibling;
+		node.child2 = leaf;
+		(m_nodes[sibling] as b2DynamicTreeNode).parent = node2;
+		(m_nodes[leaf] as b2DynamicTreeNode).parent = node2;
+		m_root = node2;
 	}
 }
 
@@ -331,54 +326,58 @@ public function RemoveLeaf(leaf:int):void
 		return;
 	}
 	
-	var parent:int = (m_nodes[leaf] as b2DynamicTreeNode).parent;
-	var nodeParent:b2DynamicTreeNode = m_nodes[parent] as b2DynamicTreeNode;
-	var grandParent:int = nodeParent.parent;
+	var node:b2DynamicTreeNode;
+
+	var node2:int = (m_nodes[leaf] as b2DynamicTreeNode).parent;
+	node = m_nodes[node2] as b2DynamicTreeNode;
+	var node1:int = node.parent;
 	var sibling:int;
-	if (nodeParent.child1 == leaf)
+	if (node.child1 == leaf)
 	{
-		sibling = nodeParent.child2;
+		sibling = node.child2;
 	}
 	else
 	{
-		sibling = nodeParent.child1;
+		sibling = node.child1;
 	}
 
-	var nodeSibling:b2DynamicTreeNode = m_nodes[sibling] as b2DynamicTreeNode;
-	if (grandParent != b2_nullNode)
+	if (node1 != b2_nullNode)
 	{
-		// Destroy parent and connect sibling to grandParent.
-		var nodeGrandParent:b2DynamicTreeNode = m_nodes[grandParent] as b2DynamicTreeNode;
-		if (nodeGrandParent.child1 == parent)
+		// Destroy node2 and connect node1 to sibling.
+		node = m_nodes[node1] as b2DynamicTreeNode;
+		if (node.child1 == node2)
 		{
-			nodeGrandParent.child1 = sibling;
+			node.child1 = sibling;
 		}
 		else
 		{
-			nodeGrandParent.child2 = sibling;
+			node.child2 = sibling;
 		}
-		nodeSibling.parent = grandParent;
-		FreeNode(parent);
+		(m_nodes[sibling] as b2DynamicTreeNode).parent = node1;
+		FreeNode(node2);
 
 		// Adjust ancestor bounds.
-		parent = grandParent;
-		while (parent != b2_nullNode)
+		var oldAABB:b2AABB = new b2AABB ();
+		while (node1 != b2_nullNode)
 		{
-			//b2AABB oldAABB = m_nodes[parent].aabb; // seems not used in c++
-			nodeParent = m_nodes[parent] as b2DynamicTreeNode;
-			nodeParent.aabb.CombineTwo((m_nodes[nodeParent.child1] as b2DynamicTreeNode).aabb, (m_nodes[nodeParent.child2] as b2DynamicTreeNode).aabb);
+			node = m_nodes[node1] as b2DynamicTreeNode;
+			
+			oldAABB.CopyFrom (node.aabb);
+			node.aabb.Combine((m_nodes[node.child1] as b2DynamicTreeNode).aabb, (m_nodes[node.child2] as b2DynamicTreeNode).aabb);
 
-			//b2Assert(m_nodes[parent].leafCount > 0);
-			nodeParent.leafCount -= 1;
+			if (oldAABB.Contains(node.aabb))
+			{
+				break;
+			}
 
-			parent = nodeParent.parent;
+			node1 = node.parent;
 		}
 	}
 	else
 	{
 		m_root = sibling;
-		nodeSibling.parent = b2_nullNode;
-		FreeNode(parent);
+		(m_nodes[sibling] as b2DynamicTreeNode).parent = b2_nullNode;
+		FreeNode(node2);
 	}
 }
 
@@ -389,7 +388,6 @@ public function Rebalance(iterations:int):void
 		return;
 	}
 
-	// Rebalance the tree by removing and re-inserting leaves.
 	for (var i:int = 0; i < iterations; ++i)
 	{
 		var node:int = m_root;
@@ -398,18 +396,9 @@ public function Rebalance(iterations:int):void
 		var bit:uint = 0;
 		while (treeNode.IsLeaf() == false)
 		{
-		//	int32* children = &m_nodes[node].child1;
-		//	
-		//	// Child selector based on a bit in the path
-		//	int32 selector = (m_path >> bit) & 1;
-		//
-		//	// Select the child nod
-		//	node = children[selector];
-		//
-		//	// Keep bit between 0 and 31 because m_path has 32 bits
-		//	// bit = (bit + 1) % 31
-		//	bit = (bit + 1) & 0x1F;
-			
+			//int32* children = &m_nodes[node].child1;
+			//node = children[(m_path >> bit) & 1];
+			//bit = (bit + 1) & (8* sizeof(uint32) - 1);
 			node = ((m_path >> bit) & 1) == 0 ? treeNode.child1 : treeNode.child2;
 			treeNode = m_nodes[node] as b2DynamicTreeNode;
 			bit = (bit + 1) & 31;
@@ -441,32 +430,4 @@ public function ComputeHeight(nodeId:Number):int
 public function ComputeTreeHeight():int
 {
 	return ComputeHeight(m_root);
-}
-
-private function CountLeaves(nodeId:int):int
-{
-	if (nodeId == b2_nullNode)
-	{
-		return 0;
-	}
-
-	//b2Assert(0 <= nodeId && nodeId < m_nodeCapacity);
-	var node:b2DynamicTreeNode = m_nodes [nodeId];
-
-	if (node.IsLeaf())
-	{
-		//b2Assert(node->leafCount == 1);
-		return 1;
-	}
-
-	var count1:int = CountLeaves(node.child1);
-	var count2:int = CountLeaves(node.child2);
-	var count:int = count1 + count2;
-	//b2Assert(count == node->leafCount);
-	return count;
-}
-
-public function Validate():void
-{
-	CountLeaves(m_root);	
 }

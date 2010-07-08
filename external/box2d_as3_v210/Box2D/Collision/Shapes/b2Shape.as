@@ -86,7 +86,7 @@ package Box2D.Collision.Shapes
 		public function ComputeAABB(aabb:b2AABB, xf:b2Transform):void {}
 
 		/// Compute the mass properties of this shape using its dimensions and density.
-		/// The inertia tensor is computed about the local origin.
+		/// The inertia tensor is computed about the local origin, not the centroid.
 		/// @param massData returns the mass data for this shape.
 		/// @param density the density in kilograms per meter squared.
 		//virtual void ComputeMass(b2MassData* massData, float32 density) const = 0;

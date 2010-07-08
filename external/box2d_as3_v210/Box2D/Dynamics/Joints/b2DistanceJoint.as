@@ -56,8 +56,7 @@ package Box2D.Dynamics.Joints
 		//b2Vec2 GetReactionForce(float32 inv_dt) const;
 		//float32 GetReactionTorque(float32 inv_dt) const;
 
-		/// Set/get the natural length.
-		/// Manipulating the length can lead to non-physical behavior when the frequency is zero.
+		// Set/get the natural length.
 		//void SetLength(float32 length);
 		//float32 GetLength() const;
 

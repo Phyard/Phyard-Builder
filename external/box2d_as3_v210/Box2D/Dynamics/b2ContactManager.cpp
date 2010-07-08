@@ -23,7 +23,7 @@
 //#include <Box2D/Dynamics/Contacts/b2Contact.h>
 
 public static var b2_defaultFilter:b2ContactFilter = new b2ContactFilter ();
-public static var b2_defaultListener:b2ContactListener = new b2ContactListenerDefault ();
+public static var b2_defaultListener:b2ContactListener = new b2ContactListener ();
 
 public function b2ContactManager(broadPhase:b2BroadPhase)
 {
@@ -49,7 +49,7 @@ public function Destroy(c:b2Contact):void
 	var bodyA:b2Body = fixtureA.GetBody();
 	var bodyB:b2Body = fixtureB.GetBody();
 
-	if (m_contactListener != null && c.IsTouching())
+	if (c.IsTouching())
 	{
 		m_contactListener.EndContact(c);
 	}
@@ -140,7 +140,7 @@ public function Collide():void
 			}
 
 			// Check user filtering.
-			if (m_contactFilter != null && m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
+			if (m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
 			{
 				var cNuke3:b2Contact = c;
 				c = cNuke3.GetNext();
@@ -166,7 +166,7 @@ public function Collide():void
 		}
 
 		// The contact persists.
-		c.Update(m_contactListener, m_contactPreSolveListener);
+		c.Update(m_contactListener);//, m_contactPreSolveListener);
 		c = c.GetNext();
 	}
 }
@@ -221,7 +221,7 @@ public function AddPair(proxyUserDataA:Object, proxyUserDataB:Object):void
 	}
 
 	// Check user filtering.
-	if (m_contactFilter != null && m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
+	if (m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false)
 	{
 		return;
 	}

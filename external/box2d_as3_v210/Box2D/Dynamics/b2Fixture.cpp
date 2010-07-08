@@ -128,7 +128,7 @@ public function Synchronize(broadPhase:b2BroadPhase, transform1:b2Transform, tra
 	m_shape.ComputeAABB(aabb1, transform1);
 	m_shape.ComputeAABB(aabb2, transform2);
 	
-	m_aabb.Combine(aabb1, aabb2);
+	m_aabb.CombineTwo(aabb1, aabb2);
 
 	//var displacement:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (transform2.position.x - transform1.position.x, transform2.position.y - transform1.position.y);
 	displacement.x = transform2.position.x - transform1.position.x;

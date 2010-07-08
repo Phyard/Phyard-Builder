@@ -25,6 +25,7 @@ package Box2D.Collision
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2Settings;
+	import Box2D.Common.b2GrowableStack;
 
 	/// A dynamic AABB tree broad-phase, inspired by Nathanael Presson's btDbvt.
 
@@ -80,7 +81,8 @@ package Box2D.Collision
 		/// Get the fat AABB for a proxy.
 		//const b2AABB& GetFatAABB(int32 proxyId) const;
 
-		/// Compute the height of the tree.
+		/// Compute the height of the binary tree in O(N) time. Should not be
+		/// called often.
 		//int32 ComputeHeight() const;
 
 		/// Query an AABB for overlapping proxies. The callback class
@@ -98,6 +100,8 @@ package Box2D.Collision
 		//template <typename T>
 		//void RayCast(T* callback, const b2RayCastInput& input) const;
 
+		//void Validate() const;
+
 	//private:
 
 		//int32 AllocateNode();
@@ -107,6 +111,8 @@ package Box2D.Collision
 		//void RemoveLeaf(int32 node);
 
 		//int32 ComputeHeight(int32 nodeId) const;
+
+		//int32 CountLeaves(int32 nodeId) const;
 
 		private var m_root:int;
 
@@ -140,18 +146,13 @@ package Box2D.Collision
 		//inline void b2DynamicTree::Query(T* callback, const b2AABB& aabb) const
 		public function Query(callback:b2QueryCallbackOwner, aabb:b2AABB):void
 		{
-			const k_stackSize:int = 128;
-			//int32 stack[k_stackSize];
-			var stack:Array = new Array (k_stackSize);
-			//for (var i:int = 0; i < k_stackSize; ++ i)
-			//	stack [i] = 0;
+			//b2GrowableStack<int32, 256> stack;
+			var stack:b2GrowableStack = new b2GrowableStack (256);
+			stack.Push(m_root);
 
-			var count:int = 0;
-			stack[count++] = m_root;
-			
-			while (count > 0)
+			while (stack.GetCount() > 0)
 			{
-				var nodeId:int = stack[--count];
+				var nodeId:int = int (stack.Pop());
 				if (nodeId == b2_nullNode)
 				{
 					continue;
@@ -172,15 +173,8 @@ package Box2D.Collision
 					}
 					else
 					{
-						if (count < k_stackSize)
-						{
-							stack[count++] = node.child1;
-						}
-						
-						if (count < k_stackSize)
-						{
-							stack[count++] = node.child2;
-						}
+						stack.Push(node.child1);
+						stack.Push(node.child2);
 					}
 				}
 			}
@@ -221,18 +215,13 @@ package Box2D.Collision
 				segmentAABB.upperBound.Set (p1.x > t1.x ? p1.x : t1.x, p1.y > t1.y ? p1.y : t1.y);
 			//}
 
-			const k_stackSize:int = 128;
-			//int32 stack[k_stackSize];
-			var stack:Array = new Array (k_stackSize);
-			//for (var i:int = 0; i < k_stackSize; ++ i)
-			//	stack [i] = 0;
+			//b2GrowableStack<int32, 256> stack;
+			var stack:b2GrowableStack = new b2GrowableStack (256);
+			stack.Push(m_root);
 
-			var count:int = 0;
-			stack[count++] = m_root;
-
-			while (count > 0)
+			while (stack.GetCount() > 0)
 			{
-				var nodeId:int = stack[--count];
+				var nodeId:int = int (stack.Pop());
 				if (nodeId == b2_nullNode)
 				{
 					continue;
@@ -285,15 +274,8 @@ package Box2D.Collision
 				}
 				else
 				{
-					if (count < k_stackSize)
-					{
-						stack[count++] = node.child1;
-					}
-					
-					if (count < k_stackSize)
-					{
-						stack[count++] = node.child2;
-					}
+					stack.Push(node.child1);
+					stack.Push(node.child2);
 				}
 			}
 		}

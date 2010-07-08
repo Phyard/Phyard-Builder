@@ -30,7 +30,8 @@ package Box2D.Collision
 
 		public function Initialize(cache:b2SimplexCache,
 			proxyA:b2DistanceProxy, sweepA:b2Sweep,
-			proxyB:b2DistanceProxy, sweepB:b2Sweep):Number
+			proxyB:b2DistanceProxy, sweepB:b2Sweep,
+			t1:Number):Number
 		{
 			m_proxyA = proxyA;
 			m_proxyB = proxyB;
@@ -40,8 +41,8 @@ package Box2D.Collision
 			m_sweepA = sweepA; // .Clone ();
 			m_sweepB = sweepB; // .Clone ();
 
-			m_sweepA.GetTransform(xfA, 0.0);
-			m_sweepB.GetTransform(xfB, 0.0);
+			m_sweepA.GetTransform(xfA, t1);
+			m_sweepB.GetTransform(xfB, t1);
 
 			var s:Number;
 

@@ -116,7 +116,7 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 
 		// Initialize the separating axis.
 		var fcn:b2SeparationFunction = sSeparationFunction;
-		fcn.Initialize(cache, proxyA, sweepA, proxyB, sweepB);
+		fcn.Initialize(cache, proxyA, sweepA, proxyB, sweepB, t1);
 
 //#if 0
 //		// Dump the curve seen by the root finder

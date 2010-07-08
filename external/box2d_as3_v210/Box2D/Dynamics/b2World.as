@@ -195,6 +195,9 @@ package Box2D.Dynamics
 		/// Get the flag that controls automatic clearing of forces after each time step.
 		//bool GetAutoClearForces() const;
 
+		/// Get the contact manager for testing.
+		//const b2ContactManager& GetContactManager() const;
+
 	//private:
 
 		// m_flags
@@ -308,6 +311,11 @@ package Box2D.Dynamics
 		public function GetAutoClearForces():Boolean
 		{
 			return (m_flags & e_clearForces) == e_clearForces;
+		}
+
+		public function GetContactManager():b2ContactManager
+		{
+			return m_contactManager;;
 		}
 
 //====================================================================================

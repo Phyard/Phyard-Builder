@@ -57,6 +57,15 @@ package Box2D.Common
 			a0 = _t * a0 + t * a;
 		}
 
+		/// Normalize an angle in radians to be between -pi and pi
+		public function Normalize():void
+		{
+			const twoPi:Number = 2.0 * Math.PI;
+			var d:Number =  twoPi * Math.floor (a0 / twoPi);
+			a0 -= d;
+			a -= d;
+		}
+
 		public var localCenter:b2Vec2 = new b2Vec2 ();	///< local center of mass position
 		public var c0:b2Vec2 = new b2Vec2 (), c:b2Vec2 = new b2Vec2 ();		///< center world positions
 		public var a0:Number, a:Number;		///< world angles

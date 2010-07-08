@@ -71,22 +71,26 @@ package Box2D.Dynamics
 		/// @param doSleep improve performance by not simulating inactive bodies.
 		//b2World(const b2Vec2& gravity, bool doSleep);
 
-		/// Destruct the world. All physics entities are destroyed and all heap memory is released.
+		/// Destruct the world. All physics entities are destroyed and all heap memory is release
 		//~b2World();
 
-		/// Register a destruction listener.
+		/// Register a destruction listener. The listener is owned by you and must
+		/// remain in scope. 
 		//void SetDestructionListener(b2DestructionListener* listener);
 
-		/// Register a contact filter to provide specific control over collision.
+		/// Register a contact filter to provide specific control over collision. The listener is
+		/// owned by you and must remain in scope. 
 		/// Otherwise the default filter is used (b2_defaultFilter).
 		//void SetContactFilter(b2ContactFilter* filter);
 
-		/// Register a contact event listener
+		/// Register a contact event listener. The listener is owned by you and must
+		/// remain in scope. 
 		//void SetContactListener(b2ContactListener* listener);
 
 		/// Register a routine for debug drawing. The debug draw functions are called
-		/// inside the b2World::Step method, so make sure your renderer is ready to
-		/// consume draw commands when you call Step().
+		/// inside with b2World::DrawDebugData method. The debug draw object is owned
+		/// consume draw commands when you call Step()
+		/// by you and must remain in scope. 
 		//void SetDebugDraw(b2DebugDraw* debugDraw);
 
 		/// Create a rigid body given a definition. No reference to the definition
@@ -302,8 +306,8 @@ package Box2D.Dynamics
 			if (bodyCount < 128)
 				bodyCount = 128;
 			
-			if (contactCount < b2Settings.b2_maxTOIContactsPerIsland)
-				contactCount = b2Settings.b2_maxTOIContactsPerIsland;
+			if (contactCount < b2Settings.b2_maxTOIContacts)
+				contactCount = b2Settings.b2_maxTOIContacts;
 			
 			if (mIsland != null)
 			{

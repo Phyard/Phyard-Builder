@@ -11,8 +11,7 @@ package Box2D.Collision.Shapes
 		/// The position of the shape's centroid relative to the shape's origin.
 		public var center:b2Vec2 = new b2Vec2 ();
 
-		/// The rotational inertia of the shape. This may be about the center or local
-		/// origin, depending on usage.
+		/// The rotational inertia of the shape about the local origin.
 		public var I:Number;
 	} // class
 } // package

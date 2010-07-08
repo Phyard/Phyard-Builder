@@ -95,8 +95,8 @@ package Box2D.Common
 
 		// Dynamics
 
-		/// Maximum number of contacts to be handled to solve a TOI island.
-		public static const b2_maxTOIContactsPerIsland:int = 32;
+		/// Maximum number of contacts to be handled to solve a TOI impact.
+		public static const b2_maxTOIContacts:int = 32;
 
 		/// A velocity threshold for elastic collisions. Any collision with a relative linear
 		/// velocity below this threshold will be treated as inelastic.

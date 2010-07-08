@@ -576,7 +576,8 @@ public function Solve(step:b2TimeStep):void
 	// Synchronize fixtures, check for out of range bodies.
 	for (b = m_bodyList; b != null; b = b.GetNext())
 	{
-		if (b.IsAwake() == false || b.IsActive() == false)
+		// If a body was not in an island then it did not move.
+		if ((b.m_flags & b2Body.e_islandFlag) == 0) 
 		{
 			continue;
 		}
@@ -598,7 +599,7 @@ private static var sTOIInput:b2TOIInput = new b2TOIInput ();
 private static var sTOIOutput:b2TOIOutput = new b2TOIOutput ();
 private static var sSweep:b2Sweep = new b2Sweep ();
 
-private static var sContactPointerArray:Array = new Array (b2Settings.b2_maxTOIContactsPerIsland);
+private static var sContactPointerArray:Array = new Array (b2Settings.b2_maxTOIContacts);
 private static var sTOISolver:b2TOISolver = null; // new b2TOISolver (m_stackAllocator);
 
 // Advance a dynamic body to its first time of contact
@@ -633,6 +634,11 @@ public function SolveTOI_Body (body:b2Body):void
 		found = false;
 		for (ce = body.m_contactList; ce != null; ce = ce.next)
 		{
+			if (ce.contact == toiContact)
+			{
+				continue;
+			}
+			
 			other = ce.other;
 			type = other.GetType();
 
@@ -699,15 +705,15 @@ public function SolveTOI_Body (body:b2Body):void
 		++iter;
 	} while (found && count > 1 && iter < 50);
 
-	if (toiContact == null)
-	{
-		return;
-	}
-
 	// Advance the body to its safe time.
 	var backup:b2Sweep = sSweep;
 	backup.CopyFrom (body.m_sweep);
 	body.Advance(toi);
+
+	if (toiContact == null)
+	{
+		return;
+	}
 
 	++toiContact.m_toiCount;
 
@@ -716,7 +722,7 @@ public function SolveTOI_Body (body:b2Body):void
 	var contacts:Array = sContactPointerArray;
 	
 	count = 0;
-	for (ce = body.m_contactList; (ce != null) && (count < b2Settings.b2_maxTOIContactsPerIsland); ce = ce.next)
+	for (ce = body.m_contactList; (ce != null) && (count < b2Settings.b2_maxTOIContacts); ce = ce.next)
 	{
 		other = ce.other;
 		type = other.GetType();
@@ -821,8 +827,9 @@ public function SolveTOI():void
 	// Initialize the TOI flag.
 	for (body = m_bodyList; body != null; body = body.m_next)
 	{
-		// Sleeping, kinematic, and static bodies will not be affected by the TOI event.
-		if (body.IsAwake() == false || body.GetType() == b2Body.b2_kinematicBody || body.GetType() == b2Body.b2_staticBody)
+		// Kinematic, and static bodies will not be affected by the TOI event.
+		// If a body was not in an island then it did not move.
+		if ((body.m_flags & b2Body.e_islandFlag) == 0 || body.GetType() == b2Body.b2_kinematicBody || body.GetType() == b2Body.b2_staticBody)
 		{
 			body.m_flags |= b2Body.e_toiFlag;
 		}
@@ -835,7 +842,7 @@ public function SolveTOI():void
 	// Collide non-bullets.
 	for (body = m_bodyList; body != null; body = body.m_next)
 	{
-		if (body.GetType() != b2Body.b2_dynamicBody || body.IsAwake() == false)
+		if (body.m_flags & b2Body.e_toiFlag)
 		{
 			continue;
 		}
@@ -853,7 +860,7 @@ public function SolveTOI():void
 	// Collide bullets.
 	for ( body = m_bodyList; body != null; body = body.m_next)
 	{
-		if (body.GetType() != b2Body.b2_dynamicBody || body.IsAwake() == false)
+		if (body.m_flags & b2Body.e_toiFlag)
 		{
 			continue;
 		}

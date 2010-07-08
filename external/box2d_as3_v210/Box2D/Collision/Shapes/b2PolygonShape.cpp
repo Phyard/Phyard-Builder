@@ -358,8 +358,17 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 		}
 
 		output.fraction = t;
-		output.normal.x = normal.x;
-		output.normal.y = normal.y;
+		if (numerator > 0.0)
+		{
+			output.normal.x = - normal.x;
+			output.normal.y = - normal.y;
+		}
+		else
+		{
+			output.normal.x = normal.x;
+			output.normal.y = normal.y;
+		}
+		
 		return true;
 	}
 	else

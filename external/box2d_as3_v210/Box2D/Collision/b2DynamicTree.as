@@ -263,22 +263,25 @@ package Box2D.Collision
 					subInput.p2.CopyFrom (input.p2);
 					subInput.maxFraction = maxFraction;
 
-					maxFraction = callback.RayCastCallback(subInput, nodeId);
+					var value:Number = callback.RayCastCallback(subInput, nodeId);
 
-					if (maxFraction == 0.0)
+					if (value == 0.0)
 					{
+						// The client has terminated the ray cast.
 						return;
 					}
 
-					// Update segment bounding box.
-					//{
+					if (value > 0.0)
+					{
+						// Update segment bounding box.
+						maxFraction = value;
 						//b2Vec2 t = p1 + maxFraction * (p2 - p1);
 						//segmentAABB.lowerBound = b2Min(p1, t);
 						//segmentAABB.upperBound = b2Max(p1, t);
 						var t2:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (p1.x + maxFraction * (p2.x - p1.x), p1.y + maxFraction * (p2.y - p1.y));
 						segmentAABB.lowerBound.Set (p1.x < t2.x ? p1.x : t2.x, p1.y < t2.y ? p1.y : t2.y);
 						segmentAABB.upperBound.Set (p1.x > t2.x ? p1.x : t2.x, p1.y > t2.y ? p1.y : t2.y);
-					//}
+					}
 				}
 				else
 				{

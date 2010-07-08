@@ -60,7 +60,8 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 	var sweepB:b2Sweep = input.sweepB; //.Clone ();
 	var tMax:Number = input.tMax;
 
-	var target:Number = b2Settings.b2_linearSlop;
+	var totalRadius:Number = proxyA.m_radius + proxyB.m_radius;
+	var target:Number = Math.max(b2Settings.b2_linearSlop, totalRadius - 3.0 * b2Settings.b2_linearSlop);
 	var tolerance:Number = 0.25 * b2Settings.b2_linearSlop;
 	//b2Assert(target > tolerance);
 

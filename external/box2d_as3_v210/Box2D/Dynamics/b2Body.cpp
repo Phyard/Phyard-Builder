@@ -103,8 +103,6 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 	m_I = 0.0;
 	m_invI = 0.0;
 
-	m_inertiaScale = bd.inertiaScale;
-
 	m_userData = bd.userData;
 
 	m_fixtureList = null;
@@ -334,6 +332,10 @@ public function ResetMassData():void
 		m_sweep.c0.y = m_sweep.c.y = tempV.y;
 		//<<
 		
+		//m_sweep.c0 = m_sweep.c = m_xf.position;
+		//m_sweep.c0.x = m_sweep.c.x = m_xf.position.x;
+		//m_sweep.c0.y = m_sweep.c.y = m_xf.position.y;
+		
 		return;
 	}
 
@@ -385,7 +387,6 @@ public function ResetMassData():void
  	{
 		// Center the inertia about the center of mass.
 		m_I -= m_mass * b2Math.b2Dot2 (center, center);
-		m_I *= m_inertiaScale;
 		//b2Assert(m_I > 0.0f);
 		m_invI = 1.0 / m_I;
 	}
@@ -456,6 +457,7 @@ public function SetMassData (massData:b2MassData):void
 	if (massData.I > 0.0 && (m_flags & e_fixedRotationFlag) == 0)
 	{
 		m_I = massData.I - m_mass * b2Math.b2Dot2 (massData.center, massData.center);
+		//b2Assert(m_I > 0.0f);
 		m_invI = 1.0 / m_I;
 	}
 

@@ -19,7 +19,7 @@
 //#include <Box2D/Common/b2Settings.h>
 //#include <cstdlib>
 
-public static const b2_version:b2Version = new b2Version (2, 1, 1);
+public static const b2_version:b2Version = new b2Version (2, 1, 2);
 
 // Memory allocators. Modify these to use your own allocator.
 //void* b2Alloc(int32 size)

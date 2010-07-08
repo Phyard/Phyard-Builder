@@ -713,20 +713,26 @@ public function SolveTOI_Body (body:b2Body):void
 		++iter;
 	} while (found && count > 1 && iter < 50);
 
-	// Advance the body to its safe time. We have to do this even for bodies without a
-	// TOI so that later TOIs see the correct state.
-	body.Advance(toi);
-
 	if (toiContact == null)
 	{
+		body.Advance(1.0);
 		return;
+	}
+
+	var backup:b2Sweep = sSweep;
+	backup.CopyFrom (body.m_sweep);
+	body.Advance(toi);
+	toiContact.Update(m_contactManager.m_contactListener);
+	if (toiContact.IsEnabled() == false)
+	{
+		// Contact disabled. Backup and recurse.
+		body.m_sweep.CopyFrom (backup);
+		SolveTOI_Body(body);
 	}
 
 	++toiContact.m_toiCount;
 
 	// Update all the valid contacts on this body and build a contact island.
-	var backup:b2Sweep = sSweep;
-	backup.CopyFrom (body.m_sweep);
 	//b2Contact* contacts[b2_maxTOIContactsPerIsland];
 	var contacts:Array = sContactPointerArray;
 	
@@ -760,26 +766,17 @@ public function SolveTOI_Body (body:b2Body):void
 		}
 
 		// The contact likely has some new contact points. The listener
-		// gives the user a chance to disable the contact;
-		contact.Update(m_contactManager.m_contactListener
-							//, m_contactManager.m_contactPreSolveListener
-							);
+		// gives the user a chance to disable the contact.
+		if (contact != toiContact)
+		{
+			contact.Update(m_contactManager.m_contactListener
+								//, m_contactManager.m_contactPreSolveListener
+								);
+		}
 
 		// Did the user disable the contact?
 		if (contact.IsEnabled() == false)
 		{
-			if (contact == toiContact)
-			{
-				// Restore the body's sweep.
-				body.m_sweep.CopyFrom (backup); // as3: can ref assign?
-				body.SynchronizeTransform();
-
-				// Recurse because the TOI has been invalidated.
-				SolveTOI_Body (body);
-				
-				return;
-			}
-
 			// Skip this contact.
 			continue;
 		}

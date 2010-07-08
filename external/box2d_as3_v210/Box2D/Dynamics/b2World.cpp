@@ -609,6 +609,7 @@ public function SolveTOI_Body (body:b2Body):void
 	// Find the minimum contact.
 	var toiContact:b2Contact = null;
 	var toi:Number = 1.0;
+	var toiOther:b2Body = null;
 	var found:Boolean;
 	var count:int;
 	var iter:int = 0;
@@ -647,6 +648,12 @@ public function SolveTOI_Body (body:b2Body):void
 			{
 				// Bullets only perform TOI with bodies that have their TOI resolved.
 				if ((other.m_flags & b2Body.e_toiFlag) == 0)
+				{
+					continue;
+				}
+				
+				// No repeated hits on non-static bodies
+				if (type != b2Body.b2_staticBody && (ce.contact.m_flags & b2Contact.e_bulletHitFlag) != 0)
 				{
 					continue;
 				}
@@ -696,6 +703,7 @@ public function SolveTOI_Body (body:b2Body):void
 			{
 				toiContact = contact;
 				toi = output.t;
+				toiOther = other;
 				found = true;
 			}
 
@@ -705,9 +713,8 @@ public function SolveTOI_Body (body:b2Body):void
 		++iter;
 	} while (found && count > 1 && iter < 50);
 
-	// Advance the body to its safe time.
-	var backup:b2Sweep = sSweep;
-	backup.CopyFrom (body.m_sweep);
+	// Advance the body to its safe time. We have to do this even for bodies without a
+	// TOI so that later TOIs see the correct state.
 	body.Advance(toi);
 
 	if (toiContact == null)
@@ -718,6 +725,8 @@ public function SolveTOI_Body (body:b2Body):void
 	++toiContact.m_toiCount;
 
 	// Update all the valid contacts on this body and build a contact island.
+	var backup:b2Sweep = sSweep;
+	backup.CopyFrom (body.m_sweep);
 	//b2Contact* contacts[b2_maxTOIContactsPerIsland];
 	var contacts:Array = sContactPointerArray;
 	
@@ -804,6 +813,11 @@ public function SolveTOI_Body (body:b2Body):void
 			solved = true;
 			break;
 		}
+	}
+	
+	if (toiOther.GetType() != b2Body.b2_staticBody)
+	{
+		toiContact.m_flags |= b2Contact.e_bulletHitFlag;
 	}
 }
 

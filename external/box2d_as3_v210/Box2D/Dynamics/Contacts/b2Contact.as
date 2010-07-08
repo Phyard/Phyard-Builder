@@ -134,6 +134,8 @@ package Box2D.Dynamics.Contacts
 			public static const e_enabledFlag:int		= 0x0004;
 			// This contact needs filtering because a fixture filter was changed.
 			public static const e_filterFlag:int		= 0x0008;
+			// This bullet contact had a TOI event
+			public static const e_bulletHitFlag:int		= 0x0010;
 		//};
 
 		/// Flag this contact for filtering. Filtering will occur the next time step.

@@ -310,7 +310,7 @@ package Box2D.Dynamics.Joints
 
 			if (m_collideConnected == false)
 			{
-				FlagConnectedContactsForFiltering ()
+				FlagConnectedContactsForFiltering ();
 			}
 
 		// more tot do ...

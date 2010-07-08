@@ -306,6 +306,10 @@ public function ResetMassData():void
 	// Static and kinematic bodies have zero mass.
 	if (m_type == b2_staticBody || m_type == b2_kinematicBody)
 	{
+		//m_sweep.c0 = m_sweep.c = m_xf.position;
+		//m_sweep.c0.x = m_sweep.c.x = m_xf.position.x;
+		//m_sweep.c0.y = m_sweep.c.y = m_xf.position.y;
+		
 		//>> hacking
 		var num:int = 0;
 		for (f = m_fixtureList; f != null; f = f.m_next)
@@ -331,10 +335,6 @@ public function ResetMassData():void
 		m_sweep.c0.x = m_sweep.c.x = tempV.x;
 		m_sweep.c0.y = m_sweep.c.y = tempV.y;
 		//<<
-		
-		//m_sweep.c0 = m_sweep.c = m_xf.position;
-		//m_sweep.c0.x = m_sweep.c.x = m_xf.position.x;
-		//m_sweep.c0.y = m_sweep.c.y = m_xf.position.y;
 		
 		return;
 	}

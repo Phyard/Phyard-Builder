@@ -744,7 +744,7 @@ public function SolveTOI_Body (body:b2Body):void
 
 		// Only perform correction with static bodies, so the
 		// body won't get pushed out of the world.
-		if (type != b2Body.b2_dynamicBody)
+		if (type == b2Body.b2_dynamicBody)
 		{
 			continue;
 		}

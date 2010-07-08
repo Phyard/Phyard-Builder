@@ -171,7 +171,7 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 			if (s2 > target - tolerance)
 			{
 				// Advance the sweeps
-				t1 = t2
+				t1 = t2;
 				break;
 			}
 

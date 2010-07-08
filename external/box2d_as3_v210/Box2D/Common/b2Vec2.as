@@ -20,6 +20,11 @@ package Box2D.Common
 			y = another.y;
 		}
 		
+		public function toString():String
+		{
+			return "("+x+", " + y + ")";
+		}
+		
 		/// Default constructor does nothing (for performance).
 		public function b2Vec2() {}
 

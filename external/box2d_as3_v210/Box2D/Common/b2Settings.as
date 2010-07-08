@@ -26,6 +26,7 @@ package Box2D.Common
 
 	public class b2Settings
 	{
+		include "b2Settings.cpp";
 
 		//#define B2_NOT_USED(x) x
 		public static function B2_NOT_USED (x:Object):void
@@ -153,10 +154,6 @@ package Box2D.Common
 		//{
 			// @see b2Version class
 		//};
-
-		/// Current version.
-		//extern b2Version b2_version;
-		public static const b2_version:b2Version = new b2Version (2, 1, 0);
 
 		/// Friction mixing law. Feel free to customize this.
 		public static function b2MixFriction(friction1:Number, friction2:Number):Number

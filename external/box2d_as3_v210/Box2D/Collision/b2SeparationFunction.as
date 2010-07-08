@@ -37,8 +37,8 @@ package Box2D.Collision
 			var count:int = cache.count;
 			//b2Assert(0 < count && count < 3);
 
-			m_sweepA = sweepA;
-			m_sweepB = sweepB;
+			m_sweepA = sweepA; // .Clone ();
+			m_sweepB = sweepB; // .Clone ();
 
 			m_sweepA.GetTransform(xfA, 0.0);
 			m_sweepB.GetTransform(xfB, 0.0);

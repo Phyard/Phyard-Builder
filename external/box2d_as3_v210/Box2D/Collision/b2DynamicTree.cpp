@@ -291,25 +291,27 @@ public function InsertLeaf(leaf:int):void
 		(m_nodes[sibling] as b2DynamicTreeNode).parent = node2;
 		(m_nodes[leaf] as b2DynamicTreeNode).parent = node2;
 
+		var node_a:b2DynamicTreeNode;
+		var node_b:b2DynamicTreeNode = node; // m_nodes[node2]
 		do 
 		{
-			if ( (m_nodes[node1] as b2DynamicTreeNode).aabb.Contains( (m_nodes[node2] as b2DynamicTreeNode).aabb))
+			node_a = m_nodes[node1] as b2DynamicTreeNode;
+			
+			if (node_a.aabb.Contains(node_b.aabb))
 			{
 				break;
 			}
 
-			(m_nodes[node1] as b2DynamicTreeNode).aabb.Combine(
-																				(m_nodes[(m_nodes[node1] as b2DynamicTreeNode).child1] as b2DynamicTreeNode).aabb, 
-																				(m_nodes[(m_nodes[node1] as b2DynamicTreeNode).child2] as b2DynamicTreeNode).aabb
-																				);
-			node2 = node1;
-			node1 = (m_nodes[node1] as b2DynamicTreeNode).parent;
+			node_a.aabb.Combine((m_nodes[node_a.child1] as b2DynamicTreeNode).aabb, (m_nodes[node_a.child2] as b2DynamicTreeNode).aabb);
+			//node2 = node1;
+			node_b = node_a;
+			node1 = node_a.parent;
 		}
 		while(node1 != b2_nullNode);
 	}
 	else
 	{
-		node = m_nodes[node2] as b2DynamicTreeNode
+		node = m_nodes[node2] as b2DynamicTreeNode;
 		node.child1 = sibling;
 		node.child2 = leaf;
 		(m_nodes[sibling] as b2DynamicTreeNode).parent = node2;

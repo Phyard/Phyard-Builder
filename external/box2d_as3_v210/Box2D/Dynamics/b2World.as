@@ -293,6 +293,23 @@ package Box2D.Dynamics
 			return (m_flags & e_locked) == e_locked;
 		}
 		
+		public function SetAutoClearForces(flag:Boolean):void
+		{
+			if (flag)
+			{
+				m_flags |= e_clearForces;
+			}
+			else
+			{
+				m_flags &= ~e_clearForces;
+			}
+		}
+
+		public function GetAutoClearForces():Boolean
+		{
+			return (m_flags & e_clearForces) == e_clearForces;
+		}
+
 //====================================================================================
 // hacking
 //====================================================================================
@@ -393,24 +410,6 @@ package Box2D.Dynamics
 		//{
 		//	return m_contactManager.m_contactPostSolveListener;
 		//}
-
-		public function SetAutoClearForces(flag:Boolean):void
-		{
-			if (flag)
-			{
-				m_flags |= e_clearForces;
-			}
-			else
-			{
-				m_flags &= ~e_clearForces;
-			}
-		}
-
-		/// Get the flag that controls automatic clearing of forces after each time step.
-		public function IsAutoClearForces():Boolean
-		{
-			return (m_flags & e_clearForces) == e_clearForces;
-		}
 
 		// ...
 		public static function SetCustomJointCreateAndDestroyFunction (createFunc:Function, destroyFunc:Function):void

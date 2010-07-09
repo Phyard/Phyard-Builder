@@ -278,8 +278,6 @@ package editor.world {
       public function SetWorldWidth (ww:int):void
       {
          mWorldWidth = ww;
-         
-         trace ("SetWorldWidth = " + mWorldWidth);
       }
       
       public function GetWorldWidth ():int
@@ -290,8 +288,6 @@ package editor.world {
       public function SetWorldHeight (wh:int):void
       {
          mWorldHeight = wh;
-         
-         trace ("SetWorldHeight = " + mWorldHeight);
       }
       
       public function GetWorldHeight ():int

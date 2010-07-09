@@ -286,8 +286,8 @@ package editor.entity {
          {
             SetPropertiesForClonedEntity (entity, displayOffsetX, displayOffsetY);
             
-            entity.UpdateSelectionProxy ();
             entity.UpdateAppearance ();
+            entity.UpdateSelectionProxy ();
          }
          
          return entity;

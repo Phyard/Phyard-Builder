@@ -362,9 +362,6 @@ package editor {
          mViewWidth  = parent.width;
          mViewHeight = parent.height;
          
-         trace ("mViewWidth = " + mViewWidth);
-         trace ("mViewHeight = " + mViewHeight);
-         
          mViewBackgroundSprite.graphics.clear ();
          mViewBackgroundSprite.graphics.beginFill(0xFFFFFF);
          mViewBackgroundSprite.graphics.drawRect (0, 0, mViewWidth, mViewHeight);
@@ -537,10 +534,10 @@ package editor {
          
          if (mEditorWorld.IsInfiniteSceneSize ())
          {
-            sceneLeft   = - 0x7FFFFFFF;
-            sceneTop    = - 0x7FFFFFFF;
-            sceneWidth  = uint (0xFFFFFFFF);
-            sceneHeight = uint (0xFFFFFFFF);
+            sceneLeft   = -1000000000; // about halft of - 0x7FFFFFFF;
+            sceneTop    = - 1000000000; // about half of - 0x7FFFFFFF;
+            sceneWidth  = 2000000000; // about half of uint (0xFFFFFFFF);
+            sceneHeight = 2000000000; // about half of uint (0xFFFFFFFF);
          }
          else
          {
@@ -3001,7 +2998,7 @@ package editor {
          if (Runtime.HasInputFocused ())
             return;
          
-         trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
+         //trace ("event.keyCode = " + event.keyCode + ", event.charCode = " + event.charCode);
          
          if (IsPlaying ()) // playing
          {

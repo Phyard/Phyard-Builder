@@ -102,7 +102,7 @@ package editor.entity {
          
          if (!mIsValid)
          {
-             GraphicsUtil.DrawRect (this, mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY, 0xFF8080, IsSelected () ? 3 : 2, false);
+             GraphicsUtil.DrawRect (this, mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY, 0xFF8080, IsSelected () ? 3 : 0, false);
          }
       }
       

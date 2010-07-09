@@ -153,7 +153,9 @@ package editor.trigger.entity {
          //if (localX > mTextFieldCenterX - mTextFieldHalfWidth && localX < mTextFieldCenterX + mTextFieldHalfWidth && localY > mTextFieldCenterY - mTextFieldHalfHeight && localY < mTextFieldCenterY + mTextFieldHalfHeight)
          //   return -1;
          if (localX > mIconCenterX - mIconHalfWidth && localX < mIconCenterX + mIconHalfWidth && localY > mIconCenterY - mIconHalfHeight && localY < mIconCenterY + mIconHalfHeight)
+         {
             return -1;
+         }
          
          return 0;
       }

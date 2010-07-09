@@ -17,7 +17,9 @@
          <mx:MenuBar id="MenuBar_Api" itemClick="OnMenuBarClick (event);" height="100%"/>
          <mx:Spacer width="100%"/>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-            <mx:Button id="Button_EditVariables" click="OnEditVariables ()" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_variables.png')" />
+            <mx:Button id="Button_EditGlobalVariables" click="OnEditGlobalVariables ()" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_global_variables.png')" />
+            <mx:Button id="Button_EditEntityVariables" click="OnEditEntityVariables ()" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_entity_variables.png')" />
+            <mx:Button id="Button_EditFunction" click="OnEditFunctions ()" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_functions.png')" />
          </mx:HBox>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
             <mx:Button id="Button_CodeFormatSwitch" click="OnSwitchCodeFormat ()" toggle="true" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../res/action/command_coding_format_poem.png')" downIcon="@Embed('../../res/action/command_coding_format_poem.png')" overIcon="@Embed('../../res/action/command_coding_format_poem.png')" selectedUpIcon="@Embed('../../res/action/command_coding_format_traditional.png')" selectedOverIcon="@Embed('../../res/action/command_coding_format_traditional.png')" selectedDownIcon="@Embed('../../res/action/command_coding_format_traditional.png')" />
@@ -26,7 +28,7 @@
             <mx:Button id="Button_MoveUpCommmand" click="OnMoveCallingUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_moveup.png')" disabledIcon="@Embed('../../res/action/command_moveup-disabled.png')" />
             <mx:Button id="Button_MoveDownCommmand" click="OnMoveCallingDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_movedown.png')" disabledIcon="@Embed('../../res/action/command_movedown-disabled.png')" />
          </mx:HBox>
-         <mx:Spacer width="10"/>
+         <mx:Spacer width="5"/>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
             <mx:Button id="Button_DeleteCommmand" click="OnDeleteCalling ()" toolTip="Delete Command" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_delete.png')" disabledIcon="@Embed('../../res/action/command_delete-disabled.png')" />
          </mx:HBox>
@@ -139,13 +141,27 @@
             UpdateInterface ();
          }
          
-         public function OnEditVariables ():void
+         public function OnEditGlobalVariables ():void
          {
             var dialog:VariablesEditDialog = new VariablesEditDialog ();
             PopUpManager.addPopUp (dialog, this, false);
             PopUpManager.centerPopUp (dialog);
             //dialog.SetConfirmFunc (OnMoveSceneAccurately);
             //dialog.SetCloseFunc (OnCloseDialog);
+         }
+         
+         public function OnEditEntityVariables ():void
+         {
+            var dialog:VariablesEditDialog = new VariablesEditDialog ();
+            PopUpManager.addPopUp (dialog, this, false);
+            PopUpManager.centerPopUp (dialog);
+            //dialog.SetConfirmFunc (OnMoveSceneAccurately);
+            //dialog.SetCloseFunc (OnCloseDialog);
+         }
+         
+         public function OnEditFunctions ():void
+         {
+            
          }
          
          private function OnCopySelectedCallings (event:ContextMenuEvent):void
@@ -163,15 +179,8 @@
          private function CopyCallings (ids:Array):void
          {
             var copiedCallings:Array = GetFunctionCallings (ids, false);
-            if (copiedCallings.length == 0)
-            {
-               Runtime.mCopiedCodeSnippet = null;
-            }
-            else
-            {
-               Runtime.mCopiedCodeSnippet = new CodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition ());
-               Runtime.mCopiedCodeSnippet.AssignFunctionCallings (copiedCallings);
-            }
+            
+            Runtime.SetCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), copiedCallings);
             
             UpdateInterface ();
          }
@@ -194,10 +203,10 @@
          
          private function PasteCallingsAt (insertAt:int):void
          {
-            if (Runtime.mCopiedCodeSnippet == null)
-               return;
+            var codeSnippet:CodeSnippet = Runtime.CloneCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition ());
             
-            var codeSnippet:CodeSnippet = Runtime.mCopiedCodeSnippet.Clone (mCodeSnippet.GetOwnerFunctionDefinition ());
+            if (codeSnippet == null)
+               return;
             
             AddFunctionCallingsFromCodeSnippet (codeSnippet, insertAt);
          }
@@ -533,8 +542,8 @@
             
             mCopySelectedMenuItem.enabled = List_Commands.selectedIndices.length > 0;
             mCopyAllMenuItem.enabled = List_Commands.dataProvider.length > 0;
-            mPasteBeforeMenuItem.enabled = Runtime.mCopiedCodeSnippet != null &&  List_Commands.selectedIndex >= 0 && List_Commands.dataProvider.length > 0;
-            mPasteAfterMenuItem .enabled = Runtime.mCopiedCodeSnippet != null && (List_Commands.selectedIndex >= 0 || List_Commands.dataProvider.length == 0);
+            mPasteBeforeMenuItem.enabled = Runtime.HasCopiedCodeSnippet () &&  List_Commands.selectedIndex >= 0 && List_Commands.dataProvider.length > 0;
+            mPasteAfterMenuItem .enabled = Runtime.HasCopiedCodeSnippet () && (List_Commands.selectedIndex >= 0 || List_Commands.dataProvider.length == 0);
             
             mPasteAfterMenuItem.caption = List_Commands.dataProvider.length == 0 ? "Paste Copied Callings" : "Insert Callings After The Selected";
          }

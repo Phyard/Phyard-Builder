@@ -7,6 +7,7 @@ package editor.runtime {
    import editor.world.World;
    
    import editor.trigger.CodeSnippet;
+   import editor.trigger.FunctionDefinition
    
    import common.Define;
    
@@ -90,7 +91,48 @@ package editor.runtime {
 //
 //=====================================================================
       
-      public static var mCopiedCodeSnippet:CodeSnippet = null;
+      private static var mCopiedCodeSnippet:CodeSnippet = null;
+      
+      public static function ClearCopiedCodeSnippet ():void
+      {
+         Runtime.mCopiedCodeSnippet = null;
+      }
+      
+      public static function HasCopiedCodeSnippet ():Boolean
+      {
+         return Runtime.mCopiedCodeSnippet != null;
+      }
+      
+      public static function SetCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition, copiedCallings:Array):void
+      {
+         if (copiedCallings == null || copiedCallings.length == 0)
+         {
+             ClearCopiedCodeSnippet ();
+         }
+         else
+         {
+            var codeSnippet:CodeSnippet =  new CodeSnippet (ownerFunctionDefinition);
+            codeSnippet.AssignFunctionCallings (copiedCallings);
+            codeSnippet.PhysicsValues2DisplayValues (GetCurrentWorld ().GetCoordinateSystem ());
+            
+            Runtime.mCopiedCodeSnippet = codeSnippet.Clone(null);
+         }
+      }
+      
+      public static function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
+      {
+         if (Runtime.mCopiedCodeSnippet == null)
+         {
+            return null;
+         }
+         else
+         {
+            var codeSnippet:CodeSnippet = Runtime.mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
+            codeSnippet.DisplayValues2PhysicsValues (GetCurrentWorld ().GetCoordinateSystem ());
+            
+            return codeSnippet;
+         }
+      }
       
 //=====================================================================
 // create initial properties

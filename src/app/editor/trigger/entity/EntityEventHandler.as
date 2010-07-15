@@ -60,7 +60,7 @@ package editor.trigger.entity {
          
          mEventId = defaultEventId;
          
-         mEventHandlerDefinition = new FunctionDefinition (TriggerEngine.GetEventDeclarationById (mEventId));
+         mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId));
          
          mCodeSnippet = new CodeSnippet (mEventHandlerDefinition);
          mBackgroundColor = 0xB0B0FF;

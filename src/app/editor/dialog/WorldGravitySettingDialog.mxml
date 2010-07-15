@@ -24,7 +24,7 @@
              </mx:GridItem>
              <mx:GridItem>
                 <mx:TextInput id="Text_GravityAccelerationAngle" width="100" />
-                <mx:Label text="(pixels/m)"/>
+                <mx:Label text="(degrees)"/>
              </mx:GridItem>
           </mx:GridRow>
        </mx:Grid>

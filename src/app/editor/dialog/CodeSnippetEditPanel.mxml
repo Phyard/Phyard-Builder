@@ -7,23 +7,23 @@
       borderStyle="solid" borderThickness="0"
       width="100%" height="100%"
       creationComplete="OnInitPanel()"
+      removedFromStage="OnRemoveFromStage ();"
       >
 
    <mx:VBox width="100%">
-      <mx:HBox id="Box_Toolbar" width="100%">
-         <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+      <mx:HBox id="Box_Toolbar" width="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+         <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
             <mx:Button id="Button_MenuBarSwitch" click="OnSwitchMenuBar ()" toggle="true" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../res/action/command_menubar_longer.png')" downIcon="@Embed('../../res/action/command_menubar_longer.png')" overIcon="@Embed('../../res/action/command_menubar_longer.png')" selectedUpIcon="@Embed('../../res/action/command_menubar_shorter.png')" selectedOverIcon="@Embed('../../res/action/command_menubar_shorter.png')" selectedDownIcon="@Embed('../../res/action/command_menubar_shorter.png')" />
          </mx:HBox>
+         <mx:Spacer width="1"/>
          <mx:MenuBar id="MenuBar_Api" itemClick="OnMenuBarClick (event);" height="100%"/>
          <mx:Spacer width="100%"/>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
             <mx:Button id="Button_EditGlobalVariables" click="OnEditGlobalVariables ()" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_global_variables.png')" />
             <mx:Button id="Button_EditEntityVariables" click="OnEditEntityVariables ()" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_entity_variables.png')" />
-            <mx:Button id="Button_EditFunction" click="OnEditFunctions ()" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_functions.png')" />
+            <mx:Button id="Button_EditLocalVariables" click=";" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_local_variables.png')" />
          </mx:HBox>
-         <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-            <mx:Button id="Button_CodeFormatSwitch" click="OnSwitchCodeFormat ()" toggle="true" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" upIcon="@Embed('../../res/action/command_coding_format_poem.png')" downIcon="@Embed('../../res/action/command_coding_format_poem.png')" overIcon="@Embed('../../res/action/command_coding_format_poem.png')" selectedUpIcon="@Embed('../../res/action/command_coding_format_traditional.png')" selectedOverIcon="@Embed('../../res/action/command_coding_format_traditional.png')" selectedDownIcon="@Embed('../../res/action/command_coding_format_traditional.png')" />
-         </mx:HBox>
+         <mx:Spacer width="5"/>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
             <mx:Button id="Button_MoveUpCommmand" click="OnMoveCallingUp ()" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_moveup.png')" disabledIcon="@Embed('../../res/action/command_moveup-disabled.png')" />
             <mx:Button id="Button_MoveDownCommmand" click="OnMoveCallingDown ()" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../res/action/command_movedown.png')" disabledIcon="@Embed('../../res/action/command_movedown-disabled.png')" />
@@ -42,16 +42,6 @@
             </mx:Form>
          </mx:ViewStack>
       </mx:HBox>
-      <!--
-      <mx:HBox id="Box_ParamsAndReturns" width="100%">
-         <mx:VBox id="Box_ParamNames" width="200">
-
-         </mx:VBox>
-         <mx:VBox id="Box_ParamValues" width="200">
-
-         </mx:VBox>
-      </mx:HBox>
-      -->
    </mx:VBox>
 
    <mx:Script>
@@ -122,6 +112,9 @@
          private var mCopyAllMenuItem:ContextMenuItem = null;
          private var mPasteBeforeMenuItem:ContextMenuItem = null;
          private var mPasteAfterMenuItem:ContextMenuItem = null;
+         private var mTraditionalFormatMenuItem:ContextMenuItem = null;
+         private var mObjectOrientedFormatMenuItem:ContextMenuItem = null;
+         private var mPoemFormatMenuItem:ContextMenuItem = null;
          
          private function OnInitPanel ():void
          {
@@ -131,37 +124,36 @@
             Button_MenuBarSwitch.selected = Runtime.mLongerCodeEditorMenuBar;
             OnSwitchMenuBar ();
             
-            Button_CodeFormatSwitch.selected = Runtime.mPoemCodingFormat;
-            
             mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Calling(s)", OnCopySelectedCallings);
             mCopyAllMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy All Callings", OnCopyAllCallings);
-            mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Insert Callings Before The Selected", OnPasteCallingsBefore);
+            mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Paste Callings Before The Selected", OnPasteCallingsBefore);
             mPasteAfterMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "", OnPasteCallingsAfter);
+            mTraditionalFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Traditional Coding Format", OnSwitchToTraditionalFormat, true);
+            mObjectOrientedFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "OO Coding Format (not implemented yet)", OnSwitchToObjectOrientedFormat);
+            mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format", OnSwitchToPoemFormat);
             
             UpdateInterface ();
          }
          
-         public function OnEditGlobalVariables ():void
+         private function OnEditGlobalVariables ():void
          {
-            var dialog:VariablesEditDialog = new VariablesEditDialog ();
-            PopUpManager.addPopUp (dialog, this, false);
-            PopUpManager.centerPopUp (dialog);
-            //dialog.SetConfirmFunc (OnMoveSceneAccurately);
-            //dialog.SetCloseFunc (OnCloseDialog);
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
          }
          
-         public function OnEditEntityVariables ():void
+         private function OnEditEntityVariables ():void
          {
-            var dialog:VariablesEditDialog = new VariablesEditDialog ();
-            PopUpManager.addPopUp (dialog, this, false);
-            PopUpManager.centerPopUp (dialog);
-            //dialog.SetConfirmFunc (OnMoveSceneAccurately);
-            //dialog.SetCloseFunc (OnCloseDialog);
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
          }
          
-         public function OnEditFunctions ():void
+         private function OnEditCustomFunctions ():void
          {
             
+         }
+         
+         private function OnRemoveFromStage ():void
+         {
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
          }
          
          private function OnCopySelectedCallings (event:ContextMenuEvent):void
@@ -226,18 +218,17 @@
             }
          }
          
-         private function OnSwitchCodeFormat ():void
+         private function OnSwitchCodeFormat (codingFormat:int):void
          {
             RetrieveCurrentCommandValueSourcesFromControls (false);
             
-            Runtime.mPoemCodingFormat = Button_CodeFormatSwitch.selected;
-            if (Button_CodeFormatSwitch.selected)
+            if (codingFormat == Define.CodingFormat_Poem)
             {
-               Button_CodeFormatSwitch.toolTip = "Traditional Format";
+               Runtime.mPoemCodingFormat = true;
             }
             else
             {
-               Button_CodeFormatSwitch.toolTip = "Poem Format";
+               Runtime.mPoemCodingFormat = false;
             }
             
             for (var i:int = 0; i < List_Commands.dataProvider.length; ++ i)
@@ -248,6 +239,23 @@
             }
             
             List_Commands.invalidateList ();
+            
+            UpdateInterface ();
+         }
+         
+         private function OnSwitchToTraditionalFormat (event:ContextMenuEvent):void
+         {
+            OnSwitchCodeFormat (Define.CodingFormat_Traditional);
+         }
+         
+         private function OnSwitchToObjectOrientedFormat (event:ContextMenuEvent):void
+         {
+            //OnSwitchCodeFormat (Define.CodingFormat_ObjectOriented);
+         }
+         
+         private function OnSwitchToPoemFormat (event:ContextMenuEvent):void
+         {
+            OnSwitchCodeFormat (Define.CodingFormat_Poem);
          }
          
          private function OnMenuBarClick (event:MenuEvent):void
@@ -388,7 +396,7 @@
                   
                   var func_id:int = item.mID;
                   var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
-                  var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
+                  var func_calling:FunctionCalling = new FunctionCalling (Runtime.GetCurrentWorld ().GetTriggerEngine (), func_declaration);
                   func_calling.AssignInputValueSources (item.mCurrentValueSources);
                   func_calling.AssignOutputValueTargets (item.mCurrentValueTargets);
                   
@@ -424,7 +432,7 @@
             for (j = 0; j < func_declaration.GetNumInputs (); ++ j)
             {
                variable_def = func_declaration.GetInputParamDefinitionAt (j);
-               value_source = variable_def.GetDefaultValueSource ();
+               value_source = variable_def.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
                initialValueSources.push (value_source.CloneSource ());
                currentValueSources.push (value_source.CloneSource ());
             }
@@ -544,8 +552,20 @@
             mCopyAllMenuItem.enabled = List_Commands.dataProvider.length > 0;
             mPasteBeforeMenuItem.enabled = Runtime.HasCopiedCodeSnippet () &&  List_Commands.selectedIndex >= 0 && List_Commands.dataProvider.length > 0;
             mPasteAfterMenuItem .enabled = Runtime.HasCopiedCodeSnippet () && (List_Commands.selectedIndex >= 0 || List_Commands.dataProvider.length == 0);
+            mPasteAfterMenuItem.caption = List_Commands.dataProvider.length == 0 ? "Paste Callings" : "Paste Callings After The Selected";
             
-            mPasteAfterMenuItem.caption = List_Commands.dataProvider.length == 0 ? "Paste Copied Callings" : "Insert Callings After The Selected";
+            if (Runtime.mPoemCodingFormat)
+            {
+               mTraditionalFormatMenuItem.enabled = true;
+               mObjectOrientedFormatMenuItem.enabled = true;
+               mPoemFormatMenuItem.enabled = false;
+            }
+            else
+            {
+               mTraditionalFormatMenuItem.enabled = false;
+               mObjectOrientedFormatMenuItem.enabled = true;
+               mPoemFormatMenuItem.enabled = true;
+            }
          }
          
          private function OnCurrentCommandChanged ():void
@@ -801,7 +821,7 @@
                
                if (value_source is ValueSource_Direct)
                {
-                  var newValueSource:ValueSource = variable_def.RetrieveDirectValueSourceFromControl (value_source as ValueSource_Direct, source_control);
+                  var newValueSource:ValueSource = variable_def.RetrieveDirectValueSourceFromControl (value_source as ValueSource_Direct, source_control, Runtime.GetCurrentWorld ().GetTriggerEngine ());
                   if (newValueSource != null)
                      currentValueSources [j] = newValueSource;
                }
@@ -927,7 +947,7 @@
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
-            var new_value_source:ValueSource = variable_def.GetDefaultValueSource ();
+            var new_value_source:ValueSource = variable_def.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
             
             mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
             CreateValueSourceControl (param_index, form_item, mCurrentEditingItem.mValueSourceControls);
@@ -1017,7 +1037,7 @@
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
-            var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (TriggerEngine.GetRegisterVariableSpace (variable_def.GetValueType()));
+            var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetValueType()));
             
             mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
             CreateValueSourceControl (param_index, form_item, mCurrentEditingItem.mValueSourceControls);
@@ -1141,7 +1161,7 @@
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
-            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (TriggerEngine.GetRegisterVariableSpace (variable_def.GetValueType()));
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetValueType()));
             
             mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
             CreateValueTargetControl (return_index, form_item, mCurrentEditingItem.mValueTargetControls);

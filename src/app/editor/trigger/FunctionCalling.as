@@ -9,12 +9,17 @@ package editor.trigger {
    
    public class FunctionCalling
    {
+      public var mTriggerEngine:TriggerEngine;
+      
       public var mFunctionDeclaration:FunctionDeclaration;
+      
       public var mInputValueSources:Array;
       public var mReturnValueTargets:Array;
       
-      public function FunctionCalling (functionDeclatation:FunctionDeclaration, createDefaultSourcesAndTargets:Boolean = true)
+      public function FunctionCalling (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, createDefaultSourcesAndTargets:Boolean = true)
       {
+         mTriggerEngine = triggerEngine;
+         
          mFunctionDeclaration = functionDeclatation;
          
          var variable_def:VariableDefinition;
@@ -31,7 +36,7 @@ package editor.trigger {
             for (i = 0; i < num_inputs; ++ i)
             {
                variable_def = mFunctionDeclaration.GetInputParamDefinitionAt (i);
-               mInputValueSources [i] = variable_def.GetDefaultValueSource ();
+               mInputValueSources [i] = variable_def.GetDefaultValueSource (mTriggerEngine);
             }
             
             for (i = 0; i < num_returns; ++ i)
@@ -121,7 +126,7 @@ package editor.trigger {
       
       public function Clone (ownerFunctionDefinition:FunctionDefinition):FunctionCalling
       {
-         var calling:FunctionCalling = new FunctionCalling (mFunctionDeclaration, false);
+         var calling:FunctionCalling = new FunctionCalling (mTriggerEngine, mFunctionDeclaration, false);
          
          var i:int;
          var vi:VariableInstance;
@@ -155,7 +160,7 @@ package editor.trigger {
                      if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
                      {
                         done = true;
-                        sourcesArray [i] = mFunctionDeclaration.GetInputParamDefinitionAt (i).GetDefaultValueSource ();
+                        sourcesArray [i] = mFunctionDeclaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (mTriggerEngine);
                      }
                      else
                      {
@@ -212,7 +217,7 @@ package editor.trigger {
                      if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
                      {
                         done = true;
-                        targetsArray [i] = mFunctionDeclaration.GetInputParamDefinitionAt (i).GetDefaultValueSource ();
+                        targetsArray [i] = mFunctionDeclaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (mTriggerEngine);
                      }
                      else
                      {

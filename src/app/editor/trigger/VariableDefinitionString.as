@@ -12,6 +12,7 @@ package editor.trigger {
    //
    //========================================================================================================
       
+      protected var mDefaultValue:String = "";
       protected var mMaxLength:int = 0;
       
       public function VariableDefinitionString (name:String, description:String = null, options:Object = null)
@@ -23,6 +24,16 @@ package editor.trigger {
             if (options.mMaxLength != undefined)
                mMaxLength = int (options.mMaxLength);
          }
+      }
+      
+      override public function SetDefaultValue (valueObject:Object):void
+      {
+         mDefaultValue = String (valueObject);
+      }
+      
+      public function GetDefaultValue ():String
+      {
+         return mDefaultValue;
       }
       
       protected function ValidateValue (text:String):String
@@ -63,7 +74,7 @@ package editor.trigger {
          return text_input;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
       {
          if (control is TextInput)
          {

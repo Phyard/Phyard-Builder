@@ -33,6 +33,7 @@ package player.trigger
 //=============================================================================
 // const data structures
 //=============================================================================
+      
       private static var sConstDataInited:Boolean = false;
       
       public static function InitializeConstData ():void

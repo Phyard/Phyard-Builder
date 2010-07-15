@@ -28,6 +28,16 @@ package editor.trigger {
          }
       }
       
+      override public function SetDefaultValue (valueObject:Object):void
+      {
+         mDefaultValue = Boolean (valueObject);
+      }
+      
+      public function GetDefaultValue ():Boolean
+      {
+         return mDefaultValue;
+      }
+      
 //==============================================================================
 // to override
 //==============================================================================
@@ -70,7 +80,7 @@ package editor.trigger {
          return box;
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
       {
          if (control is HBox)
          {

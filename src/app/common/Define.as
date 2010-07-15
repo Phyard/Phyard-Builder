@@ -256,6 +256,14 @@ package common {
       //public static const PowerSource_LinearVelocity     :int = 7;
       
 //===========================================================================
+// Codeing Formats
+//===========================================================================
+      
+      public static const CodingFormat_Traditional:int = 0;
+      public static const CodingFormat_ObjectOriented:int = 1;
+      public static const CodingFormat_Poem:int = 2;
+      
+//===========================================================================
 // Logic
 //===========================================================================
       

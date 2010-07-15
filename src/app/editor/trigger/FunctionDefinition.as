@@ -7,17 +7,21 @@ package editor.trigger {
    
    public class FunctionDefinition
    {
+      public var mTriggerEngine:TriggerEngine;
+      
       public var mFunctionDeclaration:FunctionDeclaration;
       
       public var mInputVariableSpace:VariableSpaceInput;
       
       public var mReturnVariableSpace:VariableSpaceReturn;
       
-      public function FunctionDefinition (functionDeclatation:FunctionDeclaration = null)
+      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration = null)
       {
+         mTriggerEngine = triggerEngine;
+         
          mFunctionDeclaration = functionDeclatation;
          
-         mInputVariableSpace = new VariableSpaceInput ();
+         mInputVariableSpace = new VariableSpaceInput (mTriggerEngine);
          
          if (mFunctionDeclaration != null)
          {
@@ -26,7 +30,7 @@ package editor.trigger {
                mInputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetInputParamDefinitionAt (i));
          }
          
-         mReturnVariableSpace = new VariableSpaceReturn ();
+         mReturnVariableSpace = new VariableSpaceReturn (mTriggerEngine);
          
          if (mFunctionDeclaration != null)
          {

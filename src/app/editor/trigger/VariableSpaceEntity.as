@@ -2,38 +2,37 @@ package editor.trigger {
    
    import common.trigger.ValueSpaceTypeDefine;
    
-   public class VariableSpaceGlobal extends VariableSpace
+   public class VariableSpaceEntity extends VariableSpace
    {
       
    //========================================================================================================
    //
    //========================================================================================================
       
-      public function VariableSpaceGlobal (triggerEngine:TriggerEngine)
+      public function VariableSpaceEntity (triggerEngine:TriggerEngine)
       {
          super(triggerEngine);
       }
       
       override public function GetSpaceType ():int
       {
-         return ValueSpaceTypeDefine.ValueSpace_Global;
+         return ValueSpaceTypeDefine.ValueSpace_Entity;
       }
       
       override public function GetSpaceName ():String
       {
-         return "Global Variable Space";
+         return "Entity Variable Space";
       }
       
       override public function GetShortName ():String
       {
-         return "Global";
+         return "Entity Property";
       }
       
       override public function GetCodeName ():String
       {
-         return "g";
+         return "entity";
       }
       
    }
 }
-

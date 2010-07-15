@@ -10,8 +10,7 @@ package common.trigger {
       public static const ValueSpace_Local:int   = 0x3;
       public static const ValueSpace_Output:int   = 0x4;
       public static const ValueSpace_GlobalRegister:int   = 0x5;
-      
-      
-      
+      //public static const ValueSpace_LocalRegister:int   = 0x6; // seems not a good idea
+      public static const ValueSpace_Entity:int   = 0x7;
    }
 }

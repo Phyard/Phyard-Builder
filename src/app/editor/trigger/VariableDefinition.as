@@ -137,6 +137,11 @@ package editor.trigger {
          return mName;
       }
       
+      public function SetName (name:String):void
+      {
+         mName= name;
+      }
+      
       public function GetValueType ():int
       {
          return mValueType;
@@ -150,6 +155,11 @@ package editor.trigger {
       public function IsCompatibleWith (variableDefinition:VariableDefinition):Boolean
       {
          return mValueType == variableDefinition.GetValueType ();
+      }
+      
+      public function SetDefaultValue (valueObject:Object):void
+      {
+         // to override
       }
       
 //==============================================================================
@@ -266,12 +276,12 @@ package editor.trigger {
 // for value source
 //==============================================================================
       
-      public function GetDefaultValueSource ():ValueSource
+      public function GetDefaultValueSource (triggerEngine:TriggerEngine):ValueSource
       {
          switch (mDefaultSourceType)
          {
             case ValueSourceTypeDefine.ValueSource_Variable:
-               return GetDefaultVariableValueSource (TriggerEngine.GetRegisterVariableSpace (mValueType));
+               return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
             case ValueSourceTypeDefine.ValueSource_Direct:
             default:
                return GetDefaultDirectValueSource ();
@@ -322,7 +332,7 @@ package editor.trigger {
             return null;
          }
          
-         public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
+         public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
          {
             return null;
          }

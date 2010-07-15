@@ -10,12 +10,21 @@ package editor.trigger {
    //
    //========================================================================================================
       
+      protected var mTriggerEngine:TriggerEngine;
+      
       protected var mNullVariableInstance:VariableInstance;
       protected var mVariableInstances:Array = new Array ();
       
-      public function VariableSpace ()
+      public function VariableSpace (triggerEngine:TriggerEngine)
       {
+         mTriggerEngine = triggerEngine;
+         
          mNullVariableInstance = new VariableInstance (this, -1, null, ValueTypeDefine.ValueType_Void, "(null)", null);
+      }
+      
+      public function GetTriggerEngine ():TriggerEngine
+      {
+         return mTriggerEngine;
       }
       
       public function GetSpaceType ():int
@@ -77,7 +86,9 @@ package editor.trigger {
       private function RearrangeVariableInstanceIndexes ():void
       {
          for (var i:int = 0; i < mVariableInstances.length; ++ i)
+         {
             (mVariableInstances [i] as VariableInstance).SetIndex (i);
+         }
       }
       
       public function DestroyVariableInstanceByIndex (variableId:int):void
@@ -104,13 +115,17 @@ package editor.trigger {
       
       public function ChangeVariableInstanceIndex (variableOldId:int, variableNewId:int):void
       {
+         if (variableOldId == variableNewId)
+            return;
+         
          if (variableOldId < 0 || variableOldId >= mVariableInstances.length)
             return;
          
          if (variableNewId < 0 || variableNewId >= mVariableInstances.length)
             return;
          
-         var object:Object = mVariableInstances.splice (variableOldId, 1);
+         var object:Object = mVariableInstances [variableOldId];
+         mVariableInstances.splice (variableOldId, 1);
          mVariableInstances.splice (variableNewId, 0, object);
          
          RearrangeVariableInstanceIndexes ();

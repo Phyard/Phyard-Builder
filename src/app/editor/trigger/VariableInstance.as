@@ -24,25 +24,44 @@ package editor.trigger {
       private var mName:String = null;
       
       // used in VariableSpace.CreateVariableInstance () and GetNullVariableInstance ()
-      public function VariableInstance (variableSpace:VariableSpace, id:int, variableDefinition:VariableDefinition, valueType:int = 0 /*ValueTypeDefine.ValueType_void*/, variableName:String = null, intialValue:Object = null)
+      public function VariableInstance (variableSpace:VariableSpace, id:int, variableDefinition:VariableDefinition, valueType:int = ValueTypeDefine.ValueType_Void, variableName:String = null, intialValue:Object = null)
       {
          mVariableSpace = variableSpace;
          SetIndex (id);
-         mVariableDefinition = variableDefinition;
          
-         if (mVariableDefinition != null)
-            AssignValue (mVariableDefinition.GetDefaultValueSource ());
-         else
+         if (variableDefinition == null)
          {
             mValuetype = valueType;
-            mName = variableName;
+            SetName (variableName);
             SetValueObject (intialValue);
          }
-         
-         if (variableDefinition != null && (mName == null || mName.length == 0))
+         else
          {
-            mName = variableDefinition.GetName ();
+            SetVariableDefinition (variableDefinition);
          }
+      }
+      
+      public function GetVariableDefinition ():VariableDefinition
+      {
+         return mVariableDefinition;
+      }
+      
+      public function SetVariableDefinition (variableDefinition:VariableDefinition):void
+      {
+         mVariableDefinition = variableDefinition;
+         if (mVariableDefinition == null) // generally, shouldn't
+         {
+            mValuetype = ValueTypeDefine.ValueType_Void;
+            return;
+         }
+         
+         AssignValue (mVariableDefinition.GetDefaultValueSource (mVariableSpace.GetTriggerEngine ()));
+         SetName (variableDefinition.GetName ());
+      }
+      
+      public function ToVariableDefinitionString ():String
+      {
+         return ValueTypeDefine.GetTypeName (GetValueType ()) + " " + GetName ();
       }
       
       private function ToCodeStringForSourceOrTarget (forTarget:Boolean):String
@@ -91,6 +110,14 @@ package editor.trigger {
          return mIndex;
       }
       
+      public function SetName (name:String):void
+      {
+         if (mVariableDefinition == null)
+         {
+            mName = name;
+         }
+      }
+      
       public function GetName ():String
       {
          if (mVariableDefinition == null)
@@ -112,7 +139,7 @@ package editor.trigger {
          return mVariableDefinition.GetValueType ();
       }
       
-      // should call this
+      // should not call this
       public function Clone():VariableInstance
       {
          //var vi:VariableInstance = mVariableSpace.Create ... //new VariableInstance (mVariableSpace, mIndex, mVariableDefinition);

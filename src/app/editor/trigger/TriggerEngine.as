@@ -21,6 +21,10 @@ extend.field.
 
 package editor.trigger {
    
+   import flash.display.DisplayObject;
+   
+   import mx.managers.PopUpManager;
+   
    import common.trigger.CoreFunctionIds;
    import common.trigger.CoreEventIds;
    import common.trigger.CoreFunctionDeclarations;
@@ -28,19 +32,22 @@ package editor.trigger {
    
    import common.trigger.ValueTypeDefine;
    
+   import editor.dialog.VariablesEditDialog;
+   
    public class TriggerEngine
    {
       // register variables
-      public static var mRegisterVariableSpace_Boolean          :VariableSpaceRegister;
-      public static var mRegisterVariableSpace_String           :VariableSpaceRegister;
-      public static var mRegisterVariableSpace_Number           :VariableSpaceRegister;
-      public static var mRegisterVariableSpace_Entity           :VariableSpaceRegister;
-      public static var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
+      private var mRegisterVariableSpace_Boolean          :VariableSpaceRegister;
+      private var mRegisterVariableSpace_String           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_Number           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_Entity           :VariableSpaceRegister;
+      private var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
       
       // custom global variables
-      public static var mCustomGlobalVariables:VariableSpaceGlobal;
+      private var mGlobalVariableSpace:VariableSpaceGlobal;
       
       // custom entity properties
+      private var mEntityVariableSpace:VariableSpaceEntity;
       
       // custom functions
       
@@ -52,6 +59,29 @@ package editor.trigger {
       {
          InitStaticData ();
          
+         // register variable spaces
+         
+         mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Boolean);
+         mRegisterVariableSpace_String            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_String);
+         mRegisterVariableSpace_Number            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Number);
+         mRegisterVariableSpace_Entity            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Entity);
+         mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_CollisionCategory);
+         
+         // custom global variable space
+         
+         mGlobalVariableSpace = new VariableSpaceGlobal (this);
+         
+         // custom entity property space
+         
+         mEntityVariableSpace = new VariableSpaceEntity (this);
+         
+         // ...
+         
+         HideGlobalVariablesEditDialog ();
+         mGlobalVariablesEditDialog = null;
+         
+         HideEntityVariablesEditDialog ();
+         mEntityVariablesEditDialog = null;
       }
       
       private static var mStaticDataInited:Boolean = false;
@@ -68,39 +98,8 @@ package editor.trigger {
          PlayerFunctionDefinesForEditing.Initialize ();
          PlayerEventDefinesForEditing.Initialize ();
          
-         // register spaces
-         
-         mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (ValueTypeDefine.ValueType_Boolean);
-         mRegisterVariableSpace_String            = new VariableSpaceRegister (ValueTypeDefine.ValueType_String);
-         mRegisterVariableSpace_Number            = new VariableSpaceRegister (ValueTypeDefine.ValueType_Number);
-         mRegisterVariableSpace_Entity            = new VariableSpaceRegister (ValueTypeDefine.ValueType_Entity);
-         mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (ValueTypeDefine.ValueType_CollisionCategory);
-         
          // ...
          mStaticDataInited = true;
-      }
-      
-   //========================================================================================================
-   //
-   //========================================================================================================
-      
-      public static function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
-      {
-         switch (valueType)
-         {
-            case ValueTypeDefine.ValueType_Boolean:
-               return mRegisterVariableSpace_Boolean;
-            case ValueTypeDefine.ValueType_String:
-               return mRegisterVariableSpace_String;
-            case ValueTypeDefine.ValueType_Number:
-               return mRegisterVariableSpace_Number;
-            case ValueTypeDefine.ValueType_Entity:
-               return mRegisterVariableSpace_Entity;
-            case ValueTypeDefine.ValueType_CollisionCategory:
-               return mRegisterVariableSpace_CollisionCategory;
-            default:
-               return null;
-         }
       }
       
       public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler
@@ -141,6 +140,119 @@ package editor.trigger {
       public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration_Core
       {
          return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_EntityPairFilter);
+      }
+      
+   //========================================================================================================
+   // registers
+   //========================================================================================================
+      
+      public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
+      {
+         switch (valueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               return mRegisterVariableSpace_Boolean;
+            case ValueTypeDefine.ValueType_String:
+               return mRegisterVariableSpace_String;
+            case ValueTypeDefine.ValueType_Number:
+               return mRegisterVariableSpace_Number;
+            case ValueTypeDefine.ValueType_Entity:
+               return mRegisterVariableSpace_Entity;
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               return mRegisterVariableSpace_CollisionCategory;
+            default:
+               return null;
+         }
+      }
+      
+      public function GetGlobalVariableSpace ():VariableSpaceGlobal
+      {
+         return mGlobalVariableSpace;
+      }
+      
+      public function GetEntityVariableSpace ():VariableSpaceEntity
+      {
+         return mEntityVariableSpace;
+      }
+      
+   //========================================================================================================
+   // variable edit dialogs
+   //========================================================================================================
+      
+      private static var mGlobalVariablesEditDialog:VariablesEditDialog = null;
+      private static var mGlobalVariablesEditDialogVisible:Boolean = false;
+      
+      public function ShowGlobalVariablesEditDialog (parent:DisplayObject):void
+      {
+         var toCreate:Boolean = (mGlobalVariablesEditDialog == null);
+         if (toCreate)
+         {
+            mGlobalVariablesEditDialog = new VariablesEditDialog ();
+            mGlobalVariablesEditDialog.SetTitle ("Global Variables Editing");
+            mGlobalVariablesEditDialog.SetCloseFunc (HideGlobalVariablesEditDialog);
+            mGlobalVariablesEditDialog.SetVariableSpace (mGlobalVariableSpace);
+         }
+         
+         if (! mGlobalVariablesEditDialogVisible)
+         {
+            PopUpManager.addPopUp (mGlobalVariablesEditDialog, parent, false);
+            mGlobalVariablesEditDialogVisible = true;
+         }
+         
+         if (toCreate)
+         {
+            PopUpManager.centerPopUp (mGlobalVariablesEditDialog);
+         }
+         
+         PopUpManager.bringToFront (mGlobalVariablesEditDialog);
+      }
+      
+      public function HideGlobalVariablesEditDialog ():void
+      {
+         if (mGlobalVariablesEditDialog != null && mGlobalVariablesEditDialogVisible)
+         {
+            PopUpManager.removePopUp (mGlobalVariablesEditDialog);
+         }
+         
+         mGlobalVariablesEditDialogVisible = false;
+      }
+      
+      private static var mEntityVariablesEditDialog:VariablesEditDialog = null;
+      private static var mEntityVariablesEditDialogVisible:Boolean = false;
+      
+      public function ShowEntityVariablesEditDialog (parent:DisplayObject):void
+      {
+         var toCreate:Boolean = (mEntityVariablesEditDialog == null);
+         if (toCreate)
+         {
+            mEntityVariablesEditDialog = new VariablesEditDialog ();
+            mEntityVariablesEditDialog.SetTitle ("Custom Entity Properties Editing");
+            mEntityVariablesEditDialog.SetCloseFunc (HideEntityVariablesEditDialog);
+            mEntityVariablesEditDialog.SetVariableSpace (mEntityVariableSpace);
+         }
+         
+         if (! mEntityVariablesEditDialogVisible)
+         {
+            PopUpManager.addPopUp (mEntityVariablesEditDialog, parent, false);
+            mEntityVariablesEditDialogVisible = true;
+         }
+         
+         if (toCreate)
+         {
+            PopUpManager.centerPopUp (mEntityVariablesEditDialog);
+         }
+         
+         PopUpManager.bringToFront (mEntityVariablesEditDialog);
+      }
+      
+      public function HideEntityVariablesEditDialog ():void
+      {
+         if (mEntityVariablesEditDialog != null && mEntityVariablesEditDialogVisible)
+         {
+            PopUpManager.removePopUp (mEntityVariablesEditDialog);
+         }
+         
+         mEntityVariablesEditDialogVisible = false;
       }
    }
 }

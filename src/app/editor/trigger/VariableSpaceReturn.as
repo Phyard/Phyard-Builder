@@ -9,8 +9,9 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      public function VariableSpaceReturn ()
+      public function VariableSpaceReturn (triggerEngine:TriggerEngine)
       {
+         super(triggerEngine);
       }
       
       override public function GetSpaceType ():int

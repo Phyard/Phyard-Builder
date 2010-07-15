@@ -55,7 +55,7 @@
                <mx:Button id="Button_MouseScale" toolTip="Scale Selected(s)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-scale.png')" selectedDownIcon="@Embed('res/command/command-scale-sel.png')" selectedOverIcon="@Embed('res/command/command-scale-sel.png')" selectedUpIcon="@Embed('res/command/command-scale-sel.png')" />
                <mx:Spacer width="10"/>
                <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('res/command/command-cookie-mode-sel.png')" />
-               <mx:Spacer width="56"/>
+               <mx:Spacer width="10"/>
                <mx:Button id="Button_Undo" toolTip="Undo" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-undo.png')" disabledIcon="@Embed('res/command/command-undo-disabled.png')" />
                <mx:Button id="Button_Redo" toolTip="Redo" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-redo.png')" disabledIcon="@Embed('res/command/command-redo-disabled.png')" />
             </mx:HBox>
@@ -85,9 +85,15 @@
             -->
             <mx:Spacer width="100%"/>
          </mx:HBox>
+         <mx:HBox id="Box_FunctionEditViewCommands" backgroundColor="0xD0D0D0" verticalAlign="middle" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+            <mx:Spacer width="100%"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
       </mx:ViewStack>
       <mx:HBox id="Box_SwitchViewCommands" backgroundColor="0xA0A0A0" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
-         <mx:Button id="Button_ToggleCCatEditView" toggle="true" toolTip="Edit Collision Categories" click="OnToggleCCatEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/file/design-edit-ccats.png')" downIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedUpIcon="@Embed('res/file/design-edit-entities.png')" selectedDisabledIcon="@Embed('res/file/design-edit-entities-disabled.png')" selectedOverIcon="@Embed('res/file/design-edit-entities.png')" selectedDownIcon="@Embed('res/file/design-edit-entities-sel.png')" />
+         <mx:Button id="Button_ShowEntityEditView" toggle="true" selected="true" toolTip="Edit Entities" click="OnShowEntityEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-entities.png')" downIcon="@Embed('res/file/design-edit-entities-sel.png')" overIcon="@Embed('res/file/design-edit-entities.png')" selectedUpIcon="@Embed('res/file/design-edit-entities-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-entities-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-entities.png')"   />
+         <mx:Button id="Button_ShowCCatEditView" toggle="true" selected="false" toolTip="Edit Collision Categories" click="OnShowCCatEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-ccats.png')" downIcon="@Embed('res/file/design-edit-ccats-sel.png')" overIcon="@Embed('res/file/design-edit-ccats.png')" selectedUpIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-ccats.png')"   />
+         <mx:Button id="Button_ShowFunctionEditView" toggle="true" selected="false" toolTip="Edit Functions" click="OnShowFunctionEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-functions.png')" downIcon="@Embed('res/file/design-edit-functions-sel.png')" overIcon="@Embed('res/file/design-edit-functions.png')" selectedUpIcon="@Embed('res/file/design-edit-functions-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-functions-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-functions.png')"   />
          <mx:Spacer width="2"/>
       </mx:HBox>
 
@@ -441,6 +447,23 @@
                   <mx:Spacer width="100%"/>
                   <mx:HBox height="600" width="600">
                      <editor:CollisionManagerView id="CollisionManagerView" height="600" width="600"/>
+                  </mx:HBox>
+                  <mx:Spacer width="100%"/>
+               </mx:HBox>
+               <mx:Spacer height="100%"/>
+            </mx:VBox>
+         </mx:HBox>
+         <mx:HBox id="FunctionDesignView" backgroundColor="0xE0E0E0" borderStyle="solid" height="100%" width="100%"
+                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                  horizontalGap="0" verticalGap="0" borderThickness="0"
+                  >
+            <mx:VBox width="100%" height="100%">
+               <mx:Spacer height="100%"/>
+               <mx:HBox width="100%">
+                  <mx:Spacer width="100%"/>
+                  <mx:HBox height="600" width="600">
+                     <editor:FunctionEditingView id="FunctionEditingView" height="600" width="600"/>
                   </mx:HBox>
                   <mx:Spacer width="100%"/>
                </mx:HBox>
@@ -1134,25 +1157,46 @@
 // 
 //========================================================================================
             
-            private function OnToggleCCatEditView ():void
+            private function OnShowEntityEditView ():void
             {
-               if (Button_ToggleCCatEditView.selected)
+               Button_ShowEntityEditView.selected = true;
+               Button_ShowCCatEditView.selected = false;
+               Button_ShowFunctionEditView.selected = false;
+               
+               if (ViewStack_EditView.selectedChild == CCatDesignView)
                {
-                  ViewStack_EditView.selectedChild = CCatDesignView;
-                  ViewStack_ViewEditCommands.selectedChild = Box_CCatEditViewCommands;
-                  
-                  Runtime.SetActiveView (CollisionManagerView);
-                  CollisionManagerView.SetCollisionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetCollisionManager ());
-               }
-               else
-               {
-                  ViewStack_EditView.selectedChild = EntityDesignView;
-                  
-                  Runtime.SetActiveView (MainView);
-                  ViewStack_ViewEditCommands.selectedChild = Box_EntityEditViewCommands;
-                  
                   MainView.OnFinishedCCatEditing ();
                }
+               
+               ViewStack_EditView.selectedChild = EntityDesignView;
+               
+               Runtime.SetActiveView (MainView);
+               ViewStack_ViewEditCommands.selectedChild = Box_EntityEditViewCommands;
+            }
+            
+            private function OnShowCCatEditView ():void
+            {
+               Button_ShowEntityEditView.selected = false;
+               Button_ShowCCatEditView.selected = true;
+               Button_ShowFunctionEditView.selected = false;
+               
+               ViewStack_EditView.selectedChild = CCatDesignView;
+               ViewStack_ViewEditCommands.selectedChild = Box_CCatEditViewCommands;
+               
+               Runtime.SetActiveView (CollisionManagerView);
+               CollisionManagerView.SetCollisionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetCollisionManager ());
+            }
+            
+            private function OnShowFunctionEditView ():void
+            {
+               Button_ShowEntityEditView.selected = false;
+               Button_ShowCCatEditView.selected = false;
+               Button_ShowFunctionEditView.selected = true;
+               
+               ViewStack_EditView.selectedChild = FunctionDesignView;
+               
+               Runtime.SetActiveView (FunctionEditingView);
+               ViewStack_ViewEditCommands.selectedChild = Box_FunctionEditViewCommands;
             }
             
 //========================================================================================

@@ -14,8 +14,10 @@ package editor.trigger {
       
       private var mValueType:int;
       
-      public function VariableSpaceRegister (valueType:int)
+      public function VariableSpaceRegister (triggerEngine:TriggerEngine, valueType:int)
       {
+         super (triggerEngine);
+         
          mValueType = valueType;
          
          var init_value:Object = VariableDefinition.GetDefaultInitialValueByType (mValueType);

@@ -9,7 +9,5 @@ package common.trigger {
       public static const FunctionType_Custom:int = 1;
       public static const FunctionType_EventHandler:int = 2;
       
-      
-      
    }
 }

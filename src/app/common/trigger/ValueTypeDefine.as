@@ -4,6 +4,30 @@ package common.trigger {
    
    public class ValueTypeDefine
    {
+      public static function GetTypeName (valueType:int):String
+      {
+         switch (valueType)
+         {
+            case ValueType_Boolean:
+               return "Boolean";
+            case ValueType_Number:
+               return "Number";
+            case ValueType_String:
+               return "String";
+            case ValueType_CollisionCategory:
+               return "CCat";
+            case ValueType_Entity:
+               return "Entity";
+            case ValueType_Void:
+            default:
+               return "Void";
+         }
+      }
+      
+//=============================================================================
+// 
+//=============================================================================
+      
       public static const NumberTypeMask_Basic:int = 0xFFFF;
       
       public static const NumberTypeMask_Detail:int = 0x000F0000;

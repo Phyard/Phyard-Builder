@@ -27,6 +27,8 @@ package player.design
       public static var mRegisterVariableSpace_Entity :VariableSpace;
       public static var mRegisterVariableSpace_CollisionCategory:VariableSpace;
       
+      public static var mGlobalVariableSpace:VariableSpace;
+      
       public static var mRandomNumberGenerators:Array;
       
 //==============================================================================

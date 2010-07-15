@@ -249,7 +249,7 @@ package common {
          for (i = 0; i < num_outputs; ++ i)
             value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
          
-         var func_calling:FunctionCalling = new FunctionCalling (func_declaration);
+         var func_calling:FunctionCalling = new FunctionCalling (editorWorld.GetTriggerEngine (), func_declaration);
          func_calling.AssignInputValueSources (value_sources);
          func_calling.AssignOutputValueTargets (value_targets);
          
@@ -329,7 +329,7 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  var variable_space:VariableSpace = TriggerEngine.GetRegisterVariableSpace (valueType);
+                  var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
                      variable_instance = variable_space.GetVariableInstanceAt (variable_index);
@@ -383,7 +383,7 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
-                  var variable_space:VariableSpace = TriggerEngine.GetRegisterVariableSpace (valueType);
+                  var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
                      variable_instance = variable_space.GetVariableInstanceAt (variable_index);

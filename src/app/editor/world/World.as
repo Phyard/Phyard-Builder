@@ -70,7 +70,7 @@ package editor.world {
       
       public var mSelectionEngineForVertexes:SelectionEngine; // used within package
       
-      public var mTiggerEngine:TriggerEngine;
+      public var mTriggerEngine:TriggerEngine;
       
       // temp the 2 is not used
       // somewhere need to be modified to use the 2 
@@ -87,7 +87,7 @@ package editor.world {
          //mSelectionEngineForVertexes = new SelectionEngine ();
          mSelectionEngineForVertexes = mSelectionEngine;
          
-         mTiggerEngine = new TriggerEngine ();
+         mTriggerEngine = new TriggerEngine ();
       }
       
       override public function Destroy ():void
@@ -1414,6 +1414,15 @@ package editor.world {
                entity.DrawEntityLinks (canvasSprite, forceDraw);
             }
          }
+      }
+      
+//=================================================================================
+//   trigger system
+//=================================================================================
+      
+      public function GetTriggerEngine ():TriggerEngine
+      {
+         return mTriggerEngine;
       }
       
 //=================================================================================

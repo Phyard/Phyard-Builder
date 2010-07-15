@@ -23,6 +23,8 @@ package editor.trigger {
       public static const sWorldPackage:FunctionPackage = new FunctionPackage ("World");
       public static const sEntityPackage:FunctionPackage = new FunctionPackage ("Entity");
       
+      public static const sCustomPackage:FunctionPackage = new FunctionPackage ("Custom");
+      
       public static var sMenuBarDataProvider_Shorter:XML = null;
       public static var sMenuBarDataProvider_Longer:XML = null;
       
@@ -2082,8 +2084,8 @@ package editor.trigger {
          
       // ...
          
-         sMenuBarDataProvider_Shorter = CreateXmlFromPackages ([sGlobalPackage, sWorldPackage, sEntityPackage])
-         sMenuBarDataProvider_Longer = CreateXmlFromPackages ([sGlobalPackage, number_package, sWorldPackage, sEntityPackage, entity_shape_package])
+         sMenuBarDataProvider_Shorter = CreateXmlFromPackages ([sGlobalPackage, sWorldPackage, sEntityPackage, sCustomPackage])
+         sMenuBarDataProvider_Longer = CreateXmlFromPackages ([sGlobalPackage, number_package, sWorldPackage, sEntityPackage, entity_shape_package, sCustomPackage])
      }
       
 //===========================================================

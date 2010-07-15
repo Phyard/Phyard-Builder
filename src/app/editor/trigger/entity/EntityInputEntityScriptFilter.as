@@ -34,7 +34,7 @@ package editor.trigger.entity {
       {
          super (world);
          
-         mCodeSnippet = new CodeSnippet (new FunctionDefinition (TriggerEngine.GetEntityFilterFunctionDeclaration ()));
+         mCodeSnippet = new CodeSnippet (new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEntityFilterFunctionDeclaration ()));
          mIconBitmap = new Resource.IconInputEntityScriptFilter ();
          mBackgroundColor = 0xFFC000;
       }

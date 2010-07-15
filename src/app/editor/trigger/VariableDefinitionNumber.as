@@ -49,6 +49,16 @@ package editor.trigger {
          }
       }
       
+      override public function SetDefaultValue (valueObject:Object):void
+      {
+         mDefaultValue = Number (valueObject);
+      }
+      
+      public function GetDefaultValue ():Number
+      {
+         return mDefaultValue;
+      }
+      
       protected function ValidateValue (value:Number):Number
       {
          if (isNaN (value))
@@ -124,7 +134,7 @@ package editor.trigger {
          }
       }
       
-      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent):ValueSource
+      override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
       {
          var value:Number = mDefaultValue;
          
@@ -159,7 +169,7 @@ package editor.trigger {
                   }
                   else
                   {
-                     var vi:VariableInstance = TriggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
+                     var vi:VariableInstance = triggerEngine.GetRegisterVariableSpace (ValueTypeDefine.ValueType_Number).GetVariableInstanceAt (value);
                      return new ValueSource_Variable (vi);
                   }
                }

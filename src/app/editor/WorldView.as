@@ -457,16 +457,6 @@ package editor {
                   UpdateBackgroundAndWorldPosition ();
                }
                
-               mEntityLinksLayer.scaleX = mEditorWorld.scaleX;
-               mEntityLinksLayer.scaleY = mEditorWorld.scaleY;
-               mEntityLinksLayer.x = mEditorWorld.x;
-               mEntityLinksLayer.y = mEditorWorld.y;
-               
-               mEntityIdsLayer.scaleX = mEditorWorld.scaleX;
-               mEntityIdsLayer.scaleY = mEditorWorld.scaleY;
-               mEntityIdsLayer.x = mEditorWorld.x;
-               mEntityIdsLayer.y = mEditorWorld.y;
-               
                mEditorWorld.Update (mStepTimeSpan.GetLastSpan ());
                
                RepaintEntityLinks ();
@@ -754,6 +744,15 @@ package editor {
             
             UpdateSelectedEntityInfo ();
          }
+         
+         if (mEntityLinksLayer.scaleX != mEditorWorld.scaleX)
+            mEntityLinksLayer.scaleX = mEditorWorld.scaleX;
+         if (mEntityLinksLayer.scaleY != mEditorWorld.scaleY)
+            mEntityLinksLayer.scaleY = mEditorWorld.scaleY;
+         if (mEntityLinksLayer.x != mEditorWorld.x)
+            mEntityLinksLayer.x = mEditorWorld.x;
+         if (mEntityLinksLayer.y != mEditorWorld.y)
+            mEntityLinksLayer.y = mEditorWorld.y;
       }
       
       private var mEntityIdsModified:Boolean = false;
@@ -777,8 +776,17 @@ package editor {
                return;
             
             mEditorWorld.DrawEntityIds (mEntityIdsLayer);
-        }
-      }
+         }
+         
+         if (mEntityIdsLayer.scaleX != mEditorWorld.scaleX)
+            mEntityIdsLayer.scaleX = mEditorWorld.scaleX;
+         if (mEntityIdsLayer.scaleY != mEditorWorld.scaleY)
+            mEntityIdsLayer.scaleY = mEditorWorld.scaleY;
+         if (mEntityIdsLayer.x != mEditorWorld.x)
+            mEntityIdsLayer.x = mEditorWorld.x;
+         if (mEntityIdsLayer.y != mEditorWorld.y)
+            mEntityIdsLayer.y = mEditorWorld.y;
+     }
       
       public function RepaintWorldDebugInfo ():void
       {

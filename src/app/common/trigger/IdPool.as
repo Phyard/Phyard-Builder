@@ -79,6 +79,22 @@ package common.trigger {
       public static const CoreApiId_20:int = 20; //
       public static const CoreApiId_21:int = 21; //
       public static const CoreApiId_22:int = 22; //
+      public static const CoreApiId_23:int = 23; //
+      
+      public static const CoreApiId_30:int = 30; //
+      public static const CoreApiId_31:int = 31; //
+      public static const CoreApiId_32:int = 32; //
+      public static const CoreApiId_33:int = 33; //
+      public static const CoreApiId_34:int = 34; //
+      public static const CoreApiId_35:int = 35; //
+      public static const CoreApiId_36:int = 36; //
+      public static const CoreApiId_37:int = 37; //
+      public static const CoreApiId_38:int = 38; //
+      public static const CoreApiId_39:int = 39; //
+      public static const CoreApiId_40:int = 40; //
+      public static const CoreApiId_41:int = 41; //
+      
+      public static const CoreApiId_59:int = 59; // end of block callings
       
       public static const CoreApiId_70:int = 70; //
       public static const CoreApiId_71:int = 71; //

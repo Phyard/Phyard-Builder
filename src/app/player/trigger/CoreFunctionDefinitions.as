@@ -58,6 +58,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Return,                           ReturnVoid);
          RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfTrue,                     ReturnIfTrue);
          RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfFalse,                    ReturnIfFalse);
+         RegisterCoreFunction (CoreFunctionIds.ID_Break,                            BreakVoid);
          
       // system / time
          
@@ -421,6 +422,11 @@ package player.trigger {
          var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
          
          valueTarget.AssignValueObject (! value);
+      }
+      
+      public static function BreakVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         // do nothing, shouldn't run into here
       }
       
    //*******************************************************************

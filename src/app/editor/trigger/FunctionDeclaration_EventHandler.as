@@ -10,9 +10,12 @@ package editor.trigger {
    public class FunctionDeclaration_EventHandler extends FunctionDeclaration
    {
       
-      public function FunctionDeclaration_EventHandler (id:int, name:String, poemCallingFormat:String, traditionalCallingFormat:String, paramDefines:Array = null, description:String = null):void
+      public function FunctionDeclaration_EventHandler (id:int, name:String, description:String = null, 
+                                                      poemCallingFormat:String = null, traditionalCallingFormat:String = null, 
+                                                      paramDefines:Array = null, 
+                                                      showUpInApiMenu:Boolean = true)
       {
-         super (id, name, poemCallingFormat, traditionalCallingFormat, paramDefines, description);
+         super (id, name, description, poemCallingFormat, traditionalCallingFormat, paramDefines, null, showUpInApiMenu);
          
          if ( ! CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id) ) )
             throw new Error ("not consistent! event id = " + id);

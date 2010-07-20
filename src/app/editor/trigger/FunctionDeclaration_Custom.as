@@ -4,9 +4,12 @@ package editor.trigger {
    
    public class FunctionDeclaration_Custom extends FunctionDeclaration
    {
-      public function FunctionDeclaration_Custom (id:int, name:String, poemCallingFormat:String, traditionalCallingFormat:String, inputDefinitions:Array = null, returnDefinitions:Array = null, description:String = null) //ValueTypeDefine.ValueType_Void)
+      public function FunctionDeclaration_Custom (id:int, name:String, description:String = null, 
+                                                poemCallingFormat:String = null, traditionalCallingFormat:String = null, 
+                                                inputDefinitions:Array = null, returnDefinitions:Array = null, 
+                                                showUpInApiMenu:Boolean = true)
       {
-         super (id, name, poemCallingFormat, traditionalCallingFormat, inputDefinitions, description, returnValueType);
+         super (id, name, description, poemCallingFormat, traditionalCallingFormat, inputDefinitions, null, showUpInApiMenu);
       }
       
       override public function GetType ():int 

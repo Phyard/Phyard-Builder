@@ -11,6 +11,29 @@ package common.trigger {
             ;
       }
       
+      public static function IsBlockStartCalling (id:int):Boolean
+      {
+         return  id == ID_StartIf
+              //|| id == ID_StartSwitch
+              || id == ID_StartWhile
+              //|| id == ID_StartDoWhile
+            ;
+      }
+      
+      public static function IsBlockEndCalling (id:int):Boolean
+      {
+         return  id == ID_EndIf
+              //|| id == ID_EndSwitch
+              || id == ID_EndWhile
+              //|| id == ID_EndDoWhile
+            ;
+      }
+      
+      public static function IsBlockCalling (id:int):Boolean
+      {
+         return  id >= MinId_BlockCalling && id <= MaxId_BlockCalling;
+            ;
+      }
       
    // the id < 8196 will be reserved for officeial core apis
       
@@ -29,6 +52,24 @@ package common.trigger {
       public static const ID_Return:int                       = IdPool.CoreApiId_20; //
       public static const ID_ReturnIfTrue:int                 = IdPool.CoreApiId_21; //
       public static const ID_ReturnIfFalse:int                = IdPool.CoreApiId_22; //
+      public static const ID_Break:int                        = IdPool.CoreApiId_23; //
+      
+      public static const MinId_BlockCalling:int = IdPool.CoreApiId_30; // .......
+      
+      public static const ID_StartIf:int                      = IdPool.CoreApiId_30; //
+      //public static const ID_ElseIf:int                     = IdPool.CoreApiId_31; //
+      //public static const ID_Else:int                       = IdPool.CoreApiId_32; //
+      public static const ID_EndIf:int                        = IdPool.CoreApiId_33; //
+      public static const ID_StartSwitch:int                      = IdPool.CoreApiId_34; //
+      //public static const ID_SwitchCase:int                     = IdPool.CoreApiId_35; //
+      //public static const ID_SwitchDefault:int                  = IdPool.CoreApiId_36; //
+      public static const ID_EndSwitch:int                        = IdPool.CoreApiId_37; //
+      public static const ID_StartWhile:int                   = IdPool.CoreApiId_38; //
+      public static const ID_EndWhile:int                     = IdPool.CoreApiId_39; //
+      //public static const ID_StartDoWhile:int                   = IdPool.CoreApiId_40; //
+      //public static const ID_EndDoWhile:int                     = IdPool.CoreApiId_41; //
+      
+      public static const MaxId_BlockCalling:int = IdPool.CoreApiId_59; // ......
       
    // system
       

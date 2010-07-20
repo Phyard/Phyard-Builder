@@ -3,7 +3,7 @@
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
 
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ed="editor.controls.*" 
       borderStyle="solid" borderThickness="0"
       width="100%" height="100%"
       creationComplete="OnInitPanel()"
@@ -34,7 +34,13 @@
          </mx:HBox>
       </mx:HBox>
       <mx:HBox id="Box_Commands" height="216" width="100%">
-         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="true" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()" />
+         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" paddingTop="0" paddingBottom="0" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="true" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()">
+            <mx:itemRenderer>
+               <mx:Component>
+                  <ed:FunctionCallingLine fontSize="10"/>
+               </mx:Component>
+            </mx:itemRenderer>
+         </mx:List>
       </mx:HBox>
       <mx:HBox height="166" width="100%">
          <mx:ViewStack borderStyle="solid" width="100%" height="100%">
@@ -68,12 +74,15 @@
          import mx.core.Container;
          
          import common.Define;
+         import common.trigger.CoreFunctionIds;
          import common.trigger.ValueTypeDefine;
          import common.trigger.ValueSpaceTypeDefine;
          import common.trigger.ValueSourceTypeDefine;
          
          import com.tapirgames.util.DisplayObjectUtil;
          import com.tapirgames.util.TextUtil;
+         
+         import editor.controls.FunctionCallingLine;
          
          import editor.runtime.Runtime;
          
@@ -124,10 +133,14 @@
             Button_MenuBarSwitch.selected = Runtime.mLongerCodeEditorMenuBar;
             OnSwitchMenuBar ();
             
-            mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Calling(s)", OnCopySelectedCallings);
+            mCopySelectedMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy Selected Calling(s)", OnCopySelectedCallings, false);
             mCopyAllMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Copy All Callings", OnCopyAllCallings);
             mPasteBeforeMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Paste Callings Before The Selected", OnPasteCallingsBefore);
             mPasteAfterMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "", OnPasteCallingsAfter);
+            
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"If\" Block", OnAddIfBlock, true);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"While\" Block", OnAddWhileBlock);
+            
             mTraditionalFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Traditional Coding Format", OnSwitchToTraditionalFormat, true);
             mObjectOrientedFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "OO Coding Format (not implemented yet)", OnSwitchToObjectOrientedFormat);
             mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format", OnSwitchToPoemFormat);
@@ -338,7 +351,13 @@
                   currentReturnTargets.push (value_target.CloneTarget ());
                }
                
-               List_Commands.dataProvider.addItemAt ({mName:codeLine, mID:func_id, mDataTip: codeLine,
+               var isBlockStart:Boolean = CoreFunctionIds.IsBlockStartCalling (func_id);
+               var isBlockEnd  :Boolean = CoreFunctionIds.IsBlockEndCalling (func_id);
+               var isBlock     :Boolean = CoreFunctionIds.IsBlockCalling (func_id);
+               
+               List_Commands.dataProvider.addItemAt ({mName:codeLine, mID:func_id, mDataTip: codeLine, 
+                                                      mIsBlockStart:isBlockStart, mIsBlockEnd:isBlockEnd, mIsBlock:isBlock, 
+                                                      mIndentLevel:0, // temp value
                                                       mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources,
                                                       mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
                                                       },
@@ -353,11 +372,37 @@
             
             if (codeSnippet.GetNumFunctionCallings () > 0)
             {
+               UpdateCallingIndents ();
                List_Commands.validateNow ();
                OnCurrentCommandChanged ();
             }
             
             UpdateInterface ();
+         }
+         
+         private function UpdateCallingIndents ():void
+         {
+            var indentLevel:int = 0;
+            
+            var numCallings:int = List_Commands.dataProvider.length;
+            for (var i:int = 0; i < numCallings; ++ i)
+            {
+               var data:Object = List_Commands.dataProvider.getItemAt (i);
+               var isBlockStart:Boolean = data.mIsBlockStart;
+               var isBlockEnd  :Boolean = data.mIsBlockEnd;
+               var isBlock     :Boolean = data.mIsBlock;
+               if (isBlockEnd)
+                  -- indentLevel;
+               
+               if (data.mIndentLevel != indentLevel)
+               {
+                  data.mIndentLevel = indentLevel;
+                  List_Commands.dataProvider.itemUpdated (data);
+               }
+               
+               if (isBlockStart)
+                  ++ indentLevel;
+            }
          }
          
          public function GetFunctionCallings (callingIds:Array = null, clearContextMenus:Boolean = false):Array
@@ -407,7 +452,23 @@
             return func_calling_list;
          }
          
-         private function OnNewCalling (id:int):void
+         private function OnAddIfBlock (event:ContextMenuEvent):void
+         {
+            var label:Label;
+            
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (CoreFunctionIds.ID_EndIf, insertAt, false);
+            OnNewCalling (CoreFunctionIds.ID_StartIf, insertAt, true);
+         }
+         
+         private function OnAddWhileBlock (event:ContextMenuEvent):void
+         {
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (CoreFunctionIds.ID_EndWhile, insertAt, false);
+            OnNewCalling (CoreFunctionIds.ID_StartWhile, insertAt, true);
+         }
+         
+         private function OnNewCalling (id:int, insertAt:int = -1, updateUI:Boolean = true):void
          {
             if (isNaN (id) || id < 0)
                return;
@@ -447,9 +508,45 @@
                currentReturnTargets.push (value_target.CloneTarget ());
             }
             
-            var insert_index:int = List_Commands.selectedIndex + 1;
+            var insert_index:int;
+            if (insertAt < 0)
+            {
+               insert_index = List_Commands.selectedIndex + 1;
+            }
+            else
+            {
+               insert_index = insertAt;
+               if (insert_index < 0)
+                  insert_index = 0;
+               else if (insert_index >= List_Commands.dataProvider.length)
+                  insert_index = List_Commands.dataProvider.length;
+            }
+            
+            var isBlockStart:Boolean = CoreFunctionIds.IsBlockStartCalling (id);
+            var isBlockEnd  :Boolean = CoreFunctionIds.IsBlockEndCalling (id);
+            var isBlock     :Boolean = CoreFunctionIds.IsBlockCalling (id);
+            
+            var indentLevel:int;
+            if (insert_index <= 0 || insert_index > List_Commands.dataProvider.length)
+            {
+               indentLevel = 0;
+            }
+            else
+            {
+               var aboveCallingData:Object = List_Commands.dataProvider.getItemAt (insert_index - 1);
+               if (aboveCallingData.mIsBlockEnd || (! aboveCallingData.mIsBlock))
+               {
+                  indentLevel = aboveCallingData.mIndentLevel;
+               }
+               else
+               {
+                  indentLevel = aboveCallingData.mIndentLevel + 1;
+               }
+            }
             
             List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
+                                                   mIsBlockStart:isBlockStart, mIsBlockEnd:isBlockEnd, mIsBlock:isBlock, 
+                                                   mIndentLevel:indentLevel, 
                                                    mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, 
                                                    mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
                                                    }, 
@@ -457,10 +554,15 @@
             
             List_Commands.selectedIndex = insert_index;
             
-            OnCurrentCommandChanged ();
-            
-            List_Commands.validateNow ();
-            UpdateInterface ();
+            if (updateUI)
+            {
+               OnCurrentCommandChanged ();
+               
+               //UpdateCallingIndents ();
+               List_Commands.validateNow ();
+               
+               UpdateInterface ();
+            }
          }
          
          private function OnDeleteCalling ():void
@@ -502,7 +604,9 @@
             {
                OnCurrentCommandChanged ();
                
+               UpdateCallingIndents ();
                List_Commands.validateNow ();
+               
                UpdateInterface ();
             }
          }
@@ -518,6 +622,7 @@
                
                List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index - 1);
                
+               UpdateCallingIndents ();
                UpdateInterface ();
             }
          }
@@ -533,6 +638,7 @@
                
                List_Commands.selectedItem = List_Commands.dataProvider.getItemAt (index + 1);
                
+               UpdateCallingIndents ();
                UpdateInterface ();
             }
          }

@@ -86,6 +86,30 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Break,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_StartIf,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EndIf,
+                     null,
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_StartWhile,
+                     [
+                        ValueTypeDefine.ValueType_Boolean, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EndWhile,
+                     null,
+                     null
+                  );
          
       // system / time
          

@@ -85,7 +85,7 @@ package editor.trigger {
          
          if (Compile::Is_Debugging)
          {
-            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, basic_package, "ForDevDebug", "@(&0, &1, &2, &3, &4) = ForDevDebug ($0, $1, $2, $3, $4)", null,
+            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, sGlobalPackage, "ForDevDebug", "@(&0, &1, &2, &3, &4) = ForDevDebug ($0, $1, $2, $3, $4)", null,
                           [
                              new VariableDefinitionEntity ("Shape"), 
                              new VariableDefinitionNumber ("Gravity Angle"), 
@@ -151,6 +151,34 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Bool Value"), 
                      ],
                      null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Break, basic_package, "Break", "Break", "Break",
+                     null,
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_StartIf, basic_package, "If", "@If ($0 is true)", "@If ($0 is true)",
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"), 
+                     ],
+                     null,
+                     false
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EndIf, basic_package, "End If", "@End If", "@End If",
+                     null,
+                     null,
+                     false
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_StartWhile, basic_package, "While", "@While ($0 is true)", "@While ($0 is true)",
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"), 
+                     ],
+                     null,
+                     false
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EndWhile, basic_package, "End While", "@End While", "@End While",
+                     null,
+                     null,
+                     false
                   );
          
       // system / time
@@ -1044,14 +1072,14 @@ package editor.trigger {
          
       // game / world
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_physics_package, "Set Gravity Acceleration by Radians", "@&0 = SetGravityAcceleration (Radians($0))", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_physics_package, "Set Gravity Acceleration by Radians", "@SetGravityAcceleration ($0, Radians($1))", null,
                      [
                              new VariableDefinitionNumber ("Magnitude"), 
                              new VariableDefinitionNumber ("Angle Radians"), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees, world_physics_package, "Set Gravity Acceleration by Degrees", "@&0 = SetGravityAcceleration (Degrees($0))", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees, world_physics_package, "Set Gravity Acceleration by Degrees", "@SetGravityAcceleration ($0, Degrees($1))", null,
                      [
                              new VariableDefinitionNumber ("Magnitude"), 
                              new VariableDefinitionNumber ("Angle Degrees"), 
@@ -2092,12 +2120,12 @@ package editor.trigger {
 // util functions
 //===========================================================
       
-      private static function RegisterFunctionDeclaration (function_id:int, functionPackage:FunctionPackage, function_name:String, poemCallingFormat:String, traditionalCallingFormat:String, param_defines:Array, return_defines:Array):void
+      private static function RegisterFunctionDeclaration (function_id:int, functionPackage:FunctionPackage, function_name:String, poemCallingFormat:String, traditionalCallingFormat:String, param_defines:Array, return_defines:Array, showUpInApiMenu:Boolean = true):void
       {
          if (function_id < 0)
             return;
          
-         sFunctionDeclarations [function_id] = new FunctionDeclaration_Core (function_id, function_name, poemCallingFormat, traditionalCallingFormat, param_defines, return_defines, null);
+         sFunctionDeclarations [function_id] = new FunctionDeclaration_Core (function_id, function_name, "", poemCallingFormat, traditionalCallingFormat, param_defines, return_defines, showUpInApiMenu);
          
          if (functionPackage != null)
             functionPackage.AddFunctionDeclaration (sFunctionDeclarations [function_id]);
@@ -2149,14 +2177,16 @@ package editor.trigger {
          for (var j:int = 0; j < declarations.length; ++ j)
          {
             declaration = declarations [j] as FunctionDeclaration_Core;
-            
-            function_element = <menuitem />;
-            function_element.@name = declaration.GetName ();
-            function_element.@id = declaration.GetID ();
-            
-            package_element.appendChild (function_element);
-            
-            ++ num_items;
+            if (declaration.IsShowUpInApiMenu ())
+            {
+               function_element = <menuitem />;
+               function_element.@name = declaration.GetName ();
+               function_element.@id = declaration.GetID ();
+               
+               package_element.appendChild (function_element);
+               
+               ++ num_items;
+            }
          }
          
          if (num_items == 0)

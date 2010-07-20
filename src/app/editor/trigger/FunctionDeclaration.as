@@ -18,13 +18,20 @@ package editor.trigger {
       protected var mInputParamDefinitions:Array; // input variable defines
       protected var mOutputParamDefinitions:Array; // returns
       
-      public function FunctionDeclaration (id:int, name:String, poemCallingFormat:String, traditionalCallingFormat:String, inputDefinitions:Array = null, description:String = null, returnDefinitions:Array = null) //returnValueType:int=0) //ValueTypeDefine.ValueType_Void)
+      protected var mShowUpInApiMenu:Boolean = true;
+      
+      public function FunctionDeclaration (id:int, name:String, description:String = null, 
+                                          poemCallingFormat:String = null, traditionalCallingFormat:String = null, 
+                                          inputDefinitions:Array = null, returnDefinitions:Array = null, 
+                                          showUpInApiMenu:Boolean = true)
       {
          mId = id;
          mName = name;
          mDescription = description;
-         mInputParamDefinitions = inputDefinitions;
          
+         mShowUpInApiMenu = showUpInApiMenu;
+         
+         mInputParamDefinitions = inputDefinitions;
          mOutputParamDefinitions = returnDefinitions;
          
          if (mName == null)
@@ -64,6 +71,11 @@ package editor.trigger {
       public function GetDescription ():String
       {
          return mDescription;
+      }
+      
+      public function IsShowUpInApiMenu ():Boolean
+      {
+         return mShowUpInApiMenu;
       }
       
       public function GetNumOutputs ():int

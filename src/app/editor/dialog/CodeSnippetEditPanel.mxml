@@ -34,10 +34,10 @@
          </mx:HBox>
       </mx:HBox>
       <mx:HBox id="Box_Commands" height="216" width="100%">
-         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" paddingTop="0" paddingBottom="0" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="true" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()">
+         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" paddingTop="0" paddingBottom="0" labelField="null" showDataTips="false" useRollOver="false" allowMultipleSelection="true" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()">
             <mx:itemRenderer>
                <mx:Component>
-                  <ed:FunctionCallingLine fontSize="10"/>
+                  <ed:TextForFunctionCallingLine fontSize="10"/>
                </mx:Component>
             </mx:itemRenderer>
          </mx:List>
@@ -82,7 +82,11 @@
          import com.tapirgames.util.DisplayObjectUtil;
          import com.tapirgames.util.TextUtil;
          
-         import editor.controls.FunctionCallingLine;
+         import editor.controls.TextForFunctionCallingLine;
+         
+         import editor.controls.FunctionCallingLineData;
+         import editor.controls.FunctionCallingBlockData;
+         import editor.controls.FunctionCallingBranchData;
          
          import editor.runtime.Runtime;
          
@@ -112,7 +116,7 @@
          
          private var mCodeSnippet:CodeSnippet = null;
          
-         private var mCurrentEditingItem:Object = null;
+         private var mCurrentCallingLine:FunctionCallingLineData = null;
          
          [Bindable]
          private var mCommandListDataProvider:Object = [];
@@ -244,13 +248,6 @@
                Runtime.mPoemCodingFormat = false;
             }
             
-            for (var i:int = 0; i < List_Commands.dataProvider.length; ++ i)
-            {
-               var item:Object = List_Commands.dataProvider.getItemAt (i);
-               var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (item.mID);
-               item.mName = item.mDataTip = func_declaration.CreateFormattedCallingText (item.mCurrentValueSources, item.mCurrentValueTargets);
-            }
-            
             List_Commands.invalidateList ();
             
             UpdateInterface ();
@@ -324,44 +321,11 @@
             for (i = 0; i < count; ++ i)
             {
                func_calling = codeSnippet.GetFunctionCallingAt (i);
-               func_declaration = func_calling.GetFunctionDeclaration ();
                
-               var func_name:String = func_declaration.GetName ();
-               var func_id:int = func_declaration.GetID ();
-               var initialValueSources:Array = new Array ();
-               var currentValueSources:Array = new Array ();
-               var initialReturnTargets:Array = new Array ();
-               var currentReturnTargets:Array = new Array ();
+               var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
+               callingLine.BuildFromFunctionCalling (func_calling);
                
-               var codeLine:String = func_calling.ToCodeString ();
-               
-               for (j = 0; j < func_declaration.GetNumInputs (); ++ j)
-               {
-                  value_source = func_calling.GetInputValueSource (j);
-                  
-                  initialValueSources.push (value_source.CloneSource ());
-                  currentValueSources.push (value_source.CloneSource ());
-               }
-               
-               for (j = 0; j < func_declaration.GetNumOutputs (); ++ j)
-               {
-                  value_target = func_calling.GetReturnValueTarget (j);
-                  
-                  initialReturnTargets.push (value_target.CloneTarget ());
-                  currentReturnTargets.push (value_target.CloneTarget ());
-               }
-               
-               var isBlockStart:Boolean = CoreFunctionIds.IsBlockStartCalling (func_id);
-               var isBlockEnd  :Boolean = CoreFunctionIds.IsBlockEndCalling (func_id);
-               var isBlock     :Boolean = CoreFunctionIds.IsBlockCalling (func_id);
-               
-               List_Commands.dataProvider.addItemAt ({mName:codeLine, mID:func_id, mDataTip: codeLine, 
-                                                      mIsBlockStart:isBlockStart, mIsBlockEnd:isBlockEnd, mIsBlock:isBlock, 
-                                                      mIndentLevel:0, // temp value
-                                                      mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources,
-                                                      mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
-                                                      },
-                                                      insertAt ++);
+               List_Commands.dataProvider.addItemAt (callingLine, insertAt ++);
             }
             
             if (oldSelectedIndex != newSelectedIndex)
@@ -383,26 +347,47 @@
          private function UpdateCallingIndents ():void
          {
             var indentLevel:int = 0;
+            var lineNumber:int = 0;
             
+            var currentMainCallingBlock:FunctionCallingBlockData = null;
+            var currentBranchCallingBlock:FunctionCallingBlockData = null;
+            var callingBlock:FunctionCallingBlockData;
+            
+            /*
             var numCallings:int = List_Commands.dataProvider.length;
             for (var i:int = 0; i < numCallings; ++ i)
             {
-               var data:Object = List_Commands.dataProvider.getItemAt (i);
-               var isBlockStart:Boolean = data.mIsBlockStart;
-               var isBlockEnd  :Boolean = data.mIsBlockEnd;
-               var isBlock     :Boolean = data.mIsBlock;
-               if (isBlockEnd)
-                  -- indentLevel;
+               var callingLine:FunctionCallingLineData = List_Commands.dataProvider.getItemAt (i) as FunctionCallingLineData;
                
-               if (data.mIndentLevel != indentLevel)
+               switch (callingLine.mFunctionId)
                {
-                  data.mIndentLevel = indentLevel;
-                  List_Commands.dataProvider.itemUpdated (data);
+               case CoreFunctionIds.ID_StartIf:
+                  callingBlock = new FunctionCallingBlockData ();
+                  break;
+               case:
+                  break;
+               default:
+               }
+               
+               //var isBlockStart :Boolean = callingLine.mIsBlockStart;
+               //var isBlockEnd   :Boolean = callingLine.mIsBlockEnd;
+               //var isBlockBranch:Boolean = callingLine.mIsBlockBranch;
+               if (isBlockEnd)
+               {
+                  -- indentLevel;
+               }
+               
+               callingLine.mLineNumber = ++ lineNumber;
+               if (callingLine.mIndentLevel != indentLevel)
+               {
+                  callingLine.mIndentLevel = indentLevel;
+                  List_Commands.dataProvider.itemUpdated (callingLine);
                }
                
                if (isBlockStart)
                   ++ indentLevel;
             }
+            */
          }
          
          public function GetFunctionCallings (callingIds:Array = null, clearContextMenus:Boolean = false):Array
@@ -439,7 +424,7 @@
                {
                   var item:Object = item_array [callingId];
                   
-                  var func_id:int = item.mID;
+                  var func_id:int = (item as FunctionCallingLineData).mFunctionId;
                   var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
                   var func_calling:FunctionCalling = new FunctionCalling (Runtime.GetCurrentWorld ().GetTriggerEngine (), func_declaration);
                   func_calling.AssignInputValueSources (item.mCurrentValueSources);
@@ -478,35 +463,8 @@
             if (func_declaration == null)
                return;
             
-            var func_id:int = func_declaration.GetID ();
-            var func_name:String = func_declaration.GetName ();
-            var initialValueSources:Array = new Array ();
-            var currentValueSources:Array = new Array ();
-            var initialReturnTargets:Array = new Array ();
-            var currentReturnTargets:Array = new Array ();
-            
-            var variable_def:VariableDefinition;
-            var j:int;
-            
-            var value_source:ValueSource;
-            
-            for (j = 0; j < func_declaration.GetNumInputs (); ++ j)
-            {
-               variable_def = func_declaration.GetInputParamDefinitionAt (j);
-               value_source = variable_def.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
-               initialValueSources.push (value_source.CloneSource ());
-               currentValueSources.push (value_source.CloneSource ());
-            }
-            
-            var value_target:ValueTarget;
-            
-            for (j = 0; j < func_declaration.GetNumOutputs (); ++ j)
-            {
-               variable_def = func_declaration.GetOutputParamDefinitionAt (j);
-               value_target = variable_def.GetDefaultValueTarget ();
-               initialReturnTargets.push (value_target.CloneTarget ());
-               currentReturnTargets.push (value_target.CloneTarget ());
-            }
+            var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
+            callingLine.BuildFromFunctionDeclaration (func_declaration);
             
             var insert_index:int;
             if (insertAt < 0)
@@ -522,35 +480,7 @@
                   insert_index = List_Commands.dataProvider.length;
             }
             
-            var isBlockStart:Boolean = CoreFunctionIds.IsBlockStartCalling (id);
-            var isBlockEnd  :Boolean = CoreFunctionIds.IsBlockEndCalling (id);
-            var isBlock     :Boolean = CoreFunctionIds.IsBlockCalling (id);
-            
-            var indentLevel:int;
-            if (insert_index <= 0 || insert_index > List_Commands.dataProvider.length)
-            {
-               indentLevel = 0;
-            }
-            else
-            {
-               var aboveCallingData:Object = List_Commands.dataProvider.getItemAt (insert_index - 1);
-               if (aboveCallingData.mIsBlockEnd || (! aboveCallingData.mIsBlock))
-               {
-                  indentLevel = aboveCallingData.mIndentLevel;
-               }
-               else
-               {
-                  indentLevel = aboveCallingData.mIndentLevel + 1;
-               }
-            }
-            
-            List_Commands.dataProvider.addItemAt ({mName:func_name, mID:func_id, 
-                                                   mIsBlockStart:isBlockStart, mIsBlockEnd:isBlockEnd, mIsBlock:isBlock, 
-                                                   mIndentLevel:indentLevel, 
-                                                   mInitialValueSources:initialValueSources, mCurrentValueSources:currentValueSources, 
-                                                   mInitialValueTargets:initialReturnTargets, mCurrentValueTargets:currentReturnTargets
-                                                   }, 
-                                                   insert_index);
+            List_Commands.dataProvider.addItemAt (callingLine, insert_index);
             
             List_Commands.selectedIndex = insert_index;
             
@@ -558,7 +488,7 @@
             {
                OnCurrentCommandChanged ();
                
-               //UpdateCallingIndents ();
+               UpdateCallingIndents ();
                List_Commands.validateNow ();
                
                UpdateInterface ();
@@ -591,7 +521,7 @@
             if (selectedIndex >= 0)
             {
                List_Commands.dataProvider.removeItemAt (selectedIndex);
-               mCurrentEditingItem = null;
+               mCurrentCallingLine = null;
                
                if (selectedIndex >= List_Commands.dataProvider.length)
                   -- selectedIndex;
@@ -645,9 +575,17 @@
          
          private function UpdateInterface ():void
          {
+            var aboveCallingIsBlock:Boolean = false;
+            var belowCallingIsBlock:Boolean = false;
+            
             if (List_Commands.selectedIndex >= 0)
             {
                List_Commands.scrollToIndex (List_Commands.selectedIndex);
+               
+               if (List_Commands.selectedIndex > 0)
+               {
+                  // todo
+               }
             }
             
             Button_DeleteCommmand.enabled = List_Commands.selectedIndex >= 0;
@@ -677,7 +615,7 @@
          private function OnCurrentCommandChanged ():void
          {
             RetrieveCurrentCommandValueSourcesFromControls (true);
-            mCurrentEditingItem = null;
+            mCurrentCallingLine = null;
             
             while (Box_ParamsAndReturns.numChildren > 0)
                Box_ParamsAndReturns.removeChildAt (0);
@@ -691,11 +629,11 @@
             if (List_Commands.selectedItem == null)
                return;
             
-            mCurrentEditingItem = List_Commands.selectedItem;
-            var func_id:int = mCurrentEditingItem.mID;
+            mCurrentCallingLine = List_Commands.selectedItem as FunctionCallingLineData;
+            var func_id:int = mCurrentCallingLine.mFunctionId;
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
-            var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
-            var currentValueTargets:Array = mCurrentEditingItem.mCurrentValueTargets;
+            var currentValueSources:Array = mCurrentCallingLine.mCurrentValueSources;
+            var currentValueTargets:Array = mCurrentCallingLine.mCurrentValueTargets;
             
          //===========================
          // create new controls
@@ -705,10 +643,10 @@
             var source_value_controls:Array = new Array ();
             var target_form_items:Array = new Array ();
             var target_value_controls:Array = new Array ();
-            mCurrentEditingItem.mValueSourceParentControls = source_form_items;
-            mCurrentEditingItem.mValueSourceControls = source_value_controls;
-            mCurrentEditingItem.mValueTargetParentControls = target_form_items;
-            mCurrentEditingItem.mValueTargetControls = target_value_controls;
+            mCurrentCallingLine.mValueSourceParentControls = source_form_items;
+            mCurrentCallingLine.mValueSourceControls = source_value_controls;
+            mCurrentCallingLine.mValueTargetParentControls = target_form_items;
+            mCurrentCallingLine.mValueTargetControls = target_value_controls;
             
             var block_title:Label;
             var title_box:HBox;
@@ -810,8 +748,8 @@
          
          private function CreateValueSourceControl (inputId:int, parentContainer:Container, valueControls:Array):UIComponent
          {
-            var func_id:int = mCurrentEditingItem.mID;
-            var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
+            var func_id:int = mCurrentCallingLine.mFunctionId;
+            var currentValueSources:Array = mCurrentCallingLine.mCurrentValueSources;
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
             
             if (valueControls [inputId] != null)
@@ -856,8 +794,8 @@
          
          private function CreateValueTargetControl (returnId:int, parentContainer:Container, valueControls:Array):UIComponent
          {
-            var func_id:int = mCurrentEditingItem.mID;
-            var currentValueTargets:Array = mCurrentEditingItem.mCurrentValueTargets;
+            var func_id:int = mCurrentCallingLine.mFunctionId;
+            var currentValueTargets:Array = mCurrentCallingLine.mCurrentValueTargets;
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
             
             if (valueControls [returnId] != null)
@@ -902,14 +840,14 @@
          
          private function RetrieveCurrentCommandValueSourcesFromControls (clearContextMenus:Boolean):void
          {
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var func_id:int = mCurrentEditingItem.mID;
-            var currentValueSources:Array = mCurrentEditingItem.mCurrentValueSources;
-            var source_value_controls:Array = mCurrentEditingItem.mValueSourceControls;
-            var currentReturnTargets:Array = mCurrentEditingItem.mCurrentValueTargets;
-            var target_value_controls:Array = mCurrentEditingItem.mValueTargetControls;
+            var func_id:int = mCurrentCallingLine.mFunctionId;
+            var currentValueSources:Array = mCurrentCallingLine.mCurrentValueSources;
+            var source_value_controls:Array = mCurrentCallingLine.mValueSourceControls;
+            var currentReturnTargets:Array = mCurrentCallingLine.mCurrentValueTargets;
+            var target_value_controls:Array = mCurrentCallingLine.mValueTargetControls;
             
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
             
@@ -968,9 +906,8 @@
                }
             }
             
-            var codeLine:String = func_declaration.CreateFormattedCallingText (currentValueSources, currentReturnTargets);
-            mCurrentEditingItem.mName = codeLine;
-            mCurrentEditingItem.mDataTip = codeLine;
+            mCurrentCallingLine.UpdateCodeLineText ();
+            
             List_Commands.invalidateList ();
          }
          
@@ -1044,19 +981,19 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var param_index:int = mCurrentEditingItem.mValueSourceParentControls.indexOf (form_item);
+            var param_index:int = mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
             
-            mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
-            CreateValueSourceControl (param_index, form_item, mCurrentEditingItem.mValueSourceControls);
+            mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+            CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
             BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
         }
          
@@ -1066,19 +1003,19 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var param_index:int = mCurrentEditingItem.mValueSourceParentControls.indexOf (form_item);
+            var param_index:int = mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
-            var new_value_source:ValueSource = mCurrentEditingItem.mInitialValueSources [param_index];
+            var new_value_source:ValueSource = mCurrentCallingLine.mInitialValueSources [param_index];
             
-            mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
-            CreateValueSourceControl (param_index, form_item, mCurrentEditingItem.mValueSourceControls);
+            mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+            CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
             BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
         }
          
@@ -1088,19 +1025,19 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var param_index:int = mCurrentEditingItem.mValueSourceParentControls.indexOf (form_item);
+            var param_index:int = mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultDirectValueSource ();
             
-            mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
-            CreateValueSourceControl (param_index, form_item, mCurrentEditingItem.mValueSourceControls);
+            mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+            CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
             BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
         }
          
@@ -1110,21 +1047,21 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var param_index:int = mCurrentEditingItem.mValueSourceParentControls.indexOf (form_item);
+            var param_index:int = mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
             if (param_index < 0)
                return;
             
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (ownerFuncDefinition.GetInputVariableSpace ());
             
-            mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
-            CreateValueSourceControl (param_index, form_item, mCurrentEditingItem.mValueSourceControls);
+            mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+            CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
             BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
          }
          
@@ -1134,19 +1071,19 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var param_index:int = mCurrentEditingItem.mValueSourceParentControls.indexOf (form_item);
+            var param_index:int = mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetValueType()));
             
-            mCurrentEditingItem.mCurrentValueSources [param_index] = new_value_source;
-            CreateValueSourceControl (param_index, form_item, mCurrentEditingItem.mValueSourceControls);
+            mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+            CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
             BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
          }
          
@@ -1190,19 +1127,19 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var return_index:int = mCurrentEditingItem.mValueTargetParentControls.indexOf (form_item);
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
             if (return_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
-            var new_value_target:ValueTarget = mCurrentEditingItem.mInitialValueTargets [return_index];
+            var new_value_target:ValueTarget = mCurrentCallingLine.mInitialValueTargets [return_index];
             
-            mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
-            CreateValueTargetControl (return_index, form_item, mCurrentEditingItem.mValueTargetControls);
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
             BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
         }
         
@@ -1212,19 +1149,19 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var return_index:int = mCurrentEditingItem.mValueTargetParentControls.indexOf (form_item);
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
             if (return_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultNullValueTarget ();
             
-            mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
-            CreateValueTargetControl (return_index, form_item, mCurrentEditingItem.mValueTargetControls);
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
             BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
         }
          
@@ -1234,21 +1171,21 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var return_index:int = mCurrentEditingItem.mValueTargetParentControls.indexOf (form_item);
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
             if (return_index < 0)
                return;
             
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (ownerFuncDefinition.GetReturnVariableSpace ());
             
-            mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
-            CreateValueTargetControl (return_index, form_item, mCurrentEditingItem.mValueTargetControls);
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
             BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
          }
          
@@ -1258,19 +1195,19 @@
             if (form_item == null)
                return;
             
-            if (mCurrentEditingItem == null)
+            if (mCurrentCallingLine == null)
                return;
             
-            var return_index:int = mCurrentEditingItem.mValueTargetParentControls.indexOf (form_item);
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
             if (return_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentEditingItem.mID);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetValueType()));
             
-            mCurrentEditingItem.mCurrentValueTargets [return_index] = new_value_target;
-            CreateValueTargetControl (return_index, form_item, mCurrentEditingItem.mValueTargetControls);
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
             BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
          }
          

@@ -29,9 +29,13 @@ package common.trigger {
             ;
       }
       
-      public static function IsBlockCalling (id:int):Boolean
+      public static function IsBlockBranchCalling (id:int):Boolean
       {
-         return  id >= MinId_BlockCalling && id <= MaxId_BlockCalling;
+         return  id == ID_StartIf
+              //|| id == ID_ElseIf
+              //|| id == ID_Else
+              //|| id == ID_SwitchCase
+              //|| id == ID_SwitchDefault
             ;
       }
       

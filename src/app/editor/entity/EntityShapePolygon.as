@@ -330,7 +330,8 @@ package editor.entity {
       
       private function UpdateLocalBoundingBox ():void
       {
-         mMinX = mMinY = mMaxX = mMaxY = 0;
+         mMinX = mMinY = -1.0;
+         mMaxX = mMaxY = 1.0;
          
          for (var i:int = 0; i < mLocalPoints.length; ++ i)
          {

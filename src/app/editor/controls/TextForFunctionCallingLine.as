@@ -7,9 +7,9 @@ package editor.controls {
    
    import mx.controls.Label;
    
-   public class FunctionCallingLine extends Label 
+   public class TextForFunctionCallingLine extends Label 
    {
-      public function FunctionCallingLine ()
+      public function TextForFunctionCallingLine ()
       {
          addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
       }
@@ -31,8 +31,10 @@ package editor.controls {
       {
          if (data != null)
          {
-            setStyle ("paddingLeft", 16 * data.mIndentLevel);
-            //htmlText = "<font color='#FF0000'>" + data.mName + "</font>";
+            var callingData:FunctionCallingLineData = data as FunctionCallingLineData;
+            
+            setStyle ("paddingLeft", 16 * callingData.mIndentLevel);
+            htmlText = callingData.mHtmlText;
          }
       }
    }

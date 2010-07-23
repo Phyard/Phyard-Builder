@@ -161,24 +161,29 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Condition Result"), 
                      ],
                      null,
-                     false
+                     true
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Else, basic_package, "Else", "@Else", "@Else",
+                     null,
+                     null,
+                     true
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EndIf, basic_package, "End If", "@End If", "@End If",
                      null,
                      null,
-                     false
+                     true
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_StartWhile, basic_package, "While", "@While ($0 is true)", "@While ($0 is true)",
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                      ],
                      null,
-                     false
+                     true
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_EndWhile, basic_package, "End While", "@End While", "@End While",
                      null,
                      null,
-                     false
+                     true
                   );
          
       // system / time

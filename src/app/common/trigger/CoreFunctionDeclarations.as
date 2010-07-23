@@ -96,6 +96,10 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Else,
+                     null,
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EndIf,
                      null,
                      null

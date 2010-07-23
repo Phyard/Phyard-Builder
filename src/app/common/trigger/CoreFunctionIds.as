@@ -62,7 +62,7 @@ package common.trigger {
       
       public static const ID_StartIf:int                      = IdPool.CoreApiId_30; //
       //public static const ID_ElseIf:int                     = IdPool.CoreApiId_31; //
-      //public static const ID_Else:int                       = IdPool.CoreApiId_32; //
+      public static const ID_Else:int                       = IdPool.CoreApiId_32; //
       public static const ID_EndIf:int                        = IdPool.CoreApiId_33; //
       public static const ID_StartSwitch:int                      = IdPool.CoreApiId_34; //
       //public static const ID_SwitchCase:int                     = IdPool.CoreApiId_35; //

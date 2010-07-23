@@ -5,15 +5,33 @@ package editor.controls {
    {
       public var mIndentLevel:int;
       
-      public var mParentBlock:FunctionCallingBlockData; // null means most top level
-      public var mMainBlock:FunctionCallingBlockData; // null means this is a main block
-      public var mNextBranchBlock:FunctionCallingBlockData; // next branch block in current main block
+      public var mIsValid:Boolean;
       
-      public var mFirstCallingLine:FunctionCallingLineData;
-      public var mLastCallingLine:FunctionCallingLineData;
+      public var mOwnerBlock:FunctionCallingBlockData; // the owner block, null means top block
+      public var mOwnerBranch:FunctionCallingBranchData; // the branch contains this block. Must be a branch of mOwnerBlock
+      
+      public var mFirstBranch:FunctionCallingBranchData;
+      public var mLastBranch:FunctionCallingBranchData;
+      
+      public var mStartCallingLine:FunctionCallingLineData;
+      public var mEndCallingLine:FunctionCallingLineData;
+      
+      public var mSupportBreakCalling:Boolean;
+      
+      public var mNumElseBranches:int = 0; // valid for if-block only
       
       public function FunctionCallingBlockData ()
       {
+      }
+      
+      public function GetFirstCallingFunctionId ():int
+      {
+         return mStartCallingLine == null ? -1 : mStartCallingLine.mFunctionId;
+      }
+      
+      public function GetFirstLineNumber ():int
+      {
+         return mStartCallingLine == null ? -1 : mStartCallingLine.mLineNumber;
       }
    }
 }

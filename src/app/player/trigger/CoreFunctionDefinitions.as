@@ -407,7 +407,8 @@ package player.trigger {
          
       public static function ReturnVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         // do nothing, shouldn't run into here
+         // do nothing, shouldn't run into here.
+         // for CodeSnippet will return directly.
       }
       
       public static function ReturnIfTrue (valueSource:ValueSource, valueTarget:ValueTarget):void

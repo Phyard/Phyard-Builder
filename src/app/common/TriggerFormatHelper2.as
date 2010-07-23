@@ -58,14 +58,22 @@ package common {
       public static function CreateCodeSnippet (parentFunctionInstance:FunctionInstance, playerWorld:World, codeSnippetDefine:CodeSnippetDefine):CodeSnippet
       {
          var calling_list_head:FunctionCalling = null;
-         var calling:FunctionCalling = null;
          
-         for (var i:int = codeSnippetDefine.mNumCallings - 1; i >= 0; -- i)
+         var lastCalling:FunctionCalling;
+         var calling:FunctionCalling;
+         
+         if (codeSnippetDefine.mNumCallings > 0)
          {
-            calling = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, codeSnippetDefine.mFunctionCallingDefines [i]);
+            calling_list_head = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, codeSnippetDefine.mFunctionCallingDefines [0]);
             
-            calling.SetNextCalling (calling_list_head);
-            calling_list_head = calling;
+            lastCalling = calling_list_head;
+            for (var i:int = 1; i < codeSnippetDefine.mNumCallings; ++ i)
+            {
+               calling = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, codeSnippetDefine.mFunctionCallingDefines [i]);
+               
+               lastCalling.SetNextCalling (calling);
+               lastCalling = calling;
+            }
          }
          
          var code_snippet:CodeSnippet = new CodeSnippet (calling_list_head);

@@ -14,40 +14,80 @@ package editor.controls {
    
    public class FunctionCallingLineData
    {
-      public var mLineNumber:int;
-      public var mIndentLevel:int = 0;
+      private var _mIndentLevel:int = 0;
+      
+      public var mOwnerBlock:FunctionCallingBlockData;
+      public var mOwnerBranch:FunctionCallingBranchData; // may be null
+      
+      private var _mIsValid:Boolean = true;
+      
+      private var _mLineNumber:int;
+      
+      public function set mIsValid (valid:Boolean):void
+      {
+         if (_mIsValid != valid)
+         {
+            mHtmlText = null;
+            _mIsValid = valid;
+         }
+      }
+      
+      public function get mIsValid ():Boolean
+      {
+         return _mIsValid;
+      }
+      
+      public function set mLineNumber (lineNumber:int):void
+      {
+         _mLineNumber = lineNumber;
+      }
+      
+      public function get mLineNumber ():int
+      {
+         return _mLineNumber;
+      }
+      
+      public function set mIndentLevel (indentLevel:int):void
+      {
+         _mIndentLevel = indentLevel;
+      }
+      
+      public function get mIndentLevel ():int
+      {
+         return _mIndentLevel;
+      }
+      
+      // ...
+      
+      public var mHtmlText:String = null;
+      
+      public function UpdateCodeLineText ():void
+      {
+         if (mHtmlText != null)
+            return;
+         
+         mHtmlText = mFuncDeclaration.CreateFormattedCallingText (mCurrentValueSources, mCurrentValueTargets);
+         
+         if (! mIsValid)
+         {
+            mHtmlText = "<font color='#A0A0A0'>" + mHtmlText + "</font>"
+         }
+      }
+      
+      // ...
       
       public var mFunctionId:int;
       public var mFuncDeclaration:FunctionDeclaration;
-      
-      public var mHtmlText:String;
       
       public var mInitialValueSources:Array;
       public var mCurrentValueSources:Array;
       public var mInitialValueTargets:Array;
       public var mCurrentValueTargets:Array;
       
-      public var mIsValid:Boolean;
-      
-      //public var mIsBlockStart:Boolean;
-      //public var mIsBlockEnd:Boolean;
-      //public var mIsBlockBranch:Boolean;
-      
-      public var mCallingBlock:FunctionCallingBlockData;
-      
       public function SetFunctionDeclaration (funcDeclaration:FunctionDeclaration):void
       {
          mFuncDeclaration = funcDeclaration;
          mFunctionId = funcDeclaration.GetID ();
-         
-         //mIsBlockStart  = CoreFunctionIds.IsBlockStartCalling  (mFunctionId);
-         //mIsBlockEnd    = CoreFunctionIds.IsBlockEndCalling    (mFunctionId);
-         //mIsBlockBranch = CoreFunctionIds.IsBlockBranchCalling (mFunctionId);
-      }
-      
-      public function UpdateCodeLineText ():void
-      {
-         mHtmlText = mFuncDeclaration.CreateFormattedCallingText (mCurrentValueSources, mCurrentValueTargets);
       }
       
       public function BuildFromFunctionDeclaration (funcDeclaration:FunctionDeclaration):void
@@ -81,11 +121,11 @@ package editor.controls {
             currentReturnTargets.push (valueTarget.CloneTarget ());
          }
          
-         mHtmlText = funcDeclaration.GetName ();
          mInitialValueSources = initialValueSources;
          mCurrentValueSources = currentValueSources;
          mInitialValueTargets = initialReturnTargets;
          mCurrentValueTargets = currentReturnTargets;
+         mHtmlText = funcDeclaration.GetName ();
       }
       
       public function BuildFromFunctionCalling (funcCalling:FunctionCalling):void
@@ -122,6 +162,12 @@ package editor.controls {
          mCurrentValueSources = currentValueSources;
          mInitialValueTargets = initialReturnTargets;
          mCurrentValueTargets = currentReturnTargets;
+         //UpdateCodeLineText ();
+      }
+      
+      public function NotifyParametersModified ():void
+      {
+         mHtmlText = null;
          UpdateCodeLineText ();
       }
       

@@ -79,14 +79,17 @@
          import common.trigger.ValueSpaceTypeDefine;
          import common.trigger.ValueSourceTypeDefine;
          
+         import common.trigger.parse.CodeSnippetParser;
+         
+         import common.trigger.parse.FunctionCallingBlockInfo;
+         import common.trigger.parse.FunctionCallingBranchInfo;
+         import common.trigger.parse.FunctionCallingLineInfo;
+         
          import com.tapirgames.util.DisplayObjectUtil;
          import com.tapirgames.util.TextUtil;
          
          import editor.controls.TextForFunctionCallingLine;
-         
          import editor.controls.FunctionCallingLineData;
-         import editor.controls.FunctionCallingBlockData;
-         import editor.controls.FunctionCallingBranchData;
          
          import editor.runtime.Runtime;
          
@@ -348,209 +351,25 @@
          
          private function UpdateCallingIndents ():void
          {
-            var topBlock:FunctionCallingBlockData = new FunctionCallingBlockData ();
-            topBlock.mIndentLevel = -1;
-            topBlock.mIsValid = true;
-            topBlock.mOwnerBranch = null;
-            topBlock.mStartCallingLine = topBlock.mEndCallingLine = null;
-            topBlock.mSupportBreakCalling = false;
-            
-            var topBranch:FunctionCallingBranchData = new FunctionCallingBranchData ();
-            topBranch.mIndentLevel = -1;
-            topBranch.mIsValid = true;
-            topBranch.mOwnerBlock = topBlock;
-            topBranch.mFirstCallingLine = topBranch.mLastCallingLine = null;
-            topBranch.mSupportBreakCalling = false;
-            
-            topBlock.mFirstBranch = topBranch;
-            topBlock.mLastBranch = topBranch;
-            
-            var currentBlock:FunctionCallingBlockData = topBlock;
-            var currentBranch:FunctionCallingBranchData = topBranch;
-            var currentCallingLine:FunctionCallingLineData = null;
-            
-            //var block:FunctionCallingBlockData;
-            //var branch:FunctionCallingBranchData;
-            
-            var callingLineOldValid:Boolean;
-            var callingLineOldIndent:int;
+            var lineNumber:int;
             
             var numCallings:int = List_Commands.dataProvider.length;
-            for (var lineNumber:int = 0; lineNumber < numCallings; ++ lineNumber)
+            var callingInfos:Array = new Array (numCallings);
+            for (lineNumber = 0; lineNumber < numCallings; ++ lineNumber)
             {
-               currentCallingLine = List_Commands.dataProvider.getItemAt (lineNumber) as FunctionCallingLineData;
-               
-               callingLineOldValid = currentCallingLine.mIsValid;
-               callingLineOldIndent = currentCallingLine.mIndentLevel;
-               
-               currentCallingLine.mLineNumber = lineNumber;
-               
-               switch (currentCallingLine.mFunctionId)
-               {
-                  case CoreFunctionIds.ID_StartIf:
-                  case CoreFunctionIds.ID_StartWhile:
-                     if (currentBranch == null) // for example: between switch and the first case
-                     {
-                        currentCallingLine.mIsValid = false;
-                        currentCallingLine.mIndentLevel = currentBlock.mIndentLevel + 1;
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = null;
-                     }
-                     else
-                     {
-                        currentBlock = new FunctionCallingBlockData ();
-                        if (currentCallingLine.mFunctionId == CoreFunctionIds.ID_StartIf)
-                        {
-                           currentBlock.mSupportBreakCalling = currentBranch.mSupportBreakCalling;
-                        }
-                        else if (currentCallingLine.mFunctionId == CoreFunctionIds.ID_StartWhile)
-                        {
-                           currentBlock.mSupportBreakCalling = true;
-                        }
-                        currentBlock.mIndentLevel = currentBranch.mIndentLevel + 1;
-                        currentBlock.mIsValid = currentBranch.mIsValid && (currentBranch.mNumDirectReturnCallings == 0)
-                                                && ((! currentBranch.mSupportBreakCalling) || (currentBranch.mNumDirectBreakCallings == 0));
-                        currentBlock.mOwnerBlock = currentBranch.mOwnerBlock;
-                        currentBlock.mOwnerBranch = currentBranch;
-                        currentBlock.mStartCallingLine = currentCallingLine;
-                        
-                        currentBranch = new FunctionCallingBranchData ();
-                        currentBranch.mIndentLevel = currentBlock.mIndentLevel;
-                        currentBranch.mIsValid = currentBlock.mIsValid;
-                        currentBranch.mOwnerBlock = currentBlock;
-                        currentBranch.mFirstCallingLine = currentCallingLine;
-                        currentBranch.mSupportBreakCalling = currentBlock.mSupportBreakCalling;
-                        
-                        currentBlock.mFirstBranch = currentBranch;
-                        currentBlock.mLastBranch = currentBranch;
-                        
-                        currentCallingLine.mIsValid = currentBranch.mIsValid;
-                        currentCallingLine.mIndentLevel = currentBranch.mIndentLevel;
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = currentBranch;
-                        
-                        currentBranch.mLastCallingLine = currentCallingLine;
-                     }
-                     break;
-                  case CoreFunctionIds.ID_Else:
-                     if (currentBranch == null) // for example: between switch and the first case
-                     {
-                        currentCallingLine.mIsValid = false;
-                        currentCallingLine.mIndentLevel = currentBlock.mIndentLevel + 1;
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = null;
-                     }
-                     else if (currentBlock.GetFirstCallingFunctionId () != CoreFunctionIds.ID_StartIf)
-                     {
-                        currentCallingLine.mIsValid = false;
-                        currentCallingLine.mIndentLevel = currentBranch.mIndentLevel + 1;
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = currentBranch;
-                     }
-                     else
-                     {
-                        currentBranch = new FunctionCallingBranchData ();
-                        currentBranch.mIndentLevel = currentBlock.mIndentLevel;
-                        currentBranch.mIsValid = currentBlock.mIsValid && (currentBlock.mNumElseBranches == 0);
-                        currentBranch.mOwnerBlock = currentBlock;
-                        currentBranch.mFirstCallingLine = currentCallingLine;
-                        currentBranch.mSupportBreakCalling = currentBlock.mSupportBreakCalling;
-                        
-                        currentCallingLine.mIsValid = currentBranch.mIsValid;
-                        currentCallingLine.mIndentLevel = currentBranch.mIndentLevel;
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = currentBranch;
-                        
-                        currentBlock.mLastBranch = currentBranch;
-                        currentBlock.mNumElseBranches ++;
-                        
-                        currentBranch.mLastCallingLine = currentCallingLine;
-                     }
-                     break;
-                  case CoreFunctionIds.ID_EndIf:
-                  case CoreFunctionIds.ID_EndWhile:
-                     if (  currentCallingLine.mFunctionId == CoreFunctionIds.ID_EndIf    && currentBlock.GetFirstCallingFunctionId () != CoreFunctionIds.ID_StartIf
-                        || currentCallingLine.mFunctionId == CoreFunctionIds.ID_EndWhile && currentBlock.GetFirstCallingFunctionId () != CoreFunctionIds.ID_StartWhile)
-                     {
-                        currentCallingLine.mIsValid = false;
-                        currentCallingLine.mIndentLevel = (currentBranch != null ? currentBranch.mIndentLevel + 1 : currentBlock.mIndentLevel + 1);
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = currentBranch;
-                        
-                        if (currentBranch != null)
-                           currentBranch.mLastCallingLine = currentCallingLine;
-                     }
-                     else
-                     {
-                        currentCallingLine.mIsValid = currentBlock.mIsValid;
-                        currentCallingLine.mIndentLevel = currentBlock.mIndentLevel;
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = null;
-                        
-                        currentBlock.mEndCallingLine = currentCallingLine;
-                        
-                        currentBranch = currentBlock.mOwnerBranch;
-                        currentBlock = currentBlock.mOwnerBlock;
-                     }
-                     break;
-                  default:
-                     if (currentBranch == null) // for example: between switch and the first case
-                     {
-                        currentCallingLine.mIsValid = false;
-                        currentCallingLine.mIndentLevel = currentBlock.mIndentLevel + 1;
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = null;
-                     }
-                     else
-                     {
-                        currentCallingLine.mIsValid = currentBranch.mIsValid && (currentBranch.mNumDirectReturnCallings == 0)
-                                                      && ((! currentBranch.mSupportBreakCalling) || (currentBranch.mNumDirectBreakCallings == 0));
-                        currentCallingLine.mIndentLevel = currentBranch.mIndentLevel + 1;
-                        currentCallingLine.mOwnerBlock = currentBlock;
-                        currentCallingLine.mOwnerBranch = currentBranch;
-                        
-                        currentBranch.mLastCallingLine = currentCallingLine;
-                        if (currentCallingLine.mFunctionId == CoreFunctionIds.ID_Break)
-                        {
-                           currentBranch.mNumDirectBreakCallings ++;
-                           
-                           // corrent
-                           currentCallingLine.mIsValid = currentCallingLine.mIsValid && currentBranch.mSupportBreakCalling;
-                        }
-                        else if (currentCallingLine.mFunctionId == CoreFunctionIds.ID_Return)
-                        {
-                           currentBranch.mNumDirectReturnCallings ++;
-                        }
-                     }
-               }
-               
-               if (currentCallingLine.mIsValid != callingLineOldValid || currentCallingLine.mIndentLevel != callingLineOldIndent)
-               {
-                  currentCallingLine.UpdateCodeLineText ();
-                  List_Commands.dataProvider.itemUpdated (currentCallingLine);
-               }
+               callingInfos [lineNumber] = (List_Commands.dataProvider.getItemAt (lineNumber) as FunctionCallingLineData).mInfo;
             }
             
-            if (currentCallingLine != null)
+            CodeSnippetParser.ParseCodeSnippet (callingInfos);
+            
+            var currentCallingLineData:FunctionCallingLineData;
+            for (lineNumber = 0; lineNumber < numCallings; ++ lineNumber)
             {
-               while (true)
+               currentCallingLineData = List_Commands.dataProvider.getItemAt (lineNumber) as FunctionCallingLineData;
+               
+               if (currentCallingLineData.UpdateCodeLineText ())
                {
-                  if (currentBranch != null)
-                  {
-                     currentBranch.mLastCallingLine = currentCallingLine;
-                     currentBlock = currentBranch.mOwnerBlock;
-                     currentBranch = null;
-                  }
-                  else if (currentBlock != null)
-                  {
-                     currentBlock.mEndCallingLine = currentCallingLine;
-                     currentBranch = currentBlock.mOwnerBranch;
-                     currentBlock = currentBlock.mOwnerBlock;
-                  }
-                  else
-                  {
-                     break;
-                  }
+                  List_Commands.dataProvider.itemUpdated (currentCallingLineData);
                }
             }
          }
@@ -1082,8 +901,8 @@
             }
             
             mCurrentCallingLine.NotifyParametersModified ();
-            
-            List_Commands.invalidateList ();
+            //List_Commands.invalidateList ();
+             List_Commands.dataProvider.itemUpdated (mCurrentCallingLine);
          }
          
          private function AppendContextMenuItem (sprite:InteractiveObject, caption:String, selectedListener:Function, addSaperator:Boolean = false, isEnabled:Boolean = true):void

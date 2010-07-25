@@ -33,10 +33,16 @@ package editor.controls {
          {
             var callingData:FunctionCallingLineData = data as FunctionCallingLineData;
             
-            callingData.UpdateCodeLineText ();
-            
             setStyle ("paddingLeft", 16 * callingData.mIndentLevel);
-            htmlText = callingData.mHtmlText;
+            
+            if (Compile::Is_Debugging)
+            {
+               htmlText = callingData.mLineNumber + ": " + callingData.mHtmlText;
+            }
+            else
+            {
+               htmlText = callingData.mHtmlText;
+            }
          }
       }
    }

@@ -8,7 +8,7 @@
 
    <mx:HBox width="100%">
       <mx:Label text="Rotation:" textAlign="right" width="60"/>
-      <mx:TextInput id="TextInput_RotationAngle" width="80" text="100"/>
+      <mx:TextInput id="TextInput_RotationAngle" width="80" text="90"/>
       <mx:Label text="deg. (0-360)" textAlign="left" />
    </mx:HBox>
 

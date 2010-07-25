@@ -55,10 +55,10 @@ package player.trigger {
          
       // global
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Return,                           ReturnVoid);
-         RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfTrue,                     ReturnIfTrue);
-         RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfFalse,                    ReturnIfFalse);
-         RegisterCoreFunction (CoreFunctionIds.ID_Break,                            BreakVoid);
+         //RegisterCoreFunction (CoreFunctionIds.ID_Return,                           ReturnVoid);
+         //RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfTrue,                     ReturnIfTrue);
+         //RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfFalse,                    ReturnIfFalse);
+         //RegisterCoreFunction (CoreFunctionIds.ID_Break,                            BreakVoid);
          
       // system / time
          
@@ -405,30 +405,30 @@ package player.trigger {
    // global
    //*******************************************************************
          
-      public static function ReturnVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         // do nothing, shouldn't run into here.
-         // for CodeSnippet will return directly.
-      }
+      //public static function ReturnVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   // do nothing, shouldn't run into here.
+      //   // for CodeSnippet will return directly.
+      //}
       
-      public static function ReturnIfTrue (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
-         
-         valueTarget.AssignValueObject (value);
-      }
+      //public static function ReturnIfTrue (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
+      //   
+      //   valueTarget.AssignValueObject (value);
+      //}
       
-      public static function ReturnIfFalse (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
-         
-         valueTarget.AssignValueObject (! value);
-      }
+      //public static function ReturnIfFalse (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
+      //   
+      //   valueTarget.AssignValueObject (! value);
+      //}
       
-      public static function BreakVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
-      {
-         // do nothing, shouldn't run into here
-      }
+      //public static function BreakVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //{
+      //   // do nothing, shouldn't run into here
+      //}
       
    //*******************************************************************
    // system / time

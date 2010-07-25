@@ -11,72 +11,61 @@ package editor.controls {
    import editor.runtime.Runtime;
    
    import common.trigger.CoreFunctionIds;
+   import common.trigger.parse.FunctionCallingLineInfo;
    
    public class FunctionCallingLineData
    {
-      private var _mIndentLevel:int = 0;
+      public var mInfo:FunctionCallingLineInfo = new FunctionCallingLineInfo ();
       
-      public var mOwnerBlock:FunctionCallingBlockData;
-      public var mOwnerBranch:FunctionCallingBranchData; // may be null
-      
-      private var _mIsValid:Boolean = true;
-      
-      private var _mLineNumber:int;
-      
-      public function set mIsValid (valid:Boolean):void
+      public function UpdateCodeLineText ():Boolean
       {
-         if (_mIsValid != valid)
+         if (mInfo.mHtmlText == null)
          {
-            mHtmlText = null;
-            _mIsValid = valid;
+            mInfo.mHtmlText = mFuncDeclaration.CreateFormattedCallingText (mCurrentValueSources, mCurrentValueTargets);
+            
+            if (! mInfo.mIsValid)
+            {
+               mInfo.mHtmlText = "<font color='#A0A0A0'>" + mHtmlText + "</font>"
+            }
+            
+            mInfo.mIndentChanged = false;
+            
+            return true;
          }
-      }
-      
-      public function get mIsValid ():Boolean
-      {
-         return _mIsValid;
-      }
-      
-      public function set mLineNumber (lineNumber:int):void
-      {
-         _mLineNumber = lineNumber;
+         else if (mInfo.mIndentChanged)
+         {
+            mInfo.mIndentChanged = false;
+            
+            return true;
+         }
+         else
+         {
+            return false;
+         }
       }
       
       public function get mLineNumber ():int
       {
-         return _mLineNumber;
+         return mInfo.mLineNumber;
       }
       
-      public function set mIndentLevel (indentLevel:int):void
+      public function get mFunctionId ():int
       {
-         _mIndentLevel = indentLevel;
+         return mInfo.mFunctionId;
+      }
+      
+      public function get mHtmlText ():String
+      {
+         return mInfo.mHtmlText;
       }
       
       public function get mIndentLevel ():int
       {
-         return _mIndentLevel;
+         return mInfo.mIndentLevel;
       }
       
       // ...
       
-      public var mHtmlText:String = null;
-      
-      public function UpdateCodeLineText ():void
-      {
-         if (mHtmlText != null)
-            return;
-         
-         mHtmlText = mFuncDeclaration.CreateFormattedCallingText (mCurrentValueSources, mCurrentValueTargets);
-         
-         if (! mIsValid)
-         {
-            mHtmlText = "<font color='#A0A0A0'>" + mHtmlText + "</font>"
-         }
-      }
-      
-      // ...
-      
-      public var mFunctionId:int;
       public var mFuncDeclaration:FunctionDeclaration;
       
       public var mInitialValueSources:Array;
@@ -87,7 +76,7 @@ package editor.controls {
       public function SetFunctionDeclaration (funcDeclaration:FunctionDeclaration):void
       {
          mFuncDeclaration = funcDeclaration;
-         mFunctionId = funcDeclaration.GetID ();
+         mInfo.mFunctionId = funcDeclaration.GetID ();
       }
       
       public function BuildFromFunctionDeclaration (funcDeclaration:FunctionDeclaration):void
@@ -125,7 +114,7 @@ package editor.controls {
          mCurrentValueSources = currentValueSources;
          mInitialValueTargets = initialReturnTargets;
          mCurrentValueTargets = currentReturnTargets;
-         mHtmlText = funcDeclaration.GetName ();
+         mInfo.mHtmlText = funcDeclaration.GetName ();
       }
       
       public function BuildFromFunctionCalling (funcCalling:FunctionCalling):void
@@ -167,7 +156,7 @@ package editor.controls {
       
       public function NotifyParametersModified ():void
       {
-         mHtmlText = null;
+         mInfo.mHtmlText = null;
          UpdateCodeLineText ();
       }
       

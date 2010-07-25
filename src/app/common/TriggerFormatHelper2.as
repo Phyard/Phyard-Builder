@@ -15,7 +15,8 @@ package common {
    import player.trigger.FunctionInstance;
    import player.trigger.CodeSnippet;
    import player.trigger.FunctionCalling;
-   import player.trigger.FunctionCalling_Return;
+   import player.trigger.FunctionCalling_Condition;
+   import player.trigger.FunctionCalling_Dummy;
    import player.trigger.ValueSource;
    import player.trigger.ValueSource_Null;
    import player.trigger.ValueSource_Direct;
@@ -46,6 +47,12 @@ package common {
    import common.trigger.define.ValueTargetDefine_Null;
    import common.trigger.define.ValueTargetDefine_Variable;
    
+   import common.trigger.parse.CodeSnippetParser;
+   
+   import common.trigger.parse.FunctionCallingBlockInfo;
+   import common.trigger.parse.FunctionCallingBranchInfo;
+   import common.trigger.parse.FunctionCallingLineInfo;
+   
    import common.CoordinateSystem;
    
    public class TriggerFormatHelper2
@@ -57,23 +64,149 @@ package common {
       
       public static function CreateCodeSnippet (parentFunctionInstance:FunctionInstance, playerWorld:World, codeSnippetDefine:CodeSnippetDefine):CodeSnippet
       {
+         var lineNumber:int;
+         var callingInfo:FunctionCallingLineInfo;
+         var callingDefine:FunctionCallingDefine;
+         
+         // parse...
+         
+         var callingInfos:Array = new Array (codeSnippetDefine.mNumCallings);
+         
+         for (lineNumber = 0; lineNumber < codeSnippetDefine.mNumCallings; ++ lineNumber)
+         {
+            callingDefine = codeSnippetDefine.mFunctionCallingDefines [lineNumber] as FunctionCallingDefine;
+            
+            callingInfo = new FunctionCallingLineInfo ();
+            callingInfos [lineNumber] = callingInfo;
+            
+            callingInfo.mLineNumber = lineNumber;
+            callingInfo.mFunctionId = callingDefine.mFunctionId;
+            callingInfo.mFunctionCallingDefine = callingDefine;
+         }
+         
+         // create valid callings
+         
+         var numValidCallings:int = CodeSnippetParser.ParseCodeSnippet (callingInfos);
+         var validCallingInfos:Array = new Array (numValidCallings + 1);
+         validCallingInfos [numValidCallings] = null;
+         
+         var lastCallingInfo:FunctionCallingLineInfo = null;
+         numValidCallings = 0;
+         for (lineNumber = 0; lineNumber < codeSnippetDefine.mNumCallings; ++ lineNumber)
+         {
+            callingInfo = callingInfos [lineNumber] as FunctionCallingLineInfo;
+            
+            if (callingInfo.mIsValid)
+            {
+               callingInfo.mFunctionCallingForPlaying = FunctionCallingDefine2FunctionCalling (lineNumber, parentFunctionInstance, playerWorld, callingInfo.mFunctionCallingDefine);
+               validCallingInfos [numValidCallings ++] = callingInfo;
+               
+               if (lastCallingInfo != null)
+                  lastCallingInfo.mNextValidCallingLine = callingInfo;
+               
+               lastCallingInfo = callingInfo;
+            }
+         }
+         
+         // build calling list
          var calling_list_head:FunctionCalling = null;
          
-         var lastCalling:FunctionCalling;
-         var calling:FunctionCalling;
-         
-         if (codeSnippetDefine.mNumCallings > 0)
+         if (numValidCallings > 0)
          {
-            calling_list_head = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, codeSnippetDefine.mFunctionCallingDefines [0]);
+            callingInfo = validCallingInfos [0] as FunctionCallingLineInfo;
+            calling_list_head = callingInfo.mFunctionCallingForPlaying;
             
-            lastCalling = calling_list_head;
-            for (var i:int = 1; i < codeSnippetDefine.mNumCallings; ++ i)
+            var calling_condition:FunctionCalling_Condition;
+            
+            var nextCallingInfo:FunctionCallingLineInfo;
+            var branchInfo:FunctionCallingBranchInfo;
+            
+            do
             {
-               calling = FunctionCallingDefine2FunctionCalling (parentFunctionInstance, playerWorld, codeSnippetDefine.mFunctionCallingDefines [i]);
+               lastCallingInfo = callingInfo;
+               callingInfo = lastCallingInfo.mNextValidCallingLine;
                
-               lastCalling.SetNextCalling (calling);
-               lastCalling = calling;
+               switch (lastCallingInfo.mFunctionId)
+               {
+                  case CoreFunctionIds.ID_ReturnIfTrue:
+                     calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
+                     
+                     calling_condition.SetNextCallingForTrue (null);
+                     calling_condition.SetNextCallingForFalse (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     break;
+                  case CoreFunctionIds.ID_ReturnIfFalse:
+                     calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
+                     
+                     calling_condition.SetNextCallingForTrue (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     calling_condition.SetNextCallingForFalse (null);
+                     break;
+                  case CoreFunctionIds.ID_StartIf:
+                     calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
+                     
+                     if (lastCallingInfo.mOwnerBlock.mFirstBranch.mNumValidCallings > 0)
+                     {
+                        calling_condition.SetNextCallingForTrue (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     }
+                     else
+                     {
+                        nextCallingInfo = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                        if (nextCallingInfo != null)
+                           nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
+                        calling_condition.SetNextCallingForTrue (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                     }
+                     branchInfo = lastCallingInfo.mOwnerBlock.mFirstBranch; // if branch, should not be null
+                     branchInfo = branchInfo.mNextBranch; // else branch
+                     if (branchInfo == null)
+                        nextCallingInfo = null;
+                     else
+                        nextCallingInfo = branchInfo.mFirstCallingLine.mNextValidCallingLine;
+                     calling_condition.SetNextCallingForFalse (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                     break;
+                  case CoreFunctionIds.ID_StartWhile:
+                     calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
+                     
+                     calling_condition.SetNextCallingForTrue (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     nextCallingInfo = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end while
+                     if (nextCallingInfo != null)
+                        nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
+                     calling_condition.SetNextCallingForFalse (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                     break;
+                  case CoreFunctionIds.ID_Else:
+                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     break;
+                  case CoreFunctionIds.ID_EndIf:
+                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     break;
+                  case CoreFunctionIds.ID_EndWhile:
+                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (lastCallingInfo.mOwnerBlock.mStartCallingLine.mFunctionCallingForPlaying);
+                     break;
+                  case CoreFunctionIds.ID_Return:
+                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (null);
+                     break;
+                  case CoreFunctionIds.ID_Break:
+                     nextCallingInfo = lastCallingInfo.mOwnerBlockSupportBreak.mEndCallingLine;
+                     if (nextCallingInfo != null)
+                        nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
+                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                     break;
+                  default:
+                  {
+                     if (callingInfo != null && callingInfo.mFunctionId == CoreFunctionIds.ID_Else)
+                     {
+                        nextCallingInfo = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                        if (nextCallingInfo != null)
+                           nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
+                        lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                     }
+                     else
+                     {
+                        lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     }
+                     break;
+                  }
+               }
             }
+            while (callingInfo != null);
          }
          
          var code_snippet:CodeSnippet = new CodeSnippet (calling_list_head);
@@ -81,7 +214,7 @@ package common {
          return code_snippet;
       }
       
-      public static function FunctionCallingDefine2FunctionCalling (parentFunctionInstance:FunctionInstance, playerWorld:World, funcCallingDefine:FunctionCallingDefine):FunctionCalling
+      public static function FunctionCallingDefine2FunctionCalling (lineNumber:int, parentFunctionInstance:FunctionInstance, playerWorld:World, funcCallingDefine:FunctionCallingDefine):FunctionCalling
       {
          if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
@@ -109,13 +242,26 @@ package common {
             }
             
             var calling:FunctionCalling;
-            if (CoreFunctionIds.IsReturnCalling (function_id))
+            switch (function_id)
             {
-               calling = new FunctionCalling_Return (core_func_definition, value_source_list, value_target_list, function_id);
-            }
-            else
-            {
-               calling = new FunctionCalling (core_func_definition, value_source_list, value_target_list);
+               case CoreFunctionIds.ID_ReturnIfTrue:
+               case CoreFunctionIds.ID_ReturnIfFalse:
+               case CoreFunctionIds.ID_StartIf:
+               case CoreFunctionIds.ID_StartWhile:
+                  calling = new FunctionCalling_Condition (lineNumber, core_func_definition, value_source_list, value_target_list);
+                  break;
+               case CoreFunctionIds.ID_EndIf:
+               case CoreFunctionIds.ID_Else:
+               case CoreFunctionIds.ID_EndWhile:
+               case CoreFunctionIds.ID_Return:
+               case CoreFunctionIds.ID_Break:
+                  calling = new FunctionCalling_Dummy (lineNumber, core_func_definition, value_source_list, value_target_list);
+                  break;
+               default:
+               {
+                  calling = new FunctionCalling (lineNumber, core_func_definition, value_source_list, value_target_list);
+                  break;
+               }
             }
             
             return calling;

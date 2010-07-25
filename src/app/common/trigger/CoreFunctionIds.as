@@ -3,41 +3,6 @@ package common.trigger {
    
    public class CoreFunctionIds
    {
-      public static function IsReturnCalling (id:int):Boolean
-      {
-         return  id == ID_Return
-              || id == ID_ReturnIfTrue
-              || id == ID_ReturnIfFalse
-            ;
-      }
-      
-      public static function IsBlockStartCalling (id:int):Boolean
-      {
-         return  id == ID_StartIf
-              //|| id == ID_StartSwitch
-              || id == ID_StartWhile
-              //|| id == ID_StartDoWhile
-            ;
-      }
-      
-      public static function IsBlockEndCalling (id:int):Boolean
-      {
-         return  id == ID_EndIf
-              //|| id == ID_EndSwitch
-              || id == ID_EndWhile
-              //|| id == ID_EndDoWhile
-            ;
-      }
-      
-      public static function IsBlockBranchCalling (id:int):Boolean
-      {
-         return  id == ID_StartIf
-              //|| id == ID_ElseIf
-              //|| id == ID_Else
-              //|| id == ID_SwitchCase
-              //|| id == ID_SwitchDefault
-            ;
-      }
       
    // the id < 8196 will be reserved for officeial core apis
       

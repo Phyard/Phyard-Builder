@@ -143,7 +143,7 @@ package common {
                   case CoreFunctionIds.ID_StartIf:
                      calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
                      
-                     if (lastCallingInfo.mOwnerBlock.mFirstBranch.mNumValidCallings > 0)
+                     if (lastCallingInfo.mOwnerBlock.mFirstBranch.mNumValidCallings > 1)
                      {
                         calling_condition.SetNextCallingForTrue (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
                      }

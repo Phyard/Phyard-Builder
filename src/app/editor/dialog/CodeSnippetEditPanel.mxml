@@ -181,7 +181,7 @@
          private function OnCopySelectedCallings (event:ContextMenuEvent):void
          {
             var selectedIndices:Array = List_Commands.selectedIndices;
-            selectedIndices.sort ();
+            selectedIndices.sort (Array.NUMERIC);
             CopyCallings (selectedIndices);
          }
          
@@ -492,7 +492,7 @@
          private function OnDeleteCalling ():void
          {
             var selectedIndices:Array = List_Commands.selectedIndices;
-            selectedIndices.sort (Array.DESCENDING);
+            selectedIndices.sort (Array.NUMERIC | Array.DESCENDING);
             var selectedIndex:int = List_Commands.selectedIndex;
             var index:int;
             for (var i:int = 0; i < selectedIndices.length; ++ i)

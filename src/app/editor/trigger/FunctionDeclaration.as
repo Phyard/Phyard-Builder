@@ -396,7 +396,7 @@ package editor.trigger {
             if (posDollar == 0)
                posDollar = callingForamtText.indexOf ("$", currentPos);
             if (posAnd == 0)
-               posAnd = callingForamtText.indexOf ("&", currentPos);
+               posAnd = callingForamtText.indexOf ("#", currentPos);
             
             if (posDollar < 0)
                posDollar = len;

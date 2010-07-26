@@ -85,7 +85,7 @@ package editor.trigger {
          
          if (Compile::Is_Debugging)
          {
-            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, sGlobalPackage, "ForDevDebug", "@(&0, &1, &2, &3, &4) = ForDevDebug ($0, $1, $2, $3, $4)", null,
+            RegisterFunctionDeclaration (CoreFunctionIds.ID_ForDebug, sGlobalPackage, "ForDevDebug", "@(#0, #1, #2, #3, #4) = ForDevDebug ($0, $1, $2, $3, $4)", null,
                           [
                              new VariableDefinitionEntity ("Shape"), 
                              new VariableDefinitionNumber ("Gravity Angle"), 
@@ -206,7 +206,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Milliseconds"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_IsKeyHold, system_package, "Is Key Held", "@&0 = Is the key (key code is $0) held?", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_IsKeyHold, system_package, "Is Key Held", "@#0 = Is the key (key code is $0) held?", null,
                      [
                              new VariableDefinitionNumber ("The Key", null, {mValueLists: Lists.mKeyCodeList}), 
                      ],
@@ -217,7 +217,7 @@ package editor.trigger {
          
       // string
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", "@&0 = $0", "@&0 = $0",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", "@#0 = $0", "@#0 = $0",
                      [
                              new VariableDefinitionString ("Source String"), 
                      ],
@@ -225,7 +225,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Target String"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                              new VariableDefinitionString ("Source String 1"), 
@@ -235,14 +235,14 @@ package editor.trigger {
                              new VariableDefinitionString ("Target String"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_SwapValues, string_package, "Swap String Values", "@$0 <-> $1", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_SwapValues, string_package, "Swap String Values", "@$0 &lt;-&gt; $1", null,
                      [
                              new VariableDefinitionString ("String 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                              new VariableDefinitionString ("String 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_IsNull, string_package, "Is Null?", "@&0 = String ($0) is Null?", "IsNullString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_IsNull, string_package, "Is Null?", "@#0 = String ($0) is Null?", "IsNullString",
                      [
                              new VariableDefinitionString ("The String"), 
                      ],
@@ -250,7 +250,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Null"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Equals, string_package, "String == String?", "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Equals, string_package, "String == String?", "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
                      [
                              new VariableDefinitionString ("String 1"), 
                              new VariableDefinitionString ("String 2"), 
@@ -259,7 +259,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Add, string_package, "String + String", "@&0 = $0 + $1", "@&0 = $0 + $1",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_Add, string_package, "String + String", "@#0 = $0 + $1", "@#0 = $0 + $1",
                      [
                              new VariableDefinitionString ("Source String 1"), 
                              new VariableDefinitionString ("Source String 2"), 
@@ -268,7 +268,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Target String"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_GetLength, string_package, "Get Length", "@&0 = GetStringLength ($0)", "@&0 = GetStringLength ($0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_GetLength, string_package, "Get Length", "@#0 = GetStringLength ($0)", "@#0 = GetStringLength ($0)",
                      [
                              new VariableDefinitionString ("The String"), 
                      ],
@@ -276,7 +276,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("String Length"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_GetCharAt, string_package, "Get Char At", "@&0 = The ($1)th Char in String($0)", "@&0 = StringCharAt ($0, $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_GetCharAt, string_package, "Get Char At", "@#0 = The ($1)th Char in String($0)", "@#0 = StringCharAt ($0, $1)",
                      [
                              new VariableDefinitionString ("The String"), 
                              new VariableDefinitionNumber ("Char Index", null, {mMinValue: 0}), 
@@ -285,7 +285,7 @@ package editor.trigger {
                              new VariableDefinitionString ("The Char"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt, string_package, "Get Char Code At", "@&0 = The Code of ($1)th Char in String($0)", "@&0 = StringCharCodeAt ($0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt, string_package, "Get Char Code At", "@#0 = The Code of ($1)th Char in String($0)", "@#0 = StringCharCodeAt ($0)",
                      [
                              new VariableDefinitionString ("The String"), 
                              new VariableDefinitionNumber ("Char Index", null, {mMinValue: 0}), 
@@ -294,7 +294,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Char Code"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_CharCode2Char, string_package, "Char Code -> Char", "@Char (&0) = From Char Code($0)", "@&0 = CharCode2Char ($0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_CharCode2Char, string_package, "Char Code -&gt; Char", "@Char (#0) = From Char Code($0)", "@#0 = CharCode2Char ($0)",
                      [
                              new VariableDefinitionNumber ("Char Code"), 
                      ],
@@ -321,7 +321,7 @@ package editor.trigger {
          
        // bool
           
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Assign, bool_package, "= (Assign Boolean)", "@&0 = $0", "@&0 = $0",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Assign, bool_package, "= (Assign Boolean)", "@#0 = $0", "@#0 = $0",
                      [
                              new VariableDefinitionBoolean ("Source Boolean"), 
                      ],
@@ -329,7 +329,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Target Boolean"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign, bool_package, "=? (Condition Assign Boolean)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign, bool_package, "=? (Condition Assign Boolean)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                              new VariableDefinitionBoolean ("Source Boolean 1"), 
@@ -339,14 +339,14 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Target Boolean"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_SwapValues, bool_package, "Swap Values", "@$0 <-> $1", "SwapBooleanValues",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_SwapValues, bool_package, "Swap Values", "@$0 &lt;-&gt; $1", "SwapBooleanValues",
                      [
                              new VariableDefinitionBoolean ("Boolean 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                              new VariableDefinitionBoolean ("Boolean 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Boolean_ToString, bool_package, "Bool -> String", "@$0 -> &0", "BoolToString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Boolean_ToString, bool_package, "Bool -&gt; String", "@$0 -&gt; #0", "BoolToString",
                      [
                              new VariableDefinitionBoolean ("The Bool"), 
                      ],
@@ -354,7 +354,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Boolean == Boolean?",  "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Boolean == Boolean?",  "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
                      [
                              new VariableDefinitionBoolean ("Bool 1"), 
                              new VariableDefinitionBoolean ("Bool 2"), 
@@ -363,7 +363,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Invert, bool_package, "! (Invert)", "@&0 = ! $0", "@&0 = ! $0",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Invert, bool_package, "! (Invert)", "@#0 = ! $0", "@#0 = ! $0",
                      [
                              new VariableDefinitionBoolean ("Source Boolean"), 
                      ],
@@ -371,7 +371,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Source Boolean"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsTrue, bool_package, "IsTrue?", "@&0 = ($0 == true)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsTrue, bool_package, "IsTrue?", "@#0 = ($0 == true)", null,
                      [
                              new VariableDefinitionBoolean ("Input Bool Value"), 
                      ],
@@ -379,7 +379,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsFalse, bool_package, "IsFalse?", "@&0 = ($0 == false)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_IsFalse, bool_package, "IsFalse?", "@#0 = ($0 == false)", null,
                      [
                              new VariableDefinitionBoolean ("Input Bool Value"), 
                      ],
@@ -387,7 +387,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_And, bool_package, "x && y (Bool And)", "@&0 = ($0 && $1)", "@&0 = ($0 && $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_And, bool_package, "x && y (Bool And)", "@#0 = ($0 && $1)", "@#0 = ($0 && $1)",
                      [
                              new VariableDefinitionBoolean ("Bool 1"), 
                              new VariableDefinitionBoolean ("Bool 2"), 
@@ -396,7 +396,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Or, bool_package, "x || y (Bool Or)", "@&0 = ($0 || $1)", "@&0 = ($0 || $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Or, bool_package, "x || y (Bool Or)", "@#0 = ($0 || $1)", "@#0 = ($0 || $1)",
                      [
                              new VariableDefinitionBoolean ("Boolean 1"), 
                              new VariableDefinitionBoolean ("Boolean 2"), 
@@ -405,7 +405,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Not, bool_package, "! (Bool Not)", "@&0 = (! $0)", "@&0 = (! $0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Not, bool_package, "! (Bool Not)", "@#0 = (! $0)", "@#0 = (! $0)",
                      [
                              new VariableDefinitionBoolean ("Input Boolean Value"), 
                      ],
@@ -413,7 +413,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Xor, bool_package, "!= (Bool Xor)", "@&0 = ($0 != $1)", "@&0 = ($0 != $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bool_Xor, bool_package, "!= (Bool Xor)", "@#0 = ($0 != $1)", "@#0 = ($0 != $1)",
                      [
                              new VariableDefinitionBoolean ("Boolean 1"), 
                              new VariableDefinitionBoolean ("Boolean 2"), 
@@ -425,7 +425,7 @@ package editor.trigger {
           
        // math basic ops
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Assign, numbe_general_package, "= (Number Assign)", "@&0 = $0", "@&0 = $0",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Assign, numbe_general_package, "= (Number Assign)", "@#0 = $0", "@#0 = $0",
                      [
                              new VariableDefinitionNumber ("Source"), 
                      ],
@@ -433,7 +433,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ConditionAssign, numbe_general_package, "=? (Condition Assign)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ConditionAssign, numbe_general_package, "=? (Condition Assign)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 
                              new VariableDefinitionNumber ("True Source"), 
@@ -443,14 +443,14 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_SwapValues, numbe_general_package, "Swap Values", "@$0 <-> $1", "SwapNumberValues",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_SwapValues, numbe_general_package, "Swap Values", "@$0 &lt;-&gt; $1", "SwapNumberValues",
                      [
                              new VariableDefinitionNumber ("Number 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                              new VariableDefinitionNumber ("Number 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Equals, numbe_general_package, "Number == Number?", "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Equals, numbe_general_package, "Number == Number?", "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -459,7 +459,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_LargerThan, numbe_general_package, "Number > Number?", "@&0 = ($0 > $1)", "@&0 = ($0 > $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_LargerThan, numbe_general_package, "Number &gt; Number?", "@#0 = ($0 &gt; $1)", "@#0 = ($0 &gt; $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -468,7 +468,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_LessThan, numbe_general_package, "Number < Number?", "@&0 = ($0 < $1)", "@&0 = ($0 < $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_LessThan, numbe_general_package, "Number &lt; Number?", "@#0 = ($0 &lt; $1)", "@#0 = ($0 &lt; $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -493,7 +493,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Negative, numbe_general_package, "- x (Negative)", "@&0 = (- $0)", "@&0 = (- $0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Negative, numbe_general_package, "- x (Negative)", "@#0 = (- $0)", "@#0 = (- $0)",
                      [
                              new VariableDefinitionNumber ("Number"), 
                      ],
@@ -501,7 +501,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Inverse, numbe_general_package, "1.0 / x (Inverse)", "@&0 = (1.0 / $0)", "@&0 = (1.0 / $0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Inverse, numbe_general_package, "1.0 / x (Inverse)", "@#0 = (1.0 / $0)", "@#0 = (1.0 / $0)",
                      [
                              new VariableDefinitionNumber ("Number", null, {mDefaultValue: 1.0}), 
                      ],
@@ -509,7 +509,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Add, numbe_general_package, "x + y", "@&0 = $0 + $1", "@&0 = $0 + $1",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Add, numbe_general_package, "x + y", "@#0 = $0 + $1", "@#0 = $0 + $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -518,7 +518,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Subtract, numbe_general_package, "x - y", "@&0 = $0 - $1", "@&0 = $0 - $1",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Subtract, numbe_general_package, "x - y", "@#0 = $0 - $1", "@#0 = $0 - $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -527,7 +527,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Multiply, numbe_general_package, "x * y (Multiply)", "@&0 = $0 * $1", "@&0 = $0 * $1",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Multiply, numbe_general_package, "x * y (Multiply)", "@#0 = $0 * $1", "@#0 = $0 * $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -536,7 +536,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Divide, numbe_general_package, "x / y (Divide)", "@&0 = $0 / $1", "@&0 = $0 / $1",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Divide, numbe_general_package, "x / y (Divide)", "@#0 = $0 / $1", "@#0 = $0 / $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2", null, {mDefaultValue: 1.0}), 
@@ -545,7 +545,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Modulo, numbe_general_package, "x % y (Modulo)", "@&0 = $0 % $1", "@&0 = $0 % $1",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Modulo, numbe_general_package, "x % y (Modulo)", "@#0 = $0 % $1", "@#0 = $0 % $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2", null, {mDefaultValue: 1.0}), 
@@ -557,7 +557,7 @@ package editor.trigger {
          
       // math / toString
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ToString, to_string_package, "Number -> String", "@$0 -> &0", "NumberToString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ToString, to_string_package, "Number -&gt; String", "@$0 -&gt; #0", "NumberToString",
                      [
                              new VariableDefinitionNumber ("The Number"), 
                      ],
@@ -592,7 +592,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix, to_string_package, "Number -> String (By Radix)", "@$0 -> &0 by radix $1", "ToStringByRadix",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix, to_string_package, "Number -&gt; String (By Radix)", "@$0 -&gt; #0 by radix $1", "ToStringByRadix",
                      [
                              new VariableDefinitionNumber ("The Number"), 
                              new VariableDefinitionNumber ("The Radix", null, {mDefaultValue: 10}), 
@@ -601,7 +601,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ParseFloat, to_string_package, "Number <- String", "@$0 <- &0", "StringToNumber",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ParseFloat, to_string_package, "Number <- String", "@$0 <- #0", "StringToNumber",
                      [
                              new VariableDefinitionString ("String"), 
                      ],
@@ -609,7 +609,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("The Number"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ParseInteger, to_string_package, "Integer <- String", "@$0 <- &0 by radix $1", "StringToInteger",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ParseInteger, to_string_package, "Integer <- String", "@$0 <- #0 by radix $1", "StringToInteger",
                      [
                              new VariableDefinitionString ("String"), 
                              new VariableDefinitionNumber ("The Radix ([2, 36])", null, {mDefaultValue: 10}), 
@@ -621,7 +621,7 @@ package editor.trigger {
          
       // math / bitwise
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft, bitwise_package, "<< (ShiftLeft)", "@&0 = ($0 << $1)", "@&0 = ($0 << $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft, bitwise_package, "&lt;&lt; (ShiftLeft)", "@#0 = ($0 &lt;&lt; $1)", "@#0 = ($0 &lt;&lt; $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -630,7 +630,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight, bitwise_package, ">> (ShiftRight)", "@&0 = ($0 >> $1)", "@&0 = ($0 >> $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight, bitwise_package, "&gt;&gt; (ShiftRight)", "@#0 = ($0 &gt;&gt; $1)", "@#0 = ($0 &gt;&gt; $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -639,7 +639,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned, bitwise_package, ">>> (ShiftRightUnsignedly)", "@&0 = ($0 >>> $1)", "@&0 = ($0 >>> $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned, bitwise_package, "&gt;&gt;&gt; (ShiftRightUnsignedly)", "@#0 = ($0 &gt;&gt;&gt; $1)", "@#0 = ($0 &gt;&gt;&gt; $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -648,7 +648,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_And, bitwise_package, "x & y (Bitwise And)", "@&0 = ($0 & $1)", "@&0 = ($0 & $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_And, bitwise_package, "x & y (Bitwise And)", "@#0 = ($0 & $1)", "@#0 = ($0 & $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -657,7 +657,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Or, bitwise_package, "x | y (Bitwise Or)", "@&0 = ($0 | $1)", "@&0 = ($0 | $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Or, bitwise_package, "x | y (Bitwise Or)", "@#0 = ($0 | $1)", "@#0 = ($0 | $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -666,7 +666,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Not, bitwise_package, "~ x (Bitwise Not)", "@&0 = (~ $0)", "@&0 = (~ $0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Not, bitwise_package, "~ x (Bitwise Not)", "@#0 = (~ $0)", "@#0 = (~ $0)",
                      [
                              new VariableDefinitionNumber ("Inout Number"), 
                      ],
@@ -674,7 +674,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Xor, bitwise_package, "x ^ y (Bitwise Xor)", "@&0 = ($0 ^ $1)", "@&0 = ($0 ^ $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_Xor, bitwise_package, "x ^ y (Bitwise Xor)", "@#0 = ($0 ^ $1)", "@#0 = ($0 ^ $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -686,7 +686,7 @@ package editor.trigger {
          
       // math / number trinomogetry
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_SinRadians, trigonometry_package, "Sin", "@&0 = Sin (Radians ($0))", "@&0 = Sin (Radians ($0))",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_SinRadians, trigonometry_package, "Sin", "@#0 = Sin (Radians ($0))", "@#0 = Sin (Radians ($0))",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -694,7 +694,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Sin (Radians)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_CosRadians, trigonometry_package, "Cos", "@&0 = Cos (Radians ($0))", "@&0 = Cos (Radians ($0))",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_CosRadians, trigonometry_package, "Cos", "@#0 = Cos (Radians ($0))", "@#0 = Cos (Radians ($0))",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -702,7 +702,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Cos (Radians)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_TanRadians, trigonometry_package, "Tan", "@&0 = Tan (Radians ($0))", "@&0 = Tan (Radians ($0))",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_TanRadians, trigonometry_package, "Tan", "@#0 = Tan (Radians ($0))", "@#0 = Tan (Radians ($0))",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -710,7 +710,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Tan (Radians)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ArcSinRadians, trigonometry_package, "ArcSin_Radians", "@Radians (&0) = ArcSin ($0)", "@Radians (&0) = ArcSin ($0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ArcSinRadians, trigonometry_package, "ArcSin_Radians", "@Radians (#0) = ArcSin ($0)", "@Radians (#0) = ArcSin ($0)",
                      [
                              new VariableDefinitionNumber ("Sin (Radians)"), 
                      ],
@@ -718,7 +718,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ArcCosRadians, trigonometry_package, "ArcCos_Radians", "@Radians (&0) = ArcCos ($0)", "@Radians (&0) = ArcCos ($0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ArcCosRadians, trigonometry_package, "ArcCos_Radians", "@Radians (#0) = ArcCos ($0)", "@Radians (#0) = ArcCos ($0)",
                      [
                              new VariableDefinitionNumber ("Cos (Radians)"), 
                      ],
@@ -726,7 +726,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ArcTanRadians, trigonometry_package, "ArcTan_Radians", "@Radians (&0) = ArcTan ($0)", "@Radians (&0) = ArcTan ($0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ArcTanRadians, trigonometry_package, "ArcTan_Radians", "@Radians (#0) = ArcTan ($0)", "@Radians (#0) = ArcTan ($0)",
                      [
                              new VariableDefinitionNumber ("Tan (Radians)"), 
                      ],
@@ -734,7 +734,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ArcTan2Radians, trigonometry_package, "ArcTan2_Radians", "@Radians (&0) = ArcTan2 ($0, $1)", "@Radians (&0) = ArcTan2 ($0, $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ArcTan2Radians, trigonometry_package, "ArcTan2_Radians", "@Radians (#0) = ArcTan2 ($0, $1)", "@Radians (#0) = ArcTan2 ($0, $1)",
                      [
                              new VariableDefinitionNumber ("y"), 
                              new VariableDefinitionNumber ("x"), 
@@ -817,7 +817,7 @@ package editor.trigger {
           
        // math / number convert
           
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians, convert_package, "Degrees -> Radians", "@Degrees ($0) -> Radians (&0)", "DegreesToRadians",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians, convert_package, "Degrees -&gt; Radians", "@Degrees ($0) -&gt; Radians (#0)", "DegreesToRadians",
                      [
                              new VariableDefinitionNumber ("Degrees"), 
                      ],
@@ -825,7 +825,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Radians2Degrees, convert_package, "Radians -> Degrees", "@Radians ($0) -> Degrees (&0)", "RadiansToDegrees",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Radians2Degrees, convert_package, "Radians -&gt; Degrees", "@Radians ($0) -&gt; Degrees (#0)", "RadiansToDegrees",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -833,7 +833,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Degrees"), 
                      ]
                   );
-          RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Number2RGB, convert_package, "Color -> RGB", "@Color ($0) -> RGB (&0, &1, &2)", "Color2Rgb",
+          RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Number2RGB, convert_package, "Color -&gt; RGB", "@Color ($0) -&gt; RGB (#0, #1, #2)", "Color2Rgb",
                      [
                              new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
                      ],
@@ -843,7 +843,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Blue"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RGB2Number, convert_package, "RGB -> Color", "@RGB ($0, $1, $2) -> Color (&0)", "RgbToColor",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RGB2Number, convert_package, "RGB -&gt; Color", "@RGB ($0, $1, $2) -&gt; Color (#0)", "RgbToColor",
                      [
                              new VariableDefinitionNumber ("Red (0-255)"), 
                              new VariableDefinitionNumber ("Green (0-255)"), 
@@ -853,7 +853,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -> Minutes : Seconds", "@Milliseconds ($0) -> Minutes (&0) : Seconds (&1) : Milliseconds (&2)", "MillisecondsToMinutesAndSeconds",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -&gt; Minutes : Seconds", "@Milliseconds ($0) -&gt; Minutes (#0) : Seconds (#1) : Milliseconds (#2)", "MillisecondsToMinutesAndSeconds",
                      [
                              new VariableDefinitionNumber ("Milliseconds", null, {mMinValue: 0.0}), 
                      ],
@@ -1175,7 +1175,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Return Boolean Result"),
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction, world_script_package, "Condition Call Boolean Function", "@&0 = If $0 is true, call $1, otherwise, call $2", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction, world_script_package, "Condition Call Boolean Function", "@#0 = If $0 is true, call $1, otherwise, call $2", null,
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionEntity ("Script 1 to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
@@ -1215,7 +1215,7 @@ package editor.trigger {
          
      // game / collision category
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_Assign, ccat_package, "= (Assign CCat)", "@&0 = $0", "@&0 = $0",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_Assign, ccat_package, "= (Assign CCat)", "@#0 = $0", "@#0 = $0",
                      [
                              new VariableDefinitionCollisionCategory ("Source Collision Category"), 
                      ],
@@ -1223,7 +1223,7 @@ package editor.trigger {
                              new VariableDefinitionCollisionCategory ("Target Collision Category"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign, ccat_package, "?= (Condition Assign CCat)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign, ccat_package, "?= (Condition Assign CCat)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionCollisionCategory ("Collision Category 1"), 
@@ -1233,14 +1233,14 @@ package editor.trigger {
                              new VariableDefinitionCollisionCategory ("Target Collision Category"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SwapValues, ccat_package, "Swap Values", "@$0 <-> $1", "SwapCCatValues",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_SwapValues, ccat_package, "Swap Values", "@$0 &lt;-&gt; $1", "SwapCCatValues",
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                              new VariableDefinitionCollisionCategory ("Collision Category 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_IsNull, ccat_package, "Is Null?", "@&0 = CCat($0) is Null?", "IsNullCCat",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_IsNull, ccat_package, "Is Null?", "@#0 = CCat($0) is Null?", "IsNullCCat",
                      [
                              new VariableDefinitionCollisionCategory ("The CCat"), 
                      ],
@@ -1248,7 +1248,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Null"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ToString, ccat_package, "CCat -> String", "@$0 -> &0", "CCatToString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ToString, ccat_package, "CCat -&gt; String", "@$0 -&gt; #0", "CCatToString",
                      [
                              new VariableDefinitionCollisionCategory ("The CCat"), 
                      ],
@@ -1256,7 +1256,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_Equals, ccat_package, "CCat == CCat?",  "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_Equals, ccat_package, "CCat == CCat?",  "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
                      [
                              new VariableDefinitionCollisionCategory ("CCat 1"), 
                              new VariableDefinitionCollisionCategory ("CCat 2"), 
@@ -1283,7 +1283,7 @@ package editor.trigger {
          
      // game /entity
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Assign, entity_general_package, "= (Assign Entity)", "@&0 = $0", "@&0 = $0",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Assign, entity_general_package, "= (Assign Entity)", "@#0 = $0", "@#0 = $0",
                      [
                              new VariableDefinitionEntity ("Source Entity"), 
                      ],
@@ -1291,7 +1291,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Target"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign, entity_general_package, "?= (Condition Assign Entity)", "@&0 = ($0 is true) ? $1 : $2", "@&0 = ($0 is true) ? $1 : $2",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign, entity_general_package, "?= (Condition Assign Entity)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
                              new VariableDefinitionEntity ("Source Entity 1"), 
@@ -1301,14 +1301,14 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Target"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SwapValues, entity_general_package, "Swap Values", "@$0 <-> $1", "SwapEntityValues",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_SwapValues, entity_general_package, "Swap Values", "@$0 &lt;-&gt; $1", "SwapEntityValues",
                      [
                              new VariableDefinitionEntity ("Entity 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                              new VariableDefinitionEntity ("Entity 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsNull, entity_general_package, "Is Null?", "@&0 = Entity($0) is Null?", "IsNullEntity",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsNull, entity_general_package, "Is Null?", "@#0 = Entity($0) is Null?", "IsNullEntity",
                      [
                              new VariableDefinitionEntity ("The Entity"), 
                      ],
@@ -1325,7 +1325,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Another Entity"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ToString, entity_general_package, "Entity -> String", "@$0 -> &0", "EntityToString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ToString, entity_general_package, "Entity -&gt; String", "@$0 -&gt; #0", "EntityToString",
                      [
                              new VariableDefinitionEntity ("The Entity"), 
                      ],
@@ -1333,7 +1333,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Equals, entity_general_package, "Entity == Entity?",  "@&0 = ($0 == $1)", "@&0 = ($0 == $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_Equals, entity_general_package, "Entity == Entity?",  "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
                      [
                              new VariableDefinitionEntity ("Entity 1"), 
                              new VariableDefinitionEntity ("Entity 2"), 
@@ -1350,7 +1350,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed, entity_as_task_package, "Is Entity Task Failed?", "@&0 = Is Entity ($0) Task Failed?", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed, entity_as_task_package, "Is Entity Task Failed?", "@#0 = Is Entity ($0) Task Failed?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sTaskEntityClasses}), 
                      ],
@@ -1358,7 +1358,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Failed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_as_task_package, "Is Entity Task Successed", "@&0 = Is Entity ($0) Task Successed?", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_as_task_package, "Is Entity Task Successed", "@#0 = Is Entity ($0) Task Successed?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sTaskEntityClasses}), 
                      ],
@@ -1366,7 +1366,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Successed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished, entity_as_task_package, "Is Entity Task Unfinished", "@&0 = Is Entity ($0) Task Unfinished?", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished, entity_as_task_package, "Is Entity Task Unfinished", "@#0 = Is Entity ($0) Task Unfinished?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sTaskEntityClasses}), 
                      ],
@@ -1400,7 +1400,7 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsVisible, entity_common_package, "Is Visible", "@&0 = Is $0 Visible?", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsVisible, entity_common_package, "Is Visible", "@#0 = Is $0 Visible?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}), 
                      ],
@@ -1415,7 +1415,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetAlpha, entity_common_package, "Get Alpha", "@&0 = Get Alpha of $0", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetAlpha, entity_common_package, "Get Alpha", "@#0 = Get Alpha of $0", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}), 
                      ],
@@ -1430,7 +1430,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsEnabled, entity_common_package, "Is Entity Enabled",  "@&0 = Is Entity ($0) Enabled?", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsEnabled, entity_common_package, "Is Entity Enabled",  "@#0 = Is Entity ($0) Enabled?", null,
                      [
                              new VariableDefinitionEntity ("The Event Handler", null, {mValidClasses: Filters.sCanBeDisabledEntityClasses}), 
                      ],
@@ -1463,7 +1463,7 @@ package editor.trigger {
          //            ],
          //            null
          //         );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians, entity_common_package, "Get Rotation by Radians", "@Radians (&0) = Get Rotation ($0)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians, entity_common_package, "Get Rotation by Radians", "@Radians (#0) = Get Rotation ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
                      ],
@@ -1471,7 +1471,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Rotation (radians)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees, entity_common_package, "Get Rotation by Degrees", "@Degrees (&0) = Get Rotation ($0)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees, entity_common_package, "Get Rotation by Degrees", "@Degrees (#0) = Get Rotation ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
                      ],
@@ -1480,7 +1480,7 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint, shape_general_package, "World Point -> Local Point", "@World Point ($0, $1) -> Local Point (&0, &1)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint, shape_general_package, "World Point -&gt; Local Point", "@World Point ($0, $1) -&gt; Local Point (#0, #1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
                              new VariableDefinitionNumber ("World Point X"), 
@@ -1491,7 +1491,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Local Point Y"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint, shape_general_package, "Local Point -> World Point", "@Local Point ($0, $1) -> World Point (&0, &1)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint, shape_general_package, "Local Point -&gt; World Point", "@Local Point ($0, $1) -&gt; World Point (#0, #1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
                              new VariableDefinitionNumber ("Local Point X"), 
@@ -1613,7 +1613,7 @@ package editor.trigger {
                      null
                   );
          
-          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Background Color", "@Color (&0) = Get Background Color ($0)", null,
+          RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Background Color", "@Color (#0) = Get Background Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                      ],
@@ -1628,7 +1628,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "Get Background Color RGB", "@RGB (&0, &1, &2) = Get Background Color ($0)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB, shape_appearance_package, "Get Background Color RGB", "@RGB (#0, #1, #2) = Get Background Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
                      ],
@@ -1737,7 +1737,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetLinearVelocity, shape_physics_dynamics_package, "Get Linear Velocity", "@Vector (&0, &1) = Get Linear Velocity ($0)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetLinearVelocity, shape_physics_dynamics_package, "Get Linear Velocity", "@Vector (#0, #1) = Get Linear Velocity ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -1909,7 +1909,7 @@ package editor.trigger {
          
       // game / entity / shape / text
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetText, shape_text_package, "Get Text", "@&0 = Get Text of $0", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetText, shape_text_package, "Get Text", "@#0 = Get Text of $0", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}), 
                      ],
@@ -1940,7 +1940,7 @@ package editor.trigger {
          
       // game / entity / shape / circle
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShapeCircle_GetRadius, shape_circle_package, "Get Radius", "@&0 = Get Radius of Circle $0", "GetCircleRadius",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShapeCircle_GetRadius, shape_circle_package, "Get Radius", "@#0 = Get Radius of Circle $0", "GetCircleRadius",
                      [
                              new VariableDefinitionEntity ("The Circle", null, {mValidClasses: Filters.sCircleShapeEntityClasses}), 
                      ],
@@ -1951,7 +1951,7 @@ package editor.trigger {
          
       // game / entity / shape / rectangle
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_GetSize, shape_rectangle_package, "Get Size", "@(&0, &1) = Get Size of Retangle $0", "GetRectangleSize",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_GetSize, shape_rectangle_package, "Get Size", "@(#0, #1) = Get Size of Retangle $0", "GetRectangleSize",
                      [
                              new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}), 
                      ],
@@ -2009,7 +2009,7 @@ package editor.trigger {
                      null
                   );
          
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeAngleByDegrees, entity_joint_package, "Get Hinge Angle By Degrees", "@Degrees (&0) = Get Current Angle of Hinge ($0)", null,
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeAngleByDegrees, entity_joint_package, "Get Hinge Angle By Degrees", "@Degrees (#0) = Get Current Angle of Hinge ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                      ],
@@ -2017,7 +2017,7 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Current Angle (degrees)"), 
                      ]
                   );
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees, entity_joint_package, "Get Hinge Limits By Degrees", "@Degrees (&0, &1) = Get Limits of Hinge ($0)", null,
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees, entity_joint_package, "Get Hinge Limits By Degrees", "@Degrees (#0, #1) = Get Limits of Hinge ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                      ],
@@ -2034,7 +2034,7 @@ package editor.trigger {
                      ],
                      null
                   );
-        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed, entity_joint_package, "Get Hinge Motor Speed by Degrees", "@Degrees/s (&0) = Get Motor Speed of Hinge ($0)", null,
+        RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed, entity_joint_package, "Get Hinge Motor Speed by Degrees", "@Degrees/s (#0) = Get Motor Speed of Hinge ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Hinge", null, {mValidClasses: Filters.sJointHingeEntityClasses}), 
                      ],
@@ -2050,7 +2050,7 @@ package editor.trigger {
                      null
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderTranslation, entity_joint_package, "Get Slider Translation", "@&0 = Get Current Translation of Slider ($0)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderTranslation, entity_joint_package, "Get Slider Translation", "@#0 = Get Current Translation of Slider ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
                      ],
@@ -2058,7 +2058,7 @@ package editor.trigger {
                         new VariableDefinitionNumber ("Current Translation"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits, entity_joint_package, "Get Slider Limits", "@&0 = Get Limits of Slider ($0)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits, entity_joint_package, "Get Slider Limits", "@#0 = Get Limits of Slider ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
                      ],
@@ -2075,7 +2075,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed, entity_joint_package, "Get Slider Motor Speed", "@&0 = Get Motor Speed of Slider ($0)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed, entity_joint_package, "Get Slider Motor Speed", "@#0 = Get Motor Speed of Slider ($0)", null,
                      [
                         new VariableDefinitionEntity ("The Slider", null, {mValidClasses: Filters.sJointSliderEntityClasses}), 
                      ],

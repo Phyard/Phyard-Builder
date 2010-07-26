@@ -200,7 +200,7 @@ package common.trigger.parse {
          
          while (true)
          {
-            if (currentBranch != topBranch)
+            if (currentBranch != null && currentBranch != topBranch)
             {
                currentBranch.mLastCallingLine = null;
                currentBlock = currentBranch.mOwnerBlock;

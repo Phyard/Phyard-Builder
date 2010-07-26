@@ -19,14 +19,6 @@ package player.mode {
       
       private var mIsStarted:Boolean = false;
       
-      
-      override public function Reset ():void
-      {
-         ResetSession ();
-         
-         mWorld.SetCurrentMode (null);
-      }
-      
       protected function ResetSession ():void
       {
          mIsStarted = false;

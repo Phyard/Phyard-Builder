@@ -21,12 +21,9 @@ package editor.mode {
       
       private var mIsStarted:Boolean = false;
       
-      
-      override public function Reset ():void
+      override public function Destroy ():void
       {
          ResetSession ();
-         
-         mMainView.SetCurrentEditMode (null);
       }
       
       protected function ResetSession ():void

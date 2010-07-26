@@ -853,8 +853,10 @@ package editor {
       public function SetCurrentCreateMode (mode:Mode):void
       {
          if (mCurrentCreatMode != null)
+         {
             mCurrentCreatMode.Destroy ();
-         //CancelCurrentCreatingMode ();
+            mCurrentCreatMode = null;
+         }
          
          if (Runtime.HasSettingDialogOpened ())
          {
@@ -887,19 +889,17 @@ package editor {
       {
          if (mCurrentCreatMode != null)
          {
-            mCurrentCreatMode.Reset ();
             SetCurrentCreateMode (null);
          }
-         
-         UpdateUiButtonsEnabledStatus ();
-         
-         CalSelectedEntitiesCenterPoint ();
       }
       
       public function SetCurrentEditMode (mode:Mode):void
       {
          if (mCurrentEditMode != null)
+         {
             mCurrentEditMode.Destroy ();
+            mCurrentEditMode = null;
+         }
          
          if (Runtime.HasSettingDialogOpened ())
          {
@@ -912,6 +912,14 @@ package editor {
          
          if (mCurrentEditMode != null)
             mCurrentEditMode.Initialize ();
+      }
+      
+      public function CancelCurrentEditingMode ():void
+      {
+         if (mCurrentEditMode != null)
+         {
+            SetCurrentEditMode (null);
+         }
       }
       
       private var mIsCreating:Boolean = false;
@@ -2970,6 +2978,8 @@ package editor {
             if (mCurrentCreatMode != null)
             {
                CancelCurrentCreatingMode ();
+               UpdateUiButtonsEnabledStatus ();
+               CalSelectedEntitiesCenterPoint ();
             }
          }
          
@@ -2978,7 +2988,9 @@ package editor {
          {
             if (mCurrentEditMode != null)
             {
-               mCurrentEditMode.Reset ();
+               CancelCurrentEditingMode ();
+               UpdateUiButtonsEnabledStatus ();
+               CalSelectedEntitiesCenterPoint ();
             }
          }
       }

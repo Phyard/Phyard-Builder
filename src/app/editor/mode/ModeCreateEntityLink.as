@@ -32,11 +32,9 @@ package editor.mode {
       {
       }
       
-      override public function Reset ():void
+      override public function Destroy ():void
       {
          ResetSession ();
-         
-         mMainView.SetCurrentCreateMode (null);
       }
       
       protected function ResetSession ():void

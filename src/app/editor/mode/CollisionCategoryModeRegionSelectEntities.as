@@ -27,13 +27,6 @@ package editor.mode {
          ResetSession ();
       }
       
-      override public function Reset ():void
-      {
-         ResetSession ();
-         
-         mMainView.SetCurrentEditMode (null);
-      }
-      
       protected function ResetSession ():void
       {
          if ( mBoxShape != null && mMainView.mForegroundLayer.contains (mBoxShape) )

@@ -43,13 +43,6 @@ package editor.mode {
          ResetSession (true);
       }
       
-      override public function Reset ():void
-      {
-         ResetSession (true);
-         
-         mMainView.SetCurrentCreateMode (null);
-      }
-      
       protected function ResetSession (isCancelled:Boolean):void
       {
          if (isCancelled && mEntity != null)

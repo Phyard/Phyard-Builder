@@ -21,14 +21,12 @@ package editor.mode {
       private var mIsStarted:Boolean = false;
       
       
-      override public function Reset ():void
+      override public function Destroy ():void
       {
          if (mIsStarted)
             UpdateSession (mStartX, mStartY, true);
          
          ResetSession ();
-         
-         mMainView.SetCurrentEditMode (null);
       }
       
       protected function ResetSession ():void

@@ -54,11 +54,9 @@ package editor.mode {
       
       private var mRectEntity:EntityShapeRectangle = null;
       
-      override public function Reset ():void
+      override public function Destroy ():void
       {
          ResetSession (true);
-         
-         mMainView.SetCurrentCreateMode (null);
       }
       
       protected function ResetSession (isCancelled:Boolean):void

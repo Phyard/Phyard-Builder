@@ -22,10 +22,6 @@ package editor.mode {
       {
       }
       
-      public function Reset ():void
-      {
-      }
-      
       public function Update (escapedTime:Number):void
       {
          

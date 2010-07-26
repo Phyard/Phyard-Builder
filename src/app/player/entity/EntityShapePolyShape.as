@@ -39,7 +39,8 @@ package player.entity {
          if (index < 0 || index >= GetVertexPointsCount ())
             return null;
          
-         return mLocalPoints [index];
+         var localPoint:Point = mLocalPoints [index] as Point;
+         return new Point (localPoint.x, localPoint.y);
       }
       
       public function SetLocalDisplayVertexPoints (points:Array):void

@@ -31,7 +31,7 @@ package editor.trigger {
       
       override public function GetCodeName ():String
       {
-         return "g";
+         return "global";
       }
       
    }

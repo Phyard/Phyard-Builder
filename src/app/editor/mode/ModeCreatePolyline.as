@@ -90,7 +90,7 @@ package editor.mode {
          
          if (mPolylineEntity == null)
          {
-            Reset ();
+            mMainView.CancelCurrentCreatingMode ();
             return;
          }
       }
@@ -121,7 +121,7 @@ package editor.mode {
             {
                if (mPolylineEntity.GetVertexPointsCount () < 3)
                {
-                  Reset ();
+                  mMainView.CancelCurrentCreatingMode ();
                }
                else
                {

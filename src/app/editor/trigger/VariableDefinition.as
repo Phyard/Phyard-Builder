@@ -168,9 +168,13 @@ package editor.trigger {
       
       public static function VariableIndex2SelectListSelectedIndex (variableIndex:int, selectListDataProvider:Array):int
       {
+         var vi:VariableInstance;
+         var index:int;
          for (var i:int = 0; i < selectListDataProvider.length; ++ i)
          {
-            if (selectListDataProvider[i].mVariableIndex == variableIndex)
+            vi = selectListDataProvider[i].mVariableInstance as VariableInstance;
+            index = vi == null ? -1 : vi.GetIndex ();
+            if (variableIndex == index)
                return i;
          }
          
@@ -250,7 +254,11 @@ package editor.trigger {
             var currentVariable:VariableInstance = valueTargetVariable.GetVariableInstance ();
             var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
             
-            valueTargetVariable.SetVariableInstance (variable_space.GetVariableInstanceAt (combo_box.selectedItem == null ? -1 : combo_box.selectedItem.mVariableIndex));
+            var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
+            if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
+               valueTargetVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            else
+               valueTargetVariable.SetVariableInstance (vi);
          }
       }
       
@@ -355,7 +363,7 @@ package editor.trigger {
             
             var combo_box:ComboBox = new ComboBox ();
             combo_box.dataProvider = variable_list;
-            combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);;
+            combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);
             combo_box.rowCount = 11;
             
             return combo_box;
@@ -370,7 +378,11 @@ package editor.trigger {
                var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
                var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
                
-               valueSourceVariable.SetVariableInstance (variable_space.GetVariableInstanceAt (combo_box.selectedItem == null ? -1 : combo_box.selectedItem.mVariableIndex));
+               var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
+               if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
+                  valueSourceVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
+               else
+                  valueSourceVariable.SetVariableInstance (vi);
             }
          }
          

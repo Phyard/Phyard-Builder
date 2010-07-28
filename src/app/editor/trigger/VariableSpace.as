@@ -15,6 +15,8 @@ package editor.trigger {
       protected var mNullVariableInstance:VariableInstance;
       protected var mVariableInstances:Array = new Array ();
       
+      private var mNumModifiedTimes:int = 0;
+      
       public function VariableSpace (triggerEngine:TriggerEngine)
       {
          mTriggerEngine = triggerEngine;
@@ -66,6 +68,8 @@ package editor.trigger {
          
          mVariableInstances.push (variable_instance);
          
+         NotifyModified ();
+         
          return variable_instance;
       }
       
@@ -74,6 +78,8 @@ package editor.trigger {
          var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, null, valueType, variableName, intialValue);
          
          mVariableInstances.push (variable_instance);
+         
+         NotifyModified ();
          
          return variable_instance;
       }
@@ -100,6 +106,8 @@ package editor.trigger {
          mVariableInstances.splice (variableId, 1);
          
          RearrangeVariableInstanceIndexes ();
+         
+         NotifyModified ();
       }
       
       public function DestroyVariableInstance (vi:VariableInstance):void
@@ -129,6 +137,8 @@ package editor.trigger {
          mVariableInstances.splice (variableNewId, 0, object);
          
          RearrangeVariableInstanceIndexes ();
+         
+         NotifyModified ();
       }
       
       public function HasVariablesWithValueType (valueType:int):Boolean
@@ -152,7 +162,7 @@ package editor.trigger {
          
          var item:Object = new Object ();
          item.label = "(null)"; // mNullVariableInstance.GetLongName ();
-         item.mVariableIndex = -1;
+         item.mVariableInstance = null;
          
          entity_list.push (item);
          
@@ -173,7 +183,7 @@ package editor.trigger {
             
             item = new Object ();
             item.label = vi.GetLongName ();
-            item.mVariableIndex = i;
+            item.mVariableInstance = vi;
             
             entity_list.push (item);
          }
@@ -182,6 +192,15 @@ package editor.trigger {
       }
       
       
+      public function NotifyModified ():void
+      {
+         ++ mNumModifiedTimes;
+      }
+      
+      public function GetNumModifiedTimes ():int
+      {
+         return mNumModifiedTimes;
+      }
       
    }
 }

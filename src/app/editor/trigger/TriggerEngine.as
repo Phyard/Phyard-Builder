@@ -34,6 +34,8 @@ package editor.trigger {
    
    import editor.dialog.VariablesEditDialog;
    
+   import editor.runtime.Runtime;
+   
    public class TriggerEngine
    {
       // register variables
@@ -195,7 +197,7 @@ package editor.trigger {
          
          if (! mGlobalVariablesEditDialogVisible)
          {
-            PopUpManager.addPopUp (mGlobalVariablesEditDialog, parent, false);
+            PopUpManager.addPopUp (mGlobalVariablesEditDialog, parent, true);
             mGlobalVariablesEditDialogVisible = true;
          }
          
@@ -212,6 +214,11 @@ package editor.trigger {
          if (mGlobalVariablesEditDialog != null && mGlobalVariablesEditDialogVisible)
          {
             PopUpManager.removePopUp (mGlobalVariablesEditDialog);
+            
+            if (Runtime.mGlobalVariablesEditingDialogClosedCallBack != null)
+            {
+               Runtime.mGlobalVariablesEditingDialogClosedCallBack ();
+            }
          }
          
          mGlobalVariablesEditDialogVisible = false;
@@ -233,7 +240,7 @@ package editor.trigger {
          
          if (! mEntityVariablesEditDialogVisible)
          {
-            PopUpManager.addPopUp (mEntityVariablesEditDialog, parent, false);
+            PopUpManager.addPopUp (mEntityVariablesEditDialog, parent, true);
             mEntityVariablesEditDialogVisible = true;
          }
          
@@ -250,6 +257,11 @@ package editor.trigger {
          if (mEntityVariablesEditDialog != null && mEntityVariablesEditDialogVisible)
          {
             PopUpManager.removePopUp (mEntityVariablesEditDialog);
+            
+            if (Runtime.mEntityVariablesEditingDialogClosedCallBack != null)
+            {
+               Runtime.mEntityVariablesEditingDialogClosedCallBack ();
+            }
          }
          
          mEntityVariablesEditDialogVisible = false;

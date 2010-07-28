@@ -54,7 +54,7 @@ package editor.mode {
          mEntityJoint = mEntityCreateFunction ();
          if (mEntityJoint == null)
          {
-            Reset ();
+            mMainView.CancelCurrentCreatingMode ();
             return;
          }
          
@@ -157,7 +157,7 @@ package editor.mode {
          
          if (mCurrrentStep == 0) // this is caused by dragging mouse from out of world field.
          {
-            Reset ();
+            mMainView.CancelCurrentCreatingMode ();
             return;
          }
          

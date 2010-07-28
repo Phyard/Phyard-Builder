@@ -63,7 +63,7 @@ package editor.mode {
          mCircleEntity.SetAiType (mCiAiType);
          if (mCircleEntity == null)
          {
-            Reset ();
+            mMainView.CancelCurrentCreatingMode ();
             return;
          }
          

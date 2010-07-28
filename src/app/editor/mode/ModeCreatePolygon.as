@@ -85,7 +85,7 @@ package editor.mode {
          mPolygonEntity.SetAiType (mCiAiType);
          if (mPolygonEntity == null)
          {
-            Reset ();
+            mMainView.CancelCurrentCreatingMode ();
             return;
          }
       }
@@ -116,7 +116,7 @@ package editor.mode {
             {
                if (mPolygonEntity.GetVertexPointsCount () < 4)
                {
-                  Reset ();
+                  mMainView.CancelCurrentCreatingMode ();
                }
                else
                {

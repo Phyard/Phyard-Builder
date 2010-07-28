@@ -45,8 +45,8 @@ package editor.mode {
          mEntityCollisionCategory = mMainView.CreateCollisionCategory (0, 0);
          if (mEntityCollisionCategory == null)
          {
-            Reset ();
-            return
+            mMainView.CancelCurrentCreatingMode ();
+            return;
          }
          
          mEntityCollisionCategory.visible = false;

@@ -63,7 +63,7 @@ package editor.mode {
          
          if (mEntity == null)
          {
-            Reset ();
+            mMainView.CancelCurrentCreatingMode ();
             return;
          }
          

@@ -6,8 +6,9 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ed="editor.controls.*" 
       borderStyle="solid" borderThickness="0"
       width="100%" height="100%"
-      creationComplete="OnInitPanel()"
-      removedFromStage="OnRemoveFromStage ();"
+      creationComplete="OnInitPanel();"
+      addedToStage="OnAddedToStage ();"
+      removedFromStage="OnRemovedFromStage ();"
       >
 
    <mx:VBox width="100%">
@@ -152,9 +153,52 @@
             
             mTraditionalFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Traditional Coding Format", OnSwitchToTraditionalFormat, true);
             mObjectOrientedFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "OO Coding Format (not implemented yet)", OnSwitchToObjectOrientedFormat);
-            mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format", OnSwitchToPoemFormat);
+            mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format (Partially Support)", OnSwitchToPoemFormat);
             
             UpdateInterface ();
+         }
+         
+         private function OnAddedToStage ():void
+         {
+            mLastModifyTimesOfGlobalVariableSpace = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+            Runtime.mGlobalVariablesEditingDialogClosedCallBack = OnGlobalVariablesEditingDialogClosed;
+            
+            mLastModifyTimesOEntityVariableSpace = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+            Runtime.mEntityVariablesEditingDialogClosedCallBack = OnEntityVariablesEditingDialogClosed;
+         }
+         
+         private function OnRemovedFromStage ():void
+         {
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
+            
+            // ...
+            Runtime.mGlobalVariablesEditingDialogClosedCallBack = null;
+            Runtime.mEntityVariablesEditingDialogClosedCallBack = null;
+         }
+         
+         private var mLastModifyTimesOfGlobalVariableSpace:int = -1;
+         private function OnGlobalVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOfGlobalVariableSpace < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOfGlobalVariableSpace = newModifyTimes;
+            }
+         }
+         
+         private var mLastModifyTimesOEntityVariableSpace:int = -1;
+         private function OnEntityVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOEntityVariableSpace < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOEntityVariableSpace = newModifyTimes;
+            }
          }
          
          private function OnEditGlobalVariables ():void
@@ -170,12 +214,6 @@
          private function OnEditCustomFunctions ():void
          {
             
-         }
-         
-         private function OnRemoveFromStage ():void
-         {
-            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
-            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
          }
          
          private function OnCopySelectedCallings (event:ContextMenuEvent):void
@@ -251,6 +289,12 @@
             else
             {
                Runtime.mPoemCodingFormat = false;
+            }
+            
+            var numCallings:int = List_Commands.dataProvider.length;
+            for (var lineNumber:int = 0; lineNumber < numCallings; ++ lineNumber)
+            {
+               (List_Commands.dataProvider.getItemAt (lineNumber) as FunctionCallingLineData).NotifyParametersModified ();
             }
             
             List_Commands.invalidateList ();
@@ -963,10 +1007,10 @@
             if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
                AppendContextMenuItem (sprite, "from Input Varialbes", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
             
-            //AppendContextMenuItem (sprite, "from Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
-            //AppendContextMenuItem (sprite, "from Global Variable", null, false), space_type != ValueSpaceTypeDefine.ValueSpace_Global;
-            
             AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+            
+            AppendContextMenuItem (sprite, "from Global Variable", OnSelectValueSource_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+            //AppendContextMenuItem (sprite, "from Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
          }
          
          private function OnSetValueSourceDefault (event:ContextMenuEvent):void
@@ -1081,6 +1125,28 @@
             BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
          }
          
+         private function OnSelectValueSource_GlobalVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+            
+            if (mCurrentCallingLine == null)
+               return;
+            
+            var param_index:int = mCurrentCallingLine.mValueSourceParentControls.indexOf (form_item);
+            if (param_index < 0)
+               return;
+            
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
+            var new_value_source:ValueSource = variable_def.GetDefaultVariableValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ());
+            
+            mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
+            CreateValueSourceControl (param_index, form_item, mCurrentCallingLine.mValueSourceControls);
+            BuildContextMenuForValueSource (form_item, variable_def, new_value_source);
+         }
+         
    //================================================================================================
    // switch value target types
    //================================================================================================
@@ -1109,10 +1175,11 @@
             if (ownerFuncDefinition.HasOutputsSatisfiedBy (variableDefinition))
                AppendContextMenuItem (sprite, "to Output Variables", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Output);
             
-            //AppendContextMenuItem (sprite, "to Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
-            //AppendContextMenuItem (sprite, "to Global Variable", null, false), space_type != ValueSpaceTypeDefine.ValueSpace_Global;
-            
             AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+            
+            AppendContextMenuItem (sprite, "to Global Variable", OnSelectValueTarget_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+            
+            //AppendContextMenuItem (sprite, "to Local Variable", null, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
          }
          
          private function OnResetValueTarge (event:ContextMenuEvent):void
@@ -1199,6 +1266,28 @@
             var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetValueType()));
+            
+            mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
+            CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);
+            BuildContextMenuForValueTarget (form_item, variable_def, new_value_target);
+         }
+         
+         private function OnSelectValueTarget_GlobalVariable (event:ContextMenuEvent):void
+         {
+            var form_item:FormItem = event.contextMenuOwner as FormItem;
+            if (form_item == null)
+               return;
+            
+            if (mCurrentCallingLine == null)
+               return;
+            
+            var return_index:int = mCurrentCallingLine.mValueTargetParentControls.indexOf (form_item);
+            if (return_index < 0)
+               return;
+            
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
+            var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ());
             
             mCurrentCallingLine.mCurrentValueTargets [return_index] = new_value_target;
             CreateValueTargetControl (return_index, form_item, mCurrentCallingLine.mValueTargetControls);

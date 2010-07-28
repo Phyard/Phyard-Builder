@@ -294,7 +294,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Char Code"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_CharCode2Char, string_package, "Char Code -&gt; Char", "@Char (#0) = From Char Code($0)", "@#0 = CharCode2Char ($0)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_String_CharCode2Char, string_package, "Char Code -> Char", "@Char (#0) = From Char Code($0)", "@#0 = CharCode2Char ($0)",
                      [
                              new VariableDefinitionNumber ("Char Code"), 
                      ],
@@ -346,7 +346,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Boolean_ToString, bool_package, "Bool -&gt; String", "@$0 -&gt; #0", "BoolToString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Boolean_ToString, bool_package, "Bool -> String", "@$0 -&gt; #0", "BoolToString",
                      [
                              new VariableDefinitionBoolean ("The Bool"), 
                      ],
@@ -459,7 +459,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_LargerThan, numbe_general_package, "Number &gt; Number?", "@#0 = ($0 &gt; $1)", "@#0 = ($0 &gt; $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_LargerThan, numbe_general_package, "Number > Number?", "@#0 = ($0 &gt; $1)", "@#0 = ($0 &gt; $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -468,7 +468,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_LessThan, numbe_general_package, "Number &lt; Number?", "@#0 = ($0 &lt; $1)", "@#0 = ($0 &lt; $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_LessThan, numbe_general_package, "Number < Number?", "@#0 = ($0 &lt; $1)", "@#0 = ($0 &lt; $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
                              new VariableDefinitionNumber ("Number 2"), 
@@ -557,7 +557,7 @@ package editor.trigger {
          
       // math / toString
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ToString, to_string_package, "Number -&gt; String", "@$0 -&gt; #0", "NumberToString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ToString, to_string_package, "Number -> String", "@$0 -&gt; #0", "NumberToString",
                      [
                              new VariableDefinitionNumber ("The Number"), 
                      ],
@@ -592,7 +592,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix, to_string_package, "Number -&gt; String (By Radix)", "@$0 -&gt; #0 by radix $1", "ToStringByRadix",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix, to_string_package, "Number -> String (By Radix)", "@$0 -&gt; #0 by radix $1", "ToStringByRadix",
                      [
                              new VariableDefinitionNumber ("The Number"), 
                              new VariableDefinitionNumber ("The Radix", null, {mDefaultValue: 10}), 
@@ -621,7 +621,7 @@ package editor.trigger {
          
       // math / bitwise
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft, bitwise_package, "&lt;&lt; (ShiftLeft)", "@#0 = ($0 &lt;&lt; $1)", "@#0 = ($0 &lt;&lt; $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft, bitwise_package, "<< (ShiftLeft)", "@#0 = ($0 &lt;&lt; $1)", "@#0 = ($0 &lt;&lt; $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -630,7 +630,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight, bitwise_package, "&gt;&gt; (ShiftRight)", "@#0 = ($0 &gt;&gt; $1)", "@#0 = ($0 &gt;&gt; $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight, bitwise_package, ">> (ShiftRight)", "@#0 = ($0 &gt;&gt; $1)", "@#0 = ($0 &gt;&gt; $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -639,7 +639,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Result"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned, bitwise_package, "&gt;&gt;&gt; (ShiftRightUnsignedly)", "@#0 = ($0 &gt;&gt;&gt; $1)", "@#0 = ($0 &gt;&gt;&gt; $1)",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned, bitwise_package, ">>> (ShiftRightUnsignedly)", "@#0 = ($0 &gt;&gt;&gt; $1)", "@#0 = ($0 &gt;&gt;&gt; $1)",
                      [
                              new VariableDefinitionNumber ("Number to Shift"), 
                              new VariableDefinitionNumber ("Shift Bits Count"), 
@@ -817,7 +817,7 @@ package editor.trigger {
           
        // math / number convert
           
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians, convert_package, "Degrees -&gt; Radians", "@Degrees ($0) -&gt; Radians (#0)", "DegreesToRadians",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians, convert_package, "Degrees -> Radians", "@Degrees ($0) -&gt; Radians (#0)", "DegreesToRadians",
                      [
                              new VariableDefinitionNumber ("Degrees"), 
                      ],
@@ -825,7 +825,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Radians"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Radians2Degrees, convert_package, "Radians -&gt; Degrees", "@Radians ($0) -&gt; Degrees (#0)", "RadiansToDegrees",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Radians2Degrees, convert_package, "Radians -> Degrees", "@Radians ($0) -&gt; Degrees (#0)", "RadiansToDegrees",
                      [
                              new VariableDefinitionNumber ("Radians"), 
                      ],
@@ -833,7 +833,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Degrees"), 
                      ]
                   );
-          RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Number2RGB, convert_package, "Color -&gt; RGB", "@Color ($0) -&gt; RGB (#0, #1, #2)", "Color2Rgb",
+          RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_Number2RGB, convert_package, "Color -> RGB", "@Color ($0) -&gt; RGB (#0, #1, #2)", "Color2Rgb",
                      [
                              new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
                      ],
@@ -843,7 +843,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Blue"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RGB2Number, convert_package, "RGB -&gt; Color", "@RGB ($0, $1, $2) -&gt; Color (#0)", "RgbToColor",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Number_RGB2Number, convert_package, "RGB -> Color", "@RGB ($0, $1, $2) -&gt; Color (#0)", "RgbToColor",
                      [
                              new VariableDefinitionNumber ("Red (0-255)"), 
                              new VariableDefinitionNumber ("Green (0-255)"), 
@@ -853,7 +853,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Number", null, {mIsColorValue: true}), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -&gt; Minutes : Seconds", "@Milliseconds ($0) -&gt; Minutes (#0) : Seconds (#1) : Milliseconds (#2)", "MillisecondsToMinutesAndSeconds",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds, convert_package, "Milliseconds -> Minutes : Seconds", "@Milliseconds ($0) -&gt; Minutes (#0) : Seconds (#1) : Milliseconds (#2)", "MillisecondsToMinutesAndSeconds",
                      [
                              new VariableDefinitionNumber ("Milliseconds", null, {mMinValue: 0.0}), 
                      ],
@@ -987,13 +987,13 @@ package editor.trigger {
                      null,
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused, world_general_package, "Is Level Paused", null, null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused, world_general_package, "Is Level Paused?", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Paused (false for playing)"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused, world_general_package, "Set Level Paused?", null, null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused, world_general_package, "Set Level Paused", null, null,
                      [
                         new VariableDefinitionBoolean ("Paused (false for playing)", null, {mDefaultValue: true}), 
                      ],
@@ -1248,7 +1248,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Null"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ToString, ccat_package, "CCat -&gt; String", "@$0 -&gt; #0", "CCatToString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_CCat_ToString, ccat_package, "CCat -> String", "@$0 -&gt; #0", "CCatToString",
                      [
                              new VariableDefinitionCollisionCategory ("The CCat"), 
                      ],
@@ -1325,7 +1325,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("Another Entity"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ToString, entity_general_package, "Entity -&gt; String", "@$0 -&gt; #0", "EntityToString",
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_ToString, entity_general_package, "Entity -> String", "@$0 -&gt; #0", "EntityToString",
                      [
                              new VariableDefinitionEntity ("The Entity"), 
                      ],
@@ -1480,7 +1480,7 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint, shape_general_package, "World Point -&gt; Local Point", "@World Point ($0, $1) -&gt; Local Point (#0, #1)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint, shape_general_package, "World Point -> Local Point", "@World Point ($0, $1) -&gt; Local Point (#0, #1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
                              new VariableDefinitionNumber ("World Point X"), 
@@ -1491,7 +1491,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Local Point Y"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint, shape_general_package, "Local Point -&gt; World Point", "@Local Point ($0, $1) -&gt; World Point (#0, #1)", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint, shape_general_package, "Local Point -> World Point", "@Local Point ($0, $1) -&gt; World Point (#0, #1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
                              new VariableDefinitionNumber ("Local Point X"), 

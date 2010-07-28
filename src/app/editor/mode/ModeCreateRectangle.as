@@ -86,7 +86,7 @@ package editor.mode {
          mRectEntity.SetAiType (mCiAiType);
           if (mRectEntity == null)
          {
-            Reset ();
+            mMainView.CancelCurrentCreatingMode ();
             return;
          }
          

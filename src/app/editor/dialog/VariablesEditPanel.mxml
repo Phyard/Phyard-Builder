@@ -15,75 +15,83 @@
          </mx:HBox>
          <mx:List id="List_Variables" dataProvider="{mVariableListDataProvider}" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false"  width="100%" height="100%" editable="false" change="OnChangeVariable ()"/>
       </mx:VBox>
-      <mx:VBox width="100%" height="100%" borderStyle="solid" borderThickness="1">
-         <mx:Spacer height="3" />
-         <mx:RadioButtonGroup id="VariableType" change="OnTypeChanged ();"/>
-         <mx:HBox width="100%" borderStyle="none" borderThickness="0">
-            <mx:Spacer width="16" />
-            <mx:HBox width="67%" borderStyle="none" borderThickness="0">
-               <mx:RadioButton groupName="VariableType" width="50%" id="RadioButton_BooleanType" value="Booelan" label="Boolean" />
-               <mx:RadioButton groupName="VariableType" width="50%" id="RadioButton_NumberType" value="Number" label="Number" selected="true" />
+      <mx:ViewStack id="ViewStack_VariableProperties" creationPolicy="all" width="100%" height="100%" borderStyle="solid" borderThickness="1">
+         <mx:VBox id="Box_BlankPanel" width="100%" height="100%">
+            <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+               <mx:Spacer width="3" />
+               <mx:Spacer width="3" />
             </mx:HBox>
-            <mx:RadioButton groupName="VariableType" width="33%" id="RadioButton_StringType" value="String" label="String" />
-            <mx:Spacer width="6" />
-         </mx:HBox>
-         <mx:HBox width="100%" borderStyle="none" borderThickness="0">
-            <mx:Spacer width="16" />
-            <mx:RadioButton groupName="VariableType" width="67%" id="RadioButton_CCatType" value="CCat" label="Collision Category" />
-            <mx:RadioButton groupName="VariableType" width="33%" id="RadioButton_EntityType" value="Booelan" label="Entity" />
-            <mx:Spacer width="6" />
-         </mx:HBox>
-         <mx:HBox width="100%" borderStyle="none" borderThickness="0">
-            <mx:Spacer width="3" />
-            <mx:Label width="35%" text="Name:" textAlign="right" />
-            <mx:TextInput width="65%" id="Text_Name" text="" change="OnNameChanged ();"/>
-            <mx:Spacer width="3" />
-         </mx:HBox>
-         <mx:ViewStack id="ViewStack_VariableSetting" creationPolicy="all" width="100%" height="100%">
-            <mx:VBox id="Box_NumberVariableSettingPanel" width="100%" height="100%">
-               <mx:HBox width="100%" borderStyle="none" borderThickness="0">
-                  <mx:Spacer width="3" />
-                  <mx:Label width="35%" text="Default Value:" textAlign="right" />
-                  <mx:TextInput width="65%" id="Text_DefaultNumberValue" text="" change="OnNumberVariableSettingChanged ();"/>
-                  <mx:Spacer width="3" />
+         </mx:VBox>
+         <mx:VBox id="Box_VariableProperties" width="100%" height="100%">
+            <mx:Spacer height="3" />
+            <mx:RadioButtonGroup id="VariableType" enabled="false" change="OnTypeChanged ();"/>
+            <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+               <mx:Spacer width="16" />
+               <mx:HBox width="67%" borderStyle="none" borderThickness="0">
+                  <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_BooleanType" value="Booelan" label="Boolean" />
+                  <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_NumberType" value="Number" label="Number" selected="true" />
                </mx:HBox>
-            </mx:VBox>
-            <mx:VBox id="Box_BooleanVariableSettingPanel" width="100%" height="100%">
-               <mx:HBox width="100%" borderStyle="none" borderThickness="0">
-                  <mx:Spacer width="3" />
-                  <mx:Label width="35%" text="Default Value:" textAlign="right" />
-                  <mx:RadioButtonGroup id="DefaultBooleanValue" change="OnBooleanVariableSettingChanged ();"/>
-                  <mx:RadioButton groupName="DefaultBooleanValue" id="RadioButton_True" value="true" label="true" />
-                  <mx:RadioButton groupName="DefaultBooleanValue" id="RadioButton_False" value="false" label="false" selected="true"/>
-                  <mx:Spacer width="3" />
-               </mx:HBox>
-            </mx:VBox>
-            <mx:VBox id="Box_StringVariableSettingPanel" width="100%" height="100%">
-               <mx:HBox width="100%" borderStyle="none" borderThickness="0">
-                  <mx:Spacer width="3" />
-                  <mx:Label width="35%" text="Default Value:" textAlign="right" />
-                  <mx:TextInput width="65%" id="Text_DefaultStringValue" text="" change="OnStringVariableSettingChanged ();"/>
-                  <mx:Spacer width="3" />
-               </mx:HBox>
-            </mx:VBox>
-            <mx:VBox id="Box_CCatVariableSettingPanel" width="100%" height="100%">
-               <mx:HBox width="100%" borderStyle="none" borderThickness="0">
-                  <mx:Spacer width="3" />
-                  <mx:Label width="35%" text="Default Value:" textAlign="right" />
-                  <mx:Label width="65%" text="null" textAlign="left" />
-                  <mx:Spacer width="3" />
-               </mx:HBox>
-            </mx:VBox>
-            <mx:VBox id="Box_EntityVariableSettingPanel" width="100%" height="100%">
-               <mx:HBox width="100%" borderStyle="none" borderThickness="0">
-                  <mx:Spacer width="3" />
-                  <mx:Label width="35%" text="Default Value:" textAlign="right" />
-                  <mx:Label width="65%" text="null" textAlign="left" />
-                  <mx:Spacer width="3" />
-               </mx:HBox>
-            </mx:VBox>
-         </mx:ViewStack>
-      </mx:VBox>
+               <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_StringType" value="String" label="String" />
+               <mx:Spacer width="6" />
+            </mx:HBox>
+            <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+               <mx:Spacer width="16" />
+               <mx:RadioButton groupName="VariableType" enabled="false" width="67%" id="RadioButton_CCatType" value="CCat" label="Collision Category" />
+               <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_EntityType" value="Booelan" label="Entity" />
+               <mx:Spacer width="6" />
+            </mx:HBox>
+            <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+               <mx:Spacer width="3" />
+               <mx:Label width="35%" text="Name:" textAlign="right" />
+               <mx:TextInput width="65%" id="Text_Name" text="" change="OnNameChanged ();"/>
+               <mx:Spacer width="3" />
+            </mx:HBox>
+            <mx:ViewStack id="ViewStack_VariableSetting" creationPolicy="all" width="100%" height="100%">
+               <mx:VBox id="Box_NumberVariableSettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:TextInput width="65%" id="Text_DefaultNumberValue" text="" change="OnNumberVariableSettingChanged ();"/>
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox id="Box_BooleanVariableSettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:RadioButtonGroup id="DefaultBooleanValue" change="OnBooleanVariableSettingChanged ();"/>
+                     <mx:RadioButton groupName="DefaultBooleanValue" id="RadioButton_True" value="true" label="true" />
+                     <mx:RadioButton groupName="DefaultBooleanValue" id="RadioButton_False" value="false" label="false" selected="true"/>
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox id="Box_StringVariableSettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:TextInput width="65%" id="Text_DefaultStringValue" text="" change="OnStringVariableSettingChanged ();"/>
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox id="Box_CCatVariableSettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:Label width="65%" text="null" textAlign="left" />
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox id="Box_EntityVariableSettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:Label width="65%" text="null" textAlign="left" />
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
+            </mx:ViewStack>
+         </mx:VBox>
+      </mx:ViewStack>
    </mx:HBox>
 
    <mx:XML id="CreateNewMenuData">
@@ -221,6 +229,8 @@
                }
                
                OnChangeVariable ();
+               
+               UpdateInterface ();
             }
             
             private function OnDeleteVariable ():void
@@ -241,6 +251,8 @@
                if (selectedIndex >= 0)
                   List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex);
                
+               OnChangeVariable ();
+               
                UpdateInterface ();
             }
             
@@ -257,6 +269,8 @@
                List_Variables.dataProvider.addItemAt (List_Variables.dataProvider.removeItemAt (selectedIndex), selectedIndex - 1);
                List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex - 1);
                
+               OnChangeVariable ();
+               
                UpdateInterface ();
             }
             
@@ -266,12 +280,14 @@
                   return;
                
                var selectedIndex:int = List_Variables.selectedIndex;
-               if (selectedIndex + 1 < List_Variables.dataProvider.length)
-               {
-                  mVariableSpace.ChangeVariableInstanceIndex (selectedIndex, selectedIndex + 1);
-                  List_Variables.dataProvider.addItemAt (List_Variables.dataProvider.removeItemAt (selectedIndex), selectedIndex + 1);
-                  List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex + 1);
-               }
+               if (selectedIndex + 1 > List_Variables.dataProvider.length)
+                  return;
+               
+               mVariableSpace.ChangeVariableInstanceIndex (selectedIndex, selectedIndex + 1);
+               List_Variables.dataProvider.addItemAt (List_Variables.dataProvider.removeItemAt (selectedIndex), selectedIndex + 1);
+               List_Variables.selectedItem = List_Variables.dataProvider.getItemAt (selectedIndex + 1);
+               
+               OnChangeVariable ();
                
                UpdateInterface ();
             }
@@ -280,46 +296,56 @@
             
             public function OnChangeVariable ():void
             {
-               if (mVariableSpace == null)
-                  return;
-               
                var selectedIndex:int = List_Variables.selectedIndex;
-               if (selectedIndex < 0)
-                  return;
                
-               var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
-               var variableInstance:VariableInstance = item.mData;
-               var variableDefinition:VariableDefinition = variableInstance.GetVariableDefinition ();
-               
-               Text_Name.text = variableDefinition.GetName ();
-               
-               if (variableDefinition is VariableDefinitionBoolean)
+               if (mVariableSpace == null || selectedIndex < 0)
                {
-                  RadioButton_BooleanType.selected = true;
-                  DefaultBooleanValue.selectedValue = (variableDefinition as VariableDefinitionBoolean).GetDefaultValue () ? "true" : "false";
-                  ViewStack_VariableSetting.selectedChild = Box_BooleanVariableSettingPanel;
+                  VariableType.selectedValue = null;
+                  ViewStack_VariableProperties.selectedChild = Box_BlankPanel;
                }
-               else if (variableDefinition is VariableDefinitionNumber)
+               else
                {
-                  RadioButton_NumberType.selected = true;
-                  Text_DefaultNumberValue.text = "" + (variableDefinition as VariableDefinitionNumber).GetDefaultValue ();
-                  ViewStack_VariableSetting.selectedChild = Box_NumberVariableSettingPanel;
-               }
-               else if (variableDefinition is VariableDefinitionString)
-               {
-                  RadioButton_StringType.selected = true;
-                  Text_DefaultStringValue.text = (variableDefinition as VariableDefinitionString).GetDefaultValue ();
-                  ViewStack_VariableSetting.selectedChild = Box_StringVariableSettingPanel;
-               }
-               else if (variableDefinition is VariableDefinitionCollisionCategory)
-               {
-                  RadioButton_CCatType.selected = true;
-                  ViewStack_VariableSetting.selectedChild = Box_CCatVariableSettingPanel;
-               }
-               else if (variableDefinition is VariableDefinitionEntity)
-               {
-                  RadioButton_EntityType.selected = true;
-                  ViewStack_VariableSetting.selectedChild = Box_EntityVariableSettingPanel;
+                  ViewStack_VariableProperties.selectedChild = Box_VariableProperties;
+                  
+                  var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
+                  var variableInstance:VariableInstance = item.mData;
+                  var variableDefinition:VariableDefinition = variableInstance.GetVariableDefinition ();
+                  
+                  Text_Name.text = variableDefinition.GetName ();
+                  
+                  if (variableDefinition is VariableDefinitionBoolean)
+                  {
+                     RadioButton_BooleanType.selected = true;
+                     DefaultBooleanValue.selectedValue = (variableDefinition as VariableDefinitionBoolean).GetDefaultValue () ? "true" : "false";
+                     ViewStack_VariableSetting.selectedChild = Box_BooleanVariableSettingPanel;
+                  }
+                  else if (variableDefinition is VariableDefinitionNumber)
+                  {
+                     RadioButton_NumberType.selected = true;
+                     Text_DefaultNumberValue.text = "" + (variableDefinition as VariableDefinitionNumber).GetDefaultValue ();
+                     ViewStack_VariableSetting.selectedChild = Box_NumberVariableSettingPanel;
+                  }
+                  else if (variableDefinition is VariableDefinitionString)
+                  {
+                     RadioButton_StringType.selected = true;
+                     Text_DefaultStringValue.text = (variableDefinition as VariableDefinitionString).GetDefaultValue ();
+                     ViewStack_VariableSetting.selectedChild = Box_StringVariableSettingPanel;
+                  }
+                  else if (variableDefinition is VariableDefinitionCollisionCategory)
+                  {
+                     RadioButton_CCatType.selected = true;
+                     ViewStack_VariableSetting.selectedChild = Box_CCatVariableSettingPanel;
+                  }
+                  else if (variableDefinition is VariableDefinitionEntity)
+                  {
+                     RadioButton_EntityType.selected = true;
+                     ViewStack_VariableSetting.selectedChild = Box_EntityVariableSettingPanel;
+                  }
+                  else
+                  {
+                     VariableType.selectedValue = null;
+                     ViewStack_VariableProperties.selectedChild = Box_BlankPanel;
+                  }
                }
                
                UpdateInterface ();
@@ -375,6 +401,8 @@
                item.mName = name;
                item.mDataTip = name;
                List_Variables.invalidateList ();
+               
+               mVariableSpace.NotifyModified ();
             }
             
             public function OnBooleanVariableSettingChanged ():void

@@ -87,6 +87,9 @@ package editor.runtime {
       public static var mLongerCodeEditorMenuBar:Boolean = false;
       public static var mPoemCodingFormat:Boolean = false;
       
+      public static var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
+      public static var mEntityVariablesEditingDialogClosedCallBack:Function = null;
+      
 //=====================================================================
 //
 //=====================================================================

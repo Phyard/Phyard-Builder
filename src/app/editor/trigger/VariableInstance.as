@@ -5,6 +5,7 @@ package editor.trigger {
    import common.trigger.ValueTypeDefine;
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.ValueTargetTypeDefine;
+   import common.trigger.ValueSpaceTypeDefine;
    
    public class VariableInstance implements ValueSource, ValueTarget
    {
@@ -68,10 +69,10 @@ package editor.trigger {
       {
          if (mIndex < 0)
             return forTarget ? "void" : "null";
-         else if (mName == null || mName.length == 0)
+         else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
             return mVariableSpace.GetCodeName () + "[" + mIndex + "]";
          else
-            return mVariableSpace.GetCodeName () + "[\"" + mName + "\"]";
+            return mVariableSpace.GetCodeName () + "[" + mIndex + ":\"" + GetName () + "\"]";
       }
       
       public function SourceToCodeString (vd:VariableDefinition):String

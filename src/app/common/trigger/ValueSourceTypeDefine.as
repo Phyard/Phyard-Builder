@@ -10,14 +10,7 @@ package common.trigger {
       public static const ValueSource_Null:int = 0x0;
       public static const ValueSource_Direct:int = 0x1;
       public static const ValueSource_Variable:int = 0x2;
-      //public static const ValueSource_Property:int = 0x3;
-      
-      
-      
-      //public static const PropertyOwner_Void:int = 0x0;
-      //public static const PropertyOwner_Global:int = 0x1;
-      //public static const PropertyOwner_World:int = 0x2;
-      //public static const PropertyOwner_Entity:int = 0x3;
+      public static const ValueSource_Property:int = 0x3;
       
 //=========================================================
 // used in files, 

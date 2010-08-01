@@ -3,6 +3,7 @@ package editor.trigger {
    import mx.core.UIComponent;
    import mx.controls.ComboBox;
    import mx.controls.Label;
+   import mx.containers.HBox;
    
    import editor.world.World;
    import editor.entity.WorldEntity;
@@ -266,144 +267,293 @@ package editor.trigger {
    // todo: property target
    //==============================================================================
       
-      //public function GetDefaultPropertyValueTarget ():ValueTarget_Property
-      //{
-      //   return new ValueTarget_Property ();
-      //}
-      //
-      //public function CreateControlForPropertyValueTarget (valueTargetProperty:ValueTarget_Property):UIComponent
-      //{
-      //   return null;
-      //}
-      //
-      //public function RetrievePropertyValueTargetFromControl (valueTargetProperty:ValueTarget_Property, control:UIComponent):void
-      //{
-      //}
+      public function GetDefaultPropertyValueTarget ():ValueTarget_Property
+      {
+         BuildPropertyVaribleDefinition ();
+         return new ValueTarget_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueTarget (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+      }
+      
+      public function CreateControlForPropertyValueTarget (valueTargetProperty:ValueTarget_Property):UIComponent
+      {
+         BuildPropertyVaribleDefinition ();
+         
+         var entityValueSource:ValueSource = valueTargetProperty.GetEntityValueSource ();
+         var propertyValueTarget:ValueTarget_Variable = valueTargetProperty.GetPropertyValueTarget ();
+         
+         var entityValueSourceControl:UIComponent = null;
+         if (entityValueSource is ValueSource_Direct)
+         {
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct);
+         }
+         else if (entityValueSource is ValueSource_Variable)
+         {
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
+         }
+         else
+         {
+            trace ("unknown value source type in CreateControlForPropertyValueSource");
+         }
+         
+         var propertyValueTargetTontrol:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueTarget (propertyValueTarget, null);
+         
+         var box:HBox = new HBox ();
+         entityValueSourceControl.percentWidth = 50;
+         box.addChild (entityValueSourceControl);
+         propertyValueTargetTontrol.percentWidth = 50;
+         box.addChild (propertyValueTargetTontrol);
+         
+         return box;
+      }
+      
+      public function RetrievePropertyValueTargetFromControl (valueTargetProperty:ValueTarget_Property, control:UIComponent):void
+      {
+   	   if (control is HBox)
+   	   {
+            BuildPropertyVaribleDefinition ();
+            
+            var box:HBox = control as HBox;
+   	      var entityValueSource:ValueSource = valueTargetProperty.GetEntityValueSource ();
+            var propertyValueTarget:ValueTarget_Variable = valueTargetProperty.GetPropertyValueTarget ();
+            
+         trace ("entityValueSource = " + entityValueSource + ", propertyValueTarget = " + propertyValueTarget);
+            var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
+            if (entityValueSource is ValueSource_Direct)
+            {
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, Runtime.GetCurrentWorld ().GetTriggerEngine ());
+            }
+            else if (entityValueSource is ValueSource_Variable)
+            {
+               mEntityVariableDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
+            }
+            else
+            {
+               trace ("unknown value source type in RetrievePropertyValueTargetFromControl");
+            }
+            
+            var propertyValueTargetControl:UIComponent = box.getChildAt (1) as UIComponent;
+            mPropertyVariableDefinition.RetrieveVariableValueTargetFromControl (propertyValueTarget, propertyValueTargetControl);
+   	   }
+      }
       
 //==============================================================================
 // for value source
 //==============================================================================
-      
-      public function GetDefaultValueSource (triggerEngine:TriggerEngine):ValueSource
+   
+   public function GetDefaultValueSource (triggerEngine:TriggerEngine):ValueSource
+   {
+      switch (mDefaultSourceType)
       {
-         switch (mDefaultSourceType)
-         {
-            case ValueSourceTypeDefine.ValueSource_Variable:
-               return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
-            case ValueSourceTypeDefine.ValueSource_Direct:
-            default:
-               return GetDefaultDirectValueSource ();
-         }
+         case ValueSourceTypeDefine.ValueSource_Variable:
+            return GetDefaultVariableValueSource (triggerEngine.GetRegisterVariableSpace (mValueType));
+         case ValueSourceTypeDefine.ValueSource_Direct:
+         default:
+            return GetDefaultDirectValueSource ();
+      }
+   }
+   
+   public function CreateControlForValueSource (valueSource:ValueSource):UIComponent
+   {
+      return null;
+   }
+   
+   public function RetrieveValueSourceFromControl (valueSource:ValueSource, control:ComboBox):void
+   {
+   }
+   
+//==============================================================================
+// direct source
+//==============================================================================
+      
+      public function ValidateDirectValueSource (valueSourceDirect:ValueSource_Direct):void
+      {
+         if (valueSourceDirect == null)
+            return;
+         
+         valueSourceDirect.SetValueObject (ValidateDirectValueObject (valueSourceDirect.GetValueObject ()))
       }
       
-      public function CreateControlForValueSource (valueSource:ValueSource):UIComponent
+   //==============================================================================
+   // to override
+   //==============================================================================
+      
+      public function ValidateDirectValueObject (valueObject:Object):Object
+      {
+         return valueObject;
+      }
+      
+   //==============================================================================
+   // to override
+   //==============================================================================
+      
+      public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
          return null;
       }
       
-      public function RetrieveValueSourceFromControl (valueSource:ValueSource, control:ComboBox):void
+      public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
       {
+         return null;
       }
       
-   //==============================================================================
-   // direct source
-   //==============================================================================
+      public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
+      {
+         return null;
+      }
+   
+//==============================================================================
+// variable source
+//==============================================================================
          
-         public function ValidateDirectValueSource (valueSourceDirect:ValueSource_Direct):void
-         {
-            if (valueSourceDirect == null)
-               return;
-            
-            valueSourceDirect.SetValueObject (ValidateDirectValueObject (valueSourceDirect.GetValueObject ()))
-         }
-         
-      //==============================================================================
-      // to override
-      //==============================================================================
-         
-         public function ValidateDirectValueObject (valueObject:Object):Object
-         {
-            return valueObject;
-         }
-         
-      //==============================================================================
-      // to override
-      //==============================================================================
-         
-         public function GetDefaultDirectValueSource ():ValueSource_Direct
-         {
-            return null;
-         }
-         
-         public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
-         {
-            return null;
-         }
-         
-         public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
-         {
-            return null;
-         }
+      public function GetDefaultVariableValueSource (variableSpace:VariableSpace):ValueSource_Variable
+      {
+         return new ValueSource_Variable (variableSpace.GetNullVariableInstance ());
+      }
       
-   //==============================================================================
-   // variable source
-   //==============================================================================
-            
-         public function GetDefaultVariableValueSource (variableSpace:VariableSpace):ValueSource_Variable
-         {
-            return new ValueSource_Variable (variableSpace.GetNullVariableInstance ());
-         }
+      public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable, validVariableIndexes:Array = null):UIComponent
+      {
+         var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
+         var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
          
-         public function CreateControlForVariableValueSource (valueSourceVariable:ValueSource_Variable, validVariableIndexes:Array = null):UIComponent
+         var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType, validVariableIndexes);
+         
+         var combo_box:ComboBox = new ComboBox ();
+         combo_box.dataProvider = variable_list;
+         combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);
+         combo_box.rowCount = 11;
+         
+         return combo_box;
+      }
+      
+      public function RetrieveVariableValueSourceFromControl (valueSourceVariable:ValueSource_Variable, control:UIComponent):void
+      {
+         if (control is ComboBox)
          {
+            var combo_box:ComboBox = control as ComboBox;
+            
             var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
             var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
             
-            var variable_list:Array = variable_space.GetVariableSelectListDataProviderByValueType (mValueType, validVariableIndexes);
-            
-            var combo_box:ComboBox = new ComboBox ();
-            combo_box.dataProvider = variable_list;
-            combo_box.selectedIndex = VariableIndex2SelectListSelectedIndex (currentVariable.IsNull () ? -1 : currentVariable.GetIndex (), variable_list);
-            combo_box.rowCount = 11;
-            
-            return combo_box;
+            var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
+            if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
+               valueSourceVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
+            else
+               valueSourceVariable.SetVariableInstance (vi);
+         }
+      }
+      
+//==============================================================================
+// to do: property source
+//==============================================================================
+      
+      private var mEntityVariableDefinition:VariableDefinitionEntity = null;
+      private var mPropertyVariableDefinition:VariableDefinition = null;
+      
+      public function GetVariableDefinitionForEntityParameter ():VariableDefinitionEntity
+      {
+         return mEntityVariableDefinition;
+      }
+      
+      private function BuildPropertyVaribleDefinition ():void
+      {
+         if (mEntityVariableDefinition == null)
+         {
+            mEntityVariableDefinition = new VariableDefinitionEntity ("Property Owner", null, null);
          }
          
-         public function RetrieveVariableValueSourceFromControl (valueSourceVariable:ValueSource_Variable, control:UIComponent):void
+         if (mPropertyVariableDefinition == null)
          {
-            if (control is ComboBox)
+            switch (mValueType)
             {
-               var combo_box:ComboBox = control as ComboBox;
-               
-               var currentVariable:VariableInstance = valueSourceVariable.GetVariableInstance ();
-               var variable_space:VariableSpace = currentVariable.GetVariableSpace ();
-               
-               var vi:VariableInstance = combo_box.selectedItem == null ? null : combo_box.selectedItem.mVariableInstance;
-               if (vi == null || vi.GetIndex () < 0 || vi.GetVariableSpace () != variable_space)
-                  valueSourceVariable.SetVariableInstance (variable_space.GetNullVariableInstance ());
-               else
-                  valueSourceVariable.SetVariableInstance (vi);
+               case ValueTypeDefine.ValueType_Boolean:
+                  mPropertyVariableDefinition = new VariableDefinitionBoolean ("Boolean Property");
+                  break;
+               case ValueTypeDefine.ValueType_String:
+                  mPropertyVariableDefinition = new VariableDefinitionString ("String Property");
+                  break;
+               case ValueTypeDefine.ValueType_Number:
+                  mPropertyVariableDefinition = new VariableDefinitionNumber ("Number Property");
+                  break;
+               case ValueTypeDefine.ValueType_Entity:
+                  mPropertyVariableDefinition = new VariableDefinitionEntity ("Entity Property");
+                  break;
+               case ValueTypeDefine.ValueType_CollisionCategory:
+                  mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");
+                  break;
+               default:
+               {
+                  trace ("unknown mValueType in BuildPropertyVaribleDefinition");
+               }
             }
          }
+      }
+      
+      public function GetDefaultPropertyValueSource ():ValueSource_Property
+      {
+         BuildPropertyVaribleDefinition ();
+         return new ValueSource_Property (mEntityVariableDefinition.GetDefaultDirectValueSource (), mPropertyVariableDefinition.GetDefaultVariableValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ()));
+      }
+      
+      public function CreateControlForPropertyValueSource (valueSourceProperty:ValueSource_Property):UIComponent
+      {
+         BuildPropertyVaribleDefinition ();
          
-   //==============================================================================
-   // to do: property source
-   //==============================================================================
+         var entityValueSource:ValueSource = valueSourceProperty.GetEntityValueSource ();
+         var propertyValueSource:ValueSource_Variable = valueSourceProperty.GetPropertyValueSource ();
          
-         //public function GetDefaultPropertyValueSource ():ValueSource_Property
-         //{
-         //   return null;
-         //}
-         //
-         //public function CreateControlForPropertyValueSource (valueSourceProperty:ValueSource_Property):UIComponent
-         //{
-         //   return null;
-         //}
-         //
-         //public function RetrievePropertyValueSourceFromControl (valueSourceProperty:ValueSource_Property, control:UIComponent):void
-         //{
-         //}
+         var entityValueSourceControl:UIComponent = null;
+         if (entityValueSource is ValueSource_Direct)
+         {
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct);
+         }
+         else if (entityValueSource is ValueSource_Variable)
+         {
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForVariableValueSource (entityValueSource as ValueSource_Variable, null);
+         }
+         else
+         {
+            trace ("unknown value source type in CreateControlForPropertyValueSource");
+         }
          
+         var propertyValueSourceControl:UIComponent = mPropertyVariableDefinition.CreateControlForVariableValueSource (propertyValueSource, null);
+         
+         var box:HBox = new HBox ();
+         entityValueSourceControl.percentWidth = 50;
+         box.addChild (entityValueSourceControl);
+         propertyValueSourceControl.percentWidth = 50;
+         box.addChild (propertyValueSourceControl);
+         
+         return box;
+      }
+      
+      public function RetrievePropertyValueSourceFromControl (valueSourceProperty:ValueSource_Property, control:UIComponent):void
+      {
+   	   if (control is HBox)
+   	   {
+            BuildPropertyVaribleDefinition ();
+            
+            var box:HBox = control as HBox;
+   	      var entityValueSource:ValueSource = valueSourceProperty.GetEntityValueSource ();
+   	      var propertyValueSource:ValueSource_Variable = valueSourceProperty.GetPropertyValueSource ();
+            
+         trace ("entityValueSource = " + entityValueSource + ", propertyValueSource = " + propertyValueSource);
+            var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
+            if (entityValueSource is ValueSource_Direct)
+            {
+               mEntityVariableDefinition.RetrieveDirectValueSourceFromControl (entityValueSource as ValueSource_Direct, entityValueSourceControl, Runtime.GetCurrentWorld ().GetTriggerEngine ());
+            }
+            else if (entityValueSource is ValueSource_Variable)
+            {
+               mEntityVariableDefinition.RetrieveVariableValueSourceFromControl (entityValueSource as ValueSource_Variable, entityValueSourceControl);
+            }
+            else
+            {
+               trace ("unknown value source type in RetrievePropertyValueSourceFromControl");
+            }
+            
+            var propertyValueSourceControl:UIComponent = box.getChildAt (1) as UIComponent;
+            mPropertyVariableDefinition.RetrieveVariableValueSourceFromControl (propertyValueSource, propertyValueSourceControl);
+   	   }
+      }
+      
    }
 }
-

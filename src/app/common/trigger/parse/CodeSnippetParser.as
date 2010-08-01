@@ -176,6 +176,8 @@ package common.trigger.parse {
                      {
                         currentBranch.mNumDirectBreakCallings ++;
                         
+                        currentCallingLineInfo.mOwnerBlockSupportBreak = currentBranch.mOwnerBlockSupportBreak;
+                        
                         // correct
                         currentCallingLineInfo.mIsValid = currentCallingLineInfo.mIsValid && (currentBranch.mOwnerBlockSupportBreak != null);
                      }

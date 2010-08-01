@@ -508,7 +508,7 @@ package editor.trigger {
                   callingText = callingText + (valueSources [segment [1]] as ValueSource).SourceToCodeString (GetInputParamDefinitionAt(segment [1]));
                   break;
                case kSegmentType_OutputParam:
-                  callingText = callingText + (valueTargets [segment [1]] as ValueTarget).TargetToCodeString ();
+                  callingText = callingText + (valueTargets [segment [1]] as ValueTarget).TargetToCodeString (GetOutputParamDefinitionAt(segment [1]));
                   break;
                case kSegmentType_PlainText:
                   callingText = callingText + segment [1];

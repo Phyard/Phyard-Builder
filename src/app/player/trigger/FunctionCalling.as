@@ -25,23 +25,22 @@ package player.trigger
          mReturnValueTargetList = valueTargetList;
       }
       
+      public function GetLineNumber ():int
+      {
+         return mLineNumberInEditor;
+      }
+      
       public function SetNextCalling (nextCalling:FunctionCalling):void
       {
          mNextFunctionCalling = nextCalling;
       }
       
+      // todo: best to return next calling
       public function Call ():void
       {
          //trace ("FunctionCalling.Call");
          
-      try
-      {
          mFunctionDefinition.DoCall (mInputValueSourceList, mReturnValueTargetList);
-      }
-      catch (e:Error)
-      {
-         trace ("error> mLineNumberInEditor = " + mLineNumberInEditor + ", mFunctionDefinition = " + mFunctionDefinition);
-      }
       }
       
       // can optimize a bit

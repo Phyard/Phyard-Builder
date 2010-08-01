@@ -14,9 +14,9 @@ package editor.trigger {
          SetVariableInstance (vi);
       }
       
-      public function TargetToCodeString ():String
+      public function TargetToCodeString (vd:VariableDefinition):String
       {
-         return mVariableInstance.TargetToCodeString ();
+         return mVariableInstance.TargetToCodeString (vd);
       }
       
       public function GetVariableInstance ():VariableInstance
@@ -56,6 +56,39 @@ package editor.trigger {
       public function CloneTarget ():ValueTarget
       {
          return new ValueTarget_Variable (mVariableInstance);
+      }
+      
+      public function CloneVariableTarget (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      {
+         var variableDefinition:VariableDefinition;;
+         
+         switch (mVariableInstance.GetSpaceType ())
+         {
+            case ValueSpaceTypeDefine.ValueSpace_Input:
+               variableDefinition = ownerFunctionDefinition.GetInputParamDefinitionAt (mVariableInstance.GetIndex ());
+               
+               if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
+               {
+                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
+               }
+               else
+               {
+                  return new ValueTarget_Variable (ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+               }
+            case ValueSpaceTypeDefine.ValueSpace_Output:
+               variableDefinition = ownerFunctionDefinition.GetOutputParamDefinitionAt (mVariableInstance.GetIndex ());
+               
+               if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
+               {
+                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
+               }
+               else
+               {
+                  return new ValueTarget_Variable (ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+               }
+            default:
+               return new ValueTarget_Variable (mVariableInstance);
+         }
       }
       
       public function ValidateTarget ():void

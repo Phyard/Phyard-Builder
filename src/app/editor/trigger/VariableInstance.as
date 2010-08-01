@@ -69,6 +69,8 @@ package editor.trigger {
       {
          if (mIndex < 0)
             return forTarget ? "void" : "null";
+         else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Entity)
+            return "[" + mIndex + ":\"" + GetName () + "\"]";
          else if (mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GlobalRegister)
             return mVariableSpace.GetCodeName () + "[" + mIndex + "]";
          else
@@ -80,7 +82,7 @@ package editor.trigger {
          return ToCodeStringForSourceOrTarget (false);
       }
       
-      public function TargetToCodeString ():String
+      public function TargetToCodeString (vd:VariableDefinition):String
       {
          return ToCodeStringForSourceOrTarget (true);
       }

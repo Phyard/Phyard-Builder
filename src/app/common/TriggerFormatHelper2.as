@@ -156,10 +156,16 @@ package common {
                      }
                      branchInfo = lastCallingInfo.mOwnerBlock.mFirstBranch; // if branch, should not be null
                      branchInfo = branchInfo.mNextBranch; // else branch
-                     if (branchInfo == null)
-                        nextCallingInfo = null;
-                     else
+                     if (branchInfo != null && branchInfo.mNumValidCallings > 1)
+                     {
                         nextCallingInfo = branchInfo.mFirstCallingLine.mNextValidCallingLine;
+                     }
+                     else
+                     {
+                        nextCallingInfo = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                        if (nextCallingInfo != null)
+                           nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
+                     }
                      calling_condition.SetNextCallingForFalse (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
                      break;
                   case CoreFunctionIds.ID_StartWhile:

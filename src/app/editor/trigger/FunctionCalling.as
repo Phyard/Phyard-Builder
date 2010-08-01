@@ -131,9 +131,6 @@ package editor.trigger {
          var i:int;
          var vi:VariableInstance;
          
-         var variableDefinition:VariableDefinition;
-         var done:Boolean;
-         
          var numInputs:int = mInputValueSources.length;
          var sourcesArray:Array = new Array (numInputs);
          var source:ValueSource;
@@ -142,115 +139,44 @@ package editor.trigger {
          {
             source = mInputValueSources [i] as ValueSource;
             
-            if (source is ValueSource_Direct)
+            if (source is ValueSource_Property)
             {
-               sourcesArray [i] = new ValueSource_Direct ((source as ValueSource_Direct).GetValueObject ());
+               sourcesArray [i] = (source as ValueSource_Property).ClonePropertySource (mTriggerEngine, ownerFunctionDefinition, mFunctionDeclaration, i);
             }
             else if (source is ValueSource_Variable)
             {
-               vi = (source as ValueSource_Variable).GetVariableInstance ();
-               
-               done = false;
-               
-               switch (vi.GetSpaceType ())
-               {
-                  case ValueSpaceTypeDefine.ValueSpace_Input:
-                     variableDefinition = ownerFunctionDefinition.GetInputParamDefinitionAt (vi.GetIndex ());
-                     
-                     if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
-                     {
-                        done = true;
-                        sourcesArray [i] = mFunctionDeclaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (mTriggerEngine);
-                     }
-                     else
-                     {
-                        vi = ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
-                     }
-                     break;
-                  case ValueSpaceTypeDefine.ValueSpace_Output:
-                     variableDefinition = ownerFunctionDefinition.GetOutputParamDefinitionAt (vi.GetIndex ());
-                     
-                     if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
-                     {
-                        done = true;
-                        sourcesArray [i] = mFunctionDeclaration.GetOutputParamDefinitionAt (i).GetDefaultNullValueTarget ();
-                     }
-                     else
-                     {
-                        vi = ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
-                     }
-                     break;
-                  default:
-                     break;
-               }
-               
-               if (! done)
-               {
-                  sourcesArray [i] = new ValueSource_Variable (vi);
-               }
+               sourcesArray [i] = (source as ValueSource_Variable).CloneVariableSource (mTriggerEngine, ownerFunctionDefinition, mFunctionDeclaration, i);
             }
             else
             {
-               sourcesArray [i] = new ValueSource_Null ();
+               sourcesArray [i] = source.CloneSource ();
             }
          }
+         
          calling.AssignInputValueSources (sourcesArray);
          
          var numOutputs:int = mReturnValueTargets.length;
          var targetsArray:Array = new Array (numOutputs);
          var target:ValueTarget;
+         
          for (i = 0; i < numOutputs; ++ i)
          {
             target = mReturnValueTargets [i] as ValueTarget;
             
-            if (target is ValueTarget_Variable)
+            if (target is ValueTarget_Property)
             {
-               vi = (target as ValueTarget_Variable).GetVariableInstance ();
-               
-               done = false;
-               
-               switch (vi.GetSpaceType ())
-               {
-                  case ValueSpaceTypeDefine.ValueSpace_Input:
-                     variableDefinition = ownerFunctionDefinition.GetInputParamDefinitionAt (vi.GetIndex ());
-                     
-                     if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
-                     {
-                        done = true;
-                        targetsArray [i] = mFunctionDeclaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (mTriggerEngine);
-                     }
-                     else
-                     {
-                        vi = ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
-                     }
-                     break;
-                  case ValueSpaceTypeDefine.ValueSpace_Output:
-                     variableDefinition = ownerFunctionDefinition.GetOutputParamDefinitionAt (vi.GetIndex ());
-                     
-                     if (variableDefinition == null || variableDefinition.GetValueType () != vi.GetValueType ())
-                     {
-                        done = true;
-                        targetsArray [i] = mFunctionDeclaration.GetOutputParamDefinitionAt (i).GetDefaultNullValueTarget ();
-                     }
-                     else
-                     {
-                        vi = ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (vi.GetIndex ());
-                     }
-                     break;
-                  default:
-                     break;
-               }
-               
-               if (! done)
-               {
-                  targetsArray [i] = new ValueTarget_Variable (vi);
-               }
+               targetsArray [i] = (target as ValueTarget_Property).ClonePropertyTarget (mTriggerEngine, ownerFunctionDefinition, mFunctionDeclaration, i);
+            }
+            else if (target is ValueTarget_Variable)
+            {
+               targetsArray [i] = (target as ValueTarget_Variable).CloneVariableTarget (mTriggerEngine, ownerFunctionDefinition, mFunctionDeclaration, i);
             }
             else
             {
-               targetsArray [i] = new ValueTarget_Null ();
+               targetsArray [i] = target.CloneTarget ();
             }
          }
+         
          calling.AssignOutputValueTargets (targetsArray);
          
          return calling;

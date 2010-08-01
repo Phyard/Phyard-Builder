@@ -26,12 +26,12 @@ package editor.trigger {
       
       override public function GetShortName ():String
       {
-         return "Entity Property";
+         return "Property";
       }
       
       override public function GetCodeName ():String
       {
-         return "entity";
+         return "property";
       }
       
    }

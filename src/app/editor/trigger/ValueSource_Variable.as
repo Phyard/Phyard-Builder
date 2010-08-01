@@ -59,7 +59,33 @@ package editor.trigger {
       
       public function CloneSource ():ValueSource
       {
+         // not a safe clone. Only used in FunctionCallingLineData
          return new ValueSource_Variable (mVariableInstance);
+      }
+      
+      public function CloneVariableSource (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      {
+         var variableDefinition:VariableDefinition;;
+         
+         switch (mVariableInstance.GetSpaceType ())
+         {
+            case ValueSpaceTypeDefine.ValueSpace_Input:
+               variableDefinition = ownerFunctionDefinition.GetInputParamDefinitionAt (mVariableInstance.GetIndex ());
+               
+               if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
+               else
+                  return new ValueSource_Variable (ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+            case ValueSpaceTypeDefine.ValueSpace_Output:
+               variableDefinition = ownerFunctionDefinition.GetOutputParamDefinitionAt (mVariableInstance.GetIndex ());
+               
+               if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
+                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
+               else
+                  return (ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+            default:
+               return new ValueSource_Variable (mVariableInstance);
+         }
       }
       
       public function ValidateSource ():void

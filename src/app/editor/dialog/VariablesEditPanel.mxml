@@ -138,11 +138,11 @@
             
             public function SetVariableSpace (variableSpace:VariableSpace):void
             {
-               if (mVariableSpace == variableSpace)
-                  return;
-               
                mVariableSpace = variableSpace;
-               
+            }
+            
+            public function NotifyVariableSpaceModified ():void
+            {
                List_Variables.dataProvider.removeAll ();
                
                if (mVariableSpace != null)
@@ -426,7 +426,8 @@
                      
                      OnNameChanged ()
                   }
-                  variableDefinitionBoolean.SetDefaultValue (RadioButton_True.selected);
+                  
+                  variableInstance.SetValueObject (RadioButton_True.selected);
                }
             }
             
@@ -455,7 +456,8 @@
                   var defaultValue:Number = parseFloat (Text_DefaultNumberValue.text);
                   if (isNaN (defaultValue) )
                      defaultValue = 0.0;
-                  variableDefinitionNumber.SetDefaultValue (defaultValue);
+                  
+                  variableInstance.SetValueObject (defaultValue);
                }
             }
             
@@ -481,7 +483,7 @@
                      OnNameChanged ()
                   }
                   
-                  variableDefinitionString.SetDefaultValue (Text_DefaultStringValue.text);
+                  variableInstance.SetValueObject (Text_DefaultStringValue.text);
                }
             }
             
@@ -506,6 +508,8 @@
                      
                      OnNameChanged ()
                   }
+                  
+                  // variableInstance.SetValueObject (Text_DefaultStringValue.text);
                }
             }
             
@@ -530,6 +534,8 @@
                      
                      OnNameChanged ()
                   }
+                  
+                  // variableInstance.SetValueObject (Text_DefaultStringValue.text);
                }
             }
             

@@ -1,15 +1,20 @@
 package player.entity {
    
    import player.world.World;
-   import player.world.EntityList;   
+   import player.world.EntityList;
    import player.physics.PhysicsProxy;
 
    import player.trigger.IPropertyOwner;
    import player.trigger.ValueSource;
    import player.trigger.ValueSource_Direct;
    
+   import player.trigger.VariableSpace;
+   import player.trigger.VariableInstance;
+   
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
+   
+   import player.design.Global;
    
    import common.trigger.CoreEventIds;
    
@@ -66,8 +71,14 @@ package player.entity {
                SetAlpha     (entityDefine.mAlpha);
             if (entityDefine.mIsEnabled != undefined)
                SetEnabled    (entityDefine.mIsEnabled);
+            
+            // custom properties
+            
+            Global.InitEntityPropertyValues (mCustomProeprtySpaces);
          }
       }
+      
+      
       
 //=============================================================
 //   for entities in editor
@@ -183,6 +194,35 @@ package player.entity {
       protected function CanBeDisabled ():Boolean
       {
          return false;
+      }
+      
+//====================================================================================================
+//   custom properties
+//====================================================================================================
+      
+      protected var mCustomProeprtySpaces:Array = new Array ();
+      
+      public function GetCustomProperty (spaceId:int, propertyId:int):Object
+      {
+         if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
+            return null;
+         
+      trace ("spaceId = " + spaceId + ", propertyId = " + propertyId);
+      trace ("mCustomProeprtySpaces [spaceId] = " + mCustomProeprtySpaces [spaceId]);
+      trace ("(mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId) = " + (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId));
+         return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId).GetValueObject ();
+      }
+      
+      public function SetCustomProperty (spaceId:int, propertyId:int, valueObject:Object):void
+      {
+         if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
+            return;
+         
+         var vi:VariableInstance = (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId);
+         if (vi != null)
+         {
+            vi.SetValueObject (valueObject);
+         }
       }
       
 //====================================================================================================

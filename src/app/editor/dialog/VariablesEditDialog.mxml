@@ -42,9 +42,15 @@
             mVariableSpace = variableSpace;
          }
          
-         private function OnVariablesEditPanelCreationComplete ():void
+         public function OnVariablesEditPanelCreationComplete ():void
          {
             variablesEditPanel.SetVariableSpace (mVariableSpace);
+            NotifyVariableSpaceModified ();
+         }
+         
+         public function NotifyVariableSpaceModified ():void
+         {
+            variablesEditPanel.NotifyVariableSpaceModified ();
          }
          
          public function SetTitle (title:String):void

@@ -6,7 +6,7 @@ package player.trigger
    {
       protected var mFirstVariableInstance:VariableInstance;
       
-      protected var mVariableInstances:Array;
+      internal var mVariableInstances:Array;
       
       public function VariableSpace (numVariables:int = 0)
       {
@@ -16,17 +16,32 @@ package player.trigger
          mVariableInstances = new Array (numVariables);
          mFirstVariableInstance = null;
          
-         var vi:VariableInstance;
-         for (var i:int = 0; i < numVariables; ++ i)
-         {
-            mVariableInstances [i] = new VariableInstance ();
-            
-            if (i > 0)
-               mVariableInstances [i-1].mNextVariableInstanceInSpace = mVariableInstances [i];
-         }
+         // the link list is for input and output parameter spaces
          
          if (numVariables > 0)
-            mFirstVariableInstance = mVariableInstances [0];
+         {
+            mFirstVariableInstance = new VariableInstance ();
+            mVariableInstances [0] = mFirstVariableInstance;
+            
+            for (var i:int = 1; i < numVariables; ++ i)
+            {
+               mVariableInstances [i] = new VariableInstance ();
+               (mVariableInstances [i-1] as VariableInstance).mNextVariableInstanceInSpace = mVariableInstances [i];
+            }
+         }
+      }
+      
+      public function CloneSpace ():VariableSpace
+      {
+         var numVariables:int = mVariableInstances.length;
+         
+         var variableSpace:VariableSpace = new VariableSpace (numVariables);
+         for (var i:int = 0; i < numVariables; ++ i)
+         {
+            (variableSpace.mVariableInstances [i] as VariableInstance).SetValueObject ((mVariableInstances [i] as VariableInstance).GetValueObject ());
+         }
+         
+         return variableSpace;
       }
       
       public function GetVariableAt (index:int):VariableInstance

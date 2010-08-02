@@ -50,6 +50,10 @@ package common {
    import player.trigger.entity.EntityEventHandler_Timer;
    import player.trigger.entity.EntityEventHandler_Keyboard;
    
+   import common.trigger.define.VariableSpaceDefine;
+   
+   import common.trigger.ValueSpaceTypeDefine;
+   
    import common.trigger.CoreEventIds;
    
    public class DataFormat2
@@ -282,6 +286,10 @@ package common {
                entity.Register (entityDefine.mCreationOrderId, entityDefine.mAppearanceOrderId);
             }
          }
+         
+      // init custom variables
+         
+         Global.InitCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines);
          
    //*********************************************************************************************************************************
    // create
@@ -936,8 +944,33 @@ package common {
             worldDefine.mBrotherGroupDefines.push (brotherIDs);
          }
          
+         // custom variables
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            var numSpaces:int;
+            var spaceId:int;
+            var variableSpaceDefine:VariableSpaceDefine;
+            
+            numSpaces = byteArray.readShort ();
+            for (spaceId = 0; spaceId < numSpaces; ++ spaceId)
+            {
+               variableSpaceDefine = TriggerFormatHelper2.LoadVariableSpaceDefineFromBinFile (byteArray);
+               variableSpaceDefine.mPackageId = spaceId;
+               variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Global;
+               worldDefine.mGlobalVariableSpaceDefines.push (variableSpaceDefine);
+            }
+            
+            numSpaces = byteArray.readShort ();
+            for (spaceId = 0; spaceId < numSpaces; ++ spaceId)
+            {
+               variableSpaceDefine = TriggerFormatHelper2.LoadVariableSpaceDefineFromBinFile (byteArray);
+               variableSpaceDefine.mPackageId = spaceId;
+               variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Entity;
+               worldDefine.mEntityPropertySpaceDefines.push (variableSpaceDefine);
+            }
+         }
          
-         
+         // ...
          return worldDefine;
       }
       
@@ -1247,6 +1280,28 @@ package common {
                element.@category2_index = pairDefine.mCollisionCategory2Index;
                xml.CollisionCategoryFriendPairs.appendChild (element);
             }
+         }
+         
+         // custom variables
+         
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            xml.GlobalVariables = <GlobalVariables />
+            
+            for (var globalSpaceId:int = 0; globalSpaceId < worldDefine.mGlobalVariableSpaceDefines.length; ++ globalSpaceId)
+            {
+               element = TriggerFormatHelper2.VariableSpaceDefine2Xml (worldDefine.mGlobalVariableSpaceDefines [globalSpaceId]);
+               xml.GlobalVariables.appendChild (element);
+            }
+            
+            xml.EntityProperties = <EntityProperties />
+            
+            for (var propertySpaceId:int = 0; propertySpaceId < worldDefine.mEntityPropertySpaceDefines.length; ++ propertySpaceId)
+            {
+               element = TriggerFormatHelper2.VariableSpaceDefine2Xml (worldDefine.mEntityPropertySpaceDefines [propertySpaceId]);
+               xml.EntityProperties.appendChild (element);
+            }
+            
          }
          
          return xml;

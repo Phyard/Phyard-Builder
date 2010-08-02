@@ -16,7 +16,7 @@ package player.trigger
          return mVariableInstance.GetValueObject ();
       }
       
-      // this function is for some special apis
+      // this function is for some special apis (used as a reference parameter)
       public function GetVariableInstance ():VariableInstance
       {
          return mVariableInstance;

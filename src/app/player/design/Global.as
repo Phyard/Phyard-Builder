@@ -11,6 +11,10 @@ package player.design
    import com.stephencalenderblog.MersenneTwisterRNG;
    
    import common.trigger.ValueTypeDefine;
+   import common.trigger.define.VariableSpaceDefine;
+   
+   import common.TriggerFormatHelper2;
+   
    import common.Define;
    
    public class Global implements IPropertyOwner
@@ -27,9 +31,11 @@ package player.design
       public static var mRegisterVariableSpace_Entity :VariableSpace;
       public static var mRegisterVariableSpace_CollisionCategory:VariableSpace;
       
-      public static var mGlobalVariableSpace:VariableSpace;
-      
       public static var mRandomNumberGenerators:Array;
+      
+      public static var mGlobalVariableSpaces:Array;
+      
+      public static var mEntityVariableSpaces:Array;
       
 //==============================================================================
 // static values
@@ -51,6 +57,9 @@ package player.design
          mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null);
          
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
+         
+         mGlobalVariableSpaces = null;
+         mEntityVariableSpaces = null;
       }
       
       public static function SetCurrentDesign (design:Design):void
@@ -100,15 +109,47 @@ package player.design
          }
       }
       
-      public static function GetPropertyValue (propertyId:int):Object
+      public static function InitCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void
       {
-         return sTheGlobal.GetPropertyValue (propertyId);
+         var numSpaces:int;
+         
+         numSpaces = globalVarialbeSpaceDefines.length;
+         mGlobalVariableSpaces = new Array (numSpaces);
+         
+         for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
+         {
+            mGlobalVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentDesign.mCurrentWorld, globalVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
+         }
+         
+         numSpaces = entityVarialbeSpaceDefines.length;
+         mEntityVariableSpaces = new Array (numSpaces);
+         
+         for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
+         {
+            mEntityVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentDesign.mCurrentWorld, entityVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
+         }
       }
       
-      public static function SetPropertyValue (propertyId:int, value:Object):void
+      public static function GetGlobalVariableSpace (spaceId:int):VariableSpace
       {
-         sTheGlobal.SetPropertyValue (propertyId, value);
+         if (spaceId < 0 || spaceId >= mGlobalVariableSpaces.length)
+            return null;
+         
+         return mGlobalVariableSpaces [spaceId] as VariableSpace;
       }
+      
+      // propertyValues should not be null
+      public static function InitEntityPropertyValues (proeprtySpaces:Array):void
+      {
+         var numSpaces:int = mEntityVariableSpaces.length;
+         
+         proeprtySpaces.length = numSpaces;
+         for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
+         {
+            proeprtySpaces [spaceId] = (mEntityVariableSpaces [spaceId] as VariableSpace).CloneSpace ();
+         }
+      }
+      
       
       public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void
       {
@@ -127,6 +168,16 @@ package player.design
       public static function GetRandomNumberGenerator (rngSlot:int):RandomNumberGenerator
       {
          return mRandomNumberGenerators [rngSlot];
+      }
+      
+      public static function GetPropertyValue (propertyId:int):Object
+      {
+         return sTheGlobal.GetPropertyValue (propertyId);
+      }
+      
+      public static function SetPropertyValue (propertyId:int, value:Object):void
+      {
+         sTheGlobal.SetPropertyValue (propertyId, value);
       }
       
 //==============================================================================

@@ -27,6 +27,9 @@ package common {
       public var mCollisionCategoryDefines:Array = new Array ();
       public var mDefaultCollisionCategoryIndex:int = Define.CollisionCategoryId_HiddenCategory;
       public var mCollisionCategoryFriendLinkDefines:Array = new Array ();
+      
+      public var mGlobalVariableSpaceDefines:Array = new Array ();
+      public var mEntityPropertySpaceDefines:Array = new Array ();
    }
 }
 

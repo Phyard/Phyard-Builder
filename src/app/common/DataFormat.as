@@ -33,20 +33,27 @@ package common {
    
    import editor.entity.EntityCollisionCategory;
    
-   import editor.trigger.entity. EntityLogic;
-   import editor.trigger.entity. EntityTask;
-   import editor.trigger.entity. EntityBasicCondition;
-   import editor.trigger.entity. EntityConditionDoor;
-   import editor.trigger.entity. EntityInputEntityAssigner;
-   import editor.trigger.entity. EntityInputEntityPairAssigner;
-   import editor.trigger.entity. EntityAction;
-   import editor.trigger.entity. EntityEventHandler;
-   import editor.trigger.entity. EntityEventHandler_Timer;
-   import editor.trigger.entity. EntityEventHandler_Keyboard;
-   import editor.trigger.entity. EntityEventHandler_Mouse;
-   import editor.trigger.entity. EntityEventHandler_Contact;
+   import editor.trigger.entity.EntityLogic;
+   import editor.trigger.entity.EntityTask;
+   import editor.trigger.entity.EntityBasicCondition;
+   import editor.trigger.entity.EntityConditionDoor;
+   import editor.trigger.entity.EntityInputEntityAssigner;
+   import editor.trigger.entity.EntityInputEntityPairAssigner;
+   import editor.trigger.entity.EntityAction;
+   import editor.trigger.entity.EntityEventHandler;
+   import editor.trigger.entity.EntityEventHandler_Timer;
+   import editor.trigger.entity.EntityEventHandler_Keyboard;
+   import editor.trigger.entity.EntityEventHandler_Mouse;
+   import editor.trigger.entity.EntityEventHandler_Contact;
+   
+   import editor.trigger.VariableSpace;
+   import editor.trigger.VariableInstance;
    
    import editor.runtime.Runtime;
+   
+   import common.trigger.define.VariableSpaceDefine;
+   
+   import common.trigger.ValueSpaceTypeDefine;
    
    import common.trigger.CoreEventIds;
    
@@ -672,6 +679,14 @@ package common {
          }
          //<<
          
+         //from v1.52
+         // global variables and custom entity properties
+         {
+            worldDefine.mGlobalVariableSpaceDefines.push (TriggerFormatHelper.VariableSpace2VariableSpaceDefine (editorWorld, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ()));
+            
+            worldDefine.mEntityPropertySpaceDefines.push (TriggerFormatHelper.VariableSpace2VariableSpaceDefine (editorWorld, editorWorld.GetTriggerEngine ().GetEntityVariableSpace ()));
+         }
+         
          return worldDefine;
       }
       
@@ -1287,6 +1302,16 @@ package common {
          }
          //<<<
          
+         //>>> load custom variables
+         // from v1.52
+         var beginningGlobalVariableIndex:int = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumVariableInstances ();
+         var beginningEntityVariableIndex:int = editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumVariableInstances ();
+         TriggerFormatHelper.VariableSpaceDefine2VariableSpace (editorWorld, worldDefine.mGlobalVariableSpaceDefines [0], editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ());
+         TriggerFormatHelper.VariableSpaceDefine2VariableSpace (editorWorld, worldDefine.mEntityPropertySpaceDefines [0], editorWorld.GetTriggerEngine ().GetEntityVariableSpace ());
+         editorWorld.GetTriggerEngine ().NotifyGlobalVariableSpaceModified ();
+         editorWorld.GetTriggerEngine ().NotifyEntityVariableSpaceModified ();
+         //<<<
+         
          // modify, 2nd round
          
          Runtime.mPauseCreateShapeProxy = false;
@@ -1354,7 +1379,7 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftEntityRefIndexesInCodeSnippet (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
                   TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, condition.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
@@ -1429,14 +1454,14 @@ package common {
                      }
                   }
                   
-                  TriggerFormatHelper.ShiftEntityRefIndexesInCodeSnippet (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
                   TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftEntityRefIndexesInCodeSnippet (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
                   TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, action.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
                }
             }
@@ -1653,6 +1678,29 @@ package common {
                pairDefine.mCollisionCategory2Index = parseInt (element.@category2_index);
                
                worldDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
+            }
+         }
+         
+         // custom variables
+         
+         // custom variables
+         
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            var variableSpaceDefine:VariableSpaceDefine;
+            
+            for each (element in worldXml.GlobalVariables.VariablePackage)
+            {
+               variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
+               variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Global;
+               worldDefine.mGlobalVariableSpaceDefines.push (variableSpaceDefine);
+            }
+            
+            for each (element in worldXml.EntityProperties.VariablePackage)
+            {
+               variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
+               variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Entity;
+               worldDefine.mEntityPropertySpaceDefines.push (variableSpaceDefine);
             }
          }
          
@@ -2637,6 +2685,17 @@ package common {
             WriteShortArrayIntoBinFile (brotherIDs, byteArray);
          }
          
+         // custom variables
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            byteArray.writeShort (1); // num global variable packages
+            TriggerFormatHelper.WriteVariableSpaceDefineIntoBinFile (byteArray, worldDefine.mGlobalVariableSpaceDefines [0] as VariableSpaceDefine);
+            
+            byteArray.writeShort (1); // num entity property packages
+            TriggerFormatHelper.WriteVariableSpaceDefineIntoBinFile (byteArray, worldDefine.mEntityPropertySpaceDefines [0] as VariableSpaceDefine);
+         }
+         
+         // ...
          return byteArray;
       }
       

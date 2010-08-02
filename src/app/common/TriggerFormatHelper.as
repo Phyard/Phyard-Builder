@@ -19,11 +19,19 @@ package common {
    import editor.trigger.ValueSource_Null;
    import editor.trigger.ValueSource_Direct;
    import editor.trigger.ValueSource_Variable;
+   import editor.trigger.ValueSource_Property;
    import editor.trigger.ValueTarget;
    import editor.trigger.ValueTarget_Null;
    import editor.trigger.ValueTarget_Variable;
+   import editor.trigger.ValueTarget_Property;
    import editor.trigger.VariableSpace;
    import editor.trigger.VariableInstance;
+   import editor.trigger.VariableSpace;
+   import editor.trigger.VariableDefinitionBoolean;
+   import editor.trigger.VariableDefinitionNumber;
+   import editor.trigger.VariableDefinitionString;
+   import editor.trigger.VariableDefinitionEntity;
+   import editor.trigger.VariableDefinitionCollisionCategory;
    
    import common.trigger.FunctionTypeDefine;
    import common.trigger.ValueSourceTypeDefine;
@@ -37,9 +45,14 @@ package common {
    import common.trigger.define.ValueSourceDefine_Null;
    import common.trigger.define.ValueSourceDefine_Direct;
    import common.trigger.define.ValueSourceDefine_Variable;
+   import common.trigger.define.ValueSourceDefine_Property;
    import common.trigger.define.ValueTargetDefine;
    import common.trigger.define.ValueTargetDefine_Null;
    import common.trigger.define.ValueTargetDefine_Variable;
+   import common.trigger.define.ValueTargetDefine_Property;
+   
+   import common.trigger.define.VariableSpaceDefine;
+   import common.trigger.define.VariableInstanceDefine;
    
    public class TriggerFormatHelper
    {
@@ -130,54 +143,28 @@ package common {
          {
             var direct_source:ValueSource_Direct = valueSource as ValueSource_Direct;
             
-            var valid:Boolean = true;
-            var value_object:Object = null;
-            
-            switch (valueType)
+            try
             {
-               case ValueTypeDefine.ValueType_Boolean:
-                  value_object = direct_source.GetValueObject () as Boolean;
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  value_object = direct_source.GetValueObject () as Number;
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  value_object = direct_source.GetValueObject () as String;
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-               {
-                  var entity:Entity = direct_source.GetValueObject () as Entity;
-                  
-                  if (entity == null)
-                  {
-                     if (direct_source.GetValueObject () is World)
-                        value_object = Define.EntityId_Ground;
-                     else
-                        value_object = Define.EntityId_None;
-                  }
-                  else
-                  {
-                     value_object = editorWorld.GetEntityCreationId (entity);
-                  }
-                  
-                  break;
-               }
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_object = editorWorld.GetCollisionCategoryIndex (direct_source.GetValueObject () as EntityCollisionCategory);
-                  break;
-               default:
-                  valid = false;
-                  break;
+               value_source_define = new ValueSourceDefine_Direct (valueType, ValidateDirectValueObject_Object2Define (editorWorld, valueType, direct_source.GetValueObject ()));
             }
-            
-            if (valid)
-               value_source_define = new ValueSourceDefine_Direct (valueType, value_object);
+            catch (err:Error)
+            {
+               trace (err.getStackTrace ());
+            }
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
             var variable_source:ValueSource_Variable = valueSource as ValueSource_Variable;
             
             value_source_define = new ValueSourceDefine_Variable (variable_source.GetVariableSpaceType (), variable_source.GetVariableIndex ());
+         }
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         {
+            var property_source:ValueSource_Property = valueSource as ValueSource_Property;
+            
+            
+            value_source_define = new ValueSourceDefine_Property (ValueSource2ValueSourceDefine (editorWorld, property_source.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+                                            , 0, property_source.GetPropertyVariableIndex ());
          }
          
          if (value_source_define == null)
@@ -202,6 +189,13 @@ package common {
             
             value_target_define = new ValueTargetDefine_Variable (variable_target.GetVariableSpaceType (), variable_target.GetVariableIndex ());
          }
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         {
+            var property_target:ValueTarget_Property = valueTarget as ValueTarget_Property;
+            
+            value_target_define = new ValueTargetDefine_Property (ValueSource2ValueSourceDefine (editorWorld, property_target.GetEntityValueSource (), ValueTypeDefine.ValueType_Entity)
+                                            , 0, property_target.GetPropertyVariableIndex ());
+         }
          
          if (value_target_define == null)
          {
@@ -209,6 +203,67 @@ package common {
          }
          
          return value_target_define;
+      }
+      
+      private static function ValidateDirectValueObject_Object2Define (editorWorld:World, valueType:int, valueObject:Object):Object
+      {
+         switch (valueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               return valueObject as Boolean;
+            case ValueTypeDefine.ValueType_Number:
+               return valueObject as Number;
+            case ValueTypeDefine.ValueType_String:
+              return valueObject as String;
+            case ValueTypeDefine.ValueType_Entity:
+            {
+               var entity:Entity = valueObject as Entity;
+               
+               if (entity == null)
+               {
+                  if (valueObject is World)
+                     return Define.EntityId_Ground;
+                  else
+                     return Define.EntityId_None;
+               }
+               else
+               {
+                  return editorWorld.GetEntityCreationId (entity);
+               }
+            }
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               return editorWorld.GetCollisionCategoryIndex (valueObject as EntityCollisionCategory);
+               break;
+            default:
+            {
+               throw new Error ("! wrong value");
+            }
+         }
+      }
+      
+      public static function VariableSpace2VariableSpaceDefine (editorWorld:World, variableSpace:VariableSpace):VariableSpaceDefine
+      {
+         var numVariables:int = variableSpace.GetNumVariableInstances ();
+         
+         var spaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
+         spaceDefine.mPackageId = 0;
+         spaceDefine.mSpaceType = variableSpace.GetSpaceType ();
+         spaceDefine.mParentPackageId = -1;
+         spaceDefine.mName = "";
+         spaceDefine.mVariableDefines = new Array (numVariables);
+         
+         for (var variableId:int = 0; variableId < numVariables; ++ variableId)
+         {
+            var variableInstance:VariableInstance = variableSpace.GetVariableInstanceAt (variableId);
+            
+            var variableInstanceDefine:VariableInstanceDefine = new VariableInstanceDefine ();
+            variableInstanceDefine.mName = variableInstance.GetName ();
+            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (editorWorld, variableInstance.GetValueType (), variableInstance.GetValueObject ()));
+            
+            spaceDefine.mVariableDefines [variableId] = variableInstanceDefine;
+         }
+         
+         return spaceDefine;
       }
       
 //==============================================================================================
@@ -266,55 +321,14 @@ package common {
          {
             var direct_source_define:ValueSourceDefine_Direct = valueSourceDefine as ValueSourceDefine_Direct;
             
-            var valid:Boolean = true;
-            var value_object:Object = null;
-            
-            switch (valueType)
+            try
             {
-               case ValueTypeDefine.ValueType_Boolean:
-                  value_object = direct_source_define.mValueObject as Boolean;
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  value_object = direct_source_define.mValueObject as Number;
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  // "as String in commented off, otherwise value_object will be always null, bug?!
-                  // re: add back  "as String", in xml -> define: String (valueSourceElement.@direct_value)
-                  value_object = direct_source_define.mValueObject as String
-                  if (value_object == null)
-                     value_object = "";
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-               {
-                  var entityIndex:int = direct_source_define.mValueObject as int;
-                  if (entityIndex < 0)
-                  {
-                     if (entityIndex == Define.EntityId_Ground)
-                     {
-                        value_object = editorWorld;
-                     }
-                     else if (entityIndex == Define.EntityId_None)
-                     {
-                        value_object = null;
-                     }
-                  }
-                  else
-                  {
-                     value_object = editorWorld.GetEntityByCreationId (entityIndex);
-                  }
-                  
-                  break;
-               }
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_object = editorWorld.GetCollisionCategoryByIndex (direct_source_define.mValueObject as int);
-                  break;
-               default:
-                  valid = false;
-                  break;
+               value_source = new ValueSource_Direct (ValidateDirectValueObject_Define2Object (editorWorld, valueType, direct_source_define.mValueObject));
             }
-            
-            if (valid)
-               value_source = new ValueSource_Direct (value_object);
+            catch (err:Error)
+            {
+               trace (err.getStackTrace ());
+            }
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -327,6 +341,7 @@ package common {
             switch (variable_source_define.mSpaceType)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
+                  variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
@@ -348,10 +363,18 @@ package common {
                   break;
             }
             
+            
             if (variable_instance != null)
             {
                value_source = new ValueSource_Variable (variable_instance);
             }
+         }
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         {
+            var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
+            
+            value_source = new ValueSource_Property (ValueSourceDefine2ValueSource (editorWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueSource_Variable (editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetVariableInstanceAt (property_source_define.mPropertyId)));
          }
          
          if (value_source == null)
@@ -381,6 +404,7 @@ package common {
             switch (variable_target_define.mSpaceType)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
+                  variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
@@ -407,6 +431,13 @@ package common {
                value_target = new ValueTarget_Variable (variable_instance);
             }
          }
+         else  if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         {
+            var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
+            
+            value_target = new ValueTarget_Property (ValueSourceDefine2ValueSource (editorWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, functionDefinition)
+                                                   , new ValueTarget_Variable (editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetVariableInstanceAt (property_target_define.mPropertyId)));
+         }
          
          if (value_target == null)
          {
@@ -414,6 +445,97 @@ package common {
          }
          
          return value_target;
+      }
+      
+      private static function ValidateDirectValueObject_Define2Object (editorWorld:World, valueType:int, valueobject:Object):Object
+      {
+         switch (valueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               return Boolean (valueobject);
+            case ValueTypeDefine.ValueType_Number:
+               return Number (valueobject);
+            case ValueTypeDefine.ValueType_String:
+               // "as String in commented off, otherwise value_object will be always null, bug?!
+               // re: add back  "as String", in xml -> define: String (valueSourceElement.@direct_value)
+               var text:String = valueobject as String
+               if (text == null)
+                  text = "";
+               return text;
+            case ValueTypeDefine.ValueType_Entity:
+            {
+               var entityIndex:int = valueobject as int;
+               if (entityIndex < 0)
+               {
+                  if (entityIndex == Define.EntityId_Ground)
+                  {
+                     return editorWorld;
+                  }
+                  else if (entityIndex == Define.EntityId_None)
+                  {
+                     return null;
+                  }
+               }
+               else
+               {
+                  return editorWorld.GetEntityByCreationId (entityIndex);
+               }
+            }
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               return editorWorld.GetCollisionCategoryByIndex (valueobject as int);
+            default:
+            {
+               throw new Error ("!wrong balue");
+            }
+         }
+      }
+      
+      public static function VariableSpaceDefine2VariableSpace (editorWorld:World, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void
+      {
+         var numVariables:int = spaceDefine.mVariableDefines.length;
+         
+         //spaceDefine.mPackageId = 0;
+         //spaceDefine.mSpaceType = variableSpace.GetSpaceType ();
+         //spaceDefine.mParentPackageId = -1;
+         
+         for (var variableId:int = 0; variableId < numVariables; ++ variableId)
+         {
+            var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine;
+            var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
+            
+            var variableDefinition:VariableDefinition = null;
+            var valueObject:Object = ValidateDirectValueObject_Define2Object (editorWorld, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject);
+            
+            switch (directValueSourceDefine.mValueType)
+            {
+               case ValueTypeDefine.ValueType_Boolean:
+                  variableDefinition = new VariableDefinitionBoolean (variableInstanceDefine.mName);
+                  break;
+               case ValueTypeDefine.ValueType_Number:
+                  variableDefinition = new VariableDefinitionNumber (variableInstanceDefine.mName);
+                  break;
+               case ValueTypeDefine.ValueType_String:
+                  variableDefinition = new VariableDefinitionString (variableInstanceDefine.mName);
+                  break;
+               case ValueTypeDefine.ValueType_Entity:
+                  variableDefinition = new VariableDefinitionEntity (variableInstanceDefine.mName);
+                  break;
+               case ValueTypeDefine.ValueType_CollisionCategory:
+                  variableDefinition = new VariableDefinitionCollisionCategory (variableInstanceDefine.mName);
+                  break;
+               default:
+               {
+                  trace ("error!");
+                  variableDefinition = new VariableDefinitionNumber ("!error");
+               }
+            }
+            
+            if (variableDefinition != null)
+            {
+               var vi:VariableInstance = variableSpace.CreateVariableInstanceFromDefinition (variableDefinition);
+               vi.SetValueObject (valueObject);
+            }
+         }
       }
       
 //==============================================================================================
@@ -468,40 +590,7 @@ package common {
             var direct_source_define:ValueSourceDefine_Direct = valueSourceDefine as ValueSourceDefine_Direct;
             var value_object:Object = direct_source_define.mValueObject;
             
-            switch (valueType)
-            {
-               case ValueTypeDefine.ValueType_Boolean:
-                  binFile.writeByte ((value_object as Boolean) ? 1 : 0);
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  switch (numberDetail)
-                  {
-                     case ValueTypeDefine.NumberTypeDetail_Single:
-                        binFile.writeFloat (value_object as Number);
-                        break;
-                     case ValueTypeDefine.NumberTypeDetail_Integer:
-                        binFile.writeInt (value_object as Number);
-                        break;
-                     case ValueTypeDefine.NumberTypeDetail_Double:
-                     default:
-                        binFile.writeDouble (value_object as Number);
-                        break;
-                  }
-                  
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  binFile.writeUTF (value_object == null ? "" : value_object as String);
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-                  binFile.writeInt (value_object as int);
-                  break;
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  binFile.writeInt (value_object as int);
-                  break;
-               default:
-                  trace ("error");
-                  break;
-            }
+            WriteDirectValueObjectIntoBinFile (binFile, valueType, numberDetail, direct_source_define.mValueObject);
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -509,6 +598,14 @@ package common {
             
             binFile.writeByte (variable_source_define.mSpaceType);
             binFile.writeShort (variable_source_define.mVariableIndex);
+         }
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         {
+            var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
+            
+            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double); // ValueTypeDefine.NumberTypeDetail_Double is useless
+            binFile.writeShort (property_source_define.mSpacePackageId);
+            binFile.writeShort (property_source_define.mPropertyId);
          }
       }
       
@@ -524,6 +621,71 @@ package common {
             
             binFile.writeByte (variable_target_define.mSpaceType);
             binFile.writeShort (variable_target_define.mVariableIndex);
+         }
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         {
+            var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
+            
+            WriteValueSourceDefinIntoBinFile (binFile, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, ValueTypeDefine.NumberTypeDetail_Double); // ValueTypeDefine.NumberTypeDetail_Double is useless
+            binFile.writeShort (property_target_define.mSpacePackageId);
+            binFile.writeShort (property_target_define.mPropertyId);
+         }
+      }
+      
+      private static function WriteDirectValueObjectIntoBinFile (binFile:ByteArray, valueType:int,  numberDetail:int, valueObject:Object):void
+      {
+         switch (valueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               binFile.writeByte ((valueObject as Boolean) ? 1 : 0);
+               break;
+            case ValueTypeDefine.ValueType_Number:
+               switch (numberDetail)
+               {
+                  case ValueTypeDefine.NumberTypeDetail_Single:
+                     binFile.writeFloat (valueObject as Number);
+                     break;
+                  case ValueTypeDefine.NumberTypeDetail_Integer:
+                     binFile.writeInt (valueObject as Number);
+                     break;
+                  case ValueTypeDefine.NumberTypeDetail_Double:
+                  default:
+                     binFile.writeDouble (valueObject as Number);
+                     break;
+               }
+               
+               break;
+            case ValueTypeDefine.ValueType_String:
+               binFile.writeUTF (valueObject == null ? "" : valueObject as String);
+               break;
+            case ValueTypeDefine.ValueType_Entity:
+               binFile.writeInt (valueObject as int);
+               break;
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               binFile.writeInt (valueObject as int);
+               break;
+            default:
+            {
+               throw new Error ("! bad value");
+            }
+         }
+      }
+      
+      public static function WriteVariableSpaceDefineIntoBinFile (binFile:ByteArray, variableSpaceDefine:VariableSpaceDefine):void
+      {
+         binFile.writeUTF (variableSpaceDefine.mName);
+         binFile.writeShort (variableSpaceDefine.mParentPackageId);
+         
+         var numVariables:int = variableSpaceDefine.mVariableDefines.length;
+         binFile.writeShort (numVariables);
+         
+         for (var i:int = 0; i < numVariables; ++ i)
+         {
+            var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i];
+            
+            binFile.writeUTF (viDefine.mName);
+            binFile.writeShort (viDefine.mDirectValueSourceDefine.mValueType);
+            WriteDirectValueObjectIntoBinFile (binFile, viDefine.mDirectValueSourceDefine.mValueType, ValueTypeDefine.NumberTypeDetail_Double, viDefine.mDirectValueSourceDefine.mValueObject);
          }
       }
       
@@ -613,39 +775,23 @@ package common {
          
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
-            var valid:Boolean = true;;
-            var value_object:Object = null;
-            
-            switch (valueType)
+            try
             {
-               case ValueTypeDefine.ValueType_Boolean:
-                  value_object = parseInt (valueSourceElement.@direct_value) != 0;
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  value_object = parseFloat (valueSourceElement.@direct_value);
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  value_object = String (valueSourceElement.@direct_value); // valueSourceElement.@direct_value is not a string, ??? 
-                  if (value_object == null)
-                     value_object = "";
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-                  value_object = parseInt (valueSourceElement.@direct_value);
-                  break;
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_object = parseInt (valueSourceElement.@direct_value);
-                  break;
-               default:
-                  valid = false;
-                  break;
+               value_source_define = new ValueSourceDefine_Direct (valueType, ValidateDirectValueObject_Xml2Define (valueType, valueSourceElement.@direct_value));
             }
-            
-            if (valid)
-               value_source_define = new ValueSourceDefine_Direct (valueType, value_object);
+            catch (err:Error)
+            {
+               trace (err.getStackTrace ());
+            }
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
             value_source_define = new ValueSourceDefine_Variable (parseInt (valueSourceElement.@variable_space), parseInt (valueSourceElement.@variable_index));
+         }
+         else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
+         {
+            value_source_define = new ValueSourceDefine_Property (Xml2ValueSourceDefine (valueSourceElement.PropertyOwnerValueSource[0], ValueTypeDefine.ValueType_Entity)
+                                                                  , parseInt (valueSourceElement.@property_package_id), parseInt (valueSourceElement.@property_id));
          }
          
          if (value_source_define == null)
@@ -668,6 +814,11 @@ package common {
          {
             value_target_define = new ValueTargetDefine_Variable (parseInt (valueTargetElement.@variable_space), parseInt (valueTargetElement.@variable_index));
          }
+         else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
+         {
+            value_target_define = new ValueTargetDefine_Property (Xml2ValueSourceDefine (valueTargetElement.PropertyOwnerValueSource[0], ValueTypeDefine.ValueType_Entity)
+                                                                  , parseInt (valueTargetElement.@property_package_id), parseInt (valueTargetElement.@property_id));
+         }
          
          if (value_target_define == null)
          {
@@ -676,6 +827,52 @@ package common {
          
          return value_target_define;
       }
+      
+      private static function ValidateDirectValueObject_Xml2Define (valueType:int, direct_value:String):Object
+      {
+         switch (valueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               return parseInt (String (direct_value)) != 0;
+            case ValueTypeDefine.ValueType_Number:
+               return parseFloat (String (direct_value));
+            case ValueTypeDefine.ValueType_String:
+               var text:String = String (direct_value); // valueSourceElement.@direct_value is not a string, ??? 
+               if (text == null)
+                  text = "";
+               return text;
+            case ValueTypeDefine.ValueType_Entity:
+               return parseInt (String (direct_value));
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               return parseInt (String (direct_value));
+            default:
+            {
+               throw new Error ("! wrong value");
+            }
+         }
+      }
+      
+      public static function VariableSpaceXml2Define (elementVariablePackage:XML):VariableSpaceDefine
+      {
+         var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
+         
+         variableSpaceDefine.mName = elementVariablePackage.@name;
+         variableSpaceDefine.mPackageId = parseInt (elementVariablePackage.@package_id);
+         variableSpaceDefine.mParentPackageId = parseInt (elementVariablePackage.@parent_package_id);
+         variableSpaceDefine.mVariableDefines = new Array ();
+         
+         for each (var element:XML in elementVariablePackage.Variable)
+         {
+            var viDefine:VariableInstanceDefine = new VariableInstanceDefine ();
+            
+            viDefine.mName = element.@name;
+            viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (parseInt (element.@value_type), parseInt (element.@initial_value));
+            
+            variableSpaceDefine.mVariableDefines.push (viDefine);
+         }
+         
+         return variableSpaceDefine;
+     }
       
 //========================================================================================
 // 
@@ -687,10 +884,12 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftEntityRefIndexesInCodeSnippet (codeSnippetDefine:CodeSnippetDefine, entityIdShiftedValue:int, ccatIdShiftedValue:int):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int):void
       {
          var funcCallingDefine:FunctionCallingDefine;
          var i:int;
+         var j:int;
+         
          var numCallings:int = codeSnippetDefine.mNumCallings;
          for (i = 0; i < numCallings; ++ i)
          {
@@ -701,39 +900,18 @@ package common {
                var functionId:int = funcCallingDefine.mFunctionId;
                var funcDclaration:common.trigger.FunctionDeclaration = common.trigger.CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
                
-               var sourceDefine:ValueSourceDefine;
-               var direcSourceDefine:ValueSourceDefine_Direct;
-               var sourceValueType:int;
-               var valueType:int;
-               var entityIndex:int;
-               var ccatIndex:int;
                var numInputs:int = funcCallingDefine.mNumInputs;
-               var j:int;
+               
                for (j = 0; j < numInputs; ++ j)
                {
-                  sourceDefine = funcCallingDefine.mInputValueSourceDefines [j];
-                  sourceValueType = sourceDefine.GetValueSourceType ();
-                  valueType = funcDclaration.GetInputParamValueType (j);
-                  
-                  if (sourceValueType == ValueSourceTypeDefine.ValueSource_Direct)
-                  {
-                     direcSourceDefine = sourceDefine as ValueSourceDefine_Direct;
-                     
-                     if (valueType == ValueTypeDefine.ValueType_Entity)
-                     {
-                        entityIndex = int (direcSourceDefine.mValueObject);
-                        
-                        if (entityIndex >= 0)
-                           direcSourceDefine.mValueObject = entityIndex + entityIdShiftedValue;
-                     }
-                     else if (valueType == ValueTypeDefine.ValueType_CollisionCategory)
-                     {
-                        ccatIndex = int (direcSourceDefine.mValueObject);
-                        
-                        if (ccatIndex >= 0)
-                           direcSourceDefine.mValueObject = ccatIndex + ccatIdShiftedValue;
-                     }
-                  }
+                  ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+               }
+               
+               var numOutputs:int = funcCallingDefine.mNumOutputs;
+               
+               for (j = 0; j < numOutputs; ++ j)
+               {
+                  ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
                }
             }
             else
@@ -742,5 +920,79 @@ package common {
          }
       }
       
+      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int):void
+      {
+         var valueSourceType:int = sourceDefine.GetValueSourceType ();
+         
+         if (valueSourceType == ValueSourceTypeDefine.ValueSource_Direct)
+         {
+            var directSourceDefine:ValueSourceDefine_Direct = sourceDefine as ValueSourceDefine_Direct;
+            
+            if (valueType == ValueTypeDefine.ValueType_Entity)
+            {
+               var entityIndex:int = int (directSourceDefine.mValueObject);
+               
+               if (entityIndex >= 0)
+                  directSourceDefine.mValueObject = entityIndex + entityIdShiftedValue;
+            }
+            else if (valueType == ValueTypeDefine.ValueType_CollisionCategory)
+            {
+               var ccatIndex:int = int (directSourceDefine.mValueObject);
+               
+               if (ccatIndex >= 0)
+                  directSourceDefine.mValueObject = ccatIndex + ccatIdShiftedValue;
+            }
+         }
+         else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Variable)
+         {
+            var variableSourceDefine:ValueSourceDefine_Variable = sourceDefine as ValueSourceDefine_Variable;
+            
+            if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
+            {
+               var variableIndex:int = variableSourceDefine.mVariableIndex;
+               
+               if (variableIndex >= 0)
+                  variableSourceDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
+            }
+         }
+         else if (valueSourceType == ValueSourceTypeDefine.ValueSource_Property)
+         {
+            var propertySourceDefine:ValueSourceDefine_Property = sourceDefine as ValueSourceDefine_Property;
+            
+            var propertyId:int = propertySourceDefine.mPropertyId;
+            if (propertyId >= 0)
+               propertySourceDefine.mPropertyId = propertyId + entityVariableShiftIndex;
+            
+            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+         }
+      }
+      
+      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int):void
+      {
+         var valueTargetType:int = targetDefine.GetValueTargetType ();
+         
+         if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Variable)
+         {
+            var variableTargetDefine:ValueTargetDefine_Variable = targetDefine as ValueTargetDefine_Variable;
+            
+            if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
+            {
+               var variableIndex:int = variableTargetDefine.mVariableIndex;
+               
+               if (variableIndex >= 0)
+                  variableTargetDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
+            }
+         }
+         else if (valueTargetType == ValueTargetTypeDefine.ValueTarget_Property)
+         {
+            var propertyTargetDefine:ValueTargetDefine_Property = targetDefine as ValueTargetDefine_Property;
+            
+            var propertyId:int = propertyTargetDefine.mPropertyId;
+            if (propertyId >= 0)
+               propertyTargetDefine.mPropertyId = propertyId + entityVariableShiftIndex;
+            
+            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+         }
+      }
    }
 }

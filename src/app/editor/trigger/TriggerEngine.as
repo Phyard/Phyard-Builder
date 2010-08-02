@@ -145,7 +145,7 @@ package editor.trigger {
       }
       
    //========================================================================================================
-   // registers
+   // variable spaces
    //========================================================================================================
       
       public function GetRegisterVariableSpace (valueType:int):VariableSpaceRegister
@@ -175,6 +175,22 @@ package editor.trigger {
       public function GetEntityVariableSpace ():VariableSpaceEntity
       {
          return mEntityVariableSpace;
+      }
+      
+      public function NotifyGlobalVariableSpaceModified ():void
+      {
+         if (mGlobalVariablesEditDialog != null)
+         {
+            mGlobalVariablesEditDialog.NotifyVariableSpaceModified ();
+         }
+      }
+      
+      public function NotifyEntityVariableSpaceModified ():void
+      {
+         if (mEntityVariablesEditDialog != null)
+         {
+            mEntityVariablesEditDialog.NotifyVariableSpaceModified ();
+         }
       }
       
    //========================================================================================================

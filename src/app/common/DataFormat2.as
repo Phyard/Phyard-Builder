@@ -1885,6 +1885,10 @@ package common {
                {
                   TriggerFormatHelper2.AdjustNumberPrecisionsInCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
                }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+                  TriggerFormatHelper2.AdjustNumberPrecisionsInCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
+               }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
                   TriggerFormatHelper2.AdjustNumberPrecisionsInCodeSnippetDefine (entityDefine.mCodeSnippetDefine);
@@ -2065,6 +2069,25 @@ package common {
          {
             worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = 0.0;
          }
+         
+         // custom variables
+         // from v1.52
+         //{
+            var numSpaces:int;
+            var spaceId:int;
+         
+            numSpaces = worldDefine.mGlobalVariableSpaceDefines.length;
+            for (spaceId = 0; spaceId < numSpaces; ++ spaceId)
+            {
+                TriggerFormatHelper2.AdjustNumberPrecisionsInVariableSpaceDefine (worldDefine.mGlobalVariableSpaceDefines [spaceId] as VariableSpaceDefine);
+            }
+            
+            numSpaces = worldDefine.mEntityPropertySpaceDefines.length;
+            for (spaceId = 0; spaceId < numSpaces; ++ spaceId)
+            {
+                TriggerFormatHelper2.AdjustNumberPrecisionsInVariableSpaceDefine (worldDefine.mEntityPropertySpaceDefines [spaceId] as VariableSpaceDefine);
+            }
+         //}
       }
       
       // fill some missed fields in earliser versions
@@ -2177,11 +2200,11 @@ package common {
             {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
-                  TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper2.FillMissedFieldsInCodeSinippetDefine (entityDefine.mCodeSnippetDefine);
                }
                if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
-                  TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper2.FillMissedFieldsInCodeSinippetDefine (entityDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
@@ -2190,7 +2213,7 @@ package common {
                      entityDefine.mExternalActionEntityCreationId = -1;
                   }
                   
-                  TriggerFormatHelper2.FillMissedFieldsInWorldDefine (entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper2.FillMissedFieldsInCodeSinippetDefine (entityDefine.mCodeSnippetDefine);
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )

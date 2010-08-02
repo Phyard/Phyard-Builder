@@ -90,6 +90,17 @@ package common.trigger {
                      null,
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Comment,
+                     [
+                        ValueTypeDefine.ValueType_String, 
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Blank,
+                     null,
+                     null
+                  );
+         
          RegisterCoreDeclaration (CoreFunctionIds.ID_StartIf,
                      [
                         ValueTypeDefine.ValueType_Boolean, 

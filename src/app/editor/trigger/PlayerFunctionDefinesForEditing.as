@@ -156,6 +156,17 @@ package editor.trigger {
                      null,
                      null
                   );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Comment, basic_package, "Comment Line", "@// $0", "@// $0",
+                     [
+                             new VariableDefinitionString ("Comment Text"), 
+                     ],
+                     null
+                  );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Blank, basic_package, "Blank Line", "@", "@",
+                     null,
+                     null
+                  );
+         
          RegisterFunctionDeclaration (CoreFunctionIds.ID_StartIf, basic_package, "If", "@If ($0 is true)", "@If ($0 is true)",
                      [
                              new VariableDefinitionBoolean ("Condition Result"), 

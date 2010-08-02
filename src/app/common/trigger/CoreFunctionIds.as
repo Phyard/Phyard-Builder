@@ -22,8 +22,9 @@ package common.trigger {
       public static const ID_ReturnIfTrue:int                 = IdPool.CoreApiId_21; //
       public static const ID_ReturnIfFalse:int                = IdPool.CoreApiId_22; //
       public static const ID_Break:int                        = IdPool.CoreApiId_23; //
-      
-      public static const MinId_BlockCalling:int = IdPool.CoreApiId_30; // .......
+      //public static const ID_GoTo:int                        = IdPool.CoreApiId_24; //
+      public static const ID_Comment:int                     = IdPool.CoreApiId_25; //
+      public static const ID_Blank:int                       = IdPool.CoreApiId_26; //
       
       public static const ID_StartIf:int                      = IdPool.CoreApiId_30; //
       //public static const ID_ElseIf:int                     = IdPool.CoreApiId_31; //
@@ -37,8 +38,6 @@ package common.trigger {
       public static const ID_EndWhile:int                     = IdPool.CoreApiId_39; //
       //public static const ID_StartDoWhile:int                   = IdPool.CoreApiId_40; //
       //public static const ID_EndDoWhile:int                     = IdPool.CoreApiId_41; //
-      
-      public static const MaxId_BlockCalling:int = IdPool.CoreApiId_59; // ......
       
    // system
       

@@ -149,12 +149,17 @@
             mPasteAfterMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "", OnPasteCallingsAfter);
             
             DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"If\" Block", OnAddIfBlock, true);
-            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Else\"", OnAddElseBranch);
             DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"While\" Block", OnAddWhileBlock);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Else\"", OnAddElseBranch, true);
             DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Break\"", OnAddBreakBranch);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Return\"", OnAddReturn);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"ReturnIfTrue\"", OnAddReturnIfTrue);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"ReturnIfFalse\"", OnAddReturnIfFalse);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add Comment Line", OnAddCommentLine, true);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add Blank Line", OnAddBlankLine);
             
             mTraditionalFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Traditional Coding Format", OnSwitchToTraditionalFormat, true);
-            mObjectOrientedFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "OO Coding Format (not implemented yet)", OnSwitchToObjectOrientedFormat);
+            //mObjectOrientedFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "OO Coding Format (not implemented yet)", OnSwitchToObjectOrientedFormat);
             mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format (Partially Support)", OnSwitchToPoemFormat);
             
             UpdateInterface ();
@@ -488,6 +493,36 @@
             OnNewCalling (CoreFunctionIds.ID_Break, insertAt, true);
          }
          
+         private function OnAddReturn (event:ContextMenuEvent):void
+         {
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (CoreFunctionIds.ID_Return, insertAt, true);
+         }
+         
+         private function OnAddReturnIfTrue (event:ContextMenuEvent):void
+         {
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (CoreFunctionIds.ID_ReturnIfTrue, insertAt, true);
+         }
+         
+         private function OnAddReturnIfFalse (event:ContextMenuEvent):void
+         {
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (CoreFunctionIds.ID_ReturnIfFalse, insertAt, true);
+         }
+         
+         private function OnAddCommentLine (event:ContextMenuEvent):void
+         {
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (CoreFunctionIds.ID_Comment, insertAt, true);
+         }
+         
+         private function OnAddBlankLine (event:ContextMenuEvent):void
+         {
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (CoreFunctionIds.ID_Blank, insertAt, true);
+         }
+         
          private function OnNewCalling (id:int, insertAt:int = -1, updateUI:Boolean = true):void
          {
             if (isNaN (id) || id < 0)
@@ -635,15 +670,15 @@
             
             if (Runtime.mPoemCodingFormat)
             {
-               mTraditionalFormatMenuItem.enabled = true;
-               mObjectOrientedFormatMenuItem.enabled = true;
-               mPoemFormatMenuItem.enabled = false;
+               if (mTraditionalFormatMenuItem != null) mTraditionalFormatMenuItem.enabled = true;
+               if (mObjectOrientedFormatMenuItem != null) mObjectOrientedFormatMenuItem.enabled = true;
+               if (mPoemFormatMenuItem != null) mPoemFormatMenuItem.enabled = false;
             }
             else
             {
-               mTraditionalFormatMenuItem.enabled = false;
-               mObjectOrientedFormatMenuItem.enabled = true;
-               mPoemFormatMenuItem.enabled = true;
+               if (mTraditionalFormatMenuItem != null) mTraditionalFormatMenuItem.enabled = false;
+               if (mObjectOrientedFormatMenuItem != null) mObjectOrientedFormatMenuItem.enabled = true;
+               if (mPoemFormatMenuItem != null) mPoemFormatMenuItem.enabled = true;
             }
          }
          

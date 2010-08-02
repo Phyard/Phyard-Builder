@@ -136,6 +136,30 @@ package editor.world {
          return mSelectionListManager.GetSelectedEntities ();
       }
       
+      public function GetMainSelectedEntity ():Entity
+      {
+         var entityArray:Array = GetSelectedEntities ();
+         
+         var entity:Entity = null;
+         var firstEntity:Entity = null;
+         for (var i:uint = 0; i < entityArray.length; ++ i)
+         {
+            entity = entityArray[i] as Entity;
+            if (entity != null)
+            {
+               if (entity.AreInternalComponentsVisible ())
+                  return entity;
+               
+               if (firstEntity == null)
+               {
+                  firstEntity = entity;
+               }
+            }
+         }
+         
+         return firstEntity;
+      }
+      
       public function ClearSelectedEntities ():void
       {
          mSelectionListManager.ClearSelectedEntities ();

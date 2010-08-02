@@ -172,18 +172,28 @@ package common.trigger.parse {
                      currentCallingLineInfo.mOwnerBranch = currentBranch;
                      
                      currentBranch.mLastCallingLine = currentCallingLineInfo;
-                     if (currentCallingLineInfo.mFunctionId == CoreFunctionIds.ID_Break)
+                     
+                     switch (currentCallingLineInfo.mFunctionId)
                      {
-                        currentBranch.mNumDirectBreakCallings ++;
-                        
-                        currentCallingLineInfo.mOwnerBlockSupportBreak = currentBranch.mOwnerBlockSupportBreak;
-                        
-                        // correct
-                        currentCallingLineInfo.mIsValid = currentCallingLineInfo.mIsValid && (currentBranch.mOwnerBlockSupportBreak != null);
-                     }
-                     else if (currentCallingLineInfo.mFunctionId == CoreFunctionIds.ID_Return)
-                     {
-                        currentBranch.mNumDirectReturnCallings ++;
+                        case CoreFunctionIds.ID_Break:
+                           currentBranch.mNumDirectBreakCallings ++;
+                           
+                           currentCallingLineInfo.mOwnerBlockSupportBreak = currentBranch.mOwnerBlockSupportBreak;
+                           
+                           // correct
+                           currentCallingLineInfo.mIsValid = currentCallingLineInfo.mIsValid && (currentBranch.mOwnerBlockSupportBreak != null);
+                           
+                           break;
+                        case CoreFunctionIds.ID_Return:
+                           currentBranch.mNumDirectReturnCallings ++;
+                           break;
+                        case CoreFunctionIds.ID_Comment:
+                        case CoreFunctionIds.ID_Blank:
+                           currentCallingLineInfo.mIsValid = false;
+                           break;
+                        default:
+                        {
+                        }
                      }
                   }
                }

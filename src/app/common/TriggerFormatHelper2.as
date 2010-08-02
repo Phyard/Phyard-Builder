@@ -939,8 +939,24 @@ package common {
          }
       }
       
+      public static function AdjustNumberPrecisionsInVariableSpaceDefine (variableSpaceDefine:VariableSpaceDefine):void
+      {
+         var numVariables:int = variableSpaceDefine.mVariableDefines.length;
+         var directNumber:Number;
+         for (var i:int = 0; i < numVariables; ++ i)
+         {
+            var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i] as VariableInstanceDefine;
+            
+            if (viDefine.mDirectValueSourceDefine.mValueType == ValueTypeDefine.ValueType_Number)
+            {
+               directNumber = Number (viDefine.mDirectValueSourceDefine.mValueObject);
+               viDefine.mDirectValueSourceDefine.mValueObject = ValueAdjuster.Number2Precision (directNumber, 12);
+            }
+         }
+      }
+      
       // it is possible some new parameters are appended in a newer version for some functions
-      public static function FillMissedFieldsInWorldDefine (codeSnippetDefine:CodeSnippetDefine):void
+      public static function FillMissedFieldsInCodeSinippetDefine (codeSnippetDefine:CodeSnippetDefine):void
       {
          
       }

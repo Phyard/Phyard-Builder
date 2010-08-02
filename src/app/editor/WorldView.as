@@ -655,27 +655,27 @@ package editor {
          if (mLastSelectedEntity != null && ! mEditorWorld.IsEntitySelected (mLastSelectedEntity))
             SetLastSelectedEntities (null);
          
-         if (mLastSelectedEntity == null)
+         if (mMainSelectedEntity == null)
          {
             if (StatusBar_SetMainSelectedEntityInfo != null)
                StatusBar_SetMainSelectedEntityInfo (null);
             return;
          }
          
-         var mainEntity:Entity = mLastSelectedEntity.GetMainEntity ();
-         var typeName:String = mLastSelectedEntity.GetTypeName ();
-         var infoText:String = mLastSelectedEntity.GetInfoText ();
+         var mainEntity:Entity = mMainSelectedEntity.GetMainEntity ();
+         var typeName:String = mMainSelectedEntity.GetTypeName ();
+         var infoText:String = mMainSelectedEntity.GetInfoText ();
          
          if (infoText == null || infoText.length == 0)
             infoText = "</b>";
          else
             infoText = "</b>: " + infoText;
          
-         if (mainEntity != mLastSelectedEntity)
+         if (mainEntity != mMainSelectedEntity)
          {
             infoText = " (of &lt;" + mEditorWorld.GetEntityCreationId (mainEntity) + "&gt; " + mainEntity.GetTypeName () + ")" + infoText;
          }
-         infoText = "<b>&lt;" + mEditorWorld.GetEntityCreationId (mLastSelectedEntity) + "&gt; " + mLastSelectedEntity.GetTypeName () + infoText;
+         infoText = "<b>&lt;" + mEditorWorld.GetEntityCreationId (mMainSelectedEntity) + "&gt; " + mMainSelectedEntity.GetTypeName () + infoText;
          
          StatusBar_SetMainSelectedEntityInfo (infoText);
       }
@@ -1975,11 +1975,11 @@ package editor {
          //var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
          //if (selectedEntities == null || selectedEntities.length != 1)
          //   return;
-         if (mLastSelectedEntity == null)
+         if (mMainSelectedEntity == null)
             return;
          
          //var entity:Entity = selectedEntities [0] as Entity;
-         var entity:Entity = mLastSelectedEntity;
+         var entity:Entity = mMainSelectedEntity;
          
          var values:Object = new Object ();
          
@@ -3668,6 +3668,8 @@ package editor {
 //    
 //============================================================================
       
+      private var mMainSelectedEntity:Entity = null;
+      
       private var mLastSelectedEntity:Entity = null;
       private var mLastSelectedEntities:Array = null;
       
@@ -3678,7 +3680,15 @@ package editor {
          mLastSelectedEntity = entity;
          
          if (mLastSelectedEntity != null && mEditorWorld.IsEntitySelected (mLastSelectedEntity))
+         {
             mLastSelectedEntity.SetInternalComponentsVisible (true);
+            
+            mMainSelectedEntity = mLastSelectedEntity;
+         }
+         else
+         {
+            mMainSelectedEntity = mEditorWorld.GetMainSelectedEntity ();
+         }
          
          UpdateUiButtonsEnabledStatus ();
          UpdateSelectedEntityInfo ();

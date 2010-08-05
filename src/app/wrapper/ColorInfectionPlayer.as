@@ -223,6 +223,13 @@ package wrapper {
             }
          }
          
+         //
+         //var copyCifEmbedItem:ContextMenuItem = new ContextMenuItem("Copy Embed Link For C.I. Forum", false);
+         //theContextMenu.customItems.push (copyCifEmbedItem);
+         //copyCifEmbedItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyEmbedLink);
+         //addSeperaor = true;
+         //
+         
          var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
          var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
          var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), addSeperaor);
@@ -259,18 +266,18 @@ package wrapper {
                break;
             case StateId_Load:
             {
-               var params:Object = GetFlashParams ();
+               ParseFlashParams ();
                
-               if (params.mWorldPlayCode != null)
+               if (mFlashParams.mWorldPlayCode != null)
                {
-                  mWorldPlayCode = params.mWorldPlayCode;
+                  mWorldPlayCode = mFlashParams.mWorldPlayCode;
                   mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
                   
                   ChangeState (StateId_BuildWorld)
                }
                else
                {
-                  TryToStartOnlineLoading (params)
+                  TryToStartOnlineLoading ()
                }
                
                break;
@@ -571,44 +578,49 @@ package wrapper {
       public static const k_ReturnCode_ProfileNameNotCreatedYet:int = 7;
       public static const k_ReturnCode_NoEnoughRightsToProcess:int = 8;
 
-      public function GetFlashParams ():Object
+      private var mFlashParams:Object;
+
+      public function ParseFlashParams ():void
       {
+         mFlashParams = new Object ();
+         
          try 
          {
             var loadInfo:LoaderInfo = LoaderInfo(root.loaderInfo);
-             
-            var params:Object = new Object ();
             
-            params.mRootUrl = UrlUtil.GetRootUrl (loaderInfo.url);
+            mFlashParams.mRootUrl = UrlUtil.GetRootUrl (loaderInfo.url);
             
             var flashVars:Object = loaderInfo.parameters;
             if (flashVars != null)
             {
                if (flashVars.playcode != null)
-                  params.mWorldPlayCode = flashVars.playcode;
+                  mFlashParams.mWorldPlayCode = flashVars.playcode;
                if (flashVars.action != null)
-                  params.mAction = flashVars.action;
+                  mFlashParams.mAction = flashVars.action;
                if (flashVars.author != null)
-                  params.mAuthorName = flashVars.author;
+                  mFlashParams.mAuthorName = flashVars.author;
                if (flashVars.slot != null)
-                  params.mSlotID = flashVars.slot;
+                  mFlashParams.mSlotID = flashVars.slot;
                if (flashVars.revision != null)
-                  params.mRevisionID = flashVars.revision;
+                  mFlashParams.mRevisionID = flashVars.revision;
             }
-            
-            return params;
          } 
          catch (error:Error) 
          {
              trace ("Parse flash vars error." + error);
          }
-         
-         return null;
       }
       
-      private function TryToStartOnlineLoading (params:Object):void
+      private function OnCopyEmbedLink (event:ContextMenuEvent):void
       {
-         if (params == null || params.mRootUrl == null || params.mAction == null || params.mAuthorName == null || params.mSlotID == null)
+         mFlashParams
+      }
+      
+      private var mPhyardDesignEmbedCode:String = "";
+      
+      private function TryToStartOnlineLoading ():void
+      {
+         if (mFlashParams == null || mFlashParams.mRootUrl == null || mFlashParams.mAction == null || mFlashParams.mAuthorName == null || mFlashParams.mSlotID == null)
          {
             ChangeState (StateId_LoadFailed);
             return;
@@ -618,14 +630,14 @@ package wrapper {
          
          var designLoadUrl:String;
          
-         if (params.mAction == "play")
-            designLoadUrl = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/loadpc";
+         if (mFlashParams.mAction == "play")
+            designLoadUrl = mFlashParams.mRootUrl + "design/" + mFlashParams.mAuthorName + "/" + mFlashParams.mSlotID + "/loadpc";
          else // "view"
          {
-            if (params.mRevisionID == null)
-               params.mRevisionID = "lastest";
+            if (mFlashParams.mRevisionID == null)
+               mFlashParams.mRevisionID = "latest";
             
-            designLoadUrl = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/revision/" + params.mRevisionID + "/loadvc";
+            designLoadUrl = mFlashParams.mRootUrl + "design/" + mFlashParams.mAuthorName + "/" + mFlashParams.mSlotID + "/revision/" + mFlashParams.mRevisionID + "/loadvc";
          }
          
          var request:URLRequest = new URLRequest (designLoadUrl);

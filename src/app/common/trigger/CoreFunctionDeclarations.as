@@ -1262,6 +1262,14 @@ package common.trigger {
                         ValueTypeDefine.ValueType_Boolean, 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityId,
+                     [
+                        ValueTypeDefine.ValueType_Entity,
+                     ],
+                     [
+                        ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General, 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset,
                      [
                         ValueTypeDefine.ValueType_Entity,

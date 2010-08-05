@@ -126,7 +126,7 @@
              PopUpManager.removePopUp(this);
              
              if (OnClose != null)
-               OnClose ();
+               OnClose (true);
          }
          
      ]]>

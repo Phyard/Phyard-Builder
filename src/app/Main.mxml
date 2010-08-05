@@ -1370,7 +1370,7 @@
             
             private function ShowDesignInfoSettingDialog():void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:DesignInfoSettingDialog = new DesignInfoSettingDialog ();
                settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldDesignInfo ());
@@ -1382,7 +1382,7 @@
             
             private function ShowLevelRulesEditDialog ():void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:WorldLevelRulesSettingDialog = new WorldLevelRulesSettingDialog ();
                settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldLevelRulesInfo ());
@@ -1394,7 +1394,7 @@
             
             private function ShowCoordinateSystemEditDialog ():void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:WorldCoordinateSystemSettingDialog = new WorldCoordinateSystemSettingDialog ();
                settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldCoordinateSystemInfo ());
@@ -1406,7 +1406,7 @@
             
             private function ShowWorldGravityEditDialog ():void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:WorldGravitySettingDialog = new WorldGravitySettingDialog ();
                settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldGravityInfo ());
@@ -1418,7 +1418,7 @@
             
             private function ShowWorldAppearanceEditDialog ():void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:WorldAppearanceSettingDialog = new WorldAppearanceSettingDialog ();
                settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldAppearanceInfo ());
@@ -1430,7 +1430,7 @@
             
             private function ShowViewportEditDialog ():void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:ViewportSettingDialog = new ViewportSettingDialog ();
                settingDialog.SetValues (Runtime.mEditorWorldView.GetViewportInfo ());
@@ -1444,15 +1444,26 @@
 // 
 //========================================================================================
             
-            private function OnCloseDialog ():void
+            private function OnOpenDialog ():void
+            {
+               Runtime.SetHasSettingDialogOpened (true);
+               MainView.StartSettingEntityProperties ();
+            }
+            
+            private function OnCloseDialog (checkCustomVariablesModifications:Boolean = false):void
             {
                Runtime.SetHasSettingDialogOpened (false);
                stage.focus = stage;
+               
+               if (checkCustomVariablesModifications)
+               {
+                  MainView.CancelSettingEntityProperties ();
+               }
             }
             
             private function ShowShapeRectangleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                if ( Define.IsBombShape (initialValues.mAiType) )
                {
@@ -1476,7 +1487,7 @@
             
             private function ShowShapeCircleSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                if ( Define.IsBombShape (initialValues.mAiType) )
                {
@@ -1500,7 +1511,7 @@
             
             private function ShowShapePolygonSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:ShapePolygonSettingDialog = new ShapePolygonSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1512,7 +1523,7 @@
             
             private function ShowShapePolylineSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:ShapePolylineSettingDialog = new ShapePolylineSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1524,7 +1535,7 @@
             
             private function ShowShapeTextSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:ShapeTextSettingDialog = new ShapeTextSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1536,7 +1547,7 @@
             
             private function ShowShapeTextButtonSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:ShapeTextButtonSettingDialog = new ShapeTextButtonSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1548,7 +1559,7 @@
             
             private function ShowShapeGravityControllerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:ShapeGravityControllerSettingDialog = new ShapeGravityControllerSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1560,7 +1571,7 @@
             
             private function ShowHingeSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:JointHingeSettingDialog = new JointHingeSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1572,7 +1583,7 @@
             
             private function ShowSliderSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:JointSliderSettingDialog = new JointSliderSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1584,7 +1595,7 @@
             
             private function ShowSpringSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:JointSpringSettingDialog = new JointSpringSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1596,7 +1607,7 @@
             
             private function ShowDistanceSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:JointDistanceSettingDialog = new JointDistanceSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1608,7 +1619,7 @@
             
             private function ShowWeldSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:JointWeldSettingDialog = new JointWeldSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1620,7 +1631,7 @@
             
             private function ShowDummySettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:JointDummySettingDialog = new JointDummySettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1632,7 +1643,7 @@
             
             private function ShowCameraSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:UtilityCameraSettingDialog = new UtilityCameraSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1644,7 +1655,7 @@
             
             private function ShowPowerSourceSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:UtilityPowerSourceSettingDialog = new UtilityPowerSourceSettingDialog ();
                settingDialog.SetValues (initialValues);
@@ -1657,7 +1668,7 @@
             
             private function ShowEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicEventHandlerEditDialog = new LogicEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1669,7 +1680,7 @@
             
             private function ShowTimerEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicTimerEventHandlerEditDialog = new LogicTimerEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1681,7 +1692,7 @@
             
             private function ShowKeyboardEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicKeyboardEventHandlerEditDialog = new LogicKeyboardEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1693,7 +1704,7 @@
             
             private function ShowMouseEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicMouseEventHandlerEditDialog = new LogicMouseEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1705,7 +1716,7 @@
             
             private function ShowContactEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicShapeContactEventHandlerEditDialog = new LogicShapeContactEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1717,7 +1728,7 @@
             
             private function ShowActionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicActionEditDialog = new LogicActionEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1729,7 +1740,7 @@
             
             private function ShowConditionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicConditionEditDialog = new LogicConditionEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1741,7 +1752,7 @@
             
             private function ShowEntityFilterSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicEntityFilterEditDialog = new LogicEntityFilterEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1753,7 +1764,7 @@
             
             private function ShowEntityPairFilterSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicEntityPairFilterEditDialog = new LogicEntityPairFilterEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1765,7 +1776,7 @@
             
             private function ShowConditionDoorSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicConditionDoorEditDialog = new LogicConditionDoorEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1777,7 +1788,7 @@
             
             private function ShowTaskSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicTaskEditDialog = new LogicTaskEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1789,7 +1800,7 @@
             
             private function ShowEntityAssignerSettingDialog(initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicEntityAssignerEditDialog = new LogicEntityAssignerEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1801,7 +1812,7 @@
             
             private function ShowEntityPairAssignerSettingDialog(initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var settingDialog:LogicEntityPairAssignerEditDialog = new LogicEntityPairAssignerEditDialog ();
                settingDialog.SetValues (initialValues);
@@ -1813,7 +1824,7 @@
             
             //private function ShowWorldSettingDialog (initialValues:Object, onConfirmFunc:Function):void
             //{
-            //   Runtime.SetHasSettingDialogOpened (true);
+            //   OnOpenDialog ();
             //   
             //   var settingDialog:WorldSettingDialog = new WorldSettingDialog ();
             //   PopUpManager.addPopUp (settingDialog, MainView, true);
@@ -1825,7 +1836,7 @@
             
             private function ShowWorldSavingDialog (initialValues:Object):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:WorldSavingDialog = new WorldSavingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1836,7 +1847,7 @@
             
             private function ShowWorldLoadingDialog (onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:WorldLoadingDialog = new WorldLoadingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1847,7 +1858,7 @@
             
             private function ShowWorldQuickLoadingDialog (initialValues:Object, onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:WorldQuickLoadingDialog = new WorldQuickLoadingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1859,7 +1870,7 @@
             
             private function ShowPlayCodeLoadingDialog (onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:PlayCodeLoadingDialog = new PlayCodeLoadingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1870,7 +1881,7 @@
             
             private function ShowImportSourceCodeDialog (onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:WorldImportDialog = new WorldImportDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1916,7 +1927,7 @@
             
             private function ShowModifyEntityCommonDialog (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:BatchEntityCommonPropertyModifyDialog = new BatchEntityCommonPropertyModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1927,7 +1938,7 @@
             
             private function ShowModifyShapeFlagsDialog (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:BatchShapePhysicsFlagsModifyDialog = new BatchShapePhysicsFlagsModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1938,7 +1949,7 @@
             
             private function ShowModifyShapeCollisionCategoryDialog (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:BatchShapePhysicsCollisionCategoryModifyDialog = new BatchShapePhysicsCollisionCategoryModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1949,7 +1960,7 @@
             
             private function ShowModifyShapeVelocityDialog (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:BatchShapePhysicsVelocityModifyDialog = new BatchShapePhysicsVelocityModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1960,7 +1971,7 @@
             
             private function ShowModifyShapeFixtureDialog (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:BatchShapePhysicsFixtureModifyDialog = new BatchShapePhysicsFixtureModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1971,7 +1982,7 @@
             
             private function ShowModifyJointCollideConnectedsDialog  (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:BatchJointCollideConnectedsModifyDialog = new BatchJointCollideConnectedsModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -1986,7 +1997,7 @@
             
             private function ShowDialog_MoveSelectedEntitiesAccurately (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:AccurateMoveDialog = new AccurateMoveDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -2002,7 +2013,7 @@
             
             private function ShowDialog_RotateSelectedEntitiesAccurately (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:AccurateRotateDialog = new AccurateRotateDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -2018,7 +2029,7 @@
             
             private function ShowDialog_ScaleSelectedEntitiesAccurately (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:AccurateScaleDialog = new AccurateScaleDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -2035,7 +2046,7 @@
             
             private function ShowDialog_MoveSceneAccurately (event:ContextMenuEvent):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:AccurateMoveDialog = new AccurateMoveDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -2051,7 +2062,7 @@
             
             private function ShowWorldOnlineSavingDialog (/*event:ContextMenuEvent*/):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:WorldOnlineSavingDialog = new WorldOnlineSavingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
@@ -2086,7 +2097,7 @@
             
             private function ShowEditorCustomCommandSettingDialog (onConfirmFunc:Function):void
             {
-               Runtime.SetHasSettingDialogOpened (true);
+               OnOpenDialog ();
                
                var dialog:EditorCustomCommandSettingDialog = new EditorCustomCommandSettingDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);

@@ -150,7 +150,7 @@
                   for (var i:int = 0; i < mVariableSpace.GetNumVariableInstances (); ++ i)
                   {
                      var variableInstance:VariableInstance = mVariableSpace.GetVariableInstanceAt (i);
-                     var name:String = variableInstance.GetName ();
+                     var name:String = variableInstance.ToVariableDefinitionString ();
                      List_Variables.dataProvider.addItem ({mName:name, mDataTip:name, mData:variableInstance});
                   }
                }

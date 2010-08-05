@@ -262,6 +262,7 @@ package common.trigger {
       public static const CoreApiId_902:int = 902; // entity
       public static const CoreApiId_903:int = 903; // entity
       public static const CoreApiId_904:int = 904; // entity
+      public static const CoreApiId_905:int = 905; // entity
       
       public static const CoreApiId_910:int = 910; // entity
       public static const CoreApiId_912:int = 912; // entity

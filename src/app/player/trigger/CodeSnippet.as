@@ -16,13 +16,14 @@ package player.trigger
       {
          var calling:FunctionCalling = mFirstFunctionCalling;
          
-      trace ("-----------");
+      //trace ("-----------");
          while (calling != null)
          {
             calling.Call ();
-         trace (calling.GetLineNumber () + "> mNextFunctionCalling = " + calling.mNextFunctionCalling);
+      //trace (calling.GetLineNumber () + "> mNextFunctionCalling = " + calling.mNextFunctionCalling);
             calling = calling.mNextFunctionCalling;
          }
+      //trace ("#############" + new Error ().getStackTrace ());
       }
       
    }

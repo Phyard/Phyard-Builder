@@ -18,6 +18,10 @@ package editor.runtime {
 //
 //=====================================================================
       
+//=====================================================================
+//
+//=====================================================================
+      
       // used in loading editor world
       public static var mPauseCreateShapeProxy:Boolean = false;
       
@@ -27,9 +31,9 @@ package editor.runtime {
       
       private static var mHasSettingDialogOpened:Boolean = false;
       
-      public static function SetHasSettingDialogOpened (has:Boolean):void
+      public static function SetHasSettingDialogOpened (opened:Boolean):void
       {
-         mHasSettingDialogOpened = has;
+         mHasSettingDialogOpened = opened;
       }
       
       public static function HasSettingDialogOpened ():Boolean

@@ -2009,7 +2009,7 @@ package editor {
                   values.mRunningInterval = timer_event_handler.GetRunningInterval ();
                   values.mOnlyRunOnce = timer_event_handler.IsOnlyRunOnce ();
                   
-                  ShowTimerEventHandlerSettingDialog (values, SetEntityProperties);
+                  ShowTimerEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
                }
                else if (entity is EntityEventHandler_Keyboard)
                {
@@ -2017,19 +2017,19 @@ package editor {
                   
                   values.mKeyCodes = keyboard_event_handler.GetKeyCodes ();
                   
-                  ShowKeyboardEventHandlerSettingDialog (values, SetEntityProperties);
+                  ShowKeyboardEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
                }
                else if (entity is EntityEventHandler_Mouse)
                {
-                  ShowMouseEventHandlerSettingDialog (values, SetEntityProperties);
+                  ShowMouseEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
                }
                else if (entity is EntityEventHandler_Contact)
                {
-                  ShowContactEventHandlerSettingDialog (values, SetEntityProperties);
+                  ShowContactEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
                }
                else
                {
-                  ShowEventHandlerSettingDialog (values, SetEntityProperties);
+                  ShowEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
                }
             }
             else if (entity is EntityBasicCondition)
@@ -2040,7 +2040,7 @@ package editor {
                values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
                
-               ShowConditionSettingDialog (values, SetEntityProperties);
+               ShowConditionSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is EntityAction)
             {
@@ -2050,7 +2050,7 @@ package editor {
                values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
                
-               ShowActionSettingDialog (values, SetEntityProperties);
+               ShowActionSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is EntityInputEntityScriptFilter)
             {
@@ -2060,7 +2060,7 @@ package editor {
                values.mCodeSnippet  = entityFilter.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
                
-               ShowEntityFilterSettingDialog (values, SetEntityProperties);
+               ShowEntityFilterSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is EntityInputEntityPairScriptFilter)
             {
@@ -2070,23 +2070,23 @@ package editor {
                values.mCodeSnippet  = pairFilter.GetCodeSnippet ().Clone (null);
                (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (mEditorWorld.GetCoordinateSystem ());
                
-               ShowEntityPairFilterSettingDialog (values, SetEntityProperties);
+               ShowEntityPairFilterSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is EntityConditionDoor)
             {
-               ShowConditionDoorSettingDialog (values, SetEntityProperties);
+               ShowConditionDoorSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is EntityTask)
             {
-               ShowTaskSettingDialog (values, SetEntityProperties);
+               ShowTaskSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is EntityInputEntityAssigner)
             {
-               ShowEntityAssignerSettingDialog (values, SetEntityProperties);
+               ShowEntityAssignerSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is EntityInputEntityPairAssigner)
             {
-               ShowEntityPairAssignerSettingDialog (values, SetEntityProperties);
+               ShowEntityPairAssignerSettingDialog (values, ConfirmSettingEntityProperties);
             }
          }
          else if (entity is EntityShape)
@@ -2139,7 +2139,7 @@ package editor {
                   values.mAppearanceType = (entity as EntityShapeCircle).GetAppearanceType();
                   values.mAppearanceTypeListSelectedIndex = (entity as EntityShapeCircle).GetAppearanceType();
                   
-                  ShowShapeCircleSettingDialog (values, SetEntityProperties);
+                  ShowShapeCircleSettingDialog (values, ConfirmSettingEntityProperties);
                }
                else if (entity is EntityShapeRectangle)
                {
@@ -2147,18 +2147,18 @@ package editor {
                   values.mHeight = ValueAdjuster.Number2Precision (2.0 * mEditorWorld.GetCoordinateSystem ().D2P_Length ((shape as EntityShapeRectangle).GetHalfHeight ()), 6);
                   values.mIsRoundCorners = (shape as EntityShapeRectangle).IsRoundCorners ();
                   
-                  ShowShapeRectangleSettingDialog (values, SetEntityProperties);
+                  ShowShapeRectangleSettingDialog (values, ConfirmSettingEntityProperties);
                }
                else if (entity is EntityShapePolygon)
                {
-                  ShowShapePolygonSettingDialog (values, SetEntityProperties);
+                  ShowShapePolygonSettingDialog (values, ConfirmSettingEntityProperties);
                }
                else if (entity is EntityShapePolyline)
                {
                   values.mCurveThickness = (shape as EntityShapePolyline).GetCurveThickness ();
                   values.mIsRoundEnds = (shape as EntityShapePolyline).IsRoundEnds ();
                   
-                  ShowShapePolylineSettingDialog (values, SetEntityProperties);
+                  ShowShapePolylineSettingDialog (values, ConfirmSettingEntityProperties);
                }
             }
             else // no physics entity
@@ -2195,11 +2195,11 @@ package editor {
                      values.mMouseOverValues.mTransparency = moveOverShape.GetTransparency ();
                      values.mMouseOverValues.mBorderTransparency = moveOverShape.GetBorderTransparency ();
                      
-                     ShowShapeTextButtonSettingDialog (values, SetEntityProperties);
+                     ShowShapeTextButtonSettingDialog (values, ConfirmSettingEntityProperties);
                   }
                   else
                   {
-                     ShowShapeTextSettingDialog (values, SetEntityProperties);
+                     ShowShapeTextSettingDialog (values, ConfirmSettingEntityProperties);
                   }
                }
                else if (entity is EntityShapeGravityController)
@@ -2217,7 +2217,7 @@ package editor {
                   values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetInitialGravityAcceleration ()), 6);
                   values.mInitialGravityAngle = ValueAdjuster.Number2Precision ( mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees ((shape as EntityShapeGravityController).GetInitialGravityAngle ()), 6);
                   
-                  ShowShapeGravityControllerSettingDialog (values, SetEntityProperties);
+                  ShowShapeGravityControllerSettingDialog (values, ConfirmSettingEntityProperties);
                }
             }
          }
@@ -2275,7 +2275,7 @@ package editor {
                jointValues.mMaxMotorTorque = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Torque (hinge.GetMaxMotorTorque ()), 6);
                //<<
                
-               ShowHingeSettingDialog (values, SetEntityProperties);
+               ShowHingeSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is SubEntitySliderAnchor)
             {
@@ -2292,7 +2292,7 @@ package editor {
                jointValues.mMaxMotorForce = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_ForceMagnitude (slider.GetMaxMotorForce ()), 6);
                //<<
                
-               ShowSliderSettingDialog (values, SetEntityProperties);
+               ShowSliderSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is SubEntitySpringAnchor)
             {
@@ -2309,7 +2309,7 @@ package editor {
                jointValues.mBreakExtendedLength = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length (spring.GetBreakExtendedLength ()), 6);
                //<<
                
-               ShowSpringSettingDialog (values, SetEntityProperties);
+               ShowSpringSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is SubEntityDistanceAnchor)
             {
@@ -2319,19 +2319,19 @@ package editor {
                jointValues.mBreakDeltaLength = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_Length (distance.GetBreakDeltaLength ()), 6);
                //<<
                
-               ShowDistanceSettingDialog (values, SetEntityProperties);
+               ShowDistanceSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is SubEntityWeldAnchor)
             {
                var weld:EntityJointWeld = joint as EntityJointWeld;
                
-               ShowWeldSettingDialog (values, SetEntityProperties);
+               ShowWeldSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is SubEntityDummyAnchor)
             {
                var dummy:EntityJointDummy = joint as EntityJointDummy;
                
-               ShowDummySettingDialog (values, SetEntityProperties);
+               ShowDummySettingDialog (values, ConfirmSettingEntityProperties);
             }
          }
          else if (entity is EntityUtility)
@@ -2347,7 +2347,7 @@ package editor {
                values.mFollowingStyle = camera.GetFollowingStyle ();
                //<<
                
-               ShowCameraSettingDialog (values, SetEntityProperties);
+               ShowCameraSettingDialog (values, ConfirmSettingEntityProperties);
             }
             else if (entity is EntityUtilityPowerSource)
             {
@@ -2396,7 +2396,7 @@ package editor {
                }
                values.mPowerMagnitude = ValueAdjuster.Number2Precision (values.mPowerMagnitude, 6);
                
-               ShowPowerSourceSettingDialog (values, SetEntityProperties);
+               ShowPowerSourceSettingDialog (values, ConfirmSettingEntityProperties);
             }
          }
       }
@@ -4154,7 +4154,35 @@ package editor {
 //   set properties
 //=================================================================================
       
-      public function SetEntityProperties (params:Object):void
+      private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
+      private var mLastEntityVariableSpaceModifiedTimes:int = 0;
+      
+      public function StartSettingEntityProperties ():void
+      {
+         mLastGlobalVariableSpaceModifiedTimes = mEditorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+         mLastEntityVariableSpaceModifiedTimes = mEditorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+      }
+      
+      public function CancelSettingEntityProperties ():void
+      {
+         var globalVariableSpaceModified:Boolean = mEditorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
+         var entityVariableSpaceModified:Boolean = mEditorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
+         
+         if (globalVariableSpaceModified && entityVariableSpaceModified)
+         {
+            CreateUndoPoint ("Global variables and custom entity proeprties are changed", null, null);
+         }
+         else if (globalVariableSpaceModified)
+         {
+            CreateUndoPoint ("Global variables are changed", null, null);
+         }
+         else if (entityVariableSpaceModified)
+         {
+            CreateUndoPoint ("Custom entity proeprties are changed", null, null);
+         }
+      }
+      
+      public function ConfirmSettingEntityProperties (params:Object):void
       {
          //var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
          //if (selectedEntities == null || selectedEntities.length != 1)
@@ -4602,6 +4630,9 @@ package editor {
                   entity.SetVisible (params.mIsVisible);
             }
          }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify common proeprties for " + selectedEntities.length + " entities", null, null);
       }
       
       public function OnBatchModifyShapePhysicsFlags (params:Object):void
@@ -4633,6 +4664,9 @@ package editor {
                   shape.SetFixRotation (params.mFixRotation);
             }
          }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify physics proeprties for " + selectedEntities.length + " shapes", null, null);
       }
       
       public function OnBatchModifyShapePhysicsCollisionCategory (params:Object):void
@@ -4649,6 +4683,9 @@ package editor {
                shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
             }
          }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify collision category for " + selectedEntities.length + " shapes", null, null);
       }
       
       public function OnBatchModifyShapePhysicsVelocity (params:Object):void
@@ -4670,6 +4707,9 @@ package editor {
                   shape.SetAngularVelocity (mEditorWorld.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
             }
          }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify physics velocities for " + selectedEntities.length + " shapes", null, null);
       }
       
       public function OnBatchModifyShapePhysicsFixture (params:Object):void
@@ -4691,6 +4731,9 @@ package editor {
                   shape.SetRestitution (params.mRestitution);
             }
          }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify physics material proeprties for " + selectedEntities.length + " shapes", null, null);
       }
       
       public function OnBatchModifyJointCollideConnectedsProperty (params:Object):void
@@ -4713,6 +4756,9 @@ package editor {
                }
             }
          }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify collid-connected proeprty for " + selectedEntities.length + " joints", null, null);
       }
       
 //=================================================================================
@@ -4898,7 +4944,7 @@ package editor {
             
             mWorldHistoryManager.ClearHistories ();
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading successed", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading succeeded", EffectMessagePopup.kBgColor_OK));
             
             CreateUndoPoint ("Offline loading");
          }
@@ -4993,7 +5039,7 @@ package editor {
             
             System.setClipboard(DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (newWorld)));
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export successed", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Export succeeded", EffectMessagePopup.kBgColor_OK));
          }
          catch (error:Error)
          {
@@ -5069,7 +5115,7 @@ package editor {
                MoveSelectedEntities (mViewCenterWorldX - centerX, mViewCenterWorldY - centerY, true, false);
             }
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import successed", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import succeeded", EffectMessagePopup.kBgColor_OK));
             
             CreateUndoPoint ("Import");
          }
@@ -5448,7 +5494,7 @@ package editor {
             
             CreateUndoPoint ("Quick save data is loaed");
             
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load Successed", EffectMessagePopup.kBgColor_OK));
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load succeeded", EffectMessagePopup.kBgColor_OK));
          }
          catch (error:Error)
          {
@@ -5619,7 +5665,7 @@ package editor {
             
             if (returnCode == k_ReturnCode_Successed)
             {
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save Successed", EffectMessagePopup.kBgColor_OK));
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save succeeded", EffectMessagePopup.kBgColor_OK));
             }
             else
             {
@@ -5707,8 +5753,8 @@ package editor {
                
                CreateUndoPoint ("Online data is loaded");
                
-               //Alert.show("Loading Scuessed!", "Scuessed");
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load successed", EffectMessagePopup.kBgColor_OK));
+               //Alert.show("Loading Succeeded!", "Succeeded");
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load succeeded", EffectMessagePopup.kBgColor_OK));
             }
             else
             {

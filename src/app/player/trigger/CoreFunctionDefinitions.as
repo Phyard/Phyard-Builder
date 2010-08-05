@@ -242,6 +242,7 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_ToString,                    EntityToString);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetEntityId,                 GetEntityId);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetEntityByIdOffset,         GetAnotherEntityByIdOffset);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetTaskStatus,                         SetEntityTaskStatus);
@@ -1870,6 +1871,19 @@ package player.trigger {
          valueTarget.AssignValueObject (entity == null);
       }
       
+      public static function GetEntityId (valueSource:ValueSource, valueTarget:ValueTarget):void
+      {
+         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         if (entity == null)
+         {
+            valueTarget.AssignValueObject (Define.EntityId_None);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (entity.GetCreationId ());
+         }
+      }
+      
       public static function GetAnotherEntityByIdOffset (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
          var baseEntity:Entity = valueSource.EvalateValueObject () as Entity;
@@ -1913,9 +1927,9 @@ package player.trigger {
       {
          var entity:Entity = valueSource.EvalateValueObject () as Entity;
          
-         var successed:Boolean = entity == null ? false : entity.IsTaskSuccessed ();
+         var succeeded:Boolean = entity == null ? false : entity.IsTaskSuccessed ();
          
-         valueTarget.AssignValueObject (successed);
+         valueTarget.AssignValueObject (succeeded);
       }
       
       public static function IsEntityTaskFailed (valueSource:ValueSource, valueTarget:ValueTarget):void

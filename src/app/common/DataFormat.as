@@ -1306,8 +1306,10 @@ package common {
          // from v1.52
          var beginningGlobalVariableIndex:int = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumVariableInstances ();
          var beginningEntityVariableIndex:int = editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumVariableInstances ();
-         TriggerFormatHelper.VariableSpaceDefine2VariableSpace (editorWorld, worldDefine.mGlobalVariableSpaceDefines [0], editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ());
-         TriggerFormatHelper.VariableSpaceDefine2VariableSpace (editorWorld, worldDefine.mEntityPropertySpaceDefines [0], editorWorld.GetTriggerEngine ().GetEntityVariableSpace ());
+         if (worldDefine.mGlobalVariableSpaceDefines.length > 0)
+            TriggerFormatHelper.VariableSpaceDefine2VariableSpace (editorWorld, worldDefine.mGlobalVariableSpaceDefines [0], editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ());
+         if (worldDefine.mEntityPropertySpaceDefines.length > 0)
+            TriggerFormatHelper.VariableSpaceDefine2VariableSpace (editorWorld, worldDefine.mEntityPropertySpaceDefines [0], editorWorld.GetTriggerEngine ().GetEntityVariableSpace ());
          editorWorld.GetTriggerEngine ().NotifyGlobalVariableSpaceModified ();
          editorWorld.GetTriggerEngine ().NotifyEntityVariableSpaceModified ();
          //<<<

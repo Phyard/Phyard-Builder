@@ -229,6 +229,7 @@ package common.trigger {
       public static const ID_Entity_ConditionAssign:int                = IdPool.CoreApiId_901; // entity
       public static const ID_Entity_SwapValues:int                     = IdPool.CoreApiId_903; // entity
       public static const ID_Entity_IsNull:int                         = IdPool.CoreApiId_904; // entity
+      public static const ID_Entity_GetEntityId:int                    = IdPool.CoreApiId_905;
       public static const ID_Entity_GetEntityByIdOffset:int            = IdPool.CoreApiId_902; // entity
       public static const ID_Entity_ToString:int                       = IdPool.CoreApiId_152; // 
       public static const ID_Entity_Equals:int                         = IdPool.CoreApiId_182; // 

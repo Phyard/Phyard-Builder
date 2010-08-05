@@ -1067,7 +1067,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed, level_package, "Is Level Successed?", null, null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed, level_package, "Is Level Succeeded?", null, null,
                      null,
                      [
                         new VariableDefinitionBoolean ("Finshied?"), 
@@ -1327,6 +1327,14 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Null?"), 
                      ]
                   );
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetEntityId, entity_common_package, "Get Entity Id", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Entity"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Entity Id"), 
+                     ]
+                  );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset, entity_common_package, "Get Another Entity by Id Offset", null, null,
                      [
                              new VariableDefinitionEntity ("Base Entity"), 
@@ -1369,12 +1377,12 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Failed?"), 
                      ]
                   );
-         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_as_task_package, "Is Entity Task Successed", "@#0 = Is Entity ($0) Task Successed?", null,
+         RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed, entity_as_task_package, "Is Entity Task Succeeded", "@#0 = Is Entity ($0) Task Successed?", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sTaskEntityClasses}), 
                      ],
                      [
-                             new VariableDefinitionBoolean ("Successed?"), 
+                             new VariableDefinitionBoolean ("Succeeded?"), 
                      ]
                   );
          RegisterFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished, entity_as_task_package, "Is Entity Task Unfinished", "@#0 = Is Entity ($0) Task Unfinished?", null,
@@ -2128,8 +2136,8 @@ package editor.trigger {
          
       // ...
          
-         sMenuBarDataProvider_Shorter = CreateXmlFromPackages ([sGlobalPackage, sWorldPackage, sEntityPackage, sCustomPackage])
-         sMenuBarDataProvider_Longer = CreateXmlFromPackages ([sGlobalPackage, number_package, sWorldPackage, sEntityPackage, entity_shape_package, sCustomPackage])
+         sMenuBarDataProvider_Shorter = CreateXmlFromPackages ([sGlobalPackage, sWorldPackage, sEntityPackage]);//, sCustomPackage])
+         sMenuBarDataProvider_Longer = CreateXmlFromPackages ([sGlobalPackage, number_package, sWorldPackage, sEntityPackage, entity_shape_package]);//, sCustomPackage])
      }
       
 //===========================================================

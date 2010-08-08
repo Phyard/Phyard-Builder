@@ -456,7 +456,7 @@ package player.world {
       // update camera
       //-----------------------------
          
-         UpdateCamera ();
+         UpdateCamera (false);
          
       //------------------------------------
       // on level inited
@@ -511,7 +511,7 @@ package player.world {
       
       private var mFunc_StepUpdate:Function = null;
       
-      public function Update (escapedTime:Number, speedX:int):void
+      public function Update (escapedTime:Number, speedX:int, forceUpdateCamera:Boolean):void
       {
          if (mDestroyed)
             return;
@@ -527,7 +527,7 @@ package player.world {
       //-----------------------------
          
          if (mFunc_StepUpdate != null)
-            mFunc_StepUpdate (escapedTime, speedX);
+            mFunc_StepUpdate (escapedTime, speedX, forceUpdateCamera);
          
       //-----------------------------
       // repaint
@@ -553,7 +553,7 @@ package player.world {
       //-----------------------------
       }
       
-      public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int):void
+      public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int, forceUpdateCamera:Boolean):void
       {
          var dt:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5;
          
@@ -605,7 +605,7 @@ package player.world {
          // update camera
          //-----------------------------
             
-            UpdateCamera ();
+            UpdateCamera (forceUpdateCamera);
             
          //------------------------------------
          // handle key-hold eventgs

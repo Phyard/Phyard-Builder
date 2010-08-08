@@ -202,7 +202,7 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
 
 
 
-protected function UpdateCamera ():void
+protected function UpdateCamera (forceUpdateCamera:Boolean):void
 {
    var targetX:Number;
    var targetY:Number
@@ -210,10 +210,12 @@ protected function UpdateCamera ():void
    var smoothX:Boolean;
    var smoothY:Boolean;
    
+   var updateCamera:Boolean = forceUpdateCamera || (! mIsPaused);
+   
    if (mFollowedEntityCameraCenterX != null && mFollowedEntityCameraCenterX.IsDestroyedAlready ())
       mFollowedEntityCameraCenterX = null;
    
-   if (! mIsPaused && mFollowedEntityCameraCenterX != null)
+   if (updateCamera && mFollowedEntityCameraCenterX != null)
    {
       smoothX = mSmoothFollowingCameraCenterX;
       targetX = mCoordinateSystem.P2D_PositionX (mFollowedEntityCameraCenterX.GetPositionX ());
@@ -227,7 +229,7 @@ protected function UpdateCamera ():void
    if (mFollowedEntityCameraCenterY != null && mFollowedEntityCameraCenterY.IsDestroyedAlready ())
       mFollowedEntityCameraCenterY = null;
    
-   if (! mIsPaused && mFollowedEntityCameraCenterY != null)
+   if (updateCamera && mFollowedEntityCameraCenterY != null)
    {
       smoothY = mSmoothFollowingCameraCenterY;
       targetY = mCoordinateSystem.P2D_PositionY (mFollowedEntityCameraCenterY.GetPositionY ());
@@ -339,7 +341,7 @@ public function MouseMoveCamera (offsetX:Number, offsetY:Number):void
    mCameraMovedOffsetY_ByMouse += offsetY;
    
    if (mIsPaused)
-      UpdateCamera ();
+      UpdateCamera (false);
 }
 
 //=====================================================================================

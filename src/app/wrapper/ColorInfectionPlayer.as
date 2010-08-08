@@ -361,7 +361,7 @@ package wrapper {
             {
                try
                {
-                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX (), singleStepMode);
                }
                catch (error:Error)
                {

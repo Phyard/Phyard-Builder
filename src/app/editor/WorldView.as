@@ -4642,7 +4642,7 @@ package editor {
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            shape = selectedEntities [i];
+            shape = selectedEntities [i] as EntityShape;
             
             if (shape != null)
             {

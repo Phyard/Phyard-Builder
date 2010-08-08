@@ -973,6 +973,9 @@ package wrapper {
          Global.SetSpeedX = mPlayControlBar.SetPlayingSpeedX;
          Global.GetScale = mPlayControlBar.GetZoomScale;
          Global.SetScale = mPlayControlBar.SetZoomScale;
+         
+         //
+         mPlayerWorld.Initialize ();
       }
       
       private function CenterSprite (sprite:Sprite):void

@@ -363,7 +363,8 @@ package common {
    // 
    //*********************************************************************************************************************************
          
-         playerWorld.Initialize ();
+         // removed from here, for many functions such as Global.SetPlaying are not registerd yet.
+         //playerWorld.Initialize ();
          
          return playerWorld;
       }

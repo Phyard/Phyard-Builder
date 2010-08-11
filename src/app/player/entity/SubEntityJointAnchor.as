@@ -83,7 +83,7 @@ package player.entity {
             mShape.LocalPoint2WorldPoint (mLocalPositionX, mLocalPositionY, point);
             mPositionX = point.x;
             mPositionY = point.y;
-            mRotation  = mShape.mRotation + mRelativeRotation;
+            SetRotation (mShape.mRotation + mRelativeRotation);
          }
       }
 

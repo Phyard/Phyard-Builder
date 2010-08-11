@@ -147,10 +147,15 @@ package player.entity {
       public function SetRotation (rot:Number):void
       {
          mRotation = rot % Define.kPI_x_2;
+         if (mRotation < 0)
+         {
+            mRotation += Define.kPI_x_2;
+         }
       }
       
       public function GetRotation ():Number
       {
+         // for EntityBody, the value is not limited between [0, 2 * PI)
          return mRotation;
       }
       
@@ -207,9 +212,9 @@ package player.entity {
          if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
             return null;
          
-      trace ("spaceId = " + spaceId + ", propertyId = " + propertyId);
-      trace ("mCustomProeprtySpaces [spaceId] = " + mCustomProeprtySpaces [spaceId]);
-      trace ("(mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId) = " + (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId));
+      //trace ("spaceId = " + spaceId + ", propertyId = " + propertyId);
+      //trace ("mCustomProeprtySpaces [spaceId] = " + mCustomProeprtySpaces [spaceId]);
+      //trace ("(mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId) = " + (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId));
          return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId).GetValueObject ();
       }
       

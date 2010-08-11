@@ -798,7 +798,7 @@ package player.entity {
          {
             mPositionX = mBody.mPositionX + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
             mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
-            mRotation  = (mBody.mRotation + mRelativeRotation) % Define.kPI_x_2;
+            SetRotation (mBody.mRotation + mRelativeRotation);
          }
          
          mAppearanceObjectsContainer.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);

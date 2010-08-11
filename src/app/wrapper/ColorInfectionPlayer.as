@@ -1011,6 +1011,10 @@ package wrapper {
       {
          RebuildPlayerWorld ();
          
+         //
+         mPlayerWorld.Initialize ();
+         
+         //
          mPlayerWorldZoomScale = mPlayerWorld.GetZoomScale ();
          if (mPlayControlBar != null)
             mPlayControlBar.SetZoomScale (mPlayerWorldZoomScale);

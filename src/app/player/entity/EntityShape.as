@@ -801,9 +801,35 @@ package player.entity {
             SetRotation (mBody.mRotation + mRelativeRotation);
          }
          
-         mAppearanceObjectsContainer.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
-         mAppearanceObjectsContainer.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
-         mAppearanceObjectsContainer.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotation) * Define.kRadians2Degrees;
+         var newX:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
+         var newY:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
+         var newR:Number = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotation) * Define.kRadians2Degrees;
+         
+         if (mBody.IsStatic () || mBody.IsSleeping ()) // special optimize for potiential static shapes. Maybe here can be more optimized. (call nothing here but when the shape position are manually changed, this function needs also be called.)
+         {
+            if ( (int(mAppearanceObjectsContainer.x * 20.0)) != (int (newX * 20.0)) )
+            {
+               //trace ("xxxxxx mCreationId = " + mCreationId + ", mAppearanceObjectsContainer.x = " + mAppearanceObjectsContainer.x + ", newX = " + newX);
+               //trace ("   (int(mAppearanceObjectsContainer.x * 20.0)) = " + (int(mAppearanceObjectsContainer.x * 20.0)) + ", (int (newX * 20.0)) = " + (int (newX * 20.0)) );
+               mAppearanceObjectsContainer.x = newX;
+            }
+            if ( (int(mAppearanceObjectsContainer.y * 20.0)) != (int (newY * 20.0)) )
+            {
+               //trace ("yyyyyy mCreationId = " + mCreationId + ", mAppearanceObjectsContainer.y = " + mAppearanceObjectsContainer.y + ", newY = " + newY);
+               //trace ("   (int(mAppearanceObjectsContainer.y * 20.0)) = " + (int(mAppearanceObjectsContainer.y * 20.0)) + ", (int (newY * 20.0)) = " + (int (newY * 20.0)) );
+               mAppearanceObjectsContainer.y = newY;
+            }
+            if (mAppearanceObjectsContainer.rotation != newR)
+            {
+               mAppearanceObjectsContainer.rotation = newR;
+            }
+         }
+         else
+         {
+            mAppearanceObjectsContainer.x = newX;
+            mAppearanceObjectsContainer.y = newY;
+            mAppearanceObjectsContainer.rotation = newR;
+         }
       }
       
 //=============================================================

@@ -296,24 +296,24 @@ package common {
 // colors
 //===========================================================================
       
-      public static const ColorObjectBorder:uint = 0xFF000000;
+      public static const ColorObjectBorder:uint = 0x000000;
       
       
-      public static const ColorStaticObject:uint = 0xFF606060;
-      //public static const ColorMovableObject:uint = 0xFFA0A0FF;
+      public static const ColorStaticObject:uint = 0x606060;
+      //public static const ColorMovableObject:uint = 0xA0A0FF;
       public static const ColorMovableObject:uint = 0x5555FF; // from v1.07
       
-      public static const ColorBreakableObject:uint = 0xFFFF00FF; // 0xFF6600; // 
+      public static const ColorBreakableObject:uint = 0xFF00FF; // 0xFF6600; // 
       
-      public static const ColorInfectedObject:uint = 0xFF804000;
-      public static const ColorUninfectedObject:uint = 0xFFFFFF00;
-      public static const ColorDontInfectObject:uint = 0xFF60FF60;
+      public static const ColorInfectedObject:uint = 0x804000;
+      public static const ColorUninfectedObject:uint = 0xFFFF00;
+      public static const ColorDontInfectObject:uint = 0x60FF60;
       
       // v1.01
-      public static const ColorBombObject:uint = 0xFF000000;
+      public static const ColorBombObject:uint = 0x000000;
       
       // ...
-      public static const BorderColorSelectedObject:uint = 0xFF0000FF;
+      public static const BorderColorSelectedObject:uint = 0x0000FF;
       public static const BorderColorUnselectedObject:uint = Define.ColorObjectBorder;
 
 //===========================================================================

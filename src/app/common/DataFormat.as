@@ -78,7 +78,7 @@ package common {
          
          // basic
          {
-            worldDefine.mVersion = Config.VersionNumber;
+            worldDefine.mVersion = Version.VersionNumber;
             
             worldDefine.mAuthorName = editorWorld.GetAuthorName ();
             worldDefine.mAuthorHomepage = editorWorld.GetAuthorHomepage ();

@@ -49,6 +49,7 @@ package wrapper {
    import common.WorldDefine;
    
    import common.Config;
+   import common.Version;
    //import misc.Analytics;
    
    public dynamic class ColorInfectionPlayer extends Sprite 
@@ -230,8 +231,8 @@ package wrapper {
          //addSeperaor = true;
          //
          
-         var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
+         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
          var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), addSeperaor);
          theContextMenu.customItems.push (aboutItem);
          aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);

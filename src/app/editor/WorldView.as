@@ -163,8 +163,9 @@ package editor {
    import common.WorldDefine;
    import common.DataFormat;
    import common.DataFormat2;
-   import common.Define;   
+   import common.Define;
    import common.Config;
+   import common.Version;
    import common.ValueAdjuster;
    
    import common.trigger.CoreEventIds;
@@ -434,6 +435,8 @@ package editor {
                      
                      if (NotifyEditingScaleChanged != null)
                         NotifyEditingScaleChanged ();
+                     
+                     UpdateBackgroundAndWorldPosition ();
                   }
                   else if (mEditorWorld.scaleX > mEditorWorldZoomScale)
                   {
@@ -452,9 +455,9 @@ package editor {
                      
                      if (NotifyEditingScaleChanged != null)
                         NotifyEditingScaleChanged ();
+                     
+                     UpdateBackgroundAndWorldPosition ();
                   }
-                  
-                  UpdateBackgroundAndWorldPosition ();
                }
                
                mEditorWorld.Update (mStepTimeSpan.GetLastSpan ());
@@ -749,9 +752,9 @@ package editor {
             mEntityLinksLayer.scaleX = mEditorWorld.scaleX;
          if (mEntityLinksLayer.scaleY != mEditorWorld.scaleY)
             mEntityLinksLayer.scaleY = mEditorWorld.scaleY;
-         if (mEntityLinksLayer.x != mEditorWorld.x)
+         if ((int (20.0 * mEntityLinksLayer.x)) != (int (20.0 * mEditorWorld.x)))
             mEntityLinksLayer.x = mEditorWorld.x;
-         if (mEntityLinksLayer.y != mEditorWorld.y)
+         if ((int (20.0 * mEntityLinksLayer.y)) != (int (20.0 * mEditorWorld.y)))
             mEntityLinksLayer.y = mEditorWorld.y;
       }
       
@@ -782,9 +785,9 @@ package editor {
             mEntityIdsLayer.scaleX = mEditorWorld.scaleX;
          if (mEntityIdsLayer.scaleY != mEditorWorld.scaleY)
             mEntityIdsLayer.scaleY = mEditorWorld.scaleY;
-         if (mEntityIdsLayer.x != mEditorWorld.x)
+         if ((int (20.0 * mEntityIdsLayer.x)) != (int (20.0 * mEditorWorld.x)))
             mEntityIdsLayer.x = mEditorWorld.x;
-         if (mEntityIdsLayer.y != mEditorWorld.y)
+         if ((int (20.0 * mEntityIdsLayer.y)) != (int (20.0 * mEditorWorld.y)))
             mEntityIdsLayer.y = mEditorWorld.y;
      }
       
@@ -1571,8 +1574,8 @@ package editor {
          //theContextMenu.customItems.push (mMenuItemQuickLoad);
          //mMenuItemQuickLoad.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         var majorVersion:int = (Config.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Config.VersionNumber & 0xFF) >> 0;
+         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
          
          mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16)); //, true);
          theContextMenu.customItems.push (mMenuItemAbout);
@@ -1611,6 +1614,11 @@ package editor {
          
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionManager ().SetChanged (false);
+         
+         mEditorWorld.scaleX = mEditorWorld.scaleY = mEditorWorldZoomScale = mEditorWorld.GetZoomScale ();
+         
+         if (NotifyEditingScaleChanged != null)
+            NotifyEditingScaleChanged ();
          
          mContentLayer.addChild (mEditorWorld);
          
@@ -5586,7 +5594,7 @@ package editor {
          
          var designDataAll:ByteArray = new ByteArray ();
          
-         designDataAll.writeInt (Config.VersionNumber);
+         designDataAll.writeInt (Version.VersionNumber);
          
          //>> from v1.07 (in fact, the code added in v0110 r003)
          var shareSourceCode:Boolean = mEditorWorld.IsShareSourceCode ();

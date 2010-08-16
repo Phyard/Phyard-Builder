@@ -280,20 +280,11 @@ package player.entity {
       // for judging if this condition is evaluated already in current step.
       private var mLastVelocityUpdatedStep:int = -1;
       
+      internal var mVelocityUpdatedTimes:int = 0; // for shapes to determined whether their velocities are synchronized.
+      
       internal function FlagVelocitySynchronized (syned:Boolean):void
       {
          mLastVelocityUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
-         
-         if (! syned)
-         {
-            var shape:EntityShape = mShapeListHead;
-            while (shape != null)
-            {
-               shape.FlagVelocitySynchronized (syned);
-               
-               shape = shape.mNextShapeInBody;
-            }
-         }
       }
       
       internal var mLinearVelocityX:Number = 0.0;
@@ -305,6 +296,7 @@ package player.entity {
          if (mLastVelocityUpdatedStep < mWorld.GetSimulatedSteps ())
          {
             FlagVelocitySynchronized (true);
+            ++ mVelocityUpdatedTimes;
             
             if (mPhysicsProxy == null)
             {
@@ -482,6 +474,7 @@ package player.entity {
          }
       }
       
+      // this function is only called at init stage
       public function AddShapeMomentums ():void
       {
          var shape:EntityShape = mPhysicsShapeListHead;
@@ -521,6 +514,7 @@ package player.entity {
             return;
          
          mPhysicsProxyBody.SetSleeping (sleeping);
+         FlagVelocitySynchronized (false); // bug fixed in v1.53
       }
 
    }

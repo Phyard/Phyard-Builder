@@ -367,6 +367,9 @@ package player.entity {
       
       public function SetDrawBackground (draw:Boolean):void
       {
+         if (mAiType >= 0)
+            return;
+         
          mDrawBackground = draw;
          
          mNeedRebuildAppearanceObjects = true;
@@ -383,6 +386,9 @@ package player.entity {
       
       public function SetFilledColor (color:uint):void
       {
+         if (mAiType >= 0)
+            return;
+         
          mFilledColor = color;
          
          mNeedRebuildAppearanceObjects = true;
@@ -442,6 +448,9 @@ package player.entity {
       // the background transparency
       public function SetTransparency (transparency:uint):void
       {
+         if (mAiType >= 0)
+            return;
+         
          mTransparency = transparency;
          
          mNeedUpdateAppearanceProperties = true;
@@ -896,8 +905,6 @@ package player.entity {
 //=============================================================
       
       // for judging if this condition is evaluated already in current step.
-      private var mLastVelocityUpdatedStep:int = -1;
-      private var mLastAngularVelocityUpdatedStep:int = -1;
       private var mLastWorldCentroidUpdatedStep:int = -1;
       
       // ..
@@ -927,7 +934,7 @@ package player.entity {
       
       internal function SynchronizeWorldCentroid ():void
       {
-         if (mLastWorldCentroidUpdatedStep <  mWorld.GetSimulatedSteps ())
+         if (mLastWorldCentroidUpdatedStep < mWorld.GetSimulatedSteps ())
          {
             FlagWorldCentroidSynchronized (true);
             
@@ -941,22 +948,26 @@ package player.entity {
          }
       }
       
+      // for judging if this condition is evaluated already in current step.
+      private var mLastVelocityUpdatedTimes:int = -1;
+      private var mLastAngularVelocityUpdatedTimes:int = -1;
+      
       internal function FlagVelocitySynchronized (syned:Boolean):void
       {
-         mLastVelocityUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
+         mLastVelocityUpdatedTimes = syned ? mBody.mVelocityUpdatedTimes : -1;
          
          FlagAngularVelocitySynchronized (syned);
       }
       
       internal function SynchronizeVelocityAndWorldCentroid ():void
       {
-         if (mLastVelocityUpdatedStep <  mWorld.GetSimulatedSteps ())
+         mBody.SynchronizeVelocityWithPhysicsProxy ();
+         
+         if (mLastVelocityUpdatedTimes < mBody.mVelocityUpdatedTimes)
          {
             FlagVelocitySynchronized (true);
             
             SynchronizeWorldCentroid ();
-            
-            mBody.SynchronizeVelocityWithPhysicsProxy ();
             
             var worldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
             var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
@@ -972,16 +983,16 @@ package player.entity {
       
       internal function FlagAngularVelocitySynchronized (syned:Boolean):void
       {
-         mLastAngularVelocityUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
+         mLastAngularVelocityUpdatedTimes = syned ? mBody.mVelocityUpdatedTimes : -1;
       }
       
       internal function SynchronizeAngularVelocityAndWorldCentroid ():void
       {
-         if (mLastAngularVelocityUpdatedStep <  mWorld.GetSimulatedSteps ())
+         mBody.SynchronizeVelocityWithPhysicsProxy ();
+         
+         if (mLastAngularVelocityUpdatedTimes < mBody.mVelocityUpdatedTimes)
          {
             FlagAngularVelocitySynchronized (true);
-            
-            mBody.SynchronizeVelocityWithPhysicsProxy ();
             
             mAngularVelocity = mBody.mAngularVelocity;
          }

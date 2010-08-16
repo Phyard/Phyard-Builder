@@ -436,7 +436,7 @@ public function  AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocit
       //mBody.mNumPhysicsShapes > 0
    }
    
-   if (IsTheOnlyPhysicsShapeInBody ())
+   if (onBodyCenter || IsTheOnlyPhysicsShapeInBody ())
    {
       worldX = mBody.mPositionX;
       worldY = mBody.mPositionY;
@@ -454,8 +454,10 @@ public function  AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocit
    if (valueIsVelocity)
    {
       // mMass is possible zero for many reasons
-      momentumX = mMass * valueX;
-      momentumY = mMass * valueY;
+      var mass:Number = onBodyCenter ? mBody.GetMass () : mMass;
+      
+      momentumX = mass * valueX;
+      momentumY = mass * valueY;
    }
    else
    {

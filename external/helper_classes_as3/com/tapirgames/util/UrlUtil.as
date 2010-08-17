@@ -96,10 +96,12 @@ package com.tapirgames.util {
          
          url = url.toLowerCase ();
          
-         var urlStart:int = url.indexOf("://") + 3;
+         var urlStart:int = url.indexOf("://");
          
          if (urlStart < 0)
             return null;
+         
+         urlStart += 3;
          
          var urlEnd:int = url.indexOf("/", urlStart);
          if (urlEnd < 0)

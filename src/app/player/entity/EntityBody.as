@@ -284,7 +284,15 @@ package player.entity {
       
       internal function FlagVelocitySynchronized (syned:Boolean):void
       {
-         mLastVelocityUpdatedStep = syned ? mWorld.GetSimulatedSteps () : -1;
+         if (syned)
+         {
+            ++ mVelocityUpdatedTimes;
+            mLastVelocityUpdatedStep = mWorld.GetSimulatedSteps ();
+         }
+         else
+         {
+            mLastVelocityUpdatedStep = -1;
+         }
       }
       
       internal var mLinearVelocityX:Number = 0.0;
@@ -296,7 +304,6 @@ package player.entity {
          if (mLastVelocityUpdatedStep < mWorld.GetSimulatedSteps ())
          {
             FlagVelocitySynchronized (true);
-            ++ mVelocityUpdatedTimes;
             
             if (mPhysicsProxy == null)
             {
@@ -514,7 +521,9 @@ package player.entity {
             return;
          
          mPhysicsProxyBody.SetSleeping (sleeping);
-         FlagVelocitySynchronized (false); // bug fixed in v1.53
+         
+         // bug fixed in v1.53
+         FlagVelocitySynchronized (false);
       }
 
    }

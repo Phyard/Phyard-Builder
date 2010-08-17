@@ -64,6 +64,9 @@ package wrapper {
          private var GetWorldBinaryData:Function = null;
          private var GetViewportSize:Function = null;
       
+      private var mParamsFromUniPlayer:Object = null;
+         private var LoadWorldBinaryData:Function = null;
+      
       private var mStartRightNow:Boolean = false;
       
       private var mExternalPaused:Boolean = false;
@@ -102,7 +105,7 @@ package wrapper {
 //
 //======================================================================
       
-      public function ColorInfectionPlayer (start:Boolean = false, paramsFromEditor:Object = null)
+      public function ColorInfectionPlayer (start:Boolean = false, paramsFromEditor:Object = null, paramsFromUniPlayer:Object = null)
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
@@ -122,6 +125,12 @@ package wrapper {
             GetWorldDefine = paramsFromEditor.getWorldDefine;
             GetWorldBinaryData = paramsFromEditor.getWorldBinaryData;
             GetViewportSize = paramsFromEditor.getViewportSize;
+         }
+         
+         mParamsFromUniPlayer = paramsFromUniPlayer;
+         if (paramsFromUniPlayer != null)
+         {
+            LoadWorldBinaryData = paramsFromUniPlayer.loadWorldBinaryData;
          }
       }
       

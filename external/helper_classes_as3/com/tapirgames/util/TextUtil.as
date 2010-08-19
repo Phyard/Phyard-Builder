@@ -103,8 +103,7 @@ package com.tapirgames.util {
       
       private static function ParseBullets(input:String):String 
       { 
-          var pattern:RegExp = /^\*(.*)/gm; 
-          //return input.replace(pattern, "<li>$1</li>"); 
+          var pattern:RegExp = /^\*(.*)(\r)/gm; 
           return input.replace(pattern, TrimBulletsTextBeginningSpaces); 
       }
       

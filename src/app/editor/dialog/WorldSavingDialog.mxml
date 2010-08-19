@@ -8,7 +8,8 @@
 
    <mx:VBox width="100%">
       <mx:Text id="Text_TutorialLink" width="100%" selectable="true" link="OnClickTutorialLink(event)">
-         <mx:htmlText><![CDATA[<li>Please at least backup the source code for later modifications.</li>]]></mx:htmlText>
+         <mx:htmlText>
+            <![CDATA[<li>Please backup the <b>source code</b> for later modifications if your design is not saved online.</li><li><b>Play Code</b> is used to post on <i>Color Infection Forum</i> quickly.</li><li><b>Embed Html Code</b> is used to post on your website.</li>]]></mx:htmlText>
       </mx:Text >
    </mx:VBox>
    
@@ -19,7 +20,6 @@
    <mx:HBox width="100%">
       <mx:Label id="Label_SourceCode" text="Source Code:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
-      <mx:Button label="Copy Source Code" click="OnClickCopySourceCode ();"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
@@ -30,10 +30,11 @@
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Label id="Label_PlayCode" text="Play Code" fontWeight="bold"/>
-      <mx:Label id="Label_PlayCodeLength" text="" />
+      <mx:Button label="Copy Source Code" click="OnClickCopySourceCode ();"/>
       <mx:Spacer width="100%"/>
-      <mx:Button label="Copy Play Code" click="OnClickCopyPlayCode ();"/>
+      <mx:Button id="Button_CopyPlayCode" label="Copy Play Code" click="OnClickCopyPlayCode ();"/>
+      <mx:Spacer width="100%"/>
+      <mx:Button label="Copy Embed Html Code" click="OnClickCopyEmbedCode ();"/>
    </mx:HBox>
 
    <!--
@@ -82,38 +83,7 @@
             mInputValues = values;
             
             TextArea_SourceCode.text = values.mXmlString;
-            Label_PlayCodeLength.text = "(" + values.mHexString.length +" bytes)";
-            
-            /*
-            var embedCode:String = 
-"<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"600\" height=\"600\">\n"
-+ 
-"<param name=\"FlashVars\" value=\"playcode=" + values.mHexString + "\" />\n"
-+
-"<param name=\"movie\" value=\"http://swfs.colorinfection.com/player.swf\" />\n"
-+
-"<param name=\"quality\" value=\"high\" />\n"
-+
-"<embed src=\"http://swfs.colorinfection.com/player.swf\"\n"
-+
-"  width=\"600\" height=\"600\"\n"
-+
-"  FlashVars=\"playcode=" + values.mHexString + "\"\n"
-+
-"  quality=\"high\"\n"
-+
-"  type=\"application/x-shockwave-flash\"\n"
-+
-"  pluginspage=\"http://www.adobe.com/go/getflashplayer\">\n"
-+
-"</embed>\n"
-+
-"</object>\n"
-;
-
-            
-            TextArea_EmbedCode.text = embedCode;
-*/
+            Button_CopyPlayCode.label = Button_CopyPlayCode.label + " (" + values.mHexString.length +" bytes)";
          }
          
          public function SetCloseFunc (onClose:Function):void
@@ -135,6 +105,11 @@
             var newStr:String = ">\r\n$1<";
             
             System.setClipboard(TextArea_SourceCode.text.replace(pattern, newStr));
+         }
+         
+         private function OnClickCopyEmbedCode ():void
+         {
+            System.setClipboard (mInputValues.mEmbedCode);
          }
          
          private function OnClickCopyPlayCode ():void

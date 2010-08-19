@@ -266,13 +266,6 @@ package wrapper {
             addSeperaor = true;
          }
          
-         //
-         //var copyCifEmbedItem:ContextMenuItem = new ContextMenuItem("Copy Embed Link For C.I. Forum", false);
-         //theContextMenu.customItems.push (copyCifEmbedItem);
-         //copyCifEmbedItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyEmbedLink);
-         //addSeperaor = true;
-         //
-         
          var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
          var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
          var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), addSeperaor);
@@ -520,7 +513,7 @@ package wrapper {
                BuildErrorMessage ("Loading ...");
                break;
             case StateId_LoadFailed:
-           trace (new Error ().getStackTrace ());
+               //trace (new Error ().getStackTrace ());
                BuildErrorMessage ("Fail to parse play code.", "http://www.phyard.com");
                break;
             case StateId_BuildWorld:
@@ -715,13 +708,6 @@ package wrapper {
              trace ("Parse flash vars error." + error);
          }
       }
-      
-      private function OnCopyEmbedLink (event:ContextMenuEvent):void
-      {
-         mFlashParams
-      }
-      
-      private var mPhyardDesignEmbedCode:String = "";
       
       private function TryToStartOnlineLoading ():void
       {

@@ -6,23 +6,25 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
     title="Design Info Setting" width="600"  creationComplete="OnInitPanel()">
 
-    <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
+   <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10">
       <mx:Spacer width="100%"/>
-      <mx:VBox>
-         <!--
-         <mx:CheckBox id="CheckBox_PermitPublishing" label="Permit Other Websites to Publish"/>
-         -->
-         <mx:CheckBox label=" " visible="false"/>
-         <mx:Label text="Your Name:" textAlign="right" width="30%"/>
-         <mx:Label text="Your Homepage:" textAlign="right" width="30%"/>
-      </mx:VBox>
-      <mx:VBox>
-         <!--
-         <mx:CheckBox id="CheckBox_PermitPublishing" label="Permit Other Websites to Publish"/>
-         -->
-         <mx:CheckBox id="CheckBox_ShareSourceCode" label="Share Source Code"/>
-         <mx:TextInput id="Text_AuthorName" width="200" />
-         <mx:TextInput id="Text_AuthorHomePage" width="368" />
+      <mx:VBox width="100%">
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_ShareSourceCode" label="Share Source Code"/>
+            <mx:Spacer width="100%"/>
+            <mx:CheckBox id="CheckBox_PermitPublishing" label="Allow Publishing on Other Websites"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HBox width="100%" textAlign="left">
+            <mx:Label text="Your Name:" textAlign="left" width="100"/>
+            <mx:TextInput id="Text_AuthorName" width="200" />
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
+         <mx:HBox width="100%" textAlign="left">
+            <mx:Label text="Your Homepage:" textAlign="left" width="100"/>
+            <mx:TextInput id="Text_AuthorHomePage" width="368" />
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
       </mx:VBox>
       <mx:Spacer width="100%"/>
    </mx:HBox>
@@ -62,6 +64,7 @@
          private function OnInitPanel ():void
          {
             CheckBox_ShareSourceCode.selected = mParams.mShareSoureCode;
+            CheckBox_PermitPublishing.selected = mParams.mPermitPublishing;
             Text_AuthorName.text = mParams.mAuthorName;
             Text_AuthorHomePage.text = mParams.mAuthorHomepage;
          }
@@ -79,6 +82,7 @@
          private function OnClickOkButton():void 
          {
             mParams.mShareSoureCode = CheckBox_ShareSourceCode.selected;
+            mParams.mPermitPublishing = CheckBox_PermitPublishing.selected;
             mParams.mAuthorName = Text_AuthorName.text;
             mParams.mAuthorHomepage = Text_AuthorHomePage.text;
             

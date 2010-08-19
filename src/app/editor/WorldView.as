@@ -4778,6 +4778,7 @@ package editor {
          var info:Object = new Object ();
          
          info.mShareSoureCode = mEditorWorld.IsShareSourceCode ();
+         info.mPermitPublishing = mEditorWorld.IsPermitPublishing ();
          info.mAuthorName = mEditorWorld.GetAuthorName ();
          info.mAuthorHomepage = mEditorWorld.GetAuthorHomepage ();
          
@@ -4787,6 +4788,7 @@ package editor {
       public function SetCurrentWorldDesignInfo (info:Object):void
       {
          mEditorWorld.SetShareSourceCode (info.mShareSoureCode);
+         mEditorWorld.SetPermitPublishing (info.mPermitPublishing);
          mEditorWorld.SetAuthorName (info.mAuthorName);
          mEditorWorld.SetAuthorHomepage (info.mAuthorHomepage);
          

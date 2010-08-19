@@ -65,7 +65,6 @@ package wrapper {
          private var GetViewportSize:Function = null;
       
       private var mParamsFromUniPlayer:Object = null;
-         private var LoadWorldBinaryData:Function = null;
       
       private var mStartRightNow:Boolean = false;
       
@@ -119,7 +118,7 @@ package wrapper {
          
          mStartRightNow = start;
          
-         mParamsFromEditor = paramsFromEditor
+         mParamsFromEditor = paramsFromEditor;
          if (paramsFromEditor != null)
          {
             GetWorldDefine = paramsFromEditor.getWorldDefine;
@@ -128,10 +127,6 @@ package wrapper {
          }
          
          mParamsFromUniPlayer = paramsFromUniPlayer;
-         if (paramsFromUniPlayer != null)
-         {
-            LoadWorldBinaryData = paramsFromUniPlayer.loadWorldBinaryData;
-         }
       }
       
       public function GetPlayerWorld ():World
@@ -139,21 +134,22 @@ package wrapper {
          return mPlayerWorld;
       }
       
-      public function SetOptions (options:Object = null):void
-      {
-         if (options != null)
-         {
-            if (options.mWorldPlayCode != null)
-            {
-               mWorldPlayCode = options.mWorldPlayCode;
-               mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
-            }
-            if (options.mBuildContextMenu != null)
-               mBuildContextMenu = options.mBuildContextMenu;
-            if (options.mMainMenuCallback != null)
-               mMainMenuCallback = options.mMainMenuCallback;
-         }
-      }
+      // for old packager, which is already cancelled.
+      //public function SetOptions (options:Object = null):void
+      //{
+      //   if (options != null)
+      //   {
+      //      if (options.mWorldPlayCode != null)
+      //      {
+      //         mWorldPlayCode = options.mWorldPlayCode;
+      //         mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
+      //      }
+      //      if (options.mBuildContextMenu != null)
+      //         mBuildContextMenu = options.mBuildContextMenu;
+      //      if (options.mMainMenuCallback != null)
+      //         mMainMenuCallback = options.mMainMenuCallback;
+      //   }
+      //}
       
       private function OnAddedToStage (e:Event):void
       {
@@ -166,9 +162,27 @@ package wrapper {
          addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          
          if (mParamsFromEditor != null) //(GetWorldDefine != null || GetWorldBinaryData != null )
+         {
             ChangeState (StateId_BuildWorld);
+         }
+         else if (mParamsFromUniPlayer != null)
+         {
+            if (mParamsFromUniPlayer.mWorldBinaryData != null)
+            {
+               mWorldDataForPlaying = mParamsFromUniPlayer.mWorldBinaryData;
+            }
+            else // if (mParamsFromUniPlayer.mWorldPlayCode != null)
+            {
+               mWorldPlayCode = mParamsFromUniPlayer.mWorldPlayCode;
+               mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
+            }
+            
+            ChangeState (StateId_BuildWorld);
+         }
          else
+         {
             ChangeState (StateId_Load);
+         }
          
          //
          //mAnalytics = new Analytics (this, mAnalyticsDurations);
@@ -189,6 +203,10 @@ package wrapper {
          //mAnalytics.TrackTime (Config.VirtualPageName_PlayerTimePrefix);
       }
       
+//======================================================================
+//
+//======================================================================
+      
       private function BuildContextMenu ():void
       {
          if (! mBuildContextMenu)
@@ -202,7 +220,6 @@ package wrapper {
          var addSeperaor:Boolean = false;
          if (Compile::Is_Debugging || mPlayerWorld != null && mPlayerWorld.IsShareSourceCode ())
          {
-            //if (mWorldPlayCode != null)
             if (mWorldDataForPlaying != null)
             {
                //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
@@ -221,7 +238,7 @@ package wrapper {
             }
          }
          
-         if (Compile::Is_Debugging || mPlayerWorld != null && mPlayerWorld.IsPermitPublishing ())
+         if (Compile::Is_Debugging)
          {
             if (mWorldPlayCode != null)
             {
@@ -231,6 +248,22 @@ package wrapper {
                
                addSeperaor = true;
             }
+         }
+         
+         if (mParamsFromUniPlayer != null && mPlayerWorld != null)
+         {
+            if (mPlayerWorld.IsPermitPublishing ())
+            {
+               var copyEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code", false);
+               theContextMenu.customItems.push (copyEmbedCodeMenuItem);
+               copyEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyEmbedCode);
+            }
+            
+            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code for CIF", false);
+            theContextMenu.customItems.push (copyForumEmbedCodeMenuItem);
+            copyForumEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyForumEmbedCode);
+            
+            addSeperaor = true;
          }
          
          //
@@ -247,6 +280,83 @@ package wrapper {
          aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
          
          contextMenu = theContextMenu;
+      }
+      
+      private function OnCopySourceCode (event:ContextMenuEvent):void
+      {
+         if (mWorldSourceCode != null)
+            System.setClipboard(mWorldSourceCode);
+      }
+      
+      private function OnCopyPlayCode (event:ContextMenuEvent):void
+      {
+         if (mWorldPlayCode != null)
+            System.setClipboard(mWorldPlayCode);
+      }
+      
+      private function OnCopyEmbedCode (event:ContextMenuEvent):void
+      {
+         if (mParamsFromUniPlayer != null && mPlayerWorld != null)
+         {
+            var width:int = mPlayerWorld.GetViewportWidth ();
+            var height:int = mPlayerWorld.GetViewportHeight ();
+            if ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+               height += 20;
+            var playcode:String = mParamsFromUniPlayer.mWorldPlayCode;
+            
+            var embedCode:String = 
+               "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
+                 + (playcode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + playcode + "\"></param>\n") +
+               "  <param name=\"movie\" value=\"" + mParamsFromUniPlayer.mUniplayerUrl + "\"></param>"
+                 + "\n" +
+               "  <param name=\"quality\" value=\"high\"></param>"
+                 + "\n" +
+               "  <embed src=\"" + mParamsFromUniPlayer.mUniplayerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
+                 + (playcode == null ? "\n" : "\n    FlashVars=\"playcode=" + playcode + "\"\n") +
+               "    quality=\"high\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\">"
+                 + "\n" +
+               "  </embed>"
+                 + "\n" +
+               "</object>"
+               ;
+            
+            System.setClipboard(embedCode);
+         }
+      }
+      
+      private function OnCopyForumEmbedCode (event:ContextMenuEvent):void
+      {
+         if (mParamsFromUniPlayer != null && mPlayerWorld != null)
+         {
+            var width:int = mPlayerWorld.GetViewportWidth ();
+            var height:int = mPlayerWorld.GetViewportHeight ();
+            if ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+               height += 20;
+            
+            if (mParamsFromUniPlayer.mWorldPlayCode != null)
+            {
+                System.setClipboard (mParamsFromUniPlayer.mWorldPlayCode);
+                return;
+            }
+            
+            var substr:String = "uniplayer.swf?";
+            
+            var index:int = mParamsFromUniPlayer.mUniplayerUrl.indexOf (substr);
+            if (index < 0)
+            {
+                System.setClipboard("");
+               return;
+            }
+            
+            var embedCode:String = "[phyard=" + mParamsFromUniPlayer.mUniplayerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "/]";
+            
+            System.setClipboard (embedCode);
+         }
+      }
+      
+      private function OnAbout (event:ContextMenuEvent):void
+      {
+         UrlUtil.PopupPage (Define.AboutUrl);
       }
       
 //======================================================================
@@ -410,6 +520,7 @@ package wrapper {
                BuildErrorMessage ("Loading ...");
                break;
             case StateId_LoadFailed:
+           trace (new Error ().getStackTrace ());
                BuildErrorMessage ("Fail to parse play code.", "http://www.phyard.com");
                break;
             case StateId_BuildWorld:
@@ -557,27 +668,6 @@ package wrapper {
 //
 //======================================================================
       
-      private function OnCopySourceCode (event:ContextMenuEvent):void
-      {
-         if (mWorldSourceCode != null)
-            System.setClipboard(mWorldSourceCode);
-      }
-      
-      private function OnCopyPlayCode (event:ContextMenuEvent):void
-      {
-         if (mWorldPlayCode != null)
-            System.setClipboard(mWorldPlayCode);
-      }
-      
-      private function OnAbout (event:ContextMenuEvent):void
-      {
-         UrlUtil.PopupPage (Define.AboutUrl);
-      }
-      
-//======================================================================
-//
-//======================================================================
-      
       public static const k_ReturnCode_UnknowError:int = 0;
       public static const k_ReturnCode_Successed:int = 1;
       public static const k_ReturnCode_NotLoggedIn:int = 2;
@@ -596,15 +686,20 @@ package wrapper {
          
          try 
          {
-            var loadInfo:LoaderInfo = LoaderInfo(root.loaderInfo);
+            var loadInfo:LoaderInfo = LoaderInfo(this.loaderInfo);
             
             mFlashParams.mRootUrl = UrlUtil.GetRootUrl (loaderInfo.url);
             
             var flashVars:Object = loaderInfo.parameters;
             if (flashVars != null)
             {
+               // offline params
+               
                if (flashVars.playcode != null)
                   mFlashParams.mWorldPlayCode = flashVars.playcode;
+               
+               // online laod params
+               
                if (flashVars.action != null)
                   mFlashParams.mAction = flashVars.action;
                if (flashVars.author != null)
@@ -713,13 +808,16 @@ package wrapper {
          {
             var worldDefine:WorldDefine = null;
             
-            if (GetWorldBinaryData != null)
+            if (mParamsFromEditor != null)
             {
-               worldDefine = DataFormat2.ByteArray2WorldDefine (GetWorldBinaryData ())
-            }
-            else if (GetWorldDefine != null)
-            {
-               worldDefine = GetWorldDefine ();
+               if (GetWorldBinaryData != null)
+               {
+                  worldDefine = DataFormat2.ByteArray2WorldDefine (GetWorldBinaryData ())
+               }
+               else // if (GetWorldDefine != null)
+               {
+                  worldDefine = GetWorldDefine ();
+               }
             }
             else if (mWorldDataForPlaying != null)
             {

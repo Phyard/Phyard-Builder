@@ -18,6 +18,8 @@ package common.trigger.parse {
       public var mStartCallingLine:FunctionCallingLineInfo;
       public var mEndCallingLine:FunctionCallingLineInfo;
       
+      public var mNumValidCallings:int = 0;
+      
       public var mNumElseBranches:int = 0; // valid for if-block only
       
       public function FunctionCallingBlockInfo ()

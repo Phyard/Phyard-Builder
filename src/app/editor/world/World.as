@@ -11,6 +11,7 @@ package editor.world {
    
    import editor.entity.Entity;
    import editor.entity.SubEntity;
+   import editor.entity.WorldSubEntity;
    
    import editor.entity.EntityShape;
    import editor.entity.EntityShapeCircle;
@@ -143,7 +144,7 @@ package editor.world {
       private var mAuthorName:String = "";
       private var mAuthorHomepage:String = "";
       private var mShareSourceCode:Boolean = false;
-      private var mPermitPublishing:Boolean = false;
+      private var mPermitPublishing:Boolean = true;
       
       // display values, pixles
       private var mInfiniteWorldSize:Boolean = false;
@@ -715,6 +716,82 @@ package editor.world {
                return;
             
             GlueEntities (newBrotherGroup);
+         }
+      }
+      
+//=================================================================================
+//   change layers
+//=================================================================================
+      
+      override public function MoveSelectedEntitiesToTop ():void
+      {
+         super.MoveSelectedEntitiesToTop ();
+         
+         CorrectLayerIdsForJoints ();
+      }
+      
+      override public function MoveSelectedEntitiesToBottom ():void
+      {
+         super.MoveSelectedEntitiesToBottom ();
+         
+         CorrectLayerIdsForJoints ();
+      }
+      
+      public function CorrectLayerIdsForJoints ():void
+      {
+         var numEntities:int = mEntitiesSortedByCreationId.length;
+         
+         for (var i:int = 0; i < numEntities; ++ i)
+         {
+            var entity:Entity = mEntitiesSortedByCreationId [i] as Entity;
+            
+            if (entity is EntityJoint)
+            {
+               var maxIndex:int = -1;
+               
+               var joint:Object = entity as Object;
+               
+               if (joint.hasOwnProperty ("GetAnchor"))
+               {
+                  var anchor:WorldSubEntity = joint.GetAnchor () as WorldSubEntity;
+                  if (anchor != null)
+                  {
+                     var index:int = getChildIndex (anchor);
+                     if (index > maxIndex)
+                        maxIndex = index;
+                  }
+               }
+               else
+               {
+                  if (joint.hasOwnProperty ("GetAnchor1"))
+                  {
+                     var anchor1:WorldSubEntity = joint.GetAnchor1 () as WorldSubEntity;
+                     if (anchor1 != null)
+                     {
+                        var index1:int = getChildIndex (anchor1);
+                        if (index1 > maxIndex)
+                           maxIndex = index1;
+                     }
+                  }
+                  
+                  if (joint.hasOwnProperty ("GetAnchor2"))
+                  {
+                     var anchor2:WorldSubEntity = joint.GetAnchor2 () as WorldSubEntity;
+                     if (anchor2 != null)
+                     {
+                        var index2:int = getChildIndex (anchor2);
+                        if (index2 > maxIndex)
+                           maxIndex = index2;
+                     }
+                  }
+                  
+                  if (maxIndex > 0)
+                  {
+                     removeChild (entity);
+                     addChildAt (entity, maxIndex + 1);
+                  }
+               }
+            }
          }
       }
       

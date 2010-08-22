@@ -12,18 +12,20 @@ package player.trigger
          mFirstFunctionCalling = firstCalling;
       }
       
+   //public static var mEnableTrace:Boolean = false;
+      
       public function Excute ():void
       {
          var calling:FunctionCalling = mFirstFunctionCalling;
          
-      //trace ("-----------");
+   //if (mEnableTrace) trace ("-----------");
          while (calling != null)
          {
             calling.Call ();
-      //trace (calling.GetLineNumber () + "> mNextFunctionCalling = " + calling.mNextFunctionCalling);
+   //if (mEnableTrace) trace (calling.GetLineNumber () + "> mNextFunctionCalling = " + calling.mNextFunctionCalling);
             calling = calling.mNextFunctionCalling;
          }
-      //trace ("#############" + new Error ().getStackTrace ());
+   //if (mEnableTrace)  trace ("#############" + new Error ().getStackTrace ());
       }
       
    }

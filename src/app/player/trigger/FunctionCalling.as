@@ -35,6 +35,11 @@ package player.trigger
          mNextFunctionCalling = nextCalling;
       }
       
+      public function GetNextCalling ():FunctionCalling
+      {
+         return mNextFunctionCalling;
+      }
+      
       // todo: best to return next calling
       public function Call ():void
       {

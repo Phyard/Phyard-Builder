@@ -109,6 +109,8 @@ package common.trigger.parse {
                   }
                   else
                   {
+                     currentBlock.mNumValidCallings += currentBranch.mNumValidCallings;
+                     
                      currentBranch = new FunctionCallingBranchInfo ();
                      currentBranch.mIndentLevel = currentBlock.mIndentLevel;
                      currentBranch.mIsValid = currentBlock.mIsValid && (currentBlock.mNumElseBranches == 0);
@@ -150,7 +152,12 @@ package common.trigger.parse {
                      
                      currentBlock.mEndCallingLine = currentCallingLineInfo;
                      
+                     currentBlock.mNumValidCallings += currentBranch.mNumValidCallings;
+                     
                      currentBranch = currentBlock.mOwnerBranch;
+                     
+                     currentBranch.mNumValidCallings += currentBlock.mNumValidCallings;
+                     
                      currentBlock = currentBlock.mOwnerBlock;
                   }
                   break;

@@ -26,6 +26,7 @@ package common.trigger.parse {
       public var mFunctionCallingDefine:FunctionCallingDefine; // only for playing
       public var mFunctionCallingForPlaying:FunctionCalling = null; // only for playing
       public var mNextValidCallingLine:FunctionCallingLineInfo = null; // only for playing
+      public var mNextGoodCallingLine:FunctionCallingLineInfo = null; // only for playing optimize
       
       public function set mIsValid (valid:Boolean):void
       {

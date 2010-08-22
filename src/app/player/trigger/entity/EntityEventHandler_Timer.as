@@ -4,6 +4,7 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Logic;
+   import player.trigger.CodeSnippet;
    import player.trigger.ValueSource;
    import player.trigger.ValueSource_Direct;
    
@@ -164,7 +165,11 @@ package player.trigger.entity
          
          mTimerEventHandlerValueSource0.mValueObject = mRunningTimes;
          
+      //if (mCreationId == 120) CodeSnippet.mEnableTrace = true;
+         
          HandleEvent (mTimerEventHandlerValueSourceList);
+         
+      //if (mCreationId == 120) CodeSnippet.mEnableTrace = false;
       }      
       public function HandleEntityTimerEvent ():void
       {

@@ -24,6 +24,16 @@ package player.trigger
          mNextFunctionCalling_True = nextCalling;
       }
       
+      public function GetNextCallingForFalse ():FunctionCalling
+      {
+         return mNextFunctionCalling_False;
+      }
+      
+      public function GetNextCallingForTrue ():FunctionCalling
+      {
+         return mNextFunctionCalling_True;
+      }
+      
       public function SetNextCallingForFalse (nextCalling:FunctionCalling):void
       {
          mNextFunctionCalling_False = nextCalling;

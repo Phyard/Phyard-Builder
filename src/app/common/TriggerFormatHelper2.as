@@ -109,7 +109,10 @@ package common {
                validCallingInfos [numValidCallings ++] = callingInfo;
                
                if (lastCallingInfo != null)
+               {
                   lastCallingInfo.mNextValidCallingLine = callingInfo;
+                  lastCallingInfo.mNextGoodCallingLine = callingInfo;
+               }
                
                lastCallingInfo = callingInfo;
             }
@@ -125,98 +128,117 @@ package common {
             
             var calling_condition:FunctionCalling_Condition;
             
-            var nextCallingInfo:FunctionCallingLineInfo;
             var branchInfo:FunctionCallingBranchInfo;
+            
+            var nextCallingInfo:FunctionCallingLineInfo;
+            var nextCallingInfoForTrue:FunctionCallingLineInfo;
+            var nextCallingInfoForFalse:FunctionCallingLineInfo;
             
             do
             {
                lastCallingInfo = callingInfo;
                callingInfo = lastCallingInfo.mNextValidCallingLine;
                
+               nextCallingInfo = null;
+               nextCallingInfoForTrue = null;
+               nextCallingInfoForFalse = null;
+               
+               calling_condition = null;
+               
                switch (lastCallingInfo.mFunctionId)
                {
                   case CoreFunctionIds.ID_ReturnIfTrue:
                      calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
                      
-                     calling_condition.SetNextCallingForTrue (null);
-                     calling_condition.SetNextCallingForFalse (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     nextCallingInfoForTrue = null;
+                     nextCallingInfoForFalse = callingInfo;
                      break;
                   case CoreFunctionIds.ID_ReturnIfFalse:
                      calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
                      
-                     calling_condition.SetNextCallingForTrue (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
-                     calling_condition.SetNextCallingForFalse (null);
+                     nextCallingInfoForTrue = callingInfo;
+                     nextCallingInfoForFalse = null;
                      break;
                   case CoreFunctionIds.ID_StartIf:
                      calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
                      
                      if (lastCallingInfo.mOwnerBlock.mFirstBranch.mNumValidCallings > 1)
                      {
-                        calling_condition.SetNextCallingForTrue (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                        nextCallingInfoForTrue = callingInfo;
                      }
                      else
                      {
-                        nextCallingInfo = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
-                        if (nextCallingInfo != null)
-                           nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
-                        calling_condition.SetNextCallingForTrue (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                        nextCallingInfoForTrue = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                        
+                        if (nextCallingInfoForTrue != null)
+                           nextCallingInfoForTrue = nextCallingInfoForTrue.mNextGoodCallingLine;
                      }
+                     
                      branchInfo = lastCallingInfo.mOwnerBlock.mFirstBranch; // if branch, should not be null
                      branchInfo = branchInfo.mNextBranch; // else branch
                      if (branchInfo != null && branchInfo.mNumValidCallings > 1)
                      {
-                        nextCallingInfo = branchInfo.mFirstCallingLine.mNextValidCallingLine;
+                        nextCallingInfoForFalse = branchInfo.mFirstCallingLine.mNextGoodCallingLine;
                      }
                      else
                      {
-                        nextCallingInfo = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
-                        if (nextCallingInfo != null)
-                           nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
+                        nextCallingInfoForFalse = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
+                        
+                        if (nextCallingInfoForFalse != null)
+                           nextCallingInfoForFalse = nextCallingInfoForFalse.mNextGoodCallingLine;
                      }
-                     calling_condition.SetNextCallingForFalse (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
                      break;
                   case CoreFunctionIds.ID_StartWhile:
                      calling_condition = lastCallingInfo.mFunctionCallingForPlaying as FunctionCalling_Condition;
                      
-                     calling_condition.SetNextCallingForTrue (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
-                     nextCallingInfo = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end while
-                     if (nextCallingInfo != null)
-                        nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
-                     calling_condition.SetNextCallingForFalse (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                     nextCallingInfoForTrue = callingInfo;
+                     
+                     nextCallingInfoForFalse = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end while
+                     if (nextCallingInfoForFalse != null)
+                        nextCallingInfoForFalse = nextCallingInfoForFalse.mNextGoodCallingLine;
                      break;
+                  
+                  //========================================================
+                  
                   case CoreFunctionIds.ID_Else:
-                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     nextCallingInfo = callingInfo;
                      break;
                   case CoreFunctionIds.ID_EndIf:
-                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
+                     nextCallingInfo = callingInfo;
                      break;
                   case CoreFunctionIds.ID_EndWhile:
-                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (lastCallingInfo.mOwnerBlock.mStartCallingLine.mFunctionCallingForPlaying);
+                     nextCallingInfo = lastCallingInfo.mOwnerBlock.mStartCallingLine; // start while
                      break;
                   case CoreFunctionIds.ID_Return:
-                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (null);
+                     nextCallingInfo = null;
                      break;
                   case CoreFunctionIds.ID_Break:
-                     nextCallingInfo = lastCallingInfo.mOwnerBlockSupportBreak.mEndCallingLine;
+                     nextCallingInfo = lastCallingInfo.mOwnerBlockSupportBreak.mEndCallingLine; // end while / end switch / end do while / end for / ...
                      if (nextCallingInfo != null)
-                        nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
-                     lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                        nextCallingInfo = nextCallingInfo.mNextGoodCallingLine;
                      break;
                   default:
                   {
-                     if (callingInfo != null && callingInfo.mFunctionId == CoreFunctionIds.ID_Else)
-                     {
-                        nextCallingInfo = lastCallingInfo.mOwnerBlock.mEndCallingLine; // end if
-                        if (nextCallingInfo != null)
-                           nextCallingInfo = nextCallingInfo.mNextValidCallingLine;
-                        lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
-                     }
-                     else
-                     {
-                        lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (callingInfo == null ? null : callingInfo.mFunctionCallingForPlaying);
-                     }
+                     nextCallingInfo = callingInfo;
                      break;
                   }
+               }
+               
+               if (calling_condition != null)
+               {
+                  nextCallingInfoForTrue = GetNextGoodCalling (nextCallingInfoForTrue);
+                  calling_condition.SetNextCallingForTrue (nextCallingInfoForTrue == null ? null : nextCallingInfoForTrue.mFunctionCallingForPlaying);
+                  
+                  nextCallingInfoForFalse = GetNextGoodCalling (nextCallingInfoForFalse);
+                  calling_condition.SetNextCallingForFalse (nextCallingInfoForFalse == null ? null : nextCallingInfoForFalse.mFunctionCallingForPlaying);
+         //trace ("> " + lastCallingInfo.mFunctionCallingForPlaying.GetLineNumber () + " -> " + (nextCallingInfoForTrue == null ? -1 : nextCallingInfoForTrue.mFunctionCallingForPlaying.GetLineNumber ()) + " : " +  (nextCallingInfoForFalse == null ? -1 : nextCallingInfoForFalse.mFunctionCallingForPlaying.GetLineNumber ()));
+               }
+               else
+               {
+                  nextCallingInfo = GetNextGoodCalling (nextCallingInfo);
+                  lastCallingInfo.mFunctionCallingForPlaying.SetNextCalling (nextCallingInfo == null ? null : nextCallingInfo.mFunctionCallingForPlaying);
+                  
+         //trace ("> " + lastCallingInfo.mFunctionCallingForPlaying.GetLineNumber () + " -> " + (nextCallingInfo == null ? -1 : nextCallingInfo.mFunctionCallingForPlaying.GetLineNumber ()));
                }
             }
             while (callingInfo != null);
@@ -225,6 +247,38 @@ package common {
          var code_snippet:CodeSnippet = new CodeSnippet (calling_list_head);
          
          return code_snippet;
+      }
+      
+      // a good calling <=> not an "else" calling and not an "end if" calling
+      private static function GetNextGoodCalling (inputCallingInfo:FunctionCallingLineInfo):FunctionCallingLineInfo
+      {
+         var goodCallingInfo:FunctionCallingLineInfo = inputCallingInfo;
+         var nextCallingInfo:FunctionCallingLineInfo = inputCallingInfo;
+         
+         while (nextCallingInfo != null && (nextCallingInfo.mFunctionId == CoreFunctionIds.ID_Else || nextCallingInfo.mFunctionId == CoreFunctionIds.ID_EndIf)) // a bad calling
+         {
+            goodCallingInfo = nextCallingInfo.mOwnerBlock.mEndCallingLine;  // "end if" of the bad calling block
+            if (goodCallingInfo == nextCallingInfo)
+            {
+               nextCallingInfo = nextCallingInfo.mNextGoodCallingLine;
+               goodCallingInfo = nextCallingInfo;
+            }
+            else
+            {
+               nextCallingInfo.mNextGoodCallingLine = goodCallingInfo;
+               nextCallingInfo = goodCallingInfo;
+            }
+         }
+         
+         // optimize
+         while (inputCallingInfo != goodCallingInfo)
+         {
+            nextCallingInfo = inputCallingInfo.mNextGoodCallingLine;
+            inputCallingInfo.mNextGoodCallingLine = goodCallingInfo;
+            inputCallingInfo = nextCallingInfo;
+         }
+         
+         return goodCallingInfo;
       }
       
       public static function FunctionCallingDefine2FunctionCalling (lineNumber:int, parentFunctionInstance:FunctionInstance, playerWorld:World, funcCallingDefine:FunctionCallingDefine):FunctionCalling

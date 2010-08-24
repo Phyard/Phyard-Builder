@@ -331,7 +331,7 @@ package uniplayer
             paramsFromUniPlayer.mUniplayerUrl = mUniplayerUrl;
             
          trace ("   loading design player done.");
-            UpdateInfoText ("Building ...");
+            //UpdateInfoText ("Building ...");
             var PlayerClass:Class = ApplicationDomain.currentDomain.getDefinition("wrapper.ColorInfectionPlayer") as Class;
             if (PlayerClass == null)
             {

@@ -159,9 +159,15 @@ package uniplayer
       private function LoadDesignInfo ():void
       {
          var date:Date = new Date ();
-         var loadInfoUrl:String = mUniplayerUrl.replace (/\/uniplayer.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber + "&time=" 
-                                                         + date.getFullYear () + "-" + date.getMonth () + "-" + date.getDate () + "-"
-                                                         + date.getHours () + "-" + date.getMinutes () + "-" + date.getSeconds ();
+         var loadInfoUrl:String = mUniplayerUrl.replace (/\/uniplayer.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
+         if (mUniplayerUrl.indexOf ("revision=") < 0) // for play. On the contrary, for view, the brower cache will be used.
+         {
+            loadInfoUrl = loadInfoUrl + "&time=" + date.getFullYear () + "-" + date.getMonth () + "-" + date.getDate () + "-" + date.getHours () + "-" + date.getMinutes () + "-" + date.getSeconds ();
+         }
+         else
+         {
+            loadInfoUrl = loadInfoUrl + "&view=1"; // indication for view
+         }
          
          var request:URLRequest = new URLRequest (loadInfoUrl);
          request.method = URLRequestMethod.GET;
@@ -239,7 +245,11 @@ package uniplayer
       
       private function LoadDesignData ():void
       {
-         var loadDataUrl:String = mUniplayerUrl.replace (/\/uniplayer.swf/, "/i/design/loaddata") + "&revision=" + mRealRevision;
+         var loadDataUrl:String = mUniplayerUrl.replace (/\/uniplayer.swf/, "/i/design/loaddata");
+         if (mUniplayerUrl.indexOf ("revision=") < 0) // for play, add the published revison id. For view, the revision is also caontained in mUniplayerUrl
+         {
+            loadInfoUrl = loadInfoUrl + "&revision=" + mRealRevision;
+         }
          
          var request:URLRequest = new URLRequest (loadDataUrl);
          request.method = URLRequestMethod.GET;

@@ -29,6 +29,7 @@ package playerui {
    import flash.net.URLLoaderDataFormat;
    import flash.net.navigateToURL;
    
+   // following imports will be removed
    import com.tapirgames.display.FpsCounter;
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
@@ -52,7 +53,7 @@ package playerui {
    import common.Version;
    //import misc.Analytics;
    
-   public dynamic class PlayUI extends Sprite 
+   public dynamic class ViewerUI extends Sprite 
    {
       
 //======================================================================

@@ -5,7 +5,6 @@ package common {
    import flash.geom.Point;
    
    import player.design.Global;
-   import player.design.Design;
    import player.world.World;
    
    import player.entity.EntityBody;
@@ -91,14 +90,8 @@ package common {
          //
          Global.InitGlobalData ();
          
-         var design:Design = new Design ();
-         Global.SetCurrentDesign (design);
-         
-         //
          var playerWorld:player.world.World = new player.world.World (worldDefine);
-         
-         design.RegisterWorld (playerWorld);
-         design.SetCurrentWorld (playerWorld);
+         Global.SetCurrentWorld (playerWorld);
          
    //*********************************************************************************************************************************
    // 

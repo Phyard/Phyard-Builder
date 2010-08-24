@@ -2,6 +2,8 @@ package player.world {
    
    import flash.system.IME;
    
+   import flash.utils.ByteArray;
+   
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
@@ -24,7 +26,6 @@ package player.world {
    import player.physics.PhysicsProxyJoint;
    
    import player.design.Global;
-   import player.design.Design;
    
    import player.entity.EntityBody;
    
@@ -62,8 +63,6 @@ package player.world {
    import player.trigger.entity.EntityConditionDoor;
    import player.trigger.entity.EntityInputEntityAssigner;
    
-   import player.trigger.IPropertyOwner;
-   
    import player.trigger.data.ShapeContactInfo;
    import player.trigger.data.ListElement_EventHandler;
    
@@ -83,7 +82,9 @@ package player.world {
    import common.ValueAdjuster;
    import common.KeyCodes;
    
-   public class World extends Sprite implements IPropertyOwner
+   import common.DataFormat2;
+   
+   public class World extends Sprite
    {
    // includes
       
@@ -92,6 +93,7 @@ package player.world {
       include "World_SystemEventHandling.as";
       include "World_ParticleManager.as";
       include "World_ColorInfectionRelated.as";
+      include "World_Task.as";
       include "World_ContactEventHandling.as";
       include "World_KeyboardEventHandling.as";
       include "World_GeneralEventHandling.as";
@@ -1267,25 +1269,5 @@ package player.world {
          
          return ccat1.mEnemyTable [ccat2.mArrayIndex];
       }
-      
-//==========================================================
-// temp. will removed from a later version
-//==========================================================
-      
-      public function IsLevelSuccessed ():Boolean
-      {
-         return Global.GetCurrentDesign ().IsLevelSuccessed ();
-      }
-      
-      public function IsLevelFailed ():Boolean
-      {
-         return Global.GetCurrentDesign ().IsLevelFailed ();
-      }
-      
-      public function IsLevelUnfinished ():Boolean
-      {
-         return Global.GetCurrentDesign ().IsLevelUnfinished ();
-      }
-      
    }
 }

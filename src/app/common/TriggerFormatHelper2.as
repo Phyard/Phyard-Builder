@@ -6,7 +6,6 @@ package common {
    import player.design.Global;
    import player.world.World;
    import player.entity.Entity;
-   import player.trigger.IPropertyOwner;
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition;

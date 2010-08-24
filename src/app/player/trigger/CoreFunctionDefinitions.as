@@ -4,7 +4,6 @@ package player.trigger {
    import flash.geom.Point;
    
    import player.design.Global;
-   import player.design.Design;
    
    import player.world.*;
    import player.entity.*;
@@ -1463,12 +1462,12 @@ package player.trigger {
       
       public static function GetLevelMilliseconds (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentDesign ().GetLevelMilliseconds ());
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetLevelMilliseconds ());
       }
       
       public static function GetLevelSteps (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentDesign ().GetLevelSteps ());
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetSimulatedSteps ());
       }
       
       public static function GetWorldMousePosition (valueSource:ValueSource, valueTarget:ValueTarget):void
@@ -1489,13 +1488,13 @@ package player.trigger {
          switch (int (valueSource.EvalateValueObject ()))
          {
             case ValueDefine.LevelStatus_Failed:
-               Global.GetCurrentDesign ().SetLevelFailed ();
+               Global.GetCurrentWorld ().SetLevelFailed ();
                break;
             case ValueDefine.LevelStatus_Successed:
-               Global.GetCurrentDesign ().SetLevelSuccessed ();
+               Global.GetCurrentWorld ().SetLevelSuccessed ();
                break;
             case ValueDefine.LevelStatus_Unfinished:
-               Global.GetCurrentDesign ().SetLevelUnfinished ();
+               Global.GetCurrentWorld ().SetLevelUnfinished ();
                break;
             default:
                break;
@@ -1504,17 +1503,17 @@ package player.trigger {
       
       public static function IsLevelSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelSuccessed ());
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelSuccessed ());
       }
       
       public static function IsLevelFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelFailed ());
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelFailed ());
       }
       
       public static function IsLevelUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentDesign ().IsLevelUnfinished ());
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelUnfinished ());
       }
       
    //*******************************************************************

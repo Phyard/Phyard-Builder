@@ -4,7 +4,6 @@ package player.entity {
    import player.world.EntityList;
    import player.physics.PhysicsProxy;
 
-   import player.trigger.IPropertyOwner;
    import player.trigger.ValueSource;
    import player.trigger.ValueSource_Direct;
    
@@ -21,7 +20,7 @@ package player.entity {
    import common.Define;
    import common.trigger.ValueDefine;
    
-   public class Entity implements IPropertyOwner
+   public class Entity
    {
       protected var mCreationId:int = -1; // will not change once assigned
       protected var mAppearanceId:int = -1;

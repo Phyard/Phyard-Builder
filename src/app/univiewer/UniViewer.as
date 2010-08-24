@@ -1,4 +1,4 @@
-package uniplayer
+package univiewer
 {
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
@@ -50,7 +50,7 @@ package uniplayer
        
     */
    
-   public dynamic class UniPlayer extends Sprite
+   public dynamic class UniViewer extends Sprite
    {
       private static const VersionNumber:int = 0x0001;
    
@@ -58,7 +58,7 @@ package uniplayer
    //   
    //================================================
       
-      public function UniPlayer ()
+      public function UniViewer ()
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage)
       }
@@ -89,9 +89,17 @@ package uniplayer
             addChild (loadingText);
          }
          
-         loadingText.htmlText = infoText;
-         loadingText.x = 0.5 * (App::Default_Width - loadingText.width);
-         loadingText.y = 0.5 * (App::Default_Height - loadingText.height);
+         if (infoText == null)
+         {
+            loadingText.visible = false;
+            loadingText.htmlText = "";
+         }
+         else
+         {
+            loadingText.visible = true;
+            loadingText.x = 0.5 * (App::Default_Width - loadingText.width);
+            loadingText.y = 0.5 * (App::Default_Height - loadingText.height);
+         }
       }
       
       private function Loading (percent:int):void
@@ -158,15 +166,16 @@ package uniplayer
       
       private function LoadDesignInfo ():void
       {
-         var date:Date = new Date ();
-         var loadInfoUrl:String = mUniplayerUrl.replace (/\/uniplayer.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
-         if (mUniplayerUrl.indexOf ("revision=") < 0) // for play. On the contrary, for view, the brower cache will be used.
+         var loadInfoUrl:String;
+         if (mUniplayerUrl.indexOf ("/uniplayer.swf") >= 0) // for play. On the contrary
          {
+            var date:Date = new Date ();
+            loadInfoUrl = mUniplayerUrl.replace (/\/uniplayer.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
             loadInfoUrl = loadInfoUrl + "&time=" + date.getFullYear () + "-" + date.getMonth () + "-" + date.getDate () + "-" + date.getHours () + "-" + date.getMinutes () + "-" + date.getSeconds ();
          }
-         else
+         else // for view, the brower cache will be used if availabe
          {
-            loadInfoUrl = loadInfoUrl + "&view=1"; // indication for view
+            loadInfoUrl = mUniplayerUrl.replace (/\/swfs\/univiewer.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
          }
          
          var request:URLRequest = new URLRequest (loadInfoUrl);
@@ -245,10 +254,16 @@ package uniplayer
       
       private function LoadDesignData ():void
       {
-         var loadDataUrl:String = mUniplayerUrl.replace (/\/uniplayer.swf/, "/i/design/loaddata");
-         if (mUniplayerUrl.indexOf ("revision=") < 0) // for play, add the published revison id. For view, the revision is also caontained in mUniplayerUrl
+         var loadDataUrl:String;
+         if (mUniplayerUrl.indexOf ("/uniplayer.swf") >= 0)  // for play, add the return published revison id
          {
-            loadInfoUrl = loadInfoUrl + "&revision=" + mRealRevision;
+            loadDataUrl = mUniplayerUrl.replace (/\/uniplayer.swf/, "/i/design/loaddata");
+            loadDataUrl = loadDataUrl + "&revision=" + mRealRevision;
+         }
+         else // for view, the revision is already caontained in mUniplayerUrl
+         {
+            loadDataUrl = mUniplayerUrl.replace (/\/swfs\/univiewer.swf/, "/i/design/loaddata");
+            loadDataUrl = loadDataUrl + "&view=1"; // indication for view
          }
          
          var request:URLRequest = new URLRequest (loadDataUrl);
@@ -341,7 +356,7 @@ package uniplayer
             paramsFromUniPlayer.mUniplayerUrl = mUniplayerUrl;
             
          trace ("   loading design player done.");
-            //UpdateInfoText ("Building ...");
+            UpdateInfoText (null);
             var PlayerClass:Class = ApplicationDomain.currentDomain.getDefinition("wrapper.ColorInfectionPlayer") as Class;
             if (PlayerClass == null)
             {

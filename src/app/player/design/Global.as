@@ -3,7 +3,6 @@ package player.design
    import player.world.World;
    
    import player.trigger.TriggerEngine;
-   import player.trigger.IPropertyOwner;
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
    
@@ -17,11 +16,11 @@ package player.design
    
    import common.Define;
    
-   public class Global implements IPropertyOwner
+   public class Global
    {
       public static var sTheGlobal:Global = null;
       
-      public static var mCurrentDesign:Design = null;
+      public static var mCurrentWorld:World = null;
       
       // these variables are static, which mmeans there can only be one player instance running at the same time.
       
@@ -36,6 +35,16 @@ package player.design
       public static var mGlobalVariableSpaces:Array;
       
       public static var mEntityVariableSpaces:Array;
+      
+   // callbacks
+      
+      public static var RestartPlay:Function;
+      public static var IsPlaying:Function;
+      public static var SetPlaying:Function;
+      public static var GetSpeedX:Function;
+      public static var SetSpeedX:Function;
+      public static var GetScale:Function;
+      public static var SetScale:Function;
       
 //==============================================================================
 // static values
@@ -60,24 +69,25 @@ package player.design
          
          mGlobalVariableSpaces = null;
          mEntityVariableSpaces = null;
+         
+         //
+         RestartPlay = null;
+         IsPlaying = null;
+         SetPlaying = null;
+         GetSpeedX = null;
+         SetSpeedX = null;
+         GetScale = null;
+         SetScale = null;
       }
       
-      public static function SetCurrentDesign (design:Design):void
+      public static function SetCurrentWorld (world:World):void
       {
-         mCurrentDesign = design;
-      }
-      
-      public static function GetCurrentDesign ():Design
-      {
-         return mCurrentDesign;
+         mCurrentWorld = world;
       }
       
       public static function GetCurrentWorld ():World
       {
-         if (mCurrentDesign == null)
-            return null;
-         
-         return mCurrentDesign.mCurrentWorld;
+         return mCurrentWorld;
       }
       
       protected static function CreateRegisterVariableSpace (initValueObject:Object):VariableSpace
@@ -118,7 +128,7 @@ package player.design
          
          for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
          {
-            mGlobalVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentDesign.mCurrentWorld, globalVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
+            mGlobalVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentWorld, globalVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
          }
          
          numSpaces = entityVarialbeSpaceDefines.length;
@@ -126,7 +136,7 @@ package player.design
          
          for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
          {
-            mEntityVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentDesign.mCurrentWorld, entityVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
+            mEntityVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentWorld, entityVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
          }
       }
       
@@ -170,44 +180,12 @@ package player.design
          return mRandomNumberGenerators [rngSlot];
       }
       
-      public static function GetPropertyValue (propertyId:int):Object
-      {
-         return sTheGlobal.GetPropertyValue (propertyId);
-      }
-      
-      public static function SetPropertyValue (propertyId:int, value:Object):void
-      {
-         sTheGlobal.SetPropertyValue (propertyId, value);
-      }
-      
 //==============================================================================
-// IPropertyOwner
+// instance
 //==============================================================================
       
       public function Global ()
       {
       }
-      
-      public function GetPropertyValue (propertyId:int):Object
-      {
-         return null;
-      }
-      
-      public function SetPropertyValue (propertyId:int, value:Object):void
-      {
-      }
-      
-//==============================================================================
-// callbacks
-//==============================================================================
-      
-      public static var RestartPlay:Function = null;
-      public static var IsPlaying:Function = null;
-      public static var SetPlaying:Function = null;
-      public static var GetSpeedX:Function = null;
-      public static var SetSpeedX:Function = null;
-      public static var GetScale:Function = null;
-      public static var SetScale:Function = null;
-      
    }
 }

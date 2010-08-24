@@ -334,7 +334,7 @@
          <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
          
-         <arg line="uniplayer/UniPlayer.as" />
+         <arg line="univiewer/UniViewer.as" />
       </exec>
    </target>
 

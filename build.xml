@@ -26,7 +26,7 @@
    <property name="dir.release"        value="${basedir}/.release" />
    <property name="dir.release.editor"        value="${basedir}/.release_editor" />
    <property name="dir.release.player"        value="${basedir}/.release_player" />
-   <property name="dir.release.uniplayer"        value="${basedir}/.release_uniplayer" />
+   <property name="dir.release.univiewer"        value="${basedir}/.release_univiewer" />
    
    <property name="dir.release.packager"        value="${basedir}/.release_packager" />
    <property name="dir.custom-packages"        value="E:/- custom color infection packages" />
@@ -307,9 +307,9 @@
       <copy tofile="${dir.phyard}/player.swf" file="${dir.release}/player.swf"  overwrite="true" verbose="true" />
    </target>   
    
-   <target name="--compile-uniplayer">
-      <delete dir="${dir.release.uniplayer}" quiet="true" />
-      <mkdir dir="${dir.release.uniplayer}" />
+   <target name="--compile-univiewer">
+      <delete dir="${dir.release.univiewer}" quiet="true" />
+      <mkdir dir="${dir.release.univiewer}" />
       
       <antcall target="--pre-compile" />
       
@@ -323,7 +323,7 @@
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
          <arg line="-define+=App::Default_Width,${--width}" />
          <arg line="-define+=App::Default_Height,${--height}" />
-         <arg line="-output=${dir.release.uniplayer}/uniplayer_unsecure.swf"/>
+         <arg line="-output=${dir.release.univiewer}/univiewer_unsecure.swf"/>
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
@@ -338,8 +338,8 @@
       </exec>
    </target>
 
-   <target name="debug-uniplayer">
-      <antcall target="--compile-uniplayer">
+   <target name="debug-univiewer">
+      <antcall target="--compile-univiewer">
          <param name="--debug" value="true" />
          <param name="--game-mode" value="" />
          <param name="--width" value="${player-width}" />
@@ -347,8 +347,8 @@
       </antcall>
    </target>
    
-   <target name="release-uniplayer" depends="compile-resource">
-      <antcall target="--compile-uniplayer">
+   <target name="release-univiewer" depends="compile-resource">
+      <antcall target="--compile-univiewer">
          <param name="--debug" value="false" />
          <param name="--game-mode" value="" />
          <param name="--width" value="${player-width}" />
@@ -356,11 +356,11 @@
       </antcall>
       
       <mkdir dir="${dir.release}" />
-      <delete file="${dir.release}/uniplayer.swf" quiet="true" />
+      <delete file="${dir.release}/univiewer.swf" quiet="true" />
       
-      <exec dir="${dir.release.uniplayer}" executable="${dir.secureswf}/ssCLI.exe">
-         <arg line="uniplayer_unsecure.swf"/>
-         <arg line="${dir.release.uniplayer}"/>
+      <exec dir="${dir.release.univiewer}" executable="${dir.secureswf}/ssCLI.exe">
+         <arg line="univiewer_unsecure.swf"/>
+         <arg line="${dir.release.univiewer}"/>
          <arg line="-wrap:0"/>
          <arg line="-controlflow:0"/>
          <arg line="-optimize:off"/>
@@ -369,7 +369,7 @@
          <arg line="-safe:off"/>
       </exec>
       
-      <move file="${dir.release.uniplayer}/uniplayer_unsecure.swf" tofile="${dir.release}/uniplayer.swf"/>
+      <move file="${dir.release.univiewer}/univiewer_unsecure.swf" tofile="${dir.release}/univiewer.swf"/>
    </target>
    
     <target name="package-level-data">

@@ -26,6 +26,8 @@
    <property name="dir.release"        value="${basedir}/.release" />
    <property name="dir.release.editor"        value="${basedir}/.release_editor" />
    <property name="dir.release.player"        value="${basedir}/.release_player" />
+   <property name="dir.release.world"        value="${basedir}/.release_world" />
+   <property name="dir.release.player"        value="${basedir}/.release_player" />
    <property name="dir.release.univiewer"        value="${basedir}/.release_univiewer" />
    
    <property name="dir.release.packager"        value="${basedir}/.release_packager" />

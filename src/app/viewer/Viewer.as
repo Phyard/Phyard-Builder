@@ -1,5 +1,5 @@
 
-package wrapper {
+package viewer {
 
    import flash.utils.ByteArray;
    
@@ -39,47 +39,47 @@ package wrapper {
    import com.tapirgames.display.ImageButton;
    
    import player.world.World;
-   import player.ui.UiUtil;
-   import player.ui.PlayHelpDialog;
-   import player.ui.PlayControlBar;
-   import player.design.Global;
+   
+   import viewer.ui.UiUtil;
+   import viewer.ui.PlayHelpDialog;
+   import viewer.ui.PlayControlBar;
    
    import common.DataFormat2;
    import common.Define;
    import common.WorldDefine;
    
-   import common.Config;
    import common.Version;
-   //import misc.Analytics;
    
-   public dynamic class ColorInfectionPlayer extends Sprite 
+   public dynamic class Viewer extends Sprite 
    {
-      
 //======================================================================
 //
 //======================================================================
       
+   //>>>>>>>>>>>>>>>>> input params, one and only one is not null
+      
+      private var mParamsFromUniViewer:Object = null;
+      
       private var mParamsFromEditor:Object = null;
-         private var GetWorldDefine:Function = null;
-         private var GetWorldBinaryData:Function = null;
-         private var GetViewportSize:Function = null;
       
-      private var mParamsFromUniPlayer:Object = null;
+      private var mParamsFromPackager:Object = null;
+    
+   //<<<<<<<<<<<<<<< input params
       
-      private var mStartRightNow:Boolean = false;
-      
+      // special interface for editor
       private var mExternalPaused:Boolean = false;
       public function SetExternalPaused (paused:Boolean):void
       {
          mExternalPaused = paused;
       }
       
+      private var mStartRightNow:Boolean = false;
+      
+      private var mBuildContextMenu:Boolean = true;
+      
       private var mWorldPlayCode:String = null;
       private var mWorldDataForPlaying:ByteArray = null;
       private var mWorldSourceCode:String = null;
-      
-      private var mBuildContextMenu:Boolean = true;
-      private var mMainMenuCallback:Function = null;
       
       private var mPlayerWorld:World = null;
       private var mIsPlaying:Boolean = false;
@@ -96,15 +96,11 @@ package wrapper {
       private var mFinishedTextLayer:Sprite = new Sprite ();
       private var mDialogLayer:Sprite = new Sprite ();
       
-      //
-      //private var mAnalyticsDurations:Array = [0.20, 0.30, 1, 1.5, 2, 3, 5];
-      //private var mAnalytics:Analytics;
-      
 //======================================================================
 //
 //======================================================================
       
-      public function ColorInfectionPlayer (start:Boolean = false, paramsFromEditor:Object = null, paramsFromUniPlayer:Object = null)
+      public function Viewer (params:Object)
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
@@ -116,17 +112,19 @@ package wrapper {
          addChild (mFinishedTextLayer);
          addChild (mDialogLayer);
          
-         mStartRightNow = start;
+         mParamsFromUniViewer = params.mParamsFromUniViewer;
+         mParamsFromEditor = params.mParamsFromEditor;
+         mParamsFromPackager = params.mParamsFromPackager;
          
-         mParamsFromEditor = paramsFromEditor;
-         if (paramsFromEditor != null)
+         if (mParamsFromEditor != null)
          {
-            GetWorldDefine = paramsFromEditor.getWorldDefine;
-            GetWorldBinaryData = paramsFromEditor.getWorldBinaryData;
-            GetViewportSize = paramsFromEditor.getViewportSize;
+            mStartRightNow = mParamsFromEditor.mStartRightNow == undefined ? true : mParamsFromEditor.mStartRightNow;
          }
          
-         mParamsFromUniPlayer = paramsFromUniPlayer;
+         if (mParamsFromPackager != null)
+         {
+            mBuildContextMenu = mParamsFromPackager.mBuildContextMenu == undefined ? true : mParamsFromPackager.mBuildContextMenu;
+         }
       }
       
       public function GetPlayerWorld ():World
@@ -153,7 +151,7 @@ package wrapper {
       
       private function OnAddedToStage (e:Event):void
       {
-         if (GetViewportSize == null)
+         if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
          {
             CheckStageSize (Number (App::Default_Width),  Number (App::Default_Height));
          }
@@ -161,19 +159,19 @@ package wrapper {
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
          addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          
-         if (mParamsFromEditor != null) //(GetWorldDefine != null || GetWorldBinaryData != null )
+         if (mParamsFromEditor != null)
          {
             ChangeState (StateId_BuildWorld);
          }
-         else if (mParamsFromUniPlayer != null)
+         else if (mParamsFromUniViewer != null)
          {
-            if (mParamsFromUniPlayer.mWorldBinaryData != null)
+            if (mParamsFromUniViewer.mWorldBinaryData != null)
             {
-               mWorldDataForPlaying = mParamsFromUniPlayer.mWorldBinaryData;
+               mWorldDataForPlaying = mParamsFromUniViewer.mWorldBinaryData;
             }
-            else // if (mParamsFromUniPlayer.mWorldPlayCode != null)
+            else // if (mParamsFromUniViewer.mWorldPlayCode != null)
             {
-               mWorldPlayCode = mParamsFromUniPlayer.mWorldPlayCode;
+               mWorldPlayCode = mParamsFromUniViewer.mWorldPlayCode;
                mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
             }
             
@@ -183,10 +181,6 @@ package wrapper {
          {
             ChangeState (StateId_Load);
          }
-         
-         //
-         //mAnalytics = new Analytics (this, mAnalyticsDurations);
-         //mAnalytics.TrackPageview (Config.VirtualPageName_PlayerJustLoaded);
       }
       
       private function OnRemovedFromFrame (e:Event):void
@@ -198,9 +192,6 @@ package wrapper {
       private function OnEnterFrame (event:Event):void 
       {
          Update ();
-         
-         // ...
-         //mAnalytics.TrackTime (Config.VirtualPageName_PlayerTimePrefix);
       }
       
 //======================================================================
@@ -250,7 +241,7 @@ package wrapper {
             }
          }
          
-         if (mParamsFromUniPlayer != null && mPlayerWorld != null)
+         if (mParamsFromUniViewer != null && mPlayerWorld != null)
          {
             if (mPlayerWorld.IsPermitPublishing ())
             {
@@ -289,22 +280,22 @@ package wrapper {
       
       private function OnCopyEmbedCode (event:ContextMenuEvent):void
       {
-         if (mParamsFromUniPlayer != null && mPlayerWorld != null)
+         if (mParamsFromUniViewer != null && mPlayerWorld != null)
          {
             var width:int = mPlayerWorld.GetViewportWidth ();
             var height:int = mPlayerWorld.GetViewportHeight ();
             if ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
                height += 20;
-            var playcode:String = mParamsFromUniPlayer.mWorldPlayCode;
+            var playcode:String = mParamsFromUniViewer.mWorldPlayCode;
             
             var embedCode:String = 
                "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
                  + (playcode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + playcode + "\"></param>\n") +
-               "  <param name=\"movie\" value=\"" + mParamsFromUniPlayer.mUniplayerUrl + "\"></param>"
+               "  <param name=\"movie\" value=\"" + mParamsFromUniViewer.mUniplayerUrl + "\"></param>"
                  + "\n" +
                "  <param name=\"quality\" value=\"high\"></param>"
                  + "\n" +
-               "  <embed src=\"" + mParamsFromUniPlayer.mUniplayerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
+               "  <embed src=\"" + mParamsFromUniViewer.mUniplayerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
                  + (playcode == null ? "\n" : "\n    FlashVars=\"playcode=" + playcode + "\"\n") +
                "    quality=\"high\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\">"
                  + "\n" +
@@ -319,29 +310,29 @@ package wrapper {
       
       private function OnCopyForumEmbedCode (event:ContextMenuEvent):void
       {
-         if (mParamsFromUniPlayer != null && mPlayerWorld != null)
+         if (mParamsFromUniViewer != null && mPlayerWorld != null)
          {
             var width:int = mPlayerWorld.GetViewportWidth ();
             var height:int = mPlayerWorld.GetViewportHeight ();
             if ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
                height += 20;
             
-            if (mParamsFromUniPlayer.mWorldPlayCode != null)
+            if (mParamsFromUniViewer.mWorldPlayCode != null)
             {
-                System.setClipboard (mParamsFromUniPlayer.mWorldPlayCode);
+                System.setClipboard (mParamsFromUniViewer.mWorldPlayCode);
                 return;
             }
             
             var substr:String = "uniplayer.swf?";
             
-            var index:int = mParamsFromUniPlayer.mUniplayerUrl.indexOf (substr);
+            var index:int = mParamsFromUniViewer.mUniplayerUrl.indexOf (substr);
             if (index < 0)
             {
                 System.setClipboard("");
                return;
             }
             
-            var embedCode:String = "[phyard=" + mParamsFromUniPlayer.mUniplayerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "/]";
+            var embedCode:String = "[phyard=" + mParamsFromUniViewer.mUniplayerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "/]";
             
             System.setClipboard (embedCode);
          }
@@ -478,7 +469,7 @@ package wrapper {
                }
                catch (error:Error)
                {
-                  //if (mParamsFromEditor != null) //(GetWorldBinaryData != null || GetWorldDefine != null)
+                  //if (mParamsFromEditor != null)
                   //{
                   //   throw error; // let editor to handle it
                   //}
@@ -566,14 +557,14 @@ package wrapper {
          
          var w:int;
          var h:int;
-         if (GetViewportSize == null)
+         if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
          {
             w = App::Default_Width;
             h = App::Default_Height;
          }
          else
          {
-            var size:Point = GetViewportSize ();
+            var size:Point = mParamsFromEditor.GetViewportSize ();
             w = size.x;
             h = size.y;
          }
@@ -796,13 +787,13 @@ package wrapper {
             
             if (mParamsFromEditor != null)
             {
-               if (GetWorldBinaryData != null)
+               if (mParamsFromEditor.GetWorldBinaryData != null)
                {
-                  worldDefine = DataFormat2.ByteArray2WorldDefine (GetWorldBinaryData ())
+                  worldDefine = DataFormat2.ByteArray2WorldDefine (mParamsFromEditor.GetWorldBinaryData ())
                }
-               else // if (GetWorldDefine != null)
+               else
                {
-                  worldDefine = GetWorldDefine ();
+                  worldDefine =  mParamsFromEditor.GetWorldDefine ();
                }
             }
             else if (mWorldDataForPlaying != null)
@@ -826,7 +817,7 @@ package wrapper {
             var hidePlayBar:Boolean = (mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0;
             
             mPlayerWorld.SetCacheSystemEvent (! hidePlayBar);
-            mPlayerWorld.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null); //GetWorldBinaryData != null || GetWorldDefine != null);
+            mPlayerWorld.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null);
             
             mWorldLayer.addChild (mPlayerWorld);
             
@@ -835,6 +826,24 @@ package wrapper {
          
          CloseFinishedDialog ();
          CloseHelpDialog ();
+      }
+      
+      private function InitPlayerWorld ():void
+      {
+         if (mPlayerWorld == null)
+            return;
+         
+         mPlayerWorld.SetParametersFromUI ({
+            OnClickRestart  : mPlayControlBar.OnClickRestart, 
+            IsPlaying       : mPlayControlBar.IsPlaying, 
+            SetPlaying      : mPlayControlBar.SetPlaying, 
+            GetPlayingSpeedX: mPlayControlBar.GetPlayingSpeedX, 
+            SetPlayingSpeedX: mPlayControlBar.SetPlayingSpeedX, 
+            GetZoomScale    : mPlayControlBar.GetZoomScale, 
+            SetZoomScale    : mPlayControlBar.SetZoomScale
+         });
+         
+         mPlayerWorld.Initialize ();
       }
       
 //======================================================================
@@ -1038,14 +1047,14 @@ package wrapper {
          var viewerWidth:Number = viewportWidth;
          var viewerHeight:Number = showPlayBar ? (Define.PlayerPlayBarThickness + viewportHeight) : viewportHeight;
          
-         if (GetViewportSize == null)
+         if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
          {
             CheckStageSize (viewerWidth, viewerHeight);
          }
          
          GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth - 1, Define.PlayerPlayBarThickness, playBarColor, 1, true, playBarColor);
          
-         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, mMainMenuCallback, showScaleAdjustor ? OnZoom : null);
+         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, mParamsFromPackager == null ? null : mParamsFromPackager.mMainMenuCallback, showScaleAdjustor ? OnZoom : null);
          mTopBarLayer.addChild (mPlayControlBar);
          mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
          mPlayControlBar.y = 2;
@@ -1060,16 +1069,7 @@ package wrapper {
          mWorldLayer.y = mTopBarLayer.y + (showPlayBar ? mTopBarLayer.height : 0);
          
          //
-         Global.RestartPlay = mPlayControlBar.OnClickRestart;
-         Global.IsPlaying = mPlayControlBar.IsPlaying;
-         Global.SetPlaying = mPlayControlBar.SetPlaying;
-         Global.GetSpeedX = mPlayControlBar.GetPlayingSpeedX;
-         Global.SetSpeedX = mPlayControlBar.SetPlayingSpeedX;
-         Global.GetScale = mPlayControlBar.GetZoomScale;
-         Global.SetScale = mPlayControlBar.SetZoomScale;
-         
-         //
-         mPlayerWorld.Initialize ();
+         InitPlayerWorld ();
       }
       
       private function CenterSprite (sprite:Sprite):void
@@ -1106,7 +1106,7 @@ package wrapper {
          RebuildPlayerWorld ();
          
          //
-         mPlayerWorld.Initialize ();
+         InitPlayerWorld ();
          
          //
          mPlayerWorldZoomScale = mPlayerWorld.GetZoomScale ();

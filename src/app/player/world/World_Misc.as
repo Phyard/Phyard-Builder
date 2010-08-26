@@ -20,24 +20,32 @@ public static function PlayCode2BinaryData (playCode:String):ByteArray
    return DataFormat2.HexString2ByteArray (playCode);
 }
 
-public function SetProperty (name:String, value:Object):void
+public static function BinaryData2WorldDefine (binaryData:ByteArray):Object
 {
-   switch (name)
-   {
-      default:
-      {
-      }
-   }
+   return DataFormat2.ByteArray2WorldDefine (binaryData);
 }
 
-public function GetProperty (name:String):Object
+public function SetParametersFromUI (params:Object):void
 {
-   switch (name)
-   {
-      default:
-      {
-         return null;
-      }
-   }
+   Global.RestartPlay = params.OnClickRestart;
+   Global.IsPlaying = params.IsPlaying;
+   Global.SetPlaying = params.SetPlaying;
+   Global.GetSpeedX = params.GetPlayingSpeedX;
+   Global.SetSpeedX = params.SetPlayingSpeedX;
+   Global.GetScale = params.GetZoomScale;
+   Global.SetScale = params.SetZoomScale;
 }
+
+public function GetParametersToUI ():Object
+{
+   var params:Object = {
+      
+   };
+   
+   return params;
+}
+
+//============== more interfaces in other files ======================
+// public function Initialize ():void
+// public function Update (escapedTime:Number, speedX:int, forceUpdateCamera:Boolean):void
 

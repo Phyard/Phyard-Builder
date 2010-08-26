@@ -156,9 +156,8 @@ package editor {
    import editor.trigger.Filters;
    
    import player.world.World;
-   //import player.ui.PlayHelpDialog;
-   //import player.ui.PlayControlBar;
-   import wrapper.ColorInfectionPlayer;
+   
+   import viewer.Viewer;
    
    import common.WorldDefine;
    import common.DataFormat;
@@ -221,7 +220,7 @@ package editor {
       
       private var mWorldHistoryManager:WorldHistoryManager;
       
-      private var mDesignPlayer:ColorInfectionPlayer = null;
+      private var mDesignPlayer:Viewer = null;
          
       // ...
       private var mAnalyticsDurations:Array = [0.5, 1, 2, 5, 10, 15, 20, 30];
@@ -1688,7 +1687,7 @@ package editor {
          return mEditorWorld.scaleX;
       }
       
-      private function SetDesignPlayer (newPlayer:ColorInfectionPlayer):void
+      private function SetDesignPlayer (newPlayer:Viewer):void
       {
          DestroyDesignPlayer ();
          
@@ -1790,9 +1789,13 @@ package editor {
          }
          
          if (useQuickMethod)
-            SetDesignPlayer (new ColorInfectionPlayer (true, {getWorldDefine:GetWorldDefine, getWorldBinaryData:null, getViewportSize:GetViewportSize}));
+         {
+            SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:GetWorldDefine, GetWorldBinaryData:null, GetViewportSize:GetViewportSize, mStartRightNow: true}}));
+         }
          else
-            SetDesignPlayer (new ColorInfectionPlayer (true, {getWorldDefine:null, getWorldBinaryData:GetWorldBinaryData, getViewportSize:GetViewportSize}));
+         {
+            SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:null, GetWorldBinaryData:GetWorldBinaryData, GetViewportSize:GetViewportSize, mStartRightNow: true}}));
+         }
          
          mIsPlaying = true;
          

@@ -64,8 +64,10 @@ package common {
 // 
 //===========================================================================
       
-      public static function WorldDefine2PlayerWorld (worldDefine:WorldDefine):World
+      public static function WorldDefine2PlayerWorld (defObject:Object):World
       {
+         var worldDefine:WorldDefine = defObject as WorldDefine;
+         
          //trace ("WorldDefine2PlayerWorld");
          
          FillMissedFieldsInWorldDefine (worldDefine);

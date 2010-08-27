@@ -21,6 +21,7 @@ package editor {
    import flash.geom.Rectangle;
    
    import flash.system.System;
+   import flash.system.ApplicationDomain;
    
    import flash.ui.Keyboard;
    import flash.ui.Mouse;
@@ -408,7 +409,7 @@ package editor {
                
                //
                UpdateDesignPalyerPosition ();
-               var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld ();
+               var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld () as player.world.World;
                var playingSteps:int = playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
                StatusBar_SetRunningSteps ("Step#" + playingSteps);
                StatusBar_SetRunningFPS ("FPS: " + mFpsStat.GetFps ().toFixed (2));
@@ -699,7 +700,7 @@ package editor {
          {
             if (mDesignPlayer != null)
             {
-               var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld ();
+               var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld () as player.world.World;
                if (playerWorld != null)
                {
                   worldPoint = playerWorld.globalToLocal (new Point (stagePoint.x, stagePoint.y));
@@ -1738,10 +1739,10 @@ package editor {
       public var OnPlayingStarted:Function;
       public var OnPlayingStopped:Function;
       
-      private function GetWorldDefine ():WorldDefine
-      {
-         return DataFormat.EditorWorld2WorldDefine ( mEditorWorld );
-      }
+      //private function GetWorldDefine ():WorldDefine
+      //{
+      //   return DataFormat.EditorWorld2WorldDefine ( mEditorWorld );
+      //}
       
       private function GetWorldBinaryData ():ByteArray
       {
@@ -1777,25 +1778,27 @@ package editor {
          
          DestroyDesignPlayer ();
          
-         var useQuickMethod:Boolean;
+         //var useQuickMethod:Boolean;
+         //
+         //if (Compile::Is_Debugging)
+         //{
+         //   useQuickMethod = true;
+         //}
+         //else
+         //{
+         //   useQuickMethod = false;
+         //}
+         //
+         //if (useQuickMethod)
+         //{
+         //   SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:GetWorldDefine, GetWorldBinaryData:null, GetViewportSize:GetViewportSize, mStartRightNow: true}}));
+         //}
+         //else
+         //{
+         //   SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:null, GetWorldBinaryData:GetWorldBinaryData, GetViewportSize:GetViewportSize, mStartRightNow: true}}));
+         //}
          
-         if (Compile::Is_Debugging)
-         {
-            useQuickMethod = true;
-         }
-         else
-         {
-            useQuickMethod = false;
-         }
-         
-         if (useQuickMethod)
-         {
-            SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:GetWorldDefine, GetWorldBinaryData:null, GetViewportSize:GetViewportSize, mStartRightNow: true}}));
-         }
-         else
-         {
-            SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:null, GetWorldBinaryData:GetWorldBinaryData, GetViewportSize:GetViewportSize, mStartRightNow: true}}));
-         }
+         SetDesignPlayer (new Viewer ({mParamsFromEditor: {mWorldDomain: ApplicationDomain.currentDomain, mWorldBinaryData: GetWorldBinaryData (), GetViewportSize:GetViewportSize, mStartRightNow: true}}));
          
          mIsPlaying = true;
          

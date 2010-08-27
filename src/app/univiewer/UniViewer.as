@@ -46,7 +46,6 @@ package univiewer
       {
          // init
          
-         mApplicationDomains ["default"] = ApplicationDomain.currentDomain;
          mUniViewerUrl =  LoaderInfo(this.loaderInfo).url;
          
          // ...
@@ -61,12 +60,12 @@ package univiewer
          if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0) // for play. avoid using browser cache
          {
             var date:Date = new Date ();
-            infoUrl = mUniViewerUrl.replace (/\/uniplayer.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
+            infoUrl = mUniViewerUrl.replace (/\/uniplayer\.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
             infoUrl = infoUrl + "&time=" + date.getFullYear () + "-" + date.getMonth () + "-" + date.getDate () + "-" + date.getHours () + "-" + date.getMinutes () + "-" + date.getSeconds ();
          }
          else // for view, the brower cache will be used if availabe
          {
-            infoUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
+            infoUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
          }
          
          CreateNewLoading (infoUrl, "Loading design info", null, OnLoadInfoComplete, UpdateLoadingProgress, UpdateInfoText);
@@ -115,7 +114,7 @@ package univiewer
                mViewerSwfUrl = mUniViewerUrl.substring (0, index) + "/swfs/" + viewerSwfUrl;
             }
             
-            CreateNewLoading (mViewerSwfUrl, "Loading viewer", "default", OnLoadViewerSwfComplete, UpdateLoadingProgress, UpdateInfoText);
+            CreateNewLoading (mViewerSwfUrl, "Loading viewer", "viewer", OnLoadViewerSwfComplete, UpdateLoadingProgress, UpdateInfoText);
          }
          catch (error:Error)
          {
@@ -145,16 +144,16 @@ package univiewer
                var dataUrl:String;
                if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0)  // for play, add the return published revison id
                {
-                  dataUrl = mUniViewerUrl.replace (/\/uniplayer.swf/, "/i/design/loaddata");
+                  dataUrl = mUniViewerUrl.replace (/\/uniplayer\.swf/, "/i/design/loaddata");
                   dataUrl = dataUrl + "&revision=" + mRealRevision;
                }
                else // for view, the revision should be already caontained in mUniViewerUrl
                {
-                  dataUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.swf/, "/i/design/loaddata");
+                  dataUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/i/design/loaddata");
                   dataUrl = dataUrl + "&view=1"; // indication for view
                }
                
-               CreateNewLoading (mWorldSwfUrl, "Loading design data", null, OnLoadDataComplete, UpdateLoadingProgress, UpdateInfoText);
+               CreateNewLoading (dataUrl, "Loading design data", null, OnLoadDataComplete, UpdateLoadingProgress, UpdateInfoText);
             }
             else
             {
@@ -197,7 +196,7 @@ package univiewer
             
             // all loadings are done
             
-            var ViewerClass:Class = ApplicationDomain.currentDomain.getDefinition("viewer.Viewer") as Class;
+            var ViewerClass:Class = mApplicationDomains ["viewer"].getDefinition("viewer.Viewer") as Class;
             if (ViewerClass == null)
             {
                throw new Error ("viewer class not found");
@@ -214,6 +213,7 @@ package univiewer
             paramsFromUniPlayer.mUniViewerUrl = mUniViewerUrl;
             paramsFromUniPlayer.mWorldDomain = WorldDomain;
             paramsFromUniPlayer.mDesignBinaryData = designBinaryData;
+            paramsFromUniPlayer.mWorldPlayCode = LoaderInfo(this.loaderInfo).parameters.playcode;
             paramsFromUniPlayer.mFlashVars = LoaderInfo(this.loaderInfo).parameters;
             
             var viewer:Sprite = (new ViewerClass ({mParamsFromUniViewer: paramsFromUniPlayer})) as Sprite;
@@ -221,6 +221,7 @@ package univiewer
          }
          catch (error:Error)
          {
+         throw error;
             UpdateInfoText ("Loading error: " + error.message);
          }
       }
@@ -269,14 +270,17 @@ package univiewer
             }
             
             listenersOwner.addEventListener(Event.COMPLETE, OnLoadingComplete);
-            listenersOwner.addEventListener.addEventListener(ProgressEvent.PROGRESS, OnLoadingProgress);
+            listenersOwner.addEventListener(ProgressEvent.PROGRESS, OnLoadingProgress);
             listenersOwner.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
             listenersOwner.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
             
             message = "Start loading (" + loadingName + ", " + url + ") ...";
             trace (message);
             
-            loader.load(request, loaderContext);
+            if (loader is URLLoader)
+               loader.load(request);
+            else
+               loader.load(request, loaderContext);
          }
          catch (error:Error)
          {
@@ -292,6 +296,7 @@ package univiewer
       
       private function OnLoadingComplete (event:Event):void
       {
+      trace ("+++++++++++++++++++++++");
          var listenerOwner:Object = event.currentTarget;
          var threadInfo:Object = mLoadingThreadInfos [listenerOwner];
          if (threadInfo == null)
@@ -299,7 +304,7 @@ package univiewer
          
          delete mLoadingThreadInfos [listenerOwner];
          
-         var message:String = "Loading compete (" + threadInfo.loadingName + ", " + threadInfo.url + ").";
+         var message:String = "Loading compete (" + threadInfo.mLoadingName + ", " + threadInfo.mUrl + ").";
          trace (message);
          
          if (threadInfo.OnCompete == null)
@@ -315,7 +320,7 @@ package univiewer
          if (threadInfo == null)
             return;
          
-         //var message:String = "Loading progress (" + threadInfo.loadingName + ", " + threadInfo.url + "): " + event.bytesTotal + "/" + event.bytesTotal;
+         //var message:String = "Loading progress (" + threadInfo.mLoadingName + ", " + threadInfo.mUrl + "): " + event.bytesTotal + "/" + event.bytesTotal;
          //trace (message);
          
          if (threadInfo.OnProgress == null)
@@ -333,7 +338,7 @@ package univiewer
          
          delete mLoadingThreadInfos [listenerOwner];
          
-         var message:String = "Loading error (" + threadInfo.loadingName + ", " + threadInfo.url + "): " + event.text;
+         var message:String = "Loading error (" + threadInfo.mLoadingName + ", " + threadInfo.mUrl + "): " + event.text;
          trace (message);
          
          if (threadInfo.OnError == null)
@@ -372,6 +377,8 @@ package univiewer
             loadingText.visible = true;
             loadingText.x = 0.5 * (App::Default_Width - loadingText.width);
             loadingText.y = 0.5 * (App::Default_Height - loadingText.height);
+            
+            trace ("loadingText.x = " + loadingText.x + ", loadingText.y = " + loadingText.y + ", infoText = " + infoText);
          }
       }
       

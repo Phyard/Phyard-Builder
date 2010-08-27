@@ -15,6 +15,7 @@ package viewer {
    import flash.display.StageScaleMode;
    
    import flash.system.System;
+   import flash.system.ApplicationDomain;
    
    import flash.events.Event;
    
@@ -36,22 +37,18 @@ package viewer {
    import com.tapirgames.util.TextUtil;
    import com.tapirgames.display.TextFieldEx;
    import com.tapirgames.display.TextButton;
-   import com.tapirgames.display.ImageButton;
-   
-   import player.world.World;
+   //import com.tapirgames.display.ImageButton;
    
    import viewer.ui.UiUtil;
    import viewer.ui.PlayHelpDialog;
    import viewer.ui.PlayControlBar;
    
-   import common.DataFormat2;
    import common.Define;
-   import common.WorldDefine;
    
-   import common.Version;
-   
-   public dynamic class Viewer extends Sprite 
+   public class Viewer extends Sprite 
    {
+      private static const VersionNumber:int = 0x0100; // dependent with the version number of editor and player package
+      
 //======================================================================
 //
 //======================================================================
@@ -62,26 +59,34 @@ package viewer {
       
       private var mParamsFromEditor:Object = null;
       
-      private var mParamsFromPackager:Object = null;
-    
-   //<<<<<<<<<<<<<<< input params
+   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       
-      // special interface for editor
+   //>>>>>>>>>>>>>>>>>  special interfaces for editor
+      
       private var mExternalPaused:Boolean = false;
       public function SetExternalPaused (paused:Boolean):void
       {
          mExternalPaused = paused;
       }
       
+      public function GetPlayerWorld ():Object
+      {
+         return mPlayerWorld;
+      }
+      
+   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      
       private var mStartRightNow:Boolean = false;
       
       private var mBuildContextMenu:Boolean = true;
+      
+      private var mWorldDomain:ApplicationDomain;
       
       private var mWorldPlayCode:String = null;
       private var mWorldDataForPlaying:ByteArray = null;
       private var mWorldSourceCode:String = null;
       
-      private var mPlayerWorld:World = null;
+      private var mPlayerWorld:Object = null;
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
       
@@ -100,8 +105,12 @@ package viewer {
 //
 //======================================================================
       
-      public function Viewer (params:Object)
+      
+      
+      public function Viewer (params:Object = null)
       {
+         trace ("Viewer params = " + params);
+         
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
          
          addChild (mWorldLayer);
@@ -114,22 +123,23 @@ package viewer {
          
          mParamsFromUniViewer = params.mParamsFromUniViewer;
          mParamsFromEditor = params.mParamsFromEditor;
-         mParamsFromPackager = params.mParamsFromPackager;
          
          if (mParamsFromEditor != null)
          {
             mStartRightNow = mParamsFromEditor.mStartRightNow == undefined ? true : mParamsFromEditor.mStartRightNow;
+            
+            mWorldDomain = ApplicationDomain.currentDomain;
          }
-         
-         if (mParamsFromPackager != null)
+         else if (mParamsFromUniViewer != null)
          {
-            mBuildContextMenu = mParamsFromPackager.mBuildContextMenu == undefined ? true : mParamsFromPackager.mBuildContextMenu;
+            mWorldDomain = ApplicationDomain.currentDomain;
          }
-      }
-      
-      public function GetPlayerWorld ():World
-      {
-         return mPlayerWorld;
+         else
+         {
+            mWorldDomain = ApplicationDomain.currentDomain;
+         }
+
+         
       }
       
       // for old packager, which is already cancelled.
@@ -161,6 +171,8 @@ package viewer {
          
          if (mParamsFromEditor != null)
          {
+            mWorldDataForPlaying = mParamsFromEditor.mWorldBinaryData;
+            
             ChangeState (StateId_BuildWorld);
          }
          else if (mParamsFromUniViewer != null)
@@ -172,7 +184,7 @@ package viewer {
             else // if (mParamsFromUniViewer.mWorldPlayCode != null)
             {
                mWorldPlayCode = mParamsFromUniViewer.mWorldPlayCode;
-               mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
+               mWorldDataForPlaying = (mWorldDomain.getDefinition ("common.DataFormat2").HexString2ByteArray as Function) (mWorldPlayCode);
             }
             
             ChangeState (StateId_BuildWorld);
@@ -216,7 +228,7 @@ package viewer {
                //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
                
                mWorldDataForPlaying.position = 0;
-               mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.ByteArray2WorldDefine (mWorldDataForPlaying));
+               mWorldSourceCode = (mWorldDomain.getDefinition ("common.DataFormat2").WorldDefine2Xml as Function) ((mWorldDomain.getDefinition ("common.DataFormat2").ByteArray2WorldDefine as Function) (mWorldDataForPlaying));
                
                if (mWorldSourceCode != null)
                {
@@ -257,8 +269,8 @@ package viewer {
             addSeperaor = true;
          }
          
-         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+         var majorVersion:int = (VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (VersionNumber & 0xFF) >> 0;
          var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), addSeperaor);
          theContextMenu.customItems.push (aboutItem);
          aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
@@ -375,7 +387,7 @@ package viewer {
                if (mFlashParams.mWorldPlayCode != null)
                {
                   mWorldPlayCode = mFlashParams.mWorldPlayCode;
-                  mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
+                  mWorldDataForPlaying = (mWorldDomain.getDefinition ("common.DataFormat2").HexString2ByteArray as Function) (mWorldPlayCode);
                   
                   ChangeState (StateId_BuildWorld)
                }
@@ -775,34 +787,19 @@ package viewer {
          {
             mPlayerWorld.Destroy ();
             
-            if (mWorldLayer.contains (mPlayerWorld))
-               mWorldLayer.removeChild (mPlayerWorld);
+            if (mWorldLayer.contains (mPlayerWorld as Sprite))
+               mWorldLayer.removeChild (mPlayerWorld as Sprite);
          }
          
          mPlayerWorld = null;
          
          try
          {
-            var worldDefine:WorldDefine = null;
+            mWorldDataForPlaying.position = 0;
             
-            if (mParamsFromEditor != null)
-            {
-               if (mParamsFromEditor.GetWorldBinaryData != null)
-               {
-                  worldDefine = DataFormat2.ByteArray2WorldDefine (mParamsFromEditor.GetWorldBinaryData ())
-               }
-               else
-               {
-                  worldDefine =  mParamsFromEditor.GetWorldDefine ();
-               }
-            }
-            else if (mWorldDataForPlaying != null)
-            {
-               mWorldDataForPlaying.position = 0;
-               worldDefine = DataFormat2.ByteArray2WorldDefine (mWorldDataForPlaying)
-            }
+            var worldDefine:Object = (mWorldDomain.getDefinition ("common.DataFormat2").ByteArray2WorldDefine as Function) (mWorldDataForPlaying)
             
-            mPlayerWorld = DataFormat2.WorldDefine2PlayerWorld (worldDefine);
+            mPlayerWorld = (mWorldDomain.getDefinition ("common.DataFormat2").WorldDefine2PlayerWorld as Function) (worldDefine);
          }
          catch (error:Error)
          {
@@ -819,7 +816,7 @@ package viewer {
             mPlayerWorld.SetCacheSystemEvent (! hidePlayBar);
             mPlayerWorld.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null);
             
-            mWorldLayer.addChild (mPlayerWorld);
+            mWorldLayer.addChild (mPlayerWorld as Sprite);
             
             mEverFinished = false;
          }
@@ -1054,7 +1051,7 @@ package viewer {
          
          GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth - 1, Define.PlayerPlayBarThickness, playBarColor, 1, true, playBarColor);
          
-         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, mParamsFromPackager == null ? null : mParamsFromPackager.mMainMenuCallback, showScaleAdjustor ? OnZoom : null);
+         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, null, showScaleAdjustor ? OnZoom : null);
          mTopBarLayer.addChild (mPlayControlBar);
          mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
          mPlayControlBar.y = 2;

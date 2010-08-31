@@ -401,6 +401,13 @@ package player.world {
          mIsPaused = paused;
       }
       
+      private var mSingleStepMode:Boolean = false;
+      
+      public function SetSingleStepMode (singleStepMode:Boolean):void
+      {
+         mSingleStepMode = singleStepMode;
+      }
+      
    // ...
       
 //=============================================================
@@ -458,7 +465,7 @@ package player.world {
       // update camera
       //-----------------------------
          
-         UpdateCamera (false);
+         UpdateCamera ();
          
       //------------------------------------
       // on level inited
@@ -513,7 +520,7 @@ package player.world {
       
       private var mFunc_StepUpdate:Function = null;
       
-      public function Update (escapedTime:Number, speedX:int, forceUpdateCamera:Boolean):void
+      public function Update (escapedTime:Number, speedX:int):void
       {
          if (mDestroyed)
             return;
@@ -529,7 +536,7 @@ package player.world {
       //-----------------------------
          
          if (mFunc_StepUpdate != null)
-            mFunc_StepUpdate (escapedTime, speedX, forceUpdateCamera);
+            mFunc_StepUpdate (escapedTime, speedX);
          
       //-----------------------------
       // repaint
@@ -555,7 +562,7 @@ package player.world {
       //-----------------------------
       }
       
-      public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int, forceUpdateCamera:Boolean):void
+      public function Update_FixedStepInterval_SpeedX (escapedTime1:Number, speedX:int):void
       {
          var dt:Number = Define.WorldStepTimeInterval_SpeedX2 * 0.5;
          
@@ -607,7 +614,7 @@ package player.world {
          // update camera
          //-----------------------------
             
-            UpdateCamera (forceUpdateCamera);
+            UpdateCamera ();
             
          //------------------------------------
          // handle key-hold eventgs

@@ -12,7 +12,7 @@ package player.trigger
          mFirstFunctionCalling = firstCalling;
       }
       
-   //public static var mEnableTrace:Boolean = false;
+   //public static var mEnableTrace:Boolean = true;
       
       public function Excute ():void
       {

@@ -2457,7 +2457,7 @@ package editor {
             if ((mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
                height += 20;
             
-            values.mEmbedCode = "<embed src=\"http://localhost:8080/uniplayer.swf?app=ci&format=0x0152\"\n  width=\'" + width + "\" height=\"" + height + "\"\n"
+            values.mEmbedCode = "<embed src=\"http://www.phyard.com/uniplayer.swf?app=ci&format=0x0152\"\n  width=\'" + width + "\" height=\"" + height + "\"\n"
                               + "  FlashVars=\"playcode=" + values.mHexString
                               + "\"\n  quality=\"high\" allowScriptAccess=\"sameDomain\"\n  type=\"application/x-shockwave-flash\"\n  pluginspage=\"http://www.macromedia.com/go/getflashplayer\">\n</embed>"
                                 ;
@@ -3049,7 +3049,7 @@ package editor {
             switch (event.keyCode)
             {
                case Keyboard.SPACE:
-                  mDesignPlayer.Step (true);
+                  mDesignPlayer.UpdateSingleStep ();
                   break;
                default:
                   break;

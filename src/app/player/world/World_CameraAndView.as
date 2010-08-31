@@ -202,7 +202,7 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
 
 
 
-protected function UpdateCamera (forceUpdateCamera:Boolean):void
+protected function UpdateCamera ():void
 {
    var targetX:Number;
    var targetY:Number
@@ -210,7 +210,7 @@ protected function UpdateCamera (forceUpdateCamera:Boolean):void
    var smoothX:Boolean;
    var smoothY:Boolean;
    
-   var updateCamera:Boolean = forceUpdateCamera || (! mIsPaused);
+   var updateCamera:Boolean = mSingleStepMode || (! mIsPaused);
    
    if (mFollowedEntityCameraCenterX != null && mFollowedEntityCameraCenterX.IsDestroyedAlready ())
       mFollowedEntityCameraCenterX = null;
@@ -341,7 +341,9 @@ public function MouseMoveCamera (offsetX:Number, offsetY:Number):void
    mCameraMovedOffsetY_ByMouse += offsetY;
    
    if (mIsPaused)
-      UpdateCamera (false);
+   {
+      UpdateCamera ();
+   }
 }
 
 //=====================================================================================

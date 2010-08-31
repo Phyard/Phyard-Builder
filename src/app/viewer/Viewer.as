@@ -11,13 +11,14 @@ package viewer {
    import flash.display.MovieClip;
    import flash.display.Stage;
    import flash.events.Event;
-   import flash.display.LoaderInfo;
-   import flash.display.StageScaleMode;
+   import flash.events.ProgressEvent;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
    
    import flash.system.System;
    import flash.system.ApplicationDomain;
    
-   import flash.events.Event;
+   import flash.display.StageScaleMode;
    
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
@@ -29,6 +30,9 @@ package viewer {
    import flash.net.URLRequestMethod;
    import flash.net.URLLoaderDataFormat;
    import flash.net.navigateToURL;
+   import flash.display.Loader;
+   import flash.display.LoaderInfo;
+   import flash.system.LoaderContext;
    
    import com.tapirgames.display.FpsCounter;
    import com.tapirgames.util.TimeSpan;
@@ -44,11 +48,10 @@ package viewer {
    import viewer.ui.PlayControlBar;
    
    import common.Define;
+   import common.Version;
    
    public class Viewer extends Sprite 
    {
-      private static const VersionNumber:int = 0x0100; // dependent with the version number of editor and player package
-      
 //======================================================================
 //
 //======================================================================
@@ -74,19 +77,23 @@ package viewer {
          return mPlayerWorld;
       }
       
+      public function UpdateSingleStep ():void
+      {
+         Step (true);
+      }
+      
    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       
       private var mStartRightNow:Boolean = false;
       
       private var mBuildContextMenu:Boolean = true;
       
-      private var mWorldDomain:ApplicationDomain;
-      
       private var mWorldPlayCode:String = null;
-      private var mWorldDataForPlaying:ByteArray = null;
+      private var mWorldBinaryData:ByteArray = null;
       private var mWorldSourceCode:String = null;
       
       private var mPlayerWorld:Object = null;
+      
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
       
@@ -111,7 +118,8 @@ package viewer {
       {
          trace ("Viewer params = " + params);
          
-         addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
+         if (params == null) // strangel flash ai=uto instance this class when loading done. shit!
+            return;
          
          addChild (mWorldLayer);
          //addChild (mBottomBarLayer);
@@ -124,40 +132,8 @@ package viewer {
          mParamsFromUniViewer = params.mParamsFromUniViewer;
          mParamsFromEditor = params.mParamsFromEditor;
          
-         if (mParamsFromEditor != null)
-         {
-            mStartRightNow = mParamsFromEditor.mStartRightNow == undefined ? true : mParamsFromEditor.mStartRightNow;
-            
-            mWorldDomain = ApplicationDomain.currentDomain;
-         }
-         else if (mParamsFromUniViewer != null)
-         {
-            mWorldDomain = ApplicationDomain.currentDomain;
-         }
-         else
-         {
-            mWorldDomain = ApplicationDomain.currentDomain;
-         }
-
-         
+         addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
       }
-      
-      // for old packager, which is already cancelled.
-      //public function SetOptions (options:Object = null):void
-      //{
-      //   if (options != null)
-      //   {
-      //      if (options.mWorldPlayCode != null)
-      //      {
-      //         mWorldPlayCode = options.mWorldPlayCode;
-      //         mWorldDataForPlaying = DataFormat2.HexString2ByteArray (mWorldPlayCode);
-      //      }
-      //      if (options.mBuildContextMenu != null)
-      //         mBuildContextMenu = options.mBuildContextMenu;
-      //      if (options.mMainMenuCallback != null)
-      //         mMainMenuCallback = options.mMainMenuCallback;
-      //   }
-      //}
       
       private function OnAddedToStage (e:Event):void
       {
@@ -166,193 +142,16 @@ package viewer {
             CheckStageSize (Number (App::Default_Width),  Number (App::Default_Height));
          }
          
+         addEventListener (Event.ENTER_FRAME, Update);
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
-         addEventListener (Event.ENTER_FRAME, OnEnterFrame);
          
-         if (mParamsFromEditor != null)
-         {
-            mWorldDataForPlaying = mParamsFromEditor.mWorldBinaryData;
-            
-            ChangeState (StateId_BuildWorld);
-         }
-         else if (mParamsFromUniViewer != null)
-         {
-            if (mParamsFromUniViewer.mWorldBinaryData != null)
-            {
-               mWorldDataForPlaying = mParamsFromUniViewer.mWorldBinaryData;
-            }
-            else // if (mParamsFromUniViewer.mWorldPlayCode != null)
-            {
-               mWorldPlayCode = mParamsFromUniViewer.mWorldPlayCode;
-               mWorldDataForPlaying = (mWorldDomain.getDefinition ("common.DataFormat2").HexString2ByteArray as Function) (mWorldPlayCode);
-            }
-            
-            ChangeState (StateId_BuildWorld);
-         }
-         else
-         {
-            ChangeState (StateId_Load);
-         }
+         ParseParams ();
       }
       
       private function OnRemovedFromFrame (e:Event):void
       {
-         removeEventListener (Event.ENTER_FRAME, OnEnterFrame);
+         removeEventListener (Event.ENTER_FRAME, Update);
          removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
-      }
-      
-      private function OnEnterFrame (event:Event):void 
-      {
-         Update ();
-      }
-      
-//======================================================================
-//
-//======================================================================
-      
-      private function BuildContextMenu ():void
-      {
-         if (! mBuildContextMenu)
-            return;
-         
-         var theContextMenu:ContextMenu = new ContextMenu ();
-         theContextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
-         defaultItems.print = true;
-         
-         var addSeperaor:Boolean = false;
-         if (Compile::Is_Debugging || mPlayerWorld != null && mPlayerWorld.IsShareSourceCode ())
-         {
-            if (mWorldDataForPlaying != null)
-            {
-               //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
-               
-               mWorldDataForPlaying.position = 0;
-               mWorldSourceCode = (mWorldDomain.getDefinition ("common.DataFormat2").WorldDefine2Xml as Function) ((mWorldDomain.getDefinition ("common.DataFormat2").ByteArray2WorldDefine as Function) (mWorldDataForPlaying));
-               
-               if (mWorldSourceCode != null)
-               {
-                  var copySourceCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", false);
-                  theContextMenu.customItems.push (copySourceCodeMenuItem);
-                  copySourceCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
-                  
-                  addSeperaor = true;
-               }
-            }
-         }
-         
-         if (Compile::Is_Debugging)
-         {
-            if (mWorldPlayCode != null)
-            {
-               var copyPlayCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Play Code", false);
-               theContextMenu.customItems.push (copyPlayCodeMenuItem);
-               copyPlayCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyPlayCode);
-               
-               addSeperaor = true;
-            }
-         }
-         
-         if (mParamsFromUniViewer != null && mPlayerWorld != null)
-         {
-            if (mPlayerWorld.IsPermitPublishing ())
-            {
-               var copyEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code", false);
-               theContextMenu.customItems.push (copyEmbedCodeMenuItem);
-               copyEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyEmbedCode);
-            }
-            
-            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code for CIF", false);
-            theContextMenu.customItems.push (copyForumEmbedCodeMenuItem);
-            copyForumEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyForumEmbedCode);
-            
-            addSeperaor = true;
-         }
-         
-         var majorVersion:int = (VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (VersionNumber & 0xFF) >> 0;
-         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), addSeperaor);
-         theContextMenu.customItems.push (aboutItem);
-         aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
-         
-         contextMenu = theContextMenu;
-      }
-      
-      private function OnCopySourceCode (event:ContextMenuEvent):void
-      {
-         if (mWorldSourceCode != null)
-            System.setClipboard(mWorldSourceCode);
-      }
-      
-      private function OnCopyPlayCode (event:ContextMenuEvent):void
-      {
-         if (mWorldPlayCode != null)
-            System.setClipboard(mWorldPlayCode);
-      }
-      
-      private function OnCopyEmbedCode (event:ContextMenuEvent):void
-      {
-         if (mParamsFromUniViewer != null && mPlayerWorld != null)
-         {
-            var width:int = mPlayerWorld.GetViewportWidth ();
-            var height:int = mPlayerWorld.GetViewportHeight ();
-            if ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
-               height += 20;
-            var playcode:String = mParamsFromUniViewer.mWorldPlayCode;
-            
-            var embedCode:String = 
-               "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
-                 + (playcode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + playcode + "\"></param>\n") +
-               "  <param name=\"movie\" value=\"" + mParamsFromUniViewer.mUniplayerUrl + "\"></param>"
-                 + "\n" +
-               "  <param name=\"quality\" value=\"high\"></param>"
-                 + "\n" +
-               "  <embed src=\"" + mParamsFromUniViewer.mUniplayerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
-                 + (playcode == null ? "\n" : "\n    FlashVars=\"playcode=" + playcode + "\"\n") +
-               "    quality=\"high\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\">"
-                 + "\n" +
-               "  </embed>"
-                 + "\n" +
-               "</object>"
-               ;
-            
-            System.setClipboard(embedCode);
-         }
-      }
-      
-      private function OnCopyForumEmbedCode (event:ContextMenuEvent):void
-      {
-         if (mParamsFromUniViewer != null && mPlayerWorld != null)
-         {
-            var width:int = mPlayerWorld.GetViewportWidth ();
-            var height:int = mPlayerWorld.GetViewportHeight ();
-            if ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
-               height += 20;
-            
-            if (mParamsFromUniViewer.mWorldPlayCode != null)
-            {
-                System.setClipboard (mParamsFromUniViewer.mWorldPlayCode);
-                return;
-            }
-            
-            var substr:String = "uniplayer.swf?";
-            
-            var index:int = mParamsFromUniViewer.mUniplayerUrl.indexOf (substr);
-            if (index < 0)
-            {
-                System.setClipboard("");
-               return;
-            }
-            
-            var embedCode:String = "[phyard=" + mParamsFromUniViewer.mUniplayerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "/]";
-            
-            System.setClipboard (embedCode);
-         }
-      }
-      
-      private function OnAbout (event:ContextMenuEvent):void
-      {
-         UrlUtil.PopupPage (Define.AboutUrl);
       }
       
 //======================================================================
@@ -360,176 +159,469 @@ package viewer {
 //======================================================================
       
       private static const StateId_None:int = -1;
-      private static const StateId_Load:int = 0;
-      private static const StateId_LoadFailed:int = 1;
-      private static const StateId_BuildWorld:int = 2;
-      private static const StateId_Play:int = 3;
-      private static const StateId_OnlineLoad:int = 4;
+      private static const StateId_ParsingError:int = 0;
+      private static const StateId_Loading:int = 1;
+      private static const StateId_LoadingError:int = 2;
+      private static const StateId_WaitingPlay:int = 3;
+      private static const StateId_Playing:int = 4;
       private static const StateId_RunningError:int = 5;
       
       private var mStateId:int = StateId_None;
       
-      private var mFpsCounter:FpsCounter;
-      private var mStepTimeSpan:TimeSpan = new TimeSpan ();
-      
-      public function Update ():void
+      public function Update (event:Event):void
       {
-      // ...
-         
          switch (mStateId)
          {
-            case StateId_None:
+            case StateId_Loading:
+               // Load progress on screen
                break;
-            case StateId_Load:
-            {
-               ParseFlashParams ();
-               
-               if (mFlashParams.mWorldPlayCode != null)
-               {
-                  mWorldPlayCode = mFlashParams.mWorldPlayCode;
-                  mWorldDataForPlaying = (mWorldDomain.getDefinition ("common.DataFormat2").HexString2ByteArray as Function) (mWorldPlayCode);
-                  
-                  ChangeState (StateId_BuildWorld)
-               }
-               else
-               {
-                  TryToStartOnlineLoading ()
-               }
-               
+            case StateId_LoadingError:
+               // "Copy Error Message" and "Report Error" in Context Menu
                break;
-            }
-            case StateId_OnlineLoad:
+            case StateId_WaitingPlay:
+               // Play button / Design info / Phyard logo
+               // In playing, press Home to this screen
                break;
-            case StateId_LoadFailed:
-               break;
-            case StateId_BuildWorld:
-               RebuildPlayerWorld ();
-               
-               if (mPlayerWorld == null)
-               {
-                  ChangeState (StateId_LoadFailed);
-               }
-               else
-               {
-                  ChangeState (StateId_Play);
-               }
-               
-               break;
-            case StateId_Play:
-            {
-               if (mPlayerWorld != null && mPlayerWorld.GetZoomScale () != mPlayerWorldZoomScale)
-               {
-                  var newScale:Number;
-                  
-                  if (mPlayerWorld.GetZoomScale () < mPlayerWorldZoomScale)
-                  {
-                     if (mPlayerWorldZoomScaleChangedSpeed < 0)
-                        mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
-                     
-                     newScale = mPlayerWorld.scaleX + mPlayerWorldZoomScaleChangedSpeed;
-                     
-                     if (newScale >= mPlayerWorldZoomScale)
-                        mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
-                     else
-                        mPlayerWorld.SetZoomScale (newScale);
-                  }
-                  else
-                  {
-                     if (mPlayerWorldZoomScaleChangedSpeed > 0)
-                        mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
-                     
-                     newScale = mPlayerWorld.scaleX + mPlayerWorldZoomScaleChangedSpeed;
-                     
-                     if (newScale <= mPlayerWorldZoomScale)
-                        mPlayerWorld.SetZoomScale (mPlayerWorldZoomScale);
-                     else
-                        mPlayerWorld.SetZoomScale (newScale);
-                  }
-               }
-               
+            case StateId_Playing:
                Step (false);
-               
-               if ( mPlayerWorld.IsLevelSuccessed () )
-                  OpenFinishedDialog ();
-               else
-                  CloseFinishedDialog ();
                break;
-            }
             case StateId_RunningError:
+               // "Copy Error Message" and "Report Error" in Context Menu
                break;
+            case StateId_None:
             default:
                break;
          }
       }
       
-      public function Step (singleStepMode:Boolean = false):void
+      public function ChangeState (stateId:int):void
       {
-         mStepTimeSpan.End ();
-         mStepTimeSpan.Start ();
-         
-         if (mPlayerWorld != null)
+      //trace ("change state: " + stateId + "\n" + new Error ().getStackTrace ());
+         mStateId = stateId;
+         switch (mStateId)
          {
-            var paused:Boolean = (! IsPlaying ()) || mHelpDialog.visible;
-            
-            mPlayerWorld.SetPaused (paused);
-            
-            if ( (! mExternalPaused) && ((! paused) || singleStepMode) )
-            {
-               try
-               {
-                  mPlayerWorld.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX (), singleStepMode);
-               }
-               catch (error:Error)
-               {
-                  //if (mParamsFromEditor != null)
-                  //{
-                  //   throw error; // let editor to handle it
-                  //}
-                  //else
-                  {
-                     // todo show dialog: "stop" or "continue";
-                     // write log of send message to server
-                     
-                     ChangeState (StateId_RunningError);
-                  }
-                  
-                  if (Compile::Is_Debugging)
-                  {
-                     throw error;
-                  }
-               }
-               
-               if (mPlayControlBar != null)
-                  mPlayControlBar.NotifyStepped ();
-            }
+            case StateId_Loading:
+               break;
+            case StateId_LoadingError:
+               break;
+            case StateId_WaitingPlay:
+               break;
+            case StateId_Playing:
+               break;
+            case StateId_RunningError:
+               break;
          }
       }
       
-      public function ChangeState (newStateId:int):void
+//======================================================================
+//
+//======================================================================
+      
+      private var mUniViewerUrl:String;
+      private var mFlashParams:Object;
+      
+      private var mWorldPluginUrl:String;
+      private var mLoadDataUrl:String;
+      
+      public function ParseParams ():void
       {
-         switch (newStateId)
+         try
          {
-            case StateId_Load:
-               BuildErrorMessage ("Initializing ...");
-               break;
-            case StateId_OnlineLoad:
-               BuildErrorMessage ("Loading ...");
-               break;
-            case StateId_LoadFailed:
-               //trace (new Error ().getStackTrace ());
-               BuildErrorMessage ("Fail to parse play code.", "http://www.phyard.com");
-               break;
-            case StateId_BuildWorld:
-               BuildErrorMessage ("Building ...");
-               break;
-            case StateId_Play:
-               BuildContextMenu ();
+            if (mParamsFromEditor != null)
+            {
+               mWorldBinaryData = mParamsFromEditor.mWorldBinaryData;
+               mStartRightNow = mParamsFromEditor.mStartRightNow == undefined ? true : mParamsFromEditor.mStartRightNow;
+               mWorldPluginDomain = mParamsFromEditor.mWorldDomain;
                
+               if (RebuildPlayerWorld ())
+               {
+                  ChangeState (StateId_Playing);
+               }
+               else
+               {
+                  throw new Error ("RebuildPlayerWorld failed");
+               }
+            }
+            else if (mParamsFromUniViewer != null)
+            {
+               mFlashParams = mParamsFromUniViewer.mFlashVars;
+               
+               mUniViewerUrl = mParamsFromUniViewer.mUniViewerUrl;
+               
+               var stream:ByteArray = mParamsFromUniViewer.mDesignInfoStream;
+               var designRevision:int = stream.readInt ();
+               var worldPluginUrl:String = stream.readUTF ();
+               
+               if (worldPluginUrl.indexOf ("://") < 0)
+               {
+                  var index:int = mUniViewerUrl.indexOf ("/uniplayer.swf");
+                  if (index < 0)
+                     index = mUniViewerUrl.indexOf ("/swfs/univiewer");
+                  
+                  if (index < 0)
+                  {
+                     throw new Error ("Invalid url: " + mUniViewerUrl);
+                  }
+                  
+                  worldPluginUrl = mUniViewerUrl.substring (0, index) + "/swfs/" + worldPluginUrl;
+               }
+               
+               mWorldPluginUrl = worldPluginUrl;
+               
+               var loadDataUrl:String;
+               if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0)  // for play, add the return published revison id
+               {
+                  loadDataUrl = mUniViewerUrl.replace (/\/uniplayer\.*swf/, "/i/design/loaddata");
+                  loadDataUrl = loadDataUrl + "&revision=" + designRevision;
+               }
+               else // for view, the revision is already caontained in mUniViewerUrl
+               {
+                  loadDataUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/i/design/loaddata");
+                  loadDataUrl = loadDataUrl + "&view=1"; // indication for view
+               }
+               
+               mLoadDataUrl = loadDataUrl;
+               
+               mWorldPlayCode = mFlashParams.playcode;
+               if (mWorldPlayCode != null && mWorldPlayCode.length == 0)
+               {
+                  mWorldPlayCode = null;
+               }
+               
+               //
+               if (mWorldPlayCode == null)
+               {
+                  if (StartOnlineLoadingData ())
+                  {
+                     ChangeState (StateId_Loading);
+                  }
+                  else
+                  {
+                     ChangeState (StateId_LoadingError);
+                  }
+               }
+               else
+               {
+                  if (StartOnlineLoadingWorldPlugin ())
+                  {
+                     ChangeState (StateId_Loading);
+                  }
+                  else
+                  {
+                     ChangeState (StateId_LoadingError);
+                  }
+               }
+            }
+         }
+         catch (error:Error)
+         {
+            ChangeState (StateId_ParsingError);
+         }
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
+      public static const k_ReturnCode_UnknowError:int = 0;
+      public static const k_ReturnCode_Successed:int = 1;
+      public static const k_ReturnCode_NotLoggedIn:int = 2;
+      public static const k_ReturnCode_SlotIdOutOfRange:int = 3;
+      public static const k_ReturnCode_DesignNotCreatedYet:int = 4;
+      public static const k_ReturnCode_DesignAlreadyRemoved:int = 5;
+      public static const k_ReturnCode_DesignCannotBeCreated:int = 6;
+      public static const k_ReturnCode_ProfileNameNotCreatedYet:int = 7;
+      public static const k_ReturnCode_NoEnoughRightsToProcess:int = 8;
+      
+      private function StartOnlineLoadingData ():Boolean
+      {
+         try
+         {
+            if (mLoadDataUrl == null)
+            {
+               throw new Error ("mLoadDataUrl == null");
+            }
+      trace ("StartOnlineLoadingData: " + mLoadDataUrl);
+            
+            var request:URLRequest = new URLRequest (mLoadDataUrl);
+            request.method = URLRequestMethod.GET;
+            
+            var loader:URLLoader = new URLLoader ();
+            loader.dataFormat = URLLoaderDataFormat.BINARY;
+            
+            loader.addEventListener(Event.COMPLETE, OnOnlineLoadDataCompleted);
+            loader.addEventListener(ProgressEvent.PROGRESS, OnLoadingDataProgress);
+            
+            loader.load (request);
+         }
+         catch (error:Error)
+         {
+            if (Compile::Is_Debugging)
+               throw error;
+            
+            return false;
+         }
+         
+         return true;
+      }
+      
+      private function OnLoadingDataProgress (event:ProgressEvent):void
+      {
+         var startPercent:Number = mParamsFromUniViewer.mLoadingProgress;
+         var endPercent:Number = mParamsFromUniViewer.mLoadingProgress + 0.5 * (100.0 - mParamsFromUniViewer.mLoadingProgress);
+         
+         mParamsFromUniViewer.SetLoadingText ("Loading ... (" + int (startPercent + (endPercent - startPercent) * event.bytesLoaded / event.bytesTotal) + "%)");
+      }
+      
+      private function OnOnlineLoadDataCompleted (event:Event):void 
+      {
+         try
+         {
+            var loader:URLLoader = URLLoader(event.target);
+            
+            var data:ByteArray = ByteArray (loader.data);
+            
+            var returnCode:int = data.readByte ();
+            
+            if (returnCode != k_ReturnCode_Successed)
+            {
+               throw new Error ("Load data error");
+            }
+            
+            var designDataForPlaying:ByteArray = new ByteArray ();
+            data.readBytes (designDataForPlaying);
+            designDataForPlaying.uncompress ();
+            
+            mWorldBinaryData = designDataForPlaying;
+            
+            //
+            if (! StartOnlineLoadingWorldPlugin ())
+            {
+               throw new Error ("Fail to start load world plugin");
+            }
+         }
+         catch (error:Error)
+         {
+            ChangeState (StateId_LoadingError);
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
+      }
+      
+      private function StartOnlineLoadingWorldPlugin ():Boolean
+      {
+         try
+         {
+            if (mWorldPluginUrl == null)
+            {
+               throw new Error ("mWorldPluginUrl == null");
+            }
+      trace ("StartOnlineLoadingWorldPlugin: " + mWorldPluginUrl);
+            
+            var request:URLRequest = new URLRequest (mWorldPluginUrl);
+            request.method = URLRequestMethod.GET;
+            
+            var loader:Loader = new Loader ();
+               
+            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnOnlineLoadWorldPluginCompleted);
+            loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, OnLoadWorldPluginProgress);
+            //loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
+            //loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+            
+            mWorldPluginDomain = new ApplicationDomain ();
+            loader.load(request, new LoaderContext(false, mWorldPluginDomain));
+         }
+         catch (error:Error)
+         {
+            if (Compile::Is_Debugging)
+               throw error;
+            
+            return false;
+         }
+         
+         return true;
+      }
+      
+      private function OnOnlineLoadWorldPluginCompleted (event:Event):void 
+      {
+         try
+         {
+            mParamsFromUniViewer.SetLoadingText (null);
+            this.alpha = 1.0;
+            
+            if (RebuildPlayerWorld ())
+            {
+               //ChangeState (StateId_WaitingPlay);
+               ChangeState (StateId_Playing);
+            }
+            else
+            {
+               throw new Error ("RebuildPlayerWorld failed");
+            }
+         }
+         catch (error:Error)
+         {
+            ChangeState (StateId_LoadingError);
+            
+            if (Compile::Is_Debugging)
+               throw error;
+         }
+      }
+      
+      private function OnLoadWorldPluginProgress (event:ProgressEvent):void
+      {
+         var startPercent:Number = mParamsFromUniViewer.mLoadingProgress + 0.5 * (100.0 - mParamsFromUniViewer.mLoadingProgress);
+         var endPercent:Number = 100;
+         
+         mParamsFromUniViewer.SetLoadingText ("Loading ... (" + int (startPercent + (endPercent - startPercent) * event.bytesLoaded / event.bytesTotal) + "%)");
+      }
+      
+//======================================================================
+// world plugin
+//======================================================================
+      
+      private var mWorldPluginDomain:ApplicationDomain;
+      private var mWorldPlugin:Object;
+      
+      private var mWorldPluginProperties:Object;
+      
+      private function RetrieveWorldPluginProperties ():void
+      {
+         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer
+         {
+            mWorldPlugin = mWorldPluginDomain.getDefinition ("Main");
+         }
+         else // if (mWorldPluginDomain.hasDefinition ("plugin.WorldPlugin")) // for editor
+         {
+            mWorldPlugin = mWorldPluginDomain.getDefinition ("plugin.WorldPlugin");
+         }
+         
+         mWorldPluginProperties = mWorldPlugin.Call ("GetStaticProperties");
+      }
+      
+      private var mWorldDesignProperties:Object;
+      
+      private function RetrieveWorldDesignProperties ():void
+      {
+         mWorldDesignProperties = mWorldPlugin.Call ("GetWorldProperties", {mWorld: mPlayerWorld});
+         
+         if (mWorldDesignProperties.IsPermitPublishing == null)              mWorldDesignProperties.IsPermitPublishing = DummyCallback_ReturnFalse;
+         if (mWorldDesignProperties.IsShareSourceCode == null)               mWorldDesignProperties.IsShareSourceCode = DummyCallback_ReturnFalse;
+         if (mWorldDesignProperties.GetZoomScale == null)                    mWorldDesignProperties.GetZoomScale = DummyCallback_GetScale;
+         if (mWorldDesignProperties.SetZoomScale == null)                    mWorldDesignProperties.SetZoomScale = DummyCallback;
+         if (mWorldDesignProperties.GetViewportWidth == null)                mWorldDesignProperties.GetViewportWidth = DummyCallback_ViewSize;
+         if (mWorldDesignProperties.GetViewportHeight == null)               mWorldDesignProperties.GetViewportHeight = DummyCallback_ViewSize;
+         if (mWorldDesignProperties.GetViewerUiFlags == null)                mWorldDesignProperties.GetViewerUiFlags = DummyCallback_UiFlags;
+         if (mWorldDesignProperties.GetPlayBarColor == null)                 mWorldDesignProperties.GetPlayBarColor = DummyCallback_PlayBarColor;
+         if (mWorldDesignProperties.Initialize == null)                      mWorldDesignProperties.Initialize = DummyCallback;
+         if (mWorldDesignProperties.SetSingleStepMode == null)               mWorldDesignProperties.SetSingleStepMode = DummyCallback;
+         if (mWorldDesignProperties.SetPaused == null)                       mWorldDesignProperties.SetPaused = DummyCallback;
+         if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == null) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
+         if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
+      }
+      
+      private function DummyCallback (param1:Object = null, param2:Object = null, param3:Object = null):void
+      {
+      }
+      
+      private function DummyCallback_ReturnFalse ():Boolean
+      {
+         return false;
+      }
+      
+      private function DummyCallback_GetScale ():Number
+      {
+         return 1.0;
+      }
+      
+      private function DummyCallback_ViewSize ():int
+      {
+         return 600;
+      }
+      
+      private function DummyCallback_PlayBarColor ():uint
+      {
+         return 0x606060;
+      }
+      
+      private function DummyCallback_UiFlags ():int
+      {
+         if (mWorldPluginProperties.mWorldVersion >= 0x0104)
+         {
+            return Define.PlayerUiFlag_ShowPlayBar | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowScaleAdjustor | Define.PlayerUiFlag_ShowHelpButton;
+         }
+         else
+         {
+            return Define.PlayerUiFlag_ShowPlayBar | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowHelpButton;
+         }
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
+      private function RebuildPlayerWorld ():Boolean
+      {
+         try
+         {
+            var isFirstTime:Boolean = (mPlayerWorld == null);
+            
+            ClearInfoMessage ();
+            
+         trace ("RebuildPlayerWorld: isFirstTime = " + isFirstTime);
+            if (isFirstTime)
+            {
+               RetrieveWorldPluginProperties ();
+               
+               if (mWorldBinaryData == null && mWorldPlayCode != null)
+               {
+                  mWorldBinaryData = (mWorldPluginProperties.WorldFormat_HexString2ByteArray as Function) (mWorldPlayCode);
+               }
+            }
+            else
+            {
+         trace ("RebuildPlayerWorld: mWorldDesignProperties.Destroy = " + mWorldDesignProperties.Destroy);
+               mWorldDesignProperties.Destroy ();
+               
+         trace ("RebuildPlayerWorld: mPlayerWorld = " + mPlayerWorld);
+               if (mWorldLayer.contains (mPlayerWorld as Sprite))
+                  mWorldLayer.removeChild (mPlayerWorld as Sprite);
+               
+               mPlayerWorld = null;
+            }
+            
+            mWorldBinaryData.position = 0;
+            var worldDefine:Object = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData)
+            mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
+            
+            RetrieveWorldDesignProperties ();
+            
+            if (mPlayerWorld != null)
+            {
+               var hidePlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0;
+               
+               mWorldDesignProperties.SetCacheSystemEvent (! hidePlayBar);
+               mWorldDesignProperties.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null);
+               
+               mWorldLayer.addChild (mPlayerWorld as Sprite);
+               
+               mEverFinished = false;
+            }
+            
+            CloseFinishedDialog ();
+            CloseHelpDialog ();
+            
+            if (isFirstTime)
+            {
                CreateTopBar ();
-               if (mStartRightNow)
-                  mPlayControlBar.OnClickStart ();
                
-               OnPause (null);
+               if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+                  mWorldLayer.y = mTopBarLayer.y + mTopBarLayer.height;
+               else
+                  mWorldLayer.y = mTopBarLayer.y
+               
+            trace ("mWorldLayer.y = " + mWorldLayer.y);
                
                CreateHelpDialog ();
                //OpenHelpDialog ();
@@ -538,34 +630,155 @@ package viewer {
                
                //CreateBottomBar ();
                
-               break;
-            case StateId_RunningError:
-               //if (mPlayControlBar != null)
-               //{
-               //   mPlayControlBar.OnClickPause ();
-               //   mPlayControlBar.OnClickRestart ();
-               //}
+               //CreateBorderLineLayer ();
                
-               BuildErrorMessage ("Runtime error!");
-               
-               break;
-            default:
-               break;
+               BuildContextMenu ();
+            }
+            
+            // special handling, before v1.02 (not include v1.02)
+            if (mWorldPluginProperties.mWorldVersion < 0x0102)
+            {
+               mWorldDesignProperties.Update (0, 1);
+            }
+            
+            // from v1.5
+            mWorldPlugin.Call ("SetUiParams", {
+               mWorld : mPlayerWorld,
+               OnClickRestart : mPlayControlBar.OnClickRestart,
+               IsPlaying : mPlayControlBar.IsPlaying,
+               SetPlaying : mPlayControlBar.SetPlaying,
+               GetPlayingSpeedX : mPlayControlBar.GetPlayingSpeedX,
+               SetPlayingSpeedX : mPlayControlBar.SetPlayingSpeedX,
+               GetZoomScale : mPlayControlBar.GetZoomScale,
+               SetZoomScale : mPlayControlBar.SetZoomScale
+            });
+            
+            mWorldDesignProperties.Initialize ();
+            
+            if (isFirstTime)
+            {
+               if (mStartRightNow) mPlayControlBar.OnClickStart ();
+            }
+         }
+         catch (error:Error)
+         {
+            if (Compile::Is_Debugging)
+               throw error;
+            
+            return false;
          }
          
-         mStateId = newStateId;
+         return true;
       }
       
-      private function ClearErrorMessage ():void
+//======================================================================
+//
+//======================================================================
+      
+      private var mFpsCounter:FpsCounter;
+      private var mStepTimeSpan:TimeSpan = new TimeSpan ();
+      
+      public function Step (singleStepMode:Boolean = false):void
+      {
+         if (mPlayerWorld == null)
+            return;
+         
+         // update scale
+         if (mWorldDesignProperties.GetZoomScale () != mPlayerWorldZoomScale)
+         {
+            var newScale:Number;
+            
+            if (mWorldDesignProperties.GetZoomScale () < mPlayerWorldZoomScale)
+            {
+               if (mPlayerWorldZoomScaleChangedSpeed < 0)
+                  mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
+               
+               newScale = (mPlayerWorld as Sprite).scaleX + mPlayerWorldZoomScaleChangedSpeed;
+               
+               if (newScale >= mPlayerWorldZoomScale)
+                  mWorldDesignProperties.SetZoomScale (mPlayerWorldZoomScale);
+               else
+                  mWorldDesignProperties.SetZoomScale (newScale);
+            }
+            else
+            {
+               if (mPlayerWorldZoomScaleChangedSpeed > 0)
+                  mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
+               
+               newScale = (mPlayerWorld as Sprite).scaleX + mPlayerWorldZoomScaleChangedSpeed;
+               
+               if (newScale <= mPlayerWorldZoomScale)
+                  mWorldDesignProperties.SetZoomScale (mPlayerWorldZoomScale);
+               else
+                  mWorldDesignProperties.SetZoomScale (newScale);
+            }
+         }
+         
+         // 
+         mStepTimeSpan.End ();
+         mStepTimeSpan.Start ();
+         
+         var paused:Boolean = (! IsPlaying ()) || mHelpDialog.visible;
+         
+         mWorldDesignProperties.SetPaused (paused);
+         mWorldDesignProperties.SetSingleStepMode (singleStepMode);
+         
+         if ( (! mExternalPaused) && ((! paused) || singleStepMode) )
+         {
+            try
+            {
+               mWorldDesignProperties.Update (mStepTimeSpan.GetLastSpan (), GetPlayingSpeedX ());
+            }
+            catch (error:Error)
+            {
+               //if (mParamsFromEditor != null)
+               //{
+               //   throw error; // let editor to handle it
+               //}
+               //else
+               {
+                  // todo show dialog: "stop" or "continue";
+                  // write log of send message to server
+                  
+                  ChangeState (StateId_RunningError);
+               }
+               
+               if (Compile::Is_Debugging)
+               {
+                  throw error;
+               }
+            }
+            
+            if (mPlayControlBar != null)
+            {
+               mPlayControlBar.NotifyStepped ();
+            }
+         }
+         
+         if (mWorldDesignProperties.IsLevelSuccessed ())
+         {
+            OpenFinishedDialog ();
+         }
+         else
+         {
+            CloseFinishedDialog ();
+         }
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
+      private function ClearInfoMessage ():void
       {
          while (mErrorMessageLayer.numChildren > 0)
             mErrorMessageLayer.removeChildAt (0);
          GraphicsUtil.Clear (mErrorMessageLayer);
       }
       
-      private function BuildErrorMessage (message:String, linkUrl:String = null):void
+      private function BuildInfoMessage (message:String, linkUrl:String = null):void
       {
-         ClearErrorMessage ();
+         ClearInfoMessage ();
          
          var w:int;
          var h:int;
@@ -595,322 +808,9 @@ package viewer {
          }
       }
       
-      private function CheckStageSize (contentWidth:Number, contentHeight:Number):void
-      {
-         // in fact, I still don't know why this code work.
-         // weird flash.
-         
-         var defaultRatio:Number;
-         var stageRatio:Number;
-         var marginTop:Number; // default unit
-         var marginLeft:Number; // default unit
-         var scaleStageToDefault:Number;
-         
-         defaultRatio = Number (App::Default_Height) / Number (App::Default_Width);
-         stageRatio = stage.stageHeight / stage.stageWidth;
-         if (defaultRatio < stageRatio)
-         {
-            marginLeft = 0;
-            marginTop = 0.5 * (Number (App::Default_Width) * stageRatio - Number (App::Default_Height));
-            scaleStageToDefault = Number (App::Default_Width) / stage.stageWidth;
-         }
-         else
-         {
-            marginLeft = 0.5 * (Number (App::Default_Height) / stageRatio - Number (App::Default_Width));
-            marginTop = 0;
-            scaleStageToDefault = Number (App::Default_Height) / stage.stageHeight;
-         }
-         
-         var ratio:Number = contentHeight / contentWidth;
-         var availableWidth:Number; // stage unit
-         var availableHeight:Number; // stage unit
-         var scale:Number;
-         var topY:Number; // stage unit
-         var leftX:Number; // stage unit
-         if (Math.abs (ratio - stageRatio) < 1e-12)
-         {
-            availableWidth = stage.stageWidth;
-            availableHeight = stage.stageHeight;
-            scale = contentWidth >= contentHeight ? availableWidth / contentWidth : availableHeight / contentHeight;
-            leftX = 0;
-            topY = 0;
-         }
-         else if (ratio < stageRatio)
-         {
-            availableWidth = stage.stageWidth;
-            availableHeight = availableWidth * ratio;
-            scale = availableWidth / contentWidth;
-            leftX = 0;
-            topY = 0.5 * (stage.stageHeight - availableHeight);
-         }
-         else
-         {
-            availableHeight = stage.stageHeight;
-            availableWidth = availableHeight / ratio;
-            scale = availableHeight / contentHeight;
-            leftX = 0.5 * (stage.stageWidth - availableWidth);
-            topY = 0;
-         }
-         leftX *= scaleStageToDefault;
-         topY *= scaleStageToDefault;
-         scale *= scaleStageToDefault;
-         
-         this.scaleX = this.scaleY = scale;
-         this.x =  leftX - marginLeft;
-         this.y = topY - marginTop;
-      }
-      
 //======================================================================
 //
 //======================================================================
-      
-      public static const k_ReturnCode_UnknowError:int = 0;
-      public static const k_ReturnCode_Successed:int = 1;
-      public static const k_ReturnCode_NotLoggedIn:int = 2;
-      public static const k_ReturnCode_SlotIdOutOfRange:int = 3;
-      public static const k_ReturnCode_DesignNotCreatedYet:int = 4;
-      public static const k_ReturnCode_DesignAlreadyRemoved:int = 5;
-      public static const k_ReturnCode_DesignCannotBeCreated:int = 6;
-      public static const k_ReturnCode_ProfileNameNotCreatedYet:int = 7;
-      public static const k_ReturnCode_NoEnoughRightsToProcess:int = 8;
-
-      private var mFlashParams:Object;
-
-      public function ParseFlashParams ():void
-      {
-         mFlashParams = new Object ();
-         
-         try 
-         {
-            var loadInfo:LoaderInfo = LoaderInfo(this.loaderInfo);
-            
-            mFlashParams.mRootUrl = UrlUtil.GetRootUrl (loaderInfo.url);
-            
-            var flashVars:Object = loaderInfo.parameters;
-            if (flashVars != null)
-            {
-               // offline params
-               
-               if (flashVars.playcode != null)
-                  mFlashParams.mWorldPlayCode = flashVars.playcode;
-               
-               // online laod params
-               
-               if (flashVars.action != null)
-                  mFlashParams.mAction = flashVars.action;
-               if (flashVars.author != null)
-                  mFlashParams.mAuthorName = flashVars.author;
-               if (flashVars.slot != null)
-                  mFlashParams.mSlotID = flashVars.slot;
-               if (flashVars.revision != null)
-                  mFlashParams.mRevisionID = flashVars.revision;
-            }
-         } 
-         catch (error:Error) 
-         {
-             trace ("Parse flash vars error." + error);
-         }
-      }
-      
-      private function TryToStartOnlineLoading ():void
-      {
-         if (mFlashParams == null || mFlashParams.mRootUrl == null || mFlashParams.mAction == null || mFlashParams.mAuthorName == null || mFlashParams.mSlotID == null)
-         {
-            ChangeState (StateId_LoadFailed);
-            return;
-         }
-         
-         ChangeState (StateId_OnlineLoad);
-         
-         var designLoadUrl:String;
-         
-         if (mFlashParams.mAction == "play")
-            designLoadUrl = mFlashParams.mRootUrl + "design/" + mFlashParams.mAuthorName + "/" + mFlashParams.mSlotID + "/loadpc";
-         else // "view"
-         {
-            if (mFlashParams.mRevisionID == null)
-               mFlashParams.mRevisionID = "latest";
-            
-            designLoadUrl = mFlashParams.mRootUrl + "design/" + mFlashParams.mAuthorName + "/" + mFlashParams.mSlotID + "/revision/" + mFlashParams.mRevisionID + "/loadvc";
-         }
-         
-         var request:URLRequest = new URLRequest (designLoadUrl);
-         request.method = URLRequestMethod.GET;
-         
-         var loader:URLLoader = new URLLoader ();
-         loader.dataFormat = URLLoaderDataFormat.BINARY;
-         
-         loader.addEventListener(Event.COMPLETE, OnOnlineLoadCompleted);
-         
-         loader.load ( request );
-      }
-      
-      private function OnOnlineLoadCompleted(event:Event):void 
-      {
-         var loader:URLLoader = URLLoader(event.target);
-         
-         try
-         {
-            var data:ByteArray = ByteArray (loader.data);
-            
-            var returnCode:int = data.readByte ();
-            
-            if (returnCode == k_ReturnCode_Successed)
-            {
-               var designDataForPlaying:ByteArray = new ByteArray ();
-               data.readBytes (designDataForPlaying);
-               designDataForPlaying.uncompress ();
-               
-               mWorldDataForPlaying = designDataForPlaying;
-               
-               ChangeState (StateId_BuildWorld);
-            }
-            else
-            {
-               ChangeState (StateId_LoadFailed);
-            }
-         }
-         catch (error:Error)
-         {
-            ChangeState (StateId_LoadFailed);
-            
-            if (Compile::Is_Debugging)
-               throw error;
-         }
-      }
-      
-      private function RebuildPlayerWorld ():void
-      {
-         ClearErrorMessage ();
-         
-         if (mPlayerWorld != null)
-         {
-            mPlayerWorld.Destroy ();
-            
-            if (mWorldLayer.contains (mPlayerWorld as Sprite))
-               mWorldLayer.removeChild (mPlayerWorld as Sprite);
-         }
-         
-         mPlayerWorld = null;
-         
-         try
-         {
-            mWorldDataForPlaying.position = 0;
-            
-            var worldDefine:Object = (mWorldDomain.getDefinition ("common.DataFormat2").ByteArray2WorldDefine as Function) (mWorldDataForPlaying)
-            
-            mPlayerWorld = (mWorldDomain.getDefinition ("common.DataFormat2").WorldDefine2PlayerWorld as Function) (worldDefine);
-         }
-         catch (error:Error)
-         {
-            trace ("create world error." + error);
-            
-            if (Compile::Is_Debugging)
-               throw error;
-         }
-         
-         if (mPlayerWorld != null)
-         {
-            var hidePlayBar:Boolean = (mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0;
-            
-            mPlayerWorld.SetCacheSystemEvent (! hidePlayBar);
-            mPlayerWorld.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null);
-            
-            mWorldLayer.addChild (mPlayerWorld as Sprite);
-            
-            mEverFinished = false;
-         }
-         
-         CloseFinishedDialog ();
-         CloseHelpDialog ();
-      }
-      
-      private function InitPlayerWorld ():void
-      {
-         if (mPlayerWorld == null)
-            return;
-         
-         mPlayerWorld.SetParametersFromUI ({
-            OnClickRestart  : mPlayControlBar.OnClickRestart, 
-            IsPlaying       : mPlayControlBar.IsPlaying, 
-            SetPlaying      : mPlayControlBar.SetPlaying, 
-            GetPlayingSpeedX: mPlayControlBar.GetPlayingSpeedX, 
-            SetPlayingSpeedX: mPlayControlBar.SetPlayingSpeedX, 
-            GetZoomScale    : mPlayControlBar.GetZoomScale, 
-            SetZoomScale    : mPlayControlBar.SetZoomScale
-         });
-         
-         mPlayerWorld.Initialize ();
-      }
-      
-//======================================================================
-//
-//======================================================================
-      
-      /*
-      private function CreateBottomBar ():void
-      {
-         mBottomBarLayer.x = Define.DefaultWorldWidth * 0.5;
-         mBottomBarLayer.y = Define.DefaultWorldHeight - Define.WorldBorderThinknessTB;
-         
-         mBottomBarLayer.graphics.clear ();
-         mBottomBarLayer.graphics.beginFill(0x606060);
-         mBottomBarLayer.graphics.drawRect ( - Define.DefaultWorldWidth * 0.5, 0, Define.DefaultWorldWidth, Define.WorldBorderThinknessTB);
-         mBottomBarLayer.graphics.endFill ();
-         
-         while (mBottomBarLayer.numChildren > 0)
-            mBottomBarLayer.removeChildAt (0);
-         
-         if (mPlayerWorld != null)
-         {
-            var authorName:String = mPlayerWorld.GetAuthorName ();
-            var anthorUrl:String = mPlayerWorld.GetAuthorHomepage ().toLowerCase();
-            
-            var infoText:String = "<font face='Verdana' size='10'> Designed by: ";
-            
-            if (authorName != null && authorName.length > 0)
-            {
-               authorName = TextUtil.TrimString (authorName);
-               
-               if (authorName.length > 30)
-                  authorName = authorName.substr (0, 30);
-               
-               infoText = infoText + "<b><i>" + authorName + "</i></b>";
-               
-               if (anthorUrl != null)
-               {
-                  if (anthorUrl.indexOf ("http") != 0)
-                     anthorUrl = null;
-               }
-               
-               if (anthorUrl != null)
-               {
-                  anthorUrl = TextUtil.TrimString (anthorUrl);
-                  
-                  var maxUrlLength:int = 60 - authorName.length;
-                  
-                  var anthorUrlShort:String = anthorUrl;
-                  
-                  if (anthorUrl.length > maxUrlLength)
-                  {
-                     anthorUrlShort = anthorUrl.substr (0, maxUrlLength - 3) + "...";
-                  }
-                  else
-                     anthorUrl = anthorUrl;
-                  
-                  
-                  infoText = infoText + " (<u><font color='#0000ff'><a href='" + anthorUrl + "' target='_blank' >" + anthorUrlShort + "</a></font></u>)";
-               }
-               
-               var textField:TextFieldEx = TextFieldEx.CreateTextField (infoText, true, 0xDDDDDD);
-               mBottomBarLayer.addChild (textField);
-               
-               textField.x = - textField.width * 0.5;
-               textField.y = 2;
-            }
-         }
-      }
-      */
       
       private var mFinishedDialog:Sprite;
       
@@ -937,13 +837,11 @@ package viewer {
          
          if (mWorldLayer != null)
          {
-            var authorName:String = mPlayerWorld.GetAuthorName ();
-            var anthorUrl:String = mPlayerWorld.GetAuthorHomepage ().toLowerCase();
+            var authorName:String = mWorldDesignProperties.mAuthorName;
+            var anthorUrl:String = mWorldDesignProperties.mAuthorHomepage.toLowerCase();
             
             if (anthorUrl.indexOf ("http") != 0)
                anthorUrl = null;
-            
-            
             
             if (authorName != null && authorName.length > 0)
             {
@@ -1034,13 +932,13 @@ package viewer {
       
       private function CreateTopBar ():void
       {
-         var playBarColor:uint = mPlayerWorld == null ? 0x606060 : mPlayerWorld.GetPlayBarColor ();
-         var showPlayBar:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
-         var showSpeedAdjustor:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
-         var showScaleAdjustor:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
-         var showHelpButton:Boolean = mPlayerWorld == null ? true : ((mPlayerWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
-         var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mPlayerWorld.GetViewportWidth ();
-         var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mPlayerWorld.GetViewportHeight ();
+         var playBarColor:uint = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
+         var showPlayBar:Boolean = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
+         var showSpeedAdjustor:Boolean = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
+         var showScaleAdjustor:Boolean = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
+         var showHelpButton:Boolean = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
+         var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
+         var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
          var viewerWidth:Number = viewportWidth;
          var viewerHeight:Number = showPlayBar ? (Define.PlayerPlayBarThickness + viewportHeight) : viewportHeight;
          
@@ -1049,7 +947,7 @@ package viewer {
             CheckStageSize (viewerWidth, viewerHeight);
          }
          
-         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth - 1, Define.PlayerPlayBarThickness, playBarColor, 1, true, playBarColor);
+         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth, Define.PlayerPlayBarThickness, playBarColor, 1, true, playBarColor);
          
          mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, null, showScaleAdjustor ? OnZoom : null);
          mTopBarLayer.addChild (mPlayControlBar);
@@ -1061,21 +959,222 @@ package viewer {
          mTopBarLayer.visible = showPlayBar;
          mTopBarLayer.x = 0;
          mTopBarLayer.y = 0;
-         
-         mWorldLayer.x = 0;
-         mWorldLayer.y = mTopBarLayer.y + (showPlayBar ? mTopBarLayer.height : 0);
-         
-         //
-         InitPlayerWorld ();
       }
       
       private function CenterSprite (sprite:Sprite):void
       {
-         var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mPlayerWorld.GetViewportWidth ();
-         var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mPlayerWorld.GetViewportHeight ();
+         var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
+         var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
          
          sprite.x = mWorldLayer.x + 0.5 * (viewportWidth - sprite.width);
          sprite.y = mWorldLayer.y + 0.5 * (viewportHeight - sprite.height);
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
+      private function CheckStageSize (contentWidth:Number, contentHeight:Number):void
+      {
+         // in fact, I still don't know why this code work.
+         // weird flash.
+         
+         var defaultRatio:Number;
+         var stageRatio:Number;
+         var marginTop:Number; // default unit
+         var marginLeft:Number; // default unit
+         var scaleStageToDefault:Number;
+         
+         defaultRatio = Number (App::Default_Height) / Number (App::Default_Width);
+         stageRatio = stage.stageHeight / stage.stageWidth;
+         if (defaultRatio < stageRatio)
+         {
+            marginLeft = 0;
+            marginTop = 0.5 * (Number (App::Default_Width) * stageRatio - Number (App::Default_Height));
+            scaleStageToDefault = Number (App::Default_Width) / stage.stageWidth;
+         }
+         else
+         {
+            marginLeft = 0.5 * (Number (App::Default_Height) / stageRatio - Number (App::Default_Width));
+            marginTop = 0;
+            scaleStageToDefault = Number (App::Default_Height) / stage.stageHeight;
+         }
+         
+         var ratio:Number = contentHeight / contentWidth;
+         var availableWidth:Number; // stage unit
+         var availableHeight:Number; // stage unit
+         var scale:Number;
+         var topY:Number; // stage unit
+         var leftX:Number; // stage unit
+         if (Math.abs (ratio - stageRatio) < 1e-12)
+         {
+            availableWidth = stage.stageWidth;
+            availableHeight = stage.stageHeight;
+            scale = contentWidth >= contentHeight ? availableWidth / contentWidth : availableHeight / contentHeight;
+            leftX = 0;
+            topY = 0;
+         }
+         else if (ratio < stageRatio)
+         {
+            availableWidth = stage.stageWidth;
+            availableHeight = availableWidth * ratio;
+            scale = availableWidth / contentWidth;
+            leftX = 0;
+            topY = 0.5 * (stage.stageHeight - availableHeight);
+         }
+         else
+         {
+            availableHeight = stage.stageHeight;
+            availableWidth = availableHeight / ratio;
+            scale = availableHeight / contentHeight;
+            leftX = 0.5 * (stage.stageWidth - availableWidth);
+            topY = 0;
+         }
+         leftX *= scaleStageToDefault;
+         topY *= scaleStageToDefault;
+         scale *= scaleStageToDefault;
+         
+         this.scaleX = this.scaleY = scale;
+         this.x =  leftX - marginLeft;
+         this.y = topY - marginTop;
+      }
+      
+//======================================================================
+//
+//======================================================================
+      
+      private function BuildContextMenu ():void
+      {
+         if (! mBuildContextMenu)
+            return;
+         
+         var theContextMenu:ContextMenu = new ContextMenu ();
+         theContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
+         defaultItems.print = true;
+         
+         var addSeperaor:Boolean = false;
+         if (Compile::Is_Debugging || mPlayerWorld != null && mWorldDesignProperties.IsShareSourceCode ())
+         {
+            if (mWorldBinaryData != null && mWorldPluginProperties.CallBack_ByteArray2WorldDefine != null && mWorldPluginProperties.CallBack_WorldDefine2Xml != null)
+            {
+               //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
+               
+               mWorldBinaryData.position = 0;
+               mWorldSourceCode = (mWorldPluginProperties.CallBack_WorldDefine2Xml as Function) ((mWorldPluginProperties.CallBack_ByteArray2WorldDefine as Function) (mWorldBinaryData));
+               
+               if (mWorldSourceCode != null)
+               {
+                  var copySourceCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", false);
+                  theContextMenu.customItems.push (copySourceCodeMenuItem);
+                  copySourceCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
+                  
+                  addSeperaor = true;
+               }
+            }
+         }
+         
+         if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?"))
+         {
+            if (mWorldDesignProperties.IsPermitPublishing ())
+            {
+               var copyEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code", false);
+               theContextMenu.customItems.push (copyEmbedCodeMenuItem);
+               copyEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyEmbedCode);
+            }
+            
+            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code for CIF", false);
+            theContextMenu.customItems.push (copyForumEmbedCodeMenuItem);
+            copyForumEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyForumEmbedCode);
+            
+            addSeperaor = true;
+         }
+         
+         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), addSeperaor);
+         theContextMenu.customItems.push (aboutItem);
+         aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
+         
+         contextMenu = theContextMenu;
+      }
+      
+      private function OnCopySourceCode (event:ContextMenuEvent):void
+      {
+         if (mWorldSourceCode != null)
+            System.setClipboard(mWorldSourceCode);
+      }
+      
+      private function OnCopyEmbedCode (event:ContextMenuEvent):void
+      {
+         if (mParamsFromUniViewer != null && mPlayerWorld != null)
+         {
+            var width:int = mWorldDesignProperties.GetViewportWidth ();
+            var height:int = mWorldDesignProperties.GetViewportHeight ();
+            if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+               height += 20;
+            var playcode:String = mParamsFromUniViewer.mWorldPlayCode;
+            
+            var embedCode:String = 
+               "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
+                 + (playcode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + playcode + "\"></param>\n") +
+               "  <param name=\"movie\" value=\"" + mParamsFromUniViewer.mUniViewerUrl + "\"></param>"
+                 + "\n" +
+               "  <param name=\"quality\" value=\"high\"></param>"
+                 + "\n" +
+               "  <embed src=\"" + mParamsFromUniViewer.mUniViewerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
+                 + (playcode == null ? "\n" : "\n    FlashVars=\"playcode=" + playcode + "\"\n") +
+               "    quality=\"high\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\">"
+                 + "\n" +
+               "  </embed>"
+                 + "\n" +
+               "</object>"
+               ;
+            
+            System.setClipboard(embedCode);
+         }
+      }
+      
+      private function OnCopyForumEmbedCode (event:ContextMenuEvent):void
+      {
+         if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?"))
+         {
+            if (mWorldPlayCode != null)
+            {
+               System.setClipboard(mWorldPlayCode);
+            }
+            else
+            {
+               var width:int = mWorldDesignProperties.GetViewportWidth ();
+               var height:int = mWorldDesignProperties.GetViewportHeight ();
+               if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+                  height += 20;
+               
+               if (mParamsFromUniViewer.mWorldPlayCode != null)
+               {
+                   System.setClipboard (mParamsFromUniViewer.mWorldPlayCode);
+                   return;
+               }
+               
+               var substr:String = "uniplayer.swf?";
+               
+               var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf (substr);
+               if (index < 0)
+               {
+                   System.setClipboard("");
+                  return;
+               }
+               
+               var embedCode:String = "[phyard=" + mParamsFromUniViewer.mUniViewerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "/]";
+               
+               System.setClipboard (embedCode);
+            }
+         }
+      }
+      
+      private function OnAbout (event:ContextMenuEvent):void
+      {
+         UrlUtil.PopupPage (Define.AboutUrl);
       }
       
 //======================================================================
@@ -1103,10 +1202,7 @@ package viewer {
          RebuildPlayerWorld ();
          
          //
-         InitPlayerWorld ();
-         
-         //
-         mPlayerWorldZoomScale = mPlayerWorld.GetZoomScale ();
+         mPlayerWorldZoomScale = mWorldDesignProperties.GetZoomScale ();
          if (mPlayControlBar != null)
             mPlayControlBar.SetZoomScale (mPlayerWorldZoomScale);
       }
@@ -1135,7 +1231,7 @@ package viewer {
          if (mPlayerWorld == null)
             return;
          
-         mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mPlayerWorld.GetZoomScale () ) * 0.03;
+         mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mWorldDesignProperties.GetZoomScale () ) * 0.03;
       }
       
       private function OnHelp(data:Object = null):void

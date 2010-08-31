@@ -1165,7 +1165,7 @@ package viewer {
                   return;
                }
                
-               var embedCode:String = "[phyard=" + mParamsFromUniViewer.mUniViewerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "/]";
+               var embedCode:String = "[phyard=" + mParamsFromUniViewer.mUniViewerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "][/phyard]";
                
                System.setClipboard (embedCode);
             }

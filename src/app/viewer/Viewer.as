@@ -506,8 +506,8 @@ package viewer {
       {
          mWorldDesignProperties = mWorldPlugin.Call ("GetWorldProperties", {mWorld: mPlayerWorld});
          
-         if (mWorldDesignProperties.IsPermitPublishing == null)              mWorldDesignProperties.IsPermitPublishing = DummyCallback_ReturnFalse;
-         if (mWorldDesignProperties.IsShareSourceCode == null)               mWorldDesignProperties.IsShareSourceCode = DummyCallback_ReturnFalse;
+         if (mWorldDesignProperties.mIsPermitPublishing == undefined)        mWorldDesignProperties.mIsPermitPublishing = false;
+         if (mWorldDesignProperties.mIsShareSourceCode == undefined)         mWorldDesignProperties.mIsShareSourceCode = false;
          if (mWorldDesignProperties.GetZoomScale == null)                    mWorldDesignProperties.GetZoomScale = DummyCallback_GetScale;
          if (mWorldDesignProperties.SetZoomScale == null)                    mWorldDesignProperties.SetZoomScale = DummyCallback;
          if (mWorldDesignProperties.GetViewportWidth == null)                mWorldDesignProperties.GetViewportWidth = DummyCallback_ViewSize;
@@ -1054,14 +1054,14 @@ package viewer {
          defaultItems.print = true;
          
          var addSeperaor:Boolean = false;
-         if (Compile::Is_Debugging || mPlayerWorld != null && mWorldDesignProperties.IsShareSourceCode ())
+         if (Compile::Is_Debugging || mPlayerWorld != null && mWorldDesignProperties.mIsShareSourceCode)
          {
-            if (mWorldBinaryData != null && mWorldPluginProperties.CallBack_ByteArray2WorldDefine != null && mWorldPluginProperties.CallBack_WorldDefine2Xml != null)
+            if (mWorldBinaryData != null && mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine != null && mWorldPluginProperties.WorldFormat_WorldDefine2Xml != null)
             {
                //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
                
                mWorldBinaryData.position = 0;
-               mWorldSourceCode = (mWorldPluginProperties.CallBack_WorldDefine2Xml as Function) ((mWorldPluginProperties.CallBack_ByteArray2WorldDefine as Function) (mWorldBinaryData));
+               mWorldSourceCode = (mWorldPluginProperties.WorldFormat_WorldDefine2Xml as Function) ((mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData));
                
                if (mWorldSourceCode != null)
                {
@@ -1076,7 +1076,7 @@ package viewer {
          
          if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?"))
          {
-            if (mWorldDesignProperties.IsPermitPublishing ())
+            if (mWorldDesignProperties.mIsPermitPublishing)
             {
                var copyEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code", false);
                theContextMenu.customItems.push (copyEmbedCodeMenuItem);

@@ -6,15 +6,15 @@ package editor.mode {
    import com.tapirgames.util.GraphicsUtil;
    
    import editor.entity.Entity;
-   import editor.WorldView;
+   import editor.FunctionEditingView;
    
    import editor.trigger.entity.Linkable;
    
    import common.Define;
    
-   public class ModeCreateEntityLink extends Mode
+   public class FunctionModeCreateEntityLink extends FunctionMode
    {
-      public function ModeCreateEntityLink (mainView:WorldView, linkable:Linkable)
+      public function FunctionModeCreateEntityLink (mainView:FunctionEditingView, linkable:Linkable)
       {
          super (mainView);
          
@@ -57,8 +57,8 @@ package editor.mode {
       
       protected function UpdateSession (posX:Number, posY:Number):void
       {
-         var point1:Point = mMainView.WorldToView ( new Point (mFromWorldDisplayX, mFromWorldDisplayY) );
-         var point2:Point = mMainView.WorldToView ( new Point (posX, posY) );
+         var point1:Point = mMainView.ManagerToView ( new Point (mFromWorldDisplayX, mFromWorldDisplayY) );
+         var point2:Point = mMainView.ManagerToView ( new Point (posX, posY) );
          
          GraphicsUtil.ClearAndDrawLine (mLineShape, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
       }
@@ -74,7 +74,7 @@ package editor.mode {
          var created:Boolean = false;
          
          // first round
-         var entities:Array = mMainView.GetEditorWorld ().GetEntitiesAtPoint (endX, endY);
+         var entities:Array = mMainView.GetFunctionManager ().GetEntitiesAtPoint (endX, endY);
          var entity:Entity;
          var linkable:Linkable;
          var i:int;
@@ -101,12 +101,6 @@ package editor.mode {
                if (created)
                   break;
             }
-         }
-         
-         if (created)
-         {
-            mMainView.CreateUndoPoint ("Create link");
-            mMainView.NotifyEntityLinksModified ();
          }
       }
       

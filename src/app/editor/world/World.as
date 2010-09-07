@@ -52,6 +52,9 @@ package editor.world {
    import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityAction;
    
+   import editor.trigger.entity.EntityFunctionPackage;
+   import editor.trigger.entity.EntityFunction;
+   
    import editor.entity.VertexController;
    
    import editor.entity.EntityCollisionCategory;
@@ -69,6 +72,8 @@ package editor.world {
       
       public var mCollisionManager:CollisionManager;
       
+      public var mFunctionManager:FunctionManager;
+      
       public var mSelectionEngineForVertexes:SelectionEngine; // used within package
       
       public var mTriggerEngine:TriggerEngine;
@@ -85,6 +90,8 @@ package editor.world {
          
          mCollisionManager = new CollisionManager ();
          
+         mFunctionManager = new FunctionManager ();
+         
          //mSelectionEngineForVertexes = new SelectionEngine ();
          mSelectionEngineForVertexes = mSelectionEngine;
          
@@ -94,6 +101,7 @@ package editor.world {
       override public function Destroy ():void
       {
          mCollisionManager.Destroy ();
+         mFunctionManager.Destroy ();
          
          super.Destroy ();
          
@@ -104,6 +112,8 @@ package editor.world {
       override public function DestroyAllEntities ():void
       {
          mCollisionManager.DestroyAllEntities ();
+         
+         mFunctionManager.DestroyAllEntities ();
          
          super.DestroyAllEntities ();
       }
@@ -1409,11 +1419,6 @@ package editor.world {
 //   collision categories
 //=================================================================================
       
-      public function GetNumCollisionCategories ():int
-      {
-         return mCollisionManager.GetNumCollisionCategories ();
-      }
-      
       public function GetCollisionManager ():CollisionManager
       {
          return mCollisionManager;
@@ -1422,6 +1427,11 @@ package editor.world {
       public function SetCollisionManager (cm:CollisionManager):void
       {
          mCollisionManager = cm;
+      }
+      
+      public function GetNumCollisionCategories ():int
+      {
+         return mCollisionManager.GetNumCollisionCategories ();
       }
       
       public function GetCollisionCategoryIndex (category:EntityCollisionCategory):int
@@ -1456,6 +1466,35 @@ package editor.world {
       public function CreateEntityCollisionCategory (ccName:String):EntityCollisionCategory
       {
          return mCollisionManager.CreateEntityCollisionCategory (ccName);
+      }
+      
+//=================================================================================
+//   functions
+//=================================================================================
+      
+      public function GetFunctionManager ():FunctionManager
+      {
+         return mFunctionManager;
+      }
+      
+      public function SetFunctionManager (fm:FunctionManager):void
+      {
+         mFunctionManager = fm;
+      }
+      
+      public function GetNumFunctions ():int
+      {
+         return mFunctionManager.GetNumFunctions ();
+      }
+      
+      public function GetFunctionByIndex (index:int):EntityFunction
+      {
+         return mFunctionManager.GetFunctionByIndex (index);
+      }
+      
+      public function CreateEntityFunction (funcName:String):EntityFunction
+      {
+         return mFunctionManager.CreateEntityFunction (funcName);
       }
       
 //=================================================================================

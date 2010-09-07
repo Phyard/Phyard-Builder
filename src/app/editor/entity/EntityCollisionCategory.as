@@ -32,7 +32,8 @@ package editor.entity {
    {
       protected var mCollisionManager:CollisionManager;
       
-      private var mCategoryName:String = "Default Category";
+      // replaced with mName fron v1.53
+      //private var mCategoryName:String = "Default Category";
       
       private var mCollideInternally:Boolean = true;
       
@@ -81,15 +82,21 @@ package editor.entity {
       
       public function GetCategoryName ():String
       {
-         return mCategoryName;
+         //return mCategoryName;
+         return GetName ();
       }
       
       public function SetCategoryName (newName:String, checkValidity:Boolean = true):void
       {
          if (checkValidity)
-            mCollisionManager.ChangeCollisionCategoryName (newName, mCategoryName)
+         {
+            mCollisionManager.ChangeCollisionCategoryName (newName, GetName ());
+         }
          else
-            mCategoryName = newName;
+         {
+            //mCategoryName = newName;
+            SetName (newName);
+         }
       }
       
       public function IsCollideInternally ():Boolean
@@ -109,7 +116,7 @@ package editor.entity {
          while (numChildren > 0)
             removeChildAt (0);
          
-         var ccName:String = mCategoryName;
+         var ccName:String = GetName ();
          
          ccName = TextUtil.GetHtmlEscapedText (ccName);
          
@@ -180,8 +187,6 @@ package editor.entity {
       private function OnContextMenuEvent (event:ContextMenuEvent):void
       {
          var ccat:EntityCollisionCategory = event.mouseTarget as EntityCollisionCategory;
-         //if (ccat == null)
-         //   return;
          if (ccat != this)
             return;
          

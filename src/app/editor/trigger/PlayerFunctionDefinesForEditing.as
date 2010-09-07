@@ -1149,9 +1149,9 @@ package editor.trigger {
          RegisterFunctionDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn, world_camera_package, "Fade Out Then Fade In", null, null,
                      [
                              new VariableDefinitionNumber ("Fade Color", null, {mIsColorValue: true}), 
-                             new VariableDefinitionNumber ("Fade Out Steps", null, {mMinValue: 0}), 
-                             new VariableDefinitionNumber ("Fade Staying Steps", null, {mMinValue: 1}), 
-                             new VariableDefinitionNumber ("Fade In Steps", null, {mMinValue: 0}), 
+                             new VariableDefinitionNumber ("Fade Out Steps", null, {mDefaultValue: 30, mMinValue: 0}), 
+                             new VariableDefinitionNumber ("Fade Staying Steps", null, {mDefaultValue: 30, mMinValue: 1}), 
+                             new VariableDefinitionNumber ("Fade In Steps", null, {mDefaultValue: 30, mMinValue: 0}), 
                              new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sScriptHolderEntityClasses}), 
                      ],
                      null

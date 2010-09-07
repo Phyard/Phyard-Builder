@@ -193,14 +193,20 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
 {
    if (mBackgroundSprite != null)
    {
-      mBackgroundSprite.x = mCameraCenterX;
-      mBackgroundSprite.y = mCameraCenterY;
-      mBackgroundSprite.scaleX = 1.0 / scaleX;
-      mBackgroundSprite.scaleY = 1.0 / scaleY;
+      if ((int(mBackgroundSprite.x * 20.0)) != (int (mCameraCenterX * 20.0)))
+         mBackgroundSprite.x = mCameraCenterX;
+      if ((int(mBackgroundSprite.y * 20.0)) != (int (mCameraCenterY * 20.0)))
+         mBackgroundSprite.y = mCameraCenterY;
+      
+      var sx:Number = 1.0 / scaleX;
+      if (mBackgroundSprite.scaleX != sx)
+         mBackgroundSprite.scaleX = sx;
+      
+      var sy:Number = 1.0 / scaleY;
+      if (mBackgroundSprite.scaleY != sy)
+         mBackgroundSprite.scaleY = sy;
    }
 }
-
-
 
 protected function UpdateCamera ():void
 {
@@ -424,9 +430,21 @@ protected function FadingCamera ():void
             mCameraFadeMaskNeedRepaint = true;
          }
          
-         mFadeMaskSprite.alpha = mCameraFadeParams.mCurrentAlpha;
-         mFadeMaskSprite.x = mCameraCenterX;
-         mFadeMaskSprite.y = mCameraCenterY;
+         if (mFadeMaskSprite.alpha != mCameraFadeParams.mCurrentAlpha)
+            mFadeMaskSprite.alpha = mCameraFadeParams.mCurrentAlpha;
+         
+         if ((int(mFadeMaskSprite.x * 20.0)) != (int (mCameraCenterX * 20.0)))
+            mFadeMaskSprite.x = mCameraCenterX;
+         if ((int(mFadeMaskSprite.y * 20.0)) != (int (mCameraCenterY * 20.0)))
+            mFadeMaskSprite.y = mCameraCenterY;
+         
+         var sx:Number = 1.0 / scaleX;
+         if (mFadeMaskSprite.scaleX != sx)
+            mFadeMaskSprite.scaleX = sx;
+         
+         var sy:Number = 1.0 / scaleY;
+         if (mFadeMaskSprite.scaleY != sy)
+            mFadeMaskSprite.scaleY = sy;
       }
    }
 }

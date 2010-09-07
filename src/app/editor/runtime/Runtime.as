@@ -2,9 +2,11 @@ package editor.runtime {
    
    import flash.display.DisplayObject;
    
-   import editor.CollisionManagerView;
-   import editor.WorldView;
    import editor.world.World;
+   
+   import editor.WorldView;
+   import editor.CollisionManagerView;
+   import editor.FunctionEditingView;
    
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDefinition
@@ -59,6 +61,7 @@ package editor.runtime {
       
       public static var mEditorWorldView:WorldView = null;
       public static var mCollisionCategoryView:CollisionManagerView = null;
+      public static var mFunctionEditingView:FunctionEditingView = null;
       
       private static var mActiveView:DisplayObject = null;
       

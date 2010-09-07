@@ -4,17 +4,14 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
-    title="Batch Shape Collision Category Setting" width="600"
-    creationComplete="OnInitPanel()"
-    >
+    title="Function Setting" width="656">
 
-      <mx:HBox label="Basic" width="100%" paddingTop="10" paddingBottom="10" borderStyle="solid" borderThickness="1">
-         <mx:Spacer width="100%"/>
-         <mx:CheckBox id="CheclkBox_EnableCCat" selected="false" click="Label_CollisionCategory.enabled=CheclkBox_EnableCCat.selected;SelectList_CollisionCategory.enabled=CheclkBox_EnableCCat.selected;"/>
-         <mx:Label id="Label_CollisionCategory" enabled="false" text="Collision Category:" textAlign="right" />
-         <mx:ComboBox id="SelectList_CollisionCategory" enabled="false" />
-         <mx:Spacer width="100%"/>
-      </mx:HBox>
+   <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"
+            paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+            horizontalScrollPolicy="off" verticalScrollPolicy="off"
+            horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnCodeSnippetSettingPanelCreationComplete()">
+      <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
+   </mx:VBox>
 
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
@@ -36,29 +33,30 @@
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
          
-         import editor.runtime.Runtime;
-         
          import common.Define;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          
-         private var mParams:Object = new Object ();
+         private var mParams:Object;
          
-         //public function SetValues (initialValues:Object):void
-         //{
-         //   mParams = initialValues;
-         //}
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
+         
+         public function OnCodeSnippetSettingPanelCreationComplete ():void
+         {
+            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet, mParams);
+         }
          
          public function GetValues (returnValues:Object):void
          {
-            returnValues.mCollisionCategoryIndex = SelectList_CollisionCategory.selectedItem.mCategoryIndex;
+            returnValues.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
          }
          
          private function OnInitPanel ():void
          {
-            SelectList_CollisionCategory.dataProvider = Runtime.GetCurrentWorld ().GetCollisionCategoryListDataProvider ();
-            SelectList_CollisionCategory.selectedIndex = 0;
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -89,7 +87,7 @@
              PopUpManager.removePopUp(this);
              
              if (OnClose != null)
-               OnClose ();
+               OnClose (true);
          }
          
      ]]>

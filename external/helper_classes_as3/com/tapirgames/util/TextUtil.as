@@ -120,11 +120,15 @@ package com.tapirgames.util {
          //var urlPattern:RegExp = new RegExp(protocol + urlPart + optionalUrlPart, "ig");
          //return input.replace(urlPattern, "<font color='#0000FF'><a href='$1$2$3'><u>$1$2$3</u></a></font>");
          
+      trace ("input = " + input);
          var protocol:String = "((?:http|https)://)"; 
          var urlPart:String = "([\x21-\x7E]+)"; 
          var optionalUrlPart:String = "([ \t\r\n\v\f])"; 
          var urlPattern:RegExp = new RegExp(protocol + urlPart + optionalUrlPart, "ig");
-         return input.replace(urlPattern, "<font color='#0000FF'><a href='$1$2' target='_blank'><u>$1$2</u></a></font>$3");
+         var output:String = input.replace(urlPattern, "<font color='#0000FF'><a href='$1$2' target='_blank'><u>$1$2</u></a></font>$3");
+      trace ("output = " + output);
+         
+         return output;
       }
       
       // the following is copied from adobe website, url is forgetten

@@ -842,7 +842,7 @@ package editor {
 //==================================================================================
       
       // create mode
-      private var mCurrentCreatMode:Mode = null;
+      private var mCurrentCreateMode:Mode = null;
       private var mLastSelectedCreateButton:Button = null;
       
       // edit mode
@@ -855,10 +855,10 @@ package editor {
       
       public function SetCurrentCreateMode (mode:Mode):void
       {
-         if (mCurrentCreatMode != null)
+         if (mCurrentCreateMode != null)
          {
-            mCurrentCreatMode.Destroy ();
-            mCurrentCreatMode = null;
+            mCurrentCreateMode.Destroy ();
+            mCurrentCreateMode = null;
          }
          
          if (Runtime.HasSettingDialogOpened ())
@@ -868,9 +868,9 @@ package editor {
             return;
          }
          
-         mCurrentCreatMode = mode;
+         mCurrentCreateMode = mode;
          
-         if (mCurrentCreatMode != null)
+         if (mCurrentCreateMode != null)
          {
             mIsCreating = true;
             mLastSelectedCreateButton.selected = true;
@@ -884,13 +884,13 @@ package editor {
          
          UpdateUiButtonsEnabledStatus ();
          
-         if (mCurrentCreatMode != null)
-            mCurrentCreatMode.Initialize ();
+         if (mCurrentCreateMode != null)
+            mCurrentCreateMode.Initialize ();
       }
       
       public function CancelCurrentCreatingMode ():void
       {
-         if (mCurrentCreatMode != null)
+         if (mCurrentCreateMode != null)
          {
             SetCurrentCreateMode (null);
          }
@@ -1044,7 +1044,7 @@ package editor {
          if ( ! event.target is Button)
             return;
          
-         if (mCurrentCreatMode != null)
+         if (mCurrentCreateMode != null)
          {
             SetCurrentCreateMode (null);
             
@@ -1614,6 +1614,7 @@ package editor {
          
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionManager ().SetChanged (false);
+         mEditorWorld.GetFunctionManager ().SetChanged (false);
          
          mEditorWorld.scaleX = mEditorWorld.scaleY = mEditorWorldZoomScale = mEditorWorld.GetZoomScale ();
          
@@ -1624,6 +1625,9 @@ package editor {
          
          if (Runtime.mCollisionCategoryView != null)
             Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
+         
+         if (Runtime.mFunctionEditingView != null)
+            Runtime.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetFunctionManager ());
          
          if (! firstTime)
          {
@@ -1914,6 +1918,19 @@ package editor {
          Runtime.SetHasInputFocused (false);
          stage.focus = this;
       }
+      
+      public function OnFinishedFunctionEditing ():void
+      {
+         if (mEditorWorld.GetFunctionManager ().IsChanged ())
+         {
+            mEditorWorld.GetFunctionManager ().SetChanged (false);
+            CreateUndoPoint ("Modify functions");
+         }
+         
+         Runtime.SetHasInputFocused (false);
+         stage.focus = this;
+      }
+      
       
 //============================================================================
 //    
@@ -2761,9 +2778,9 @@ package editor {
          
          if (IsCreating ())
          {
-            if (mCurrentCreatMode != null)
+            if (mCurrentCreateMode != null)
             {
-               mCurrentCreatMode.OnMouseDown (worldPoint.x, worldPoint.y);
+               mCurrentCreateMode.OnMouseDown (worldPoint.x, worldPoint.y);
             }
          }
          
@@ -2903,9 +2920,9 @@ package editor {
          
          if (IsCreating ())
          {
-            if (mCurrentCreatMode != null)
+            if (mCurrentCreateMode != null)
             {
-               mCurrentCreatMode.OnMouseMove (worldPoint.x, worldPoint.y);
+               mCurrentCreateMode.OnMouseMove (worldPoint.x, worldPoint.y);
             }
          }
          
@@ -2929,9 +2946,9 @@ package editor {
          
          if (IsCreating ())
          {
-            if (mCurrentCreatMode != null)
+            if (mCurrentCreateMode != null)
             {
-               mCurrentCreatMode.OnMouseUp (worldPoint.x, worldPoint.y);
+               mCurrentCreateMode.OnMouseUp (worldPoint.x, worldPoint.y);
                
                return;
             }
@@ -2999,7 +3016,7 @@ package editor {
          
          if (IsCreating ())
          {
-            if (mCurrentCreatMode != null)
+            if (mCurrentCreateMode != null)
             {
                CancelCurrentCreatingMode ();
                UpdateUiButtonsEnabledStatus ();
@@ -3060,7 +3077,7 @@ package editor {
             switch (event.keyCode)
             {
                case Keyboard.ESCAPE:
-                  if (mCurrentCreatMode != null)
+                  if (mCurrentCreateMode != null)
                   {
                      CancelCurrentCreatingMode ();
                   }
@@ -3074,7 +3091,7 @@ package editor {
             switch (event.keyCode)
             {
                case Keyboard.ESCAPE:
-                  //if (mCurrentCreatMode != null)
+                  //if (mCurrentCreateMode != null)
                   //{
                   //   CancelCurrentEditingMode ();
                   //}
@@ -4011,6 +4028,7 @@ package editor {
             CalSelectedEntitiesCenterPoint ();
             
             Runtime.mCollisionCategoryView.UpdateFriendLinkLines ();
+            Runtime.mFunctionEditingView.UpdateEntityLinkLines ();
          }
       }
       
@@ -4211,11 +4229,11 @@ package editor {
          //var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
          //if (selectedEntities == null || selectedEntities.length != 1)
          //   return;
-         if (mLastSelectedEntity == null)
+         if (mMainSelectedEntity == null)
             return;
          
          //var entity:Entity = selectedEntities [0] as Entity;
-         var entity:Entity = mLastSelectedEntity;
+         var entity:Entity = mMainSelectedEntity;
          
          var newPosX:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionX (params.mPosX);
          var newPosY:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionY (params.mPosY);
@@ -5325,11 +5343,6 @@ package editor {
          
          var object:Object = worldState.mUserData;
           
-         ////var cm:CollisionManager = mEditorWorld.GetCollisionManager ();
-         //mEditorWorld.DestroyAllEntities ();
-         //DataFormat.WorldDefine2EditorWorld (object.mWorldDefine, false, mEditorWorld);
-         ////mEditorWorld.SetCollisionManager (cm);
-         
          var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (object.mWorldDefine, false);
          SetEditorWorld (newEditorWorld);
          

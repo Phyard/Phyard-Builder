@@ -32,6 +32,10 @@ package editor.entity {
       protected var mIsEnabled:Boolean = true;
       //<<
       
+      //>> v1.53
+      protected var mName:String = "";
+      //<<
+      
       public function Entity (container:EntityContainer)
       {
          mEntityContainer = container;
@@ -203,18 +207,18 @@ package editor.entity {
          return mIsEnabled;
       }
       
-      //public function SetName (name:String):void
-      //{
-      //   if (name == null)
-      //      name = GetDefaultName ();
-      //   
-      //   mName = name;
-      //}
-      //
-      //public function GetName ():String
-      //{
-      //   return mName;
-      //}
+      public function SetName (name:String):void
+      {
+         //if (name == null)
+         //   name = GetDefaultName ();
+         
+         mName = name;
+      }
+      
+      public function GetName ():String
+      {
+         return mName;
+      }
       
 //======================================================
 // pos, rotition

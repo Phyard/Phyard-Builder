@@ -23,7 +23,7 @@
                 <mx:Label text="Scale:" textAlign="right"/>
              </mx:GridItem>
              <mx:GridItem>
-                <mx:NumericStepper id="NumericStepper_CoordinatesScale" stepSize="1" width="80" />
+                <mx:NumericStepper id="NumericStepper_CoordinatesScale" stepSize="1" width="80" enabled="false" />
                 <mx:Label text="(pixels/m)"/>
              </mx:GridItem>
           </mx:GridRow>

@@ -5,13 +5,12 @@ package editor.mode {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.WorldView;
+   import editor.FunctionEditingView;
    
-   
-   public class ModeRegionSelectEntities extends Mode
+   public class FunctionModeRegionSelectEntities extends FunctionMode
    {
       
-      public function ModeRegionSelectEntities (mainView:WorldView)
+      public function FunctionModeRegionSelectEntities (mainView:FunctionEditingView)
       {
          super (mainView);
       }
@@ -29,8 +28,8 @@ package editor.mode {
       
       protected function ResetSession ():void
       {
-         if ( mBoxShape != null && mMainView.mContentLayer.contains (mBoxShape) )
-            mMainView.mContentLayer.removeChild (mBoxShape);
+         if ( mBoxShape != null && mMainView.mForegroundLayer.contains (mBoxShape) )
+            mMainView.mForegroundLayer.removeChild (mBoxShape);
          
          mBoxShape = null;
       }
@@ -40,7 +39,7 @@ package editor.mode {
          ResetSession ();
          
          mBoxShape = new Shape ();
-         mMainView.mContentLayer.addChild (mBoxShape);
+         mMainView.mForegroundLayer.addChild (mBoxShape);
          
          mStartX = startX;
          mStartY = startY;
@@ -61,10 +60,10 @@ package editor.mode {
          mEndX = endX;
          mEndY = endY;
          
-         var point1:Point = mMainView.WorldToView ( new Point (left, top) );
-         var point2:Point = mMainView.WorldToView ( new Point (right, bottom) );
+         var point1:Point = mMainView.ManagerToView ( new Point (left, top) );
+         var point2:Point = mMainView.ManagerToView ( new Point (top, bottom) );
          
-         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, point2.x - point1.x, point2.y - point1.y);
+         GraphicsUtil.ClearAndDrawRect (mBoxShape, point1.x, point1.y, w, h);
          
          mMainView.RegionSelectEntities (left, top, right, bottom);
       }
@@ -76,9 +75,6 @@ package editor.mode {
          ResetSession ();
          
          mMainView.SetCurrentEditMode (null);
-         
-         // for debug
-         mMainView.RepaintWorldDebugInfo ();
       }
       
       override public function Update (escapedTime:Number):void

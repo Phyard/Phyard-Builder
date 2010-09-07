@@ -949,7 +949,15 @@ package viewer {
          
          GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth, Define.PlayerPlayBarThickness, playBarColor, 1, true, playBarColor);
          
-         mPlayControlBar = new PlayControlBar (OnRestart, OnStart, OnPause, null, showSpeedAdjustor ? OnSpeed : null, showHelpButton ? OnHelp : null, null, showScaleAdjustor ? OnZoom : null);
+         mPlayControlBar = new PlayControlBar ({
+                              OnRestart: OnRestart, 
+                              OnStart: OnStart, 
+                              OnPause: OnPause, 
+                              OnSpeed: OnSpeed, mShowSpeedAdjustor: showSpeedAdjustor, 
+                              OnZoom: OnZoom, mShowScaleAdjustor: showScaleAdjustor, 
+                              OnHelp: OnHelp, mShowHelpButton: showHelpButton, 
+                              OnMainMenu: null 
+                           });
          mTopBarLayer.addChild (mPlayControlBar);
          mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
          mPlayControlBar.y = 2;
@@ -1074,7 +1082,7 @@ package viewer {
             }
          }
          
-         if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?"))
+         if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?") >= 0)
          {
             if (mWorldDesignProperties.mIsPermitPublishing)
             {
@@ -1107,23 +1115,25 @@ package viewer {
       
       private function OnCopyEmbedCode (event:ContextMenuEvent):void
       {
-         if (mParamsFromUniViewer != null && mPlayerWorld != null)
+         if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?") >= 0)
          {
             var width:int = mWorldDesignProperties.GetViewportWidth ();
             var height:int = mWorldDesignProperties.GetViewportHeight ();
             if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
                height += 20;
-            var playcode:String = mParamsFromUniViewer.mWorldPlayCode;
+            
+            var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?");
+            var uniplayerUrl:String = "http://www.phyard.com/" + mParamsFromUniViewer.mUniViewerUrl.substr (index);
             
             var embedCode:String = 
                "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
-                 + (playcode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + playcode + "\"></param>\n") +
-               "  <param name=\"movie\" value=\"" + mParamsFromUniViewer.mUniViewerUrl + "\"></param>"
+                 + (mWorldPlayCode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + mWorldPlayCode + "\"></param>\n") +
+               "  <param name=\"movie\" value=\"" + uniplayerUrl + "\"></param>"
                  + "\n" +
                "  <param name=\"quality\" value=\"high\"></param>"
                  + "\n" +
-               "  <embed src=\"" + mParamsFromUniViewer.mUniViewerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
-                 + (playcode == null ? "\n" : "\n    FlashVars=\"playcode=" + playcode + "\"\n") +
+               "  <embed src=\"" + uniplayerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
+                 + (mWorldPlayCode == null ? "\n" : "\n    FlashVars=\"playcode=" + mWorldPlayCode + "\"\n") +
                "    quality=\"high\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\">"
                  + "\n" +
                "  </embed>"
@@ -1137,7 +1147,7 @@ package viewer {
       
       private function OnCopyForumEmbedCode (event:ContextMenuEvent):void
       {
-         if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?"))
+         if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?") >= 0)
          {
             if (mWorldPlayCode != null)
             {
@@ -1149,12 +1159,6 @@ package viewer {
                var height:int = mWorldDesignProperties.GetViewportHeight ();
                if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
                   height += 20;
-               
-               if (mParamsFromUniViewer.mWorldPlayCode != null)
-               {
-                   System.setClipboard (mParamsFromUniViewer.mWorldPlayCode);
-                   return;
-               }
                
                var substr:String = "uniplayer.swf?";
                

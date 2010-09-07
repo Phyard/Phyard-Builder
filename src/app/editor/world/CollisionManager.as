@@ -101,6 +101,7 @@ package editor.world {
       
       public function GetCollisionCategoryByIndex (index:int):EntityCollisionCategory
       {
+         // GetEntityByAppearanceId or GetEntityByCreationId?
          return GetEntityByAppearanceId (index) as EntityCollisionCategory;
       }
       
@@ -130,7 +131,7 @@ package editor.world {
             return;
          if (newName == null)
             return;
-         if (newName.length < Define.MinCollisionCategoryNameLength)
+         if (newName.length < Define.MinEntityNameLength)
             return;
          
          var category:EntityCollisionCategory = mLookupTable [oldName];
@@ -140,8 +141,8 @@ package editor.world {
          
          delete mLookupTable [oldName];
          
-         if (newName.length > Define.MaxCollisionCategoryNameLength)
-            newName = newName.substr (0, Define.MaxCollisionCategoryNameLength);
+         if (newName.length > Define.MaxEntityNameLength)
+            newName = newName.substr (0, Define.MaxEntityNameLength);
          
          newName = GetRecommendName (newName);
          
@@ -199,6 +200,7 @@ package editor.world {
          
          super.DestroyEntity (entity);
          
+         // ids changed, maybe
          var ccat:EntityCollisionCategory;
          for (var i:int = 0; i < numChildren; ++ i)
          {

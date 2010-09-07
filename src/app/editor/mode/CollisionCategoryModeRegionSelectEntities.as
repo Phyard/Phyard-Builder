@@ -42,8 +42,8 @@ package editor.mode {
          mBoxShape = new Shape ();
          mMainView.mForegroundLayer.addChild (mBoxShape);
          
-          mStartX = startX;
-          mStartY = startY;
+         mStartX = startX;
+         mStartY = startY;
          
          UpdateSession (mStartX, mStartY);
       }

@@ -11,8 +11,6 @@ package viewer.ui {
    
    public class PlayControlBar extends Sprite
    {
-      
-      
       [Embed(source="../../res/player/player-restart.png")]
       private static var IconRestart:Class;
       [Embed(source="../../res/player/player-restart-disabled.png")]
@@ -21,10 +19,6 @@ package viewer.ui {
       private static var IconStart:Class;
       [Embed(source="../../res/player/player-pause.png")]
       private static var IconPause:Class;
-      [Embed(source="../../res/player/player-stop.png")]
-      private static var IconStop:Class;
-      [Embed(source="../../res/player/player-stop-disabled.png")]
-      private static var IconStopDisabled:Class;
       
       [Embed(source="../../res/player/player-help.png")]
       private static var IconHelp:Class;
@@ -50,8 +44,6 @@ package viewer.ui {
       private var mBitmapDataRetartDisabled:BitmapData = new IconRestartDisabled ().bitmapData;
       private var mBitmapDataStart:BitmapData = new IconStart ().bitmapData;
       private var mBitmapDataPause:BitmapData = new IconPause ().bitmapData;
-      private var mBitmapDataStop:BitmapData = new IconStop ().bitmapData;
-      private var mBitmapDataStopDisabled:BitmapData = new IconStopDisabled ().bitmapData;
       private var mBitmapDataHelp:BitmapData  = new IconHelp ().bitmapData;
       private var mBitmapDataSpeed:BitmapData  = new IconSpeed ().bitmapData;
       private var mBitmapDataSpeedSelected:BitmapData  = new IconSpeedSelected ().bitmapData;
@@ -70,7 +62,6 @@ package viewer.ui {
       private var _OnRestart:Function;
       private var _OnStart:Function;
       private var _OnPause:Function;
-      private var _OnStop:Function;
       private var _OnSpeed:Function;
       private var _OnHelp:Function;
       
@@ -85,7 +76,6 @@ package viewer.ui {
       
       private var mButtonRestart:ImageButton;
       private var mButtonStartPause:ImageButton;
-      private var mButtonStop:ImageButton;
       private var mButtonHelp:ImageButton;
       private var mButtonSpeeds:Array;
       
@@ -97,17 +87,15 @@ package viewer.ui {
       private static const NumButtonSpeed:int = 5;
       private static const ButtonMargin:int = 8;
       
-      public function PlayControlBar (onRestart:Function, onStart:Function, onPause:Function, onStop:Function, onSpeed:Function, onHelp:Function, onMainMenu:Function = null, onZoom:Function = null)
+      public function PlayControlBar (params:Object)
       {
-         _OnRestart = onRestart;
-         _OnStart = onStart;
-         _OnPause = onPause;
-         _OnStop = onStop;
-         _OnSpeed = onSpeed;
-         _OnHelp = onHelp;
-         
-         _OnMainMenu = onMainMenu;
-         _OnZoom = onZoom;
+         _OnRestart = params.OnRestart;
+         _OnStart = params.OnStart;
+         _OnPause = params.OnPause;
+         _OnSpeed = params.OnSpeed;
+         _OnHelp = params.OnHelp;
+         _OnMainMenu = params.OnMainMenu;
+         _OnZoom = params.OnZoom;
          
          mIsPlaying = false;
          
@@ -144,15 +132,6 @@ package viewer.ui {
          mButtonStartPause.x = buttonX; 
          buttonX += mButtonStartPause.width;
          
-         if (onStop != null)
-         {
-            mButtonStop = new ImageButton (mBitmapDataStopDisabled);
-            addChild (mButtonStop);
-            
-            mButtonStop.x = buttonX; 
-            buttonX += mButtonStop.width;
-         }
-         
          buttonX += ButtonMargin;
          
       // speed
@@ -163,7 +142,7 @@ package viewer.ui {
          {
             mButtonSpeeds [i] = new ImageButton (mBitmapDataSpeed, i);
             
-            if (mButtonShown [i] && onSpeed != null)
+            if (mButtonShown [i] && params.mShowSpeedAdjustor)
             {
                mButtonSpeeds [i].SetClickEventHandler (OnClickSpeed);
                
@@ -181,17 +160,14 @@ package viewer.ui {
          mButtonZoomIn = new ImageButton (mBitmapDataZoomIn);
          mButtonZoomOut = new ImageButton (mBitmapDataZoomOut);
          
-         if (onZoom != null)
+         if (params.mShowScaleAdjustor)
          {
             mButtonZoomIn.SetClickEventHandler (OnClickZoomIn);
             addChild (mButtonZoomIn);
             
             mButtonZoomOut.SetClickEventHandler (OnClickZoomOut);
             addChild (mButtonZoomOut);
-         }
-         
-         if (onZoom != null)
-         {
+            
             mButtonZoomIn.x = buttonX;
             buttonX += mButtonZoomIn.width;
             mButtonZoomOut.x = buttonX;
@@ -203,7 +179,7 @@ package viewer.ui {
          
          mButtonHelp = new ImageButton (mBitmapDataHelp);
          
-         if (onHelp != null)
+         if (params.mShowHelpButton)
          {
             mButtonHelp.SetClickEventHandler (OnClickHelp);
             addChild (mButtonHelp);
@@ -300,12 +276,6 @@ package viewer.ui {
          mButtonStartPause.SetBitmapData (mBitmapDataPause);
          mButtonStartPause.SetClickEventHandler (OnClickPause);
          
-         if (mButtonStop != null)
-         {
-            mButtonStop.SetBitmapData (mBitmapDataStop);
-            mButtonStop.SetClickEventHandler (OnClickStop);
-         }
-         
          if (_OnStart != null)
             _OnStart ();
       }
@@ -336,26 +306,6 @@ package viewer.ui {
          
          if (_OnPause != null)
             _OnPause ();
-      }
-      
-      public function OnClickStop (data:Object = null):void
-      {
-         mIsPlaying = false;
-         
-         mButtonRestart.SetBitmapData (mBitmapDataRetartDisabled);
-         mButtonRestart.SetClickEventHandler (null);
-         
-         if (mButtonStop != null)
-         {
-            mButtonStop.SetBitmapData (mBitmapDataStopDisabled);
-            mButtonStop.SetClickEventHandler (null);
-         }
-         
-         mButtonStartPause.SetBitmapData (mBitmapDataStart);
-         mButtonStartPause.SetClickEventHandler (OnClickStart);
-         
-         if (_OnStop != null)
-            _OnStop ();
       }
       
       private static const ButtonIndex2SpeedXTable:Array = [1, 2, 3, 4, 5];

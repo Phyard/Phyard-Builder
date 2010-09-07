@@ -1,14 +1,14 @@
 
 package editor.mode {
    
-   import editor.CollisionManagerView;
+   import editor.FunctionEditingView;
    
    
-   public class CollisionCategoryMode
+   public class FunctionMode
    {
-      protected var mMainView:CollisionManagerView;
+      protected var mMainView:FunctionEditingView;
       
-      public function CollisionCategoryMode (mainView:CollisionManagerView)
+      public function FunctionMode (mainView:FunctionEditingView)
       {
          mMainView = mainView;
       }

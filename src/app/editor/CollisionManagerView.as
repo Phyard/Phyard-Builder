@@ -17,6 +17,7 @@ package editor {
    import mx.core.UIComponent;
    import mx.controls.Button;
    import mx.controls.CheckBox;
+   import mx.controls.Label;
    import mx.controls.TextInput;
    
    import com.tapirgames.util.TimeSpan;
@@ -25,13 +26,13 @@ package editor {
    
    import editor.runtime.Runtime;
    
+   import editor.entity.Entity;
+   
    import editor.world.CollisionManager;
    
    import editor.entity.EntityCollisionCategory;
    
    import editor.trigger.entity.Linkable;
-   
-   import editor.entity.Entity;
    
    import editor.mode.CollisionCategoryMode;
    
@@ -91,6 +92,31 @@ package editor {
          UpdateFriendLinkLines ();
          
          UpdateToolbarConponents ();
+      }
+      
+      public function UpdateFriendLinkLines ():void
+      {
+         if (mCollisionManager == null)
+            return;
+         
+         GraphicsUtil.Clear (mFriendLinksLayer);
+         
+         var friendPairs:Array = mCollisionManager.GetCollisionCategoryFriendPairs ();
+         var point1:Point;
+         var point2:Point;
+         var friend1:EntityCollisionCategory;
+         var friend2:EntityCollisionCategory;
+         
+         for (var i:int = 0; i <  friendPairs.length; ++ i)
+         {
+            friend1 = friendPairs [i].mCategory1;
+            friend2 = friendPairs [i].mCategory2;
+            
+            point1 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksLayer, new Point (friend1.x, friend1.y) );
+            point2 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksLayer, new Point (friend2.x, friend2.y) );
+            
+            GraphicsUtil.DrawLine (mFriendLinksLayer, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
+         }
       }
       
 //============================================================================
@@ -160,37 +186,12 @@ package editor {
             mCollisionManager.Update (mStepTimeSpan.GetLastSpan ());
       }
       
-      public function UpdateFriendLinkLines ():void
-      {
-         if (mCollisionManager == null)
-            return;
-         
-         GraphicsUtil.Clear (mFriendLinksLayer);
-         
-         var friendPairs:Array = mCollisionManager.GetCollisionCategoryFriendPairs ();
-         var point1:Point;
-         var point2:Point;
-         var friend1:EntityCollisionCategory;
-         var friend2:EntityCollisionCategory;
-         
-         for (var i:int = 0; i <  friendPairs.length; ++ i)
-         {
-            friend1 = friendPairs [i].mCategory1;
-            friend2 = friendPairs [i].mCategory2;
-            
-            point1 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksLayer, new Point (friend1.x, friend1.y) );
-            point2 = DisplayObjectUtil.LocalToLocal (mCollisionManager, mFriendLinksLayer, new Point (friend2.x, friend2.y) );
-            
-            GraphicsUtil.DrawLine (mFriendLinksLayer, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
-         }
-      }
-      
 //==================================================================================
 // mode
 //==================================================================================
       
       // create mode
-      private var mCurrentCreatMode:CollisionCategoryMode = null;
+      private var mCurrentCreateMode:CollisionCategoryMode = null;
       private var mLastSelectedCreateButton:Button = null;
       
       // edit mode
@@ -198,10 +199,10 @@ package editor {
       
       public function SetCurrentCreateMode (mode:CollisionCategoryMode):void
       {
-         if (mCurrentCreatMode != null)
+         if (mCurrentCreateMode != null)
          {
-            mCurrentCreatMode.Destroy ();
-            mCurrentCreatMode = null;
+            mCurrentCreateMode.Destroy ();
+            mCurrentCreateMode = null;
          }
          
          if (Runtime.HasSettingDialogOpened ())
@@ -211,9 +212,9 @@ package editor {
             return;
          }
          
-         mCurrentCreatMode = mode;
+         mCurrentCreateMode = mode;
          
-         if (mCurrentCreatMode != null)
+         if (mCurrentCreateMode != null)
          {
             mIsCreating = true;
             mLastSelectedCreateButton.selected = true;
@@ -225,13 +226,13 @@ package editor {
                mLastSelectedCreateButton.selected = false;
          }
          
-         if (mCurrentCreatMode != null)
-            mCurrentCreatMode.Initialize ();
+         if (mCurrentCreateMode != null)
+            mCurrentCreateMode.Initialize ();
       }
       
       public function CancelCurrentCreatingMode ():void
       {
-         if (mCurrentCreatMode != null)
+         if (mCurrentCreateMode != null)
          {
             SetCurrentCreateMode (null);
          }
@@ -328,6 +329,7 @@ package editor {
          }
       }
       
+      public var mLabelName:Label;
       public var mTextInputName:TextInput;
       
       public function OnTextInputEnter (event:Event):void
@@ -338,34 +340,32 @@ package editor {
          }
       }
       
-      
       public function UpdateToolbarConponents ():void
       {
-         var notNull:Boolean = mCollisionManager != null;
          var numCategories:int = 0;
-         var selecteds:Array = mCollisionManager.GetSelectedEntities ();
          var numSelecteds:int = 0;
          var onlySelected:EntityCollisionCategory = null;
-         if (notNull)
+         if (mCollisionManager != null)
          {
             numCategories = mCollisionManager.GetNumCollisionCategories ();
             
-            selecteds = mCollisionManager.GetSelectedEntities ();
+            var selecteds:Array = mCollisionManager.GetSelectedEntities ();
             numSelecteds = selecteds.length;
             
             if (numSelecteds == 1)
                onlySelected = selecteds [0] as EntityCollisionCategory;
          }
          
-         mButtonCreateCollisionCategory.enabled = notNull && numCategories < Define.MaxCollisionCategoriesCount - 1;
+         mButtonCreateCollisionCategory.enabled = (mCollisionManager != null) && (numCategories < Define.MaxCollisionCategoriesCount - 1);
          
          mButtonDelete.enabled = numSelecteds > 0;
          
+         mLabelName.enabled = numSelecteds == 1;
          mTextInputName.enabled = numSelecteds == 1;
          mCheckBoxHarmoniousCategory.enabled = numSelecteds == 1;
          mCheckBoxDefaultCategory.enabled = numSelecteds == 1;
          
-         if (numSelecteds == 1)
+         if (onlySelected != null)
          {
             mCheckBoxHarmoniousCategory.selected = ! onlySelected.IsCollideInternally ();
             mCheckBoxDefaultCategory.selected = onlySelected.IsDefaultCategory ();
@@ -443,9 +443,9 @@ package editor {
          
          if (IsCreating ())
          {
-            if (mCurrentCreatMode != null)
+            if (mCurrentCreateMode != null)
             {
-               mCurrentCreatMode.OnMouseDown (worldPoint.x, worldPoint.y);
+               mCurrentCreateMode.OnMouseDown (worldPoint.x, worldPoint.y);
             }
          }
          
@@ -568,9 +568,9 @@ package editor {
          
          if (IsCreating ())
          {
-            if (mCurrentCreatMode != null)
+            if (mCurrentCreateMode != null)
             {
-               mCurrentCreatMode.OnMouseMove (worldPoint.x, worldPoint.y);
+               mCurrentCreateMode.OnMouseMove (worldPoint.x, worldPoint.y);
             }
          }
          
@@ -596,9 +596,9 @@ package editor {
          
          if (IsCreating ())
          {
-            if (mCurrentCreatMode != null)
+            if (mCurrentCreateMode != null)
             {
-               mCurrentCreatMode.OnMouseUp (worldPoint.x, worldPoint.y);
+               mCurrentCreateMode.OnMouseUp (worldPoint.x, worldPoint.y);
                
                return;
             }
@@ -657,7 +657,7 @@ package editor {
          
          if (IsCreating ())
          {
-            if (mCurrentCreatMode != null)
+            if (mCurrentCreateMode != null)
             {
                CancelCurrentCreatingMode ();
             }

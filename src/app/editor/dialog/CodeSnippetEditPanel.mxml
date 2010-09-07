@@ -19,12 +19,12 @@
          <mx:Spacer width="1"/>
          <mx:MenuBar id="MenuBar_Api" itemClick="OnMenuBarClick (event);" height="100%"/>
          <mx:Spacer width="100%"/>
-         <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+         <mx:HBox id="Box_EditVariablesButtons" borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
             <mx:Button id="Button_EditGlobalVariables" click="OnEditGlobalVariables ()" toolTip="Edit Global Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_global_variables.png')" />
-            <!--
-            <mx:Button id="Button_EditLocalVariables" click=";" toolTip="Edit Local Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_local_variables.png')" />
-            -->
             <mx:Button id="Button_EditEntityVariables" click="OnEditEntityVariables ()" toolTip="Edit Custom Entity Properties" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_entity_variables.png')" />
+            <mx:Button id="Button_EditLocalVariables" click=";" toolTip="Edit Local Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_local_variables.png')" />
+            <mx:Button id="Button_EditInputVariables" click=";" toolTip="Edit Input Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_input_variables.png')" />
+            <mx:Button id="Button_EditOutputVariables" click=";" toolTip="Edit Output Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_output_variables.png')" />
          </mx:HBox>
          <mx:Spacer width="5"/>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
@@ -163,6 +163,20 @@
             mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format (Partially Support)", OnSwitchToPoemFormat);
             
             UpdateInterface ();
+         }
+         
+         public function SetOptions (options:Object):void
+         {
+            if (options != null && options.mShowGlobalVariablesEditingButton != undefined && options.mShowGlobalVariablesEditingButton == false)
+               Box_EditVariablesButtons.removeChild (Button_EditGlobalVariables);
+            if (options != null && options.mShowEntityVariablesEditingButton != undefined && options.mShowEntityVariablesEditingButton == false)
+               Box_EditVariablesButtons.removeChild (Button_EditEntityVariables);
+            if (options == null || options.mShowInputVariablesEditingButton == undefined || options.mShowInputVariablesEditingButton == false)
+               Box_EditVariablesButtons.removeChild (Button_EditLocalVariables);
+            if (options == null || options.mShowInputVariablesEditingButton == undefined || options.mShowInputVariablesEditingButton == false)
+               Box_EditVariablesButtons.removeChild (Button_EditInputVariables);
+            if (options == null || options.mShowOutputVariablesEditingButton == undefined || options.mShowOutputVariablesEditingButton == false)
+               Box_EditVariablesButtons.removeChild (Button_EditOutputVariables);
          }
          
          private function OnAddedToStage ():void
@@ -329,9 +343,11 @@
             OnNewCalling (event.item.@id);
          }
          
-         public function SetCodeSnippet (codeSnippet:CodeSnippet):void
+         public function SetCodeSnippet (codeSnippet:CodeSnippet, options:Object = null):void
          {
             mCodeSnippet = codeSnippet;
+            
+            SetOptions (options);
             
             Initialize ();
          }

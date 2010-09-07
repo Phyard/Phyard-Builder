@@ -38,7 +38,7 @@
                <mx:Button id="Button_Glue" toolTip="Become Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-make.png')" disabledIcon="@Embed('res/command/command-brothers-make-disabled.png')" />
                <mx:Button id="Button_BreakApart" toolTip="Break Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-break.png')" disabledIcon="@Embed('res/command/command-brothers-break-disabled.png')" />
                <mx:Spacer width="10"/>
-               <mx:Button id="Button_Setting" label="Setting..." toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/command/command-setting.png')" disabledIcon="@Embed('res/command/command-setting-disabled.png')" />
+               <mx:Button id="Button_Setting" toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/command/command-setting.png')" disabledIcon="@Embed('res/command/command-setting-disabled.png')" />
                <mx:Spacer width="11"/>
             </mx:HBox>
             <mx:HBox backgroundColor="0xA0A0A0" verticalAlign="middle" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderThickness="0">
@@ -88,15 +88,23 @@
          </mx:HBox>
          <mx:HBox id="Box_FunctionEditViewCommands" backgroundColor="0xD0D0D0" verticalAlign="middle" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
             <mx:Spacer width="100%"/>
+            <mx:Button id="Button_CreatePackage" visible="false" toolTip="New Package" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/function/create-package-disabled.png')" selectedDisabledIcon="@Embed('res/function/create-package-disabled.png')" upIcon="@Embed('res/function/create-package.png')" downIcon="@Embed('res/function/create-package-sel.png')" overIcon="@Embed('res/function/create-package.png')" selectedUpIcon="@Embed('res/function/create-package-sel.png')" selectedOverIcon="@Embed('res/function/create-package-sel.png')" selectedDownIcon="@Embed('res/function/create-package.png')"   />
+            <mx:Button id="Button_CreateClass" visible="false" toolTip="New Class" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/function/create-class-disabled.png')" selectedDisabledIcon="@Embed('res/function/create-class-disabled.png')" upIcon="@Embed('res/function/create-class.png')" downIcon="@Embed('res/function/create-class-sel.png')" overIcon="@Embed('res/function/create-class.png')" selectedUpIcon="@Embed('res/function/create-class-sel.png')" selectedOverIcon="@Embed('res/function/create-class-sel.png')" selectedDownIcon="@Embed('res/function/create-class.png')"   />
+            <mx:Button id="Button_CreateFunction" toolTip="New Function" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('res/function/create-function-disabled.png')" upIcon="@Embed('res/function/create-function.png')" downIcon="@Embed('res/function/create-function-sel.png')" overIcon="@Embed('res/function/create-function.png')" selectedUpIcon="@Embed('res/function/create-function-sel.png')" selectedOverIcon="@Embed('res/function/create-function-sel.png')" selectedDownIcon="@Embed('res/function/create-function.png')"   />
+            <mx:Spacer width="30"/>
+            <mx:Button id="Button_DeleteFunctionEntity" toolTip="Delete" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-delete.png')" disabledIcon="@Embed('res/command/command-delete-disabled.png')" />
+            <mx:Spacer width="30"/>
+            <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/function/command-setting.png')" disabledIcon="@Embed('res/function/command-setting-disabled.png')" />
+            <mx:Spacer width="30"/>
+            <mx:Label id="Label_FunctionEntityName" text="Name:" textAlign="right"/>
+            <mx:TextInput id="Text_FunctionEntityName" text="" width="200"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
       </mx:ViewStack>
       <mx:HBox id="Box_SwitchViewCommands" backgroundColor="0xA0A0A0" borderStyle="none" height="100%" horizontalGap="0" verticalGap="0" paddingTop="1" paddingLeft="0" paddingRight="0" paddingBottom="1" borderThickness="0">
-         <mx:Button id="Button_ShowEntityEditView" toggle="true" selected="true" toolTip="Edit Entities" click="OnShowEntityEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-entities.png')" downIcon="@Embed('res/file/design-edit-entities-sel.png')" overIcon="@Embed('res/file/design-edit-entities.png')" selectedUpIcon="@Embed('res/file/design-edit-entities-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-entities-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-entities.png')"   />
-         <mx:Button id="Button_ShowCCatEditView" toggle="true" selected="false" toolTip="Edit Collision Categories" click="OnShowCCatEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-ccats.png')" downIcon="@Embed('res/file/design-edit-ccats-sel.png')" overIcon="@Embed('res/file/design-edit-ccats.png')" selectedUpIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-ccats.png')"   />
-         <!--
-         <mx:Button id="Button_ShowFunctionEditView" toggle="true" selected="false" toolTip="Edit Functions" click="OnShowFunctionEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-functions.png')" downIcon="@Embed('res/file/design-edit-functions-sel.png')" overIcon="@Embed('res/file/design-edit-functions.png')" selectedUpIcon="@Embed('res/file/design-edit-functions-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-functions-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-functions.png')"   />
-         -->
+         <mx:Button id="Button_ShowEntityEditView" toggle="true" selected="true" toolTip="Game Scene View" click="OnShowEntityEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-entities.png')" downIcon="@Embed('res/file/design-edit-entities-sel.png')" overIcon="@Embed('res/file/design-edit-entities.png')" selectedUpIcon="@Embed('res/file/design-edit-entities-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-entities-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-entities.png')"   />
+         <mx:Button id="Button_ShowCCatEditView" toggle="true" selected="false" toolTip="Collision Category View" click="OnShowCCatEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-ccats.png')" downIcon="@Embed('res/file/design-edit-ccats-sel.png')" overIcon="@Embed('res/file/design-edit-ccats.png')" selectedUpIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-ccats-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-ccats.png')"   />
+         <mx:Button id="Button_ShowFunctionEditView" toggle="true" selected="false" toolTip="Code Library View" click="OnShowFunctionEditView ();" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" upIcon="@Embed('res/file/design-edit-functions.png')" downIcon="@Embed('res/file/design-edit-functions-sel.png')" overIcon="@Embed('res/file/design-edit-functions.png')" selectedUpIcon="@Embed('res/file/design-edit-functions-sel.png')" selectedOverIcon="@Embed('res/file/design-edit-functions-sel.png')" selectedDownIcon="@Embed('res/file/design-edit-functions.png')"   />
          <mx:Spacer width="2"/>
       </mx:HBox>
 
@@ -444,34 +452,14 @@
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0"
                   >
-            <mx:VBox width="100%" height="100%">
-               <mx:Spacer height="100%"/>
-               <mx:HBox width="100%">
-                  <mx:Spacer width="100%"/>
-                  <mx:HBox height="600" width="600">
-                     <editor:CollisionManagerView id="CollisionManagerView" height="600" width="600"/>
-                  </mx:HBox>
-                  <mx:Spacer width="100%"/>
-               </mx:HBox>
-               <mx:Spacer height="100%"/>
-            </mx:VBox>
+            <editor:CollisionManagerView id="CollisionManagerView" width="100%" height="100%"/>
          </mx:HBox>
          <mx:HBox id="FunctionDesignView" backgroundColor="0xE0E0E0" borderStyle="solid" height="100%" width="100%"
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0"
                   >
-            <mx:VBox width="100%" height="100%">
-               <mx:Spacer height="100%"/>
-               <mx:HBox width="100%">
-                  <mx:Spacer width="100%"/>
-                  <mx:HBox height="600" width="600">
-                     <editor:FunctionEditingView id="FunctionEditingView" height="600" width="600"/>
-                  </mx:HBox>
-                  <mx:Spacer width="100%"/>
-               </mx:HBox>
-               <mx:Spacer height="100%"/>
-            </mx:VBox>
+            <editor:FunctionEditingView id="FunctionEditingView" width="100%" height="100%"/>
          </mx:HBox>
       </mx:ViewStack>
 
@@ -552,8 +540,10 @@
             //===================================================================================================
                
                Runtime.SetActiveView (MainView);
+               
                Runtime.mEditorWorldView = MainView;
                Runtime.mCollisionCategoryView = CollisionManagerView;
+               Runtime.mFunctionEditingView = FunctionEditingView;
                
             //===================================================================================================
                
@@ -910,7 +900,7 @@
          //  Collision Manager
          //===============================================================================================================
                
-               //
+               // 
                CollisionManagerView.mButtonCreateCollisionCategory = Button_CreateCollisionCategory;
                
                Button_CreateCollisionCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnCreateButtonClick);
@@ -924,9 +914,37 @@
                CheckBox_CollisionCategory_HarmoniousCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
                CheckBox_CollisionCategory_DefaultCategory.addEventListener (MouseEvent.CLICK, CollisionManagerView.OnEditButtonClick);
                
+               CollisionManagerView.mLabelName = Label_CollisionCategoryName;
                CollisionManagerView.mTextInputName = Text_CollisionCategoryName;
                
                Text_CollisionCategoryName.addEventListener (FlexEvent.ENTER, CollisionManagerView.OnTextInputEnter);
+               
+         //===============================================================================================================
+         //  Function Manager
+         //===============================================================================================================
+               
+               // setting dialogs
+               FunctionEditingView.ShowFunctionSettingDialog = ShowFunctionSettingDialog;
+               
+               // 
+               FunctionEditingView.mButtonCreateFunction = Button_CreateFunction;
+               FunctionEditingView.mButtonCreatePackage = Button_CreatePackage;
+               FunctionEditingView.mButtonCreateClass = Button_CreateClass;
+               
+               Button_CreateFunction.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnCreateButtonClick);
+               Button_CreatePackage.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnCreateButtonClick);
+               Button_CreateClass.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnCreateButtonClick);
+               
+               FunctionEditingView.mButtonDelete = Button_DeleteFunctionEntity;
+               FunctionEditingView.mButtonSetting = Button_SettingFunction;
+               
+               Button_DeleteFunctionEntity.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnEditButtonClick);
+               Button_SettingFunction.addEventListener (MouseEvent.CLICK, FunctionEditingView.OnEditButtonClick);
+               
+               FunctionEditingView.mLabelName = Label_FunctionEntityName;
+               FunctionEditingView.mTextInputName = Text_FunctionEntityName;
+               
+               Text_FunctionEntityName.addEventListener (FlexEvent.ENTER, FunctionEditingView.OnTextInputEnter);
             }
             
             private var mCustomTriggerdButtons:Array = new Array ();
@@ -1164,11 +1182,15 @@
             {
                Button_ShowEntityEditView.selected = true;
                Button_ShowCCatEditView.selected = false;
-               //Button_ShowFunctionEditView.selected = false;
+               Button_ShowFunctionEditView.selected = false;
                
                if (ViewStack_EditView.selectedChild == CCatDesignView)
                {
                   MainView.OnFinishedCCatEditing ();
+               }
+               else if (ViewStack_EditView.selectedChild == FunctionDesignView)
+               {
+                  MainView.OnFinishedFunctionEditing ();
                }
                
                ViewStack_EditView.selectedChild = EntityDesignView;
@@ -1181,7 +1203,7 @@
             {
                Button_ShowEntityEditView.selected = false;
                Button_ShowCCatEditView.selected = true;
-               //Button_ShowFunctionEditView.selected = false;
+               Button_ShowFunctionEditView.selected = false;
                
                ViewStack_EditView.selectedChild = CCatDesignView;
                ViewStack_ViewEditCommands.selectedChild = Box_CCatEditViewCommands;
@@ -1194,12 +1216,15 @@
             {
                Button_ShowEntityEditView.selected = false;
                Button_ShowCCatEditView.selected = false;
-               //Button_ShowFunctionEditView.selected = true;
+               Button_ShowFunctionEditView.selected = true;
                
                ViewStack_EditView.selectedChild = FunctionDesignView;
                
                Runtime.SetActiveView (FunctionEditingView);
                ViewStack_ViewEditCommands.selectedChild = Box_FunctionEditViewCommands;
+               
+               Runtime.SetActiveView (FunctionEditingView);
+               FunctionEditingView.SetFunctionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetFunctionManager ());
             }
             
 //========================================================================================
@@ -1260,6 +1285,8 @@
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
                if (ids != null)
                   MainView.GoToEntity (ids);
+               
+               stage.focus = MainView;
             }
             
             private function SelectNewEntitiesWithoutBrothers (event:ContextMenuEvent):void
@@ -1267,6 +1294,8 @@
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
                if (ids != null)
                   MainView.SelectEntityByIds (ids, true, false);
+               
+               stage.focus = MainView;
             }
             
             private function SelectNewEntitiesWithBrothers (event:ContextMenuEvent):void
@@ -1274,6 +1303,8 @@
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
                if (ids != null)
                   MainView.SelectEntityByIds (ids, true, true);
+               
+               stage.focus = MainView;
             }
             
             private function SelectMoreEntitiesWithoutBrothers (event:ContextMenuEvent):void
@@ -1281,6 +1312,8 @@
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
                if (ids != null)
                   MainView.SelectEntityByIds (ids, false, false);
+               
+               stage.focus = MainView;
             }
             
             private function SelectMoreEntitiesWithBrothers (event:ContextMenuEvent):void
@@ -1288,6 +1321,8 @@
                var ids:Array = GetEntityIdsFromInputText (Text_FindEntityId.text);
                if (ids != null)
                   MainView.SelectEntityByIds (ids, false, true);
+               
+               stage.focus = MainView;
             }
             
             private function StatusBar_SetMainSelectedEntityInfo (info:String):void
@@ -2105,6 +2140,22 @@
                PopUpManager.centerPopUp (dialog);
                dialog.SetConfirmFunc (onConfirmFunc);
                dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+//========================================================================================
+// code lib view
+//========================================================================================
+            
+            private function ShowFunctionSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               OnOpenDialog ();
+               
+               var settingDialog:FunctionEditDialog = new FunctionEditDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, FunctionEditingView, true);
+               PopUpManager.centerPopUp (settingDialog);
             }
             
 //========================================================================================

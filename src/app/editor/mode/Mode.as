@@ -8,7 +8,6 @@ package editor.mode {
    {
       protected var mMainView:WorldView;
       
-      
       public function Mode (mainView:WorldView)
       {
          mMainView = mainView;

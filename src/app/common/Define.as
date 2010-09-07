@@ -79,8 +79,11 @@ package common {
       public static const BodyCloneOffsetY:uint = 0;
       
 //===========================================================================
-// joint connected shape index
+// entity common
 //===========================================================================
+      
+      public static const MinEntityNameLength:int = 1;
+      public static const MaxEntityNameLength:int = 30; // would be 32 when plus 2 digits number
       
       public static const EntityId_None:int = -1;
       public static const EntityId_Ground:int = -2;
@@ -93,8 +96,6 @@ package common {
       public static const MaxCollisionCategoriesCount:int = 128; // can be larger
       
       public static const CategoryDefaultName:String = "Category";
-      public static const MinCollisionCategoryNameLength:int = 1;
-      public static const MaxCollisionCategoryNameLength:int = 30; // would be 32 when plus 2 digits number
       
       public static const CollisionCategoryId_HiddenCategory:int = -1;
       public static const MinCollisionCategoryId:int = -1;
@@ -256,14 +257,6 @@ package common {
       //public static const PowerSource_LinearVelocity     :int = 7;
       
 //===========================================================================
-// Codeing Formats
-//===========================================================================
-      
-      public static const CodingFormat_Traditional:int = 0;
-      public static const CodingFormat_ObjectOriented:int = 1;
-      public static const CodingFormat_Poem:int = 2;
-      
-//===========================================================================
 // Logic
 //===========================================================================
       
@@ -291,6 +284,18 @@ package common {
       
       public static const MaxEntitiesCountEachAssigner:int = 32; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
       public static const MaxEntityPairesCountEachOneToOnePairAssigner:int = 16; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
+      
+//===========================================================================
+// Coding
+//===========================================================================
+      
+      public static const CodingFormat_Traditional:int = 0;
+      public static const CodingFormat_ObjectOriented:int = 1;
+      public static const CodingFormat_Poem:int = 2;
+      
+      public static const FunctionDefaultName:String = "Function";
+      public static const PackageDefaultName:String = "Package";
+      public static const ClassDefaultName:String = "Type";
       
 //===========================================================================
 // colors

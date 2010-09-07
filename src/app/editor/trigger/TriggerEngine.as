@@ -104,7 +104,7 @@ package editor.trigger {
          mStaticDataInited = true;
       }
       
-      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler
+      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_PreDefined
       {
          return PlayerEventDefinesForEditing.GetEventDeclarationById (event_id);
       }

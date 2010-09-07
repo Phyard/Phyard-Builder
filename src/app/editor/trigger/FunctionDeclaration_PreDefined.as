@@ -6,11 +6,11 @@ package editor.trigger {
    import common.trigger.FunctionTypeDefine;
    import common.trigger.CoreEventDeclarations;
    
-   // todo: change name to FunctionDeclaration_EventHandler
-   public class FunctionDeclaration_EventHandler extends FunctionDeclaration
+   // todo: change name to FunctionDeclaration_PreDefined
+   public class FunctionDeclaration_PreDefined extends FunctionDeclaration
    {
       
-      public function FunctionDeclaration_EventHandler (id:int, name:String, description:String = null, 
+      public function FunctionDeclaration_PreDefined (id:int, name:String, description:String = null, 
                                                       poemCallingFormat:String = null, traditionalCallingFormat:String = null, 
                                                       paramDefines:Array = null, 
                                                       showUpInApiMenu:Boolean = true)

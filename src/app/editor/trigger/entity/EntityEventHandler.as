@@ -21,7 +21,7 @@ package editor.trigger.entity {
    import editor.selection.SelectionProxyRectangle;
    
    import editor.trigger.TriggerEngine;
-   import editor.trigger.FunctionDeclaration_EventHandler;
+   import editor.trigger.FunctionDeclaration_PreDefined;
    import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
    import editor.trigger.VariableDefinitionEntity;

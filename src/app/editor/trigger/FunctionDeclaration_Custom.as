@@ -16,39 +16,6 @@ package editor.trigger {
       {
          return FunctionTypeDefine.FunctionType_Custom;
       }
-      
-   //=======================================================
-   // todo: for custom function declatations and definitions
-   //=======================================================
-      
-      public function InsertParamDefinition ():void
-      {
-      }
-      
-      public function DeleteParamDefinition ():void
-      {
-      }
-      
-      public function ChangeParamDefinitionIndex ():void
-      {
-      }
-      
-      public function ReplaceParamDefinition ():void
-      {
-      }
-      
-      public function SetID ():void
-      {
-      }
-      
-      public function SetName ():void
-      {
-      }
-      
-      public function SetDescription ():void
-      {
-      }
-      
    }
 }
 

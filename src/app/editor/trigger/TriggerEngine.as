@@ -124,6 +124,10 @@ package editor.trigger {
          return PlayerFunctionDefinesForEditing.sMenuBarDataProvider_Longer;
       }
       
+   //========================================================================================================
+   // some special function declarations
+   //========================================================================================================
+      
       public static function GetVoidFunctionDeclaration ():FunctionDeclaration_Core
       {
          return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_Void);
@@ -167,34 +171,8 @@ package editor.trigger {
          }
       }
       
-      public function GetGlobalVariableSpace ():VariableSpaceGlobal
-      {
-         return mGlobalVariableSpace;
-      }
-      
-      public function GetEntityVariableSpace ():VariableSpaceEntity
-      {
-         return mEntityVariableSpace;
-      }
-      
-      public function NotifyGlobalVariableSpaceModified ():void
-      {
-         if (mGlobalVariablesEditDialog != null)
-         {
-            mGlobalVariablesEditDialog.NotifyVariableSpaceModified ();
-         }
-      }
-      
-      public function NotifyEntityVariableSpaceModified ():void
-      {
-         if (mEntityVariablesEditDialog != null)
-         {
-            mEntityVariablesEditDialog.NotifyVariableSpaceModified ();
-         }
-      }
-      
    //========================================================================================================
-   // variable edit dialogs
+   // global variable edit dialog
    //========================================================================================================
       
       private static var mGlobalVariablesEditDialog:VariablesEditDialog = null;
@@ -240,6 +218,23 @@ package editor.trigger {
          mGlobalVariablesEditDialogVisible = false;
       }
       
+      public function GetGlobalVariableSpace ():VariableSpaceGlobal
+      {
+         return mGlobalVariableSpace;
+      }
+      
+      public function NotifyGlobalVariableSpaceModified ():void
+      {
+         if (mGlobalVariablesEditDialog != null)
+         {
+            mGlobalVariablesEditDialog.NotifyVariableSpaceModified ();
+         }
+      }
+      
+   //========================================================================================================
+   // entity variable edit dialog
+   //========================================================================================================
+      
       private static var mEntityVariablesEditDialog:VariablesEditDialog = null;
       private static var mEntityVariablesEditDialogVisible:Boolean = false;
       
@@ -281,6 +276,19 @@ package editor.trigger {
          }
          
          mEntityVariablesEditDialogVisible = false;
+      }
+      
+      public function GetEntityVariableSpace ():VariableSpaceEntity
+      {
+         return mEntityVariableSpace;
+      }
+      
+      public function NotifyEntityVariableSpaceModified ():void
+      {
+         if (mEntityVariablesEditDialog != null)
+         {
+            mEntityVariablesEditDialog.NotifyVariableSpaceModified ();
+         }
       }
    }
 }

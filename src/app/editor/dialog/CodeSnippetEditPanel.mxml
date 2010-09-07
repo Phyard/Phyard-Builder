@@ -22,9 +22,9 @@
          <mx:HBox id="Box_EditVariablesButtons" borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
             <mx:Button id="Button_EditGlobalVariables" click="OnEditGlobalVariables ()" toolTip="Edit Global Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_global_variables.png')" />
             <mx:Button id="Button_EditEntityVariables" click="OnEditEntityVariables ()" toolTip="Edit Custom Entity Properties" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_entity_variables.png')" />
-            <mx:Button id="Button_EditLocalVariables" click=";" toolTip="Edit Local Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_local_variables.png')" />
-            <mx:Button id="Button_EditInputVariables" click=";" toolTip="Edit Input Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_input_variables.png')" />
-            <mx:Button id="Button_EditOutputVariables" click=";" toolTip="Edit Output Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_output_variables.png')" />
+            <mx:Button id="Button_EditLocalVariables" click="OnEditLocalVariables ();" toolTip="Edit Local Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_local_variables.png')" />
+            <mx:Button id="Button_EditInputVariables" click="OnEditInputVariables ();" toolTip="Edit Input Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_input_variables.png')" />
+            <mx:Button id="Button_EditOutputVariables" click="OnEditOutputVariables ();" toolTip="Edit Output Variables" fontSize="8" left="5" top="5" width="20" height="20" cornerRadius="0" icon="@Embed('../../res/action/command_edit_output_variables.png')" />
          </mx:HBox>
          <mx:Spacer width="5"/>
          <mx:HBox borderStyle="solid" borderThickness="1" height="100%" horizontalGap="1" verticalGap="1" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
@@ -118,7 +118,7 @@
          import editor.trigger.VariableSpaceLocal;
          import editor.trigger.VariableSpaceRegister;
          
-         private var mInputValues:Object;
+         //private var mInputValues:Object;
          
          private var mCodeSnippet:CodeSnippet = null;
          
@@ -190,51 +190,7 @@
          
          private function OnRemovedFromStage ():void
          {
-            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
-            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
-            
-            // ...
-            Runtime.mGlobalVariablesEditingDialogClosedCallBack = null;
-            Runtime.mEntityVariablesEditingDialogClosedCallBack = null;
-         }
-         
-         private var mLastModifyTimesOfGlobalVariableSpace:int = -1;
-         private function OnGlobalVariablesEditingDialogClosed ():void
-         {
-            var newModifyTimes:int = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
-            if (mLastModifyTimesOfGlobalVariableSpace < newModifyTimes)
-            {
-               OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
-               mLastModifyTimesOfGlobalVariableSpace = newModifyTimes;
-            }
-         }
-         
-         private var mLastModifyTimesOEntityVariableSpace:int = -1;
-         private function OnEntityVariablesEditingDialogClosed ():void
-         {
-            var newModifyTimes:int = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
-            if (mLastModifyTimesOEntityVariableSpace < newModifyTimes)
-            {
-               OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
-               mLastModifyTimesOEntityVariableSpace = newModifyTimes;
-            }
-         }
-         
-         private function OnEditGlobalVariables ():void
-         {
-            Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
-         }
-         
-         private function OnEditEntityVariables ():void
-         {
-            Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
-         }
-         
-         private function OnEditCustomFunctions ():void
-         {
-            
+            CloseVariableEditingDialogsAndCleanUpRalatedInfo ();
          }
          
          private function OnCopySelectedCallings (event:ContextMenuEvent):void
@@ -1637,8 +1593,67 @@
          }
          
    //=========================================================================================
-   // 
+   // variable editing dialogs
    //=========================================================================================
+         
+         private function CloseVariableEditingDialogsAndCleanUpRalatedInfo ():void
+         {
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideGlobalVariablesEditDialog ();
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().HideEntityVariablesEditDialog ();
+            
+            // ...
+            Runtime.mGlobalVariablesEditingDialogClosedCallBack = null;
+            Runtime.mEntityVariablesEditingDialogClosedCallBack = null;
+         }
+         
+         private var mLastModifyTimesOfGlobalVariableSpace:int = -1;
+         private function OnGlobalVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOfGlobalVariableSpace < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOfGlobalVariableSpace = newModifyTimes;
+            }
+         }
+         
+         private var mLastModifyTimesOEntityVariableSpace:int = -1;
+         private function OnEntityVariablesEditingDialogClosed ():void
+         {
+            var newModifyTimes:int = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
+            if (mLastModifyTimesOEntityVariableSpace < newModifyTimes)
+            {
+               OnCurrentCommandChanged ();
+               OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               mLastModifyTimesOEntityVariableSpace = newModifyTimes;
+            }
+         }
+         
+         private function OnEditGlobalVariables ():void
+         {
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowGlobalVariablesEditDialog (this);
+         }
+         
+         private function OnEditEntityVariables ():void
+         {
+            Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowEntityVariablesEditDialog (this);
+         }
+         
+         private function OnEditLocalVariables ():void
+         {
+            //Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet);
+         }
+         
+         private function OnEditInputVariables():void
+         {
+            //Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet);
+         }
+         
+         private function OnEditOutputVariables():void
+         {
+            //Runtime.GetCurrentWorld ().GetTriggerEngine ().ShowLocalVariablesEditDialog (this, mCodeSnippet);
+         }
          
      ]]>
    </mx:Script>

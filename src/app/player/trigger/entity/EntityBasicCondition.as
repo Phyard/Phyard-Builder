@@ -4,8 +4,8 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Logic;
-   import player.trigger.ValueTarget_BooleanReturn;
-   
+   import player.trigger.VariableInstance;
+   import player.trigger.ValueTarget_Variable;
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
@@ -14,14 +14,11 @@ package player.trigger.entity
       public var mConditionDefinition:FunctionDefinition_Logic;
       public var mName:String = null;
       
-      protected var mBooleanReturnValueTarget:ValueTarget_BooleanReturn = null;
-      
       public function EntityBasicCondition (world:World)
       {
          super (world);
          
          mConditionDefinition = new FunctionDefinition_Logic (TriggerEngine.GetBoolFunctionDeclaration  ());
-         mBooleanReturnValueTarget = new ValueTarget_BooleanReturn ();
       }
       
 //=============================================================
@@ -68,12 +65,15 @@ package player.trigger.entity
 //   as Bool Function
 //=============================================================
       
+      private var mBooleanVariable:VariableInstance = new VariableInstance ();
+      private var mBooleanReturnValueTarget:ValueTarget_Variable = new ValueTarget_Variable (mBooleanVariable); // to use Parameter_DirectValue instead
+      
       public function RunBoolFunction ():Boolean
       {
          // if (mConditionListDefinition != null) // should not be null
          mConditionDefinition.EvaluateCondition (mBooleanReturnValueTarget);
          
-         return mBooleanReturnValueTarget.mBoolValue;
+         return mBooleanVariable.mValueObject as Boolean;
       }
       
    }

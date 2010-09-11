@@ -98,7 +98,7 @@
          
          import editor.trigger.TriggerEngine;
          import editor.trigger.FunctionDeclaration;
-         import editor.trigger.FunctionDeclaration_PreDefined;
+         import editor.trigger.FunctionDeclaration_EventHandler;
          import editor.trigger.FunctionDefinition
          import editor.trigger.VariableDefinition;
          import editor.trigger.CodeSnippet;
@@ -427,7 +427,7 @@
                   var item:Object = item_array [callingId];
                   
                   var func_id:int = (item as FunctionCallingLineData).mFunctionId;
-                  var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+                  var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
                   var func_calling:FunctionCalling = new FunctionCalling (Runtime.GetCurrentWorld ().GetTriggerEngine (), func_declaration);
                   func_calling.AssignInputValueSources (item.mCurrentValueSources);
                   func_calling.AssignOutputValueTargets (item.mCurrentValueTargets);
@@ -500,7 +500,7 @@
             if (isNaN (id) || id < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (id);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (id);
             
             if (func_declaration == null)
                return;
@@ -673,7 +673,7 @@
             
             mCurrentCallingLine = List_Commands.selectedItem as FunctionCallingLineData;
             var func_id:int = mCurrentCallingLine.mFunctionId;
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
             var currentValueSources:Array = mCurrentCallingLine.mCurrentValueSources;
             var currentValueTargets:Array = mCurrentCallingLine.mCurrentValueTargets;
             
@@ -792,7 +792,7 @@
          {
             var func_id:int = mCurrentCallingLine.mFunctionId;
             var currentValueSources:Array = mCurrentCallingLine.mCurrentValueSources;
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
             
             if (valueControls [inputId] != null)
             {
@@ -844,7 +844,7 @@
          {
             var func_id:int = mCurrentCallingLine.mFunctionId;
             var currentValueTargets:Array = mCurrentCallingLine.mCurrentValueTargets;
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
             
             if (valueControls [returnId] != null)
             {
@@ -901,7 +901,7 @@
             var currentReturnTargets:Array = mCurrentCallingLine.mCurrentValueTargets;
             var target_value_controls:Array = mCurrentCallingLine.mValueTargetControls;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
             
             var variable_def:VariableDefinition;
             var j:int;
@@ -1102,7 +1102,7 @@
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
             
@@ -1124,7 +1124,7 @@
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = mCurrentCallingLine.mInitialValueSources [param_index];
             mCurrentCallingLine.mCurrentValueSources [param_index] = new_value_source;
@@ -1159,7 +1159,7 @@
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition;
             
             if (isForEntiryPropertyOwner)
@@ -1224,7 +1224,7 @@
             
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition;
             if (isForEntiryPropertyOwner)
             {
@@ -1286,7 +1286,7 @@
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition;
             if (isForEntiryPropertyOwner)
             {
@@ -1346,7 +1346,7 @@
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition;
             if (isForEntiryPropertyOwner)
             {
@@ -1392,7 +1392,7 @@
             if (param_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetInputParamDefinitionAt (param_index);
             var new_value_source:ValueSource = variable_def.GetDefaultPropertyValueSource ();
             
@@ -1471,7 +1471,7 @@
             if (return_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = mCurrentCallingLine.mInitialValueTargets [return_index];
             
@@ -1493,7 +1493,7 @@
             if (return_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultNullValueTarget ();
             
@@ -1517,7 +1517,7 @@
             
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (ownerFuncDefinition.GetReturnVariableSpace ());
             
@@ -1539,7 +1539,7 @@
             if (return_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetRegisterVariableSpace (variable_def.GetValueType()));
             
@@ -1561,7 +1561,7 @@
             if (return_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultVariableValueTarget (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ());
             
@@ -1583,7 +1583,7 @@
             if (return_index < 0)
                return;
             
-            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
+            var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (mCurrentCallingLine.mFunctionId);
             var variable_def:VariableDefinition = func_declaration.GetOutputParamDefinitionAt (return_index);
             var new_value_target:ValueTarget = variable_def.GetDefaultPropertyValueTarget ();
             

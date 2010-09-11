@@ -28,5 +28,14 @@ package player.trigger
    //if (mEnableTrace)  trace ("#############" + new Error ().getStackTrace ());
       }
       
+      public function Clone ():CodeSnippet
+      {
+         return null;
+      }
+      
+      public function SetParentFunctionInstance (parentFunctionInstance:FunctionInstance):void
+      {
+         // replace current input/output/local/memeber variable sources
+      }
    }
 }

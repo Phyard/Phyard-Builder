@@ -18,6 +18,7 @@ package player.trigger
       
       public function DoCall (inputValueSources:ValueSource, returnValueTarget:ValueTarget):void
       {
+         throw new Error ("to override");
       }
    }
 }

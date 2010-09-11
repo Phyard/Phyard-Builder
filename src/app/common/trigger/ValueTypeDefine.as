@@ -28,14 +28,21 @@ package common.trigger {
 // 
 //=============================================================================
       
-      public static const NumberTypeMask_Basic:int = 0xFFFF;
+      public static const NumberTypeMask_Basic:uint = 0xFFFF;
       
-      public static const NumberTypeMask_Detail:int = 0x000F0000;
+      public static const NumberTypeMask_Detail:uint = 0x000F0000;
       
-      public static const NumberTypeMask_Usage:int = 0x07F00000;
+      public static const NumberTypeMask_Usage:uint = 0x0FF00000;
+      
+      public static const NumberTypeMask_Modifier:uint = 0xF0000000;
+         public static const NumberTypeMask_Static:uint = 0x10000000;
+         public static const NumberTypeMask_Final:uint = 0x20000000;
+         public static const NumberTypeMask_Public:uint = 0x40000000;
+         public static const NumberTypeMask_Private:uint = 0x80000000;
+         public static const NumberTypeMask_Protected:uint = 0xC0000000;
       
 //=============================================================================
-// basic types
+// basic types 
 //=============================================================================
       
       // best to keep the max valye type id < 256.
@@ -65,7 +72,7 @@ package common.trigger {
       public static const NumberTypeDetail_Single :int = 1 << 16; // 32 bits float
       public static const NumberTypeDetail_Integer:int = 2 << 16; // 32 bits int
       
-      // most 64 usages, assume offset_rotation must be zero
+      // most 256 usages, assume offset_rotation must be zero
       
       public static const NumberTypeUsage_General                          :int = 0 << 20;
       public static const NumberTypeUsage_PositionX                        :int = 1 << 20;
@@ -101,6 +108,6 @@ package common.trigger {
       public static const NumberTypeUsage_LinearDeltaY                     :int = 30 << 20;
       public static const NumberTypeUsage_LinearDyDx                       :int = 31 << 20;
       
-      // 1 << 26
+      //
    }
 }

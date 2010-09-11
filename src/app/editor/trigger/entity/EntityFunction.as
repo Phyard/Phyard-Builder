@@ -135,10 +135,8 @@ package editor.trigger.entity {
          mHalfWidth = mHalfTextWidth;// + 15;
          mHalfHeight = mHalfTextHeight;
          
-         //GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, 0xD0FFD0);
-         GraphicsUtil.DrawRect (this, - mHalfTextWidth, - mHalfTextHeight, mHalfTextWidth + mHalfTextWidth, mHalfTextHeight + mHalfTextHeight, 0x0, 1, true, true ? 0xC0FFC0 : 0xFFD0D0);
-         GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false);
-      }
+         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, true ? 0xC0FFC0 : 0xFFD0D0);
+         GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false);      }
       
       override public function UpdateSelectionProxy ():void
       {

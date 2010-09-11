@@ -19,27 +19,15 @@ package player.trigger
       
       protected var mLogicFunctionInstance:FunctionInstance = null;
       
-      public function FunctionDefinition_Logic(eventDecl:FunctionDeclaration, localVariableDefines:Array = null)
+      public function FunctionDefinition_Logic(eventDecl:FunctionDeclaration)
       {
          super (eventDecl);
-         
-         BuildNewFunctionInstance (localVariableDefines);
       }
       
       public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
       {
+         mLogicFunctionInstance = new FunctionInstance (this);
          mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (mLogicFunctionInstance, Global.GetCurrentWorld (), codeSnippetDefine);
-      }
-      
-      // as normal function, this function will not be called
-      override public function DoCall (inputValueSources:ValueSource, returnValueTarget:ValueTarget):void
-      {
-         mLogicFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
-         
-         mCodeSnippet.Excute ();
-         
-         // no return
-         mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
       }
       
       // as condition component, no inputs
@@ -74,13 +62,5 @@ package player.trigger
          // no returns
          //mLogicFunctionInstance.mReturnVariableSpace.SetValuesTo (returnValueTarget);
       }
-      
-      protected function BuildNewFunctionInstance (localVariableDefines:Array):void
-      {
-         var fi:FunctionInstance = new FunctionInstance (this, localVariableDefines);
-         
-         mLogicFunctionInstance = fi;
-      }
-      
    }
 }

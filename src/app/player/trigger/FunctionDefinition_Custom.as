@@ -6,43 +6,54 @@ package player.trigger
    
    public class FunctionDefinition_Custom extends FunctionDefinition
    {
-      //
-      protected var mLocalVariableDefines:Array;
+      protected var mPrimaryFunctionInstance:FunctionInstance;
+      protected var mPrimaryCodeSnippet:CodeSnippet;
       
-      public function FunctionDefinition_Custom (functionDecl:FunctionDeclaration, localVariableDefines:Array = null)
+      protected var mFreeFunctionInstance:FunctionInstance = null;
+      protected var mGeneralCodeSnippet:CodeSnippet;
+      
+      public function FunctionDefinition_Custom (functionDecl:FunctionDeclaration)
       {
          super (functionDecl);
          
-         mLocalVariableDefines = localVariableDefines;
-         
-         BuildNewFunctionInstance (mLocalVariableDefines);
+         mPrimaryFunctionInstance = new FunctionInstance (this);
+      }
+      
+      public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
+      {
+         mLogicFunctionInstance = new FunctionInstance (this);
+         mPrimaryCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (mLogicFunctionInstance, Global.GetCurrentWorld (), codeSnippetDefine);
       }
       
       override public function DoCall (inputValueSources:ValueSoure, returnValueTarget:ValueTarget):void
       {
-         if (mFreeFunctionInstance == null)
-            BuildNewFunctionInstance ();
-         
-         
-         var func_instance:FunctionInstance = mFreeFunctionInstance;
-         mFreeFunctionInstance = mFreeFunctionInstance.mNextFreeFunctionInstance;
-         
-         funcc_instance.mInputVariableSpace.GetValuesFrom (mInputValueSourceList);
-         
-         // todo: call ...
-         
-         func_instance.mReturnValueTargetList.SetValuesTo (mReturnValueTargetList);
-         
-         func_instance.mNextFreeFunctionInstance = mFreeFunctionInstance;
-         mFreeFunctionInstance = func_instance;
-      }
-      
-      protected function BuildNewFunctionInstance (localVariableDefines:Array):void
-      {
-         var fi:FunctionInstance = new FunctionInstance (this, localVariableDefines);
-         
-         fi.mNextFreeFunctionInstance = mFreeFunctionInstance;
-         mFreeFunctionInstance = fi;
+      /*
+         if (mPrimaryFunctionInstance.mIsFree)
+         {
+            mPrimaryFunctionInstance.mIsFree = false;
+            
+            mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
+            mPrimaryCodeSnippet.Excute ();
+            mPrimaryFunctionInstance.mReturnValueTargetList.SetValuesTo (returnValueTarget);
+            
+            mPrimaryFunctionInstance.mIsFree = true;
+         }
+         else
+         {
+            var func_instance:FunctionInstance = mFreeFunctionInstance;
+            if (func_instance == null)
+               func_instance = new FunctionInstance (this);
+            else
+               mFreeFunctionInstance = mFreeFunctionInstance.mNextFreeFunctionInstance;
+            
+            func_instance.mInputVariableSpace.GetValuesFrom (inputValueSources);
+            mGeneralCodeSnippet.ExcuteGeneral (func_instance);
+            func_instance.mReturnValueTargetList.SetValuesTo (returnValueTarget);
+            
+            func_instance.mNextFreeFunctionInstance = mFreeFunctionInstance;
+            mFreeFunctionInstance = func_instance;
+         }
+      */
       }
       
    }

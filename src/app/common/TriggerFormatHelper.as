@@ -288,7 +288,7 @@ package common {
       {
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
-         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
          
          var i:int;
          var num_inputs:int = funcCallingDefine.mNumInputs;
@@ -556,7 +556,7 @@ package common {
          
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
-         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (func_id);
+         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
          
          var i:int;
          var num_inputs:int = funcCallingDefine.mNumInputs;
@@ -736,7 +736,7 @@ package common {
          var function_type:int = parseInt (funcCallingElement.@function_type);
          var function_id  :int = parseInt (funcCallingElement.@function_id);
  
-         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerFunctionDeclarationById (function_id);
+         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (function_id);
          
          var i:int;
          var value_source_defines:Array = new Array ();

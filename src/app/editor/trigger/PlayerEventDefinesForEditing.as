@@ -274,10 +274,10 @@ package editor.trigger {
          if (event_id < 0)
             return;
          
-         sEventDeclarations [event_id] = new FunctionDeclaration_PreDefined (event_id, event_name, event_description, event_name, event_name, param_definitions);
+         sEventDeclarations [event_id] = new FunctionDeclaration_EventHandler (event_id, event_name, event_description, event_name, event_name, param_definitions);
       }
       
-      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_PreDefined
+      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler
       {
          if (event_id < 0 || event_id >= sEventDeclarations.length)
             return null;
@@ -285,7 +285,7 @@ package editor.trigger {
          return sEventDeclarations [event_id];
       }
       
-      public static function GetEventSettingById (event_id:int):FunctionDeclaration_PreDefined
+      public static function GetEventSettingById (event_id:int):FunctionDeclaration_EventHandler
       {
          if (event_id < 0 || event_id >= sEventDeclarations.length)
             return null;

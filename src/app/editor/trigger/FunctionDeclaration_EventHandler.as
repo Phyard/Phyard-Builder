@@ -7,14 +7,18 @@ package editor.trigger {
    import common.trigger.CoreEventDeclarations;
    
    // todo: change name to FunctionDeclaration_EventHandler
-   public class FunctionDeclaration_PreDefined extends FunctionDeclaration
+   public class FunctionDeclaration_EventHandler extends FunctionDeclaration
    {
-      public function FunctionDeclaration_PreDefined (id:int, name:String, description:String = null, 
+      
+      public function FunctionDeclaration_EventHandler (id:int, name:String, description:String = null, 
                                                       poemCallingFormat:String = null, traditionalCallingFormat:String = null, 
-                                                      paramDefines:Array = null, returnDefinitions:Array = null, 
+                                                      paramDefines:Array = null, 
                                                       showUpInApiMenu:Boolean = true)
       {
-         super (id, name, description, poemCallingFormat, traditionalCallingFormat, paramDefines, returnDefinitions, showUpInApiMenu);
+         super (id, name, description, poemCallingFormat, traditionalCallingFormat, paramDefines, null, showUpInApiMenu);
+         
+         if ( ! CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id) ) )
+            throw new Error ("not consistent! event id = " + id);
       }
       
       override public function GetType ():int 

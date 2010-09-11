@@ -5,18 +5,18 @@ package player.trigger
    // instance of custom functions
    public class FunctionInstance
    {
-      public var mNextFreeFunctionInstance:FunctionInstance = null;
+      internal var mIsFree:Boolean = true;
+      internal var mNextFreeFunctionInstance:FunctionInstance = null;
       
       //
       protected var mFunctionDefinition:FunctionDefinition;
       
-      // to reduce the number of function callings, set the 2 variables public
+      // to reduce the number of function callings, set the 3 variables public
       public var mInputVariableSpace:VariableSpace;
       public var mReturnVariableSpace:VariableSpace;
+      public var mLocalVariableSpace:VariableSpace;
       
-      protected var mLocalVariableSpace:VariableSpace;
-      
-      public function FunctionInstance (functionDefiniton:FunctionDefinition, localVariableDefines:Array = null)
+      public function FunctionInstance (functionDefiniton:FunctionDefinition)
       {
          mFunctionDefinition = functionDefiniton;
          
@@ -29,13 +29,8 @@ package player.trigger
          var num_returns:int = func_declaration == null ? 0 : func_declaration.GetNumOutputs ();
          mReturnVariableSpace = new VariableSpace (num_returns);
          
-         var num_locals:int = localVariableDefines == null ? 0 : localVariableDefines.length;
-         if (num_locals > 0)
-         {
-            mLocalVariableSpace = new VariableSpace (localVariableDefines.length);
-            
-            // create local varible instances
-         }
+         var num_locals:int = func_declaration == null ? 0 : func_declaration.GetNumLocalVariables ();
+         mLocalVariableSpace = new VariableSpace (num_locals);
       }
       
       public function GetFunctionDefinition ():FunctionDefinition

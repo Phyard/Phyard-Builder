@@ -4,7 +4,6 @@ package player.trigger.entity
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Logic;
-   import player.trigger.ValueTarget_BooleanReturn;
    
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;

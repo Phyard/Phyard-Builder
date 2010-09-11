@@ -37,7 +37,7 @@ package common.trigger {
                   
          }
          
-      // special
+      // special, some predefineds for internal using
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_Void,
                      null,

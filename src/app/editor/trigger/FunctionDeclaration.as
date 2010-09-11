@@ -211,6 +211,20 @@ package editor.trigger {
       }
       
 //=================================================================
+// some to override
+//=================================================================
+      
+      public function IsSupportLocalVariables ():Boolean
+      {
+         return false;
+      }
+      
+      public function IsSupportParameters ():Boolean // input and output
+      {
+         return false;
+      }
+      
+//=================================================================
 //
 //=================================================================
       

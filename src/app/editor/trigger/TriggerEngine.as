@@ -104,14 +104,14 @@ package editor.trigger {
          mStaticDataInited = true;
       }
       
-      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_PreDefined
+      public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler
       {
          return PlayerEventDefinesForEditing.GetEventDeclarationById (event_id);
       }
       
-      public static function GetPlayerFunctionDeclarationById (func_id:int):FunctionDeclaration_Core
+      public static function GetPlayerCoreFunctionDeclarationById (func_id:int):FunctionDeclaration_Core
       {
-         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (func_id);
+         return PlayerFunctionDefinesForEditing.GetCoreFunctionDeclarationById (func_id);
       }
       
       public static function GetCoreApiFunctionsMenuBarDataProvider_Shorter ():XML
@@ -128,24 +128,24 @@ package editor.trigger {
    // some special function declarations
    //========================================================================================================
       
-      public static function GetVoidFunctionDeclaration ():FunctionDeclaration_Core
+      public static function GetVoidFunctionDeclaration ():FunctionDeclaration_PreDefined
       {
-         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_Void);
+         return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_Void);
       }
       
-      public static function GetBoolFunctionDeclaration ():FunctionDeclaration_Core
+      public static function GetBoolFunctionDeclaration ():FunctionDeclaration_PreDefined
       {
-         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_Bool);
+         return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_Bool);
       }
       
-      public static function GetEntityFilterFunctionDeclaration ():FunctionDeclaration_Core
+      public static function GetEntityFilterFunctionDeclaration ():FunctionDeclaration_PreDefined
       {
-         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_EntityFilter);
+         return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_EntityFilter);
       }
       
-      public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration_Core
+      public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration_PreDefined
       {
-         return PlayerFunctionDefinesForEditing.GetFunctionDeclarationById (CoreFunctionIds.ID_EntityPairFilter);
+         return PlayerFunctionDefinesForEditing.GetPreDefinedFunctionDeclarationById (CoreFunctionIds.ID_EntityPairFilter);
       }
       
    //========================================================================================================

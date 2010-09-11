@@ -9,8 +9,6 @@ package player.trigger
       public var mNextFunctionCalling_True:FunctionCalling = null;
       public var mNextFunctionCalling_False:FunctionCalling = null;
       
-      //protected var mBooleanReturnValueTarget:ValueTarget_BooleanReturn = new ValueTarget_BooleanReturn ();
-      
       // todo: unlike the super.mFunctionDefinition, this.mFunctionDefinition is used to evaluate the condition result.
       //       this.mFunctionDefinition is an inline function, which has no input parameters and has one output parameter
       

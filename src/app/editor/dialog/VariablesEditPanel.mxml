@@ -316,19 +316,19 @@
                   if (variableDefinition is VariableDefinitionBoolean)
                   {
                      RadioButton_BooleanType.selected = true;
-                     DefaultBooleanValue.selectedValue = (variableDefinition as VariableDefinitionBoolean).GetDefaultValue () ? "true" : "false";
+                     DefaultBooleanValue.selectedValue = (variableInstance.GetValueObject () as Boolean) ? "true" : "false";
                      ViewStack_VariableSetting.selectedChild = Box_BooleanVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionNumber)
                   {
                      RadioButton_NumberType.selected = true;
-                     Text_DefaultNumberValue.text = "" + (variableDefinition as VariableDefinitionNumber).GetDefaultValue ();
+                     Text_DefaultNumberValue.text = "" + (variableInstance.GetValueObject () as Number);
                      ViewStack_VariableSetting.selectedChild = Box_NumberVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionString)
                   {
                      RadioButton_StringType.selected = true;
-                     Text_DefaultStringValue.text = (variableDefinition as VariableDefinitionString).GetDefaultValue ();
+                     Text_DefaultStringValue.text = (variableInstance.GetValueObject () as String);
                      ViewStack_VariableSetting.selectedChild = Box_StringVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionCollisionCategory)

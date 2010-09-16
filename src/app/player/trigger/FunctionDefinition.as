@@ -16,7 +16,7 @@ package player.trigger
          return mFunctionDeclaration;
       }
       
-      public function DoCall (inputValueSources:ValueSource, returnValueTarget:ValueTarget):void
+      public function DoCall (inputValueSources:Parameter, returnValueTarget:Parameter):void
       {
          throw new Error ("to override");
       }

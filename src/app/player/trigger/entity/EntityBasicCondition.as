@@ -3,22 +3,22 @@ package player.trigger.entity
    import player.world.World;
    
    import player.trigger.TriggerEngine;
-   import player.trigger.FunctionDefinition_Logic;
+   import player.trigger.FunctionDefinition_Custom;
    import player.trigger.VariableInstance;
-   import player.trigger.ValueTarget_Variable;
+   import player.trigger.Parameter_Direct;
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
    public class EntityBasicCondition extends EntityCondition implements ScriptHolder
    {
-      public var mConditionDefinition:FunctionDefinition_Logic;
+      public var mConditionDefinition:FunctionDefinition_Custom;
       public var mName:String = null;
       
       public function EntityBasicCondition (world:World)
       {
          super (world);
          
-         mConditionDefinition = new FunctionDefinition_Logic (TriggerEngine.GetBoolFunctionDeclaration  ());
+         mConditionDefinition = new FunctionDefinition_Custom (TriggerEngine.GetBoolFunctionDeclaration  ());
       }
       
 //=============================================================
@@ -65,15 +65,16 @@ package player.trigger.entity
 //   as Bool Function
 //=============================================================
       
-      private var mBooleanVariable:VariableInstance = new VariableInstance ();
-      private var mBooleanReturnValueTarget:ValueTarget_Variable = new ValueTarget_Variable (mBooleanVariable); // to use Parameter_DirectValue instead
+      private var mBooleanReturnValueTarget:Parameter_Direct = new Parameter_Direct (false);
       
       public function RunBoolFunction ():Boolean
       {
+         mBooleanReturnValueTarget.mValueObject = false;
+         
          // if (mConditionListDefinition != null) // should not be null
          mConditionDefinition.EvaluateCondition (mBooleanReturnValueTarget);
          
-         return mBooleanVariable.mValueObject as Boolean;
+         return mBooleanReturnValueTarget.mValueObject as Boolean;
       }
       
    }

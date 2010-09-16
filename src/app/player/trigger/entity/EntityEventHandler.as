@@ -3,8 +3,8 @@ package player.trigger.entity
    import player.world.World;
    
    import player.trigger.TriggerEngine;
-   import player.trigger.FunctionDefinition_Logic;
-   import player.trigger.ValueSource;
+   import player.trigger.FunctionDefinition_Custom;
+   import player.trigger.Parameter;
    
    import player.trigger.data.ListElement_InputEntityAssigner;
    
@@ -22,7 +22,7 @@ package player.trigger.entity
       public var mFirstEntityAssigner:ListElement_InputEntityAssigner = null;
       
       protected var mEventId:int = CoreEventIds.ID_Invalid;
-      public var mEventHandlerDefinition:FunctionDefinition_Logic = null;
+      public var mEventHandlerDefinition:FunctionDefinition_Custom = null;
       
       public var mExternalAction:EntityAction = null;
       
@@ -54,7 +54,7 @@ package player.trigger.entity
             if (entityDefine.mEventId != undefined)
             {
                mEventId = int (entityDefine.mEventId);
-               mEventHandlerDefinition = new FunctionDefinition_Logic (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
+               mEventHandlerDefinition = new FunctionDefinition_Custom (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
                
                // code snippets
                if (entityDefine.mCodeSnippetDefine != undefined)
@@ -169,7 +169,7 @@ package player.trigger.entity
          }
       }
       
-      public function HandleEvent (valueSourceList:ValueSource):void
+      public function HandleEvent (valueSourceList:Parameter):void
       {
          if (mIsEnabled == false || mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
             return;

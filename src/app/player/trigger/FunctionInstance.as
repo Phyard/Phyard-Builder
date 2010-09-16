@@ -5,54 +5,50 @@ package player.trigger
    // instance of custom functions
    public class FunctionInstance
    {
-      internal var mIsFree:Boolean = true;
-      internal var mNextFreeFunctionInstance:FunctionInstance = null;
+      internal var mPrevFunctionInstance:FunctionInstance = null;
+      internal var mNextFunctionInstance:FunctionInstance = null;
       
       //
-      protected var mFunctionDefinition:FunctionDefinition;
+      protected var mCustomFunctionDefinition:FunctionDefinition_Custom;
       
       // to reduce the number of function callings, set the 3 variables public
-      public var mInputVariableSpace:VariableSpace;
-      public var mReturnVariableSpace:VariableSpace;
-      public var mLocalVariableSpace:VariableSpace;
+      internal var mInputVariableSpace:VariableSpace;
+      internal var mOutputVariableSpace:VariableSpace;
+      internal var mLocalVariableSpace:VariableSpace;
       
-      public function FunctionInstance (functionDefiniton:FunctionDefinition)
+      public function FunctionInstance (customFunctionDefiniton:FunctionDefinition_Custom)
       {
-         mFunctionDefinition = functionDefiniton;
+         mCustomFunctionDefinition = customFunctionDefiniton;
          
-         // create variable spaces
-         var func_declaration:FunctionDeclaration = functionDefiniton.GetFunctionDeclaration ();
+         var func_declaration:FunctionDeclaration = mCustomFunctionDefinition.GetFunctionDeclaration ();
          
-         var num_inputs :int = func_declaration == null ? 0 : func_declaration.GetNumInputs ();
-         mInputVariableSpace = new VariableSpace (num_inputs);
-         
-         var num_returns:int = func_declaration == null ? 0 : func_declaration.GetNumOutputs ();
-         mReturnVariableSpace = new VariableSpace (num_returns);
-         
-         var num_locals:int = func_declaration == null ? 0 : func_declaration.GetNumLocalVariables ();
-         mLocalVariableSpace = new VariableSpace (num_locals);
+         mInputVariableSpace = new VariableSpace (func_declaration.GetNumInputs ());
+         mOutputVariableSpace = new VariableSpace (func_declaration.GetNumOutputs ());
+         mLocalVariableSpace = new VariableSpace (func_declaration.GetNumLocalVariables ());
       }
       
-      public function GetFunctionDefinition ():FunctionDefinition
+      public function SetAsCurrent ():void
       {
-         return mFunctionDefinition;
+         mInputVariableSpace.FillVariableReferenceList (mCustomFunctionDefinition.mInputVariableRefList);
+         mOutputVariableSpace.FillVariableReferenceList (mCustomFunctionDefinition.mOutputVariableRefList);
+         mLocalVariableSpace.FillVariableReferenceList (mCustomFunctionDefinition.mLocalVariableRefList);
       }
       
-      public function GetInputVariableAt (index:int):VariableInstance
-      {
-         if (mInputVariableSpace == null)
-            return null;
-         
-         return mInputVariableSpace.GetVariableAt (index);
-      }
-      
-      public function GetReturnVariableAt (index:int):VariableInstance
-      {
-         if (mReturnVariableSpace == null)
-            return null;
-         
-         return mReturnVariableSpace.GetVariableAt (index);
-      }
+      //public function GetInputVariableAt (index:int):VariableInstance
+      //{
+      //   if (mInputVariableSpace == null)
+      //      return null;
+      //   
+      //   return mInputVariableSpace.GetVariableAt (index);
+      //}
+      //
+      //public function GetReturnVariableAt (index:int):VariableInstance
+      //{
+      //   if (mReturnVariableSpace == null)
+      //      return null;
+      //   
+      //   return mReturnVariableSpace.GetVariableAt (index);
+      //}
       
       public function GetLocalVariableAt (index:int):VariableInstance
       {

@@ -88,7 +88,7 @@ private function HandleCachedSystemEvent (eventInfo:Array):void
    else
    {
       var handlerElement:ListElement_EventHandler = eventInfo [1] as ListElement_EventHandler;
-      var valueSourceList:ValueSource = eventInfo [2] as ValueSource;
+      var valueSourceList:Parameter = eventInfo [2] as Parameter;
       
       IncStepStage ();
       while (handlerElement != null)
@@ -363,13 +363,13 @@ public function RegisterMouseEvent (event:MouseEvent, handlerList:ListElement_Ev
    if (handlerList == null)
       return;
    
-   var valueSource7:ValueSource_Direct = new ValueSource_Direct (null); // is overlapped by some entities
-   var valueSource6:ValueSource_Direct = new ValueSource_Direct (null, valueSource7); // alt down
-   var valueSource5:ValueSource_Direct = new ValueSource_Direct (null, valueSource6); // shift down
-   var valueSource4:ValueSource_Direct = new ValueSource_Direct (null, valueSource5); // ctrl down
-   var valueSource3:ValueSource_Direct = new ValueSource_Direct (null, valueSource4); // button down
-   var valueSource2:ValueSource_Direct = new ValueSource_Direct (null, valueSource3); // world physics y
-   var valueSource1:ValueSource_Direct = new ValueSource_Direct (null, valueSource2); // world physics x
+   var valueSource7:Parameter_Direct = new Parameter_Direct (null); // is overlapped by some entities
+   var valueSource6:Parameter_Direct = new Parameter_Direct (null, valueSource7); // alt down
+   var valueSource5:Parameter_Direct = new Parameter_Direct (null, valueSource6); // shift down
+   var valueSource4:Parameter_Direct = new Parameter_Direct (null, valueSource5); // ctrl down
+   var valueSource3:Parameter_Direct = new Parameter_Direct (null, valueSource4); // button down
+   var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3); // world physics y
+   var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2); // world physics x
    
    valueSource1.mValueObject = mCurrentMouseX;
    valueSource2.mValueObject = mCurrentMouseY;
@@ -385,7 +385,7 @@ public function RegisterMouseEvent (event:MouseEvent, handlerList:ListElement_Ev
    }
    else
    {
-      var valueSource0:ValueSource_Direct = new ValueSource_Direct (null, valueSource1); // entity
+      var valueSource0:Parameter_Direct = new Parameter_Direct (null, valueSource1); // entity
       valueSource0.mValueObject = shape;
       RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
    }
@@ -475,11 +475,11 @@ public function RegisterKeyboardEvent (exactKeyCode:int, event:KeyboardEvent, ha
    if (handlerList == null)
       return;
    
-   var valueSource4:ValueSource_Direct = new ValueSource_Direct (null);
-   var valueSource3:ValueSource_Direct = new ValueSource_Direct (null, valueSource4);
-   var valueSource2:ValueSource_Direct = new ValueSource_Direct (null, valueSource3);
-   var valueSource1:ValueSource_Direct = new ValueSource_Direct (null, valueSource2);
-   var valueSource0:ValueSource_Direct = new ValueSource_Direct (null, valueSource1);
+   var valueSource4:Parameter_Direct = new Parameter_Direct (null);
+   var valueSource3:Parameter_Direct = new Parameter_Direct (null, valueSource4);
+   var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3);
+   var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2);
+   var valueSource0:Parameter_Direct = new Parameter_Direct (null, valueSource1);
    
    valueSource0.mValueObject = exactKeyCode;
    valueSource1.mValueObject = event.charCode;

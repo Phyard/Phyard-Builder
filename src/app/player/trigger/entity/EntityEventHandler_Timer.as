@@ -3,10 +3,9 @@ package player.trigger.entity
    import player.world.World;
    
    import player.trigger.TriggerEngine;
-   import player.trigger.FunctionDefinition_Logic;
    import player.trigger.CodeSnippet;
-   import player.trigger.ValueSource;
-   import player.trigger.ValueSource_Direct;
+   import player.trigger.Parameter;
+   import player.trigger.Parameter_Direct;
    
    import player.trigger.data.ListElement_InputEntityAssigner;
    
@@ -153,10 +152,10 @@ package player.trigger.entity
          return false;
       }
       
-      private var mTimerEventHandlerValueSource2:ValueSource_Direct = new ValueSource_Direct (null);
-      private var mTimerEventHandlerValueSource1:ValueSource_Direct = new ValueSource_Direct (null, mTimerEventHandlerValueSource2);
-      private var mTimerEventHandlerValueSource0:ValueSource_Direct = new ValueSource_Direct (null, mTimerEventHandlerValueSource1);
-      private var mTimerEventHandlerValueSourceList:ValueSource = mTimerEventHandlerValueSource0;
+      private var mTimerEventHandlerValueSource2:Parameter_Direct = new Parameter_Direct (null);
+      private var mTimerEventHandlerValueSource1:Parameter_Direct = new Parameter_Direct (null, mTimerEventHandlerValueSource2);
+      private var mTimerEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, mTimerEventHandlerValueSource1);
+      private var mTimerEventHandlerValueSourceList:Parameter = mTimerEventHandlerValueSource0;
       
       public function HandleWorldTimerEvent ():void
       {

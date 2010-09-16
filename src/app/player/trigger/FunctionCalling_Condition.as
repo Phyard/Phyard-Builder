@@ -12,7 +12,7 @@ package player.trigger
       // todo: unlike the super.mFunctionDefinition, this.mFunctionDefinition is used to evaluate the condition result.
       //       this.mFunctionDefinition is an inline function, which has no input parameters and has one output parameter
       
-      public function FunctionCalling_Condition (lineNumber:int, functionDefinition:FunctionDefinition, valueSourceList:ValueSource, valueTargetList:ValueTarget)
+      public function FunctionCalling_Condition (lineNumber:int, functionDefinition:FunctionDefinition, valueSourceList:Parameter, valueTargetList:Parameter)
       {
          super (lineNumber, functionDefinition, valueSourceList, valueTargetList);
       }
@@ -45,7 +45,7 @@ package player.trigger
          //mFunctionDefinition.DoCall (mInputValueSourceList, mReturnValueTargetList);
          //if (mBooleanReturnValueTarget.mBoolValue)
          
-         if (mInputValueSourceList.EvalateValueObject () as Boolean)
+         if (mInputValueSourceList.EvaluateValueObject () as Boolean)
          {
             mNextFunctionCalling = mNextFunctionCalling_True;
          }

@@ -43,12 +43,12 @@
       }
    }
    
-   private var mKeyboardEventHandlerValueSource4:ValueSource_Direct = new ValueSource_Direct (null);
-   private var mKeyboardEventHandlerValueSource3:ValueSource_Direct = new ValueSource_Direct (null, mKeyboardEventHandlerValueSource4);
-   private var mKeyboardEventHandlerValueSource2:ValueSource_Direct = new ValueSource_Direct (null, mKeyboardEventHandlerValueSource3);
-   private var mKeyboardEventHandlerValueSource1:ValueSource_Direct = new ValueSource_Direct (null, mKeyboardEventHandlerValueSource2);
-   private var mKeyboardEventHandlerValueSource0:ValueSource_Direct = new ValueSource_Direct (null, mKeyboardEventHandlerValueSource1);
-   private var mKeyboardEventHandlerValueSourceList:ValueSource = mKeyboardEventHandlerValueSource0;
+   private var mKeyboardEventHandlerValueSource4:Parameter_Direct = new Parameter_Direct (null);
+   private var mKeyboardEventHandlerValueSource3:Parameter_Direct = new Parameter_Direct (null, mKeyboardEventHandlerValueSource4);
+   private var mKeyboardEventHandlerValueSource2:Parameter_Direct = new Parameter_Direct (null, mKeyboardEventHandlerValueSource3);
+   private var mKeyboardEventHandlerValueSource1:Parameter_Direct = new Parameter_Direct (null, mKeyboardEventHandlerValueSource2);
+   private var mKeyboardEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, mKeyboardEventHandlerValueSource1);
+   private var mKeyboardEventHandlerValueSourceList:Parameter = mKeyboardEventHandlerValueSource0;
    
    // key down and up events have already handled when they are triggered.
    private function HandleKeyHoldEvents ():void

@@ -100,6 +100,16 @@ package common.trigger
          return mLocalValueTypes [variableId] & ValueTypeDefine.NumberTypeMask_Basic;
       }
       
+      public function IsStaticLocalVariable (variableId:int):Boolean
+      {
+         return false;
+      }
+      
+      public function IsConstLocalVariable (variableId:int):Boolean
+      {
+         return false;
+      }
+      
 //=====================================================================
 //
 //=====================================================================

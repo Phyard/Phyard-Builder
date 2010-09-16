@@ -66,8 +66,8 @@ package player.world {
    import player.trigger.data.ShapeContactInfo;
    import player.trigger.data.ListElement_EventHandler;
    
-   import player.trigger.ValueSource;
-   import player.trigger.ValueSource_Direct;
+   import player.trigger.Parameter;
+   import player.trigger.Parameter_Direct;
    
    import player.mode.Mode;
    import player.mode.ModeMoveWorldScene;

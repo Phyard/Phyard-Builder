@@ -17,7 +17,7 @@ package player.trigger
          mCoreFunction = callback;
       }
       
-      override public function DoCall (inputValueSourceList:ValueSource, returnValueTargetList:ValueTarget):void
+      override public function DoCall (inputValueSourceList:Parameter, returnValueTargetList:Parameter):void
       {
          mCoreFunction (inputValueSourceList, returnValueTargetList);
       }

@@ -16,7 +16,7 @@
 // general event handler
 //==================================
 
-   public function HandleEventById (eventId:int, valueSourceList:ValueSource = null):void
+   public function HandleEventById (eventId:int, valueSourceList:Parameter = null):void
    {
       var handler_element:ListElement_EventHandler = mEventHandlers [eventId];
       

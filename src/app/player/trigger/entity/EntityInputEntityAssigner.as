@@ -5,8 +5,8 @@ package player.trigger.entity
    import player.world.World;
    import player.entity.Entity;
    
-   import player.trigger.ValueSource;
-   import player.trigger.ValueSource_Direct;
+   import player.trigger.Parameter;
+   import player.trigger.Parameter_Direct;
    
    import player.trigger.data.ListElement_InputEntityAssigner;
    
@@ -388,12 +388,12 @@ package player.trigger.entity
 //   as input of timer event handlers
 //==========================================================================================================
       
-      public function HandleTimerEventForEntities (timerEventHandler:EntityEventHandler_Timer, valueSourceList:ValueSource):void
+      public function HandleTimerEventForEntities (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
          if (mIsPairLimiter)
             return;
          
-         var valueSourceEntity:ValueSource_Direct = valueSourceList.mNextValueSourceInList as ValueSource_Direct;
+         var valueSourceEntity:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;
          
          var num:int = mInputEntityArray1.length;
          var entity:Entity;
@@ -417,13 +417,13 @@ package player.trigger.entity
          }
       }
       
-      public function HandleTimerEventForEntityPairs (timerEventHandler:EntityEventHandler_Timer, valueSourceList:ValueSource):void
+      public function HandleTimerEventForEntityPairs (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
          if (! mIsPairLimiter)
             return;
          
-         var valueSourceEntity1:ValueSource_Direct = valueSourceList.mNextValueSourceInList as ValueSource_Direct;
-         var valueSourceEntity2:ValueSource_Direct = valueSourceEntity1.mNextValueSourceInList as ValueSource_Direct;
+         var valueSourceEntity1:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;
+         var valueSourceEntity2:Parameter_Direct = valueSourceEntity1.mNextParameter as Parameter_Direct;
          
          var entity1:Entity;
          var entity2:Entity;

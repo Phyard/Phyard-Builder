@@ -12,8 +12,8 @@ package player.trigger {
    import player.physics.PhysicsEngine;
    
    import player.trigger.FunctionDefinition_Core;
-   import player.trigger.ValueSource;
-   import player.trigger.ValueTarget;
+   import player.trigger.Parameter;
+   import player.trigger.Parameter;
    
    import actionscript.util.RandomNumberGenerator;
    
@@ -397,7 +397,7 @@ package player.trigger {
       
    // for debug
       
-      public static function ForDebug (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ForDebug (valueSource:Parameter, valueTarget:Parameter):void
       {
       }
       
@@ -405,27 +405,27 @@ package player.trigger {
    // global
    //*******************************************************************
          
-      //public static function ReturnVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function ReturnVoid (valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   // do nothing, shouldn't run into here.
       //   // for CodeSnippet will return directly.
       //}
       
-      //public static function ReturnIfTrue (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function ReturnIfTrue (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
+      //   var value:Boolean = (valueSource.EvaluateValueObject () as Boolean);
       //   
       //   valueTarget.AssignValueObject (value);
       //}
       
-      //public static function ReturnIfFalse (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function ReturnIfFalse (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var value:Boolean = (valueSource.EvalateValueObject () as Boolean);
+      //   var value:Boolean = (valueSource.EvaluateValueObject () as Boolean);
       //   
       //   valueTarget.AssignValueObject (! value);
       //}
       
-      //public static function BreakVoid (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function BreakVoid (valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   // do nothing, shouldn't run into here
       //}
@@ -434,39 +434,39 @@ package player.trigger {
    // system / time
    //*******************************************************************
       
-      public static function GetProgramMilliseconds (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetProgramMilliseconds (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (getTimer ());
       }
       
-      public static function GetCurrentDateTime (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetCurrentDateTime (valueSource:Parameter, valueTarget:Parameter):void
       {
          var date:Date = new Date ();
          
          valueTarget.AssignValueObject (date.getFullYear ());
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (date.getMonth () + 1);
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (date.getDate ());
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (date.getHours ());
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (date.getMinutes ());
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (date.getSeconds ());
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (date.getMilliseconds ());
       }
       
-      public static function IsKeyHold (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsKeyHold (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var keyCode:int = int (valueSource.EvalateValueObject ());
+         var keyCode:int = int (valueSource.EvaluateValueObject ());
          
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsKeyHold (keyCode));
       }
@@ -475,72 +475,72 @@ package player.trigger {
    // string
    //*******************************************************************
       
-      public static function AssignString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AssignString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:String = valueSource.EvalateValueObject () as String;
+         var value:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (value);
       }
       
-      public static function ConditionAssignString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ConditionAssignString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var string1:String = valueSource.EvalateValueObject () as String;
+         valueSource = valueSource.mNextParameter;
+         var string1:String = valueSource.EvaluateValueObject () as String;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var string2:String = valueSource.EvalateValueObject () as String;
+         valueSource = valueSource.mNextParameter;
+         var string2:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (condtion ? string1 : string2);
       }
       
-      public static function SwapStringValues (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SwapStringValues (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var text1:String = valueSource.EvalateValueObject () as String;
+         var text1:String = valueSource.EvaluateValueObject () as String;
          
-         var source1:ValueSource = valueSource;
+         var source1:Parameter = valueSource;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var text2:String = valueSource.EvalateValueObject () as String;
+         valueSource = valueSource.mNextParameter;
+         var text2:String = valueSource.EvaluateValueObject () as String;
          
-         if (source1 is ValueSource_Variable)
-            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (text2);
+         if (source1 is Parameter_Variable)
+            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (text2);
          
-         if (valueSource is ValueSource_Variable)
-            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (text1);
+         if (valueSource is Parameter_Variable)
+            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (text1);
       }
       
-      public static function IsNullString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsNullString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var text:String = valueSource.EvalateValueObject () as String;
+         var text:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (text == null);
       }
       
-      public static function AddTwoStrings (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AddTwoStrings (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:String = valueSource.EvalateValueObject () as String;
+         var value1:String = valueSource.EvaluateValueObject () as String;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:String = valueSource.EvalateValueObject () as String;
+         valueSource = valueSource.mNextParameter;
+         var value2:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (value1 + value2);
       }
       
-      public static function GetStringLength (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetStringLength (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:String = valueSource.EvalateValueObject () as String;
+         var value:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (value == null ? 0 : value.length);
       }
       
-      public static function StringCharAt (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function StringCharAt (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var text:String = valueSource.EvalateValueObject () as String;
+         var text:String = valueSource.EvaluateValueObject () as String;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var index:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var index:int = int (valueSource.EvaluateValueObject ());
          
          if (text == null || index < 0 || index >= text.length)
          {
@@ -551,12 +551,12 @@ package player.trigger {
          valueTarget.AssignValueObject (text.charAt (index));
       }
       
-      public static function StringCharCodeAt (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function StringCharCodeAt (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var text:String = valueSource.EvalateValueObject () as String;
+         var text:String = valueSource.EvaluateValueObject () as String;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var index:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var index:int = int (valueSource.EvaluateValueObject ());
          
          if (text == null || index < 0 || index >= text.length)
          {
@@ -567,40 +567,40 @@ package player.trigger {
          valueTarget.AssignValueObject (text.charCodeAt (index));
       }
       
-      public static function CharCode2Char (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CharCode2Char (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var char_code:int = int (valueSource.EvalateValueObject ());
+         var char_code:int = int (valueSource.EvaluateValueObject ());
          
          valueTarget.AssignValueObject (char_code == 0 ? "" : String.fromCharCode (char_code));
       }
       
-      public static function ToLowerCase (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ToLowerCase (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var text:String = valueSource.EvalateValueObject () as String;
+         var text:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (text == null ? null : text.toLowerCase ());
       }
       
-      public static function ToUpperCase (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ToUpperCase (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var text:String = valueSource.EvalateValueObject () as String;
+         var text:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (text == null ? null : text.toUpperCase ());
       }
       
-      public static function NumberToString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function NumberToString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value.toString (10));
       }
       
-      //public static function NumberToExponentialString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function NumberToExponentialString (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var value:Number = valueSource.EvalateValueObject () as Number;
+      //   var value:Number = valueSource.EvaluateValueObject () as Number;
       //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var fractionDigits:int = int (valueSource.EvalateValueObject ());
+      //   valueSource = valueSource.mNextParameter;
+      //   var fractionDigits:int = int (valueSource.EvaluateValueObject ());
       //   
       //   if (fractionDigits < 0 || fractionDigits > 20)
       //      valueTarget.AssignValueObject (null);
@@ -612,12 +612,12 @@ package player.trigger {
       //   }
       //}
       
-      public static function NumberToFixedString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function NumberToFixedString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var fractionDigits:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var fractionDigits:int = int (valueSource.EvaluateValueObject ());
          
          if (fractionDigits < 0 || fractionDigits > 20)
             valueTarget.AssignValueObject (null);
@@ -628,12 +628,12 @@ package player.trigger {
          }
       }
       
-      public static function NumberToPrecisionString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function NumberToPrecisionString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var precision:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var precision:int = int (valueSource.EvaluateValueObject ());
          
          if (precision < 1 || precision > 21)
             valueTarget.AssignValueObject (null);
@@ -644,12 +644,12 @@ package player.trigger {
          }
       }
       
-      public static function NumberToStringByRadix (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function NumberToStringByRadix (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var radix:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var radix:int = int (valueSource.EvaluateValueObject ());
          
          if (radix < 2 || radix > 36)
             valueTarget.AssignValueObject (null);
@@ -657,19 +657,19 @@ package player.trigger {
             valueTarget.AssignValueObject (value.toString (radix));
       }
       
-      public static function ParseFloat (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ParseFloat (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var text:String = String (valueSource.EvalateValueObject ());
+         var text:String = String (valueSource.EvaluateValueObject ());
          
          valueTarget.AssignValueObject (parseFloat (text));
       }
       
-      public static function ParseInteger (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ParseInteger (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var text:String = String (valueSource.EvalateValueObject ());
+         var text:String = String (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var radix:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var radix:int = int (valueSource.EvaluateValueObject ());
          
          if (radix < 2 || radix > 36)
             valueTarget.AssignValueObject (NaN);
@@ -677,23 +677,23 @@ package player.trigger {
             valueTarget.AssignValueObject (parseInt (text, radix));
       }
       
-      public static function BooleanToString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BooleanToString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (String (value));
       }
       
-      public static function EntityToString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function EntityToString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          valueTarget.AssignValueObject (entity == null ? "null" : "Entity#" + entity.GetCreationId ());
       }
       
-      public static function CollisionCategoryToString (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CollisionCategoryToString (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var ccat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         var ccat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
          valueTarget.AssignValueObject ("CollisionCategory#" + (ccat == null ? -1 : ccat.GetIndexInEditor ()));
       }
@@ -702,172 +702,172 @@ package player.trigger {
    // bool
    //************************************************
       
-      public static function AssignBoolean (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AssignBoolean (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (value);
       }
       
-      public static function ConditionAssignBoolean (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ConditionAssignBoolean (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bool1:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var bool1:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bool2:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var bool2:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (condtion ? bool1 : bool2);
       }
       
-      public static function SwapBooleanValues (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SwapBooleanValues (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var bool1:Boolean = Boolean (valueSource.EvalateValueObject ());
+         var bool1:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         var source1:ValueSource = valueSource;
+         var source1:Parameter = valueSource;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bool2:Boolean = Boolean (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var bool2:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         if (source1 is ValueSource_Variable)
-            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (bool2);
+         if (source1 is Parameter_Variable)
+            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (bool2);
          
-         if (valueSource is ValueSource_Variable)
-            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (bool1);
+         if (valueSource is Parameter_Variable)
+            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (bool1);
       }
       
-      public static function BooleanInvert (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BooleanInvert (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (! value);
       }
       
-      public static function IsTrue (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsTrue (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (value);
       }
       
-      public static function IsFalse (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsFalse (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (! value);
       }
       
-      public static function EqualsWith_Numbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function EqualsWith_Numbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          var dv:Number = value1 - value2;
          
          valueTarget.AssignValueObject (- Number.MIN_VALUE < dv && dv < Number.MIN_VALUE);
       }
       
-      public static function EqualsWith_Booleans (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function EqualsWith_Booleans (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var value2:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (value1 == value2);
       }
       
-      public static function EqualsWith_Entities (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function EqualsWith_Entities (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Entity = valueSource.EvalateValueObject () as Entity;
+         var value1:Entity = valueSource.EvaluateValueObject () as Entity;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Entity = valueSource.EvalateValueObject () as Entity;
+         valueSource = valueSource.mNextParameter;
+         var value2:Entity = valueSource.EvaluateValueObject () as Entity;
          
          valueTarget.AssignValueObject (value1 == value2);
       }
       
-      public static function EqualsWith_Strings (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function EqualsWith_Strings (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:String = valueSource.EvalateValueObject () as String;
+         var value1:String = valueSource.EvaluateValueObject () as String;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:String = valueSource.EvalateValueObject () as String;
+         valueSource = valueSource.mNextParameter;
+         var value2:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (value1 == value2);
       }
       
-      public static function EqualsWith_CollisiontCategories (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function EqualsWith_CollisiontCategories (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         var value1:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         valueSource = valueSource.mNextParameter;
+         var value2:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
          valueTarget.AssignValueObject (value1 == value2);
       }
       
-      public static function LargerThan (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function LargerThan (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          var dv:Number = value1 - value2;
          
          valueTarget.AssignValueObject (dv >= Number.MIN_VALUE);
       }
       
-      public static function LessThan (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function LessThan (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          var dv:Number = value1 - value2;
          
          valueTarget.AssignValueObject (dv <= - Number.MIN_VALUE);
       }
       
-      public static function BoolAnd (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BoolAnd (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var value2:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (value1 && value2);
       }
       
-      public static function BoolOr (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BoolOr (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var value2:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (value1 || value2);
       }
       
-      public static function BoolNot (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BoolNot (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (! value);
       }
       
-      public static function BoolXor (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BoolXor (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var value2:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (value1 != value2);
       }
@@ -878,368 +878,368 @@ package player.trigger {
       
       // + - * / x=y -x 
       
-      public static function AssignNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AssignNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value);
       }
       
-      public static function ConditionAssignNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ConditionAssignNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var contionResult:Boolean = valueSource.EvalateValueObject () as Boolean;
+         var contionResult:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var trueValue:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var trueValue:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var falseValue:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var falseValue:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (contionResult ? trueValue : falseValue);
       }
       
-      public static function SwapNumberValues (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SwapNumberValues (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var number1:Number = Number (valueSource.EvalateValueObject ());
+         var number1:Number = Number (valueSource.EvaluateValueObject ());
          
-         var source1:ValueSource = valueSource;
+         var source1:Parameter = valueSource;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var number2:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var number2:Number = Number (valueSource.EvaluateValueObject ());
          
-         if (source1 is ValueSource_Variable)
-            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (number2);
+         if (source1 is Parameter_Variable)
+            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (number2);
          
-         if (valueSource is ValueSource_Variable)
-            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (number1);
+         if (valueSource is Parameter_Variable)
+            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (number1);
       }
       
-      public static function IsNaN (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsNaN (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (isNaN (value));
       }
       
-      public static function IsInfinity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsInfinity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (! isFinite (value));
       }
       
-      public static function NegativeNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function NegativeNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (-value);
       }
       
-      public static function AddTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AddTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value1 + value2);
       }
       
-      public static function SubtractTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SubtractTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value1 - value2);
       }
       
-      public static function MultiplyTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function MultiplyTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value1 * value2);
       }
       
-      public static function DivideTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function DivideTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value1 / value2);
       }
       
-      public static function ModuloTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ModuloTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value1 % value2);
       }
       
       // bitwise
       
-      public static function ShiftLeft (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ShiftLeft (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
+         valueSource = valueSource.mNextParameter;
+         var numBitsToShift:int = int (valueSource.EvaluateValueObject () as Number);
          
          value <<= numBitsToShift;
          valueTarget.AssignValueObject (value);
       }
       
-      public static function ShiftRight (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ShiftRight (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
+         valueSource = valueSource.mNextParameter;
+         var numBitsToShift:int = int (valueSource.EvaluateValueObject () as Number);
          
          value >>= numBitsToShift;
          valueTarget.AssignValueObject (value);
       }
       
-      public static function ShiftRightUnsigned (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ShiftRightUnsigned (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var numBitsToShift:int = int (valueSource.EvalateValueObject () as Number);
+         valueSource = valueSource.mNextParameter;
+         var numBitsToShift:int = int (valueSource.EvaluateValueObject () as Number);
          
          value >>>= numBitsToShift;
          valueTarget.AssignValueObject (value);
       }
       
-      public static function BitwiseAnd (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BitwiseAnd (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Number(value1 & value2));
       }
       
-      public static function BitwiseOr (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BitwiseOr (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Number(value1 | value2));
       }
       
-      public static function BitwiseNot (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BitwiseNot (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Number(~value));
       }
       
-      public static function BitwiseXor (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BitwiseXor (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Number(value1 ^ value2));
       }
       
       // sin, cos, tan, asin, acos, atan, atan2
       
-      public static function SinRadian (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SinRadian (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.sin (value));
       }
       
-      public static function CosRadian (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CosRadian (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.cos (value));
       }
       
-      public static function TanRadian (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function TanRadian (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.tan (value));
       }
       
-      public static function AsinRadian (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AsinRadian (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.asin (value));
       }
       
-      public static function AcosRadian (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AcosRadian (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.acos (value));
       }
       
-      public static function AtanRadian (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AtanRadian (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.atan (value));
       }
       
-      public static function AtanRadianTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AtanRadianTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.atan2 (value1, value2));
       }
       
       // random
       
-      public static function RandomNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RandomNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Math.random ());
       }
       
-      public static function RandomNumberRange (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RandomNumberRange (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value1 + (value2 - value1) * Math.random ());
       }
       
-      public static function RandomIntegerRange (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RandomIntegerRange (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:int = Math.round (valueSource.EvalateValueObject () as Number);
+         var value1:int = Math.round (valueSource.EvaluateValueObject () as Number);
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:int = Math.round (valueSource.EvalateValueObject () as Number);
+         valueSource = valueSource.mNextParameter;
+         var value2:int = Math.round (valueSource.EvaluateValueObject () as Number);
          
          var r:Number = value1 + (value2 - value1) * Math.random ();
          valueTarget.AssignValueObject (value1 < value2 ? Math.floor (r) : Math.ceil (r));
       }
       
-      public static function RngCreate (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RngCreate (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         var rngSlot:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var rngMethod:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var rngMethod:int = int (valueSource.EvaluateValueObject ());
          
          Global.CreateRandomNumberGenerator (rngSlot, rngMethod);
       }
       
-      public static function RngSetSeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RngSetSeed (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         var rngSlot:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var seedId:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var seedId:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var seed:uint = uint (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var seed:uint = uint (valueSource.EvaluateValueObject ());
          
          Global.GetRandomNumberGenerator (rngSlot).SetSeed (seedId, seed);
       }
       
-      public static function RngRandom (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RngRandom (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         var rngSlot:int = int (valueSource.EvaluateValueObject ());
          
          valueTarget.AssignValueObject (Global.GetRandomNumberGenerator (rngSlot).NextFloat ());
       }
       
-      public static function RngRandomNumberRange (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RngRandomNumberRange (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         var rngSlot:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value1 + (value2 - value1) * Global.GetRandomNumberGenerator (rngSlot).NextFloat ());
       }
       
-      public static function RngRandomIntegerRange (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RngRandomIntegerRange (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var rngSlot:int = int (valueSource.EvalateValueObject ());
+         var rngSlot:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value1:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var value1:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var value2:int = int (valueSource.EvaluateValueObject ());
          
          valueTarget.AssignValueObject (Global.GetRandomNumberGenerator (rngSlot).NextIntegerBetween (value1, value2));
       }
       
       // degree <-> radian
       
-      public static function Degrees2Radians (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function Degrees2Radians (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value * Define.kDegrees2Radians);
       }
       
-      public static function Radians2Degrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function Radians2Degrees (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value * Define.kRadians2Degrees);
       }
       
-      public static function Number2RGB (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function Number2RGB (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var color:int = (valueSource.EvalateValueObject () as Number) & 0xFFFFFFFF;
+         var color:int = (valueSource.EvaluateValueObject () as Number) & 0xFFFFFFFF;
          
          valueTarget.AssignValueObject ((color >> 16) & 0xFF);
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject ((color >> 8) & 0xFF);
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject ((color >> 0) & 0xFF);
       }
       
-      public static function RGB2Number (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RGB2Number (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var red:int = (valueSource.EvalateValueObject () as Number) & 0xFF;
+         var red:int = (valueSource.EvaluateValueObject () as Number) & 0xFF;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var green:int = (valueSource.EvalateValueObject () as Number) & 0xFF;
+         valueSource = valueSource.mNextParameter;
+         var green:int = (valueSource.EvaluateValueObject () as Number) & 0xFF;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var blue:Number = (valueSource.EvalateValueObject () as Number) & 0xFF;
+         valueSource = valueSource.mNextParameter;
+         var blue:Number = (valueSource.EvaluateValueObject () as Number) & 0xFF;
          
          valueTarget.AssignValueObject ((red << 16) | (green << 8) | (blue));
       }
       
-      public static function MillisecondsToMinutesSeconds (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function MillisecondsToMinutesSeconds (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var millseconds:int = valueSource.EvalateValueObject () as Number;
+         var millseconds:int = valueSource.EvaluateValueObject () as Number;
          
          var minutes:int = millseconds / 60000;
          millseconds -= minutes * 60000;
@@ -1248,114 +1248,114 @@ package player.trigger {
          
          valueTarget.AssignValueObject (Number (minutes));
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Number (seconds));
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Number (millseconds));
       }
       
       // invert 
       
-      public static function InverseNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function InverseNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (1.0 / value);
       }
       
       // max, min
       
-      public static function MaxOfTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function MaxOfTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.max (value1, value2));
       }
       
-      public static function MinOfTwoNumbers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function MinOfTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.min (value1, value2));
       }
       
       // abs, sqrt, ceil, floor, round, log, exp
       
-      public static function AbsNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AbsNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.abs (value));
       }
       
-      public static function SqrtNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SqrtNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.sqrt (value));
       }
       
-      public static function CeilNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CeilNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.ceil (value));
       }
       
-      public static function FloorNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function FloorNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.floor (value));
       }
       
-      public static function RoundNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RoundNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.round (value));
       }
       
-      public static function LogNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function LogNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.log (value));
       }
       
-      public static function ExpNumber (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ExpNumber (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.exp (value));
       }
       
-      public static function Power (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function Power (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (Math.pow (value1, value2));
       }
       
-      public static function Clamp (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function Clamp (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value:Number = valueSource.EvalateValueObject () as Number;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var limit1:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var limit1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var limit2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var limit2:Number = valueSource.EvaluateValueObject () as Number;
          
          if (limit1 <= limit2)
          {
@@ -1375,28 +1375,28 @@ package player.trigger {
          valueTarget.AssignValueObject (value);
       }
       
-      public static function LinearInterpolation (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function LinearInterpolation (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var factor:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var factor:Number = valueSource.EvaluateValueObject () as Number;
          
          valueTarget.AssignValueObject (value1 * factor + (1.0 - factor) * value2);
       }
       
-      public static function LinearInterpolationColor (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function LinearInterpolationColor (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var value1:Number = valueSource.EvalateValueObject () as Number;
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var value2:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var factor:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var factor:Number = valueSource.EvaluateValueObject () as Number;
          var factor2:Number = 1.0 - factor;
          
          var red  :int = ((value1 >> 16) & 0xFF) * factor + ((value2 >> 16) & 0xFF) * factor2;
@@ -1411,31 +1411,31 @@ package player.trigger {
    // game / design
    //*******************************************************************
       
-      public static function RestartLevel (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
       {
          Global.RestartPlay ();
       }
       
-      public static function IsLevelPaused (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsLevelPaused (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (! Global.IsPlaying ());
       }
       
-      public static function SetLevelPaused (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetLevelPaused (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var paused:Boolean = Boolean (valueSource.EvalateValueObject ());
+         var paused:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
          Global.SetPlaying (! paused);
       }
       
-      public static function GetPlaySpeedX (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetPlaySpeedX (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetSpeedX ());
       }
       
-      public static function SetPlaySpeedX (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetPlaySpeedX (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var speedX:int = int (valueSource.EvalateValueObject ());
+         var speedX:int = int (valueSource.EvaluateValueObject ());
          if (speedX < 0)
             speedX = 0;
          else if (speedX > 9)
@@ -1444,14 +1444,14 @@ package player.trigger {
          Global.SetSpeedX (speedX);
       }
       
-      public static function GetWorldScale (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetWorldScale (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetScale());
       }
       
-      public static function SetWorldScale (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetWorldScale (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var scale:Number = Number (valueSource.EvalateValueObject ());
+         var scale:Number = Number (valueSource.EvaluateValueObject ());
          if (scale < 0.0625)
             scale = 0.0625;
          else if (scale > 16.0)
@@ -1460,32 +1460,32 @@ package player.trigger {
          Global.SetScale (scale);
       }
       
-      public static function GetLevelMilliseconds (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetLevelMilliseconds (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetLevelMilliseconds ());
       }
       
-      public static function GetLevelSteps (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetLevelSteps (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetSimulatedSteps ());
       }
       
-      public static function GetWorldMousePosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetWorldMousePosition (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseX ());
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseY ());
       }
       
-      public static function IsMouseButtonHold (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsMouseButtonHold (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsMouseButtonDown ());
       }
       
-      public static function SetLevelStatus (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetLevelStatus (valueSource:Parameter, valueTarget:Parameter):void
       {
-         switch (int (valueSource.EvalateValueObject ()))
+         switch (int (valueSource.EvaluateValueObject ()))
          {
             case ValueDefine.LevelStatus_Failed:
                Global.GetCurrentWorld ().SetLevelFailed ();
@@ -1501,17 +1501,17 @@ package player.trigger {
          }
       }
       
-      public static function IsLevelSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsLevelSuccessed (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelSuccessed ());
       }
       
-      public static function IsLevelFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsLevelFailed (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelFailed ());
       }
       
-      public static function IsLevelUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsLevelUnfinished (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelUnfinished ());
       }
@@ -1520,132 +1520,132 @@ package player.trigger {
    // game / world
    //*******************************************************************
       
-      public static function SetWorldGravityAcceleration_Radians (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetWorldGravityAcceleration_Radians (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var magnitude:Number = valueSource.EvalateValueObject () as Number;
+         var magnitude:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var radians:Number = (valueSource.EvalateValueObject () as Number) % 360.0;
+         valueSource = valueSource.mNextParameter;
+         var radians:Number = (valueSource.EvaluateValueObject () as Number) % 360.0;
          
          Global.GetCurrentWorld ().SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
       }
       
-      public static function SetWorldGravityAcceleration_Degrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetWorldGravityAcceleration_Degrees (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var magnitude:Number = valueSource.EvalateValueObject () as Number;
+         var magnitude:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var radians:Number = ((valueSource.EvalateValueObject () as Number) % 360.0) * Define.kDegrees2Radians;
+         valueSource = valueSource.mNextParameter;
+         var radians:Number = ((valueSource.EvaluateValueObject () as Number) % 360.0) * Define.kDegrees2Radians;
          
          Global.GetCurrentWorld ().SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
       }
       
-      public static function SetWorldGravityAcceleration_Vector (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetWorldGravityAcceleration_Vector (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var gaX:Number = valueSource.EvalateValueObject () as Number;
+         var gaX:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var gaY:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var gaY:Number = valueSource.EvaluateValueObject () as Number;
          
          Global.GetCurrentWorld ().SetCurrentGravityAcceleration (gaX, gaY);
       }
       
-      public static function GetCameraCenter (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetCameraCenter (valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterPhysicsX ());
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterPhysicsY ());
       }
       
-      public static function FollowCameraWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function FollowCameraWithShape (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          //if (shape == null)
          //   return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         //valueSource = valueSource.mNextValueSourceInList;
-         //var folowRotation:Boolean = valueSource.EvalateValueObject () as Boolean;
+         //valueSource = valueSource.mNextParameter;
+         //var folowRotation:Boolean = valueSource.EvaluateValueObject () as Boolean;
          var folowRotation:Boolean = false;
          
          Global.GetCurrentWorld ().FollowCameraWithEntity (shape, isSmooth, folowRotation);
       }
       
-      public static function FollowCameraCenterXWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function FollowCameraCenterXWithShape (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          //if (shape == null)
          //   return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          Global.GetCurrentWorld ().FollowCameraCenterXWithEntity (shape, isSmooth);
       }
       
-      public static function FollowCameraCenterYWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function FollowCameraCenterYWithShape (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          //if (shape == null)
          //   return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          Global.GetCurrentWorld ().FollowCameraCenterYWithEntity (shape, isSmooth);
       }
       
-      //public static function FollowCameraRotationRotationWithShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function FollowCameraRotationRotationWithShape (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
       //   if (shape == null)
       //      return;
       //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var isSmooth:Boolean = valueSource.EvalateValueObject () as Boolean;
+      //   valueSource = valueSource.mNextParameter;
+      //   var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
       //   
       //   Global.GetCurrentWorld ().FollowCameraRotationWithEntity (shape, isSmooth);
       //}
       
-      public static function CameraFadeOutThenFadeIn (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CameraFadeOutThenFadeIn (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var fadeColor:uint = uint (valueSource.EvalateValueObject ());
+         var fadeColor:uint = uint (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var stepsFadeOut:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var stepsFadeOut:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var stepsFadeStaying:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var stepsFadeStaying:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var stepsFadeIn:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var stepsFadeIn:int = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var scriptToRun:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         valueSource = valueSource.mNextParameter;
+         var scriptToRun:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
          
          Global.GetCurrentWorld ().CameraFadeOutThenFadeIn (fadeColor, stepsFadeOut, stepsFadeIn, stepsFadeStaying, scriptToRun);
       }
       
-      public static function CallScript (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CallScript (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var scriptToRun:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         var scriptToRun:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
          
          if (scriptToRun != null)
             scriptToRun.RunScript ();
       }
       
-      public static function ConditionCallScript (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ConditionCallScript (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var script1:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         valueSource = valueSource.mNextParameter;
+         var script1:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var script2:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         valueSource = valueSource.mNextParameter;
+         var script2:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
          
          if (condtion)
          {
@@ -1659,22 +1659,22 @@ package player.trigger {
          }
       }
       
-      public static function CallBoolFunction (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CallBoolFunction (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var boolFunction:EntityBasicCondition = valueSource.EvalateValueObject () as EntityBasicCondition;
+         var boolFunction:EntityBasicCondition = valueSource.EvaluateValueObject () as EntityBasicCondition;
          
          valueTarget.AssignValueObject (boolFunction == null ? false : boolFunction.RunBoolFunction ());
       }
       
-      public static function ConditionCallBoolFunction  (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ConditionCallBoolFunction  (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var boolFunction1:EntityBasicCondition = valueSource.EvalateValueObject () as EntityBasicCondition;
+         valueSource = valueSource.mNextParameter;
+         var boolFunction1:EntityBasicCondition = valueSource.EvaluateValueObject () as EntityBasicCondition;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var boolFunction2:EntityBasicCondition = valueSource.EvalateValueObject () as EntityBasicCondition;
+         valueSource = valueSource.mNextParameter;
+         var boolFunction2:EntityBasicCondition = valueSource.EvaluateValueObject () as EntityBasicCondition;
          
          if (condtion)
             valueTarget.AssignValueObject (boolFunction1 == null ? false : boolFunction1.RunBoolFunction ());
@@ -1682,20 +1682,20 @@ package player.trigger {
             valueTarget.AssignValueObject (boolFunction2 == null ? false : boolFunction2.RunBoolFunction ());
       }
       
-      public static function CallScriptMultiTimes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CallScriptMultiTimes (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var scriptToRun:ScriptHolder = valueSource.EvalateValueObject () as ScriptHolder;
+         var scriptToRun:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var times:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var times:int = int (valueSource.EvaluateValueObject ());
          
          while (-- times >= 0)
             scriptToRun.RunScript ();
       }
       
-      public static function CallBoolFunctionMultiTimes (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CallBoolFunctionMultiTimes (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var boolFunction:EntityBasicCondition = valueSource.EvalateValueObject () as EntityBasicCondition;
+         var boolFunction:EntityBasicCondition = valueSource.EvaluateValueObject () as EntityBasicCondition;
          
          if (boolFunction != null)
          {
@@ -1707,46 +1707,46 @@ package player.trigger {
    // game / world / create
    //*******************************************************************
       
-      public static function CreateExplosion (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function CreateExplosion (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var worldX:Number = Number (valueSource.EvalateValueObject ());
+         var worldX:Number = Number (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var worldY:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var worldY:Number = Number (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var numParticles:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var numParticles:int = int (valueSource.EvaluateValueObject ());
          if (numParticles > Define.MaxNumParticls_CreateExplosion)
             numParticles = Define.MaxNumParticls_CreateExplosion;
          else if (numParticles < Define.MinNumParticls_CreateExplosion)
             numParticles = Define.MinNumParticls_CreateExplosion;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var lifeSteps:int = int (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var lifeSteps:int = int (valueSource.EvaluateValueObject ());
          if (lifeSteps < 0)
             lifeSteps = 0;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var density:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var density:Number = Number (valueSource.EvaluateValueObject ());
          if (density < 0.0)
             density = 0.0;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var restitution:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var restitution:Number = Number (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var speed:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var speed:Number = Number (valueSource.EvaluateValueObject ());
          if (speed < 0.0)
             speed = - speed;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var color:uint = uint (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var visible:Boolean = Boolean (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var visible:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var cat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         valueSource = valueSource.mNextParameter;
+         var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
          numParticles = Global.GetCurrentWorld ().CreateExplosion (worldX, worldY, cat, numParticles, lifeSteps * Define.WorldStepTimeInterval_SpeedX1, density, restitution, speed, 1.0, color, visible);
          
@@ -1757,68 +1757,68 @@ package player.trigger {
    // game collision category
    //*******************************************************************
       
-      public static function AssignCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AssignCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var cat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
          valueTarget.AssignValueObject (cat);
       }
       
-      public static function ConditionAssignCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ConditionAssignCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var condtion:Boolean = Boolean (valueSource.EvalateValueObject ());
+         var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var cat1:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         valueSource = valueSource.mNextParameter;
+         var cat1:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var cat2:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         valueSource = valueSource.mNextParameter;
+         var cat2:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
          valueTarget.AssignValueObject (condtion ? cat1 : cat2);
       }
       
-      public static function SwapCCatValues (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SwapCCatValues (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var ccat1:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         var ccat1:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
-         var source1:ValueSource = valueSource;
+         var source1:Parameter = valueSource;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var ccat2:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         valueSource = valueSource.mNextParameter;
+         var ccat2:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
-         if (source1 is ValueSource_Variable)
-            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (ccat2);
+         if (source1 is Parameter_Variable)
+            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (ccat2);
          
-         if (valueSource is ValueSource_Variable)
-            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (ccat1);
+         if (valueSource is Parameter_Variable)
+            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (ccat1);
       }
       
-      public static function IsNullCCat (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsNullCCat (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var ccat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         var ccat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
          valueTarget.AssignValueObject (ccat == null);
       }
       
-      public static function SetCollisionCategoryCollideInternally (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetCollisionCategoryCollideInternally (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var cat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var collideInternally:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var collideInternally:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          Global.GetCurrentWorld ().BreakOrCreateCollisionCategoryFriendLink (cat, cat, collideInternally);
       }
       
-      public static function SetCollisionCategoriesAsFriends (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetCollisionCategoriesAsFriends (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var cat1:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         var cat1:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var cat2:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         valueSource = valueSource.mNextParameter;
+         var cat2:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var asFriends:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var asFriends:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          Global.GetCurrentWorld ().BreakOrCreateCollisionCategoryFriendLink (cat1, cat2, ! asFriends);
       }
@@ -1827,52 +1827,52 @@ package player.trigger {
    // game entity
    //*******************************************************************
       
-      public static function AssignEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AssignEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          valueTarget.AssignValueObject (entity);
       }
       
-      public static function ConditionAssignEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ConditionAssignEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var condition:Boolean = Boolean (valueSource.EvalateValueObject ());
+         var condition:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var entity1:Entity = valueSource.EvalateValueObject () as Entity;
+         valueSource = valueSource.mNextParameter;
+         var entity1:Entity = valueSource.EvaluateValueObject () as Entity;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var entity2:Entity = valueSource.EvalateValueObject () as Entity;
+         valueSource = valueSource.mNextParameter;
+         var entity2:Entity = valueSource.EvaluateValueObject () as Entity;
          
          valueTarget.AssignValueObject (condition ? entity1 : entity2);
       }
       
-      public static function SwapEntityValues(valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SwapEntityValues(valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity1:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity1:Entity = valueSource.EvaluateValueObject () as Entity;
          
-         var source1:ValueSource = valueSource;
+         var source1:Parameter = valueSource;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var entity2:Entity = valueSource.EvalateValueObject () as Entity;
+         valueSource = valueSource.mNextParameter;
+         var entity2:Entity = valueSource.EvaluateValueObject () as Entity;
          
-         if (source1 is ValueSource_Variable)
-            (source1 as ValueSource_Variable).GetVariableInstance ().SetValueObject (entity2);
+         if (source1 is Parameter_Variable)
+            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (entity2);
          
-         if (valueSource is ValueSource_Variable)
-            (valueSource as ValueSource_Variable).GetVariableInstance ().SetValueObject (entity1);
+         if (valueSource is Parameter_Variable)
+            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (entity1);
       }
       
-      public static function IsNullEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsNullEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          valueTarget.AssignValueObject (entity == null);
       }
       
-      public static function GetEntityId (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetEntityId (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
          {
             valueTarget.AssignValueObject (Define.EntityId_None);
@@ -1883,30 +1883,30 @@ package player.trigger {
          }
       }
       
-      public static function GetAnotherEntityByIdOffset (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetAnotherEntityByIdOffset (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var baseEntity:Entity = valueSource.EvalateValueObject () as Entity;
+         var baseEntity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (baseEntity == null || baseEntity.GetCreationId () < 0)
          {
             valueTarget.AssignValueObject (null);
          }
          else
          {
-            valueSource = valueSource.mNextValueSourceInList;
-            var idOffset:int = int (valueSource.EvalateValueObject ());
+            valueSource = valueSource.mNextParameter;
+            var idOffset:int = int (valueSource.EvaluateValueObject ());
             
             valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetEntityByCreationId (baseEntity.GetCreationId () + idOffset));
          }
       }
       
-      public static function SetEntityTaskStatus (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetEntityTaskStatus (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         switch (int (valueSource.EvalateValueObject ()))
+         valueSource = valueSource.mNextParameter;
+         switch (int (valueSource.EvaluateValueObject ()))
          {
             case ValueDefine.TaskStatus_Failed:
                entity.SetTaskFailed ();
@@ -1922,106 +1922,106 @@ package player.trigger {
          }
       }
       
-      public static function IsEntityTaskSuccessed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsEntityTaskSuccessed (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          var succeeded:Boolean = entity == null ? false : entity.IsTaskSuccessed ();
          
          valueTarget.AssignValueObject (succeeded);
       }
       
-      public static function IsEntityTaskFailed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsEntityTaskFailed (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          var failed:Boolean = entity == null ? false : entity.IsTaskFailed ();
          
          valueTarget.AssignValueObject (failed);
       }
       
-      public static function IsEntityTaskUnfinished (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsEntityTaskUnfinished (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          var unfinished:Boolean = entity == null ? true : entity.IsTaskUnfinished ();
          
          valueTarget.AssignValueObject (unfinished);
       }
       
-      public static function IsShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          valueTarget.AssignValueObject (shape != null);
       }
       
-      public static function IsJointEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsJointEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var joint:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var joint:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          valueTarget.AssignValueObject (joint != null);
       }
       
-      public static function IsTriggerEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsTriggerEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var trigger:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var trigger:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          valueTarget.AssignValueObject (trigger != null);
       }
       
-      public static function IsEntityVisible (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsEntityVisible (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          var visible:Boolean = entity == null ? false : entity.IsVisible ();
          valueTarget.AssignValueObject (visible);
       }
       
-      public static function SetEntityVisible (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetEntityVisible (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var visible:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var visible:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          entity.SetVisible (visible);
       }
       
-      public static function GetEntityAlpha (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetEntityAlpha (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          var alpha:Number = entity == null ? 1.0 : entity.GetAlpha ();
          
          valueTarget.AssignValueObject (alpha);
       }
       
-      public static function SetEntityAlpha (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetEntityAlpha (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var alpha:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var alpha:Number = valueSource.EvaluateValueObject () as Number;
          
          entity.SetAlpha (alpha);
       }
       
-      public static function IsEntityEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsEntityEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
          var enabled:Boolean = entity == null ? false : entity.IsEnabled ();
          valueTarget.AssignValueObject (enabled);
       }
       
-      public static function SetEntityEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetEntityEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null || entity.IsDestroyedAlready ())
             return;
          
@@ -2029,22 +2029,22 @@ package player.trigger {
          // if (! entity.CanBeDisabled ())
          //    return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var enabled:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          entity.SetEnabled (enabled);
       }
       
-      public static function GetEntityPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetEntityPosition (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
          {
             // error 
             
             valueTarget.AssignValueObject (0.0);
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (0.0);
             
             return;
@@ -2052,31 +2052,31 @@ package player.trigger {
          
          valueTarget.AssignValueObject (entity.GetPositionX ());
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (entity.GetPositionY ());
       }
       
-      //public static function SetEntityPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function SetEntityPosition (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
       //   if (shape == null)
       //      return;
       //   
       //   if (entity.IsDestroyedAlready ())
       //      return;
       //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var pos_x:Number = valueSource.EvalateValueObject () as Number;
+      //   valueSource = valueSource.mNextParameter;
+      //   var pos_x:Number = valueSource.EvaluateValueObject () as Number;
       //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var pos_y:Number = valueSource.EvalateValueObject () as Number;
+      //   valueSource = valueSource.mNextParameter;
+      //   var pos_y:Number = valueSource.EvaluateValueObject () as Number;
       //   
       //   shape.MoveTo (pos_x, pos_y);
       //}
       
-      public static function GetEntityRotationByRadians (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetEntityRotationByRadians (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
          {
             valueTarget.AssignValueObject (0.0);
@@ -2087,18 +2087,18 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetRotation ());
       }
       
-      //public static function SetEntityRotationByRadians (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function SetEntityRotationByRadians (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var entity:Entity = valueSource.EvalateValueObject () as Entity;
+      //   var entity:Entity = valueSource.EvaluateValueObject () as Entity;
       //   if (entity == null)
       //      return;
       //   
       //   valueTarget.AssignValueObject (entity.GetRotation ());
       //}
       
-      public static function GetEntityRotationByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetEntityRotationByDegrees (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
          {
             valueTarget.AssignValueObject (0.0);
@@ -2109,23 +2109,23 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetRotation () * Define.kRadians2Degrees);
       }
       
-      //public static function SetEntityRotationByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function SetEntityRotationByDegrees (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var entity:Entity = valueSource.EvalateValueObject () as Entity;
+      //   var entity:Entity = valueSource.EvaluateValueObject () as Entity;
       //   if (entity == null)
       //      return;
       //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var degrees:Number = valueSource.EvalateValueObject () as Number;
+      //   valueSource = valueSource.mNextParameter;
+      //   var degrees:Number = valueSource.EvaluateValueObject () as Number;
       //   
       //   entity.SetRotation (degrees * Define.kDegrees2Radians);
       //}
       
-      public static function WorldPoint2EntityLocalPoint (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function WorldPoint2EntityLocalPoint (valueSource:Parameter, valueTarget:Parameter):void
       {
          var localPoint:Point = sPoint;
          
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
          {
             localPoint.x = 0.0;
@@ -2133,11 +2133,11 @@ package player.trigger {
          }
          else
          {
-            valueSource = valueSource.mNextValueSourceInList;
-            var world_x:Number = valueSource.EvalateValueObject () as Number;
+            valueSource = valueSource.mNextParameter;
+            var world_x:Number = valueSource.EvaluateValueObject () as Number;
             
-            valueSource = valueSource.mNextValueSourceInList;
-            var world_y:Number = valueSource.EvalateValueObject () as Number;
+            valueSource = valueSource.mNextParameter;
+            var world_y:Number = valueSource.EvaluateValueObject () as Number;
             
             shape.WorldPoint2LocalPoint (world_x, world_y, localPoint);
          }
@@ -2146,15 +2146,15 @@ package player.trigger {
          
          valueTarget.AssignValueObject (localPoint.x);
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (localPoint.y);
       }
       
-      public static function EntityLocalPoint2WorldPoint (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function EntityLocalPoint2WorldPoint (valueSource:Parameter, valueTarget:Parameter):void
       {
          var worldPoint:Point = sPoint;
          
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
          {
             worldPoint.x = 0.0;
@@ -2162,11 +2162,11 @@ package player.trigger {
          }
          else
          {
-            valueSource = valueSource.mNextValueSourceInList;
-            var local_x:Number = valueSource.EvalateValueObject () as Number;
+            valueSource = valueSource.mNextParameter;
+            var local_x:Number = valueSource.EvaluateValueObject () as Number;
             
-            valueSource = valueSource.mNextValueSourceInList;
-            var local_y:Number = valueSource.EvalateValueObject () as Number;
+            valueSource = valueSource.mNextParameter;
+            var local_y:Number = valueSource.EvaluateValueObject () as Number;
             
             shape.LocalPoint2WorldPoint (local_x, local_y, worldPoint);
          }
@@ -2175,13 +2175,13 @@ package player.trigger {
          
          valueTarget.AssignValueObject (worldPoint.x);
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (worldPoint.y);
       }
       
-      public static function IsEntityDestroyed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsEntityDestroyed (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
          {
             valueTarget.AssignValueObject (false);
@@ -2192,9 +2192,9 @@ package player.trigger {
          }
       }
       
-      public static function DestroyEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function DestroyEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
             return;
          
@@ -2217,25 +2217,25 @@ package player.trigger {
          }
       }
       
-      public static function AreTwoEntitiesCoincided (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AreTwoEntitiesCoincided (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity1:Entity = valueSource.EvalateValueObject () as Entity;
+         var entity1:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity1 == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var entity2:Entity = valueSource.EvalateValueObject () as Entity;
+         valueSource = valueSource.mNextParameter;
+         var entity2:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity2 == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var toleranceDx:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var toleranceDx:Number = Number (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var toleranceDy:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var toleranceDy:Number = Number (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var toleranceDr:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var toleranceDr:Number = Number (valueSource.EvaluateValueObject ());
          
          var dx:Number = entity1.GetPositionX () - entity2.GetPositionX ();
          var dy:Number = entity1.GetPositionY () - entity2.GetPositionY ();
@@ -2255,61 +2255,61 @@ package player.trigger {
    // entity / shape
    //*******************************************************************
       
-      public static function IsCircleShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsCircleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShapeCircle = valueSource.EvalateValueObject () as EntityShapeCircle;
+         var shape:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
          
          valueTarget.AssignValueObject (shape != null); 
       }
       
-      public static function IsRectangleShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsRectangleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShapeRectangle = valueSource.EvalateValueObject () as EntityShapeRectangle;
+         var shape:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
          
          valueTarget.AssignValueObject (shape != null); 
       }
       
-      public static function IsPolygonShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsPolygonShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShapePolygon = valueSource.EvalateValueObject () as EntityShapePolygon;
+         var shape:EntityShapePolygon = valueSource.EvaluateValueObject () as EntityShapePolygon;
          
          valueTarget.AssignValueObject (shape != null); 
       }
       
-      public static function IsPolylineShapeEntity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsPolylineShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShapePolyline = valueSource.EvalateValueObject () as EntityShapePolyline;
+         var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
          
          valueTarget.AssignValueObject (shape != null); 
       }
       
-      public static function IsBombShapeEntitiy (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsBombShapeEntitiy (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape
          
          valueTarget.AssignValueObject (shape is EntityShape_CircleBomb || shape is EntityShape_RectangleBomb); 
       }
       
-      public static function IsWorldBorderEntitiy (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsWorldBorderEntitiy (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape_WorldBorder = valueSource.EvalateValueObject () as EntityShape_WorldBorder;
+         var shape:EntityShape_WorldBorder = valueSource.EvaluateValueObject () as EntityShape_WorldBorder;
          
          valueTarget.AssignValueObject (shape != null); 
       }
       
       // ...
       
-      public static function GetShapeOriginalCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeOriginalCIType (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var aiType:int = shape == null ? Define.ShapeAiType_Unknown : shape.GetOriginalShapeAiType ();
          valueTarget.AssignValueObject (aiType);
       }
       
-      public static function SetShapeOriginalCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetShapeOriginalCIType (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
@@ -2319,23 +2319,23 @@ package player.trigger {
          if (! shape.IsAiTypeChangeable ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var ciType:int = uint (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var ciType:int = uint (valueSource.EvaluateValueObject ());
          
          shape.SetOriginalShapeAiType (ciType);
       }
       
-      public static function GetShapeCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeCIType (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var aiType:int = shape == null ? Define.ShapeAiType_Unknown : shape.GetShapeAiType ();
          valueTarget.AssignValueObject (aiType);
       }
       
-      public static function SetShapeCIType (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetShapeCIType (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
@@ -2345,21 +2345,21 @@ package player.trigger {
          if (! shape.IsAiTypeChangeable ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var ciType:int = uint (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var ciType:int = uint (valueSource.EvaluateValueObject ());
          
          shape.SetShapeAiType (ciType);
       }
       
-      public static function GetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeFilledColor (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var filledColor:uint;
          
          if (shape == null)
          {
-            var world:World = valueSource.EvalateValueObject () as World;
+            var world:World = valueSource.EvaluateValueObject () as World;
             if (world != null)
                filledColor = world.GetBackgroundColor ();
          }
@@ -2371,20 +2371,20 @@ package player.trigger {
          valueTarget.AssignValueObject (filledColor);
       }
       
-      public static function SetShapeFilledColor (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetShapeFilledColor (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var world:World;
          if (shape == null)
          {
-            world = valueSource.EvalateValueObject () as World;
+            world = valueSource.EvaluateValueObject () as World;
             if (world == null)
                return;
          }
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var color:uint = uint (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
          
          if (shape == null)
          {
@@ -2396,15 +2396,15 @@ package player.trigger {
          }
       }
       
-      public static function GetShapeFilledColorRGB (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var filledColor:uint;
          
          if (shape == null)
          {
-            var world:World = valueSource.EvalateValueObject () as World;
+            var world:World = valueSource.EvaluateValueObject () as World;
             if (world != null)
                filledColor = world.GetBackgroundColor ();
          }
@@ -2415,33 +2415,33 @@ package player.trigger {
          
          valueTarget.AssignValueObject ((filledColor >> 16) & 0xFF);
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject ((filledColor >> 8) & 0xFF);
          
-         valueTarget = valueTarget.mNextValueTargetInList;
+         valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject ((filledColor >> 0) & 0xFF);
       }
       
-      public static function SetShapeFilledColorRGB (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetShapeFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var world:World;
          if (shape == null)
          {
-            world = valueSource.EvalateValueObject () as World;
+            world = valueSource.EvaluateValueObject () as World;
             if (world == null)
                return;
          }
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var red:int =  valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var red:int =  valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var green:int =  valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var blue:int =  valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
          
          if (shape == null)
          {
@@ -2453,72 +2453,72 @@ package player.trigger {
          }
       }
       
-      public static function IsShapePhysicsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsShapePhysicsEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var enabled:Boolean = shape == null ? false : shape.IsPhysicsShape ();
          valueTarget.AssignValueObject (enabled);
       }
       
-      //public static function SetShapePhysicsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function SetShapePhysicsEnabled (valueSource:Parameter, valueTarget:Parameter):void
       //{
          //if (shape.IsDestroyedAlready ())
          //   return;
          //
       //}
       
-      public static function GetShapeCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var ccat:CollisionCategory = shape == null ? null : shape.GetCollisionCategory ();
          valueTarget.AssignValueObject (ccat);
       }
       
-      public static function SetShapeCollisionCategory (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetShapeCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          //if (shape.IsDestroyedAlready ())
          //   return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var ccat:CollisionCategory = valueSource.EvalateValueObject () as CollisionCategory;
+         valueSource = valueSource.mNextParameter;
+         var ccat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          //if (ccat == null)
          //   return;
          
          shape.SetCollisionCategory (ccat);
       }
       
-      public static function IsSensorShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsSensorShape (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          var sensor:Boolean = shape == null ? false : shape.IsSensor ();
          valueTarget.AssignValueObject (sensor);
       }
       
-      public static function SetShapeAsSensor (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetShapeAsSensor (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var sensor:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var sensor:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          shape.SetAsSensor (sensor);
       }
       
-      public static function IsShapeSleeping (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function IsShapeSleeping (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          if (shape == null || shape.IsDestroyedAlready ())
             valueTarget.AssignValueObject (false);
@@ -2530,31 +2530,31 @@ package player.trigger {
          }
       }
       
-      public static function SetShapeSleeping (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetShapeSleeping (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var sleeping:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var sleeping:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          shape.GetBody ().SetSleeping (sleeping);
       }
       
-      public static function GetShapeMass (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeMass (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          if (shape == null || shape.IsDestroyedAlready ())
             valueTarget.AssignValueObject (0.0);
          else
          {
-            valueSource = valueSource.mNextValueSourceInList;
-            var isBodyValue:Boolean = valueSource.EvalateValueObject () as Boolean;
+            valueSource = valueSource.mNextParameter;
+            var isBodyValue:Boolean = valueSource.EvaluateValueObject () as Boolean;
             
             if (isBodyValue)
             {
@@ -2567,16 +2567,16 @@ package player.trigger {
          }
       }
       
-      public static function GetShapeInertia (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeInertia (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          if (shape == null || shape.IsDestroyedAlready ())
             valueTarget.AssignValueObject (0.0);
          else
          {
-            valueSource = valueSource.mNextValueSourceInList;
-            var isBodyValue:Boolean = valueSource.EvalateValueObject () as Boolean;
+            valueSource = valueSource.mNextParameter;
+            var isBodyValue:Boolean = valueSource.EvaluateValueObject () as Boolean;
             
             if (isBodyValue)
             {
@@ -2589,9 +2589,9 @@ package player.trigger {
          }
       }
       
-      public static function GetShapeDensity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeDensity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          if (shape == null) // || shape.IsDestroyedAlready ())
             valueTarget.AssignValueObject (0.0);
@@ -2601,93 +2601,93 @@ package player.trigger {
          }
       }
       
-      public static function SetShapeLinearVelocity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetShapeLinearVelocity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var velocityX:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var velocityX:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var velocityY:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var velocityY:Number = valueSource.EvaluateValueObject () as Number;
          
          shape.AddLinearMomentum (velocityX - shape.GetLinearVelocityX (), velocityY - shape.GetLinearVelocityY (), true, false);
       }
       
-      public static function GetShapeLinearVelocity (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeLinearVelocity (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
          {
             valueTarget.AssignValueObject (0.0);
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (0.0);
          }
          else
          {
             valueTarget.AssignValueObject (shape.GetLinearVelocityX ());
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (shape.GetLinearVelocityY ());
          }
       }
       
-      public static function AddLinearImpulseByVelocityVector (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AddLinearImpulseByVelocityVector (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var velocityX:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var velocityX:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var velocityY:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var velocityY:Number = valueSource.EvaluateValueObject () as Number;
          
          shape.AddLinearMomentum (velocityX, velocityY, true, false);
       }
       
-      public static function ApplyLinearImpulseOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ApplyLinearImpulseOnShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyLinearImpulseOnShape (valueSource, valueTarget);
       }
       
-      public static function ApplyLinearImpulseAtLocalPointOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ApplyLinearImpulseAtLocalPointOnShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyLinearImpulseOnShape (valueSource, valueTarget, true);
       }
       
-      public static function ApplyLinearImpulseAtWorldPointOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ApplyLinearImpulseAtWorldPointOnShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyLinearImpulseOnShape (valueSource, valueTarget, false);
       }
       
-      public static function _ApplyLinearImpulseOnShape (valueSource:ValueSource, valueTarget:ValueTarget, isLocalPoint:Boolean = false):void
+      public static function _ApplyLinearImpulseOnShape (valueSource:Parameter, valueTarget:Parameter, isLocalPoint:Boolean = false):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var impulseX:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var impulseX:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var impulseY:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var impulseY:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var isLocalImpulse:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var isLocalImpulse:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          if (isLocalImpulse)
          {
@@ -2698,11 +2698,11 @@ package player.trigger {
          
          var body:EntityBody = shape.GetBody ();
          
-         valueSource = valueSource.mNextValueSourceInList;
+         valueSource = valueSource.mNextParameter;
          
-         if (valueSource.mNextValueSourceInList == null)
+         if (valueSource.mNextParameter == null)
          {
-            var onBodyCenter:Boolean = valueSource.EvalateValueObject () as Boolean;
+            var onBodyCenter:Boolean = valueSource.EvaluateValueObject () as Boolean;
             
             if (onBodyCenter)
                body.ApplyLinearImpulse (impulseX, impulseY, body.GetPositionX (), body.GetPositionY ());
@@ -2711,10 +2711,10 @@ package player.trigger {
          }
          else
          {
-            var pointX:Number = valueSource.EvalateValueObject () as Number;
+            var pointX:Number = valueSource.EvaluateValueObject () as Number;
             
-            valueSource = valueSource.mNextValueSourceInList;
-            var pointY:Number = valueSource.EvalateValueObject () as Number;
+            valueSource = valueSource.mNextParameter;
+            var pointY:Number = valueSource.EvaluateValueObject () as Number;
             
             if (isLocalPoint)
             {
@@ -2727,53 +2727,53 @@ package player.trigger {
          }
       }
       
-      public static function ApplyAngularImpulse (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ApplyAngularImpulse (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var angularImpulse:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var angularImpulse:Number = valueSource.EvaluateValueObject () as Number;
          
          shape.GetBody ().ApplyAngularImpulse (angularImpulse);
       }
       
-      public static function ApplyStepForceOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ApplyStepForceOnShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyStepForceOnShape (valueSource, valueTarget);
       }
       
-      public static function ApplyStepForceAtLocalPointOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ApplyStepForceAtLocalPointOnShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyStepForceOnShape (valueSource, valueTarget, true);
       }
       
-      public static function ApplyStepForceAtWorldPointOnShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ApplyStepForceAtWorldPointOnShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyStepForceOnShape (valueSource, valueTarget, false);
       }
       
-      public static function _ApplyStepForceOnShape (valueSource:ValueSource, valueTarget:ValueTarget, isLocalPoint:Boolean = false):void
+      public static function _ApplyStepForceOnShape (valueSource:Parameter, valueTarget:Parameter, isLocalPoint:Boolean = false):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var forceX:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var forceX:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var forceY:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var forceY:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var isLocalForce:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var isLocalForce:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          if (isLocalForce)
          {
@@ -2784,11 +2784,11 @@ package player.trigger {
          
          var body:EntityBody = shape.GetBody ();
          
-         valueSource = valueSource.mNextValueSourceInList;
+         valueSource = valueSource.mNextParameter;
          
-         if (valueSource.mNextValueSourceInList == null)
+         if (valueSource.mNextParameter == null)
          {
-            var onBodyCenter:Boolean = valueSource.EvalateValueObject () as Boolean;
+            var onBodyCenter:Boolean = valueSource.EvaluateValueObject () as Boolean;
             
             if (onBodyCenter)
             {
@@ -2801,10 +2801,10 @@ package player.trigger {
          }
          else
          {
-            var pointX:Number = valueSource.EvalateValueObject () as Number;
+            var pointX:Number = valueSource.EvaluateValueObject () as Number;
             
-            valueSource = valueSource.mNextValueSourceInList;
-            var pointY:Number = valueSource.EvalateValueObject () as Number;
+            valueSource = valueSource.mNextParameter;
+            var pointY:Number = valueSource.EvaluateValueObject () as Number;
             
             if (isLocalPoint)
             {
@@ -2817,123 +2817,123 @@ package player.trigger {
          }
       }
       
-      public static function ApplyStepTorque (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ApplyStepTorque (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var torque:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var torque:Number = valueSource.EvaluateValueObject () as Number;
          
          shape.GetBody ().ApplyTorque (torque);
       }
       
-      public static function TeleportShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function TeleportShape (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var targetX:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var targetX:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var targetY:Number = valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var targetY:Number = valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var targetRotation:Number = (valueSource.EvalateValueObject () as Number) * Define.kDegrees2Radians;
+         valueSource = valueSource.mNextParameter;
+         var targetRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bTeleportConnectedMovables:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bTeleprotConnectedStatics:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
          
          shape.Teleport (targetX, targetY, targetRotation - shape.GetRotation (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
-      public static function TeleportShape_Offsets (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function TeleportShape_Offsets (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          if (shape.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var deltaX:Number =  valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var deltaX:Number =  valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var deltaY:Number =  valueSource.EvalateValueObject () as Number;
+         valueSource = valueSource.mNextParameter;
+         var deltaY:Number =  valueSource.EvaluateValueObject () as Number;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var deltaRotation:Number = (valueSource.EvalateValueObject () as Number) * Define.kDegrees2Radians;
+         valueSource = valueSource.mNextParameter;
+         var deltaRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bTeleportConnectedMovables:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bTeleprotConnectedStatics:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
          
          shape.Teleport (shape.GetPositionX () + deltaX, shape.GetPositionY () + deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
-      //public static function CloneShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function CloneShape (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+      //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
       //   if (shape == null)
       //      return;
       //   
       //}
       
-      public static function DetachShape (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function DetachShape (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
          shape.Detach ();
       }
       
-	  public static function AttachTwoShapes (valueSource:ValueSource, valueTarget:ValueTarget):void
+	  public static function AttachTwoShapes (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape1:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var shape2:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         valueSource = valueSource.mNextParameter;
+         var shape2:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape2 == null || shape2.IsDestroyedAlready ())
             return;
 
          shape1.AttachWith (shape2);
       }
 	  
-	  public static function DetachShapeThenAttachWithAnother (valueSource:ValueSource, valueTarget:ValueTarget):void
+	  public static function DetachShapeThenAttachWithAnother (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape1:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null)
             return;
          
          if (shape1.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var shape2:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         valueSource = valueSource.mNextParameter;
+         var shape2:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          
          if (shape2 == null || shape2.IsDestroyedAlready ())
             shape1.Detach ();
@@ -2941,9 +2941,9 @@ package player.trigger {
             shape1.DetachThenAttachWith (shape2);
       }
 	  
-      public static function BreakupShapeBrothers (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function BreakupShapeBrothers (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
@@ -2953,9 +2953,9 @@ package player.trigger {
          shape.BreakupBrothers ();
       }
 	  
-	  public static function BreakShapeJoints (valueSource:ValueSource, valueTarget:ValueTarget):void
+	  public static function BreakShapeJoints (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var shape:EntityShape = valueSource.EvalateValueObject () as EntityShape;
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
          
@@ -2969,47 +2969,47 @@ package player.trigger {
    // entity / shape / text
    //*******************************************************************
       
-      public static function GetTextFromTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetTextFromTextComponent (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          
          var text:String = entity_text == null ? "" : entity_text.GetText ();
          valueTarget.AssignValueObject (text);
       }
       
-      public static function SetTextForTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetTextForTextComponent (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null)
             return;
          
          if (entity_text.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var text:String = valueSource.EvalateValueObject () as String;
+         valueSource = valueSource.mNextParameter;
+         var text:String = valueSource.EvaluateValueObject () as String;
          
          entity_text.SetText (text);
       }
       
-      public static function AppendTextToTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AppendTextToTextComponent (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null)
             return;
          
          if (entity_text.IsDestroyedAlready ())
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var text:String = valueSource.EvalateValueObject () as String;
+         valueSource = valueSource.mNextParameter;
+         var text:String = valueSource.EvaluateValueObject () as String;
          
          entity_text.SetText (entity_text.GetText () + text);
       }
       
-      public static function AppendNewLineToTextComponent (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function AppendNewLineToTextComponent (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var entity_text:EntityShape_Text = valueSource.EvalateValueObject () as EntityShape_Text;
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null)
             return;
          
@@ -3023,9 +3023,9 @@ package player.trigger {
    // entity / shape / circle
    //*******************************************************************
       
-      public static function GetShapeCircleRadius (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeCircleRadius (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var circle:EntityShapeCircle = valueSource.EvalateValueObject () as EntityShapeCircle;
+         var circle:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
          if (circle == null)// || circle.IsDestroyedAlready ())
          {
             valueTarget.AssignValueObject (0.0);
@@ -3040,21 +3040,21 @@ package player.trigger {
    // entity / shape / rectangle
    //*******************************************************************
       
-      public static function GetShapeRectangleSize (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetShapeRectangleSize (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var rect:EntityShapeRectangle = valueSource.EvalateValueObject () as EntityShapeRectangle;
+         var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
          if (rect == null)// || rect.IsDestroyedAlready ())
          {
             valueTarget.AssignValueObject (0.0);
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (0.0);
          }
          else
          {
             valueTarget.AssignValueObject (2.0 * rect.GetHalfWidth ());
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (2.0 * rect.GetHalfHeight ());
          }
       }
@@ -3063,9 +3063,9 @@ package player.trigger {
    // entity / shape / poly shape
    //*******************************************************************
       
-      public static function GetVertexCount (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetVertexCount (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var polyShape:EntityShapePolyShape = valueSource.EvalateValueObject () as EntityShapePolyShape;
+         var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
          
          if (polyShape == null)// || polyShape.IsDestroyedAlready ())
          {
@@ -3077,31 +3077,31 @@ package player.trigger {
          }
       }
       
-      public static function GetVertexLocalPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetVertexLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
       {
          GetVertexPosition (valueSource, valueTarget, false);
       }
       
-      public static function GetVertexWorldPosition (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetVertexWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
       {
          GetVertexPosition (valueSource, valueTarget, true);
       }
       
-      public static function GetVertexPosition (valueSource:ValueSource, valueTarget:ValueTarget, isWorldPoint:Boolean):void
+      public static function GetVertexPosition (valueSource:Parameter, valueTarget:Parameter, isWorldPoint:Boolean):void
       {
-         var polyShape:EntityShapePolyShape = valueSource.EvalateValueObject () as EntityShapePolyShape;
+         var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
          
          if (polyShape == null)// || polyShape.IsDestroyedAlready ())
          {
             valueTarget.AssignValueObject (0.0);
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (0.0);
          }
          else
          {
-            valueSource = valueSource.mNextValueSourceInList;
-            var vertexIndex:int = int (valueSource.EvalateValueObject ());
+            valueSource = valueSource.mNextParameter;
+            var vertexIndex:int = int (valueSource.EvaluateValueObject ());
             
             var point:Point = polyShape.GetLocalVertex (vertexIndex);
             if (isWorldPoint)
@@ -3111,7 +3111,7 @@ package player.trigger {
             
             valueTarget.AssignValueObject (point.x);
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (point.y);
          }
       }
@@ -3120,35 +3120,35 @@ package player.trigger {
    // entity / joint
    //*******************************************************************
       
-      public static function SetJointMotorEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetJointMotorEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var joint:EntityJoint = valueSource.EvalateValueObject () as EntityJoint;
+         var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
          
          if (joint == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var enabled:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          joint.SetEnableMotor (enabled);
       }
       
-      public static function SetJointLimitsEnabled (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetJointLimitsEnabled (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var joint:EntityJoint = valueSource.EvalateValueObject () as EntityJoint;
+         var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
          
          if (joint == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var enabled:Boolean = valueSource.EvalateValueObject () as Boolean;
+         valueSource = valueSource.mNextParameter;
+         var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          joint.SetEnableLimits (enabled);
       }
       
-      public static function GetHingeAngleByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetHingeAngleByDegrees (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
          
          if (hinge == null)
          {
@@ -3160,44 +3160,44 @@ package player.trigger {
          }
       }
       
-      public static function GetHingeLimitsByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetHingeLimitsByDegrees (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
          
          if (hinge == null)
          {
             valueTarget.AssignValueObject (0.0);
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (0.0);
          }
          else
          {
             valueTarget.AssignValueObject (hinge.GetLowerAngle () * Define.kRadians2Degrees);
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (hinge.GetUpperAngle () * Define.kRadians2Degrees);
          }
       }
       
-      public static function SetHingeLimitsByDegrees (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetHingeLimitsByDegrees (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
          if (hinge == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var lowerLimit:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
+         valueSource = valueSource.mNextParameter;
+         var lowerLimit:Number = Number (valueSource.EvaluateValueObject ()) * Define.kDegrees2Radians;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var upperLimit:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
+         valueSource = valueSource.mNextParameter;
+         var upperLimit:Number = Number (valueSource.EvaluateValueObject ()) * Define.kDegrees2Radians;
          
          hinge.SetAngleLimits (lowerLimit, upperLimit);
       }
       
-     public static function GetHingeMotorSpeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+     public static function GetHingeMotorSpeed (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
          
          if (hinge == null)
          {
@@ -3209,21 +3209,21 @@ package player.trigger {
          }
       }
       
-      public static function SetHingeMotorSpeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetHingeMotorSpeed (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var hinge:EntityJointHinge = valueSource.EvalateValueObject () as EntityJointHinge;
+         var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
          if (hinge == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var motorSpeed:Number = Number (valueSource.EvalateValueObject ()) * Define.kDegrees2Radians;
+         valueSource = valueSource.mNextParameter;
+         var motorSpeed:Number = Number (valueSource.EvaluateValueObject ()) * Define.kDegrees2Radians;
          
          hinge.SetMotorSpeed (motorSpeed);
       }
       
-      public static function GetSliderTranslation (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetSliderTranslation (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
          
          if (slider == null)
          {
@@ -3235,44 +3235,44 @@ package player.trigger {
          }
       }
       
-      public static function GetSliderLimits (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetSliderLimits (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
          
          if (slider == null)
          {
             valueTarget.AssignValueObject (0.0);
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (0.0);
          }
          else
          {
             valueTarget.AssignValueObject (slider.GetLowerTranslation ());
             
-            valueTarget = valueTarget.mNextValueTargetInList;
+            valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (slider.GetUpperTranslation ());
          }
       }
       
-      public static function SetSliderLimits (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetSliderLimits (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
          if (slider == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var lowerLimit:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var lowerLimit:Number = Number (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var upperLimit:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var upperLimit:Number = Number (valueSource.EvaluateValueObject ());
          
          slider.SetTranslationLimits (lowerLimit, upperLimit);
       }
       
-      public static function GetSliderMotorSpeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function GetSliderMotorSpeed (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
          
          if (slider == null)
          {
@@ -3284,49 +3284,49 @@ package player.trigger {
          }
       }
       
-      public static function SetSliderMotorSpeed (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetSliderMotorSpeed (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var slider:EntityJointSlider = valueSource.EvalateValueObject () as EntityJointSlider;
+         var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
          if (slider == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var motorSpeed:Number = Number (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var motorSpeed:Number = Number (valueSource.EvaluateValueObject ());
          
          slider.SetMotorSpeed (motorSpeed);
       }
       
       // game / entity / event handler
          
-      public static function ResetTimer (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function ResetTimer (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var timer:EntityEventHandler_Timer = valueSource.EvalateValueObject () as EntityEventHandler_Timer;
+         var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
          if (timer == null)
             return;
          
          timer.Reset ();
       }
       
-      public static function SetTimerPaused (valueSource:ValueSource, valueTarget:ValueTarget):void
+      public static function SetTimerPaused (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var timer:EntityEventHandler_Timer = valueSource.EvalateValueObject () as EntityEventHandler_Timer;
+         var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
          if (timer == null)
             return;
          
-         valueSource = valueSource.mNextValueSourceInList;
-         var paused:Boolean = Boolean (valueSource.EvalateValueObject ());
+         valueSource = valueSource.mNextParameter;
+         var paused:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
          timer.SetPaused (paused);
       }
       
-      //public static function SetTimerInterval (valueSource:ValueSource, valueTarget:ValueTarget):void
+      //public static function SetTimerInterval (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var timer:EntityEventHandler_Timer = valueSource.EvalateValueObject () as EntityEventHandler_Timer;
+      //   var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
       //   if (timer == null)
       //      return;
       //   
-      //   valueSource = valueSource.mNextValueSourceInList;
-      //   var interval:Number = Number (valueSource.EvalateValueObject ());
+      //   valueSource = valueSource.mNextParameter;
+      //   var interval:Number = Number (valueSource.EvaluateValueObject ());
       //   
       //   timer.SetRunningInterval (interval);
       //}

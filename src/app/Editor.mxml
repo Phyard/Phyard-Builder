@@ -1092,7 +1092,7 @@
                   }
                   xml.appendChild (<menuitem label="Load Offline (xml) ..." data="load_offline"/>);
                   //xml.appendChild (<menuitem label="Load Local ..." data="load_local"/>);
-                  xml.appendChild (<menuitem label="Quick Load" data="load_cookie"/>);
+                  xml.appendChild (<menuitem label="Quick Load ..." data="load_cookie"/>);
                   xml.appendChild (<menuitem label="Import ..." data="import"/>);
                   
                   mLoadDesignMenu = Menu.createMenu(Button_OpenDesign, xml, false);

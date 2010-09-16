@@ -9,22 +9,16 @@ package common {
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition;
-   import player.trigger.FunctionDefinition_Core;
-   import player.trigger.FunctionDefinition_Logic;
-   import player.trigger.FunctionInstance;
+   import player.trigger.FunctionDefinition_Custom;
    import player.trigger.CodeSnippet;
    import player.trigger.FunctionCalling;
    import player.trigger.FunctionCalling_Condition;
    import player.trigger.FunctionCalling_Dummy;
-   import player.trigger.ValueSource;
-   import player.trigger.ValueSource_Null;
-   import player.trigger.ValueSource_Direct;
-   import player.trigger.ValueSource_Variable;
-   import player.trigger.ValueSource_Property;
-   import player.trigger.ValueTarget;
-   import player.trigger.ValueTarget_Null;
-   import player.trigger.ValueTarget_Variable;
-   import player.trigger.ValueTarget_Property;
+   import player.trigger.Parameter;
+   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_Variable;
+   import player.trigger.Parameter_VariableRef;
+   import player.trigger.Parameter_Property;
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
    
@@ -68,7 +62,7 @@ package common {
 // define -> definition (player)
 //==============================================================================================
       
-      public static function CreateCodeSnippet (parentFunctionInstance:FunctionInstance, playerWorld:World, codeSnippetDefine:CodeSnippetDefine):CodeSnippet
+      public static function CreateCodeSnippet (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, codeSnippetDefine:CodeSnippetDefine):CodeSnippet
       {
          var lineNumber:int;
          var callingInfo:FunctionCallingLineInfo;
@@ -104,7 +98,7 @@ package common {
             
             if (callingInfo.mIsValid)
             {
-               callingInfo.mFunctionCallingForPlaying = FunctionCallingDefine2FunctionCalling (lineNumber, parentFunctionInstance, playerWorld, callingInfo.mFunctionCallingDefine);
+               callingInfo.mFunctionCallingForPlaying = FunctionCallingDefine2FunctionCalling (lineNumber, customFunctionDefinition, playerWorld, callingInfo.mFunctionCallingDefine);
                validCallingInfos [numValidCallings ++] = callingInfo;
                
                if (lastCallingInfo != null)
@@ -280,7 +274,7 @@ package common {
          return goodCallingInfo;
       }
       
-      public static function FunctionCallingDefine2FunctionCalling (lineNumber:int, parentFunctionInstance:FunctionInstance, playerWorld:World, funcCallingDefine:FunctionCallingDefine):FunctionCalling
+      public static function FunctionCallingDefine2FunctionCalling (lineNumber:int, customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, funcCallingDefine:FunctionCallingDefine):FunctionCalling
       {
          if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
@@ -288,22 +282,22 @@ package common {
             var core_func_definition:FunctionDefinition = TriggerEngine.GetCoreFunctionDefinition (function_id);
             var core_func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (function_id);
             
-            var value_source_list:ValueSource = null;
-            var value_source:ValueSource;
+            var value_source_list:Parameter = null;
+            var value_source:Parameter;
             var i:int;
             for (i = funcCallingDefine.mNumInputs - 1; i >= 0; -- i)
             {
-               value_source = ValueSourceDefine2InputValueSource (parentFunctionInstance, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], core_func_declaration.GetInputParamValueType (i));
-               value_source.mNextValueSourceInList = value_source_list;
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], core_func_declaration.GetInputParamValueType (i));
+               value_source.mNextParameter = value_source_list;
                value_source_list = value_source;
             }
             
-            var value_target_list:ValueTarget = null;
-            var value_target:ValueTarget;
+            var value_target_list:Parameter = null;
+            var value_target:Parameter;
             for (i = funcCallingDefine.mNumOutputs - 1; i >= 0; -- i)
             {
-               value_target = ValueTargetDefine2ReturnValueTarget (parentFunctionInstance, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], core_func_declaration.GetOutputParamValueType (i));
-               value_target.mNextValueTargetInList = value_target_list;
+               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], core_func_declaration.GetOutputParamValueType (i));
+               value_target.mNextParameter = value_target_list;
                value_target_list = value_target;
             }
             
@@ -338,9 +332,9 @@ package common {
          }
       }
       
-      public static function ValueSourceDefine2InputValueSource (parentFunctionInstance:FunctionInstance, playerWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int):ValueSource
+      public static function ValueSourceDefine2InputValueSource (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int):Parameter
       {
-         var value_source:ValueSource = null;
+         var value_source:Parameter = null;
          
          var source_type:int = valueSourceDefine.GetValueSourceType ();
          
@@ -353,13 +347,13 @@ package common {
             switch (valueType)
             {
                case ValueTypeDefine.ValueType_Boolean:
-                  value_source = new ValueSource_Direct (direct_source_define.mValueObject as Boolean);
+                  value_source = new Parameter_Direct (direct_source_define.mValueObject as Boolean);
                   break;
                case ValueTypeDefine.ValueType_Number:
-                  value_source = new ValueSource_Direct (direct_source_define.mValueObject as Number);
+                  value_source = new Parameter_Direct (direct_source_define.mValueObject as Number);
                   break;
                case ValueTypeDefine.ValueType_String:
-                  value_source = new ValueSource_Direct (direct_source_define.mValueObject as String);
+                  value_source = new Parameter_Direct (direct_source_define.mValueObject as String);
                   break;
                case ValueTypeDefine.ValueType_Entity:
                {
@@ -367,19 +361,19 @@ package common {
                   if (entityIndex < 0)
                   {
                      if (entityIndex == Define.EntityId_Ground)
-                        value_source = new ValueSource_Direct (playerWorld);
+                        value_source = new Parameter_Direct (playerWorld);
                      else // if (entityIndex == Define.EntityId_None)
-                        value_source = new ValueSource_Direct (null);
+                        value_source = new Parameter_Direct (null);
                   }
                   else
                   {
-                     value_source = new ValueSource_Direct (playerWorld.GetEntityByCreationId (entityIndex));
+                     value_source = new Parameter_Direct (playerWorld.GetEntityByCreationId (entityIndex));
                   }
                   
                   break;
                }
                case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_source = new ValueSource_Direct (playerWorld.GetCollisionCategoryById (direct_source_define.mValueObject as int));
+                  value_source = new Parameter_Direct (playerWorld.GetCollisionCategoryById (direct_source_define.mValueObject as int));
                   break;
                default:
                   break;
@@ -391,43 +385,34 @@ package common {
             
             var value_space_type:int = variable_source_define.mSpaceType;
             var variable_index:int   = variable_source_define.mVariableIndex;
-            var variable_instance:VariableInstance = null;
             
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  variable_instance = (Global.GetGlobalVariableSpace (0) as VariableSpace).GetVariableAt (variable_index);
+                  value_source = new Parameter_Variable ((Global.GetGlobalVariableSpace (0) as VariableSpace).GetVariableAt (variable_index));
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
-                     variable_instance = variable_space.GetVariableAt (variable_index);
+                     value_source = new Parameter_Variable (variable_space.GetVariableAt (variable_index));
                   }
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Input:
-                  variable_instance = parentFunctionInstance.GetInputVariableAt (variable_index);
-                  break;
                case ValueSpaceTypeDefine.ValueSpace_Output:
-                  variable_instance = parentFunctionInstance.GetReturnVariableAt (variable_index);
-                  break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
+                  value_source = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, false);
                   break;
                default:
                   break;
-            }
-            
-            if (variable_instance != null)
-            {
-               value_source = new ValueSource_Variable (variable_instance);
             }
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Property)
          {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
-            value_source = new ValueSource_Property (ValueSourceDefine2InputValueSource (parentFunctionInstance, playerWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity)
+            value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity)
                                                       , property_source_define.mSpacePackageId, property_source_define.mPropertyId);
          }
          
@@ -439,39 +424,39 @@ package common {
             switch (valueType)
             {
                case ValueTypeDefine.ValueType_Boolean:
-                  value_source = new ValueSource_Direct (false);
+                  value_source = new Parameter_Direct (false);
                   break;
                case ValueTypeDefine.ValueType_Number:
-                  value_source = new ValueSource_Direct (0);
+                  value_source = new Parameter_Direct (0);
                   break;
                case ValueTypeDefine.ValueType_String:
-                  value_source = new ValueSource_Direct (null);
+                  value_source = new Parameter_Direct (null);
                   break;
                case ValueTypeDefine.ValueType_Entity:
-                  value_source = new ValueSource_Direct (null);
+                  value_source = new Parameter_Direct (null);
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_source = new ValueSource_Direct (Define.CollisionCategoryId_HiddenCategory);
+                  value_source = new Parameter_Direct (Define.CollisionCategoryId_HiddenCategory);
                   break;
                default:
-                  value_source = new ValueSource_Null ();
-                  trace ("Error: source is null");
-                  break;
+               {
+                  throw new Error ("unknown type");
+               }
             }
          }
          
          return value_source;
       }
       
-      public static function ValueTargetDefine2ReturnValueTarget (parentFunctionInstance:FunctionInstance, playerWorld:World, valueTargetDefine:ValueTargetDefine, valueType:int):ValueTarget
+      public static function ValueTargetDefine2ReturnValueTarget (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueTargetDefine:ValueTargetDefine, valueType:int):Parameter
       {
-         var value_target:ValueTarget = null;
+         var value_target:Parameter = null;
          
          var target_type:int = valueTargetDefine.GetValueTargetType ();
          
          if (target_type == ValueTargetTypeDefine.ValueTarget_Null)
          {
-            value_target = new ValueTarget_Null ();
+            value_target = new Parameter ();
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_Variable)
          {
@@ -479,49 +464,40 @@ package common {
             
             var value_space_type:int = variable_target_define.mSpaceType;
             var variable_index:int   = variable_target_define.mVariableIndex;
-            var variable_instance:VariableInstance = null;
             
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  variable_instance = (Global.GetGlobalVariableSpace (0) as VariableSpace).GetVariableAt (variable_index);
+                  value_target = new Parameter_Variable ((Global.GetGlobalVariableSpace (0) as VariableSpace).GetVariableAt (variable_index));
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
-                     variable_instance = variable_space.GetVariableAt (variable_index);
+                     value_target = new Parameter_Variable (variable_space.GetVariableAt (variable_index));
                   }
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Input:
-                  variable_instance = parentFunctionInstance.GetInputVariableAt (variable_index);
-                  break;
                case ValueSpaceTypeDefine.ValueSpace_Output:
-                  variable_instance = parentFunctionInstance.GetReturnVariableAt (variable_index);
-                  break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
+                  value_target = customFunctionDefinition.CreateVariableParameter (value_space_type, variable_index, true);
                   break;
                default:
                   break;
-            }
-            
-            if (variable_instance != null)
-            {
-               value_target = new ValueTarget_Variable (variable_instance);
             }
          }
          else if (target_type == ValueTargetTypeDefine.ValueTarget_Property)
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
-            value_target = new ValueTarget_Property (ValueSourceDefine2InputValueSource (parentFunctionInstance, playerWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity)
+            value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity)
                                                       , property_target_define.mSpacePackageId, property_target_define.mPropertyId);
          }
          
          if (value_target == null)
          {
-            value_target = new ValueTarget_Null ();
+            value_target = new Parameter ();
             
             //trace ("Error: target is null");
          }

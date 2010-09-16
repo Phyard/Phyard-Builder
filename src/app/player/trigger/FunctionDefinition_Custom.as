@@ -1,60 +1,148 @@
 package player.trigger
 {
-   import common.trigger.FunctionDeclaration;
+   import player.design.Global;
    
-   import common.trigger.ValueTypeDefine;
+   import common.trigger.ValueSpaceTypeDefine;
+   import common.trigger.FunctionDeclaration;
+   import common.trigger.define.CodeSnippetDefine;
+   import common.TriggerFormatHelper2;
    
    public class FunctionDefinition_Custom extends FunctionDefinition
    {
       protected var mPrimaryFunctionInstance:FunctionInstance;
-      protected var mPrimaryCodeSnippet:CodeSnippet;
+      protected var mCurrentFunctionInstance:FunctionInstance = null;
+      protected var mCodeSnippet:CodeSnippet;
       
-      protected var mFreeFunctionInstance:FunctionInstance = null;
-      protected var mGeneralCodeSnippet:CodeSnippet;
+      internal var mInputVariableReferences:Array;
+      internal var mOutputVariableReferences:Array;
+      internal var mLocalVariableReferences:Array;
+      
+      internal var mInputVariableRefList:VariableReference;
+      internal var mOutputVariableRefList:VariableReference;
+      internal var mLocalVariableRefList:VariableReference;
       
       public function FunctionDefinition_Custom (functionDecl:FunctionDeclaration)
       {
          super (functionDecl);
+         
+         mInputVariableReferences = VariableReference.CreateVariableReferenceArray (mFunctionDeclaration.GetNumInputs ());
+         mOutputVariableReferences = VariableReference.CreateVariableReferenceArray (mFunctionDeclaration.GetNumOutputs ());
+         mLocalVariableReferences = VariableReference.CreateVariableReferenceArray (mFunctionDeclaration.GetNumLocalVariables ());
+         
+         mInputVariableRefList = mInputVariableReferences.length > 0 ? mInputVariableReferences [0] : null;
+         mOutputVariableRefList = mOutputVariableReferences.length > 0 ? mOutputVariableReferences [0] : null;
+         mLocalVariableRefList = mLocalVariableReferences.length > 0 ? mLocalVariableReferences [0] : null;
          
          mPrimaryFunctionInstance = new FunctionInstance (this);
       }
       
       public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
       {
-         mLogicFunctionInstance = new FunctionInstance (this);
-         mPrimaryCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (mLogicFunctionInstance, Global.GetCurrentWorld (), codeSnippetDefine);
+         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, Global.GetCurrentWorld (), codeSnippetDefine);
+         mPrimaryFunctionInstance.SetAsCurrent ();
       }
       
-      override public function DoCall (inputValueSources:ValueSoure, returnValueTarget:ValueTarget):void
+      public function CreateVariableParameter (variableSpaceType:int, variableIndex:int, isOutput:Boolean, nextParameter:Parameter = null):Parameter
       {
-      /*
-         if (mPrimaryFunctionInstance.mIsFree)
+         var variableReferenceArray:Array;
+         
+         if (variableSpaceType == ValueSpaceTypeDefine.ValueSpace_Input)
          {
-            mPrimaryFunctionInstance.mIsFree = false;
-            
-            mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFrom (inputValueSources);
-            mPrimaryCodeSnippet.Excute ();
-            mPrimaryFunctionInstance.mReturnValueTargetList.SetValuesTo (returnValueTarget);
-            
-            mPrimaryFunctionInstance.mIsFree = true;
+            variableReferenceArray = mInputVariableReferences;
+         }
+         else if (variableSpaceType == ValueSpaceTypeDefine.ValueSpace_Output)
+         {
+            variableReferenceArray = mOutputVariableReferences;
+         }
+         else if (variableSpaceType == ValueSpaceTypeDefine.ValueSpace_Local)
+         {
+            variableReferenceArray = mLocalVariableReferences;
          }
          else
          {
-            var func_instance:FunctionInstance = mFreeFunctionInstance;
-            if (func_instance == null)
-               func_instance = new FunctionInstance (this);
-            else
-               mFreeFunctionInstance = mFreeFunctionInstance.mNextFreeFunctionInstance;
-            
-            func_instance.mInputVariableSpace.GetValuesFrom (inputValueSources);
-            mGeneralCodeSnippet.ExcuteGeneral (func_instance);
-            func_instance.mReturnValueTargetList.SetValuesTo (returnValueTarget);
-            
-            func_instance.mNextFreeFunctionInstance = mFreeFunctionInstance;
-            mFreeFunctionInstance = func_instance;
+            throw new Error ("unknown var space");
          }
-      */
+         
+         if (variableIndex < 0 || variableIndex >= variableReferenceArray.length)
+         {
+            throw new Error ("index out of range");
+         }
+         
+         if (variableSpaceType == ValueSpaceTypeDefine.ValueSpace_Local && mFunctionDeclaration.IsStaticLocalVariable (variableIndex))
+         {
+            return new Parameter_Variable (mPrimaryFunctionInstance.GetLocalVariableAt (variableIndex), nextParameter);
+         }
+         
+         return new Parameter_VariableRef (variableReferenceArray [variableIndex], nextParameter);
       }
       
+      // general calling
+      override public function DoCall (inputParamList:Parameter, outputParamList:Parameter):void
+      {
+         // 1. push 
+         
+         if (mCurrentFunctionInstance == null)
+         {
+            mCurrentFunctionInstance = mPrimaryFunctionInstance;
+            
+            mCurrentFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+            mCodeSnippet.Excute ();
+            mCurrentFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+            
+            mCurrentFunctionInstance = null;
+         }
+         else
+         {
+            if (mCurrentFunctionInstance.mNextFunctionInstance == null)
+            {
+               var next:FunctionInstance = new FunctionInstance (this);
+               mCurrentFunctionInstance.mNextFunctionInstance = next;
+               next.mPrevFunctionInstance = mCurrentFunctionInstance;
+            }
+            
+            mCurrentFunctionInstance = mCurrentFunctionInstance.mNextFunctionInstance;
+            mCurrentFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+            mCurrentFunctionInstance.SetAsCurrent ();
+            
+            mCodeSnippet.Excute ();
+            
+            mCurrentFunctionInstance = mCurrentFunctionInstance.mPrevFunctionInstance;
+            mCurrentFunctionInstance.SetAsCurrent ();
+            mCurrentFunctionInstance.mNextFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+         }
+      }
+      
+      // as condition component, no inputs
+      public function EvaluateCondition (outputParamList:Parameter):void
+      {
+         // no inputs
+         //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+         
+         mCodeSnippet.Excute ();
+         
+         mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+      }
+      
+      // as event handler, no returns
+      public function ExcuteEventHandler (inputParamList:Parameter):void
+      {
+         mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+         
+         mCodeSnippet.Excute ();
+         
+         // no returns
+         //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+      }
+      
+      // as action, no inputs, returns
+      public function ExcuteAction ():void
+      {
+         //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+         
+         mCodeSnippet.Excute ();
+         
+         // no returns
+         //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+      }
    }
 }

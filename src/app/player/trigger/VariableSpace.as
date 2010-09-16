@@ -4,7 +4,7 @@ package player.trigger
    
    public class VariableSpace
    {
-      protected var mFirstVariableInstance:VariableInstance;
+      protected var mFirstVariableInstance:VariableInstance = null;
       
       internal var mVariableInstances:Array;
       
@@ -52,28 +52,39 @@ package player.trigger
          return mVariableInstances [index];
       }
       
-      public function GetValuesFrom (valueSourceList:ValueSource):void
+      public function GetValuesFromParameters (inputParamList:Parameter):void
       {
          var vi:VariableInstance = mFirstVariableInstance;
          
-         while (vi != null) // && valueSourceList != null) // the missed value sources should be appended at init process.
+         while (vi != null) // && inputParamList != null) // the missed value sources should be appended at init process.
          {
-            vi.SetValueObject (valueSourceList.EvalateValueObject ());
+            vi.SetValueObject (inputParamList.EvaluateValueObject ());
             vi = vi.mNextVariableInstanceInSpace;
-            valueSourceList = valueSourceList.mNextValueSourceInList;
+            inputParamList = inputParamList.mNextParameter;
          }
       }
       
-      public function SetValuesTo (valueTargetList:ValueTarget):void
+      public function SetValuesToParameters (outputParamList:Parameter):void
       {
          var vi:VariableInstance = mFirstVariableInstance;
          
-         while (valueTargetList != null) // the number of value targets should be less than variable instances
+         while (vi != null) // && outputParamList != null) // the missed value targets should be appended at init process.
          {
-            valueTargetList.AssignValueObject (vi.GetValueObject ());
-            
+            outputParamList.AssignValueObject (vi.GetValueObject ());
             vi = vi.mNextVariableInstanceInSpace;
-            valueTargetList = valueTargetList.mNextValueTargetInList;
+            outputParamList = outputParamList.mNextParameter;
+         }
+      }
+      
+      public function FillVariableReferenceList (viRefList:VariableReference):void
+      {
+         var vi:VariableInstance = mFirstVariableInstance;
+         
+         while (vi != null)
+         {
+            viRefList.mVariableInstance = vi;
+            vi = vi.mNextVariableInstanceInSpace;
+            viRefList = viRefList.mNextVariableReference;
          }
       }
    }

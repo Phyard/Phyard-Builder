@@ -2,9 +2,10 @@ package player.trigger
 {
    public class VariableInstance
    {
-      public var mNextVariableInstanceInSpace:VariableInstance;
+      public var mNextVariableInstanceInSpace:VariableInstance; // for efficiency
       
       public var mName:String = null; // for debug usage only
+      
       public var mValueObject:Object = null;
       
       public function VariableInstance (value:Object = null)

@@ -5,8 +5,8 @@ package player.trigger.entity
    import player.world.World;
    import player.entity.Entity;
    
-   import player.trigger.ValueSource;
-   import player.trigger.ValueSource_Direct;
+   import player.trigger.Parameter;
+   import player.trigger.Parameter_Direct;
    
    import player.trigger.data.ListElement_InputEntityAssigner;
    

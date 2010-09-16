@@ -3,9 +3,8 @@ package player.trigger.entity
    import player.world.World;
    
    import player.trigger.TriggerEngine;
-   import player.trigger.FunctionDefinition_Logic;
-   import player.trigger.ValueSource;
-   import player.trigger.ValueSource_Direct;
+   import player.trigger.Parameter;
+   import player.trigger.Parameter_Direct;
    
    import player.trigger.data.ListElement_InputEntityAssigner;
    
@@ -63,7 +62,7 @@ package player.trigger.entity
       // for judging if this handler is excuted already in current step.
       private var mLastHandlingStep:int = -1;
       
-      override public function HandleEvent (valueSourceList:ValueSource):void
+      override public function HandleEvent (valueSourceList:Parameter):void
       {
          if (mEventId == CoreEventIds.ID_OnWorldKeyHold)
          {
@@ -79,7 +78,7 @@ package player.trigger.entity
             var num:int = mKeyCodes.length;
             var keyCode:int;
             
-            var eventKeyCode:int = int ( (valueSourceList as ValueSource_Direct).mValueObject );
+            var eventKeyCode:int = int ((valueSourceList as Parameter_Direct).mValueObject);
             for (i = 0; i < num; ++ i)
             {
                keyCode = mKeyCodes [i];

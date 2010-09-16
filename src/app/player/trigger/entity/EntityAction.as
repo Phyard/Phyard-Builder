@@ -3,21 +3,21 @@ package player.trigger.entity
    import player.world.World;
    
    import player.trigger.TriggerEngine;
-   import player.trigger.FunctionDefinition_Logic;
+   import player.trigger.FunctionDefinition_Custom;
    
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
    public class EntityAction extends EntityLogic implements ScriptHolder
    {
-      public var mVoidFunctionDefinition:FunctionDefinition_Logic;
+      public var mVoidFunctionDefinition:FunctionDefinition_Custom;
       public var mName:String = null;
       
       public function EntityAction (world:World)
       {
          super (world);
          
-         mVoidFunctionDefinition = new FunctionDefinition_Logic (TriggerEngine.GetVoidFunctionDeclaration  ());
+         mVoidFunctionDefinition = new FunctionDefinition_Custom (TriggerEngine.GetVoidFunctionDeclaration  ());
       }
       
 //=============================================================

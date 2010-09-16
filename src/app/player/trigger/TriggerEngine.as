@@ -66,5 +66,10 @@ package player.trigger
       {
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_Bool];
       }
+      
+//=============================================================================
+// 
+//=============================================================================
+      
    }
 }

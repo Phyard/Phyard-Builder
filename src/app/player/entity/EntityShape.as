@@ -11,8 +11,8 @@ package player.entity {
    import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
    
-   import player.trigger.ValueSource;
-   import player.trigger.ValueSource_Direct
+   import player.trigger.Parameter;
+   import player.trigger.Parameter_Direct
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
    

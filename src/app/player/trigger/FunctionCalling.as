@@ -13,10 +13,10 @@ package player.trigger
       protected var mLineNumberInEditor:int;
       
       protected var mFunctionDefinition:FunctionDefinition;
-      protected var mInputValueSourceList:ValueSource;
-      protected var mReturnValueTargetList:ValueTarget;
+      protected var mInputValueSourceList:Parameter;
+      protected var mReturnValueTargetList:Parameter;
       
-      public function FunctionCalling (lineNumber:int, functionDefinition:FunctionDefinition, valueSourceList:ValueSource, valueTargetList:ValueTarget)
+      public function FunctionCalling (lineNumber:int, functionDefinition:FunctionDefinition, valueSourceList:Parameter, valueTargetList:Parameter)
       {
          mLineNumberInEditor = lineNumber;
          mFunctionDefinition = functionDefinition;

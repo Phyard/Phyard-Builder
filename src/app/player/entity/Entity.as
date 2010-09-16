@@ -4,8 +4,8 @@ package player.entity {
    import player.world.EntityList;
    import player.physics.PhysicsProxy;
 
-   import player.trigger.ValueSource;
-   import player.trigger.ValueSource_Direct;
+   import player.trigger.Parameter;
+   import player.trigger.Parameter_Direct;
    
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
@@ -233,8 +233,8 @@ package player.entity {
 //   event value sources, they are static, so parallel computing is not supported
 //====================================================================================================
       
-      protected static var mEventHandlerValueSource0:ValueSource_Direct = new ValueSource_Direct (null, null);
-      protected static var mEventHandlerValueSourceList:ValueSource = mEventHandlerValueSource0;
+      protected static var mEventHandlerValueSource0:Parameter_Direct = new Parameter_Direct (null, null);
+      protected static var mEventHandlerValueSourceList:Parameter = mEventHandlerValueSource0;
       
       private var mInitializeEventHandlerList:ListElement_EventHandler = null;
       private var mUpdateEventHandlerList:ListElement_EventHandler = null;

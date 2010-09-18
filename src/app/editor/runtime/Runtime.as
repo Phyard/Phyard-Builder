@@ -96,6 +96,9 @@ package editor.runtime {
       
       public static var mGlobalVariablesEditingDialogClosedCallBack:Function = null;
       public static var mEntityVariablesEditingDialogClosedCallBack:Function = null;
+      public static var mLocalVariablesEditingDialogClosedCallBack:Function = null;
+      public static var mInputVariablesEditingDialogClosedCallBack:Function = null;
+      public static var mOutputVariablesEditingDialogClosedCallBack:Function = null;
       
 //=====================================================================
 //

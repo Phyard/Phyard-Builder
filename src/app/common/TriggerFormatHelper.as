@@ -355,7 +355,7 @@ package common {
                   variable_instance = functionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Output:
-                  variable_instance = functionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = functionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
                   break;
@@ -418,7 +418,7 @@ package common {
                   variable_instance = functionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Output:
-                  variable_instance = functionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (variable_index);
+                  variable_instance = functionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
                   break;

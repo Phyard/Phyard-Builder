@@ -62,6 +62,7 @@ package editor.world {
    import editor.selection.SelectionEngine;
    
    import editor.trigger.TriggerEngine;
+   import editor.trigger.PlayerFunctionDefinesForEditing;
    
    import common.Define;
    import common.ValueAdjuster;
@@ -96,6 +97,8 @@ package editor.world {
          mSelectionEngineForVertexes = mSelectionEngine;
          
          mTriggerEngine = new TriggerEngine ();
+         
+         mFunctionManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
       }
       
       override public function Destroy ():void

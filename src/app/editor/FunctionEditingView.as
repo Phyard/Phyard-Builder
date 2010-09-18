@@ -384,8 +384,8 @@ package editor {
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (null);
             (values.mCodeSnippet as CodeSnippet).DisplayValues2PhysicsValues (Runtime.GetCurrentWorld ().GetCoordinateSystem ());
             
-            values.mShowGlobalVariablesEditingButton = true;
-            values.mShowEntityVariablesEditingButton = true;
+            values.mShowGlobalVariablesEditingButton = false;
+            values.mShowEntityVariablesEditingButton = false;
             values.mShowLocalVariablesEditingButton = true;
             values.mShowInputVariablesEditingButton = true;
             values.mShowOutputVariablesEditingButton = true;

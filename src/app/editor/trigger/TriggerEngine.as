@@ -31,6 +31,7 @@ package editor.trigger {
    import common.trigger.CoreEventDeclarations;
    
    import common.trigger.ValueTypeDefine;
+   import editor.trigger.VariableSpace;
    
    import editor.dialog.VariablesEditDialog;
    
@@ -186,13 +187,16 @@ package editor.trigger {
             mGlobalVariablesEditDialog = new VariablesEditDialog ();
             mGlobalVariablesEditDialog.SetTitle ("Global Variables Editing");
             mGlobalVariablesEditDialog.SetCloseFunc (HideGlobalVariablesEditDialog);
-            mGlobalVariablesEditDialog.SetVariableSpace (mGlobalVariableSpace);
+            //mGlobalVariablesEditDialog.visible = false; // useless, when change to true first ime, show-event will not triggered
          }
+         
+         mGlobalVariablesEditDialog.SetVariableSpace (mGlobalVariableSpace);
          
          if (! mGlobalVariablesEditDialogVisible)
          {
             PopUpManager.addPopUp (mGlobalVariablesEditDialog, parent, true);
             mGlobalVariablesEditDialogVisible = true;
+            mGlobalVariablesEditDialog.visible = true;
          }
          
          if (toCreate)
@@ -207,6 +211,8 @@ package editor.trigger {
       {
          if (mGlobalVariablesEditDialog != null && mGlobalVariablesEditDialogVisible)
          {
+            mGlobalVariablesEditDialog.visible = false;
+            
             PopUpManager.removePopUp (mGlobalVariablesEditDialog);
             
             if (Runtime.mGlobalVariablesEditingDialogClosedCallBack != null)
@@ -246,13 +252,16 @@ package editor.trigger {
             mEntityVariablesEditDialog = new VariablesEditDialog ();
             mEntityVariablesEditDialog.SetTitle ("Custom Entity Properties Editing");
             mEntityVariablesEditDialog.SetCloseFunc (HideEntityVariablesEditDialog);
-            mEntityVariablesEditDialog.SetVariableSpace (mEntityVariableSpace);
+            //mEntityVariablesEditDialog.visible = false; // useless, when change to true first ime, show-event will not triggered
          }
+         
+         mEntityVariablesEditDialog.SetVariableSpace (mEntityVariableSpace);
          
          if (! mEntityVariablesEditDialogVisible)
          {
             PopUpManager.addPopUp (mEntityVariablesEditDialog, parent, true);
             mEntityVariablesEditDialogVisible = true;
+            mEntityVariablesEditDialog.visible = true;
          }
          
          if (toCreate)
@@ -267,6 +276,8 @@ package editor.trigger {
       {
          if (mEntityVariablesEditDialog != null && mEntityVariablesEditDialogVisible)
          {
+            mEntityVariablesEditDialog.visible = false;
+            
             PopUpManager.removePopUp (mEntityVariablesEditDialog);
             
             if (Runtime.mEntityVariablesEditingDialogClosedCallBack != null)
@@ -288,6 +299,193 @@ package editor.trigger {
          if (mEntityVariablesEditDialog != null)
          {
             mEntityVariablesEditDialog.NotifyVariableSpaceModified ();
+         }
+      }
+      
+   //========================================================================================================
+   // local variable edit dialog
+   //========================================================================================================
+      
+      private static var mLocalVariablesEditDialog:VariablesEditDialog = null;
+      private static var mLocalVariablesEditDialogVisible:Boolean = false;
+      
+      public function ShowLocalVariablesEditDialog (parent:DisplayObject, variableSpace:VariableSpace):void
+      {
+         var toCreate:Boolean = (mLocalVariablesEditDialog == null);
+         if (toCreate)
+         {
+            mLocalVariablesEditDialog = new VariablesEditDialog ();
+            mLocalVariablesEditDialog.SetTitle ("Local Variables Editing");
+            mLocalVariablesEditDialog.SetCloseFunc (HideLocalVariablesEditDialog);
+            //mLocalVariablesEditDialog.visible = false; // useless, when change to true first ime, show-event will not triggered
+            
+            mLocalVariablesEditDialog.SetOptions ({mSupportEditingInitialValues: false});
+         }
+         
+         mLocalVariablesEditDialog.SetVariableSpace (variableSpace);
+         
+         if (! mLocalVariablesEditDialogVisible)
+         {
+            PopUpManager.addPopUp (mLocalVariablesEditDialog, parent, true);
+            mLocalVariablesEditDialogVisible = true;
+            mLocalVariablesEditDialog.visible = true;
+         }
+         
+         if (toCreate)
+         {
+            PopUpManager.centerPopUp (mLocalVariablesEditDialog);
+         }
+         
+         PopUpManager.bringToFront (mLocalVariablesEditDialog);
+      }
+      
+      public function HideLocalVariablesEditDialog ():void
+      {
+         if (mLocalVariablesEditDialog != null && mLocalVariablesEditDialogVisible)
+         {
+            mLocalVariablesEditDialog.visible = false;
+            
+            PopUpManager.removePopUp (mLocalVariablesEditDialog);
+            
+            if (Runtime.mLocalVariablesEditingDialogClosedCallBack != null)
+            {
+               Runtime.mLocalVariablesEditingDialogClosedCallBack ();
+            }
+         }
+         
+         mLocalVariablesEditDialogVisible = false;
+      }
+      
+      public function NotifyLocalVariableSpaceInvalid ():void
+      {
+         if (mLocalVariablesEditDialog != null)
+         {
+            mLocalVariablesEditDialog.SetVariableSpace (null);
+            mLocalVariablesEditDialog.NotifyVariableSpaceModified ();
+         }
+      }
+      
+   //========================================================================================================
+   // local variable edit dialog
+   //========================================================================================================
+      
+      private static var mInputVariablesEditDialog:VariablesEditDialog = null;
+      private static var mInputVariablesEditDialogVisible:Boolean = false;
+      
+      public function ShowInputVariablesEditDialog (parent:DisplayObject, variableSpace:VariableSpace):void
+      {
+         var toCreate:Boolean = (mInputVariablesEditDialog == null);
+         if (toCreate)
+         {
+            mInputVariablesEditDialog = new VariablesEditDialog ();
+            mInputVariablesEditDialog.SetTitle ("Input Variables Editing");
+            mInputVariablesEditDialog.SetCloseFunc (HideInputVariablesEditDialog);
+            //mInputVariablesEditDialog.visible = false; // useless, when change to true first ime, show-event will not triggered
+         }
+         
+         mInputVariablesEditDialog.SetVariableSpace (variableSpace);
+         
+         if (! mInputVariablesEditDialogVisible)
+         {
+            PopUpManager.addPopUp (mInputVariablesEditDialog, parent, true);
+            mInputVariablesEditDialogVisible = true;
+            mInputVariablesEditDialog.visible = true;
+         }
+         
+         if (toCreate)
+         {
+            PopUpManager.centerPopUp (mInputVariablesEditDialog);
+         }
+         
+         PopUpManager.bringToFront (mInputVariablesEditDialog);
+      }
+      
+      public function HideInputVariablesEditDialog ():void
+      {
+         if (mInputVariablesEditDialog != null && mInputVariablesEditDialogVisible)
+         {
+            mInputVariablesEditDialog.visible = false;
+            
+            PopUpManager.removePopUp (mInputVariablesEditDialog);
+            
+            if (Runtime.mInputVariablesEditingDialogClosedCallBack != null)
+            {
+               Runtime.mInputVariablesEditingDialogClosedCallBack ();
+            }
+         }
+         
+         mInputVariablesEditDialogVisible = false;
+      }
+      
+      public function NotifyInputVariableSpaceInvalid ():void
+      {
+         if (mInputVariablesEditDialog != null)
+         {
+            mInputVariablesEditDialog.SetVariableSpace (null);
+            mInputVariablesEditDialog.NotifyVariableSpaceModified ();
+         }
+      }
+      
+   //========================================================================================================
+   // local variable edit dialog
+   //========================================================================================================
+      
+      private static var mOutputVariablesEditDialog:VariablesEditDialog = null;
+      private static var mOutputVariablesEditDialogVisible:Boolean = false;
+      
+      public function ShowOutputVariablesEditDialog (parent:DisplayObject, variableSpace:VariableSpace):void
+      {
+         var toCreate:Boolean = (mOutputVariablesEditDialog == null);
+         if (toCreate)
+         {
+            mOutputVariablesEditDialog = new VariablesEditDialog ();
+            mOutputVariablesEditDialog.SetTitle ("Output Variables Editing");
+            mOutputVariablesEditDialog.SetCloseFunc (HideOutputVariablesEditDialog);
+            //mOutputVariablesEditDialog.visible = false; // useless, when change to true first ime, show-event will not triggered
+            
+            mOutputVariablesEditDialog.SetOptions ({mSupportEditingInitialValues: false});
+         }
+         
+         mOutputVariablesEditDialog.SetVariableSpace (variableSpace);
+         
+         if (! mOutputVariablesEditDialogVisible)
+         {
+            PopUpManager.addPopUp (mOutputVariablesEditDialog, parent, true);
+            mOutputVariablesEditDialogVisible = true;
+            mOutputVariablesEditDialog.visible = true;
+         }
+         
+         if (toCreate)
+         {
+            PopUpManager.centerPopUp (mOutputVariablesEditDialog);
+         }
+         
+         PopUpManager.bringToFront (mOutputVariablesEditDialog);
+      }
+      
+      public function HideOutputVariablesEditDialog ():void
+      {
+         if (mOutputVariablesEditDialog != null && mOutputVariablesEditDialogVisible)
+         {
+            mOutputVariablesEditDialog.visible = false;
+            
+            PopUpManager.removePopUp (mOutputVariablesEditDialog);
+            
+            if (Runtime.mOutputVariablesEditingDialogClosedCallBack != null)
+            {
+               Runtime.mOutputVariablesEditingDialogClosedCallBack ();
+            }
+         }
+         
+         mOutputVariablesEditDialogVisible = false;
+      }
+      
+      public function NotifyOutputVariableSpaceInvalid ():void
+      {
+         if (mOutputVariablesEditDialog != null)
+         {
+            mOutputVariablesEditDialog.SetVariableSpace (null);
+            mOutputVariablesEditDialog.NotifyVariableSpaceModified ();
          }
       }
    }

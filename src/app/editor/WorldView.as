@@ -4994,7 +4994,7 @@ package editor {
          }
          catch (error:Error)
          {
-            SetEditorWorld (new editor.world.World ());
+            //SetEditorWorld (new editor.world.World ());
             
             //Alert.show("Sorry, loading error!", "Error");
             
@@ -5158,6 +5158,8 @@ package editor {
                
                MoveSelectedEntities (mViewCenterWorldX - centerX, mViewCenterWorldY - centerY, true, false);
             }
+            
+            UpdateUiButtonsEnabledStatus ();
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import succeeded", EffectMessagePopup.kBgColor_OK));
             

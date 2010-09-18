@@ -19,11 +19,11 @@ package editor.trigger {
       
       private static var sFunctionDeclarations:Array = new Array (IdPool.NumPlayerFunctions);
       
-      public static const sGlobalPackage:FunctionPackage = new FunctionPackage ("Global");
-      public static const sWorldPackage:FunctionPackage = new FunctionPackage ("World");
-      public static const sEntityPackage:FunctionPackage = new FunctionPackage ("Entity");
+      public static const sGlobalMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Global");
+      public static const sWorldMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("World");
+      public static const sEntityMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Entity");
       
-      public static const sCustomPackage:FunctionPackage = new FunctionPackage ("Custom");
+      public static const sCustomMenuGroup:FunctionMenuGroup = new FunctionMenuGroup ("Custom");
       
       public static var sMenuBarDataProvider_Shorter:XML = null;
       public static var sMenuBarDataProvider_Longer:XML = null;
@@ -35,49 +35,49 @@ package editor.trigger {
       // packages
       //================================================
          
-         var system_package:FunctionPackage = new FunctionPackage ("System", sGlobalPackage);
-         var basic_package:FunctionPackage = new FunctionPackage ("Basic", sGlobalPackage);
-         var number_package:FunctionPackage   = new FunctionPackage ("Number", sGlobalPackage);
-            var numbe_general_package:FunctionPackage         = new FunctionPackage ("General", number_package);
-            var to_string_package:FunctionPackage      = new FunctionPackage ("To/From String", number_package);
-            var bitwise_package:FunctionPackage            = new FunctionPackage ("Bitwise", number_package);
-            var usual_number_package:FunctionPackage         = new FunctionPackage ("Usual", number_package);
-            var interpolation_package:FunctionPackage      = new FunctionPackage ("Interpolation", number_package);
-            var trigonometry_package:FunctionPackage = new FunctionPackage ("Trigonometry", number_package);
-            var random_package:FunctionPackage             = new FunctionPackage ("Random", number_package);
-            var convert_package:FunctionPackage            = new FunctionPackage ("Conversion", number_package);
-         var string_package:FunctionPackage = new FunctionPackage ("String", sGlobalPackage);
-         var bool_package:FunctionPackage   = new FunctionPackage ("Boolean", sGlobalPackage);
+         var system_package:FunctionMenuGroup = new FunctionMenuGroup ("System", sGlobalMenuGroup);
+         var basic_package:FunctionMenuGroup = new FunctionMenuGroup ("Basic", sGlobalMenuGroup);
+         var number_package:FunctionMenuGroup   = new FunctionMenuGroup ("Number", sGlobalMenuGroup);
+            var numbe_general_package:FunctionMenuGroup         = new FunctionMenuGroup ("General", number_package);
+            var to_string_package:FunctionMenuGroup      = new FunctionMenuGroup ("To/From String", number_package);
+            var bitwise_package:FunctionMenuGroup            = new FunctionMenuGroup ("Bitwise", number_package);
+            var usual_number_package:FunctionMenuGroup         = new FunctionMenuGroup ("Usual", number_package);
+            var interpolation_package:FunctionMenuGroup      = new FunctionMenuGroup ("Interpolation", number_package);
+            var trigonometry_package:FunctionMenuGroup = new FunctionMenuGroup ("Trigonometry", number_package);
+            var random_package:FunctionMenuGroup             = new FunctionMenuGroup ("Random", number_package);
+            var convert_package:FunctionMenuGroup            = new FunctionMenuGroup ("Conversion", number_package);
+         var string_package:FunctionMenuGroup = new FunctionMenuGroup ("String", sGlobalMenuGroup);
+         var bool_package:FunctionMenuGroup   = new FunctionMenuGroup ("Boolean", sGlobalMenuGroup);
          
-         var world_general_package:FunctionPackage  = new FunctionPackage ("General", sWorldPackage);
-         var ccat_package:FunctionPackage    = new FunctionPackage ("CCat", sWorldPackage);
-         var level_package:FunctionPackage  = new FunctionPackage ("Level Status", sWorldPackage);
-         var world_physics_package:FunctionPackage    = new FunctionPackage ("Physics", sWorldPackage);
-         //var world_appearance_package:FunctionPackage    = new FunctionPackage ("Appearance", sWorldPackage);
-         var world_camera_package:FunctionPackage    = new FunctionPackage ("Camera", sWorldPackage);
-         var world_script_package:FunctionPackage    = new FunctionPackage ("Script", sWorldPackage);
-         var world_create_entity_package:FunctionPackage    = new FunctionPackage ("Create", sWorldPackage);
+         var world_general_package:FunctionMenuGroup  = new FunctionMenuGroup ("General", sWorldMenuGroup);
+         var ccat_package:FunctionMenuGroup    = new FunctionMenuGroup ("CCat", sWorldMenuGroup);
+         var level_package:FunctionMenuGroup  = new FunctionMenuGroup ("Level Status", sWorldMenuGroup);
+         var world_physics_package:FunctionMenuGroup    = new FunctionMenuGroup ("Physics", sWorldMenuGroup);
+         //var world_appearance_package:FunctionMenuGroup    = new FunctionMenuGroup ("Appearance", sWorldMenuGroup);
+         var world_camera_package:FunctionMenuGroup    = new FunctionMenuGroup ("Camera", sWorldMenuGroup);
+         var world_script_package:FunctionMenuGroup    = new FunctionMenuGroup ("Script", sWorldMenuGroup);
+         var world_create_entity_package:FunctionMenuGroup    = new FunctionMenuGroup ("Create", sWorldMenuGroup);
          
-         var entity_is_subtype_package:FunctionPackage    = new FunctionPackage ("Is a *?", sEntityPackage);
-         var entity_general_package:FunctionPackage    = new FunctionPackage ("General", sEntityPackage);
-         var entity_common_package:FunctionPackage    = new FunctionPackage ("Common", sEntityPackage);
-         var entity_as_task_package:FunctionPackage    = new FunctionPackage ("Task Status", sEntityPackage);
-         var entity_shape_package:FunctionPackage = new FunctionPackage ("Shape", sEntityPackage);
-             var shape_is_subtype_package:FunctionPackage    = new FunctionPackage ("Is a *?", entity_shape_package);
-             var shape_general_package:FunctionPackage    = new FunctionPackage ("General", entity_shape_package);
-             var shape_appearance_package:FunctionPackage = new FunctionPackage ("Appearance", entity_shape_package);
-             var shape_physics_properties_package:FunctionPackage = new FunctionPackage ("Physics Properties", entity_shape_package);
-             var shape_physics_dynamics_package:FunctionPackage = new FunctionPackage ("Physics Dynamics", entity_shape_package);
-             var entity_shape_brothers_package:FunctionPackage = new FunctionPackage ("Brothers", entity_shape_package);
-             var entity_shape_connections_package:FunctionPackage = new FunctionPackage ("Connections", entity_shape_package);
-             var shape_text_package:FunctionPackage  = new FunctionPackage ("Text", entity_shape_package);
-             var shape_circle_package:FunctionPackage  = new FunctionPackage ("Circle", entity_shape_package);
-             var shape_rectangle_package:FunctionPackage  = new FunctionPackage ("Rectangle", entity_shape_package);
-             var shape_poly_package:FunctionPackage  = new FunctionPackage ("Poly Shape", entity_shape_package);
-             //var shape_polygon_package:FunctionPackage  = new FunctionPackage ("Polygon", entity_shape_package);
-             //var shape_polyline_package:FunctionPackage  = new FunctionPackage ("Polyline", entity_shape_package);
-         var entity_joint_package:FunctionPackage  = new FunctionPackage ("Joint", sEntityPackage);
-         var entity_trigger_package:FunctionPackage  = new FunctionPackage ("Trigger", sEntityPackage);
+         var entity_is_subtype_package:FunctionMenuGroup    = new FunctionMenuGroup ("Is a *?", sEntityMenuGroup);
+         var entity_general_package:FunctionMenuGroup    = new FunctionMenuGroup ("General", sEntityMenuGroup);
+         var entity_common_package:FunctionMenuGroup    = new FunctionMenuGroup ("Common", sEntityMenuGroup);
+         var entity_as_task_package:FunctionMenuGroup    = new FunctionMenuGroup ("Task Status", sEntityMenuGroup);
+         var entity_shape_package:FunctionMenuGroup = new FunctionMenuGroup ("Shape", sEntityMenuGroup);
+             var shape_is_subtype_package:FunctionMenuGroup    = new FunctionMenuGroup ("Is a *?", entity_shape_package);
+             var shape_general_package:FunctionMenuGroup    = new FunctionMenuGroup ("General", entity_shape_package);
+             var shape_appearance_package:FunctionMenuGroup = new FunctionMenuGroup ("Appearance", entity_shape_package);
+             var shape_physics_properties_package:FunctionMenuGroup = new FunctionMenuGroup ("Physics Properties", entity_shape_package);
+             var shape_physics_dynamics_package:FunctionMenuGroup = new FunctionMenuGroup ("Physics Dynamics", entity_shape_package);
+             var entity_shape_brothers_package:FunctionMenuGroup = new FunctionMenuGroup ("Brothers", entity_shape_package);
+             var entity_shape_connections_package:FunctionMenuGroup = new FunctionMenuGroup ("Connections", entity_shape_package);
+             var shape_text_package:FunctionMenuGroup  = new FunctionMenuGroup ("Text", entity_shape_package);
+             var shape_circle_package:FunctionMenuGroup  = new FunctionMenuGroup ("Circle", entity_shape_package);
+             var shape_rectangle_package:FunctionMenuGroup  = new FunctionMenuGroup ("Rectangle", entity_shape_package);
+             var shape_poly_package:FunctionMenuGroup  = new FunctionMenuGroup ("Poly Shape", entity_shape_package);
+             //var shape_polygon_package:FunctionMenuGroup  = new FunctionMenuGroup ("Polygon", entity_shape_package);
+             //var shape_polyline_package:FunctionMenuGroup  = new FunctionMenuGroup ("Polyline", entity_shape_package);
+         var entity_joint_package:FunctionMenuGroup  = new FunctionMenuGroup ("Joint", sEntityMenuGroup);
+         var entity_trigger_package:FunctionMenuGroup  = new FunctionMenuGroup ("Trigger", sEntityMenuGroup);
          
       //================================================
       // functions
@@ -85,7 +85,7 @@ package editor.trigger {
          
          if (Compile::Is_Debugging)
          {
-            RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ForDebug, sGlobalPackage, "ForDevDebug", "@(#0, #1, #2, #3, #4) = ForDevDebug ($0, $1, $2, $3, $4)", null,
+            RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ForDebug, sGlobalMenuGroup, "ForDevDebug", "@(#0, #1, #2, #3, #4) = ForDevDebug ($0, $1, $2, $3, $4)", null,
                           [
                              new VariableDefinitionEntity ("Shape"), 
                              new VariableDefinitionNumber ("Gravity Angle"), 
@@ -2136,34 +2136,34 @@ package editor.trigger {
          
       // ...
          
-         sMenuBarDataProvider_Shorter = CreateXmlFromPackages ([sGlobalPackage, sWorldPackage, sEntityPackage]);//, sCustomPackage])
-         sMenuBarDataProvider_Longer = CreateXmlFromPackages ([sGlobalPackage, number_package, sWorldPackage, sEntityPackage, entity_shape_package]);//, sCustomPackage])
+         sMenuBarDataProvider_Shorter = CreateXmlFromMenuGroups ([sGlobalMenuGroup, sWorldMenuGroup, sEntityMenuGroup, sCustomMenuGroup])
+         sMenuBarDataProvider_Longer = CreateXmlFromMenuGroups ([sGlobalMenuGroup, number_package, sWorldMenuGroup, sEntityMenuGroup, entity_shape_package, sCustomMenuGroup])
      }
       
 //===========================================================
 // util functions
 //===========================================================
       
-      private static function RegisterPreDefineFunctionDeclaration (function_id:int, functionPackage:FunctionPackage, function_name:String, poemCallingFormat:String, traditionalCallingFormat:String, param_defines:Array, return_defines:Array):void
+      private static function RegisterPreDefineFunctionDeclaration (function_id:int, functionMenuGroup:FunctionMenuGroup, function_name:String, poemCallingFormat:String, traditionalCallingFormat:String, param_defines:Array, return_defines:Array):void
       {
          if (function_id < 0)
             return;
          
          sFunctionDeclarations [function_id] = new FunctionDeclaration_PreDefined (function_id, function_name, "", function_name, function_name, param_defines, return_defines);
          
-         if (functionPackage != null)
-            functionPackage.AddFunctionDeclaration (sFunctionDeclarations [function_id]);
+         if (functionMenuGroup != null)
+            functionMenuGroup.AddFunctionDeclaration (sFunctionDeclarations [function_id]);
       }
       
-      private static function RegisterCoreFunctionDeclaration (function_id:int, functionPackage:FunctionPackage, function_name:String, poemCallingFormat:String, traditionalCallingFormat:String, param_defines:Array, return_defines:Array, showUpInApiMenu:Boolean = true):void
+      private static function RegisterCoreFunctionDeclaration (function_id:int, functionMenuGroup:FunctionMenuGroup, function_name:String, poemCallingFormat:String, traditionalCallingFormat:String, param_defines:Array, return_defines:Array, showUpInApiMenu:Boolean = true):void
       {
          if (function_id < 0)
             return;
          
          sFunctionDeclarations [function_id] = new FunctionDeclaration_Core (function_id, function_name, "", poemCallingFormat, traditionalCallingFormat, param_defines, return_defines, showUpInApiMenu);
          
-         if (functionPackage != null)
-            functionPackage.AddFunctionDeclaration (sFunctionDeclarations [function_id]);
+         if (functionMenuGroup != null)
+            functionMenuGroup.AddFunctionDeclaration (sFunctionDeclarations [function_id]);
       }
       
       public static function GetCoreFunctionDeclarationById (function_id:int):FunctionDeclaration_Core
@@ -2183,38 +2183,38 @@ package editor.trigger {
       }
       
       // top leel
-      private static function CreateXmlFromPackages (packages:Array):XML
+      private static function CreateXmlFromMenuGroups (packages:Array):XML
       {
          var xml:XML = <root />;
          
-         for each (var functionPackage:FunctionPackage in packages)
+         for each (var functionMenuGroup:FunctionMenuGroup in packages)
          {
-            AddPackageToXML (functionPackage, xml, packages);
+            AddMenuGroupToXML (functionMenuGroup, xml, packages);
          }
          
          return xml;
       }
       
-      private static function AddPackageToXML (functionPackage:FunctionPackage, parentXml:XML, topPackages:Array):void
+      private static function AddMenuGroupToXML (functionMenuGroup:FunctionMenuGroup, parentXml:XML, topMenuGroups:Array):void
       {
          var package_element:XML = <menuitem />;
-         package_element.@name = functionPackage.GetName ();
+         package_element.@name = functionMenuGroup.GetName ();
          parentXml.appendChild (package_element);
          
          var num_items:int = 0;
          
-         var child_packages:Array = functionPackage.GetChildPackages ();
+         var child_packages:Array = functionMenuGroup.GetChildMenuGroups ();
          for (var i:int = 0; i < child_packages.length; ++ i)
          {
-            if (topPackages.indexOf (child_packages [i]) < 0)
+            if (topMenuGroups.indexOf (child_packages [i]) < 0)
             {
-               AddPackageToXML (child_packages [i] as FunctionPackage, package_element, topPackages);
+               AddMenuGroupToXML (child_packages [i] as FunctionMenuGroup, package_element, topMenuGroups);
                
                ++ num_items;
             }
          }
          
-         var declarations:Array = functionPackage.GetFunctionDeclarations ();
+         var declarations:Array = functionMenuGroup.GetFunctionDeclarations ();
          var declaration:FunctionDeclaration_Core;
          var function_element:XML;
          for (var j:int = 0; j < declarations.length; ++ j)

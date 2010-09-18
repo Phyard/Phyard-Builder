@@ -4,6 +4,8 @@
     borderAlpha="0.77"
     showCloseButton="false"
     close="OnClickCloseButton ();"
+    creationComplete="OnCreateCompete ();"
+    show="OnShow ();"
     mouseDown="PopUpManager.bringToFront (this);"
     >
 
@@ -11,7 +13,7 @@
             paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
             horizontalScrollPolicy="off" verticalScrollPolicy="off"
             horizontalGap="0" verticalGap="0" borderThickness="0">
-      <VariablesEditPanel id="variablesEditPanel" width="100%" height="100%" creationComplete="OnVariablesEditPanelCreationComplete ();"/>
+      <VariablesEditPanel id="theVariablesEditPanel" width="100%" height="100%" />
    </mx:VBox>
 
    <mx:HBox width="100%">
@@ -32,6 +34,7 @@
          private var OnClose:Function;
          
          private var mVariableSpace:VariableSpace;
+         private var mOptions:Object;
          
          private function OnInitPanel ():void
          {
@@ -42,15 +45,25 @@
             mVariableSpace = variableSpace;
          }
          
-         public function OnVariablesEditPanelCreationComplete ():void
+         public function SetOptions (options:Object):void
          {
-            variablesEditPanel.SetVariableSpace (mVariableSpace);
-            NotifyVariableSpaceModified ();
+            mOptions = options;
+         }
+         
+         private function OnCreateCompete ():void
+         {
+            theVariablesEditPanel.SetOptions (mOptions);
+            OnShow ();
+         }
+         
+         private function OnShow ():void
+         {
+            theVariablesEditPanel.SetVariableSpace (mVariableSpace);
          }
          
          public function NotifyVariableSpaceModified ():void
          {
-            variablesEditPanel.NotifyVariableSpaceModified ();
+            theVariablesEditPanel.NotifyVariableSpaceModified ();
          }
          
          public function SetTitle (title:String):void

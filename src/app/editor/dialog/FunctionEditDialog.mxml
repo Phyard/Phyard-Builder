@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
-    title="Function Setting" width="656">
+    title="Function Setting" width="600">
 
    <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"
             paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"

@@ -12,6 +12,8 @@ package editor.world {
    import editor.trigger.entity.EntityFunction;
    import editor.trigger.entity.EntityFunctionPackage;
    
+   import editor.trigger.FunctionMenuGroup;
+   
    import common.Define;
    import common.ValueAdjuster;
    
@@ -282,6 +284,28 @@ package editor.world {
       public function IsChanged ():Boolean
       {
          return mIsChanged;
+      }
+      
+//=============================================
+// menu
+//=============================================
+      
+      private var mFunctionMenuGroup:FunctionMenuGroup;
+      
+      public function SetFunctionMenuGroup (menuGroup:FunctionMenuGroup):void
+      {
+         mFunctionMenuGroup = menuGroup;
+      }
+      
+      private function UpdateFunctionMenu ():void
+      {
+         if (mFunctionMenuGroup == null)
+            return null;
+         
+         // mFunctionMenuGroup.AddChildMenuGroup ();
+         // mFunctionMenuGroup.AddFunctionDeclaration ();
+         
+         //for (
       }
    }
 }

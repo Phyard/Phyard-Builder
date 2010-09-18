@@ -84,7 +84,7 @@ package editor.trigger {
                }
                else
                {
-                  return new ValueTarget_Variable (ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+                  return new ValueTarget_Variable (ownerFunctionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
                }
             default:
                return new ValueTarget_Variable (mVariableInstance);

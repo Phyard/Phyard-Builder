@@ -2,14 +2,14 @@ package editor.trigger {
    
    import common.trigger.ValueSpaceTypeDefine;
    
-   public class VariableSpaceReturn extends VariableSpace
+   public class VariableSpaceOutput extends VariableSpace
    {
       
    //========================================================================================================
    //
    //========================================================================================================
       
-      public function VariableSpaceReturn (triggerEngine:TriggerEngine)
+      public function VariableSpaceOutput (triggerEngine:TriggerEngine)
       {
          super(triggerEngine);
       }

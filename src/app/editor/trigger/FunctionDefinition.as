@@ -13,7 +13,9 @@ package editor.trigger {
       
       public var mInputVariableSpace:VariableSpaceInput;
       
-      public var mReturnVariableSpace:VariableSpaceReturn;
+      public var mOutputVariableSpace:VariableSpaceOutput;
+      
+      public var mLocalVariableSpace:VariableSpaceLocal;
       
       public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration = null)
       {
@@ -30,14 +32,16 @@ package editor.trigger {
                mInputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetInputParamDefinitionAt (i));
          }
          
-         mReturnVariableSpace = new VariableSpaceReturn (mTriggerEngine);
+         mOutputVariableSpace = new VariableSpaceOutput (mTriggerEngine);
          
          if (mFunctionDeclaration != null)
          {
             var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
             for (var j:int = 0; j < num_returns; ++ j)
-               mReturnVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOutputParamDefinitionAt (j));
+               mOutputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOutputParamDefinitionAt (j));
          }
+         
+         mLocalVariableSpace = new VariableSpaceLocal (mTriggerEngine);
       }
       
       public function GetFunctionDeclaration ():FunctionDeclaration
@@ -58,9 +62,14 @@ package editor.trigger {
          return mInputVariableSpace;
       }
       
-      public function GetReturnVariableSpace ():VariableSpaceReturn
+      public function GetOutputVariableSpace ():VariableSpaceOutput
       {
-         return mReturnVariableSpace;
+         return mOutputVariableSpace;
+      }
+      
+      public function GetLocalVariableSpace ():VariableSpaceLocal
+      {
+         return mLocalVariableSpace;
       }
       
       public function ValidateValueSources ():void

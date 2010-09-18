@@ -82,7 +82,7 @@ package editor.trigger {
                if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
                   return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
                else
-                  return (ownerFunctionDefinition.GetReturnVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+                  return (ownerFunctionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
             default:
                return new ValueSource_Variable (mVariableInstance);
          }

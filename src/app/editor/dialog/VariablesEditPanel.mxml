@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
       width="100%" height="100%"
-      creationComplete="OnInitPanel()"
       >
    <mx:HBox height="100%" width="100%">
       <mx:VBox width="168" height="100%">
@@ -119,7 +118,6 @@
             import editor.trigger.VariableSpace;
             import editor.trigger.Lists;
             
-            private var mVariableSpace:VariableSpace;
             import editor.trigger.VariableInstance;
             import editor.trigger.VariableDefinition;
             import editor.trigger.VariableDefinitionBoolean;
@@ -136,24 +134,52 @@
             {
             }
             
+            private var mVariableSpace:VariableSpace = null;
+            private var mLastVariableSpace:VariableSpace = null;
+            
             public function SetVariableSpace (variableSpace:VariableSpace):void
             {
-               mVariableSpace = variableSpace;
+               if (mVariableSpace != variableSpace)
+               {
+                  mVariableSpace = variableSpace;
+                  NotifyVariableSpaceModified ();
+               }
+            }
+            
+            private var mOptions:Object;
+            public function SetOptions (options:Object):void
+            {
+               mOptions = options;
+               
+               if (mOptions != null)
+               {
+                  if (mOptions.mSupportEditingInitialValues != undefined && mOptions.mSupportEditingInitialValues == false)
+                  {
+                     ViewStack_VariableSetting.visible = false;
+                  }
+               }
             }
             
             public function NotifyVariableSpaceModified ():void
             {
                List_Variables.dataProvider.removeAll ();
                
-               if (mVariableSpace != null)
+               if (visible)
                {
-                  for (var i:int = 0; i < mVariableSpace.GetNumVariableInstances (); ++ i)
+                  if (mVariableSpace != null)
                   {
-                     var variableInstance:VariableInstance = mVariableSpace.GetVariableInstanceAt (i);
-                     var name:String = variableInstance.ToVariableDefinitionString ();
-                     List_Variables.dataProvider.addItem ({mName:name, mDataTip:name, mData:variableInstance});
+                     for (var i:int = 0; i < mVariableSpace.GetNumVariableInstances (); ++ i)
+                     {
+                        var variableInstance:VariableInstance = mVariableSpace.GetVariableInstanceAt (i);
+                        var name:String = variableInstance.ToVariableDefinitionString ();
+                        List_Variables.dataProvider.addItem ({mName:name, mDataTip:name, mData:variableInstance});
+                     }
                   }
+                  
+                  mLastVariableSpace = mVariableSpace;
                }
+               
+               OnChangeVariable ();
                
                UpdateInterface ();
             }

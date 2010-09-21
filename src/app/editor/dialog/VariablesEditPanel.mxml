@@ -23,7 +23,7 @@
          </mx:VBox>
          <mx:VBox id="Box_VariableProperties" width="100%" height="100%">
             <mx:Spacer height="3" />
-            <mx:RadioButtonGroup id="VariableType" enabled="false" change="OnTypeChanged ();"/>
+            <mx:RadioButtonGroup id="VariableType" enabled="false"/>
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="16" />
                <mx:HBox width="67%" borderStyle="none" borderThickness="0">
@@ -378,38 +378,6 @@
             }
             
         //===========================
-            
-            public function OnTypeChanged ():void
-            {
-               if (RadioButton_BooleanType.selected)
-               {
-                  ViewStack_VariableSetting.selectedChild = Box_BooleanVariableSettingPanel;
-                  DefaultBooleanValue.selection = RadioButton_False;
-                  OnBooleanVariableSettingChanged ();
-               }
-               else if (RadioButton_NumberType.selected)
-               {
-                  ViewStack_VariableSetting.selectedChild = Box_NumberVariableSettingPanel;
-                  Text_DefaultNumberValue.text = "0.0";
-                  OnNumberVariableSettingChanged ();
-               }
-               else if (RadioButton_StringType.selected)
-               {
-                  ViewStack_VariableSetting.selectedChild = Box_StringVariableSettingPanel;
-                  Text_DefaultStringValue.text = "";
-                  OnStringVariableSettingChanged ();
-               }
-               else if (RadioButton_CCatType.selected)
-               {
-                  ViewStack_VariableSetting.selectedChild = Box_CCatVariableSettingPanel;
-                  OnCCatVariableSettingChanged ();
-               }
-               else if (RadioButton_EntityType.selected)
-               {
-                  ViewStack_VariableSetting.selectedChild = Box_EntityVariableSettingPanel;
-                  OnEntityVariableSettingChanged ();
-               }
-            }
             
             public function OnNameChanged ():void
             {

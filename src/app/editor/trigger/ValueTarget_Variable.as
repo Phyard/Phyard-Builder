@@ -50,7 +50,7 @@ package editor.trigger {
       
       public function AssignValue (source:ValueSource):void
       {
-         mVariableInstance.AssignValue (source);
+         mVariableInstance.SetValueObject (source.GetValueObject ());
       }
       
       public function CloneTarget ():ValueTarget

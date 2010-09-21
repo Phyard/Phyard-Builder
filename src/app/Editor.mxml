@@ -1224,7 +1224,7 @@
                ViewStack_ViewEditCommands.selectedChild = Box_FunctionEditViewCommands;
                
                Runtime.SetActiveView (FunctionEditingView);
-               FunctionEditingView.SetFunctionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetFunctionManager ());
+               FunctionEditingView.SetFunctionManager (Runtime.mEditorWorldView.GetEditorWorld ().GetPureFunctionManager ());
             }
             
 //========================================================================================

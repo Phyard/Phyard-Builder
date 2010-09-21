@@ -196,6 +196,7 @@ package common.trigger.parse {
                            break;
                         case CoreFunctionIds.ID_Comment:
                         case CoreFunctionIds.ID_Blank:
+                        case CoreFunctionIds.ID_Removed:
                            currentCallingLineInfo.mIsValid = false;
                            break;
                         default:

@@ -74,7 +74,7 @@ package editor {
          addChild (mForegroundLayer);
       }
       
-      public function GetFunctionManager ():FunctionManager
+      public function GetPureFunctionManager ():FunctionManager
       {
          return mFunctionManager;
       }

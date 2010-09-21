@@ -14,7 +14,9 @@ package editor.trigger {
       public var mFunctionDeclaration:FunctionDeclaration;
       
       public var mInputValueSources:Array;
-      public var mReturnValueTargets:Array;
+      public var mOutputValueTargets:Array;
+      
+      protected var mCommentedOff:Boolean = false;
       
       public function FunctionCalling (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, createDefaultSourcesAndTargets:Boolean = true)
       {
@@ -29,7 +31,7 @@ package editor.trigger {
          mInputValueSources = new Array (num_inputs);
          
          var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
-         mReturnValueTargets = new Array (num_returns);
+         mOutputValueTargets = new Array (num_returns);
          
          if (createDefaultSourcesAndTargets)
          {
@@ -42,7 +44,7 @@ package editor.trigger {
             for (i = 0; i < num_returns; ++ i)
             {
                variable_def = mFunctionDeclaration.GetOutputParamDefinitionAt (i);
-               mReturnValueTargets [i] = variable_def.GetDefaultValueTarget ();
+               mOutputValueTargets [i] = variable_def.GetDefaultValueTarget ();
             }
          }
       }
@@ -52,7 +54,12 @@ package editor.trigger {
          return mFunctionDeclaration;
       }
       
-      public function GetFunctionDeclarationId ():int
+      public function GetFunctionType ():int
+      {
+         return mFunctionDeclaration.GetType ();
+      }
+      
+      public function GetFunctionId ():int
       {
          return mFunctionDeclaration.GetID ();
       }
@@ -81,25 +88,51 @@ package editor.trigger {
       
       public function AssignOutputValueTargets (valueTargets:Array):void
       {
-         mReturnValueTargets = valueTargets; // best to clone
+         mOutputValueTargets = valueTargets; // best to clone
          
          mSourcesOrTargetsChanged = true;
       }
       
       public function GetReturnValueTarget (returnId:int):ValueTarget
       {
-         return mReturnValueTargets [returnId];
+         return mOutputValueTargets [returnId];
       }
       
-      public function ValidateValueSources ():void
+      public function ValidateValueSourcesAndTargets ():void
       {
+         var i:int;
+         
          var value_source:ValueSource;
-         for (var i:int = 0; i < mInputValueSources.length; ++ i)
+         for (i = 0; i < mInputValueSources.length; ++ i)
          {
             value_source = mInputValueSources [i] as ValueSource;
             
             value_source.ValidateSource ();
          }
+         
+         var value_target:ValueTarget;
+         for (i = 0; i < mOutputValueTargets.length; ++ i)
+         {
+            value_target = mOutputValueTargets [i] as ValueTarget;
+            
+            value_target.ValidateTarget ();
+         }
+      }
+      
+      // return true if can't be validated
+      public function Validate ():Boolean
+      {
+         return false; // to override
+      }
+      
+      public function IsCommentedOff ():Boolean
+      {
+         return mCommentedOff;
+      }
+      
+      public function SetCommentedOff (commentedOff:Boolean):void
+      {
+         mCommentedOff = commentedOff;
       }
       
 //====================================================================
@@ -114,7 +147,7 @@ package editor.trigger {
          {
             mSourcesOrTargetsChanged = false;
             
-            mCacheCodeString = mFunctionDeclaration.CreateFormattedCallingText (mInputValueSources, mReturnValueTargets);
+            mCacheCodeString = mFunctionDeclaration.CreateFormattedCallingText (mInputValueSources, mOutputValueTargets);
          }
          
          return mCacheCodeString;
@@ -123,6 +156,11 @@ package editor.trigger {
 //====================================================================
 // 
 //====================================================================
+      
+      protected function CloneShell ():FunctionCalling
+      {
+         return null; // to override
+      }
       
       public function Clone (ownerFunctionDefinition:FunctionDefinition):FunctionCalling
       {
@@ -155,13 +193,13 @@ package editor.trigger {
          
          calling.AssignInputValueSources (sourcesArray);
          
-         var numOutputs:int = mReturnValueTargets.length;
+         var numOutputs:int = mOutputValueTargets.length;
          var targetsArray:Array = new Array (numOutputs);
          var target:ValueTarget;
          
          for (i = 0; i < numOutputs; ++ i)
          {
-            target = mReturnValueTargets [i] as ValueTarget;
+            target = mOutputValueTargets [i] as ValueTarget;
             
             if (target is ValueTarget_Property)
             {

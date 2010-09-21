@@ -181,7 +181,7 @@ package editor.trigger.entity {
       
       override public function ValidateEntityLinks ():void
       {
-         //mCodeSnippet.ValidateValueSources ();
+         //mCodeSnippet.ValidateValueSourcesAndTargets ();
          super.ValidateEntityLinks ();
          
          EntityLogic.ValidateLinkedEntities (mEntityAssignerList);

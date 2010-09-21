@@ -17,7 +17,9 @@ package editor.trigger {
                                                 inputDefinitions:Array = null, returnDefinitions:Array = null, 
                                                 showUpInApiMenu:Boolean = true)
       {
-         super (id, name, description, poemCallingFormat, traditionalCallingFormat, inputDefinitions, returnDefinitions, showUpInApiMenu);
+         super (id, name, description, inputDefinitions, returnDefinitions, showUpInApiMenu);
+         
+         ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
          
          mFunctionDeclaration_Common = CoreFunctionDeclarations.GetCoreFunctionDeclaration (id);
          

@@ -13,7 +13,7 @@ package editor.trigger {
       protected var mId:int;
       protected var mName:String;
       
-      private var mDescription:String = null;
+      protected var mDescription:String = null;
       
       protected var mInputParamDefinitions:Array; // input variable defines
       protected var mOutputParamDefinitions:Array; // returns
@@ -21,7 +21,6 @@ package editor.trigger {
       protected var mShowUpInApiMenu:Boolean = true;
       
       public function FunctionDeclaration (id:int, name:String, description:String = null, 
-                                          poemCallingFormat:String = null, traditionalCallingFormat:String = null, 
                                           inputDefinitions:Array = null, returnDefinitions:Array = null, 
                                           showUpInApiMenu:Boolean = true)
       {
@@ -36,11 +35,15 @@ package editor.trigger {
          
          if (mName == null)
             mName = "";
-         
+      }
+      
+      public function ParseAllCallingTextSegments (poemCallingFormat:String = null, traditionalCallingFormat:String = null):void
+      {
          if (poemCallingFormat == null || poemCallingFormat.length == 0)
          {
             poemCallingFormat = mName;
          }
+         
          mPoemCallingTextSegments = ParseCallingTextSegments (poemCallingFormat);
          
          if (traditionalCallingFormat == null || traditionalCallingFormat.length == 0)
@@ -50,6 +53,7 @@ package editor.trigger {
             pattern = /[\?]*/g;
             traditionalCallingFormat = traditionalCallingFormat.replace(pattern, "");
          }
+         
          mTraditionalCallingTextSegments = ParseCallingTextSegments (traditionalCallingFormat);
       }
       

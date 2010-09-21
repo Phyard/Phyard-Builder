@@ -4,6 +4,7 @@ package editor.controls {
    import editor.trigger.TriggerEngine;
    import editor.trigger.VariableDefinition;
    import editor.trigger.FunctionDeclaration;
+   import editor.trigger.FunctionDeclaration_Custom;
    import editor.trigger.FunctionCalling;
    import editor.trigger.ValueSource;
    import editor.trigger.ValueTarget;
@@ -69,14 +70,39 @@ package editor.controls {
       public var mFuncDeclaration:FunctionDeclaration;
       
       public var mInitialValueSources:Array;
-      public var mCurrentValueSources:Array;
       public var mInitialValueTargets:Array;
+      
+      public var mCurrentValueSources:Array;
       public var mCurrentValueTargets:Array;
+      
+      public var mInputVariableDefinitions:Array;
+      public var mOutputVariableDefinitions:Array;
       
       public function SetFunctionDeclaration (funcDeclaration:FunctionDeclaration):void
       {
          mFuncDeclaration = funcDeclaration;
          mInfo.mFunctionId = funcDeclaration.GetID ();
+         
+         if (mFuncDeclaration is FunctionDeclaration_Custom)
+         {
+            var numInputs:int = mFuncDeclaration.GetNumInputs ();
+            var numOutputs:int = mFuncDeclaration.GetNumOutputs ();
+            
+            mInputVariableDefinitions = new Array (numInputs);
+            mOutputVariableDefinitions = new Array (numOutputs);
+            
+            var i:int;
+            
+            for (i = 0; i < numInputs; ++ i)
+            {
+               mInputVariableDefinitions [i] = mFuncDeclaration.GetInputParamDefinitionAt (i);
+            }
+            
+            for (i = 0; i < numOutputs; ++ i)
+            {
+               mOutputVariableDefinitions [i] = mFuncDeclaration.GetOutputParamDefinitionAt (i);
+            }
+         }
       }
       
       public function BuildFromFunctionDeclaration (funcDeclaration:FunctionDeclaration):void
@@ -156,6 +182,87 @@ package editor.controls {
       
       public function NotifyParametersModified ():void
       {
+         mInfo.mHtmlText = null;
+         UpdateCodeLineText ();
+      }
+      
+      public function Validate (functionDeclaration:FunctionDeclaration):void
+      {
+         if (functionDeclaration != mFuncDeclaration)
+            return;
+         
+      // ...
+         
+         if (mFuncDeclaration is FunctionDeclaration_Custom)
+         {
+            var customfunctionDeclatation:FunctionDeclaration_Custom = mFuncDeclaration as FunctionDeclaration_Custom;
+            
+            var numInputs:int = customfunctionDeclatation.GetNumInputs ();
+            var numOutputs:int = customfunctionDeclatation.GetNumOutputs ();
+            
+            var newInitialInputValueSources:Array = new Array (numInputs);
+            var newInitialOutputValueTargets:Array = new Array (numOutputs);
+            
+            var newCurrentInputValueSources:Array = new Array (numInputs);
+            var newCurrentOutputValueTargets:Array = new Array (numOutputs);
+            
+            var newInputVariableDefinitions:Array = new Array (numInputs);
+            var newOutputVariableDefinitions:Array = new Array (numOutputs);
+            
+            var i:int;
+            var index:int;
+            var variableDefinition:VariableDefinition;
+            
+            for (i = 0; i < numInputs; ++ i)
+            {
+               variableDefinition = customfunctionDeclatation.GetInputParamDefinitionAt (i);
+               
+               index = mInputVariableDefinitions.indexOf (variableDefinition);
+               if (index >= 0)
+               {
+                  newInitialInputValueSources [i] = mInitialValueSources [index];
+                  newCurrentInputValueSources [i] = mCurrentValueSources [index];
+               }
+               else
+               {
+                  newInitialInputValueSources [i] = variableDefinition.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
+                  newCurrentInputValueSources [i] = variableDefinition.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
+               }
+               
+               newInputVariableDefinitions [i] = variableDefinition;
+            }
+            
+            for (i = 0; i < numOutputs; ++ i)
+            {
+               variableDefinition = customfunctionDeclatation.GetOutputParamDefinitionAt (i);
+               
+               index = mOutputVariableDefinitions.indexOf (variableDefinition);
+               if (index >= 0)
+               {
+                  newInitialOutputValueTargets [i] = mInitialValueTargets [index];
+                  newCurrentOutputValueTargets [i] = mCurrentValueTargets [index];
+               }
+               else
+               {
+                  newInitialOutputValueTargets [i] = variableDefinition.GetDefaultValueTarget ();
+                  newCurrentOutputValueTargets [i] = variableDefinition.GetDefaultValueTarget ();
+               }
+               
+               newOutputVariableDefinitions [i] = variableDefinition;
+            }
+            
+            mInitialValueSources = newInitialInputValueSources;
+            mInitialValueTargets = newInitialOutputValueTargets;
+            
+            mCurrentValueSources = newCurrentInputValueSources;
+            mCurrentValueTargets = newCurrentOutputValueTargets;
+            
+            mInputVariableDefinitions = newInputVariableDefinitions;
+            mOutputVariableDefinitions = newOutputVariableDefinitions;
+         }
+         
+      // ...
+         
          mInfo.mHtmlText = null;
          UpdateCodeLineText ();
       }

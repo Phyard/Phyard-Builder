@@ -166,6 +166,11 @@ package editor.trigger {
                      null,
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Removed, basic_package, "Removed Warning", "@(This function is removed)", "@(This function is removed)",
+                     null,
+                     null,
+                     false
+                  );
          
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartIf, basic_package, "If", "@If ($0 is true)", "@If ($0 is true)",
                      [
@@ -1178,30 +1183,30 @@ package editor.trigger {
                      ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunction, world_script_package, "Call Boolean Function", null, null,
-         //            [
-         //                    new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
-         //            ],
-         //            [
-         //                    new VariableDefinitionBoolean ("Return Boolean Result"),
-         //            ]
-         //         );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction, world_script_package, "Condition Call Boolean Function", "@#0 = If $0 is true, call $1, otherwise, call $2", null,
-         //            [
-         //                    new VariableDefinitionBoolean ("Condition Result"),
-         //                    new VariableDefinitionEntity ("Script 1 to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
-         //                    new VariableDefinitionEntity ("Script 2 to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
-         //            ],
-         //            [
-         //                    new VariableDefinitionBoolean ("Return Bool Result"),
-         //            ]
-         //         );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes, world_script_package, "Call Bool Function Multi Times", "@Call Bool Function ($0) Multi Times", null,
-         //            [
-         //                    new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
-         //            ],
-         //            null
-         //         );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunction, world_script_package, "Call Boolean Function", null, null,
+                     [
+                             new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Return Boolean Result"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction, world_script_package, "Condition Call Boolean Function", "@#0 = If $0 is true, call $1, otherwise, call $2", null,
+                     [
+                             new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionEntity ("Script 1 to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
+                             new VariableDefinitionEntity ("Script 2 to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Return Bool Result"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes, world_script_package, "Call Bool Function Multi Times", "@Call Bool Function ($0) Multi Times", null,
+                     [
+                             new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sBasicConditionEntityClasses}), 
+                     ],
+                     null
+                  );
          
      // game / world / create ...
          
@@ -2182,20 +2187,20 @@ package editor.trigger {
          return sFunctionDeclarations [function_id] as FunctionDeclaration_PreDefined;
       }
       
-      // top leel
+      // top level
       private static function CreateXmlFromMenuGroups (packages:Array):XML
       {
          var xml:XML = <root />;
          
          for each (var functionMenuGroup:FunctionMenuGroup in packages)
          {
-            AddMenuGroupToXML (functionMenuGroup, xml, packages);
+            ConvertMenuGroupToXML (functionMenuGroup, xml, packages);
          }
          
          return xml;
       }
       
-      private static function AddMenuGroupToXML (functionMenuGroup:FunctionMenuGroup, parentXml:XML, topMenuGroups:Array):void
+      private static function ConvertMenuGroupToXML (functionMenuGroup:FunctionMenuGroup, parentXml:XML, topMenuGroups:Array):void
       {
          var package_element:XML = <menuitem />;
          package_element.@name = functionMenuGroup.GetName ();
@@ -2206,25 +2211,26 @@ package editor.trigger {
          var child_packages:Array = functionMenuGroup.GetChildMenuGroups ();
          for (var i:int = 0; i < child_packages.length; ++ i)
          {
-            if (topMenuGroups.indexOf (child_packages [i]) < 0)
+            if (topMenuGroups == null || topMenuGroups.indexOf (child_packages [i]) < 0)
             {
-               AddMenuGroupToXML (child_packages [i] as FunctionMenuGroup, package_element, topMenuGroups);
+               ConvertMenuGroupToXML (child_packages [i] as FunctionMenuGroup, package_element, topMenuGroups);
                
                ++ num_items;
             }
          }
          
          var declarations:Array = functionMenuGroup.GetFunctionDeclarations ();
-         var declaration:FunctionDeclaration_Core;
+         var declaration:FunctionDeclaration;
          var function_element:XML;
          for (var j:int = 0; j < declarations.length; ++ j)
          {
-            declaration = declarations [j] as FunctionDeclaration_Core;
+            declaration = declarations [j] as FunctionDeclaration;
             if (declaration.IsShowUpInApiMenu ())
             {
                function_element = <menuitem />;
                function_element.@name = declaration.GetName ();
                function_element.@id = declaration.GetID ();
+               function_element.@type = declaration.GetType ();
                
                package_element.appendChild (function_element);
                
@@ -2240,6 +2246,21 @@ package editor.trigger {
             
             package_element.appendChild (function_element);
          }
+      }
+      
+      public static function UpdateCustomMenu ():void
+      {
+         var parent:XML;
+         
+         parent = sMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0].parent ();
+         delete sMenuBarDataProvider_Longer.menuitem.(@name=="Custom")[0];
+         
+         ConvertMenuGroupToXML (sCustomMenuGroup, parent, null)
+         
+         parent = sMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0].parent ();
+         delete sMenuBarDataProvider_Shorter.menuitem.(@name=="Custom")[0];
+         
+         ConvertMenuGroupToXML (sCustomMenuGroup, parent, null)
       }
    }
 }

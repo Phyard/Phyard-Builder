@@ -25,6 +25,7 @@ package common.trigger {
       //public static const ID_GoTo:int                        = IdPool.CoreApiId_24; //
       public static const ID_Comment:int                     = IdPool.CoreApiId_25; //
       public static const ID_Blank:int                       = IdPool.CoreApiId_26; //
+      public static const ID_Removed:int                       = IdPool.CoreApiId_27; //
       
       public static const ID_StartIf:int                      = IdPool.CoreApiId_30; //
       //public static const ID_ElseIf:int                     = IdPool.CoreApiId_31; //

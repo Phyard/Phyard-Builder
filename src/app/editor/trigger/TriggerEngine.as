@@ -62,6 +62,8 @@ package editor.trigger {
       {
          InitStaticData ();
          
+         PlayerFunctionDefinesForEditing.sCustomMenuGroup.Clear ();
+         
          // register variable spaces
          
          mRegisterVariableSpace_Boolean           = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Boolean);
@@ -103,6 +105,11 @@ package editor.trigger {
          
          // ...
          mStaticDataInited = true;
+      }
+      
+      public function UpdateCustomFunctionMenu ():void
+      {
+         PlayerFunctionDefinesForEditing.UpdateCustomMenu ();
       }
       
       public static function GetEventDeclarationById (event_id:int):FunctionDeclaration_EventHandler

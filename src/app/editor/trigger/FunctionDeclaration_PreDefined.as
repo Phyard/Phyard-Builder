@@ -14,7 +14,9 @@ package editor.trigger {
                                                       paramDefines:Array = null, returnDefinitions:Array = null, 
                                                       showUpInApiMenu:Boolean = true)
       {
-         super (id, name, description, poemCallingFormat, traditionalCallingFormat, paramDefines, returnDefinitions, showUpInApiMenu);
+         super (id, name, description, paramDefines, returnDefinitions, showUpInApiMenu);
+         
+         ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
       }
       
       override public function GetType ():int 

@@ -72,7 +72,7 @@ package editor.trigger {
          return mLocalVariableSpace;
       }
       
-      public function ValidateValueSources ():void
+      public function ValidateValueSourcesAndTargets ():void
       {
       }
       
@@ -182,6 +182,40 @@ package editor.trigger {
             return false;
          
          return mFunctionDeclaration.HasOutputsSatisfiedBy (variableDefinition);
+      }
+      
+//==============================================================================
+// it best to merge difinition with declaration
+//==============================================================================
+      
+      public function SybchronizeDeclarationWithDefinition ():void
+      {
+         var functionDecl:FunctionDeclaration_Custom = mFunctionDeclaration as FunctionDeclaration_Custom;
+         if (functionDecl == null)
+            return;
+         
+         var i:int;
+         
+         var inputDefinitions:Array = new Array ();
+         
+         var num_inputs:int = mInputVariableSpace.GetNumVariableInstances ();
+         for (i = 0; i < num_inputs; ++ i)
+         {
+            inputDefinitions.push (mInputVariableSpace.GetVariableInstanceAt (i).GetVariableDefinition ());
+         }
+         
+         var outputDefinitions:Array = new Array ();
+         
+         var num_outputs:int = mOutputVariableSpace.GetNumVariableInstances ();
+         for (i = 0; i < num_outputs; ++ i)
+         {
+            outputDefinitions.push (mOutputVariableSpace.GetVariableInstanceAt (i).GetVariableDefinition ());
+         }
+         
+         functionDecl.SetInputParamDefinitions (inputDefinitions);
+         functionDecl.SetOutputParamDefinitions (outputDefinitions);
+         
+         functionDecl.IncreaseModifiedTimes ();
       }
    }
 }

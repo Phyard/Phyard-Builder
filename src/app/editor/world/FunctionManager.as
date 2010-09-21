@@ -14,6 +14,8 @@ package editor.world {
    
    import editor.trigger.FunctionMenuGroup;
    
+   import editor.runtime.Runtime;
+   
    import common.Define;
    import common.ValueAdjuster;
    
@@ -279,6 +281,11 @@ package editor.world {
       public function SetChanged (changed:Boolean):void
       {
          mIsChanged = changed;
+         
+         if (changed)
+         {
+            UpdateFunctionMenu ();
+         }
       }
       
       public function IsChanged ():Boolean
@@ -300,12 +307,19 @@ package editor.world {
       private function UpdateFunctionMenu ():void
       {
          if (mFunctionMenuGroup == null)
-            return null;
+            return;
+         
+         mFunctionMenuGroup.Clear ();
          
          // mFunctionMenuGroup.AddChildMenuGroup ();
          // mFunctionMenuGroup.AddFunctionDeclaration ();
          
-         //for (
+         for (var i:int = 0; i < mFunctionEntities.length; ++ i)
+         {
+            mFunctionMenuGroup.AddFunctionDeclaration ((mFunctionEntities [i] as EntityFunction).GetFunctionDeclaration ());
+         }
+         
+         Runtime.GetCurrentWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
       }
    }
 }

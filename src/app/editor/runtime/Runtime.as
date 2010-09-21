@@ -134,12 +134,14 @@ package editor.runtime {
       
       public static function CloneCopiedCodeSnippet (ownerFunctionDefinition:FunctionDefinition):CodeSnippet
       {
-         if (Runtime.mCopiedCodeSnippet == null)
+         if (mCopiedCodeSnippet == null)
          {
             return null;
          }
          else
          {
+            mCopiedCodeSnippet.ValidateCallings ();
+            
             var codeSnippet:CodeSnippet = Runtime.mCopiedCodeSnippet.Clone (ownerFunctionDefinition);
             codeSnippet.DisplayValues2PhysicsValues (GetCurrentWorld ().GetCoordinateSystem ());
             

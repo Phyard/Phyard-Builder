@@ -42,6 +42,8 @@ package editor.trigger.entity {
       protected var mFunctionId:int = -1;
       
       protected var mCodeSnippet:CodeSnippet;
+      protected var mFunctionDeclaration:FunctionDeclaration_Custom;
+      protected var mFunctionDefinition:FunctionDefinition;
       
       private var mHalfWidth:Number;
       private var mHalfHeight:Number;
@@ -59,12 +61,24 @@ package editor.trigger.entity {
          
          mouseChildren = false;
          
-         mCodeSnippet = new CodeSnippet (new FunctionDefinition (Runtime.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetVoidFunctionDeclaration ()));
+         mFunctionDeclaration = new FunctionDeclaration_Custom (mName);
+         mFunctionDefinition = new FunctionDefinition (Runtime.GetCurrentWorld ().GetTriggerEngine (), mFunctionDeclaration);
+         mCodeSnippet = new CodeSnippet (mFunctionDefinition);
+      }
+      
+      override public function Destroy ():void
+      {
+         mFunctionDeclaration.SetID (-1);
+         mFunctionDeclaration.NotifyRemoved ();
+         
+         super.Destroy ();
       }
       
       public function SetFunctionIndex (functionId:int):void
       {
          mFunctionId = functionId;
+         
+         mFunctionDeclaration.SetID (mFunctionId);
       }
       
       public function GetFunctionIndex ():int
@@ -96,6 +110,9 @@ package editor.trigger.entity {
          else
          {
             SetName (newName);
+            
+            mFunctionDeclaration.SetName (newName);
+            mFunctionDeclaration.ParseAllCallingTextSegments ();
          }
       }
       
@@ -136,7 +153,8 @@ package editor.trigger.entity {
          mHalfHeight = mHalfTextHeight;
          
          GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, true ? 0xC0FFC0 : 0xFFD0D0);
-         GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false);      }
+         GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false);
+      }
       
       override public function UpdateSelectionProxy ():void
       {
@@ -170,7 +188,12 @@ package editor.trigger.entity {
       
       public function ValidateEntityLinks ():void
       {
-         mCodeSnippet.ValidateValueSources ();
+         //mCodeSnippet.ValidateValueSourcesAndTargets ();
+      }
+      
+      public function GetFunctionDeclaration ():FunctionDeclaration_Custom
+      {
+         return mFunctionDeclaration;
       }
       
    //====================================================================

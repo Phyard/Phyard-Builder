@@ -100,6 +100,10 @@ package common.trigger {
                      null,
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Removed,
+                     null,
+                     null
+                  );
          
          RegisterCoreDeclaration (CoreFunctionIds.ID_StartIf,
                      [

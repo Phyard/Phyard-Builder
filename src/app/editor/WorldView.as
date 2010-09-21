@@ -1614,7 +1614,7 @@ package editor {
          
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionManager ().SetChanged (false);
-         mEditorWorld.GetFunctionManager ().SetChanged (false);
+         mEditorWorld.GetPureFunctionManager ().SetChanged (false);
          
          mEditorWorld.scaleX = mEditorWorld.scaleY = mEditorWorldZoomScale = mEditorWorld.GetZoomScale ();
          
@@ -1627,7 +1627,7 @@ package editor {
             Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
          
          if (Runtime.mFunctionEditingView != null)
-            Runtime.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetFunctionManager ());
+            Runtime.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetPureFunctionManager ());
          
          if (! firstTime)
          {
@@ -1921,9 +1921,9 @@ package editor {
       
       public function OnFinishedFunctionEditing ():void
       {
-         if (mEditorWorld.GetFunctionManager ().IsChanged ())
+         if (mEditorWorld.GetPureFunctionManager ().IsChanged ())
          {
-            mEditorWorld.GetFunctionManager ().SetChanged (false);
+            mEditorWorld.GetPureFunctionManager ().SetChanged (false);
             CreateUndoPoint ("Modify functions");
          }
          
@@ -2474,7 +2474,7 @@ package editor {
             if ((mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
                height += 20;
             
-            values.mEmbedCode = "<embed src=\"http://www.phyard.com/uniplayer.swf?app=ci&format=0x0152\"\n  width=\'" + width + "\" height=\"" + height + "\"\n"
+            values.mEmbedCode = "<embed src=\"http://www.phyard.com/uniplayer.swf?app=ci&format=0x0152\"\n width=\'" + width + "\" height=\"" + height + "\"\n"
                               + "  FlashVars=\"playcode=" + values.mHexString
                               + "\"\n  quality=\"high\" allowScriptAccess=\"sameDomain\"\n  type=\"application/x-shockwave-flash\"\n  pluginspage=\"http://www.macromedia.com/go/getflashplayer\">\n</embed>"
                                 ;

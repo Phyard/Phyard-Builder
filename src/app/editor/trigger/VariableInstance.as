@@ -7,7 +7,7 @@ package editor.trigger {
    import common.trigger.ValueTargetTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
    
-   public class VariableInstance implements ValueSource, ValueTarget
+   public class VariableInstance // implements ValueSource, ValueTarget
    {
    //========================================================================================================
    //
@@ -56,7 +56,7 @@ package editor.trigger {
             return;
          }
          
-         AssignValue (mVariableDefinition.GetDefaultValueSource (mVariableSpace.GetTriggerEngine ()));
+         SetValueObject (mVariableDefinition.GetDefaultValueSource (mVariableSpace.GetTriggerEngine ()).GetValueObject ());
          SetName (variableDefinition.GetName ());
       }
       
@@ -163,52 +163,57 @@ package editor.trigger {
           mValueObject = valueObject;
       }
       
-//=========================================================================================
-// as a target
-//=========================================================================================
-      
-      public function GetValueTargetType ():int
-      {
-         return ValueTargetTypeDefine.ValueTarget_Self;
-      }
-      
-      public function AssignValue (source:ValueSource):void
-      {
-         SetValueObject (source.GetValueObject ());
-      }
-      
-      public function CloneTarget ():ValueTarget
-      {
-         return Clone ();
-      }
-      
-      public function ValidateTarget ():void
-      {
-      }
-      
-//=========================================================================================
-// as a ValueSource
-//=========================================================================================
-      
-      public function GetValueSourceType ():int
-      {
-         return ValueSourceTypeDefine.ValueSource_Direct;
-      }
-      
       public function GetValueObject ():Object
       {
          return mValueObject;
       }
       
-      public function CloneSource ():ValueSource
-      {
-         return Clone ();
-      }
+//=========================================================================================
+// as a target
+//=========================================================================================
       
-      public function ValidateSource ():void
-      {
-         // ...
-      }
+      //public function GetValueTargetType ():int
+      //{
+      //   return ValueTargetTypeDefine.ValueTarget_Self;
+      //}
+      
+      //public function AssignValue (source:ValueSource):void
+      //{
+      //   SetValueObject (source.GetValueObject ());
+      //}
+      
+      //public function CloneTarget ():ValueTarget
+      //{
+      //   return Clone ();
+      //}
+      
+      //public function ValidateTarget ():void
+      //{
+      //}
+      
+//=========================================================================================
+// as a ValueSource
+//=========================================================================================
+      
+      //public function GetValueSourceType ():int
+      //{
+      //   return ValueSourceTypeDefine.ValueSource_Direct;
+      //}
+      
+      //public function GetValueObject ():Object
+      //{
+      //   return mValueObject;
+      //}
+      
+      //public function CloneSource ():ValueSource
+      //{
+      //   return Clone ();
+      //}
+      
+      //public function ValidateSource ():void
+      //{
+      //   // ...
+      //}
    }
 }
 

@@ -1475,27 +1475,22 @@ package editor.world {
 //   functions
 //=================================================================================
       
-      public function GetFunctionManager ():FunctionManager
+      public function GetPureFunctionManager ():FunctionManager
       {
          return mFunctionManager;
       }
       
-      public function SetFunctionManager (fm:FunctionManager):void
-      {
-         mFunctionManager = fm;
-      }
-      
-      public function GetNumFunctions ():int
+      public function GetNumPureFunctions ():int
       {
          return mFunctionManager.GetNumFunctions ();
       }
       
-      public function GetFunctionByIndex (index:int):EntityFunction
+      public function GetPureFunctionByIndex (index:int):EntityFunction
       {
          return mFunctionManager.GetFunctionByIndex (index);
       }
       
-      public function CreateEntityFunction (funcName:String):EntityFunction
+      public function CreatePureFunctionEntity (funcName:String):EntityFunction
       {
          return mFunctionManager.CreateEntityFunction (funcName);
       }

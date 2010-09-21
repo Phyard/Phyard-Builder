@@ -15,7 +15,9 @@ package editor.trigger {
                                                       paramDefines:Array = null, 
                                                       showUpInApiMenu:Boolean = true)
       {
-         super (id, name, description, poemCallingFormat, traditionalCallingFormat, paramDefines, null, showUpInApiMenu);
+         super (id, name, description, paramDefines, null, showUpInApiMenu);
+         
+         ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
          
          if ( ! CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id) ) )
             throw new Error ("not consistent! event id = " + id);

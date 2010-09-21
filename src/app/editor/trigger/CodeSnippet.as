@@ -3,6 +3,10 @@ package editor.trigger {
    import flash.utils.ByteArray;
    //import flash.utils.Dictionary;
    
+   import editor.runtime.Runtime;
+   
+   import common.trigger.CoreFunctionIds;
+   
    import common.Define;
    import common.CoordinateSystem;
    
@@ -71,14 +75,32 @@ package editor.trigger {
          return mFunctionCallings [index];
       }
       
-      public function ValidateValueSources ():void
+      public function ValidateValueSourcesAndTargets ():void
       {
          var func_calling:FunctionCalling;
          for (var i:int = 0; i < mFunctionCallings.length; ++ i)
          {
             func_calling = mFunctionCallings [i] as FunctionCalling;
             if (func_calling != null)
-               func_calling.ValidateValueSources ();
+            {
+               func_calling.ValidateValueSourcesAndTargets ();
+            }
+         }
+      }
+      
+      public function ValidateCallings ():void
+      {
+         var func_calling:FunctionCalling;
+         for (var i:int = mFunctionCallings.length - 1; i >= 0 ; -- i)
+         {
+            func_calling = mFunctionCallings [i] as FunctionCalling;
+            if (func_calling != null)
+            {
+               if (func_calling.Validate ())
+               {
+                   mFunctionCallings [i] = new FunctionCalling_Core (Runtime.GetCurrentWorld ().GetTriggerEngine (), TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Removed), true);
+               }
+            }
          }
       }
       
@@ -132,6 +154,8 @@ package editor.trigger {
       
       public function Clone (ownerFunctionDefinition:FunctionDefinition, callingIds:Array = null):CodeSnippet
       {
+         ValidateCallings ();
+         
          if (ownerFunctionDefinition == null)
             ownerFunctionDefinition = mOwnerFunctionDefinition;
          

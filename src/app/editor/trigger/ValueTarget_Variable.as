@@ -58,36 +58,46 @@ package editor.trigger {
          return new ValueTarget_Variable (mVariableInstance);
       }
       
-      public function CloneVariableTarget (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      public function CloneVariableTarget (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
          var variableDefinition:VariableDefinition;;
          
          switch (mVariableInstance.GetSpaceType ())
          {
             case ValueSpaceTypeDefine.ValueSpace_Input:
-               variableDefinition = ownerFunctionDefinition.GetInputParamDefinitionAt (mVariableInstance.GetIndex ());
+            {
+               variableDefinition = targetFunctionDefinition.GetInputParamDefinitionAt (mVariableInstance.GetIndex ());
                
                if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
-               {
                   return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
-               }
                else
-               {
-                  return new ValueTarget_Variable (ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
-               }
+                  return new ValueTarget_Variable (targetFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+            }
             case ValueSpaceTypeDefine.ValueSpace_Output:
-               variableDefinition = ownerFunctionDefinition.GetOutputParamDefinitionAt (mVariableInstance.GetIndex ());
+            {
+               variableDefinition = targetFunctionDefinition.GetOutputParamDefinitionAt (mVariableInstance.GetIndex ());
                
                if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
-               {
                   return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
-               }
                else
-               {
-                  return new ValueTarget_Variable (ownerFunctionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
-               }
+                  return new ValueTarget_Variable (targetFunctionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+            }
+            case ValueSpaceTypeDefine.ValueSpace_Local:
+            {
+               variableDefinition = targetFunctionDefinition.GetLocalVariableDefinitionAt (mVariableInstance.GetIndex ());
+               
+               if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
+                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
+               else
+                  return new ValueTarget_Variable (targetFunctionDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+            }
             default:
-               return new ValueTarget_Variable (mVariableInstance);
+            {
+               if (targetFunctionDefinition.IsPure ())
+                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultNullValueTarget ();
+               else
+                  return new ValueTarget_Variable (mVariableInstance);
+            }
          }
       }
       

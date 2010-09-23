@@ -162,7 +162,7 @@ package editor.trigger {
          return null; // to override
       }
       
-      public function Clone (ownerFunctionDefinition:FunctionDefinition):FunctionCalling
+      public function Clone (targetFunctionDefinition:FunctionDefinition):FunctionCalling
       {
          var calling:FunctionCalling = new FunctionCalling (mTriggerEngine, mFunctionDeclaration, false);
          
@@ -179,13 +179,13 @@ package editor.trigger {
             
             if (source is ValueSource_Property)
             {
-               sourcesArray [i] = (source as ValueSource_Property).ClonePropertySource (mTriggerEngine, ownerFunctionDefinition, mFunctionDeclaration, i);
+               sourcesArray [i] = (source as ValueSource_Property).ClonePropertySource (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
             }
             else if (source is ValueSource_Variable)
             {
-               sourcesArray [i] = (source as ValueSource_Variable).CloneVariableSource (mTriggerEngine, ownerFunctionDefinition, mFunctionDeclaration, i);
+               sourcesArray [i] = (source as ValueSource_Variable).CloneVariableSource (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
             }
-            else
+            else // direct
             {
                sourcesArray [i] = source.CloneSource ();
             }
@@ -203,13 +203,13 @@ package editor.trigger {
             
             if (target is ValueTarget_Property)
             {
-               targetsArray [i] = (target as ValueTarget_Property).ClonePropertyTarget (mTriggerEngine, ownerFunctionDefinition, mFunctionDeclaration, i);
+               targetsArray [i] = (target as ValueTarget_Property).ClonePropertyTarget (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
             }
             else if (target is ValueTarget_Variable)
             {
-               targetsArray [i] = (target as ValueTarget_Variable).CloneVariableTarget (mTriggerEngine, ownerFunctionDefinition, mFunctionDeclaration, i);
+               targetsArray [i] = (target as ValueTarget_Variable).CloneVariableTarget (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
             }
-            else
+            else // direct
             {
                targetsArray [i] = target.CloneTarget ();
             }

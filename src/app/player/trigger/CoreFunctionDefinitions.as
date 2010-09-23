@@ -504,11 +504,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var text2:String = valueSource.EvaluateValueObject () as String;
          
-         if (source1 is Parameter_Variable)
-            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (text2);
-         
-         if (valueSource is Parameter_Variable)
-            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (text1);
+         source1.AssignValueObject (text2);
       }
       
       public static function IsNullString (valueSource:Parameter, valueTarget:Parameter):void

@@ -63,28 +63,46 @@ package editor.trigger {
          return new ValueSource_Variable (mVariableInstance);
       }
       
-      public function CloneVariableSource (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function CloneVariableSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
          var variableDefinition:VariableDefinition;;
          
          switch (mVariableInstance.GetSpaceType ())
          {
             case ValueSpaceTypeDefine.ValueSpace_Input:
-               variableDefinition = ownerFunctionDefinition.GetInputParamDefinitionAt (mVariableInstance.GetIndex ());
+            {
+               variableDefinition = targetFunctionDefinition.GetInputParamDefinitionAt (mVariableInstance.GetIndex ());
                
                if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
                   return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
                else
-                  return new ValueSource_Variable (ownerFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+                  return new ValueSource_Variable (targetFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+            }
             case ValueSpaceTypeDefine.ValueSpace_Output:
-               variableDefinition = ownerFunctionDefinition.GetOutputParamDefinitionAt (mVariableInstance.GetIndex ());
+            {
+               variableDefinition = targetFunctionDefinition.GetOutputParamDefinitionAt (mVariableInstance.GetIndex ());
                
                if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
-                  return callingFunctionDeclaration.GetOutputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
                else
-                  return new ValueSource_Variable (ownerFunctionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
-            default:
-               return new ValueSource_Variable (mVariableInstance);
+                  return new ValueSource_Variable (targetFunctionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+            }
+            case ValueSpaceTypeDefine.ValueSpace_Local:
+            {
+               variableDefinition = targetFunctionDefinition.GetLocalVariableDefinitionAt (mVariableInstance.GetIndex ());
+               
+               if (variableDefinition == null || variableDefinition.GetValueType () != mVariableInstance.GetValueType ())
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
+               else
+                  return new ValueSource_Variable (targetFunctionDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (mVariableInstance.GetIndex ()));
+            }
+            default: // global/entity variable
+            {
+               if (targetFunctionDefinition.IsPure ())
+                  return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
+               else
+                  return new ValueSource_Variable (mVariableInstance);
+            }
          }
       }
       

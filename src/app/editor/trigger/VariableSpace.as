@@ -156,6 +156,23 @@ package editor.trigger {
          return false;
       }
       
+      public function HasVariablesSatisfiedBy (variableDefinition:VariableDefinition):Boolean
+      {
+         var viDef:VariableDefinition;
+         var count:int = GetNumVariableInstances ();
+         for (var i:int = 0; i < count; ++ i)
+         {
+            viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
+            if (viDef != null)
+            {
+               if (variableDefinition.IsCompatibleWith (viDef))
+                  return true;
+            }
+         }
+         
+         return false;
+      }
+      
       public function GetVariableSelectListDataProviderByValueType (valueType:int, validVariableIndexes:Array = null):Array
       {
          var entity_list:Array = new Array ();

@@ -1099,9 +1099,11 @@
                
                AppendContextMenuItem (sprite, "from Register Entity Variable", isForTarget ? OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_RegisterVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
                
-               AppendContextMenuItem (sprite, "from Global Entity Variable", isForTarget ? OnSelectValueSource_GlobalVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_GlobalVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+               if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Global Entity Variable", isForTarget ? OnSelectValueSource_GlobalVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_GlobalVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
                
-               AppendContextMenuItem (sprite, "from Local Entity Variable", isForTarget ? OnSelectValueSource_LocalVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_LocalVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
+               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Local Entity Variable", isForTarget ? OnSelectValueSource_LocalVariable_ForEntiryPropertyOwner_ForTarget : OnSelectValueSource_LocalVariable_ForEntiryPropertyOwner, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             }
             else
             {
@@ -1115,19 +1117,22 @@
                
                if (mOptions.mShowEntityVariablesEditingButton == undefined || mOptions.mShowEntityVariablesEditingButton == true)
                {
-                  AppendContextMenuItem (sprite, "from Entity Custom Property", OnSelectValueSource_EntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
+                  if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                     AppendContextMenuItem (sprite, "from Entity Custom Property", OnSelectValueSource_EntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
                }
-               
-               AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
                
                if (mOptions.mShowGlobalVariablesEditingButton == undefined || mOptions.mShowGlobalVariablesEditingButton == true)
                {
-                  AppendContextMenuItem (sprite, "from Global Variable", OnSelectValueSource_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+                  AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+                  
+                  if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                     AppendContextMenuItem (sprite, "from Global Variable", OnSelectValueSource_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
                }
                
                if (mOptions.mShowInputVariablesEditingButton == undefined || mOptions.mShowInputVariablesEditingButton == true)
                {
-                  AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
+                  if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+                     AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
                }
             }
          }
@@ -1555,19 +1560,22 @@
             
             if (mOptions.mShowEntityVariablesEditingButton == undefined || mOptions.mShowEntityVariablesEditingButton == true)
             {
-               AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
+               if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
             }
-            
-            AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
             
             if (mOptions.mShowGlobalVariablesEditingButton == undefined || mOptions.mShowGlobalVariablesEditingButton == true)
             {
-               AppendContextMenuItem (sprite, "to Global Variable", OnSelectValueTarget_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
+               AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
+               
+               if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "to Global Variable", OnSelectValueTarget_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
             }
             
             if (mOptions.mShowInputVariablesEditingButton == undefined || mOptions.mShowInputVariablesEditingButton == true)
             {
-               AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
+               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             }
          }
          

@@ -17,11 +17,15 @@ package editor.trigger {
       
       public var mLocalVariableSpace:VariableSpaceLocal;
       
-      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration = null)
+      public var mPure:Boolean = false;
+      
+      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, isPure:Boolean = false)
       {
          mTriggerEngine = triggerEngine;
          
          mFunctionDeclaration = functionDeclatation;
+         
+         mPure = isPure;
          
          mInputVariableSpace = new VariableSpaceInput (mTriggerEngine);
          
@@ -42,6 +46,11 @@ package editor.trigger {
          }
          
          mLocalVariableSpace = new VariableSpaceLocal (mTriggerEngine);
+      }
+      
+      public function IsPure ():Boolean
+      {
+         return mPure;
       }
       
       public function GetFunctionDeclaration ():FunctionDeclaration
@@ -136,6 +145,22 @@ package editor.trigger {
          return mFunctionDeclaration.GetInputParamValueType (inputId);
       }
       
+      public function HasInputsWithValueTypeOf (valueType:int):Boolean
+      {
+         if (mFunctionDeclaration == null)
+            return false;
+         
+         return mFunctionDeclaration.HasInputsWithValueTypeOf (valueType);
+      }
+      
+      public function HasInputsSatisfy (variableDefinition:VariableDefinition):Boolean
+      {
+         if (mFunctionDeclaration == null)
+            return false;
+         
+         return mFunctionDeclaration.HasInputsSatisfy (variableDefinition);
+      }
+      
       public function GetNumOutputs ():int
       {
          if (mFunctionDeclaration == null)
@@ -160,22 +185,6 @@ package editor.trigger {
          return mFunctionDeclaration.GetOutputParamValueType (outputId);
       }
       
-      public function HasInputsWithValueTypeOf (valueType:int):Boolean
-      {
-         if (mFunctionDeclaration == null)
-            return false;
-         
-         return mFunctionDeclaration.HasInputsWithValueTypeOf (valueType);
-      }
-      
-      public function HasInputsSatisfy (variableDefinition:VariableDefinition):Boolean
-      {
-         if (mFunctionDeclaration == null)
-            return false;
-         
-         return mFunctionDeclaration.HasInputsSatisfy (variableDefinition);
-      }
-      
       public function HasOutputsSatisfiedBy (variableDefinition:VariableDefinition):Boolean
       {
          if (mFunctionDeclaration == null)
@@ -184,9 +193,52 @@ package editor.trigger {
          return mFunctionDeclaration.HasOutputsSatisfiedBy (variableDefinition);
       }
       
+      public function GetNumLocalVariables ():int
+      {
+         if (mLocalVariableSpace == null)
+            return 0;
+         
+         return mLocalVariableSpace.GetNumVariableInstances ();
+      }
+      
+      public function GetLocalVariableDefinitionAt (localId:int):VariableDefinition
+      {
+         if (mLocalVariableSpace == null)
+            return null;
+         
+         var vi:VariableInstance = mLocalVariableSpace.GetVariableInstanceAt (localId);
+         
+         return vi.IsNull () ? null : vi.GetVariableDefinition ();
+      }
+      
+      public function GetLocalVariableValueType (localId:int):int
+      {
+         if (mLocalVariableSpace == null)
+            return ValueTypeDefine.ValueType_Void;
+         
+         var vi:VariableInstance = mLocalVariableSpace.GetVariableInstanceAt (localId);
+         
+         return vi.GetValueType ();
+      }
+      
+      public function HasLocalVariablesSatisfiedBy (variableDefinition:VariableDefinition):Boolean
+      {
+         if (mLocalVariableSpace == null)
+            return false;
+         
+         return mLocalVariableSpace.HasVariablesSatisfiedBy (variableDefinition);
+      }
+      
 //==============================================================================
-// it best to merge difinition with declaration
+// it best to merge difinition with declaration (cancelled, not a good idea)
 //==============================================================================
+      
+      public function HasSameDeclarationWith (functionDefinition:FunctionDefinition):Boolean
+      {
+         return mFunctionDeclaration == functionDefinition.GetFunctionDeclaration ();
+         
+         // todo: it is possible return true if mFunctionDeclaration != functionDefinition.GetFunctionDeclaration ()
+      }
       
       public function SybchronizeDeclarationWithDefinition ():void
       {
@@ -216,6 +268,11 @@ package editor.trigger {
          functionDecl.SetOutputParamDefinitions (outputDefinitions);
          
          functionDecl.IncreaseModifiedTimes ();
+      }
+      
+      public function Clone ():FunctionDefinition
+      {
+         return null;
       }
    }
 }

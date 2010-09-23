@@ -253,8 +253,8 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_SwapValues, string_package, "Swap String Values", "@$0 &lt;-&gt; $1", null,
                      [
-                             new VariableDefinitionString ("String 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
-                             new VariableDefinitionString ("String 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
+                             new VariableDefinitionString ("String 1 (reference)", null), 
+                             new VariableDefinitionString ("String 2 (reference)", null), 
                      ],
                      null
                   );
@@ -355,10 +355,10 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Target Boolean"), 
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_SwapValues, bool_package, "Swap Values", "@$0 &lt;-&gt; $1", "SwapBooleanValues",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_SwapValues, bool_package, "Swap Boolean Values", "@$0 &lt;-&gt; $1", "SwapBooleanValues",
                      [
-                             new VariableDefinitionBoolean ("Boolean 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
-                             new VariableDefinitionBoolean ("Boolean 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
+                             new VariableDefinitionBoolean ("Boolean 1 (reference)", null), 
+                             new VariableDefinitionBoolean ("Boolean 2 (reference)", null), 
                      ],
                      null
                   );
@@ -459,10 +459,10 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target"), 
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_SwapValues, numbe_general_package, "Swap Values", "@$0 &lt;-&gt; $1", "SwapNumberValues",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_SwapValues, numbe_general_package, "Swap Number Values", "@$0 &lt;-&gt; $1", "SwapNumberValues",
                      [
-                             new VariableDefinitionNumber ("Number 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
-                             new VariableDefinitionNumber ("Number 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
+                             new VariableDefinitionNumber ("Number 1 (reference)", null), 
+                             new VariableDefinitionNumber ("Number 2 (reference)", null), 
                      ],
                      null
                   );
@@ -1251,8 +1251,8 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CCat_SwapValues, ccat_package, "Swap Values", "@$0 &lt;-&gt; $1", "SwapCCatValues",
                      [
-                             new VariableDefinitionCollisionCategory ("Collision Category 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
-                             new VariableDefinitionCollisionCategory ("Collision Category 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
+                             new VariableDefinitionCollisionCategory ("CCat 1 (reference)", null), 
+                             new VariableDefinitionCollisionCategory ("CCat 2 (reference)", null), 
                      ],
                      null
                   );
@@ -1319,8 +1319,8 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_SwapValues, entity_general_package, "Swap Values", "@$0 &lt;-&gt; $1", "SwapEntityValues",
                      [
-                             new VariableDefinitionEntity ("Entity 1", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
-                             new VariableDefinitionEntity ("Entity 2", null, {mDefaultSourceType: ValueSourceTypeDefine.ValueSource_Variable}), 
+                             new VariableDefinitionEntity ("Entity 1 (reference)", null), 
+                             new VariableDefinitionEntity ("Entity 2 (reference)", null), 
                      ],
                      null
                   );

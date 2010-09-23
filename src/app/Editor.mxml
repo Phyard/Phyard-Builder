@@ -97,7 +97,7 @@
             <mx:Button id="Button_SettingFunction" toolTip="Edit Code Snippet" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/function/command-setting.png')" disabledIcon="@Embed('res/function/command-setting-disabled.png')" />
             <mx:Spacer width="30"/>
             <mx:Label id="Label_FunctionEntityName" text="Name:" textAlign="right"/>
-            <mx:TextInput id="Text_FunctionEntityName" text="" width="200"/>
+            <mx:TextInput id="Text_FunctionEntityName" text="" width="200" enter="stage.focus = MainView;" focusIn="Runtime.SetHasInputFocused (true);" focusOut="Runtime.SetHasInputFocused (false);"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
       </mx:ViewStack>

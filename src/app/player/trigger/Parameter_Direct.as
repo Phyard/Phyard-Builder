@@ -16,10 +16,9 @@ package player.trigger
          return mValueObject;
       }
       
-      // used internally
       override public function AssignValueObject (valueObject:Object):void
       {
-         mValueObject = valueObject;
+         // can't changed
       }
    }
 }

@@ -62,7 +62,7 @@ package editor.trigger.entity {
          mouseChildren = false;
          
          mFunctionDeclaration = new FunctionDeclaration_Custom (mName);
-         mFunctionDefinition = new FunctionDefinition (Runtime.GetCurrentWorld ().GetTriggerEngine (), mFunctionDeclaration);
+         mFunctionDefinition = new FunctionDefinition (Runtime.GetCurrentWorld ().GetTriggerEngine (), mFunctionDeclaration, true);
          mCodeSnippet = new CodeSnippet (mFunctionDefinition);
       }
       

@@ -764,6 +764,9 @@ package editor {
          if (Runtime.HasSettingDialogOpened ())
             return;
          
+         if (Runtime.HasInputFocused ())
+            return;
+         
          switch (event.keyCode)
          {
             case Keyboard.ESCAPE:

@@ -5,7 +5,7 @@ package player.trigger.entity
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
    import player.trigger.VariableInstance;
-   import player.trigger.Parameter_Direct;
+   import player.trigger.Parameter_Variable;
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
@@ -65,16 +65,16 @@ package player.trigger.entity
 //   as Bool Function
 //=============================================================
       
-      private var mBooleanReturnValueTarget:Parameter_Direct = new Parameter_Direct (false);
+      private var mBooleanReturnValueTarget:Parameter_Variable = new Parameter_Variable (new VariableInstance (false));
       
       public function RunBoolFunction ():Boolean
       {
-         mBooleanReturnValueTarget.mValueObject = false;
+         //mBooleanReturnValueTarget.AssignValueObject (false); // default value
          
          // if (mConditionListDefinition != null) // should not be null
          mConditionDefinition.EvaluateCondition (mBooleanReturnValueTarget);
          
-         return mBooleanReturnValueTarget.mValueObject as Boolean;
+         return mBooleanReturnValueTarget.EvaluateValueObject () as Boolean;
       }
       
    }

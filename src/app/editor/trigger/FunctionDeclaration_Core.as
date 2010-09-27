@@ -17,11 +17,20 @@ package editor.trigger {
                                                 inputDefinitions:Array = null, returnDefinitions:Array = null, 
                                                 showUpInApiMenu:Boolean = true)
       {
+         mFunctionDeclaration_Common = CoreFunctionDeclarations.GetCoreFunctionDeclaration (id);
+         
+         if (inputDefinitions != null)
+         {
+            var count:int = inputDefinitions.length;
+            for (var i:int = 0; i < count; ++ i)
+            {
+               (inputDefinitions[i] as VariableDefinition).SetDefaultValue (mFunctionDeclaration_Common.GetInputParamDefaultValue (i));
+            }
+         }
+         
          super (id, name, description, inputDefinitions, returnDefinitions, showUpInApiMenu);
          
          ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
-         
-         mFunctionDeclaration_Common = CoreFunctionDeclarations.GetCoreFunctionDeclaration (id);
          
          if ( ! CheckConsistent (mFunctionDeclaration_Common) )
             throw new Error ("not consistent! id = " + id);

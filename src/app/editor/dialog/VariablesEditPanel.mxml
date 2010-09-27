@@ -100,6 +100,7 @@
          <menuitem label="New String Variable" data="String"/>
          <menuitem label="New Collision Category Variable" data="CCat"/>
          <menuitem label="New Entity Variable" data="Entity"/>
+         <!--menuitem label="New Array Variable" data="Array"/-->
       </root>
    </mx:XML>
 
@@ -125,6 +126,7 @@
             import editor.trigger.VariableDefinitionString;
             import editor.trigger.VariableDefinitionEntity;
             import editor.trigger.VariableDefinitionCollisionCategory;
+            import editor.trigger.VariableDefinitionArray;
                
             
             [Bindable]
@@ -241,6 +243,10 @@
                else if (event.item.@data == "Entity")
                {
                   variableDefinition = new VariableDefinitionEntity ("anEntity");
+               }
+               else if (event.item.@data == "Array")
+               {
+                  variableDefinition = new VariableDefinitionArray ("anArray");
                }
                
                if (variableDefinition != null)

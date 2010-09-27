@@ -46,12 +46,15 @@ package common {
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
    
+   import editor.trigger.entity.EntityFunction;
+   
    import editor.trigger.VariableSpace;
    import editor.trigger.VariableInstance;
    
    import editor.runtime.Runtime;
    
-   import common.trigger.define.VariableSpaceDefine;
+   import common.trigger.define.FunctionDefine;
+   //import common.trigger.define.VariableSpaceDefine;
    
    import common.trigger.ValueSpaceTypeDefine;
    
@@ -203,7 +206,7 @@ package common {
                   
                   var basicCondition:EntityBasicCondition = editorEntity as EntityBasicCondition;
                   
-                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, basicCondition.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, basicCondition.GetCodeSnippet ());
                }
                else if (editorEntity is EntityTask)
                {
@@ -294,7 +297,7 @@ package common {
                   }
                   //<<
                   
-                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, eventHandler.GetCodeSnippet ());
                }
                else if (editorEntity is EntityAction)
                {
@@ -302,7 +305,7 @@ package common {
                   
                   var action:EntityAction = editorEntity as EntityAction;
                   
-                  entityDefine.mCodeSnippetDefine = TriggerFormatHelper.CodeSnippet2CodeSnippetDefine (editorWorld, action.GetCodeSnippet ());
+                  entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, action.GetCodeSnippet ());
                }
             }
             else if (editorEntity is EntityShape)
@@ -681,11 +684,30 @@ package common {
          
          //from v1.52
          // global variables and custom entity properties
-         {
-            worldDefine.mGlobalVariableSpaceDefines.push (TriggerFormatHelper.VariableSpace2VariableSpaceDefine (editorWorld, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ()));
+         //{
+            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), worldDefine.mGlobalVariableDefines, true);
             
-            worldDefine.mEntityPropertySpaceDefines.push (TriggerFormatHelper.VariableSpace2VariableSpaceDefine (editorWorld, editorWorld.GetTriggerEngine ().GetEntityVariableSpace ()));
-         }
+            TriggerFormatHelper.VariableSpace2VariableDefines (editorWorld, editorWorld.GetTriggerEngine ().GetEntityVariableSpace (), worldDefine.mEntityPropertyDefines, true);
+         //}
+         
+         //from v1.53
+         // custom functions
+         //{
+            // packages
+            
+            // package variables
+            
+            // functions 
+            
+            var numFunctions:int = editorWorld.GetNumPureFunctions ();
+            for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+            {
+               var functionEntity:EntityFunction = editorWorld.GetPureFunctionByIndex (functionId);
+               
+               worldDefine.mFunctionDefines.push (TriggerFormatHelper.Function2FunctionDefine (editorWorld, functionEntity.GetCodeSnippet ()));
+            }
+         //}
+         //<<
          
          return worldDefine;
       }
@@ -694,14 +716,16 @@ package common {
       {
          if (worldDefine == null)
             return editorWorld;
-            
+         
+         var isCreatingNewWorld:Boolean = (editorWorld == null);
+         
          // from v1,03
          DataFormat2.FillMissedFieldsInWorldDefine (worldDefine);
          if (adjustPrecisionsInWorldDefine)
             DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine);
          
          //
-         if (editorWorld == null)
+         if (isCreatingNewWorld)
          {
             editorWorld = new editor.world.World ();
             
@@ -770,7 +794,7 @@ package common {
          
          var beginningCollisionCategoryIndex:int = editorWorld.GetNumCollisionCategories ();
          
-         if (worldDefine.mVersion >= 0x0102)
+         //>> from v1.02
          {
             var collisionCategory:EntityCollisionCategory;
             
@@ -787,9 +811,12 @@ package common {
                collisionCategory.UpdateSelectionProxy ();
             }
             
-            collisionCategory = editorWorld.GetCollisionCategoryByIndex (worldDefine.mDefaultCollisionCategoryIndex);
-            if (collisionCategory != null)
-               collisionCategory.SetDefaultCategory (true);
+            if (isCreatingNewWorld)
+            {
+               collisionCategory = editorWorld.GetCollisionCategoryByIndex (worldDefine.mDefaultCollisionCategoryIndex);
+               if (collisionCategory != null)
+                  collisionCategory.SetDefaultCategory (true);
+            }
             
             for (var pairId:int = 0; pairId < worldDefine.mCollisionCategoryFriendLinkDefines.length; ++ pairId)
             {
@@ -800,6 +827,7 @@ package common {
                                                                     beginningCollisionCategoryIndex + pairDefine.mCollisionCategory2Index);
             }
          }
+         //<<
          
          // entities
          
@@ -1306,10 +1334,10 @@ package common {
          // from v1.52
          var beginningGlobalVariableIndex:int = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumVariableInstances ();
          var beginningEntityVariableIndex:int = editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumVariableInstances ();
-         if (worldDefine.mGlobalVariableSpaceDefines.length > 0)
-            TriggerFormatHelper.VariableSpaceDefine2VariableSpace (editorWorld, worldDefine.mGlobalVariableSpaceDefines [0], editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ());
-         if (worldDefine.mEntityPropertySpaceDefines.length > 0)
-            TriggerFormatHelper.VariableSpaceDefine2VariableSpace (editorWorld, worldDefine.mEntityPropertySpaceDefines [0], editorWorld.GetTriggerEngine ().GetEntityVariableSpace ());
+         if (worldDefine.mGlobalVariableDefines.length > 0)
+            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mGlobalVariableDefines, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), true);
+         if (worldDefine.mEntityPropertyDefines.length > 0)
+            TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mEntityPropertyDefines, editorWorld.GetTriggerEngine ().GetEntityVariableSpace (), true);
          editorWorld.GetTriggerEngine ().NotifyGlobalVariableSpaceModified ();
          editorWorld.GetTriggerEngine ().NotifyEntityVariableSpaceModified ();
          //<<<
@@ -1381,8 +1409,8 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
-                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, condition.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mFunctionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
+                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, condition.GetCodeSnippet (), entityDefine.mFunctionDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -1427,16 +1455,13 @@ package common {
                   ShiftEntityRefIndexes (entityDefine.mInputAssignerCreationIds, beginningEntityIndex);
                   eventHandler.SetEntityAssignersByCreationIds (entityDefine.mInputAssignerCreationIds);
                   
-                  if (worldDefine.mVersion >= 0x0108)
+                  //>> from v1.08, if (worldDefine.mVersion >= 0x0108)
                   {
                      if (entityDefine.mExternalActionEntityCreationId >= 0)
                         entityDefine.mExternalActionEntityCreationId += beginningEntityIndex;
                      
                      eventHandler.SetExternalActionByCreationId (entityDefine.mExternalActionEntityCreationId);
-                  }
-                  
-                  if (worldDefine.mVersion >= 0x0108)
-                  {
+                     
                      if (eventHandler is EntityEventHandler_Timer)
                      {
                         var timerEventHandler:EntityEventHandler_Timer = eventHandler as EntityEventHandler_Timer;
@@ -1454,17 +1479,22 @@ package common {
                      {
                         var mouseEventHandler:EntityEventHandler_Mouse = eventHandler as EntityEventHandler_Mouse;
                      }
+                     else if (eventHandler is EntityEventHandler_Contact)
+                     {
+                        var contactEventHandler:EntityEventHandler_Contact = eventHandler as EntityEventHandler_Contact;
+                     }
                   }
+                  //<<
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
-                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mFunctionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
+                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, eventHandler.GetCodeSnippet (), entityDefine.mFunctionDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
-                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, action.GetCodeSnippet (), entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (entityDefine.mFunctionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex);
+                  TriggerFormatHelper.LoadCodeSnippetFromCodeSnippetDefine (editorWorld, action.GetCodeSnippet (), entityDefine.mFunctionDefine.mCodeSnippetDefine);
                }
             }
             
@@ -1689,20 +1719,32 @@ package common {
          
          if (worldDefine.mVersion >= 0x0152)
          {
-            var variableSpaceDefine:VariableSpaceDefine;
+            //>> v1.52 only
+            //var variableSpaceDefine:VariableSpaceDefine;
+            //
+            //for each (element in worldXml.GlobalVariables.VariablePackage)
+            //{
+            //   variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
+            //   variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Global;
+            //   worldDefine.mGlobalVariableSpaceDefines.push (variableSpaceDefine);
+            //}
             
-            for each (element in worldXml.GlobalVariables.VariablePackage)
+            //for each (element in worldXml.EntityProperties.VariablePackage)
+            //{
+            //   variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
+            //   variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Entity;
+            //   worldDefine.mEntityPropertySpaceDefines.push (variableSpaceDefine);
+            //}
+            
+            if (worldDefine.mVersion == 0x0152)
             {
-               variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
-               variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Global;
-               worldDefine.mGlobalVariableSpaceDefines.push (variableSpaceDefine);
+               TriggerFormatHelper.VariablesXml2Define (worldXml.GlobalVariables.VariablePackage [0], worldDefine.mGlobalVariableDefines, true);
+               TriggerFormatHelper.VariablesXml2Define (worldXml.EntityProperties.VariablePackage [0], worldDefine.mEntityPropertyDefines, true);
             }
-            
-            for each (element in worldXml.EntityProperties.VariablePackage)
+            else
             {
-               variableSpaceDefine = TriggerFormatHelper.VariableSpaceXml2Define (element);
-               variableSpaceDefine.mSpaceType = ValueSpaceTypeDefine.ValueSpace_Entity;
-               worldDefine.mEntityPropertySpaceDefines.push (variableSpaceDefine);
+               TriggerFormatHelper.VariablesXml2Define (worldXml.GlobalVariables [0], worldDefine.mGlobalVariableDefines, true);
+               TriggerFormatHelper.VariablesXml2Define (worldXml.EntityProperties [0], worldDefine.mEntityPropertyDefines, true);
             }
          }
          
@@ -1776,7 +1818,8 @@ package common {
          {
             if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
             {
-               entityDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
+               entityDefine.mFunctionDefine = new FunctionDefine ();
+               entityDefine.mFunctionDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
@@ -1835,11 +1878,13 @@ package common {
                   }
                }
                
-               entityDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
+               entityDefine.mFunctionDefine = new FunctionDefine ();
+               entityDefine.mFunctionDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
             {
-               entityDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
+               entityDefine.mFunctionDefine = new FunctionDefine ();
+               entityDefine.mFunctionDefine.mCodeSnippetDefine = TriggerFormatHelper.Xml2CodeSnippetDefine (element.CodeSnippet);
             }
          }
          else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -2307,7 +2352,7 @@ package common {
             {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
-                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -2374,11 +2419,11 @@ package common {
                      }
                   }
                   
-                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine.mCodeSnippetDefine);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
-                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mCodeSnippetDefine);
+                  TriggerFormatHelper.WriteCodeSnippetDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine.mCodeSnippetDefine);
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -2690,11 +2735,21 @@ package common {
          // custom variables
          if (worldDefine.mVersion >= 0x0152)
          {
-            byteArray.writeShort (1); // num global variable packages
-            TriggerFormatHelper.WriteVariableSpaceDefineIntoBinFile (byteArray, worldDefine.mGlobalVariableSpaceDefines [0] as VariableSpaceDefine);
+            if (worldDefine.mVersion == 0x0152)
+            {
+               byteArray.writeShort (1); // num global variable packages
+               byteArray.writeUTF ("");//variableSpaceDefine.mName);
+               byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
+            }
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mGlobalVariableDefines, true);
             
-            byteArray.writeShort (1); // num entity property packages
-            TriggerFormatHelper.WriteVariableSpaceDefineIntoBinFile (byteArray, worldDefine.mEntityPropertySpaceDefines [0] as VariableSpaceDefine);
+            if (worldDefine.mVersion == 0x0152)
+            {
+               byteArray.writeShort (1); // num entity property packages
+               byteArray.writeUTF ("");//variableSpaceDefine.mName);
+               byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
+            }
+            TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
          }
          
          // ...

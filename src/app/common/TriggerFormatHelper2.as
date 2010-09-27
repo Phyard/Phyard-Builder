@@ -7,6 +7,10 @@ package common {
    import player.world.World;
    import player.entity.Entity;
    
+   import player.trigger.FunctionDefinition;
+   import player.trigger.FunctionDefinition_Core;
+   import player.trigger.FunctionDefinition_Custom;
+   
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition;
    import player.trigger.FunctionDefinition_Custom;
@@ -32,6 +36,7 @@ package common {
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.ValueTypeDefine;
    
+   import common.trigger.define.FunctionDefine;
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionCallingDefine;
    import common.trigger.define.ValueSourceDefine;
@@ -44,7 +49,7 @@ package common {
    import common.trigger.define.ValueTargetDefine_Variable;
    import common.trigger.define.ValueTargetDefine_Property;
    
-   import common.trigger.define.VariableSpaceDefine;
+   //import common.trigger.define.VariableSpaceDefine;
    import common.trigger.define.VariableInstanceDefine;
    
    import common.trigger.parse.CodeSnippetParser;
@@ -57,6 +62,71 @@ package common {
    
    public class TriggerFormatHelper2
    {
+      
+      public static function BuildInputValueSourceDefinesFormFunctionDeclaration (functionDeclaration:FunctionDeclaration):Array
+      {
+         var valueSourceDefines:Array = null;
+         
+         var numInputs:int = functionDeclaration.GetNumInputs ();
+         if (numInputs > 0)
+         {
+            valueSourceDefines = new Array (numInputs);
+            
+            for (var i:int =  0; i < numInputs; ++ i)
+            {
+               valueSourceDefines [i] = new ValueSourceDefine_Direct (functionDeclaration.GetInputParamValueType (i), functionDeclaration.GetInputParamDefaultValue (i));
+            }
+         }
+         
+         return valueSourceDefines;
+      }
+      
+      public static function BuildInputValueSourceDefinesFormVariableDefines (inputVariableDefines:Array):Array
+      {
+         var valueSourceDefines:Array = null;
+         
+         var numInputs:int = inputVariableDefines.length;
+         if (numInputs > 0)
+         {
+            valueSourceDefines = new Array (numInputs);
+            
+            for (var i:int =  0; i < numInputs; ++ i)
+            {
+               var variableInstanceDefine:VariableInstanceDefine = inputVariableDefines [i] as VariableInstanceDefine;
+               var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
+               
+               valueSourceDefines [i] = new ValueSourceDefine_Direct (direct_source_define.mValueType, direct_source_define.mValueObject);
+            }
+         }
+         
+         return valueSourceDefines;
+      }
+      
+      public static function CreateCoreFunctionDefinition (functionDeclaration:FunctionDeclaration, callback:Function):FunctionDefinition_Core
+      {
+         return new FunctionDefinition_Core (BuildInputValueSourceDefinesFormFunctionDeclaration (functionDeclaration), functionDeclaration.GetNumOutputs (), callback);
+      }
+      
+      // for functionDefine and functionDeclaration, at least one is not null
+      public static function CreateFunctionDefinition (playerWorld:World, functionDefine:FunctionDefine, functionDeclaration:FunctionDeclaration):FunctionDefinition_Custom
+      {
+         var numLocals:int = functionDefine.mLocalVariableDefines == null ? 0 : functionDefine.mLocalVariableDefines.length;
+         var costomFunction:FunctionDefinition_Custom;
+         if (functionDeclaration != null)
+         {
+            costomFunction = new FunctionDefinition_Custom (BuildInputValueSourceDefinesFormFunctionDeclaration (functionDeclaration), functionDeclaration.GetNumOutputs (), numLocals);
+         }
+         else
+         {
+            costomFunction = new FunctionDefinition_Custom (BuildInputValueSourceDefinesFormVariableDefines (functionDefine.mInputVariableDefines), functionDefine.mOutputVariableDefines.length, numLocals);
+         }
+         
+         var codeSnippetDefine:CodeSnippetDefine = functionDefine.mCodeSnippetDefine.Clone ();
+         codeSnippetDefine.DisplayValues2PhysicsValues (playerWorld.GetCoordinateSystem ());
+         costomFunction.SetCodeSnippetDefine (codeSnippetDefine);
+         
+         return costomFunction;
+      }
       
 //==============================================================================================
 // define -> definition (player)
@@ -344,40 +414,7 @@ package common {
             
             //assert (valueType == direct_source_define.mValueType);
             
-            switch (valueType)
-            {
-               case ValueTypeDefine.ValueType_Boolean:
-                  value_source = new Parameter_Direct (direct_source_define.mValueObject as Boolean);
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  value_source = new Parameter_Direct (direct_source_define.mValueObject as Number);
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  value_source = new Parameter_Direct (direct_source_define.mValueObject as String);
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-               {
-                  var entityIndex:int = direct_source_define.mValueObject as int;
-                  if (entityIndex < 0)
-                  {
-                     if (entityIndex == Define.EntityId_Ground)
-                        value_source = new Parameter_Direct (playerWorld);
-                     else // if (entityIndex == Define.EntityId_None)
-                        value_source = new Parameter_Direct (null);
-                  }
-                  else
-                  {
-                     value_source = new Parameter_Direct (playerWorld.GetEntityByCreationId (entityIndex));
-                  }
-                  
-                  break;
-               }
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_source = new Parameter_Direct (playerWorld.GetCollisionCategoryById (direct_source_define.mValueObject as int));
-                  break;
-               default:
-                  break;
-            }
+            value_source = new Parameter_Direct (ValidateDirectValueObject_Define2Object (playerWorld, valueType, direct_source_define.mValueObject));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable)
          {
@@ -389,7 +426,7 @@ package common {
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  value_source = new Parameter_Variable ((Global.GetGlobalVariableSpace (0) as VariableSpace).GetVariableAt (variable_index));
+                  value_source = new Parameter_Variable ((Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index));
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
@@ -436,7 +473,7 @@ package common {
                   value_source = new Parameter_Direct (null);
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_source = new Parameter_Direct (Define.CollisionCategoryId_HiddenCategory);
+                  value_source = new Parameter_Direct (Define.CCatId_Hidden);
                   break;
                default:
                {
@@ -468,7 +505,7 @@ package common {
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  value_target = new Parameter_Variable ((Global.GetGlobalVariableSpace (0) as VariableSpace).GetVariableAt (variable_index));
+                  value_target = new Parameter_Variable ((Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index));
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
@@ -505,52 +542,56 @@ package common {
          return value_target;
       }
       
-      public static function VariableSpaceDefine2VariableSpace (playerWorld:World, variableSpaceDefine:VariableSpaceDefine):VariableSpace
+      public static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueobject:Object):Object
       {
-         var numVariables:int = variableSpaceDefine.mVariableDefines.length;
+         switch (valueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               return valueobject as Boolean;
+            case ValueTypeDefine.ValueType_Number:
+               return valueobject as Number;
+            case ValueTypeDefine.ValueType_String:
+               return valueobject as String;
+            case ValueTypeDefine.ValueType_Entity:
+            {
+               var entityIndex:int = valueobject as int;
+               if (entityIndex < 0)
+               {
+                  if (entityIndex == Define.EntityId_Ground)
+                     return playerWorld;
+                  else // if (entityIndex == Define.EntityId_None)
+                     return null;
+               }
+               else
+               {
+                  return playerWorld.GetEntityByCreationId (entityIndex);
+               }
+            }
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               return playerWorld.GetCollisionCategoryById (valueobject as int);
+            default:
+            {
+               return null;
+            }
+         }
+      }
+      
+      //public static function VariableSpaceDefine2VariableSpace (playerWorld:World, variableSpaceDefine:VariableSpaceDefine):VariableSpace // v1.52 only
+      public static function VariableDefines2VariableSpace (playerWorld:World, variableDefines:Array):VariableSpace // supportInitalValues parameter:is not essential
+      {
+         //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
+         var numVariables:int = variableDefines.length;
          var variableSpace:VariableSpace = new VariableSpace (numVariables);
          
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
-            var variableInstanceDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [variableId] as VariableInstanceDefine;
+            //var variableInstanceDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
+            var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
             var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
             
             var variableInstance:VariableInstance = variableSpace.GetVariableAt (variableId);
             variableInstance.SetName (variableInstanceDefine.mName);
-            
-            switch (direct_source_define.mValueType)
-            {
-               case ValueTypeDefine.ValueType_Boolean:
-                  variableInstance.SetValueObject (direct_source_define.mValueObject as Boolean);
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  variableInstance.SetValueObject (direct_source_define.mValueObject as Number);
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  variableInstance.SetValueObject (direct_source_define.mValueObject as String);
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-               {
-                  var entityIndex:int = direct_source_define.mValueObject as int;
-                  if (entityIndex < 0)
-                  {
-                     variableInstance.SetValueObject (null);
-                  }
-                  else
-                  {
-                     variableInstance.SetValueObject (playerWorld.GetEntityByCreationId (entityIndex));
-                  }
-                  
-                  break;
-               }
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  variableInstance.SetValueObject (playerWorld.GetCollisionCategoryById (direct_source_define.mValueObject as int));
-                  break;
-               default:
-               {
-                  variableInstance.SetValueObject (null);
-               }
-            }
+            variableInstance.SetValueObject (ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
          }
          
          return variableSpace;
@@ -702,15 +743,18 @@ package common {
          }
       }
       
-      public static function  LoadVariableSpaceDefineFromBinFile (binFile:ByteArray):VariableSpaceDefine
+      //public static function  LoadVariableSpaceDefineFromBinFile (binFile:ByteArray):VariableSpaceDefine // v1.52 only
+      public static function  LoadVariableDefinesFromBinFile (binFile:ByteArray, outputVariableDefines:Array, supportInitalValues:Boolean):void
       {
-         var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
-         
-         variableSpaceDefine.mName = binFile.readUTF ();
-         variableSpaceDefine.mParentPackageId = binFile.readShort ();
+         //>> only v1.52
+         //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
+         //
+         //variableSpaceDefine.mName = binFile.readUTF ();
+         //variableSpaceDefine.mParentPackageId = binFile.readShort ();
+         //<<
          
          var numVariables:int = binFile.readShort ();
-         variableSpaceDefine.mVariableDefines = new Array (numVariables);
+         //variableSpaceDefine.mVariableDefines = new Array (numVariables); // v1.52 only
          var valueType:int;
          
          for (var i:int = 0; i < numVariables; ++ i)
@@ -721,13 +765,14 @@ package common {
             valueType = binFile.readShort ();
             viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
                                                             valueType,
-                                                            LoadDirectValueObjectFromBinFile (binFile, valueType, ValueTypeDefine.NumberTypeDetail_Double)
+                                                            supportInitalValues ? LoadDirectValueObjectFromBinFile (binFile, valueType, ValueTypeDefine.NumberTypeDetail_Double) : ValueTypeDefine.GetDefaultDirectDefineValue (valueType)
                                                             );
             
-            variableSpaceDefine.mVariableDefines [i] = viDefine;
+            //variableSpaceDefine.mVariableDefines [i] = viDefine; // v1.52 only
+            outputVariableDefines.push (viDefine);
          }
          
-         return variableSpaceDefine;
+         //return variableSpaceDefine; // v1.52 only
       }
       
 //==============================================================================================
@@ -874,31 +919,40 @@ package common {
          }
       }
       
-      public static function VariableSpaceDefine2Xml (variableSpaceDefine:VariableSpaceDefine):XML
+      //public static function VariableSpaceDefine2Xml (variableSpaceDefine:VariableSpaceDefine):XML // v1.52 only
+      public static function VariablesDefine2Xml (variableDefines:Array, elementVariablePackage:XML, supportInitalValues:Boolean):void
       {
-         var elementVariablePackage:XML = <VariablePackage />;
-         
-         elementVariablePackage.@name = variableSpaceDefine.mName;
-         elementVariablePackage.@package_id = variableSpaceDefine.mPackageId;
-         elementVariablePackage.@parent_package_id = variableSpaceDefine.mParentPackageId;
+         //>> v1.52 only
+         //var elementVariablePackage:XML = <VariablePackage />;
+         //
+         //elementVariablePackage.@name = variableSpaceDefine.mName;
+         //elementVariablePackage.@package_id = variableSpaceDefine.mPackageId;
+         //elementVariablePackage.@parent_package_id = variableSpaceDefine.mParentPackageId;
+         //<<
          
          var viDefine:VariableInstanceDefine;
          var element:Object;;
          
-         var numVariables:int = variableSpaceDefine.mVariableDefines.length;
+         //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
+         var numVariables:int = variableDefines.length;
          for (var variableIndex:int = 0; variableIndex < numVariables; ++ variableIndex)
          {
-            viDefine = variableSpaceDefine.mVariableDefines [variableIndex] as VariableInstanceDefine;
+            //viDefine = variableSpaceDefine.mVariableDefines [variableIndex] as VariableInstanceDefine; // v1.52 only
+            viDefine = variableDefines [variableIndex] as VariableInstanceDefine;
             
             element = <Variable />;
             element.@name = viDefine.mName;
             element.@value_type = viDefine.mDirectValueSourceDefine.mValueType;
-            element.@initial_value = ValidateDirectValueObject_Define2Xml (viDefine.mDirectValueSourceDefine.mValueType, viDefine.mDirectValueSourceDefine.mValueObject);
+            
+            if (supportInitalValues)
+            {
+               element.@initial_value = ValidateDirectValueObject_Define2Xml (viDefine.mDirectValueSourceDefine.mValueType, viDefine.mDirectValueSourceDefine.mValueObject);
+            }
             
             elementVariablePackage.appendChild (element);
          }
          
-         return elementVariablePackage;
+         //return elementVariablePackage; // v1.52 only
       }
       
 //========================================================================================
@@ -968,13 +1022,17 @@ package common {
          }
       }
       
-      public static function AdjustNumberPrecisionsInVariableSpaceDefine (variableSpaceDefine:VariableSpaceDefine):void
+      //public static function AdjustNumberPrecisionsInVariableSpaceDefine (variableSpaceDefine:VariableSpaceDefine):void // v1.52 only
+      public static function AdjustNumberPrecisionsInVariableDefines (variableDefines:Array):void
       {
-         var numVariables:int = variableSpaceDefine.mVariableDefines.length;
+         //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
+         var numVariables:int = variableDefines.length;
+         
          var directNumber:Number;
          for (var i:int = 0; i < numVariables; ++ i)
          {
-            var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i] as VariableInstanceDefine;
+            //var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i] as VariableInstanceDefine; // v1.52 only
+            var viDefine:VariableInstanceDefine = variableDefines [i] as VariableInstanceDefine;
             
             if (viDefine.mDirectValueSourceDefine.mValueType == ValueTypeDefine.ValueType_Number)
             {

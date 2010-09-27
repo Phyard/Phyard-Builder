@@ -1283,7 +1283,7 @@ package editor.world {
       {
          var list:Array = new Array ();
          
-         list.push ({label:"-1:{Hidden Category}", mCategoryIndex:Define.CollisionCategoryId_HiddenCategory});
+         list.push ({label:"-1:{Hidden Category}", mCategoryIndex:Define.CCatId_Hidden});
          
          var child:Object;
          var category:EntityCollisionCategory;
@@ -1310,7 +1310,7 @@ package editor.world {
                return i;
          }
          
-         return CollisionCategoryIndex2SelectListSelectedIndex (Define.CollisionCategoryId_HiddenCategory, dataProvider);
+         return CollisionCategoryIndex2SelectListSelectedIndex (Define.CCatId_Hidden, dataProvider);
       }
       
 //=================================================================================

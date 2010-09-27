@@ -70,10 +70,6 @@ package player.entity {
                SetAlpha     (entityDefine.mAlpha);
             if (entityDefine.mIsEnabled != undefined)
                SetEnabled    (entityDefine.mIsEnabled);
-            
-            // custom properties
-            
-            Global.InitEntityPropertyValues (mCustomProeprtySpaces);
          }
       }
       
@@ -204,25 +200,32 @@ package player.entity {
 //   custom properties
 //====================================================================================================
       
-      protected var mCustomProeprtySpaces:Array = new Array ();
+      //protected var mCustomProeprtySpaces:Array = new Array (); // v1.52 only
+      protected var mCustomProeprtySpace:VariableSpace;
+      
+      public function InitCustomPropertyValues ():void
+      {
+         mCustomProeprtySpace = Global.CloneEntityPropertyInitialValues ();
+      }
       
       public function GetCustomProperty (spaceId:int, propertyId:int):Object
       {
-         if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
-            return null;
+         //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
+         //   return null;
+         //
+         //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId).GetValueObject ();
          
-      //trace ("spaceId = " + spaceId + ", propertyId = " + propertyId);
-      //trace ("mCustomProeprtySpaces [spaceId] = " + mCustomProeprtySpaces [spaceId]);
-      //trace ("(mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId) = " + (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId));
-         return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId).GetValueObject ();
+         return mCustomProeprtySpace.GetVariableAt (propertyId).GetValueObject ();
       }
       
       public function SetCustomProperty (spaceId:int, propertyId:int, valueObject:Object):void
       {
-         if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
-            return;
+         //if (spaceId < 0 || spaceId >= mCustomProeprtySpaces.length)
+         //   return;
+         //
+         //var vi:VariableInstance = (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId);
          
-         var vi:VariableInstance = (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId);
+         var vi:VariableInstance = mCustomProeprtySpace.GetVariableAt (propertyId);
          if (vi != null)
          {
             vi.SetValueObject (valueObject);

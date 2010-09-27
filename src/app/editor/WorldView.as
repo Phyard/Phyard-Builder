@@ -5117,7 +5117,7 @@ package editor {
             if (oldEntitiesCount + worldDefine.mEntityDefines.length > Define.MaxEntitiesCount)
                return;
             
-            if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCollisionCategoriesCount)
+            if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
                return;
             
             DataFormat.WorldDefine2EditorWorld (worldDefine, true, mEditorWorld);

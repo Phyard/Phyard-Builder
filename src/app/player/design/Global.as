@@ -5,12 +5,13 @@ package player.design
    import player.trigger.TriggerEngine;
    import player.trigger.VariableSpace;
    import player.trigger.VariableInstance;
+   import player.trigger.FunctionDefinition_Custom;
    
    import actionscript.util.RandomNumberGenerator;
    import com.stephencalenderblog.MersenneTwisterRNG;
    
    import common.trigger.ValueTypeDefine;
-   import common.trigger.define.VariableSpaceDefine;
+   //import common.trigger.define.VariableSpaceDefine;
    
    import common.TriggerFormatHelper2;
    
@@ -32,9 +33,13 @@ package player.design
       
       public static var mRandomNumberGenerators:Array;
       
-      public static var mGlobalVariableSpaces:Array;
+      //public static var mGlobalVariableSpaces:Array;
+      public static var mGlobalVariableSpace:VariableSpace;
       
-      public static var mEntityVariableSpaces:Array;
+      //public static var mEntityVariableSpaces:Array;
+      public static var mEntityVariableSpace:VariableSpace;
+      
+      public static var mCustomFunctionDefinitions:Array;
       
    // callbacks
       
@@ -67,8 +72,8 @@ package player.design
          
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
          
-         mGlobalVariableSpaces = null;
-         mEntityVariableSpaces = null;
+         mGlobalVariableSpace = null;
+         mEntityVariableSpace = null;
          
          //
          RestartPlay = null;
@@ -119,47 +124,74 @@ package player.design
          }
       }
       
-      public static function InitCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void
+      //public static function InitCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
+      public static function InitCustomVariables (globalVarialbeDefines:Array, entityVarialbeDefines:Array):void
       {
-         var numSpaces:int;
+         //>> v1.52 only
+         //var numSpaces:int;
+         //
+         //numSpaces = globalVarialbeSpaceDefines.length;
+         //mGlobalVariableSpaces = new Array (numSpaces);
+         //
+         //for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
+         //{
+         //   mGlobalVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentWorld, globalVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
+         //}
+         //
+         //numSpaces = entityVarialbeSpaceDefines.length;
+         //mEntityVariableSpaces = new Array (numSpaces);
+         //
+         //for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
+         //{
+         //   mEntityVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentWorld, entityVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
+         //}
+         //<<
          
-         numSpaces = globalVarialbeSpaceDefines.length;
-         mGlobalVariableSpaces = new Array (numSpaces);
-         
-         for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
-         {
-            mGlobalVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentWorld, globalVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
-         }
-         
-         numSpaces = entityVarialbeSpaceDefines.length;
-         mEntityVariableSpaces = new Array (numSpaces);
-         
-         for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
-         {
-            mEntityVariableSpaces [spaceId] = TriggerFormatHelper2.VariableSpaceDefine2VariableSpace (mCurrentWorld, entityVarialbeSpaceDefines [spaceId] as VariableSpaceDefine);
-         }
+         mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines);
+         mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines);
       }
       
-      public static function GetGlobalVariableSpace (spaceId:int):VariableSpace
+      public static function GetGlobalVariableSpace ():VariableSpace
       {
-         if (spaceId < 0 || spaceId >= mGlobalVariableSpaces.length)
-            return null;
+         //>> v1.52 only
+         //if (spaceId < 0 || spaceId >= mGlobalVariableSpaces.length)
+         //   return null;
+         //
+         //return mGlobalVariableSpaces [spaceId] as VariableSpace;
+         //<<
          
-         return mGlobalVariableSpaces [spaceId] as VariableSpace;
+         return mGlobalVariableSpace;
       }
       
-      // propertyValues should not be null
-      public static function InitEntityPropertyValues (proeprtySpaces:Array):void
+      //>> v1.52 only
+      //// propertyValues should not be null
+      //public static function InitEntityPropertyValues (proeprtySpaces:Array):void
+      //{
+      //   var numSpaces:int = mEntityVariableSpaces.length;
+      //   
+      //   proeprtySpaces.length = numSpaces;
+      //   for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
+      //   {
+      //      proeprtySpaces [spaceId] = (mEntityVariableSpaces [spaceId] as VariableSpace).CloneSpace ();
+      //   }
+      //}
+      //<<
+      
+      public static function CloneEntityPropertyInitialValues ():VariableSpace
       {
-         var numSpaces:int = mEntityVariableSpaces.length;
-         
-         proeprtySpaces.length = numSpaces;
-         for (var spaceId:int = 0; spaceId < numSpaces; ++ spaceId)
-         {
-            proeprtySpaces [spaceId] = (mEntityVariableSpaces [spaceId] as VariableSpace).CloneSpace ();
-         }
+         return mEntityVariableSpace.CloneSpace ();
       }
       
+      //public static function InitCustomFunctions (functionDefines:Array);void
+      //{
+      //   var numFunctions:int = functionDefines.length;
+      //   mCustomFunctionDefinitions = new Array (numFunctions);
+      //   
+      //   for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+      //   {
+      //      mCustomFunctionDefinitions [functionId] = functionDefines [functionId];
+      //   }
+      //}
       
       public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void
       {

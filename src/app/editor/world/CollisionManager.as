@@ -89,12 +89,12 @@ package editor.world {
       public function GetCollisionCategoryIndex (category:EntityCollisionCategory):int
       {
          //if (category == null || ! contains (category))
-         //   return Define.CollisionCategoryId_HiddenCategory;
+         //   return Define.CCatId_Hidden;
          //
          //return getChildIndex (category);
          
          if (category == null)
-            return Define.CollisionCategoryId_HiddenCategory;
+            return Define.CCatId_Hidden;
          
          return category.GetAppearanceLayerId ();
       }
@@ -107,11 +107,11 @@ package editor.world {
       
       public function CreateEntityCollisionCategory (ccName:String = null):EntityCollisionCategory
       {
-         if (numChildren >= Define.MaxCollisionCategoriesCount - 1)
+         if (numChildren >= Define.MaxCCatsCount - 1)
             return null;
          
          if (ccName == null)
-            ccName = Define.CategoryDefaultName;
+            ccName = Define.DefaultCCatName;
          
          var category:EntityCollisionCategory = new EntityCollisionCategory (this);
          addChild (category);

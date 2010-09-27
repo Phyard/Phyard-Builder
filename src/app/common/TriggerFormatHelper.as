@@ -12,6 +12,7 @@ package common {
    import editor.trigger.TriggerEngine;
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDeclaration;
+   import editor.trigger.FunctionDeclaration_Custom;
    import editor.trigger.FunctionDefinition;
    import editor.trigger.FunctionCalling;
    import editor.trigger.VariableDefinition;
@@ -39,6 +40,7 @@ package common {
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.ValueTypeDefine;
    
+   import common.trigger.define.FunctionDefine;
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionCallingDefine;
    import common.trigger.define.ValueSourceDefine;
@@ -51,7 +53,7 @@ package common {
    import common.trigger.define.ValueTargetDefine_Variable;
    import common.trigger.define.ValueTargetDefine_Property;
    
-   import common.trigger.define.VariableSpaceDefine;
+   //import common.trigger.define.VariableSpaceDefine;
    import common.trigger.define.VariableInstanceDefine;
    
    public class TriggerFormatHelper
@@ -88,6 +90,31 @@ package common {
             entityDefine.mInputConditionEntityCreationIds = indexes;
             entityDefine.mInputConditionTargetValues = values;
          }
+      }
+      
+      public static function Function2FunctionDefine (editorWorld:World, codeSnippet:CodeSnippet):FunctionDefine
+      {
+         var functionDefine:FunctionDefine = new FunctionDefine ();
+         
+         var functionDefinition:FunctionDefinition = codeSnippet.GetOwnerFunctionDefinition ();
+         
+         //>> from v`1.53
+         if (functionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
+         {
+            functionDefine.mInputVariableDefines = new Array ();
+            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetInputVariableSpace (), functionDefine.mInputVariableDefines, true);
+            
+            functionDefine.mOutputVariableDefines = new Array ();
+            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetOutputVariableSpace (), functionDefine.mOutputVariableDefines, false);
+         }
+         
+         functionDefine.mLocalVariableDefines = new Array ();
+         VariableSpace2VariableDefines (editorWorld, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false);
+         //<<
+         
+         functionDefine.mCodeSnippetDefine = CodeSnippet2CodeSnippetDefine (editorWorld, codeSnippet);
+         
+         return functionDefine;
       }
       
       public static function CodeSnippet2CodeSnippetDefine (editorWorld:World, codeSnippet:CodeSnippet):CodeSnippetDefine
@@ -241,16 +268,18 @@ package common {
          }
       }
       
-      public static function VariableSpace2VariableSpaceDefine (editorWorld:World, variableSpace:VariableSpace):VariableSpaceDefine
+      public static function VariableSpace2VariableDefines (editorWorld:World, variableSpace:VariableSpace, outputVariableDefines:Array, supportInitalValues:Boolean):void
       {
          var numVariables:int = variableSpace.GetNumVariableInstances ();
          
-         var spaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
-         spaceDefine.mPackageId = 0;
-         spaceDefine.mSpaceType = variableSpace.GetSpaceType ();
-         spaceDefine.mParentPackageId = -1;
-         spaceDefine.mName = "";
-         spaceDefine.mVariableDefines = new Array (numVariables);
+         //>> v1.52 only
+         //var spaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
+         //spaceDefine.mSpaceType = variableSpace.GetSpaceType ();
+         //spaceDefine.mPackageId = 0;
+         //spaceDefine.mParentPackageId = -1;
+         //spaceDefine.mName = "";
+         //spaceDefine.mVariableDefines = new Array (numVariables);
+         //<<
          
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
@@ -258,12 +287,14 @@ package common {
             
             var variableInstanceDefine:VariableInstanceDefine = new VariableInstanceDefine ();
             variableInstanceDefine.mName = variableInstance.GetName ();
-            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (editorWorld, variableInstance.GetValueType (), variableInstance.GetValueObject ()));
+            variableInstanceDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), ValidateDirectValueObject_Object2Define (editorWorld, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : ValueTypeDefine.GetDefaultDirectDefineValue (variableInstance.GetValueType ())));
             
-            spaceDefine.mVariableDefines [variableId] = variableInstanceDefine;
+            //spaceDefine.mVariableDefines [variableId] = variableInstanceDefine; // 1.52 only
+            
+            outputVariableDefines.push (variableInstanceDefine);
          }
          
-         return spaceDefine;
+         //return spaceDefine; // 1.52 only
       }
       
 //==============================================================================================
@@ -490,21 +521,27 @@ package common {
          }
       }
       
-      public static function VariableSpaceDefine2VariableSpace (editorWorld:World, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void
+      //public static function VariableSpaceDefine2VariableSpace (editorWorld:World, spaceDefine:VariableSpaceDefine, variableSpace:VariableSpace):void // v1.52 only
+      public static function VariableDefines2VariableSpace (editorWorld:World, variableDefines:Array, variableSpace:VariableSpace, supportInitalValues:Boolean):void
       {
-         var numVariables:int = spaceDefine.mVariableDefines.length;
-         
+         //>> v1.52 only
+         //var numVariables:int = spaceDefine.mVariableDefines.length;
+         //
          //spaceDefine.mPackageId = 0;
          //spaceDefine.mSpaceType = variableSpace.GetSpaceType ();
          //spaceDefine.mParentPackageId = -1;
+         //<<
+         
+         var numVariables:int = variableDefines.length;
          
          for (var variableId:int = 0; variableId < numVariables; ++ variableId)
          {
-            var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine;
+            //var variableInstanceDefine:VariableInstanceDefine = spaceDefine.mVariableDefines [variableId] as VariableInstanceDefine; // v1.52 only
+            var variableInstanceDefine:VariableInstanceDefine = variableDefines [variableId] as VariableInstanceDefine;
             var directValueSourceDefine:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
             
             var variableDefinition:VariableDefinition = null;
-            var valueObject:Object = ValidateDirectValueObject_Define2Object (editorWorld, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject);
+            var valueObject:Object = supportInitalValues ? ValidateDirectValueObject_Define2Object (editorWorld, directValueSourceDefine.mValueType, directValueSourceDefine.mValueObject) : null;
             
             switch (directValueSourceDefine.mValueType)
             {
@@ -671,21 +708,30 @@ package common {
          }
       }
       
-      public static function WriteVariableSpaceDefineIntoBinFile (binFile:ByteArray, variableSpaceDefine:VariableSpaceDefine):void
+      //public static function WriteVariableSpaceDefineIntoBinFile (binFile:ByteArray, variableSpaceDefine:VariableSpaceDefine):void // v1.52 only
+      public static function WriteVariableDefinesIntoBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean):void
       {
-         binFile.writeUTF (variableSpaceDefine.mName);
-         binFile.writeShort (variableSpaceDefine.mParentPackageId);
+         //>> v1.52 only
+         //binFile.writeUTF (variableSpaceDefine.mName);
+         //binFile.writeShort (variableSpaceDefine.mParentPackageId);
+         //<<
          
-         var numVariables:int = variableSpaceDefine.mVariableDefines.length;
+         //var numVariables:int = variableSpaceDefine.mVariableDefines.length; // v1.52 only
+         var numVariables:int = variableDefines.length;
          binFile.writeShort (numVariables);
          
          for (var i:int = 0; i < numVariables; ++ i)
          {
-            var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i];
+            //var viDefine:VariableInstanceDefine = variableSpaceDefine.mVariableDefines [i]; // v1.52 only
+            var viDefine:VariableInstanceDefine = variableDefines [i];
             
             binFile.writeUTF (viDefine.mName);
             binFile.writeShort (viDefine.mDirectValueSourceDefine.mValueType);
-            WriteDirectValueObjectIntoBinFile (binFile, viDefine.mDirectValueSourceDefine.mValueType, ValueTypeDefine.NumberTypeDetail_Double, viDefine.mDirectValueSourceDefine.mValueObject);
+            
+            if (supportInitalValues)
+            {
+               WriteDirectValueObjectIntoBinFile (binFile, viDefine.mDirectValueSourceDefine.mValueType, ValueTypeDefine.NumberTypeDetail_Double, viDefine.mDirectValueSourceDefine.mValueObject);
+            }
          }
       }
       
@@ -852,26 +898,32 @@ package common {
          }
       }
       
-      public static function VariableSpaceXml2Define (elementVariablePackage:XML):VariableSpaceDefine
+      //public static function VariableSpaceXml2Define (elementVariablePackage:XML):VariableSpaceDefine // v1.52 only
+      public static function VariablesXml2Define (elementVariablePackage:XML, outputVariableDefines:Array, supportInitalValues:Boolean):void
       {
-         var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
+         //>> v1.52 only
+         //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
+         //
+         //variableSpaceDefine.mName = elementVariablePackage.@name;
+         //variableSpaceDefine.mPackageId = parseInt (elementVariablePackage.@package_id);
+         //variableSpaceDefine.mParentPackageId = parseInt (elementVariablePackage.@parent_package_id);
+         //variableSpaceDefine.mVariableDefines = new Array ();
          
-         variableSpaceDefine.mName = elementVariablePackage.@name;
-         variableSpaceDefine.mPackageId = parseInt (elementVariablePackage.@package_id);
-         variableSpaceDefine.mParentPackageId = parseInt (elementVariablePackage.@parent_package_id);
-         variableSpaceDefine.mVariableDefines = new Array ();
          
          for each (var element:XML in elementVariablePackage.Variable)
          {
             var viDefine:VariableInstanceDefine = new VariableInstanceDefine ();
             
-            viDefine.mName = element.@name;
-            viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (parseInt (element.@value_type), parseInt (element.@initial_value));
+            var valueType:int = parseInt (element.@value_type);
             
-            variableSpaceDefine.mVariableDefines.push (viDefine);
+            viDefine.mName = element.@name;
+            viDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (valueType, supportInitalValues ? ValidateDirectValueObject_Xml2Define (valueType, element.@initial_value) : ValueTypeDefine.GetDefaultDirectDefineValue (valueType));
+            
+            //variableSpaceDefine.mVariableDefines.push (viDefine); v1.52 only
+            outputVariableDefines.push (viDefine);
          }
          
-         return variableSpaceDefine;
+         //return variableSpaceDefine; // v1.52 only
      }
       
 //========================================================================================

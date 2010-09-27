@@ -2,18 +2,22 @@ package common.trigger
 {
    public class FunctionDeclaration
    {
+      public static const Index_ValueType:int = 0;
+      public static const Index_DevaultValue:int = 1;
+      
+   //
+      
       private var mId:int;
       
-      private var mInputValueTypes:Array;
-      private var mReturnValueTypes:Array;
-      private var mLocalValueTypes:Array;
+      private var mInputParamDefines:Array;
+      private var mOutputParamDefines:Array;
       
-      public function FunctionDeclaration (id:int, inputValueTypes:Array, returnValueTypes:Array = null, localValueTypes:Array = null)
+      public function FunctionDeclaration (id:int, inputParamDefines:Array, outputParamDefines:Array = null)
       {
          mId = id;
-         mInputValueTypes = inputValueTypes;
-         mReturnValueTypes = returnValueTypes;
-         mLocalValueTypes = localValueTypes;
+         
+         mInputParamDefines = inputParamDefines;
+         mOutputParamDefines = outputParamDefines;
       }
       
       public function GetID ():int
@@ -23,91 +27,73 @@ package common.trigger
       
       public function GetNumInputs ():int
       {
-         if (mInputValueTypes == null)
+         if (mInputParamDefines == null)
             return 0;
          
-         return mInputValueTypes.length;
+         return mInputParamDefines.length;
+      }
+      
+      public function GetInputParamDefaultValue (inputId:int):Object
+      {
+         if (mInputParamDefines == null)
+            return undefined;
+         
+         if (inputId < 0 || inputId >= mInputParamDefines.length)
+            return undefined;
+         
+         return mInputParamDefines [inputId][Index_DevaultValue];
       }
       
       public function GetInputParamValueType (inputId:int):int
       {
-         if (mInputValueTypes == null)
+         if (mInputParamDefines == null)
+            return mInputParamDefines.ValueType_Void;
+         
+         if (inputId < 0 || inputId >= mInputParamDefines.length)
             return ValueTypeDefine.ValueType_Void;
          
-         if (inputId < 0 || inputId >= mInputValueTypes.length)
-            return ValueTypeDefine.ValueType_Void;
-         
-         return mInputValueTypes [inputId] & ValueTypeDefine.NumberTypeMask_Basic;
+         return mInputParamDefines [inputId][Index_ValueType] & ValueTypeDefine.NumberTypeMask_Basic;
       }
       
       public function GetInputNumberTypeDetail (inputId:int):int
       {
-         if (mInputValueTypes == null)
+         if (mInputParamDefines == null)
             return ValueTypeDefine.NumberTypeDetail_Double;
          
-         if (inputId < 0 || inputId >= mInputValueTypes.length)
+         if (inputId < 0 || inputId >= mInputParamDefines.length)
             return ValueTypeDefine.NumberTypeDetail_Double;
          
-         return  mInputValueTypes [inputId] & ValueTypeDefine.NumberTypeMask_Detail;
+         return  mInputParamDefines [inputId][Index_ValueType] & ValueTypeDefine.NumberTypeMask_Detail;
       }
       
       public function GetInputNumberTypeUsage (inputId:int):int
       {
-         if (mInputValueTypes == null)
+         if (mInputParamDefines == null)
             return ValueTypeDefine.NumberTypeUsage_General;
          
-         if (inputId < 0 || inputId >= mInputValueTypes.length)
+         if (inputId < 0 || inputId >= mInputParamDefines.length)
             return ValueTypeDefine.NumberTypeUsage_General;
          
-         return mInputValueTypes [inputId] & ValueTypeDefine.NumberTypeMask_Usage;
+         return mInputParamDefines [inputId][Index_ValueType] & ValueTypeDefine.NumberTypeMask_Usage;
       }
       
       public function GetNumOutputs ():int
       {
-         if (mReturnValueTypes == null)
+         if (mOutputParamDefines == null)
             return 0;
          
-         return mReturnValueTypes.length;
+         return mOutputParamDefines.length;
       }
       
       public function GetOutputParamValueType (returnId:int):int
       {
-         if (mReturnValueTypes == null)
+         if (mOutputParamDefines == null)
             return ValueTypeDefine.ValueType_Void;
          
-         if (returnId < 0 || returnId >= mReturnValueTypes.length)
+         if (returnId < 0 || returnId >= mOutputParamDefines.length)
             return ValueTypeDefine.ValueType_Void;
          
-         return mReturnValueTypes [returnId] & ValueTypeDefine.NumberTypeMask_Basic;
-      }
-      
-      public function GetNumLocalVariables ():int
-      {
-         if (mLocalValueTypes == null)
-            return 0;
-         
-         return mLocalValueTypes.length;
-      }
-      
-      public function GetLocalVariableValueType (variableId:int):int
-      {
-         if (mLocalValueTypes == null)
-            return ValueTypeDefine.ValueType_Void;
-         
-         if (variableId < 0 || variableId >= mLocalValueTypes.length)
-            return ValueTypeDefine.ValueType_Void;
-         
-         return mLocalValueTypes [variableId] & ValueTypeDefine.NumberTypeMask_Basic;
-      }
-      
-      public function IsStaticLocalVariable (variableId:int):Boolean
-      {
-         return false;
-      }
-      
-      public function IsConstLocalVariable (variableId:int):Boolean
-      {
-         return false;
+         return mOutputParamDefines [returnId][Index_ValueType] & ValueTypeDefine.NumberTypeMask_Basic;
       }
       
 //=====================================================================

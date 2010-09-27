@@ -356,7 +356,7 @@ package editor {
                onlySelected = selecteds [0] as EntityCollisionCategory;
          }
          
-         mButtonCreateCollisionCategory.enabled = (mCollisionManager != null) && (numCategories < Define.MaxCollisionCategoriesCount - 1);
+         mButtonCreateCollisionCategory.enabled = (mCollisionManager != null) && (numCategories < Define.MaxCCatsCount - 1);
          
          mButtonDelete.enabled = numSelecteds > 0;
          

@@ -9,6 +9,8 @@ package player.trigger.entity
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
+   import common.TriggerFormatHelper2;
+   
    public class EntityBasicCondition extends EntityCondition implements ScriptHolder
    {
       public var mConditionDefinition:FunctionDefinition_Custom;
@@ -17,8 +19,6 @@ package player.trigger.entity
       public function EntityBasicCondition (world:World)
       {
          super (world);
-         
-         mConditionDefinition = new FunctionDefinition_Custom (TriggerEngine.GetBoolFunctionDeclaration  ());
       }
       
 //=============================================================
@@ -31,14 +31,9 @@ package player.trigger.entity
          
          if (createStageId == 0)
          {
-            if (entityDefine.mName != undefined)
-               mName = entityDefine.mName;
-            
-            if (entityDefine.mCodeSnippetDefine != undefined)
+            if (entityDefine.mFunctionDefine != undefined)
             {
-               var codeSnippetDefine:CodeSnippetDefine = entityDefine.mCodeSnippetDefine.Clone ();
-               codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
-               mConditionDefinition.SetCodeSnippetDefine (codeSnippetDefine);
+               mConditionDefinition = TriggerFormatHelper2.CreateFunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetBoolFunctionDeclaration  ());
             }
          }
       }

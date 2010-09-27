@@ -196,6 +196,11 @@ package editor.trigger.entity {
          return mFunctionDeclaration;
       }
       
+      public function GetFunctionDefinition ():FunctionDefinition
+      {
+         return mFunctionDefinition;
+      }
+      
    //====================================================================
    //   clone
    //====================================================================

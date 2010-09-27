@@ -1,19 +1,34 @@
 package player.trigger
 {
-   import common.trigger.FunctionDeclaration;
+   import common.trigger.define.ValueSourceDefine;
    
    public class FunctionDefinition
    {
-      protected var mFunctionDeclaration:FunctionDeclaration = null;
+      protected var mDefaultInputValueSourceDefines:Array;
       
-      public function FunctionDefinition (functionDecl:FunctionDeclaration)
+      protected var mNumInputParams:int;
+      protected var mNumOutputParams:int;
+      
+      public function FunctionDefinition (inputValueSourceDefines:Array, numOutputParams:int)
       {
-         mFunctionDeclaration = functionDecl;
+         mNumInputParams = inputValueSourceDefines == null ? 0 : inputValueSourceDefines.length;
+         mDefaultInputValueSourceDefines = inputValueSourceDefines == null ? [] : inputValueSourceDefines;
+         mNumOutputParams = numOutputParams;
       }
       
-      public function GetFunctionDeclaration ():FunctionDeclaration
+      public function GetDefaultInputValueSourceDefine (paramId:int):ValueSourceDefine
       {
-         return mFunctionDeclaration;
+         return mDefaultInputValueSourceDefines [paramId] as ValueSourceDefine;
+      }
+      
+      public function GetNumInputParameters ():int
+      {
+         return mNumInputParams;
+      }
+      
+      public function GetNumOutputParameters ():int
+      {
+         return mNumOutputParams;
       }
       
       public function DoCall (inputValueSources:Parameter, returnValueTarget:Parameter):void

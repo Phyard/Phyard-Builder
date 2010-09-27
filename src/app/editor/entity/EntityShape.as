@@ -470,7 +470,7 @@ package editor.entity {
       {
          var index:int = mWorld.mCollisionManager.GetCollisionCategoryIndex (mCollisionCategory);
          
-         if (index == Define.CollisionCategoryId_HiddenCategory)
+         if (index == Define.CCatId_Hidden)
             mCollisionCategory = null;
          
          return index;

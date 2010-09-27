@@ -662,6 +662,8 @@ package viewer {
          }
          catch (error:Error)
          {
+            trace (error.getStackTrace ());
+            
             if (Compile::Is_Debugging)
                throw error;
             

@@ -20,11 +20,9 @@ package player.trigger
       {
          mCustomFunctionDefinition = customFunctionDefiniton;
          
-         var func_declaration:FunctionDeclaration = mCustomFunctionDefinition.GetFunctionDeclaration ();
-         
-         mInputVariableSpace = new VariableSpace (func_declaration.GetNumInputs ());
-         mOutputVariableSpace = new VariableSpace (func_declaration.GetNumOutputs ());
-         mLocalVariableSpace = new VariableSpace (func_declaration.GetNumLocalVariables ());
+         mInputVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumInputParameters ());
+         mOutputVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumOutputParameters ());
+         mLocalVariableSpace = new VariableSpace (mCustomFunctionDefinition.GetNumLocalVariables ());
       }
       
       public function SetAsCurrent ():void

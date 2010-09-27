@@ -28,6 +28,8 @@ package player.trigger {
    import common.trigger.ValueDefine;
    import common.trigger.IdPool;
    
+   import common.TriggerFormatHelper2;
+   
    public class CoreFunctionDefinitions
    {
 //=============================
@@ -388,7 +390,7 @@ package player.trigger {
          
          var func_decl:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
          
-         sCoreFunctionDefinitions [functionId] = new FunctionDefinition_Core (func_decl, callback);
+         sCoreFunctionDefinitions [functionId] = TriggerFormatHelper2.CreateCoreFunctionDefinition (func_decl, callback);
       }
       
 //===========================================================

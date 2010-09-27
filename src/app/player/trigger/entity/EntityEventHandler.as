@@ -13,6 +13,8 @@ package player.trigger.entity
    import common.trigger.CoreEventIds;
    import common.trigger.CoreEventDeclarations;
    
+   import common.TriggerFormatHelper2;
+   
    public class EntityEventHandler extends EntityLogic
    {
       //public var mNextEntityEventHandlerOfTheSameType:EntityEventHandler = null;
@@ -51,18 +53,10 @@ package player.trigger.entity
          
          if (createStageId == 0)
          {
-            if (entityDefine.mEventId != undefined)
+            if (entityDefine.mEventId != undefined && entityDefine.mFunctionDefine != undefined)
             {
                mEventId = int (entityDefine.mEventId);
-               mEventHandlerDefinition = new FunctionDefinition_Custom (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
-               
-               // code snippets
-               if (entityDefine.mCodeSnippetDefine != undefined)
-               {
-                  var codeSnippetDefine:CodeSnippetDefine = entityDefine.mCodeSnippetDefine.Clone ();
-                  codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
-                  mEventHandlerDefinition.SetCodeSnippetDefine (codeSnippetDefine);
-               }
+               mEventHandlerDefinition = TriggerFormatHelper2.CreateFunctionDefinition (mWorld, entityDefine.mFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
             }
             
             // external condition
@@ -107,11 +101,11 @@ package player.trigger.entity
       
       protected function RegisterToEntityEventHandlerLists ():void
       {
-         var eventId:int = mEventHandlerDefinition.GetFunctionDeclaration ().GetID ();
+         //var eventId:int = mEventHandlerDefinition.GetFunctionDeclaration ().GetID ();
          
-         mWorld.RegisterEventHandler (eventId, this);
+         mWorld.RegisterEventHandler (mEventId, this);
          
-         switch (eventId)
+         switch (mEventId)
          {
             // ai flow
             case CoreEventIds.ID_OnEntityInitialized:
@@ -132,7 +126,7 @@ package player.trigger.entity
                var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
                while (list_element != null)
                {
-                  list_element.mInputEntityAssigner.RegisterEventHandlerForEntities (eventId, this);
+                  list_element.mInputEntityAssigner.RegisterEventHandlerForEntities (mEventId, this);
                   
                   list_element = list_element.mNextListElement;
                }

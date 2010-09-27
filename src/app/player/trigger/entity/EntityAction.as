@@ -8,6 +8,8 @@ package player.trigger.entity
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.ValueDefine;
    
+   import common.TriggerFormatHelper2;
+   
    public class EntityAction extends EntityLogic implements ScriptHolder
    {
       public var mVoidFunctionDefinition:FunctionDefinition_Custom;
@@ -16,8 +18,6 @@ package player.trigger.entity
       public function EntityAction (world:World)
       {
          super (world);
-         
-         mVoidFunctionDefinition = new FunctionDefinition_Custom (TriggerEngine.GetVoidFunctionDeclaration  ());
       }
       
 //=============================================================
@@ -30,15 +30,11 @@ package player.trigger.entity
          
          if (createStageId == 0)
          {
-            if (entityDefine.mName != undefined)
-               mName = entityDefine.mName;
-            
-            if (entityDefine.mCodeSnippetDefine != undefined)
+            if (entityDefine.mFunctionDefine != undefined)
             {
-               var codeSnippetDefine:CodeSnippetDefine = entityDefine.mCodeSnippetDefine.Clone ();
-               codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
-               mVoidFunctionDefinition.SetCodeSnippetDefine (codeSnippetDefine);
+               mVoidFunctionDefinition = TriggerFormatHelper2.CreateFunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetVoidFunctionDeclaration  ());
             }
+            
          }
       }
             

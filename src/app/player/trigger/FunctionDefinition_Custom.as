@@ -13,6 +13,8 @@ package player.trigger
       protected var mCurrentFunctionInstance:FunctionInstance = null;
       protected var mCodeSnippet:CodeSnippet;
       
+      internal var mNumLocalVariables:int;
+      
       internal var mInputVariableReferences:Array;
       internal var mOutputVariableReferences:Array;
       internal var mLocalVariableReferences:Array;
@@ -21,19 +23,26 @@ package player.trigger
       internal var mOutputVariableRefList:VariableReference;
       internal var mLocalVariableRefList:VariableReference;
       
-      public function FunctionDefinition_Custom (functionDecl:FunctionDeclaration)
+      public function FunctionDefinition_Custom (inputValueSourceDefines:Array, numOutputParams:int, numLocalVariables:int)
       {
-         super (functionDecl);
+         super (inputValueSourceDefines, numOutputParams);
          
-         mInputVariableReferences = VariableReference.CreateVariableReferenceArray (mFunctionDeclaration.GetNumInputs ());
-         mOutputVariableReferences = VariableReference.CreateVariableReferenceArray (mFunctionDeclaration.GetNumOutputs ());
-         mLocalVariableReferences = VariableReference.CreateVariableReferenceArray (mFunctionDeclaration.GetNumLocalVariables ());
+         mNumLocalVariables = numLocalVariables;
          
-         mInputVariableRefList = mInputVariableReferences.length > 0 ? mInputVariableReferences [0] : null;
-         mOutputVariableRefList = mOutputVariableReferences.length > 0 ? mOutputVariableReferences [0] : null;
-         mLocalVariableRefList = mLocalVariableReferences.length > 0 ? mLocalVariableReferences [0] : null;
+         mInputVariableReferences = VariableReference.CreateVariableReferenceArray (mNumInputParams);
+         mOutputVariableReferences = VariableReference.CreateVariableReferenceArray (mNumOutputParams);
+         mLocalVariableReferences = VariableReference.CreateVariableReferenceArray (mNumLocalVariables);
+         
+         mInputVariableRefList = mNumInputParams > 0 ? mInputVariableReferences [0] : null;
+         mOutputVariableRefList = numOutputParams > 0 ? mOutputVariableReferences [0] : null;
+         mLocalVariableRefList = numLocalVariables > 0 ? mLocalVariableReferences [0] : null;
          
          mPrimaryFunctionInstance = new FunctionInstance (this);
+      }
+      
+      public function GetNumLocalVariables ():int
+      {
+         return mNumLocalVariables;
       }
       
       public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
@@ -68,10 +77,10 @@ package player.trigger
             throw new Error ("index out of range");
          }
          
-         if (variableSpaceType == ValueSpaceTypeDefine.ValueSpace_Local && mFunctionDeclaration.IsStaticLocalVariable (variableIndex))
-         {
-            return new Parameter_Variable (mPrimaryFunctionInstance.GetLocalVariableAt (variableIndex), nextParameter);
-         }
+         //if (variableSpaceType == ValueSpaceTypeDefine.ValueSpace_Local && mFunctionDeclaration.IsStaticLocalVariable (variableIndex))
+         //{
+         //   return new Parameter_Variable (mPrimaryFunctionInstance.GetLocalVariableAt (variableIndex), nextParameter);
+         //}
          
          return new Parameter_VariableRef (variableReferenceArray [variableIndex], nextParameter);
       }

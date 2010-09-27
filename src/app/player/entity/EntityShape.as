@@ -37,7 +37,7 @@ package player.entity {
          
          SetBorderThickness (mWorld.GetCoordinateSystem ().D2P_Length (1.0));
          
-         SetCollisionCategoryById (Define.CollisionCategoryId_HiddenCategory); // default
+         SetCollisionCategoryById (Define.CCatId_Hidden); // default
          
          mPhysicsShapePotentially = false; // to override
          
@@ -66,7 +66,7 @@ package player.entity {
             if (entityDefine.mCollisionCategoryIndex != undefined)
                catId = entityDefine.mCollisionCategoryIndex;
             else
-               catId = Define.CollisionCategoryId_HiddenCategory;
+               catId = Define.CCatId_Hidden;
             
             SetCollisionCategoryById (catId);
             //<<
@@ -175,13 +175,13 @@ package player.entity {
       {
          mCollisionCategory = mWorld.GetCollisionCategoryById (ccatId);
          if (mCollisionCategory == null)
-            SetCollisionCategoryById (Define.CollisionCategoryId_HiddenCategory);
+            SetCollisionCategoryById (Define.CCatId_Hidden);
       }
       
       public function SetCollisionCategory (ccat:CollisionCategory):void
       {
          if (ccat == null)
-            SetCollisionCategoryById (Define.CollisionCategoryId_HiddenCategory);
+            SetCollisionCategoryById (Define.CCatId_Hidden);
          else
             mCollisionCategory = ccat;
          

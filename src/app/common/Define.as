@@ -93,12 +93,12 @@ package common {
 // collsion category
 //===========================================================================
       
-      public static const MaxCollisionCategoriesCount:int = 128; // can be larger
+      public static const MaxCCatsCount:int = 128; // can be larger
       
-      public static const CategoryDefaultName:String = "Category";
+      public static const DefaultCCatName:String = "Category";
       
-      public static const CollisionCategoryId_HiddenCategory:int = -1;
-      public static const MinCollisionCategoryId:int = -1;
+      public static const CCatId_Hidden:int = -1;
+      public static const MinCCatId:int = -1;
       
 //===========================================================================
 // shaoe common

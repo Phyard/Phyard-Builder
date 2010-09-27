@@ -519,7 +519,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Inverse, numbe_general_package, "1.0 / x (Inverse)", "@#0 = (1.0 / $0)", "@#0 = (1.0 / $0)",
                      [
-                             new VariableDefinitionNumber ("Number", null, {mDefaultValue: 1.0}), 
+                             new VariableDefinitionNumber ("Number"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result"), 
@@ -555,7 +555,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Divide, numbe_general_package, "x / y (Divide)", "@#0 = $0 / $1", "@#0 = $0 / $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2", null, {mDefaultValue: 1.0}), 
+                             new VariableDefinitionNumber ("Number 2"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result"), 
@@ -564,7 +564,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Modulo, numbe_general_package, "x % y (Modulo)", "@#0 = $0 % $1", "@#0 = $0 % $1",
                      [
                              new VariableDefinitionNumber ("Number 1"), 
-                             new VariableDefinitionNumber ("Number 2", null, {mDefaultValue: 1.0}), 
+                             new VariableDefinitionNumber ("Number 2"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Result"), 
@@ -584,7 +584,7 @@ package editor.trigger {
          //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ToExponential, to_string_package, "To Exponential", null, null,
          //            [
          //                    new VariableDefinitionNumber ("The Number"), 
-         //                    new VariableDefinitionNumber ("Number of Fraction Digits", null, {mDefaultValue: 2}), 
+         //                    new VariableDefinitionNumber ("Number of Fraction Digits"), 
          //            ],
          //            [
          //                    new VariableDefinitionString ("Result"), 
@@ -593,7 +593,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ToFixed, to_string_package, "To Fixed", null, null,
                      [
                              new VariableDefinitionNumber ("The Number"), 
-                             new VariableDefinitionNumber ("Number of Fraction Digits", null, {mDefaultValue: 2}), 
+                             new VariableDefinitionNumber ("Number of Fraction Digits"), 
                      ],
                      [
                              new VariableDefinitionString ("Result"), 
@@ -602,7 +602,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ToPrecision, to_string_package, "To Precision", null, null,
                      [
                              new VariableDefinitionNumber ("The Number"), 
-                             new VariableDefinitionNumber ("Number of Precision Digits", null, {mDefaultValue: 6}), 
+                             new VariableDefinitionNumber ("Number of Precision Digits"), 
                      ],
                      [
                              new VariableDefinitionString ("Result"), 
@@ -611,7 +611,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix, to_string_package, "Number -> String (By Radix)", "@$0 -&gt; #0 by radix $1", "ToStringByRadix",
                      [
                              new VariableDefinitionNumber ("The Number"), 
-                             new VariableDefinitionNumber ("The Radix", null, {mDefaultValue: 10}), 
+                             new VariableDefinitionNumber ("The Radix"), 
                      ],
                      [
                              new VariableDefinitionString ("Result"), 
@@ -628,7 +628,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ParseInteger, to_string_package, "Integer <- String", "@$0 <- #0 by radix $1", "StringToInteger",
                      [
                              new VariableDefinitionString ("String"), 
-                             new VariableDefinitionNumber ("The Radix ([2, 36])", null, {mDefaultValue: 10}), 
+                             new VariableDefinitionNumber ("The Radix ([2, 36])"), 
                      ],
                      [
                              new VariableDefinitionNumber ("The Integer"), 
@@ -770,8 +770,8 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_RandomRange, random_package, "Quick Float Random Between", null, null,
                      [
-                             new VariableDefinitionNumber ("Min Number", null, {mDefaultValue: 0.0}), 
-                             new VariableDefinitionNumber ("Max Number", null, {mDefaultValue: 1.0}), 
+                             new VariableDefinitionNumber ("Min Number"), 
+                             new VariableDefinitionNumber ("Max Number"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Random Number"), 
@@ -779,8 +779,8 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_RandomIntRange, random_package, "Quick Integer Random Between", null, null,
                      [
-                             new VariableDefinitionNumber ("Min Integer Number", null, {mDefaultValue: 0}), 
-                             new VariableDefinitionNumber ("Max Integer Number", null, {mDefaultValue: 0x7FFFFFFF}), 
+                             new VariableDefinitionNumber ("Min Integer Number"), 
+                             new VariableDefinitionNumber ("Max Integer Number"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Random Ingeter Number"), 
@@ -813,8 +813,8 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_RngRandomRange, random_package, "Next Float Random Between", null, null,
                      [
                              new VariableDefinitionNumber ("Random Generator Slot", null, {mValueLists: Lists.mRngIdList}), 
-                             new VariableDefinitionNumber ("Min Number", null, {mDefaultValue: 0.0}), 
-                             new VariableDefinitionNumber ("Max Number", null, {mDefaultValue: 1.0}), 
+                             new VariableDefinitionNumber ("Min Number"), 
+                             new VariableDefinitionNumber ("Max Number"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Random Number"), 
@@ -823,8 +823,8 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_RngRandomIntRange, random_package, "Next Integer Random Between", null, null,
                      [
                              new VariableDefinitionNumber ("Random Generator Slot", null, {mValueLists: Lists.mRngIdList}), 
-                             new VariableDefinitionNumber ("Min Integer Number", null, {mDefaultValue: 0}), 
-                             new VariableDefinitionNumber ("Max Integer Number", null, {mDefaultValue: 0x7FFFFFFF}), 
+                             new VariableDefinitionNumber ("Min Integer Number"), 
+                             new VariableDefinitionNumber ("Max Integer Number"), 
                      ],
                      [
                              new VariableDefinitionNumber ("Random Ingeter Number"), 
@@ -1011,7 +1011,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused, world_general_package, "Set Level Paused", null, null,
                      [
-                        new VariableDefinitionBoolean ("Paused (false for playing)", null, {mDefaultValue: true}), 
+                        new VariableDefinitionBoolean ("Paused (false for playing)"), 
                      ],
                      null
                   );
@@ -1023,7 +1023,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetPlaySpeedX, world_general_package, "Set Play SpeedX", null, null,
                      [
-                        new VariableDefinitionNumber ("Speed X ([0-9])", null, {mDefaultValue: 2, mMinValue: 0, mMaxValue: 9}),
+                        new VariableDefinitionNumber ("Speed X ([0-9])", null, {mMinValue: 0, mMaxValue: 9}),
                      ],
                      null
                   );
@@ -1035,7 +1035,7 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetWorldScale, world_general_package, "Set World Scale", null, null,
                      [
-                        new VariableDefinitionNumber ("World Scale ([0.0625-16.0])", null, {mDefaultValue: 1.0, mMinValue: 0.0625, mMaxValue: 16.0}),
+                        new VariableDefinitionNumber ("World Scale ([0.0625-16.0])", null, {mMinValue: 0.0625, mMaxValue: 16.0}),
                      ],
                      null
                   );
@@ -1125,7 +1125,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape, world_camera_package, "Follow Camera With Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Smooth Following?"), 
                              //new VariableDefinitionBoolean ("Follow Rotation?"), 
                      ],
                      null
@@ -1133,30 +1133,30 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape, world_camera_package, "Follow Camera Center X With Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Smooth Following?"), 
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape, world_camera_package, "Follow Camera Center Y With Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
-                             new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Smooth Following?"), 
                      ],
                      null
                   );
          //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape, world_camera_package, "Follow Camera Rotation With Shape", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Followed Shape"), 
-         //                    new VariableDefinitionBoolean ("Smooth Following?", null, {mDefaultValue: true}), 
+         //                    new VariableDefinitionBoolean ("Smooth Following?"), 
          //            ],
          //            null
          //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn, world_camera_package, "Fade Out Then Fade In", null, null,
                      [
                              new VariableDefinitionNumber ("Fade Color", null, {mIsColorValue: true}), 
-                             new VariableDefinitionNumber ("Fade Out Steps", null, {mDefaultValue: 30, mMinValue: 0}), 
-                             new VariableDefinitionNumber ("Fade Staying Steps", null, {mDefaultValue: 30, mMinValue: 1}), 
-                             new VariableDefinitionNumber ("Fade In Steps", null, {mDefaultValue: 30, mMinValue: 0}), 
+                             new VariableDefinitionNumber ("Fade Out Steps", null, {mMinValue: 0}), 
+                             new VariableDefinitionNumber ("Fade Staying Steps", null, {mMinValue: 1}), 
+                             new VariableDefinitionNumber ("Fade In Steps", null, {mMinValue: 0}), 
                              new VariableDefinitionEntity ("Script to Call", null, {mValidClasses: Filters.sScriptHolderEntityClasses}), 
                      ],
                      null
@@ -1212,15 +1212,15 @@ package editor.trigger {
          
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_CreateExplosion, world_create_entity_package, "Create Explosion", null, null,
                      [
-                              new VariableDefinitionNumber ("Explosion World X", null, {mDefaultValue: 0}), 
-                              new VariableDefinitionNumber ("Explosion World Y", null, {mDefaultValue: 0}), 
-                              new VariableDefinitionNumber ("Number of Particles (4-100)", null, {mDefaultValue: 64, mMinValue: Define.MinNumParticls_CreateExplosion, mMaxValue: Define.MaxNumParticls_CreateExplosion}), 
-                              new VariableDefinitionNumber ("Life (steps)", null, {mDefaultValue: 60, mMinValue:0}), 
-                              new VariableDefinitionNumber ("Particle Density", null, {mDefaultValue: 25.0, mMinValue: 0.0}), 
-                              new VariableDefinitionNumber ("Particle Restitution", null, {mDefaultValue: 0.8, mMinValue: 0.0, mMaxValue:1.0}), 
-                              new VariableDefinitionNumber ("Particle Speed", null, {mDefaultValue: 50.0, mMinValue: 0.0}), 
-                              new VariableDefinitionNumber ("Particle Color", null, {mDefaultValue: 0x0, mIsColorValue: true}), 
-                              new VariableDefinitionBoolean ("Is Particle Visible?", null, {mDefaultValue: true}),
+                              new VariableDefinitionNumber ("Explosion World X"), 
+                              new VariableDefinitionNumber ("Explosion World Y"), 
+                              new VariableDefinitionNumber ("Number of Particles (4-100)", null, {mMinValue: Define.MinNumParticls_CreateExplosion, mMaxValue: Define.MaxNumParticls_CreateExplosion}), 
+                              new VariableDefinitionNumber ("Life (steps)", null, {mMinValue:0}), 
+                              new VariableDefinitionNumber ("Particle Density", null, {mMinValue: 0.0}), 
+                              new VariableDefinitionNumber ("Particle Restitution", null, {mMinValue: 0.0, mMaxValue:1.0}), 
+                              new VariableDefinitionNumber ("Particle Speed", null, {mMinValue: 0.0}), 
+                              new VariableDefinitionNumber ("Particle Color", null, {mIsColorValue: true}), 
+                              new VariableDefinitionBoolean ("Is Particle Visible?"),
                               new VariableDefinitionCollisionCategory ("Particle Collision Category"), 
                      ],
                      [
@@ -1284,7 +1284,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally, ccat_package, "Set Collision Category Collide Internally", "@Set Collision Category ($0) Collide Internally ($1)", null,
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category"), 
-                             new VariableDefinitionBoolean ("Collide Internally?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Collide Internally?"), 
                      ],
                      null
                   );
@@ -1292,7 +1292,7 @@ package editor.trigger {
                      [
                              new VariableDefinitionCollisionCategory ("Collision Category 1"), 
                              new VariableDefinitionCollisionCategory ("Collision Category 2"), 
-                             new VariableDefinitionBoolean ("Friends?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Friends?"), 
                      ],
                      null
                   );
@@ -1435,7 +1435,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_SetVisible, entity_common_package, "Set Visible", "@Set Visibility ($1) of $0", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}), 
-                             new VariableDefinitionBoolean ("Visible?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Visible?"), 
                      ],
                      null
                   );
@@ -1465,7 +1465,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_SetEnabled, entity_common_package, "Set Entity Enabled", "@Set Entity ($0) Enabled ($1)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sCanBeDisabledEntityClasses}), 
-                             new VariableDefinitionBoolean ("Enabled?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Enabled?"), 
                      ],
                      null
                   );
@@ -1546,9 +1546,9 @@ package editor.trigger {
                      [
                         new VariableDefinitionEntity ("The Entity 1", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
                         new VariableDefinitionEntity ("The Entity 2", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
-                        new VariableDefinitionNumber ("Tolerance Delta X", null, {mMinValue:0.0, mDefaultValue:0.8}), 
-                        new VariableDefinitionNumber ("Tolerance Delta Y", null, {mMinValue:0.0, mDefaultValue:0.8}), 
-                        new VariableDefinitionNumber ("Tolerance Delta Angle (degrees)", null, {mMinValue:0.0, mDefaultValue:6}), 
+                        new VariableDefinitionNumber ("Tolerance Delta X", null, {mMinValue:0.0}), 
+                        new VariableDefinitionNumber ("Tolerance Delta Y", null, {mMinValue:0.0}), 
+                        new VariableDefinitionNumber ("Tolerance Delta Angle (degrees)", null, {mMinValue:0.0}), 
                      ],
                      [
                         new VariableDefinitionBoolean ("Superimposed?"), 
@@ -1706,7 +1706,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, shape_physics_properties_package, "Set Sensor", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                             new VariableDefinitionBoolean ("Is Sensor?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Is Sensor?"), 
                      ],
                      null
                   );
@@ -1721,7 +1721,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping, shape_physics_properties_package, "Set Sleeping", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                             new VariableDefinitionBoolean ("Sleeping?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Sleeping?"), 
                      ],
                      null
                   );
@@ -1729,7 +1729,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetMass, shape_physics_properties_package, "Get Mass", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                             new VariableDefinitionBoolean ("Mass of Brothers?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Mass of Brothers?"), 
                      ],
                      [
                              new VariableDefinitionNumber ("The Mass"), 
@@ -1738,7 +1738,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia, shape_physics_properties_package, "Get Inertia", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                             new VariableDefinitionBoolean ("Inertia of Brothers?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Inertia of Brothers?"), 
                      ],
                      [
                              new VariableDefinitionNumber ("The Mass"), 
@@ -1784,8 +1784,8 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Force X"), 
                              new VariableDefinitionNumber ("Force Y"), 
-                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: false}), 
-                             new VariableDefinitionBoolean ("Apply on Center of Brothers?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Is Local Force?"), 
+                             new VariableDefinitionBoolean ("Apply on Center of Brothers?"), 
                      ],
                      null
                   );
@@ -1794,7 +1794,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Force X"), 
                              new VariableDefinitionNumber ("Force Y"), 
-                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Is Local Force?"), 
                              new VariableDefinitionNumber ("Local Point X"), 
                              new VariableDefinitionNumber ("Local Point Y"), 
                      ],
@@ -1805,7 +1805,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Force X"), 
                              new VariableDefinitionNumber ("Force Y"), 
-                             new VariableDefinitionBoolean ("Is Local Force?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Is Local Force?"), 
                              new VariableDefinitionNumber ("World Point X"), 
                              new VariableDefinitionNumber ("World Point Y"), 
                      ],
@@ -1824,8 +1824,8 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Impulse X"), 
                              new VariableDefinitionNumber ("Impulse Y"), 
-                             new VariableDefinitionBoolean ("Is Local Impulse?", null, {mDefaultValue: false}), 
-                             new VariableDefinitionBoolean ("Apply on Center of Brothers?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Is Local Impulse?"), 
+                             new VariableDefinitionBoolean ("Apply on Center of Brothers?"), 
                      ],
                      null
                   );
@@ -1834,7 +1834,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Impulse X"), 
                              new VariableDefinitionNumber ("Impulse Y"), 
-                             new VariableDefinitionBoolean ("Is Local Impulse?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Is Local Impulse?"), 
                              new VariableDefinitionNumber ("Local Point X"), 
                              new VariableDefinitionNumber ("Local Point Y"), 
                      ],
@@ -1845,7 +1845,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Impulse X"), 
                              new VariableDefinitionNumber ("Impulse Y"), 
-                             new VariableDefinitionBoolean ("Is Local Impulse?", null, {mDefaultValue: false}), 
+                             new VariableDefinitionBoolean ("Is Local Impulse?"), 
                              new VariableDefinitionNumber ("World Point X"), 
                              new VariableDefinitionNumber ("World Point Y"), 
                      ],
@@ -1865,9 +1865,9 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Target Position X"), 
                              new VariableDefinitionNumber ("Target Position Y"), 
                              new VariableDefinitionNumber ("Target Angle (degrees)"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Movables?", null, {mDefaultValue: true}), 
-                             new VariableDefinitionBoolean ("Teleport Connected Statics?", null, {mDefaultValue: false}), 
-                             new VariableDefinitionBoolean ("Break Embarrassed Joints?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"), 
                      ],
                      null
                   );
@@ -1877,9 +1877,9 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Offset X"), 
                              new VariableDefinitionNumber ("Offset Y"), 
                              new VariableDefinitionNumber ("Delta Angle (degrees)"), 
-                             new VariableDefinitionBoolean ("Teleport Connected Movables?", null, {mDefaultValue: true}), 
-                             new VariableDefinitionBoolean ("Teleport Connected Statics?", null, {mDefaultValue: false}), 
-                             new VariableDefinitionBoolean ("Break Embarrassed Joints?", null, {mDefaultValue: true}), 
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"), 
                      ],
                      null
                   );
@@ -1889,8 +1889,8 @@ package editor.trigger {
          //                    new VariableDefinitionNumber ("Target PositionX"), 
          //                    new VariableDefinitionNumber ("Target PositionY"), 
          //                    new VariableDefinitionNumber ("Delta Rotation"), 
-         //                    new VariableDefinitionBoolean ("Teleport Connected Movables?", null, {mDefaultValue: true}), 
-         //                    new VariableDefinitionBoolean ("Teleport Connected Statics?", null, {mDefaultValue: true}), 
+         //                    new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
+         //                    new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
          //            ],
          //            null
          //         );
@@ -2021,14 +2021,14 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled, entity_joint_package, "Set Joint Limits Enabled", null, null,
                      [
                         new VariableDefinitionEntity ("The Joints", null, {mValidClasses: Filters.sLimitsConfigureableJointEntityClasses}), 
-                        new VariableDefinitionBoolean ("Enabled?", null, {mDefaultValue: true}), 
+                        new VariableDefinitionBoolean ("Enabled?"), 
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled, entity_joint_package, "Set Joint Motor Enabled", null, null,
                      [
                         new VariableDefinitionEntity ("The Joint", null, {mValidClasses: Filters.sMotorConfigureableJointEntityClasses}), 
-                        new VariableDefinitionBoolean ("Enabled?", null, {mDefaultValue: true}), 
+                        new VariableDefinitionBoolean ("Enabled?"), 
                      ],
                      null
                   );
@@ -2126,7 +2126,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused, entity_trigger_package, "Set Timer Paused", null, null,
                      [
                         new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
-                        new VariableDefinitionBoolean ("Paused?", null, {mDefaultValue: true}), 
+                        new VariableDefinitionBoolean ("Paused?"), 
                      ],
                      null
                   );

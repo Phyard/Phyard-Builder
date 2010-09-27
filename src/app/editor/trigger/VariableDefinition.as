@@ -395,6 +395,7 @@ package editor.trigger {
          return null;
       }
       
+      // return null for not changed
       public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
       {
          return null;

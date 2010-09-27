@@ -1,6 +1,6 @@
-
-
 package common.trigger {
+   
+   import common.Define;
    
    public class ValueTypeDefine
    {
@@ -21,6 +21,27 @@ package common.trigger {
             case ValueType_Void:
             default:
                return "Void";
+         }
+      }
+      
+      // return a Boolean or Number or String
+      public static function GetDefaultDirectDefineValue (valueType:int):Object
+      {
+         switch (valueType)
+         {
+            case ValueType_Boolean:
+               return false;
+            case ValueType_Number:
+               return 0;
+            case ValueType_String:
+               return "";
+            case ValueType_CollisionCategory:
+               return -1;
+            case ValueType_Entity:
+               return Define.EntityId_None;
+            case ValueType_Void:
+            default:
+               return undefined;
          }
       }
       
@@ -54,8 +75,8 @@ package common.trigger {
       public static const ValueType_String:int  = 2;
       public static const ValueType_Number:int  = 3;
       
-      public static const ValyeType_Array:int = 30;
-      public static const ValyeType_Function:int = 31;
+      public static const ValueType_Array:int = 30;
+      public static const ValueType_Function:int = 31;
       
       public static const ValueType_Entity:int            = 60;
       public static const ValueType_CollisionCategory:int = 61;

@@ -21,7 +21,7 @@ package editor.trigger {
       
       override public function GetType ():int 
       {
-         return FunctionTypeDefine.FunctionType_EventHandler;
+         return FunctionTypeDefine.FunctionType_PreDefined;
       }
       
    }

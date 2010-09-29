@@ -54,12 +54,19 @@ package player.trigger {
          
          // 
          
-      // global
+      // code flow
          
-         //RegisterCoreFunction (CoreFunctionIds.ID_Return,                           ReturnVoid);
-         //RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfTrue,                     ReturnIfTrue);
-         //RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfFalse,                    ReturnIfFalse);
-         //RegisterCoreFunction (CoreFunctionIds.ID_Break,                            BreakVoid);
+         RegisterCoreFunction (CoreFunctionIds.ID_Return,                        null);
+         RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfTrue,                  null);
+         RegisterCoreFunction (CoreFunctionIds.ID_ReturnIfFalse,                 null);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_StartIf,                       null);
+         RegisterCoreFunction (CoreFunctionIds.ID_Else,                          null);
+         RegisterCoreFunction (CoreFunctionIds.ID_EndIf,                         null);
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_StartWhile,                    null);
+         RegisterCoreFunction (CoreFunctionIds.ID_Break,                         null);
+         RegisterCoreFunction (CoreFunctionIds.ID_EndWhile,                      null);
          
       // system / time
          
@@ -402,35 +409,6 @@ package player.trigger {
       public static function ForDebug (valueSource:Parameter, valueTarget:Parameter):void
       {
       }
-      
-   //*******************************************************************
-   // global
-   //*******************************************************************
-         
-      //public static function ReturnVoid (valueSource:Parameter, valueTarget:Parameter):void
-      //{
-      //   // do nothing, shouldn't run into here.
-      //   // for CodeSnippet will return directly.
-      //}
-      
-      //public static function ReturnIfTrue (valueSource:Parameter, valueTarget:Parameter):void
-      //{
-      //   var value:Boolean = (valueSource.EvaluateValueObject () as Boolean);
-      //   
-      //   valueTarget.AssignValueObject (value);
-      //}
-      
-      //public static function ReturnIfFalse (valueSource:Parameter, valueTarget:Parameter):void
-      //{
-      //   var value:Boolean = (valueSource.EvaluateValueObject () as Boolean);
-      //   
-      //   valueTarget.AssignValueObject (! value);
-      //}
-      
-      //public static function BreakVoid (valueSource:Parameter, valueTarget:Parameter):void
-      //{
-      //   // do nothing, shouldn't run into here
-      //}
       
    //*******************************************************************
    // system / time

@@ -75,7 +75,7 @@ package editor.trigger {
                if (category_index < 0)
                   valueSourceDirect.SetValueObject (null);
                else
-                  valueSourceDirect.SetValueObject (world.GetCollisionCategoryByIndex (category_index));
+                  valueSourceDirect.SetValueObject (world.GetCollisionManager ().GetCollisionCategoryByIndex (category_index));
             }
          }
          

@@ -527,7 +527,7 @@
             }
             else if (type == FunctionTypeDefine.FunctionType_Custom)
             {
-               func_declaration = Runtime.GetCurrentWorld ().GetPureFunctionByIndex (id).GetFunctionDeclaration ();
+               func_declaration = Runtime.GetCurrentWorld ().GetFunctionManager().GetFunctionByIndex (id).GetFunctionDeclaration ();
             }
             
             if (func_declaration == null)
@@ -1841,7 +1841,6 @@
                
                var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
                ownerFuncDefinition.SybchronizeDeclarationWithDefinition ();
-               ownerFuncDefinition.GetFunctionDeclaration ().ParseAllCallingTextSegments ();
                
                ValidateFunctionCallingLineDatas (ownerFuncDefinition.GetFunctionDeclaration ());
                

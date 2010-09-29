@@ -39,7 +39,7 @@ package editor {
    
    import editor.mode.FunctionMode;
    
-   import editor.mode.FunctionModePlaceCreateEntitiy;
+   import editor.mode.FunctionModePlaceCreateEntity;
    import editor.mode.FunctionModeCreateEntityLink;
    
    import editor.mode.FunctionModeRegionSelectEntities;
@@ -74,13 +74,16 @@ package editor {
          addChild (mForegroundLayer);
       }
       
-      public function GetPureFunctionManager ():FunctionManager
+      public function GetFunctionManager ():FunctionManager
       {
          return mFunctionManager;
       }
       
       public function SetFunctionManager (fm:FunctionManager):void
       {
+         if (mFunctionManager == fm)
+            return;
+         
          if (mFunctionManager != null && contains (mFunctionManager))
          {
             removeChild (mFunctionManager);
@@ -284,13 +287,13 @@ package editor {
          switch (event.target)
          {
             case mButtonCreateFunction:
-               SetCurrentCreateMode (new FunctionModePlaceCreateEntitiy (this, CreateEntityFunction));
+               SetCurrentCreateMode (new FunctionModePlaceCreateEntity (this, CreateEntityFunction));
                break;
             case mButtonCreatePackage:
-               //SetCurrentCreateMode (new FunctionModePlaceCreateEntitiy (this, CreateEntityFunctionPackage));
+               //SetCurrentCreateMode (new FunctionModePlaceCreateEntity (this, CreateEntityFunctionPackage));
                break;
             case mButtonCreateClass:
-               //SetCurrentCreateMode (new FunctionModePlaceCreateEntitiy (this, CreateEntityClass));
+               //SetCurrentCreateMode (new FunctionModePlaceCreateEntity (this, CreateEntityClass));
                break;
          // ...
             default:
@@ -418,7 +421,7 @@ package editor {
       
       public function CreateEntityFunction (options:Object = null):EntityFunction
       {
-         if (options != null && options.stage == FunctionModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage == FunctionModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -436,7 +439,7 @@ package editor {
       
       public function CreateEntityFunctionPackage (options:Object = null):EntityFunctionPackage
       {
-         if (options != null && options.stage == FunctionModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage == FunctionModePlaceCreateEntity. StageFinished)
          {
             return null;
          }

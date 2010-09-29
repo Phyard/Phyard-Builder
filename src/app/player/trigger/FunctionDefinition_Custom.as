@@ -23,9 +23,9 @@ package player.trigger
       internal var mOutputVariableRefList:VariableReference;
       internal var mLocalVariableRefList:VariableReference;
       
-      public function FunctionDefinition_Custom (inputValueSourceDefines:Array, numOutputParams:int, numLocalVariables:int)
+      public function FunctionDefinition_Custom (inputValueSourceDefines:Array, ouputParamValueTypes:Array, numLocalVariables:int)
       {
-         super (inputValueSourceDefines, numOutputParams);
+         super (inputValueSourceDefines, ouputParamValueTypes);
          
          mNumLocalVariables = numLocalVariables;
          
@@ -34,8 +34,8 @@ package player.trigger
          mLocalVariableReferences = VariableReference.CreateVariableReferenceArray (mNumLocalVariables);
          
          mInputVariableRefList = mNumInputParams > 0 ? mInputVariableReferences [0] : null;
-         mOutputVariableRefList = numOutputParams > 0 ? mOutputVariableReferences [0] : null;
-         mLocalVariableRefList = numLocalVariables > 0 ? mLocalVariableReferences [0] : null;
+         mOutputVariableRefList = mNumOutputParams > 0 ? mOutputVariableReferences [0] : null;
+         mLocalVariableRefList = mNumLocalVariables > 0 ? mLocalVariableReferences [0] : null;
          
          mPrimaryFunctionInstance = new FunctionInstance (this);
       }

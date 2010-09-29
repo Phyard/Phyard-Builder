@@ -91,7 +91,7 @@ package editor.world {
          
          mCollisionManager = new CollisionManager ();
          
-         mFunctionManager = new FunctionManager ();
+         mFunctionManager = new FunctionManager (this);
          
          //mSelectionEngineForVertexes = new SelectionEngine ();
          mSelectionEngineForVertexes = mSelectionEngine;
@@ -820,7 +820,7 @@ package editor.world {
          var circle:EntityShapeCircle = new EntityShapeCircle (this);
          addChild (circle);
          
-         circle.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
+         circle.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
          
          return circle;
       }
@@ -833,7 +833,7 @@ package editor.world {
          var rect:EntityShapeRectangle = new EntityShapeRectangle (this);
          addChild (rect);
          
-         rect.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
+         rect.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
          
          return rect;
       }
@@ -846,7 +846,7 @@ package editor.world {
          var polygon:EntityShapePolygon = new EntityShapePolygon (this);
          addChild (polygon);
          
-         polygon.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
+         polygon.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
          
          return polygon;
       }
@@ -859,7 +859,7 @@ package editor.world {
          var polyline:EntityShapePolyline = new EntityShapePolyline (this);
          addChild (polyline);
          
-         polyline.SetCollisionCategoryIndex (GetCollisionCategoryIndex (GetDefaultCollisionCategory ()));
+         polyline.SetCollisionCategoryIndex (mCollisionManager.GetCollisionCategoryIndex (mCollisionManager.GetDefaultCollisionCategory ()));
          
          return polyline;
       }
@@ -1427,36 +1427,6 @@ package editor.world {
          return mCollisionManager;
       }
       
-      public function SetCollisionManager (cm:CollisionManager):void
-      {
-         mCollisionManager = cm;
-      }
-      
-      public function GetNumCollisionCategories ():int
-      {
-         return mCollisionManager.GetNumCollisionCategories ();
-      }
-      
-      public function GetCollisionCategoryIndex (category:EntityCollisionCategory):int
-      {
-         return mCollisionManager.GetCollisionCategoryIndex (category);
-      }
-      
-      public function GetCollisionCategoryByIndex (index:int):EntityCollisionCategory
-      {
-         return mCollisionManager.GetCollisionCategoryByIndex (index);
-      }
-      
-      public function GetCollisionCategoryFriendPairs ():Array
-      {
-         return mCollisionManager.GetCollisionCategoryFriendPairs ();
-      }
-      
-      public function GetDefaultCollisionCategory ():EntityCollisionCategory
-      {
-         return mCollisionManager.GetDefaultCollisionCategory ();
-      }
-      
       public function CreateEntityCollisionCategoryFriendLink (categoryIndex1:int, categoryIndex2:int):void
       {
          var category1:EntityCollisionCategory = mCollisionManager.GetCollisionCategoryByIndex (categoryIndex1);
@@ -1466,33 +1436,13 @@ package editor.world {
             mCollisionManager.CreateEntityCollisionCategoryFriendLink (category1, category2);
       }
       
-      public function CreateEntityCollisionCategory (ccName:String):EntityCollisionCategory
-      {
-         return mCollisionManager.CreateEntityCollisionCategory (ccName);
-      }
-      
 //=================================================================================
 //   functions
 //=================================================================================
       
-      public function GetPureFunctionManager ():FunctionManager
+      public function GetFunctionManager ():FunctionManager
       {
          return mFunctionManager;
-      }
-      
-      public function GetNumPureFunctions ():int
-      {
-         return mFunctionManager.GetNumFunctions ();
-      }
-      
-      public function GetPureFunctionByIndex (index:int):EntityFunction
-      {
-         return mFunctionManager.GetFunctionByIndex (index);
-      }
-      
-      public function CreatePureFunctionEntity (funcName:String):EntityFunction
-      {
-         return mFunctionManager.CreateEntityFunction (funcName);
       }
       
 //=================================================================================

@@ -7,6 +7,7 @@ package player.trigger.entity
    import player.trigger.VariableInstance;
    import player.trigger.Parameter_Variable;
    import common.trigger.define.CodeSnippetDefine;
+   import common.trigger.define.FunctionDefine;
    import common.trigger.ValueDefine;
    
    import common.TriggerFormatHelper2;
@@ -33,7 +34,11 @@ package player.trigger.entity
          {
             if (entityDefine.mFunctionDefine != undefined)
             {
-               mConditionDefinition = TriggerFormatHelper2.CreateFunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetBoolFunctionDeclaration  ());
+               var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
+               codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
+               
+               mConditionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetBoolFunctionDeclaration ());
+               mConditionDefinition.SetCodeSnippetDefine (codeSnippetDefine);
             }
          }
       }

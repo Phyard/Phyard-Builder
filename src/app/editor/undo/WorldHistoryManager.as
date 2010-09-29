@@ -18,6 +18,11 @@ package editor.undo {
          mCurrentWorldState = null;
       }
       
+      public function GetCurrentWorldState ():WorldState
+      {
+         return mCurrentWorldState;
+      }
+      
       public function GetPrevWorldState ():WorldState
       {
          if (mCurrentWorldState == null)

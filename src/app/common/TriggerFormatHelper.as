@@ -259,7 +259,7 @@ package common {
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return editorWorld.GetCollisionCategoryIndex (valueObject as EntityCollisionCategory);
+               return editorWorld.GetCollisionManager ().GetCollisionCategoryIndex (valueObject as EntityCollisionCategory);
                break;
             default:
             {
@@ -301,7 +301,29 @@ package common {
 // define -> definition (editor)
 //==============================================================================================
       
-      public static function LoadCodeSnippetFromCodeSnippetDefine (editorWorld:World, codeSnippet:CodeSnippet, codeSnippetDefine:CodeSnippetDefine):void
+      public static function FunctionDefine2FunctionDefinition (editorWorld:World, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true):void
+      {
+         if (createVariables)
+         {
+            //>> from v`1.53
+            if (functionDefinition.GetFunctionDeclaration () is FunctionDeclaration_Custom)
+            {
+               VariableDefines2VariableSpace (editorWorld, functionDefine.mInputVariableDefines, functionDefinition.GetInputVariableSpace (), true);
+               
+               VariableDefines2VariableSpace (editorWorld, functionDefine.mOutputVariableDefines, functionDefinition.GetOutputVariableSpace (), false);
+            }
+            
+            VariableDefines2VariableSpace (editorWorld, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false);
+            //<<
+         }
+         
+         if (createCodeSnippet)
+         {
+            LoadCodeSnippetFromCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, codeSnippet);
+         }
+      }
+      
+      public static function LoadCodeSnippetFromCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, codeSnippet:CodeSnippet):void
       {
          var function_definition:FunctionDefinition = codeSnippet.GetOwnerFunctionDefinition ();
          
@@ -319,21 +341,46 @@ package common {
       {
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
-         var func_declaration:FunctionDeclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
          
-         var i:int;
-         var num_inputs:int = funcCallingDefine.mNumInputs;
-         var num_outputs:int = funcCallingDefine.mNumOutputs;
+         var func_declaration:FunctionDeclaration;
+         if (func_type == FunctionTypeDefine.FunctionType_Core)
+         {
+            func_declaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
+         }
+         else if (func_type == FunctionTypeDefine.FunctionType_Custom)
+         {
+            func_declaration = editorWorld.GetFunctionManager ().GetFunctionByIndex (func_id).GetFunctionDeclaration ();
+         }
+         else if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
+         {
+            // impossible
+         }
+         
+         var real_num_inputs:int = func_declaration.GetNumInputs ()
+         var real_num_outputs:int = func_declaration.GetNumOutputs ()
+         
          var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
          var outputValueTargetDefines:Array = funcCallingDefine.mOutputValueTargetDefines;
          
+         var i:int;
+         
          var value_sources:Array = new Array (funcCallingDefine.mNumInputs);
-         for (i = 0; i < num_inputs; ++ i)
-            value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
+         for (i = 0; i < funcCallingDefine.mNumInputs; ++ i)
+         {
+            if (i >= funcCallingDefine.mNumInputs)
+               value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (editorWorld.GetTriggerEngine ());
+            else
+               value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
+         }
          
          var value_targets:Array = new Array (funcCallingDefine.mNumOutputs);
-         for (i = 0; i < num_outputs; ++ i)
-            value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
+         for (i = 0; i < funcCallingDefine.mNumOutputs; ++ i)
+         {
+            if (i >= funcCallingDefine.mNumOutputs)
+               value_targets [i] = func_declaration.GetOutputParamDefinitionAt (i).GetDefaultValueTarget ();
+            else
+               value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
+         }
          
          var func_calling:FunctionCalling = new FunctionCalling (editorWorld.GetTriggerEngine (), func_declaration);
          func_calling.AssignInputValueSources (value_sources);
@@ -389,6 +436,7 @@ package common {
                   variable_instance = functionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
+                  variable_instance = functionDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                default:
                   break;
@@ -452,6 +500,7 @@ package common {
                   variable_instance = functionDefinition.GetOutputVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Local:
+                  variable_instance = functionDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                default:
                   break;
@@ -513,7 +562,7 @@ package common {
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return editorWorld.GetCollisionCategoryByIndex (valueobject as int);
+               return editorWorld.GetCollisionManager ().GetCollisionCategoryByIndex (valueobject as int);
             default:
             {
                throw new Error ("!wrong balue");
@@ -578,6 +627,26 @@ package common {
 //==============================================================================================
 // define -> byte array
 //==============================================================================================
+      
+      public static function WriteFunctionDefineIntoBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, writeVariables:Boolean, writeCodeSnippet:Boolean):void
+      {
+         if (writeVariables)
+         {
+            if (hasParams)
+            {
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mInputVariableDefines, true);
+               
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mOutputVariableDefines, false);
+            }
+            
+            WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+         }
+         
+         if (writeCodeSnippet)
+         {
+            WriteCodeSnippetDefineIntoBinFile (binFile, functionDefine.mCodeSnippetDefine);
+         }
+      }
       
       public static function WriteCodeSnippetDefineIntoBinFile (binFile:ByteArray, codeSnippetDefine:CodeSnippetDefine):void
       {
@@ -758,7 +827,31 @@ package common {
          entityDefine.mInputConditionTargetValues = values;
       }
       
-      public static function Xml2CodeSnippetDefine (codeSnippetElement:XMLList):CodeSnippetDefine
+      public static function Xml2FunctionDefine (functionElement:XML, parseParams:Boolean, convertVariables:Boolean, convertCodeSnippet:Boolean):FunctionDefine
+      {
+         var functionDefine:FunctionDefine = new FunctionDefine ();
+         
+         if (convertVariables)
+         {
+            if (parseParams)
+            {
+               VariablesXml2Define (functionElement.InputParameters [0], functionDefine.mInputVariableDefines, true);
+               
+               VariablesXml2Define (functionElement.OutputParameters [0], functionDefine.mOutputVariableDefines, false);
+            }
+            
+            VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false);
+         }
+         
+         if (convertCodeSnippet)
+         {
+            functionDefine.mCodeSnippetDefine = Xml2CodeSnippetDefine (functionElement.CodeSnippet [0]);
+         }
+         
+         return functionDefine;
+      }
+      
+      public static function Xml2CodeSnippetDefine (codeSnippetElement:XML):CodeSnippetDefine
       {
          var func_calling_defines:Array = new Array ();
          
@@ -936,7 +1029,7 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int):void
       {
          var funcCallingDefine:FunctionCallingDefine;
          var i:int;
@@ -947,20 +1040,30 @@ package common {
          {
             funcCallingDefine = codeSnippetDefine.mFunctionCallingDefines [i];
             
+            var func_type:int = funcCallingDefine.mFunctionType;
+            var functionId:int = funcCallingDefine.mFunctionId;
+            
+            var funcDclaration:FunctionDeclaration;
+            if (func_type == FunctionTypeDefine.FunctionType_Core)
+            {
+               funcDclaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (functionId);
+            }
+            else // if (func_type == FunctionTypeDefine.FunctionType_Custom)
+            {
+               functionId += beginningCustomFunctionIndex;
+               funcCallingDefine.mFunctionId = functionId;
+               funcDclaration = editorWorld.GetFunctionManager ().GetFunctionByIndex (functionId).GetFunctionDeclaration ();
+            }
+            
             if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
             {
-               var functionId:int = funcCallingDefine.mFunctionId;
-               var funcDclaration:common.trigger.FunctionDeclaration = common.trigger.CoreFunctionDeclarations.GetCoreFunctionDeclaration (functionId);
-               
                var numInputs:int = funcCallingDefine.mNumInputs;
-               
                for (j = 0; j < numInputs; ++ j)
                {
                   ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
                }
                
                var numOutputs:int = funcCallingDefine.mNumOutputs;
-               
                for (j = 0; j < numOutputs; ++ j)
                {
                   ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);

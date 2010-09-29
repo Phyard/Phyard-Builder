@@ -21,8 +21,16 @@ package editor.world {
    
    public class FunctionManager extends EntityContainer
    {
-      public function FunctionManager ()
+      protected var mWorld:World;
+      
+      public function FunctionManager (world:World)
       {
+         mWorld = world;
+      }
+      
+      public function GetWorld ():World
+      {
+         return mWorld;
       }
       
       override public function DestroyEntity (entity:Entity):void
@@ -319,7 +327,7 @@ package editor.world {
             mFunctionMenuGroup.AddFunctionDeclaration ((mFunctionEntities [i] as EntityFunction).GetFunctionDeclaration ());
          }
          
-         Runtime.GetCurrentWorld ().GetTriggerEngine ().UpdateCustomFunctionMenu ();
+         mWorld.GetTriggerEngine ().UpdateCustomFunctionMenu ();
       }
    }
 }

@@ -70,7 +70,7 @@ package editor {
    
    import editor.mode.ModeCreateJoint;
    
-   import editor.mode.ModePlaceCreateEntitiy;
+   import editor.mode.ModePlaceCreateEntity;
    
    import editor.mode.ModeRegionSelectEntities;
    import editor.mode.ModeMoveSelectedEntities;
@@ -1191,120 +1191,120 @@ package editor {
          // others
             
             case mButtonCreateText:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateText));
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateText));
                break;
             case mButtonCreateTextButton:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTextButton));
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityTextButton));
                break;
             case mButtonCreateGravityController:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateGravityController));
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateGravityController));
                break;
             case mButtonCreateCamera:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityCamera));
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityCamera));
                break;
             
             case mButtonCreateLinearForce:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_Force}));
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_Force}));
                break;
             case mButtonCreateAngularForce:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_Torque}));
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_Torque}));
                break;
             case mButtonCreateLinearImpulse:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearImpusle}));
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearImpusle}));
                break;
             case mButtonCreateAngularImpulse:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularImpulse}));
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularImpulse}));
                break;
             //case mButtonCreateAngularAcceleration:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularAcceleration}));
+            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularAcceleration}));
             //   break;
             //case mButtonCreateAngularVelocity:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularVelocity}));
+            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_AngularVelocity}));
             //   break;
             //case mButtonCreateLinearAcceleration:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearAcceleration}));
+            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearAcceleration}));
             //   break;
             //case mButtonCreateLinearVelocity:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearVelocity}));
+            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityUtilityPowerSource, {mPowerSourceType: Define.PowerSource_LinearVelocity}));
             //   break;
             
           // logic
           
             case mButtonCreateCondition:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityCondition) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityCondition) );
                break;
             case mButtonCreateConditionDoor:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityConditionDoor) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityConditionDoor) );
                break;
             case mButtonCreateTask:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityTask) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityTask) );
                break;
             case mButtonCreateAction:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityAction) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityAction) );
                break;
             case mButtonCreateEntityAssigner:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityAssigner) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityAssigner) );
                break;
             case mButtonCreateEntityPairAssigner:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityPairAssigner) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityPairAssigner) );
                break;
             //case mButtonCreateEntityRegionSelector:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityRegionSelector) );
+            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityRegionSelector) );
             //   break;
             //case mButtonCreateEntityFilter:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityFilter) );
+            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityFilter) );
             //   break;
             //case mButtonCreateEntityPairFilter:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityInputEntityPairFilter) );
+            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityPairFilter) );
             //   break;
                
             case mButtonCreateEventHandler0:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldBeforeInitializing, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldBeforeInitializing, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler1:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterInitialized, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterInitialized, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler2:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLWorldBeforeUpdating, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnLWorldBeforeUpdating, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler3:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterUpdated, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterUpdated, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler4:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachLowerLimit, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachLowerLimit, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler5:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachUpperLimit, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachUpperLimit, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler6:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldTimer, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldTimer, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler7:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldKeyDown, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldKeyDown, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler8:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldMouseClick, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldMouseClick, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler50:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityInitialized, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityInitialized, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler51:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityUpdated, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityUpdated, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler52:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityDestroyed, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityDestroyed, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler53:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler56:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityPairTimer, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityPairTimer, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler57:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityTimer, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityTimer, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler58:
-               SetCurrentCreateMode (new ModePlaceCreateEntitiy (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityMouseClick, mPotientialEventIds:null}) );
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityMouseClick, mPotientialEventIds:null}) );
                break;
             
          // ...
@@ -1614,7 +1614,7 @@ package editor {
          
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionManager ().SetChanged (false);
-         mEditorWorld.GetPureFunctionManager ().SetChanged (false);
+         mEditorWorld.GetFunctionManager ().SetChanged (false);
          
          mEditorWorld.scaleX = mEditorWorld.scaleY = mEditorWorldZoomScale = mEditorWorld.GetZoomScale ();
          
@@ -1627,7 +1627,7 @@ package editor {
             Runtime.mCollisionCategoryView.SetCollisionManager (mEditorWorld.GetCollisionManager ());
          
          if (Runtime.mFunctionEditingView != null)
-            Runtime.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetPureFunctionManager ());
+            Runtime.mFunctionEditingView.SetFunctionManager (mEditorWorld.GetFunctionManager ());
          
          if (! firstTime)
          {
@@ -1921,9 +1921,9 @@ package editor {
       
       public function OnFinishedFunctionEditing ():void
       {
-         if (mEditorWorld.GetPureFunctionManager ().IsChanged ())
+         if (mEditorWorld.GetFunctionManager ().IsChanged ())
          {
-            mEditorWorld.GetPureFunctionManager ().SetChanged (false);
+            mEditorWorld.GetFunctionManager ().SetChanged (false);
             CreateUndoPoint ("Modify functions");
          }
          
@@ -3375,7 +3375,7 @@ package editor {
       
       public function CreateText (options:Object = null):EntityShapeText
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3404,7 +3404,7 @@ package editor {
       
       public function CreateEntityTextButton (options:Object = null):EntityShapeTextButton
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3426,7 +3426,7 @@ package editor {
       
       public function CreateGravityController (options:Object = null):EntityShapeGravityController
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3450,7 +3450,7 @@ package editor {
       
       public function CreateEntityUtilityCamera (options:Object = null):EntityUtilityCamera
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3468,7 +3468,7 @@ package editor {
       
       public function CreateEntityUtilityPowerSource (options:Object = null):EntityUtilityPowerSource
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3488,7 +3488,7 @@ package editor {
       
       public function CreateEntityCondition (options:Object = null):EntityBasicCondition
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3506,7 +3506,7 @@ package editor {
       
       public function CreateEntityConditionDoor (options:Object = null):EntityConditionDoor
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3524,7 +3524,7 @@ package editor {
       
       public function CreateEntityTask (options:Object = null):EntityTask
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3542,7 +3542,7 @@ package editor {
       
       public function CreateEntityInputEntityAssigner (options:Object = null):EntityInputEntityAssigner
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityAssigner).SetInternalComponentsVisible (true);
@@ -3562,7 +3562,7 @@ package editor {
       
       public function CreateEntityInputEntityPairAssigner (options:Object = null):EntityInputEntityPairAssigner
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityPairAssigner).SetInternalComponentsVisible (true);
@@ -3580,7 +3580,7 @@ package editor {
       
       public function CreateEntityInputEntityRegionSelector (options:Object = null):EntityInputEntityRegionSelector
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityRegionSelector).SetInternalComponentsVisible (true);
@@ -3598,7 +3598,7 @@ package editor {
       
       public function CreateEntityInputEntityFilter (options:Object = null):EntityInputEntityScriptFilter
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityScriptFilter).SetInternalComponentsVisible (true);
@@ -3616,7 +3616,7 @@ package editor {
       
       public function CreateEntityInputEntityPairFilter (options:Object = null):EntityInputEntityPairScriptFilter
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityPairScriptFilter).SetInternalComponentsVisible (true);
@@ -3634,7 +3634,7 @@ package editor {
       
       public function CreateEntityEventHandler (options:Object = null):EntityEventHandler
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3689,7 +3689,7 @@ package editor {
       
       public function CreateEntityAction (options:Object = null):EntityAction
       {
-         if (options != null && options.stage ==ModePlaceCreateEntitiy. StageFinished)
+         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
          {
             return null;
          }
@@ -3720,7 +3720,8 @@ package editor {
       {
          mLastSelectedEntity = entity;
          
-         if (mLastSelectedEntity != null && mEditorWorld.IsEntitySelected (mLastSelectedEntity))
+         
+         if (mLastSelectedEntity != null && mEditorWorld != null && mEditorWorld.IsEntitySelected (mLastSelectedEntity))
          {
             mLastSelectedEntity.SetInternalComponentsVisible (true);
             
@@ -3728,7 +3729,7 @@ package editor {
          }
          else
          {
-            mMainSelectedEntity = mEditorWorld.GetMainSelectedEntity ();
+            mMainSelectedEntity = mEditorWorld == null ? null : mEditorWorld.GetMainSelectedEntity ();
          }
          
          UpdateUiButtonsEnabledStatus ();
@@ -4994,12 +4995,14 @@ package editor {
          }
          catch (error:Error)
          {
+            if (Compile::Is_Debugging)
+               throw error;
+            
+            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+            
             //SetEditorWorld (new editor.world.World ());
             
             //Alert.show("Sorry, loading error!", "Error");
-            
-            if (Compile::Is_Debugging)
-               throw error;
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading failed", EffectMessagePopup.kBgColor_Error));
          }
@@ -5110,7 +5113,7 @@ package editor {
          try
          {
             var oldEntitiesCount:int = mEditorWorld.GetNumEntities ();
-            var oldCategoriesCount:int = mEditorWorld.GetNumCollisionCategories ();
+            var oldCategoriesCount:int = mEditorWorld.GetCollisionManager ().GetNumCollisionCategories ();
             
             var worldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
             
@@ -5338,7 +5341,10 @@ package editor {
       private function RestoreWorld (worldState:WorldState):void
       {
          if (worldState == null)
+         {
+            OnCloseClearAllAndResetSceneAlert (null);
             return;
+         }
          
          SetLastSelectedEntities (null);
          mLastSelectedEntities = null;
@@ -5762,16 +5768,21 @@ package editor {
          
          var returnCode:int = k_ReturnCode_UnknowError;
          
-         try
+         var data:ByteArray = ByteArray (loader.data);
+         
+         returnCode = data.readByte ();
+         
+         if (returnCode != k_ReturnCode_Successed)
          {
-            var data:ByteArray = ByteArray (loader.data);
+            //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
+            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error));
+         }
+         else
+         {
+            DestroyEditorWorld ();
             
-            returnCode = data.readByte ();
-            
-            if (returnCode == k_ReturnCode_Successed)
+            try
             {
-               DestroyEditorWorld ();
-               
                var designDataForEditing:ByteArray = new ByteArray ();
                
                var newEditorWorld:editor.world.World;
@@ -5797,24 +5808,21 @@ package editor {
                //Alert.show("Loading Succeeded!", "Succeeded");
                mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load succeeded", EffectMessagePopup.kBgColor_OK));
             }
-            else
+            catch (error:Error)
             {
-               //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
-               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error));
+               if (Compile::Is_Debugging)
+                  throw error;
+               
+               RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+               
+               //Alert.show("Sorry, online loading error!", "Error");
+               
+               mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error));
             }
          }
-         catch (error:Error)
-         {
-            if (returnCode == k_ReturnCode_Successed)
-               SetEditorWorld (new editor.world.World ());
-            
-            //Alert.show("Sorry, online loading error!", "Error");
-            
-            if (Compile::Is_Debugging)
-               throw error;
-            
-            mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error));
-         }
       }
+      
+      
+      
    }
 }

@@ -268,6 +268,8 @@ package editor.trigger {
          functionDecl.SetOutputParamDefinitions (outputDefinitions);
          
          functionDecl.IncreaseModifiedTimes ();
+         
+         functionDecl.ParseAllCallingTextSegments ();
       }
       
       public function Clone ():FunctionDefinition

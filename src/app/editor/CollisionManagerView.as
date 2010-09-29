@@ -73,6 +73,9 @@ package editor {
       
       public function SetCollisionManager (cm:CollisionManager):void
       {
+         if (mCollisionManager == cm)
+            return;
+         
          if (mCollisionManager != null && contains (mCollisionManager))
          {
             mCollisionManager.SetFriendLinksChangedCallback (null);

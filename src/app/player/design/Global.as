@@ -11,7 +11,7 @@ package player.design
    import com.stephencalenderblog.MersenneTwisterRNG;
    
    import common.trigger.ValueTypeDefine;
-   //import common.trigger.define.VariableSpaceDefine;
+   import common.trigger.define.FunctionDefine;
    
    import common.TriggerFormatHelper2;
    
@@ -182,16 +182,24 @@ package player.design
          return mEntityVariableSpace.CloneSpace ();
       }
       
-      //public static function InitCustomFunctions (functionDefines:Array);void
-      //{
-      //   var numFunctions:int = functionDefines.length;
-      //   mCustomFunctionDefinitions = new Array (numFunctions);
-      //   
-      //   for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
-      //   {
-      //      mCustomFunctionDefinitions [functionId] = functionDefines [functionId];
-      //   }
-      //}
+      public static function CreateCustomFunctionDefinitions (functionDefines:Array):void
+      {
+         var numFunctions:int = functionDefines.length;
+         mCustomFunctionDefinitions = new Array (numFunctions);
+         
+         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+         {
+            mCustomFunctionDefinitions [functionId] = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (functionDefines [functionId] as FunctionDefine, null);
+         }
+      }
+      
+      public static function GetCustomFunctionDefinition (functionId:int):FunctionDefinition_Custom
+      {
+         if (functionId < 0 || functionId >= mCustomFunctionDefinitions.length)
+            return null;
+         
+         return mCustomFunctionDefinitions [functionId] as FunctionDefinition_Custom;
+      }
       
       public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void
       {

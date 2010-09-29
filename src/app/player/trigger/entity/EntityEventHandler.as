@@ -9,6 +9,7 @@ package player.trigger.entity
    import player.trigger.data.ListElement_InputEntityAssigner;
    
    import common.trigger.define.CodeSnippetDefine;
+   import common.trigger.define.FunctionDefine;
    
    import common.trigger.CoreEventIds;
    import common.trigger.CoreEventDeclarations;
@@ -53,10 +54,18 @@ package player.trigger.entity
          
          if (createStageId == 0)
          {
-            if (entityDefine.mEventId != undefined && entityDefine.mFunctionDefine != undefined)
+            if (entityDefine.mEventId != undefined)
             {
                mEventId = int (entityDefine.mEventId);
-               mEventHandlerDefinition = TriggerFormatHelper2.CreateFunctionDefinition (mWorld, entityDefine.mFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
+            }
+            
+            if (entityDefine.mFunctionDefine != undefined)
+            {
+               var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
+               codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
+               
+               mEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
+               mEventHandlerDefinition.SetCodeSnippetDefine (codeSnippetDefine);
             }
             
             // external condition

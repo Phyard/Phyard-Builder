@@ -63,74 +63,111 @@ package common {
    public class TriggerFormatHelper2
    {
       
-      public static function BuildInputValueSourceDefinesFormFunctionDeclaration (functionDeclaration:FunctionDeclaration):Array
+      public static function BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration:FunctionDeclaration, forInputParams:Boolean):Array
       {
-         var valueSourceDefines:Array = null;
+         var paramDefines:Array = null;
          
-         var numInputs:int = functionDeclaration.GetNumInputs ();
-         if (numInputs > 0)
+         var i:int;
+         
+         if (forInputParams)
          {
-            valueSourceDefines = new Array (numInputs);
-            
-            for (var i:int =  0; i < numInputs; ++ i)
+            var numInputs:int = functionDeclaration.GetNumInputs ();
+            if (numInputs > 0)
             {
-               valueSourceDefines [i] = new ValueSourceDefine_Direct (functionDeclaration.GetInputParamValueType (i), functionDeclaration.GetInputParamDefaultValue (i));
+               paramDefines = new Array (numInputs);
+               
+               for (i =  0; i < numInputs; ++ i)
+               {
+                  paramDefines [i] = new ValueSourceDefine_Direct (functionDeclaration.GetInputParamValueType (i), functionDeclaration.GetInputParamDefaultValue (i));
+               }
+            }
+         }
+         else
+         {
+            var numOutputs:int = functionDeclaration.GetNumOutputs ();
+            if (numOutputs > 0)
+            {
+               paramDefines = new Array (numOutputs);
+               
+               for (i =  0; i < numOutputs; ++ i)
+               {
+                  paramDefines [i] = functionDeclaration.GetOutputParamValueType (i);
+               }
             }
          }
          
-         return valueSourceDefines;
+         return paramDefines;
       }
       
-      public static function BuildInputValueSourceDefinesFormVariableDefines (inputVariableDefines:Array):Array
+      public static function BuildParamDefinesFormVariableDefines (inputVariableDefines:Array, forInputParams:Boolean):Array
       {
-         var valueSourceDefines:Array = null;
+         var paramDefines:Array = null;
          
-         var numInputs:int = inputVariableDefines.length;
-         if (numInputs > 0)
+         var i:int;
+         var variableInstanceDefine:VariableInstanceDefine;
+         var direct_source_define:ValueSourceDefine_Direct;
+         
+         if (forInputParams)
          {
-            valueSourceDefines = new Array (numInputs);
-            
-            for (var i:int =  0; i < numInputs; ++ i)
+            var numInputs:int = inputVariableDefines.length;
+            if (numInputs > 0)
             {
-               var variableInstanceDefine:VariableInstanceDefine = inputVariableDefines [i] as VariableInstanceDefine;
-               var direct_source_define:ValueSourceDefine_Direct = variableInstanceDefine.mDirectValueSourceDefine;
+               paramDefines = new Array (numInputs);
                
-               valueSourceDefines [i] = new ValueSourceDefine_Direct (direct_source_define.mValueType, direct_source_define.mValueObject);
+               for (i =  0; i < numInputs; ++ i)
+               {
+                  variableInstanceDefine = inputVariableDefines [i] as VariableInstanceDefine;
+                  direct_source_define = variableInstanceDefine.mDirectValueSourceDefine;
+                  
+                  paramDefines [i] = new ValueSourceDefine_Direct (direct_source_define.mValueType, direct_source_define.mValueObject);
+               }
+            }
+         }
+         else
+         {
+            var numOutputs:int = inputVariableDefines.length;
+            if (numOutputs > 0)
+            {
+               paramDefines = new Array (numOutputs);
+               
+               for (i =  0; i < numOutputs; ++ i)
+               {
+                  variableInstanceDefine = inputVariableDefines [i] as VariableInstanceDefine;
+                  direct_source_define = variableInstanceDefine.mDirectValueSourceDefine;
+                  
+                  paramDefines [i] = direct_source_define.mValueType;
+               }
             }
          }
          
-         return valueSourceDefines;
+         return paramDefines;
       }
       
       public static function CreateCoreFunctionDefinition (functionDeclaration:FunctionDeclaration, callback:Function):FunctionDefinition_Core
       {
-         return new FunctionDefinition_Core (BuildInputValueSourceDefinesFormFunctionDeclaration (functionDeclaration), functionDeclaration.GetNumOutputs (), callback);
-      }
-      
-      // for functionDefine and functionDeclaration, at least one is not null
-      public static function CreateFunctionDefinition (playerWorld:World, functionDefine:FunctionDefine, functionDeclaration:FunctionDeclaration):FunctionDefinition_Custom
-      {
-         var numLocals:int = functionDefine.mLocalVariableDefines == null ? 0 : functionDefine.mLocalVariableDefines.length;
-         var costomFunction:FunctionDefinition_Custom;
-         if (functionDeclaration != null)
-         {
-            costomFunction = new FunctionDefinition_Custom (BuildInputValueSourceDefinesFormFunctionDeclaration (functionDeclaration), functionDeclaration.GetNumOutputs (), numLocals);
-         }
-         else
-         {
-            costomFunction = new FunctionDefinition_Custom (BuildInputValueSourceDefinesFormVariableDefines (functionDefine.mInputVariableDefines), functionDefine.mOutputVariableDefines.length, numLocals);
-         }
-         
-         var codeSnippetDefine:CodeSnippetDefine = functionDefine.mCodeSnippetDefine.Clone ();
-         codeSnippetDefine.DisplayValues2PhysicsValues (playerWorld.GetCoordinateSystem ());
-         costomFunction.SetCodeSnippetDefine (codeSnippetDefine);
-         
-         return costomFunction;
+         return new FunctionDefinition_Core (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), callback);
       }
       
 //==============================================================================================
 // define -> definition (player)
 //==============================================================================================
+      
+      // for functionDefine and functionDeclaration, at least one is not null
+      public static function FunctionDefine2FunctionDefinition (functionDefine:FunctionDefine, functionDeclaration:FunctionDeclaration):FunctionDefinition_Custom
+      {
+         var numLocals:int = functionDefine.mLocalVariableDefines == null ? 0 : functionDefine.mLocalVariableDefines.length;
+         var costomFunction:FunctionDefinition_Custom;
+         if (functionDeclaration != null)
+         {
+            costomFunction = new FunctionDefinition_Custom (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), numLocals);
+         }
+         else
+         {
+            costomFunction = new FunctionDefinition_Custom (BuildParamDefinesFormVariableDefines (functionDefine.mInputVariableDefines, true), BuildParamDefinesFormVariableDefines (functionDefine.mOutputVariableDefines, false), numLocals);
+         }
+         
+         return costomFunction;
+      }
       
       public static function CreateCodeSnippet (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, codeSnippetDefine:CodeSnippetDefine):CodeSnippet
       {
@@ -346,60 +383,88 @@ package common {
       
       public static function FunctionCallingDefine2FunctionCalling (lineNumber:int, customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, funcCallingDefine:FunctionCallingDefine):FunctionCalling
       {
+         var function_id:int = funcCallingDefine.mFunctionId;
+         var func_definition:FunctionDefinition;
+         
          if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
          {
-            var function_id:int = funcCallingDefine.mFunctionId;
-            var core_func_definition:FunctionDefinition = TriggerEngine.GetCoreFunctionDefinition (function_id);
-            var core_func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (function_id);
+            func_definition = TriggerEngine.GetCoreFunctionDefinition (function_id);
+         }
+         else if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Custom)
+         {
+            func_definition = Global.GetCustomFunctionDefinition (function_id);
+         }
+         else if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_PreDefined)
+         {
+            // impossible
+         }
+         
+         var real_num_input_params:int = func_definition.GetNumInputParameters ();
+         var dafault_value_source_define:ValueSourceDefine_Direct;
+         
+         var real_num_output_params:int = func_definition.GetNumOutputParameters ();
+         var dafault_value_target_define:ValueSourceDefine_Direct;
+         
+         var i:int;
+         
+         var value_source_list:Parameter = null;
+         var value_source:Parameter;
+         for (i = real_num_input_params - 1; i >= 0; -- i)
+         {
+            dafault_value_source_define = func_definition.GetDefaultInputValueSourceDefine (i);
             
-            var value_source_list:Parameter = null;
-            var value_source:Parameter;
-            var i:int;
-            for (i = funcCallingDefine.mNumInputs - 1; i >= 0; -- i)
-            {
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], core_func_declaration.GetInputParamValueType (i));
-               value_source.mNextParameter = value_source_list;
-               value_source_list = value_source;
-            }
+            if (i >= funcCallingDefine.mNumInputs) // fill the missed parameters
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType);
+            else                                   // use the value set by designer
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType);
+               
+            value_source.mNextParameter = value_source_list;
+            value_source_list = value_source;
+         }
+         
+         var value_target_list:Parameter = null;
+         var value_target:Parameter;
+         for (i = real_num_output_params - 1; i >= 0; -- i)
+         {
+            if (i >= funcCallingDefine.mNumOutputs) // fill the missed parameters
+               value_target = new Parameter ();
+            else
+               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], func_definition.GetOutputParamValueType (i));
             
-            var value_target_list:Parameter = null;
-            var value_target:Parameter;
-            for (i = funcCallingDefine.mNumOutputs - 1; i >= 0; -- i)
-            {
-               value_target = ValueTargetDefine2ReturnValueTarget (customFunctionDefinition, playerWorld, funcCallingDefine.mOutputValueTargetDefines [i], core_func_declaration.GetOutputParamValueType (i));
-               value_target.mNextParameter = value_target_list;
-               value_target_list = value_target;
-            }
-            
-            var calling:FunctionCalling;
+            value_target.mNextParameter = value_target_list;
+            value_target_list = value_target;
+         }
+         
+         var calling:FunctionCalling = null;
+         
+         if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
+         {
             switch (function_id)
             {
                case CoreFunctionIds.ID_ReturnIfTrue:
                case CoreFunctionIds.ID_ReturnIfFalse:
                case CoreFunctionIds.ID_StartIf:
                case CoreFunctionIds.ID_StartWhile:
-                  calling = new FunctionCalling_Condition (lineNumber, core_func_definition, value_source_list, value_target_list);
+                  calling = new FunctionCalling_Condition (lineNumber, func_definition, value_source_list, value_target_list);
                   break;
                case CoreFunctionIds.ID_EndIf:
                case CoreFunctionIds.ID_Else:
                case CoreFunctionIds.ID_EndWhile:
                case CoreFunctionIds.ID_Return:
                case CoreFunctionIds.ID_Break:
-                  calling = new FunctionCalling_Dummy (lineNumber, core_func_definition, value_source_list, value_target_list);
+                  calling = new FunctionCalling_Dummy (lineNumber, func_definition, value_source_list, value_target_list);
                   break;
                default:
-               {
-                  calling = new FunctionCalling (lineNumber, core_func_definition, value_source_list, value_target_list);
+               { 
                   break;
                }
             }
-            
-            return calling;
          }
-         else
-         {
-            return null;
-         }
+         
+         if (calling == null)
+            calling = new FunctionCalling (lineNumber, func_definition, value_source_list, value_target_list);
+         
+         return calling;
       }
       
       public static function ValueSourceDefine2InputValueSource (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int):Parameter
@@ -601,6 +666,31 @@ package common {
 // byte array -> define
 //==============================================================================================
       
+      public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, loadVariables:Boolean, loadCodeSnippet:Boolean):FunctionDefine
+      {
+         if (functionDefine == null)
+            functionDefine = new FunctionDefine ();
+         
+         if (loadVariables)
+         {
+            if (hasParams)
+            {
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mInputVariableDefines, true);
+               
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mOutputVariableDefines, false);
+            }
+            
+            LoadVariableDefinesFromBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+         }
+         
+         if (loadCodeSnippet)
+         {
+            functionDefine.mCodeSnippetDefine = LoadCodeSnippetDefineFromBinFile (binFile);
+         }
+         
+         return functionDefine;
+      }
+      
       public static function LoadCodeSnippetDefineFromBinFile (binFile:ByteArray):CodeSnippetDefine
       {
          var codeSnippetDefine:CodeSnippetDefine = new CodeSnippetDefine ();
@@ -728,8 +818,6 @@ package common {
                   default:
                      return binFile.readDouble ();
                }
-               
-               break;
             case ValueTypeDefine.ValueType_String:
                return binFile.readUTF ();
             case ValueTypeDefine.ValueType_Entity:
@@ -744,7 +832,7 @@ package common {
       }
       
       //public static function  LoadVariableSpaceDefineFromBinFile (binFile:ByteArray):VariableSpaceDefine // v1.52 only
-      public static function  LoadVariableDefinesFromBinFile (binFile:ByteArray, outputVariableDefines:Array, supportInitalValues:Boolean):void
+      public static function  LoadVariableDefinesFromBinFile (binFile:ByteArray, variableDefines:Array, supportInitalValues:Boolean):void
       {
          //>> only v1.52
          //var variableSpaceDefine:VariableSpaceDefine = new VariableSpaceDefine ();
@@ -769,7 +857,7 @@ package common {
                                                             );
             
             //variableSpaceDefine.mVariableDefines [i] = viDefine; // v1.52 only
-            outputVariableDefines.push (viDefine);
+            variableDefines.push (viDefine);
          }
          
          //return variableSpaceDefine; // v1.52 only
@@ -778,6 +866,29 @@ package common {
 //==============================================================================================
 // define -> xml
 //==============================================================================================
+      
+      public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, hasParams:Boolean, convertVariables:Boolean, convertCodeSnippet:Boolean):void
+      {
+         if (convertVariables)
+         {
+            if (hasParams)
+            {
+               functionElement.InputParameters = <InputParameters/>;
+               VariablesDefine2Xml (functionDefine.mInputVariableDefines, functionElement.InputParameters [0], true);
+               
+               functionElement.OutputParameters = <OutputParameters/>;
+               VariablesDefine2Xml (functionDefine.mOutputVariableDefines, functionElement.OutputParameters [0], false);
+            }
+            
+            functionElement.LocalVariables = <LocalVariables/>;
+            VariablesDefine2Xml (functionDefine.mLocalVariableDefines, functionElement.LocalVariables [0], false);
+         }
+         
+         if (convertCodeSnippet)
+         {
+            functionElement.CodeSnippet = CodeSnippetDefine2Xml (functionDefine.mCodeSnippetDefine);
+         }
+      }
       
       public static function CodeSnippetDefine2Xml (codeSnippetDefine:CodeSnippetDefine):XML
       {
@@ -960,6 +1071,13 @@ package common {
 //========================================================================================
       
       // float -> 6 precisions, double -> 12 precisions
+      public static function AdjustNumberPrecisionsInFunctionDefine (functionDefine:FunctionDefine):void
+      {
+         AdjustNumberPrecisionsInVariableDefines (functionDefine.mInputVariableDefines);
+         
+         AdjustNumberPrecisionsInCodeSnippetDefine (functionDefine.mCodeSnippetDefine);
+      }
+      
       public static function AdjustNumberPrecisionsInCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
       {
          var funcCallingDefine:FunctionCallingDefine;
@@ -1043,9 +1161,8 @@ package common {
       }
       
       // it is possible some new parameters are appended in a newer version for some functions
-      public static function FillMissedFieldsInCodeSinippetDefine (codeSnippetDefine:CodeSnippetDefine):void
+      public static function FillMissedFieldsInFunctionDefine (functionDefine:FunctionDefine):void
       {
-         
       }
    }
 }

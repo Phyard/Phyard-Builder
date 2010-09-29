@@ -4,13 +4,14 @@ package editor.mode {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.FunctionEditingView;
+   import editor.WorldView;
+   
    
    import editor.entity.Entity;
    
    import common.Define;
    
-   public class FunctionModePlaceCreateEntitiy extends FunctionMode
+   public class ModePlaceCreateEntity extends Mode
    {
       public static const StageStart:int = 0;
       public static const StageFinished:int = 1;
@@ -20,7 +21,7 @@ package editor.mode {
       private var mEntityCreateFunction:Function = null;
       private var mEntityCreateOptions:Object = null;
       
-      public function FunctionModePlaceCreateEntitiy (mainView:FunctionEditingView, createFunc:Function, createOptions:Object = undefined)
+      public function ModePlaceCreateEntity (mainView:WorldView, createFunc:Function, createOptions:Object = undefined)
       {
          super (mainView);
          
@@ -91,7 +92,11 @@ package editor.mode {
             mEntityCreateFunction (mEntityCreateOptions);
          }
          
+         mMainView.CreateUndoPoint ("Create new " + mEntity.GetTypeName ().toLowerCase ());
+         
          ResetSession (false);
+         
+         mMainView.CalSelectedEntitiesCenterPoint ();
          
          mMainView.SetCurrentCreateMode (null);
       }

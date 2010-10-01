@@ -158,8 +158,6 @@ package editor.entity {
       public function SetWordWrap (auto:Boolean):void
       {
          mWordWrap = auto;
-         
-         UpdateAppearance ();
       }
       
       public function GetTextColor ():uint

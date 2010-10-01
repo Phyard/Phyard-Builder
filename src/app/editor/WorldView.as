@@ -4415,21 +4415,6 @@ package editor {
             {
                if (entity is EntityShapeText)
                {
-                  (shape as EntityShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
-                  (shape as EntityShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
-                  
-                  (shape as EntityShapeText).SetWordWrap (params.mWordWrap);
-                  (shape as EntityShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
-                  
-                  (shape as EntityShapeText).SetUnderlined (params.mIsUnderlined);
-                  (shape as EntityShapeText).SetTextAlign (params.mTextAlign);
-                  
-                  (shape as EntityShapeText).SetText (params.mText);
-                  (shape as EntityShapeText).SetTextColor (params.mTextColor);
-                  (shape as EntityShapeText).SetFontSize (params.mFontSize);
-                  (shape as EntityShapeText).SetBold (params.mIsBold);
-                  (shape as EntityShapeText).SetItalic (params.mIsItalic);
-                  
                   if (entity is EntityShapeTextButton)
                   {
                      (shape as EntityShapeTextButton).SetUsingHandCursor (params.mUsingHandCursor);
@@ -4447,6 +4432,21 @@ package editor {
                   else
                   {
                   }
+                  
+                  (shape as EntityShapeText).SetWordWrap (params.mWordWrap);
+                  (shape as EntityShapeText).SetAdaptiveBackgroundSize (params.mAdaptiveBackgroundSize);
+                  
+                  (shape as EntityShapeText).SetUnderlined (params.mIsUnderlined);
+                  (shape as EntityShapeText).SetTextAlign (params.mTextAlign);
+                  
+                  (shape as EntityShapeText).SetText (params.mText);
+                  (shape as EntityShapeText).SetTextColor (params.mTextColor);
+                  (shape as EntityShapeText).SetFontSize (params.mFontSize);
+                  (shape as EntityShapeText).SetBold (params.mIsBold);
+                  (shape as EntityShapeText).SetItalic (params.mIsItalic);
+                  
+                  (shape as EntityShapeRectangle).SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
+                  (shape as EntityShapeRectangle).SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
                }
                else if (entity is EntityShapeGravityController)
                {

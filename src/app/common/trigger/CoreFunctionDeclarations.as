@@ -968,6 +968,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetWorldScale,       
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
+                        [ValueTypeDefine.ValueType_Boolean,       true], 
                      ], 
                      null
                   );

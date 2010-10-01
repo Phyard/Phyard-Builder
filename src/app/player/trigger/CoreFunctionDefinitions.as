@@ -1433,7 +1433,10 @@ package player.trigger {
          else if (scale > 16.0)
             scale = 16.0;
          
-         Global.SetScale (scale);
+         valueSource = valueSource.mNextParameter;
+         var smoothly:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         
+         Global.SetScale (scale, smoothly);
       }
       
       public static function GetLevelMilliseconds (valueSource:Parameter, valueTarget:Parameter):void

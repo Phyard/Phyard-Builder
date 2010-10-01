@@ -2027,6 +2027,7 @@ package editor {
             if (entity is EntityEventHandler)
             {
                var event_handler:EntityEventHandler = entity as EntityEventHandler;
+               event_handler.GetCodeSnippet ().ValidateCallings ();
                
                values.mCodeSnippetName = event_handler.GetCodeSnippetName ();
                values.mEventId = event_handler.GetEventId ();
@@ -2066,6 +2067,7 @@ package editor {
             else if (entity is EntityBasicCondition)
             {
                var condition:EntityBasicCondition = entity as EntityBasicCondition;
+               condition.GetCodeSnippet ().ValidateCallings ();
                
                values.mCodeSnippetName = condition.GetCodeSnippetName ();
                values.mCodeSnippet  = condition.GetCodeSnippet ().Clone (null);
@@ -2076,6 +2078,7 @@ package editor {
             else if (entity is EntityAction)
             {
                var action:EntityAction = entity as EntityAction;
+               action.GetCodeSnippet ().ValidateCallings ();
                
                values.mCodeSnippetName = action.GetCodeSnippetName ();
                values.mCodeSnippet  = action.GetCodeSnippet ().Clone (null);

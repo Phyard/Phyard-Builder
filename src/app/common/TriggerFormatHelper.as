@@ -12,9 +12,12 @@ package common {
    import editor.trigger.TriggerEngine;
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDeclaration;
+   import editor.trigger.FunctionDeclaration_Core;
    import editor.trigger.FunctionDeclaration_Custom;
    import editor.trigger.FunctionDefinition;
    import editor.trigger.FunctionCalling;
+   import editor.trigger.FunctionCalling_Core;
+   import editor.trigger.FunctionCalling_Custom;
    import editor.trigger.VariableDefinition;
    import editor.trigger.ValueSource;
    import editor.trigger.ValueSource_Null;
@@ -341,15 +344,20 @@ package common {
       {
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
+         var func_calling:FunctionCalling;
          
          var func_declaration:FunctionDeclaration;
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
             func_declaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
+            
+            func_calling = new FunctionCalling_Core (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Core, false)
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
             func_declaration = editorWorld.GetFunctionManager ().GetFunctionByIndex (func_id).GetFunctionDeclaration ();
+            
+            func_calling = new FunctionCalling_Custom (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Custom, false);
          }
          else if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -365,7 +373,7 @@ package common {
          var i:int;
          
          var value_sources:Array = new Array (funcCallingDefine.mNumInputs);
-         for (i = 0; i < funcCallingDefine.mNumInputs; ++ i)
+         for (i = 0; i < real_num_inputs; ++ i)
          {
             if (i >= funcCallingDefine.mNumInputs)
                value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (editorWorld.GetTriggerEngine ());
@@ -374,7 +382,7 @@ package common {
          }
          
          var value_targets:Array = new Array (funcCallingDefine.mNumOutputs);
-         for (i = 0; i < funcCallingDefine.mNumOutputs; ++ i)
+         for (i = 0; i < real_num_outputs; ++ i)
          {
             if (i >= funcCallingDefine.mNumOutputs)
                value_targets [i] = func_declaration.GetOutputParamDefinitionAt (i).GetDefaultValueTarget ();
@@ -382,7 +390,6 @@ package common {
                value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
          }
          
-         var func_calling:FunctionCalling = new FunctionCalling (editorWorld.GetTriggerEngine (), func_declaration);
          func_calling.AssignInputValueSources (value_sources);
          func_calling.AssignOutputValueTargets (value_targets);
          

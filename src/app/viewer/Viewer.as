@@ -1237,6 +1237,13 @@ package viewer {
          if (mPlayerWorld == null)
             return;
          
+         if ((data is Boolean) && (! (data as Boolean)))
+         {
+            mWorldDesignProperties.SetZoomScale (mPlayerWorldZoomScale);
+            
+            return;
+         }
+         
          mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mWorldDesignProperties.GetZoomScale () ) * 0.03;
       }
       

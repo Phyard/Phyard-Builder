@@ -1036,6 +1036,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SetWorldScale, world_general_package, "Set World Scale", null, null,
                      [
                         new VariableDefinitionNumber ("World Scale ([0.0625-16.0])", null, {mMinValue: 0.0625, mMaxValue: 16.0}),
+                        new VariableDefinitionBoolean ("Changed Smoothly?"), 
                      ],
                      null
                   );

@@ -220,7 +220,7 @@ package viewer.ui {
          return mZoomScale;
       }
       
-      public function SetZoomScale (zoomScale:Number):void
+      public function SetZoomScale (zoomScale:Number, smoothly:Boolean = true):void
       {
          var oldScale:Number = mZoomScale;
          
@@ -253,7 +253,7 @@ package viewer.ui {
          }
          
          if (_OnZoom != null)
-            _OnZoom ();
+            _OnZoom (smoothly);
       }
       
       public function NotifyStepped ():void

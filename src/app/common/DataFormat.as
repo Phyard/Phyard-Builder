@@ -1377,7 +1377,7 @@ package common {
             functionEntity = editorWorld.GetFunctionManager ().GetFunctionByIndex (functionId + beginningCustomFunctionIndex);
             functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
             
-            functionEntity.SetName (functionDefine.mName);
+            functionEntity.SetFunctionName (functionDefine.mName);
             functionEntity.SetPosition (functionDefine.mPosX, functionDefine.mPosY);
             
             functionEntity.UpdateAppearance ();

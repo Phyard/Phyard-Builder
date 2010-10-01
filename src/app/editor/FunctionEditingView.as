@@ -507,6 +507,8 @@ package editor {
          if (event.eventPhase != EventPhase.BUBBLING_PHASE)
             return;
          
+         stage.focus = this;
+         
          if (mFunctionManager == null)
             return;
          

@@ -67,6 +67,8 @@ package plugin
                Global.SetSpeedX = params.SetPlayingSpeedX as Function;
                Global.GetScale = params.GetZoomScale as Function;
                Global.SetScale = params.SetZoomScale as Function;
+               // from v1.53, SetScale has a 2nd param: changeScaleSmoothly, default value is true
+               
                break;
             default:
             {

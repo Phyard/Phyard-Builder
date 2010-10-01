@@ -519,6 +519,34 @@ package common {
             }
          }
          
+         if (worldDefine.mVersion >= 0x0153)
+         {
+            var functionId:int;
+            var functionDefine:FunctionDefine;
+            
+            var numFunctions:int = byteArray.readShort ();
+            
+            for (functionId = 0; functionId < numFunctions; ++ functionId)
+            {
+               functionDefine = new FunctionDefine ();
+               
+               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, true, null);
+               
+               worldDefine.mFunctionDefines.push (functionDefine);
+            }
+            
+            for (functionId = 0; functionId < numFunctions; ++ functionId)
+            {
+               functionDefine = worldDefine.mFunctionDefines [functionId];
+               
+               functionDefine.mName = byteArray.readUTF ();
+               functionDefine.mPosX = byteArray.readFloat ();
+               functionDefine.mPosY = byteArray.readFloat ();
+               
+               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, false, worldDefine.mFunctionDefines);
+            }
+         }
+         
          // entities
          
          var numEntities:int = byteArray.readShort ();
@@ -583,9 +611,9 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null,false, true, true);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null,false, true, worldDefine.mFunctionDefines);
                   else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null,false, false, true);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null,false, false, worldDefine.mFunctionDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -651,16 +679,16 @@ package common {
                   }
                   
                   if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, true);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
                   else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, true);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, true);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
                   else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, true);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -1004,23 +1032,6 @@ package common {
             TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
          }
          
-         if (worldDefine.mVersion >= 0x0153)
-         {
-            var numFunctions:int = byteArray.readShort ();
-            for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
-            {
-               var functionDefine:FunctionDefine = new FunctionDefine ();
-               
-               functionDefine.mName = byteArray.readUTF ();
-               functionDefine.mPosX = byteArray.readFloat ();
-               functionDefine.mPosY = byteArray.readFloat ();
-               
-               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, true, true);
-               
-               worldDefine.mFunctionDefines.push (functionDefine);
-            }
-         }
-         
          // ...
          return worldDefine;
       }
@@ -1258,9 +1269,28 @@ package common {
             xml.Settings.appendChild (element);
          }
          
+         if (worldDefine.mVersion >= 0x0153)
+         {
+            xml.CustomFunctions = <CustomFunctions />
+            for (var functionId:int = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+            {
+               var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               
+               element = <Function />;
+               TriggerFormatHelper2.FunctionDefine2Xml (functionDefine, element, true, true, worldDefine.mFunctionDefines);
+               
+               element.@name = functionDefine.mName;
+               element.@x = functionDefine.mPosX;
+               element.@y = functionDefine.mPosY;
+               
+               xml.CustomFunctions.appendChild (element);
+            }
+         }
+         
+         // entities ...
+         
          xml.Entities = <Entities />
          
-         // entities
          var appearId:int;
          var createId:int;
          
@@ -1372,24 +1402,6 @@ package common {
             {
                TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGlobalVariableDefines, xml.GlobalVariables [0], true);
                TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mEntityPropertyDefines, xml.EntityProperties [0], true);
-            }
-         }
-         
-         if (worldDefine.mVersion >= 0x0153)
-         {
-            xml.CustomFunctions = <CustomFunctions />
-            for (var functionId:int = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
-            {
-               var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
-               
-               element = <Function />;
-               TriggerFormatHelper2.FunctionDefine2Xml (functionDefine, element, true, true, true);
-               
-               element.@name = functionDefine.mName;
-               element.@x = functionDefine.mPosX;
-               element.@y = functionDefine.mPosY;
-               
-               xml.CustomFunctions.appendChild (element);
             }
          }
          
@@ -1526,9 +1538,9 @@ package common {
             if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, true);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, true);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
@@ -1600,16 +1612,16 @@ package common {
                }
                
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, true);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, true);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, true);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, true);
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
             }
          }
          else if ( Define.IsShapeEntity (entityDefine.mEntityType) )

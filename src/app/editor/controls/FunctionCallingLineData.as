@@ -167,7 +167,7 @@ package editor.controls {
          
          for (j = 0; j < funcDeclaration.GetNumOutputs (); ++ j)
          {
-            valueTarget = funcCalling.GetReturnValueTarget (j);
+            valueTarget = funcCalling.GetOutputValueTarget (j);
             
             initialReturnTargets.push (valueTarget.CloneTarget ());
             currentReturnTargets.push (valueTarget.CloneTarget ());

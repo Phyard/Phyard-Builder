@@ -93,7 +93,7 @@ package editor.trigger {
          mSourcesOrTargetsChanged = true;
       }
       
-      public function GetReturnValueTarget (returnId:int):ValueTarget
+      public function GetOutputValueTarget (returnId:int):ValueTarget
       {
          return mOutputValueTargets [returnId];
       }

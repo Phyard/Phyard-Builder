@@ -206,6 +206,7 @@ package common {
                   
                   var basicCondition:EntityBasicCondition = editorEntity as EntityBasicCondition;
                   
+                  basicCondition.GetCodeSnippet ().ValidateCallings ();
                   entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, basicCondition.GetCodeSnippet ());
                }
                else if (editorEntity is EntityTask)
@@ -297,6 +298,7 @@ package common {
                   }
                   //<<
                   
+                  eventHandler.GetCodeSnippet ().ValidateCallings ();
                   entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, eventHandler.GetCodeSnippet ());
                }
                else if (editorEntity is EntityAction)
@@ -305,6 +307,7 @@ package common {
                   
                   var action:EntityAction = editorEntity as EntityAction;
                   
+                  action.GetCodeSnippet ().ValidateCallings ();
                   entityDefine.mFunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, action.GetCodeSnippet ());
                }
             }
@@ -703,6 +706,8 @@ package common {
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
             {
                var functionEntity:EntityFunction = editorWorld.GetFunctionManager().GetFunctionByIndex (functionId);
+               
+               functionEntity.GetCodeSnippet ().ValidateCallings ();
                var functionDefine:FunctionDefine = TriggerFormatHelper.Function2FunctionDefine (editorWorld, functionEntity.GetCodeSnippet ());
                functionDefine.mName = functionEntity.GetName ();
                functionDefine.mPosX = functionEntity.GetPositionX ();
@@ -1692,6 +1697,33 @@ package common {
             }
          }
          
+         // must be loaded before loading codesnippets in entities
+         if (worldDefine.mVersion >= 0x0153)
+         {
+            var functionDefine:FunctionDefine;
+            
+            for each (element in worldXml.CustomFunctions.Function)
+            {
+               functionDefine = new FunctionDefine ();
+               
+               TriggerFormatHelper.Xml2FunctionDefine (element, functionDefine, true, true, null);
+               
+               worldDefine.mFunctionDefines.push (functionDefine);
+            }
+            
+            var functionId:int = 0;
+            for each (element in worldXml.CustomFunctions.Function)
+            {
+               functionDefine = worldDefine.mFunctionDefines [functionId ++];
+               
+               TriggerFormatHelper.Xml2FunctionDefine (element, functionDefine, true, false, worldDefine.mFunctionDefines);
+               
+               functionDefine.mName = element.@name;
+               functionDefine.mPosX = parseFloat (element.@x);
+               functionDefine.mPosY = parseFloat (element.@y);
+            }
+         }
+         
          var appearId:int;
          var createId:int;
          
@@ -1784,20 +1816,6 @@ package common {
                TriggerFormatHelper.VariablesXml2Define (worldXml.GlobalVariables [0], worldDefine.mGlobalVariableDefines, true);
                TriggerFormatHelper.VariablesXml2Define (worldXml.EntityProperties [0], worldDefine.mEntityPropertyDefines, true);
             }
-            
-            if (worldDefine.mVersion >= 0x0153)
-            {
-               for each (element in worldXml.CustomFunctions.Function)
-               {
-                  var functionDefine:FunctionDefine = TriggerFormatHelper.Xml2FunctionDefine (element, true, true, true);
-                  
-                  functionDefine.mName = element.@name;
-                  functionDefine.mPosX = parseFloat (element.@x);
-                  functionDefine.mPosY = parseFloat (element.@y);
-                  
-                  worldDefine.mFunctionDefines.push (functionDefine);
-               }
-            }
          }
          
          return worldDefine;
@@ -1870,10 +1888,12 @@ package common {
          {
             if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
             {
+               entityDefine.mFunctionDefine = new FunctionDefine ();
+               
                if (worldDefine.mVersion >= 0x0153)
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Xml2FunctionDefine (element, false, true, true);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
                else
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Xml2FunctionDefine (element, false, false, true);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
@@ -1932,17 +1952,19 @@ package common {
                   }
                }
                
+               entityDefine.mFunctionDefine = new FunctionDefine ();
+               
                if (worldDefine.mVersion >= 0x0153)
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Xml2FunctionDefine (element, false, true, true);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
                else
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Xml2FunctionDefine (element, false, false, true);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Xml2FunctionDefine (element, false, true, true);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
                else
-                  entityDefine.mFunctionDefine = TriggerFormatHelper.Xml2FunctionDefine (element, false, false, true);
+                  TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
             }
          }
          else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -2349,7 +2371,34 @@ package common {
             }
          }
          
-         // entities
+         if (worldDefine.mVersion >= 0x0153)
+         {
+            var functionId:int;
+            var functionDefine:FunctionDefine;
+            
+            byteArray.writeShort (worldDefine.mFunctionDefines.length);
+            
+            for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+            {
+               functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               
+               TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, true, null);
+            }
+            
+            for (functionId = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+            {
+               functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               
+               byteArray.writeUTF (functionDefine.mName);
+               byteArray.writeFloat (functionDefine.mPosX);
+               byteArray.writeFloat (functionDefine.mPosY);
+               
+               TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, false, worldDefine.mFunctionDefines);
+            }
+         }
+         
+         // entities ...
+         
          var appearId:int;
          var createId:int;
          var vertexId:int;
@@ -2411,9 +2460,9 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, true);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
                   else
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, true);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -2481,16 +2530,16 @@ package common {
                   }
                   
                   if (worldDefine.mVersion >= 0x0153)
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, true);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
                   else
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, true);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, true);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
                   else
-                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, true);
+                     TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, entityDefine.mFunctionDefine, false, false, worldDefine.mFunctionDefines);
                }
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
@@ -2817,21 +2866,6 @@ package common {
                byteArray.writeShort (-1);//variableSpaceDefine.mParentPackageId);
             }
             TriggerFormatHelper.WriteVariableDefinesIntoBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
-         }
-         
-         if (worldDefine.mVersion >= 0x0153)
-         {
-            byteArray.writeShort (worldDefine.mFunctionDefines.length);
-            for (var functionId:int = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
-            {
-               var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
-               
-               byteArray.writeUTF (functionDefine.mName);
-               byteArray.writeFloat (functionDefine.mPosX);
-               byteArray.writeFloat (functionDefine.mPosY);
-               
-               TriggerFormatHelper.WriteFunctionDefineIntoBinFile (byteArray, functionDefine, true, true, true);
-            }
          }
          
          // ...

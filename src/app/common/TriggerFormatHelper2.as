@@ -666,7 +666,7 @@ package common {
 // byte array -> define
 //==============================================================================================
       
-      public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, loadVariables:Boolean, loadCodeSnippet:Boolean):FunctionDefine
+      public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, loadVariables:Boolean, customFunctionDefines:Array):FunctionDefine
       {
          if (functionDefine == null)
             functionDefine = new FunctionDefine ();
@@ -683,15 +683,15 @@ package common {
             LoadVariableDefinesFromBinFile (binFile, functionDefine.mLocalVariableDefines, false);
          }
          
-         if (loadCodeSnippet)
+         if (customFunctionDefines != null)
          {
-            functionDefine.mCodeSnippetDefine = LoadCodeSnippetDefineFromBinFile (binFile);
+            functionDefine.mCodeSnippetDefine = LoadCodeSnippetDefineFromBinFile (binFile, customFunctionDefines);
          }
          
          return functionDefine;
       }
       
-      public static function LoadCodeSnippetDefineFromBinFile (binFile:ByteArray):CodeSnippetDefine
+      public static function LoadCodeSnippetDefineFromBinFile (binFile:ByteArray, customFunctionDefines:Array):CodeSnippetDefine
       {
          var codeSnippetDefine:CodeSnippetDefine = new CodeSnippetDefine ();
          
@@ -699,12 +699,12 @@ package common {
          codeSnippetDefine.mNumCallings = binFile.readShort ();
          codeSnippetDefine.mFunctionCallingDefines = new Array (codeSnippetDefine.mNumCallings);
          for (var i:int = 0; i < codeSnippetDefine.mNumCallings; ++ i)
-            codeSnippetDefine.mFunctionCallingDefines [i] = LoadFunctionCallingDefineFromBinFile (binFile);
+            codeSnippetDefine.mFunctionCallingDefines [i] = LoadFunctionCallingDefineFromBinFile (binFile, customFunctionDefines);
          
          return codeSnippetDefine;
       }
       
-      public static function  LoadFunctionCallingDefineFromBinFile (binFile:ByteArray):FunctionCallingDefine
+      public static function  LoadFunctionCallingDefineFromBinFile (binFile:ByteArray, customFunctionDefines:Array):FunctionCallingDefine
       {
          var funcCallingDefine:FunctionCallingDefine = new FunctionCallingDefine ();
          
@@ -726,10 +726,24 @@ package common {
          funcCallingDefine.mInputValueSourceDefines = inputValueSourceDefines = new Array (num_inputs);
          funcCallingDefine.mOutputValueTargetDefines = outputValueTargetDefines = new Array (num_outputs);
          
-         var func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id);
-         
-         for (i = 0; i < num_inputs; ++ i)
-            inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+         if (func_type == FunctionTypeDefine.FunctionType_Core)
+         {
+            var func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id);
+            
+            for (i = 0; i < num_inputs; ++ i)
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+         }
+         else if (func_type == FunctionTypeDefine.FunctionType_Custom)
+         {
+            var calledInputVariableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mInputVariableDefines;
+            
+            for (i = 0; i < num_inputs; ++ i)
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType, ValueTypeDefine.NumberTypeDetail_Double);
+         }
+         else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
+         {
+            // impossible
+         }
          
          for (i = 0; i < num_outputs; ++ i)
             outputValueTargetDefines [i] = LoadValueTargetDefineFromBinFile (binFile);
@@ -867,7 +881,7 @@ package common {
 // define -> xml
 //==============================================================================================
       
-      public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, hasParams:Boolean, convertVariables:Boolean, convertCodeSnippet:Boolean):void
+      public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, hasParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array):void
       {
          if (convertVariables)
          {
@@ -884,13 +898,13 @@ package common {
             VariablesDefine2Xml (functionDefine.mLocalVariableDefines, functionElement.LocalVariables [0], false);
          }
          
-         if (convertCodeSnippet)
+         if (customFunctionDefines != null)
          {
-            functionElement.CodeSnippet = CodeSnippetDefine2Xml (functionDefine.mCodeSnippetDefine);
+            functionElement.CodeSnippet = CodeSnippetDefine2Xml (functionDefine.mCodeSnippetDefine, customFunctionDefines);
          }
       }
       
-      public static function CodeSnippetDefine2Xml (codeSnippetDefine:CodeSnippetDefine):XML
+      public static function CodeSnippetDefine2Xml (codeSnippetDefine:CodeSnippetDefine, customFunctionDefines:Array):XML
       {
          var elementCodeSnippet:XML = <CodeSnippet />;
          
@@ -900,15 +914,17 @@ package common {
          var functionCallings:Array = codeSnippetDefine.mFunctionCallingDefines;
          for (var i:int = 0; i < num; ++ i)
          {
-            elementCodeSnippet.appendChild (FunctionCallingDefine2Xml (functionCallings[i]));
+            elementCodeSnippet.appendChild (FunctionCallingDefine2Xml (functionCallings[i], customFunctionDefines));
          }
          
          return elementCodeSnippet;
       }
       
-      public static function FunctionCallingDefine2Xml (funcCallingDefine:FunctionCallingDefine):XML
+      public static function FunctionCallingDefine2Xml (funcCallingDefine:FunctionCallingDefine, customFunctionDefines:Array):XML
       {
-         var func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (funcCallingDefine.mFunctionId);
+         var func_type:int = funcCallingDefine.mFunctionType;
+         var func_id:int = funcCallingDefine.mFunctionId;
+         var func_declaration:FunctionDeclaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id)
          
          var elementFunctionCalling:XML = <FunctionCalling />;
          
@@ -920,14 +936,44 @@ package common {
          var num_inputs:int = funcCallingDefine.mNumInputs;
          var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
          elementFunctionCalling.InputValueSources = <InputValueSources />;
-         for (i = 0; i < num_inputs; ++ i)
-            elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i)));
+         
+         if (func_type == FunctionTypeDefine.FunctionType_Core)
+         {
+            for (i = 0; i < num_inputs; ++ i)
+               elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i)));
+         }
+         else if (func_type == FunctionTypeDefine.FunctionType_Custom)
+         {
+            var calledInputVariableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mInputVariableDefines;
+            
+            for (i = 0; i < num_inputs; ++ i)
+               elementFunctionCalling.InputValueSources.appendChild (ValueSourceDefine2Xml (inputValueSourceDefines [i], (calledInputVariableDefines [i] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType));
+         }
+         else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
+         {
+            // impossible
+         }
          
          var num_outputs:int = funcCallingDefine.mNumOutputs;
          var outputValueTargetDefines:Array = funcCallingDefine.mOutputValueTargetDefines;
          elementFunctionCalling.OutputValueTargets = <OutputValueTargets />
-         for (i = 0; i < num_outputs; ++ i)
-            elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i)));
+         
+         if (func_type == FunctionTypeDefine.FunctionType_Core)
+         {
+            for (i = 0; i < num_outputs; ++ i)
+               elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i)));
+         }
+         else if (func_type == FunctionTypeDefine.FunctionType_Custom)
+         {
+            var calledOutputVariableDefines:Array = (customFunctionDefines [func_id] as FunctionDefine).mOutputVariableDefines;
+            
+            for (i = 0; i < num_outputs; ++ i)
+               elementFunctionCalling.OutputValueTargets.appendChild (ValueTargetefine2Xml (outputValueTargetDefines [i], (calledOutputVariableDefines [i] as VariableInstanceDefine).mDirectValueSourceDefine.mValueType));
+         }
+         else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
+         {
+            // impossible
+         }
          
          return elementFunctionCalling;
       }

@@ -1269,9 +1269,31 @@ package common {
             xml.Settings.appendChild (element);
          }
          
+         // precreate some nodes
+         
+         xml.Entities = <Entities />
+         
+         if (worldDefine.mVersion >= 0x0107)
+            xml.EntityAppearingOrder = <EntityAppearingOrder />;
+         
+         xml.BrotherGroups = <BrotherGroups />
+         
+         if (worldDefine.mVersion >= 0x0102)
+            xml.CollisionCategories = <CollisionCategories />
+         
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            xml.GlobalVariables = <GlobalVariables />
+            xml.EntityProperties = <EntityProperties />
+         }
+         
+         if (worldDefine.mVersion >= 0x0153)
+            xml.CustomFunctions = <CustomFunctions />
+         
+         //
+         
          if (worldDefine.mVersion >= 0x0153)
          {
-            xml.CustomFunctions = <CustomFunctions />
             for (var functionId:int = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
             {
                var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
@@ -1289,8 +1311,6 @@ package common {
          
          // entities ...
          
-         xml.Entities = <Entities />
-         
          var appearId:int;
          var createId:int;
          
@@ -1307,13 +1327,10 @@ package common {
          // ...
          if (worldDefine.mVersion >= 0x0107)
          {
-            xml.EntityAppearingOrder = <EntityAppearingOrder />;
             xml.EntityAppearingOrder.@entity_indices = IntegerArray2IndicesString (worldDefine.mEntityAppearanceOrder);
          }
          
          // ...
-         
-         xml.BrotherGroups = <BrotherGroups />
          
          var groupId:int;
          var brotherIDs:Array;
@@ -1333,8 +1350,6 @@ package common {
          
          if (worldDefine.mVersion >= 0x0102)
          {
-            xml.CollisionCategories = <CollisionCategories />
-            
             for (var ccId:int = 0; ccId < worldDefine.mCollisionCategoryDefines.length; ++ ccId)
             {
                var ccDefine:Object = worldDefine.mCollisionCategoryDefines [ccId];
@@ -1367,9 +1382,6 @@ package common {
          
          if (worldDefine.mVersion >= 0x0152)
          {
-            xml.GlobalVariables = <GlobalVariables />
-            xml.EntityProperties = <EntityProperties />
-            
             // v1.52 only
             //for (var globalSpaceId:int = 0; globalSpaceId < worldDefine.mGlobalVariableSpaceDefines.length; ++ globalSpaceId)
             //{

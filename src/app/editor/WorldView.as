@@ -227,6 +227,8 @@ package editor {
       private var mAnalyticsDurations:Array = [0.5, 1, 2, 5, 10, 15, 20, 30];
       //private var mAnalytics:Analytics;
       
+   //===========================================================================
+      
       public function WorldView ()
       {
          enabled = true;
@@ -1795,14 +1797,14 @@ package editor {
          //
          //if (useQuickMethod)
          //{
-         //   SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:GetWorldDefine, GetWorldBinaryData:null, GetViewportSize:GetViewportSize, mStartRightNow: true}}));
+         //   SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:GetWorldDefine, GetWorldBinaryData:null, GetViewportSize:GetViewportSize, mStartRightNow: true, mMaskViewerField: mMaskViewerField}}));
          //}
          //else
          //{
-         //   SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:null, GetWorldBinaryData:GetWorldBinaryData, GetViewportSize:GetViewportSize, mStartRightNow: true}}));
+         //   SetDesignPlayer (new Viewer ({mParamsFromEditor: {GetWorldDefine:null, GetWorldBinaryData:GetWorldBinaryData, GetViewportSize:GetViewportSize, mStartRightNow: true, mMaskViewerField: mMaskViewerField}}));
          //}
          
-         SetDesignPlayer (new Viewer ({mParamsFromEditor: {mWorldDomain: ApplicationDomain.currentDomain, mWorldBinaryData: GetWorldBinaryData (), GetViewportSize:GetViewportSize, mStartRightNow: true}}));
+         SetDesignPlayer (new Viewer ({mParamsFromEditor: {mWorldDomain: ApplicationDomain.currentDomain, mWorldBinaryData: GetWorldBinaryData (), GetViewportSize:GetViewportSize, mStartRightNow: true, mMaskViewerField: mMaskViewerField}}));
          
          mIsPlaying = true;
          
@@ -1900,6 +1902,24 @@ package editor {
          if (IsPlaying ())
          {
             return mDesignPlayer.SetOnSpeedChangedFunction (onSpeed);
+         }
+      }
+      
+      
+      private static var mMaskViewerField:Boolean = false;
+      
+      public function IsMaskViewerField ():Boolean
+      {
+         return mMaskViewerField;
+      }
+      
+      public function SetMaskViewerField (mask:Boolean):void
+      {
+         mMaskViewerField = mask;
+         
+         if (IsPlaying ())
+         {
+            mDesignPlayer.SetMaskViewerField (mMaskViewerField);
          }
       }
       

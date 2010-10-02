@@ -82,9 +82,30 @@ package viewer {
          Step (true);
       }
       
+      public function SetMaskViewerField (mask:Boolean):void
+      {
+         mMaskViewerField = mask;
+         
+         if (mMaskViewerField)
+         {
+            if (! contains (mMaskShape))
+               addChild (mMaskShape);
+            
+            this.mask = mMaskShape
+         }
+         else
+         {
+            if (contains (mMaskShape))
+               removeChild (mMaskShape);
+            
+            this.mask = null;
+         }
+      }
+      
    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       
       private var mStartRightNow:Boolean = false;
+      private var mMaskViewerField:Boolean = true;
       
       private var mBuildContextMenu:Boolean = true;
       
@@ -107,6 +128,8 @@ package viewer {
       private var mErrorMessageLayer:Sprite = new Sprite ();
       private var mFinishedTextLayer:Sprite = new Sprite ();
       private var mDialogLayer:Sprite = new Sprite ();
+      
+      private var mMaskShape:Sprite = new Sprite ();
       
 //======================================================================
 //
@@ -229,6 +252,8 @@ package viewer {
          {
             if (mParamsFromEditor != null)
             {
+               mMaskViewerField = mParamsFromEditor.mMaskViewerField;
+               
                mWorldBinaryData = mParamsFromEditor.mWorldBinaryData;
                mStartRightNow = mParamsFromEditor.mStartRightNow == undefined ? true : mParamsFromEditor.mStartRightNow;
                mWorldPluginDomain = mParamsFromEditor.mWorldDomain;
@@ -569,7 +594,7 @@ package viewer {
             
             ClearInfoMessage ();
             
-         trace ("RebuildPlayerWorld: isFirstTime = " + isFirstTime);
+         //trace ("RebuildPlayerWorld: isFirstTime = " + isFirstTime);
             if (isFirstTime)
             {
                RetrieveWorldPluginProperties ();
@@ -581,10 +606,10 @@ package viewer {
             }
             else
             {
-         trace ("RebuildPlayerWorld: mWorldDesignProperties.Destroy = " + mWorldDesignProperties.Destroy);
+         //trace ("RebuildPlayerWorld: mWorldDesignProperties.Destroy = " + mWorldDesignProperties.Destroy);
                mWorldDesignProperties.Destroy ();
                
-         trace ("RebuildPlayerWorld: mPlayerWorld = " + mPlayerWorld);
+         //trace ("RebuildPlayerWorld: mPlayerWorld = " + mPlayerWorld);
                if (mWorldLayer.contains (mPlayerWorld as Sprite))
                   mWorldLayer.removeChild (mPlayerWorld as Sprite);
                
@@ -621,7 +646,7 @@ package viewer {
                else
                   mWorldLayer.y = mTopBarLayer.y
                
-            trace ("mWorldLayer.y = " + mWorldLayer.y);
+            //trace ("mWorldLayer.y = " + mWorldLayer.y);
                
                CreateHelpDialog ();
                //OpenHelpDialog ();
@@ -969,6 +994,14 @@ package viewer {
          mTopBarLayer.visible = showPlayBar;
          mTopBarLayer.x = 0;
          mTopBarLayer.y = 0;
+         
+         //
+         GraphicsUtil.ClearAndDrawRect (mMaskShape, 0, 0, viewerWidth, viewerHeight, 0x0, -1, true);
+         if (mMaskViewerField)
+         {
+            addChild (mMaskShape);
+            this.mask = mMaskViewerField ? mMaskShape : null;
+         }
       }
       
       private function CenterSprite (sprite:Sprite):void

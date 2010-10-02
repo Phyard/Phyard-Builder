@@ -209,6 +209,10 @@ package editor.world {
       private var mViewportHeight:int = Define.DefaultPlayerHeight;
       //<<
       
+      //>>
+      //private var mMaskViewerField:Boolean = false;
+      //<<
+      
       //
       private var mCiRulesEnabled:Boolean = true;
       
@@ -584,6 +588,16 @@ package editor.world {
                mViewportHeight = 600;
          }
       }
+      
+      //public function IsMaskViewerField ():Boolean
+      //{
+      //   return mMaskViewerField;
+      //}
+      
+      //public function SetMaskViewerField (mask:Boolean):void
+      //{
+      //   mMaskViewerField = mask;
+      //}
       
 //=================================================================================
 //   clone

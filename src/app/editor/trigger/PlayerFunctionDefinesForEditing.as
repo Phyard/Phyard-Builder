@@ -211,7 +211,9 @@ package editor.trigger {
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetCurrentDateTime, system_package, "Get Current Date Time", null, null,
-                     null,
+                     [
+                             new VariableDefinitionBoolean ("UTC (universal time)?"),
+                     ],
                      [
                              new VariableDefinitionNumber ("Year"), 
                              new VariableDefinitionNumber ("Month"), 
@@ -220,6 +222,20 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Minutes"), 
                              new VariableDefinitionNumber ("Seconds"), 
                              new VariableDefinitionNumber ("Milliseconds"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetDay, system_package, "Get Day", null, null,
+                     [
+                             new VariableDefinitionBoolean ("UTC (universal time)?"),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("The Day of The Week (0 for Sunday)"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetTimeZone, system_package, "Get Time Zone", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("The Time Zone [-12, +12]"), 
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsKeyHold, system_package, "Is Key Held", "@#0 = Is the key (key code is $0) held?", null,

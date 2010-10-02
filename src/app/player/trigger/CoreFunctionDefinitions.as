@@ -72,6 +72,8 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_GetProgramMilliseconds,           GetProgramMilliseconds);
          RegisterCoreFunction (CoreFunctionIds.ID_GetCurrentDateTime,               GetCurrentDateTime);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetDay,                           GetDay);
+         RegisterCoreFunction (CoreFunctionIds.ID_GetTimeZone,                      GetTimeZone);
          RegisterCoreFunction (CoreFunctionIds.ID_IsKeyHold,                        IsKeyHold);
          
       // string
@@ -421,27 +423,73 @@ package player.trigger {
       
       public static function GetCurrentDateTime (valueSource:Parameter, valueTarget:Parameter):void
       {
+         var isUTC:Boolean = Boolean(valueSource.EvaluateValueObject ());
+         
          var date:Date = new Date ();
          
-         valueTarget.AssignValueObject (date.getFullYear ());
+         if (isUTC)
+         {
+            valueTarget.AssignValueObject (date.getUTCFullYear ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getUTCMonth () + 1);
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getUTCDate ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getUTCHours ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getUTCMinutes ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getUTCSeconds ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getUTCMilliseconds ()); 
+         }
+         else
+         {
+            valueTarget.AssignValueObject (date.getFullYear ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getMonth () + 1);
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getDate ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getHours ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getMinutes ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getSeconds ());
+            
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (date.getMilliseconds ());
+        }
+      }
+      
+      public static function GetDay (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var isUTC:Boolean = Boolean(valueSource.EvaluateValueObject ());
          
-         valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (date.getMonth () + 1);
-         
-         valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (date.getDate ());
-         
-         valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (date.getHours ());
-         
-         valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (date.getMinutes ());
-         
-         valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (date.getSeconds ());
-         
-         valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (date.getMilliseconds ());
+         if (isUTC)
+         {
+            valueTarget.AssignValueObject (new Date ().getUTCDay ());
+         }
+         else
+         {
+            valueTarget.AssignValueObject (new Date ().getDay ());
+         }
+      }
+      
+      public static function GetTimeZone (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (- int (new Date ().getTimezoneOffset() / 60));
       }
       
       public static function IsKeyHold (valueSource:Parameter, valueTarget:Parameter):void

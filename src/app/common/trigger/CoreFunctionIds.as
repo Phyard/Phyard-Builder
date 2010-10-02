@@ -44,6 +44,8 @@ package common.trigger {
       
       public static const ID_GetProgramMilliseconds:int           = IdPool.CoreApiId_70; //
       public static const ID_GetCurrentDateTime:int               = IdPool.CoreApiId_71; //
+      public static const ID_GetDay:int                           = IdPool.CoreApiId_73; //
+      public static const ID_GetTimeZone:int                      = IdPool.CoreApiId_74; //
       public static const ID_IsKeyHold:int                        = IdPool.CoreApiId_72; //
       
    // string

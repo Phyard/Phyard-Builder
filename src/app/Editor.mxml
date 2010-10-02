@@ -419,6 +419,8 @@
                            <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
                            <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-faster.png')" disabledIcon="@Embed('res/edit/play-faster-disabled.png')"/>
                            <mx:Spacer width="100%"/>
+                           <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
+                           <mx:Label id="CheckBox_MaskViewerField" text="Mask Player Field" toolTip="Toggle Mask Player Field" focusEnabled="false" color="0x808080" click="ToggleMaskPlayerField ();"/>
                         </mx:HBox>
                      </mx:ViewStack>
                      <mx:Spacer width="1"/>
@@ -1128,8 +1130,6 @@
                }
             }
             
-             
-            
 //========================================================================================
 // play / stop
 //========================================================================================
@@ -1172,6 +1172,13 @@
                Box_CreateCommands.enabled = true;
                
                ViewStack_WorldInfo.selectedChild = Box_EditingWorldInfo;
+            }
+            
+            private function ToggleMaskPlayerField ():void
+            {
+               MainView.SetMaskViewerField (! MainView.IsMaskViewerField ());
+               
+               CheckBox_MaskViewerField.setStyle ("color", MainView.IsMaskViewerField () ? "0x000000" : "0x808080");
             }
             
 //========================================================================================

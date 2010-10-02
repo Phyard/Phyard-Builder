@@ -103,6 +103,8 @@ package common.trigger {
       public static const CoreApiId_70:int = 70; //
       public static const CoreApiId_71:int = 71; //
       public static const CoreApiId_72:int = 72; //
+      public static const CoreApiId_73:int = 73; //
+      public static const CoreApiId_74:int = 74; //
       
       public static const CoreApiId_120:int = 120; // 
       public static const CoreApiId_121:int = 121; // 

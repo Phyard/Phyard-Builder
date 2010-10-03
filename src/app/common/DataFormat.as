@@ -1961,6 +1961,8 @@ package common {
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
             {
+               entityDefine.mFunctionDefine = new FunctionDefine ();
+               
                if (worldDefine.mVersion >= 0x0153)
                   TriggerFormatHelper.Xml2FunctionDefine (element, entityDefine.mFunctionDefine, false, true, worldDefine.mFunctionDefines);
                else

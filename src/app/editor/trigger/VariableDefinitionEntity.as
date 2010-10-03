@@ -150,10 +150,10 @@ package editor.trigger {
          return new ValueSource_Direct (null);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var world:World = Runtime.GetCurrentWorld ();
-         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable);
+         var entity_list:Array = world.GetEntitySelectListDataProviderByFilter (IsValidEntity, mGroundSelectable, null, isForPureCustomFunction);
          
          var entity:WorldEntity = valueSourceDirect.GetValueObject () as WorldEntity;
          var sel_index:int = -1;

@@ -65,7 +65,7 @@ package editor.trigger {
          return new ValueSource_Direct ("");
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var text_input:TextInput = new TextInput ()
          

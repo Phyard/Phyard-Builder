@@ -21,7 +21,7 @@ package player.trigger
       {
          var entity:Entity = mEntityParameter.EvaluateValueObject () as Entity;
          
-         return entity == null ? null : entity.GetCustomProperty (mSpacePackageId, mPropertyId);
+         return entity == null ? undefined : entity.GetCustomProperty (mSpacePackageId, mPropertyId);
       }
       
       override public function AssignValueObject (valueObject:Object):void

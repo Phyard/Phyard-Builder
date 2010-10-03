@@ -126,6 +126,7 @@
          //private var mInputValues:Object;
          
          private var mCodeSnippet:CodeSnippet = null;
+         private var mIsPureCustomFunction:Boolean;
          
          private var mCurrentCallingLine:FunctionCallingLineData = null;
          
@@ -168,23 +169,6 @@
             mPoemFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Poem Coding Format (Partially Support)", OnSwitchToPoemFormat);
             
             UpdateInterface ();
-         }
-         
-         private var mOptions:Object = new Object ();
-         public function SetOptions (options:Object):void
-         {
-            mOptions = (options == null) ? (new Object ()) : options;
-            
-            if (mOptions.mShowGlobalVariablesEditingButton != undefined && mOptions.mShowGlobalVariablesEditingButton == false)
-               Box_EditVariablesButtons.removeChild (Button_EditGlobalVariables);
-            if (mOptions.mShowEntityVariablesEditingButton != undefined && mOptions.mShowEntityVariablesEditingButton == false)
-               Box_EditVariablesButtons.removeChild (Button_EditEntityVariables);
-            if (mOptions.mShowLocalVariablesEditingButton != undefined && mOptions.mShowLocalVariablesEditingButton == false)
-               Box_EditVariablesButtons.removeChild (Button_EditLocalVariables);
-            if (mOptions.mShowInputVariablesEditingButton == undefined || mOptions.mShowInputVariablesEditingButton == false)
-               Box_EditVariablesButtons.removeChild (Button_EditInputVariables);
-            if (mOptions.mShowOutputVariablesEditingButton == undefined || mOptions.mShowOutputVariablesEditingButton == false)
-               Box_EditVariablesButtons.removeChild (Button_EditOutputVariables);
          }
          
          private function OnAddedToStage ():void
@@ -303,11 +287,22 @@
             OnNewCalling (event.item.@type, event.item.@id, -1, true);
          }
          
-         public function SetCodeSnippet (codeSnippet:CodeSnippet, options:Object = null):void
+         public function SetCodeSnippet (codeSnippet:CodeSnippet):void
          {
             mCodeSnippet = codeSnippet;
             
-            SetOptions (options);
+            mIsPureCustomFunction = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration () is FunctionDeclaration_Custom;
+            
+            if (mIsPureCustomFunction)
+            {
+               Box_EditVariablesButtons.removeChild (Button_EditGlobalVariables);
+               Box_EditVariablesButtons.removeChild (Button_EditEntityVariables);
+            }
+            else
+            {
+               Box_EditVariablesButtons.removeChild (Button_EditInputVariables);
+               Box_EditVariablesButtons.removeChild (Button_EditOutputVariables);
+            }
             
             Initialize ();
          }
@@ -838,7 +833,7 @@
             var value_control:UIComponent = null;
             if (value_source is ValueSource_Direct)
             {
-               value_control = variable_def.CreateControlForDirectValueSource (value_source as ValueSource_Direct);
+               value_control = variable_def.CreateControlForDirectValueSource (value_source as ValueSource_Direct, mIsPureCustomFunction);
             }
             else if (value_source is ValueSource_Variable)
             {
@@ -1115,25 +1110,19 @@
                if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Input Varialbe", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
                
-               if (mOptions.mShowEntityVariablesEditingButton == undefined || mOptions.mShowEntityVariablesEditingButton == true)
+               if (! mIsPureCustomFunction)
                {
                   if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Entity Custom Property", OnSelectValueSource_EntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
-               }
-               
-               if (mOptions.mShowGlobalVariablesEditingButton == undefined || mOptions.mShowGlobalVariablesEditingButton == true)
-               {
+                  
                   AppendContextMenuItem (sprite, "from Register Variable", OnSelectValueSource_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
                   
                   if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Global Variable", OnSelectValueSource_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
                }
                
-               if (mOptions.mShowInputVariablesEditingButton == undefined || mOptions.mShowInputVariablesEditingButton == true)
-               {
-                  if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
-                     AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
-               }
+               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+                  AppendContextMenuItem (sprite, "from Local Variable", OnSelectValueSource_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
             }
          }
          
@@ -1558,25 +1547,19 @@
             if (ownerFuncDefinition.HasOutputsSatisfiedBy (variableDefinition))
                AppendContextMenuItem (sprite, "to Output Variables", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Output);
             
-            if (mOptions.mShowEntityVariablesEditingButton == undefined || mOptions.mShowEntityVariablesEditingButton == true)
+            if (! mIsPureCustomFunction)
             {
                if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
-            }
-            
-            if (mOptions.mShowGlobalVariablesEditingButton == undefined || mOptions.mShowGlobalVariablesEditingButton == true)
-            {
+               
                AppendContextMenuItem (sprite, "to Register Variable", OnSelectValueTarget_RegisterVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_GlobalRegister);
                
                if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Global Variable", OnSelectValueTarget_GlobalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Global);
             }
             
-            if (mOptions.mShowInputVariablesEditingButton == undefined || mOptions.mShowInputVariablesEditingButton == true)
-            {
-               if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
-                  AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
-            }
+            if (ownerFuncDefinition.HasLocalVariablesSatisfiedBy (variableDefinition))
+               AppendContextMenuItem (sprite, "to Local Variable", OnSelectValueTarget_LocalVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Local);
          }
          
          private function OnResetValueTarget (event:ContextMenuEvent):void

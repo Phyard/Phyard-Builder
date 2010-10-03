@@ -47,7 +47,7 @@
          
          public function OnCodeSnippetSettingPanelCreationComplete ():void
          {
-            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet, mParams);
+            theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
          }
          
          public function GetValues (returnValues:Object):void

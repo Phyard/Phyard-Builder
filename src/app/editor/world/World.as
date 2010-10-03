@@ -1251,31 +1251,37 @@ package editor.world {
 //   queries
 //=================================================================================
       
-      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, includeGround:Boolean = false, nullEntityLable:String = "(null)"):Array
+      public function GetEntitySelectListDataProviderByFilter (filterFunc:Function = null, includeGround:Boolean = false, nullEntityLable:String = null, isForPureCustomFunction:Boolean = false):Array
       {
          var list:Array = new Array ();
          
          if (includeGround)
             list.push({label:Define.EntityId_Ground + ":{Ground}", mEntityIndex:Define.EntityId_Ground});
          
+         if (nullEntityLable == null)
+            nullEntityLable = "(null)";
+         
          list.push({label:Define.EntityId_None + ":" + nullEntityLable, mEntityIndex:Define.EntityId_None});
          
-         var entity:Entity;
-         
-         var numEntities:int = mEntitiesSortedByCreationId.length;
-         if (numEntities != numChildren)
-            trace ("!!! numEntities != numChildren");
-         
-         for (var i:int = 0; i < numEntities; ++ i)
+         if (! isForPureCustomFunction)
          {
-            entity = mEntitiesSortedByCreationId [i] as Entity;
+            var entity:Entity;
             
-            if ( filterFunc == null || filterFunc (entity) )
+            var numEntities:int = mEntitiesSortedByCreationId.length;
+            if (numEntities != numChildren)
+               trace ("!!! numEntities != numChildren");
+            
+            for (var i:int = 0; i < numEntities; ++ i)
             {
-               var item:Object = new Object ();
-               item.label = i + ": " + entity.GetTypeName ();
-               item.mEntityIndex = entity.GetCreationOrderId ();
-               list.push (item);
+               entity = mEntitiesSortedByCreationId [i] as Entity;
+               
+               if ( filterFunc == null || filterFunc (entity) )
+               {
+                  var item:Object = new Object ();
+                  item.label = i + ": " + entity.GetTypeName ();
+                  item.mEntityIndex = entity.GetCreationOrderId ();
+                  list.push (item);
+               }
             }
          }
          
@@ -1293,24 +1299,27 @@ package editor.world {
          return EntityIndex2SelectListSelectedIndex (Define.EntityId_None, dataProvider);
       }
       
-      public function GetCollisionCategoryListDataProvider ():Array
+      public function GetCollisionCategoryListDataProvider (isForPureCustomFunction:Boolean = false):Array
       {
          var list:Array = new Array ();
          
          list.push ({label:"-1:{Hidden Category}", mCategoryIndex:Define.CCatId_Hidden});
          
-         var child:Object;
-         var category:EntityCollisionCategory;
-         var numCats:int = mCollisionManager.GetNumCollisionCategories ();
-         
-         for (var i:int = 0; i < numCats; ++ i)
+         if (! isForPureCustomFunction)
          {
-            category = mCollisionManager.GetCollisionCategoryByIndex (i);
+            var child:Object;
+            var category:EntityCollisionCategory;
+            var numCats:int = mCollisionManager.GetNumCollisionCategories ();
             
-            var item:Object = new Object ();
-            item.label = i + ": " + category.GetCategoryName ();
-            item.mCategoryIndex = category.GetAppearanceLayerId ();
-            list.push (item);
+            for (var i:int = 0; i < numCats; ++ i)
+            {
+               category = mCollisionManager.GetCollisionCategoryByIndex (i);
+               
+               var item:Object = new Object ();
+               item.label = i + ": " + category.GetCategoryName ();
+               item.mCategoryIndex = category.GetAppearanceLayerId ();
+               list.push (item);
+            }
          }
          
          return list;

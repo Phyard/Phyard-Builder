@@ -50,7 +50,7 @@ package editor.trigger {
          return new ValueSource_Direct (null);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var label:Label = new Label ();
          label.text = "(direct value is not support for arrays now)";

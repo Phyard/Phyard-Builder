@@ -45,6 +45,11 @@ package common.trigger {
          }
       }
       
+      public static function IsLevelRelatedDirectValue (valueType:int):Boolean
+      {
+         return valueType == ValueType_Entity || valueType == ValueType_CollisionCategory;
+      }
+      
 //=============================================================================
 // 
 //=============================================================================

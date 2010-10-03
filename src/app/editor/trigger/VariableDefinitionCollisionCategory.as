@@ -41,10 +41,10 @@ package editor.trigger {
          return new ValueSource_Direct (null);
       }
       
-      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
+      override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var world:World = Runtime.GetCurrentWorld ();
-         var category_list:Array = world.GetCollisionCategoryListDataProvider ();
+         var category_list:Array = world.GetCollisionCategoryListDataProvider (isForPureCustomFunction);
          
          var category:EntityCollisionCategory = valueSourceDirect.GetValueObject () as EntityCollisionCategory;
          var sel_index:int = -1;

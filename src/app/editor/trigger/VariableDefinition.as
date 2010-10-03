@@ -283,7 +283,7 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct);
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {
@@ -390,7 +390,7 @@ package editor.trigger {
          return null;
       }
       
-      public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct):UIComponent
+      public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          return null;
       }
@@ -504,7 +504,7 @@ package editor.trigger {
          var entityValueSourceControl:UIComponent = null;
          if (entityValueSource is ValueSource_Direct)
          {
-            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct);
+            entityValueSourceControl = mEntityVariableDefinition.CreateControlForDirectValueSource (entityValueSource as ValueSource_Direct, false);
          }
          else if (entityValueSource is ValueSource_Variable)
          {

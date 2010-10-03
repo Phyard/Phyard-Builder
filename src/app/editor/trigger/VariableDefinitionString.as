@@ -48,6 +48,18 @@ package editor.trigger {
       }
       
 //==============================================================================
+// clone
+//==============================================================================
+      
+      override public function Clone ():VariableDefinition
+      {
+         var stringVariableDefinition:VariableDefinitionString = new VariableDefinitionString (mName, mDescription);
+         stringVariableDefinition.mMaxLength = mMaxLength;
+         
+         return stringVariableDefinition;
+      }
+      
+//==============================================================================
 // to override
 //==============================================================================
       

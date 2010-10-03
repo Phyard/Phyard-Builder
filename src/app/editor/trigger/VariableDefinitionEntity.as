@@ -19,11 +19,11 @@ package editor.trigger {
    //
    //========================================================================================================
       
-      protected var mValidClasses:Array = null;
-      protected var mExceptClasses:Array = null;
-      protected var mNullValueEnabled:Boolean = true;
-      protected var mMultiValuesEnabled:Boolean = false;
-      protected var mGroundSelectable:Boolean = false;
+      internal var mValidClasses:Array = null;
+      internal var mExceptClasses:Array = null;
+      internal var mNullValueEnabled:Boolean = true;
+      internal var mMultiValuesEnabled:Boolean = false;
+      internal var mGroundSelectable:Boolean = false;
       
       public function VariableDefinitionEntity (name:String, description:String = null, options:Object = null)
       {
@@ -115,6 +115,22 @@ package editor.trigger {
          }
          
          return false;
+      }
+      
+//==============================================================================
+// clone
+//==============================================================================
+      
+      override public function Clone ():VariableDefinition
+      {
+         var entityVariableDefinition:VariableDefinitionEntity = new VariableDefinitionEntity (mName, mDescription);
+         entityVariableDefinition.mValidClasses = mValidClasses;
+         entityVariableDefinition.mExceptClasses = mExceptClasses;
+         entityVariableDefinition.mNullValueEnabled = mNullValueEnabled;
+         entityVariableDefinition.mMultiValuesEnabled = mMultiValuesEnabled;
+         entityVariableDefinition.mGroundSelectable = mGroundSelectable;
+         
+         return entityVariableDefinition;
       }
       
 //==============================================================================

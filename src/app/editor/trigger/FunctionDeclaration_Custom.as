@@ -67,6 +67,40 @@ package editor.trigger {
       {
          ++ mNumModifiedTimes;
       }
+      
+   //======================
+      
+      public function Clone ():FunctionDeclaration_Custom
+      {
+         var customFunctionDeclaration:FunctionDeclaration_Custom = new FunctionDeclaration_Custom (mName);
+         
+         customFunctionDeclaration.mName = mName;
+         customFunctionDeclaration.mDescription = mDescription;
+         customFunctionDeclaration.mShowUpInApiMenu = mShowUpInApiMenu;
+         
+         var i:int;
+         
+         if (mInputParamDefinitions != null)
+         {
+            customFunctionDeclaration.mInputParamDefinitions = new Array (mInputParamDefinitions.length);
+            for (i = 0; i < mInputParamDefinitions.length; ++ i)
+            {
+               customFunctionDeclaration.mInputParamDefinitions [i] = (mInputParamDefinitions [i] as VariableDefinition).Clone ();
+            }
+         }
+         
+         if (mOutputParamDefinitions != null)
+         {
+            customFunctionDeclaration.mOutputParamDefinitions = new Array (mOutputParamDefinitions.length);
+            for (i = 0; i < mOutputParamDefinitions.length; ++ i)
+            {
+               customFunctionDeclaration.mOutputParamDefinitions [i] = (mOutputParamDefinitions [i] as VariableDefinition).Clone ();
+            }
+         }
+         
+         return customFunctionDeclaration;
+      }
+      
    }
 }
 

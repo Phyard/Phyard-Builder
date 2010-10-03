@@ -39,6 +39,18 @@ package editor.trigger {
       }
       
 //==============================================================================
+// clone
+//==============================================================================
+      
+      override public function Clone ():VariableDefinition
+      {
+         var booleanVariableDefinition:VariableDefinitionBoolean = new VariableDefinitionBoolean (mName, mDescription);
+         booleanVariableDefinition.SetDefaultValue (mDefaultValue);
+         
+         return booleanVariableDefinition;
+      }
+      
+//==============================================================================
 // to override
 //==============================================================================
       

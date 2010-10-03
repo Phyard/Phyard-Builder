@@ -156,9 +156,14 @@ package editor.trigger {
       public function SetValueObject (valueObject:Object):void
       {
          if (mVariableDefinition != null)
+         {
             valueObject = mVariableDefinition.ValidateDirectValueObject (valueObject);
+            mVariableDefinition.SetDefaultValue (valueObject);
+         }
          else
+         {
             valueObject = VariableDefinition.ValidateValueByType (valueObject, mValuetype);
+         }
          
           mValueObject = valueObject;
       }

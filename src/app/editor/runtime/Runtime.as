@@ -128,7 +128,7 @@ package editor.runtime {
             codeSnippet.AssignFunctionCallings (copiedCallings);
             codeSnippet.PhysicsValues2DisplayValues (GetCurrentWorld ().GetCoordinateSystem ());
             
-            Runtime.mCopiedCodeSnippet = codeSnippet.Clone(null);
+            Runtime.mCopiedCodeSnippet = codeSnippet.Clone(ownerFunctionDefinition.Clone ());
          }
       }
       

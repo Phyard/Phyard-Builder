@@ -272,9 +272,40 @@ package editor.trigger {
          functionDecl.ParseAllCallingTextSegments ();
       }
       
+//==============================================================================
+// clone
+//==============================================================================
+      
       public function Clone ():FunctionDefinition
       {
-         return null;
+         SybchronizeDeclarationWithDefinition ();
+         
+         var newFuncDefinition:FunctionDefinition;
+         
+         if ((mFunctionDeclaration is FunctionDeclaration_Custom))
+         {
+            newFuncDefinition = new FunctionDefinition (mTriggerEngine, (mFunctionDeclaration as FunctionDeclaration_Custom).Clone (), mPure);
+            
+            newFuncDefinition.SybchronizeDeclarationWithDefinition ();
+         }
+         else
+         {
+            newFuncDefinition = new FunctionDefinition (mTriggerEngine, mFunctionDeclaration, mPure);
+         }
+         
+         var num_locals:int = mLocalVariableSpace.GetNumVariableInstances ();
+         var vi:VariableInstance;
+         var newVi:VariableInstance;
+         for (var j:int = 0; j < num_locals; ++ j)
+         {
+            vi = mLocalVariableSpace.GetVariableInstanceAt (j);
+            
+            newFuncDefinition.mLocalVariableSpace.CreateVariableInstanceFromDefinition (vi.GetVariableDefinition ().Clone ());
+            newVi = newFuncDefinition.mLocalVariableSpace.GetVariableInstanceAt (j);
+            newVi.SetValueObject (vi.GetValueObject ());
+         }
+         
+         return newFuncDefinition;
       }
    }
 }

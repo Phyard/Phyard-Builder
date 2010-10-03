@@ -114,7 +114,7 @@ package editor.trigger {
       
       //public var mIsReference:Boolean = false;
       
-      private var mDescription:String = null;
+      public var mDescription:String = null;
       
       // options
       
@@ -161,6 +161,17 @@ package editor.trigger {
       public function SetDefaultValue (valueObject:Object):void
       {
          // to override
+      }
+      
+//==============================================================================
+// clone
+//==============================================================================
+      
+      public function Clone ():VariableDefinition
+      {
+         throw new Error ("need override");
+         
+         return null; // to override
       }
       
 //==============================================================================

@@ -73,6 +73,22 @@ package editor.trigger {
       }
       
 //==============================================================================
+// clone
+//==============================================================================
+      
+      override public function Clone ():VariableDefinition
+      {
+         var numberVariableDefinition:VariableDefinitionNumber = new VariableDefinitionNumber (mName, mDescription);
+         numberVariableDefinition.mMinValue = mMinValue;
+         numberVariableDefinition.mMaxValue = mMaxValue;
+         numberVariableDefinition.mDefaultValue = mDefaultValue;
+         numberVariableDefinition.mIsColorValue = mIsColorValue;
+         numberVariableDefinition.mValueLists = mValueLists;
+         
+         return numberVariableDefinition;
+      }
+      
+//==============================================================================
 // to override
 //==============================================================================
       

@@ -10,15 +10,15 @@ package editor.trigger {
    
    public class FunctionDeclaration
    {
-      protected var mId:int;
-      protected var mName:String;
+      internal var mId:int;
+      internal var mName:String;
       
-      protected var mDescription:String = null;
+      internal var mDescription:String = null;
       
-      protected var mInputParamDefinitions:Array; // input variable defines
-      protected var mOutputParamDefinitions:Array; // returns
+      internal var mInputParamDefinitions:Array; // input variable defines
+      internal var mOutputParamDefinitions:Array; // returns
       
-      protected var mShowUpInApiMenu:Boolean = true;
+      internal var mShowUpInApiMenu:Boolean = true;
       
       public function FunctionDeclaration (id:int, name:String, description:String = null, 
                                           inputDefinitions:Array = null, returnDefinitions:Array = null, 

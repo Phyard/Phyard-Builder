@@ -24,6 +24,17 @@ package editor.trigger {
       }
       
 //==============================================================================
+// clone
+//==============================================================================
+      
+      override public function Clone ():VariableDefinition
+      {
+         var ccatVariableDefinition:VariableDefinitionCollisionCategory = new VariableDefinitionCollisionCategory (mName, mDescription);
+         
+         return ccatVariableDefinition;
+      }
+      
+//==============================================================================
 // to override
 //==============================================================================
       

@@ -31,7 +31,7 @@ package editor.trigger {
       }
       
       // to override
-      public function CloneSource ():ValueSource
+      public function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
          return new ValueSource_Null ();
       }

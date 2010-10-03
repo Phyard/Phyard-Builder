@@ -11,7 +11,7 @@ package editor.trigger {
       function GetValueObject ():Object;
       
       // to override
-      function CloneSource ():ValueSource;
+      function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource;
       
       function ValidateSource ():void;
       

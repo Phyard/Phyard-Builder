@@ -10,7 +10,7 @@ package editor.trigger {
       
       function AssignValue (source:ValueSource):void;
       
-      function CloneTarget ():ValueTarget;
+      function CloneTarget (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget;
       
       function ValidateTarget ():void;
       

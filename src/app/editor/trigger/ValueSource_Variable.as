@@ -57,13 +57,13 @@ package editor.trigger {
          return mVariableInstance.GetValueObject ();
       }
       
-      public function CloneSource ():ValueSource
-      {
-         // not a safe clone. Only used in FunctionCallingLineData
-         return new ValueSource_Variable (mVariableInstance);
-      }
+      //public function CloneSource ():ValueSource
+      //{
+      //   // not a safe clone. Only used in FunctionCallingLineData
+      //   return new ValueSource_Variable (mVariableInstance);
+      //}
       
-      public function CloneVariableSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
          var variableDefinition:VariableDefinition;;
          

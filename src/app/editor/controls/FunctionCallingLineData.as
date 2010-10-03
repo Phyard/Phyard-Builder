@@ -2,6 +2,7 @@
 package editor.controls {
    
    import editor.trigger.TriggerEngine;
+   import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableDefinition;
    import editor.trigger.FunctionDeclaration;
    import editor.trigger.FunctionDeclaration_Custom;
@@ -105,7 +106,7 @@ package editor.controls {
          }
       }
       
-      public function BuildFromFunctionDeclaration (funcDeclaration:FunctionDeclaration):void
+      public function BuildFromFunctionDeclaration (funcDeclaration:FunctionDeclaration, triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition):void
       {
          SetFunctionDeclaration (funcDeclaration);
          
@@ -124,16 +125,16 @@ package editor.controls {
          {
             variableDefinition = funcDeclaration.GetInputParamDefinitionAt (j);
             valueSource = variableDefinition.GetDefaultValueSource (Runtime.GetCurrentWorld ().GetTriggerEngine ());
-            initialValueSources.push (valueSource.CloneSource ());
-            currentValueSources.push (valueSource.CloneSource ());
+            initialValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
+            currentValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
          }
          
          for (j = 0; j < funcDeclaration.GetNumOutputs (); ++ j)
          {
             variableDefinition = funcDeclaration.GetOutputParamDefinitionAt (j);
             valueTarget = variableDefinition.GetDefaultValueTarget ();
-            initialReturnTargets.push (valueTarget.CloneTarget ());
-            currentReturnTargets.push (valueTarget.CloneTarget ());
+            initialReturnTargets.push (valueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
+            currentReturnTargets.push (valueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
          }
          
          mInitialValueSources = initialValueSources;
@@ -143,7 +144,7 @@ package editor.controls {
          mInfo.mHtmlText = funcDeclaration.GetName ();
       }
       
-      public function BuildFromFunctionCalling (funcCalling:FunctionCalling):void
+      public function BuildFromFunctionCalling (funcCalling:FunctionCalling, triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition):void
       {
          var funcDeclaration:FunctionDeclaration = funcCalling.GetFunctionDeclaration ();
          SetFunctionDeclaration (funcDeclaration);
@@ -161,16 +162,16 @@ package editor.controls {
          {
             valueSource = funcCalling.GetInputValueSource (j);
             
-            initialValueSources.push (valueSource.CloneSource ());
-            currentValueSources.push (valueSource.CloneSource ());
+            initialValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
+            currentValueSources.push (valueSource.CloneSource (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
          }
          
          for (j = 0; j < funcDeclaration.GetNumOutputs (); ++ j)
          {
             valueTarget = funcCalling.GetOutputValueTarget (j);
             
-            initialReturnTargets.push (valueTarget.CloneTarget ());
-            currentReturnTargets.push (valueTarget.CloneTarget ());
+            initialReturnTargets.push (valueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
+            currentReturnTargets.push (valueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, funcDeclaration, j));
          }
          
          mInitialValueSources = initialValueSources;

@@ -177,18 +177,7 @@ package editor.trigger {
          {
             source = mInputValueSources [i] as ValueSource;
             
-            if (source is ValueSource_Property)
-            {
-               sourcesArray [i] = (source as ValueSource_Property).ClonePropertySource (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
-            }
-            else if (source is ValueSource_Variable)
-            {
-               sourcesArray [i] = (source as ValueSource_Variable).CloneVariableSource (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
-            }
-            else // direct
-            {
-               sourcesArray [i] = source.CloneSource ();
-            }
+            sourcesArray [i] = source.CloneSource (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
          }
          
          calling.AssignInputValueSources (sourcesArray);
@@ -201,18 +190,7 @@ package editor.trigger {
          {
             target = mOutputValueTargets [i] as ValueTarget;
             
-            if (target is ValueTarget_Property)
-            {
-               targetsArray [i] = (target as ValueTarget_Property).ClonePropertyTarget (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
-            }
-            else if (target is ValueTarget_Variable)
-            {
-               targetsArray [i] = (target as ValueTarget_Variable).CloneVariableTarget (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
-            }
-            else // direct
-            {
-               targetsArray [i] = target.CloneTarget ();
-            }
+            targetsArray [i] = target.CloneTarget (mTriggerEngine, targetFunctionDefinition, mFunctionDeclaration, i);
          }
          
          calling.AssignOutputValueTargets (targetsArray);

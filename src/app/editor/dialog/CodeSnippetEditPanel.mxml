@@ -350,7 +350,7 @@
                func_calling = codeSnippet.GetFunctionCallingAt (i);
                
                var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
-               callingLine.BuildFromFunctionCalling (func_calling);
+               callingLine.BuildFromFunctionCalling (func_calling, Runtime.GetCurrentWorld ().GetTriggerEngine (), mCodeSnippet.GetOwnerFunctionDefinition ());
                
                List_Commands.dataProvider.addItemAt (callingLine, insertAt ++);
             }
@@ -529,7 +529,7 @@
                return;
             
             var callingLine:FunctionCallingLineData = new FunctionCallingLineData ();
-            callingLine.BuildFromFunctionDeclaration (func_declaration);
+            callingLine.BuildFromFunctionDeclaration (func_declaration, Runtime.GetCurrentWorld ().GetTriggerEngine (), mCodeSnippet.GetOwnerFunctionDefinition ());
             
             var insert_index:int;
             if (insertAt < 0)

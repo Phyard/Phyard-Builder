@@ -53,12 +53,12 @@ package editor.trigger {
          mVariableInstance.SetValueObject (source.GetValueObject ());
       }
       
-      public function CloneTarget ():ValueTarget
-      {
-         return new ValueTarget_Variable (mVariableInstance);
-      }
+      //public function CloneTarget ():ValueTarget
+      //{
+      //   return new ValueTarget_Variable (mVariableInstance);
+      //}
       
-      public function CloneVariableTarget (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      public function CloneTarget (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
          var variableDefinition:VariableDefinition;;
          

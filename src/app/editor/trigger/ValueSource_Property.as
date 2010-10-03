@@ -64,32 +64,20 @@ package editor.trigger {
          return mPropertyValueSource.GetValueObject ();
       }
       
-      public function CloneSource ():ValueSource
-      {
-         // not a safe clone. Only used in FunctionCallingLineData
-         return new ValueSource_Property (mEntityValueSource.CloneSource (), mPropertyValueSource.CloneSource () as ValueSource_Variable);
-      }
+      //public function CloneSource ():ValueSource
+      //{
+      //   // not a safe clone. Only used in FunctionCallingLineData
+      //   return new ValueSource_Property (mEntityValueSource.CloneSource (), mPropertyValueSource.CloneSource () as ValueSource_Variable);
+      //}
       
-      public function ClonePropertySource (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function CloneSource (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
          var newEntityValueSource:ValueSource;
          var newPropertyValueSource:ValueSource_Variable;
          
-         if (mEntityValueSource is ValueSource_Property)
-         {
-            throw new Error ("mEntityValueSource can't be a ValueSource_Property");
-         }
-         else if (mEntityValueSource is ValueSource_Variable)
-         {
-            newEntityValueSource = (mEntityValueSource as ValueSource_Variable).CloneVariableSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex);
-         }
-         else
-         {
-            newEntityValueSource = mEntityValueSource.CloneSource ();
-         }
+         newEntityValueSource = mEntityValueSource.CloneSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex);
          
-         // in fact, "newPropertyValueSource = mPropertyValueSource.CloneSource () as ValueSource_Variable;" is ok
-         newPropertyValueSource = mPropertyValueSource.CloneVariableSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueSource_Variable;
+         newPropertyValueSource = mPropertyValueSource.CloneSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueSource_Variable;
          
          return new ValueSource_Property (newEntityValueSource, newPropertyValueSource);
       }

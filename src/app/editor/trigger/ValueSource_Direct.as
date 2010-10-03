@@ -72,8 +72,20 @@ package editor.trigger {
          return mValueObject;
       }
       
-      public function CloneSource ():ValueSource
+      public function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
+         if (targetFunctionDefinition.IsPure ())
+         {
+            if (mValueObject is Entity)
+            {
+               return new ValueSource_Direct (null);
+            }
+            else if (mValueObject is EntityCollisionCategory)
+            {
+               return new ValueSource_Direct (null);
+            }
+         }
+         
          return new ValueSource_Direct (mValueObject);
       }
       

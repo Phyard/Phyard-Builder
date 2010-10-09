@@ -21,7 +21,7 @@ package univiewer
    
    public dynamic class UniViewer extends Sprite
    {
-      private static const VersionNumber:int = 2;
+      private static const VersionNumber:int = 3;
       
       private static const StartLoadingPercent:int = 5;
       private static const StartLoadingViewerPercent:int = 5;
@@ -54,12 +54,12 @@ package univiewer
          if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0) // for play. avoid using browser cache
          {
             var date:Date = new Date ();
-            infoUrl = mUniViewerUrl.replace (/\/uniplayer\.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
+            infoUrl = mUniViewerUrl.replace (/\/uniplayer\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
             infoUrl = infoUrl + "&time=" + date.getFullYear () + "-" + date.getMonth () + "-" + date.getDate () + "-" + date.getHours () + "-" + date.getMinutes () + "-" + date.getSeconds ();
          }
          else // for view, the brower cache will be used if availabe
          {
-            infoUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/i/design/loadinfo") + "&vn=" + VersionNumber;
+            infoUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
          }
          
          var request:URLRequest = new URLRequest (infoUrl);

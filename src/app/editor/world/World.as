@@ -764,6 +764,8 @@ package editor.world {
          CorrectLayerIdsForJoints ();
       }
       
+      // make sure the joint is befind of its anchors in aapearance list
+      // so that there are some conviences in playing initization.
       public function CorrectLayerIdsForJoints ():void
       {
          var numEntities:int = mEntitiesSortedByCreationId.length;
@@ -811,12 +813,13 @@ package editor.world {
                            maxIndex = index2;
                      }
                   }
-                  
-                  if (maxIndex > 0)
-                  {
-                     removeChild (entity);
-                     addChildAt (entity, maxIndex + 1);
-                  }
+               }
+               
+               var oldIndex:int = getChildIndex (entity);
+               if (maxIndex > oldIndex)
+               {
+                  removeChild (entity);
+                  addChildAt (entity, maxIndex);
                }
             }
          }

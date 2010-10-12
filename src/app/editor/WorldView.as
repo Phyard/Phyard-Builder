@@ -4998,11 +4998,29 @@ package editor {
          
          try
          {
-            var xmlString:String = params.mXmlString;
+            var codeString:String = params.mXmlString;
             
-            var xml:XML = new XML (xmlString);
+            var newWorldDefine:WorldDefine = null;
             
-            var newWorldDefine:WorldDefine = DataFormat.Xml2WorldDefine (xml);
+            if (codeString != null)
+            {
+               if (codeString.length > 8 && codeString.substring (0, 8) == "playcode")
+               {
+                  var identifyText:String = "434F494E";
+                  var offset:int = codeString.indexOf (identifyText, 8);
+                  if (offset > 0)
+                  {
+                     newWorldDefine = DataFormat2.HexString2WorldDefine (codeString.substring (offset));
+                  }
+               }
+               else
+               {
+                  var xml:XML = new XML (codeString);
+                  
+                  newWorldDefine = DataFormat.Xml2WorldDefine (xml);
+               }
+            }
+            
             if (newWorldDefine == null)
                throw new Error ("newWorldDefine == null !!!");
             

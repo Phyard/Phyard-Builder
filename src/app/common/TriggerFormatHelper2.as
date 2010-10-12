@@ -414,9 +414,9 @@ package common {
             dafault_value_source_define = func_definition.GetDefaultInputValueSourceDefine (i);
             
             if (i >= funcCallingDefine.mNumInputs) // fill the missed parameters
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, dafault_value_source_define, dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject);
             else                                   // use the value set by designer
-               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType);
+               value_source = ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, funcCallingDefine.mInputValueSourceDefines [i], dafault_value_source_define.mValueType, dafault_value_source_define.mValueObject);
                
             value_source.mNextParameter = value_source_list;
             value_source_list = value_source;
@@ -467,7 +467,7 @@ package common {
          return calling;
       }
       
-      public static function ValueSourceDefine2InputValueSource (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int):Parameter
+      public static function ValueSourceDefine2InputValueSource (customFunctionDefinition:FunctionDefinition_Custom, playerWorld:World, valueSourceDefine:ValueSourceDefine, valueType:int, defaultDirectValue:Object):Parameter
       {
          var value_source:Parameter = null;
          
@@ -488,16 +488,23 @@ package common {
             var value_space_type:int = variable_source_define.mSpaceType;
             var variable_index:int   = variable_source_define.mVariableIndex;
             
+            var variable_instance:VariableInstance = null;
+            
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  value_source = new Parameter_Variable ((Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index));
+                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_source = new Parameter_Variable (variable_instance);
+                  
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
-                     value_source = new Parameter_Variable (variable_space.GetVariableAt (variable_index));
+                     variable_instance = variable_space.GetVariableAt (variable_index);
+                     if (variable_instance != null)
+                        value_source = new Parameter_Variable (variable_instance);
                   }
                   
                   break;
@@ -514,37 +521,13 @@ package common {
          {
             var property_source_define:ValueSourceDefine_Property = valueSourceDefine as ValueSourceDefine_Property;
             
-            value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity)
+            value_source = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_source_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, null)
                                                       , property_source_define.mSpacePackageId, property_source_define.mPropertyId);
          }
          
          if (value_source == null)
          {
-            //value_source = new ValueSource_Null ();
-            //trace ("Error: source is null");
-            
-            switch (valueType)
-            {
-               case ValueTypeDefine.ValueType_Boolean:
-                  value_source = new Parameter_Direct (false);
-                  break;
-               case ValueTypeDefine.ValueType_Number:
-                  value_source = new Parameter_Direct (0);
-                  break;
-               case ValueTypeDefine.ValueType_String:
-                  value_source = new Parameter_Direct (null);
-                  break;
-               case ValueTypeDefine.ValueType_Entity:
-                  value_source = new Parameter_Direct (null);
-                  break;
-               case ValueTypeDefine.ValueType_CollisionCategory:
-                  value_source = new Parameter_Direct (Define.CCatId_Hidden);
-                  break;
-               default:
-               {
-                  throw new Error ("unknown type");
-               }
-            }
+            value_source = new Parameter_Direct (ValidateDirectValueObject_Define2Object (playerWorld, valueType, defaultDirectValue));
          }
          
          return value_source;
@@ -567,16 +550,23 @@ package common {
             var value_space_type:int = variable_target_define.mSpaceType;
             var variable_index:int   = variable_target_define.mVariableIndex;
             
+            var variable_instance:VariableInstance = null;
+            
             switch (value_space_type)
             {
                case ValueSpaceTypeDefine.ValueSpace_Global:
-                  value_target = new Parameter_Variable ((Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index));
+                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_target = new Parameter_Variable (variable_instance);
+                  
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
                   if (variable_space != null)
                   {
-                     value_target = new Parameter_Variable (variable_space.GetVariableAt (variable_index));
+                     variable_instance = variable_space.GetVariableAt (variable_index);
+                     if (variable_instance != null)
+                        value_target = new Parameter_Variable (variable_instance);
                   }
                   
                   break;
@@ -593,7 +583,7 @@ package common {
          {
             var property_target_define:ValueTargetDefine_Property = valueTargetDefine as ValueTargetDefine_Property;
             
-            value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity)
+            value_target = new Parameter_Property (ValueSourceDefine2InputValueSource (customFunctionDefinition, playerWorld, property_target_define.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, null)
                                                       , property_target_define.mSpacePackageId, property_target_define.mPropertyId);
          }
          
@@ -607,7 +597,7 @@ package common {
          return value_target;
       }
       
-      public static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueobject:Object):Object
+      private static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueobject:Object):Object
       {
          switch (valueType)
          {

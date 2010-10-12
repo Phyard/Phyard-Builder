@@ -74,7 +74,9 @@ package player.trigger
          
          if (variableIndex < 0 || variableIndex >= variableReferenceArray.length)
          {
-            throw new Error ("index out of range");
+            //throw new Error ("index out of range");
+            
+            return null; // will be converted to a default direct parameter.
          }
          
          //if (variableSpaceType == ValueSpaceTypeDefine.ValueSpace_Local && mFunctionDeclaration.IsStaticLocalVariable (variableIndex))

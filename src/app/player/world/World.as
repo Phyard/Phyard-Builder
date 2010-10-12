@@ -1254,11 +1254,11 @@ package player.world {
       
       public function GetCollisionCategoryById (ccatId:int):CollisionCategory
       {
-         ++ ccatId; // ccatIndex = ccatId + 1
-         if (ccatId < 0 || ccatId >= mCollisionCategories.length)
+         var ccatIndex:int = ccatId + 1
+         if (ccatIndex < 0 || ccatIndex >= mCollisionCategories.length)
             return mCollisionCategories [0] // the hidden category
          else
-            return mCollisionCategories [ccatId];
+            return mCollisionCategories [ccatIndex];
       }
       
       private function ShouldTwoShapeCollide (phyShape1:PhysicsProxyShape, phyShape2:PhysicsProxyShape):Boolean

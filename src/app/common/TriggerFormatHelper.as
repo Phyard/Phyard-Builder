@@ -8,6 +8,7 @@ package common {
    import editor.entity.EntityCollisionCategory;
    
    import editor.trigger.entity.ConditionAndTargetValue;
+   import editor.trigger.entity.EntityFunction;
    
    import editor.trigger.TriggerEngine;
    import editor.trigger.CodeSnippet;
@@ -58,6 +59,8 @@ package common {
    
    //import common.trigger.define.VariableSpaceDefine;
    import common.trigger.define.VariableInstanceDefine;
+   
+   import common.trigger.CoreFunctionIds;
    
    public class TriggerFormatHelper
    {
@@ -344,50 +347,72 @@ package common {
       {
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
-         var func_calling:FunctionCalling;
+         
+         var func_calling:FunctionCalling = null;
          
          var func_declaration:FunctionDeclaration;
          if (func_type == FunctionTypeDefine.FunctionType_Core)
          {
             func_declaration = TriggerEngine.GetPlayerCoreFunctionDeclarationById (func_id);
             
-            func_calling = new FunctionCalling_Core (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Core, false)
+            if (func_declaration != null)
+            {
+               func_calling = new FunctionCalling_Core (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Core, false)
+            }
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
-            func_declaration = editorWorld.GetFunctionManager ().GetFunctionByIndex (func_id).GetFunctionDeclaration ();
+            var entityFunction:EntityFunction = editorWorld.GetFunctionManager ().GetFunctionByIndex (func_id) as EntityFunction;
             
-            func_calling = new FunctionCalling_Custom (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Custom, false);
+            if (entityFunction != null)
+            {
+               func_declaration = entityFunction.GetFunctionDeclaration ();
+               
+               func_calling = new FunctionCalling_Custom (editorWorld.GetTriggerEngine (), func_declaration as FunctionDeclaration_Custom, false);
+            }
          }
          else if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
          {
             // impossible
          }
          
-         var real_num_inputs:int = func_declaration.GetNumInputs ()
-         var real_num_outputs:int = func_declaration.GetNumOutputs ()
+         var value_sources:Array;
+         var value_targets:Array;
          
-         var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
-         var outputValueTargetDefines:Array = funcCallingDefine.mOutputValueTargetDefines;
-         
-         var i:int;
-         
-         var value_sources:Array = new Array (funcCallingDefine.mNumInputs);
-         for (i = 0; i < real_num_inputs; ++ i)
+         if (func_calling == null)
          {
-            if (i >= funcCallingDefine.mNumInputs)
-               value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (editorWorld.GetTriggerEngine ());
-            else
-               value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
+            func_calling = new FunctionCalling_Core (editorWorld.GetTriggerEngine (), TriggerEngine.GetPlayerCoreFunctionDeclarationById (CoreFunctionIds.ID_Blank), false)
+            
+            value_sources = new Array ();
+            value_targets = new Array ();
          }
-         
-         var value_targets:Array = new Array (funcCallingDefine.mNumOutputs);
-         for (i = 0; i < real_num_outputs; ++ i)
+         else
          {
-            if (i >= funcCallingDefine.mNumOutputs)
-               value_targets [i] = func_declaration.GetOutputParamDefinitionAt (i).GetDefaultValueTarget ();
-            else
-               value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
+            var real_num_inputs:int = func_declaration.GetNumInputs ()
+            var real_num_outputs:int = func_declaration.GetNumOutputs ()
+            
+            var inputValueSourceDefines:Array = funcCallingDefine.mInputValueSourceDefines;
+            var outputValueTargetDefines:Array = funcCallingDefine.mOutputValueTargetDefines;
+            
+            var i:int;
+            
+            value_sources = new Array (funcCallingDefine.mNumInputs);
+            for (i = 0; i < real_num_inputs; ++ i)
+            {
+               if (i >= funcCallingDefine.mNumInputs)
+                  value_sources [i] = func_declaration.GetInputParamDefinitionAt (i).GetDefaultValueSource (editorWorld.GetTriggerEngine ());
+               else
+                  value_sources [i] = ValueSourceDefine2ValueSource (editorWorld, inputValueSourceDefines [i], func_declaration.GetInputParamValueType (i), functionDefinition);
+            }
+            
+            value_targets = new Array (funcCallingDefine.mNumOutputs);
+            for (i = 0; i < real_num_outputs; ++ i)
+            {
+               if (i >= funcCallingDefine.mNumOutputs)
+                  value_targets [i] = func_declaration.GetOutputParamDefinitionAt (i).GetDefaultValueTarget ();
+               else
+                  value_targets [i] = ValueTargetDefine2ValueTarget (editorWorld, outputValueTargetDefines [i], func_declaration.GetOutputParamValueType (i), functionDefinition);
+            }
          }
          
          func_calling.AssignInputValueSources (value_sources);

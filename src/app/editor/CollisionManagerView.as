@@ -10,6 +10,12 @@ package editor {
    import flash.ui.Keyboard;
    import flash.events.EventPhase;
    
+   import flash.ui.ContextMenu;
+   import flash.ui.ContextMenuItem;
+   import flash.ui.ContextMenuBuiltInItems;
+   //import flash.ui.ContextMenuClipboardItems; // flash 10
+   import flash.events.ContextMenuEvent;
+   
    import flash.geom.Point;
    import flash.geom.Matrix;
    import flash.geom.Rectangle;
@@ -43,6 +49,7 @@ package editor {
    import editor.mode.CollisionCategoryModeMoveSelectedEntities;
    
    import common.Define;
+   import common.Version;
    
    public class CollisionManagerView extends UIComponent 
    {
@@ -69,6 +76,9 @@ package editor {
          
          mForegroundLayer = new Sprite ();
          addChild (mForegroundLayer);
+         
+         //
+         BuildContextMenu ();
       }
       
       public function SetCollisionManager (cm:CollisionManager):void
@@ -904,6 +914,50 @@ package editor {
          category.UpdateAppearance ();
          
          UpdateToolbarConponents ();
+      }
+      
+//=====================================================================
+// context menu
+//=====================================================================
+      
+      private var mMenuItemAbout:ContextMenuItem;
+      
+      private function BuildContextMenu ():void
+      {
+         var theContextMenu:ContextMenu = new ContextMenu ();
+         theContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
+         defaultItems.print = true;
+         contextMenu = theContextMenu;
+         
+         // need flash 10
+         //theContextMenu.clipboardMenu = true;
+         //var clipboardItems:ContextMenuClipboardItems = theContextMenu.builtInItems;
+         //clipboardItems.clear = true;
+         //clipboardItems.cut = false;
+         //clipboardItems.copy = true;
+         //clipboardItems.paste = true;
+         //clipboardItems.selectAll = false;
+            
+         
+         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+         
+         mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16)); //, true);
+         theContextMenu.customItems.push (mMenuItemAbout);
+         mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
+      }
+      
+      private function OnContextMenuEvent (event:ContextMenuEvent):void
+      {
+         switch (event.target)
+         {
+            case mMenuItemAbout:
+               WorldView.OpenAboutLink ();
+               break;
+            default:
+               break;
+         }
       }
       
    }

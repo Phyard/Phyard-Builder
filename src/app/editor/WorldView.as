@@ -2535,7 +2535,7 @@ package editor {
          ShowCollisionGroupManageDialog (null);
       }
       
-      private function OpenAboutLink ():void
+      public static function OpenAboutLink ():void
       {
          UrlUtil.PopupPage (Define.AboutUrl);
       }
@@ -2551,7 +2551,7 @@ package editor {
       //   ShowPlayCodeLoadingDialog (LoadPlayerWorldFromHexString);
       //}
       
-      public function  OpenImportSourceCodeDialog ():void
+      public function  OpenImportSourceCodeDialog (importFunctionsOnly:Boolean):void
       {
          if (! IsEditing ())
             return;
@@ -2559,7 +2559,10 @@ package editor {
          if (Runtime.HasSettingDialogOpened ())
             return;
          
-         ShowImportSourceCodeDialog (ImportFromXmlString);
+         if (importFunctionsOnly)
+            ShowImportSourceCodeDialog (ImportFunctionsFromXmlString);
+         else
+            ShowImportSourceCodeDialog (ImportAllFromXmlString);
       }
       
 //==================================================================================
@@ -5145,7 +5148,17 @@ package editor {
          }
       }
       
-      public function ImportFromXmlString (params:Object):void
+      public function ImportFunctionsFromXmlString (params:Object):void
+      {
+         ImportFromXmlString (params, false, true);
+      }
+      
+      public function ImportAllFromXmlString (params:Object):void
+      {
+         ImportFromXmlString (params, true, true);
+      }
+      
+      public function ImportFromXmlString (params:Object, importEntities:Boolean, importFunctions:Boolean):void
       {
          var xmlString:String = params.mXmlString;
          

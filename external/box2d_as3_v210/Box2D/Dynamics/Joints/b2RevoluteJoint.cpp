@@ -565,9 +565,9 @@ public function EnableMotor(flag:Boolean):void
 	m_enableMotor = flag;
 }
 
-public function GetMotorTorque():Number
+public function GetMotorTorque(inv_dt:Number):Number
 {
-	return m_motorImpulse;
+	return inv_dt * m_motorImpulse;
 }
 
 public function SetMotorSpeed(speed:Number):void

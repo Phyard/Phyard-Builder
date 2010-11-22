@@ -18,14 +18,11 @@
 
 //#include <Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.h>
 //#include <Box2D/Common/b2BlockAllocator.h>
-//#include <Box2D/Collision/b2TimeOfImpact.h>
-//#include <Box2D/Dynamics/b2Body.h>
 //#include <Box2D/Dynamics/b2Fixture.h>
-//#include <Box2D/Dynamics/b2WorldCallbacks.h>
 
 //#include <new>
 
-public static function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:b2BlockAllocator = null):b2Contact
+public static function Create(fixtureA:b2Fixture, indexA:int, fixtureB:b2Fixture, indexB:int, allocator:b2BlockAllocator = null):b2Contact
 {
 	//void* mem = allocator->Allocate(sizeof(b2PolygonAndCircleContact));
 	//return new (mem) b2PolygonAndCircleContact(fixtureA, fixtureB);
@@ -43,7 +40,7 @@ public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = n
 public function b2PolygonAndCircleContact(fixtureA:b2Fixture, fixtureB:b2Fixture)
 	//: b2Contact(fixtureA, fixtureB)
 {
-	super (fixtureA, fixtureB);
+	super (fixtureA, 0, fixtureB, 0);
 	//b2Assert(m_fixtureA->GetType() == b2Shape::e_polygon);
 	//b2Assert(m_fixtureB->GetType() == b2Shape::e_circle);
 }

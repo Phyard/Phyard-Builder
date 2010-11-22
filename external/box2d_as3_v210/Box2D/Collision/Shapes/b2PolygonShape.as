@@ -35,6 +35,8 @@ package Box2D.Collision.Shapes
 
 	/// A convex polygon. It is assumed that the interior of the polygon is to
 	/// the left of each edge.
+	/// Polygons have a maximum number of vertices equal to b2_maxPolygonVertices.
+	/// In most cases you should not need many vertices for a convex polygon.
 	public class b2PolygonShape extends b2Shape
 	{
 		include "b2PolygonShape.cpp";
@@ -45,8 +47,12 @@ package Box2D.Collision.Shapes
 		/// Implement b2Shape.
 		//b2Shape* Clone(b2BlockAllocator* allocator) const;
 
+		/// @see b2Shape::GetChildCount
+		//int32 GetChildCount() const;
+
 		/// Copy vertices. This assumes the vertices define a convex polygon.
 		/// It is assumed that the exterior is the the right of each edge.
+		/// The count must be in the range [3, b2_maxPolygonVertices].
 		//void Set(const b2Vec2* vertices, int32 vertexCount);
 
 		/// Build vertices to represent an axis-aligned box.
@@ -61,26 +67,17 @@ package Box2D.Collision.Shapes
 		/// @param angle the rotation of the box in local coordinates.
 		//void SetAsBox(float32 hx, float32 hy, const b2Vec2& center, float32 angle);
 
-		/// Set this as a single edge.
-		//void SetAsEdge(const b2Vec2& v1, const b2Vec2& v2);
-
 		/// @see b2Shape::TestPoint
 		//bool TestPoint(const b2Transform& transform, const b2Vec2& p) const;
 
 		/// Implement b2Shape.
-		//bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input, const b2Transform& transform) const;
+		//bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input, const b2Transform& transform, int32 childIndex) const;
 
 		/// @see b2Shape::ComputeAABB
-		//void ComputeAABB(b2AABB* aabb, const b2Transform& transform) const;
+		//void ComputeAABB(b2AABB* aabb, const b2Transform& transform, int32 childIndex) const;
 
 		/// @see b2Shape::ComputeMass
 		//void ComputeMass(b2MassData* massData, float32 density) const;
-
-		/// Get the supporting vertex index in the given direction.
-		//int32 GetSupport(const b2Vec2& d) const;
-
-		/// Get the supporting vertex in the given direction.
-		//const b2Vec2& GetSupportVertex(const b2Vec2& d) const;
 
 		/// Get the vertex count.
 		//int32 GetVertexCount() const { return m_vertexCount; }
@@ -108,40 +105,6 @@ package Box2D.Collision.Shapes
 			m_radius = b2Settings.b2_polygonRadius;
 			m_vertexCount = 0;
 			m_centroid.SetZero();
-		}
-
-		public function GetSupport(d:b2Vec2):int
-		{
-			var bestIndex:int = 0;
-			var bestValue:Number = b2Math.b2Dot2 (m_vertices[0], d);
-			for (var i:int = 1; i < m_vertexCount; ++i)
-			{
-				var value:Number = b2Math.b2Dot2 (m_vertices[i], d);
-				if (value > bestValue)
-				{
-					bestIndex = i;
-					bestValue = value;
-				}
-			}
-
-			return bestIndex;
-		}
-
-		public function GetSupportVertex(d:b2Vec2):b2Vec2
-		{
-			var bestIndex:int = 0;
-			var bestValue:Number = b2Math.b2Dot2 (m_vertices[0], d);
-			for (var i:int = 1; i < m_vertexCount; ++i)
-			{
-				var value:Number = b2Math.b2Dot2 (m_vertices[i], d);
-				if (value > bestValue)
-				{
-					bestIndex = i;
-					bestValue = value;
-				}
-			}
-
-			return (m_vertices[bestIndex] as b2Vec2).Clone ();
 		}
 
 		public function GetVertex(index:int):b2Vec2

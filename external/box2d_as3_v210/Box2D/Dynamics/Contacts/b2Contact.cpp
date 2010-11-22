@@ -49,6 +49,10 @@ public static function InitializeRegisters():void
 	AddType(b2CircleContact.Create, b2CircleContact.Destroy, b2Shape.e_circle, b2Shape.e_circle);
 	AddType(b2PolygonAndCircleContact.Create, b2PolygonAndCircleContact.Destroy, b2Shape.e_polygon, b2Shape.e_circle);
 	AddType(b2PolygonContact.Create, b2PolygonContact.Destroy, b2Shape.e_polygon, b2Shape.e_polygon);
+	AddType(b2EdgeAndCircleContact.Create, b2EdgeAndCircleContact.Destroy, b2Shape.e_edge, b2Shape.e_circle);
+	AddType(b2EdgeAndPolygonContact.Create, b2EdgeAndPolygonContact.Destroy, b2Shape.e_edge, b2Shape.e_polygon);
+	AddType(b2LoopAndCircleContact.Create, b2LoopAndCircleContact.Destroy, b2Shape.e_loop, b2Shape.e_circle);
+	AddType(b2LoopAndPolygonContact.Create, b2LoopAndPolygonContact.Destroy, b2Shape.e_loop, b2Shape.e_polygon);
 }
 
 public static function AddType(createFcn:Function, destoryFcn:Function,
@@ -69,7 +73,7 @@ public static function AddType(createFcn:Function, destoryFcn:Function,
 	}
 }
 
-public static function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:b2BlockAllocator = null):b2Contact
+public static function Create(fixtureA:b2Fixture, indexA:int, fixtureB:b2Fixture, indexB:int, allocator:b2BlockAllocator = null):b2Contact
 {
 	if (s_initialized == false)
 	{
@@ -89,11 +93,11 @@ public static function Create(fixtureA:b2Fixture, fixtureB:b2Fixture, allocator:
 	{
 		if (cr.primary)
 		{
-			return createFcn(fixtureA, fixtureB, allocator);
+			return createFcn(fixtureA, indexA, fixtureB, indexB, allocator);
 		}
 		else
 		{
-			return createFcn(fixtureB, fixtureA, allocator);
+			return createFcn(fixtureB, indexB, fixtureA, indexA, allocator);
 		}
 	}
 	else
@@ -130,12 +134,15 @@ public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = n
 
 private static var mManifoldPool:b2Manifold = null; // b2Manifold pool
 
-public function b2Contact(fA:b2Fixture, fB:b2Fixture)
+public function b2Contact(fA:b2Fixture, indexA:int, fB:b2Fixture, indexB:int)
 {
 	m_flags = e_enabledFlag;
 
 	m_fixtureA = fA;
 	m_fixtureB = fB;
+
+	m_indexA = indexA;
+	m_indexB = indexB;
 
 	//hacking
 	if (mManifoldPool == null)
@@ -227,7 +234,7 @@ public function Update(listener:b2ContactListener
 	{
 		const shapeA:b2Shape = m_fixtureA.GetShape();
 		const shapeB:b2Shape = m_fixtureB.GetShape();
-		touching = b2Collision.b2TestOverlap_Shapes (shapeA, shapeB, xfA, xfB);
+		touching = b2Collision.b2TestOverlap_Shapes (shapeA, m_indexA, shapeB, m_indexB, xfA, xfB);
 
 		// Sensors don't generate manifolds.
 		m_manifold.pointCount = 0;
@@ -247,6 +254,7 @@ public function Update(listener:b2ContactListener
 			mp2.tangentImpulse = 0.0;
 			//var id2:b2ContactID = mp2.m_id.Clone ();
 			var id2:uint = mp2.id;
+			var found:Boolean = false;
 
 			for (j = 0; j < oldManifold.pointCount; ++j)
 			{
@@ -258,8 +266,15 @@ public function Update(listener:b2ContactListener
 				{
 					mp2.normalImpulse = mp1.normalImpulse;
 					mp2.tangentImpulse = mp1.tangentImpulse;
+					found = true;
 					break;
 				}
+			}
+
+			if (found == false)
+			{
+				mp2.normalImpulse = 0.0;
+				mp2.tangentImpulse = 0.0;
 			}
 		}
 

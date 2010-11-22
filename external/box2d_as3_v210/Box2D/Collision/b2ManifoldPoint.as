@@ -38,8 +38,9 @@ package Box2D.Collision
 		public var normalImpulse:Number;	///< the non-penetration impulse
 		public var tangentImpulse:Number;	///< the friction impulse
 		//public var id:b2ContactID = new b2ContactID ();			///< uniquely identifies a contact point between two shapes
-		// hacking to optimize
+		//>> hacking to optimize
 		public var id:uint;
-		
+		//<<
+		public var isNew:Boolean;
 	} // class
 } // package

@@ -19,7 +19,9 @@
 //#include <Box2D/Dynamics/b2Fixture.h>
 //#include <Box2D/Dynamics/Contacts/b2Contact.h>
 //#include <Box2D/Collision/Shapes/b2CircleShape.h>
+//#include <Box2D/Collision/Shapes/b2EdgeShape.h>
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
+//#include <Box2D/Collision/Shapes/b2LoopShape.h>
 //#include <Box2D/Collision/b2BroadPhase.h>
 //#include <Box2D/Collision/b2Collision.h>
 //#include <Box2D/Common/b2BlockAllocator.h>
@@ -30,7 +32,8 @@ public function b2Fixture()
 	m_userData = null;
 	m_body = null;
 	m_next = null;
-	m_proxyId = b2BroadPhase.e_nullProxy;
+	m_proxies = null;
+	m_proxyCount = 0;
 	m_shape = null;
 	m_density = 0.0;
 }
@@ -38,8 +41,6 @@ public function b2Fixture()
 //b2Fixture::~b2Fixture()
 public function _b2Fixture ():void
 {
-	//b2Assert(m_shape == NULL);
-	//b2Assert(m_proxyId == b2BroadPhase::e_nullProxy);
 }
 
 public function Create(allocator:b2BlockAllocator, body:b2Body, xf:b2Transform, def:b2FixtureDef):void
@@ -57,13 +58,32 @@ public function Create(allocator:b2BlockAllocator, body:b2Body, xf:b2Transform, 
 
 	m_shape = def.shape.Clone(allocator);
 
+	// Reserve proxy space
+	var childCount:int = m_shape.GetChildCount();
+	//m_proxies = (b2FixtureProxy*)allocator->Allocate(childCount * sizeof(b2FixtureProxy));
+	m_proxies = new Array (childCount);
+	var proxy:b2FixtureProxy;
+	for (var i:int = 0; i < childCount; ++i)
+	{
+		proxy = new b2FixtureProxy ();;
+		m_proxies[i] = proxy
+		proxy.fixture = null;
+		proxy.proxyId = b2BroadPhase.e_nullProxy;
+	}
+	m_proxyCount = 0;
+
 	m_density = def.density;
 }
 
 public function Destroy(allocator:b2BlockAllocator):void
 {
-	// The proxy must be destroyed before calling this.
-	//b2Assert(m_proxyId == b2BroadPhase::e_nullProxy);
+	// The proxies must be destroyed before calling this.
+	//b2Assert(m_proxyCount == 0);
+
+	// Free the proxy array.
+	var childCount:int = m_shape.GetChildCount();
+	//allocator->Free(m_proxies, childCount * sizeof(b2FixtureProxy));
+	m_proxies = null;
 
 	// Free the child shape.
 	switch (m_shape.m_type)
@@ -76,11 +96,27 @@ public function Destroy(allocator:b2BlockAllocator):void
 		}
 		break;
 
+	case b2Shape.e_edge:
+		{
+			var es:b2EdgeShape = m_shape as b2EdgeShape;
+			//s->~b2EdgeShape();
+			//allocator->Free(s, sizeof(b2EdgeShape));
+		}
+		break;
+
 	case b2Shape.e_polygon:
 		{
 			var ps:b2PolygonShape = m_shape as b2PolygonShape;
 			//s->~b2PolygonShape();
 			//allocator->Free(s, sizeof(b2PolygonShape));
+		}
+		break;
+
+	case b2Shape.e_loop:
+		{
+			var ls:b2LoopShape = m_shape as b2LoopShape;
+			//s->~b2LoopShape();
+			//allocator->Free(s, sizeof(b2LoopShape));
 		}
 		break;
 
@@ -92,25 +128,34 @@ public function Destroy(allocator:b2BlockAllocator):void
 	m_shape = null;
 }
 
-public function CreateProxy(broadPhase:b2BroadPhase, xf:b2Transform):void
+public function CreateProxies(broadPhase:b2BroadPhase, xf:b2Transform):void
 {
-	//b2Assert(m_proxyId == b2BroadPhase::e_nullProxy);
+	//b2Assert(m_proxyCount == 0);
 
-	// Create proxy in the broad-phase.
-	m_shape.ComputeAABB(m_aabb, xf);
-	m_proxyId = broadPhase.CreateProxy(m_aabb, this);
+	// Create proxies in the broad-phase.
+	m_proxyCount = m_shape.GetChildCount();
+
+	for (var i:int = 0; i < m_proxyCount; ++i)
+	{
+		var proxy:b2FixtureProxy = m_proxies[i] as b2FixtureProxy;
+		m_shape.ComputeAABB(proxy.aabb, xf, i);
+		proxy.proxyId = broadPhase.CreateProxy(proxy.aabb, proxy);
+		proxy.fixture = this;
+		proxy.childIndex = i;
+	}
 }
 
-public function DestroyProxy(broadPhase:b2BroadPhase):void
+public function DestroyProxies(broadPhase:b2BroadPhase):void
 {
-	if (m_proxyId == b2BroadPhase.e_nullProxy)
+	// Destroy proxies in the broad-phase.
+	for (var i:int = 0; i < m_proxyCount; ++i)
 	{
-		return;
+		var proxy:b2FixtureProxy = m_proxies[i] as b2FixtureProxy;
+		broadPhase.DestroyProxy(proxy.proxyId);
+		proxy.proxyId = b2BroadPhase.e_nullProxy;
 	}
 
-	// Destroy proxy in the broad-phase.
-	broadPhase.DestroyProxy(m_proxyId);
-	m_proxyId = b2BroadPhase.e_nullProxy;
+	m_proxyCount = 0;
 }
 
 private static var aabb1:b2AABB = new b2AABB ();
@@ -118,23 +163,28 @@ private static var aabb2:b2AABB= new b2AABB ();
 private static var displacement:b2Vec2 = new b2Vec2 ();
 public function Synchronize(broadPhase:b2BroadPhase, transform1:b2Transform, transform2:b2Transform):void
 {
-	if (m_proxyId == b2BroadPhase.e_nullProxy)
+	if (m_proxyCount == 0)
 	{	
 		return;
 	}
 
-	// Compute an AABB that covers the swept shape (may miss some rotation effect).
-	//var aabb1:b2AABB = new b2AABB (), aabb2:b2AABB= new b2AABB ();
-	m_shape.ComputeAABB(aabb1, transform1);
-	m_shape.ComputeAABB(aabb2, transform2);
+	for (var i:int = 0; i < m_proxyCount; ++i)
+	{
+		var proxy:b2FixtureProxy = m_proxies[i] as b2FixtureProxy;
+
+		// Compute an AABB that covers the swept shape (may miss some rotation effect).
+		//b2AABB aabb1, aabb2;
+		m_shape.ComputeAABB(aabb1, transform1, proxy.childIndex);
+		m_shape.ComputeAABB(aabb2, transform2, proxy.childIndex);
 	
-	m_aabb.CombineTwo(aabb1, aabb2);
+		proxy.aabb.CombineTwo(aabb1, aabb2);
 
-	//var displacement:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (transform2.position.x - transform1.position.x, transform2.position.y - transform1.position.y);
-	displacement.x = transform2.position.x - transform1.position.x;
-	displacement.y = transform2.position.y - transform1.position.y;
+		//b2Vec2 displacement = transform2.position - transform1.position;
+		displacement.x = transform2.position.x - transform1.position.x;
+		displacement.y = transform2.position.y - transform1.position.y;
 
-	broadPhase.MoveProxy(m_proxyId, m_aabb, displacement);
+		broadPhase.MoveProxy(proxy.proxyId, proxy.aabb, displacement);
+	}
 }
 
 public function SetFilterData(filter:b2Filter):void

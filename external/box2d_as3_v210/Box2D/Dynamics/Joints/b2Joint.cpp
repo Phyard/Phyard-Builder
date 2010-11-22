@@ -24,6 +24,9 @@
 //#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
 //#include <Box2D/Dynamics/Joints/b2PulleyJoint.h>
 //#include <Box2D/Dynamics/Joints/b2GearJoint.h>
+//#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
+//#include <Box2D/Dynamics/Joints/b2FrictionJoint.h>
+//#include <Box2D/Dynamics/Joints/b2RopeJoint.h>
 //#include <Box2D/Dynamics/b2Body.h>
 //#include <Box2D/Dynamics/b2World.h>
 //#include <Box2D/Common/b2BlockAllocator.h>
@@ -108,6 +111,14 @@ public static function Create(def:b2JointDef, allocator:b2BlockAllocator = null)
 		}
 		break;
 
+	case e_ropeJoint:
+		{
+			//void* mem = allocator->Allocate(sizeof(b2RopeJoint));
+			//joint = new (mem) b2RopeJoint((b2RopeJointDef*)def);
+			joint = new b2RopeJoint (def as b2RopeJointDef);
+		}
+		break;
+
 	default:
 		//b2Assert(false);
 		//>>hacking
@@ -162,6 +173,10 @@ public static function Destroy (joint:b2Joint, allocator:b2BlockAllocator = null
 
 	case e_frictionJoint:
 		//allocator->Free(joint, sizeof(b2WeldJoint));
+		break;
+
+	case e_ropeJoint:
+		//allocator->Free(joint, sizeof(b2RopeJoint));
 		break;
 
 	default:

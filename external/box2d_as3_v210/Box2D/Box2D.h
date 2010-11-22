@@ -34,6 +34,8 @@ For discussion please visit http://box2d.org/forum
 //#include <Box2D/Common/b2Settings.h>
 //
 //#include <Box2D/Collision/Shapes/b2CircleShape.h>
+//#include <Box2D/Collision/Shapes/b2EdgeShape.h>
+//#include <Box2D/Collision/Shapes/b2LoopShape.h>
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 //
 //#include <Box2D/Collision/b2BroadPhase.h>
@@ -57,6 +59,7 @@ For discussion please visit http://box2d.org/forum
 //#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
 //#include <Box2D/Dynamics/Joints/b2PulleyJoint.h>
 //#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
+//#include <Box2D/Dynamics/Joints/b2RopeJoint.h>
 //#include <Box2D/Dynamics/Joints/b2WeldJoint.h>
 
 import Box2D.Common.*;

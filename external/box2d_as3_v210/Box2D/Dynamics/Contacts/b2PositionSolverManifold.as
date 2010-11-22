@@ -40,9 +40,10 @@ package Box2D.Dynamics.Contacts
 					//point = 0.5f * (pointA + pointB);
 					point.x = 0.5 * (pointA.x + pointB.x);
 					point.y = 0.5 * (pointA.y + pointB.y);
+					//separation = b2Dot(pointB - pointA, normal) - cc->radiusA - cc->radiusB;
 					tempV.x = pointB.x - pointA.x;
 					tempV.y = pointB.y - pointA.y;
-					separation = b2Math.b2Dot2 (tempV, normal) - cc.radius;
+					separation = b2Math.b2Dot2 (tempV, normal) - cc.radiusA - cc.radiusB;
 				}
 				break;
 
@@ -54,7 +55,7 @@ package Box2D.Dynamics.Contacts
 					cc.bodyB.GetWorldPoint_Output (cc.points[index].localPoint, clipPoint);
 					tempV.x = clipPoint.x - planePoint.x;
 					tempV.y = clipPoint.y - planePoint.y;
-					separation = b2Math.b2Dot2(tempV, normal) - cc.radius;
+					separation = b2Math.b2Dot2(tempV, normal) - cc.radiusA - cc.radiusB;
 					point.x = clipPoint.x;
 					point.y = clipPoint.y;
 				}
@@ -68,7 +69,7 @@ package Box2D.Dynamics.Contacts
 					cc.bodyA.GetWorldPoint_Output (cc.points[index].localPoint, clipPoint);
 					tempV.x = clipPoint.x - planePoint.x;
 					tempV.y = clipPoint.y - planePoint.y;
-					separation = b2Math.b2Dot2 (tempV, normal) - cc.radius;
+					separation = b2Math.b2Dot2 (tempV, normal) - cc.radiusA - cc.radiusB;
 					point.x = clipPoint.x;
 					point.y = clipPoint.y;
 

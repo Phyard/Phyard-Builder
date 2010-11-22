@@ -25,7 +25,6 @@ package Box2D.Dynamics.Contacts
 	//#include <Box2D/Common/b2Math.h>
 	//#include <Box2D/Collision/b2Collision.h>
 	//#include <Box2D/Collision/Shapes/b2Shape.h>
-	//#include <Box2D/Dynamics/Contacts/b2Contact.h>
 	//#include <Box2D/Dynamics/b2Fixture.h>
 	
 	import Box2D.Common.b2Settings;
@@ -54,7 +53,9 @@ package Box2D.Dynamics.Contacts
 	//class b2StackAllocator;
 	//class b2ContactListener;
 
-	//typedef b2Contact* b2ContactCreateFcn(b2Fixture* fixtureA, b2Fixture* fixtureB, b2BlockAllocator* allocator);
+	//typedef b2Contact* b2ContactCreateFcn(	b2Fixture* fixtureA, int32 indexA,
+	//										b2Fixture* fixtureB, int32 indexB,
+	//										b2BlockAllocator* allocator);
 	//typedef void b2ContactDestroyFcn(b2Contact* contact, b2BlockAllocator* allocator);
 
 	//struct b2ContactRegister
@@ -104,13 +105,19 @@ package Box2D.Dynamics.Contacts
 		//b2Contact* GetNext();
 		//const b2Contact* GetNext() const;
 
-		/// Get the first fixture in this contact.
+		/// Get fixture A in this contact.
 		//b2Fixture* GetFixtureA();
 		//const b2Fixture* GetFixtureA() const;
 
-		/// Get the second fixture in this contact.
+		/// Get the child primitive index for fixture A.
+		//int32 GetChildIndexA() const;
+
+		/// Get fixture B in this contact.
 		//b2Fixture* GetFixtureB();
 		//const b2Fixture* GetFixtureB() const;
+
+		/// Get the child primitive index for fixture B.
+		//int32 GetChildIndexB() const;
 
 		/// Evaluate this contact with your own manifold and transforms.
 		//virtual void Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB) = 0;
@@ -128,14 +135,21 @@ package Box2D.Dynamics.Contacts
 		//{
 			// Used when crawling contact graph when forming islands.
 			public static const e_islandFlag:int		= 0x0001;
+			
 			// Set when the shapes are touching.
 			public static const e_touchingFlag:int		= 0x0002;
+			
 			// This contact can be disabled (by user)
 			public static const e_enabledFlag:int		= 0x0004;
+			
 			// This contact needs filtering because a fixture filter was changed.
 			public static const e_filterFlag:int		= 0x0008;
+			
 			// This bullet contact had a TOI event
 			public static const e_bulletHitFlag:int		= 0x0010;
+			
+			// This contact has a valid TOI in m_toi
+			public static const e_toiFlag:int		= 0x0020;
 		//};
 
 		/// Flag this contact for filtering. Filtering will occur the next time step.
@@ -144,12 +158,12 @@ package Box2D.Dynamics.Contacts
 		//static void AddType(b2ContactCreateFcn* createFcn, b2ContactDestroyFcn* destroyFcn,
 		//					b2Shape::Type typeA, b2Shape::Type typeB);
 		//static void InitializeRegisters();
-		//static b2Contact* Create(b2Fixture* fixtureA, b2Fixture* fixtureB, b2BlockAllocator* allocator);
+		//static b2Contact* Create(b2Fixture* fixtureA, int32 indexA, b2Fixture* fixtureB, int32 indexB, b2BlockAllocator* allocator);
 		//static void Destroy(b2Contact* contact, b2Shape::Type typeA, b2Shape::Type typeB, b2BlockAllocator* allocator);
 		//static void Destroy(b2Contact* contact, b2BlockAllocator* allocator);
 
 		//b2Contact() : m_fixtureA(NULL), m_fixtureB(NULL) {}
-		//b2Contact(b2Fixture* fixtureA, b2Fixture* fixtureB);
+		//b2Contact(b2Fixture* fixtureA, int32 indexA, b2Fixture* fixtureB, int32 indexB);
 		//virtual ~b2Contact() {}
 		public function Destructor ():void {}
 
@@ -171,10 +185,13 @@ package Box2D.Dynamics.Contacts
 		public var m_fixtureA:b2Fixture;
 		public var m_fixtureB:b2Fixture;
 
+		public var m_indexA:int;
+		public var m_indexB:int;
+
 		public var m_manifold:b2Manifold//  = new b2Manifold (); // now use manifold pool to optimize
 
 		public var m_toiCount:int
-		//public var m_toi:Number;
+		public var m_toi:Number;
 	//};
 	
 	// inline
@@ -241,6 +258,11 @@ package Box2D.Dynamics.Contacts
 		//	return m_fixtureA;
 		//}
 
+		public function GetChildIndexA():int
+		{
+			return m_indexA;
+		}
+
 		public function GetFixtureB():b2Fixture
 		{
 			return m_fixtureB;
@@ -250,6 +272,11 @@ package Box2D.Dynamics.Contacts
 		//{
 		//	return m_fixtureB;
 		//}
+
+		public function GetChildIndexB():int
+		{
+			return m_indexB;
+		}
 
 		public function FlagForFiltering():void
 		{
@@ -271,7 +298,7 @@ package Box2D.Dynamics.Contacts
 			
 			var manifoldPoint:Array = m_manifold.points;
 			
-			var flip:Boolean = b2ContactID.ContactID_GetFlip (manifoldPoint [0].id) != 0;
+			var flip:Boolean = b2ContactID.ContactID_IsFlip ((manifoldPoint [0] as b2ManifoldPoint).id);
 			var isBodyA:Boolean = body == m_fixtureA.GetBody ();
 			
 			var firstBodyIsBodyA:Boolean = (isBodyA != flip);

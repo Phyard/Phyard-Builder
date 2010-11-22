@@ -27,8 +27,6 @@
 public static var b2_toiCalls:int, b2_toiIters:int, b2_toiMaxIters:int;
 public static var b2_toiRootIters:int, b2_toiMaxRootIters:int;
 
-public static var b2_toiMaxOptIters:int;
-
 //struct b2SeparationFunction
 //{
 	//@see b2SeparationFunction.as

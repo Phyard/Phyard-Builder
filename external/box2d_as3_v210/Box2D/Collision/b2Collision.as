@@ -32,6 +32,7 @@ package Box2D.Collision
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
+	import Box2D.Collision.Shapes.b2EdgeShape;
 
 	/// @file
 	/// Structures and functions used for computing contact points, distance
@@ -49,6 +50,7 @@ package Box2D.Collision
 		include "b2Collision.cpp";
 		include "b2CollideCircle.cpp";
 		include "b2CollidePolygon.cpp";
+		include "b2CollideEdge.cpp";
 		
 		/// Contact ids to facilitate warm starting.
 		//union b2ContactID
@@ -136,28 +138,38 @@ package Box2D.Collision
 			//@see b2AABB.as
 		//};
 
-		/// Compute the collision manifold between two circles.
+		///// Compute the collision manifold between two circles.
 		//void b2CollideCircles(b2Manifold* manifold,
-		//					  const b2CircleShape* circle1, const b2Transform& xf1,
-		//					  const b2CircleShape* circle2, const b2Transform& xf2);
+		//					  const b2CircleShape* circleA, const b2Transform& xfA,
+		//					  const b2CircleShape* circleB, const b2Transform& xfB);
 
-		/// Compute the collision manifold between a polygon and a circle.
+		///// Compute the collision manifold between a polygon and a circle.
 		//void b2CollidePolygonAndCircle(b2Manifold* manifold,
-		//							   const b2PolygonShape* polygon, const b2Transform& xf1,
-		//							   const b2CircleShape* circle, const b2Transform& xf2);
+		//								const b2PolygonShape* polygonA, const b2Transform& xfA,
+		//								const b2CircleShape* circleB, const b2Transform& xfB);
 
-		/// Compute the collision manifold between two polygons.
+		///// Compute the collision manifold between two polygons.
 		//void b2CollidePolygons(b2Manifold* manifold,
-		//					   const b2PolygonShape* polygon1, const b2Transform& xf1,
-		//					   const b2PolygonShape* polygon2, const b2Transform& xf2);
+		//						const b2PolygonShape* polygonA, const b2Transform& xfA,
+		//						const b2PolygonShape* polygonB, const b2Transform& xfB);
 
-		/// Clipping for contact manifolds.
+		///// Compute the collision manifold between an edge and a circle.
+		//void b2CollideEdgeAndCircle(b2Manifold* manifold,
+		//								const b2EdgeShape* polygonA, const b2Transform& xfA,
+		//								const b2CircleShape* circleB, const b2Transform& xfB);
+
+		///// Compute the collision manifold between an edge and a circle.
+		//void b2CollideEdgeAndPolygon(b2Manifold* manifold,
+		//								const b2EdgeShape* edgeA, const b2Transform& xfA,
+		//								const b2PolygonShape* circleB, const b2Transform& xfB);
+
+		///// Clipping for contact manifolds.
 		//int32 b2ClipSegmentToLine(b2ClipVertex vOut[2], const b2ClipVertex vIn[2],
-		//							const b2Vec2& normal, float32 offset);
-		//
+		//							const b2Vec2& normal, float32 offset, int32 vertexIndexA);
 
-		/// Determine if two generic shapes overlap.
-		//bool b2TestOverlap(const b2Shape* shapeA, const b2Shape* shapeB,
+		///// Determine if two generic shapes overlap.
+		//bool b2TestOverlap(	const b2Shape* shapeA, int32 indexA,
+		//					const b2Shape* shapeB, int32 indexB,
 		//					const b2Transform& xfA, const b2Transform& xfB);
 
 		// ---------------- Inline Functions ------------------------------------------

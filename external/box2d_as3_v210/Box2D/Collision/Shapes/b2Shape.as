@@ -41,7 +41,7 @@ package Box2D.Collision.Shapes
 
 	/// A shape is used for collision detection. You can create a shape however you like.
 	/// Shapes used for simulation in b2World are created automatically when a b2Fixture
-	/// is created.
+	/// is created. Shapes may encapsulate a one or more child shapes.
 	public class b2Shape
 	{
 	//public:
@@ -50,8 +50,10 @@ package Box2D.Collision.Shapes
 		//{
 			public static const e_unknown:int= -1;
 			public static const e_circle:int = 0;
-			public static const e_polygon:int = 1;
-			public static const e_typeCount:int = 2;
+			public static const e_edge:int = 1;
+			public static const e_polygon:int = 2;
+			public static const e_loop:int = 3;
+			public static const e_typeCount:int = 4;
 		//};
 		
 		public function b2Shape() { m_type = e_unknown; }
@@ -66,24 +68,30 @@ package Box2D.Collision.Shapes
 		/// @return the shape type.
 		//Type GetType() const;
 
+		/// Get the number of child primitives.
+		//virtual int32 GetChildCount() const = 0;
+		public function GetChildCount ():int {return 0;}
+
 		/// Test a point for containment in this shape. This only works for convex shapes.
 		/// @param xf the shape world transform.
 		/// @param p a point in world coordinates.
 		//virtual bool TestPoint(const b2Transform& xf, const b2Vec2& p) const = 0;
 		public function TestPoint(xf:b2Transform, p:b2Vec2):Boolean {return false;}
 
-		/// Cast a ray against this shape.
+		/// Cast a ray against a child shape.
 		/// @param output the ray-cast results.
 		/// @param input the ray-cast input parameters.
 		/// @param transform the transform to be applied to the shape.
-		//virtual void RayCast(b2RayCastOutput* output, const b2RayCastInput& input, const b2Transform& transform) const = 0;
-		public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, transform:b2Transform):Boolean {return false;}
+		/// @param childIndex the child shape index
+		//virtual void RayCast(b2RayCastOutput* output, const b2RayCastInput& input, const b2Transform& transform, int32 childIndex) const = 0;
+		public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, transform:b2Transform, childIndex:int):Boolean {return false;}
 
-		/// Given a transform, compute the associated axis aligned bounding box for this shape.
+		/// Given a transform, compute the associated axis aligned bounding box for a child shape.
 		/// @param aabb returns the axis aligned box.
 		/// @param xf the world transform of the shape.
-		//virtual void ComputeAABB(b2AABB* aabb, const b2Transform& xf) const = 0;
-		public function ComputeAABB(aabb:b2AABB, xf:b2Transform):void {}
+		/// @param childIndex the child shape
+		//virtual void ComputeAABB(b2AABB* aabb, const b2Transform& xf, int32 childIndex) const = 0;
+		public function ComputeAABB(aabb:b2AABB, xf:b2Transform, childIndex:int):void {}
 
 		/// Compute the mass properties of this shape using its dimensions and density.
 		/// The inertia tensor is computed about the local origin.

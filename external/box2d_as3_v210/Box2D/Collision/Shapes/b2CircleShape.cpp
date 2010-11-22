@@ -30,9 +30,15 @@ override public function Clone(allocator:b2BlockAllocator = null):b2Shape
 	
 	clone.m_type = m_type;
 	clone.m_radius = m_radius;
+
 	clone.m_p.CopyFrom (m_p);
 	
 	return clone;
+}
+
+override public function GetChildCount():int
+{
+	return 1;
 }
 
 override public function TestPoint(transform:b2Transform, p:b2Vec2):Boolean
@@ -53,8 +59,10 @@ override public function TestPoint(transform:b2Transform, p:b2Vec2):Boolean
 // From Section 3.1.2
 // x = s + a * r
 // norm(x) = radius
-override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, transform:b2Transform):Boolean
+override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, transform:b2Transform, childIndex:int):Boolean
 {
+	//B2_NOT_USED(childIndex);
+	
 	var position:b2Vec2 = new b2Vec2 ();
 	var s:b2Vec2 = new b2Vec2 ();
 	var r:b2Vec2 = new b2Vec2 ();
@@ -102,8 +110,10 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, t
 
 private static var mP:b2Vec2 = new b2Vec2 ();
 
-override public function ComputeAABB(aabb:b2AABB, transform:b2Transform):void
+override public function ComputeAABB(aabb:b2AABB, transform:b2Transform, childIndex:int):void
 {
+	//B2_NOT_USED(childIndex);
+	
 	var p:b2Vec2 = mP;//new b2Vec2 ();
 	
 	//b2Vec2 p = transform.position + b2Mul(transform.R, m_p);

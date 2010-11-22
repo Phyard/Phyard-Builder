@@ -296,6 +296,9 @@ package Box2D.Dynamics
 			public static const b2_staticBody:int = 0;
 			public static const b2_kinematicBody:int = 1;
 			public static const b2_dynamicBody:int = 2;
+			
+			// TODO_ERIN
+			//b2_bulletBody,
 		//};
 
 		// m_flags
@@ -761,10 +764,10 @@ package Box2D.Dynamics
 			m_xf.position.y = m_sweep.c.y - tempV.y;
 		}
 
-		public function Advance(t:Number):void
+		public function Advance(alpha:Number):void
 		{
 			// Advance to the new safe time.
-			m_sweep.Advance(t);
+			m_sweep.Advance(alpha);
 			m_sweep.c.CopyFrom (m_sweep.c0);
 			m_sweep.a = m_sweep.a0;
 			SynchronizeTransform();

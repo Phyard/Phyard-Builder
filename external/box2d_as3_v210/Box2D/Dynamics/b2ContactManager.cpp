@@ -118,6 +118,8 @@ public function Collide():void
 	{
 		var fixtureA:b2Fixture = c.GetFixtureA();
 		var fixtureB:b2Fixture = c.GetFixtureB();
+		var indexA:int = c.GetChildIndexA();
+		var indexB:int = c.GetChildIndexB();
 		var bodyA:b2Body = fixtureA.GetBody();
 		var bodyB:b2Body = fixtureB.GetBody();
 
@@ -152,8 +154,8 @@ public function Collide():void
 			c.m_flags &= ~b2Contact.e_filterFlag;
 		}
 
-		var proxyIdA:int = fixtureA.m_proxyId;
-		var proxyIdB:int = fixtureB.m_proxyId;
+		var proxyIdA:int = (fixtureA.m_proxies[indexA] as b2FixtureProxy).proxyId;
+		var proxyIdB:int = (fixtureB.m_proxies[indexB] as b2FixtureProxy).proxyId;
 		var overlap:Boolean = m_broadPhase.TestOverlap(proxyIdA, proxyIdB);
 
 		// Here we destroy contacts that cease to overlap in the broad-phase.
@@ -178,8 +180,14 @@ public function FindNewContacts():void
 
 public function AddPair(proxyUserDataA:Object, proxyUserDataB:Object):void
 {
-	var fixtureA:b2Fixture = proxyUserDataA as b2Fixture;
-	var fixtureB:b2Fixture = proxyUserDataB as b2Fixture;
+	var proxyA:b2FixtureProxy = proxyUserDataA as b2FixtureProxy;
+	var proxyB:b2FixtureProxy = proxyUserDataB as b2FixtureProxy;
+
+	var fixtureA:b2Fixture = proxyA.fixture;
+	var fixtureB:b2Fixture = proxyB.fixture;
+
+	var indexA:int = proxyA.childIndex;
+	var indexB:int = proxyB.childIndex;
 
 	var bodyA:b2Body = fixtureA.GetBody();
 	var bodyB:b2Body = fixtureB.GetBody();
@@ -198,13 +206,16 @@ public function AddPair(proxyUserDataA:Object, proxyUserDataB:Object):void
 		{
 			var fA:b2Fixture = edge.contact.GetFixtureA();
 			var fB:b2Fixture = edge.contact.GetFixtureB();
-			if (fA == fixtureA && fB == fixtureB)
+			var iA:int = edge.contact.GetChildIndexA();
+			var iB:int = edge.contact.GetChildIndexB();
+
+			if (fA == fixtureA && fB == fixtureB && iA == indexA && iB == indexB)
 			{
 				// A contact already exists.
 				return;
 			}
 
-			if (fA == fixtureB && fB == fixtureA)
+			if (fA == fixtureB && fB == fixtureA && iA == indexB && iB == indexA)
 			{
 				// A contact already exists.
 				return;
@@ -228,11 +239,13 @@ public function AddPair(proxyUserDataA:Object, proxyUserDataB:Object):void
 
 	// Call the factory.
 	//b2Contact* c = b2Contact::Create(fixtureA, fixtureB, m_allocator);
-	var c:b2Contact = b2Contact.Create(fixtureA, fixtureB, null);
+	var c:b2Contact = b2Contact.Create(fixtureA, indexA, fixtureB, indexB, null);
 
 	// Contact creation may swap fixtures.
 	fixtureA = c.GetFixtureA();
 	fixtureB = c.GetFixtureB();
+	indexA = c.GetChildIndexA();
+	indexB = c.GetChildIndexB();
 	bodyA = fixtureA.GetBody();
 	bodyB = fixtureB.GetBody();
 

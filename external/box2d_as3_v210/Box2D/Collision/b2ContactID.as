@@ -8,60 +8,56 @@ package Box2D.Collision
 		public static const b2_nullFeature:int = b2Settings.UCHAR_MAX;
 		
 		//>> hacking to optimize
-		public static function ContactID_SetFeatures (contact_id:uint, referenceEdge:int, incidentEdge:int, incidentVertex:int):uint
+		// the flip bits doesn't exist in c++.
+		public static function ContactID_FromFeature (indexA:int, indexB:int, typeA:int, typeB:int):uint
 		{
-			return (referenceEdge && 0xFF) << 24 | (incidentEdge && 0xFF) << 16 | (incidentVertex && 0xFF) << 8 | (contact_id && 0xFF);
+			return ((indexA & 0xFF) << 24) | ((indexB & 0xFF) << 16) | ((typeA & 0xF) << 12) | ((typeB & 0xF) << 4);
 		}
 		
-		public static function ContactID_SetFlip (contact_id:uint, flip:int):uint
+		public static function ContactID_FlipFeature (feature:int):uint
 		{
-			return (contact_id && 0xFFFFFF00) | (flip && 0xFF);
+			return ((feature & 0xFF00F000) >> 8) | ((feature & 0x00FF00F0) << 8) | (1 & 0x00000F0F);
 		}
 		
-		public static function ContactID_GetFlip (contact_id:uint):uint
+		public static function ContactID_IsFlip (id:int):Boolean
 		{
-			return (contact_id && 0xFF);
+			return (id & 0x00000F0F) != 0;
 		}
 		
+		public static function ContactID_IndexB (id:int):int
+		{
+			return (id >> 16) & 0xFF;
+		}
 		//<<
 		
-		
-		// this function doesn't exist in the c++ version
-	//	public function SetFeatures (referenceEdge:int, incidentEdge:int, incidentVertex:int):void
-	//	{
-	//		key = (referenceEdge && 0xFF) << 24 | (incidentEdge && 0xFF) << 16 | (incidentVertex && 0xFF) << 8 | (key && 0xFF);
-	//	}
-	
-		// this function doesn't exist in the c++ version
-	//	public function SetFlip (flip:int):void
-	//	{
-	//		key = (key && 0xFFFFFF00) | (flip && 0xFF);
-	//	}
-	
-		// this function doesn't exist in the c++ version
-	//	public function Clone ():b2ContactID
-	//	{
-	//		var contact_id:b2ContactID = new  b2ContactID ();
-	//		contact_id.key = key;
-	//	
-	//		return contact_id;
-	//	}
-	
-		// this function doesn't exist in the c++ version
-	//	public function CopyFrom (another:b2ContactID):void
-	//	{
-	//		key = another.key;
-	//	}
-	
-		/// The features that intersect to form the contact point
-		//struct Features
+		//const uint8 b2_nullFeature = UCHAR_MAX;
+		//
+		///// The features that intersect to form the contact point
+		///// This must be 4 bytes or less.
+		//struct b2ContactFeature
 		//{
-		//	uint8 referenceEdge;	///< The edge that defines the outward contact normal.
-		//	uint8 incidentEdge;		///< The edge most anti-parallel to the reference edge.
-		//	uint8 incidentVertex;	///< The vertex (0 or 1) on the incident edge that was clipped.
-		//	uint8 flip;				///< A value of 1 indicates that the reference edge is on shape2.
-		//} features;
-		//uint32 key;					///< Used to quickly compare contact ids.
-	//	public var key:uint;					///< Used to quickly compare contact ids.
+		//	enum Type
+		//	{
+		//		e_vertex = 0,
+		//		e_face = 1,
+		//	};
+		//	
+		
+		public static const b2ContactFeature_e_vertex:int = 0;
+		public static const b2ContactFeature_e_face:int = 1;
+		
+		//	uint8 indexA;		///< Feature index on shapeA
+		//	uint8 indexB;		///< Feature index on shapeB
+		//	uint8 typeA;		///< The feature type on shapeA
+		//	uint8 typeB;		///< The feature type on shapeB
+		//};
+		//
+		///// Contact ids to facilitate warm starting.
+		//union b2ContactID
+		//{
+		//	b2ContactFeature cf;
+		//	uint32 key;					///< Used to quickly compare contact ids.
+		//};
+		
 	} // class
 } // pacakge

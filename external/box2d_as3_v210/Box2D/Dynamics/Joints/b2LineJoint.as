@@ -93,8 +93,9 @@ package Box2D.Dynamics.Joints
 		//void SetMaxMotorForce(float32 force);
 		//float32 GetMaxMotorForce() const;
 
-		/// Get the current motor force, usually in N.
-		//float32 GetMotorForce() const;
+		/// Get the current motor force given the inverse time step, usually in N.
+		//float32 GetMotorForce(float32 inv_dt) const;
+
 
 	//protected:
 
@@ -133,6 +134,11 @@ package Box2D.Dynamics.Joints
 		public function GetMotorSpeed():Number
 		{
 			return m_motorSpeed;
+		}
+		
+		public function GetMaxMotorForce():Number
+		{
+			return m_maxMotorForce;
 		}
 		
 //***********************************************************************

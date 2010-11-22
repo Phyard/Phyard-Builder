@@ -74,10 +74,10 @@ package Box2D.Common
 		}
 
 		// will be directly replaced by Math.sqrt
-		//#define	b2Sqrt(x)	sqrtf(x)
+		//#define	b2Sqrt(x)	std::sqrt(x)
 		
 		// will be directly replaced by Math.atan2
-		//#define	b2Atan2(y, x)	atan2f(y, x)
+		//#define	b2Atan2(y, x)	std::atan2(y, x)
 
 		// will be directly replaced by Math.abs
 		//inline float32 b2Abs(float32 a)
@@ -505,6 +505,32 @@ package Box2D.Common
 			
 			output.x = vx * col1.x + vy * col1.y;
 			output.y = vx * col2.x + vy * col2.y;
+		}
+
+		// v2 = A.R' * (B.R * v1 + B.p - A.p) = (A.R' * B.R) * v1 + (B.p - A.p)
+		//inline b2Transform b2MulT(const b2Transform& A, const b2Transform& B)
+		public static function b2MulT_TransformAndTransform (A:b2Transform, B:b2Transform):b2Transform
+		{
+			//b2Transform C;
+			//C.R = b2MulT(A.R, B.R);
+			//C.position = B.position - A.position;
+			
+			var C:b2Transform = new b2Transform ();
+			b2MulT_Matrix22AndMatrix22_Output(A.R, B.R, C.R);
+			C.position.x = B.position.x - A.position.x;
+			C.position.y = B.position.y - A.position.y;
+			return C;
+		}
+
+		public static function b2MulT_TransformAndTransform_Output (A:b2Transform, B:b2Transform, C:b2Transform):void
+		{
+			//b2Transform C;
+			//C.R = b2MulT(A.R, B.R);
+			//C.position = B.position - A.position;
+			
+			b2MulT_Matrix22AndMatrix22_Output(A.R, B.R, C.R);
+			C.position.x = B.position.x - A.position.x;
+			C.position.y = B.position.y - A.position.y;
 		}
 
 		//inline b2Vec2 b2Abs(const b2Vec2& a)

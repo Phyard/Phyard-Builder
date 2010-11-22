@@ -8,8 +8,8 @@ package Box2D.Dynamics
 	{
 		public function QueryCallback(proxyId:int):Boolean
 		{
-			var fixture:b2Fixture = broadPhase.GetUserData(proxyId) as b2Fixture;
-			return callback.ReportFixture(fixture);
+			var proxy:b2FixtureProxy = broadPhase.GetUserData(proxyId) as b2FixtureProxy;
+			return callback.ReportFixture(proxy.fixture);
 		}
 
 		public var broadPhase:b2BroadPhase;

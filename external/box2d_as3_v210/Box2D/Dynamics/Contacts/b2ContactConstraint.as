@@ -22,14 +22,16 @@ package Box2D.Dynamics.Contacts
 		public var localNormal:b2Vec2 = new b2Vec2 ();
 		public var localPoint:b2Vec2 = new b2Vec2 ();
 		public var normal:b2Vec2 = new b2Vec2 ();
-		public var normalMass:b2Mat22;// = new b2Mat22 ();
+		public var normalMass:b2Mat22 = new b2Mat22 ();
 		public var K:b2Mat22 = new b2Mat22 ();
 		public var bodyA:b2Body;
 		public var bodyB:b2Body;
 		//b2Manifold::Type type;
 		public var type:int;
-		public var radius:Number;
+		public var radiusA:Number;
+		public var radiusB:Number;
 		public var friction:Number;
+		public var restitution:Number;
 		public var pointCount:int;
 		public var manifold:b2Manifold;
 	} // class

@@ -219,6 +219,10 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 		var k12:Number = i1 * m_s1 + i2 * m_s2;
 		var k13:Number = i1 * m_s1 * m_a1 + i2 * m_s2 * m_a2;
 		var k22:Number = i1 + i2;
+		if (k22 == 0.0)
+		{
+			k22 = 1.0;
+		}
 		var k23:Number = i1 * m_a1 + i2 * m_a2;
 		var k33:Number = m1 + m2 + i1 * m_a1 * m_a1 + i2 * m_a2 * m_a2;
 
@@ -578,6 +582,10 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 		    k12        = i1 * m_s1 + i2 * m_s2;
 		var k13:Number = i1 * m_s1 * m_a1 + i2 * m_s2 * m_a2;
 		    k22        = i1 + i2;
+		if (k22 == 0.0)
+		{
+			k22 = 1.0;
+		}
 		var k23:Number = i1 * m_a1 + i2 * m_a2;
 		var k33:Number = m1 + m2 + i1 * m_a1 * m_a1 + i2 * m_a2 * m_a2;
 
@@ -608,6 +616,10 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 		k11 = m1 + m2 + i1 * m_s1 * m_s1 + i2 * m_s2 * m_s2;
 		k12 = i1 * m_s1 + i2 * m_s2;
 		k22 = i1 + i2;
+		if (k22 == 0.0)
+		{
+			k22 = 1.0;
+		}
 
 		m_K.col1.Set(k11, k12, 0.0);
 		m_K.col2.Set(k12, k22, 0.0);
@@ -794,7 +806,7 @@ public function SetMaxMotorForce(force:Number):void
 	m_maxMotorForce = force;
 }
 
-public function GetMotorForce():Number
+public function GetMotorForce(inv_dt:Number):Number
 {
-	return m_motorImpulse;
+	return inv_dt * m_motorImpulse;
 }

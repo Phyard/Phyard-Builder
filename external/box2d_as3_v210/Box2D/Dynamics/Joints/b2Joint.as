@@ -98,7 +98,7 @@ package Box2D.Dynamics.Joints
 			public static const e_lineJoint:int = 7;
 			public static const e_weldJoint:int = 8;
 			public static const e_frictionJoint:int = 9;
-
+			public static const e_ropeJoint:int = 10;
 		//};
 
 		//enum b2LimitState
@@ -138,6 +138,7 @@ package Box2D.Dynamics.Joints
 
 		/// Get the next joint the world joint list.
 		//b2Joint* GetNext();
+		//const b2Joint* GetNext() const;
 
 		/// Get the user data pointer.
 		//void* GetUserData() const;
@@ -185,6 +186,7 @@ package Box2D.Dynamics.Joints
 		public var m_userData:Object;
 
 		// Cache here per time step to reduce cache misses.
+		// TODO_ERIN will be wrong if the mass changes.
 		public var m_localCenterA:b2Vec2 = new b2Vec2 (), m_localCenterB:b2Vec2 = new b2Vec2 ();
 		public var m_invMassA:Number, m_invIA:Number;
 		public var m_invMassB:Number, m_invIB:Number;
@@ -229,6 +231,11 @@ package Box2D.Dynamics.Joints
 		{
 			return m_next;
 		}
+
+		//inline const b2Joint* b2Joint::GetNext() const
+		//{
+		//	return m_next;
+		//}
 
 		public function GetUserData():Object
 		{

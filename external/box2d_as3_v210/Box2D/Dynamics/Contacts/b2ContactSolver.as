@@ -57,19 +57,21 @@ package Box2D.Dynamics.Contacts
 		include "b2ContactSolver.cpp";
 		
 	//public:
-		//b2ContactSolver(b2Contact** contacts, int32 contactCount, b2StackAllocator* allocator, float32 impulseRatio);
+		//b2ContactSolver(b2ContactSolverDef* def);
 		//~b2ContactSolver();
 
+		//void InitializeVelocityConstraints();
 		//void WarmStart();
 		//void SolveVelocityConstraints();
 		//void StoreImpulses();
 
 		//bool SolvePositionConstraints(float32 baumgarte);
+		//bool SolveTOIPositionConstraints(float32 baumgarte, const b2Body* toiBodyA, const b2Body* toiBodyB);
 
 		public var m_allocator:b2StackAllocator;
 		//b2ContactConstraint* m_constraints;
 		public var m_constraints:Array;
-		public var m_constraintCount:int = 0;
+		public var m_count:int = 0;
 	} // class
 } // package
 //#endif

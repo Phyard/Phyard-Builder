@@ -1132,7 +1132,7 @@ package editor.trigger {
                      null
                   );
          
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraCenter, world_camera_package, "Get Cemera Center", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraCenter, world_camera_package, "Get Camera Center", null, null,
                      null,
                      [
                              new VariableDefinitionNumber ("Camera Center X"), 

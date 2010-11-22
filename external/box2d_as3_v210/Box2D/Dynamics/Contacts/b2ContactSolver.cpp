@@ -29,28 +29,28 @@ private static var tempVa:b2Vec2 = new b2Vec2 ();
 private static var tempVb:b2Vec2 = new b2Vec2 ();
 private static var tempV:b2Vec2 = new b2Vec2 ();
 private static var tangent:b2Vec2 = new b2Vec2 ();
-private static var mWorldManifold:b2WorldManifold = new b2WorldManifold ();
 public static var m_ConstraintsArray:Array = new Array ();
 
+private static var mWorldManifold:b2WorldManifold = new b2WorldManifold ();
 
-public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2StackAllocator, impulseRatio:Number)
+
+public function b2ContactSolver(def:b2ContactSolverDef)
 {
 	var i:int;
 	var j:int;
 	var cc:b2ContactConstraint;
 	
-	//m_step = step;
-	m_allocator = allocator;
+	m_allocator = def.allocator;
 
-	m_constraintCount = contactCount;
+	m_count = def.count;
 	//m_constraints = (b2ContactConstraint*)m_allocator->Allocate(m_constraintCount * sizeof(b2ContactConstraint));
 	//>>hacking
-	if (m_ConstraintsArray.length < m_constraintCount)
+	if (m_ConstraintsArray.length < m_count)
 	{
 		var oldCount:int = m_ConstraintsArray.length;
-		m_ConstraintsArray.length = m_constraintCount;
+		m_ConstraintsArray.length = m_count;
 		
-		for (i = oldCount; i < m_constraintCount; ++ i)
+		for (i = oldCount; i < m_count; ++ i)
 		{
 			cc = new b2ContactConstraint ();
 			m_ConstraintsArray [i] = cc;
@@ -59,10 +59,11 @@ public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2St
 	m_constraints = m_ConstraintsArray;
 	//<<
 
-	for (i = 0; i < m_constraintCount; ++i)
-	{	
+	// Initialize position independent portions of the constraints.
+	for (i = 0; i < m_count; ++i)
+	{
 		// ...
-		var contact:b2Contact = contacts[i] as b2Contact;
+		var contact:b2Contact = def.contacts[i] as b2Contact;
 
 		var fixtureA:b2Fixture = contact.m_fixtureA;
 		var fixtureB:b2Fixture = contact.m_fixtureB;
@@ -74,32 +75,23 @@ public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2St
 		var bodyB:b2Body = fixtureB.GetBody();
 		var manifold:b2Manifold = contact.GetManifold();
 
-		var friction:Number = b2Settings.b2MixFriction (fixtureA.GetFriction(), fixtureB.GetFriction());
-		var restitution:Number = b2Settings.b2MixRestitution(fixtureA.GetRestitution(), fixtureB.GetRestitution());
-
-		var vA:b2Vec2 = bodyA.m_linearVelocity; // .Clone ()
-		var vB:b2Vec2 = bodyB.m_linearVelocity; // .Clone ()
-		var wA:Number = bodyA.m_angularVelocity;
-		var wB:Number = bodyB.m_angularVelocity;
-
 		//b2Assert(manifold->pointCount > 0);
 
-		var worldManifold:b2WorldManifold = mWorldManifold; //new b2WorldManifold ();
-		worldManifold.Initialize(manifold, bodyA.m_xf, radiusA, bodyB.m_xf, radiusB);
-
 		cc = m_constraints [i];
+		cc.friction = b2Settings.b2MixFriction (fixtureA.GetFriction(), fixtureB.GetFriction());
+		cc.restitution = b2Settings.b2MixRestitution(fixtureA.GetRestitution(), fixtureB.GetRestitution())
 		cc.bodyA = bodyA;
 		cc.bodyB = bodyB;
 		cc.manifold = manifold;
-		cc.normal.CopyFrom (worldManifold.normal);
+		cc.normal.SetZero();
 		cc.pointCount = manifold.pointCount;
-		cc.friction = friction;
 
-		//cc.localNormal.CopyFrom (manifold.localNormal);
-		cc.localNormal = manifold.localNormal; // hacking
-		//cc.localPoint.CopyFrom (manifold.localPoint);
-		cc.localPoint = manifold.localPoint; // hacking
-		cc.radius = radiusA + radiusB;
+		cc.localNormal.x = manifold.localNormal.x;
+		cc.localNormal.y = manifold.localNormal.y;
+		cc.localPoint.x = manifold.localPoint.x;
+		cc.localPoint.y = manifold.localPoint.y;
+		cc.radiusA = radiusA;
+		cc.radiusB = radiusB;
 		cc.type = manifold.type;
 
 		for (j = 0; j < cc.pointCount; ++j)
@@ -107,11 +99,68 @@ public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2St
 			var cp:b2ManifoldPoint = manifold.points [j];
 			var ccp:b2ContactConstraintPoint = cc.points [j];
 
-			ccp.normalImpulse = impulseRatio * cp.normalImpulse;
-			ccp.tangentImpulse = impulseRatio * cp.tangentImpulse;
+			if (def.warmStarting)
+			{
+				ccp.normalImpulse = def.impulseRatio * cp.normalImpulse;
+				ccp.tangentImpulse = def.impulseRatio * cp.tangentImpulse;
+			}
+			else
+			{
+				ccp.normalImpulse = 0.0;
+				ccp.tangentImpulse = 0.0;
+			}
 
-			//ccp.localPoint.CopyFrom (cp.m_localPoint);
-			ccp.localPoint = cp.localPoint;
+			ccp.localPoint.x = cp.localPoint.x;
+			ccp.localPoint.y = cp.localPoint.y;
+			ccp.rA.SetZero();
+			ccp.rB.SetZero();
+			ccp.normalMass = 0.0;
+			ccp.tangentMass = 0.0;
+			ccp.velocityBias = 0.0;
+		}
+		
+		cc.K.SetZero();
+		cc.normalMass.SetZero();
+	}
+}
+
+//b2ContactSolver::~b2ContactSolver()
+public function Destructor ():void
+{
+	//m_allocator->Free(m_constraints);
+}
+
+// Initialize position dependent portions of the velocity constraints.
+public function InitializeVelocityConstraints():void
+{
+	for (var i:int = 0; i < m_count; ++i)
+	{
+		var cc:b2ContactConstraint = m_constraints [i] as b2ContactConstraint;
+
+		var radiusA:Number = cc.radiusA;
+		var radiusB:Number = cc.radiusB;
+		var bodyA:b2Body = cc.bodyA;
+		var bodyB:b2Body = cc.bodyB;
+		var manifold:b2Manifold = cc.manifold;
+
+		var vA:b2Vec2 = bodyA.m_linearVelocity; //.Clone ();
+		var vB:b2Vec2 = bodyB.m_linearVelocity; //.Clone ();
+		var wA:Number = bodyA.m_angularVelocity;
+		var wB:Number = bodyB.m_angularVelocity;
+
+		//b2Assert(manifold->pointCount > 0);
+
+		//b2WorldManifold worldManifold;
+		var worldManifold:b2WorldManifold = mWorldManifold; // hacking
+		worldManifold.Initialize(manifold, bodyA.m_xf, radiusA, bodyB.m_xf, radiusB);
+
+		cc.normal.x = worldManifold.normal.x;
+		cc.normal.y = worldManifold.normal.y;
+
+		for (var j:int = 0; j < cc.pointCount; ++j)
+		{
+			var cp:b2ManifoldPoint = manifold.points [j] as b2ManifoldPoint;
+			var ccp:b2ContactConstraintPoint = cc.points [j] as b2ContactConstraintPoint;
 
 			//ccp->rA = worldManifold.m_points[j] - bodyA->m_sweep.c;
 			//ccp->rB = worldManifold.m_points[j] - bodyB->m_sweep.c;
@@ -149,7 +198,7 @@ public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2St
 			var vRel:Number = b2Math.b2Dot2 (cc.normal, tempV);
 			if (vRel < -b2Settings.b2_velocityThreshold)
 			{
-				ccp.velocityBias = -restitution * vRel;
+				ccp.velocityBias = -cc.restitution * vRel;
 			}
 		}
 
@@ -193,12 +242,6 @@ public function b2ContactSolver(contacts:Array, contactCount:int, allocator:b2St
 	}
 }
 
-//b2ContactSolver::~b2ContactSolver()
-public function Destructor ():void
-{
-	//m_allocator->Free(m_constraints);
-}
-
 private static var mP:b2Vec2 = new b2Vec2 ();
 
 public function WarmStart():void
@@ -206,10 +249,8 @@ public function WarmStart():void
 	var i:int;
 	var j:int;
 	
-	var P:b2Vec2 = mP;//new b2Vec2 ();
-	
 	// Warm start.
-	for (i = 0; i < m_constraintCount; ++i)
+	for (i = 0; i < m_count; ++i)
 	{
 		var c:b2ContactConstraint = m_constraints [i];
 
@@ -228,6 +269,7 @@ public function WarmStart():void
 		{
 			ccp = c.points [j];
 			//b2Vec2 P = ccp->normalImpulse * normal + ccp->tangentImpulse * tangent;
+			var P:b2Vec2 = mP;//new b2Vec2 ();
 			P.Set (	ccp.normalImpulse * normal.x + ccp.tangentImpulse * tangent.x, 
 						ccp.normalImpulse * normal.y + ccp.tangentImpulse * tangent.y);
 			bodyA.m_angularVelocity -= invIA * b2Math.b2Cross2 (ccp.rA, P);
@@ -262,7 +304,7 @@ public function SolveVelocityConstraints():void
 	var i:int;
 	var j:int;
 	
-	for (i = 0; i < m_constraintCount; ++i)
+	for (i = 0; i < m_count; ++i)
 	{
 		var c:b2ContactConstraint = m_constraints [i];
 		var bodyA:b2Body = c.bodyA;
@@ -646,7 +688,7 @@ public function StoreImpulses():void
 	var c:b2ContactConstraint;
 	var m:b2Manifold;
 	
-	for (i = 0; i < m_constraintCount; ++i)
+	for (i = 0; i < m_count; ++i)
 	{
 		c = m_constraints [i];
 		m = c.manifold;
@@ -686,11 +728,97 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 	//var P:b2Vec2 = new b2Vec2 ();
 	var tF:Number;
 	
-	for (i = 0; i < m_constraintCount; ++i)
+	for (i = 0; i < m_count; ++i)
 	{
-		var c:b2ContactConstraint = m_constraints [i];
+		var c:b2ContactConstraint = m_constraints [i] as b2ContactConstraint;
 		var bodyA:b2Body = c.bodyA;
 		var bodyB:b2Body = c.bodyB;
+
+		var invMassA:Number = bodyA.m_mass * bodyA.m_invMass;
+		var invIA:Number = bodyA.m_mass * bodyA.m_invI;
+		var invMassB:Number = bodyB.m_mass * bodyB.m_invMass;
+		var invIB:Number = bodyB.m_mass * bodyB.m_invI;
+
+		// Solve normal constraints
+		for (j = 0; j < c.pointCount; ++j)
+		{
+			//b2PositionSolverManifold psm;
+			var psm:b2PositionSolverManifold = sPositionSolverManifold; // hacking
+			psm.Initialize(c, j);
+			var normal:b2Vec2 = psm.normal; //.Clone ();
+
+			var point:b2Vec2 = psm.point; // .Clone ()
+			var separation:Number = psm.separation;
+
+			rC = bodyA.m_sweep.c;
+			rA.Set (point.x - rC.x, point.y - rC.y);
+			rC = bodyB.m_sweep.c;
+			rB.Set (point.x - rC.x, point.y - rC.y);
+
+			// Track max constraint error.
+			minSeparation = Math.min (minSeparation, separation);
+
+			// Prevent large corrections and allow slop.
+			var C:Number = b2Math.b2Clamp_Number (baumgarte * (separation + b2Settings.b2_linearSlop), - b2Settings.b2_maxLinearCorrection, 0.0);
+
+			// Compute the effective mass.
+			var rnA:Number = b2Math.b2Cross2 (rA, normal);
+			var rnB:Number = b2Math.b2Cross2 (rB, normal);
+			var K:Number = invMassA + invMassB + invIA * rnA * rnA + invIB * rnB * rnB;
+
+			// Compute normal impulse
+			var impulse:Number = K > 0.0 ? - C / K : 0.0;
+
+			//b2Vec2 P = impulse * normal;
+			P.Set (impulse * normal.x, impulse * normal.y); // hacking
+
+			//bodyA->m_sweep.c -= invMassA * P;
+			rC = bodyA.m_sweep.c;
+			rC.x -= invMassA * P.x;
+			rC.y -= invMassA * P.y;
+			bodyA.m_sweep.a -= invIA * b2Math.b2Cross2 (rA, P);
+			bodyA.SynchronizeTransform ();
+
+			//bodyB->m_sweep.c += invMassB * P;
+			rC = bodyB.m_sweep.c;
+			rC.x += invMassB * P.x;
+			rC.y += invMassB * P.y;			
+			bodyB.m_sweep.a += invIB * b2Math.b2Cross2 (rB, P);
+			bodyB.SynchronizeTransform ();
+		}
+	}
+
+	// We can't expect minSpeparation >= -b2_linearSlop because we don't
+	// push the separation above -b2_linearSlop.
+	return minSeparation >= -1.5 * b2Settings.b2_linearSlop;
+}
+
+// Sequential position solver for position constraints.
+public function SolveTOIPositionConstraints(baumgarte:Number, toiBodyA:b2Body, toiBodyB:b2Body):Boolean
+{
+	var i:int;
+	var j:int;
+	var minSeparation:Number = 0.01;
+
+	var rC:b2Vec2;
+	
+	for (i = 0; i < m_count; ++i)
+	{
+		var c:b2ContactConstraint = m_constraints [i] as b2ContactConstraint;
+		var bodyA:b2Body = c.bodyA;
+		var bodyB:b2Body = c.bodyB;
+
+		var massA:Number = 0.0;
+		if (bodyA == toiBodyA || bodyA == toiBodyB)
+		{
+			massA = bodyA.m_mass;
+		}
+
+		var massB:Number = 0.0;
+		if (bodyB == toiBodyA || bodyB == toiBodyB)
+		{
+			massB = bodyB.m_mass;
+		}
 
 		var invMassA:Number = bodyA.m_mass * bodyA.m_invMass;
 		var invIA:Number = bodyA.m_mass * bodyA.m_invI;
@@ -727,7 +855,8 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 			// Compute normal impulse
 			var impulse:Number = K > 0.0 ? - C / K : 0.0;
 
-			P.Set (impulse * normal.x, impulse * normal.y);
+			//b2Vec2 P = impulse * normal;
+			P.Set (impulse * normal.x, impulse * normal.y); // hacking
 			//bodyA->m_sweep.c -= invMassA * P;
 			rC = bodyA.m_sweep.c;
 			rC.x -= invMassA * P.x;

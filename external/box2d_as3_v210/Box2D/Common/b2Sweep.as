@@ -27,20 +27,22 @@ package Box2D.Common
 			c.y = another.c.y;
 			a0 = another.a0;
 			a = another.a;
+			alpha0 = another.alpha0;
 		}
 		
 		private static var mVec2:b2Vec2 = new b2Vec2 ();
 		/// Get the interpolated transform at a specific time.
-		/// @param alpha is a factor in [0,1], where 0 indicates t0.
-		public function GetTransform(xf:b2Transform, alpha:Number):void
+		/// @param beta is a factor in [0,1], where 0 indicates alpha0.
+		public function GetTransform(xf:b2Transform, beta:Number):void
 		{
-			var _alpha:Number = 1.0 - alpha;
-			xf.position.x = _alpha * c0.x + alpha * c.x;
-			xf.position.y = _alpha * c0.y + alpha * c.y;
-			var angle:Number = _alpha * a0 + alpha * a;
+			var _beta:Number = 1.0 - beta;
+			xf.position.x = _beta * c0.x + beta * c.x;
+			xf.position.y = _beta * c0.y + beta * c.y;
+			var angle:Number = _beta * a0 + beta * a;
 			xf.R.SetFromAngle(angle);
 
 			// Shift to origin
+			//xf->position -= b2Mul(xf->R, localCenter);
 			var vec2:b2Vec2 = mVec2;
 			b2Math.b2Mul_Matrix22AndVector2_Output (xf.R, localCenter, vec2);
 			xf.position.x -= vec2.x;
@@ -48,13 +50,16 @@ package Box2D.Common
 		}
 
 		/// Advance the sweep forward, yielding a new initial state.
-		/// @param t the new initial time.
-		public function Advance(t:Number):void
+		/// @param alpha the new initial time.
+		public function Advance(alpha:Number):void
 		{
-			var _t:Number = 1.0 - t;
-			c0.x = _t * c0.x + t * c.x;
-			c0.y = _t * c0.y + t * c.y;
-			a0 = _t * a0 + t * a;
+			//b2Assert(alpha0 < 1.0f);
+			var beta:Number = (alpha - alpha0) / (1.0 - alpha0);
+			var _beta:Number = 1.0 - beta;
+			c0.x = _beta * c0.x + beta * c.x;
+			c0.y = _beta * c0.y + beta * c.y;
+			a0 = _beta * a0 + beta * a;
+			alpha0 = alpha;
 		}
 
 		/// Normalize an angle in radians to be between -pi and pi
@@ -69,6 +74,10 @@ package Box2D.Common
 		public var localCenter:b2Vec2 = new b2Vec2 ();	///< local center of mass position
 		public var c0:b2Vec2 = new b2Vec2 (), c:b2Vec2 = new b2Vec2 ();		///< center world positions
 		public var a0:Number, a:Number;		///< world angles
+
+		/// Fraction of the current time step in the range [0,1]
+		/// c0 and a0 are the positions at alpha0.
+		public var alpha0:Number;
 		
 	} // class
 } // package

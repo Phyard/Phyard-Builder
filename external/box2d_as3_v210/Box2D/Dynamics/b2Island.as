@@ -27,12 +27,14 @@ package Box2D.Dynamics
 	
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
+	import Box2D.Common.b2Sweep;
 	import Box2D.Common.b2Vec2;
 	import Box2D.Common.b2StackAllocator;
 	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Contacts.b2ContactConstraint;
 	import Box2D.Dynamics.Contacts.b2ContactConstraintPoint;
 	import Box2D.Dynamics.Contacts.b2ContactSolver;
+	import Box2D.Dynamics.Contacts.b2ContactSolverDef;
 	import Box2D.Dynamics.Joints.b2Joint;
 
 	//class b2Contact;
@@ -76,6 +78,9 @@ package Box2D.Dynamics
 
 		//void Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSleep);
 
+		//void SolveTOI(const b2TimeStep& subStep, const b2Body* bodyA, const b2Body* bodyB);
+
+
 		public function AddBody (body:b2Body):void
 		{
 			//b2Assert(m_bodyCount < m_bodyCapacity);
@@ -118,8 +123,6 @@ package Box2D.Dynamics
 		public var m_bodyCapacity:int;
 		public var m_contactCapacity:int;
 		public var m_jointCapacity:int;
-
-		public var m_positionIterationCount:int;
 
 //====================================================================================
 // hacking

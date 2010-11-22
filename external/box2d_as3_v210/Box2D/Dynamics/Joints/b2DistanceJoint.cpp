@@ -171,7 +171,8 @@ override public function InitVelocityConstraints (step:b2TimeStep):void
 		m_impulse *= step.dtRatio;
 
 		//b2Vec2 P = m_impulse * m_u;
-		P.Set (m_impulse * m_u.x, m_impulse * m_u.y);
+		P.x = m_impulse * m_u.x;
+		P.y = m_impulse * m_u.y;
 		//b1->m_linearVelocity -= b1->m_invMass * P;
 		b1.m_linearVelocity.x -= b1.m_invMass * P.x;
 		b1.m_linearVelocity.y -= b1.m_invMass * P.y;
@@ -222,7 +223,9 @@ override public function SolveVelocityConstraints (step:b2TimeStep):void
 	var impulse:Number = -m_mass * (Cdot + m_bias + m_gamma * m_impulse);
 	m_impulse += impulse;
 
-	P.Set (impulse * m_u.x, impulse * m_u.y);
+	//b2Vec2 P = m_impulse * m_u;
+	P.x = impulse * m_u.x;
+	P.y = impulse * m_u.y;
 	//b1->m_linearVelocity -= b1->m_invMass * P;
 	b1.m_linearVelocity.x -= b1.m_invMass * P.x;
 	b1.m_linearVelocity.y -= b1.m_invMass * P.y;

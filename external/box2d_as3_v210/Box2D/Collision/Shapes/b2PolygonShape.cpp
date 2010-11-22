@@ -92,43 +92,50 @@ public function SetAsBox(hx:Number, hy:Number, center:b2Vec2 = null, angle:Numbe
 	}
 }
 
-public function SetAsEdge(v1:b2Vec2, v2:b2Vec2):void
-{
-	var tempV:b2Vec2 = new b2Vec2 ();
+// remove from r141
+//public function SetAsEdge(v1:b2Vec2, v2:b2Vec2):void
+//{
+//	var tempV:b2Vec2 = new b2Vec2 ();
+//
+//	m_vertexCount = 2;
+//	(m_vertices[0] as b2Vec2).CopyFrom (v1);
+//	(m_vertices[1] as b2Vec2).CopyFrom (v2);
+//	//m_centroid = 0.5f * (v1 + v2);
+//	m_centroid.x = 0.5 * (v1.x + v2.x);
+//	m_centroid.y = 0.5 * (v1.y + v2.y);
+//	//m_normals[0] = b2Math.b2Cross2(v2 - v1, 1.0f);
+//	tempV.x = v2.x - v1.x;
+//	tempV.y = v2.y - v1.y;
+//	b2Math.b2Cross_Vector2AndScalar_Output (tempV, 1.0, m_normals[0] as b2Vec2);
+//	(m_normals[0] as b2Vec2).Normalize();
+//	//m_normals[1] = -m_normals[0];
+//	(m_normals[1] as b2Vec2).x = - (m_normals[0] as b2Vec2).x;
+//	(m_normals[1] as b2Vec2).y = - (m_normals[0] as b2Vec2).y;
+//}
 
-	m_vertexCount = 2;
-	(m_vertices[0] as b2Vec2).CopyFrom (v1);
-	(m_vertices[1] as b2Vec2).CopyFrom (v2);
-	//m_centroid = 0.5f * (v1 + v2);
-	m_centroid.x = 0.5 * (v1.x + v2.x);
-	m_centroid.y = 0.5 * (v1.y + v2.y);
-	//m_normals[0] = b2Math.b2Cross2(v2 - v1, 1.0f);
-	tempV.x = v2.x - v1.x;
-	tempV.y = v2.y - v1.y;
-	b2Math.b2Cross_Vector2AndScalar_Output (tempV, 1.0, m_normals[0] as b2Vec2);
-	(m_normals[0] as b2Vec2).Normalize();
-	//m_normals[1] = -m_normals[0];
-	(m_normals[1] as b2Vec2).x = - (m_normals[0] as b2Vec2).x;
-	(m_normals[1] as b2Vec2).y = - (m_normals[0] as b2Vec2).y;
+override public function GetChildCount():int
+{
+	return 1;
 }
 
 //static b2Vec2 ComputeCentroid(const b2Vec2* vs, int32 count)
 public static function ComputeCentroid(vs:Array, count:int):b2Vec2
 {
-	//b2Assert(count >= 2);
+	//b2Assert(count >= 3);
 
 	//b2Vec2 c; c.Set(0.0f, 0.0f);
 	var c:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0.0, 0.0);
 	var area:Number = 0.0;
 
-	if (count == 2)
-	{
-		//c = 0.5f * (vs[0] + vs[1]);
-		b2Math.b2Add_Vector2_Output (vs[0] as b2Vec2, vs[1] as b2Vec2, c)
-		c.x *= 0.5;
-		c.y *= 0.5;
-		return c;
-	}
+	// remove from r141
+	//if (count == 2)
+	//{
+	//	//c = 0.5f * (vs[0] + vs[1]);
+	//	b2Math.b2Add_Vector2_Output (vs[0] as b2Vec2, vs[1] as b2Vec2, c)
+	//	c.x *= 0.5;
+	//	c.y *= 0.5;
+	//	return c;
+	//}
 
 	// pRef is the reference point for forming triangles.
 	// It's location doesn't change the result (except for rounding error).
@@ -197,12 +204,12 @@ public function Set(vertices:Array, count:int):void
 	var edge:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
 	
-	//b2Assert(2 <= count && count <= b2Settings.b2_maxPolygonVertices);
+	//b2Assert(3 <= count && count <= b2Settings.b2_maxPolygonVertices);
 	//>>hacking
 	if (count < 3)
 	{
-		if (count == 2)
-			SetAsEdge (vertices[0], vertices[1]);
+		//if (count == 2)
+		//	SetAsEdge (vertices[0], vertices[1]);
 		
 		return;
 	}
@@ -286,8 +293,10 @@ override public function TestPoint(xf:b2Transform, p:b2Vec2):Boolean
 	return true;
 }
 
-override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, xf:b2Transform):Boolean
+override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, xf:b2Transform, childIndex:int):Boolean
 {
+	//B2_NOT_USED(childIndex);
+
 	var p1:b2Vec2 = new b2Vec2 ();
 	var p2:b2Vec2 = new b2Vec2 ();
 	var d:b2Vec2 = new b2Vec2 ();
@@ -311,68 +320,69 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 	var numerator:Number;
 	var denominator:Number;
 
-	if (m_vertexCount == 2)
-	{
-		var v1:b2Vec2 = m_vertices[0];
-		var v2:b2Vec2 = m_vertices[1];
-		var normal:b2Vec2 = m_normals[0];
-
-		// q = p1 + t * d
-		// dot(normal, q - v1) = 0
-		// dot(normal, p1 - v1) + t * dot(normal, d) = 0
-		tempV.x = v1.x - p1.x;
-		tempV.y = v1.y - p1.y;
-		numerator = b2Math.b2Dot2 (normal, tempV);
-		denominator = b2Math.b2Dot2 (normal, d);
-
-		if (denominator == 0.0)
-		{
-			return false;
-		}
-	
-		var t:Number = numerator / denominator;
-		if (t < 0.0 || 1.0 < t)
-		{
-			return false;
-		}
-
-		q.x = p1.x + t * d.x;
-		q.y = p1.y + t * d.y;
-
-		// q = v1 + s * r
-		// s = dot(q - v1, r) / dot(r, r)
-		r.x = v2.x - v1.x;
-		r.y = v2.y - v1.y;
-		var rr:Number = b2Math.b2Dot2 (r, r);
-		if (rr == 0.0)
-		{
-			return false;
-		}
-
-		tempV.x = q.x - v1.x;
-		tempV.y = q.y - v1.y;
-		var s:Number = b2Math.b2Dot2 (tempV, r) / rr;
-		if (s < 0.0 || 1.0 < s)
-		{
-			return false;
-		}
-
-		output.fraction = t;
-		if (numerator > 0.0)
-		{
-			output.normal.x = - normal.x;
-			output.normal.y = - normal.y;
-		}
-		else
-		{
-			output.normal.x = normal.x;
-			output.normal.y = normal.y;
-		}
-		
-		return true;
-	}
-	else
-	{
+	// removed from r141
+	//if (m_vertexCount == 2)
+	//{
+	//	var v1:b2Vec2 = m_vertices[0];
+	//	var v2:b2Vec2 = m_vertices[1];
+	//	var normal:b2Vec2 = m_normals[0];
+	//
+	//	// q = p1 + t * d
+	//	// dot(normal, q - v1) = 0
+	//	// dot(normal, p1 - v1) + t * dot(normal, d) = 0
+	//	tempV.x = v1.x - p1.x;
+	//	tempV.y = v1.y - p1.y;
+	//	numerator = b2Math.b2Dot2 (normal, tempV);
+	//	denominator = b2Math.b2Dot2 (normal, d);
+	//
+	//	if (denominator == 0.0)
+	//	{
+	//		return false;
+	//	}
+	//
+	//	var t:Number = numerator / denominator;
+	//	if (t < 0.0 || 1.0 < t)
+	//	{
+	//		return false;
+	//	}
+	//
+	//	q.x = p1.x + t * d.x;
+	//	q.y = p1.y + t * d.y;
+	//
+	//	// q = v1 + s * r
+	//	// s = dot(q - v1, r) / dot(r, r)
+	//	r.x = v2.x - v1.x;
+	//	r.y = v2.y - v1.y;
+	//	var rr:Number = b2Math.b2Dot2 (r, r);
+	//	if (rr == 0.0)
+	//	{
+	//		return false;
+	//	}
+	//
+	//	tempV.x = q.x - v1.x;
+	//	tempV.y = q.y - v1.y;
+	//	var s:Number = b2Math.b2Dot2 (tempV, r) / rr;
+	//	if (s < 0.0 || 1.0 < s)
+	//	{
+	//		return false;
+	//	}
+	//
+	//	output.fraction = t;
+	//	if (numerator > 0.0)
+	//	{
+	//		output.normal.x = - normal.x;
+	//		output.normal.y = - normal.y;
+	//	}
+	//	else
+	//	{
+	//		output.normal.x = normal.x;
+	//		output.normal.y = normal.y;
+	//	}
+	//	
+	//	return true;
+	//}
+	//else
+	//{
 		var lower:Number = 0.0, upper:Number = input.maxFraction;
 
 		var index:int = -1;
@@ -434,7 +444,7 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 			b2Math.b2Mul_Matrix22AndVector2_Output (xf.R, m_normals[index] as b2Vec2, output.normal)
 			return true;
 		}
-	}
+	//} // removed from v141
 	
 	return false;
 }
@@ -443,8 +453,10 @@ private static var lower:b2Vec2 = new b2Vec2 ();
 private static var upper:b2Vec2 = new b2Vec2 ();
 private static var v:b2Vec2 = new b2Vec2 ();
 	
-override public function ComputeAABB(aabb:b2AABB, xf:b2Transform):void
+override public function ComputeAABB(aabb:b2AABB, xf:b2Transform, childIndex:int):void
 {
+	//B2_NOT_USED(childIndex);
+
 	//var lower:b2Vec2 = new b2Vec2 ();
 	//var upper:b2Vec2 = new b2Vec2 ();
 	//var v:b2Vec2 = new b2Vec2 ();
@@ -506,19 +518,20 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 	var e2:b2Vec2 = new b2Vec2 ();
 	var tempF:Number;
 	
-	//b2Assert(m_vertexCount >= 2);
+	//b2Assert(m_vertexCount >= 3);
 
+	// removed from r141
 	// A line segment has zero mass.
-	if (m_vertexCount == 2)
-	{
-		//massData->center = 0.5f * (m_vertices[0] + m_vertices[1]);
-		b2Math.b2Add_Vector2_Output (m_vertices[0] as b2Vec2, m_vertices[1] as b2Vec2, tempV);
-		massData.center.x = 0.5 * tempV.x;
-		massData.center.y = 0.5 * tempV.y;
-		massData.mass = 0.0;
-		massData.I = 0.0;
-		return;
-	}
+	//if (m_vertexCount == 2)
+	//{
+	//	//massData->center = 0.5f * (m_vertices[0] + m_vertices[1]);
+	//	b2Math.b2Add_Vector2_Output (m_vertices[0] as b2Vec2, m_vertices[1] as b2Vec2, tempV);
+	//	massData.center.x = 0.5 * tempV.x;
+	//	massData.center.y = 0.5 * tempV.y;
+	//	massData.mass = 0.0;
+	//	massData.I = 0.0;
+	//	return;
+	//}
 
 	//b2Vec2 center; center.Set(0.0f, 0.0f);
 	center.Set(0.0, 0.0);

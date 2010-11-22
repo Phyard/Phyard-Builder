@@ -12,9 +12,11 @@ package Box2D.Dynamics
 		public function RayCastCallback(input:b2RayCastInput, proxyId:int):Number
 		{
 			var userData:Object = broadPhase.GetUserData(proxyId);
-			var fixture:b2Fixture = userData as b2Fixture;
+			var proxy:b2FixtureProxy = userData as b2FixtureProxy;
+			var fixture:b2Fixture = proxy.fixture;
+			var index:int = proxy.childIndex;
 			var output:b2RayCastOutput = new b2RayCastOutput (); // if this is a member variable, the followed "output.normal" must be cloned 
-			var hit:Boolean = fixture.RayCast(output, input);
+			var hit:Boolean = fixture.RayCast(output, input, index);
 
 			if (hit)
 			{

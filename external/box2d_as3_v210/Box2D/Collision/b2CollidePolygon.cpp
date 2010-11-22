@@ -213,22 +213,22 @@ public static function b2FindIncidentEdge(c:b2ClipVertexSegment, //b2ClipVertex 
 	var i2:int = i1 + 1 < count2 ? i1 + 1 : 0;
 
 	//c[0].v = b2Mul(xf2, vertices2[i1]);
-	//c[0].id.features.referenceEdge = (uint8)edge1;
-	//c[0].id.features.incidentEdge = (uint8)i1;
-	//c[0].id.features.incidentVertex = 0;
-	var c0:b2ClipVertex = c.GetClipVertexById (0);
+	//c[0].id.cf.indexA = (uint8)edge1;
+	//c[0].id.cf.indexB = (uint8)i1;
+	//c[0].id.cf.typeA = b2ContactFeature::e_face;
+	//c[0].id.cf.typeB = b2ContactFeature::e_vertex;
+	var c0:b2ClipVertex = c.clipVertex0;
 	b2Math.b2Mul_TransformAndVector2_Output (xf2, vertices2[i1], c0.v);
-	//c0.id.SetFeatures (edge1, i1, 0);
-	c0.id = b2ContactID.ContactID_SetFeatures  (c0.id, edge1, i1, 0);
+	c0.id = b2ContactID.ContactID_FromFeature  (edge1, i1, b2ContactID.b2ContactFeature_e_face, b2ContactID.b2ContactFeature_e_vertex);
 
 	//c[1].v = b2Mul(xf2, vertices2[i2]);
-	//c[1].id.features.referenceEdge = (uint8)edge1;
-	//c[1].id.features.incidentEdge = (uint8)i2;
-	//c[1].id.features.incidentVertex = 1;
-	var c1:b2ClipVertex = c.GetClipVertexById (1);
+	//c[1].id.cf.indexA = (uint8)edge1;
+	//c[1].id.cf.indexB = (uint8)i2;
+	//c[1].id.cf.typeA = b2ContactFeature::e_face;
+	//c[1].id.cf.typeB = b2ContactFeature::e_vertex;
+	var c1:b2ClipVertex = c.clipVertex1;
 	b2Math.b2Mul_TransformAndVector2_Output (xf2, vertices2[i2], c1.v);
-	//c1.id.SetFeatures (edge1, i2, 1);
-	c1.id = b2ContactID.ContactID_SetFeatures (c1.id, edge1, i2, 1);
+	c1.id = b2ContactID.ContactID_FromFeature (edge1, i2, b2ContactID.b2ContactFeature_e_face, b2ContactID.b2ContactFeature_e_vertex);
 }
 
 // Find edge normal of max separation on A - return if separating axis is found
@@ -304,12 +304,13 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	//const b2Vec2* vertices1 = poly1->m_vertices;
 	var vertices1:Array = poly1.m_vertices;
 
-	//b2Vec2 v11 = vertices1[edge1];
-	//b2Vec2 v12 = edge1 + 1 < count1 ? vertices1[edge1+1] : vertices1[0];
-	// notice: can't use reference
-	var tempV11:b2Vec2 = (vertices1[edge1] as b2Vec2);//.Clone ();
-	//var tempV12:b2Vec2 = edge1 + 1 < count1 ? (vertices1[edge1+1] as b2Vec2).Clone (): (vertices1[0] as b2Vec2).Clone ();
-	var tempV12:b2Vec2 = edge1 + 1 < count1 ? (vertices1[edge1+1] as b2Vec2): (vertices1[0] as b2Vec2);
+	var iv1:int = edge1;
+	var iv2:int = edge1 + 1 < count1 ? edge1 + 1 : 0;
+
+	//b2Vec2 v11 = vertices1[iv1];
+	//b2Vec2 v12 = vertices1[iv2];
+	var tempV11:b2Vec2 = (vertices1[iv1] as b2Vec2);//.Clone ();
+	var tempV12:b2Vec2 = (vertices1[iv2] as b2Vec2);//.Clone ();
 
 	//b2Vec2 localTangent = tempV12 - tempV11;
 	var localTangent:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (tempV12.x - tempV11.x, tempV12.y - tempV11.y);
@@ -344,12 +345,12 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 
 	// Clip to box side 1
 	//np = b2ClipSegmentToLine (clipPoints1, incidentEdge, -tangent, sideOffset1);
-	np = b2ClipSegmentToLine (clipPoints1, incidentEdge, tangent.GetNegative (), sideOffset1);
+	np = b2ClipSegmentToLine (clipPoints1, incidentEdge, tangent.GetNegative (), sideOffset1, iv1);
 	if (np < 2)
 		return;
 
 	// Clip to negative box side 1
-	np = b2ClipSegmentToLine(clipPoints2, clipPoints1,  tangent, sideOffset2);
+	np = b2ClipSegmentToLine(clipPoints2, clipPoints1,  tangent, sideOffset2, iv2);
 	if (np < 2)
 	{
 		return;
@@ -370,16 +371,22 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 
 		if (separation <= totalRadius)
 		{
-			//b2ManifoldPoint* cp = manifold->m_points + pointCount;
-			//cp->m_localPoint = b2MulT(xf2, clipPoints2[i].v);
-			//cp->m_id = clipPoints2[i].id;
-			//cp->m_id.features.flip = flip;
+			//b			b2ManifoldPoint* cp = manifold->points + pointCount;
+			//cp->localPoint = b2MulT(xf2, clipPoints2[i].v);
+			//cp->id = clipPoints2[i].id;
 			var cp:b2ManifoldPoint = manifold.points [pointCount];
 			b2Math.b2MulT_TransformAndVector2_Output (xf2, clipPoints2.GetClipVertexById(i).v, cp.localPoint)
-			//cp.m_id.CopyFrom (clipPoints2.GetClipVertexById (i).id);
-			//cp.m_id.SetFlip (flip);
 			cp.id = clipPoints2.GetClipVertexById (i).id;
-			cp.id = b2ContactID.ContactID_SetFlip (cp.id, flip);
+			if (flip != 0)
+			{
+				// Swap features
+				//b2ContactFeature cf = cp->id.cf;
+				//cp->id.cf.indexA = cf.indexB;
+				//cp->id.cf.indexB = cf.indexA;
+				//cp->id.cf.typeA = cf.typeB;
+				//cp->id.cf.typeB = cf.typeA;
+				cp.id = b2ContactID.ContactID_FlipFeature (cp.id);
+			}
 			++pointCount;
 		}
 	}

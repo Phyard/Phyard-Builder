@@ -334,7 +334,7 @@ package player.physics {
                if (dx > - b2Settings.b2_epsilon && dx < b2Settings.b2_epsilon && dy > - b2Settings.b2_epsilon && dy < b2Settings.b2_epsilon)
                   continue;
                
-               polygon_shape.SetAsEdge (vertex1, vertex2);
+//               polygon_shape.SetAsEdge (vertex1, vertex2);
                
                fixture_def.shape = polygon_shape;
                

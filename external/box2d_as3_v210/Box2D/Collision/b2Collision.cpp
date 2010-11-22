@@ -199,12 +199,12 @@ public static function b2GetPointStates(
 
 // Sutherland-Hodgman clipping.
 //public static function b2ClipSegmentToLine(b2ClipVertex vOut[2], const b2ClipVertex vIn[2],
-//						const b2Vec2& normal, float32 offset):int
-public static function b2ClipSegmentToLine(segmentOut:b2ClipVertexSegment, segmentIn:b2ClipVertexSegment,
-						normal:b2Vec2, offset:Number):int
+//						const b2Vec2& normal, float32 offset, int32 vertexIndexA):int
+public static function b2ClipSegmentToLine(vOut:b2ClipVertexSegment, vIn:b2ClipVertexSegment,
+						normal:b2Vec2, offset:Number, vertexIndexA:int):int
 {
-	var vIn0:b2ClipVertex = segmentIn.GetClipVertexById (0);
-	var vIn1:b2ClipVertex = segmentIn.GetClipVertexById (1);
+	var vIn0:b2ClipVertex = vIn.clipVertex0;
+	var vIn1:b2ClipVertex = vIn.clipVertex1;
 
 	// Start with no output points
 	var numOut:int = 0;
@@ -214,29 +214,32 @@ public static function b2ClipSegmentToLine(segmentOut:b2ClipVertexSegment, segme
 	var distance1:Number = b2Math.b2Dot2 (normal, vIn1.v) - offset;
 
 	// If the points are behind the plane
-	if (distance0 <= 0.0) segmentOut.GetClipVertexById (numOut++).CopyFrom (vIn0);
-	if (distance1 <= 0.0) segmentOut.GetClipVertexById (numOut++).CopyFrom (vIn1);
+	if (distance0 <= 0.0) vOut.GetClipVertexById (numOut++).CopyFrom (vIn0);
+	if (distance1 <= 0.0) vOut.GetClipVertexById (numOut++).CopyFrom (vIn1);
 
 	// If the points are on different sides of the plane
 	if (distance0 * distance1 < 0.0)
 	{
-		var vOut_numOut:b2ClipVertex = segmentOut.GetClipVertexById (numOut);
+		var vOut_numOut:b2ClipVertex = vOut.GetClipVertexById (numOut);
 
 		// Find intersection point of edge and plane
 		var interp:Number = distance0 / (distance0 - distance1);
 		//vOut[numOut].v = vIn[0].v + interp * (vIn[1].v - vIn[0].v);
 		vOut_numOut.v.x = vIn0.v.x + interp * (vIn1.v.x - vIn0.v.x);
 		vOut_numOut.v.y = vIn0.v.y + interp * (vIn1.v.y - vIn0.v.y);
-		if (distance0 > 0.0)
-		{
-			//vOut_numOut.id.CopyFrom (vIn0.id);
-			vOut_numOut.id = vIn0.id;
-		}
-		else
-		{
-			//vOut_numOut.id.CopyFrom (vIn1.id);
-			vOut_numOut.id = vIn1.id;
-		}
+		
+		// VertexA is hitting edgeB.
+		//vOut[numOut].id.cf.indexA = vertexIndexA;
+		//vOut[numOut].id.cf.indexB = vIn[0].id.cf.indexB;
+		//vOut[numOut].id.cf.typeA = b2ContactFeature::e_vertex;
+		//vOut[numOut].id.cf.typeB = b2ContactFeature::e_face;
+		vOut_numOut.id = b2ContactID.ContactID_FromFeature (
+												vertexIndexA, 
+												b2ContactID.ContactID_IndexB (vIn0.id),
+												b2ContactID.b2ContactFeature_e_vertex,
+												b2ContactID.b2ContactFeature_e_face
+											);
+		
 		++numOut;
 	}
 
@@ -249,16 +252,18 @@ private static var mDistanceInput:b2DistanceInput = new b2DistanceInput ();
    private static var mDistanceProxyB:b2DistanceProxy = new b2DistanceProxy ();
 private static var mDistanceOutput:b2DistanceOutput = new b2DistanceOutput ();
 
-//bool b2TestOverlap(const b2Shape* shapeA, const b2Shape* shapeB,
-//				   const b2Transform& xfA, const b2Transform& xfB)
-public static function b2TestOverlap_Shapes (shapeA:b2Shape, shapeB:b2Shape,
-				   xfA:b2Transform, xfB:b2Transform):Boolean
+//bool b2TestOverlap(const b2Shape* shapeA, int32 indexA, 
+//							const b2Shape* shapeB, int32 indexB,
+//							const b2Transform& xfA, const b2Transform& xfB)
+public static function b2TestOverlap_Shapes (shapeA:b2Shape, indexA:int, 
+															shapeB:b2Shape, indexB:int, 
+															xfA:b2Transform, xfB:b2Transform):Boolean
 {
 	var input:b2DistanceInput = mDistanceInput; //new b2DistanceInput ();
 	input.proxyA = mDistanceProxyA;
 	input.proxyB = mDistanceProxyB;
-	input.proxyA.Set(shapeA);
-	input.proxyB.Set(shapeB);
+	input.proxyA.Set(shapeA, indexA);
+	input.proxyB.Set(shapeB, indexB);
 	//input.transformA.CopyFrom (xfA);
 	//input.transformB.CopyFrom (xfB);
 	input.transformA = xfA;

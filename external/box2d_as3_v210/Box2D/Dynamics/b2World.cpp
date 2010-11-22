@@ -26,8 +26,10 @@
 //#include <Box2D/Collision/b2Collision.h>
 //#include <Box2D/Collision/b2BroadPhase.h>
 //#include <Box2D/Collision/Shapes/b2CircleShape.h>
+//#include <Box2D/Collision/Shapes/b2EdgeShape.h>
+//#include <Box2D/Collision/Shapes/b2LoopShape.h>
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
-//#include <new>
+//#include <Box2D/Collision/b2TimeOfImpact.h>
 
 public static function b2World_FromWorldDefine (worldDef:b2WorldDef):b2World
 {
@@ -71,6 +73,10 @@ private function Create (worldDef:b2WorldDef = null):void
 
 	m_warmStarting = true;
 	m_continuousPhysics = true;
+	m_subStepping = false;
+
+	m_stepComplete = true;
+
 
 	m_allowSleep = worldDef.doSleep;
 	//m_gravity = gravity;
@@ -93,6 +99,23 @@ private function Create (worldDef:b2WorldDef = null):void
 //b2World::~b2World()
 public function Destructor ():void
 {
+	// Some shapes allocate using b2Alloc.
+	//b2Body* b = m_bodyList;
+	//while (b)
+	//{
+	//	b2Body* bNext = b->m_next;
+	//
+	//	b2Fixture* f = b->m_fixtureList;
+	//	while (f)
+	//	{
+	//		b2Fixture* fNext = f->m_next;
+	//		f->m_proxyCount = 0;
+	//		f->Destroy(&m_blockAllocator);
+	//		f = fNext;
+	//	}
+	//
+	//	b = bNext;
+	//}
 }
 
 public function SetDestructionListener(listener:b2DestructionListener):void
@@ -196,6 +219,8 @@ public function DestroyBody(b:b2Body):void
 		}
 
 		DestroyJoint(je0.joint);
+
+		b.m_jointList = je;
 	}
 	b.m_jointList = null;
 
@@ -220,11 +245,14 @@ public function DestroyBody(b:b2Body):void
 		{
 			m_destructionListener.SayGoodbye_Fixture (f0);
 		}
-		f0.DestroyProxy(m_contactManager.m_broadPhase);
+		f0.DestroyProxies(m_contactManager.m_broadPhase);
 		f0.Destroy(m_blockAllocator);
 		//f0->~b2Fixture();
 		f0._b2Fixture ();
 		//m_blockAllocator.Free(f0, sizeof(b2Fixture));
+
+		b.m_fixtureList = f;
+		b.m_fixtureCount -= 1;
 	}
 	b.m_fixtureList = null;
 	b.m_fixtureCount = 0;
@@ -423,7 +451,7 @@ public function Solve(step:b2TimeStep):void
 	//									//m_contactManager.m_contactListener
 	//									m_contactManager.m_contactPostSolveListener
 	//									);
-	var island:b2Island = GetIsland (m_jointCount, m_contactManager.m_contactCount);
+	var island:b2Island = GetIsland (m_bodyCount, m_jointCount, m_contactManager.m_contactCount);
 
 	// Clear all the island flags.
 	for (b = m_bodyList; b != null; b = b.m_next)
@@ -597,301 +625,351 @@ public function Solve(step:b2TimeStep):void
 
 private static var sTOIInput:b2TOIInput = new b2TOIInput ();
 private static var sTOIOutput:b2TOIOutput = new b2TOIOutput ();
-private static var sSweep:b2Sweep = new b2Sweep ();
+private static var sBackupSweep1:b2Sweep = new b2Sweep ();
+private static var sBackupSweep2:b2Sweep = new b2Sweep ();
+private static var sBackupSweep:b2Sweep = new b2Sweep ();
+private static var sSubTimeStep:b2TimeStep = new b2TimeStep ();
 
-private static var sContactPointerArray:Array = new Array (b2Settings.b2_maxTOIContacts);
-private static var sTOISolver:b2TOISolver = null; // new b2TOISolver (m_stackAllocator);
-
-// Advance a dynamic body to its first time of contact
-// and adjust the position to ensure clearance.
-public function SolveTOI_Body (body:b2Body):void
+// Find TOI contacts and solve them.
+public function SolveTOI(step:b2TimeStep):void
 {
-	// Find the minimum contact.
-	var toiContact:b2Contact = null;
-	var toi:Number = 1.0;
-	var toiOther:b2Body = null;
-	var found:Boolean;
-	var count:int;
-	var iter:int = 0;
+	//b2Island island(2 * b2_maxTOIContacts, b2_maxTOIContacts, 0, &m_stackAllocator, m_contactManager.m_contactListener);
+	var island:b2Island = GetIsland (2 * b2Settings.b2_maxTOIContacts, 0, b2Settings.b2_maxTOIContacts);
 
-	var bullet:Boolean = body.IsBullet();
-
-	var ce:b2ContactEdge;
-
-	var other:b2Body;
-	var type:int;
-	var contact:b2Contact;
-	var fixtureA:b2Fixture;
-	var fixtureB:b2Fixture;
-	var bodyA:b2Body;
-	var bodyB:b2Body;
-
-	// Iterate until all contacts agree on the minimum TOI. We have
-	// to iterate because the TOI algorithm may skip some intermediate
-	// collisions when objects rotate through each other.
-	do
+	if (m_stepComplete)
 	{
-		count = 0;
-		found = false;
-		for (ce = body.m_contactList; ce != null; ce = ce.next)
+		for (var b1:b2Body = m_bodyList; b1 != null; b1 = b1.m_next)
 		{
-			if (ce.contact == toiContact)
+			b1.m_flags &= ~b2Body.e_islandFlag;
+			b1.m_sweep.alpha0 = 0.0;
+		}
+
+		for (var c1:b2Contact = m_contactManager.m_contactList; c1 != null; c1 = c1.m_next)
+		{
+			// Invalidate TOI
+			c1.m_flags &= ~(b2Contact.e_toiFlag | b2Contact.e_islandFlag);
+			c1.m_toiCount = 0;
+			c1.m_toi = 1.0;
+		}
+	}
+
+	var fA:b2Fixture;
+	var fB:b2Fixture;
+	var bA:b2Body;
+	var bB:b2Body;
+
+	// Find TOI events and solve them.
+	for (;;)
+	{
+		// Find the first TOI.
+		var minContact:b2Contact = null;
+		var minAlpha:Number = 1.0;
+
+		for (var c:b2Contact = m_contactManager.m_contactList; c != null; c = c.m_next)
+		{
+			// Is this contact disabled?
+			if (c.IsEnabled() == false)
 			{
 				continue;
 			}
-			
-			other = ce.other;
-			type = other.GetType();
 
-			// Only bullets perform TOI with dynamic bodies.
-			if (bullet == true)
+			// Prevent excessive sub-stepping.
+			if (c.m_toiCount > b2Settings.b2_maxSubSteps)
 			{
-				// Bullets only perform TOI with bodies that have their TOI resolved.
-				if ((other.m_flags & b2Body.e_toiFlag) == 0)
+				continue;
+			}
+
+			var alpha:Number = 1.0;
+			if ( (c.m_flags & b2Contact.e_toiFlag) != 0)
+			{
+				// This contact has a valid cached TOI.
+				alpha = c.m_toi;
+			}
+			else
+			{
+				//b2Fixture* fA = c->GetFixtureA();
+				//b2Fixture* fB = c->GetFixtureB();
+				fA = c.GetFixtureA();
+				fB = c.GetFixtureB();
+
+				// Is there a sensor?
+				if (fA.IsSensor() || fB.IsSensor())
 				{
 					continue;
 				}
-				
-				// No repeated hits on non-static bodies
-				if (type != b2Body.b2_staticBody && (ce.contact.m_flags & b2Contact.e_bulletHitFlag) != 0)
+
+				//b2Body* bA = fA->GetBody();
+				//b2Body* bB = fB->GetBody();
+				bA = fA.GetBody();
+				bB = fB.GetBody();
+
+				//b2BodyType typeA = bA->GetType();
+				//b2BodyType typeB = bB->GetType();
+				var typeA:int = bA.GetType();
+				var typeB:int = bB.GetType();
+				//b2Assert(typeA == b2_dynamicBody || typeB == b2_dynamicBody);
+
+				var awakeA:Boolean = bA.IsAwake() && typeA != b2Body.b2_staticBody;
+				var awakeB:Boolean = bB.IsAwake() && typeB != b2Body.b2_staticBody;
+
+				// Is at least one body awake?
+				if (awakeA == false && awakeB == false)
 				{
 					continue;
 				}
+
+				var collideA:Boolean = bA.IsBullet() || typeA != b2Body.b2_dynamicBody;
+				var collideB:Boolean = bB.IsBullet() || typeB != b2Body.b2_dynamicBody;
+
+				// Are these two non-bullet dynamic bodies?
+				if (collideA == false && collideB == false)
+				{
+					continue;
+				}
+
+				// Compute the TOI for this contact.
+				// Put the sweeps onto the same time interval.
+				var alpha0:Number = bA.m_sweep.alpha0;
+
+				if (bA.m_sweep.alpha0 < bB.m_sweep.alpha0)
+				{
+					alpha0 = bB.m_sweep.alpha0;
+					bA.m_sweep.Advance(alpha0);
+				}
+				else if (bB.m_sweep.alpha0 < bA.m_sweep.alpha0)
+				{
+					alpha0 = bA.m_sweep.alpha0;
+					bB.m_sweep.Advance(alpha0);
+				}
+
+				//b2Assert(alpha0 < 1.0f);
+
+				var indexA:int = c.GetChildIndexA();
+				var indexB:int = c.GetChildIndexB();
+
+				// Compute the time of impact in interval [0, minTOI]
+				//b2TOIInput input;
+				var input:b2TOIInput = sTOIInput; // hacking
+				input.proxyA.Set(fA.GetShape(), indexA);
+				input.proxyB.Set(fB.GetShape(), indexB);
+				input.sweepA = bA.m_sweep; // hacking. CopyFrom ()
+				input.sweepB = bB.m_sweep; // hacking. CopyFrom ()
+				input.tMax = 1.0;
+
+				//b2TOIOutput output;
+				var output:b2TOIOutput = sTOIOutput; // hacking
+				b2TimeOfImpact.b2TimeOfImpact_(output, input);
+
+				// Beta is the fraction of the remaining portion of the .
+				var beta:Number = output.t;
+				if (output.state == b2TOIOutput.e_touching)
+				{
+					alpha = Math.min (alpha0 + (1.0 - alpha0) * beta, 1.0);
+				}
+				else
+				{
+					alpha = 1.0;
+				}
+
+				c.m_toi = alpha;
+				c.m_flags |= b2Contact.e_toiFlag;
 			}
-			else if (type == b2Body.b2_dynamicBody)
+
+			if (alpha < minAlpha)
 			{
-				continue;
+				// This is the minimum TOI found so far.
+				minContact = c;
+				minAlpha = alpha;
 			}
-
-			// Check for a disabled contact.
-			contact = ce.contact;
-			if (contact.IsEnabled() == false)
-			{
-				continue;
-			}
-
-			// Prevent infinite looping.
-			if (contact.m_toiCount > 10)
-			{
-				continue;
-			}
-
-			fixtureA = contact.m_fixtureA;
-			fixtureB = contact.m_fixtureB;
-
-			// Cull sensors.
-			if (fixtureA.IsSensor() || fixtureB.IsSensor())
-			{
-				continue;
-			}
-
-			bodyA = fixtureA.m_body;
-			bodyB = fixtureB.m_body;
-
-			// Compute the time of impact in interval [0, minTOI]
-			var input:b2TOIInput = sTOIInput;
-			input.proxyA.Set(fixtureA.GetShape());
-			input.proxyB.Set(fixtureB.GetShape());
-			input.sweepA = bodyA.m_sweep;
-			input.sweepB = bodyB.m_sweep;
-			input.tMax = toi;
-
-			var output:b2TOIOutput = sTOIOutput;
-			b2TimeOfImpact.b2TimeOfImpact_ (output, input);
-
-			if (output.state == b2TOIOutput.e_touching && output.t < toi)
-			{
-				toiContact = contact;
-				toi = output.t;
-				toiOther = other;
-				found = true;
-			}
-
-			++count;
 		}
 
-		++iter;
-	} while (found && count > 1 && iter < 50);
-
-	if (toiContact == null)
-	{
-		body.Advance(1.0);
-		return;
-	}
-
-	var backup:b2Sweep = sSweep;
-	backup.CopyFrom (body.m_sweep);
-	body.Advance(toi);
-	toiContact.Update(m_contactManager.m_contactListener);
-	if (toiContact.IsEnabled() == false)
-	{
-		// Contact disabled. Backup and recurse.
-		body.m_sweep.CopyFrom (backup);
-		SolveTOI_Body(body);
-	}
-
-	++toiContact.m_toiCount;
-
-	// Update all the valid contacts on this body and build a contact island.
-	//b2Contact* contacts[b2_maxTOIContactsPerIsland];
-	var contacts:Array = sContactPointerArray;
-	
-	count = 0;
-	for (ce = body.m_contactList; (ce != null) && (count < b2Settings.b2_maxTOIContacts); ce = ce.next)
-	{
-		other = ce.other;
-		type = other.GetType();
-
-		// Only perform correction with static bodies, so the
-		// body won't get pushed out of the world.
-		if (type == b2Body.b2_dynamicBody)
+		if (minContact == null || 1.0 - 10.0 * b2Settings.b2_epsilon < minAlpha)
 		{
-			continue;
-		}
-
-		// Check for a disabled contact.
-		contact = ce.contact;
-		if (contact.IsEnabled() == false)
-		{
-			continue;
-		}
-
-		fixtureA = contact.m_fixtureA;
-		fixtureB = contact.m_fixtureB;
-
-		// Cull sensors.
-		if (fixtureA.IsSensor() || fixtureB.IsSensor())
-		{
-			continue;
-		}
-
-		// The contact likely has some new contact points. The listener
-		// gives the user a chance to disable the contact.
-		if (contact != toiContact)
-		{
-			contact.Update(m_contactManager.m_contactListener
-								//, m_contactManager.m_contactPreSolveListener
-								);
-		}
-
-		// Did the user disable the contact?
-		if (contact.IsEnabled() == false)
-		{
-			// Skip this contact.
-			continue;
-		}
-
-		if (contact.IsTouching() == false)
-		{
-			continue;
-		}
-
-		contacts[count] = contact;
-		++count;
-	}
-
-	//>> hacking
-	if (sTOISolver == null)
-		sTOISolver = new b2TOISolver (m_stackAllocator)
-	//<<
-
-	// Reduce the TOI body's overlap with the contact island.
-	var solver:b2TOISolver = sTOISolver;
-	solver.Initialize(contacts, count, body);
-
-	const k_toiBaumgarte:Number = 0.75;
-	var solved:Boolean = false;
-	for (var i:int = 0; i < 20; ++i)
-	{
-		var contactsOkay:Boolean = solver.Solve(k_toiBaumgarte);
-		
-		if (contactsOkay)
-		{
-			solved = true;
+			// No more TOI events. Done!
+			m_stepComplete = true;
 			break;
 		}
-	}
-	
-	if (toiOther.GetType() != b2Body.b2_staticBody)
-	{
-		toiContact.m_flags |= b2Contact.e_bulletHitFlag;
-	}
-}
 
-// Sequentially solve TOIs for each body. We bring each
-// body to the time of contact and perform some position correction.
-// Time is not conserved.
-public function SolveTOI():void
-{
-	// Prepare all contacts.
-	for (var c:b2Contact = m_contactManager.m_contactList; c != null; c = c.m_next)
-	{
-		// Enable the contact
-		c.m_flags |= b2Contact.e_enabledFlag;
+		// Advance the bodies to the TOI.
+		//b2Fixture* fA = minContact->GetFixtureA();
+		//b2Fixture* fB = minContact->GetFixtureB();
+		fA = minContact.GetFixtureA();
+		fB = minContact.GetFixtureB();
+		//b2Body* bA = fA->GetBody();
+		//b2Body* bB = fB->GetBody();
+		bA = fA.GetBody();
+		bB = fB.GetBody();
 
-		// Set the number of TOI events for this contact to zero.
-		c.m_toiCount = 0;
-	}
+		//b2Sweep backup1 = bA->m_sweep;
+		//b2Sweep backup2 = bB->m_sweep;
+		var backup1:b2Sweep = sBackupSweep1; backup1.CopyFrom (bA.m_sweep); // hacking
+		var backup2:b2Sweep = sBackupSweep2; backup2.CopyFrom (bB.m_sweep); // hacking
 
-	var body:b2Body;
+		bA.Advance(minAlpha);
+		bB.Advance(minAlpha);
 
-	// Initialize the TOI flag.
-	for (body = m_bodyList; body != null; body = body.m_next)
-	{
-		// Kinematic, and static bodies will not be affected by the TOI event.
-		// If a body was not in an island then it did not move.
-		if ((body.m_flags & b2Body.e_islandFlag) == 0 || body.GetType() == b2Body.b2_kinematicBody || body.GetType() == b2Body.b2_staticBody)
+		// The TOI contact likely has some new contact points.
+		minContact.Update(m_contactManager.m_contactListener);
+		minContact.m_flags &= ~b2Contact.e_toiFlag;
+		++minContact.m_toiCount;
+
+		// Is the contact solid?
+		if (minContact.IsEnabled() == false || minContact.IsTouching() == false)
 		{
-			body.m_flags |= b2Body.e_toiFlag;
-		}
-		else
-		{
-			body.m_flags &= ~b2Body.e_toiFlag;
-		}
-	}
-
-	// Collide non-bullets.
-	for (body = m_bodyList; body != null; body = body.m_next)
-	{
-		if (body.m_flags & b2Body.e_toiFlag)
-		{
+			// Restore the sweeps.
+			minContact.SetEnabled(false);
+			bA.m_sweep.CopyFrom (backup1);
+			bB.m_sweep.CopyFrom (backup2);
+			bA.SynchronizeTransform();
+			bB.SynchronizeTransform();
 			continue;
 		}
 
-		if (body.IsBullet() == true)
+		bA.SetAwake(true);
+		bB.SetAwake(true);
+
+		// Build the island
+		island.Clear();
+		island.AddBody(bA);
+		island.AddBody(bB);
+		island.AddContact(minContact);
+
+		bA.m_flags |= b2Body.e_islandFlag;
+		bB.m_flags |= b2Body.e_islandFlag;
+		minContact.m_flags |= b2Contact.e_islandFlag;
+
+		// Get contacts on bodyA and bodyB.
+		//b2Body* bodies[2] = {bA, bB};
+		var i:int;
+		var body:b2Body;
+		for (i = 0; i < 2; ++i)
 		{
-			continue;
+			//b2Body* body = bodies[i];
+			body = (i == 0 ? bA : bB); // hacking
+			if (body.m_type == b2Body.b2_dynamicBody)
+			{
+				for (var ce:b2ContactEdge = body.m_contactList; ce!= null && island.m_bodyCount < b2Settings.b2_maxTOIContacts; ce = ce.next)
+				{
+					var contact:b2Contact = ce.contact;
+
+					// Has this contact already been added to the island?
+					if ((contact.m_flags & b2Contact.e_islandFlag) != 0)
+					{
+						continue;
+					}
+
+					// Only add static, kinematic, or bullet bodies.
+					var other:b2Body = ce.other;
+					if (other.m_type == b2Body.b2_dynamicBody &&
+						body.IsBullet() == false && other.IsBullet() == false)
+					{
+						continue;
+					}
+
+					// Skip sensors.
+					var sensorA:Boolean = contact.m_fixtureA.m_isSensor;
+					var sensorB:Boolean = contact.m_fixtureB.m_isSensor;
+					if (sensorA || sensorB)
+					{
+						continue;
+					}
+
+					// Tentatively advance the body to the TOI.
+					//b2Sweep backup = other->m_sweep;
+					var backup:b2Sweep = sBackupSweep; sBackupSweep.CopyFrom (other.m_sweep); // hacking
+					if ((other.m_flags & b2Body.e_islandFlag) == 0)
+					{
+						other.Advance(minAlpha);
+					}
+
+					// Update the contact points
+					contact.Update(m_contactManager.m_contactListener);
+
+					// Was the contact disabled by the user?
+					if (contact.IsEnabled() == false)
+					{
+						other.m_sweep.CopyFrom (backup);
+						other.SynchronizeTransform();
+						continue;
+					}
+
+					// Are there contact points?
+					if (contact.IsTouching() == false)
+					{
+						other.m_sweep.CopyFrom (backup)
+						other.SynchronizeTransform();
+						continue;
+					}
+
+					// Add the contact to the island
+					contact.m_flags |= b2Contact.e_islandFlag;
+					island.AddContact(contact);
+
+					// Has the other body already been added to the island?
+					if ((other.m_flags & b2Body.e_islandFlag) != 0)
+					{
+						continue;
+					}
+					
+					// Add the other body to the island.
+					other.m_flags |= b2Body.e_islandFlag;
+
+					if (other.m_type != b2Body.b2_staticBody)
+					{
+						other.SetAwake(true);
+					}
+
+					island.AddBody(other);
+				}
+			}
 		}
 
-		SolveTOI_Body (body);
+		//b2TimeStep subStep;
+		var subStep:b2TimeStep = sSubTimeStep; // hacking
+		subStep.dt = (1.0 - minAlpha) * step.dt;
+		subStep.inv_dt = 1.0 / subStep.dt;
+		subStep.dtRatio = 1.0;
+		subStep.positionIterations = 20;
+		subStep.velocityIterations = step.velocityIterations;
+		subStep.warmStarting = false;
+		island.SolveTOI(subStep, bA, bB);
 
-		body.m_flags |= b2Body.e_toiFlag;
-	}
-
-	// Collide bullets.
-	for ( body = m_bodyList; body != null; body = body.m_next)
-	{
-		if (body.m_flags & b2Body.e_toiFlag)
+		// Reset island flags and synchronize broad-phase proxies.
+		//for (int32 i = 0; i < island.m_bodyCount; ++i)
+		for (i = 0; i < island.m_bodyCount; ++i)
 		{
-			continue;
+			//b2Body* body = island.m_bodies[i];
+			body = island.m_bodies[i] as b2Body;
+			body.m_flags &= ~b2Body.e_islandFlag;
+
+			if (body.m_type != b2Body.b2_dynamicBody)
+			{
+				continue;
+			}
+
+			body.SynchronizeFixtures();
+
+			// Invalidate all contact TOIs on this displaced body.
+			for (var ce2:b2ContactEdge = body.m_contactList; ce2 != null; ce2 = ce2.next)
+			{
+				ce2.contact.m_flags &= ~(b2Contact.e_toiFlag | b2Contact.e_islandFlag);
+			}
 		}
 
-		if (body.IsBullet() == false)
+		// Commit fixture proxy movements to the broad-phase so that new contacts are created.
+		// Also, some contacts can be destroyed.
+		m_contactManager.FindNewContacts();
+
+		if (m_subStepping)
 		{
-			continue;
+			m_stepComplete = false;
+			break;
 		}
-
-		SolveTOI_Body (body);
-
-		body.m_flags |= b2Body.e_toiFlag;
 	}
 }
 
 public function Step(dt:Number, velocityIterations:int, positionIterations:int):void
 {
-	var height:int;
-	height = m_contactManager.m_broadPhase.ComputeHeight();
-
 	// If new fixtures were added, we need to find the new contacts.
 	if (m_flags & e_newFixture)
 	{
@@ -928,7 +1006,7 @@ public function Step(dt:Number, velocityIterations:int, positionIterations:int):
 //t1 = getTimer ();
 
 	// Integrate velocities, solve velocity constraints, and integrate positions.
-	if (step.dt > 0.0)
+	if (m_stepComplete && step.dt > 0.0)
 	{
 		Solve(step);
 	}
@@ -940,7 +1018,7 @@ public function Step(dt:Number, velocityIterations:int, positionIterations:int):
 	// Handle TOI events.
 	if (m_continuousPhysics && step.dt > 0.0)
 	{
-		SolveTOI();
+		SolveTOI(step);
 	}
 
 //t2 = getTimer ();

@@ -67,7 +67,8 @@ package Box2D.Common
 		/// The maximum number of contact points between two convex shapes.
 		public static const b2_maxManifoldPoints:int = 2;
 
-		/// The maximum number of vertices on a convex polygon.
+		/// The maximum number of vertices on a convex polygon. You cannot increase
+		/// this too much because b2BlockAllocator has a maximum object size.
 		public static const b2_maxPolygonVertices:int = 8;
 
 		/// This is used to fatten AABBs in the dynamic tree. This allows proxies
@@ -93,6 +94,8 @@ package Box2D.Common
 		/// Making it larger may create artifacts for vertex collision.
 		public static const b2_polygonRadius:Number = (2.0 * b2Settings.b2_linearSlop);
 
+		/// Maximum number of sub-steps per contact in continuous physics simulation.
+		public static const b2_maxSubSteps:int = 8;
 
 		// Dynamics
 

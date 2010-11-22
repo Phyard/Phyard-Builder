@@ -39,6 +39,8 @@ package Box2D.Dynamics
 	import Box2D.Collision.Shapes.b2MassData;
 	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
+	import Box2D.Collision.Shapes.b2EdgeShape;
+	import Box2D.Collision.Shapes.b2LoopShape;
 	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Contacts.b2ContactEdge;
 
@@ -89,20 +91,19 @@ package Box2D.Dynamics
 
 		/// Get the user data that was assigned in the fixture definition. Use this to
 		/// store your application specific data.
-		//void* GetUserData();
-
-		/// Set the user data. Use this to store your application specific data.
 		//void* GetUserData() const;
 
+		/// Set the user data. Use this to store your application specific data.
+		//void SetUserData(void* data);
+
 		/// Test a point for containment in this fixture.
-		/// @param xf the shape world transform.
 		/// @param p a point in world coordinates.
 		//bool TestPoint(const b2Vec2& p) const;
 
 		/// Cast a ray against this shape.
 		/// @param output the ray-cast results.
 		/// @param input the ray-cast input parameters.
-		//bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input) const;
+		//bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input, int32 childIndex) const;
 
 		/// Get the mass data for this fixture. The mass data is based on the density and
 		/// the shape. The rotational inertia is about the shape's origin. This operation
@@ -119,37 +120,36 @@ package Box2D.Dynamics
 		/// Get the coefficient of friction.
 		//float32 GetFriction() const;
 
-		/// Set the coefficient of friction.
+		/// Set the coefficient of friction. This will immediately update the mixed friction
+		/// on all associated contacts.
 		//void SetFriction(float32 friction);
 
 		/// Get the coefficient of restitution.
 		//float32 GetRestitution() const;
 
-		/// Set the coefficient of restitution.
+		/// Set the coefficient of restitution. This will immediately update the mixed restitution
+		/// on all associated contacts.
 		//void SetRestitution(float32 restitution);
 
 		/// Get the fixture's AABB. This AABB may be enlarge and/or stale.
 		/// If you need a more accurate AABB, compute it using the shape and
 		/// the body transform.
-		//const b2AABB& GetAABB() const;
+		//const b2AABB& GetAABB(int32 childIndex) const;
 
 	//protected:
 
 
 		
 		//b2Fixture();
-		//~b2Fixture();
 
 		// We need separation create/destroy functions from the constructor/destructor because
 		// the destructor cannot access the allocator or broad-phase (no destructor arguments allowed by C++).
-		//void Create(b2BlockAllocator* allocator, b2Body* body, const b2Transform& xf, const b2FixtureDef* def);
-		//void Destroy(b2BlockAllocator* allocator);
+		//void CreateProxies(b2BroadPhase* broadPhase, const b2Transform& xf);
+		//void DestroyProxies(b2BroadPhase* broadPhase);
 
 		//void Synchronize(b2BroadPhase* broadPhase, const b2Transform& xf1, const b2Transform& xf2);
 
 		public var m_massData:b2MassData = new b2MassData ();
-
-		public var m_aabb:b2AABB = new b2AABB ();
 
 		public var m_density:Number;
 
@@ -161,7 +161,10 @@ package Box2D.Dynamics
 		public var m_friction:Number;
 		public var m_restitution:Number;
 
-		public var m_proxyId:int; //int32
+		//b2FixtureProxy* m_proxies;
+		public var m_proxies:Array;
+		public var m_proxyCount:int;
+
 		public var m_filter:b2Filter = new b2Filter ();
 
 		public var m_isSensor:Boolean;
@@ -266,9 +269,9 @@ package Box2D.Dynamics
 			return m_shape.TestPoint(m_body.GetTransform(), p);
 		}
 
-		public function RayCast(output:b2RayCastOutput, input:b2RayCastInput):Boolean
+		public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, childIndex:int):Boolean
 		{
-			return m_shape.RayCast(output, input, m_body.GetTransform());
+			return m_shape.RayCast(output, input, m_body.GetTransform(), childIndex);
 		}
 
 		public function GetMassData(massData:b2MassData):void
@@ -276,9 +279,10 @@ package Box2D.Dynamics
 			m_shape.ComputeMass(massData, m_density);
 		}
 
-		public function GetAABB():b2AABB
+		public function GetAABB(childIndex:int):b2AABB
 		{
-			return m_aabb;
+			//b2Assert(0 <= childIndex && childIndex < m_proxyCount);
+			return (m_proxies[childIndex] as b2FixtureProxy).aabb;
 		}
 
 	} // class

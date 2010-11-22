@@ -16,6 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
+//#include <Box2D/Collision/b2Distance.h>
 //#include <Box2D/Dynamics/b2Island.h>
 //#include <Box2D/Dynamics/b2Body.h>
 //#include <Box2D/Dynamics/b2Fixture.h>
@@ -146,10 +147,6 @@ However, we can compute sin+cos of the same angle fast.
 public static const linTolSqr:Number = b2Settings.b2_linearSleepTolerance * b2Settings.b2_linearSleepTolerance;
 public static const angTolSqr:Number = b2Settings.b2_angularSleepTolerance * b2Settings.b2_angularSleepTolerance;
 
-public static const k_toiBaumgarte:Number = 0.75;
-
-
-
 public function b2Island(
 	bodyCapacity:int,
 	contactCapacity:int,
@@ -195,6 +192,8 @@ public function Destructor ():void
 	//m_allocator->Free(m_contacts);
 	//m_allocator->Free(m_bodies);
 }
+
+public var sTranslation:b2Vec2 = new b2Vec2 ();
 
 public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 {
@@ -254,8 +253,23 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	}
 
 	// Initialize velocity constraints.
-	var contactSolver:b2ContactSolver = new b2ContactSolver (m_contacts, m_contactCount, m_allocator, step.dtRatio);
-	contactSolver.WarmStart();
+	var solverDef:b2ContactSolverDef = new b2ContactSolverDef ();
+	solverDef.contacts = m_contacts;
+	solverDef.count = m_contactCount;
+	solverDef.allocator = m_allocator;
+	solverDef.impulseRatio = step.dtRatio;
+	solverDef.warmStarting = step.warmStarting;
+
+	//b2ContactSolver contactSolver(solverDef);
+	var contactSolver:b2ContactSolver = new b2ContactSolver (solverDef);
+
+	contactSolver.InitializeVelocityConstraints();
+
+	if (step.warmStarting)
+	{
+		contactSolver.WarmStart();
+	}
+	
 	for (i = 0; i < m_jointCount; ++i)
 	{
 		(m_joints[i] as b2Joint).InitVelocityConstraints(step);
@@ -288,7 +302,9 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 
 		// Check for large velocities.
 		//b2Vec2 translation = step.dt * b->m_linearVelocity;
-		var translation:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (step.dt * b.m_linearVelocity.x, step.dt * b.m_linearVelocity.y);
+		var translation:b2Vec2 = sTranslation; // hacking
+		translation.x = step.dt * b.m_linearVelocity.x;
+		translation.y = step.dt * b.m_linearVelocity.y;
 		
 		if (b2Math.b2Dot2(translation, translation) > mWorld.b2_maxTranslationSquared)
 		{
@@ -391,6 +407,141 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 			}
 		}
 	}
+}
+
+public function SolveTOI(subStep:b2TimeStep, bodyA:b2Body, bodyB:b2Body):void
+{
+	var solverDef:b2ContactSolverDef = new b2ContactSolverDef ();
+	solverDef.contacts = m_contacts;
+	solverDef.count = m_contactCount;
+	solverDef.allocator = m_allocator;
+	solverDef.impulseRatio = subStep.dtRatio;
+	solverDef.warmStarting = subStep.warmStarting;
+	//b2ContactSolver contactSolver(solverDef);
+	var contactSolver:b2ContactSolver = new b2ContactSolver (solverDef);
+
+	// Solve position constraints.
+	const k_toiBaumgarte:Number = 0.75;
+	var i:int;
+	for (i = 0; i < subStep.positionIterations; ++i)
+	{
+		var contactsOkay:Boolean = contactSolver.SolveTOIPositionConstraints(k_toiBaumgarte, bodyA, bodyB);
+		if (contactsOkay)
+		{
+			break;
+		}
+
+		if (i == subStep.positionIterations - 1)
+		{
+			i += 0; // ?
+		}
+	}
+
+//#if 0
+//	// Is the new position really safe?
+//	for (int32 i = 0; i < m_contactCount; ++i)
+//	{
+//		b2Contact* c = m_contacts[i];
+//		b2Fixture* fA = c->GetFixtureA();
+//		b2Fixture* fB = c->GetFixtureB();
+//
+//		b2Body* bA = fA->GetBody();
+//		b2Body* bB = fB->GetBody();
+//
+//		int32 indexA = c->GetChildIndexA();
+//		int32 indexB = c->GetChildIndexB();
+//
+//		b2DistanceInput input;
+//		input.proxyA.Set(fA->GetShape(), indexA);
+//		input.proxyB.Set(fB->GetShape(), indexB);
+//		input.transformA = bA->GetTransform();
+//		input.transformB = bB->GetTransform();
+//		input.useRadii = false;
+//
+//		b2DistanceOutput output;
+//		b2SimplexCache cache;
+//		cache.count = 0;
+//		b2Distance(&output, &cache, &input);
+//
+//		if (output.distance == 0 || cache.count == 3)
+//		{
+//			cache.count += 0;
+//		}
+//	}
+//#endif
+
+	// Leap of faith to new safe state.
+	var sweep:b2Sweep;
+	for (i = 0; i < m_bodyCount; ++i)
+	{
+		sweep = (m_bodies[i] as b2Body).m_sweep;
+		sweep.a0 = sweep.a;
+		sweep.c0.x = sweep.c.x;
+		sweep.c0.y = sweep.c.y;
+	}
+
+	// No warm starting is needed for TOI events because warm
+	// starting impulses were applied in the discrete solver.
+	contactSolver.InitializeVelocityConstraints();
+
+	// Solve velocity constraints.
+	for (i = 0; i < subStep.velocityIterations; ++i)
+	{
+		contactSolver.SolveVelocityConstraints();
+	}
+
+	// Don't store the TOI contact forces for warm starting
+	// because they can be quite large.
+
+	// Integrate positions.
+	for (i = 0; i < m_bodyCount; ++i)
+	{
+		var b:b2Body = m_bodies[i] as b2Body;
+
+		if (b.GetType() == b2Body.b2_staticBody)
+		{
+			continue;
+		}
+
+		// Check for large velocities.
+		//b2Vec2 translation = subStep.dt * b->m_linearVelocity;
+		var translation:b2Vec2 = sTranslation; // hacking
+		translation.x = subStep.dt * b.m_linearVelocity.x;
+		translation.y = subStep.dt * b.m_linearVelocity.y;
+		if (b2Math.b2Dot2 (translation, translation) >  mWorld.b2_maxTranslationSquared)
+		{
+			translation.Normalize();
+			//b->m_linearVelocity = (b2_maxTranslation * subStep.inv_dt) * translation;
+			var ratio:Number = mWorld.b2_maxTranslation * subStep.inv_dt;
+			b.m_linearVelocity.x = ratio * translation.x;
+			b.m_linearVelocity.y = ratio * translation.y;
+		}
+
+		var rotation:Number = subStep.dt * b.m_angularVelocity;
+		if (rotation * rotation > b2Settings.b2_maxRotationSquared)
+		{
+			if (rotation < 0.0)
+			{
+				b.m_angularVelocity = -subStep.inv_dt * b2Settings.b2_maxRotation;
+			}
+			else
+			{
+				b.m_angularVelocity = subStep.inv_dt * b2Settings.b2_maxRotation;
+			}
+		}
+
+		// Integrate
+		b.m_sweep.c.x += subStep.dt * b.m_linearVelocity.x;
+		b.m_sweep.c.y += subStep.dt * b.m_linearVelocity.y;
+		b.m_sweep.a += subStep.dt * b.m_angularVelocity;
+
+		// Compute new transform
+		b.SynchronizeTransform();
+
+		// Note: shapes are synchronized later.
+	}
+
+	Report(contactSolver.m_constraints);
 }
 
 private static var mContactImpulse:b2ContactImpulse = new b2ContactImpulse ();

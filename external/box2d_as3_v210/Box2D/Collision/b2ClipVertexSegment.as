@@ -5,8 +5,8 @@ package Box2D.Collision
 	/// Used for computing contact manifolds.
 	public class b2ClipVertexSegment
 	{
-		public var cv1:b2ClipVertex = new b2ClipVertex ();
-		public var cv2:b2ClipVertex = new b2ClipVertex ();
+		public var clipVertex0:b2ClipVertex = new b2ClipVertex ();
+		public var clipVertex1:b2ClipVertex = new b2ClipVertex ();
 		
 		public function b2ClipVertexSegment ()
 		{
@@ -14,8 +14,8 @@ package Box2D.Collision
 		
 		public function GetClipVertexById (id:int):b2ClipVertex
 		{
-			if (id == 0) return cv1;
-			if (id == 1) return cv2;
+			if (id == 0) return clipVertex0;
+			if (id == 1) return clipVertex1;
 			return null;
 		}
 		

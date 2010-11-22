@@ -742,12 +742,7 @@ public function SetMaxMotorForce(force:Number):void
 	m_maxMotorForce = force;
 }
 
-public function GetMotorForce():Number
+public function GetMotorForce(inv_dt:Number):Number
 {
-	return m_motorImpulse;
+	return inv_dt * m_motorImpulse;
 }
-
-
-
-
-

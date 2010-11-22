@@ -194,11 +194,11 @@ public static function b2CollideEdgeAndCircle(manifold:b2Manifold,
 	//b2Assert(den > 0.0f);
 	//b2Vec2 P = (1.0f / den) * (u * A + v * B);
 	var u_den:Number = u / den, v_den:Number = v / den;
-	P3.x = (u_den * A.x + v_den * B.x)
-	P3.y = (u_den * A.y + v_den * B.y)
+	P3.x = (u_den * A.x + v_den * B.x);
+	P3.y = (u_den * A.y + v_den * B.y);
 	//b2Vec2 d = Q - P;
-	d3.x = Q.x - P3.y;
-	d3.y = Q.x - P3.y;
+	d3.x = Q.x - P3.x;
+	d3.y = Q.y - P3.y;
 	var dd3:Number = b2Math.b2Dot2 (d3, d3);
 	if (dd3 > radius * radius)
 	{

@@ -11,7 +11,7 @@ package Box2D.Collision
 		//b2Vec2 normals[b2_maxPolygonVertices];
 		public var vertices:Array;
 		public var normals:Array;
-		public var centroid:b2Vec2;
+		public var centroid:b2Vec2 = new b2Vec2 ();
 		public var count:int;
 
 		public function b2EPProxy ()

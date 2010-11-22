@@ -3,14 +3,14 @@ package player.physics {
    
    import flash.geom.Point;
    
-   import Box2D.Collision.Shapes.b2Shape;
    import Box2D.Common.b2Vec2;
    import Box2D.Common.b2Settings;
    
-   //import Box2D.Collision.Shapes.b2CircleDef;
-   //import Box2D.Collision.Shapes.b2PolygonDef;
+   import Box2D.Collision.Shapes.b2Shape;
    import Box2D.Collision.Shapes.b2CircleShape;
    import Box2D.Collision.Shapes.b2PolygonShape;
+   import Box2D.Collision.Shapes.b2EdgeShape;
+   
    import Box2D.Collision.Shapes.b2MassData;
    
    import Box2D.Dynamics.b2Fixture;
@@ -307,8 +307,6 @@ package player.physics {
          var dy:Number;
          var fixture:b2Fixture;
          
-         var polygon_shape:b2PolygonShape = new b2PolygonShape ();
-         
          if (halfCurveThickness + halfCurveThickness < b2Settings.b2_epsilon)
          {
             if (vertexCount < 2)
@@ -325,6 +323,8 @@ package player.physics {
                vertexId2 = 1;
             }
             
+            var edgeShape:b2EdgeShape = new b2EdgeShape ();
+            
             for (; vertexId2 < vertexCount; ++ vertexId2)
             {
                vertex2 = bodyLocalVertexes [vertexId2];
@@ -334,9 +334,11 @@ package player.physics {
                if (dx > - b2Settings.b2_epsilon && dx < b2Settings.b2_epsilon && dy > - b2Settings.b2_epsilon && dy < b2Settings.b2_epsilon)
                   continue;
                
-//               polygon_shape.SetAsEdge (vertex1, vertex2);
+               //polygon_shape.SetAsEdge (vertex1, vertex2);
+               //fixture_def.shape = polygon_shape;
                
-               fixture_def.shape = polygon_shape;
+               edgeShape.Set (vertex1, vertex2);
+               fixture_def.shape = edgeShape;
                
                // ...
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
@@ -375,6 +377,7 @@ package player.physics {
             var borderRectVertexes:Array = [p0, p1, p2, p3];
             
             var circle_shape:b2CircleShape = new b2CircleShape ();
+            var polygon_shape:b2PolygonShape = new b2PolygonShape ();
             
             vertex1 = firstVertex;
             

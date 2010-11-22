@@ -119,6 +119,23 @@ package Box2D.Collision.Shapes
 			m_vertices = null;
 			m_count = 0;
 		}
+		
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
+		// call by b2Body
+		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number):void
+		{
+			
+			for (var i:int = 0; i < m_count; ++ i)
+			{
+				var vertex:b2Vec2 = m_vertices [i];
+				vertex.x += dx;
+				vertex.y += dy;
+			}
+		}
+		
 	} // class
 } // package
 //#endif

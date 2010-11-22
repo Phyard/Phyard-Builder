@@ -79,6 +79,31 @@ package Box2D.Collision.Shapes
 			m_hasVertex0 = false;
 			m_hasVertex3 = false;
 		}
+		
+//***********************************************************************
+// hackings
+//***********************************************************************
+		
+		// call by b2Body
+		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number):void
+		{
+			m_vertex1.x += dx;
+			m_vertex1.y += dy;
+			m_vertex2.x += dx;
+			m_vertex2.y += dy;
+			
+			if (m_hasVertex0)
+			{
+				m_vertex0.x += dx;
+				m_vertex0.y += dy;
+			}
+			if (m_hasVertex3)
+			{
+				m_vertex3.x += dx;
+				m_vertex3.y += dy;
+			}
+		}
+		
 	} // class
 } // package
 //#endif

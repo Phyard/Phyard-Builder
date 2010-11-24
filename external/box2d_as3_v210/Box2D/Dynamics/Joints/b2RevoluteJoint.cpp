@@ -496,17 +496,17 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 		K.col1.y = K1.col1.y + K2.col1.y + K3.col1.y;	K.col2.y = K1.col2.y + K2.col2.y + K3.col2.y;
 		//b2Vec2 impulse = K.Solve(-C);
 		tempV.x = - CVec2.x; tempV.y = - CVec2.y;
-		impulse = K.Solve (tempV);
+		var impulseVec2:b2Vec2 = K.Solve (tempV);
 
 		//b1->m_sweep.c -= b1->m_invMass * impulse;
-		b1.m_sweep.c.x -= b1.m_invMass * impulse.x;
-		b1.m_sweep.c.y -= b1.m_invMass * impulse.y;
-		b1.m_sweep.a -= b1.m_invI * b2Math.b2Cross2 (r1, impulse);
+		b1.m_sweep.c.x -= b1.m_invMass * impulseVec2.x;
+		b1.m_sweep.c.y -= b1.m_invMass * impulseVec2.y;
+		b1.m_sweep.a -= b1.m_invI * b2Math.b2Cross2 (r1, impulseVec2);
 
 		//b2->m_sweep.c += b2->m_invMass * impulse;
-		b2.m_sweep.c.x += b2.m_invMass * impulse.x;
-		b2.m_sweep.c.y += b2.m_invMass * impulse.y;
-		b2.m_sweep.a += b2.m_invI * b2Math.b2Cross2 (r2, impulse);
+		b2.m_sweep.c.x += b2.m_invMass * impulseVec2.x;
+		b2.m_sweep.c.y += b2.m_invMass * impulseVec2.y;
+		b2.m_sweep.a += b2.m_invI * b2Math.b2Cross2 (r2, impulseVec2);
 
 		b1.SynchronizeTransform();
 		b2.SynchronizeTransform();

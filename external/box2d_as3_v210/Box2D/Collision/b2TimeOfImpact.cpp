@@ -54,8 +54,9 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 	const proxyA:b2DistanceProxy = input.proxyA;
 	const proxyB:b2DistanceProxy = input.proxyB;
 
-	var sweepA:b2Sweep = input.sweepA; //.Clone ();
-	var sweepB:b2Sweep = input.sweepB; //.Clone ();
+	//!!! Must be clones here !!!
+	var sweepA:b2Sweep = input.sweepA.Clone ();
+	var sweepB:b2Sweep = input.sweepB.Clone ();
 
 	// Large rotations can make the root finder fail, so we normalize the
 	// sweep angles.

@@ -14,7 +14,7 @@ package Box2D.Collision
 			return ((indexA & 0xFF) << 24) | ((indexB & 0xFF) << 16) | ((typeA & 0xF) << 12) | ((typeB & 0xF) << 4);
 		}
 		
-		public static function ContactID_FlipFeature (feature:int):uint
+		public static function ContactID_SetFlip (feature:int):uint
 		{
 			return ((feature & 0xFF00F000) >> 8) | ((feature & 0x00FF00F0) << 8) | (1 & 0x00000F0F);
 		}

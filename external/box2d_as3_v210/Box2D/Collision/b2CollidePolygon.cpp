@@ -385,7 +385,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 				//cp->id.cf.indexB = cf.indexA;
 				//cp->id.cf.typeA = cf.typeB;
 				//cp->id.cf.typeB = cf.typeA;
-				cp.id = b2ContactID.ContactID_FlipFeature (cp.id);
+				cp.id = b2ContactID.ContactID_SetFlip (cp.id);
 			}
 			++pointCount;
 		}

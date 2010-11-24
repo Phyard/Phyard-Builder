@@ -2497,7 +2497,12 @@ package editor {
             if ((mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
                height += 20;
             
-            values.mEmbedCode = "<embed src=\"http://www.phyard.com/uniplayer.swf?app=ci&format=0x0152\"\n width=\'" + width + "\" height=\"" + height + "\"\n"
+            var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
+            var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+            
+            values.mEmbedCode = "<embed src=\"http://www.phyard.com/uniplayer.swf?app=ci&format=0x" 
+                              + (majorVersion < 16 ? "0" : "") + majorVersion.toString (16) + (minorVersion < 16 ? "0" : "") + minorVersion.toString (16) 
+                              + "\"\n width=\"" + width + "\" height=\"" + height + "\"\n"
                               + "  FlashVars=\"playcode=" + values.mHexString
                               + "\"\n  quality=\"high\" allowScriptAccess=\"sameDomain\"\n  type=\"application/x-shockwave-flash\"\n  pluginspage=\"http://www.macromedia.com/go/getflashplayer\">\n</embed>"
                                 ;

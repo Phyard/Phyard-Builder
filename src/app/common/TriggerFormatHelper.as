@@ -1096,7 +1096,7 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int):void
       {
          var funcCallingDefine:FunctionCallingDefine;
          var i:int;
@@ -1122,22 +1122,28 @@ package common {
                funcDclaration = editorWorld.GetFunctionManager ().GetFunctionByIndex (functionId).GetFunctionDeclaration ();
             }
             
-            if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
+            if (isCustomCodeSnippet)
             {
-               var numInputs:int = funcCallingDefine.mNumInputs;
-               for (j = 0; j < numInputs; ++ j)
-               {
-                  ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
-               }
-               
-               var numOutputs:int = funcCallingDefine.mNumOutputs;
-               for (j = 0; j < numOutputs; ++ j)
-               {
-                  ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
-               }
             }
-            else
+            else // only apply for main scene code snippets
             {
+               //if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Core)
+               //{
+                  var numInputs:int = funcCallingDefine.mNumInputs;
+                  for (j = 0; j < numInputs; ++ j)
+                  {
+                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+                  }
+                  
+                  var numOutputs:int = funcCallingDefine.mNumOutputs;
+                  for (j = 0; j < numOutputs; ++ j)
+                  {
+                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+                  }
+               //}
+               //else
+               //{
+               //}
             }
          }
       }

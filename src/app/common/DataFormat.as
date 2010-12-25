@@ -1381,7 +1381,7 @@ package common {
             functionEntity.UpdateAppearance ();
             functionEntity.UpdateSelectionProxy ();
             
-            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
+            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
             TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionEntity.GetCodeSnippet (), functionEntity.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
          }
          //<<<
@@ -1451,7 +1451,7 @@ package common {
                {
                   var condition:EntityBasicCondition = entityDefine.mEntity as EntityBasicCondition;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, condition.GetCodeSnippet (), condition.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
@@ -1528,14 +1528,14 @@ package common {
                   }
                   //<<
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   var action:EntityAction = entityDefine.mEntity as EntityAction;
                   
-                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
+                  TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, action.GetCodeSnippet (), action.GetCodeSnippet ().GetOwnerFunctionDefinition ());
                }
             }

@@ -1366,9 +1366,7 @@ package common {
             functionEntity = editorWorld.GetFunctionManager ().CreateEntityFunction ();
             functionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
             
-            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
             TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionEntity.GetCodeSnippet (), functionEntity.GetCodeSnippet ().GetOwnerFunctionDefinition (), true ,false);
-            
             functionEntity.GetFunctionDefinition ().SybchronizeDeclarationWithDefinition ();
          }
          
@@ -1383,6 +1381,7 @@ package common {
             functionEntity.UpdateAppearance ();
             functionEntity.UpdateSelectionProxy ();
             
+            TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
             TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionEntity.GetCodeSnippet (), functionEntity.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
          }
          //<<<

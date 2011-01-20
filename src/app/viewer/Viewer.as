@@ -296,12 +296,12 @@ package viewer {
                var loadDataUrl:String;
                if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0)  // for play, add the return published revison id
                {
-                  loadDataUrl = mUniViewerUrl.replace (/\/uniplayer\.*swf/, "/i/design/loaddata");
+                  loadDataUrl = mUniViewerUrl.replace (/\/uniplayer\.*swf/, "/api/design/loaddata");
                   loadDataUrl = loadDataUrl + "&revision=" + designRevision;
                }
                else // for view, the revision is already caontained in mUniViewerUrl
                {
-                  loadDataUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/i/design/loaddata");
+                  loadDataUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loaddata");
                   loadDataUrl = loadDataUrl + "&view=1"; // indication for view
                }
                
@@ -673,7 +673,9 @@ package viewer {
             }
             
             // special handling, before v1.02 (not include v1.02)
-            if (mWorldPluginProperties.mWorldVersion < 0x0102)
+            // (edit) ??? seems before v1.06 (including v1.06)
+            //if (mWorldPluginProperties.mWorldVersion < 0x0102)
+            if (mWorldPluginProperties.mWorldVersion <= 0x0106)
             {
                mWorldDesignProperties.Update (0, 1);
             }

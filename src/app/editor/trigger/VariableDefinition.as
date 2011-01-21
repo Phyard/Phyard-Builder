@@ -39,7 +39,9 @@ package editor.trigger {
             case ValueTypeDefine.ValueType_Entity:
                return ValidateValueObject_Entity (value);
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return ValidateValueObject_CollisiontCategory (valueType);
+               return ValidateValueObject_CollisiontCategory (value);
+            case ValueTypeDefine.ValueType_Array:
+               return ValidateValueObject_Array (value);
             default:
                return value;
          }
@@ -59,6 +61,8 @@ package editor.trigger {
                return "Entity";
             case ValueTypeDefine.ValueType_CollisionCategory:
                return "CCat";
+            case ValueTypeDefine.ValueType_Array:
+               return "Array";
             default:
                return "void";
          }
@@ -77,6 +81,8 @@ package editor.trigger {
             case ValueTypeDefine.ValueType_Entity:
                return null;
             case ValueTypeDefine.ValueType_CollisionCategory:
+               return null;
+            case ValueTypeDefine.ValueType_Array:
                return null;
             default:
                return undefined;
@@ -103,6 +109,11 @@ package editor.trigger {
             category = null;
          
          return category;
+      }
+      
+      public static function ValidateValueObject_Array (valueObject:Object):Object
+      {
+         return null; // currently
       }
       
    //========================================================================================================
@@ -490,6 +501,9 @@ package editor.trigger {
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
                   mPropertyVariableDefinition = new VariableDefinitionCollisionCategory ("CCat Property");
+                  break;
+               case ValueTypeDefine.ValueType_Array:
+                  mPropertyVariableDefinition = new VariableDefinitionArray ("Array Property");
                   break;
                default:
                {

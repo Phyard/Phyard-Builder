@@ -24,7 +24,7 @@
          <mx:VBox id="Box_VariableProperties" width="100%" height="100%">
             <mx:Spacer height="3" />
             <mx:RadioButtonGroup id="VariableType" enabled="false"/>
-            <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+            <!--mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="16" />
                <mx:HBox width="67%" borderStyle="none" borderThickness="0">
                   <mx:RadioButton groupName="VariableType" enabled="false" width="50%" id="RadioButton_BooleanType" value="Booelan" label="Boolean" />
@@ -38,7 +38,7 @@
                <mx:RadioButton groupName="VariableType" enabled="false" width="67%" id="RadioButton_CCatType" value="CCat" label="Collision Category" />
                <mx:RadioButton groupName="VariableType" enabled="false" width="33%" id="RadioButton_EntityType" value="Booelan" label="Entity" />
                <mx:Spacer width="6" />
-            </mx:HBox>
+            </mx:HBox-->
             <mx:HBox width="100%" borderStyle="none" borderThickness="0">
                <mx:Spacer width="3" />
                <mx:Label width="35%" text="Name:" textAlign="right" />
@@ -88,6 +88,14 @@
                      <mx:Spacer width="3" />
                   </mx:HBox>
                </mx:VBox>
+               <mx:VBox id="Box_EntityArraySettingPanel" width="100%" height="100%">
+                  <mx:HBox width="100%" borderStyle="none" borderThickness="0">
+                     <mx:Spacer width="3" />
+                     <mx:Label width="35%" text="Default Value:" textAlign="right" />
+                     <mx:Label width="65%" text="null" textAlign="left" />
+                     <mx:Spacer width="3" />
+                  </mx:HBox>
+               </mx:VBox>
             </mx:ViewStack>
          </mx:VBox>
       </mx:ViewStack>
@@ -100,7 +108,7 @@
          <menuitem label="New String Variable" data="String"/>
          <menuitem label="New Collision Category Variable" data="CCat"/>
          <menuitem label="New Entity Variable" data="Entity"/>
-         <!--menuitem label="New Array Variable" data="Array"/-->
+         <menuitem label="New Array Variable" data="Array"/>
       </root>
    </mx:XML>
 
@@ -347,31 +355,36 @@
                   
                   if (variableDefinition is VariableDefinitionBoolean)
                   {
-                     RadioButton_BooleanType.selected = true;
+                     //RadioButton_BooleanType.selected = true;
                      DefaultBooleanValue.selectedValue = (variableInstance.GetValueObject () as Boolean) ? "true" : "false";
                      ViewStack_VariableSetting.selectedChild = Box_BooleanVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionNumber)
                   {
-                     RadioButton_NumberType.selected = true;
+                     //RadioButton_NumberType.selected = true;
                      Text_DefaultNumberValue.text = "" + (variableInstance.GetValueObject () as Number);
                      ViewStack_VariableSetting.selectedChild = Box_NumberVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionString)
                   {
-                     RadioButton_StringType.selected = true;
+                     //RadioButton_StringType.selected = true;
                      Text_DefaultStringValue.text = (variableInstance.GetValueObject () as String);
                      ViewStack_VariableSetting.selectedChild = Box_StringVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionCollisionCategory)
                   {
-                     RadioButton_CCatType.selected = true;
+                     //RadioButton_CCatType.selected = true;
                      ViewStack_VariableSetting.selectedChild = Box_CCatVariableSettingPanel;
                   }
                   else if (variableDefinition is VariableDefinitionEntity)
                   {
-                     RadioButton_EntityType.selected = true;
+                     //RadioButton_EntityType.selected = true;
                      ViewStack_VariableSetting.selectedChild = Box_EntityVariableSettingPanel;
+                  }
+                  else if (variableDefinition is VariableDefinitionArray)
+                  {
+                     //RadioButton_ArrayType.selected = true;
+                     ViewStack_VariableSetting.selectedChild = Box_EntityArraySettingPanel;
                   }
                   else
                   {
@@ -414,7 +427,7 @@
                if (selectedIndex < 0)
                   return;
                
-               if (RadioButton_BooleanType.selected)
+               //if (RadioButton_BooleanType.selected)
                {
                   var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
                   var variableInstance:VariableInstance = item.mData;
@@ -440,7 +453,7 @@
                if (selectedIndex < 0)
                   return;
                
-               if (RadioButton_NumberType.selected)
+               //if (RadioButton_NumberType.selected)
                {
                   var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
                   var variableInstance:VariableInstance = item.mData;
@@ -470,7 +483,7 @@
                if (selectedIndex < 0)
                   return;
                
-               if (RadioButton_StringType.selected)
+               //if (RadioButton_StringType.selected)
                {
                   var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
                   var variableInstance:VariableInstance = item.mData;
@@ -496,7 +509,7 @@
                if (selectedIndex < 0)
                   return;
                
-               if (RadioButton_CCatType.selected)
+               //if (RadioButton_CCatType.selected)
                {
                   var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
                   var variableInstance:VariableInstance = item.mData;
@@ -522,7 +535,7 @@
                if (selectedIndex < 0)
                   return;
                
-               if (RadioButton_EntityType.selected)
+               //if (RadioButton_EntityType.selected)
                {
                   var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
                   var variableInstance:VariableInstance = item.mData;
@@ -531,6 +544,32 @@
                   {
                      variableDefinitionEntity = new VariableDefinitionEntity (Text_Name.text);
                      variableInstance.SetVariableDefinition (variableDefinitionEntity);
+                     
+                     OnNameChanged ()
+                  }
+                  
+                  // variableInstance.SetValueObject (Text_DefaultStringValue.text);
+               }
+            }
+            
+            public function OnArrayVariableSettingChanged ():void
+            {
+               if (mVariableSpace == null)
+                  return;
+               
+               var selectedIndex:int = List_Variables.selectedIndex;
+               if (selectedIndex < 0)
+                  return;
+               
+               //if (RadioButton_ArrayType.selected)
+               {
+                  var item:Object  = List_Variables.dataProvider.getItemAt (selectedIndex);
+                  var variableInstance:VariableInstance = item.mData;
+                  var variableDefinitionArray:VariableDefinitionArray = variableInstance.GetVariableDefinition () as VariableDefinitionArray;
+                  if (variableDefinitionArray == null)
+                  {
+                     variableDefinitionArray = new VariableDefinitionArray (Text_Name.text);
+                     variableInstance.SetVariableDefinition (variableDefinitionArray);
                      
                      OnNameChanged ()
                   }

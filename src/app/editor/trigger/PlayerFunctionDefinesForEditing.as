@@ -48,6 +48,7 @@ package editor.trigger {
             var convert_package:FunctionMenuGroup            = new FunctionMenuGroup ("Conversion", number_package);
          var string_package:FunctionMenuGroup = new FunctionMenuGroup ("String", sGlobalMenuGroup);
          var bool_package:FunctionMenuGroup   = new FunctionMenuGroup ("Boolean", sGlobalMenuGroup);
+         var array_package:FunctionMenuGroup   = new FunctionMenuGroup ("Array", sGlobalMenuGroup);
          
          var world_general_package:FunctionMenuGroup  = new FunctionMenuGroup ("General", sWorldMenuGroup);
          var ccat_package:FunctionMenuGroup    = new FunctionMenuGroup ("CCat", sWorldMenuGroup);
@@ -92,6 +93,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Sensor"), 
                              new VariableDefinitionString ("Text"), 
                              new VariableDefinitionCollisionCategory ("Collision Category"),
+                             new VariableDefinitionArray ("Array"),
                           ],
                           [
                              new VariableDefinitionEntity ("Shape"), 
@@ -99,6 +101,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Sensor"), 
                              new VariableDefinitionString ("Text"), 
                              new VariableDefinitionCollisionCategory ("Collision Category"),
+                             new VariableDefinitionArray ("Array"),
                           ]
                        );
          }
@@ -452,6 +455,84 @@ package editor.trigger {
                      ],
                      [
                              new VariableDefinitionBoolean ("Result"), 
+                     ]
+                  );
+          
+       // array
+          
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Assign, array_package, "= (Array Assign)", "@#0 = $0", "@#0 = $0",
+                     [
+                              new VariableDefinitionArray ("Source"), 
+                     ], 
+                     [
+                              new VariableDefinitionArray ("Target"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ConditionAssign, array_package, "=? (Condition Assign)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
+                     [
+                              new VariableDefinitionBoolean ("Condition Result"), 
+                              new VariableDefinitionArray ("True Source"), 
+                              new VariableDefinitionArray ("False Source"), 
+                     ], 
+                     [
+                              new VariableDefinitionArray ("Target"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SwapValues, array_package, "Swap Array Values", "@$0 &lt;-&gt; $1", "SwapArrayValues",
+                     [
+                              new VariableDefinitionArray ("Array 1 (reference)", null), 
+                              new VariableDefinitionArray ("Array 2 (reference)", null), 
+                     ], 
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Equals, array_package, "Array == Array?", "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+                     [
+                              new VariableDefinitionArray ("Array 1"), 
+                              new VariableDefinitionArray ("Array 2"), 
+                     ], 
+                     [
+                             new VariableDefinitionBoolean ("Result"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Create, array_package, "Create Array", null, null,
+                     [
+                              new VariableDefinitionNumber ("Initial Length"), 
+                     ], 
+                     [
+                              new VariableDefinitionArray ("Target"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_IsNull, array_package, "Is Null Array", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                     ], 
+                     [
+                              new VariableDefinitionBoolean ("Is Null?"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Length, array_package, "Get Array Length", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                     ], 
+                     [
+                              new VariableDefinitionNumber ("Array Length"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber, array_package, "Set Element With Number", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                              new VariableDefinitionNumber ("Element Value (Number)"), 
+                     ], 
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsNumber, array_package, "Get Element As Number", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                     ], 
+                     [
+                              new VariableDefinitionNumber ("Element Value (Number)"), 
                      ]
                   );
           

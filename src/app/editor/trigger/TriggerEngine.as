@@ -45,6 +45,7 @@ package editor.trigger {
       private var mRegisterVariableSpace_Number           :VariableSpaceRegister;
       private var mRegisterVariableSpace_Entity           :VariableSpaceRegister;
       private var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
+      private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
       
       // custom global variables
       private var mGlobalVariableSpace:VariableSpaceGlobal;
@@ -71,6 +72,7 @@ package editor.trigger {
          mRegisterVariableSpace_Number            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Number);
          mRegisterVariableSpace_Entity            = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Entity);
          mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_CollisionCategory);
+         mRegisterVariableSpace_Array             = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Array);
          
          // custom global variable space
          
@@ -174,6 +176,8 @@ package editor.trigger {
                return mRegisterVariableSpace_Entity;
             case ValueTypeDefine.ValueType_CollisionCategory:
                return mRegisterVariableSpace_CollisionCategory;
+            case ValueTypeDefine.ValueType_Array:
+               return mRegisterVariableSpace_Array;
             default:
                return null;
          }

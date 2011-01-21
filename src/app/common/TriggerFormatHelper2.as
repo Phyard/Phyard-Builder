@@ -597,19 +597,19 @@ package common {
          return value_target;
       }
       
-      private static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueobject:Object):Object
+      private static function ValidateDirectValueObject_Define2Object (playerWorld:World, valueType:int, valueObject:Object):Object
       {
          switch (valueType)
          {
             case ValueTypeDefine.ValueType_Boolean:
-               return valueobject as Boolean;
+               return valueObject as Boolean;
             case ValueTypeDefine.ValueType_Number:
-               return valueobject as Number;
+               return valueObject as Number;
             case ValueTypeDefine.ValueType_String:
-               return valueobject as String;
+               return valueObject as String;
             case ValueTypeDefine.ValueType_Entity:
             {
-               var entityIndex:int = valueobject as int;
+               var entityIndex:int = valueObject as int;
                if (entityIndex < 0)
                {
                   if (entityIndex == Define.EntityId_Ground)
@@ -623,7 +623,16 @@ package common {
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return playerWorld.GetCollisionCategoryById (valueobject as int);
+               return playerWorld.GetCollisionCategoryById (valueObject as int);
+            case ValueTypeDefine.ValueType_Array:
+               //if (valueObject == null)
+               //{
+                  return null;
+               //}
+               //else
+               //{
+               //   
+               //}
             default:
             {
                return null;
@@ -828,6 +837,22 @@ package common {
                return binFile.readInt ();
             case ValueTypeDefine.ValueType_CollisionCategory:
                return binFile.readInt ();
+            case ValueTypeDefine.ValueType_Array:
+               var nullArray:Boolean = binFile.readByte () == 0;
+               //if (nullArray == null) 
+               //{
+                  return null;
+               //}
+               //else
+               //{
+               //   var values:Array = valueObject as Array;
+               //   if (values.length > 1024)
+               //      throw new Error ("array i too length: " + values.length);
+               //   
+               //   binFile.writeShort (values.length);
+               //}
+               
+               break;
             default:
             {
                throw new Error ("! bad value");
@@ -987,7 +1012,11 @@ package common {
             
             try
             {
-               elementValueSource.@direct_value = ValidateDirectValueObject_Define2Xml (valueType, direct_source_define.mValueObject);
+               var directValue:Object = ValidateDirectValueObject_Define2Xml (valueType, direct_source_define.mValueObject);
+               if (directValue != null)
+               {
+                  elementValueSource.@direct_value = directValue;
+               }
             }
             catch (err:Error)
             {
@@ -1059,6 +1088,15 @@ package common {
                return valueObject as int;
             case ValueTypeDefine.ValueType_CollisionCategory:
                return valueObject as int;
+            case ValueTypeDefine.ValueType_Array:
+               //if (valueObject == null) 
+               //{
+                  return null;
+               //}
+               //else 
+               //{
+               //   
+               //}
             default:
             {
                throw new Error ("! wrong value");
@@ -1093,7 +1131,11 @@ package common {
             
             if (supportInitalValues)
             {
-               element.@initial_value = ValidateDirectValueObject_Define2Xml (viDefine.mDirectValueSourceDefine.mValueType, viDefine.mDirectValueSourceDefine.mValueObject);
+               var directValue:Object = ValidateDirectValueObject_Define2Xml (viDefine.mDirectValueSourceDefine.mValueType, viDefine.mDirectValueSourceDefine.mValueObject);
+               if (directValue != null)
+               {
+                  element.@initial_value = directValue;
+               }
             }
             
             elementVariablePackage.appendChild (element);

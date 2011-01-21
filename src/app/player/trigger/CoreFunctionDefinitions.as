@@ -110,12 +110,24 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Not,               BoolNot);
          RegisterCoreFunction (CoreFunctionIds.ID_Bool_Xor,               BoolXor);
          
-         // math ops
+      // array
          
-         RegisterCoreFunction (CoreFunctionIds.ID_Number_Assign,                     AssignNumber);
-         RegisterCoreFunction (CoreFunctionIds.ID_Number_ConditionAssign,            ConditionAssignNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_Assign,               AssignArray);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_ConditionAssign,      ConditionAssignArray);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SwapValues,           SwapArrayValues);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_Equals,               EqualsWith_Arrays);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_Create,               CreateArray);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_Length,               GetArrayLength);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithNumber,     SetArrayElementWithNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsNumber,       GetArrayElementAsNumber);
+         
+      // math ops
+         
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Assign,               AssignNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_ConditionAssign,      ConditionAssignNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_SwapValues,           SwapNumberValues);
-         RegisterCoreFunction (CoreFunctionIds.ID_Number_Equals,      EqualsWith_Numbers);
+         RegisterCoreFunction (CoreFunctionIds.ID_Number_Equals,               EqualsWith_Numbers);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Number_IsNaN,               IsNaN);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_IsInfinity,          IsInfinity);
@@ -135,7 +147,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Divide,                     DivideTwoNumbers);
          RegisterCoreFunction (CoreFunctionIds.ID_Number_Modulo,                     ModuloTwoNumbers);
          
-         // math / bitwise
+      // math / bitwise
          
          RegisterCoreFunction (CoreFunctionIds.ID_Bitwise_ShiftLeft,             ShiftLeft);
          RegisterCoreFunction (CoreFunctionIds.ID_Bitwise_ShiftRight,            ShiftRight);
@@ -835,6 +847,16 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 == value2);
       }
       
+      public static function EqualsWith_Arrays (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value1:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueSource = valueSource.mNextParameter;
+         var value2:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueTarget.AssignValueObject (value1 == value2);
+      }
+      
       public static function LargerThan (valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
@@ -894,6 +916,112 @@ package player.trigger {
          var value2:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
          valueTarget.AssignValueObject (value1 != value2);
+      }
+      
+   //************************************************
+   // array
+   //************************************************
+         
+      public static function AssignArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueTarget.AssignValueObject (array);
+      }
+      
+      public static function ConditionAssignArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var condition:Boolean = Boolean (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var array1:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueSource = valueSource.mNextParameter;
+         var array2:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueTarget.AssignValueObject (condition ? array1 : array2);
+      }
+      
+      public static function SwapArrayValues(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array1:Array = valueSource.EvaluateValueObject () as Array;
+         
+         var source1:Parameter = valueSource;
+         
+         valueSource = valueSource.mNextParameter;
+         var array2:Array = valueSource.EvaluateValueObject () as Array;
+         
+         if (source1 is Parameter_Variable)
+            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (array2);
+         
+         if (valueSource is Parameter_Variable)
+            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (array1);
+      }
+      
+      public static function IsNullArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueTarget.AssignValueObject (array == null);
+      }
+      
+      public static function CreateArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var length:int = valueSource.EvaluateValueObject () as int;
+         if (length < 0)
+            length = 0;
+         
+         var array:Array = new Array (length);
+         valueTarget.AssignValueObject (array);
+      }
+      
+      public static function GetArrayLength (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueTarget.AssignValueObject (array == null ? 0 : array.length);
+      }
+      
+      public static function SetArrayElementWithNumber (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array:Array = valueSource.EvaluateValueObject () as Array;
+         if (array == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var index:int = valueSource.EvaluateValueObject () as int;
+         if (index < 0)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var value:Number = valueSource.EvaluateValueObject () as Number;
+         
+         //trace ("set index = " + index + ", value = " + value);
+         array [index] = value;
+      }
+      
+      public static function GetArrayElementAsNumber (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         do
+         {
+            var array:Array = valueSource.EvaluateValueObject () as Array;
+            if (array == null)
+               break;
+            
+            valueSource = valueSource.mNextParameter;
+            var index:int = valueSource.EvaluateValueObject () as int;
+            if (index < 0)
+               break;
+            
+            //trace ("- get index = " + index + ", value = " + (array [index] as Number));
+            valueTarget.AssignValueObject (array [index] as Number);
+            
+            return;
+         }
+         while (false);
+         
+         // for invalid params
+         valueTarget.AssignValueObject (undefined);
       }
       
    //************************************************

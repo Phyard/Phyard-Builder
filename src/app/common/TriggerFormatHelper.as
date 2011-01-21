@@ -37,6 +37,7 @@ package common {
    import editor.trigger.VariableDefinitionString;
    import editor.trigger.VariableDefinitionEntity;
    import editor.trigger.VariableDefinitionCollisionCategory;
+   import editor.trigger.VariableDefinitionArray;
    
    import common.trigger.FunctionTypeDefine;
    import common.trigger.ValueSourceTypeDefine;
@@ -266,7 +267,15 @@ package common {
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
                return editorWorld.GetCollisionManager ().GetCollisionCategoryIndex (valueObject as EntityCollisionCategory);
-               break;
+            case ValueTypeDefine.ValueType_Array:
+               //if (valueObject == null)
+               //{
+                  return null;
+               //}
+               //else
+               //{
+               //   
+               //}
             default:
             {
                throw new Error ("! wrong value");
@@ -559,24 +568,24 @@ package common {
          return value_target;
       }
       
-      private static function ValidateDirectValueObject_Define2Object (editorWorld:World, valueType:int, valueobject:Object):Object
+      private static function ValidateDirectValueObject_Define2Object (editorWorld:World, valueType:int, valueObject:Object):Object
       {
          switch (valueType)
          {
             case ValueTypeDefine.ValueType_Boolean:
-               return Boolean (valueobject);
+               return Boolean (valueObject);
             case ValueTypeDefine.ValueType_Number:
-               return Number (valueobject);
+               return Number (valueObject);
             case ValueTypeDefine.ValueType_String:
                // "as String in commented off, otherwise value_object will be always null, bug?!
                // re: add back  "as String", in xml -> define: String (valueSourceElement.@direct_value)
-               var text:String = valueobject as String
+               var text:String = valueObject as String
                if (text == null)
                   text = "";
                return text;
             case ValueTypeDefine.ValueType_Entity:
             {
-               var entityIndex:int = valueobject as int;
+               var entityIndex:int = valueObject as int;
                if (entityIndex < 0)
                {
                   if (entityIndex == Define.EntityId_Ground)
@@ -594,7 +603,16 @@ package common {
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
-               return editorWorld.GetCollisionManager ().GetCollisionCategoryByIndex (valueobject as int);
+               return editorWorld.GetCollisionManager ().GetCollisionCategoryByIndex (valueObject as int);
+            case ValueTypeDefine.ValueType_Array:
+               //if (valueObject == null)
+               //{
+                  return null;
+               //}
+               //else
+               //{
+               //   
+               //}
             default:
             {
                throw new Error ("!wrong balue");
@@ -640,6 +658,9 @@ package common {
                   break;
                case ValueTypeDefine.ValueType_CollisionCategory:
                   variableDefinition = new VariableDefinitionCollisionCategory (variableInstanceDefine.mName);
+                  break;
+               case ValueTypeDefine.ValueType_Array:
+                  variableDefinition = new VariableDefinitionArray (variableInstanceDefine.mName);
                   break;
                default:
                {
@@ -816,6 +837,23 @@ package common {
                break;
             case ValueTypeDefine.ValueType_CollisionCategory:
                binFile.writeInt (valueObject as int);
+               break;
+            case ValueTypeDefine.ValueType_Array:
+               //if (valueObject == null) 
+               //{
+                  binFile.writeByte (0);
+               //}
+               //else
+               //{
+               //   binFile.writeByte (1);
+               //   
+               //   var values:Array = valueObject as Array;
+               //   if (values.length > 1024)
+               //      throw new Error ("array i too length: " + values.length);
+               //   
+               //   binFile.writeShort (values.length);
+               //}
+               
                break;
             default:
             {
@@ -1051,6 +1089,15 @@ package common {
                return parseInt (String (direct_value));
             case ValueTypeDefine.ValueType_CollisionCategory:
                return parseInt (String (direct_value));
+            case ValueTypeDefine.ValueType_Array:
+               //if (direct_value == null) 
+               //{
+                  return null;
+               //}
+               //else 
+               //{
+               //   
+               //}
             default:
             {
                throw new Error ("! wrong value");

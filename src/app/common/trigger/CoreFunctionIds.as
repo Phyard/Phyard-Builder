@@ -79,6 +79,28 @@ package common.trigger {
       public static const ID_Bool_Not:int                        = IdPool.CoreApiId_232; // 
       public static const ID_Bool_Xor:int                        = IdPool.CoreApiId_233; // 
       
+   // array
+      
+      public static const ID_Array_Assign:int                = IdPool.CoreApiId_80; // 
+      public static const ID_Array_ConditionAssign:int       = IdPool.CoreApiId_81; // 
+      public static const ID_Array_SwapValues:int            = IdPool.CoreApiId_82; // 
+      public static const ID_Array_Equals:int                = IdPool.CoreApiId_83; // 
+      public static const ID_Array_Create:int                = IdPool.CoreApiId_84; //
+      public static const ID_Array_IsNull:int                = IdPool.CoreApiId_85; //
+      public static const ID_Array_Length:int                = IdPool.CoreApiId_86; //
+      public static const ID_Array_SetElementWithBoolean:int     = IdPool.CoreApiId_87; //
+      public static const ID_Array_GetElementAsBoolean:int       = IdPool.CoreApiId_88; //
+      public static const ID_Array_SetElementWithNumber:int      = IdPool.CoreApiId_89; //
+      public static const ID_Array_GetElementAsNumber:int        = IdPool.CoreApiId_90; //
+      public static const ID_Array_SetElementWithString:int      = IdPool.CoreApiId_91; //
+      public static const ID_Array_GetElementAsString:int        = IdPool.CoreApiId_92; //
+      public static const ID_Array_SetElementWithCCat:int        = IdPool.CoreApiId_93; //
+      public static const ID_Array_GetElementAsCCat:int          = IdPool.CoreApiId_94; //
+      public static const ID_Array_SetElementWithEntity:int      = IdPool.CoreApiId_95; //
+      public static const ID_Array_GetElementAsEntity:int        = IdPool.CoreApiId_96; //
+      public static const ID_Array_SetElementWithArray:int       = IdPool.CoreApiId_97; //
+      public static const ID_Array_GetElementAsArray:int         = IdPool.CoreApiId_98; //
+      
    // math basic op 
       
       public static const ID_Number_Assign:int                      = IdPool.CoreApiId_300; // 

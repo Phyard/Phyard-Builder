@@ -38,7 +38,8 @@ package editor.trigger {
       
       override public function ValidateDirectValueObject (valueObject:Object):Object
       {
-         return valueObject as Array;
+         //return valueObject as Array;
+         return null; // current, direct array value is not supported. 
       }
       
 //==============================================================================
@@ -53,7 +54,7 @@ package editor.trigger {
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
          var label:Label = new Label ();
-         label.text = "(direct value is not support for arrays now)";
+         label.text = "null"; // currently, direct array value is not supported
          
          return label;
       }

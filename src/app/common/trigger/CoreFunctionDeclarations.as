@@ -26,6 +26,7 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false], 
                         [ValueTypeDefine.ValueType_String,       ""], 
                         [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
+                        [ValueTypeDefine.ValueType_Array,       null], 
                      ], 
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
@@ -33,6 +34,7 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false], 
                         [ValueTypeDefine.ValueType_String,       ""], 
                         [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
+                        [ValueTypeDefine.ValueType_Array,       null], 
                      ]
                   );
                   
@@ -381,6 +383,85 @@ package common.trigger {
                      ], 
                      [
                         [ValueTypeDefine.ValueType_Boolean,       false], 
+                     ]
+                  );
+          
+          
+      // array
+          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Assign,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_ConditionAssign,       
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SwapValues,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Equals,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Create,       
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_IsNull,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Length,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsNumber,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
                      ]
                   );
           

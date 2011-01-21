@@ -18,6 +18,8 @@ package common.trigger {
                return "CCat";
             case ValueType_Entity:
                return "Entity";
+            case ValueType_Array:
+               return "Array";
             case ValueType_Void:
             default:
                return "Void";
@@ -39,6 +41,8 @@ package common.trigger {
                return -1;
             case ValueType_Entity:
                return Define.EntityId_None;
+            case ValueType_Array:
+               return null;
             case ValueType_Void:
             default:
                return undefined;
@@ -81,7 +85,9 @@ package common.trigger {
       public static const ValueType_Number:int  = 3;
       
       public static const ValueType_Array:int = 30;
-      public static const ValueType_Function:int = 31;
+      
+      public static const ValueType_Object:int = 50;
+      public static const ValueType_Function:int = 51;
       
       public static const ValueType_Entity:int            = 60;
       public static const ValueType_CollisionCategory:int = 61;

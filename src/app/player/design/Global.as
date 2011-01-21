@@ -30,6 +30,7 @@ package player.design
       public static var mRegisterVariableSpace_Number :VariableSpace;
       public static var mRegisterVariableSpace_Entity :VariableSpace;
       public static var mRegisterVariableSpace_CollisionCategory:VariableSpace;
+      public static var mRegisterVariableSpace_Array:VariableSpace;
       
       public static var mRandomNumberGenerators:Array;
       
@@ -69,6 +70,7 @@ package player.design
          mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0);
          mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null);
          mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null);
+         mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null);
          
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
          
@@ -119,6 +121,8 @@ package player.design
                return mRegisterVariableSpace_Entity;
             case ValueTypeDefine.ValueType_CollisionCategory:
                return mRegisterVariableSpace_CollisionCategory;
+            case ValueTypeDefine.ValueType_Array:
+               return mRegisterVariableSpace_Array;
             default:
                return null;
          }

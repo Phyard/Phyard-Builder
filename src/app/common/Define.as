@@ -101,7 +101,7 @@ package common {
       public static const MinCCatId:int = -1;
       
 //===========================================================================
-// shaoe common
+// shape common
 //===========================================================================
       
       public static const DefaultShapeDensity:Number = 5; // 2700; // 2700 is the density of stone and glass

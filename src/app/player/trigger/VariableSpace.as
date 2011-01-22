@@ -87,6 +87,11 @@ package player.trigger
             viRefList = viRefList.mNextVariableReference;
          }
       }
+      
+      public function ResetVariables ():void
+      {
+         
+      }
    }
 }
 

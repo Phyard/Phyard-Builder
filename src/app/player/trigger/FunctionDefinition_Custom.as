@@ -92,7 +92,7 @@ package player.trigger
       {
          // 1. push 
          
-         if (mCurrentFunctionInstance == null)
+         if (mCurrentFunctionInstance == null) // first dream space
          {
             mCurrentFunctionInstance = mPrimaryFunctionInstance;
             

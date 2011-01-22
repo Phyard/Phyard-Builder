@@ -119,8 +119,18 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Create,               CreateArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Length,               GetArrayLength);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElementWithBoolean);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElementAsBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithNumber,     SetArrayElementWithNumber);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsNumber,       GetArrayElementAsNumber);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithString,     SetArrayElementWithString);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsString,       GetArrayElementAsString);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithCCat,     SetArrayElementWithCCat);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsCCat,       GetArrayElementAsCCat);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithEntity,     SetArrayElementWithEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsEntity,       GetArrayElementAsEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithArray,     SetArrayElementWithArray);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsArray,       GetArrayElementAsArray);
          
       // math ops
          
@@ -545,6 +555,7 @@ package player.trigger {
          var text2:String = valueSource.EvaluateValueObject () as String;
          
          source1.AssignValueObject (text2);
+         valueSource.AssignValueObject (text1); // appeneded and fixed v1.54
       }
       
       public static function IsNullString (valueSource:Parameter, valueTarget:Parameter):void
@@ -767,11 +778,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bool2:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         if (source1 is Parameter_Variable)
-            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (bool2);
-         
-         if (valueSource is Parameter_Variable)
-            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (bool1);
+         source1.AssignValueObject (bool2);
+         valueSource.AssignValueObject (bool1);
       }
       
       public static function BooleanInvert (valueSource:Parameter, valueTarget:Parameter):void
@@ -951,11 +959,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var array2:Array = valueSource.EvaluateValueObject () as Array;
          
-         if (source1 is Parameter_Variable)
-            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (array2);
-         
-         if (valueSource is Parameter_Variable)
-            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (array1);
+         source1.AssignValueObject (array2);
+         valueSource.AssignValueObject (array1);
       }
       
       public static function IsNullArray (valueSource:Parameter, valueTarget:Parameter):void
@@ -982,7 +987,7 @@ package player.trigger {
          valueTarget.AssignValueObject (array == null ? 0 : array.length);
       }
       
-      public static function SetArrayElementWithNumber (valueSource:Parameter, valueTarget:Parameter):void
+      private static function SetArrayElementWithSpecfiedClass (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
          if (array == null)
@@ -994,13 +999,12 @@ package player.trigger {
             return;
          
          valueSource = valueSource.mNextParameter;
-         var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         //trace ("set index = " + index + ", value = " + value);
-         array [index] = value;
+         //trace ("set index = " + index + ", value = " + (valueSource.EvaluateValueObject () as specfiedClass));
+         array [index] = valueSource.EvaluateValueObject () as specfiedClass;
       }
       
-      public static function GetArrayElementAsNumber (valueSource:Parameter, valueTarget:Parameter):void
+      private static function GetArrayElementAsSpecfiedClass  (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void
       {
          do
          {
@@ -1013,8 +1017,8 @@ package player.trigger {
             if (index < 0)
                break;
             
-            //trace ("- get index = " + index + ", value = " + (array [index] as Number));
-            valueTarget.AssignValueObject (array [index] as Number);
+            //trace ("- get index = " + index + ", value = " + (array [index] as specfiedClass));
+            valueTarget.AssignValueObject (array [index] as specfiedClass);
             
             return;
          }
@@ -1022,6 +1026,66 @@ package player.trigger {
          
          // for invalid params
          valueTarget.AssignValueObject (undefined);
+      }
+      
+      public static function SetArrayElementWithBoolean (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Boolean);
+      }
+      
+      public static function GetArrayElementAsBoolean (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Boolean);
+      }
+      
+      public static function SetArrayElementWithNumber (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Number);
+      }
+      
+      public static function GetArrayElementAsNumber (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Number);
+      }
+      
+      public static function SetArrayElementWithString (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, String);
+      }
+      
+      public static function GetArrayElementAsString (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, String);
+      }
+      
+      public static function SetArrayElementWithCCat (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, CollisionCategory);
+      }
+      
+      public static function GetArrayElementAsCCat (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, CollisionCategory);
+      }
+      
+      public static function SetArrayElementWithEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Entity);
+      }
+      
+      public static function GetArrayElementAsEntity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Entity);
+      }
+      
+      public static function SetArrayElementWithArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Array);
+      }
+      
+      public static function GetArrayElementAsArray (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Array);
       }
       
    //************************************************
@@ -1059,11 +1123,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var number2:Number = Number (valueSource.EvaluateValueObject ());
          
-         if (source1 is Parameter_Variable)
-            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (number2);
-         
-         if (valueSource is Parameter_Variable)
-            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (number1);
+         source1.AssignValueObject (number2);
+         valueSource.AssignValueObject (number1);
       }
       
       public static function IsNaN (valueSource:Parameter, valueTarget:Parameter):void
@@ -1941,11 +2002,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var ccat2:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
          
-         if (source1 is Parameter_Variable)
-            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (ccat2);
-         
-         if (valueSource is Parameter_Variable)
-            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (ccat1);
+         source1.AssignValueObject (ccat2);
+         valueSource.AssignValueObject (ccat1);
       }
       
       public static function IsNullCCat (valueSource:Parameter, valueTarget:Parameter):void
@@ -2011,11 +2069,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var entity2:Entity = valueSource.EvaluateValueObject () as Entity;
          
-         if (source1 is Parameter_Variable)
-            (source1 as Parameter_Variable).GetVariableInstance ().SetValueObject (entity2);
-         
-         if (valueSource is Parameter_Variable)
-            (valueSource as Parameter_Variable).GetVariableInstance ().SetValueObject (entity1);
+         source1.AssignValueObject (entity2);
+         valueSource.AssignValueObject (entity1);
       }
       
       public static function IsNullEntity (valueSource:Parameter, valueTarget:Parameter):void

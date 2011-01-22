@@ -518,6 +518,23 @@ package editor.trigger {
                               new VariableDefinitionNumber ("Array Length"), 
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean, array_package, "Set Element With Boolean", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                              new VariableDefinitionBoolean ("Element Value (Boolean)"), 
+                     ], 
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsBoolean, array_package, "Get Element As Boolean", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                     ], 
+                     [
+                              new VariableDefinitionBoolean ("Element Value (Boolean)"), 
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber, array_package, "Set Element With Number", null, null,
                      [
                               new VariableDefinitionArray ("The Array"), 
@@ -533,6 +550,74 @@ package editor.trigger {
                      ], 
                      [
                               new VariableDefinitionNumber ("Element Value (Number)"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithString, array_package, "Set Element With String", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                              new VariableDefinitionString ("Element Value (String)"), 
+                     ], 
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsString, array_package, "Get Element As String", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                     ], 
+                     [
+                              new VariableDefinitionString ("Element Value (String)"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithCCat, array_package, "Set Element With CCat", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                              new VariableDefinitionCollisionCategory ("Element Value (CCat)"), 
+                     ], 
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsCCat, array_package, "Get Element As CCat", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                     ], 
+                     [
+                              new VariableDefinitionCollisionCategory ("Element Value (CCat)"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity, array_package, "Set Element With Entity", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                              new VariableDefinitionEntity ("Element Value (Entity)"), 
+                     ], 
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsEntity, array_package, "Get Element As Entity", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                     ], 
+                     [
+                              new VariableDefinitionEntity ("Element Value (Entity)"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray, array_package, "Set Element With Array", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                              new VariableDefinitionArray ("Element Value (Array)"), 
+                     ], 
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetElementAsArray, array_package, "Get Element As Array", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                     ], 
+                     [
+                              new VariableDefinitionArray ("Element Value (Array)"), 
                      ]
                   );
           

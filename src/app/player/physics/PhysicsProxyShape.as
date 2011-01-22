@@ -290,66 +290,134 @@ package player.physics {
          CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * curveThickness, false, true, roundEnds);
       }
       
-      // close_and_round: 0 means closed, 1 means not closed but round, -1 means not close and not round
-      private function CreatePolyline (fixture_def:b2FixtureDef, bodyLocalVertexes:Array, halfCurveThickness:Number, isClosed:Boolean, isRoundJoints:Boolean, isRoundEnds:Boolean):void
+      private function CreatePolyline (fixture_def:b2FixtureDef, inputBodyLocalVertexes:Array, halfCurveThickness:Number, isClosed:Boolean, isRoundJoints:Boolean, isRoundEnds:Boolean):void
       {
-         var vertexCount:int = bodyLocalVertexes.length;
+         var vertexCount:int = inputBodyLocalVertexes.length;
          if (vertexCount < 1)
             return;
          
-         if (isClosed)
-            isRoundEnds = isRoundJoints;
+         // remvoe too short lines
+         
+         var bodyLocalVertexes:Array = new Array ();
          
          var vertex1:b2Vec2;
          var vertex2:b2Vec2;
          var vertexId2:int;
          var dx:Number;
          var dy:Number;
+         
+         vertex1 = inputBodyLocalVertexes [0];
+         vertexId2 = 1;
+         
+         bodyLocalVertexes.push (vertex1);
+         for (; vertexId2 < vertexCount; ++ vertexId2)
+         {
+            vertex2 = inputBodyLocalVertexes [vertexId2];
+            dx = vertex2.x - vertex1.x;
+            dy = vertex2.y - vertex1.y;
+            
+            if (dx > - b2Settings.b2_epsilon && dx < b2Settings.b2_epsilon && dy > - b2Settings.b2_epsilon && dy < b2Settings.b2_epsilon)
+               continue; // ignore too short lines
+            
+            vertex1 = vertex2;
+            
+            bodyLocalVertexes.push (vertex1);
+         }
+         
+         // ok, begin
+         
+         vertexCount = bodyLocalVertexes.length;
+         // vertexCount must be larger than 0
+         
          var fixture:b2Fixture;
          
-         if (halfCurveThickness + halfCurveThickness < b2Settings.b2_epsilon)
+         if (halfCurveThickness + halfCurveThickness < b2Settings.b2_epsilon) // zero thickness
          {
-            if (vertexCount < 2)
-               return;
-            
-            if (isClosed)
-            {
-               vertex1 = bodyLocalVertexes [vertexCount - 1];
-               vertexId2 = 0;
-            }
-            else
-            {
-               vertex1 = bodyLocalVertexes [0];
-               vertexId2 = 1;
-            }
-            
             var edgeShape:b2EdgeShape = new b2EdgeShape ();
             
-            for (; vertexId2 < vertexCount; ++ vertexId2)
+            if (vertexCount <= 2) // 1 or 2
             {
-               vertex2 = bodyLocalVertexes [vertexId2];
-               dx = vertex2.x - vertex1.x;
-               dy = vertex2.y - vertex1.y;
+               // isClosed = false; // force closed
                
-               if (dx > - b2Settings.b2_epsilon && dx < b2Settings.b2_epsilon && dy > - b2Settings.b2_epsilon && dy < b2Settings.b2_epsilon)
-                  continue;
-               
-               //polygon_shape.SetAsEdge (vertex1, vertex2);
-               //fixture_def.shape = polygon_shape;
-               
+               vertex1 = bodyLocalVertexes [0];
+               vertex2 = bodyLocalVertexes [vertexCount -1]; // vertex 0 or 1
                edgeShape.Set (vertex1, vertex2);
                fixture_def.shape = edgeShape;
                
                // ...
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
                _b2Fixtures.push (fixture);
+            }
+            else // vertexCount >= 3
+            {
+               var vertex0:b2Vec2;
+               var vertex3:b2Vec2;
+               var vertexId3:int;
+               var endVertexId3:int;
                
-               // ...
-               vertex1 = vertex2;
+               if (isClosed)
+               {
+                  vertex2 = bodyLocalVertexes [vertexCount - 1];
+                  vertex1 = bodyLocalVertexes [vertexCount - 2];
+                  vertex0 = bodyLocalVertexes [vertexCount - 3];
+                  
+                  vertexId3 = 0;
+                  endVertexId3 = vertexCount;
+               }
+               else
+               {
+                  vertex2 = bodyLocalVertexes [1];
+                  vertex1 = bodyLocalVertexes [0];
+                  vertex0 = null;
+                  
+                  vertexId3 = 2;
+                  endVertexId3 = vertexCount + 1;
+               }
+               
+               for (; vertexId3 < endVertexId3; ++ vertexId3)
+               {
+                  vertex3 = bodyLocalVertexes [vertexId3]; // here, in actionscript, bodyLocalVertexes [vertexCount] will return null, in c++, error instead
+                  
+                  //polygon_shape.SetAsEdge (vertex1, vertex2);
+                  //fixture_def.shape = polygon_shape;
+                  
+                  edgeShape.Set (vertex1, vertex2);
+                  if (vertex0 == null)
+                  {
+                     edgeShape.m_hasVertex0 = false;
+                  }
+                  else
+                  {
+                     edgeShape.m_hasVertex0 = true;
+                     edgeShape.m_vertex0 = vertex0;
+                  }
+                  if (vertex3 == null)
+                  {
+                     edgeShape.m_hasVertex3 = false;
+                  }
+                  else
+                  {
+                     edgeShape.m_hasVertex3 = true;
+                     edgeShape.m_vertex3 = vertex3;
+                  }
+                  fixture_def.shape = edgeShape;
+                  
+                  // ...
+                  fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
+                  _b2Fixtures.push (fixture);
+                  
+                  // ...
+                  vertex0 = vertex1;
+                  vertex1 = vertex2;
+                  vertex2 = vertex3;
+               }
             }
          }
-         else
+         else // simulate non-zero thickness lines with rectangles, by creating a circle at every line joint.
          {
+            if (isClosed)
+               isRoundEnds = isRoundJoints; // force round ends
+            
             var buildCircle:Boolean;
             var firstVertex:b2Vec2;
             
@@ -386,9 +454,6 @@ package player.physics {
                vertex2 = bodyLocalVertexes [vertexId2];
                dx = vertex2.x - vertex1.x;
                dy = vertex2.y - vertex1.y;
-               
-               if (dx > - b2Settings.b2_epsilon && dx < b2Settings.b2_epsilon && dy > - b2Settings.b2_epsilon && dy < b2Settings.b2_epsilon)
-                  continue;
                
                // rotate vector (dx, dy) by 90 degree => (- dy, dx)
                

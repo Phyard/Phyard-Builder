@@ -447,6 +447,23 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsBoolean,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber,       
                      [
                         [ValueTypeDefine.ValueType_Array,       null], 
@@ -462,6 +479,74 @@ package common.trigger {
                      ], 
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithString,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                        [ValueTypeDefine.ValueType_String,       ""], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsString,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithCCat,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsCCat,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsEntity,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsArray,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
                      ]
                   );
           

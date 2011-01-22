@@ -90,7 +90,7 @@ package editor.entity {
          
          var halfThickness:Number = thickness * 0.5;
          
-         if (mRoundEnds && halfThickness > 2 && GetVertexPointsCount () > 0)
+         if (mRoundEnds && halfThickness > 2 && mLocalPoints.length > 0)
             (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [0].x, mLocalPoints [0].y, halfThickness);
          for (var i:int = 1; i < mLocalPoints.length; ++ i)
          {

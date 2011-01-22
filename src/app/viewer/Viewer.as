@@ -694,6 +694,11 @@ package viewer {
             
             mWorldDesignProperties.Initialize ();
             
+            //
+            mPlayerWorldZoomScale = mWorldDesignProperties.GetZoomScale ();
+            if (mPlayControlBar != null)
+               mPlayControlBar.SetZoomScale (mPlayerWorldZoomScale);
+            
             if (isFirstTime)
             {
                if (mStartRightNow) mPlayControlBar.OnClickStart ();
@@ -728,6 +733,9 @@ package viewer {
          if (mWorldDesignProperties.GetZoomScale () != mPlayerWorldZoomScale)
          {
             var newScale:Number;
+            
+            //trace ("mWorldDesignProperties.GetZoomScale () = " + mWorldDesignProperties.GetZoomScale ());
+            //trace ("mPlayerWorldZoomScale = " + mPlayerWorldZoomScale);
             
             if (mWorldDesignProperties.GetZoomScale () < mPlayerWorldZoomScale)
             {
@@ -1253,11 +1261,6 @@ package viewer {
       private function OnRestart (data:Object = null):void
       {
          RebuildPlayerWorld ();
-         
-         //
-         mPlayerWorldZoomScale = mWorldDesignProperties.GetZoomScale ();
-         if (mPlayControlBar != null)
-            mPlayControlBar.SetZoomScale (mPlayerWorldZoomScale);
       }
       
       public function OnStart (data:Object = null):void

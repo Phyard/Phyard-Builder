@@ -170,7 +170,7 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null)
          {
-            mPhysicsShapeProxy.AddRectangle (0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
+            mPhysicsShapeProxy.AddRectangle (mIsStatic, 0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
          }
       }
       

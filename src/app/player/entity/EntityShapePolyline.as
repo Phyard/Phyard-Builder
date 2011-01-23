@@ -108,7 +108,7 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null)
          {
-            mPhysicsShapeProxy.AddPolyline (mLocalPoints, mCurveThickness, mIsRoundEnds);
+            mPhysicsShapeProxy.AddPolyline (mIsStatic, mLocalPoints, mCurveThickness, mIsRoundEnds);
          }
       }
       

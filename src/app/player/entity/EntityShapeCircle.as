@@ -178,7 +178,7 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null)
          {
-            mPhysicsShapeProxy.AddCircle (0, 0, mRadius, mBuildInterior, mBuildBorder, mBorderThickness);
+            mPhysicsShapeProxy.AddCircle (mIsStatic, 0, 0, mRadius, mBuildInterior, mBuildBorder, mBorderThickness);
          }
       }
 

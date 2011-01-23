@@ -94,7 +94,7 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null)
          {
-            mPhysicsShapeProxy.AddPolygon (mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
+            mPhysicsShapeProxy.AddPolygon (mIsStatic, mLocalPoints, mBuildInterior, mBuildBorder, mBorderThickness);
          }
       }
       

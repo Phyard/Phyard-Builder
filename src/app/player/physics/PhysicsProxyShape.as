@@ -151,7 +151,7 @@ package player.physics {
       
       private static const Half_B2_FLT_EPSILON:Number = b2Settings.b2_epsilon * 0.5;
       
-      public function AddCircle (shapeLocalCenterX:Number, shapeLocalCenterY:Number, radius:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
+      public function AddCircle (isStatic:Boolean, shapeLocalCenterX:Number, shapeLocalCenterY:Number, radius:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
          if ( (! buildBorder) && (! buildInterior))
             return;
@@ -203,7 +203,7 @@ package player.physics {
                   
                   var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
                   
-                  CreatePolyline (fixture_def, bodyLocalVertexes, halfBorderThickness, true, true, true);
+                  CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, halfBorderThickness, true, true, true);
                   
                   return;
                }
@@ -270,7 +270,7 @@ package player.physics {
          return bodyLocalVertexes;
       }
       
-      public function AddPolyline (shapeLocalPoints:Array, curveThickness:Number, roundEnds:Boolean):void
+      public function AddPolyline (isStatic:Boolean, shapeLocalPoints:Array, curveThickness:Number, roundEnds:Boolean):void
       {
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
@@ -286,11 +286,11 @@ package player.physics {
       //trace ("------------ AddPolyline -----------------");
       //trace ("AddPolyline: shapeLocalPoints = " + shapeLocalPoints);
       //trace ("AddPolyline: bodyLocalVertexes = " + bodyLocalVertexes);
-         
-         CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * curveThickness, false, true, roundEnds);
+      
+         CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, 0.5 * curveThickness, false, true, roundEnds);
       }
       
-      private function CreatePolyline (fixture_def:b2FixtureDef, inputBodyLocalVertexes:Array, halfCurveThickness:Number, isClosed:Boolean, isRoundJoints:Boolean, isRoundEnds:Boolean):void
+      private function CreatePolyline (isStatic:Boolean, fixture_def:b2FixtureDef, inputBodyLocalVertexes:Array, halfCurveThickness:Number, isClosed:Boolean, isRoundJoints:Boolean, isRoundEnds:Boolean):void
       {
          var vertexCount:int = inputBodyLocalVertexes.length;
          if (vertexCount < 1)
@@ -330,10 +330,12 @@ package player.physics {
          // vertexCount must be larger than 0
          
          var fixture:b2Fixture;
+         var polygon_shape:b2PolygonShape;
          
          if (halfCurveThickness + halfCurveThickness < b2Settings.b2_epsilon) // zero thickness
          {
             var edgeShape:b2EdgeShape = new b2EdgeShape ();
+            polygon_shape = new b2PolygonShape ();
             
             if (vertexCount <= 2) // 1 or 2
             {
@@ -341,8 +343,20 @@ package player.physics {
                
                vertex1 = bodyLocalVertexes [0];
                vertex2 = bodyLocalVertexes [vertexCount -1]; // vertex 0 or 1
-               edgeShape.Set (vertex1, vertex2);
-               fixture_def.shape = edgeShape;
+               if (isStatic)
+               {
+                  edgeShape.Set (vertex1, vertex2);
+                  fixture_def.shape = edgeShape;
+                  
+                  trace ("edgeShape");
+               }
+               else
+               {
+                  polygon_shape.SetAsEdge (vertex1, vertex2);
+                  fixture_def.shape = polygon_shape;
+                  
+                  trace ("polygon_shape");
+               }
                
                // ...
                fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
@@ -378,29 +392,34 @@ package player.physics {
                {
                   vertex3 = bodyLocalVertexes [vertexId3]; // here, in actionscript, bodyLocalVertexes [vertexCount] will return null, in c++, error instead
                   
-                  //polygon_shape.SetAsEdge (vertex1, vertex2);
-                  //fixture_def.shape = polygon_shape;
-                  
-                  edgeShape.Set (vertex1, vertex2);
-                  if (vertex0 == null)
+                  if (isStatic)
                   {
-                     edgeShape.m_hasVertex0 = false;
+                     edgeShape.Set (vertex1, vertex2);
+                     if (vertex0 == null)
+                     {
+                        edgeShape.m_hasVertex0 = false;
+                     }
+                     else
+                     {
+                        edgeShape.m_hasVertex0 = true;
+                        edgeShape.m_vertex0 = vertex0;
+                     }
+                     if (vertex3 == null)
+                     {
+                        edgeShape.m_hasVertex3 = false;
+                     }
+                     else
+                     {
+                        edgeShape.m_hasVertex3 = true;
+                        edgeShape.m_vertex3 = vertex3;
+                     }
+                     fixture_def.shape = edgeShape;
                   }
                   else
                   {
-                     edgeShape.m_hasVertex0 = true;
-                     edgeShape.m_vertex0 = vertex0;
+                     polygon_shape.SetAsEdge (vertex1, vertex2);
+                     fixture_def.shape = polygon_shape;
                   }
-                  if (vertex3 == null)
-                  {
-                     edgeShape.m_hasVertex3 = false;
-                  }
-                  else
-                  {
-                     edgeShape.m_hasVertex3 = true;
-                     edgeShape.m_vertex3 = vertex3;
-                  }
-                  fixture_def.shape = edgeShape;
                   
                   // ...
                   fixture = mProxyBody._b2Body.CreateFixture (fixture_def);
@@ -445,7 +464,7 @@ package player.physics {
             var borderRectVertexes:Array = [p0, p1, p2, p3];
             
             var circle_shape:b2CircleShape = new b2CircleShape ();
-            var polygon_shape:b2PolygonShape = new b2PolygonShape ();
+            polygon_shape = new b2PolygonShape ();
             
             vertex1 = firstVertex;
             
@@ -520,7 +539,7 @@ package player.physics {
          }
       }
       
-      public function AddPolygon (shapeLocalPoints:Array, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
+      public function AddPolygon (isStatic:Boolean, shapeLocalPoints:Array, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
@@ -587,17 +606,17 @@ package player.physics {
             {
                if (borderThickness >= b2Settings.b2_epsilon)
                {
-                  CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * borderThickness, true, true, true);
+                  CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, 0.5 * borderThickness, true, true, true);
                }
             }
          }
          else if (buildBorder)
          {
-            CreatePolyline (fixture_def, bodyLocalVertexes, 0.5 * borderThickness, true, true, true);
+            CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, 0.5 * borderThickness, true, true, true);
          }
       }
       
-      public function AddRectangle (shapeLocalCenterX:Number, shapeLocalCenterY:Number, shapeLocalRotation:Number, halfWidth:Number, halfHeight:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number, roundCorners:Boolean = false):void
+      public function AddRectangle (isStatic:Boolean, shapeLocalCenterX:Number, shapeLocalCenterY:Number, shapeLocalRotation:Number, halfWidth:Number, halfHeight:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number, roundCorners:Boolean = false):void
       {
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
@@ -682,7 +701,7 @@ package player.physics {
             {
                bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
                
-               CreatePolyline (fixture_def, bodyLocalVertexes, halfBorderThickness, true, roundCorners, roundCorners);
+               CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, halfBorderThickness, true, roundCorners, roundCorners);
             }
             else
             {

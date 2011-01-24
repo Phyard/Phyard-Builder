@@ -302,6 +302,8 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,        WorldPoint2EntityLocalPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,        EntityLocalPoint2WorldPoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_WorldVector2LocalVector,        WorldVector2EntityLocalVector);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_LocalVector2WorldVector,        EntityLocalVector2WorldVector);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsDestroyed,        IsEntityDestroyed);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_Destroy,        DestroyEntity);
@@ -325,6 +327,14 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledColor,              SetShapeFilledColor);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,           GetShapeFilledColorRGB);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,           SetShapeFilledColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetFilledOpacity,            GetFilledOpacity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetFilledOpacity,            SetFilledOpacity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderColor,              GetShapeBorderColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderColor,              SetShapeBorderColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB,           GetShapeBorderColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB,           SetShapeBorderColorRGB);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBorderOpacity,            GetBorderOpacity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetBorderOpacity,            SetBorderOpacity);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,            IsShapePhysicsEnabled);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetPhysicsEnabled,         SetShapePhysicsEnabled);
@@ -353,14 +363,16 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,            ApplyLinearImpulseAtWorldPointOnShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,                       ApplyAngularImpulse);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint,         GetPhysicsShapesAtPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
          
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsAttchedWith,               IsAttchedWith);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_AttachWith,                  AttachTwoShapes);
 		   RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,        DetachShapeThenAttachWithAnother);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakupBrothers,             BreakupShapeBrothers);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_DestroyBrothers,             DestroyBrothers);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakAllJoints,             BreakShapeJoints);
 
@@ -410,7 +422,8 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_ResetTimer,                           ResetTimer);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,                       SetTimerPaused);
-         //RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,                     SetTimerInterval);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_GetTimerInterval,                   GetTimerInterval);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,                   SetTimerInterval);
          
       }
       
@@ -2389,6 +2402,64 @@ package player.trigger {
          valueTarget.AssignValueObject (worldPoint.y);
       }
       
+      public static function WorldVector2EntityLocalVector (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var localVector:Point = sPoint;
+         
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+         {
+            localVector.x = 0.0;
+            localVector.y = 0.0;
+         }
+         else
+         {
+            valueSource = valueSource.mNextParameter;
+            var world_dx:Number = valueSource.EvaluateValueObject () as Number;
+            
+            valueSource = valueSource.mNextParameter;
+            var world_dy:Number = valueSource.EvaluateValueObject () as Number;
+            
+            shape.WorldVector2LocalVector (world_dx, world_dy, localVector);
+         }
+         
+         // ...
+         
+         valueTarget.AssignValueObject (localVector.x);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (localVector.y);
+      }
+      
+      public static function EntityLocalVector2WorldVector (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var worldVectort:Point = sPoint;
+         
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+         {
+            worldVectort.x = 0.0;
+            worldVectort.y = 0.0;
+         }
+         else
+         {
+            valueSource = valueSource.mNextParameter;
+            var local_dx:Number = valueSource.EvaluateValueObject () as Number;
+            
+            valueSource = valueSource.mNextParameter;
+            var local_dy:Number = valueSource.EvaluateValueObject () as Number;
+            
+            shape.LocalVector2WorldVector (local_dx, local_dy, worldVectort);
+         }
+         
+         // ...
+         
+         valueTarget.AssignValueObject (worldVectort.x);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (worldVectort.y);
+      }
+      
       public static function IsEntityDestroyed (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
@@ -2661,6 +2732,150 @@ package player.trigger {
          {
             shape.SetFilledColor ((red << 16) | (green << 8) | (blue));
          }
+      }
+      
+      public static function GetFilledOpacity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueTarget.AssignValueObject (shape.GetTransparency ());
+      }
+      
+      public static function SetFilledOpacity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var opacity:Number = Number (valueSource.EvaluateValueObject ());
+         
+         shape.SetTransparency (opacity);
+      }
+      
+      public static function GetShapeBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         
+         var borderColor:uint;
+         
+         if (shape == null)
+         {
+            var world:World = valueSource.EvaluateValueObject () as World;
+            if (world != null)
+               borderColor = world.GetBorderColor ();
+         }
+         else
+         {
+            borderColor = shape.GetBorderColor ();
+         }
+         
+         valueTarget.AssignValueObject (borderColor);
+      }
+      
+      public static function SetShapeBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         
+         var world:World;
+         if (shape == null)
+         {
+            world = valueSource.EvaluateValueObject () as World;
+            if (world == null)
+               return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+         
+         if (shape == null)
+         {
+            world.SetBorderColor (color);
+         }
+         else
+         {
+            shape.SetBorderColor (color);
+         }
+      }
+      
+      public static function GetShapeBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         
+         var borderColor:uint;
+         
+         if (shape == null)
+         {
+            var world:World = valueSource.EvaluateValueObject () as World;
+            if (world != null)
+               borderColor = world.GetBorderColor ();
+         }
+         else
+         {
+            borderColor = shape.GetBorderColor ();
+         }
+         
+         valueTarget.AssignValueObject ((borderColor >> 16) & 0xFF);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((borderColor >> 8) & 0xFF);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject ((borderColor >> 0) & 0xFF);
+      }
+      
+      public static function SetShapeBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         
+         var world:World;
+         if (shape == null)
+         {
+            world = valueSource.EvaluateValueObject () as World;
+            if (world == null)
+               return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var red:int =  valueSource.EvaluateValueObject () as Number;
+         
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
+         
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
+         
+         if (shape == null)
+         {
+            world.SetBorderColor ((red << 16) | (green << 8) | (blue));
+         }
+         else
+         {
+            shape.SetBorderColor ((red << 16) | (green << 8) | (blue));
+         }
+      }
+      
+      public static function GetBorderOpacity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueTarget.AssignValueObject (shape.GetBorderTransparency ());
+      }
+      
+      public static function SetBorderOpacity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var opacity:Number = Number (valueSource.EvaluateValueObject ());
+         
+         shape.SetBorderTransparency (opacity);
       }
       
       public static function IsShapePhysicsEnabled (valueSource:Parameter, valueTarget:Parameter):void
@@ -3042,6 +3257,16 @@ package player.trigger {
          shape.GetBody ().ApplyTorque (torque);
       }
       
+      public static function GetPhysicsShapesAtPoint(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var pointX:Number = valueSource.EvaluateValueObject () as Number;
+         
+         valueSource = valueSource.mNextParameter;
+         var pointY:Number = valueSource.EvaluateValueObject () as Number;
+         
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY));
+      }
+      
       public static function TeleportShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3102,13 +3327,25 @@ package player.trigger {
          shape.Teleport (shape.GetPositionX () + deltaX, shape.GetPositionY () + deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
-      //public static function CloneShape (valueSource:Parameter, valueTarget:Parameter):void
-      //{
-      //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-      //   if (shape == null)
-      //      return;
-      //   
-      //}
+      public static function IsAttchedWith (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape1 == null || shape1.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (false);
+            return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var shape2:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape2 == null || shape2.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (false);
+            return;
+         }
+         
+         valueTarget.AssignValueObject (shape1.GetBody () == shape2.GetBody ());
+      }
       
       public static function DetachShape (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3161,6 +3398,22 @@ package player.trigger {
             return;
          
          shape.BreakupBrothers ();
+      }
+	  
+      public static function DestroyBrothers (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         var body:EntityBody = shape.GetBody ();
+         if (body != null)
+         {
+            body.DestroyEntity ();
+         }
       }
 	  
 	  public static function BreakShapeJoints (valueSource:Parameter, valueTarget:Parameter):void
@@ -3529,17 +3782,30 @@ package player.trigger {
          timer.SetPaused (paused);
       }
       
-      //public static function SetTimerInterval (valueSource:Parameter, valueTarget:Parameter):void
-      //{
-      //   var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
-      //   if (timer == null)
-      //      return;
-      //   
-      //   valueSource = valueSource.mNextParameter;
-      //   var interval:Number = Number (valueSource.EvaluateValueObject ());
-      //   
-      //   timer.SetRunningInterval (interval);
-      //}
+      public static function GetTimerInterval (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
+         if (timer == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (timer.GetRunningInterval ());
+         }
+      }
+      
+      public static function SetTimerInterval (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
+         if (timer == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var interval:Number = Number (valueSource.EvaluateValueObject ());
+         
+         timer.SetRunningInterval (interval);
+      }
       
    }
 }

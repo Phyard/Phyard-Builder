@@ -45,6 +45,8 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    }
    else
    {
+   //trace ("++++++++++++++++ id1 = " + id1 + ", id2 = " + id2);
+   
       if (mFreeContactInfoListHead != null)
       {
          contact_info = mFreeContactInfoListHead;
@@ -162,7 +164,9 @@ private function HandleShapeContactEvents ():void
       if (contact_info.mIsNewContact)
       {
       //trace ("new");
-      
+         
+   //trace ("----------- id1 = " + contact_info.mEntityShape1.GetCreationId () + ", id2 = " + contact_info.mEntityShape2.GetCreationId ());
+         
          isContactContinued = false;
          
          contact_info.mIsNewContact = false;

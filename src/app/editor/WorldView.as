@@ -1616,7 +1616,12 @@ package editor {
          
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionManager ().SetChanged (false);
-         mEditorWorld.GetFunctionManager ().SetChanged (false);
+         if (mEditorWorld.GetFunctionManager ().IsChanged ())
+         {
+            mEditorWorld.GetFunctionManager ().UpdateFunctionMenu ();
+            mEditorWorld.GetFunctionManager ().SetChanged (false)
+            mEditorWorld.GetFunctionManager ().SetDelayUpdateFunctionMenu (false)
+         }
          
          mEditorWorld.scaleX = mEditorWorld.scaleY = mEditorWorldZoomScale = mEditorWorld.GetZoomScale ();
          
@@ -2504,7 +2509,7 @@ package editor {
                               + (majorVersion < 16 ? "0" : "") + majorVersion.toString (16) + (minorVersion < 16 ? "0" : "") + minorVersion.toString (16) 
                               + "\"\n width=\"" + width + "\" height=\"" + height + "\"\n"
                               + "  FlashVars=\"playcode=" + values.mHexString
-                              + "\"\n  quality=\"high\" allowScriptAccess=\"sameDomain\"\n  type=\"application/x-shockwave-flash\"\n  pluginspage=\"http://www.macromedia.com/go/getflashplayer\">\n</embed>"
+                              + "\"\n quality=\"high\" allowScriptAccess=\"sameDomain\"\n type=\"application/x-shockwave-flash\"\n pluginspage=\"http://www.macromedia.com/go/getflashplayer\">\n</embed>"
                                 ;
             
             ShowWorldSavingDialog (values);
@@ -4995,7 +5000,106 @@ package editor {
       }
       
 //=================================================================================
-//   IO
+//   move scene
+//=================================================================================
+      
+      public function MoveWorldScene (dx:Number, dy:Number):void
+      {
+         var sceneLeft  :int = mEditorWorld.GetWorldLeft ();
+         var sceneTop   :int = mEditorWorld.GetWorldTop ();
+         var sceneRight :int = sceneLeft + mEditorWorld.GetWorldWidth ();
+         var sceneBottom:int = sceneTop  + mEditorWorld.GetWorldHeight ();
+         
+         mViewCenterWorldX -= dx;
+         mViewCenterWorldY -= dy;
+         
+         UpdateBackgroundAndWorldPosition ();
+      }
+      
+      public function GoToEntity (entityIds:Array):void
+      {
+         var first:Boolean = true;
+         
+         for each (var entityId:int in entityIds)
+         {
+            if (entityId < 0 || entityId >= mEditorWorld.GetNumEntities ())
+               continue;
+            
+            var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);
+            
+            var posX:Number = entity.GetPositionX ();
+            var posY:Number = entity.GetPositionY ();
+            
+            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, new Point (posX, posY) );
+            if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
+               posX = mViewCenterWorldX;
+            if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
+               posY = mViewCenterWorldY;
+            
+            var dx:Number = mViewCenterWorldX - posX;
+            var dy:Number = mViewCenterWorldY - posY;
+            
+            if (first)
+            {
+               first = false;
+               
+               if (dx != 0 || dy != 0)
+               {
+                  MoveWorldScene (dx, dy);
+               }
+            }
+            
+            // aiming effect
+            mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
+         }
+      }
+      
+      public function SelectEntityByIds (entityIds:Array, clearOldSelecteds:Boolean = true, selectBoothers:Boolean = false):void
+      {
+         var entites:Array = new Array ();
+         
+         for each (var entityId:int in entityIds)
+         {
+            if (entityId < 0 || entityId >= mEditorWorld.GetNumEntities ())
+               continue;
+            
+            var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);
+            
+            var posX:Number = entity.GetPositionX ();
+            var posY:Number = entity.GetPositionY ();
+            
+            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, new Point (posX, posY) );
+            if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
+               posX = mViewCenterWorldX;
+            if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
+               posY = mViewCenterWorldY;
+            
+            var dx:Number = mViewCenterWorldX - posX;
+            var dy:Number = mViewCenterWorldY - posY;
+            
+            // aiming effect
+            mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
+            
+            //
+            if (entity is EntityJoint)
+            {
+               var subEntities:Array = (entity as EntityJoint).GetSubEntities ();
+               for each (var subEntity:Entity in subEntities)
+               {
+                  entites.push (subEntity);
+               }
+            }
+            else
+            {
+               entites.push (entity);
+            }
+         }
+         
+         SelectedEntities (entites, clearOldSelecteds, selectBoothers);
+      }
+      
+//=================================================================================
+//   offline load (xml)
 //=================================================================================
       
       public function LoadEditorWorldFromXmlString (params:Object):void
@@ -5184,6 +5288,12 @@ package editor {
             
             DataFormat.WorldDefine2EditorWorld (worldDefine, true, mEditorWorld);
             
+            if (mEditorWorld.GetFunctionManager ().IsChanged ())
+            {
+               mEditorWorld.GetFunctionManager ().UpdateFunctionMenu ();
+               mEditorWorld.GetFunctionManager ().SetChanged (false)
+            }
+            
             if (oldEntitiesCount == mEditorWorld.numChildren)
                return;
             
@@ -5234,107 +5344,10 @@ package editor {
             if (Compile::Is_Debugging)
                throw error;
             
+            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+            
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error));
          }
-      }
-      
-//=================================================================================
-//   move scene
-//=================================================================================
-      
-      public function MoveWorldScene (dx:Number, dy:Number):void
-      {
-         var sceneLeft  :int = mEditorWorld.GetWorldLeft ();
-         var sceneTop   :int = mEditorWorld.GetWorldTop ();
-         var sceneRight :int = sceneLeft + mEditorWorld.GetWorldWidth ();
-         var sceneBottom:int = sceneTop  + mEditorWorld.GetWorldHeight ();
-         
-         mViewCenterWorldX -= dx;
-         mViewCenterWorldY -= dy;
-         
-         UpdateBackgroundAndWorldPosition ();
-      }
-      
-      public function GoToEntity (entityIds:Array):void
-      {
-         var first:Boolean = true;
-         
-         for each (var entityId:int in entityIds)
-         {
-            if (entityId < 0 || entityId >= mEditorWorld.GetNumEntities ())
-               continue;
-            
-            var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);
-            
-            var posX:Number = entity.GetPositionX ();
-            var posY:Number = entity.GetPositionY ();
-            
-            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, new Point (posX, posY) );
-            if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
-               posX = mViewCenterWorldX;
-            if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
-               posY = mViewCenterWorldY;
-            
-            var dx:Number = mViewCenterWorldX - posX;
-            var dy:Number = mViewCenterWorldY - posY;
-            
-            if (first)
-            {
-               first = false;
-               
-               if (dx != 0 || dy != 0)
-               {
-                  MoveWorldScene (dx, dy);
-               }
-            }
-            
-            // aiming effect
-            mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
-         }
-      }
-      
-      public function SelectEntityByIds (entityIds:Array, clearOldSelecteds:Boolean = true, selectBoothers:Boolean = false):void
-      {
-         var entites:Array = new Array ();
-         
-         for each (var entityId:int in entityIds)
-         {
-            if (entityId < 0 || entityId >= mEditorWorld.GetNumEntities ())
-               continue;
-            
-            var entity:Entity = mEditorWorld.GetEntityByCreationId (entityId);
-            
-            var posX:Number = entity.GetPositionX ();
-            var posY:Number = entity.GetPositionY ();
-            
-            var viewPoint:Point = DisplayObjectUtil.LocalToLocal (mEditorWorld, this, new Point (posX, posY) );
-            if (viewPoint.x >= 0 && viewPoint.x < mViewWidth)
-               posX = mViewCenterWorldX;
-            if (viewPoint.y>= 0 && viewPoint.y < mViewHeight)
-               posY = mViewCenterWorldY;
-            
-            var dx:Number = mViewCenterWorldX - posX;
-            var dy:Number = mViewCenterWorldY - posY;
-            
-            // aiming effect
-            mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
-            
-            //
-            if (entity is EntityJoint)
-            {
-               var subEntities:Array = (entity as EntityJoint).GetSubEntities ();
-               for each (var subEntity:Entity in subEntities)
-               {
-                  entites.push (subEntity);
-               }
-            }
-            else
-            {
-               entites.push (entity);
-            }
-         }
-         
-         SelectedEntities (entites, clearOldSelecteds, selectBoothers);
       }
       
 //============================================================================
@@ -5606,7 +5619,9 @@ package editor {
          {
             if (Compile::Is_Debugging)
                throw error;
-               
+            
+            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+            
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load failed", EffectMessagePopup.kBgColor_Error));
          }
       }
@@ -5786,6 +5801,8 @@ package editor {
             
             if (Compile::Is_Debugging)
                throw error;
+            
+            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error));
          }

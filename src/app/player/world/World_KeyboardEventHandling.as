@@ -188,6 +188,12 @@
 
    public function ClearKeyHoldInfo (fireKeyReleasedEvents:Boolean):void
    {
+      // mouse
+      
+      mIsMouseButtonDown = false; // the status may be different with that one in mKeyHoldListHead. Remove this variable later?
+      
+      // keyboard
+      
       var info:Array;
       var ticks:int;
       var listElement:ListElement_EventHandler;

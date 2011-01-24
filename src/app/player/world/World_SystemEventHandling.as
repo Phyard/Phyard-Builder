@@ -114,18 +114,43 @@ private function ClearAllCachedSystemEvents ():void
 //   
 //=============================================================
 
-private var mCurrentMouseX:Number = 0;
-private var mCurrentMouseY:Number = 0;
+private var mCachedMousePoint:Point = null;
+private var mCurrentMouseX:Number = 0; // generally, use GetCurrentMouseX ()
+private var mCurrentMouseY:Number = 0; // generally, use GetCurrentMouseY ()
 private var mIsMouseButtonDown:Boolean = false;
 
 public function GetCurrentMouseX ():Number
 {
+   UpdateMousePosition ();
+   
    return mCurrentMouseX;
 }
 
 public function GetCurrentMouseY ():Number
 {
+   UpdateMousePosition ();
+   
    return mCurrentMouseY;
+}
+
+private function UpdateMousePosition ():void
+{
+   if (mCachedMousePoint == null)
+   {
+      mCachedMousePoint = new Point ();
+   }
+   else if (mCachedMousePoint.x == mouseX && mCachedMousePoint.y == mouseY)
+   {
+      return;
+   }
+   
+   mCachedMousePoint.x = mouseX;
+   mCachedMousePoint.y = mouseY;
+   
+   var point:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (mCachedMousePoint.x, mCachedMousePoint.y);
+   
+   mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
+   mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
 }
 
 public function IsMouseButtonDown ():Boolean
@@ -135,15 +160,17 @@ public function IsMouseButtonDown ():Boolean
 
 public function UpdateMousePositionAndHoldInfo (event:MouseEvent):void
 {
-   var point:Point = new Point (event.stageX, event.stageY);
-   point = globalToLocal (point);
-   point = mCoordinateSystem.DisplayPoint2PhysicsPosition (point.x, point.y);
-   
-   mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
-   mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
+   //var point:Point = new Point (event.stageX, event.stageY);
+   //point = globalToLocal (point);
+   //point = mCoordinateSystem.DisplayPoint2PhysicsPosition (point.x, point.y);
+   //
+   //mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12);
+   //mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
    
    mIsMouseButtonDown = event.buttonDown;
 }
+
+
 
 //=============================================================
 //   
@@ -371,8 +398,8 @@ public function RegisterMouseEvent (event:MouseEvent, handlerList:ListElement_Ev
    var valueSource2:Parameter_Direct = new Parameter_Direct (null, valueSource3); // world physics y
    var valueSource1:Parameter_Direct = new Parameter_Direct (null, valueSource2); // world physics x
    
-   valueSource1.mValueObject = mCurrentMouseX;
-   valueSource2.mValueObject = mCurrentMouseY;
+   valueSource1.mValueObject = GetCurrentMouseX ();
+   valueSource2.mValueObject = GetCurrentMouseY ();
    valueSource3.mValueObject = event.buttonDown;
    valueSource4.mValueObject = event.ctrlKey;
    valueSource5.mValueObject = event.shiftKey;

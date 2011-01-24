@@ -404,7 +404,8 @@ package editor.trigger {
                      ],
                      [
                              new VariableDefinitionBoolean ("Source Boolean"), 
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_IsTrue, bool_package, "IsTrue?", "@#0 = ($0 == true)", null,
                      [
@@ -412,7 +413,8 @@ package editor.trigger {
                      ],
                      [
                              new VariableDefinitionBoolean ("Result"), 
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_IsFalse, bool_package, "IsFalse?", "@#0 = ($0 == false)", null,
                      [
@@ -420,7 +422,8 @@ package editor.trigger {
                      ],
                      [
                              new VariableDefinitionBoolean ("Result"), 
-                     ]
+                     ],
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_And, bool_package, "x && y (Bool And)", "@#0 = ($0 && $1)", "@#0 = ($0 && $1)",
                      [
@@ -1709,6 +1712,28 @@ package editor.trigger {
                              new VariableDefinitionNumber ("World Point Y"), 
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldVector2LocalVector, shape_general_package, "World Vector -> Local Vector", "@World Vector ($0, $1) -&gt; Local Vector (#0, #1)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
+                             new VariableDefinitionNumber ("World Vector X"), 
+                             new VariableDefinitionNumber ("World Vector Y"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Local Vector X"), 
+                             new VariableDefinitionNumber ("Local Vector Y"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_LocalVector2WorldVector, shape_general_package, "Local Vector -> World Vector", "@Local Vector ($0, $1) -&gt; World Vector (#0, #1)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
+                             new VariableDefinitionNumber ("Local Vector X"), 
+                             new VariableDefinitionNumber ("Local Vector Y"), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("World Vector X"), 
+                             new VariableDefinitionNumber ("World Vector Y"), 
+                     ]
+                  );
          
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed, entity_common_package, "Is Destroyed", null, null,
                      [
@@ -1851,6 +1876,70 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Red"), 
                              new VariableDefinitionNumber ("Green"), 
                              new VariableDefinitionNumber ("Blue"), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledOpacity, shape_appearance_package, "Get Background Opacity", "@Set Background Opacity ($0, $1)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Background Opacity"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledOpacity, shape_appearance_package, "Set Background Opacity", "@Set Background Opacity ($0, $1)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}), 
+                             new VariableDefinitionNumber ("Background Opacity"), 
+                     ],
+                     null
+                  );
+          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColor, shape_appearance_package, "Get Border Color", "@Color (#0) = Get Border Color ($0)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColor, shape_appearance_package, "Set Border Color", "@Set Border Color ($0, Color ($1))", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
+                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB, shape_appearance_package, "Get Border Color RGB", "@RGB (#0, #1, #2) = Get Border Color ($0)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Red"), 
+                             new VariableDefinitionNumber ("Green"), 
+                             new VariableDefinitionNumber ("Blue"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB, shape_appearance_package, "Set Border Color RGB", "@Set Border Color ($0, RGB ($1, $2, $3))", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:true}), 
+                             new VariableDefinitionNumber ("Red"), 
+                             new VariableDefinitionNumber ("Green"), 
+                             new VariableDefinitionNumber ("Blue"), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderOpacity, shape_appearance_package, "Get Border Opacity", "@Set Border Opacity ($0, $1)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Border Opacity"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderOpacity, shape_appearance_package, "Set Border Opacity", "@Set Border Opacity ($0, $1)", null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses, mGroundSelectable:false}), 
+                             new VariableDefinitionNumber ("Border Opacity"), 
                      ],
                      null
                   );
@@ -2042,6 +2131,15 @@ package editor.trigger {
                      null
                   );
          
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint, shape_general_package, "Get Physics Shapes At Point", null, null,
+                     [
+                             new VariableDefinitionNumber ("Point X"), 
+                             new VariableDefinitionNumber ("Point Y"), 
+                     ],
+                     [
+                             new VariableDefinitionArray ("Physics Shapes"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Teleport, shape_general_package, "Teleport Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
@@ -2066,18 +2164,16 @@ package editor.trigger {
                      ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, shape_general_package, "Clone Shape", null, 
-         //            [
-         //                    new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-         //                    new VariableDefinitionNumber ("Target PositionX"), 
-         //                    new VariableDefinitionNumber ("Target PositionY"), 
-         //                    new VariableDefinitionNumber ("Delta Rotation"), 
-         //                    new VariableDefinitionBoolean ("Teleport Connected Movables?"), 
-         //                    new VariableDefinitionBoolean ("Teleport Connected Statics?"), 
-         //            ],
-         //            null
-         //         );
          
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsAttchedWith, entity_shape_brothers_package, "Are Brothers", null, null,
+                     [
+                             new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Brothers?"), 
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Detach, entity_shape_brothers_package, "Break Away From Brothers", null, null, 
                      [
                              new VariableDefinitionEntity ("The Shape to Be Detached", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2099,6 +2195,12 @@ package editor.trigger {
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers, entity_shape_brothers_package, "Breakup Brothers", null, null,
+                     [
+                             new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_DestroyBrothers, entity_shape_brothers_package, "Destroy Brothers", null, null,
                      [
                              new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                      ],
@@ -2311,15 +2413,24 @@ package editor.trigger {
                         new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
                         new VariableDefinitionBoolean ("Paused?"), 
                      ],
+                     null,
+                     false
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_GetTimerInterval, entity_trigger_package, "Get Timer Interval", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
+                     ],
+                     [
+                        new VariableDefinitionNumber ("Interval"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval, entity_trigger_package, "Set Timer Interval", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
+                        new VariableDefinitionNumber ("Interval"),
+                     ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval, entity_trigger_package, "Set Timer Interval", null, null,
-         //            [
-         //               new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
-         //               new VariableDefinitionNumber ("Interval", null, {mMinValue: 0.0}),
-         //            ],
-         //            null
-         //         );
 
          
       // ...

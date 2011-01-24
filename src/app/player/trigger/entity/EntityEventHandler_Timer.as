@@ -51,6 +51,8 @@ package player.trigger.entity
       {
          mRunningInterval = interval;
          mRunningInterval_Int = Math.round (mRunningInterval);
+         if (mRunningInterval_Int < 1)
+            mRunningInterval_Int = 1;
       }
       
       public function GetRunningInterval ():Number
@@ -99,7 +101,7 @@ package player.trigger.entity
       
       protected var mCurrentTimerStep:int = 0;
       protected var mRunningTimes:int = 0;
-      protected var mPaused:Boolean = false;
+      protected var mPaused:Boolean = false; // ??? why use this variable?
       
       override protected function UpdateInternal (dt:Number):void
       {

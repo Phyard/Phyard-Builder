@@ -85,6 +85,13 @@ package univiewer
          
          mLoadingStage = " info ";
          loader.load(request);
+         
+         //
+         var theContextMenu:ContextMenu = new ContextMenu ();
+         theContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
+         defaultItems.print = true;
+         contextMenu = theContextMenu;
       }
       
       private var mDesignInfoStream:ByteArray;

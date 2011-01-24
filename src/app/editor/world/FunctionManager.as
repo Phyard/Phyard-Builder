@@ -290,7 +290,7 @@ package editor.world {
       {
          mIsChanged = changed;
          
-         if (changed)
+         if (mIsChanged && mUpdateFunctionMenuAtOnce)
          {
             UpdateFunctionMenu ();
          }
@@ -299,6 +299,13 @@ package editor.world {
       public function IsChanged ():Boolean
       {
          return mIsChanged;
+      }
+      
+      private var mUpdateFunctionMenuAtOnce:Boolean = false;
+      
+      public function SetDelayUpdateFunctionMenu (delay:Boolean):void
+      {
+         mUpdateFunctionMenuAtOnce = ! delay;
       }
       
 //=============================================
@@ -312,7 +319,7 @@ package editor.world {
          mFunctionMenuGroup = menuGroup;
       }
       
-      private function UpdateFunctionMenu ():void
+      public function UpdateFunctionMenu ():void
       {
          if (mFunctionMenuGroup == null)
             return;

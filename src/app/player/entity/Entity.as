@@ -366,7 +366,9 @@ package player.entity {
          GetMainEntity ().Destroy (); // a main entity must destroy its sub entities
       }
       
-      // this one is for internal 
+      // this one is for internal, reasons:
+      // - avoid destroying a sub entity only
+      // DestroyEntity is for external use
       final internal function Destroy ():void
       {
          if (mAlreadyDestroyed)

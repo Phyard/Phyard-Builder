@@ -224,6 +224,8 @@ package editor.trigger.entity {
             {
                var entity:Entity = mEntityAssignerList [i] as Entity;
                
+               // todo: draw dot lines for Any tyle assigners
+               
                //if (IsSelected () || entity.IsSelected ())
                {
                   GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY (), 0x0, 0);

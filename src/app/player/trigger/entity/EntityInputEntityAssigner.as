@@ -223,6 +223,20 @@ package player.trigger.entity
                   else return ContainingResult_False;
                }
                
+            case Define.EntityPairAssignerType_BothInMany:
+               
+               if (mEntitiesIndexes1 == null)
+                  return ContainingResult_False;
+               
+               return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 && mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_True : ContainingResult_False;
+               
+            case Define.EntityPairAssignerType_EitherInMany:
+               
+               if (mEntitiesIndexes1 == null)
+                  return ContainingResult_False;
+               
+               return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 || mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_True : ContainingResult_False;
+               
             case Define.EntityPairAssignerType_ManyToAny:
                
                if (mEntitiesIndexes1 == null)
@@ -252,20 +266,6 @@ package player.trigger.entity
             case Define.EntityPairAssignerType_AnyToAny:
                
                return ContainingResult_True;
-               
-            case Define.EntityPairAssignerType_EitherInMany:
-               
-               if (mEntitiesIndexes1 == null)
-                  return ContainingResult_False;
-               
-               return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 || mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_True : ContainingResult_False;
-               
-            case Define.EntityPairAssignerType_BothInMany:
-               
-               if (mEntitiesIndexes1 == null)
-                  return ContainingResult_False;
-               
-               return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 && mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_True : ContainingResult_False;
                
             default:
                return ContainingResult_False;
@@ -346,6 +346,7 @@ package player.trigger.entity
 //==========================================================================================================
       
       // as input of a task entity
+      // Define.EntitySelectorType_Any: is not supported
       public function GetEntityListTaskStatus ():int
       {
          if (mEntityList == null)
@@ -392,6 +393,8 @@ package player.trigger.entity
       {
          if (mIsPairLimiter)
             return;
+         
+         // for Define.EntitySelectorType_Any, only support entities created in editor now
          
          var valueSourceEntity:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;
          
@@ -544,6 +547,18 @@ package player.trigger.entity
                      timerEventHandler.HandleEvent (valueSourceList);
                   }
                }
+               
+               break;
+            case Define.EntityPairAssignerType_EitherInMany:
+               
+               break;
+            case Define.EntityPairAssignerType_ManyToAny:
+            case Define.EntityPairAssignerType_AnyToMany:
+               
+               // Note the order
+               
+               break;
+            case Define.EntityPairAssignerType_AnyToAny:
                
                break;
             default:

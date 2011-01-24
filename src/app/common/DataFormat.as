@@ -1355,6 +1355,7 @@ package common {
          
          //>>> load custom functions
          // from v1.53
+         editorWorld.GetFunctionManager().SetDelayUpdateFunctionMenu (true);
          var beginningCustomFunctionIndex:int = editorWorld.GetFunctionManager().GetNumFunctions ();
          
          var functionId:int;
@@ -1384,6 +1385,7 @@ package common {
             TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, functionDefine.mCodeSnippetDefine, true, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
             TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, functionDefine, functionEntity.GetCodeSnippet (), functionEntity.GetCodeSnippet ().GetOwnerFunctionDefinition (), false, true);
          }
+         editorWorld.GetFunctionManager().SetDelayUpdateFunctionMenu (false);
          //<<<
          
          // modify, 2nd round

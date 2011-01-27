@@ -2104,7 +2104,7 @@ package common {
                   if (worldDefine.mVersion >= 0x0108)
                   {
                      entityDefine.mAdaptiveBackgroundSize = parseInt (element.@adaptive_background_size) != 0;
-                     entityDefine.mTextColor = parseInt ( (element.@text_color).substr (2), 16);
+                     entityDefine.mTextColor = element.@text_color == undefined ? 0x0 : parseInt ( (element.@text_color).substr (2), 16);
                      entityDefine.mFontSize = parseInt (element.@font_size);
                      entityDefine.mIsBold = parseInt (element.@bold) != 0;
                      entityDefine.mIsItalic = parseInt (element.@italic) != 0;
@@ -2165,7 +2165,15 @@ package common {
          }
          else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
          {
-            entityDefine.mCollideConnected = parseInt (element.@collide_connected) != 0;
+            // 
+            if (worldDefine.mVersion < 0x0104)
+            {
+               entityDefine.mCollideConnected = ("true" == String (element.@collide_connected));
+            }
+            else
+            {
+               entityDefine.mCollideConnected = parseInt (element.@collide_connected) != 0;
+            }
             
             if (worldDefine.mVersion >= 0x0102)
             {

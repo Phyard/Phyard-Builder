@@ -2039,7 +2039,8 @@ package common {
                   
                   if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
                   {
-                     if (worldDefine.mVersion >= 0x0105 && worldDefine.mVersion < 0x0107)
+                     //if (worldDefine.mVersion >= 0x0105 && worldDefine.mVersion < 0x0107) // bug: should be v1,02
+                     if (worldDefine.mVersion >= 0x0102 && worldDefine.mVersion < 0x0107)
                      {
                         if (entityDefine.mBorderThickness != 0)
                            entityDefine.mRadius = entityDefine.mRadius - 0.5;
@@ -2052,7 +2053,8 @@ package common {
                   }
                   else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
                   {
-                     if (worldDefine.mVersion >= 0x0105 && worldDefine.mVersion < 0x0107)
+                     //if (worldDefine.mVersion >= 0x0105 && worldDefine.mVersion < 0x0107) // bug: should be v1,02
+                     if (worldDefine.mVersion >= 0x0102 && worldDefine.mVersion < 0x0107)
                      {
                         if (entityDefine.mBorderThickness != 0)
                         {
@@ -2255,10 +2257,10 @@ package common {
          {
             worldDefine.mSettings.mWorldLeft = 0;
             worldDefine.mSettings.mWorldTop  = 0;
-            worldDefine.mSettings.mWorldWidth = Define.DefaultWorldWidth;
-            worldDefine.mSettings.mWorldHeight = Define.DefaultWorldHeight;
-            worldDefine.mSettings.mCameraCenterX = worldDefine.mSettings.mWorldLeft + Define.DefaultWorldWidth * 0.5
-            worldDefine.mSettings.mCameraCenterY = worldDefine.mSettings.mWorldTop + Define.DefaultWorldHeight * 0.5;
+            worldDefine.mSettings.mWorldWidth = 600;
+            worldDefine.mSettings.mWorldHeight = 600;
+            worldDefine.mSettings.mCameraCenterX = worldDefine.mSettings.mWorldLeft + 600 * 0.5
+            worldDefine.mSettings.mCameraCenterY = worldDefine.mSettings.mWorldTop + 600 * 0.5;
             worldDefine.mSettings.mBackgroundColor = 0xDDDDA0;
             worldDefine.mSettings.mBuildBorder = true;
             worldDefine.mSettings.mBorderColor = Define.ColorStaticObject;

@@ -242,7 +242,7 @@
                }
                else if (event.item.@data == "String")
                {
-                  variableDefinition = new VariableDefinitionString ("aText");
+                  variableDefinition = new VariableDefinitionString ("aString");
                }
                else if (event.item.@data == "CCat")
                {

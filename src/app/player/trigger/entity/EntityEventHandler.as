@@ -160,6 +160,12 @@ package player.trigger.entity
       
       protected var mEnabledChangedStep:int = 0;
       protected var mEnabledChangedStepStage:int = 0;
+         // these variables are to make sure a disabled (before starting pf running all timer event handlers) event handler will not run (before ending of running all timer event handlers)
+         // maybe the current implementation is not a good one.Maybe delay enabling will be used later.
+         // to make it symmatrical (maybe shouldn't), an enbled (before starting pf running all timer event handlers) event handler should be always run (before ending of running all timer event handlers)
+         // maybe dalay enabling is also not good enugh. It seems now mPaused is removed, which makes the case simpler: the ones in dlay-run list will always run, otherwuse, will not run.
+         // [edit]: delay run is stil needed, to give user a consitent value returned by IsEnabled
+         // above rules should not only apply on timer event handlers, but also for all event handlers
       
       override public function SetEnabled (enabled:Boolean):void
       {
@@ -172,10 +178,11 @@ package player.trigger.entity
          }
       }
       
-      public function HandleEvent (valueSourceList:Parameter):void
+      // the return value is only useful for some event handlers
+      public function HandleEvent (valueSourceList:Parameter):Boolean
       {
          if (mIsEnabled == false || mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
-            return;
+            return false;
          
          // only excute event handler when the event handler is enabled before the event happens.
          if (mEnabledChangedStep < mWorld.GetSimulatedSteps () || mEnabledChangedStepStage < mWorld.GetStepStage ())
@@ -186,6 +193,8 @@ package player.trigger.entity
             if (mExternalAction != null)
                mExternalAction.Perform ();
          }
+         
+         return true;
       }     
    }
 }

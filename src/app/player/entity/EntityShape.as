@@ -275,7 +275,7 @@ package player.entity {
          }
          
          mNeedRebuildAppearanceObjects = true;
-         DelayUpdateAppearance (); 
+         DelayUpdateAppearance ();
       }
       
       public function GetShapeAiType ():int

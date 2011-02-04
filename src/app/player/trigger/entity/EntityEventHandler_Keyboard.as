@@ -62,13 +62,13 @@ package player.trigger.entity
       // for judging if this handler is excuted already in current step.
       private var mLastHandlingStep:int = -1;
       
-      override public function HandleEvent (valueSourceList:Parameter):void
+      override public function HandleEvent (valueSourceList:Parameter):Boolean
       {
          if (mEventId == CoreEventIds.ID_OnWorldKeyHold)
          {
             var worldSimulateSteps:int = mWorld.GetSimulatedSteps ();
             if (mLastHandlingStep >= worldSimulateSteps)
-               return;
+               return false;
             
             mLastHandlingStep = worldSimulateSteps;
          }
@@ -83,11 +83,11 @@ package player.trigger.entity
             {
                keyCode = mKeyCodes [i];
                if (mWorld.IsKeyHold (keyCode) && keyCode != eventKeyCode)
-                  return;
+                  return false;
             }
          }
          
-         super.HandleEvent (valueSourceList);
+         return super.HandleEvent (valueSourceList);
       }      
    }
 }

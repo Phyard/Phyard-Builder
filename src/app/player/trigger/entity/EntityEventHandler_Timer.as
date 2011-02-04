@@ -101,12 +101,20 @@ package player.trigger.entity
       
       protected var mCurrentTimerStep:int = 0;
       protected var mRunningTimes:int = 0;
-      protected var mPaused:Boolean = false; // ??? why use this variable?
+      
+      protected var mPaused:Boolean = false; 
+            // ??? why use this variable?
+            // the API SetTimerPaused () is depreciated from v1.54
       
       override protected function UpdateInternal (dt:Number):void
       {
-         if (mPaused)
+         // from v1.54, pasued == (! enabled)
+         //if (mPaused)
+         //   return;
+         if (mIsEnabled == false)
             return;
+         
+         trace ("mCurrentTimerStep = " + mCurrentTimerStep);
          
          ++ mCurrentTimerStep;
          if (mCurrentTimerStep >= mRunningInterval_Int)
@@ -166,11 +174,7 @@ package player.trigger.entity
          
          mTimerEventHandlerValueSource0.mValueObject = mRunningTimes;
          
-      //if (mCreationId == 120) CodeSnippet.mEnableTrace = true;
-         
          HandleEvent (mTimerEventHandlerValueSourceList);
-         
-      //if (mCreationId == 120) CodeSnippet.mEnableTrace = false;
       }      
       public function HandleEntityTimerEvent ():void
       {

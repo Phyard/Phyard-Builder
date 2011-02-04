@@ -2382,6 +2382,8 @@ package editor {
             }
             else if (entity is SubEntityWeldAnchor)
             {
+               jointValues.mAnchorIndex = -1; // to make both shape select lists selectable
+               
                var weld:EntityJointWeld = joint as EntityJointWeld;
                
                ShowWeldSettingDialog (values, ConfirmSettingEntityProperties);

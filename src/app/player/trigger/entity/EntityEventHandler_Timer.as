@@ -114,7 +114,7 @@ package player.trigger.entity
          if (mIsEnabled == false)
             return;
          
-         trace ("mCurrentTimerStep = " + mCurrentTimerStep);
+         //trace ("mCurrentTimerStep = " + mCurrentTimerStep);
          
          ++ mCurrentTimerStep;
          if (mCurrentTimerStep >= mRunningInterval_Int)

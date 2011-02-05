@@ -62,6 +62,9 @@ package common.trigger {
       public static const ID_String_CharCode2Char:int             = IdPool.CoreApiId_125; // 
       public static const ID_String_ToLowerCase:int               = IdPool.CoreApiId_128; // 
       public static const ID_String_ToUpperCase:int               = IdPool.CoreApiId_129; // 
+      public static const ID_String_IndexOf:int                   = IdPool.CoreApiId_130; // from v1.54
+      public static const ID_String_LastIndexOf:int               = IdPool.CoreApiId_131; // from v1.54
+      public static const ID_String_Substring:int                 = IdPool.CoreApiId_132; // from v1.54
       
    // bool
       
@@ -321,11 +324,11 @@ package common.trigger {
       
       public static const ID_EntityShape_IsPhysicsEnabled:int          = IdPool.CoreApiId_1150;
       //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1151;
+      public static const ID_EntityShape_IsStatic:int                  = IdPool.CoreApiId_1155; // from v1.54
+      //public static const ID_EntityShape_SetStatic:int                 = IdPool.CoreApiId_1156;
       public static const ID_EntityShape_GetCollisionCategory:int      = IdPool.CoreApiId_1152;
       public static const ID_EntityShape_SetCollisionCategory:int      = IdPool.CoreApiId_1153;
       //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1154;
-      public static const ID_EntityShape_IsStatic:int                  = IdPool.CoreApiId_1155;
-      public static const ID_EntityShape_SetStatic:int                 = IdPool.CoreApiId_1156;
       public static const ID_EntityShape_IsSensor:int                  = IdPool.CoreApiId_1157;
       public static const ID_EntityShape_SetAsSensor:int               = IdPool.CoreApiId_1158;
       //public static const ID_EntityShape_IsBullet:int                  = IdPool.CoreApiId_1159;
@@ -351,12 +354,12 @@ package common.trigger {
       public static const ID_EntityShape_SetLinearVelocity:int                          = IdPool.CoreApiId_1095;
       public static const ID_EntityShape_GetLinearVelocity:int                          = IdPool.CoreApiId_1096;
       public static const ID_EntityShape_ApplyLinearImpulseByVelocityVector:int         = IdPool.CoreApiId_1097;
-      //public static const ID_EntityShape_SetLinearVelocityByRadians:int
-      //public static const ID_EntityShape_SetLinearVelocityByDegrees:int
-      //public static const ID_EntityShape_GetAngularVelocityByRadians:int
-      //public static const ID_EntityShape_SetAngularVelocityByRadians:int
-      //public static const ID_EntityShape_GetAngularVelocityByDegrees:int
-      //public static const ID_EntityShape_SetAngularVelocityByDegrees:int
+      public static const ID_EntityShape_SetAngularVelocityByRadians:int               = IdPool.CoreApiId_1089; // from v1.54
+      public static const ID_EntityShape_SetAngularVelocityByDegrees:int               = IdPool.CoreApiId_1090; // from v1.54
+      public static const ID_EntityShape_GetAngularVelocityByRadians:int              = IdPool.CoreApiId_1091; // from v1.54
+      public static const ID_EntityShape_GetAngularVelocityByDegrees:int              = IdPool.CoreApiId_1092; // from v1.54
+      public static const ID_EntityShape_ChangeAngularVelocityByRadians:int           = IdPool.CoreApiId_1093; // from v1.54
+      public static const ID_EntityShape_ChangeAngularVelocityByDegrees:int           = IdPool.CoreApiId_1094; // from v1.54
       
       public static const ID_EntityShape_ApplyStepForce:int                                   = IdPool.CoreApiId_1104;
       public static const ID_EntityShape_ApplyStepForceAtLocalPoint:int                       = IdPool.CoreApiId_1105;

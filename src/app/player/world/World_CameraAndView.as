@@ -89,7 +89,7 @@ public function SetZoomScale (zoomScale:Number):void
    x = oldViewCenterX - mCameraCenterX * scaleX;
    y = oldViewCenterY - mCameraCenterY * scaleY;
    
-   MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY);
+   MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY, mCameraAngle);
 }
 
 //=====================================================================================
@@ -99,6 +99,7 @@ public function SetZoomScale (zoomScale:Number):void
 // these values are in display world space, pixels, assume scale = 1
 private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
 private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
+private var mCameraAngle:Number = 0; // degrees
 
 public function GetCameraCenterDisplayX ():Number
 {
@@ -124,20 +125,20 @@ public function MoveWorldScene_PhysicsOffset (physicsDx:Number, physicsDy:Number
 {
    var displayOffet:Point = mCoordinateSystem.PhysicsVector2DisplayVector (physicsDx, physicsDy);
    
-   MoveCameraCenterTo_DisplayPoint (mCameraCenterX + displayOffet.x, mCameraCenterY + displayOffet.y);
+   MoveCameraCenterTo_DisplayPoint (mCameraCenterX + displayOffet.x, mCameraCenterY + displayOffet.y, mCameraAngle);
 }
 
 public function MoveWorldScene_DisplayOffset (displayDx:Number, displayDy:Number):void
 {
-   MoveCameraCenterTo_DisplayPoint (mCameraCenterX + displayDx, mCameraCenterY + displayDy);
+   MoveCameraCenterTo_DisplayPoint (mCameraCenterX + displayDx, mCameraCenterY + displayDy, mCameraAngle);
 }
 
 public function MoveCameraCenterTo_PhysicsPoint (physicsX:Number, physicsY:Number):void
 {
-   MoveCameraCenterTo_DisplayPoint (mCoordinateSystem.P2D_PositionX (physicsX), mCoordinateSystem.P2D_PositionY (physicsY));
+   MoveCameraCenterTo_DisplayPoint (mCoordinateSystem.P2D_PositionX (physicsX), mCoordinateSystem.P2D_PositionY (physicsY), mCameraAngle);
 }
 
-public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDisplayY:Number):void
+public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDisplayY:Number, targetDisplayAngle:Number):void
 {
    // assume rotation of world is zero
    
@@ -185,6 +186,8 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
    
    x = leftInView - mWorldLeft * scaleX;
    y = topInView  - mWorldTop  * scaleY;
+   //rotation = - targetDisplayAngle;
+      // todo, x and y are related with rotation
    
    UpdateBackgroundSpriteOffsetAndScale ();
 }
@@ -197,6 +200,8 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
          mBackgroundSprite.x = mCameraCenterX;
       if ((int(mBackgroundSprite.y * 20.0)) != (int (mCameraCenterY * 20.0)))
          mBackgroundSprite.y = mCameraCenterY;
+      if (mBackgroundSprite.rotation != mCameraAngle)
+         mBackgroundSprite.rotation = mCameraAngle;
       
       var sx:Number = 1.0 / scaleX;
       if (mBackgroundSprite.scaleX != sx)
@@ -212,9 +217,11 @@ protected function UpdateCamera ():void
 {
    var targetX:Number;
    var targetY:Number
+   var targetAngle:Number
    
    var smoothX:Boolean;
    var smoothY:Boolean;
+   var smoothAngle:Boolean;
    
    var updateCamera:Boolean = mSingleStepMode || (! mIsPaused);
    
@@ -244,6 +251,20 @@ protected function UpdateCamera ():void
    {
       smoothY = false;
       targetY = mCameraCenterY + mCameraMovedOffsetY_ByMouse;
+   }
+   
+   if (mFollowedEntityCameraAngle != null && mFollowedEntityCameraAngle.IsDestroyedAlready ())
+      mFollowedEntityCameraAngle = null;
+   
+   if (updateCamera && mFollowedEntityCameraAngle != null)
+   {
+      smoothAngle = mSmoothFollowingCameraAngle;
+      targetAngle = mCoordinateSystem.P2D_RotationRadians (mFollowedEntityCameraAngle.GetRotation ()) * Define.kRadians2Degrees;
+   }
+   else
+   {
+      smoothAngle = false;
+      targetAngle = mCameraAngle + mCameraMovedOffsetAngle_ByMouse;
    }
    
    var nextX:Number;
@@ -326,25 +347,70 @@ protected function UpdateCamera ():void
       nextY = targetY;
    }
    
-   MoveCameraCenterTo_DisplayPoint (nextX, nextY);
+   var newAngle:Number;
+   var dAngle:Number;
+   var distanceAngle:Number;
+   
+   var criteriaAngle1:Number = 180; // degrees
+   var criteriaAngle2:Number = 1; // degrees
+   
+   var maxAngularSpeed:Number = 10; // degrees
+   
+   if (smoothAngle)
+   {
+      dAngle = targetAngle - mCameraAngle;
+      distanceAngle = Math.abs (dAngle);
+      
+      if (distanceAngle <= criteriaAngle2)
+      {
+         newAngle = targetAngle;
+      }
+      else if (distanceAngle > criteriaAngle1)
+      {
+         newAngle = mCameraAngle + maxAngularSpeed * dy / distanceAngle;
+      }
+      else
+      {
+         newAngle = mCameraAngle + maxAngularSpeed * dy / criteriaAngle1;
+      }
+   }
+   else
+   {
+      newAngle = targetAngle;
+   }
+   
+   MoveCameraCenterTo_DisplayPoint (nextX, nextY, newAngle);
    
    mCameraMovedOffsetX_ByMouse = 0;
    mCameraMovedOffsetY_ByMouse = 0;
+   mCameraMovedOffsetAngle_ByMouse = 0;
    
    FadingCamera ();
 }
 
 //=====================================================================================
-// 
+// mouse move camera
 //=====================================================================================
 
 protected var mCameraMovedOffsetX_ByMouse:Number = 0;
 protected var mCameraMovedOffsetY_ByMouse:Number = 0;
+protected var mCameraMovedOffsetAngle_ByMouse:Number = 0; // degrees
 
 public function MouseMoveCamera (offsetX:Number, offsetY:Number):void
 {
    mCameraMovedOffsetX_ByMouse += offsetX;
    mCameraMovedOffsetY_ByMouse += offsetY;
+   
+   if (mIsPaused)
+   {
+      UpdateCamera ();
+   }
+}
+
+// for pad: thwo hands rotate world (delta degrees)
+public function MouseRotateCamera (offsetAngle:Number):void 
+{
+   mCameraMovedOffsetAngle_ByMouse += offsetAngle;
    
    if (mIsPaused)
    {

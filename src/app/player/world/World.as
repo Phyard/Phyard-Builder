@@ -182,6 +182,7 @@ package player.world {
          
          mCameraCenterX = worldDefine.mSettings.mCameraCenterX;
          mCameraCenterY = worldDefine.mSettings.mCameraCenterY;
+         mCameraAngle = 0;
          
       // ...
          
@@ -447,7 +448,7 @@ package player.world {
       //------------------------------------
          
          SetZoomScale (mZoomScale);
-         MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY);
+         MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY, mCameraAngle);
          
       //------------------------------------
       // init physics

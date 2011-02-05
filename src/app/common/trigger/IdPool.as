@@ -136,6 +136,9 @@ package common.trigger {
       public static const CoreApiId_127:int = 127; //
       public static const CoreApiId_128:int = 128; //
       public static const CoreApiId_129:int = 129; //
+      public static const CoreApiId_130:int = 130; //
+      public static const CoreApiId_131:int = 131; //
+      public static const CoreApiId_132:int = 132; //
       
       public static const CoreApiId_150:int = 150; // 
       public static const CoreApiId_151:int = 151; // 
@@ -321,6 +324,12 @@ package common.trigger {
       
       public static const CoreApiId_1060:int = 1060; // entity 
       
+      public static const CoreApiId_1089:int = 1089; // entity.shape physics
+      public static const CoreApiId_1090:int = 1090; // entity.shape physics
+      public static const CoreApiId_1091:int = 1091; // entity.shape physics
+      public static const CoreApiId_1092:int = 1092; // entity.shape physics
+      public static const CoreApiId_1093:int = 1093; // entity.shape physics
+      public static const CoreApiId_1094:int = 1094; // entity.shape physics
       public static const CoreApiId_1095:int = 1095; // entity.shape physics
       public static const CoreApiId_1096:int = 1096; // entity.shape physics
       public static const CoreApiId_1097:int = 1097; // entity.shape physics
@@ -370,7 +379,7 @@ package common.trigger {
       public static const CoreApiId_1153:int = 1153; // entity.shape physics
       //public static const CoreApiId_1154:int = 1154; // entity.shape physics
       public static const CoreApiId_1155:int = 1155; // entity.shape physics
-      public static const CoreApiId_1156:int = 1156; // entity.shape physics
+      //public static const CoreApiId_1156:int = 1156; // entity.shape physics
       public static const CoreApiId_1157:int = 1157; // entity.shape physics
       public static const CoreApiId_1158:int = 1158; // entity.shape physics
       //public static const CoreApiId_1159:int = 1159; // entity.shape physics
@@ -438,6 +447,7 @@ package common.trigger {
       public static const CoreApiId_2503:int = 2503; // trigger.timer
       public static const CoreApiId_2504:int = 2504; // trigger.timer
       public static const CoreApiId_2505:int = 2505; // trigger.timer
+      public static const CoreApiId_2506:int = 2506; // trigger.timer
       
    //=============================================================
       

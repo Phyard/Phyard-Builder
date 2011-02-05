@@ -88,8 +88,11 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_String_GetCharAt,                   StringCharAt);
          RegisterCoreFunction (CoreFunctionIds.ID_String_GetCharCodeAt,               StringCharCodeAt);
          RegisterCoreFunction (CoreFunctionIds.ID_String_CharCode2Char,               CharCode2Char);
-         RegisterCoreFunction (CoreFunctionIds.ID_String_ToLowerCase,                 ToLowerCase);
-         RegisterCoreFunction (CoreFunctionIds.ID_String_ToUpperCase,                 ToUpperCase);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_ToLowerCase,                 ToLowerCaseString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_ToUpperCase,                 ToUpperCaseString);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_IndexOf,                     IndexOfSubstring);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_LastIndexOf,                 LastIndexOfSubstring);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_Substring,                   Substring);
          
       // bool
          
@@ -338,6 +341,7 @@ package player.trigger {
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,            IsShapePhysicsEnabled);
          //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetPhysicsEnabled,         SetShapePhysicsEnabled);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsStatic,                    IsStaticShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,        GetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
@@ -352,6 +356,12 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,                        SetShapeLinearVelocity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetLinearVelocity,                        GetShapeLinearVelocity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,       AddLinearImpulseByVelocityVector);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians,           SetAngularVelocityByRadians);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees,           SetAngularVelocityByDegrees);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByRadians,           GetAngularVelocityByRadians);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByDegrees,           GetAngularVelocityByDegrees);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians,        ChangeAngularVelocityByRadians);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByDegrees,        ChangeAngularVelocityByDegrees);
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepForce,                        ApplyStepForceOnShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint,            ApplyStepForceAtLocalPointOnShape);
@@ -634,18 +644,82 @@ package player.trigger {
          valueTarget.AssignValueObject (char_code == 0 ? "" : String.fromCharCode (char_code));
       }
       
-      public static function ToLowerCase (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ToLowerCaseString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (text == null ? null : text.toLowerCase ());
       }
       
-      public static function ToUpperCase (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ToUpperCaseString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (text == null ? null : text.toUpperCase ());
+      }
+      
+      public static function IndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var text:String = valueSource.EvaluateValueObject () as String;
+         if (text == null)
+         {
+            valueTarget.AssignValueObject (-1);
+            return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var substring:String = valueSource.EvaluateValueObject () as String;
+         if (substring == null)
+         {
+            valueTarget.AssignValueObject (-1);
+            return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var fromIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         valueTarget.AssignValueObject (text.indexOf (substring, fromIndex));
+      }
+      
+      public static function LastIndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var text:String = valueSource.EvaluateValueObject () as String;
+         if (text == null)
+         {
+            valueTarget.AssignValueObject (-1);
+            return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var substring:String = valueSource.EvaluateValueObject () as String;
+         if (substring == null)
+         {
+            valueTarget.AssignValueObject (-1);
+            return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var lastFromIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         valueTarget.AssignValueObject (text.lastIndexOf (substring, lastFromIndex));
+      }
+      
+      public static function Substring (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var text:String = valueSource.EvaluateValueObject () as String;
+         if (text == null)
+         {
+            valueTarget.AssignValueObject (null);
+            return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var fromIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var toIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         valueTarget.AssignValueObject (text.substring (fromIndex, toIndex));
       }
       
       public static function NumberToString (valueSource:Parameter, valueTarget:Parameter):void
@@ -825,7 +899,7 @@ package player.trigger {
          
          var dv:Number = value1 - value2;
          
-         valueTarget.AssignValueObject (- Number.MIN_VALUE < dv && dv < Number.MIN_VALUE);
+         valueTarget.AssignValueObject (- Number.MIN_VALUE <= dv && dv <= Number.MIN_VALUE); // todo maybe the tolerance value is too small
       }
       
       public static function EqualsWith_Booleans (valueSource:Parameter, valueTarget:Parameter):void
@@ -2893,6 +2967,14 @@ package player.trigger {
          //
       //}
       
+      public static function IsStaticShape (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         
+         var static:Boolean = shape == null ? true : shape.IsBodyStatic ();
+         valueTarget.AssignValueObject (static);
+      }
+      
       public static function GetShapeCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3063,6 +3145,61 @@ package player.trigger {
          }
       }
       
+      public static function SetAngularVelocityByRadians (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetAngularVelocity (valueSource, valueTarget, false);
+      }
+      
+      public static function SetAngularVelocityByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetAngularVelocity (valueSource, valueTarget, true);
+      }
+      
+      private static function SetAngularVelocity (valueSource:Parameter, valueTarget:Parameter, byDegrees:Boolean):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var angularVelocity:Number = valueSource.EvaluateValueObject () as Number;
+         if (byDegrees)
+         {
+             angularVelocity *= Define.kDegrees2Radians;
+         }
+         
+         shape.AddAngularMomentum (angularVelocity - shape.GetAngularVelocity (), true);
+      }
+      
+      public static function GetAngularVelocityByRadians (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null || shape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetAngularVelocity ());
+         }
+      }
+      
+      public static function GetAngularVelocityByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null || shape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (0.0);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetAngularVelocity () * Define.kRadians2Degrees);
+         }
+      }
+      
       public static function AddLinearImpulseByVelocityVector (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3073,12 +3210,12 @@ package player.trigger {
             return;
          
          valueSource = valueSource.mNextParameter;
-         var velocityX:Number = valueSource.EvaluateValueObject () as Number;
+         var deltaVelocityX:Number = valueSource.EvaluateValueObject () as Number;
          
          valueSource = valueSource.mNextParameter;
-         var velocityY:Number = valueSource.EvaluateValueObject () as Number;
+         var deltaVelocityY:Number = valueSource.EvaluateValueObject () as Number;
          
-         shape.AddLinearMomentum (velocityX, velocityY, true, false);
+         shape.AddLinearMomentum (deltaVelocityX, deltaVelocityY, true, false);
       }
       
       public static function ApplyLinearImpulseOnShape (valueSource:Parameter, valueTarget:Parameter):void
@@ -3167,6 +3304,35 @@ package player.trigger {
          shape.GetBody ().ApplyAngularImpulse (angularImpulse);
       }
       
+      public static function ChangeAngularVelocityByRadians (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         ChangeAngularVelocity (valueSource, valueTarget, false);
+      }
+      
+      public static function ChangeAngularVelocityByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         ChangeAngularVelocity (valueSource, valueTarget, true);
+      }
+      
+      private static function ChangeAngularVelocity (valueSource:Parameter, valueTarget:Parameter, byDegrees:Boolean):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var deltaAngularVelocity:Number = valueSource.EvaluateValueObject () as Number;
+         if (byDegrees)
+         {
+            deltaAngularVelocity *= Define.kDegrees2Radians;
+         }
+         
+         shape.AddAngularMomentum (deltaAngularVelocity, true);
+      }
+
       public static function ApplyStepForceOnShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyStepForceOnShape (valueSource, valueTarget);

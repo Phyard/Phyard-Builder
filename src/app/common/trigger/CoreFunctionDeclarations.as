@@ -281,6 +281,36 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_String,       ""], 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_IndexOf,       
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       -1], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_LastIndexOf,       
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7fffffff], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       -1], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Substring,       
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7fffffff], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""], 
+                     ]
+                  );
          
        // bool
           
@@ -1886,6 +1916,14 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false], 
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       true], 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,       
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
@@ -2022,6 +2060,50 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX,       0.0], 
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY,       0.0], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByRadians,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByDegrees,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByDegrees,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
                      ], 
                      null
                   );

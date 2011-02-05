@@ -353,6 +353,36 @@ package editor.trigger {
                              new VariableDefinitionString ("Upper Case String"), 
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_IndexOf, string_package, "IndexOf", null, null,
+                     [
+                             new VariableDefinitionString ("The String"), 
+                             new VariableDefinitionString ("The Substring"), 
+                             new VariableDefinitionNumber ("From Index", null, {mMinValue: 0, mMaxValue: 0x7fffffff}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Index"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_LastIndexOf, string_package, "LastIndexOf", null, null,
+                     [
+                             new VariableDefinitionString ("The String"), 
+                             new VariableDefinitionString ("The Substring"), 
+                             new VariableDefinitionNumber ("From Index", null, {mMinValue: 0, mMaxValue: 0x7fffffff}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Last Index"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Substring, string_package, "Substring", null, null,
+                     [
+                             new VariableDefinitionString ("The String"), 
+                             new VariableDefinitionNumber ("From Index (including)", null, {mMinValue: 0, mMaxValue: 0x7fffffff}), 
+                             new VariableDefinitionNumber ("To Index (excluding)", null, {mMinValue: 0, mMaxValue: 0x7fffffff}), 
+                     ],
+                     [
+                             new VariableDefinitionString ("The Substring"), 
+                     ]
+                  );
          
        // bool
           
@@ -1952,6 +1982,14 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Physics Enabled?"), 
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic, shape_physics_properties_package, "Is Static Shape", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Static?"), 
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory, shape_physics_properties_package, "Get Collision Category", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
@@ -2047,6 +2085,50 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
                              new VariableDefinitionNumber ("Delta Velocity X"), 
                              new VariableDefinitionNumber ("Delta Velocity Y"), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians, shape_physics_dynamics_package, "Set Angular Velocity By Radians", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("New Angular Velocity (radians/s)"), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees, shape_physics_dynamics_package, "Set Angular Velocity By Degrees", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("New Angular Velocity (degrees/s)"), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByRadians, shape_physics_dynamics_package, "Get Angular Velocity By Radians", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Angular Velocity (radians/s)"), 
+                     ]
+               );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByDegrees, shape_physics_dynamics_package, "Get Angular Velocity By Degrees", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Angular Velocity (degrees/s)"), 
+                     ]
+               );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians, shape_physics_dynamics_package, "Change Angular Velocity By Radians", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Delta Angular Velocity (radians/s)"), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByDegrees, shape_physics_dynamics_package, "Change Angular Velocity By Degrees", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("Delta Angular Velocity (degrees/s)"), 
                      ],
                      null
                   );

@@ -293,6 +293,14 @@ package player.entity {
          return mIsStatic; // this value may be different with mBody.IsStatic ()
       }
       
+      public function IsBodyStatic ():Boolean
+      {
+         if (mBody != null)
+            return mBody.IsStatic ();
+         else
+            return IsStatic ();
+      }
+      
       public function SetAsBullet (bullet:Boolean):void
       {
          mIsBullet = bullet;

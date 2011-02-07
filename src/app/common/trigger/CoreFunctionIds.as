@@ -449,7 +449,7 @@ package common.trigger {
       
       //public static const ID_EntityTrigger_GetTimerTicks:int                       = IdPool.CoreApiId_2500;
       public static const ID_EntityTrigger_ResetTimer:int                          = IdPool.CoreApiId_2501;
-      //public static const ID_EntityTrigger_IsTimerPaused:int                       = IdPool.CoreApiId_2502;
+      public static const ID_EntityTrigger_IsTimerPaused:int                       = IdPool.CoreApiId_2502;
       public static const ID_EntityTrigger_SetTimerPaused:int                      = IdPool.CoreApiId_2503;
       public static const ID_EntityTrigger_GetTimerInterval:int                    = IdPool.CoreApiId_2504; // v1.54
       public static const ID_EntityTrigger_SetTimerInterval:int                    = IdPool.CoreApiId_2505; // v1.54

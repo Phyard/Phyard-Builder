@@ -2490,13 +2490,20 @@ package editor.trigger {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_IsTimerPaused, entity_trigger_package, "Is Timer Paused", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
+                     ],
+                     [
+                        new VariableDefinitionBoolean ("Paused?"), 
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused, entity_trigger_package, "Set Timer Paused", null, null,
                      [
                         new VariableDefinitionEntity ("The Timer Event Handler", null, {mValidClasses: Filters.sTimerEventHandlerEntityClasses}), 
                         new VariableDefinitionBoolean ("Paused?"), 
                      ],
-                     null,
-                     false
+                     null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityTrigger_GetTimerInterval, entity_trigger_package, "Get Timer Interval", null, null,
                      [

@@ -2467,6 +2467,14 @@ package common.trigger {
                      ], 
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_IsTimerPaused,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                     ], 
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,       
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 

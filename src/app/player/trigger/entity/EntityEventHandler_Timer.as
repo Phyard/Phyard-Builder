@@ -105,14 +105,17 @@ package player.trigger.entity
       protected var mPaused:Boolean = false; 
             // ??? why use this variable?
             // the API SetTimerPaused () is depreciated from v1.54
+            // [edit]: the "pause" is add back.
+            //        A timer "Not Paused" but "Disabled" will still update ticker, but will not run the script.
       
       override protected function UpdateInternal (dt:Number):void
       {
-         // from v1.54, pasued == (! enabled)
-         //if (mPaused)
-         //   return;
-         if (mIsEnabled == false)
+         if (mPaused)
             return;
+         // !!! here, some wavering back and forth in developing v1.54 (see above)
+         // from v1.54, pasued == (! enabled)
+         //if (mIsEnabled == false)
+         //   return;
          
          //trace ("mCurrentTimerStep = " + mCurrentTimerStep);
          
@@ -128,6 +131,11 @@ package player.trigger.entity
       public function Reset ():void
       {
          mCurrentTimerStep = 0;
+      }
+      
+      public function IsPaused ():Boolean
+      {
+         return mPaused;
       }
       
       public function SetPaused (paused:Boolean):void

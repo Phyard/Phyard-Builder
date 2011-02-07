@@ -443,7 +443,7 @@ package common.trigger {
       
       //public static const CoreApiId_2500:int = 2500; // trigger.timer
       public static const CoreApiId_2501:int = 2501; // trigger.timer
-      //public static const CoreApiId_2502:int = 2502; // trigger.timer
+      public static const CoreApiId_2502:int = 2502; // trigger.timer
       public static const CoreApiId_2503:int = 2503; // trigger.timer
       public static const CoreApiId_2504:int = 2504; // trigger.timer
       public static const CoreApiId_2505:int = 2505; // trigger.timer

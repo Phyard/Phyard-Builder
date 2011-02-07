@@ -431,7 +431,8 @@ package player.trigger {
       // game / entity / event handler
          
          RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_ResetTimer,                           ResetTimer);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,                       SetTimerPaused);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_IsTimerPaused,                       IsTimerPaused);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,                      SetTimerPaused);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_GetTimerInterval,                   GetTimerInterval);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,                   SetTimerInterval);
          
@@ -3934,6 +3935,20 @@ package player.trigger {
             return;
          
          timer.Reset ();
+      }
+      
+      public static function IsTimerPaused(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
+         
+         if (timer == null)
+         {
+            valueTarget.AssignValueObject (false);
+         }
+         else
+         {
+            valueTarget.AssignValueObject (timer.IsPaused ());
+         }
       }
       
       public static function SetTimerPaused (valueSource:Parameter, valueTarget:Parameter):void

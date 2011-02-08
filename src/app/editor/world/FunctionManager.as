@@ -301,7 +301,7 @@ package editor.world {
          return mIsChanged;
       }
       
-      private var mUpdateFunctionMenuAtOnce:Boolean = false;
+      private var mUpdateFunctionMenuAtOnce:Boolean = true;
       
       public function SetDelayUpdateFunctionMenu (delay:Boolean):void
       {

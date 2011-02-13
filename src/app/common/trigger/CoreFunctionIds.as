@@ -90,7 +90,9 @@ package common.trigger {
       public static const ID_Array_Equals:int                = IdPool.CoreApiId_83; // v1.54
       public static const ID_Array_Create:int                = IdPool.CoreApiId_84; // v1.54
       public static const ID_Array_IsNull:int                = IdPool.CoreApiId_85; // v1.54
-      public static const ID_Array_Length:int                = IdPool.CoreApiId_86; // v1.54
+      public static const ID_Array_GetLength:int                = IdPool.CoreApiId_86; // v1.54
+      public static const ID_Array_SetLength:int                = IdPool.CoreApiId_99; // v1.54
+      public static const ID_Array_RemoveElementAt:int                = IdPool.CoreApiId_100; // v1.54
       public static const ID_Array_SetElementWithBoolean:int     = IdPool.CoreApiId_87; // v1.54
       public static const ID_Array_GetElementAsBoolean:int       = IdPool.CoreApiId_88; // v1.54
       public static const ID_Array_SetElementWithNumber:int      = IdPool.CoreApiId_89; // v1.54

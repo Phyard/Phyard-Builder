@@ -543,13 +543,27 @@ package editor.trigger {
                               new VariableDefinitionBoolean ("Is Null?"), 
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Length, array_package, "Get Array Length", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_GetLength, array_package, "Get Array Length", null, null,
                      [
                               new VariableDefinitionArray ("The Array"), 
                      ], 
                      [
                               new VariableDefinitionNumber ("Array Length"), 
                      ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetLength, array_package, "Set Array Length", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Array Length"), 
+                     ], 
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_RemoveElementAt, array_package, "Remove Element At", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"), 
+                              new VariableDefinitionNumber ("Element Index"), 
+                     ], 
+                     null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean, array_package, "Set Element With Boolean", null, null,
                      [

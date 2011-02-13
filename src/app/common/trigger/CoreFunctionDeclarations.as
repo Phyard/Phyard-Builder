@@ -469,13 +469,27 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false], 
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Length,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetLength,       
                      [
                         [ValueTypeDefine.ValueType_Array,       null], 
                      ], 
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
                      ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetLength,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_RemoveElementAt,       
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                     ], 
+                     null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean,       
                      [

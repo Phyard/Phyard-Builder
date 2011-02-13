@@ -121,7 +121,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Equals,               EqualsWith_Arrays);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Create,               CreateArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
-         RegisterCoreFunction (CoreFunctionIds.ID_Array_Length,               GetArrayLength);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_GetLength,               GetArrayLength);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_SetLength,               SetArrayLength);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_RemoveElementAt,               RemoveArrayElementAt);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElementWithBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElementAsBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithNumber,     SetArrayElementWithNumber);
@@ -1073,6 +1075,36 @@ package player.trigger {
          var array:Array = valueSource.EvaluateValueObject () as Array;
          
          valueTarget.AssignValueObject (array == null ? 0 : array.length);
+      }
+      
+      public static function SetArrayLength (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array:Array = valueSource.EvaluateValueObject () as Array;
+         
+         if (array != null)
+         {
+            valueSource = valueSource.mNextParameter;
+            var new_len:int = valueSource.EvaluateValueObject () as int;
+            if (new_len < 0)
+               new_len = 0;
+            
+            array.length = new_len;
+         }
+      }
+      
+      public static function RemoveArrayElementAt (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array:Array = valueSource.EvaluateValueObject () as Array;
+         
+         if (array != null)
+         {
+            valueSource = valueSource.mNextParameter;
+            var index:int = valueSource.EvaluateValueObject () as int;
+            if (index >= 0 && index < array.length)
+            {
+               array.splice (index, 1);
+            }
+         }
       }
       
       private static function SetArrayElementWithSpecfiedClass (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void

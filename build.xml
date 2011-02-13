@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <project name="CIEditor" basedir="." default="release-editor">
    
-   <property name="dir.flexsdk"        value="D:/sdks/flex_sdk_3" />
-   <property name="dir.secureswf"        value="D:/softs/secureSWF/secureSWF" />
-   <property name="dir.webhost"        value="F:/__WebApps/_homepage/colorinfection_test" />
-   <property name="dir.phyard"        value="D:/projects/PhysicsEditor/googleapp/phyards/trunk/src/__statics/swfs" />
+   <property file="${basedir}/LocalSettings.properties" />
+   
+   <property name="dir.flexsdk"        value="${Path.FlexSDK}" />
+   <property name="dir.secureswf"        value="${Path.SecureSWF}" />
    
    <property name="editor-width" value="958" />
    <property name="editor-height" value="678" />
@@ -119,7 +119,7 @@
          <istrue value="${--debug}"/>
       </condition>
       
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
+      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
@@ -141,9 +141,6 @@
          
          <arg line="${dir.build.src}/Editor.mxml" />
       </exec>
-      
-      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release.editor}/editor_unsecure.swf"  overwrite="true" verbose="true" />
-      <copy tofile="${dir.phyard}/editor.swf" file="${dir.release.editor}/editor_unsecure.swf"  overwrite="true" verbose="true" />
    </target>
    
    <target name="debug-editor">
@@ -170,8 +167,8 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/editor.swf" quiet="true" />
       
-      <exec dir="${dir.release.editor}" executable="${dir.secureswf}/ssCLI.exe">
-         <arg line="editor_unsecure.swf"/>
+      <exec dir="${dir.release.editor}" executable="${dir.secureswf}/ssCLI">
+         <arg line="${dir.release.editor}/editor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.release}"/>
          <arg line="-wrap:3"/>
          <arg line="-controlflow:0"/>
@@ -182,9 +179,6 @@
       </exec>
       
       <move file="${dir.release}/editor_unsecure.swf" tofile="${dir.release}/editor.swf"/>
-
-      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true" />
-      <copy tofile="${dir.phyard}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true" />
    </target>
    
    <!-- ============================================= univiewer =========================================================== -->
@@ -199,7 +193,7 @@
          <istrue value="${--debug}"/>
       </condition>
       
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
+      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
@@ -240,8 +234,8 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/univiewer.swf" quiet="true" />
       
-      <exec dir="${dir.release.univiewer}" executable="${dir.secureswf}/ssCLI.exe">
-         <arg line="univiewer_unsecure.swf"/>
+      <exec dir="${dir.release.univiewer}" executable="${dir.secureswf}/ssCLI">
+         <arg line="${dir.release.univiewer/univiewer_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.release.univiewer}"/>
          <arg line="-wrap:0"/>
          <arg line="-controlflow:0"/>
@@ -272,7 +266,7 @@
          <istrue value="${--debug}"/>
       </condition>
       
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
+      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
@@ -315,8 +309,8 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/${plugin-name}.swf" quiet="true" />
       
-      <exec dir="${dir.release}.plugin.${plugin-name}" executable="${dir.secureswf}/ssCLI.exe">
-         <arg line="${plugin-name}_unsecure.swf"/>
+      <exec dir="${dir.release}.plugin.${plugin-name}" executable="${dir.secureswf}/ssCLI">
+         <arg line="${dir.release}.plugin.${plugin-name}/${plugin-name}_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.release}/${plugin-name}"/>
          <arg line="-wrap:0"/>
          <arg line="-controlflow:0"/>
@@ -406,7 +400,7 @@
          <istrue value="${--debug}"/>
       </condition>
       
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc.exe">
+      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
@@ -431,9 +425,6 @@
          
          <arg line="${dir.build.src}/Editor.mxml" />
       </exec>
-      
-      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release.editor}/editor_unsecure.swf"  overwrite="true" verbose="true" />
-      <copy tofile="${dir.phyard}/editor.swf" file="${dir.release.editor}/editor_unsecure.swf"  overwrite="true" verbose="true" />
    </target>
    
    <target name="debug-editor-alchemy">
@@ -456,8 +447,8 @@
       <mkdir dir="${dir.release}" />
       <delete file="${dir.release}/editor.swf" quiet="true" />
       
-      <exec dir="${dir.release.editor}" executable="${dir.secureswf}/ssCLI.exe">
-         <arg line="editor_unsecure.swf"/>
+      <exec dir="${dir.release.editor}" executable="${dir.secureswf}/ssCLI">
+         <arg line="${dir.release.editor}/editor_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.release}"/>
          <arg line="-wrap:3"/>
          <arg line="-controlflow:0"/>
@@ -468,9 +459,6 @@
       </exec>
       
       <move file="${dir.release}/editor_unsecure.swf" tofile="${dir.release}/editor.swf"/>
-
-      <copy tofile="${dir.webhost}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true" />
-      <copy tofile="${dir.phyard}/editor.swf" file="${dir.release}/editor.swf"  overwrite="true" verbose="true" />
    </target>
 
 </project>

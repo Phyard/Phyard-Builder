@@ -2965,6 +2965,95 @@ package common {
          return enStr;
       }
 
+//==================================== new playcode with base64 ======================================================
+
+      public static function WorldDefine2HexString_Base64 (worldDefine:WorldDefine):String
+      {
+         return ByteArray2HexString_Base64 (WorldDefine2ByteArray (worldDefine), false);
+      }
       
+      public static function ByteArray2HexString_Base64 (byteArray:ByteArray, compressOnNewByteArray:Boolean = true):String
+      {
+         if (byteArray == null)
+            return null;
+         
+         if (compressOnNewByteArray) {
+            var newByteArray:ByteArray = new ByteArray ();
+            newByteArray.length = byteArray.length;
+            newByteArray.writeBytes (byteArray, 0, byteArray.length);
+            newByteArray.position = 0;
+            byteArray = newByteArray;
+         }
+         
+         byteArray.compress ();
+         return EncodeByteArray2String (byteArray);
+      }
+
+//==================================== base64 ======================================================
+      
+      public static function EncodeByteArray2String(data:ByteArray):String
+      {
+         if (data == null) 
+         {
+            return null;
+         }
+         
+         var num_triples:int = data.length / 3;
+         var num_extras:int = data.length - num_triples * 3;
+         
+         var num_chars:int = (num_extras > 0 ? num_triples + 1 : num_triples) * 4;
+         var char_indexes:ByteArray = new ByteArray ();
+         char_indexes.length = num_chars;
+         
+         var b0:int, b1:int, b2:int;
+         
+         data.position = 0;
+         char_indexes.length = 0;
+         
+         for (var i_triple:int = 0; i_triple < num_triples; ++ i_triple)
+         {
+            b0 = data.readByte () & 0xFF; // "& 0xFF" is essential for negative values
+            b1 = data.readByte () & 0xFF;
+            b2 = data.readByte () & 0xFF;
+            
+            char_indexes.writeByte ((b0 & 0xFC) >> 2);
+            char_indexes.writeByte (((b0 & 0x03) << 4) | (b1 >> 4));
+            char_indexes.writeByte (((b1 & 0x0F) << 2) | (b2 >> 6));
+            char_indexes.writeByte (b2 & 0x3F);
+         }
+         
+         if (num_extras > 0)
+         {
+            b0 = data.readByte () & 0xFF; // "& 0xFF" is essential for negative values
+            
+            if (num_extras == 2)
+            {
+               b1 = data.readByte () & 0xFF; // "& 0xFF" is essential for negative values
+               
+               char_indexes.writeByte ((b0 & 0xFC) >> 2);
+               char_indexes.writeByte (((b0 & 0x03) << 4) | (b1 >> 4));
+               char_indexes.writeByte ((b1 & 0x0F) << 2);
+               char_indexes.writeByte (64); // "="
+            }
+            else // num_extras == 1
+            {
+               char_indexes.writeByte ((b0 & 0xFC) >> 2);
+               char_indexes.writeByte ((b0 & 0x03) << 4);
+               char_indexes.writeByte (64); // "="
+               char_indexes.writeByte (64); // "="
+            }
+         }
+         
+         var char_index:int;
+         
+         for (var i_char:int = 0; i_char < num_chars; ++ i_char) {
+            char_index = char_indexes [i_char];
+            char_indexes [i_char] = DataFormat2.Base64Chars.charCodeAt(char_index);
+         }
+         
+         char_indexes.position = 0;
+         return char_indexes.readUTFBytes (num_chars);
+      }
+
    }
 }

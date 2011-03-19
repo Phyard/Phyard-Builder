@@ -2512,7 +2512,65 @@ package common {
          }
       }
       
+      public static const Base64Chars:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
       
+      private static var Base64Char2Index:Array = null;
+      private static function GetBase64Char2IndexTable ():Array
+      {
+         if (Base64Char2Index == null)
+         {
+            Base64Char2Index = new Array (128); // all char codes in Base64Chars are smaller than 128
+            
+            for (var i_char:int = Base64Chars.length - 2; i_char >= 0; -- i_char) // "Base64Chars.length - 2" is to ignore the "=" cahr 
+            {
+               Base64Char2Index [Base64Chars.charCodeAt (i_char)] = i_char;
+            }
+         }
+         
+         return Base64Char2Index;
+      }
+      
+      public static function DecodeString2ByteArray(text:String):ByteArray
+      {
+         if (text == null) 
+         {
+            return null;
+         }
+         
+         var num_chars:int = text.length;
+         var num_triples:int = num_chars / 4;
+         var num_extras:int = num_chars - num_triples * 4;
+         
+         if (num_extras != 0)
+         {
+            return null;
+         }
+         
+         var num_bytes:int = num_bytes * 3;
+         var data:ByteArray = new ByteArray ();
+         data.length = num_bytes;
+         
+         var b0:int, b1:int, b2:int, b3:int;
+         
+         var table_char2index:Array = GetBase64Char2IndexTable ();
+         var i_char:int = 0;
+         data.position = 0;
+         
+         while (i_char < num_chars)
+         {
+            b0 = table_char2index [text.charCodeAt (i_char ++)];
+            b1 = table_char2index [text.charCodeAt (i_char ++)];
+            b2 = table_char2index [text.charCodeAt (i_char ++)];
+            b3 = table_char2index [text.charCodeAt (i_char ++)];
+            
+            data.writeByte ((b0 << 2) | ((b1 & 0x30) >> 4));
+            data.writeByte (((b1 & 0x0f) << 4) | ((b2 & 0x3c) >> 2));
+            data.writeByte (((b2 & 0x03) << 6) | b3);
+         }
+         
+         data.position = 0;
+         return data;
+      }
       
    }
    

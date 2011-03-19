@@ -34,7 +34,7 @@
       <mx:Spacer width="100%"/>
       <mx:Button id="Button_CopyPlayCode" label="Copy Play Code" click="OnClickCopyPlayCode ();"/>
       <mx:Spacer width="100%"/>
-      <mx:Button label="Copy Embed Html Code" click="OnClickCopyEmbedCode ();"/>
+      <mx:Button id="Button_EmbedCode" label="Copy Embed Html Code" click="OnClickCopyEmbedCode ();"/>
    </mx:HBox>
 
    <!--

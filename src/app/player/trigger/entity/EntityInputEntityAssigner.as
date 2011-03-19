@@ -214,7 +214,7 @@ package player.trigger.entity
                      return ContainingResult_True;
                   
                   if (ignorePairOrder)
-                  {
+                  {
                      if (mEntitiesIndexes2.indexOf (entityIndex1) < 0)
                         return ContainingResult_False;
                      
@@ -238,10 +238,10 @@ package player.trigger.entity
                return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 || mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_True : ContainingResult_False;
                
             case Define.EntityPairAssignerType_ManyToAny:
-               
+            
                if (mEntitiesIndexes1 == null)
                   return ContainingResult_False;
-               
+            
                if (mEntitiesIndexes1.indexOf (entityIndex1) >= 0)
                   return ContainingResult_True;
                

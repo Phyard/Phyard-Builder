@@ -183,7 +183,7 @@ package player.trigger.entity
       {
          if (mIsEnabled == false || mExternalCondition != null && mExternalCondition.mConditionEntity.GetEvaluatedValue () != mExternalCondition.mTargetValue)
             return false;
-         
+      
          // only excute event handler when the event handler is enabled before the event happens.
          if (mEnabledChangedStep < mWorld.GetSimulatedSteps () || mEnabledChangedStepStage < mWorld.GetStepStage ())
          {

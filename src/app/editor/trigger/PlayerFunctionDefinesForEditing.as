@@ -2102,20 +2102,6 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians, shape_physics_dynamics_package, "Set Angular Velocity By Radians", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                             new VariableDefinitionNumber ("New Angular Velocity (radians/s)"), 
-                     ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees, shape_physics_dynamics_package, "Set Angular Velocity By Degrees", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                             new VariableDefinitionNumber ("New Angular Velocity (degrees/s)"), 
-                     ],
-                     null
-                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByRadians, shape_physics_dynamics_package, "Get Angular Velocity By Radians", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
@@ -2132,6 +2118,20 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Angular Velocity (degrees/s)"), 
                      ]
                );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians, shape_physics_dynamics_package, "Set Angular Velocity By Radians", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("New Angular Velocity (radians/s)"), 
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees, shape_physics_dynamics_package, "Set Angular Velocity By Degrees", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                             new VariableDefinitionNumber ("New Angular Velocity (degrees/s)"), 
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians, shape_physics_dynamics_package, "Change Angular Velocity By Radians", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 

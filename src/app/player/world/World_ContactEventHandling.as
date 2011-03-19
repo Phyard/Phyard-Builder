@@ -163,10 +163,6 @@ private function HandleShapeContactEvents ():void
       
       if (contact_info.mIsNewContact)
       {
-      //trace ("new");
-         
-   //trace ("----------- id1 = " + contact_info.mEntityShape1.GetCreationId () + ", id2 = " + contact_info.mEntityShape2.GetCreationId ());
-         
          isContactContinued = false;
          
          contact_info.mIsNewContact = false;

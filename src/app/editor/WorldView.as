@@ -1611,6 +1611,7 @@ package editor {
          NotifyEntityLinksModified ();
          
          DestroyEditorWorld ();
+         CleatAccumulatedModificationsByArrowKeys ();
          
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionManager ().SetChanged (false);
@@ -1870,6 +1871,38 @@ package editor {
           }
       }
       
+      public function PlayRestart ():void
+      {
+         if (IsPlaying ())
+         {
+            return mDesignPlayer.PlayRestart ();
+         }
+      }
+      
+      public function PlayRun ():void
+      {
+         if (IsPlaying ())
+         {
+            return mDesignPlayer.PlayRun ();
+         }
+      }
+      
+      public function PlayPause ():void
+      {
+         if (IsPlaying ())
+         {
+            return mDesignPlayer.PlayPause ();
+         }
+      }
+      
+      public function PlayOneStep ():void
+      {
+         if (IsPlaying ())
+         {
+            mDesignPlayer.UpdateSingleStep ();
+         }
+      }
+      
       public function PlayFaster (delta:uint):Boolean
       {
          if (IsPlaying ())
@@ -1900,6 +1933,17 @@ package editor {
          return 0;
       }
       
+      public function GetPlayingSimulatedSteps ():int
+      {
+         if (IsPlaying ())
+         {
+            var playerWorld:player.world.World = mDesignPlayer.GetPlayerWorld () as player.world.World;
+            return playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
+         }
+         
+         return 0;
+      }
+      
       public function SetOnSpeedChangedFunction (onSpeed:Function):void
       {
          if (IsPlaying ())
@@ -1908,6 +1952,13 @@ package editor {
          }
       }
       
+      public function SetOnPlayStatusChangedFunction (onPlayStatusChanged:Function):void
+      {
+         if (IsPlaying ())
+         {
+            return mDesignPlayer.SetOnPlayStatusChangedFunction (onPlayStatusChanged);
+         }
+      }
       
       private static var mMaskViewerField:Boolean = false;
       
@@ -3123,7 +3174,7 @@ package editor {
             switch (event.keyCode)
             {
                case Keyboard.SPACE:
-                  mDesignPlayer.UpdateSingleStep ();
+                  //mDesignPlayer.UpdateSingleStep (); // cancelled from v1.55
                   break;
                default:
                   break;
@@ -3953,6 +4004,41 @@ package editor {
          NotifyEntityIdsModified ();
       }
       
+      protected var mAccumulatedCausedByArrowKeys_MovementX:Number = 0;
+      protected var mAccumulatedCausedByArrowKeys_MovementY:Number = 0;
+      protected function TryCreateUndoPointCausedByArrowKeys_Movement ():void
+      {
+         if (mAccumulatedCausedByArrowKeys_MovementX != 0 || mAccumulatedCausedByArrowKeys_MovementY != 0)
+         {
+            mAccumulatedCausedByArrowKeys_MovementX = 0;
+            mAccumulatedCausedByArrowKeys_MovementY = 0;
+            CreateUndoPoint ("Move entities by arrow keys", null, null, false);
+         }
+      }
+      
+      protected var mAccumulatedCausedByArrowKeys_Rotation:Number = 0;
+      protected function TryCreateUndoPointCausedByArrowKeys_Rotation ():void
+      {
+         if (mAccumulatedCausedByArrowKeys_Rotation != 0)
+         {
+            mAccumulatedCausedByArrowKeys_Rotation = 0;
+            CreateUndoPoint ("Rotate entities by arrow keys", null, null, false);
+         }
+      }
+      
+      protected function CleatAccumulatedModificationsByArrowKeys ():void
+      {
+         mAccumulatedCausedByArrowKeys_MovementX = 0;
+         mAccumulatedCausedByArrowKeys_MovementY = 0;
+         mAccumulatedCausedByArrowKeys_Rotation = 0;
+      }
+      
+      protected function TryCreateDelayedUndoPoint ():void
+      {
+         TryCreateUndoPointCausedByArrowKeys_Movement ();
+         TryCreateUndoPointCausedByArrowKeys_Rotation ();
+      }
+      
       public function MoveSelectedEntities (offsetX:Number, offsetY:Number, updateSelectionProxy:Boolean, byMouse:Boolean = true):void
       {
          if (byMouse && ! IsEntityMouseMoveEnabled () )
@@ -3962,6 +4048,12 @@ package editor {
          
          CalSelectedEntitiesCenterPoint ();
          
+         TryCreateUndoPointCausedByArrowKeys_Rotation (); // right! rotate
+         if (! byMouse)
+         {
+            mAccumulatedCausedByArrowKeys_MovementX += offsetX;
+            mAccumulatedCausedByArrowKeys_MovementY += offsetY;
+         }
       }
       
       public function RotateSelectedEntities (dAngle:Number, updateSelectionProxy:Boolean, byMouse:Boolean = true):void
@@ -3972,6 +4064,12 @@ package editor {
          mEditorWorld.RotateSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), dAngle, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
+         
+         TryCreateUndoPointCausedByArrowKeys_Movement (); // right! move
+         if (! byMouse)
+         {
+            mAccumulatedCausedByArrowKeys_Rotation += dAngle;
+         }
       }
       
       public function ScaleSelectedEntities (ratio:Number, updateSelectionProxy:Boolean, byMouse:Boolean = true):void
@@ -3982,6 +4080,11 @@ package editor {
          mEditorWorld.ScaleSelectedEntities (GetSelectedEntitiesCenterX (), GetSelectedEntitiesCenterY (), ratio, updateSelectionProxy);
          
          CalSelectedEntitiesCenterPoint ();
+         
+         if ((! byMouse) && (ratio != 1.0))
+         {
+            CreateUndoPoint ("Scale entities");
+         }
       }
       
       public function DeleteSelectedEntities ():void
@@ -4776,7 +4879,7 @@ package editor {
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            shape = selectedEntities [i];
+            shape = selectedEntities [i] as EntityShape;
             
             if (shape != null)
             {
@@ -4795,7 +4898,7 @@ package editor {
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            shape = selectedEntities [i];
+            shape = selectedEntities [i] as EntityShape;
             
             if (shape != null)
             {
@@ -4819,7 +4922,7 @@ package editor {
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            shape = selectedEntities [i];
+            shape = selectedEntities [i] as EntityShape;
             
             if (shape != null)
             {
@@ -4844,7 +4947,7 @@ package editor {
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
-            anchor = selectedEntities [i];
+            anchor = selectedEntities [i] as SubEntityJointAnchor;
             
             if (anchor != null)
             {
@@ -5375,10 +5478,15 @@ package editor {
 // undo / redo 
 //============================================================================
       
-      public function CreateUndoPoint (description:String, editActions:Array = null, targetEntity:Entity = null):void
+      public function CreateUndoPoint (description:String, editActions:Array = null, targetEntity:Entity = null, tryCreateDelayedUndoPoints:Boolean = true):void
       {
          if (mEditorWorld == null)
             return;
+         
+         if (tryCreateDelayedUndoPoints)
+         {
+            TryCreateDelayedUndoPoint ();
+         }
          
          var worldState:WorldState = new WorldState (description, editActions);
          
@@ -5443,7 +5551,9 @@ package editor {
          mLastSelectedEntities = null;
          
          var object:Object = worldState.mUserData;
-          
+         
+         var currentWorld:Number = mEditorWorldZoomScale;
+         
          var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (object.mWorldDefine, false);
          SetEditorWorld (newEditorWorld);
          
@@ -5451,7 +5561,8 @@ package editor {
          mViewCenterWorldY = object.mViewCenterWorldY;
          
          //mEditorWorldZoomScale = object.mEditorWorldZoomScale;
-         //mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
+         mEditorWorldZoomScale = currentWorld;
+         mEditorWorld.SetZoomScale (mEditorWorldZoomScale);
          
          var numEntities:int = mEditorWorld.GetNumEntities ();
          var entityId:int;

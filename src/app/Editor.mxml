@@ -418,6 +418,18 @@
                            <mx:Button id="Button_PlaySlower" click="PlaySlower ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-slower.png')" disabledIcon="@Embed('res/edit/play-slower-disabled.png')"/>
                            <mx:Label id="Label_PlaySpeed" textAlign="center" text="Speed X2"/>
                            <mx:Button id="Button_PlayFaster" click="PlayFaster ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-faster.png')" disabledIcon="@Embed('res/edit/play-faster-disabled.png')"/>
+                           <mx:Spacer width="20"/>
+                           <mx:Button id="Button_PlayRestart" click="PlayRestart ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-restart.png')" disabledIcon="@Embed('res/edit/play-restart-disabled.png')" />
+                           <mx:ViewStack id="ViewStack_PlayRunPause" borderStyle="none" creationPolicy="all">
+                              <mx:HBox id="Box_PlayRun" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+                                 <mx:Button id="Button_PlayRun" click="PlayToggleStartPause ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-start.png')"/>
+                              </mx:HBox>
+                              <mx:HBox id="Box_PlayPause" height="100%" verticalAlign="middle" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+                                 <mx:Button id="Button_PlayPause" click="PlayToggleStartPause ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-pause.png')"/>
+                              </mx:HBox>
+                           </mx:ViewStack>
+                           <mx:Spacer width="20"/>
+                           <mx:Button id="Button_PlayOneStep" click="PlayOneStep ();" width="15" height="15" focusEnabled="false" fontSize="8" toggle="false" cornerRadius="0" icon="@Embed('res/edit/play-one-step.png')" disabledIcon="@Embed('res/edit/play-one-step-disabled.png')"/>
                            <mx:Spacer width="100%"/>
                            <mx:VRule strokeWidth="1" strokeColor="0xA0A0A0" height="100%"/>
                            <mx:Label id="CheckBox_MaskViewerField" text="Mask Player Field" toolTip="Toggle Mask Player Field" focusEnabled="false" color="0x808080" click="ToggleMaskPlayerField ();"/>
@@ -1163,8 +1175,10 @@
                Button_PlayFaster.enabled = MainView.PlayFaster (0)
                Button_PlaySlower.enabled = MainView.PlaySlower (0);
                UpdatePlaySpeedxLableText ();
+               UpdatePlayButtons ();
                
                MainView.SetOnSpeedChangedFunction (UpdatePlaySpeedxLableText);
+               MainView.SetOnPlayStatusChangedFunction (UpdatePlayButtons);
             }
             
             public function OnPlayingStopped ():void
@@ -1357,16 +1371,6 @@
                Label_EntityPhysicsPosition.htmlText = info;
             }
             
-            private function StatusBar_SetRunningSteps (info:String):void
-            {
-               Label_RunningSteps.htmlText = info;
-            }
-            
-            private function StatusBar_SetRunningFPS (info:String):void
-            {
-               Label_RunningFps.htmlText = info;
-            }
-            
             public function ZoomIn ():void
             {
                if (MainView.ScaleEditorWorld (true))
@@ -1395,6 +1399,18 @@
                Label_ZoomScale.text = label;
             }
             
+     //===========================================
+            
+            private function StatusBar_SetRunningSteps (info:String):void
+            {
+               Label_RunningSteps.htmlText = info;
+            }
+            
+            private function StatusBar_SetRunningFPS (info:String):void
+            {
+               Label_RunningFps.htmlText = info;
+            }
+            
             public function PlayFaster ():void
             {
                Button_PlayFaster.enabled = MainView.PlayFaster (1);
@@ -1414,6 +1430,35 @@
             public function UpdatePlaySpeedxLableText ():void
             {
                Label_PlaySpeed.text = "Speed X" + MainView.GetPlayingSpeedX ();
+            }
+            
+            public function PlayOneStep ():void
+            {
+               MainView.PlayOneStep ();
+            }
+            
+            public function PlayToggleStartPause ():void
+            {
+               if (MainView.IsPlayingPaused ())
+               {
+                  MainView.PlayRun ();
+               }
+               else
+               {
+                  MainView.PlayPause ();
+               }
+            }
+            
+            public function PlayRestart ():void
+            {
+               MainView.PlayRestart ();
+            }
+            
+            public function UpdatePlayButtons ():void
+            {
+               Button_PlayRestart.enabled = (! MainView.IsPlayingPaused ()) || MainView.GetPlayingSimulatedSteps () > 0;
+               Button_PlayOneStep.enabled = MainView.IsPlayingPaused ();
+               ViewStack_PlayRunPause.selectedChild = (MainView.IsPlayingPaused () ? Box_PlayRun : Box_PlayPause);
             }
             
 //========================================================================================

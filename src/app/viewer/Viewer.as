@@ -1383,14 +1383,21 @@ package viewer {
       private function OnRestart (data:Object = null):void
       {
          RebuildPlayerWorld ();
+         
+         if (_onPlayStatusChanged != null)
+            _onPlayStatusChanged ();
       }
       
       public function OnStart (data:Object = null):void
       {
+         if (_onPlayStatusChanged != null)
+            _onPlayStatusChanged ();
       }
       
       public function OnPause (data:Object = null):void
       {
+         if (_onPlayStatusChanged != null)
+            _onPlayStatusChanged ();
       }
       
       private function OnSpeed (data:Object = null):void
@@ -1424,6 +1431,28 @@ package viewer {
          OpenHelpDialog ();
       }
       
+   //=========================
+   // interfaces for editing
+   //=========================
+      
+      public function PlayRestart ():void
+      {
+         if (mPlayControlBar != null)
+            mPlayControlBar.OnClickRestart ();
+      }
+      
+      public function PlayRun ():void
+      {
+         if (mPlayControlBar != null)
+            mPlayControlBar.OnClickStart ();
+      }
+      
+      public function PlayPause ():void
+      {
+         if (mPlayControlBar != null)
+            mPlayControlBar.OnClickPause ();
+      }
+      
       public function PlayFaster (delta:uint):Boolean
       {
          if (mPlayControlBar == null)
@@ -1448,6 +1477,12 @@ package viewer {
       public function SetOnSpeedChangedFunction (onSpeed:Function):void
       {
          _OnSpeed = onSpeed;
+      }
+      
+      private var _onPlayStatusChanged:Function = null;
+      public function SetOnPlayStatusChangedFunction (onPlayStatusChanged:Function):void
+      {
+         _onPlayStatusChanged = onPlayStatusChanged;
       }
       
    }

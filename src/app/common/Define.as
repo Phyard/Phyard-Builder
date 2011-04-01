@@ -240,7 +240,9 @@ package common {
       public static const Camera_FollowingStyle_X       :int = 0x01;
       public static const Camera_FollowingStyle_Y       :int = 0x02;
       public static const Camera_FollowingStyle_Angle   :int = 0x04;
-      public static const Camera_FollowingStyle_All     :int = 0xFF;
+      public static const Camera_FollowingStyle_SmoothlyX       :int = 0x10;
+      public static const Camera_FollowingStyle_SmoothlyY       :int = 0x20;
+      public static const Camera_FollowingStyle_SmoothlyAngle   :int = 0x40;
       public static const Camera_FollowingStyle_Default :int = Camera_FollowingStyle_X | Camera_FollowingStyle_Y; // don't change it 
       
 //===========================================================================

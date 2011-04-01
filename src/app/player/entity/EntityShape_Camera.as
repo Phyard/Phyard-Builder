@@ -70,12 +70,12 @@ package player.entity {
          
          if (targetEntity != null)
          {
-            if ( (mFollowingStyle & Define.Camera_FollowingStyle_X) == Define.Camera_FollowingStyle_X)
-               mWorld.FollowCameraCenterXWithEntity (targetEntity, false);
-            if ( (mFollowingStyle & Define.Camera_FollowingStyle_Y) == Define.Camera_FollowingStyle_Y)
-               mWorld.FollowCameraCenterYWithEntity (targetEntity, false);
-            if ( (mFollowingStyle & Define.Camera_FollowingStyle_Angle) == Define.Camera_FollowingStyle_Angle)
-               mWorld.FollowCameraAngleWithEntity (targetEntity, false);
+            if ((mFollowingStyle & Define.Camera_FollowingStyle_X) == Define.Camera_FollowingStyle_X)
+               mWorld.FollowCameraCenterXWithEntity (targetEntity, (mFollowingStyle & Define.Camera_FollowingStyle_SmoothlyX) == Define.Camera_FollowingStyle_SmoothlyX);
+            if ((mFollowingStyle & Define.Camera_FollowingStyle_Y) == Define.Camera_FollowingStyle_Y)
+               mWorld.FollowCameraCenterYWithEntity (targetEntity, (mFollowingStyle & Define.Camera_FollowingStyle_SmoothlyY) == Define.Camera_FollowingStyle_SmoothlyY);
+            if ((mFollowingStyle & Define.Camera_FollowingStyle_Angle) == Define.Camera_FollowingStyle_Angle)
+               mWorld.FollowCameraAngleWithEntity (targetEntity, (mFollowingStyle & Define.Camera_FollowingStyle_SmoothlyAngle) == Define.Camera_FollowingStyle_SmoothlyAngle);
          }
       }
       

@@ -261,7 +261,7 @@ package Box2D.Dynamics.Joints
 		{
 			if (m_collideConnected == false)
 			{
-				FlagConnectedContactsForFiltering ()
+				FlagConnectedContactsForFiltering ();
 			}
 
 			var oldBody:b2Body;

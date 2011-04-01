@@ -47,6 +47,7 @@ package viewer {
    import viewer.ui.PlayHelpDialog;
    import viewer.ui.PlayControlBar;
    
+   import common.DataFormat3;
    import common.Define;
    import common.Version;
    
@@ -110,6 +111,8 @@ package viewer {
       private var mBuildContextMenu:Boolean = true;
       
       private var mWorldPlayCode:String = null;
+      private var mWorldPlayCodeFormat:String = null;
+      
       private var mWorldBinaryData:ByteArray = null;
       private var mWorldSourceCode:String = null;
       
@@ -236,6 +239,11 @@ package viewer {
          }
       }
       
+      public static function TraceError (error:Error):void
+      {
+         //trace (error.getStackTrace ());
+      }
+      
 //======================================================================
 //
 //======================================================================
@@ -320,9 +328,18 @@ package viewer {
                mLoadDataUrl = loadDataUrl;
                
                mWorldPlayCode = mFlashParams.playcode;
+               mWorldPlayCodeFormat = mFlashParams.compressformat;
                if (mWorldPlayCode != null && mWorldPlayCode.length == 0)
                {
                   mWorldPlayCode = null;
+               }
+               if (mWorldPlayCode != null && DataFormat3.CompressFormat_Base64 != mWorldPlayCodeFormat)
+               {
+                  mWorldPlayCode = DataFormat3.EncodeByteArray2String (DataFormat3.HexString2ByteArray (mWorldPlayCode));
+                  if (mWorldPlayCode == null)
+                     throw new Error ("Convert hex playcode into base64 format failed!");
+                  
+                  mWorldPlayCodeFormat = DataFormat3.CompressFormat_Base64;
                }
                
                //
@@ -352,6 +369,7 @@ package viewer {
          }
          catch (error:Error)
          {
+            TraceError (error);
             ChangeState (StateId_ParsingError);
          }
       }
@@ -393,6 +411,8 @@ package viewer {
          }
          catch (error:Error)
          {
+            TraceError (error);
+            
             if (Compile::Is_Debugging)
                throw error;
             
@@ -439,6 +459,8 @@ package viewer {
          }
          catch (error:Error)
          {
+            TraceError (error);
+            
             ChangeState (StateId_LoadingError);
             
             if (Compile::Is_Debugging)
@@ -471,6 +493,8 @@ package viewer {
          }
          catch (error:Error)
          {
+            TraceError (error);
+            
             if (Compile::Is_Debugging)
                throw error;
             
@@ -499,6 +523,8 @@ package viewer {
          }
          catch (error:Error)
          {
+            TraceError (error);
+            
             ChangeState (StateId_LoadingError);
             
             if (Compile::Is_Debugging)
@@ -613,7 +639,18 @@ package viewer {
                
                if (mWorldBinaryData == null && mWorldPlayCode != null)
                {
-                  mWorldBinaryData = (mWorldPluginProperties.WorldFormat_HexString2ByteArray as Function) (mWorldPlayCode);
+                  //mWorldBinaryData = (mWorldPluginProperties.WorldFormat_HexString2ByteArray as Function) (mWorldPlayCode); // before v1.55
+                  
+                  if (mParamsFromUniViewer != null && mFlashParams != null && DataFormat3.CompressFormat_Base64 == mWorldPlayCodeFormat)
+                  {
+                  trace ("mWorldPlayCode = " + mWorldPlayCode);
+                     mWorldBinaryData = DataFormat3.DecodeString2ByteArray (mWorldPlayCode); // from v1.55
+                     mWorldBinaryData.uncompress ();
+                  }
+                  else
+                  {
+                     mWorldBinaryData = DataFormat3.HexString2ByteArray (mWorldPlayCode); // for playing in editor and to be compitiable with version before v1.55
+                  }
                }
             }
             else
@@ -706,7 +743,7 @@ package viewer {
          }
          catch (error:Error)
          {
-            trace (error.getStackTrace ());
+            TraceError (error);
             
             if (Compile::Is_Debugging)
                throw error;
@@ -780,6 +817,8 @@ package viewer {
             }
             catch (error:Error)
             {
+               TraceError (error);
+               
                //if (mParamsFromEditor != null)
                //{
                //   throw error; // let editor to handle it
@@ -1143,23 +1182,35 @@ package viewer {
          {
             if (mWorldDesignProperties.mIsPermitPublishing)
             {
-               var copyEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code", false);
+               var copyEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy HTML Embed Code", false);
                theContextMenu.customItems.push (copyEmbedCodeMenuItem);
                copyEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyEmbedCode);
             }
             
-            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Embed Code for CIF", false);
+            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Forum Embed Code", false);
             theContextMenu.customItems.push (copyForumEmbedCodeMenuItem);
             copyForumEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyForumEmbedCode);
             
             addSeperaor = true;
          }
          
-         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
-         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16), addSeperaor);
+         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + DataFormat3.GetVersionString (Version.VersionNumber), addSeperaor);
          theContextMenu.customItems.push (aboutItem);
          aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
+         
+         if (mPlayerWorld != null)
+         {
+            var designVersionItem:ContextMenuItem = new ContextMenuItem("Design File Format Version: v" + DataFormat3.GetVersionString (mPlayerWorld.GetVersion ()), false);
+            designVersionItem.enabled = false;
+            theContextMenu.customItems.push (designVersionItem);
+         }
+         
+         if (mWorldPluginProperties != null)
+         {
+            var worldPlayerVersionItem:ContextMenuItem = new ContextMenuItem("World Player Version: v" + DataFormat3.GetVersionString (mWorldPluginProperties.mWorldVersion), false);
+            worldPlayerVersionItem.enabled = false;
+            theContextMenu.customItems.push (worldPlayerVersionItem);
+         }
          
          contextMenu = theContextMenu;
       }
@@ -1167,7 +1218,9 @@ package viewer {
       private function OnCopySourceCode (event:ContextMenuEvent):void
       {
          if (mWorldSourceCode != null)
+         {
             System.setClipboard(mWorldSourceCode);
+         }
       }
       
       private function OnCopyEmbedCode (event:ContextMenuEvent):void
@@ -1182,20 +1235,39 @@ package viewer {
             var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?");
             var uniplayerUrl:String = "http://www.phyard.com/" + mParamsFromUniViewer.mUniViewerUrl.substr (index);
             
+            // before v1.55. depreciated now.
+            //var embedCode:String = 
+            //   "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
+            //     + (mWorldPlayCode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + mWorldPlayCode + "\"></param>\n") +
+            //   "  <param name=\"movie\" value=\"" + uniplayerUrl + "\"></param>"
+            //     + "\n" +
+            //   "  <param name=\"quality\" value=\"high\"></param>"
+            //     + "\n" +
+            //   "  <embed src=\"" + uniplayerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
+            //     + (mWorldPlayCode == null ? "\n" : "\n    FlashVars=\"playcode=" + mWorldPlayCode + "\"\n") +
+            //   "    quality=\"high\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\">"
+            //     + "\n" +
+            //   "  </embed>"
+            //     + "\n" +
+            //   "</object>"
+            //   ;
+            
+            // from v1.55
+            
             var embedCode:String = 
-               "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
-                 + (mWorldPlayCode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + mWorldPlayCode + "\"></param>\n") +
-               "  <param name=\"movie\" value=\"" + uniplayerUrl + "\"></param>"
-                 + "\n" +
-               "  <param name=\"quality\" value=\"high\"></param>"
-                 + "\n" +
-               "  <embed src=\"" + uniplayerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
-                 + (mWorldPlayCode == null ? "\n" : "\n    FlashVars=\"playcode=" + mWorldPlayCode + "\"\n") +
+               //"<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
+               //  + (mWorldPlayCode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + mWorldPlayCode + "\"></param>\n") +
+               //"  <param name=\"movie\" value=\"" + uniplayerUrl + "\"></param>"
+               //  + "\n" +
+               //"  <param name=\"quality\" value=\"high\"></param>"
+               //  + "\n" +
+               "<embed src=\"" + uniplayerUrl + "\" width=\"" + width + "\" height=\"" + height + "\""
+                 + (mWorldPlayCode == null ? "\n" : "\n    FlashVars=\"" + (mWorldPlayCodeFormat == null ? "playcode=" : "compressformat=" + mWorldPlayCodeFormat + "&playcode=") + mWorldPlayCode + "\"\n") +
                "    quality=\"high\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\">"
                  + "\n" +
-               "  </embed>"
-                 + "\n" +
-               "</object>"
+               "</embed>"
+               //  + "\n" +
+               //"</object>"
                ;
             
             System.setClipboard(embedCode);
@@ -1206,29 +1278,79 @@ package viewer {
       {
          if (mParamsFromUniViewer != null && mPlayerWorld != null && mParamsFromUniViewer.mUniViewerUrl != null && mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?") >= 0)
          {
-            if (mWorldPlayCode != null)
+            // before v1.55. depreciated now.
+            //if (mWorldPlayCode != null)
+            //{
+            //   System.setClipboard(mWorldPlayCode);
+            //}
+            //else
+            //{
+            //   var width:int = mWorldDesignProperties.GetViewportWidth ();
+            //   var height:int = mWorldDesignProperties.GetViewportHeight ();
+            //   if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
+            //      height += 20;
+            //   
+            //   var substr:String = "uniplayer.swf?";
+            //   
+            //   var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf (substr);
+            //   if (index < 0)
+            //   {
+            //       System.setClipboard("");
+            //      return;
+            //   }
+            //   
+            //   //var embedCode:String = "[phyard=" + mParamsFromUniViewer.mUniViewerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "][/phyard]";
+            //   
+            //   System.setClipboard (embedCode);
+            //}
+            
+            // from v1.55
+            
+            var forumEmbedCode:String = null;
+            
+            var url:String = mParamsFromUniViewer.mUniViewerUrl;
+            
+            const AuthorEquals:String = "author=";
+            var index1:int = url.indexOf (AuthorEquals);
+            var index2:int;
+            if (index1 >= 0)
             {
-               System.setClipboard(mWorldPlayCode);
-            }
-            else
-            {
-               var width:int = mWorldDesignProperties.GetViewportWidth ();
-               var height:int = mWorldDesignProperties.GetViewportHeight ();
-               if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
-                  height += 20;
+               index1 += AuthorEquals.length;
+               index2 = url.indexOf ("&", index1);
+               if (index2 < 0) index2 = url.length;
+               var author:String = url.substring (index1, index2);
                
-               var substr:String = "uniplayer.swf?";
-               
-               var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf (substr);
-               if (index < 0)
+               const SlotEquals:String = "slot=";
+               index1 = url.indexOf (SlotEquals);
+               if (index1 >= 0)
                {
-                   System.setClipboard("");
-                  return;
+                  index1 += SlotEquals.length;
+                  index2 = url.indexOf ("&", index1);
+                  if (index2 < 0) index2 = url.length;
+                  var slotId:String = url.substring (index1, index2);
+                  
+                  forumEmbedCode = "{@http://www.phyard.com/design/" + author + "/" + slotId + "@}";
                }
+            }
+            else if (mWorldBinaryData != null)
+            {
+               var playcodeBase64:String = (DataFormat3.CompressFormat_Base64 == mWorldPlayCodeFormat ? mWorldPlayCode : DataFormat3.EncodeByteArray2String (mWorldBinaryData));
                
-               var embedCode:String = "[phyard=" + mParamsFromUniViewer.mUniViewerUrl.substring (index + substr.length) + "&width=" + width + "&height=" + height + "][/phyard]";
-               
-               System.setClipboard (embedCode);
+               if (playcodeBase64 != null)
+               {
+                  var fileVersionHexString:String = DataFormat3.GetVersionHexString (mPlayerWorld.GetVersion ());
+                  
+                  var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+                  var viewportWidth:int = mWorldDesignProperties.GetViewportWidth ();
+                  var viewportHeight:int = mWorldDesignProperties.GetViewportHeight ();
+                  
+                  forumEmbedCode = DataFormat3.CreateForumEmbedCode (fileVersionHexString, viewportWidth, viewportHeight, showPlayBar, playcodeBase64);
+               }
+            }
+            
+            if (forumEmbedCode != null)
+            {
+               System.setClipboard (forumEmbedCode);
             }
          }
       }

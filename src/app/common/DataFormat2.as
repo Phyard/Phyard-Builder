@@ -395,759 +395,6 @@ package common {
          return playerWorld;
       }
       
-      public static function ByteArray2WorldDefine (byteArray:ByteArray):WorldDefine
-      {
-         //trace ("ByteArray2WorldDefine");
-         
-         var worldDefine:WorldDefine = new WorldDefine ();
-         
-         // COlor INfection
-         byteArray.readByte (); // "C".charCodeAt (0);
-         byteArray.readByte (); // "O".charCodeAt (0);
-         byteArray.readByte (); // "I".charCodeAt (0);
-         byteArray.readByte (); // "N".charCodeAt (0);
-         
-         // basic settings
-         {
-            worldDefine.mVersion = byteArray.readShort ();
-            worldDefine.mAuthorName = byteArray.readUTF ();
-            worldDefine.mAuthorHomepage = byteArray.readUTF ();
-            
-            if (worldDefine.mVersion < 0x0102)
-            {
-               // the 3 bytes are removed since v1.02
-               // hex
-               byteArray.readByte (); // "H".charCodeAt (0);
-               byteArray.readByte (); // "E".charCodeAt (0);
-               byteArray.readByte (); // "X".charCodeAt (0);
-            }
-            
-            if (worldDefine.mVersion >= 0x0102)
-            {
-               worldDefine.mShareSourceCode = byteArray.readByte () != 0;
-               worldDefine.mPermitPublishing = byteArray.readByte () != 0;
-            }
-         }
-         
-         // more settings
-         {
-            if (worldDefine.mVersion >= 0x0151)
-            {
-               worldDefine.mSettings.mViewerUiFlags = byteArray.readInt ();
-               worldDefine.mSettings.mPlayBarColor  = byteArray.readUnsignedInt ();
-               worldDefine.mSettings.mViewportWidth  = byteArray.readShort ();
-               worldDefine.mSettings.mViewportHeight  = byteArray.readShort ();
-               worldDefine.mSettings.mZoomScale = byteArray.readFloat ();
-            }
-            
-            if (worldDefine.mVersion >= 0x0104)
-            {
-               worldDefine.mSettings.mCameraCenterX = byteArray.readInt ();
-               worldDefine.mSettings.mCameraCenterY = byteArray.readInt ();
-               worldDefine.mSettings.mWorldLeft = byteArray.readInt ();
-               worldDefine.mSettings.mWorldTop  = byteArray.readInt ();
-               worldDefine.mSettings.mWorldWidth  = byteArray.readInt ();
-               worldDefine.mSettings.mWorldHeight = byteArray.readInt ();
-               worldDefine.mSettings.mBackgroundColor  = byteArray.readUnsignedInt ();
-               worldDefine.mSettings.mBuildBorder  = byteArray.readByte () != 0;
-               worldDefine.mSettings.mBorderColor = byteArray.readUnsignedInt ();
-            }
-            
-            if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
-            {
-               worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = byteArray.readInt ();
-               worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = byteArray.readShort ();
-            }
-            
-            if (worldDefine.mVersion >= 0x0108)
-            {
-               worldDefine.mSettings.mIsInfiniteWorldSize = byteArray.readByte () != 0;
-               
-               worldDefine.mSettings.mBorderAtTopLayer = byteArray.readByte () != 0;
-               worldDefine.mSettings.mWorldBorderLeftThickness = byteArray.readFloat ();
-               worldDefine.mSettings.mWorldBorderTopThickness = byteArray.readFloat ();
-               worldDefine.mSettings.mWorldBorderRightThickness = byteArray.readFloat ();
-               worldDefine.mSettings.mWorldBorderBottomThickness = byteArray.readFloat ();
-               
-               worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = byteArray.readFloat ();
-               worldDefine.mSettings.mDefaultGravityAccelerationAngle = byteArray.readFloat ();
-               
-               worldDefine.mSettings.mRightHandCoordinates = byteArray.readByte () != 0;
-               worldDefine.mSettings.mCoordinatesOriginX = byteArray.readDouble ();
-               worldDefine.mSettings.mCoordinatesOriginY = byteArray.readDouble ();
-               worldDefine.mSettings.mCoordinatesScale = byteArray.readDouble ();
-               
-               worldDefine.mSettings.mIsCiRulesEnabled = byteArray.readByte () != 0;
-            }
-         }
-         
-         // collision category
-         
-         if (worldDefine.mVersion >= 0x0102)
-         {
-            var numCategories:int = byteArray.readShort ();
-            
-            //trace ("numCategories = " + numCategories);
-            
-            for (var ccId:int = 0; ccId < numCategories; ++ ccId)
-            {
-               var ccDefine:Object = new Object ();
-               
-               ccDefine.mName = byteArray.readUTF ();
-               ccDefine.mCollideInternally = byteArray.readByte () != 0;
-               ccDefine.mPosX = byteArray.readFloat ();
-               ccDefine.mPosY = byteArray.readFloat ();
-               
-               worldDefine.mCollisionCategoryDefines.push (ccDefine);
-            }
-            
-            worldDefine.mDefaultCollisionCategoryIndex = byteArray.readShort ();
-            
-            //trace ("worldDefine.mDefaultCollisionCategoryIndex = " + worldDefine.mDefaultCollisionCategoryIndex);
-            
-            var numPairs:int = byteArray.readShort ();
-            
-            //trace ("numPairs = " + numPairs);
-            
-            for (var pairId:int = 0; pairId < numPairs; ++ pairId)
-            {
-               var pairDefine:Object = new Object ();
-               pairDefine.mCollisionCategory1Index = byteArray.readShort ();
-               pairDefine.mCollisionCategory2Index = byteArray.readShort ();
-               
-               worldDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
-            }
-         }
-         
-         if (worldDefine.mVersion >= 0x0153)
-         {
-            var functionId:int;
-            var functionDefine:FunctionDefine;
-            
-            var numFunctions:int = byteArray.readShort ();
-            
-            for (functionId = 0; functionId < numFunctions; ++ functionId)
-            {
-               functionDefine = new FunctionDefine ();
-               
-               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, true, null);
-               
-               worldDefine.mFunctionDefines.push (functionDefine);
-            }
-            
-            for (functionId = 0; functionId < numFunctions; ++ functionId)
-            {
-               functionDefine = worldDefine.mFunctionDefines [functionId];
-               
-               functionDefine.mName = byteArray.readUTF ();
-               functionDefine.mPosX = byteArray.readFloat ();
-               functionDefine.mPosY = byteArray.readFloat ();
-               
-               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, false, worldDefine.mFunctionDefines);
-            }
-         }
-         
-         // entities
-         
-         var numEntities:int = byteArray.readShort ();
-         
-         //trace ("numEntities = " + numEntities);
-         
-         var appearId:int;
-         var createId:int;
-         var vertexId:int;
-         
-         for (createId = 0; createId < numEntities; ++ createId)
-         {
-            var entityDefine:Object = new Object ();
-            
-            entityDefine.mEntityType = byteArray.readShort ();
-            
-            //trace ("appearId = " + appearId + ", mEntityType = " + entityDefine.mEntityType);
-            
-            if (worldDefine.mVersion >= 0x0103)
-            {
-               entityDefine.mPosX = byteArray.readDouble ();
-               entityDefine.mPosY = byteArray.readDouble ();
-            }
-            else
-            {
-               entityDefine.mPosX = byteArray.readFloat ();
-               entityDefine.mPosY = byteArray.readFloat ();
-            }
-            entityDefine.mRotation = byteArray.readFloat ();
-            entityDefine.mIsVisible = byteArray.readByte () != 0;
-            
-            if (worldDefine.mVersion >= 0x0108)
-            {
-               entityDefine.mAlpha = byteArray.readFloat ();
-               entityDefine.mIsEnabled = byteArray.readByte () != 0;
-            }
-            
-            if ( Define.IsUtilityEntity (entityDefine.mEntityType) )
-            {
-               // from v1.05
-               if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
-               {
-                  if (worldDefine.mVersion >= 0x0108)
-                  {
-                     entityDefine.mFollowedTarget = byteArray.readByte ();
-                     entityDefine.mFollowingStyle = byteArray.readByte ();
-                  }
-               }
-               //<<
-               //>>from v1.10
-               else if (entityDefine.mEntityType == Define.EntityType_UtilityPowerSource)
-               {
-                  entityDefine.mPowerSourceType = byteArray.readByte ();
-                  entityDefine.mPowerMagnitude = byteArray.readFloat ();
-                  entityDefine.mKeyboardEventId = byteArray.readShort ();
-                  entityDefine.mKeyCodes = ReadShortArrayFromBinFile (byteArray);
-               }
-               //<<
-            }
-            else if ( Define.IsLogicEntity (entityDefine.mEntityType) ) // from v1.07
-            {
-               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
-               {
-                  if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null,false, true, worldDefine.mFunctionDefines);
-                  else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null,false, false, worldDefine.mFunctionDefines);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
-               {
-                  entityDefine.mInputAssignerCreationIds = ReadShortArrayFromBinFile (byteArray);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
-               {
-                  entityDefine.mIsAnd = byteArray.readByte () != 0;
-                  entityDefine.mIsNot = byteArray.readByte () != 0;
-                  
-                  var num:int = byteArray.readShort ();
-                  entityDefine.mNumInputConditions = num;
-                  entityDefine.mInputConditionEntityCreationIds = new Array (num);
-                  entityDefine.mInputConditionTargetValues = new Array (num);
-                  
-                  for (i = 0; i < num; ++ i)
-                  {
-                     entityDefine.mInputConditionEntityCreationIds [i] = byteArray.readShort ();
-                     entityDefine.mInputConditionTargetValues [i] = byteArray.readByte ();
-                  }
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
-               {
-                  entityDefine.mSelectorType = byteArray.readByte ();
-                  entityDefine.mEntityCreationIds = ReadShortArrayFromBinFile (byteArray);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
-               {
-                  entityDefine.mPairingType = byteArray.readByte ();
-                  entityDefine.mEntityCreationIds1 = ReadShortArrayFromBinFile (byteArray);
-                  entityDefine.mEntityCreationIds2 = ReadShortArrayFromBinFile (byteArray);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
-               {
-                  entityDefine.mEventId = byteArray.readShort ();
-                  entityDefine.mInputConditionEntityCreationId = byteArray.readShort ();
-                  entityDefine.mInputConditionTargetValue = byteArray.readByte ();
-                  entityDefine.mInputAssignerCreationIds = ReadShortArrayFromBinFile (byteArray);
-                  
-                  if (worldDefine.mVersion >= 0x0108)
-                  {
-                     entityDefine.mExternalActionEntityCreationId = byteArray.readShort ();
-                  }
-                  
-                  if (worldDefine.mVersion >= 0x0108)
-                  {
-                     switch (entityDefine.mEventId)
-                     {
-                        case CoreEventIds.ID_OnWorldTimer:
-                        case CoreEventIds.ID_OnEntityTimer:
-                        case CoreEventIds.ID_OnEntityPairTimer:
-                           entityDefine.mRunningInterval = byteArray.readFloat ();
-                           entityDefine.mOnlyRunOnce = byteArray.readByte () != 0;
-                           break;
-                        case CoreEventIds.ID_OnWorldKeyDown:
-                        case CoreEventIds.ID_OnWorldKeyUp:
-                        case CoreEventIds.ID_OnWorldKeyHold:
-                           entityDefine.mKeyCodes = ReadShortArrayFromBinFile (byteArray);
-                           break;
-                        default:
-                           break;
-                     }
-                  }
-                  
-                  if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
-                  else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
-               {
-                  if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
-                  else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
-               }
-            }
-            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
-            {
-               if (worldDefine.mVersion >= 0x0102)
-               {
-                  entityDefine.mDrawBorder = byteArray.readByte ();
-                  entityDefine.mDrawBackground = byteArray.readByte ();
-               }
-               
-               if (worldDefine.mVersion >= 0x0104)
-               {
-                  entityDefine.mBorderColor = byteArray.readUnsignedInt ();
-                  entityDefine.mBorderThickness = byteArray.readByte ();
-                  entityDefine.mBackgroundColor = byteArray.readUnsignedInt ();
-                  entityDefine.mTransparency = byteArray.readByte ();
-               }
-               
-               if (worldDefine.mVersion >= 0x0105)
-               {
-                  entityDefine.mBorderTransparency = byteArray.readByte ();
-               }
-               
-               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
-               {
-                  if (worldDefine.mVersion >= 0x0105)
-                  {
-                     entityDefine.mAiType = byteArray.readByte ();
-                     entityDefine.mIsPhysicsEnabled = byteArray.readByte ();
-                     
-                     // the 2 lines are added in v1,04, and moved down from v1.05
-                     /////entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
-                     /////entityDefine.mIsSensor = byteArray.readByte ();
-                  }
-                  else if (worldDefine.mVersion >= 0x0104)
-                  {
-                     entityDefine.mAiType = byteArray.readByte ();
-                     entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
-                     entityDefine.mIsPhysicsEnabled = byteArray.readByte ();
-                     entityDefine.mIsSensor = byteArray.readByte ();
-                  }
-                  else
-                  {
-                     if (worldDefine.mVersion >= 0x0102)
-                     {
-                        entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
-                     }
-                     
-                     entityDefine.mAiType = byteArray.readByte ();
-                     
-                     entityDefine.mIsPhysicsEnabled = true;
-                     // entityDefine.mIsSensor = true; // will be set in FillMissedFieldsInWorldDefine
-                  }
-                  
-                  if (entityDefine.mIsPhysicsEnabled)
-                  {
-                     entityDefine.mIsStatic = byteArray.readByte ();
-                     entityDefine.mIsBullet = byteArray.readByte ();
-                     entityDefine.mDensity = byteArray.readFloat ();
-                     entityDefine.mFriction = byteArray.readFloat ();
-                     entityDefine.mRestitution = byteArray.readFloat ();
-                     
-                     if (worldDefine.mVersion >= 0x0105)
-                     {
-                        // the 2 lines are added in v1,04, and moved here from above from v1.05
-                        entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
-                        entityDefine.mIsSensor = byteArray.readByte ();
-                        
-                        // ...
-                        entityDefine.mIsHollow = byteArray.readByte ();
-                     }
-                     
-                     if (worldDefine.mVersion >= 0x0108)
-                     {
-                        entityDefine.mBuildBorder = byteArray.readByte () != 0;
-                        entityDefine.mIsSleepingAllowed = byteArray.readByte () != 0;
-                        entityDefine.mIsRotationFixed = byteArray.readByte () != 0;
-                        entityDefine.mLinearVelocityMagnitude = byteArray.readFloat ();
-                        entityDefine.mLinearVelocityAngle = byteArray.readFloat ();
-                        entityDefine.mAngularVelocity = byteArray.readFloat ();
-                     }
-                  }
-                  
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
-                  {
-                     entityDefine.mRadius = byteArray.readFloat ();
-                     entityDefine.mAppearanceType = byteArray.readByte ();
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
-                  {
-                     if (worldDefine.mVersion >= 0x0108)
-                     {
-                        entityDefine.mIsRoundCorners = byteArray.readByte () != 0
-                     }
-                     
-                     entityDefine.mHalfWidth = byteArray.readFloat ();
-                     entityDefine.mHalfHeight = byteArray.readFloat ();
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
-                  {
-                     entityDefine.mLocalPoints = new Array ( byteArray.readShort () );
-                     
-                     for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
-                     {
-                        entityDefine.mLocalPoints [vertexId] = new Point (
-                                          byteArray.readFloat (),
-                                          byteArray.readFloat ()
-                                       );
-                     }
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
-                  {
-                     entityDefine.mCurveThickness = byteArray.readByte ();
-                     
-                     if (worldDefine.mVersion >= 0x0108)
-                     {
-                        entityDefine.mIsRoundEnds = byteArray.readByte () != 0;
-                     }
-                     
-                     entityDefine.mLocalPoints = new Array ( byteArray.readShort () );
-                     
-                     for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
-                     {
-                        entityDefine.mLocalPoints [vertexId] = new Point (
-                                          byteArray.readFloat (),
-                                          byteArray.readFloat ()
-                                       );
-                     }
-                  }
-               }
-               else // not physis shape
-               {
-                  if (entityDefine.mEntityType == Define.EntityType_ShapeText 
-                     || entityDefine.mEntityType == Define.EntityType_ShapeTextButton // v1.08
-                     )
-                  {
-                     entityDefine.mText = byteArray.readUTF ();
-                     entityDefine.mWordWrap = byteArray.readByte ();
-                     
-                     if (worldDefine.mVersion >= 0x0108)
-                     {
-                        entityDefine.mAdaptiveBackgroundSize = byteArray.readByte () != 0;
-                        entityDefine.mTextColor = byteArray.readUnsignedInt ();
-                        entityDefine.mFontSize = byteArray.readShort ();
-                        entityDefine.mIsBold  = byteArray.readByte () != 0;
-                        entityDefine.mIsItalic = byteArray.readByte () != 0;
-                     }
-                     
-                     if (worldDefine.mVersion >= 0x0109)
-                     {
-                        entityDefine.mTextAlign = byteArray.readByte ();
-                        entityDefine.mIsUnderlined = byteArray.readByte () != 0;
-                     }
-                     
-                     if (worldDefine.mVersion >= 0x0108)
-                     {
-                        if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
-                        {
-                           entityDefine.mUsingHandCursor = byteArray.readByte () != 0;
-                           
-                           entityDefine.mDrawBackground_MouseOver = byteArray.readByte () != 0;
-                           entityDefine.mBackgroundColor_MouseOver = byteArray.readUnsignedInt ();
-                           entityDefine.mBackgroundTransparency_MouseOver = byteArray.readByte ();
-                           
-                           entityDefine.mDrawBorder_MouseOver = byteArray.readByte () != 0;
-                           entityDefine.mBorderColor_MouseOver = byteArray.readUnsignedInt ();
-                           entityDefine.mBorderThickness_MouseOver = byteArray.readByte ();
-                           entityDefine.mBorderTransparency_MouseOver = byteArray.readByte ();
-                        }
-                     }
-                     
-                     entityDefine.mHalfWidth = byteArray.readFloat ();
-                     entityDefine.mHalfHeight = byteArray.readFloat ();
-                  }
-                  else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
-                  {
-                     entityDefine.mRadius = byteArray.readFloat ();
-                     
-                     if (worldDefine.mVersion >= 0x0105)
-                     {
-                        entityDefine.mInteractiveZones = byteArray.readByte ();
-                        entityDefine.mInteractiveConditions = byteArray.readShort ();
-                     }
-                     else
-                     {
-                        // mIsInteractive is removed from v1.05.
-                        // in FillMissedFieldsInWorldDefine (), mIsInteractive will be converted to mInteractiveZones
-                        entityDefine.mIsInteractive = byteArray.readByte ();
-                     }
-                     
-                     entityDefine.mInitialGravityAcceleration = byteArray.readFloat ();
-                     entityDefine.mInitialGravityAngle = byteArray.readShort ();
-                     
-                     if (worldDefine.mVersion >= 0x0108)
-                     {
-                        entityDefine.mMaximalGravityAcceleration = byteArray.readFloat ();
-                     }
-                  }
-               }
-            }
-            else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
-            {
-               entityDefine.mCollideConnected = byteArray.readByte ();
-               
-               if (worldDefine.mVersion >= 0x0104)
-               {
-                  entityDefine.mConnectedShape1Index = byteArray.readShort ();
-                  entityDefine.mConnectedShape2Index = byteArray.readShort ();
-               }
-               else if (worldDefine.mVersion >= 0x0102) // ??!! why bytes?
-               {
-                  entityDefine.mConnectedShape1Index = byteArray.readByte ();
-                  entityDefine.mConnectedShape2Index = byteArray.readByte ();
-               }
-               
-               if (worldDefine.mVersion >= 0x0108)
-               {
-                  entityDefine.mBreakable = byteArray.readByte ();
-               }
-               
-               if (entityDefine.mEntityType == Define.EntityType_JointHinge)
-               {
-                  entityDefine.mAnchorEntityIndex = byteArray.readShort ();
-                  
-                  entityDefine.mEnableLimits = byteArray.readByte ();
-                  entityDefine.mLowerAngle = byteArray.readFloat ();
-                  entityDefine.mUpperAngle = byteArray.readFloat ();
-                  entityDefine.mEnableMotor = byteArray.readByte ();
-                  entityDefine.mMotorSpeed = byteArray.readFloat ();
-                  entityDefine.mBackAndForth = byteArray.readByte ();
-                  
-                  if (worldDefine.mVersion >= 0x0104)
-                  {
-                     entityDefine.mMaxMotorTorque = byteArray.readFloat ();
-                  }
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
-               {
-                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
-                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
-                  
-                  entityDefine.mEnableLimits = byteArray.readByte ();
-                  entityDefine.mLowerTranslation = byteArray.readFloat ();
-                  entityDefine.mUpperTranslation = byteArray.readFloat ();
-                  entityDefine.mEnableMotor = byteArray.readByte ();
-                  entityDefine.mMotorSpeed = byteArray.readFloat ();
-                  entityDefine.mBackAndForth = byteArray.readByte ();
-                  
-                  if (worldDefine.mVersion >= 0x0104)
-                  {
-                     entityDefine.mMaxMotorForce = byteArray.readFloat ();
-                  }
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
-               {
-                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
-                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
-                  
-                  if (worldDefine.mVersion >= 0x0108)
-                  {
-                     entityDefine.mBreakDeltaLength = byteArray.readFloat ();
-                  }
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
-               {
-                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
-                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
-                  
-                  entityDefine.mStaticLengthRatio = byteArray.readFloat ();
-                  //entityDefine.mFrequencyHz = byteArray.readFloat ();
-                  entityDefine.mSpringType = byteArray.readByte ();
-                  
-                  entityDefine.mDampingRatio = byteArray.readFloat ();
-                  
-                  if (worldDefine.mVersion >= 0x0108)
-                  {
-                     entityDefine.mFrequencyDeterminedManner = byteArray.readByte ();
-                     entityDefine.mFrequency = byteArray.readFloat ();
-                     entityDefine.mSpringConstant = byteArray.readFloat ();
-                     entityDefine.mBreakExtendedLength = byteArray.readFloat ();
-                  }
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
-               {
-                  entityDefine.mAnchorEntityIndex = byteArray.readShort ();
-               }
-               else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
-               {
-                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
-                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
-               }
-            }
-            
-            worldDefine.mEntityDefines.push (entityDefine);
-         }
-         
-         // ...
-         
-         if (worldDefine.mVersion >= 0x0107)
-         {
-            var numOrderIds:int = byteArray.readShort (); // should == numEntities
-            for (var i:int = 0; i < numOrderIds; ++ i)
-            {
-               worldDefine.mEntityAppearanceOrder.push (byteArray.readShort ());
-            }
-         }
-         
-         // ...
-         
-         var numGroups:int = byteArray.readShort ();
-         var groupId:int;
-         
-         for (groupId = 0; groupId < numGroups; ++ groupId)
-         {
-            var brotherIDs:Array = ReadShortArrayFromBinFile (byteArray);
-            
-            worldDefine.mBrotherGroupDefines.push (brotherIDs);
-         }
-         
-         // custom variables
-         if (worldDefine.mVersion >= 0x0152)
-         {
-            //var numSpaces:int;
-            //var spaceId:int;
-            //var variableSpaceDefine:VariableSpaceDefine;
-            
-            if (worldDefine.mVersion == 0x0152)
-            {
-               byteArray.readShort (); // numSpaces
-               byteArray.readUTF (); // space name
-               byteArray.readShort (); // parent id
-            }
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mGlobalVariableDefines, true);
-            
-            if (worldDefine.mVersion == 0x0152)
-            {
-               byteArray.readShort (); // numSpaces
-               byteArray.readUTF (); // space name
-               byteArray.readShort (); // parent id
-            }
-            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
-         }
-         
-         // ...
-         return worldDefine;
-      }
-      
-      public static function ReadShortArrayFromBinFile (binFile:ByteArray):Array
-      {
-         var num:int = binFile.readShort ();
-         
-         var shortArray:Array = new Array (num);
-         
-         for (var i:int = 0; i < num; ++ i)
-         {
-            shortArray [i] = binFile.readShort ();
-         }
-         
-         return shortArray;
-      }
-      
-      public static function HexString2WorldDefine (hexString:String):WorldDefine
-      {
-         return ByteArray2WorldDefine ( HexString2ByteArray (hexString) );
-      }
-      
-      public static function HexString2ByteArray (hexString:String):ByteArray
-      {
-         if (hexString == null)
-            return null;
-         
-         hexString = De (hexString);
-         
-         var byteArray:ByteArray = new ByteArray ();
-         byteArray.length = hexString.length / 2;
-         
-         var index:int = 0;
-         
-         for (var ci:int = 0; ci < hexString.length; ci += 2)
-         {
-            byteArray [index ++] = ParseByteFromHexString (hexString.substr (ci, 2));
-         }
-         
-         return byteArray;
-      }
-      
-      public static function ParseByteFromHexString (hexString:String):int
-      {
-         if (hexString == null || hexString.length != 2)
-            return NaN;
-         
-         var byteValue:int = parseInt (hexString, 16);
-         //if ( isNaN (byteValue))
-         //{
-         //   byteValue -= 128;
-         //}
-         
-         return byteValue;
-      }
-      
-      public static const Value2CharTable:String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.";
-      
-      public static function Value2Char (value:int, num:uint = 1):String
-      {
-         if (value < 0 || value >= 16 || num > 4 || num <= 0)
-            return "?";
-         
-         return Value2CharTable.charAt (value + (num - 1) * 16);
-      }
-      
-      public static var Char2ValueTable:Array = null;
-      
-      public static function Char2Value (charCode:int):int
-      {
-         if (Char2ValueTable == null)
-         {
-            Char2ValueTable = new Array (128);
-            for (var i:int = 0; i < Char2ValueTable.length; ++ i)
-               Char2ValueTable [i] = -1;
-            for (var k:int = 0; k < Value2CharTable.length; ++ k)
-               Char2ValueTable [Value2CharTable.charCodeAt (k)] = k;
-         }
-         
-         if (charCode < 0 || charCode >= Char2ValueTable.length)
-            return -1;
-         
-         return Char2ValueTable [charCode];
-      }
-      
-      public static function De (enStr:String):String
-      {
-         var str:String = "";
-         
-         var char:String;
-         var value:int;
-         var num:int;
-         for (var i:int = 0; i < enStr.length; ++ i)
-         {
-            value = Char2Value (enStr.charCodeAt (i));
-            
-            if (value >= 0 && value < 64)
-            {
-               num = ( (value & 0x3F) >> 4 ) + 1;
-               value = value & 0xF;
-               
-               char =  Value2Char (value);
-               for (var k:int = 0; k < num; ++ k)
-                  str = str + char;
-            }
-            else
-            {
-               trace ("De str error! pos = " + i + ", value = " + value + ", char = " +  enStr.charAt (i));
-               break;
-            }
-         }
-         
-         return str;
-      }
-      
 //====================================================================================
 //   
 //====================================================================================
@@ -2512,66 +1759,681 @@ package common {
          }
       }
       
-      public static const Base64Chars:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-      
-      private static var Base64Char2Index:Array = null;
-      private static function GetBase64Char2IndexTable ():Array
+      public static function ByteArray2WorldDefine (byteArray:ByteArray):WorldDefine
       {
-         if (Base64Char2Index == null)
+         //trace ("ByteArray2WorldDefine");
+         
+         var worldDefine:WorldDefine = new WorldDefine ();
+         
+         // COlor INfection
+         byteArray.readByte (); // "C".charCodeAt (0);
+         byteArray.readByte (); // "O".charCodeAt (0);
+         byteArray.readByte (); // "I".charCodeAt (0);
+         byteArray.readByte (); // "N".charCodeAt (0);
+         
+         // basic settings
          {
-            Base64Char2Index = new Array (128); // all char codes in Base64Chars are smaller than 128
+            worldDefine.mVersion = byteArray.readShort ();
+            worldDefine.mAuthorName = byteArray.readUTF ();
+            worldDefine.mAuthorHomepage = byteArray.readUTF ();
             
-            for (var i_char:int = Base64Chars.length - 2; i_char >= 0; -- i_char) // "Base64Chars.length - 2" is to ignore the "=" cahr 
+            if (worldDefine.mVersion < 0x0102)
             {
-               Base64Char2Index [Base64Chars.charCodeAt (i_char)] = i_char;
+               // the 3 bytes are removed since v1.02
+               // hex
+               byteArray.readByte (); // "H".charCodeAt (0);
+               byteArray.readByte (); // "E".charCodeAt (0);
+               byteArray.readByte (); // "X".charCodeAt (0);
+            }
+            
+            if (worldDefine.mVersion >= 0x0102)
+            {
+               worldDefine.mShareSourceCode = byteArray.readByte () != 0;
+               worldDefine.mPermitPublishing = byteArray.readByte () != 0;
             }
          }
          
-         return Base64Char2Index;
-      }
-      
-      public static function DecodeString2ByteArray(text:String):ByteArray
-      {
-         if (text == null) 
+         // more settings
          {
-            return null;
-         }
-         
-         var num_chars:int = text.length;
-         var num_triples:int = num_chars / 4;
-         var num_extras:int = num_chars - num_triples * 4;
-         
-         if (num_extras != 0)
-         {
-            return null;
-         }
-         
-         var num_bytes:int = num_bytes * 3;
-         var data:ByteArray = new ByteArray ();
-         data.length = num_bytes;
-         
-         var b0:int, b1:int, b2:int, b3:int;
-         
-         var table_char2index:Array = GetBase64Char2IndexTable ();
-         var i_char:int = 0;
-         data.position = 0;
-         
-         while (i_char < num_chars)
-         {
-            b0 = table_char2index [text.charCodeAt (i_char ++)];
-            b1 = table_char2index [text.charCodeAt (i_char ++)];
-            b2 = table_char2index [text.charCodeAt (i_char ++)];
-            b3 = table_char2index [text.charCodeAt (i_char ++)];
+            if (worldDefine.mVersion >= 0x0151)
+            {
+               worldDefine.mSettings.mViewerUiFlags = byteArray.readInt ();
+               worldDefine.mSettings.mPlayBarColor  = byteArray.readUnsignedInt ();
+               worldDefine.mSettings.mViewportWidth  = byteArray.readShort ();
+               worldDefine.mSettings.mViewportHeight  = byteArray.readShort ();
+               worldDefine.mSettings.mZoomScale = byteArray.readFloat ();
+            }
             
-            data.writeByte ((b0 << 2) | ((b1 & 0x30) >> 4));
-            data.writeByte (((b1 & 0x0f) << 4) | ((b2 & 0x3c) >> 2));
-            data.writeByte (((b2 & 0x03) << 6) | b3);
+            if (worldDefine.mVersion >= 0x0104)
+            {
+               worldDefine.mSettings.mCameraCenterX = byteArray.readInt ();
+               worldDefine.mSettings.mCameraCenterY = byteArray.readInt ();
+               worldDefine.mSettings.mWorldLeft = byteArray.readInt ();
+               worldDefine.mSettings.mWorldTop  = byteArray.readInt ();
+               worldDefine.mSettings.mWorldWidth  = byteArray.readInt ();
+               worldDefine.mSettings.mWorldHeight = byteArray.readInt ();
+               worldDefine.mSettings.mBackgroundColor  = byteArray.readUnsignedInt ();
+               worldDefine.mSettings.mBuildBorder  = byteArray.readByte () != 0;
+               worldDefine.mSettings.mBorderColor = byteArray.readUnsignedInt ();
+            }
+            
+            if (worldDefine.mVersion >= 0x0106 && worldDefine.mVersion < 0x0108)
+            {
+               worldDefine.mSettings.mPhysicsShapesPotentialMaxCount = byteArray.readInt ();
+               worldDefine.mSettings.mPhysicsShapesPopulationDensityLevel = byteArray.readShort ();
+            }
+            
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               worldDefine.mSettings.mIsInfiniteWorldSize = byteArray.readByte () != 0;
+               
+               worldDefine.mSettings.mBorderAtTopLayer = byteArray.readByte () != 0;
+               worldDefine.mSettings.mWorldBorderLeftThickness = byteArray.readFloat ();
+               worldDefine.mSettings.mWorldBorderTopThickness = byteArray.readFloat ();
+               worldDefine.mSettings.mWorldBorderRightThickness = byteArray.readFloat ();
+               worldDefine.mSettings.mWorldBorderBottomThickness = byteArray.readFloat ();
+               
+               worldDefine.mSettings.mDefaultGravityAccelerationMagnitude = byteArray.readFloat ();
+               worldDefine.mSettings.mDefaultGravityAccelerationAngle = byteArray.readFloat ();
+               
+               worldDefine.mSettings.mRightHandCoordinates = byteArray.readByte () != 0;
+               worldDefine.mSettings.mCoordinatesOriginX = byteArray.readDouble ();
+               worldDefine.mSettings.mCoordinatesOriginY = byteArray.readDouble ();
+               worldDefine.mSettings.mCoordinatesScale = byteArray.readDouble ();
+               
+               worldDefine.mSettings.mIsCiRulesEnabled = byteArray.readByte () != 0;
+            }
          }
          
-         data.position = 0;
-         return data;
+         // collision category
+         
+         if (worldDefine.mVersion >= 0x0102)
+         {
+            var numCategories:int = byteArray.readShort ();
+            
+            //trace ("numCategories = " + numCategories);
+            
+            for (var ccId:int = 0; ccId < numCategories; ++ ccId)
+            {
+               var ccDefine:Object = new Object ();
+               
+               ccDefine.mName = byteArray.readUTF ();
+               ccDefine.mCollideInternally = byteArray.readByte () != 0;
+               ccDefine.mPosX = byteArray.readFloat ();
+               ccDefine.mPosY = byteArray.readFloat ();
+               
+               worldDefine.mCollisionCategoryDefines.push (ccDefine);
+            }
+            
+            worldDefine.mDefaultCollisionCategoryIndex = byteArray.readShort ();
+            
+            //trace ("worldDefine.mDefaultCollisionCategoryIndex = " + worldDefine.mDefaultCollisionCategoryIndex);
+            
+            var numPairs:int = byteArray.readShort ();
+            
+            //trace ("numPairs = " + numPairs);
+            
+            for (var pairId:int = 0; pairId < numPairs; ++ pairId)
+            {
+               var pairDefine:Object = new Object ();
+               pairDefine.mCollisionCategory1Index = byteArray.readShort ();
+               pairDefine.mCollisionCategory2Index = byteArray.readShort ();
+               
+               worldDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
+            }
+         }
+         
+         if (worldDefine.mVersion >= 0x0153)
+         {
+            var functionId:int;
+            var functionDefine:FunctionDefine;
+            
+            var numFunctions:int = byteArray.readShort ();
+            
+            for (functionId = 0; functionId < numFunctions; ++ functionId)
+            {
+               functionDefine = new FunctionDefine ();
+               
+               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, true, null);
+               
+               worldDefine.mFunctionDefines.push (functionDefine);
+            }
+            
+            for (functionId = 0; functionId < numFunctions; ++ functionId)
+            {
+               functionDefine = worldDefine.mFunctionDefines [functionId];
+               
+               functionDefine.mName = byteArray.readUTF ();
+               functionDefine.mPosX = byteArray.readFloat ();
+               functionDefine.mPosY = byteArray.readFloat ();
+               
+               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, false, worldDefine.mFunctionDefines);
+            }
+         }
+         
+         // entities
+         
+         var numEntities:int = byteArray.readShort ();
+         
+         //trace ("numEntities = " + numEntities);
+         
+         var appearId:int;
+         var createId:int;
+         var vertexId:int;
+         
+         for (createId = 0; createId < numEntities; ++ createId)
+         {
+            var entityDefine:Object = new Object ();
+            
+            entityDefine.mEntityType = byteArray.readShort ();
+            
+            //trace ("appearId = " + appearId + ", mEntityType = " + entityDefine.mEntityType);
+            
+            if (worldDefine.mVersion >= 0x0103)
+            {
+               entityDefine.mPosX = byteArray.readDouble ();
+               entityDefine.mPosY = byteArray.readDouble ();
+            }
+            else
+            {
+               entityDefine.mPosX = byteArray.readFloat ();
+               entityDefine.mPosY = byteArray.readFloat ();
+            }
+            entityDefine.mRotation = byteArray.readFloat ();
+            entityDefine.mIsVisible = byteArray.readByte () != 0;
+            
+            if (worldDefine.mVersion >= 0x0108)
+            {
+               entityDefine.mAlpha = byteArray.readFloat ();
+               entityDefine.mIsEnabled = byteArray.readByte () != 0;
+            }
+            
+            if ( Define.IsUtilityEntity (entityDefine.mEntityType) )
+            {
+               // from v1.05
+               if (entityDefine.mEntityType == Define.EntityType_UtilityCamera)
+               {
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mFollowedTarget = byteArray.readByte ();
+                     entityDefine.mFollowingStyle = byteArray.readByte ();
+                  }
+               }
+               //<<
+               //>>from v1.10
+               else if (entityDefine.mEntityType == Define.EntityType_UtilityPowerSource)
+               {
+                  entityDefine.mPowerSourceType = byteArray.readByte ();
+                  entityDefine.mPowerMagnitude = byteArray.readFloat ();
+                  entityDefine.mKeyboardEventId = byteArray.readShort ();
+                  entityDefine.mKeyCodes = ReadShortArrayFromBinFile (byteArray);
+               }
+               //<<
+            }
+            else if ( Define.IsLogicEntity (entityDefine.mEntityType) ) // from v1.07
+            {
+               if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
+               {
+                  if (worldDefine.mVersion >= 0x0153)
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
+                  else
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
+               {
+                  entityDefine.mInputAssignerCreationIds = ReadShortArrayFromBinFile (byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicConditionDoor)
+               {
+                  entityDefine.mIsAnd = byteArray.readByte () != 0;
+                  entityDefine.mIsNot = byteArray.readByte () != 0;
+                  
+                  var num:int = byteArray.readShort ();
+                  entityDefine.mNumInputConditions = num;
+                  entityDefine.mInputConditionEntityCreationIds = new Array (num);
+                  entityDefine.mInputConditionTargetValues = new Array (num);
+                  
+                  for (i = 0; i < num; ++ i)
+                  {
+                     entityDefine.mInputConditionEntityCreationIds [i] = byteArray.readShort ();
+                     entityDefine.mInputConditionTargetValues [i] = byteArray.readByte ();
+                  }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityAssigner)
+               {
+                  entityDefine.mSelectorType = byteArray.readByte ();
+                  entityDefine.mEntityCreationIds = ReadShortArrayFromBinFile (byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairAssigner)
+               {
+                  entityDefine.mPairingType = byteArray.readByte ();
+                  entityDefine.mEntityCreationIds1 = ReadShortArrayFromBinFile (byteArray);
+                  entityDefine.mEntityCreationIds2 = ReadShortArrayFromBinFile (byteArray);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
+               {
+                  entityDefine.mEventId = byteArray.readShort ();
+                  entityDefine.mInputConditionEntityCreationId = byteArray.readShort ();
+                  entityDefine.mInputConditionTargetValue = byteArray.readByte ();
+                  entityDefine.mInputAssignerCreationIds = ReadShortArrayFromBinFile (byteArray);
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mExternalActionEntityCreationId = byteArray.readShort ();
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     switch (entityDefine.mEventId)
+                     {
+                        case CoreEventIds.ID_OnWorldTimer:
+                        case CoreEventIds.ID_OnEntityTimer:
+                        case CoreEventIds.ID_OnEntityPairTimer:
+                           entityDefine.mRunningInterval = byteArray.readFloat ();
+                           entityDefine.mOnlyRunOnce = byteArray.readByte () != 0;
+                           break;
+                        case CoreEventIds.ID_OnWorldKeyDown:
+                        case CoreEventIds.ID_OnWorldKeyUp:
+                        case CoreEventIds.ID_OnWorldKeyHold:
+                           entityDefine.mKeyCodes = ReadShortArrayFromBinFile (byteArray);
+                           break;
+                        default:
+                           break;
+                     }
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0153)
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
+                  else
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+                  if (worldDefine.mVersion >= 0x0153)
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
+                  else
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
+               }
+            }
+            else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
+            {
+               if (worldDefine.mVersion >= 0x0102)
+               {
+                  entityDefine.mDrawBorder = byteArray.readByte ();
+                  entityDefine.mDrawBackground = byteArray.readByte ();
+               }
+               
+               if (worldDefine.mVersion >= 0x0104)
+               {
+                  entityDefine.mBorderColor = byteArray.readUnsignedInt ();
+                  entityDefine.mBorderThickness = byteArray.readByte ();
+                  entityDefine.mBackgroundColor = byteArray.readUnsignedInt ();
+                  entityDefine.mTransparency = byteArray.readByte ();
+               }
+               
+               if (worldDefine.mVersion >= 0x0105)
+               {
+                  entityDefine.mBorderTransparency = byteArray.readByte ();
+               }
+               
+               if ( Define.IsBasicShapeEntity (entityDefine.mEntityType) )
+               {
+                  if (worldDefine.mVersion >= 0x0105)
+                  {
+                     entityDefine.mAiType = byteArray.readByte ();
+                     entityDefine.mIsPhysicsEnabled = byteArray.readByte ();
+                     
+                     // the 2 lines are added in v1,04, and moved down from v1.05
+                     /////entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
+                     /////entityDefine.mIsSensor = byteArray.readByte ();
+                  }
+                  else if (worldDefine.mVersion >= 0x0104)
+                  {
+                     entityDefine.mAiType = byteArray.readByte ();
+                     entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
+                     entityDefine.mIsPhysicsEnabled = byteArray.readByte ();
+                     entityDefine.mIsSensor = byteArray.readByte ();
+                  }
+                  else
+                  {
+                     if (worldDefine.mVersion >= 0x0102)
+                     {
+                        entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
+                     }
+                     
+                     entityDefine.mAiType = byteArray.readByte ();
+                     
+                     entityDefine.mIsPhysicsEnabled = true;
+                     // entityDefine.mIsSensor = true; // will be set in FillMissedFieldsInWorldDefine
+                  }
+                  
+                  if (entityDefine.mIsPhysicsEnabled)
+                  {
+                     entityDefine.mIsStatic = byteArray.readByte ();
+                     entityDefine.mIsBullet = byteArray.readByte ();
+                     entityDefine.mDensity = byteArray.readFloat ();
+                     entityDefine.mFriction = byteArray.readFloat ();
+                     entityDefine.mRestitution = byteArray.readFloat ();
+                     
+                     if (worldDefine.mVersion >= 0x0105)
+                     {
+                        // the 2 lines are added in v1,04, and moved here from above from v1.05
+                        entityDefine.mCollisionCategoryIndex = byteArray.readShort ();
+                        entityDefine.mIsSensor = byteArray.readByte ();
+                        
+                        // ...
+                        entityDefine.mIsHollow = byteArray.readByte ();
+                     }
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mBuildBorder = byteArray.readByte () != 0;
+                        entityDefine.mIsSleepingAllowed = byteArray.readByte () != 0;
+                        entityDefine.mIsRotationFixed = byteArray.readByte () != 0;
+                        entityDefine.mLinearVelocityMagnitude = byteArray.readFloat ();
+                        entityDefine.mLinearVelocityAngle = byteArray.readFloat ();
+                        entityDefine.mAngularVelocity = byteArray.readFloat ();
+                     }
+                  }
+                  
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeCircle)
+                  {
+                     entityDefine.mRadius = byteArray.readFloat ();
+                     entityDefine.mAppearanceType = byteArray.readByte ();
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapeRectangle)
+                  {
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mIsRoundCorners = byteArray.readByte () != 0
+                     }
+                     
+                     entityDefine.mHalfWidth = byteArray.readFloat ();
+                     entityDefine.mHalfHeight = byteArray.readFloat ();
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolygon)
+                  {
+                     entityDefine.mLocalPoints = new Array ( byteArray.readShort () );
+                     
+                     for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
+                     {
+                        entityDefine.mLocalPoints [vertexId] = new Point (
+                                          byteArray.readFloat (),
+                                          byteArray.readFloat ()
+                                       );
+                     }
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapePolyline)
+                  {
+                     entityDefine.mCurveThickness = byteArray.readByte ();
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mIsRoundEnds = byteArray.readByte () != 0;
+                     }
+                     
+                     entityDefine.mLocalPoints = new Array ( byteArray.readShort () );
+                     
+                     for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
+                     {
+                        entityDefine.mLocalPoints [vertexId] = new Point (
+                                          byteArray.readFloat (),
+                                          byteArray.readFloat ()
+                                       );
+                     }
+                  }
+               }
+               else // not physis shape
+               {
+                  if (entityDefine.mEntityType == Define.EntityType_ShapeText 
+                     || entityDefine.mEntityType == Define.EntityType_ShapeTextButton // v1.08
+                     )
+                  {
+                     entityDefine.mText = byteArray.readUTF ();
+                     entityDefine.mWordWrap = byteArray.readByte ();
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mAdaptiveBackgroundSize = byteArray.readByte () != 0;
+                        entityDefine.mTextColor = byteArray.readUnsignedInt ();
+                        entityDefine.mFontSize = byteArray.readShort ();
+                        entityDefine.mIsBold  = byteArray.readByte () != 0;
+                        entityDefine.mIsItalic = byteArray.readByte () != 0;
+                     }
+                     
+                     if (worldDefine.mVersion >= 0x0109)
+                     {
+                        entityDefine.mTextAlign = byteArray.readByte ();
+                        entityDefine.mIsUnderlined = byteArray.readByte () != 0;
+                     }
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        if (entityDefine.mEntityType == Define.EntityType_ShapeTextButton) 
+                        {
+                           entityDefine.mUsingHandCursor = byteArray.readByte () != 0;
+                           
+                           entityDefine.mDrawBackground_MouseOver = byteArray.readByte () != 0;
+                           entityDefine.mBackgroundColor_MouseOver = byteArray.readUnsignedInt ();
+                           entityDefine.mBackgroundTransparency_MouseOver = byteArray.readByte ();
+                           
+                           entityDefine.mDrawBorder_MouseOver = byteArray.readByte () != 0;
+                           entityDefine.mBorderColor_MouseOver = byteArray.readUnsignedInt ();
+                           entityDefine.mBorderThickness_MouseOver = byteArray.readByte ();
+                           entityDefine.mBorderTransparency_MouseOver = byteArray.readByte ();
+                        }
+                     }
+                     
+                     entityDefine.mHalfWidth = byteArray.readFloat ();
+                     entityDefine.mHalfHeight = byteArray.readFloat ();
+                  }
+                  else if (entityDefine.mEntityType == Define.EntityType_ShapeGravityController)
+                  {
+                     entityDefine.mRadius = byteArray.readFloat ();
+                     
+                     if (worldDefine.mVersion >= 0x0105)
+                     {
+                        entityDefine.mInteractiveZones = byteArray.readByte ();
+                        entityDefine.mInteractiveConditions = byteArray.readShort ();
+                     }
+                     else
+                     {
+                        // mIsInteractive is removed from v1.05.
+                        // in FillMissedFieldsInWorldDefine (), mIsInteractive will be converted to mInteractiveZones
+                        entityDefine.mIsInteractive = byteArray.readByte ();
+                     }
+                     
+                     entityDefine.mInitialGravityAcceleration = byteArray.readFloat ();
+                     entityDefine.mInitialGravityAngle = byteArray.readShort ();
+                     
+                     if (worldDefine.mVersion >= 0x0108)
+                     {
+                        entityDefine.mMaximalGravityAcceleration = byteArray.readFloat ();
+                     }
+                  }
+               }
+            }
+            else if ( Define.IsPhysicsJointEntity (entityDefine.mEntityType) )
+            {
+               entityDefine.mCollideConnected = byteArray.readByte ();
+               
+               if (worldDefine.mVersion >= 0x0104)
+               {
+                  entityDefine.mConnectedShape1Index = byteArray.readShort ();
+                  entityDefine.mConnectedShape2Index = byteArray.readShort ();
+               }
+               else if (worldDefine.mVersion >= 0x0102) // ??!! why bytes?
+               {
+                  entityDefine.mConnectedShape1Index = byteArray.readByte ();
+                  entityDefine.mConnectedShape2Index = byteArray.readByte ();
+               }
+               
+               if (worldDefine.mVersion >= 0x0108)
+               {
+                  entityDefine.mBreakable = byteArray.readByte ();
+               }
+               
+               if (entityDefine.mEntityType == Define.EntityType_JointHinge)
+               {
+                  entityDefine.mAnchorEntityIndex = byteArray.readShort ();
+                  
+                  entityDefine.mEnableLimits = byteArray.readByte ();
+                  entityDefine.mLowerAngle = byteArray.readFloat ();
+                  entityDefine.mUpperAngle = byteArray.readFloat ();
+                  entityDefine.mEnableMotor = byteArray.readByte ();
+                  entityDefine.mMotorSpeed = byteArray.readFloat ();
+                  entityDefine.mBackAndForth = byteArray.readByte ();
+                  
+                  if (worldDefine.mVersion >= 0x0104)
+                  {
+                     entityDefine.mMaxMotorTorque = byteArray.readFloat ();
+                  }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointSlider)
+               {
+                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
+                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
+                  
+                  entityDefine.mEnableLimits = byteArray.readByte ();
+                  entityDefine.mLowerTranslation = byteArray.readFloat ();
+                  entityDefine.mUpperTranslation = byteArray.readFloat ();
+                  entityDefine.mEnableMotor = byteArray.readByte ();
+                  entityDefine.mMotorSpeed = byteArray.readFloat ();
+                  entityDefine.mBackAndForth = byteArray.readByte ();
+                  
+                  if (worldDefine.mVersion >= 0x0104)
+                  {
+                     entityDefine.mMaxMotorForce = byteArray.readFloat ();
+                  }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointDistance)
+               {
+                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
+                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mBreakDeltaLength = byteArray.readFloat ();
+                  }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointSpring)
+               {
+                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
+                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
+                  
+                  entityDefine.mStaticLengthRatio = byteArray.readFloat ();
+                  //entityDefine.mFrequencyHz = byteArray.readFloat ();
+                  entityDefine.mSpringType = byteArray.readByte ();
+                  
+                  entityDefine.mDampingRatio = byteArray.readFloat ();
+                  
+                  if (worldDefine.mVersion >= 0x0108)
+                  {
+                     entityDefine.mFrequencyDeterminedManner = byteArray.readByte ();
+                     entityDefine.mFrequency = byteArray.readFloat ();
+                     entityDefine.mSpringConstant = byteArray.readFloat ();
+                     entityDefine.mBreakExtendedLength = byteArray.readFloat ();
+                  }
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointWeld)
+               {
+                  entityDefine.mAnchorEntityIndex = byteArray.readShort ();
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_JointDummy)
+               {
+                  entityDefine.mAnchor1EntityIndex = byteArray.readShort ();
+                  entityDefine.mAnchor2EntityIndex = byteArray.readShort ();
+               }
+            }
+            
+            worldDefine.mEntityDefines.push (entityDefine);
+         }
+         
+         // ...
+         
+         if (worldDefine.mVersion >= 0x0107)
+         {
+            var numOrderIds:int = byteArray.readShort (); // should == numEntities
+            for (var i:int = 0; i < numOrderIds; ++ i)
+            {
+               worldDefine.mEntityAppearanceOrder.push (byteArray.readShort ());
+            }
+         }
+         
+         // ...
+         
+         var numGroups:int = byteArray.readShort ();
+         var groupId:int;
+         
+         for (groupId = 0; groupId < numGroups; ++ groupId)
+         {
+            var brotherIDs:Array = ReadShortArrayFromBinFile (byteArray);
+            
+            worldDefine.mBrotherGroupDefines.push (brotherIDs);
+         }
+         
+         // custom variables
+         if (worldDefine.mVersion >= 0x0152)
+         {
+            //var numSpaces:int;
+            //var spaceId:int;
+            //var variableSpaceDefine:VariableSpaceDefine;
+            
+            if (worldDefine.mVersion == 0x0152)
+            {
+               byteArray.readShort (); // numSpaces
+               byteArray.readUTF (); // space name
+               byteArray.readShort (); // parent id
+            }
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mGlobalVariableDefines, true);
+            
+            if (worldDefine.mVersion == 0x0152)
+            {
+               byteArray.readShort (); // numSpaces
+               byteArray.readUTF (); // space name
+               byteArray.readShort (); // parent id
+            }
+            TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mEntityPropertyDefines, true);
+         }
+         
+         // ...
+         return worldDefine;
       }
       
+      public static function ReadShortArrayFromBinFile (binFile:ByteArray):Array
+      {
+         var num:int = binFile.readShort ();
+         
+         var shortArray:Array = new Array (num);
+         
+         for (var i:int = 0; i < num; ++ i)
+         {
+            shortArray [i] = binFile.readShort ();
+         }
+         
+         return shortArray;
+      }
+      
+//==================================== playcode with hex string ======================================================
+
+      public static function HexString2WorldDefine (hexString:String):WorldDefine
+      {
+         return ByteArray2WorldDefine (DataFormat3.HexString2ByteArray (hexString));
+      }
+      
+//==================================== new playcode with base64 ======================================================
+      
+      public static function PlayCode2WorldDefine_Base64 (playCode:String):WorldDefine
+      {
+         var bytesArray:ByteArray = DataFormat3.DecodeString2ByteArray (playCode);
+         if (bytesArray == null)
+            return null;
+         
+         bytesArray.uncompress ();
+         return ByteArray2WorldDefine (bytesArray);
+      }
+      
+
    }
    
 }

@@ -18,6 +18,9 @@ package univiewer
    import flash.events.ProgressEvent;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
+   import flash.ui.ContextMenu;
+   import flash.ui.ContextMenuItem;
+   import flash.ui.ContextMenuBuiltInItems;
    
    public dynamic class UniViewer extends Sprite
    {
@@ -48,43 +51,66 @@ package univiewer
          
          mUniViewerUrl =  LoaderInfo(this.loaderInfo).url;
          
-         // load design info
-         
-         var infoUrl:String;
-         if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0) // for play. avoid using browser cache
+         const ViewerFileEquals:String = "ViewerFile=";
+         const RevisionIdEquals:String = "RevisionId=";
+         const WorldFileEquals:String = "WorldFile=";
+         var index1:int = mUniViewerUrl.indexOf (ViewerFileEquals);
+         var index2:int = mUniViewerUrl.indexOf (RevisionIdEquals);
+         var index3:int = mUniViewerUrl.indexOf (WorldFileEquals);
+         if (index1 >= 0 && index2 >= 0 && index3 >= 0)
          {
-            var date:Date = new Date ();
-            infoUrl = mUniViewerUrl.replace (/\/uniplayer\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
-            infoUrl = infoUrl + "&time=" + date.getFullYear () + "-" + date.getMonth () + "-" + date.getDate () + "-" + date.getHours () + "-" + date.getMinutes () + "-" + date.getSeconds ();
+            var indexEnd:int;
+            
+            index1 += ViewerFileEquals.length;
+            indexEnd = mUniViewerUrl.indexOf ("&", index1);
+            if (indexEnd < 0) indexEnd = mUniViewerUrl.length;
+            var viewerFile:String = mUniViewerUrl.substring (index1, indexEnd);
+            
+            index2 += RevisionIdEquals.length;
+            indexEnd = mUniViewerUrl.indexOf ("&", index2);
+            if (indexEnd < 0) indexEnd = mUniViewerUrl.length;
+            var revisionId:String = mUniViewerUrl.substring (index2, indexEnd);
+            
+            index3 += WorldFileEquals.length;
+            indexEnd = mUniViewerUrl.indexOf ("&", index3);
+            if (indexEnd < 0) indexEnd = mUniViewerUrl.length;
+            var worldFile:String = mUniViewerUrl.substring (index3, indexEnd);
+            
+            var stream:ByteArray = new ByteArray ();
+            stream.writeUTF (viewerFile);
+            stream.writeInt (parseInt (revisionId));
+            stream.writeUTF (worldFile);
+            stream.position = 0;
+            SetDesignInfoStream (stream);
          }
-         else // for view, the brower cache will be used if availabe
+         else
          {
-            infoUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
+            // load design info
+            
+            var infoUrl:String;
+            if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0) // for play. avoid using browser cache
+            {
+               var date:Date = new Date ();
+               infoUrl = mUniViewerUrl.replace (/\/uniplayer\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
+               infoUrl = infoUrl + "&time=" + date.getFullYear () + "-" + date.getMonth () + "-" + date.getDate () + "-" + date.getHours () + "-" + date.getMinutes () + "-" + date.getSeconds ();
+            }
+            else // for view, the brower cache will be used if availabe
+            {
+               infoUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
+            }
+            
+            var request:URLRequest = new URLRequest (infoUrl);
+            request.method = URLRequestMethod.GET;
+            var loader:URLLoader = new URLLoader ();
+            loader.dataFormat = URLLoaderDataFormat.BINARY;
+            
+            loader.addEventListener(Event.COMPLETE, OnLoadInfoComplete);
+            loader.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
+            loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+            
+            mLoadingStage = " info ";
+            loader.load(request);
          }
-         
-         //var infoUrl:String;
-         //if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0) // for play. avoid using browser cache
-         //{
-         //   var date:Date = new Date ();
-         //   infoUrl = mUniViewerUrl.replace (/\/uniplayer\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
-         //   infoUrl = infoUrl + "&time=" + date.getFullYear () + "-" + date.getMonth () + "-" + date.getDate () + "-" + date.getHours () + "-" + date.getMinutes () + "-" + date.getSeconds ();
-         //}
-         //else // for view, the brower cache will be used if availabe
-         //{
-         //   infoUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
-         //}
-         
-         var request:URLRequest = new URLRequest (infoUrl);
-         request.method = URLRequestMethod.GET;
-         var loader:URLLoader = new URLLoader ();
-         loader.dataFormat = URLLoaderDataFormat.BINARY;
-         
-         loader.addEventListener(Event.COMPLETE, OnLoadInfoComplete);
-         loader.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
-         loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
-         
-         mLoadingStage = " info ";
-         loader.load(request);
          
          //
          var theContextMenu:ContextMenu = new ContextMenu ();
@@ -95,7 +121,7 @@ package univiewer
       }
       
       private var mDesignInfoStream:ByteArray;
-      private function OnLoadInfoComplete (event:Event):void 
+      private function OnLoadInfoComplete (event:Event):void
       {
          SetInfoText ("Loading ... (" + StartLoadingViewerPercent + "%)");
          
@@ -109,6 +135,11 @@ package univiewer
             return;
          }
          
+         SetDesignInfoStream (stream);
+      }
+         
+      private function SetDesignInfoStream (stream:ByteArray):void
+      {
          mDesignInfoStream = stream;
          
          // world.swf url and viewer swf url
@@ -142,7 +173,7 @@ package univiewer
          loader.load(request, new LoaderContext(false, ApplicationDomain.currentDomain));
       }
       
-      private function OnLoadViewerSwfComplete (event:Event):void 
+      private function OnLoadViewerSwfComplete (event:Event):void
       {
          //SetInfoText (null);
          

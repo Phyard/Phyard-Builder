@@ -92,6 +92,24 @@ package Box2D.Dynamics.Joints
 				m_localAnchorB.y += dy;
 			}
 		}
+		
+      private static var worldAnchor:b2Vec2 = new b2Vec2 ();
+         
+      override protected function NotifyBodyChanged (oldBody:b2Body, isBodyA:Boolean):void
+      {
+         if (isBodyA)
+         {
+            oldBody.GetWorldPoint_Output (m_localAnchorA, worldAnchor);
+            m_bodyA.GetLocalPoint_Output (worldAnchor, m_localAnchorA);
+            m_referenceAngle -= m_bodyA.GetAngle () - oldBody.GetAngle ();
+         }
+         else
+         {
+            oldBody.GetWorldPoint_Output (m_localAnchorB, worldAnchor);
+            m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchorB);
+            m_referenceAngle += m_bodyB.GetAngle () - oldBody.GetAngle ();
+         }
+      }
 
 	}
 }

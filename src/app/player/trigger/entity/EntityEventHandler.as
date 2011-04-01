@@ -52,8 +52,10 @@ package player.trigger.entity
       {
          super.Create (createStageId, entityDefine);
          
+      trace (">>>>>>>>>>> createStageId = " + createStageId);
          if (createStageId == 0)
          {
+      trace ("111");
             if (entityDefine.mEventId != undefined)
             {
                mEventId = int (entityDefine.mEventId);
@@ -61,6 +63,7 @@ package player.trigger.entity
             
             if (entityDefine.mFunctionDefine != undefined)
             {
+      trace ("222");
                var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
@@ -71,7 +74,7 @@ package player.trigger.entity
             // external condition
             if (entityDefine.mInputConditionEntityCreationId != undefined && entityDefine.mInputConditionTargetValue != undefined)
             {
-               var conditionEntity:EntityCondition = mWorld.GetEntityByCreationId (entityDefine.mInputConditionEntityCreationId) as EntityCondition;
+                var conditionEntity:EntityCondition = mWorld.GetEntityByCreationId (entityDefine.mInputConditionEntityCreationId) as EntityCondition;
                if (conditionEntity != null)
                {
                   mExternalCondition =  new ConditionAndTargetValue (conditionEntity, entityDefine.mInputConditionTargetValue);
@@ -80,7 +83,7 @@ package player.trigger.entity
             
             if (entityDefine.mExternalActionEntityCreationId != undefined)
             {
-               mExternalAction = mWorld.GetEntityByCreationId (entityDefine.mExternalActionEntityCreationId) as EntityAction;
+                mExternalAction = mWorld.GetEntityByCreationId (entityDefine.mExternalActionEntityCreationId) as EntityAction;
             }
          }
          else if (createStageId == 1) // somthing to do after all EntityAssigners are created with stageId=0

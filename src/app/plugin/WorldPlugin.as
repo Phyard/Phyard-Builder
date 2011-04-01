@@ -17,7 +17,7 @@ package plugin
             case "GetStaticProperties":
                return {
                   mWorldVersion : Version.VersionNumber,
-                  WorldFormat_HexString2ByteArray : DataFormat2.HexString2ByteArray, // from v1.00
+                  //WorldFormat_HexString2ByteArray : DataFormat2.HexString2ByteArray, // from v1.00 to v1.55 (excluding 1.55)
                   WorldFormat_ByteArray2WorldDefine : DataFormat2.ByteArray2WorldDefine, // from v1.00
                   WorldFormat_WorldDefine2Xml : DataFormat2.WorldDefine2Xml,  // from v1.02
                   WorldFormat_WorldDefine2PlayerWorld : DataFormat2.WorldDefine2PlayerWorld, // from v1.00

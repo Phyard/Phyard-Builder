@@ -65,17 +65,21 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
          
          if (anotherShape != null && anotherShape.mSpecialId != sLastSpecialId)
          {
-            anotherShape.mSpecialId != sLastSpecialId;
+            anotherShape.mSpecialId = sLastSpecialId;
             
             if (anotherShape.mBody.IsStatic ())
             {
                if (bTeleprotConnectedStatics)
+               {
                   shapesToTeleport.push (anotherShape)
+               }
             }
             else
             {
                if (bTeleportConnectedMovables)
+               {
                   shapesToTeleport.push (anotherShape);
+               }
             }
          }
       }
@@ -239,7 +243,17 @@ public function AttachWith (anotherShape:EntityShape):void
    
    var keptBody:EntityBody;
    var discardedBody:EntityBody;
-   if (mBody.mNumPhysicsShapes == anotherBody.mNumPhysicsShapes)
+   if (mBody.mNumPhysicsShapes > anotherBody.mNumPhysicsShapes)
+   {
+      keptBody = mBody;
+      discardedBody = anotherBody;
+   }
+   else if (mBody.mNumPhysicsShapes < anotherBody.mNumPhysicsShapes)
+   {
+      keptBody = anotherBody;
+      discardedBody = mBody;
+   }
+   else // if (mBody.mNumPhysicsShapes == anotherBody.mNumPhysicsShapes)
    {
       if (mBody.mNumShapes >= anotherBody.mNumShapes)
       {
@@ -251,16 +265,6 @@ public function AttachWith (anotherShape:EntityShape):void
          keptBody = anotherBody;
          discardedBody = mBody;
       }
-   }
-   else if (mBody.mNumPhysicsShapes > anotherBody.mNumPhysicsShapes)
-   {
-      keptBody = mBody;
-      discardedBody = anotherBody;
-   }
-   else
-   {
-      keptBody = anotherBody;
-      discardedBody = mBody;
    }
    
 // ...
@@ -418,7 +422,7 @@ public function BreakAllJointsOfIsland ():void
 //================================================================
 
 // AddMomentumByLinearVelocity
-public function  AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity:Boolean = false, onBodyCenter:Boolean = false):void
+public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity:Boolean = false, onBodyCenter:Boolean = false):void
 {
    var worldX:Number;
    var worldY:Number;

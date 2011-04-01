@@ -163,6 +163,7 @@ package editor {
    import common.WorldDefine;
    import common.DataFormat;
    import common.DataFormat2;
+   import common.DataFormat3;
    import common.Define;
    import common.Config;
    import common.Version;
@@ -1576,10 +1577,7 @@ package editor {
          //theContextMenu.customItems.push (mMenuItemQuickLoad);
          //mMenuItemQuickLoad.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          
-         var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-         var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
-         
-         mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16)); //, true);
+         mMenuItemAbout = new ContextMenuItem("About Phyard Builder v" + DataFormat3.GetVersionString (Version.VersionNumber)); //, true);
          theContextMenu.customItems.push (mMenuItemAbout);
          mMenuItemAbout.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
       }
@@ -2494,25 +2492,46 @@ package editor {
          
          try
          {
-            var values:Object = new Object ();
-            
-            values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
-            values.mHexString = DataFormat.WorldDefine2HexString (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
-            
+            // ...
             var width:int = mEditorWorld.GetViewportWidth ();
             var height:int = mEditorWorld.GetViewportHeight ();
-            if ((mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
-               height += 20;
+            var showPlayBar:Boolean = (mEditorWorld.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
+            var heightWithPlayBar:int = (showPlayBar ? height + Define.PlayerPlayBarThickness : height);
             
-            var majorVersion:int = (Version.VersionNumber & 0xFF00) >> 8;
-            var minorVersion:Number = (Version.VersionNumber & 0xFF) >> 0;
+            var fileFormatVersionString:String = DataFormat3.GetVersionHexString (Version.VersionNumber);
             
-            values.mEmbedCode = "<embed src=\"http://www.phyard.com/uniplayer.swf?app=ci&format=0x" 
-                              + (majorVersion < 16 ? "0" : "") + majorVersion.toString (16) + (minorVersion < 16 ? "0" : "") + minorVersion.toString (16) 
-                              + "\"\n width=\"" + width + "\" height=\"" + height + "\"\n"
-                              + "  FlashVars=\"playcode=" + values.mHexString
+            var values:Object = new Object ();
+            
+            //========== source code ========== 
+         
+            values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+            
+            //=========== play code ========== 
+         
+            // before v1.55, depreciated now
+            //var playcode:String = DataFormat.WorldDefine2HexString (DataFormat.EditorWorld2WorldDefine (mEditorWorld)); 
+            //values.mHexString = playcode;
+            
+            // new one, from v1.55
+            var playcodeBase64:String = DataFormat.WorldDefine2PlayCode_Base64 (DataFormat.EditorWorld2WorldDefine (mEditorWorld));
+            
+            values.mHexString = DataFormat3.CreateForumEmbedCode (fileFormatVersionString, width, height, showPlayBar, playcodeBase64);
+            
+            //======== html embed code ======== 
+         
+            // before v1.55, depreciated now
+            //values.mEmbedCode = "<embed src=\"http://www.phyard.com/uniplayer.swf?app=ci&format=0x" + fileFormatVersionString
+            //                  + "\"\n width=\"" + width + "\" height=\"" + heightWithPlayBar + "\"\n"
+            //                  + "  FlashVars=\"playcode=" + playcode
+            //                  + "\"\n quality=\"high\" allowScriptAccess=\"sameDomain\"\n type=\"application/x-shockwave-flash\"\n pluginspage=\"http://www.macromedia.com/go/getflashplayer\">\n</embed>"
+            //                  ;
+            
+            // new one: add compressformat in FlashVars; change app=ci to app=coin and change format to fileversion in url.
+            values.mEmbedCode = "<embed src=\"http://www.phyard.com/uniplayer.swf?app=coin&fileversion=0x" + fileFormatVersionString
+                              + "\"\n width=\"" + width + "\" height=\"" + heightWithPlayBar + "\"\n"
+                              + "  FlashVars=\"compressformat=" + DataFormat3.CompressFormat_Base64 + "&playcode=" + playcodeBase64
                               + "\"\n quality=\"high\" allowScriptAccess=\"sameDomain\"\n type=\"application/x-shockwave-flash\"\n pluginspage=\"http://www.macromedia.com/go/getflashplayer\">\n</embed>"
-                                ;
+                              ;
             
             ShowWorldSavingDialog (values);
          }

@@ -9,7 +9,7 @@
    <mx:VBox width="100%">
       <mx:Text id="Text_TutorialLink" width="100%" selectable="true" link="OnClickTutorialLink(event)">
          <mx:htmlText>
-            <![CDATA[<li>Please backup the <b>source code</b> for later modifications if your design is not saved online.</li><li><b>Play Code</b> is used to post on <i>Color Infection Forum</i> quickly.</li><li><b>Embed Html Code</b> is used to post on your website.</li>]]></mx:htmlText>
+            <![CDATA[<li>Please backup the <b>source code</b> for later modifications if your design is not saved online.</li><li><b>Play Code</b> is used to post in forum comments quickly.</li><li><b>Embed Html Code</b> is used to post on your website.</li>]]></mx:htmlText>
       </mx:Text >
    </mx:VBox>
    
@@ -20,32 +20,33 @@
    <mx:HBox width="100%">
       <mx:Label id="Label_SourceCode" text="Source Code:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
+      <mx:Button label="Copy Source Code" click="OnClickCopySourceCode ();"/>
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:TextArea id="TextArea_SourceCode" width="100%" height="266" editable="true" wordWrap="false">
+      <mx:TextArea id="TextArea_SourceCode" width="100%" height="218" editable="true" wordWrap="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Button label="Copy Source Code" click="OnClickCopySourceCode ();"/>
+      <mx:Label text="Other Codes:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
-      <mx:Button id="Button_CopyPlayCode" label="Copy Play Code" click="OnClickCopyPlayCode ();"/>
+      <mx:Button id="Button_CopyPlayCode" label="Copy Forum Embed Play Code" click="OnClickCopyPlayCode ();"/>
       <mx:Spacer width="100%"/>
-      <mx:Button id="Button_EmbedCode" label="Copy Embed Html Code" click="OnClickCopyEmbedCode ();"/>
+      <mx:Button id="Button_EmbedCode" label="Copy Html Embed Code" click="OnClickCopyEmbedCode ();"/>
    </mx:HBox>
 
    <!--
    <mx:HBox width="100%">
       <mx:Label id="Label_EmbedCode" text="Html Embed Code:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
-      <mx:Button label="Copy Embed Code" click="OnClickCopyEmbedCode ();"/>
+      <mx:Button id="Button_EmbedCode" label="Copy Html Embed Code" click="OnClickCopyEmbedCode ();"/>
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
-      <mx:TextArea id="TextArea_EmbedCode" width="100%" height="60" editable="false">
+      <mx:TextArea id="TextArea_EmbedCode" width="100%" height="118" editable="true" wordWrap="false">
          <mx:text>
          </mx:text>
       </mx:TextArea>
@@ -83,7 +84,7 @@
             mInputValues = values;
             
             TextArea_SourceCode.text = values.mXmlString;
-            Button_CopyPlayCode.label = Button_CopyPlayCode.label + " (" + values.mHexString.length +" bytes)";
+            //TextArea_EmbedCode.text = values.mEmbedCode;
          }
          
          public function SetCloseFunc (onClose:Function):void
@@ -102,7 +103,7 @@
          private function OnClickCopySourceCode ():void
          {
             var pattern:RegExp = />\r([\s]*)</g;
-            var newStr:String = ">\r\n$1<";
+            var newStr:String = ">\n$1<";
             
             System.setClipboard(TextArea_SourceCode.text.replace(pattern, newStr));
          }

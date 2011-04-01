@@ -192,7 +192,7 @@ public static function b2FindIncidentEdge(c:b2ClipVertexSegment, //b2ClipVertex 
 
 	// Get the normal of the reference edge in poly2's frame.
 	//b2Vec2 normal1 = b2MulT(xf2.R, b2Mul(xf1.R, normals1[edge1]));
-	b2Math.b2Mul_Matrix22AndVector2_Output (xf1.R, normals1[edge1], tempV)
+	b2Math.b2Mul_Matrix22AndVector2_Output (xf1.R, normals1[edge1], tempV);
 	b2Math.b2MulT_Matrix22AndVector2_Output (xf2.R, tempV, normal1);
 
 	// Find the incident edge on poly2.

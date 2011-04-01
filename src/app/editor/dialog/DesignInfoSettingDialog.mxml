@@ -15,6 +15,11 @@
             <mx:CheckBox id="CheckBox_PermitPublishing" label="Allow Publishing on Other Websites"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
+         <mx:HBox width="100%" textAlign="center" paddingTop="10" color="0xFF0000">
+            <mx:Spacer width="100%"/>
+            <mx:Label text="(The following 2 fields are only useful when this design is not hosted on phayrd.com)"/>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
          <mx:HBox width="100%" textAlign="left">
             <mx:Label text="Your Name:" textAlign="left" width="100"/>
             <mx:TextInput id="Text_AuthorName" width="200" />

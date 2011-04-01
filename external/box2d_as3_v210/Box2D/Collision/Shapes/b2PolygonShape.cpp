@@ -331,7 +331,7 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 	var denominator:Number;
 
 	// removed from r141
-	//>>hacking (temp)
+	//>>hacking (temp, for box2d r141 has no collision checker for edge vs. edge)
 	if (m_vertexCount == 2)
 	{
 		var v1:b2Vec2 = m_vertices[0];

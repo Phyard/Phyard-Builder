@@ -19,6 +19,7 @@ package player.entity {
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.ValueTypeDefine;
    
+   import common.trigger.define.FunctionDefine;
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionCallingDefine;
    import common.trigger.define.ValueSourceDefine_Direct;
@@ -70,8 +71,11 @@ package player.entity {
                var eventHandlerDefine:Object = new Object ();
                entityDefine.mEventHandlerDefine = eventHandlerDefine;
                
+               var functionDefine:FunctionDefine = new FunctionDefine ();
+               eventHandlerDefine.mFunctionDefine = functionDefine;
+               
                var codeSnippetDefine:CodeSnippetDefine = new CodeSnippetDefine ();
-               eventHandlerDefine.mCodeSnippetDefine = codeSnippetDefine;
+               functionDefine.mCodeSnippetDefine = codeSnippetDefine;
                
                codeSnippetDefine.mName = "";
                codeSnippetDefine.mNumCallings = 1;

@@ -2938,7 +2938,7 @@ package common {
          var n1:int = (byteValue & 0xF0) >> 4;
          var n2:int = (byteValue & 0x0F);
          
-         return DataFormat2.Value2Char (n1) + DataFormat2.Value2Char (n2);
+         return DataFormat3.Value2Char (n1) + DataFormat3.Value2Char (n2);
       }
       
       public static function En (str:String):String
@@ -2959,7 +2959,7 @@ package common {
                ++ index;
             }
             
-            enStr = enStr + DataFormat2.Value2Char (DataFormat2.Char2Value (code), num);
+            enStr = enStr + DataFormat3.Value2Char (DataFormat3.Char2Value (code), num);
          }
          
          return enStr;
@@ -2967,92 +2967,11 @@ package common {
 
 //==================================== new playcode with base64 ======================================================
 
-      public static function WorldDefine2HexString_Base64 (worldDefine:WorldDefine):String
+      public static function WorldDefine2PlayCode_Base64 (worldDefine:WorldDefine):String
       {
-         return ByteArray2HexString_Base64 (WorldDefine2ByteArray (worldDefine), false);
-      }
-      
-      public static function ByteArray2HexString_Base64 (byteArray:ByteArray, compressOnNewByteArray:Boolean = true):String
-      {
-         if (byteArray == null)
-            return null;
-         
-         if (compressOnNewByteArray) {
-            var newByteArray:ByteArray = new ByteArray ();
-            newByteArray.length = byteArray.length;
-            newByteArray.writeBytes (byteArray, 0, byteArray.length);
-            newByteArray.position = 0;
-            byteArray = newByteArray;
-         }
-         
+         var byteArray:ByteArray = WorldDefine2ByteArray (worldDefine);
          byteArray.compress ();
-         return EncodeByteArray2String (byteArray);
-      }
-
-//==================================== base64 ======================================================
-      
-      public static function EncodeByteArray2String(data:ByteArray):String
-      {
-         if (data == null) 
-         {
-            return null;
-         }
-         
-         var num_triples:int = data.length / 3;
-         var num_extras:int = data.length - num_triples * 3;
-         
-         var num_chars:int = (num_extras > 0 ? num_triples + 1 : num_triples) * 4;
-         var char_indexes:ByteArray = new ByteArray ();
-         char_indexes.length = num_chars;
-         
-         var b0:int, b1:int, b2:int;
-         
-         data.position = 0;
-         char_indexes.length = 0;
-         
-         for (var i_triple:int = 0; i_triple < num_triples; ++ i_triple)
-         {
-            b0 = data.readByte () & 0xFF; // "& 0xFF" is essential for negative values
-            b1 = data.readByte () & 0xFF;
-            b2 = data.readByte () & 0xFF;
-            
-            char_indexes.writeByte ((b0 & 0xFC) >> 2);
-            char_indexes.writeByte (((b0 & 0x03) << 4) | (b1 >> 4));
-            char_indexes.writeByte (((b1 & 0x0F) << 2) | (b2 >> 6));
-            char_indexes.writeByte (b2 & 0x3F);
-         }
-         
-         if (num_extras > 0)
-         {
-            b0 = data.readByte () & 0xFF; // "& 0xFF" is essential for negative values
-            
-            if (num_extras == 2)
-            {
-               b1 = data.readByte () & 0xFF; // "& 0xFF" is essential for negative values
-               
-               char_indexes.writeByte ((b0 & 0xFC) >> 2);
-               char_indexes.writeByte (((b0 & 0x03) << 4) | (b1 >> 4));
-               char_indexes.writeByte ((b1 & 0x0F) << 2);
-               char_indexes.writeByte (64); // "="
-            }
-            else // num_extras == 1
-            {
-               char_indexes.writeByte ((b0 & 0xFC) >> 2);
-               char_indexes.writeByte ((b0 & 0x03) << 4);
-               char_indexes.writeByte (64); // "="
-               char_indexes.writeByte (64); // "="
-            }
-         }
-         
-         var char_index:int;
-         
-         for (var i_char:int = 0; i_char < num_chars; ++ i_char) {
-            char_index = char_indexes [i_char];
-            char_indexes [i_char] = DataFormat2.Base64Chars.charCodeAt(char_index);
-         }
-         
-         char_indexes.position = 0;
-         return char_indexes.readUTFBytes (num_chars);
+         return DataFormat3.EncodeByteArray2String (byteArray);
       }
 
    }

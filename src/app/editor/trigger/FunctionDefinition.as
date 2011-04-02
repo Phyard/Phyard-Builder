@@ -19,7 +19,7 @@ package editor.trigger {
       
       public var mPure:Boolean = false;
       
-      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, isPure:Boolean = false)
+      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, isPure:Boolean = false, copyFromDefinition:FunctionDefinition = null)
       {
          mTriggerEngine = triggerEngine;
          
@@ -27,25 +27,36 @@ package editor.trigger {
          
          mPure = isPure;
          
-         mInputVariableSpace = new VariableSpaceInput (mTriggerEngine);
-         
-         if (mFunctionDeclaration != null)
+         if (copyFromDefinition == null)
          {
-            var num_inputs:int = mFunctionDeclaration.GetNumInputs ();
-            for (var i:int = 0; i < num_inputs; ++ i)
-               mInputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetInputParamDefinitionAt (i));
+            mInputVariableSpace = new VariableSpaceInput (mTriggerEngine);
+            
+            if (mFunctionDeclaration != null)
+            {
+               var num_inputs:int = mFunctionDeclaration.GetNumInputs ();
+               for (var i:int = 0; i < num_inputs; ++ i)
+                  mInputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetInputParamDefinitionAt (i));
+            }
+            
+            mOutputVariableSpace = new VariableSpaceOutput (mTriggerEngine);
+            
+            if (mFunctionDeclaration != null)
+            {
+               var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
+               for (var j:int = 0; j < num_returns; ++ j)
+                  mOutputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOutputParamDefinitionAt (j));
+            }
+            
+            mLocalVariableSpace = new VariableSpaceLocal (mTriggerEngine);
          }
-         
-         mOutputVariableSpace = new VariableSpaceOutput (mTriggerEngine);
-         
-         if (mFunctionDeclaration != null)
+         else
          {
-            var num_returns:int = mFunctionDeclaration.GetNumOutputs ();
-            for (var j:int = 0; j < num_returns; ++ j)
-               mOutputVariableSpace.CreateVariableInstanceFromDefinition (mFunctionDeclaration.GetOutputParamDefinitionAt (j));
+            // the copyFromDefinition must have the same proto type as the new FunctionDefinition.
+            
+            mInputVariableSpace = copyFromDefinition.GetInputVariableSpace ();
+            mOutputVariableSpace = copyFromDefinition.GetOutputVariableSpace ();
+            mLocalVariableSpace = copyFromDefinition.GetLocalVariableSpace ();
          }
-         
-         mLocalVariableSpace = new VariableSpaceLocal (mTriggerEngine);
       }
       
       public function IsPure ():Boolean

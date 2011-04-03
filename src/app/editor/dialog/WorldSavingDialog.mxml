@@ -30,6 +30,8 @@
       </mx:TextArea>
    </mx:HBox>
 
+   <mx:Spacer height="10"/>
+   
    <mx:HBox width="100%">
       <mx:Label text="Other Codes:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>

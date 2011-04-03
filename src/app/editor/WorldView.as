@@ -1611,7 +1611,7 @@ package editor {
          NotifyEntityLinksModified ();
          
          DestroyEditorWorld ();
-         CleatAccumulatedModificationsByArrowKeys ();
+         ClearAccumulatedModificationsByArrowKeys ();
          
          mEditorWorld = newEditorWorld;
          mEditorWorld.GetCollisionManager ().SetChanged (false);
@@ -4026,13 +4026,14 @@ package editor {
          }
       }
       
-      protected function CleatAccumulatedModificationsByArrowKeys ():void
+      protected function ClearAccumulatedModificationsByArrowKeys ():void
       {
          mAccumulatedCausedByArrowKeys_MovementX = 0;
          mAccumulatedCausedByArrowKeys_MovementY = 0;
          mAccumulatedCausedByArrowKeys_Rotation = 0;
       }
       
+      // at any time, most one delayed undo point exists.
       protected function TryCreateDelayedUndoPoint ():void
       {
          TryCreateUndoPointCausedByArrowKeys_Movement ();
@@ -5598,6 +5599,8 @@ package editor {
       {
          if (mEditorWorld == null)
             return;
+         
+         TryCreateDelayedUndoPoint ();
          
          var worldState:WorldState = mWorldHistoryManager.UndoHistory ();
          

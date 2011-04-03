@@ -70,16 +70,23 @@ package editor.trigger {
       //   return new ValueSource_Property (mEntityValueSource.CloneSource (), mPropertyValueSource.CloneSource () as ValueSource_Variable);
       //}
       
-      public function CloneSource (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
+      public function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
-         var newEntityValueSource:ValueSource;
-         var newPropertyValueSource:ValueSource_Variable;
-         
-         newEntityValueSource = mEntityValueSource.CloneSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex);
-         
-         newPropertyValueSource = mPropertyValueSource.CloneSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueSource_Variable;
-         
-         return new ValueSource_Property (newEntityValueSource, newPropertyValueSource);
+         if (targetFunctionDefinition.IsPure ())
+         {
+            return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
+         }
+         else
+         {
+            var newEntityValueSource:ValueSource;
+            var newPropertyValueSource:ValueSource_Variable;
+            
+            newEntityValueSource = mEntityValueSource.CloneSource (triggerEngine, targetFunctionDefinition, callingFunctionDeclaration, paramIndex);
+            
+            newPropertyValueSource = mPropertyValueSource.CloneSource (triggerEngine, targetFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueSource_Variable;
+            
+            return new ValueSource_Property (newEntityValueSource, newPropertyValueSource);
+         }
       }
       
       public function ValidateSource ():void

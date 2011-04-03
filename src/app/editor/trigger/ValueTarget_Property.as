@@ -65,16 +65,23 @@ package editor.trigger {
       //   return new ValueTarget_Property (mEntityValueSource.CloneSource (), mPropertyValueTarget.CloneTarget () as ValueTarget_Variable);
       //}
       
-      public function CloneTarget (triggerEngine:TriggerEngine, ownerFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
+      public function CloneTarget (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
-         var newEntityValueSource:ValueSource;
-         var newPropertyValueTarget:ValueTarget_Variable;
-         
-         newEntityValueSource = mEntityValueSource.CloneSource (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex);
-         
-         newPropertyValueTarget = mPropertyValueTarget.CloneTarget (triggerEngine, ownerFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueTarget_Variable;
-         
-         return new ValueTarget_Property (newEntityValueSource, newPropertyValueTarget);
+         if (targetFunctionDefinition.IsPure ())
+         {
+            return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueTarget ();
+         }
+         else
+         {
+            var newEntityValueSource:ValueSource;
+            var newPropertyValueTarget:ValueTarget_Variable;
+            
+            newEntityValueSource = mEntityValueSource.CloneSource (triggerEngine, targetFunctionDefinition, callingFunctionDeclaration, paramIndex);
+            
+            newPropertyValueTarget = mPropertyValueTarget.CloneTarget (triggerEngine, targetFunctionDefinition, callingFunctionDeclaration, paramIndex) as ValueTarget_Variable;
+            
+            return new ValueTarget_Property (newEntityValueSource, newPropertyValueTarget);
+         }
       }
       
       public function ValidateTarget ():void

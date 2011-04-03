@@ -207,6 +207,11 @@
             if (List_Commands.selectedIndex >= 0)
             {
                PasteCallingsAt (List_Commands.selectedIndex);
+               
+               // possible new variables are added
+               OnLocalVariablesEditingDialogClosed ();
+               OnInputVariablesEditingDialogClosed ();
+               OnOutputVariablesEditingDialogClosed ();
             }
          }
          
@@ -216,6 +221,11 @@
                return;
             
             PasteCallingsAt (List_Commands.selectedIndex + 1);
+            
+            // possible new variables are added
+            OnLocalVariablesEditingDialogClosed ();
+            OnInputVariablesEditingDialogClosed ();
+            OnOutputVariablesEditingDialogClosed ();
          }
          
          private function PasteCallingsAt (insertAt:int):void

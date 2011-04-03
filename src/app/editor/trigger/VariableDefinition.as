@@ -89,6 +89,27 @@ package editor.trigger {
          }
       }
       
+      public static function CreateVariableDefinition (valueType:int, variableName:String):VariableDefinition
+      {
+         switch (valueType)
+         {
+            case ValueTypeDefine.ValueType_Boolean:
+               return new VariableDefinitionBoolean (variableName);
+            case ValueTypeDefine.ValueType_String:
+               return new VariableDefinitionString (variableName);
+            case ValueTypeDefine.ValueType_Number:
+               return new VariableDefinitionNumber (variableName);
+            case ValueTypeDefine.ValueType_Entity:
+               return new VariableDefinitionEntity (variableName);
+            case ValueTypeDefine.ValueType_CollisionCategory:
+               return new VariableDefinitionCollisionCategory (variableName);
+            case ValueTypeDefine.ValueType_Array:
+               return new VariableDefinitionArray (variableName);
+            default:
+               throw new Error ("unknown type in CreateVariableDefinition");
+         }
+      }
+      
       public static function ValidateValueObject_Entity (valueObject:Object):Object
       {
          var world:World = Runtime.GetCurrentWorld ();

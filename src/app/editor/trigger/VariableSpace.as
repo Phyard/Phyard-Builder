@@ -62,6 +62,27 @@ package editor.trigger {
          return mVariableInstances [variableId];
       }
       
+      public function GetVariableInstanceByTypeAndName (valueType:int, variableName:String, createIfNotExist:Boolean = false):VariableInstance
+      {
+         for (var variableId:int = mVariableInstances.length - 1; variableId >= 0; -- variableId)
+         {
+            var variable_instance:VariableInstance = mVariableInstances [variableId];
+            if (variable_instance.GetValueType () == valueType && variable_instance.GetName () == variableName)
+               return variable_instance;
+         }
+         
+         if (createIfNotExist)
+         {
+            var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);
+            var newVi:VariableInstance = CreateVariableInstanceFromDefinition (variableDefinition);
+            newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
+            
+            return newVi;
+         }
+         
+         return mNullVariableInstance;
+      }
+      
       public function CreateVariableInstanceFromDefinition (variableDefinition:VariableDefinition):VariableInstance
       {
          var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, variableDefinition);

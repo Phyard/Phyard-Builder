@@ -135,7 +135,8 @@
             import editor.trigger.VariableDefinitionEntity;
             import editor.trigger.VariableDefinitionCollisionCategory;
             import editor.trigger.VariableDefinitionArray;
-               
+            
+            import common.trigger.ValueTypeDefine;
             
             [Bindable]
             private var mVariableListDataProvider:Object = [];
@@ -145,14 +146,16 @@
             }
             
             private var mVariableSpace:VariableSpace = null;
-            private var mLastVariableSpace:VariableSpace = null;
+            //private var mLastVariableSpace:VariableSpace = null;
+            private var mLastVariableSpaceModifiedTimes:int = -1;
             
             public function SetVariableSpace (variableSpace:VariableSpace):void
             {
-               if (mVariableSpace != variableSpace)
+               if (mVariableSpace != variableSpace || mLastVariableSpaceModifiedTimes < mVariableSpace.GetNumModifiedTimes ())
                {
                   mVariableSpace = variableSpace;
                   NotifyVariableSpaceModified ();
+                  mLastVariableSpaceModifiedTimes = mVariableSpace.GetNumModifiedTimes ();
                }
             }
             
@@ -186,7 +189,7 @@
                      }
                   }
                   
-                  mLastVariableSpace = mVariableSpace;
+                  //mLastVariableSpace = mVariableSpace;
                }
                
                OnChangeVariable ();
@@ -234,27 +237,27 @@
                
                if (event.item.@data == "Boolean")
                {
-                  variableDefinition = new VariableDefinitionBoolean ("aBoolean");
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Boolean, "aBoolean")
                }
                else if (event.item.@data == "Number")
                {
-                  variableDefinition = new VariableDefinitionNumber ("aNumber");
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Number, "aNumber");
                }
                else if (event.item.@data == "String")
                {
-                  variableDefinition = new VariableDefinitionString ("aString");
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_String, "aString");
                }
                else if (event.item.@data == "CCat")
                {
-                  variableDefinition = new VariableDefinitionCollisionCategory ("aCCat");
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_CollisionCategory, "aCCat");
                }
                else if (event.item.@data == "Entity")
                {
-                  variableDefinition = new VariableDefinitionEntity ("anEntity");
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Entity, "anEntity");
                }
                else if (event.item.@data == "Array")
                {
-                  variableDefinition = new VariableDefinitionArray ("anArray");
+                  variableDefinition = VariableDefinition.CreateVariableDefinition (ValueTypeDefine.ValueType_Array, "anArray");
                }
                
                if (variableDefinition != null)

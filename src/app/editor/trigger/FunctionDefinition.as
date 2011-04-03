@@ -19,7 +19,7 @@ package editor.trigger {
       
       public var mPure:Boolean = false;
       
-      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, isPure:Boolean = false, copyFromDefinition:FunctionDefinition = null)
+      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, isPure:Boolean = false, toDiscardedDefinition:FunctionDefinition = null)
       {
          mTriggerEngine = triggerEngine;
          
@@ -27,7 +27,7 @@ package editor.trigger {
          
          mPure = isPure;
          
-         if (copyFromDefinition == null)
+         if (toDiscardedDefinition == null)
          {
             mInputVariableSpace = new VariableSpaceInput (mTriggerEngine);
             
@@ -51,11 +51,11 @@ package editor.trigger {
          }
          else
          {
-            // the copyFromDefinition must have the same proto type as the new FunctionDefinition.
+            // the toDiscardedDefinition must have the same proto type as the new FunctionDefinition.
             
-            mInputVariableSpace = copyFromDefinition.GetInputVariableSpace ();
-            mOutputVariableSpace = copyFromDefinition.GetOutputVariableSpace ();
-            mLocalVariableSpace = copyFromDefinition.GetLocalVariableSpace ();
+            mInputVariableSpace = toDiscardedDefinition.GetInputVariableSpace ();
+            mOutputVariableSpace = toDiscardedDefinition.GetOutputVariableSpace ();
+            mLocalVariableSpace = toDiscardedDefinition.GetLocalVariableSpace ();
          }
       }
       
@@ -311,8 +311,8 @@ package editor.trigger {
          {
             vi = mLocalVariableSpace.GetVariableInstanceAt (j);
             
-            newFuncDefinition.mLocalVariableSpace.CreateVariableInstanceFromDefinition (vi.GetVariableDefinition ().Clone ());
-            newVi = newFuncDefinition.mLocalVariableSpace.GetVariableInstanceAt (j);
+            newFuncDefinition.GetLocalVariableSpace ().CreateVariableInstanceFromDefinition (vi.GetVariableDefinition ().Clone ());
+            newVi = newFuncDefinition.GetLocalVariableSpace ().GetVariableInstanceAt (j);
             newVi.SetValueObject (vi.GetValueObject ());
          }
          

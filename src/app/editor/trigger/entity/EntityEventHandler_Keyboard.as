@@ -37,7 +37,7 @@ package editor.trigger.entity {
          {
             mEventId = eventId;
             
-            mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId)), false, mEventHandlerDefinition;
+            mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
             
             mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
             

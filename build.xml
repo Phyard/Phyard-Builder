@@ -235,7 +235,7 @@
       <delete file="${dir.release}/univiewer.swf" quiet="true" />
       
       <exec dir="${dir.release.univiewer}" executable="${dir.secureswf}/ssCLI">
-         <arg line="${dir.release.univiewer/univiewer_unsecure.swf"/> <!-- here must inlcude the path on linux -->
+         <arg line="${dir.release.univiewer}/univiewer_unsecure.swf"/> <!-- here must inlcude the path on linux -->
          <arg line="${dir.release.univiewer}"/>
          <arg line="-wrap:0"/>
          <arg line="-controlflow:0"/>

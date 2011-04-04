@@ -147,6 +147,8 @@ package player.world {
          mViewportHeight = worldDefine.mSettings.mViewportHeight;
          mZoomScale = worldDefine.mSettings.mZoomScale;
          
+         mCameraRotatingEnabled = worldDefine.mSettings.mCameraRotatingEnabled;
+         
          // ...
          
          SetBackgroundColor (worldDefine.mSettings.mBackgroundColor);
@@ -198,7 +200,7 @@ package player.world {
          
          mFunc_StepUpdate = Update_FixedStepInterval_SpeedX;
          
-      // 
+      // ...
          
          ParticleManager_Initialize ();
          
@@ -211,11 +213,13 @@ package player.world {
          mDefaultGravityAccelerationMagnitude = mCoordinateSystem.D2P_LinearAccelerationMagnitude (worldDefine.mSettings.mDefaultGravityAccelerationMagnitude);
          mDefaultGravityAccelerationAngle = mCoordinateSystem.D2P_RotationRadians (worldDefine.mSettings.mDefaultGravityAccelerationAngle * Define.kDegrees2Radians);
          
+         mAutoSleepingEnabled = worldDefine.mSettings.mAutoSleepingEnabled;
+         
          CreatePhysicsEngine ();
          
          CreateCollisionCategories (worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
          
-      // ...
+      // ...   
          
          CreateGraphicsLayers ();
          
@@ -447,8 +451,7 @@ package player.world {
       // init camera
       //------------------------------------
          
-         SetZoomScale (mZoomScale);
-         MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY, mCameraAngle);
+         InitCamera ();
          
       //------------------------------------
       // init physics
@@ -992,6 +995,7 @@ package player.world {
       // the 2 are both physics values
       private var mDefaultGravityAccelerationMagnitude:Number;
       private var mDefaultGravityAccelerationAngle:Number;
+      private var mAutoSleepingEnabled:Boolean;
       
       private var mCurrentGravityAccelerationX:Number;
       private var mCurrentGravityAccelerationY:Number;
@@ -1081,7 +1085,7 @@ package player.world {
          ClearGlobalForces ();
          SetCurrentGravityAcceleration (mDefaultGravityAccelerationMagnitude * Math.cos (mDefaultGravityAccelerationAngle), mDefaultGravityAccelerationMagnitude * Math.sin (mDefaultGravityAccelerationAngle));
          
-         mPhysicsEngine = new PhysicsEngine (mCoordinateSystem.GetScale ());
+         mPhysicsEngine = new PhysicsEngine (mCoordinateSystem.GetScale (), mAutoSleepingEnabled);
          
          mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
          mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished);

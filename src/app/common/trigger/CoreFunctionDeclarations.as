@@ -1303,13 +1303,13 @@ package common.trigger {
                      ], 
                      null
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,       
-         //            [
-         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-         //               [ValueTypeDefine.ValueType_Boolean,       true], 
-         //            ], 
-         //            null
-         //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Boolean,       true], 
+                     ], 
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn,       
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 

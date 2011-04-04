@@ -2323,7 +2323,7 @@ package editor {
                   values.mMaximalGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetMaximalGravityAcceleration ()), 6);
                   
                   values.mInitialGravityAcceleration = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude ((shape as EntityShapeGravityController).GetInitialGravityAcceleration ()), 6);
-                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision ( mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees ((shape as EntityShapeGravityController).GetInitialGravityAngle ()), 6);
+                  values.mInitialGravityAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees ((shape as EntityShapeGravityController).GetInitialGravityAngle ()), 6);
                   
                   ShowShapeGravityControllerSettingDialog (values, ConfirmSettingEntityProperties);
                }
@@ -5033,20 +5033,22 @@ package editor {
          CreateUndoPoint ("World rules are changed");
       }
       
-      public function GetCurrentWorldGravityInfo ():Object
+      public function GetCurrentWorldPhysicsyInfo ():Object
       {
          var info:Object = new Object ();
          
          info.mDefaultGravityAccelerationMagnitude = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_LinearAccelerationMagnitude (mEditorWorld.GetDefaultGravityAccelerationMagnitude ()), 6);
          info.mDefaultGravityAccelerationAngle = ValueAdjuster.Number2Precision (mEditorWorld.GetCoordinateSystem ().D2P_RotationDegrees (mEditorWorld.GetDefaultGravityAccelerationAngle ()), 6);
+         info.mAutoSleepingEnabled = mEditorWorld.IsAutoSleepingEnabled ();
          
          return info;
       }
       
-      public function SetCurrentWorldGravityInfo (info:Object):void
+      public function SetCurrentWorldPhysicsInfo (info:Object):void
       {
          mEditorWorld.SetDefaultGravityAccelerationMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (info.mDefaultGravityAccelerationMagnitude));
          mEditorWorld.SetDefaultGravityAccelerationAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (info.mDefaultGravityAccelerationAngle));
+         mEditorWorld.SetAutoSleepingEnabled (info.mAutoSleepingEnabled);
          
          CreateUndoPoint ("Default gravity is changed");
       }
@@ -5108,6 +5110,8 @@ package editor {
          info.mViewportWidth = mEditorWorld.GetViewportWidth ();
          info.mViewportHeight = mEditorWorld.GetViewportHeight ();
          
+         info.mCameraRotatingEnabled = mEditorWorld.IsCameraRotatingEnabled ();
+         
          return info;
       }
       
@@ -5118,6 +5122,8 @@ package editor {
          
          mEditorWorld.SetViewportWidth (info.mViewportWidth);
          mEditorWorld.SetViewportHeight (info.mViewportHeight);
+         
+         mEditorWorld.SetCameraRotatingEnabled (info.mCameraRotatingEnabled);
          
          mEditorWorld.ValidateViewportSize ();
          

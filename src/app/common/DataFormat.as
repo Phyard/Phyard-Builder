@@ -141,6 +141,11 @@ package common {
             
             worldDefine.mSettings.mIsCiRulesEnabled = editorWorld.IsCiRulesEnabled ();
             //<<
+            
+            //>>from v1.55
+            worldDefine.mSettings.mAutoSleepingEnabled = editorWorld.IsAutoSleepingEnabled ();
+            worldDefine.mSettings.mCameraRotatingEnabled = editorWorld.IsCameraRotatingEnabled ();
+            //<<
          }
          
          var numEntities:int = editorWorld.GetNumEntities ();
@@ -795,6 +800,11 @@ package common {
                   );
                
                editorWorld.SetCiRulesEnabled (worldDefine.mSettings.mIsCiRulesEnabled);
+               //<<
+               
+               //>>from v1.55
+               editorWorld.SetAutoSleepingEnabled (worldDefine.mSettings.mAutoSleepingEnabled);
+               editorWorld.SetCameraRotatingEnabled (worldDefine.mSettings.mCameraRotatingEnabled);
                //<<
             }
          }
@@ -1693,6 +1703,13 @@ package common {
                   worldDefine.mSettings.mIsCiRulesEnabled = parseInt (element.@value) != 0;
                //<<
                
+               //>>from v1.55
+               else if (element.@name == "auto_sleeping_enabled")
+                  worldDefine.mSettings.mAutoSleepingEnabled = parseInt (element.@value) != 0;
+               else if (element.@name == "camera_rotating_enabled")
+                  worldDefine.mSettings.mCameraRotatingEnabled = parseInt (element.@value) != 0;
+               //<<
+               
                else
                   trace ("Unkown setting: " + element.@name);
             }
@@ -2352,6 +2369,12 @@ package common {
                byteArray.writeDouble (worldDefine.mSettings.mCoordinatesScale);
                
                byteArray.writeByte (worldDefine.mSettings.mIsCiRulesEnabled ? 1 : 0);
+            }
+            
+            if (worldDefine.mVersion >= 0x0155)
+            {
+               byteArray.writeByte (worldDefine.mSettings.mAutoSleepingEnabled ? 1 : 0);
+               byteArray.writeByte (worldDefine.mSettings.mCameraRotatingEnabled ? 1 : 0);
             }
          }
          

@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
-    title="Gravity Acceleration Setting" width="600" creationComplete="OnInitPanel()">
+    title="Physics Engine Setting" width="600" creationComplete="OnInitPanel()">
 
     <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10" horizontalAlign="center">
 
@@ -25,6 +25,17 @@
              <mx:GridItem>
                 <mx:TextInput id="Text_GravityAccelerationAngle" width="100" />
                 <mx:Label text="(degrees)"/>
+             </mx:GridItem>
+          </mx:GridRow>
+          
+          <mx:GridRow>
+             <mx:GridItem>
+                <mx:Label text="Enable Auto Sleeping:" textAlign="right"/>
+             </mx:GridItem>
+             <mx:GridItem>
+               <mx:RadioButtonGroup id="RadioButtonGroup_DoSleep"/>
+               <mx:RadioButton groupName="RadioButtonGroup_DoSleep" id="RadioButton_DoSleepYes" label="Yes"/>
+               <mx:RadioButton groupName="RadioButtonGroup_DoSleep" id="RadioButton_DoSleepNo" label="No"/>
              </mx:GridItem>
           </mx:GridRow>
        </mx:Grid>
@@ -67,6 +78,9 @@
          {
             Text_GravityAccelerationMagnitude.text = mParams.mDefaultGravityAccelerationMagnitude;
             Text_GravityAccelerationAngle.text = mParams.mDefaultGravityAccelerationAngle;
+            
+            RadioButton_DoSleepYes.selected = mParams.mAutoSleepingEnabled;
+            RadioButton_DoSleepNo.selected = (! mParams.mAutoSleepingEnabled);
          }
          
          public function SetConfirmFunc (onConfirm:Function):void
@@ -88,6 +102,8 @@
             var angle:Number = parseFloat (Text_GravityAccelerationAngle.text);
             if (! isNaN (angle))
                mParams.mDefaultGravityAccelerationAngle = angle;
+            
+            mParams.mAutoSleepingEnabled = RadioButton_DoSleepYes.selected;
             
             PopUpManager.removePopUp(this);
              

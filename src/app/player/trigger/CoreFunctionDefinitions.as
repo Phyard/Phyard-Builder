@@ -243,7 +243,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraWithShape,                       FollowCameraWithShape);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,                FollowCameraCenterXWithShape);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,                FollowCameraCenterYWithShape);
-         //RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,               FollowCameraRotationWithShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,               FollowCameraRotationWithShape);
          
          RegisterCoreFunction (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn,                CameraFadeOutThenFadeIn);
          
@@ -1933,18 +1933,18 @@ package player.trigger {
          
          Global.GetCurrentWorld ().FollowCameraCenterYWithEntity (shape, isSmooth);
       }
-      
-      //public static function FollowCameraRotationRotationWithShape (valueSource:Parameter, valueTarget:Parameter):void
-      //{
-      //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-      //   if (shape == null)
-      //      return;
-      //   
-      //   valueSource = valueSource.mNextParameter;
-      //   var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
-      //   
-      //   Global.GetCurrentWorld ().FollowCameraRotationWithEntity (shape, isSmooth);
-      //}
+
+      public static function FollowCameraRotationWithShape (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         
+         Global.GetCurrentWorld ().FollowCameraAngleWithEntity (shape, isSmooth);
+      }
       
       public static function CameraFadeOutThenFadeIn (valueSource:Parameter, valueTarget:Parameter):void
       {

@@ -186,6 +186,10 @@ package editor.world {
       private var mBorderAtTopLayer:Boolean = true;
       //<<
       
+      //>>v1.08
+      private var mCiRulesEnabled:Boolean = true;
+      //<<
+      
       private var mZoomScale:Number = 1.0;
       
       private var mPhysicsShapesPotentialMaxCount:int = 1024;
@@ -209,12 +213,10 @@ package editor.world {
       private var mViewportHeight:int = Define.DefaultPlayerHeight;
       //<<
       
-      //>>
-      //private var mMaskViewerField:Boolean = false;
+      //>>v1.55
+      private var mAutoSleepingEnabled:Boolean = true;
+      private var mCameraRotatingEnabled:Boolean = false;
       //<<
-      
-      //
-      private var mCiRulesEnabled:Boolean = true;
       
       public function SetAuthorName (name:String):void
       {
@@ -589,15 +591,25 @@ package editor.world {
          }
       }
       
-      //public function IsMaskViewerField ():Boolean
-      //{
-      //   return mMaskViewerField;
-      //}
+      public function IsAutoSleepingEnabled ():Boolean
+      {
+         return mAutoSleepingEnabled;
+      }
       
-      //public function SetMaskViewerField (mask:Boolean):void
-      //{
-      //   mMaskViewerField = mask;
-      //}
+      public function SetAutoSleepingEnabled (enabled:Boolean):void
+      {
+         mAutoSleepingEnabled = enabled;
+      }
+      
+      public function IsCameraRotatingEnabled ():Boolean
+      {
+         return mCameraRotatingEnabled;
+      }
+      
+      public function SetCameraRotatingEnabled (enabled:Boolean):void
+      {
+         mCameraRotatingEnabled = enabled;
+      }
       
 //=================================================================================
 //   clone

@@ -36,11 +36,11 @@ package player.physics {
       private var mContactListener:_ContactListener;
       private var mContactFilter:_ContactFilter;
       
-      public function PhysicsEngine (pixelsPerMeter:Number):void
+      public function PhysicsEngine (pixelsPerMeter:Number, autoSleepingEnabled:Boolean):void
       {
          var gravity:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0, 0);
          
-         _b2World = b2WorldPool.AllocB2World (gravity, pixelsPerMeter);
+         _b2World = b2WorldPool.AllocB2World (gravity, autoSleepingEnabled, pixelsPerMeter);
          _b2GroundBody = _b2World.CreateBody(new b2BodyDef());
          
          mContactListener = new _ContactListener ();

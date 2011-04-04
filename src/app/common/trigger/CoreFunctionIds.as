@@ -225,7 +225,7 @@ package common.trigger {
       public static const ID_World_FollowCameraWithShape:int                         = IdPool.CoreApiId_720;
       public static const ID_World_FollowCameraCenterXWithShape:int                  = IdPool.CoreApiId_721;
       public static const ID_World_FollowCameraCenterYWithShape:int                  = IdPool.CoreApiId_722;
-      //public static const ID_World_FollowCameraRotationWithShape:int               = IdPool.CoreApiId_723;
+      public static const ID_World_FollowCameraRotationWithShape:int               = IdPool.CoreApiId_723;
       public static const ID_World_CameraFadeOutThenFadeIn:int                       = IdPool.CoreApiId_725;
       //public static const ID_World_CameraFadeOut:int
       //public static const ID_World_CameraFadeIn:int

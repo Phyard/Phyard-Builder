@@ -1374,13 +1374,13 @@ package editor.trigger {
                      ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape, world_camera_package, "Follow Camera Rotation With Shape", null, null,
-         //            [
-         //                    new VariableDefinitionEntity ("The Followed Shape"), 
-         //                    new VariableDefinitionBoolean ("Smooth Following?"), 
-         //            ],
-         //            null
-         //         );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape, world_camera_package, "Follow Camera Rotation With Shape", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Followed Shape"), 
+                             new VariableDefinitionBoolean ("Smooth Following?"), 
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn, world_camera_package, "Fade Out Then Fade In", null, null,
                      [
                              new VariableDefinitionNumber ("Fade Color", null, {mIsColorValue: true}), 

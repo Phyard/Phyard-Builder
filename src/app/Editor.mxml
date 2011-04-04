@@ -483,7 +483,7 @@
       <root>
          <menuitem label="Config Level Rules ..." data="rules"/>
          <menuitem label="Config Coordinate System ..." data="coordinate"/>
-         <menuitem label="Config World Gravity ..." data="gravity"/>
+         <menuitem label="Config Physics Engine ..." data="physics"/>
          <menuitem label="Config World Appearance ..." data="appearance"/>
          <menuitem label="Config Viewport ..." data="viewport"/>
       </root>
@@ -1005,9 +1005,9 @@
                {
                   ShowCoordinateSystemEditDialog ();
                }
-               else if (event.item.@data == "gravity")
+               else if (event.item.@data == "physics")
                {
-                  ShowWorldGravityEditDialog ();
+                  ShowWorldPhysicsEditDialog ();
                }
                else if (event.item.@data == "appearance")
                {
@@ -1501,13 +1501,13 @@
                PopUpManager.centerPopUp (settingDialog);
             }
             
-            private function ShowWorldGravityEditDialog ():void
+            private function ShowWorldPhysicsEditDialog ():void
             {
                OnOpenDialog ();
                
-               var settingDialog:WorldGravitySettingDialog = new WorldGravitySettingDialog ();
-               settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldGravityInfo ());
-               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetCurrentWorldGravityInfo);
+               var settingDialog:WorldPhysicsSettingDialog = new WorldPhysicsSettingDialog ();
+               settingDialog.SetValues (Runtime.mEditorWorldView.GetCurrentWorldPhysicsyInfo ());
+               settingDialog.SetConfirmFunc (Runtime.mEditorWorldView.SetCurrentWorldPhysicsInfo);
                settingDialog.SetCloseFunc (OnCloseDialog);
                PopUpManager.addPopUp (settingDialog, MainView, true);
                PopUpManager.centerPopUp (settingDialog);

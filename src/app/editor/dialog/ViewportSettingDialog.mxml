@@ -35,7 +35,9 @@
                   </mx:HBox>
                </mx:HBox>
             </mx:VBox>
+            
             <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
+            
             <mx:HBox width="100%" horizontalAlign="left">
                <mx:Label text="Viewport Size (width x height by pixels):" />
             </mx:HBox>
@@ -78,6 +80,16 @@
                <mx:Spacer width="50"/>
                <mx:Label text="max height is 500, otherwise, max height is 600.)"/>
             </mx:HBox>
+            
+            <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
+            
+            <mx:HBox width="100%" horizontalAlign="left">
+               <mx:Label text="Enable Camera Rotating:" textAlign="left"/>
+               <mx:RadioButtonGroup id="RadioButtonGroup_EnableCameraRotating"/>
+               <mx:RadioButton groupName="RadioButtonGroup_EnableCameraRotating" id="RadioButton_EnableCameraRotatingYes" label="Yes"/>
+               <mx:RadioButton groupName="RadioButtonGroup_EnableCameraRotating" id="RadioButton_EnableCameraRotatingNo" label="No"/>
+            </mx:HBox>
+
          </mx:VBox>
       <mx:Spacer width="100%"/>
    </mx:HBox>
@@ -155,6 +167,9 @@
                RadioButton_CustomSize.selected = true;
             }
             
+            RadioButton_EnableCameraRotatingYes.selected = mParams.mCameraRotatingEnabled;
+            RadioButton_EnableCameraRotatingNo.selected = (! mParams.mCameraRotatingEnabled);
+                        
             OnShowPlayBarClick ();
             OnCustomSizeRatioClick ();
          }
@@ -224,6 +239,8 @@
             
             mParams.mViewportWidth = width;
             mParams.mViewportHeight = height;
+            
+            mParams.mCameraRotatingEnabled = RadioButton_EnableCameraRotatingYes.selected;
             
             PopUpManager.removePopUp(this);
             

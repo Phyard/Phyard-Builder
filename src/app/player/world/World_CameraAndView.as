@@ -13,6 +13,8 @@ private var mPlayBarColor:uint = 0x606060;
 private var mViewportWidth:int = Define.DefaultPlayerWidth;
 private var mViewportHeight:int = Define.DefaultPlayerHeight;
 
+private var mCameraRotatingEnabled:Boolean = false;
+
 public function GetViewerUiFlags ():int
 {
    return mViewerUiFlags;
@@ -140,54 +142,66 @@ public function MoveCameraCenterTo_PhysicsPoint (physicsX:Number, physicsY:Numbe
 
 public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDisplayY:Number, targetDisplayAngle:Number):void
 {
-   // assume rotation of world is zero
-   
-   var leftInView:Number;
-   var topInView:Number;
-   
-   var worldViewWidth :Number = mWorldWidth  * scaleX;
-   var worldViewHeight:Number = mWorldHeight * scaleY;
-   
-   if (worldViewWidth < mViewportWidth)
+   if (mCameraRotatingEnabled)
    {
-      mCameraCenterX = mWorldLeft + mWorldWidth * 0.5;
-      leftInView = (mWorldLeft - mCameraCenterX) * scaleX + mViewportWidth * 0.5;
-   }
-   else
-   {
+      // set world sprite rotation
+      if (rotation != - targetDisplayAngle)
+         rotation = - targetDisplayAngle;
+      
+      var angleRadians:Number = Math.PI * rotation / 180.0;
+      var cos:Number = Math.cos (angleRadians);
+      var sin:Number = Math.sin (angleRadians);
+      
+      // 
       mCameraCenterX = targetDisplayX;
-      leftInView =(mWorldLeft - mCameraCenterX) * scaleX + mViewportWidth * 0.5;
+      mCameraCenterY = targetDisplayY;
       
-      if (leftInView > 0)
-         leftInView = 0;
-      if (leftInView + worldViewWidth < mViewportWidth)
-         leftInView = mViewportWidth - worldViewWidth;
-      
-      mCameraCenterX = mWorldLeft + (mViewportWidth * 0.5 - leftInView) / scaleX;
-   }
-   
-   if (worldViewHeight < mViewportHeight)
-   {
-      mCameraCenterY = mWorldTop + mWorldHeight * 0.5;
-      topInView = (mWorldTop - mCameraCenterY) * scaleY + mViewportHeight * 0.5;
+      x = (( - mCameraCenterX) * cos - ( - mCameraCenterY) * sin) * scaleX + mViewportWidth  * 0.5;
+      y = (( - mCameraCenterX) * sin + ( - mCameraCenterY) * cos) * scaleY + mViewportHeight * 0.5;
    }
    else
    {
-      mCameraCenterY = targetDisplayY;
-      topInView = (mWorldTop - mCameraCenterY) * scaleY + mViewportHeight * 0.5;
+      var worldViewWidth :Number = mWorldWidth  * scaleX;
+      var worldViewHeight:Number = mWorldHeight * scaleY;
       
-      if (topInView > 0)
-         topInView = 0;
-      if (topInView + worldViewHeight < mViewportHeight)
-         topInView = mViewportHeight - worldViewHeight;
+      if (worldViewWidth < mViewportWidth)
+      {
+         mCameraCenterX = mWorldLeft + mWorldWidth * 0.5;
+         x = (- mCameraCenterX) * scaleX + mViewportWidth * 0.5;
+      }
+      else
+      {
+         mCameraCenterX = targetDisplayX;
+         var leftInView:Number = (mWorldLeft - mCameraCenterX) * scaleX + mViewportWidth * 0.5;
+         
+         if (leftInView > 0)
+            leftInView = 0;
+         if (leftInView + worldViewWidth < mViewportWidth)
+            leftInView = mViewportWidth - worldViewWidth;
+         
+         mCameraCenterX = mWorldLeft + (mViewportWidth * 0.5 - leftInView) / scaleX;
+         x = leftInView - mWorldLeft * scaleX;
+      }
       
-      mCameraCenterY = mWorldTop + (mViewportHeight * 0.5 - topInView) / scaleY;
+      if (worldViewHeight < mViewportHeight)
+      {
+         mCameraCenterY = mWorldTop + mWorldHeight * 0.5;
+         y = (- mCameraCenterY) * scaleY + mViewportHeight * 0.5;
+      }
+      else
+      {
+         mCameraCenterY = targetDisplayY;
+         var topInView:Number = (mWorldTop - mCameraCenterY) * scaleY + mViewportHeight * 0.5;
+         
+         if (topInView > 0)
+            topInView = 0;
+         if (topInView + worldViewHeight < mViewportHeight)
+            topInView = mViewportHeight - worldViewHeight;
+         
+         mCameraCenterY = mWorldTop + (mViewportHeight * 0.5 - topInView) / scaleY;
+         y = topInView  - mWorldTop  * scaleY;
+      }
    }
-   
-   x = leftInView - mWorldLeft * scaleX;
-   y = topInView  - mWorldTop  * scaleY;
-   //rotation = - targetDisplayAngle;
-      // todo, x and y are related with rotation
    
    UpdateBackgroundSpriteOffsetAndScale ();
 }
@@ -211,6 +225,12 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
       if (mBackgroundSprite.scaleY != sy)
          mBackgroundSprite.scaleY = sy;
    }
+}
+
+protected function InitCamera ():void
+{
+   SetZoomScale (mZoomScale);
+   MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY, mCameraAngle);
 }
 
 protected function UpdateCamera ():void
@@ -367,11 +387,11 @@ protected function UpdateCamera ():void
       }
       else if (distanceAngle > criteriaAngle1)
       {
-         newAngle = mCameraAngle + maxAngularSpeed * dy / distanceAngle;
+         newAngle = mCameraAngle + maxAngularSpeed * dAngle / distanceAngle;
       }
       else
       {
-         newAngle = mCameraAngle + maxAngularSpeed * dy / criteriaAngle1;
+         newAngle = mCameraAngle + maxAngularSpeed * dAngle / criteriaAngle1;
       }
    }
    else

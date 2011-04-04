@@ -13,12 +13,12 @@ package Box2D {
    
    public class b2WorldPool 
    {
-      public static function AllocB2World (gravity:b2Vec2, pixelsPerMeter:Number = 0.0):b2World
+      public static function AllocB2World (gravity:b2Vec2, autoSleepingEnabled:Boolean = true, pixelsPerMeter:Number = 0.0):b2World
       {
          var worldDef:b2WorldDef = new b2WorldDef ();
          
          worldDef.gravity.CopyFrom (gravity);
-         worldDef.doSleep = true;
+         worldDef.doSleep = autoSleepingEnabled;
          
          //worldDef.collisionBroadPhase = new b2eBroadPhase_SweepAndPrune ();
          

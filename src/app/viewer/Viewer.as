@@ -335,7 +335,9 @@ package viewer {
                }
                if (mWorldPlayCode != null && DataFormat3.CompressFormat_Base64 != mWorldPlayCodeFormat)
                {
-                  mWorldPlayCode = DataFormat3.EncodeByteArray2String (DataFormat3.HexString2ByteArray (mWorldPlayCode));
+                  var binaryData:ByteArray = DataFormat3.HexString2ByteArray (mWorldPlayCode);
+                  binaryData.compress ();
+                  mWorldPlayCode = DataFormat3.EncodeByteArray2String (binaryData);
                   if (mWorldPlayCode == null)
                      throw new Error ("Convert hex playcode into base64 format failed!");
                   

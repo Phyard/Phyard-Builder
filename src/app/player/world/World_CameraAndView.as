@@ -148,13 +148,25 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
       if (rotation != - targetDisplayAngle)
          rotation = - targetDisplayAngle;
       
+      mCameraAngle = targetDisplayAngle;
+      
+      if (targetDisplayX < mWorldLeft)
+         mCameraCenterX = mWorldLeft;
+      else if (targetDisplayX > (mWorldLeft + mWorldWidth))
+         mCameraCenterX = mWorldLeft + mWorldWidth;
+      else
+         mCameraCenterX = targetDisplayX;
+      
+      if (targetDisplayY < mWorldTop)
+         mCameraCenterY = mWorldTop;
+      else if (targetDisplayY > (mWorldTop + mWorldHeight))
+         mCameraCenterY = mWorldTop + mWorldHeight;
+      else
+         mCameraCenterY = targetDisplayY;
+      
       var angleRadians:Number = Math.PI * rotation / 180.0;
       var cos:Number = Math.cos (angleRadians);
       var sin:Number = Math.sin (angleRadians);
-      
-      // 
-      mCameraCenterX = targetDisplayX;
-      mCameraCenterY = targetDisplayY;
       
       x = (( - mCameraCenterX) * cos - ( - mCameraCenterY) * sin) * scaleX + mViewportWidth  * 0.5;
       y = (( - mCameraCenterX) * sin + ( - mCameraCenterY) * cos) * scaleY + mViewportHeight * 0.5;
@@ -214,8 +226,12 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
          mBackgroundSprite.x = mCameraCenterX;
       if ((int(mBackgroundSprite.y * 20.0)) != (int (mCameraCenterY * 20.0)))
          mBackgroundSprite.y = mCameraCenterY;
-      if (mBackgroundSprite.rotation != mCameraAngle)
-         mBackgroundSprite.rotation = mCameraAngle;
+      
+      var targetAngle:Number = mCameraAngle % 360.0; // the result is a float number
+      if (targetAngle >= 180.0)
+         targetAngle = targetAngle - 360.0;
+      if (mBackgroundSprite.rotation != targetAngle)
+         mBackgroundSprite.rotation = targetAngle;
       
       var sx:Number = 1.0 / scaleX;
       if (mBackgroundSprite.scaleX != sx)

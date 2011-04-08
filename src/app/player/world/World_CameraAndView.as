@@ -227,11 +227,14 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
       if ((int(mBackgroundSprite.y * 20.0)) != (int (mCameraCenterY * 20.0)))
          mBackgroundSprite.y = mCameraCenterY;
       
-      var targetAngle:Number = mCameraAngle % 360.0; // the result is a float number
-      if (targetAngle >= 180.0)
-         targetAngle = targetAngle - 360.0;
-      if (mBackgroundSprite.rotation != targetAngle)
-         mBackgroundSprite.rotation = targetAngle;
+      //var targetAngle:Number = mCameraAngle % 360.0; // the result is a float number
+      //if (targetAngle >= 180.0)
+      //   targetAngle = targetAngle - 360.0;
+      //if (mBackgroundSprite.rotation != targetAngle)
+      //   mBackgroundSprite.rotation = targetAngle;
+         
+      if (mBackgroundSprite.rotation != mCameraAngle)
+         mBackgroundSprite.rotation = mCameraAngle;
       
       var sx:Number = 1.0 / scaleX;
       if (mBackgroundSprite.scaleX != sx)

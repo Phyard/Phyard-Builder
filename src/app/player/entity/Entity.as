@@ -110,7 +110,12 @@ package player.entity {
       
       internal var mPositionX:Number = 0.0;
       internal var mPositionY:Number = 0.0;
-      internal var mRotation:Number = 0.0;
+      internal var mPhysicsRotation:Number = 0.0; // here, use a word "physics" to indicate the value is not limited between 0 and 2 * PI
+      protected var mRotationInTwoPI:Number; // this is the rotation value represent the rotation direction. Value range: [0, 2 * PI)
+                                             // it is not the Sprite.rotation.
+                                             // this value only modified in SetRotation and is related with mPhysicsRotation, 
+                                             // so DON'T assign value to mPhysicsRotation directly, please use SetRotation instead.
+                                             // use this variable for efficiency. Maybe it is not very essential and calculate it in GetRotationInTwoPI runtimely.
       protected var mVisible:Boolean = true;
       protected var mAlpha:Number = 1.0;
       protected var mIsEnabled:Boolean = true;
@@ -139,19 +144,45 @@ package player.entity {
          return mPositionY;
       }
       
-      public function SetRotation (rot:Number):void
+      // the value exposed to API is in range [0, PI * 2).
+      // for internal flash display object, Sprite.rotation is in range [-180, 180).
+      // 
+      // this method will never be exposed to designers! Use SetPhysicsRotation instead
+      //public function SetRotation (rot:Number):void
+      //{
+      //   mRotation = rot % Define.kPI_x_2;
+      //   if (mRotation < 0) // should not
+      //   {
+      //      mRotation += Define.kPI_x_2;
+      //   }
+      //}
+      //
+      //public function GetRotation ():Number
+      //{
+      //   // for EntityBody, the value is not limited between [0, 2 * PI)
+      //   return mRotation;
+      //}
+      
+      // here use internal, is to avoid be called by APIs
+      internal function SetRotation (rot:Number):void
       {
-         mRotation = rot % Define.kPI_x_2;
-         if (mRotation < 0)
+         mPhysicsRotation = rot;
+         
+         mRotationInTwoPI = rot % Define.kPI_x_2;
+         if (mRotationInTwoPI < 0) // should not, just make sure
          {
-            mRotation += Define.kPI_x_2;
+            mRotationInTwoPI += Define.kPI_x_2;
          }
       }
       
       public function GetRotation ():Number
       {
-         // for EntityBody, the value is not limited between [0, 2 * PI)
-         return mRotation;
+         return mPhysicsRotation;
+      }
+      
+      public function GetRotationInTwoPI ():Number
+      {
+         return mRotationInTwoPI;
       }
       
       public function SetVisible (visible:Boolean):void

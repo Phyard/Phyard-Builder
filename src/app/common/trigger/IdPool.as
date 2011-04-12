@@ -261,6 +261,7 @@ package common.trigger {
       public static const CoreApiId_711:int = 711; // world
       public static const CoreApiId_712:int = 712; // world
       
+      public static const CoreApiId_718:int = 718; // world
       public static const CoreApiId_719:int = 719; // world
       public static const CoreApiId_720:int = 720; // world
       public static const CoreApiId_721:int = 721; // world
@@ -316,6 +317,7 @@ package common.trigger {
       //public static const CoreApiId_1006:int = 1006; // entity 
       public static const CoreApiId_1007:int = 1007; // entity 
       //public static const CoreApiId_1008:int = 1008; // entity 
+      public static const CoreApiId_1009:int = 1009; // entity 
       public static const CoreApiId_1010:int = 1010; // entity 
       public static const CoreApiId_1011:int = 1011; // entity 
       public static const CoreApiId_1012:int = 1012; // entity 

@@ -127,6 +127,7 @@ package common {
       //public static const Base64Chars:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         public static const Base64Chars:String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,._";
         // here the chars (+/=) in standard base64 set has problems in url. So use another set instead.
+        // it is possible use other 3 chars set for the last 3 chars with the current set simultaneously later.
       
       private static var Base64Char2Index:Array = null;
       private static function GetBase64Char2IndexTable ():Array

@@ -815,12 +815,12 @@ package player.entity {
          {
             mPositionX = mBody.mPositionX + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
             mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
-            SetRotation (mBody.mRotation + mRelativeRotation);
+            SetRotation (mBody.mPhysicsRotation + mRelativeRotation);
          }
          
          var newX:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
          var newY:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
-         var newR:Number = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotation) * Define.kRadians2Degrees;
+         var newR:Number = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mPhysicsRotation) * Define.kRadians2Degrees;
          
          if (mBody.IsStatic () || mBody.IsSleeping ()) // special optimize for potiential static shapes. Maybe here can be more optimized. (call nothing here but when the shape position are manually changed, this function needs also be called.)
          {
@@ -836,10 +836,10 @@ package player.entity {
                //trace ("   (int(mAppearanceObjectsContainer.y * 20.0)) = " + (int(mAppearanceObjectsContainer.y * 20.0)) + ", (int (newY * 20.0)) = " + (int (newY * 20.0)) );
                mAppearanceObjectsContainer.y = newY;
             }
-            if (mAppearanceObjectsContainer.rotation != newR)
-            {
+            //if (mAppearanceObjectsContainer.rotation != newR) // nonsense
+            //{
                mAppearanceObjectsContainer.rotation = newR;
-            }
+            //}
          }
          else
          {
@@ -1076,7 +1076,7 @@ package player.entity {
             var tempY:Number = (mPositionY - mBody.GetPositionY ());
             mLocalPositionX =   tempX * mBody.mCosRotation + tempY * mBody.mSinRotation;
             mLocalPositionY = - tempX * mBody.mSinRotation + tempY * mBody.mCosRotation;
-            mRelativeRotation  = mRotation  - mBody.GetRotation  ();
+            mRelativeRotation  = mPhysicsRotation  - mBody.GetRotation  ();
          }
       }
       
@@ -1159,12 +1159,12 @@ package player.entity {
       // before use sin and cos, call this function.
       internal function UpdateSinCos ():void
       {
-         if (mRotation != mLastRotation)
+         if (mPhysicsRotation != mLastRotation)
          {
-            mLastRotation = mRotation;
+            mLastRotation = mPhysicsRotation;
             
-            mCosRotation = Math.cos (mRotation);
-            mSinRotation = Math.sin (mRotation);
+            mCosRotation = Math.cos (mPhysicsRotation);
+            mSinRotation = Math.sin (mPhysicsRotation);
          }
       }
       

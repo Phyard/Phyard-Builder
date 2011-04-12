@@ -164,7 +164,7 @@ package player.entity {
       private function RegisterGravity ():void
       {
          // mGravityAngle is in self coordinate, newRotation is in world coordinate
-         var newRotation:Number = mGravityAngle + mRotation;
+         var newRotation:Number = mGravityAngle + mPhysicsRotation;
          if (mGravityWorldRotation != newRotation)
          {
             mGravityWorldRotation = newRotation;

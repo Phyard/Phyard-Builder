@@ -240,6 +240,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
          
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
+         RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraWithShape,                       FollowCameraWithShape);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,                FollowCameraCenterXWithShape);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,                FollowCameraCenterYWithShape);
@@ -304,6 +305,7 @@ package player.trigger {
          //RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetPosition,                 SetEntityPosition);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByDegrees,        GetEntityRotationByDegrees);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetRotationByRadians,        GetEntityRotationByRadians);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians,        GetEntityAccumulatedRotationByDegrees);
          
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,        WorldPoint2EntityLocalPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,        EntityLocalPoint2WorldPoint);
@@ -1894,6 +1896,11 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterPhysicsY ());
       }
       
+      public static function GetCameraRotation_Degrees (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraPhysicsRotationIn360Degrees ());
+      }
+      
       public static function FollowCameraWithShape (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -2414,16 +2421,11 @@ package player.trigger {
             return;
          }
          
-         valueTarget.AssignValueObject (entity.GetRotation ());
+         valueTarget.AssignValueObject (entity.GetRotationInTwoPI ());
       }
       
       //public static function SetEntityRotationByRadians (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var entity:Entity = valueSource.EvaluateValueObject () as Entity;
-      //   if (entity == null)
-      //      return;
-      //   
-      //   valueTarget.AssignValueObject (entity.GetRotation ());
       //}
       
       public static function GetEntityRotationByDegrees (valueSource:Parameter, valueTarget:Parameter):void
@@ -2436,20 +2438,25 @@ package player.trigger {
             return;
          }
          
-         valueTarget.AssignValueObject (entity.GetRotation () * Define.kRadians2Degrees);
+         valueTarget.AssignValueObject (entity.GetRotationInTwoPI () * Define.kRadians2Degrees);
       }
       
       //public static function SetEntityRotationByDegrees (valueSource:Parameter, valueTarget:Parameter):void
       //{
-      //   var entity:Entity = valueSource.EvaluateValueObject () as Entity;
-      //   if (entity == null)
-      //      return;
-      //   
-      //   valueSource = valueSource.mNextParameter;
-      //   var degrees:Number = valueSource.EvaluateValueObject () as Number;
-      //   
-      //   entity.SetRotation (degrees * Define.kDegrees2Radians);
       //}
+      
+      public static function GetEntityAccumulatedRotationByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
+         if (entity == null)
+         {
+            valueTarget.AssignValueObject (0.0);
+            
+            return;
+         }
+         
+         valueTarget.AssignValueObject (entity.GetRotation ());
+      }
       
       public static function WorldPoint2EntityLocalPoint (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -2627,10 +2634,10 @@ package player.trigger {
          
          var dx:Number = entity1.GetPositionX () - entity2.GetPositionX ();
          var dy:Number = entity1.GetPositionY () - entity2.GetPositionY ();
-         var dr:Number = ((entity1.GetRotation () - entity2.GetRotation ()) * Define.kRadians2Degrees) % 360;
+         var dr:Number = ((entity1.GetRotationInTwoPI () - entity2.GetRotationInTwoPI ()) * Define.kRadians2Degrees) % 360;
          if (dx < 0) dx = -dx;
          if (dy < 0) dy = -dy;
-         if (dr < 0) dr = -dr;
+         //if (dr < 0) dr = -dr;
          if (dr < 0) dr = -dr;
          if (dr > 180) dr = 360 - dr;
          

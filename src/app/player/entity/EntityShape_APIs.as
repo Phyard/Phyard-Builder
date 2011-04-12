@@ -155,7 +155,7 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
       
       body.mPositionX = targetX + dx * cos - dy * sin;
       body.mPositionY = targetY + dx * sin + dy * cos;
-      body.mRotation += deltaRotation;
+      body.SetRotation (body.mPhysicsRotation + deltaRotation);
       
       body.SynchronizePositionAndRotationToPhysicsProxy ();
       

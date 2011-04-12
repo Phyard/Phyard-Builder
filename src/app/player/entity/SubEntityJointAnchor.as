@@ -69,7 +69,7 @@ package player.entity {
             var tempY:Number = (mPositionY - mShape.GetPositionY ());
             mLocalPositionX =   tempX * mShape.mCosRotation + tempY * mShape.mSinRotation;
             mLocalPositionY = - tempX * mShape.mSinRotation + tempY * mShape.mCosRotation;
-            mRelativeRotation  = mRotation  - mShape.GetRotation  ();
+            mRelativeRotation  = mPhysicsRotation  - mShape.GetRotation  ();
          }
       }
 
@@ -83,7 +83,7 @@ package player.entity {
             mShape.LocalPoint2WorldPoint (mLocalPositionX, mLocalPositionY, point);
             mPositionX = point.x;
             mPositionY = point.y;
-            SetRotation (mShape.mRotation + mRelativeRotation);
+            SetRotation (mShape.mPhysicsRotation + mRelativeRotation);
          }
       }
 
@@ -117,12 +117,14 @@ package player.entity {
       override public function SynchronizeWithPhysicsProxy ():void
       {
          if (mShape != null)
-            mRotation = mShape.mRotation + mRelativeRotation;
+         {
+            SetRotation (mShape.mPhysicsRotation + mRelativeRotation);
+         }
          
          // the parent joint will update the positon of this anchor
          //mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
          //mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
-         mAnchorShape.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotation * Define.kRadians2Degrees);
+         mAnchorShape.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mPhysicsRotation * Define.kRadians2Degrees);
          
          mAnchorShape.visible = mVisible;
          mAnchorShape.alpha = mAlpha;

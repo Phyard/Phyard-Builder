@@ -123,6 +123,16 @@ public function GetCameraCenterPhysicsY ():Number
    return mCoordinateSystem.D2P_PositionY (mCameraCenterY);
 }
 
+public function GetCameraPhysicsRotationIn360Degrees ():Number
+{
+   var cameraRotation:Number = mCoordinateSystem.D2P_RotationDegrees (mCameraAngle);
+   cameraRotation = cameraRotation % 360;
+   if (cameraRotation < 0) // shouldn't
+      cameraRotation += 360;
+   
+   return cameraRotation;
+}
+
 public function MoveWorldScene_PhysicsOffset (physicsDx:Number, physicsDy:Number):void
 {
    var displayOffet:Point = mCoordinateSystem.PhysicsVector2DisplayVector (physicsDx, physicsDy);
@@ -145,8 +155,7 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
    if (mCameraRotatingEnabled)
    {
       // set world sprite rotation
-      if (rotation != - targetDisplayAngle)
-         rotation = - targetDisplayAngle;
+      rotation = - targetDisplayAngle;
       
       mCameraAngle = targetDisplayAngle;
       
@@ -164,7 +173,7 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
       else
          mCameraCenterY = targetDisplayY;
       
-      var angleRadians:Number = Math.PI * rotation / 180.0;
+      var angleRadians:Number = Math.PI * (- targetDisplayAngle) / 180.0;
       var cos:Number = Math.cos (angleRadians);
       var sin:Number = Math.sin (angleRadians);
       
@@ -232,10 +241,8 @@ private function UpdateBackgroundSpriteOffsetAndScale ():void
       //   targetAngle = targetAngle - 360.0;
       //if (mBackgroundSprite.rotation != targetAngle)
       //   mBackgroundSprite.rotation = targetAngle;
+      mBackgroundSprite.rotation = mCameraAngle;
          
-      if (mBackgroundSprite.rotation != mCameraAngle)
-         mBackgroundSprite.rotation = mCameraAngle;
-      
       var sx:Number = 1.0 / scaleX;
       if (mBackgroundSprite.scaleX != sx)
          mBackgroundSprite.scaleX = sx;
@@ -391,7 +398,7 @@ protected function UpdateCamera ():void
    var distanceAngle:Number;
    
    var criteriaAngle1:Number = 180; // degrees
-   var criteriaAngle2:Number = 1; // degrees
+   var criteriaAngle2:Number = 0.3; // degrees
    
    var maxAngularSpeed:Number = 10; // degrees
    

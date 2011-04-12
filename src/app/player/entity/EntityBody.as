@@ -224,7 +224,7 @@ package player.entity {
             {
                mPositionX = mPhysicsProxyBody.GetPositionX ();
                mPositionY = mPhysicsProxyBody.GetPositionY ();
-               mRotation = mPhysicsProxyBody.GetRotation (); // for body
+               SetRotation (mPhysicsProxyBody.GetRotation ()); // for body
                
                UpdateSinCos ();
             }
@@ -234,12 +234,12 @@ package player.entity {
       // before use sin and cos, call this function.
       internal function UpdateSinCos ():void
       {
-         if (mRotation != mLastRotation)
+         if (mPhysicsRotation != mLastRotation)
          {
-            mLastRotation = mRotation;
+            mLastRotation = mPhysicsRotation;
             
-            mCosRotation = Math.cos (mRotation);
-            mSinRotation = Math.sin (mRotation);
+            mCosRotation = Math.cos (mPhysicsRotation);
+            mSinRotation = Math.sin (mPhysicsRotation);
          }
       }
       
@@ -249,7 +249,7 @@ package player.entity {
          
          if (mPhysicsProxy != null)
          {
-            mPhysicsProxyBody.SetPositionAndRotation (mPositionX, mPositionY, mRotation);
+            mPhysicsProxyBody.SetPositionAndRotation (mPositionX, mPositionY, mPhysicsRotation);
          }
       }
       

@@ -1352,6 +1352,12 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Camera Center Y"), 
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraRotationByDegrees, world_camera_package, "Get Camera Rotation by Degrees", "@Degrees (#0) = Get Camera Rotation ()", null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Camera Rotation (degrees)"), 
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape, world_camera_package, "Follow Camera With Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Followed Shape"), 
@@ -1731,6 +1737,14 @@ package editor.trigger {
                      ],
                      [
                              new VariableDefinitionNumber ("Rotation (degrees)"), 
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians, entity_common_package, "Get Accumulated Rotation by Radians", "@Radians (#0) = Get Accumulated Rotation ($0)", null,
+                     [
+                             new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Accumulated Rotation (radians)"), 
                      ]
                   );
          

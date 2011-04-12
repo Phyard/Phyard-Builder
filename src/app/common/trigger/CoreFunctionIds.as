@@ -222,6 +222,7 @@ package common.trigger {
       public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712;
       
       public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719;
+      public static const ID_World_GetCameraRotationByDegrees:int                    = IdPool.CoreApiId_718;
       public static const ID_World_FollowCameraWithShape:int                         = IdPool.CoreApiId_720;
       public static const ID_World_FollowCameraCenterXWithShape:int                  = IdPool.CoreApiId_721;
       public static const ID_World_FollowCameraCenterYWithShape:int                  = IdPool.CoreApiId_722;
@@ -283,13 +284,14 @@ package common.trigger {
       public static const ID_Entity_GetPosition:int                    = IdPool.CoreApiId_1001; 
       //public static const ID_Entity_SetPosition:int                    = IdPool.CoreApiId_1002; 
       //public static const ID_Entity_GetLocalPosition:int               = IdPool.CoreApiId_1003; 
-      //public static const ID_Entity_SetLocalPosition:int             = IdPool.CoreApiId_1004; 
-      public static const ID_Entity_GetRotationByRadians:int           = IdPool.CoreApiId_1005; 
-      //public static const ID_Entity_SetRotationByRadians:int         = IdPool.CoreApiId_1006; 
-      public static const ID_Entity_GetRotationByDegrees:int           = IdPool.CoreApiId_1007; 
-      //public static const ID_Entity_SetRotationByDegrees:int         = IdPool.CoreApiId_1008; 
-      public static const ID_Entity_WorldPoint2LocalPoint:int          = IdPool.CoreApiId_1010; 
-      public static const ID_Entity_LocalPoint2WorldPoint:int          = IdPool.CoreApiId_1011; 
+      //public static const ID_Entity_SetLocalPosition:int              = IdPool.CoreApiId_1004; 
+      public static const ID_Entity_GetRotationByRadians:int            = IdPool.CoreApiId_1005; 
+      //public static const ID_Entity_SetRotationByRadians:int          = IdPool.CoreApiId_1006; 
+      public static const ID_Entity_GetRotationByDegrees:int            = IdPool.CoreApiId_1007; 
+      //public static const ID_Entity_SetRotationByDegrees:int          = IdPool.CoreApiId_1008; 
+      public static const ID_Entity_GetAccumulatedRotationByRadians:int = IdPool.CoreApiId_1009; 
+      public static const ID_Entity_WorldPoint2LocalPoint:int           = IdPool.CoreApiId_1010; 
+      public static const ID_Entity_LocalPoint2WorldPoint:int           = IdPool.CoreApiId_1011; 
       public static const ID_Entity_WorldVector2LocalVector:int         = IdPool.CoreApiId_1012; 
       public static const ID_Entity_LocalVector2WorldVector:int         = IdPool.CoreApiId_1013; 
       

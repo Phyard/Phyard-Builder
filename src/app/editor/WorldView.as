@@ -5247,13 +5247,35 @@ package editor {
             
             if (codeString != null)
             {
-               if (codeString.length > 8 && codeString.substring (0, 8) == "playcode")
+               const Text_PlayCode:String = "playcode";
+               if (codeString.length > Text_PlayCode.length && codeString.substring (0, Text_PlayCode.length) == Text_PlayCode)
                {
-                  var identifyText:String = "434F494E";
-                  var offset:int = codeString.indexOf (identifyText, 8);
-                  if (offset > 0)
+                  var Text_OldCodeStarting:String = "434F494E";
+                  var offset:int = codeString.indexOf (Text_OldCodeStarting, Text_PlayCode.length);
+                  if (offset > 0) // old playcode
                   {
                      newWorldDefine = DataFormat2.HexString2WorldDefine (codeString.substring (offset));
+                  }
+                  else // new base64 playcode
+                  {
+                     offset = Text_PlayCode.length;
+                     var Text_CompressFormat:String = "compressformat=base64";
+                     offset = codeString.indexOf (Text_CompressFormat, offset);
+                     if (offset > 0)
+                     {
+                        offset += Text_CompressFormat.length;
+                        var Text_PlayCode2:String = "playcode=";
+                        offset = codeString.indexOf (Text_PlayCode2, offset);
+                        if (offset > 0)
+                        {
+                           offset += Text_PlayCode2.length;
+                           var offset2:int = codeString.indexOf ("@}", offset);
+                           if (offset2 > 0)
+                           {
+                              newWorldDefine = DataFormat2.PlayCode2WorldDefine_Base64 (codeString.substring (offset, offset2));
+                           }
+                        }
+                     }
                   }
                }
                else
@@ -5279,9 +5301,6 @@ package editor {
          }
          catch (error:Error)
          {
-            if (Compile::Is_Debugging)
-               throw error;
-            
             RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
             //SetEditorWorld (new editor.world.World ());
@@ -5289,6 +5308,9 @@ package editor {
             //Alert.show("Sorry, loading error!", "Error");
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading failed", EffectMessagePopup.kBgColor_Error));
+
+            if (Compile::Is_Debugging)
+               throw error;
          }
       }
       
@@ -5472,12 +5494,12 @@ package editor {
          {
             //Alert.show("Sorry, import error!", "Error");
             
-            if (Compile::Is_Debugging)
-               throw error;
-            
             RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Import failed", EffectMessagePopup.kBgColor_Error));
+            
+            if (Compile::Is_Debugging)
+               throw error;
          }
       }
       
@@ -5758,10 +5780,10 @@ package editor {
          }
          catch (error:Error)
          {
+            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+
             if (Compile::Is_Debugging)
                throw error;
-            
-            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Quick load failed", EffectMessagePopup.kBgColor_Error));
          }
@@ -5940,10 +5962,10 @@ package editor {
          {
             //Alert.show("Sorry, online saving error! " + loader.data + " " + error, "Error");
             
+            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+            
             if (Compile::Is_Debugging)
                throw error;
-            
-            RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error));
          }
@@ -6027,10 +6049,10 @@ package editor {
             }
             catch (error:Error)
             {
+               RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
+               
                if (Compile::Is_Debugging)
                   throw error;
-               
-               RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
                
                //Alert.show("Sorry, online loading error!", "Error");
                

@@ -33,6 +33,18 @@ package editor.trigger {
       }
       
 //==============================================================================
+// clone
+//==============================================================================
+      
+      override public function Clone ():VariableDefinition
+      {
+         var arrayVariableDefinition:VariableDefinitionArray = new VariableDefinitionArray (mName, mDescription);
+         arrayVariableDefinition.mNullValueEnabled = mNullValueEnabled;
+         
+         return arrayVariableDefinition;
+      }
+
+//==============================================================================
 // to override
 //==============================================================================
       

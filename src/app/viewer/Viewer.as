@@ -63,6 +63,8 @@ package viewer {
       
       private var mParamsFromEditor:Object = null;
       
+      private var mParamsFromGamePackage:Object = null;
+      
    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       
    //>>>>>>>>>>>>>>>>>  special interfaces for editor

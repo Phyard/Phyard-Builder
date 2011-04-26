@@ -21,36 +21,36 @@ package univiewer
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
-   
+
    public dynamic class UniViewer extends Sprite
    {
       private static const VersionNumber:int = 2;
-      
+
       private static const StartLoadingPercent:int = 5;
       private static const StartLoadingViewerPercent:int = 5;
       private static const EndLoadingViewerPercent:int = 18;
-      
+
       public static const k_ReturnCode_Successed:int = 1;
-      
+
    //================================================
-   //   
+   //
    //================================================
-      
+
       public function UniViewer ()
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage)
       }
-      
+
       private var mUniViewerUrl:String;
-      private function OnAddedToStage (e:Event):void 
+      private function OnAddedToStage (e:Event):void
       {
          //
          SetInfoText ("Loading ... (" + StartLoadingPercent + "%)");
-         
+
          // init
-         
+
          mUniViewerUrl =  LoaderInfo(this.loaderInfo).url;
-         
+
          const ViewerFileEquals:String = "ViewerFile=";
          const RevisionIdEquals:String = "RevisionId=";
          const WorldFileEquals:String = "WorldFile=";
@@ -60,22 +60,22 @@ package univiewer
          if (index1 >= 0 && index2 >= 0 && index3 >= 0)
          {
             var indexEnd:int;
-            
+
             index1 += ViewerFileEquals.length;
             indexEnd = mUniViewerUrl.indexOf ("&", index1);
             if (indexEnd < 0) indexEnd = mUniViewerUrl.length;
             var viewerFile:String = mUniViewerUrl.substring (index1, indexEnd);
-            
+
             index2 += RevisionIdEquals.length;
             indexEnd = mUniViewerUrl.indexOf ("&", index2);
             if (indexEnd < 0) indexEnd = mUniViewerUrl.length;
             var revisionId:String = mUniViewerUrl.substring (index2, indexEnd);
-            
+
             index3 += WorldFileEquals.length;
             indexEnd = mUniViewerUrl.indexOf ("&", index3);
             if (indexEnd < 0) indexEnd = mUniViewerUrl.length;
             var worldFile:String = mUniViewerUrl.substring (index3, indexEnd);
-            
+
             var stream:ByteArray = new ByteArray ();
             stream.writeUTF (viewerFile);
             stream.writeInt (parseInt (revisionId));
@@ -86,7 +86,7 @@ package univiewer
          else
          {
             // load design info
-            
+
             var infoUrl:String;
             if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0) // for play. avoid using browser cache
             {
@@ -98,20 +98,20 @@ package univiewer
             {
                infoUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loadinfo") + "&vn=" + VersionNumber;
             }
-            
+
             var request:URLRequest = new URLRequest (infoUrl);
             request.method = URLRequestMethod.GET;
             var loader:URLLoader = new URLLoader ();
             loader.dataFormat = URLLoaderDataFormat.BINARY;
-            
+
             loader.addEventListener(Event.COMPLETE, OnLoadInfoComplete);
             loader.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
             loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
-            
+
             mLoadingStage = " info ";
             loader.load(request);
          }
-         
+
          //
          var theContextMenu:ContextMenu = new ContextMenu ();
          theContextMenu.hideBuiltInItems ();
@@ -119,29 +119,29 @@ package univiewer
          defaultItems.print = true;
          contextMenu = theContextMenu;
       }
-      
+
       private var mDesignInfoStream:ByteArray;
       private function OnLoadInfoComplete (event:Event):void
       {
          SetInfoText ("Loading ... (" + StartLoadingViewerPercent + "%)");
-         
+
          var stream:ByteArray = ByteArray ((event.target as URLLoader).data);
-         
+
          var returnCode:int = stream.readByte ();
-         
+
          if (returnCode != k_ReturnCode_Successed)
          {
             SetInfoText ("Loading error! code = " + returnCode);
             return;
          }
-         
+
          SetDesignInfoStream (stream);
       }
-         
+
       private function SetDesignInfoStream (stream:ByteArray):void
       {
          mDesignInfoStream = stream;
-         
+
          // world.swf url and viewer swf url
          var viewerSwfUrl:String = stream.readUTF ();
          if (viewerSwfUrl.indexOf ("://") < 0)
@@ -149,65 +149,65 @@ package univiewer
             var index:int = mUniViewerUrl.indexOf ("/uniplayer.swf");
             if (index < 0)
                index = mUniViewerUrl.indexOf ("/swfs/univiewer");
-            
+
             if (index < 0)
             {
                SetInfoText ("Invalid url: " + mUniViewerUrl);
                return;
             }
-            
+
             viewerSwfUrl = mUniViewerUrl.substring (0, index) + "/swfs/" + viewerSwfUrl;
          }
-            
+
          var request:URLRequest = new URLRequest (viewerSwfUrl);
          request.method = URLRequestMethod.GET;
-         
+
          var loader:Loader = new Loader ();
-            
-         loader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnLoadViewerSwfComplete);
-         loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, OnLoadViewerSwfProgress);
-         loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
-         loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
-         
+
+         loader.contentLoaderInfo.addEventListener (Event.COMPLETE, OnLoadViewerSwfComplete);
+         loader.contentLoaderInfo.addEventListener (ProgressEvent.PROGRESS, OnLoadViewerSwfProgress);
+         loader.contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
+         loader.contentLoaderInfo.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+
          mLoadingStage = " viewer ";
-         loader.load(request, new LoaderContext(false, ApplicationDomain.currentDomain));
+         loader.load (request, new LoaderContext(false, ApplicationDomain.currentDomain));
       }
-      
+
       private function OnLoadViewerSwfComplete (event:Event):void
       {
          //SetInfoText (null);
-         
+
          var MainClass:Object = ApplicationDomain.currentDomain.getDefinition("Main") as Class;
          if (MainClass == null)
          {
             SetInfoText ("Loading error! No main entry");
             return;
          }
-         
+
          var paramsFromUniViewer:Object = new Object ();
-         
+
          paramsFromUniViewer.mUniViewerUrl = mUniViewerUrl;
          paramsFromUniViewer.mDesignInfoStream = mDesignInfoStream;
          paramsFromUniViewer.mFlashVars = LoaderInfo(this.loaderInfo).parameters;
          paramsFromUniViewer.mLoadingProgress = EndLoadingViewerPercent;
          paramsFromUniViewer.SetLoadingText = SetInfoText;
-         
+
          var viewer:Sprite = (MainClass.Call as Function) ("NewViewer", {mParamsFromUniViewer: paramsFromUniViewer}) as Sprite;
          viewer.alpha = 0.0;
          addChild (viewer);
       }
-      
+
       private function OnLoadViewerSwfProgress (event:ProgressEvent):void
       {
          SetInfoText ("Loading ... (" + int (StartLoadingViewerPercent + (EndLoadingViewerPercent - StartLoadingViewerPercent) * event.bytesLoaded / event.bytesTotal) + "%)");
       }
-      
+
       private var mLoadingStage:String = " ";
       private function OnLoadingError (event:Object):void
       {
          SetInfoText ("Loading" + mLoadingStage + "error!");
       }
-      
+
       private var mInfoTextField:TextField = null;
       private function SetInfoText (infoText:String):void
       {
@@ -221,10 +221,10 @@ package univiewer
             mInfoTextField.wordWrap = false;
             mInfoTextField.selectable = false;
             mInfoTextField.autoSize = TextFieldAutoSize.LEFT;
-            
+
             addChild (mInfoTextField);
          }
-         
+
          if (infoText == null)
          {
             mInfoTextField.visible = false;

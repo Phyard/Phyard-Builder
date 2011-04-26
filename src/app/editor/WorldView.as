@@ -5293,7 +5293,7 @@ package editor {
             
             SetEditorWorld (newWorld);
             
-            mWorldHistoryManager.ClearHistories ();
+            //mWorldHistoryManager.ClearHistories ();
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading succeeded", EffectMessagePopup.kBgColor_OK));
             
@@ -5770,7 +5770,7 @@ package editor {
             
             var newEditorWorld:editor.world.World = DataFormat.WorldDefine2EditorWorld (DataFormat2.ByteArray2WorldDefine (designDataForEditing));
             
-            mWorldHistoryManager.ClearHistories ();
+            //mWorldHistoryManager.ClearHistories ();
             
             SetEditorWorld (newEditorWorld);
             
@@ -6038,7 +6038,7 @@ package editor {
                   newEditorWorld = new editor.world.World ();
                }
                
-               mWorldHistoryManager.ClearHistories ();
+               //mWorldHistoryManager.ClearHistories ();
                
                SetEditorWorld (newEditorWorld);
                

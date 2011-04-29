@@ -1,14 +1,16 @@
 package univiewer
 {
+   import flash.display.StageScaleMode;
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
    import flash.display.Sprite;
    import flash.display.Loader;
    import flash.display.LoaderInfo;
-   import flash.system.LoaderContext;
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
+   import flash.geom.Point;
+   import flash.system.LoaderContext;
    import flash.system.ApplicationDomain;
    import flash.net.URLRequest;
    import flash.net.URLLoader;
@@ -44,6 +46,8 @@ package univiewer
       private var mUniViewerUrl:String;
       private function OnAddedToStage (e:Event):void
       {
+         stage.scaleMode = StageScaleMode.SHOW_ALL;
+         
          //
          SetInfoText ("Loading ... (" + StartLoadingPercent + "%)");
 
@@ -191,10 +195,16 @@ package univiewer
          paramsFromUniViewer.mFlashVars = LoaderInfo(this.loaderInfo).parameters;
          paramsFromUniViewer.mLoadingProgress = EndLoadingViewerPercent;
          paramsFromUniViewer.SetLoadingText = SetInfoText;
+         paramsFromUniViewer.GetViewportSize = GetViewportSize;
 
          var viewer:Sprite = (MainClass.Call as Function) ("NewViewer", {mParamsFromUniViewer: paramsFromUniViewer}) as Sprite;
          viewer.alpha = 0.0;
          addChild (viewer);
+      }
+
+      private function GetViewportSize ():Point
+      {
+         return new Point (App::Default_Width, App::Default_Height);
       }
 
       private function OnLoadViewerSwfProgress (event:ProgressEvent):void

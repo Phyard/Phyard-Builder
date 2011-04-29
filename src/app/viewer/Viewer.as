@@ -18,8 +18,6 @@ package viewer {
    import flash.system.System;
    import flash.system.ApplicationDomain;
 
-   import flash.display.StageScaleMode;
-
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
@@ -41,7 +39,7 @@ package viewer {
    import com.tapirgames.util.TextUtil;
    import com.tapirgames.display.TextFieldEx;
    import com.tapirgames.display.TextButton;
-   //import com.tapirgames.display.ImageButton;
+   import com.tapirgames.display.ImageButton;
 
    import viewer.ui.UiUtil;
    import viewer.ui.PlayHelpDialog;
@@ -53,21 +51,29 @@ package viewer {
 
    public class Viewer extends Sprite
    {
+      [Embed(source="../../res/player/player-mainmenu.png")]
+      private static var IconMainMenu:Class;
+      [Embed(source="../../res/player/player-phyard.png")]
+      private static var IconPhyard:Class;
+
+      private var mBitmapDataMainMenu:BitmapData  = new IconMainMenu ().bitmapData;
+      private var mBitmapDataPhyard:BitmapData  = new IconPhyard ().bitmapData;
+
 //======================================================================
 //
 //======================================================================
 
-   //>>>>>>>>>>>>>>>>> input params, one and only one is not null
+   // input params, one and only one is not null
 
-      private var mParamsFromUniViewer:Object = null;
+      private var mParamsFromContainer:Object; // can't be null, equals any of the following ones
 
-      private var mParamsFromEditor:Object = null;
+         private var mParamsFromUniViewer:Object = null;
 
-      private var mParamsFromGamePackage:Object = null;
+         private var mParamsFromEditor:Object = null;
 
-   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+         private var mParamsFromGamePackage:Object = null;
 
-   //>>>>>>>>>>>>>>>>>  special interfaces for editor
+   // special interfaces for editor
 
       private var mExternalPaused:Boolean = false;
       public function SetExternalPaused (paused:Boolean):void
@@ -105,7 +111,9 @@ package viewer {
          }
       }
 
-   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//======================================================================
+//
+//======================================================================
 
       private var mStartRightNow:Boolean = false;
       private var mMaskViewerField:Boolean = true;
@@ -129,8 +137,8 @@ package viewer {
       private var mWorldLayer:Sprite = new Sprite ();
       private var mTopBarLayer:Sprite = new Sprite ();
       //private var mBottomBarLayer:Sprite = new Sprite ();
-      private var mBorderLineBarLayer:Sprite = new Sprite ();
-      private var mErrorMessageLayer:Sprite = new Sprite ();
+      //private var mBorderLineBarLayer:Sprite = new Sprite ();
+      //private var mErrorMessageLayer:Sprite = new Sprite ();
       private var mFinishedTextLayer:Sprite = new Sprite ();
       private var mDialogLayer:Sprite = new Sprite ();
 
@@ -146,29 +154,37 @@ package viewer {
       {
          trace ("Viewer params = " + params);
 
-         if (params == null) // strangel flash ai=uto instance this class when loading done. shit!
+         if (params == null) // strange: flash auto instance this class when loading done. shit!
             return;
 
          addChild (mWorldLayer);
          //addChild (mBottomBarLayer);
          addChild (mTopBarLayer);
-         addChild (mErrorMessageLayer);
-         addChild (mBorderLineBarLayer);
+         //addChild (mErrorMessageLayer);
+         //addChild (mBorderLineBarLayer);
          addChild (mFinishedTextLayer);
          addChild (mDialogLayer);
 
          mParamsFromUniViewer = params.mParamsFromUniViewer;
+         if (mParamsFromUniViewer != null)
+            mParamsFromContainer = mParamsFromUniViewer;
          mParamsFromEditor = params.mParamsFromEditor;
+         if (mParamsFromEditor != null)
+            mParamsFromContainer = mParamsFromEditor;
+         mParamsFromGamePackage = params.mParamsFromGamePackage;
+         if (mParamsFromGamePackage != null)
+            mParamsFromContainer = mParamsFromGamePackage;
 
+         // ...
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage);
       }
 
       private function OnAddedToStage (e:Event):void
       {
-         if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
-         {
-            CheckStageSize (Number (App::Default_Width),  Number (App::Default_Height));
-         }
+         //if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
+         //{
+         //   CheckStageSize (Number (App::Default_Width),  Number (App::Default_Height));
+         //}
 
          addEventListener (Event.ENTER_FRAME, Update);
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromFrame);
@@ -243,7 +259,7 @@ package viewer {
 
       public static function TraceError (error:Error):void
       {
-         //trace (error.getStackTrace ());
+         trace (error.getStackTrace ());
       }
 
 //======================================================================
@@ -260,13 +276,13 @@ package viewer {
       {
          try
          {
-            if (mParamsFromEditor != null)
+            if (mParamsFromEditor != null || mParamsFromGamePackage != null)
             {
-               mMaskViewerField = mParamsFromEditor.mMaskViewerField;
+               mMaskViewerField = mParamsFromContainer.mMaskViewerField;
 
-               mWorldBinaryData = mParamsFromEditor.mWorldBinaryData;
-               mStartRightNow = mParamsFromEditor.mStartRightNow == undefined ? true : mParamsFromEditor.mStartRightNow;
-               mWorldPluginDomain = mParamsFromEditor.mWorldDomain;
+               mWorldBinaryData = mParamsFromContainer.mWorldBinaryData;
+               mStartRightNow = mParamsFromContainer.mStartRightNow == undefined ? true : mParamsFromContainer.mStartRightNow;
+               mWorldPluginDomain = mParamsFromContainer.mWorldDomain;
 
                if (RebuildPlayerWorld ())
                {
@@ -555,7 +571,7 @@ package viewer {
 
       private function RetrieveWorldPluginProperties ():void
       {
-         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer
+         if (mWorldPluginDomain.hasDefinition ("Main")) // for uniplayer and gamepackage
          {
             mWorldPlugin = mWorldPluginDomain.getDefinition ("Main");
          }
@@ -630,13 +646,12 @@ package viewer {
 
       private function RebuildPlayerWorld ():Boolean
       {
+      trace ("RebuildPlayerWorld");
+
          try
          {
             var isFirstTime:Boolean = (mPlayerWorld == null);
 
-            ClearInfoMessage ();
-
-         //trace ("RebuildPlayerWorld: isFirstTime = " + isFirstTime);
             if (isFirstTime)
             {
                RetrieveWorldPluginProperties ();
@@ -658,10 +673,8 @@ package viewer {
             }
             else
             {
-         //trace ("RebuildPlayerWorld: mWorldDesignProperties.Destroy = " + mWorldDesignProperties.Destroy);
                mWorldDesignProperties.Destroy ();
 
-         //trace ("RebuildPlayerWorld: mPlayerWorld = " + mPlayerWorld);
                if (mWorldLayer.contains (mPlayerWorld as Sprite))
                   mWorldLayer.removeChild (mPlayerWorld as Sprite);
 
@@ -669,25 +682,22 @@ package viewer {
             }
 
             mWorldBinaryData.position = 0;
-            var worldDefine:Object = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData)
+            var worldDefine:Object = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
+
+            if (mPlayerWorld == null)
+               throw new Error ("Fails to create world");
 
             RetrieveWorldDesignProperties ();
 
-            if (mPlayerWorld != null)
-            {
-               var hidePlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0;
+            var hidePlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) == 0;
 
-               mWorldDesignProperties.SetCacheSystemEvent (! hidePlayBar);
-               mWorldDesignProperties.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null);
+            mWorldDesignProperties.SetCacheSystemEvent (! hidePlayBar);
+            mWorldDesignProperties.SetInteractiveEnabledWhenPaused (hidePlayBar ||  mParamsFromEditor != null);
 
-               mWorldLayer.addChild (mPlayerWorld as Sprite);
+            mWorldLayer.addChild (mPlayerWorld as Sprite);
 
-               mEverFinished = false;
-            }
-
-            CloseFinishedDialog ();
-            CloseHelpDialog ();
+            mEverFinished = false;
 
             if (isFirstTime)
             {
@@ -696,29 +706,17 @@ package viewer {
                if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
                   mWorldLayer.y = mTopBarLayer.y + mTopBarLayer.height;
                else
-                  mWorldLayer.y = mTopBarLayer.y
-
-            //trace ("mWorldLayer.y = " + mWorldLayer.y);
+                  mWorldLayer.y = mTopBarLayer.y;
 
                CreateHelpDialog ();
-               //OpenHelpDialog ();
 
                CreateFinishedDialog ();
-
-               //CreateBottomBar ();
-
-               //CreateBorderLineLayer ();
 
                BuildContextMenu ();
             }
 
-            // special handling, before v1.02 (not include v1.02)
-            // (edit) ??? seems before v1.06 (including v1.06)
-            //if (mWorldPluginProperties.mWorldVersion < 0x0102)
-            if (mWorldPluginProperties.mWorldVersion <= 0x0106)
-            {
-               mWorldDesignProperties.Update (0, 1);
-            }
+            CloseFinishedDialog ();
+            CloseHelpDialog ();
 
             // from v1.5
             mWorldPlugin.Call ("SetUiParams", {
@@ -734,10 +732,18 @@ package viewer {
 
             mWorldDesignProperties.Initialize ();
 
-            //
+            // special handling, before v1.02 (not include v1.02), to make world center in viewer
+            // (edit) ??? seems before v1.06 (including v1.06)
+            // maybe it is better to put this in mWorldDesignProperties.Initialize ()
+            //if (mWorldPluginProperties.mWorldVersion < 0x0102)
+            if (mWorldPluginProperties.mWorldVersion <= 0x0106)
+            {
+               mWorldDesignProperties.Update (0, 1);
+            }
+
+            // ...
             mPlayerWorldZoomScale = mWorldDesignProperties.GetZoomScale ();
-            if (mPlayControlBar != null)
-               mPlayControlBar.SetZoomScale (mPlayerWorldZoomScale);
+            mPlayControlBar.SetZoomScale (mPlayerWorldZoomScale);
 
             if (isFirstTime)
             {
@@ -860,6 +866,7 @@ package viewer {
 //
 //======================================================================
 
+      /*
       private function ClearInfoMessage ():void
       {
          while (mErrorMessageLayer.numChildren > 0)
@@ -898,6 +905,7 @@ package viewer {
             mErrorMessageLayer.addChild (linkText);
          }
       }
+      */
 
 //======================================================================
 //
@@ -907,6 +915,7 @@ package viewer {
 
       private var mTextFinished:TextFieldEx;
       private var mTextAuthorInfo:TextFieldEx;
+      private var mButtonMainMenu:TextButton;
       private var mButtonReplay:TextButton;
       private var mButtonCloseFinishDialog:TextButton;
 
@@ -917,12 +926,22 @@ package viewer {
          var finishedText:String = "<font size='30' face='Verdana' color='#000000'> <b>Cool! It is solved.</b></font>";
          mTextFinished = TextFieldEx.CreateTextField (finishedText, false, 0xFFFFFF, 0x0, false);
 
-         mButtonReplay = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>   Replay   </font>", OnRestart);
-         mButtonCloseFinishDialog = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>   Close   </font>", CloseFinishedDialog);
+         mButtonMainMenu = new TextButton ("<font size='16' face='Verdana' color='#0000FF'> Menu</font>", OnMainMenu);
+         mButtonReplay = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Replay</font>", OnRestart);
+         mButtonCloseFinishDialog = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Close</font>", CloseFinishedDialog);
          var buttonContainer:Sprite = new Sprite ();
+         var buttonX:Number = 0;
+         if (mParamsFromContainer.OnMainMenu != null)
+         {
+            buttonContainer.addChild (mButtonMainMenu);
+            mButtonMainMenu.x = buttonX;
+            buttonX += mButtonMainMenu.width + 50;
+         }
          buttonContainer.addChild (mButtonReplay);
+         mButtonReplay.x = buttonX;
+         buttonX += mButtonReplay.width + 50;
          buttonContainer.addChild (mButtonCloseFinishDialog);
-         mButtonCloseFinishDialog.x = mButtonReplay.x + mButtonReplay.width + 50;
+         mButtonCloseFinishDialog.x = buttonX;
 
          var infoText:String = "";
 
@@ -950,13 +969,13 @@ package viewer {
          if (infoText.length > 0 )
             infoText = infoText + "<br>";
          infoText = infoText + "<br><font face='Verdana' size='15'>";
-         infoText = infoText + "Want to <font color='#0000FF'><u><a href='" + Define.EditorUrl + "' target='_blank'>design your own puzzles</a></u></font>?";
+         infoText = infoText + "Want to <font color='#0000FF'><u><a href='http://www.phyard.com' target='_blank'>design your own puzzles</a></u></font>?";
          infoText = infoText + "</font>";
 
          mTextAuthorInfo = TextFieldEx.CreateTextField (infoText, false, 0xFFFFFF, 0x0);
 
          mFinishedDialog = UiUtil.CreateDialog ([mTextFinished, 20, mTextAuthorInfo, 20, buttonContainer]);
-         CenterSprite (mFinishedDialog);
+         CenterSpriteOnWorld (mFinishedDialog);
          mFinishedDialog.visible = false;
          mFinishedDialog.alpha = 0.9;
 
@@ -998,7 +1017,7 @@ package viewer {
       private function CreateHelpDialog ():void
       {
          mHelpDialog = new PlayHelpDialog (CloseHelpDialog);
-         CenterSprite (mHelpDialog);
+         CenterSpriteOnWorld (mHelpDialog);
 
          mHelpDialog.visible = false;
 
@@ -1020,6 +1039,8 @@ package viewer {
       }
 
       private var mPlayControlBar:PlayControlBar = null;
+      private var mImageButtonMainMenu:ImageButton = null;
+      private var mImageButtonPhyard:ImageButton = null;
 
       private function CreateTopBar ():void
       {
@@ -1033,10 +1054,36 @@ package viewer {
          var viewerWidth:Number = viewportWidth;
          var viewerHeight:Number = showPlayBar ? (Define.PlayerPlayBarThickness + viewportHeight) : viewportHeight;
 
-         if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
+         //if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
+         if (mParamsFromUniViewer != null || mParamsFromGamePackage != null)
          {
-            CheckStageSize (viewerWidth, viewerHeight);
+            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+            var containerWidth :Number = containerSize.x;
+            var containerHeight:Number = containerSize.y;
+            var widthRatio :Number = containerWidth  / viewerWidth ;
+            var heightRatio:Number = containerHeight / viewerHeight;
+
+            if (widthRatio < heightRatio)
+            {
+               this.scaleX = this.scaleY = widthRatio;
+               this.x = 0;
+               this.y = 0.5 * Number (containerHeight - viewerHeight * widthRatio);
+            }
+            else if (widthRatio > heightRatio)
+            {
+               this.scaleX = this.scaleY = heightRatio;
+               this.x = 0.5 * Number (containerWidth - viewerWidth * heightRatio);
+               this.y = 0;
+            }
+            else
+            {
+               this.scaleX = this.scaleY = widthRatio;
+               this.x = 0;
+               this.y = 0;
+            }
          }
+
+         // play bar
 
          GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth, Define.PlayerPlayBarThickness, playBarColor, 1, true, playBarColor);
 
@@ -1059,7 +1106,27 @@ package viewer {
          mTopBarLayer.x = 0;
          mTopBarLayer.y = 0;
 
-         //
+         // main menu
+         if (mParamsFromContainer.OnMainMenu != null)
+         {
+            mImageButtonMainMenu = new ImageButton (mBitmapDataMainMenu);
+            mImageButtonMainMenu.SetClickEventHandler (OnMainMenu);
+            mTopBarLayer.addChild (mImageButtonMainMenu);
+            mImageButtonMainMenu.x = 2;
+            mImageButtonMainMenu.y = 2;
+         }
+
+         // phyard link
+         if (mParamsFromContainer.OnGoToPhyard != null)
+         {
+            mImageButtonPhyard = new ImageButton (mBitmapDataPhyard);
+            mImageButtonPhyard.SetClickEventHandler (OnGotoPhyard);
+            mTopBarLayer.addChild (mImageButtonPhyard);
+            mImageButtonPhyard.x = viewportWidth - mImageButtonPhyard.width - 2;
+            mImageButtonPhyard.y = 2;
+         }
+
+         // mask
          GraphicsUtil.ClearAndDrawRect (mMaskShape, 0, 0, viewerWidth, viewerHeight, 0x0, -1, true);
          if (mMaskViewerField)
          {
@@ -1068,23 +1135,21 @@ package viewer {
          }
       }
 
-      private function CenterSprite (sprite:Sprite):void
+      private function CenterSpriteOnWorld (sprite:Sprite):void
       {
-         var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
-         var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
-
-         sprite.x = mWorldLayer.x + 0.5 * (viewportWidth - sprite.width);
-         sprite.y = mWorldLayer.y + 0.5 * (viewportHeight - sprite.height);
+         sprite.x = mWorldLayer.x + 0.5 * (mWorldDesignProperties.GetViewportWidth () - sprite.width);
+         sprite.y = mWorldLayer.y + 0.5 * (mWorldDesignProperties.GetViewportHeight () - sprite.height);
       }
 
 //======================================================================
 //
 //======================================================================
 
+      /*
       private function CheckStageSize (contentWidth:Number, contentHeight:Number):void
       {
-         // in fact, I still don't know why this code work.
-         // weird flash.
+         // In fact, I still don't know why this code works.
+         // Weird flash!
 
          var defaultRatio:Number;
          var stageRatio:Number;
@@ -1145,6 +1210,37 @@ package viewer {
          this.x =  leftX - marginLeft;
          this.y = topY - marginTop;
       }
+      */
+
+      /*
+      private function CheckStageSize (viewerWidth:Number, viewerHeight:Number):void
+      {
+         var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+         var containerWidth :Number = containerSize.x;
+         var containerHeight:Number = containerSize.y;
+         var widthRatio :Number = containerWidth  / viewerWidth ;
+         var heightRatio:Number = containerHeight / viewerHeight;
+
+         if (widthRatio < heightRatio)
+         {
+            this.scaleX = this.scaleY = widthRatio;
+            this.x = 0;
+            this.y = 0.5 * Number (containerHeight - viewerHeight * widthRatio);
+         }
+         else if (widthRatio > heightRatio)
+         {
+            this.scaleX = this.scaleY = heightRatio;
+            this.x = 0.5 * Number (containerWidth - viewerWidth * heightRatio);
+            this.y = 0;
+         }
+         else
+         {
+            this.scaleX = this.scaleY = widthRatio;
+            this.x = 0;
+            this.y = 0;
+         }
+      }
+      */
 
 //======================================================================
 //
@@ -1203,9 +1299,9 @@ package viewer {
 
          if (mPlayerWorld != null)
          {
-            //var designVersionItem:ContextMenuItem = new ContextMenuItem("Design File Format Version: v" + DataFormat3.GetVersionString (mPlayerWorld.GetVersion ()), false);
-            // v1.00 has no GetVersion () in player.World
-            var designVersionItem:ContextMenuItem = new ContextMenuItem("Design File Format Version: v" + DataFormat3.GetVersionString (mWorldPluginProperties.mWorldVersion), false);
+            var designVersionItem:ContextMenuItem = new ContextMenuItem("Design File Format Version: v" + DataFormat3.GetVersionString (mPlayerWorld.GetVersion ()), false);
+            // v1.00 has no GetVersion () in player.World (fixed)
+            //var designVersionItem:ContextMenuItem = new ContextMenuItem("Design File Format Version: v" + DataFormat3.GetVersionString (mWorldPluginProperties.mWorldVersion), false);
             designVersionItem.enabled = false;
             theContextMenu.customItems.push (designVersionItem);
          }
@@ -1343,9 +1439,9 @@ package viewer {
 
                if (playcodeBase64 != null)
                {
-                  //var fileVersionHexString:String = DataFormat3.GetVersionHexString (mPlayerWorld.GetVersion ());
-                  // v1.00 has no GetVersion () in player.World
-                  var fileVersionHexString:String = DataFormat3.GetVersionHexString (mWorldPluginProperties.mWorldVersion);
+                  var fileVersionHexString:String = DataFormat3.GetVersionHexString (mPlayerWorld.GetVersion ());
+                  // v1.00 has no GetVersion () in player.World (fixed now)
+                  //var fileVersionHexString:String = DataFormat3.GetVersionHexString (mWorldPluginProperties.mWorldVersion);
 
                   var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
                   var viewportWidth:int = mWorldDesignProperties.GetViewportWidth ();
@@ -1433,9 +1529,21 @@ package viewer {
          mPlayerWorldZoomScaleChangedSpeed = ( mPlayerWorldZoomScale - mWorldDesignProperties.GetZoomScale () ) * 0.03;
       }
 
-      private function OnHelp(data:Object = null):void
+      private function OnHelp (data:Object = null):void
       {
          OpenHelpDialog ();
+      }
+
+      private function OnMainMenu (data:Object = null):void
+      {
+         if (mParamsFromContainer.OnMainMenu != null)
+            mParamsFromContainer.OnMainMenu (data);
+      }
+
+      private function OnGotoPhyard (data:Object = null):void
+      {
+         if (mParamsFromContainer.OnGoToPhyard != null)
+            mParamsFromContainer.OnGoToPhyard (data);
       }
 
    //=========================

@@ -127,6 +127,15 @@ package viewer {
       private var mWorldSourceCode:String = null;
 
       private var mPlayerWorld:Object = null;
+         private var mPlayBarColor:uint;
+         private var mShowPlayBar:Boolean;
+         private var mShowSpeedAdjustor:Boolean;
+         private var mShowScaleAdjustor:Boolean;
+         private var mShowHelpButton:Boolean;
+         private var mViewportWidth:int;
+         private var mViewportHeight:int;
+         private var mViewerWidth:Number;
+         private var mViewerHeight:Number;
 
       private var mIsPlaying:Boolean = false;
       private var mPlayingSpeedX:int = 2;
@@ -602,6 +611,16 @@ package viewer {
          if (mWorldDesignProperties.SetPaused == null)                       mWorldDesignProperties.SetPaused = DummyCallback;
          if (mWorldDesignProperties.SetInteractiveEnabledWhenPaused == null) mWorldDesignProperties.SetInteractiveEnabledWhenPaused = DummyCallback;
          if (mWorldDesignProperties.SetCacheSystemEvent == null)             mWorldDesignProperties.SetCacheSystemEvent = DummyCallback;
+
+         mPlayBarColor = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
+         mShowPlayBar = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
+         mShowSpeedAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
+         mShowScaleAdjustor = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
+         mShowHelpButton = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
+         mViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
+         mViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
+         mViewerWidth = mViewportWidth;
+         mViewerHeight = mShowPlayBar ? (Define.PlayerPlayBarThickness + mViewportHeight) : mViewportHeight;
       }
 
       private function DummyCallback (param1:Object = null, param2:Object = null, param3:Object = null):void
@@ -993,6 +1012,9 @@ package viewer {
             mEverFinished = true;
 
             mFinishedDialog.visible = true;
+
+            if (mParamsFromContainer.OnLevelFinished != null)
+               mParamsFromContainer.OnLevelFinished ();
          }
 
          if (mFinishedDialog.visible)
@@ -1044,65 +1066,28 @@ package viewer {
 
       private function CreateTopBar ():void
       {
-         var playBarColor:uint = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
-         var showPlayBar:Boolean = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0);
-         var showSpeedAdjustor:Boolean = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
-         var showScaleAdjustor:Boolean = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
-         var showHelpButton:Boolean = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
-         var viewportWidth:int = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
-         var viewportHeight:int = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
-         var viewerWidth:Number = viewportWidth;
-         var viewerHeight:Number = showPlayBar ? (Define.PlayerPlayBarThickness + viewportHeight) : viewportHeight;
-
-         //if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
-         if (mParamsFromUniViewer != null || mParamsFromGamePackage != null)
-         {
-            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
-            var containerWidth :Number = containerSize.x;
-            var containerHeight:Number = containerSize.y;
-            var widthRatio :Number = containerWidth  / viewerWidth ;
-            var heightRatio:Number = containerHeight / viewerHeight;
-
-            if (widthRatio < heightRatio)
-            {
-               this.scaleX = this.scaleY = widthRatio;
-               this.x = 0;
-               this.y = 0.5 * Number (containerHeight - viewerHeight * widthRatio);
-            }
-            else if (widthRatio > heightRatio)
-            {
-               this.scaleX = this.scaleY = heightRatio;
-               this.x = 0.5 * Number (containerWidth - viewerWidth * heightRatio);
-               this.y = 0;
-            }
-            else
-            {
-               this.scaleX = this.scaleY = widthRatio;
-               this.x = 0;
-               this.y = 0;
-            }
-         }
+         OnContainerResized ();
 
          // play bar
 
-         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, viewportWidth, Define.PlayerPlayBarThickness, playBarColor, 1, true, playBarColor);
+         GraphicsUtil.ClearAndDrawRect (mTopBarLayer, 0, 0, mViewportWidth, Define.PlayerPlayBarThickness, mPlayBarColor, 1, true, mPlayBarColor);
 
          mPlayControlBar = new PlayControlBar ({
                               OnRestart: OnRestart,
                               OnStart: OnStart,
                               OnPause: OnPause,
-                              OnSpeed: OnSpeed, mShowSpeedAdjustor: showSpeedAdjustor,
-                              OnZoom: OnZoom, mShowScaleAdjustor: showScaleAdjustor,
-                              OnHelp: OnHelp, mShowHelpButton: showHelpButton,
+                              OnSpeed: OnSpeed, mShowSpeedAdjustor: mShowSpeedAdjustor,
+                              OnZoom: OnZoom, mShowScaleAdjustor: mShowScaleAdjustor,
+                              OnHelp: OnHelp, mShowHelpButton: mShowHelpButton,
                               OnMainMenu: null
                            });
          mTopBarLayer.addChild (mPlayControlBar);
          mPlayControlBar.x = 0.5 * (mTopBarLayer.width - mPlayControlBar.width);
          mPlayControlBar.y = 2;
 
-         //GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, 0, 0, viewerWidth - 1, viewerHeight - 1, 0x606060);
+         //GraphicsUtil.ClearAndDrawRect (mBorderLineBarLayer, 0, 0, mViewerWidth - 1, mViewerHeight - 1, 0x606060);
 
-         mTopBarLayer.visible = showPlayBar;
+         mTopBarLayer.visible = mShowPlayBar;
          mTopBarLayer.x = 0;
          mTopBarLayer.y = 0;
 
@@ -1122,16 +1107,48 @@ package viewer {
             mImageButtonPhyard = new ImageButton (mBitmapDataPhyard);
             mImageButtonPhyard.SetClickEventHandler (OnGotoPhyard);
             mTopBarLayer.addChild (mImageButtonPhyard);
-            mImageButtonPhyard.x = viewportWidth - mImageButtonPhyard.width - 2;
+            mImageButtonPhyard.x = mViewportWidth - mImageButtonPhyard.width - 2;
             mImageButtonPhyard.y = 2;
          }
 
          // mask
-         GraphicsUtil.ClearAndDrawRect (mMaskShape, 0, 0, viewerWidth, viewerHeight, 0x0, -1, true);
+         GraphicsUtil.ClearAndDrawRect (mMaskShape, 0, 0, mViewerWidth, mViewerHeight, 0x0, -1, true);
          if (mMaskViewerField)
          {
             addChild (mMaskShape);
             this.mask = mMaskViewerField ? mMaskShape : null;
+         }
+      }
+
+      public function OnContainerResized ():void
+      {
+         //if (mParamsFromEditor == null || mParamsFromEditor.GetViewportSize == null)
+         if (mParamsFromUniViewer != null || mParamsFromGamePackage != null)
+         {
+            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+            var containerWidth :Number = containerSize.x;
+            var containerHeight:Number = containerSize.y;
+            var widthRatio :Number = containerWidth  / mViewerWidth ;
+            var heightRatio:Number = containerHeight / mViewerHeight;
+
+            if (widthRatio < heightRatio)
+            {
+               this.scaleX = this.scaleY = widthRatio;
+               this.x = 0;
+               this.y = 0.5 * Number (containerHeight - mViewerHeight * widthRatio);
+            }
+            else if (widthRatio > heightRatio)
+            {
+               this.scaleX = this.scaleY = heightRatio;
+               this.x = 0.5 * Number (containerWidth - mViewerWidth * heightRatio);
+               this.y = 0;
+            }
+            else
+            {
+               this.scaleX = this.scaleY = widthRatio;
+               this.x = 0;
+               this.y = 0;
+            }
          }
       }
 

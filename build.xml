@@ -197,14 +197,16 @@
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
-         <arg line="-define+=App::Default_Width,${--width}" />
-         <arg line="-define+=App::Default_Height,${--height}" />
+         <!-- two continious - is not allowed in comments, so use ## instead -->
+         <!--arg line="-define+=App::Default_Width,${##width}" /-->
+         <!--arg line="-define+=App::Default_Height,${##height}" /-->
          <arg line="-output=${dir.release.univiewer}/univiewer_unsecure.swf"/>
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
          <arg line="-use-network" />
-         <arg line="-default-size ${--width} ${--height}" />
+         <!-- two continious - is not allowed in comments, so use ## instead -->
+         <!--arg line="-default-size ${##width} ${##height}" /-->
          <arg line="-source-path=${dir.build.src}" />
          <arg line="-locale=en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />

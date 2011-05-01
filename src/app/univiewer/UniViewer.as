@@ -1,6 +1,7 @@
 package univiewer
 {
    import flash.display.StageScaleMode;
+   import flash.display.StageAlign;
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
    import flash.display.Sprite;
@@ -46,8 +47,11 @@ package univiewer
       private var mUniViewerUrl:String;
       private function OnAddedToStage (e:Event):void
       {
-         stage.scaleMode = StageScaleMode.SHOW_ALL;
-         
+         //stage.scaleMode = StageScaleMode.SHOW_ALL;
+         stage.scaleMode = StageScaleMode.NO_SCALE;
+         stage.align = StageAlign.TOP_LEFT;
+         stage.addEventListener(Event.RESIZE, OnResize);
+
          //
          SetInfoText ("Loading ... (" + StartLoadingPercent + "%)");
 
@@ -200,11 +204,26 @@ package univiewer
          var viewer:Sprite = (MainClass.Call as Function) ("NewViewer", {mParamsFromUniViewer: paramsFromUniViewer}) as Sprite;
          viewer.alpha = 0.0;
          addChild (viewer);
+
+         mWiewer = viewer;
       }
+
+      private var mWiewer:Object = null;
 
       private function GetViewportSize ():Point
       {
-         return new Point (App::Default_Width, App::Default_Height);
+         //return new Point (App::Default_Width, App::Default_Height);
+         return new Point (stage.stageWidth, stage.stageHeight);
+      }
+
+      private function OnResize (event:Event):void
+      {
+trace ("OnResize");
+         if (mWiewer != null && mWiewer.hasOwnProperty ("OnContainerResized"))
+         {
+trace ("  mWiewer.OnContainerResized");
+            mWiewer.OnContainerResized ();
+         }
       }
 
       private function OnLoadViewerSwfProgress (event:ProgressEvent):void
@@ -244,8 +263,10 @@ package univiewer
          {
             mInfoTextField.visible = true;
             mInfoTextField.htmlText = infoText;
-            mInfoTextField.x = 0.5 * (App::Default_Width - mInfoTextField.width);
-            mInfoTextField.y = 0.5 * (App::Default_Height - mInfoTextField.height);
+            //mInfoTextField.x = 0.5 * (App::Default_Width - mInfoTextField.width);
+            //mInfoTextField.y = 0.5 * (App::Default_Height - mInfoTextField.height);
+            mInfoTextField.x = 0.5 * (stage.stageWidth - mInfoTextField.width);
+            mInfoTextField.y = 0.5 * (stage.stageHeight - mInfoTextField.height);
          }
       }
    }

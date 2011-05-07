@@ -23,6 +23,19 @@ public function DestroyAllBreakableShapes ():void
    }
 }
 
+public function PutShapesInArray (shapes:Array):void
+{
+   if (shapes == null)
+      return;
+   
+   var shape:EntityShape = mShapeListHead;
+   while (shape != null)
+   {
+      shapes.push (shape);
+      shape = shape.mNextShapeInBody;
+   }
+}
+
 public function ApplyForceAtPoint (worldForceX:Number, worldForceY:Number, worldPointX:Number, worldPointY:Number):void
 {
    if (mPhysicsProxy == null)

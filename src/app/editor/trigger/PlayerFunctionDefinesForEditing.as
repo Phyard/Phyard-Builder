@@ -2274,6 +2274,14 @@ package editor.trigger {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers, entity_shape_brothers_package, "Get Shape Brothers", null, null,
+                     [
+                             new VariableDefinitionEntity ("A Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
+                     ],
+                     [
+                             new VariableDefinitionArray ("Brothers (including self)"), 
+                     ]
+                  );
          
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsAttchedWith, entity_shape_brothers_package, "Are Brothers", null, null,
                      [
@@ -2675,3 +2683,4 @@ package editor.trigger {
       }
    }
 }
+

@@ -381,6 +381,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
 
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBrothers,                 GetBrothers);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsAttchedWith,               IsAttchedWith);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Detach,                      DetachShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_AttachWith,                  AttachTwoShapes);
@@ -3532,6 +3533,23 @@ package player.trigger {
 
          shape.Teleport (shape.GetPositionX () + deltaX, shape.GetPositionY () + deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
+      
+      public static function GetBrothers (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shapes:Array = new Array ();
+         
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape != null && (! shape.IsDestroyedAlready ()))
+         {
+            var body:EntityBody = shape.GetBody ();
+            if (body != null)
+            {
+               body.PutShapesInArray (shapes);
+            }
+         }
+
+         valueTarget.AssignValueObject (shapes);
+      }
 
       public static function IsAttchedWith (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3579,10 +3597,7 @@ package player.trigger {
 	  public static function DetachShapeThenAttachWithAnother (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-         if (shape1 == null)
-            return;
-
-         if (shape1.IsDestroyedAlready ())
+         if (shape1 == null || shape1.IsDestroyedAlready ())
             return;
 
          valueSource = valueSource.mNextParameter;
@@ -3597,10 +3612,7 @@ package player.trigger {
       public static function BreakupShapeBrothers (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-         if (shape == null)
-            return;
-
-         if (shape.IsDestroyedAlready ())
+         if (shape == null || shape.IsDestroyedAlready ())
             return;
 
          shape.BreakupBrothers ();
@@ -3609,10 +3621,7 @@ package player.trigger {
       public static function DestroyBrothers (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
-         if (shape == null)
-            return;
-
-         if (shape.IsDestroyedAlready ())
+         if (shape == null || shape.IsDestroyedAlready ())
             return;
 
          var body:EntityBody = shape.GetBody ();

@@ -2252,6 +2252,14 @@ package common.trigger {
                      null
                   );
          
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers,       
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null], 
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsAttchedWith,       
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 

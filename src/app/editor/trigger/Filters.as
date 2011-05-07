@@ -44,6 +44,7 @@ package editor.trigger {
       // object can be an Entity subclass.prototype or a subclass instance
       public static const sShapeEntityClasses:Array = [
                   EntityShape,
+                  EntityUtilityCamera, // appended from v1.55
             ];
       
       // object can be an Entity subclass.prototype or a subclass instance

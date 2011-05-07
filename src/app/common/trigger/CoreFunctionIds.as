@@ -379,6 +379,7 @@ package common.trigger {
       public static const ID_EntityShape_Teleport:int                         = IdPool.CoreApiId_1252;
       public static const ID_EntityShape_TeleportOffsets:int                  = IdPool.CoreApiId_1253;
       
+      public static const ID_EntityShape_GetBrothers:int                    = IdPool.CoreApiId_1258;
       public static const ID_EntityShape_IsAttchedWith:int                  = IdPool.CoreApiId_1259;
       public static const ID_EntityShape_Detach:int                         = IdPool.CoreApiId_1260;
       public static const ID_EntityShape_AttachWith:int                     = IdPool.CoreApiId_1261;

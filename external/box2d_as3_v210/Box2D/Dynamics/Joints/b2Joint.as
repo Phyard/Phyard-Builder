@@ -308,9 +308,10 @@ package Box2D.Dynamics.Joints
 			{
 				oldBody.m_jointList = edge.next;
 			}
-
+			
 		// add self to new body joint list
 
+          edge.prev = null;
 			edge.next = newBody.m_jointList;
 			if (newBody.m_jointList != null) newBody.m_jointList.prev = edge;
 			newBody.m_jointList = edge;
@@ -320,7 +321,7 @@ package Box2D.Dynamics.Joints
 				FlagConnectedContactsForFiltering ();
 			}
 
-		// more tot do ...
+		// more to do ...
 
 			NotifyBodyChanged (oldBody, isBodyA);
 		}

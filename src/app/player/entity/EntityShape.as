@@ -219,11 +219,11 @@ package player.entity {
       protected var mBorderColor:uint = 0x0;
       protected var mBorderThickness:Number = 1;
       protected var mFilledColor:uint = 0xFFFFFFFF;
-      protected var mTransparency:uint = 100;
+      protected var mTransparency:uint = 100; // opacity in fact
       //<<
       
       //>> form v1.05
-      protected var mBorderTransparency:uint = 100;
+      protected var mBorderTransparency:uint = 100; // opacity in fact
       //<<
       
       //>> form v1.04

@@ -4401,6 +4401,7 @@ package editor {
          var newPosY:Number = mEditorWorld.GetCoordinateSystem ().P2D_PositionY (params.mPosY);
          if (! mEditorWorld.IsInfiniteSceneSize ())
          {
+            //todo: seems this is not essential
             newPosX = MathUtil.GetClipValue (newPosX, mEditorWorld.GetWorldLeft () - Define.WorldFieldMargin, mEditorWorld.GetWorldRight () + Define.WorldFieldMargin);
             newPosY = MathUtil.GetClipValue (newPosY, mEditorWorld.GetWorldTop () - Define.WorldFieldMargin, mEditorWorld.GetWorldBottom () + Define.WorldFieldMargin);
          }

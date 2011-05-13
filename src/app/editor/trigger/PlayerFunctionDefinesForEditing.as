@@ -1802,7 +1802,7 @@ package editor.trigger {
                      ]
                   );
          
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed, entity_common_package, "Is Destroyed", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed, entity_common_package, "Is Entity Destroyed", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mExceptClasses: Filters.sLogicEntityClasses}), 
                      ],
@@ -1810,7 +1810,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Already Destroyed?"), 
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_Destroy, entity_common_package, "Destroy", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_Destroy, entity_common_package, "Destroy Entity", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mExceptClasses: Filters.sLogicEntityClasses}), 
                      ],
@@ -2079,16 +2079,16 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Mass of Brothers?"), 
                      ],
                      [
-                             new VariableDefinitionNumber ("The Mass"), 
+                             new VariableDefinitionNumber ("Mass"), 
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia, shape_physics_properties_package, "Get Inertia", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia, shape_physics_properties_package, "Get Moment Of Inertia", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), 
-                             new VariableDefinitionBoolean ("Inertia of Brothers?"), 
+                             new VariableDefinitionBoolean ("MOI of Brothers?"), 
                      ],
                      [
-                             new VariableDefinitionNumber ("The Inertia"), 
+                             new VariableDefinitionNumber ("Moment Of Inertia"), 
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity, shape_physics_properties_package, "Get Density", null, null,

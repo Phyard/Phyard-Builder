@@ -1106,6 +1106,7 @@ package player.world {
          mNumContactInfos = 0;
          mShapeContactInfoHashtable = new Dictionary ();
          mFirstShapeContactInfo = null;
+         mShapeContactInfos_StepQueue = new Array ();
          
       // build proxy shapes
          

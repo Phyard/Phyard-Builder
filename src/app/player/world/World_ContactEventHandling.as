@@ -6,6 +6,14 @@ private var mNumContactInfos:int = 0;
 private var mShapeContactInfoHashtable:Dictionary = null;
 private var mFirstShapeContactInfo:ShapeContactInfo = null;
 
+private var mShapeContactInfos_StepQueue:Array = new Array ();
+
+private function PushShapeContactEvent (contactInfo:ShapeContactInfo):void
+{
+   contactInfo.mLastIndexInStepQueue = mShapeContactInfos_StepQueue.length;
+   mShapeContactInfos_StepQueue.push (contactInfo);
+}
+
 private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShape2:PhysicsProxyShape):void
 {
    //InfectShapes (proxyShape1.GetUserData () as EntityShape, proxyShape2.GetUserData () as EntityShape);
@@ -14,6 +22,8 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    
    var shape1:EntityShape = proxyShape1.GetEntityShape ();
    var shape2:EntityShape = proxyShape2.GetEntityShape ();
+   
+//trace ("+ OnShapeContactStarted, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
    
    if (shape1 == null || shape2 == null)
       return;
@@ -42,6 +52,10 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
       
       ++ contact_info.mNumContactPoints;
       contact_info.mNewestBeginContactingFrame = mNumSimulatedSteps;
+      
+      // from v1.56
+      // need not to push, just hint last end contact event will be ignored
+      PushShapeContactEvent (contact_info);
    }
    else
    {
@@ -66,6 +80,7 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
       contact_info.mEntityShape2 = shape2;
       contact_info.mNumContactPoints = 1;
       contact_info.mIsNewContact = true;
+      contact_info.mInKeepContactingList = false;
       contact_info.mBeginContactingFrame = mNumSimulatedSteps;
       
       contact_info.mFirstBeginContactingHandler = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, id1, id2, true);
@@ -77,17 +92,25 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
       //if (shape2.IsSensor () && shape1.IsShapeCenterPoint ())
       //   FindEventHandlerForEntityPair (CoreEventIds.ID_OnSensorContainsPhysicsShape, );
       
-      contact_info.mPrevContactInfo = null;
-      contact_info.mNextContactInfo = mFirstShapeContactInfo;
-      
-      if (mFirstShapeContactInfo != null)
-         mFirstShapeContactInfo.mPrevContactInfo = contact_info;
-      mFirstShapeContactInfo = contact_info;
-      
       mShapeContactInfoHashtable [contact_id] = contact_info;
       
-      ++ mNumContactInfos;
-      //trace (" +++ mNumContactInfos = " + mNumContactInfos);
+      //{ before v1.56
+      //contact_info.mPrevContactInfo = null;
+      //contact_info.mNextContactInfo = mFirstShapeContactInfo;
+      //
+      //if (mFirstShapeContactInfo != null)
+      //   mFirstShapeContactInfo.mPrevContactInfo = contact_info;
+      //mFirstShapeContactInfo = contact_info;
+      //
+      //++ mNumContactInfos;
+      ////trace (" +++ mNumContactInfos = " + mNumContactInfos);
+      //}
+      //{from v1.56
+      contact_info.mPrevContactInfo = null;
+      contact_info.mNextContactInfo = null;
+
+      PushShapeContactEvent (contact_info);
+      //}}
    }
    
    //trace ("contact_info#" + contact_id + "'s.mNumContactPoints = " + contact_info.mNumContactPoints);
@@ -99,6 +122,8 @@ private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxySha
    
    var shape1:EntityShape = proxyShape1.GetEntityShape ();
    var shape2:EntityShape = proxyShape2.GetEntityShape ();
+   
+//trace ("- OnShapeContactFinished, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
    
    if (shape1 == null || shape2 == null)
       return;
@@ -130,8 +155,14 @@ private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxySha
    
    //if (contact_info.mNumContactPoints <= 0)
    //{
-      // lazy destroy, this lien is moved to HandleShapeContactEvents
+      // lazy destroy, this line is moved to HandleShapeContactEvents
       // RemoveContactFromContactList (contact_info);
+   //}
+   
+   // from v1.56
+   //if (contact_info.mNumContactPoints <= 0)
+   //{
+      PushShapeContactEvent (contact_info);
    //}
 }
 
@@ -144,6 +175,150 @@ private var mContactEventHandlerValueSource1_InvertEntityOrder:Parameter_Direct 
 private var mContactEventHandlerValueSource0_InvertEntityOrder:Parameter_Direct = new Parameter_Direct (null, mContactEventHandlerValueSource1_InvertEntityOrder);
 private var mContactEventHandlerValueSourceList_InvertEntityOrder:Parameter = mContactEventHandlerValueSource0_InvertEntityOrder;
 
+// new handling from v1.56
+private function HandleShapeContactEvents ():void
+{
+   var contact_info:ShapeContactInfo;
+   
+   // handle contact begin and end events
+   
+   var newShapeContactInfos:Array = new Array ();
+   
+   var count:int = mShapeContactInfos_StepQueue.length;
+   var i:int;
+//trace ("> count = " + count);
+   for (i = 0; i < count; ++ i)
+   {
+      contact_info = mShapeContactInfos_StepQueue [i] as ShapeContactInfo;
+      
+//trace ("11111111111  i = " + i);
+      // the first start contacting event for a pair
+      if (contact_info.mIsNewContact)
+      {
+//trace ("          mIsNewContact = " + contact_info.mIsNewContact);
+         // handle event
+         HandleShapeContactEvent (contact_info, contact_info.mFirstBeginContactingHandler, true);
+         ++ mNumContactInfos;
+         //trace (" ++ mNumContactInfos = " + mNumContactInfos);
+          
+         // add to new contact list 
+         
+         contact_info..mIsNewContact = false;
+         contact_info.mBeginContactingFrame = mNumSimulatedSteps;
+               // sometimes, contact_info.mBeginContactingFrame + 1 = mNumSimulatdSteps, so adjust it 
+               // ? forget what this means. :(, (maybe it is only needed in the old handling function)
+         
+         if (contact_info.mNumContactPoints > 0)
+         {
+            newShapeContactInfos.push (contact_info);
+         }
+      }
+
+//trace ("222222222222222222");
+      // the last end contacting event for a pair 
+      if (contact_info.mNumContactPoints <= 0)
+      {
+//trace ("          mNumContactPoints = " + contact_info.mNumContactPoints);
+         if (contact_info.mLastIndexInStepQueue == i) // only handle it if it is the last one of this contact info in the queue
+         {
+//trace ("          mLastIndexInStepQueue = " + contact_info.mLastIndexInStepQueue);
+            HandleShapeContactEvent (contact_info, contact_info.mFirstEndContactingHandler, false);
+            -- mNumContactInfos;
+            //trace (" -- mNumContactInfos = " + mNumContactInfos);
+            
+            // remove
+            
+            delete mShapeContactInfoHashtable [contact_info.mContactId];
+               
+            if (contact_info.mInKeepContactingList)
+            {
+//trace ("          mInKeepContactingList = " + contact_info.mInKeepContactingList);
+               if (contact_info.mPrevContactInfo != null)
+                  contact_info.mPrevContactInfo.mNextContactInfo = contact_info.mNextContactInfo;
+               else //if (mFirstShapeContactInfo == contact_info)
+                  mFirstShapeContactInfo = mFirstShapeContactInfo.mNextContactInfo;
+               
+               if (contact_info.mNextContactInfo != null)
+                  contact_info.mNextContactInfo.mPrevContactInfo = contact_info.mPrevContactInfo;
+               
+               // mvoe to free list
+               
+               contact_info.mNextFreeContactInfo = mFreeContactInfoListHead;
+               mFreeContactInfoListHead = contact_info;
+               
+               contact_info.mPrevContactInfo = null;
+               contact_info.mNextContactInfo = null;               
+            }
+         }
+      }
+   }
+   
+   mShapeContactInfos_StepQueue = new Array ();
+   
+   // handle keep contacting events
+   
+   var last_contact_info:ShapeContactInfo;
+   contact_info = mFirstShapeContactInfo;
+   while (contact_info != null)
+   {
+      HandleShapeContactEvent (contact_info, contact_info.mFirstKeepContactingHandler, true);
+      
+      last_contact_info = contact_info;
+      contact_info = contact_info.mNextContactInfo;
+   }
+   
+   // append new contacts to the end of contact list
+   
+   count = newShapeContactInfos.length;
+   for (i = 0; i < count; ++ i)
+   {
+      contact_info = newShapeContactInfos [i] as ShapeContactInfo;
+      
+      if (last_contact_info == null) // mFirstShapeContactInfo must be null
+      {
+         mFirstShapeContactInfo = contact_info;   
+      }
+      else
+      {
+         //if (mFirstShapeContactInfo != null)
+         //   mFirstShapeContactInfo.mPrevContactInfo = contact_info;
+         //mFirstShapeContactInfo = contact_info;
+         
+         last_contact_info.mNextContactInfo = contact_info;
+         contact_info.mPrevContactInfo = last_contact_info;
+      }
+      
+      contact_info.mInKeepContactingList = true;
+
+      last_contact_info = contact_info;
+   } 
+}
+
+private function HandleShapeContactEvent (contactInfo:ShapeContactInfo, contactingHandlerListElement:ListElement_EventHandler, doInfection:Boolean):void
+{
+   if (doInfection)
+   {
+      InfectShapes (contactInfo.mEntityShape1, contactInfo.mEntityShape2);
+   }
+   
+   mContactEventHandlerValueSource0.mValueObject = contactInfo.mEntityShape1;
+   mContactEventHandlerValueSource1.mValueObject = contactInfo.mEntityShape2;
+   mContactEventHandlerValueSource2.mValueObject = mNumSimulatedSteps - contactInfo.mBeginContactingFrame;
+   
+   mContactEventHandlerValueSource0_InvertEntityOrder.mValueObject = contactInfo.mEntityShape2;
+   mContactEventHandlerValueSource1_InvertEntityOrder.mValueObject = contactInfo.mEntityShape1;
+   
+   IncStepStage ();
+   while (contactingHandlerListElement != null)
+   {
+      contactingHandlerListElement.mEventHandler.HandleEvent (contactingHandlerListElement.mNeedExchangePairOrder ? mContactEventHandlerValueSourceList_InvertEntityOrder :mContactEventHandlerValueSourceList);
+      
+      contactingHandlerListElement = contactingHandlerListElement.mNextListElement;
+   }
+}
+
+// old handling before v1.56
+/*
 private function HandleShapeContactEvents ():void
 {
    var list_element:ListElement_EventHandler;
@@ -241,6 +416,7 @@ private function HandleShapeContactEvents ():void
       contact_info = contact_info.mNextContactInfo;
    }
 }
+*/
 
 private function FindEventHandlerForEntityPair (eventId:int, entityId1:int, entityId2:int, ignorePairOrder:Boolean):ListElement_EventHandler
 {

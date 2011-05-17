@@ -1667,14 +1667,14 @@ package editor {
          if (IsEditing ())
          {
             var newSscale:Number = mEditorWorldZoomScale * (scaleIn ? 2.0 : 0.5);
-            if (int (newSscale * 16.0) <= 1)
+            if (int (newSscale * 32.0) <= 1)
             {
-               newSscale = 1.0 / 16.0;
+               newSscale = 1.0 / 32.0;
                reachLimit = true;
             }
-            if (int (newSscale) >= 16)
+            if (int (newSscale) >= 32)
             {
-               newSscale = 16.0;
+               newSscale = 32.0;
                reachLimit = true;
             }
             

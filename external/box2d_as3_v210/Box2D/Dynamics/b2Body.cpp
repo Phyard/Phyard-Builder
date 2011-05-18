@@ -132,6 +132,12 @@ public function SetType(type:int):void
 	{
 		m_linearVelocity.SetZero();
 		m_angularVelocity = 0.0;
+		
+		//>>hacking
+      m_sweep.c0.x = m_sweep.c.x;
+      m_sweep.c0.y = m_sweep.c.y;
+		m_sweep.a0 = m_sweep.a;
+		//<<
 	}
 
 	SetAwake(true);

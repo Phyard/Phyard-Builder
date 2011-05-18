@@ -122,7 +122,7 @@ public function Collide():void
 		var indexB:int = c.GetChildIndexB();
 		var bodyA:b2Body = fixtureA.GetBody();
 		var bodyB:b2Body = fixtureB.GetBody();
-
+		
 		if (bodyA.IsAwake() == false && bodyB.IsAwake() == false)
 		{
 			c = c.GetNext();

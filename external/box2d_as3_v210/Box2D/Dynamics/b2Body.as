@@ -787,6 +787,30 @@ package Box2D.Dynamics
 // hacking
 //******************************************************************************
 		
+      public function ClearVelocities ():void
+      {
+         m_linearVelocity.x = 0;
+         m_linearVelocity.y = 0;
+         m_angularVelocity = 0;
+      }
+      
+      public function ClearPowers ():void
+      {
+         m_force.x = 0;
+         m_force.y = 0;
+         m_torque = 0;
+      }
+      
+      public function GetAccForce ():b2Vec2
+      {
+         return m_force;
+      }
+      
+      public function GetAccTorque ():Number
+      {
+         return m_torque;
+      }
+
 		private var mAutoUpdateMass:Boolean = true;
 		
 		public function SetAutoUpdateMass (auto:Boolean):void

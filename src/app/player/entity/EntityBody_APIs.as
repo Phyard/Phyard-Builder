@@ -71,3 +71,13 @@ public function ApplyAngularImpulse (angularImpulse:Number):void
    
    FlagVelocitySynchronized (false);
 }
+
+public function ClearVelocities ():void
+{
+   if (mPhysicsProxy == null)
+      return;
+   
+   mPhysicsProxyBody.ClearVelocities ();
+   
+   FlagVelocitySynchronized (false);
+}

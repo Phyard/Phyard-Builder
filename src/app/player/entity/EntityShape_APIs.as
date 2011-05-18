@@ -269,14 +269,40 @@ public function AttachWith (anotherShape:EntityShape):void
    
 // ...
    
-   var isPhysicsBody:Boolean = discardedBody.mPhysicsShapeListHead != null;
+   //var isDiscardedPhysicsBody:Boolean = discardedBody.mPhysicsShapeListHead != null;
+   //var isKeptPhysicsBody     :Boolean = keptBody.mPhysicsShapeListHead != null;
+   // the 2 are more error tolerant
+   var isDiscardedPhysicsBody:Boolean = discardedBody.mPhysicsProxyBody != null;
+   var isKeptPhysicsBody     :Boolean = keptBody.mPhysicsProxyBody != null; // if isDiscardedPhysicsBody is true, then isKeptPhysicsBody must be true
    
    discardedBody.SynchronizeVelocityWithPhysicsProxy ();
+   var discardPositionX:Number = discardedBody.mPositionX;
+   var discardPositionY:Number = discardedBody.mPositionY;
    var discardMass:Number = discardedBody.GetMass ();
    var discardInertia:Number = discardedBody.GetInertia ();
+   var discardMomentumX:Number = discardMass * discardedBody.mLinearVelocityX;
+   var discardMomentumY:Number = discardMass * discardedBody.mLinearVelocityY;
+   var discardAngularMomentum:Number = discardInertia * discardedBody.mAngularVelocity;
+   // the 3 must check isDiscardedPhysicsBody
+   var discardForceX:Number = isDiscardedPhysicsBody ? discardedBody.mPhysicsProxyBody.GetAccForceX () : 0;
+   var discardForceY:Number = isDiscardedPhysicsBody ? discardedBody.mPhysicsProxyBody.GetAccForceY () : 0;
+   var discardTorque:Number = isDiscardedPhysicsBody ? discardedBody.mPhysicsProxyBody.GetAccTorque () : 0;
+         
+   keptBody.SynchronizeVelocityWithPhysicsProxy ();
+   var keptOldPositionX:Number = keptBody.mPositionX;
+   var keptOldPositionY:Number = keptBody.mPositionY;
+   var keptOldMass:Number = keptBody.GetMass ();
+   var keptOldInertia:Number = keptBody.GetInertia ();
+   var keptOldMomentumX:Number = keptOldMass * keptBody.mLinearVelocityX;
+   var keptOldMomentumY:Number = keptOldMass * keptBody.mLinearVelocityY;
+   var keptOldAngularMomentum:Number = keptOldInertia * keptBody.mAngularVelocity;
+   // the 3 must check isKeptPhysicsBody
+   var keptOldForceX:Number = isKeptPhysicsBody ? keptBody.mPhysicsProxyBody.GetAccForceX () : 0;
+   var keptOldForceY:Number = isKeptPhysicsBody ? keptBody.mPhysicsProxyBody.GetAccForceY () : 0;
+   var keptOldTorque:Number = isKeptPhysicsBody ? keptBody.mPhysicsProxyBody.GetAccTorque () : 0;
    
 // ...
-   
+
    var shape:EntityShape;
    var jointAnchor:SubEntityJointAnchor;
    while (discardedBody.mShapeListHead != null)
@@ -297,20 +323,61 @@ public function AttachWith (anotherShape:EntityShape):void
    }
    
 // ..
-   
-   keptBody.OnPhysicsShapeListChanged ();
-   
-   if (isPhysicsBody)
+
+trace ("-----------------");
+   if (isDiscardedPhysicsBody) // then the kept must be also is physics body
    {
-      var momentumX:Number = discardMass * discardedBody.mLinearVelocityX;
-      var momentumY:Number = discardMass * discardedBody.mLinearVelocityY;
-      keptBody.mPhysicsProxyBody.AddLinearImpulseAtPoint (momentumX, momentumY, discardedBody.mPositionX, discardedBody.mPositionY);
-      keptBody.mPhysicsProxyBody.AddAngularImpulse (discardInertia * discardedBody.mAngularVelocity + (discardedBody.mPositionX - keptBody.mPositionX) * momentumY - (discardedBody.mPositionY - keptBody.mPositionY) * momentumX);
+      keptBody.OnPhysicsShapeListChanged ();
+      
+      keptBody.SynchronizeVelocityWithPhysicsProxy (); // body position may be changed in the last calling
+      
+      var newPositionX:Number = keptBody.mPositionX;
+      var newPositionY:Number = keptBody.mPositionY;
+      
+      // conservation of momentum and angular momentum
+      keptBody.ClearVelocities ();
+      keptBody.ApplyLinearImpulse (discardMomentumX, discardMomentumY, discardPositionX, discardPositionY);
+      keptBody.ApplyLinearImpulse (keptOldMomentumX, keptOldMomentumY, keptOldPositionX, keptOldPositionY);
+      keptBody.ApplyAngularImpulse (discardAngularMomentum);
+      keptBody.ApplyAngularImpulse (keptOldAngularMomentum);
+
+trace ("discardMomentumX = " + discardMomentumX + ", discardMomentumY = " + discardMomentumY + ", discardAngularMomentum = " + discardAngularMomentum);
+trace ("keptOldMomentumX = " + keptOldMomentumX + ", keptOldMomentumY = " + keptOldMomentumY + ", keptOldAngularMomentum = " + keptOldAngularMomentum);
+      
+      // re-apply force and torques
+      keptBody.mPhysicsProxyBody.ClearPowers ();
+      keptBody.ApplyForceAtPoint (discardForceX, discardForceY, discardPositionX, discardPositionY);
+      keptBody.ApplyForceAtPoint (keptOldForceX, keptOldForceY, keptOldPositionX, keptOldPositionY);
+      keptBody.ApplyTorque (discardTorque);
+      keptBody.ApplyTorque (keptOldTorque);
+   
+      //var deltaMomentumX:Number = discardMomentumX + keptOldMomentumX - newMomentumX;
+      //var deltaMomentumY:Number = discardMomentumY + keptOldMomentumY - newMomentumY;
+      
+      //keptBody.mPhysicsProxyBody.AddLinearImpulseAtPoint (momentumX, momentumY, discardedBody.mPositionX, discardedBody.mPositionY);
+      //keptBody.mPhysicsProxyBody.AddAngularImpulse (discardInertia * discardedBody.mAngularVelocity + (discardedBody.mPositionX - keptBody.mPositionX) * momentumY - (discardedBody.mPositionY - keptBody.mPositionY) * momentumX);
+      
+      //keptBody.ApplyLinearImpulse (momentumX, momentumY, discardedBody.mPositionX, discardedBody.mPositionY);
+      //keptBody.ApplyAngularImpulse (discardInertia * discardedBody.mAngularVelocity + (discardedBody.mPositionX - keptBody.mPositionX) * momentumY - (discardedBody.mPositionY - keptBody.mPositionY) * momentumX);
+      
+      // 
+      keptBody.SynchronizeVelocityWithPhysicsProxy ();
+trace ("newMomentumX = " + keptBody.GetMass () * keptBody.mLinearVelocityX + ", newMomentumY = " + keptBody.GetMass () * keptBody.mLinearVelocityY + ", newAngularMomentum = " + keptBody.GetInertia () * keptBody.mAngularVelocity);
+   }
+   
+   // ...
+   
+   shape = keptBody.mShapeListHead;
+   while (shape != null)
+   {
+      shape.FlagVelocitySynchronized (false);
+      
+      shape = shape.mNextShapeInBody;
    }
    
 // ..
    
-   discardedBody.OnPhysicsShapeListChanged ();
+   discardedBody.OnPhysicsShapeListChanged (); // this will destroy discardedBody
 }
 
 public function DetachThenAttachWith (anotherShape:EntityShape):void

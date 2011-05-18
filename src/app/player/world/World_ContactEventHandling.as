@@ -178,6 +178,19 @@ private var mContactEventHandlerValueSourceList_InvertEntityOrder:Parameter = mC
 // new handling from v1.56
 private function HandleShapeContactEvents ():void
 {
+   // All events created in box2d.world.step will be cached and delay-executed after box2d.world.step ().
+   // This is to prevent problems caused by some API callings, such as DestroyEntity, CreateEntity and TeleportEntity, etc. 
+   // After box2d.world.step (), the events created in box2d.world.step will be handled 
+   // by the occurring sequence (what this function HandleShapeContactEvents does). 
+   // 
+   // The handling described above may cause some weird or unreasonable things. For example:
+   // - a DestroyEntity calling will make an entity destroyed. But there are still some contact events related with it to handle in the event queue.
+   // - a Move/Rotate/Scale?/Flip Shape calling will make 2 shapes beging or end contacting, but this is not reflected immediately to sequenced events in queue.
+   // These defects are hard to avoid gracefully.  
+   //
+   // Another point to notice is this function will only handle the events when the function HandleShapeContactEvents is just called.
+   // New contact events created by some API callings such as DestroyEntity will be handled in the next step.
+
    var contact_info:ShapeContactInfo;
    
    // handle contact begin and end events
@@ -207,6 +220,7 @@ private function HandleShapeContactEvents ():void
          contact_info.mBeginContactingFrame = mNumSimulatedSteps;
                // sometimes, contact_info.mBeginContactingFrame + 1 = mNumSimulatdSteps, so adjust it 
                // ? forget what this means. :(, (maybe it is only needed in the old handling function)
+               // Edit: the reason is a contact may be destroy by a API calling.
          
          if (contact_info.mNumContactPoints > 0)
          {
@@ -253,7 +267,8 @@ private function HandleShapeContactEvents ():void
       }
    }
    
-   mShapeContactInfos_StepQueue = new Array ();
+   //mShapeContactInfos_StepQueue = new Array (); // wrong!!! This will discard new ones created by API callings in the above loop.
+   mShapeContactInfos_StepQueue = mShapeContactInfos_StepQueue.slice (count); // subArray. New created contact events will be handled in the next step.
    
    // handle keep contacting events
    

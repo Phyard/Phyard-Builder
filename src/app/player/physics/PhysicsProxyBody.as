@@ -174,6 +174,31 @@ package player.physics {
          return _b2Body.IsFixedRotation ();
       }
       
+      public function ClearVelocities ():void
+      {
+         _b2Body.ClearVelocities ();
+      }
+      
+      public function ClearPowers ():void
+      {
+         _b2Body.ClearPowers ();
+      }
+      
+      public function GetAccForceX ():Number
+      {
+         return _b2Body.GetAccForce ().x;
+      }
+      
+      public function GetAccForceY ():Number
+      {
+         return _b2Body.GetAccForce ().y;
+      }
+      
+      public function GetAccTorque ():Number
+      {
+         return _b2Body.GetAccTorque ();
+      }
+      
       public function AddForceAtPoint (worldForceX:Number, worldForceY:Number, worldX:Number, worldY:Number):void
       {
          _b2Body.ApplyForce (

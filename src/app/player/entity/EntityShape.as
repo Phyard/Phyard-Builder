@@ -817,7 +817,7 @@ package player.entity {
             mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
             SetRotation (mBody.mPhysicsRotation + mRelativeRotation);
          }
-         
+
          var newX:Number = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
          var newY:Number = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
          var newR:Number = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotationInTwoPI) * Define.kRadians2Degrees;
@@ -1058,7 +1058,7 @@ package player.entity {
             
             if (body != null)
             {
-               body.AddShape (this);
+               body.AddShape (this); // mBody will be the input body here
                
                // here not rebuild physics automatically.
             }

@@ -169,7 +169,7 @@ package player.entity {
          shape.mBody = null;
       }
       
-      public function OnPhysicsShapeListChanged (physicsListChanged:Boolean = true):void
+      public function OnShapeListChanged (physicsListChanged:Boolean):void
       {
          if (mShapeListHead == null)
          {
@@ -186,7 +186,10 @@ package player.entity {
                else if (physicsListChanged)
                {
                   UpdateBodyPhysicsProperties ();
-                  mPhysicsProxyBody.SetSleeping (false);
+                  if (mPhysicsProxy != null)
+                  {
+                     mPhysicsProxyBody.SetSleeping (false);
+                  }
                }
             }
             
@@ -209,6 +212,15 @@ package player.entity {
       
       // EntityBody.Update () will never be called. SynchronizeWithPhysicsProxy will do what Update () should do.
       override public function SynchronizeWithPhysicsProxy ():void
+      {
+         SynchronizeWithPhysicsProxyManually ();
+      
+         // remove manual-modify flags
+         mVelocityChangedManually = false;
+         mMovedManually = false;
+      }
+      
+      internal function SynchronizeWithPhysicsProxyManually ():void
       {
          if (mShapeListHead == null)
          {
@@ -253,6 +265,28 @@ package player.entity {
          }
       }
       
+  // =======
+      
+      internal var mMovedManually:Boolean = false;
+      
+      public function NotifyMovedManually ():void
+      {
+         mMovedManually = true;
+      }
+      
+      internal function NotifyShapesWorldCentroidChanged ():void
+      {
+         mMovedManually = false;
+         
+         var shape:EntityShape = mShapeListHead;
+         while (shape != null)
+         {
+            shape.FlagWorldCentroidSynchronized (false);
+            
+            shape = shape.mNextShapeInBody;
+         }
+      }
+      
 //=============================================================
 //   mass, inertia
 //=============================================================
@@ -277,6 +311,24 @@ package player.entity {
 //   velocity
 //=============================================================
       
+      // from v1.56, body velocities are not cached to avoid careless bugs
+      
+      public function GetLinearVelocityX ():Number
+      {
+         return mPhysicsProxy == null ? 0.0 : mPhysicsProxyBody.GetLinearVelocityX ();
+      }
+      
+      public function GetLinearVelocityY ():Number
+      {
+         return mPhysicsProxy == null ? 0.0 : mPhysicsProxyBody.GetLinearVelocityY ();
+      }
+      
+      public function GetAngularVelocity ():Number
+      {
+         return mPhysicsProxy == null ? 0.0 : mPhysicsProxyBody.GetAngularVelocity ();
+      }
+      
+      /*
       // for judging if this condition is evaluated already in current step.
       private var mLastVelocityUpdatedStep:int = -1;
       
@@ -319,6 +371,27 @@ package player.entity {
             }
          }
       }
+      */
+      
+      internal var mVelocityChangedManually:Boolean = false;
+      
+      public function NotifyVelocityChangedManually ():void
+      {
+         mVelocityChangedManually = true;
+      }
+      
+      internal function NotifyShapesVelocityChanged ():void
+      {
+         mVelocityChangedManually = false;
+         
+         var shape:EntityShape = mShapeListHead;
+         while (shape != null)
+         {
+            shape.FlagVelocitySynchronized (false);
+            
+            shape = shape.mNextShapeInBody;
+         }
+      }
       
 //=============================================================
 //   physics proxy
@@ -351,6 +424,8 @@ package player.entity {
          super.DestroyPhysicsProxy ();
          
          mPhysicsProxyBody = null;
+         
+         NotifyVelocityChangedManually ();
       }
       
       internal function GetPhysicsProxyBody ():PhysicsProxyBody
@@ -370,6 +445,8 @@ package player.entity {
          //mPhysicsProxyBody.SetUserData (this);
          mPhysicsProxyBody.SetAutoUpdateMass (false);
          mPhysicsProxyBody.SetViewZeroMassAsStatic (true);
+         
+         NotifyVelocityChangedManually ();
       }
       
       public function UpdateBodyPhysicsProperties ():void
@@ -523,7 +600,7 @@ package player.entity {
          mPhysicsProxyBody.SetSleeping (sleeping);
          
          // bug fixed in v1.53
-         FlagVelocitySynchronized (false);
+         //FlagVelocitySynchronized (false);
       }
 
    }

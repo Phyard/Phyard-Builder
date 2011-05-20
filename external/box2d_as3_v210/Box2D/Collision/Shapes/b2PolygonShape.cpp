@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -25,12 +25,12 @@ override public function Clone(allocator:b2BlockAllocator = null):b2Shape
 	//b2PolygonShape* clone = new (mem) b2PolygonShape;
 	//*clone = *this;
 	//return clone;
-	
+
 	var clone:b2PolygonShape = new b2PolygonShape ();
-	
+
 	clone.m_type = m_type;
 	clone.m_radius = m_radius;
-	
+
 	clone.m_centroid.CopyFrom (m_centroid);
 	clone.m_vertexCount = m_vertexCount;
 	for (var i:int = 0; i < m_vertexCount; ++ i)
@@ -38,7 +38,7 @@ override public function Clone(allocator:b2BlockAllocator = null):b2Shape
 		(clone.m_vertices [i] as b2Vec2).CopyFrom (m_vertices [i] as b2Vec2);
 		(clone.m_normals [i] as b2Vec2).CopyFrom (m_normals [i] as b2Vec2);
 	}
-	
+
 	return clone;
 }
 
@@ -64,7 +64,7 @@ public function SetAsBox(hx:Number, hy:Number, center:b2Vec2 = null, angle:Numbe
 	{
 		center = b2Vec2.b2Vec2_From2Numbers (0.0, 0.0);
 	}
-	
+
 	m_vertexCount = 4;
 	(m_vertices[0] as b2Vec2).Set(-hx, -hy);
 	(m_vertices[1] as b2Vec2).Set( hx, -hy);
@@ -151,7 +151,7 @@ public static function ComputeCentroid(vs:Array, count:int):b2Vec2
 	// It's location doesn't change the result (except for rounding error).
 	//b2Vec2 pRef(0.0f, 0.0f);
 	var pRef:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (0.0, 0.0);
-	
+
 //#if 0
 //	// This code would put the reference point inside the polygon.
 //	for (int32 i = 0; i < count; ++i)
@@ -162,7 +162,7 @@ public static function ComputeCentroid(vs:Array, count:int):b2Vec2
 //#endif
 
 	const inv3:Number = 1.0 / 3.0;
-	
+
 	var e1:b2Vec2 = new b2Vec2 ();
 	var e2:b2Vec2 = new b2Vec2 ();
 	var tempF:Number;
@@ -213,14 +213,14 @@ public function Set(vertices:Array, count:int):void
 	var i2:int;
 	var edge:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
-	
+
 	//b2Assert(3 <= count && count <= b2Settings.b2_maxPolygonVertices);
 	//>>hacking
 	if (count < 3)
 	{
 		//if (count == 2)
 		//	SetAsEdge (vertices[0], vertices[1]);
-		
+
 		return;
 	}
 	//<<
@@ -261,7 +261,7 @@ public function Set(vertices:Array, count:int):void
 //			{
 //				continue;
 //			}
-//			
+//
 //			b2Vec2 r = m_vertices[j] - m_vertices[i1];
 //
 //			// Your polygon is non-convex (it has an indentation) or
@@ -281,7 +281,7 @@ override public function TestPoint(xf:b2Transform, p:b2Vec2):Boolean
 {
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var pLocal:b2Vec2 = new b2Vec2 ();
-	
+
 	//b2Vec2 pLocal = b2MulT(xf.R, p - xf.position);
 	tempV.x = p.x - xf.position.x;
 	tempV.y = p.y - xf.position.y;
@@ -337,7 +337,7 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 		var v1:b2Vec2 = m_vertices[0];
 		var v2:b2Vec2 = m_vertices[1];
 		var normal:b2Vec2 = m_normals[0];
-	
+
 		// q = p1 + t * d
 		// dot(normal, q - v1) = 0
 		// dot(normal, p1 - v1) + t * dot(normal, d) = 0
@@ -345,21 +345,21 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 		tempV.y = v1.y - p1.y;
 		numerator = b2Math.b2Dot2 (normal, tempV);
 		denominator = b2Math.b2Dot2 (normal, d);
-	
+
 		if (denominator == 0.0)
 		{
 			return false;
 		}
-	
+
 		var t:Number = numerator / denominator;
 		if (t < 0.0 || 1.0 < t)
 		{
 			return false;
 		}
-	
+
 		q.x = p1.x + t * d.x;
 		q.y = p1.y + t * d.y;
-	
+
 		// q = v1 + s * r
 		// s = dot(q - v1, r) / dot(r, r)
 		r.x = v2.x - v1.x;
@@ -369,7 +369,7 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 		{
 			return false;
 		}
-	
+
 		tempV.x = q.x - v1.x;
 		tempV.y = q.y - v1.y;
 		var s:Number = b2Math.b2Dot2 (tempV, r) / rr;
@@ -377,7 +377,7 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 		{
 			return false;
 		}
-	
+
 		output.fraction = t;
 		if (numerator > 0.0)
 		{
@@ -389,7 +389,7 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 			output.normal.x = normal.x;
 			output.normal.y = normal.y;
 		}
-		
+
 		return true;
 	}
 	else
@@ -410,7 +410,7 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 			denominator = b2Math.b2Dot2 (m_normals[i] as b2Vec2, d);
 
 			if (denominator == 0.0)
-			{	
+			{
 				if (numerator < 0.0)
 				{
 					return false;
@@ -457,14 +457,14 @@ override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, x
 			return true;
 		}
 	} // removed from v141
-	
+
 	return false;
 }
 
 private static var lower:b2Vec2 = new b2Vec2 ();
 private static var upper:b2Vec2 = new b2Vec2 ();
 private static var v:b2Vec2 = new b2Vec2 ();
-	
+
 override public function ComputeAABB(aabb:b2AABB, xf:b2Transform, childIndex:int):void
 {
 	//B2_NOT_USED(childIndex);
@@ -472,7 +472,7 @@ override public function ComputeAABB(aabb:b2AABB, xf:b2Transform, childIndex:int
 	//var lower:b2Vec2 = new b2Vec2 ();
 	//var upper:b2Vec2 = new b2Vec2 ();
 	//var v:b2Vec2 = new b2Vec2 ();
-	
+
 	//b2Vec2 lower = b2Mul(xf, m_vertices[0]);
 	b2Math.b2Mul_TransformAndVector2_Output (xf, m_vertices[0] as b2Vec2, lower);
 	//b2Vec2 upper = lower;
@@ -525,11 +525,11 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var center:b2Vec2 = new b2Vec2 ();
-	var pRef:b2Vec2 = new b2Vec2 ();
+	var s:b2Vec2 = new b2Vec2 ();
 	var e1:b2Vec2 = new b2Vec2 ();
 	var e2:b2Vec2 = new b2Vec2 ();
 	var tempF:Number;
-	
+
 	//b2Assert(m_vertexCount >= 3);
 
 	// removed from r141
@@ -552,29 +552,33 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 	var area:Number = 0.0;
 	var I:Number = 0.0;
 
-	// pRef is the reference point for forming triangles.
-	// It's location doesn't change the result (except for rounding error).
-	//b2Vec2 pRef(0.0f, 0.0f);
-	pRef.Set (0.0, 0.0);
-//#if 0
-//	// This code would put the reference point inside the polygon.
-//	for (int32 i = 0; i < m_vertexCount; ++i)
-//	{
-//		pRef += m_vertices[i];
-//	}
-//	pRef *= 1.0f / count;
-//#endif
+   // s is the reference point for forming triangles.
+   // It's location doesn't change the result (except for rounding error).
+   //b2Vec2 s(0.0f, 0.0f);
+   s.x = 0.0; s.y = 0.0;
+
+   var i:int;
+
+   // This code would put the reference point inside the polygon.
+   for (i = 0; i < m_vertexCount; ++i)
+   {
+      //s += m_vertices[i];
+      var p0:b2Vec2 = m_vertices[i] as b2Vec2;
+      s.x += p0.x; s.y += p0.y;
+   }
+   //s *= 1.0 / m_vertexCount;
+   var invVertexCount:Number = 1.0 / m_vertexCount;
+   s.x *= invVertexCount; s.y *= invVertexCount;
 
 	const k_inv3:Number = 1.0 / 3.0;
 
-	var i:int;
 	for (i = 0; i < m_vertexCount; ++i)
 	{
 		// Triangle vertices.
 		//b2Vec2 p1 = pRef;
 		//b2Vec2 p2 = m_vertices[i];
 		//b2Vec2 p3 = i + 1 < m_vertexCount ? m_vertices[i+1] : m_vertices[0];
-		var p1:b2Vec2 = pRef; // .CopyFrom ()
+		var p1:b2Vec2 = s; // .CopyFrom ()
 		var p2:b2Vec2 = m_vertices[i]; // .CopyFrom ()
 		var p3:b2Vec2 = i + 1 < m_vertexCount ? m_vertices[i+1] : m_vertices[0]; // .CopyFrom ()
 
@@ -591,19 +595,18 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 		area += triangleArea;
 
 		// Area weighted centroid
-		//center += triangleArea * k_inv3 * (p1 + p2 + p3);
+		//center += triangleArea * k_inv3 * (e1 + e2);
 		tempF = triangleArea * k_inv3;
-		center.x += tempF * (p1.x + p2.x + p3.x);
-		center.y += tempF * (p1.y + p2.y + p3.y);
+		center.x += tempF * (e1.x + e2.x);
+		center.y += tempF * (e1.y + e2.y);
 
-		var px:Number = p1.x, py:Number = p1.y;
 		var ex1:Number = e1.x, ey1:Number = e1.y;
 		var ex2:Number = e2.x, ey2:Number = e2.y;
 
-		var intx2:Number = k_inv3 * (0.25 * (ex1*ex1 + ex2*ex1 + ex2*ex2) + (px*ex1 + px*ex2)) + 0.5*px*px;
-		var inty2:Number = k_inv3 * (0.25 * (ey1*ey1 + ey2*ey1 + ey2*ey2) + (py*ey1 + py*ey2)) + 0.5*py*py;
+      var intx2:Number = ex1*ex1 + ex2*ex1 + ex2*ex2;
+      var inty2:Number = ey1*ey1 + ey2*ey1 + ey2*ey2;
 
-		I += D * (intx2 + inty2);
+      I += (0.25 * k_inv3 * D) * (intx2 + inty2);
 	}
 
 	// Total mass
@@ -613,7 +616,7 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 	if (area < Number.MIN_VALUE)
 	{
 		center.Set(0.0, 0.0);
-		
+
 		for (i = 0; i < m_vertexCount; ++i)
 		{
 			var pp:b2Vec2 = m_vertices[i]; // .CopyFrom ()
@@ -623,15 +626,17 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
 		area = m_vertexCount;
 	}
 	//<<
-	
+
 	// Center of mass
 	//b2Assert(area > b2_epsilon);
 	//center *= 1.0f / area;
 	tempF = 1.0 / area;
 	center.x *= tempF;
 	center.y *= tempF;
-	massData.center.CopyFrom (center);
+	//massData->center = center + s;
+   massData.center.x = center.x + s.x;
+   massData.center.y = center.y + s.y;
 
 	// Inertia tensor relative to the local origin.
-	massData.I = density * I;
+	massData.I = density * I + massData.mass * b2Math.b2Dot2 (s, s);
 }

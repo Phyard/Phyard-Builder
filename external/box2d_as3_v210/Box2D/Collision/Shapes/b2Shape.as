@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -24,7 +24,7 @@ package Box2D.Collision.Shapes
 	//#include <Box2D/Common/b2BlockAllocator.h>
 	//#include <Box2D/Common/b2Math.h>
 	//#include <Box2D/Collision/b2Collision.h>
-	
+
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Transform;
@@ -45,7 +45,7 @@ package Box2D.Collision.Shapes
 	public class b2Shape
 	{
 	//public:
-	
+
 		//enum Type
 		//{
 			public static const e_unknown:int= -1;
@@ -55,7 +55,7 @@ package Box2D.Collision.Shapes
 			public static const e_loop:int = 3;
 			public static const e_typeCount:int = 4;
 		//};
-		
+
 		public function b2Shape() { m_type = e_unknown; }
 		//virtual ~b2Shape() {}
 		public function _b2Shape():void {}
@@ -99,7 +99,7 @@ package Box2D.Collision.Shapes
 		/// @param density the density in kilograms per meter squared.
 		//virtual void ComputeMass(b2MassData* massData, float32 density) const = 0;
 		public function ComputeMass(massData:b2MassData, density:Number):void {}
-		
+
 		//Type m_type;
 		public var m_type:int;
 		public var m_radius:Number;
@@ -109,17 +109,17 @@ package Box2D.Collision.Shapes
 		{
 			return m_type;
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		public function OnBodyLocalCenterChanged (dx:Number, dy:Number):void
 		{
 			// to override
 		}
-		
+
 	} // class
 } // package
 //#endif

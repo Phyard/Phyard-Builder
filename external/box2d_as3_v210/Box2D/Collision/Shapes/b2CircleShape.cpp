@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -25,14 +25,14 @@ override public function Clone(allocator:b2BlockAllocator = null):b2Shape
 	//b2CircleShape* clone = new (mem) b2CircleShape;
 	//*clone = *this;
 	//return clone;
-	
+
 	var clone:b2CircleShape = new b2CircleShape ();
-	
+
 	clone.m_type = m_type;
 	clone.m_radius = m_radius;
 
 	clone.m_p.CopyFrom (m_p);
-	
+
 	return clone;
 }
 
@@ -46,12 +46,12 @@ override public function TestPoint(transform:b2Transform, p:b2Vec2):Boolean
 	//b2Vec2 center = transform.position + b2Mul(transform.R, m_p);
 	//b2Vec2 d = p - center;
 	//return b2Dot(d, d) <= m_radius * m_radius;
-	
+
 	var tempV:b2Vec2 = new b2Vec2 ();
 	b2Math.b2Mul_Matrix22AndVector2_Output (transform.R, m_p, tempV);
 	tempV.x = p.x - transform.position.x - tempV.x;
 	tempV.y = p.y - transform.position.y - tempV.y;
-	
+
 	return b2Math.b2Dot2 (tempV, tempV) <= m_radius * m_radius;
 }
 
@@ -62,12 +62,12 @@ override public function TestPoint(transform:b2Transform, p:b2Vec2):Boolean
 override public function RayCast(output:b2RayCastOutput, input:b2RayCastInput, transform:b2Transform, childIndex:int):Boolean
 {
 	//B2_NOT_USED(childIndex);
-	
+
 	var position:b2Vec2 = new b2Vec2 ();
 	var s:b2Vec2 = new b2Vec2 ();
 	var r:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
-	
+
 	//b2Vec2 position = transform.position + b2Mul(transform.R, m_p);
 	b2Math.b2Mul_Matrix22AndVector2_Output (transform.R, m_p, tempV);
 	position.x = transform.position.x + tempV.x;
@@ -113,14 +113,14 @@ private static var mP:b2Vec2 = new b2Vec2 ();
 override public function ComputeAABB(aabb:b2AABB, transform:b2Transform, childIndex:int):void
 {
 	//B2_NOT_USED(childIndex);
-	
+
 	var p:b2Vec2 = mP;//new b2Vec2 ();
-	
+
 	//b2Vec2 p = transform.position + b2Mul(transform.R, m_p);
 	b2Math.b2Mul_Matrix22AndVector2_Output (transform.R, m_p, p)
 	p.x += transform.position.x;
 	p.y += transform.position.y;
-	
+
 	aabb.lowerBound.Set(p.x - m_radius, p.y - m_radius);
 	aabb.upperBound.Set(p.x + m_radius, p.y + m_radius);
 }

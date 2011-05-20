@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -122,7 +122,7 @@ public function Collide():void
 		var indexB:int = c.GetChildIndexB();
 		var bodyA:b2Body = fixtureA.GetBody();
 		var bodyB:b2Body = fixtureB.GetBody();
-		
+
 		if (bodyA.IsAwake() == false && bodyB.IsAwake() == false)
 		{
 			c = c.GetNext();

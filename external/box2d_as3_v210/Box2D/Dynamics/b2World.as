@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -26,9 +26,9 @@ package Box2D.Dynamics
 	//#include <Box2D/Common/b2StackAllocator.h>
 	//#include <Box2D/Dynamics/b2ContactManager.h>
 	//#include <Box2D/Dynamics/b2WorldCallbacks.h>
-	
+
 	import flash.utils.getTimer;
-	
+
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
@@ -46,9 +46,9 @@ package Box2D.Dynamics
 	import Box2D.Collision.b2TOIInput;
 	import Box2D.Collision.b2TOIOutput;
 	import Box2D.Collision.b2TimeOfImpact;
-	
+
 	import Box2D.Dynamics.b2Body;
-	
+
 	//struct b2AABB;
 	//struct b2BodyDef;
 	//struct b2JointDef;
@@ -56,14 +56,14 @@ package Box2D.Dynamics
 	//class b2Body;
 	//class b2Fixture;
 	//class b2Joint;
-	
+
 	/// The world class manages all physics entities, dynamic simulation,
 	/// and asynchronous queries. The world also contains efficient memory
 	/// management facilities.
 	public class b2World
 	{
 		include "b2World.cpp";
-		
+
 	//public:
 		/// Construct a world object.
 		/// @param gravity the world gravity vector.
@@ -74,22 +74,22 @@ package Box2D.Dynamics
 		//~b2World();
 
 		/// Register a destruction listener. The listener is owned by you and must
-		/// remain in scope. 
+		/// remain in scope.
 		//void SetDestructionListener(b2DestructionListener* listener);
 
 		/// Register a contact filter to provide specific control over collision. The listener is
-		/// owned by you and must remain in scope. 
+		/// owned by you and must remain in scope.
 		/// Otherwise the default filter is used (b2_defaultFilter).
 		//void SetContactFilter(b2ContactFilter* filter);
 
 		/// Register a contact event listener. The listener is owned by you and must
-		/// remain in scope. 
+		/// remain in scope.
 		//void SetContactListener(b2ContactListener* listener);
 
 		/// Register a routine for debug drawing. The debug draw functions are called
 		/// inside with b2World::DrawDebugData method. The debug draw object is owned
 		/// consume draw commands when you call Step()
-		/// by you and must remain in scope. 
+		/// by you and must remain in scope.
 		//void SetDebugDraw(b2DebugDraw* debugDraw);
 
 		/// Create a rigid body given a definition. No reference to the definition
@@ -163,7 +163,7 @@ package Box2D.Dynamics
 		/// Get the world contact list. With the returned contact, use b2Contact::GetNext to get
 		/// the next contact in the world list. A NULL contact indicates the end of the list.
 		/// @return the head of the world contact list.
-		/// @warning contacts are 
+		/// @warning contacts are
 		//b2Contact* GetContactList();
 		//const b2Contact* GetContactList() const;
 
@@ -190,7 +190,7 @@ package Box2D.Dynamics
 
 		/// Change the global gravity vector.
 		//void SetGravity(const b2Vec2& gravity);
-		
+
 		/// Get the global gravity vector.
 		//b2Vec2 GetGravity() const;
 
@@ -318,7 +318,7 @@ package Box2D.Dynamics
 		{
 			return (m_flags & e_locked) == e_locked;
 		}
-		
+
 		public function SetAutoClearForces(flag:Boolean):void
 		{
 			if (flag)
@@ -344,48 +344,48 @@ package Box2D.Dynamics
 //====================================================================================
 // hacking
 //====================================================================================
-		
+
 		private var mIsland:b2Island = null;
-		
+
 		private function GetIsland (bodyCount:int, jointCount:int, contactCount:int):b2Island
 		{
 			if (bodyCount < (b2Settings.b2_maxTOIContacts + b2Settings.b2_maxTOIContacts))
 				bodyCount = b2Settings.b2_maxTOIContacts + b2Settings.b2_maxTOIContacts;
-			
+
 			if (jointCount < b2Settings.b2_maxTOIContacts)
 				jointCount = b2Settings.b2_maxTOIContacts;
-			
+
 			if (contactCount < b2Settings.b2_maxTOIContacts)
 				contactCount = b2Settings.b2_maxTOIContacts;
-			
+
 			if (mIsland != null)
 			{
 				var toCreateNewIsland:Boolean = false;
-				
+
 				if (bodyCount > mIsland.m_bodyCapacity)
 				{
 					bodyCount = bodyCount + bodyCount;
 					toCreateNewIsland = true;
 				}
-				
+
 				if (jointCount > mIsland.m_jointCapacity)
 				{
 					jointCount = jointCount + jointCount;
 					toCreateNewIsland = true;
 				}
-				
+
 				if (contactCount > mIsland.m_contactCapacity)
 				{
 					contactCount = contactCount + contactCount;
 					toCreateNewIsland = true;
 				}
-				
+
 				if (toCreateNewIsland)
 				{
 					mIsland = null;
 				}
 			}
-			
+
 			if (mIsland == null)
 			{
 				mIsland = new b2Island (bodyCount, contactCount, jointCount,
@@ -397,13 +397,13 @@ package Box2D.Dynamics
 			else
 			{
 				mIsland.m_listener = m_contactManager.m_contactListener;
-				
+
 				mIsland.Clear ();
 			}
-			
+
 			return mIsland;
 		}
-		
+
 		public function WakeUpAllBodies ():void
 		{
 			var b:b2Body = m_bodyList;
@@ -414,7 +414,7 @@ package Box2D.Dynamics
 				b = b.m_next;
 			}
 		}
-		
+
 		public function FlagForFilteringForAllContacts ():void
 		{
 			for (var c:b2Contact = m_contactManager.m_contactList; c != null; c = c.m_next)
@@ -449,7 +449,7 @@ package Box2D.Dynamics
 			b2Joint.mCustomJointCreateFunction  = createFunc;
 			b2Joint.mCustomJointDestroyFunction = destroyFunc;
 		}
-		
+
 		//
 		public var b2_maxTranslation:Number = b2Settings.b2_maxTranslation;
 		public var b2_maxTranslationSquared:Number = b2Settings.b2_maxTranslationSquared;

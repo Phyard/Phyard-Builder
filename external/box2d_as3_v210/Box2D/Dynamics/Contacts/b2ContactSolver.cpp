@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -39,7 +39,7 @@ public function b2ContactSolver(def:b2ContactSolverDef)
 	var i:int;
 	var j:int;
 	var cc:b2ContactConstraint;
-	
+
 	m_allocator = def.allocator;
 
 	m_count = def.count;
@@ -49,7 +49,7 @@ public function b2ContactSolver(def:b2ContactSolverDef)
 	{
 		var oldCount:int = m_ConstraintsArray.length;
 		m_ConstraintsArray.length = m_count;
-		
+
 		for (i = oldCount; i < m_count; ++ i)
 		{
 			cc = new b2ContactConstraint ();
@@ -118,7 +118,7 @@ public function b2ContactSolver(def:b2ContactSolverDef)
 			ccp.tangentMass = 0.0;
 			ccp.velocityBias = 0.0;
 		}
-		
+
 		cc.K.SetZero();
 		cc.normalMass.SetZero();
 	}
@@ -192,8 +192,8 @@ public function InitializeVelocityConstraints():void
 			// Setup a velocity bias for restitution.
 			ccp.velocityBias = 0.0;
 			//float32 vRel = b2Math.b2Dot2(cc->normal, vB + b2Math.b2Cross2(wB, ccp->rB) - vA - b2Math.b2Cross2(wA, ccp->rA));
-			b2Math.b2Cross_ScalarAndVector2_Output (wB, ccp.rB, tempVb); 
-			b2Math.b2Cross_ScalarAndVector2_Output (wA, ccp.rA, tempVa); 
+			b2Math.b2Cross_ScalarAndVector2_Output (wB, ccp.rB, tempVb);
+			b2Math.b2Cross_ScalarAndVector2_Output (wA, ccp.rA, tempVa);
 			tempV.Set (vB.x + tempVb.x - vA.x - tempVa.x, vB.y + tempVb.y - vA.y - tempVa.y);
 			var vRel:Number = b2Math.b2Dot2 (cc.normal, tempV);
 			if (vRel < -b2Settings.b2_velocityThreshold)
@@ -207,7 +207,7 @@ public function InitializeVelocityConstraints():void
 		{
 			var ccp1:b2ContactConstraintPoint = cc.points [0];
 			var ccp2:b2ContactConstraintPoint = cc.points [1];
-			
+
 			var invMassA:Number = bodyA.m_invMass;
 			var invIA:Number = bodyA.m_invI;
 			var invMassB:Number = bodyB.m_invMass;
@@ -248,7 +248,7 @@ public function WarmStart():void
 {
 	var i:int;
 	var j:int;
-	
+
 	// Warm start.
 	for (i = 0; i < m_count; ++i)
 	{
@@ -270,7 +270,7 @@ public function WarmStart():void
 			ccp = c.points [j];
 			//b2Vec2 P = ccp->normalImpulse * normal + ccp->tangentImpulse * tangent;
 			var P:b2Vec2 = mP;//new b2Vec2 ();
-			P.Set (	ccp.normalImpulse * normal.x + ccp.tangentImpulse * tangent.x, 
+			P.Set (	ccp.normalImpulse * normal.x + ccp.tangentImpulse * tangent.x,
 						ccp.normalImpulse * normal.y + ccp.tangentImpulse * tangent.y);
 			bodyA.m_angularVelocity -= invIA * b2Math.b2Cross2 (ccp.rA, P);
 			//bodyA->m_linearVelocity -= invMassA * P;
@@ -303,7 +303,7 @@ public function SolveVelocityConstraints():void
 {
 	var i:int;
 	var j:int;
-	
+
 	for (i = 0; i < m_count; ++i)
 	{
 		var c:b2ContactConstraint = m_constraints [i];
@@ -320,8 +320,8 @@ public function SolveVelocityConstraints():void
 		var invMassB:Number = bodyB.m_invMass;
 		var invIB:Number = bodyB.m_invI;
 		var normal:b2Vec2 = c.normal; // .Clone () // hacking
-		//var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (normal, 1.0); 
-		b2Math.b2Cross_Vector2AndScalar_Output (normal, 1.0, tangent); 
+		//var tangent:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (normal, 1.0);
+		b2Math.b2Cross_Vector2AndScalar_Output (normal, 1.0, tangent);
 		var friction:Number = c.friction;
 
 		//b2Assert(c->pointCount == 1 || c->pointCount == 2);
@@ -414,14 +414,14 @@ public function SolveVelocityConstraints():void
 			// implies that we must have in any solution either vn_i = 0 or x_i = 0. So for the 2D contact problem the cases
 			// vn1 = 0 and vn2 = 0, x1 = 0 and x2 = 0, x1 = 0 and vn2 = 0, x2 = 0 and vn1 = 0 need to be tested. The first valid
 			// solution that satisfies the problem is chosen.
-			// 
+			//
 			// In order to account of the accumulated impulse 'a' (because of the iterative nature of the solver which only requires
 			// that the accumulated impulse is clamped and not the incremental impulse) we change the impulse variable (x_i).
 			//
 			// Substitute:
-			// 
+			//
 			// x = x' - a
-			// 
+			//
 			// Plug into above equation:
 			//
 			// vn = A * x + b
@@ -524,7 +524,7 @@ public function SolveVelocityConstraints():void
 				//
 				// Case 2: vn1 = 0 and x2 = 0
 				//
-				//   0 = a11 * x1' + a12 * 0 + b1' 
+				//   0 = a11 * x1' + a12 * 0 + b1'
 				// vn2 = a21 * x1' + a22 * 0 + b2'
 				//
 				x.x = - cp1.normalMass * b.x;
@@ -576,7 +576,7 @@ public function SolveVelocityConstraints():void
 				//
 				// Case 3: vn2 = 0 and x1 = 0
 				//
-				// vn1 = a11 * 0 + a12 * x2' + b1' 
+				// vn1 = a11 * 0 + a12 * x2' + b1'
 				//   0 = a21 * 0 + a22 * x2' + b2'
 				//
 				x.x = 0.0;
@@ -626,7 +626,7 @@ public function SolveVelocityConstraints():void
 
 				//
 				// Case 4: x1 = 0 and x2 = 0
-				// 
+				//
 				// vn1 = b1
 				// vn2 = b2;
 				x.x = 0.0;
@@ -687,7 +687,7 @@ public function StoreImpulses():void
 	var ccp:b2ContactConstraintPoint;
 	var c:b2ContactConstraint;
 	var m:b2Manifold;
-	
+
 	for (i = 0; i < m_count; ++i)
 	{
 		c = m_constraints [i];
@@ -697,7 +697,7 @@ public function StoreImpulses():void
 		{
 			mp  = m.points[j];
 			ccp = c.points[j];
-			
+
 			mp.normalImpulse  = ccp.normalImpulse;
 			mp.tangentImpulse = ccp.tangentImpulse;
 		}
@@ -720,14 +720,14 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 	var i:int;
 	var j:int;
 	var minSeparation:Number = 0.0;
-	
+
 	//var rA:b2Vec2 = new b2Vec2 ();
 	//var rB:b2Vec2 = new b2Vec2 ();
 	var rC:b2Vec2;
-	
+
 	//var P:b2Vec2 = new b2Vec2 ();
 	var tF:Number;
-	
+
 	for (i = 0; i < m_count; ++i)
 	{
 		var c:b2ContactConstraint = m_constraints [i] as b2ContactConstraint;
@@ -782,7 +782,7 @@ public function SolvePositionConstraints(baumgarte:Number):Boolean
 			//bodyB->m_sweep.c += invMassB * P;
 			rC = bodyB.m_sweep.c;
 			rC.x += invMassB * P.x;
-			rC.y += invMassB * P.y;			
+			rC.y += invMassB * P.y;
 			bodyB.m_sweep.a += invIB * b2Math.b2Cross2 (rB, P);
 			bodyB.SynchronizeTransform ();
 		}
@@ -801,7 +801,7 @@ public function SolveTOIPositionConstraints(baumgarte:Number, toiBodyA:b2Body, t
 	var minSeparation:Number = 0.01;
 
 	var rC:b2Vec2;
-	
+
 	for (i = 0; i < m_count; ++i)
 	{
 		var c:b2ContactConstraint = m_constraints [i] as b2ContactConstraint;
@@ -867,7 +867,7 @@ public function SolveTOIPositionConstraints(baumgarte:Number, toiBodyA:b2Body, t
 			//bodyB->m_sweep.c += invMassB * P;
 			rC = bodyB.m_sweep.c;
 			rC.x += invMassB * P.x;
-			rC.y += invMassB * P.y;			
+			rC.y += invMassB * P.y;
 			bodyB.m_sweep.a += invIB * b2Math.b2Cross2 (rB, P);
 			bodyB.SynchronizeTransform ();
 		}

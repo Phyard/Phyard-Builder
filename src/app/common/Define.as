@@ -71,8 +71,8 @@ package common {
          return sceneLeft == - LargeWorldHalfWidth / 2 && sceneTop == - LargeWorldHalfHeight / 2 && sceneWidth == LargeWorldHalfWidth && sceneHeight == LargeWorldHalfHeight;
       }
       
-      public static const MaxWorldZoomScale:Number = 4.0;
-      public static const MinWorldZoomScale:Number = 1.0 / 16.0;
+      public static const MaxWorldZoomScale:Number = 32.0;
+      public static const MinWorldZoomScale:Number = 1.0 / 32.0;
       
       // ...
       public static const BodyCloneOffsetX:uint = 20;

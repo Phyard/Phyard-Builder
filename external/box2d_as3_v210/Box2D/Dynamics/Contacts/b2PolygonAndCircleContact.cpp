@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -26,7 +26,7 @@ public static function Create(fixtureA:b2Fixture, indexA:int, fixtureB:b2Fixture
 {
 	//void* mem = allocator->Allocate(sizeof(b2PolygonAndCircleContact));
 	//return new (mem) b2PolygonAndCircleContact(fixtureA, fixtureB);
-	
+
 	return new b2PolygonAndCircleContact(fixtureA, fixtureB);
 }
 

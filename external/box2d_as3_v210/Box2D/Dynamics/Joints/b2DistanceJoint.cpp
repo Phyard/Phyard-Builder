@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -26,7 +26,7 @@
 // x2 = x1 + h * v2
 
 // 1-D mass-damper-spring system
-// m (v2 - v1) + h * d * v2 + h * k * 
+// m (v2 - v1) + h * d * v2 + h * k *
 
 // C = norm(p2 - p1) - L
 // u = (p2 - p1) / norm(p2 - p1)
@@ -50,7 +50,7 @@ public function b2DistanceJoint (def:b2DistanceJointDef)
 //: b2Joint(def)
 {
 	super (def);
-	
+
 	m_localAnchor1.CopyFrom (def.localAnchorA);
 	m_localAnchor2.CopyFrom (def.localAnchorB);
 	m_length = def.length;
@@ -59,7 +59,7 @@ public function b2DistanceJoint (def:b2DistanceJointDef)
 	m_impulse = 0.0;
 	m_gamma = 0.0;
 	m_bias = 0.0;
-	
+
 	//hacking
 	//>>
 	mSpringConstant = def.springConstant;
@@ -81,7 +81,7 @@ override public function InitVelocityConstraints (step:b2TimeStep):void
 	//var r2:b2Vec2 = new b2Vec2 ();
 	//var tempV:b2Vec2 = new b2Vec2 ();
 	//var P:b2Vec2 = new b2Vec2 ();
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
@@ -196,7 +196,7 @@ override public function SolveVelocityConstraints (step:b2TimeStep):void
 	//var P:b2Vec2 = new b2Vec2 ();
 	//var v1:b2Vec2 = new b2Vec2 ();
 	//var v2:b2Vec2 = new b2Vec2 ();
-	
+
 	//B2_NOT_USED(step);
 
 	var b1:b2Body = m_bodyA;

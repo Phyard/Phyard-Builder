@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -289,7 +289,7 @@ public function InsertLeaf(leaf:int):void
 		{
 			sibling = child2;
 		}
-		
+
 		siblingNode = m_nodes[sibling] as b2DynamicTreeNode;
 	}
 
@@ -338,7 +338,7 @@ public function RemoveLeaf(leaf:int):void
 		m_root = b2_nullNode;
 		return;
 	}
-	
+
 	var parent:int = (m_nodes[leaf] as b2DynamicTreeNode).parent;
 	var nodeParent:b2DynamicTreeNode = m_nodes[parent] as b2DynamicTreeNode;
 	var grandParent:int = nodeParent.parent;
@@ -375,7 +375,7 @@ public function RemoveLeaf(leaf:int):void
 			//b2AABB oldAABB = m_nodes[parent].aabb; // seems not used in c++
 			nodeParent = m_nodes[parent] as b2DynamicTreeNode;
 			nodeParent.aabb.CombineTwo((m_nodes[nodeParent.child1] as b2DynamicTreeNode).aabb, (m_nodes[nodeParent.child2] as b2DynamicTreeNode).aabb);
-			
+
 			//b2Assert(m_nodes[parent].leafCount > 0);
 			nodeParent.leafCount -= 1;
 
@@ -407,7 +407,7 @@ public function Rebalance(iterations:int):void
 		while (treeNode.IsLeaf() == false)
 		{
 			//int32* children = &m_nodes[node].child1;
-		//	
+		//
 		//	// Child selector based on a bit in the path
 		//	int32 selector = (m_path >> bit) & 1;
 		//
@@ -417,7 +417,7 @@ public function Rebalance(iterations:int):void
 		//	// Keep bit between 0 and 31 because m_path has 32 bits
 		//	// bit = (bit + 1) % 31
 		//	bit = (bit + 1) & 0x1F;
-			
+
 			node = ((m_path >> bit) & 1) == 0 ? treeNode.child1 : treeNode.child2;
 			treeNode = m_nodes[node] as b2DynamicTreeNode;
 			bit = (bit + 1) & 31;
@@ -476,5 +476,5 @@ private function CountLeaves(nodeId:int):int
 
 public function Validate():void
 {
-	CountLeaves(m_root);	
+	CountLeaves(m_root);
 }

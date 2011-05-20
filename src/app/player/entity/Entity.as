@@ -330,7 +330,7 @@ package player.entity {
          
          InitializeInternal ();
          
-         var  list_element:ListElement_EventHandler = mInitializeEventHandlerList;
+         var list_element:ListElement_EventHandler = mInitializeEventHandlerList;
          
          mEventHandlerValueSource0.mValueObject = this;
          

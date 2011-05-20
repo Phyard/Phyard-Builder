@@ -1,6 +1,6 @@
 
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -49,7 +49,7 @@ package Box2D.Collision
 
 	/// Input for b2Distance.
 	/// You have to option to use the shape radii
-	/// in the computation. Even 
+	/// in the computation. Even
 	//struct b2DistanceInput
 	//{
 		//@see b2DistanceInput.as
@@ -64,12 +64,12 @@ package Box2D.Collision
 	public class b2Distance
 	{
 		include "b2Distance.cpp";
-		
+
 		/// Compute the closest points between two shapes. Supports any combination of:
 		/// b2CircleShape, b2PolygonShape, b2EdgeShape. The simplex cache is input/output.
 		/// On the first call set b2SimplexCache.count to zero.
 		//void b2Distance(b2DistanceOutput* output,
-		//				b2SimplexCache* cache, 
+		//				b2SimplexCache* cache,
 		//				const b2DistanceInput* input);
 
 

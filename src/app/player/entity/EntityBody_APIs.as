@@ -4,6 +4,7 @@ public function DestroyAllBreakableShapes ():void
    var shape:EntityShape = mShapeListHead;
    var nextShape:EntityShape;
    var numDestroyeds:int = 0;
+   var numDestroyedPhysicsShapes:int = 0;
    while (shape != null)
    {
       nextShape = shape.mNextShapeInBody;
@@ -12,6 +13,10 @@ public function DestroyAllBreakableShapes ():void
       {
          shape.Destroy ();
          ++ numDestroyeds;
+         if (shape.IsPhysicsShape ())
+         {
+            ++ numDestroyedPhysicsShapes;
+         }
       }
       
       shape = nextShape;
@@ -19,7 +24,7 @@ public function DestroyAllBreakableShapes ():void
    
    if (numDestroyeds > 0)
    {
-      OnPhysicsShapeListChanged ();
+      OnShapeListChanged (numDestroyedPhysicsShapes > 0);
    }
 }
 
@@ -34,6 +39,29 @@ public function PutShapesInArray (shapes:Array):void
       shapes.push (shape);
       shape = shape.mNextShapeInBody;
    }
+}
+
+public function ClearPowers ():void
+{
+   if (mPhysicsProxy == null)
+      return;
+   
+   mPhysicsProxyBody.ClearPowers ();
+}
+
+public function GetAccForceX ():Number
+{
+   return mPhysicsProxy == null ? 0.0 : mPhysicsProxyBody.GetAccForceX ();
+}
+
+public function GetAccForceY ():Number
+{
+   return mPhysicsProxy == null ? 0.0 : mPhysicsProxyBody.GetAccForceY ();
+}
+
+public function GetAccTorque ():Number
+{
+   return mPhysicsProxy == null ?  0.0 : mPhysicsProxyBody.GetAccTorque ();
 }
 
 public function ApplyForceAtPoint (worldForceX:Number, worldForceY:Number, worldPointX:Number, worldPointY:Number):void
@@ -59,7 +87,8 @@ public function ApplyLinearImpulse (worldPulseX:Number, worldPulseY:Number, worl
    
    mPhysicsProxyBody.AddLinearImpulseAtPoint (worldPulseX, worldPulseY, worldPointX, worldPointY);
    
-   FlagVelocitySynchronized (false);
+   //FlagVelocitySynchronized (false);
+   NotifyVelocityChangedManually ();
 }
 
 public function ApplyAngularImpulse (angularImpulse:Number):void
@@ -69,7 +98,8 @@ public function ApplyAngularImpulse (angularImpulse:Number):void
    
    mPhysicsProxyBody.AddAngularImpulse (angularImpulse);
    
-   FlagVelocitySynchronized (false);
+   //FlagVelocitySynchronized (false);
+   NotifyVelocityChangedManually ();
 }
 
 public function ClearVelocities ():void
@@ -79,5 +109,6 @@ public function ClearVelocities ():void
    
    mPhysicsProxyBody.ClearVelocities ();
    
-   FlagVelocitySynchronized (false);
+   //FlagVelocitySynchronized (false);
+   NotifyVelocityChangedManually ();
 }

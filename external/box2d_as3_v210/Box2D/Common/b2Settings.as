@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@ package Box2D.Common
 		public static function B2_NOT_USED (x:Object):void
 		{
 		}
-		
+
 		//#define b2Assert(A) assert(A)
 		public static function b2Assert (A:Boolean):void
 		{
@@ -54,7 +54,7 @@ package Box2D.Common
 		public static const b2_maxFloat   :Number = Number.MAX_VALUE; // in the c++ version, the value is max float32 (3.402823466e+38), but all numbers in as3 are float64
 		public static const b2_epsilon    :Number = 1.192092896e-07;
 		public static const b2_pi         :Number = Math.PI;          // in the c++ version the value is 3.14159265359f
-		
+
 		// moved from b2Collision.h
 		public static const UCHAR_MAX:int = 0xFF;
 

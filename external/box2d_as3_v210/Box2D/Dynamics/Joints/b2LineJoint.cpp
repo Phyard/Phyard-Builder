@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -93,7 +93,7 @@ public function b2LineJoint (def:b2LineJointDef)
 //: b2Joint(def)
 {
 	super (def);
-	
+
 	m_localAnchor1.CopyFrom (def.localAnchorA);
 	m_localAnchor2.CopyFrom (def.localAnchorB);
 	m_localXAxis1.CopyFrom (def.localAxisA);
@@ -122,7 +122,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	var d:b2Vec2 = new b2Vec2 ();
 	var P:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
@@ -274,7 +274,7 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 	var P:b2Vec2 = new b2Vec2 ();
 	var f1:b2Vec2 = new b2Vec2 ();
 	var dfVec2:b2Vec2;// = new b2Vec2 ();
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
@@ -359,7 +359,7 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 		}
 		else
 		{
-			f2r = f1.x;	
+			f2r = f1.x;
 		}
 		m_impulse.x = f2r;
 
@@ -430,10 +430,10 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	var r2:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var impulse:b2Vec2 = new b2Vec2 ();
-	
+
 	var R1:b2Mat22 = new b2Mat22 ();
 	var R2:b2Mat22 = new b2Mat22 ();
-	
+
 	//B2_NOT_USED(baumgarte);
 
 	var b1:b2Body = m_bodyA;
@@ -625,7 +625,7 @@ public function GetJointTranslation():Number
 	//b2Vec2 axis = b1->GetWorldVector(m_localXAxis1);
 	//
 	//float32 translation = b2Math.b2Dot2(d, axis);
-	
+
 	var p1:b2Vec2 = b1.GetWorldPoint(m_localAnchor1);
 	var p2:b2Vec2 = b2.GetWorldPoint(m_localAnchor2);
 	p2.x -= p1.x;
@@ -646,7 +646,7 @@ public function GetJointSpeed():Number
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var tempV1:b2Vec2 = new b2Vec2 ();
 	var tempV2:b2Vec2 = new b2Vec2 ();
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 

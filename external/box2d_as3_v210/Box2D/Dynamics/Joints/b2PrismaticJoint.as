@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -44,7 +44,7 @@ package Box2D.Dynamics.Joints
 	public class b2PrismaticJoint extends b2Joint
 	{
 		include "b2PrismaticJoint.cpp";
-		
+
 	//public:
 		//b2Vec2 GetAnchorA() const;
 		//b2Vec2 GetAnchorB() const;
@@ -119,7 +119,7 @@ package Box2D.Dynamics.Joints
 		public var m_upperTranslation:Number;
 		public var m_maxMotorForce:Number;
 		public var m_motorSpeed:Number;
-		
+
 		public var m_enableLimit:Boolean;
 		public var m_enableMotor:Boolean;
 		//b2LimitState m_limitState;
@@ -130,11 +130,11 @@ package Box2D.Dynamics.Joints
 		{
 			return m_motorSpeed;
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
 		{
@@ -154,13 +154,13 @@ package Box2D.Dynamics.Joints
 		private static var worldAxis:b2Vec2 = new b2Vec2 ();
 		override protected function NotifyBodyChanged (oldBody:b2Body, isBodyA:Boolean):void
 		{
-			
+
 			if (isBodyA)
 			{
 				oldBody.GetWorldPoint_Output (m_localAnchor1, worldAnchor);
 				m_bodyA.GetLocalPoint_Output (worldAnchor, m_localAnchor1);
 				m_refAngle -= m_bodyA.GetAngle () - oldBody.GetAngle ();
-				
+
 				oldBody.GetWorldVector_Output (m_localXAxis1, worldAxis);
 				m_bodyA.GetLocalVector_Output (worldAxis, m_localXAxis1);
 				b2Math.b2Cross_ScalarAndVector2_Output (1.0, m_localXAxis1, m_localYAxis1);

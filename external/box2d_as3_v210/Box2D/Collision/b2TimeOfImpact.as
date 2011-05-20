@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -25,7 +25,7 @@ package Box2D.Collision
 	//#include <Box2D/Common/b2Math.h>
 	//#include <Box2D/Collision/b2Distance.h>
 	//#include <climits>
-	
+
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Transform;
@@ -36,11 +36,11 @@ package Box2D.Collision
 	//{
 		//@see b2TOIInput.as
 	//};
-	
+
 	public class b2TimeOfImpact
 	{
 		include "b2TimeOfImpact.cpp";
-		
+
 		/// Compute the time when two shapes begin to touch or touch at a closer distance.
 		/// TOI considers the shape radii. It attempts to have the radii overlap by the tolerance.
 		/// Iterations terminate with the overlap is within 0.5 * tolerance. The tolerance should be

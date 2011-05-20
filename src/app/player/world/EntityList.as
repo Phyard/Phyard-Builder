@@ -204,7 +204,7 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function OnBodyPhysicsShapeListChanged ():void
+      internal function OnBodyShapeListChanged ():void
       {
          mIsRemovingLocked = true;
          
@@ -219,7 +219,7 @@ package player.world {
                body = entity as EntityBody;
                if (body != null)
                {
-                  body.OnPhysicsShapeListChanged ();
+                  body.OnShapeListChanged (body.GetNumPhysicsShapes () > 0);
                }
                
                if (entity == tail)

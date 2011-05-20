@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -65,7 +65,7 @@ public function b2PulleyJoint(def:b2PulleyJointDef)
 //: b2Joint(def)
 {
 	super (def);
-	
+
 	m_groundAnchor1.CopyFrom (def.groundAnchorA);
 	m_groundAnchor2.CopyFrom (def.groundAnchorB);
 	m_localAnchor1.CopyFrom (def.localAnchorA);
@@ -96,7 +96,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	var P2:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var tempF:Number;
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
@@ -242,7 +242,7 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 	var P2:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var tempF:Number;
-	
+
 	//B2_NOT_USED(step);
 
 	var b1:b2Body = m_bodyA;
@@ -353,7 +353,7 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	var P2:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var tempF:Number;
-	
+
 	//B2_NOT_USED(baumgarte);
 
 	var b1:b2Body = m_bodyA;
@@ -549,7 +549,7 @@ override public function GetReactionForce(inv_dt:Number):b2Vec2
 {
 	//b2Vec2 P = m_impulse * m_u2;
 	//return inv_dt * P;
-	
+
 	var tempF:Number = m_impulse * inv_dt;
 	return b2Vec2.b2Vec2_From2Numbers (tempF * m_u2.x, tempF * m_u2.y);
 }

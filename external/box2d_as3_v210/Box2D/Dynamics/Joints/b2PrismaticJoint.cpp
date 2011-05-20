@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -101,7 +101,7 @@ public function b2PrismaticJoint(def:b2PrismaticJointDef)
 //: b2Joint(def)
 {
 	super (def);
-	
+
 	m_localAnchor1.CopyFrom (def.localAnchorA);
 	m_localAnchor2.CopyFrom (def.localAnchorB);
 	m_localXAxis1.CopyFrom (def.localAxis1);
@@ -159,7 +159,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	//var tempV:b2Vec2 = new b2Vec2 ();
 	//var d:b2Vec2 = new b2Vec2 ();
 	//var P:b2Vec2 = new b2Vec2 ();
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
@@ -196,7 +196,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 		m_a2 = b2Math.b2Cross2 (r2, m_axis);
 
 		m_motorMass = m_invMassA + m_invMassB + m_invIA * m_a1 * m_a1 + m_invIB * m_a2 * m_a2;
-		if (m_motorMass > b2Settings.b2_epsilon)
+		if (m_motorMass > 0.0)
 		{
 			m_motorMass = 1.0 / m_motorMass;
 		}	}
@@ -314,15 +314,15 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 	//var tempV:b2Vec2 = new b2Vec2 ();
 	//var tempVec3:b2Vec3 = new b2Vec3 ();
 	//var Cdot1:b2Vec2 = new b2Vec2 ();
-	
+
 	//var CdotVec3:b2Vec3 = new b2Vec3 ();
 	//var f1:b2Vec3 = new b2Vec3 ();
 	var dfVec3:b2Vec3;// = new b2Vec3 ();
 	var dfVec2:b2Vec2;// = new b2Vec2 ();
-	
+
 	//var b:b2Vec2 = new b2Vec2 ();
 	//var p:b2Vec2 = new b2Vec2 ();
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
@@ -341,7 +341,7 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 		tempV.x = v2.x - v1.x;
 		tempV.y = v2.y - v1.y;
 		var Cdot:Number = b2Math.b2Dot2 (m_axis, tempV) + m_a2 * w2 - m_a1 * w1;
-		
+
 		var impulse:Number = m_motorMass * (m_motorSpeed - Cdot);
 		var oldImpulse:Number = m_motorImpulse;
 		var maxImpulse:Number = step.dt * m_maxMotorForce;
@@ -371,7 +371,7 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 	tempV.y = v2.y - v1.y;
 	Cdot1.x = b2Math.b2Dot2 (m_perp, tempV) + m_s2 * w2 - m_s1 * w1;
 	Cdot1.y = w2 - w1;
-	
+
 	if (m_enableLimit && m_limitState != e_inactiveLimit)
 	{
 		// Solve prismatic and limit constraint in block form.
@@ -473,16 +473,16 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	//var P:b2Vec2 = new b2Vec2 ();
 	//var tempV:b2Vec2 = new b2Vec2 ();
 	//var tempVec3:b2Vec3 = new b2Vec3 ();
-	
+
 	//var d:b2Vec2 = new b2Vec2 ();
-	
+
 	//var R1:b2Mat22 = new b2Mat22 ();
 	//var R2:b2Mat22 = new b2Mat22 ();
-	
+
 	var impulse:b2Vec3;// = new b2Vec3 ();
 	var impulse1:b2Vec2;
 	//var C1:b2Vec2 = new b2Vec2 ();
-	
+
 	//B2_NOT_USED(baumgarte);
 
 	var b1:b2Body = m_bodyA;
@@ -599,7 +599,7 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 		//C.z = C2;
 
 		//impulse = m_K.Solve33(-C);
-		
+
 		tempVec3.x = - C1.x;
 		tempVec3.y = - C1.y;
 		tempVec3.z = - C2;
@@ -609,7 +609,7 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	else
 	{
 		impulse = new b2Vec3 ();
-		
+
 		m1 = m_invMassA, m2 = m_invMassB;
 		i1 = m_invIA,    i2 = m_invIB;
 
@@ -651,10 +651,10 @@ override public function SolvePositionConstraints(baumgarte:Number):Boolean
 	b1.m_sweep.a = a1;
 	b2.m_sweep.c.CopyFrom (c2);
 	b2.m_sweep.a = a2;
-	
+
 	b1.SynchronizeTransform();
 	b2.SynchronizeTransform();
-	
+
 	return linearError <= b2Settings.b2_linearSlop && angularError <= b2Settings.b2_angularSlop;
 }
 
@@ -685,7 +685,7 @@ override public function GetReactionTorque(inv_dt:Number):Number
 public function GetJointTranslation():Number
 {
 	//var d:b2Vec2 = new b2Vec2 ();
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
@@ -710,7 +710,7 @@ public function GetJointSpeed():Number
 	//var tempV:b2Vec2 = new b2Vec2 ();
 	//var tempV1:b2Vec2 = new b2Vec2 ();
 	//var tempV2:b2Vec2 = new b2Vec2 ();
-	
+
 	var b1:b2Body = m_bodyA;
 	var b2:b2Body = m_bodyB;
 
@@ -756,9 +756,13 @@ public function IsLimitEnabled():Boolean
 
 public function EnableLimit(flag:Boolean):void
 {
-	m_bodyA.SetAwake(true);
-	m_bodyB.SetAwake(true);
-	m_enableLimit = flag;
+   if (flag != m_enableLimit)
+   {
+   	m_bodyA.SetAwake(true);
+   	m_bodyB.SetAwake(true);
+   	m_enableLimit = flag;
+   	m_impulse.z = 0.0;
+   }
 }
 
 public function GetLowerLimit():Number
@@ -774,10 +778,14 @@ public function GetUpperLimit():Number
 public function SetLimits(lower:Number, upper:Number):void
 {
 	//b2Assert(lower <= upper);
-	m_bodyA.SetAwake(true);
-	m_bodyB.SetAwake(true);
-	m_lowerTranslation = lower;
-	m_upperTranslation = upper;
+	if (lower != m_lowerTranslation || upper != m_upperTranslation)
+   {
+   	m_bodyA.SetAwake(true);
+   	m_bodyB.SetAwake(true);
+   	m_lowerTranslation = lower;
+   	m_upperTranslation = upper;
+   	m_impulse.z = 0.0;
+   }
 }
 
 public function IsMotorEnabled():Boolean

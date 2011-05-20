@@ -41,6 +41,5 @@ package Box2D.Collision
 		//>> hacking to optimize
 		public var id:uint;
 		//<<
-		public var isNew:Boolean;
 	} // class
 } // package

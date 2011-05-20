@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -24,7 +24,7 @@ package Box2D.Dynamics.Contacts
 	//#include <Box2D/Dynamics/Contacts/b2Contact.h>
 
 	//class b2BlockAllocator;
-	
+
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Common.b2Transform;
 	import Box2D.Dynamics.b2Body;
@@ -36,7 +36,7 @@ package Box2D.Dynamics.Contacts
 	public class b2PolygonContact extends b2Contact
 	{
 		include "b2PolygonContact.cpp";
-		
+
 	//public:
 		//static b2Contact* Create(	b2Fixture* fixtureA, int32 indexA,
 		//							b2Fixture* fixtureB, int32 indexB, b2BlockAllocator* allocator);

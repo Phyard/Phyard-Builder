@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 package Box2D.Collision.Shapes
 {
 	//#include <Box2D/Collision/Shapes/b2Shape.h>
-	
+
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
@@ -40,7 +40,7 @@ package Box2D.Collision.Shapes
 	public class b2PolygonShape extends b2Shape
 	{
 		include "b2PolygonShape.cpp";
-		
+
 	//public:
 		//b2PolygonShape();
 
@@ -100,7 +100,7 @@ package Box2D.Collision.Shapes
 				m_vertices [i] = new b2Vec2 ();
 				m_normals  [i] = new b2Vec2 ();
 			}
-			
+
 			m_type = e_polygon;
 			m_radius = b2Settings.b2_polygonRadius;
 			m_vertexCount = 0;
@@ -112,17 +112,17 @@ package Box2D.Collision.Shapes
 			//b2Assert(0 <= index && index < m_vertexCount);
 			return (m_vertices[index] as b2Vec2).Clone ();
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number):void
 		{
 			m_centroid.x += dx;
 			m_centroid.y += dy;
-			
+
 			for (var i:int = 0; i < m_vertexCount; ++ i)
 			{
 				var vertex:b2Vec2 = m_vertices [i];
@@ -130,7 +130,7 @@ package Box2D.Collision.Shapes
 				vertex.y += dy;
 			}
 		}
-		
+
 	} // class
 } // package
 //#endif

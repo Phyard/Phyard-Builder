@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -49,9 +49,9 @@ package Box2D.Dynamics.Joints
 	public class b2PulleyJoint extends b2Joint
 	{
 		include "b2PulleyJoint.cpp";
-		
+
 		public static const b2_minPulleyLength:Number = 2.0;
-		
+
 	//public:
 		//b2Vec2 GetAnchorA() const;
 		//b2Vec2 GetAnchorB() const;
@@ -89,10 +89,10 @@ package Box2D.Dynamics.Joints
 
 		public var m_u1:b2Vec2 = new b2Vec2 ();
 		public var m_u2:b2Vec2 = new b2Vec2 ();
-		
+
 		public var m_constant:Number;
 		public var m_ratio:Number;
-		
+
 		public var m_maxLength1:Number;
 		public var m_maxLength2:Number;
 
@@ -112,11 +112,11 @@ package Box2D.Dynamics.Joints
 		public var m_state:int;
 		public var m_limitState1:int;
 		public var m_limitState2:int;
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
 		{

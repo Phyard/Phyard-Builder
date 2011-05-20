@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -24,7 +24,7 @@ package Box2D.Collision
 
 	//#include <Box2D/Common/b2Math.h>
 	//#include <climits>
-	
+
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
@@ -44,14 +44,14 @@ package Box2D.Collision
 
 	// moved to b2ContactID
 	//const uint8 b2_nullFeature = UCHAR_MAX;
-	
+
 	public class b2Collision
 	{
 		include "b2Collision.cpp";
 		include "b2CollideCircle.cpp";
 		include "b2CollidePolygon.cpp";
 		include "b2CollideEdge.cpp";
-		
+
 		/// Contact ids to facilitate warm starting.
 		//union b2ContactID
 		//{

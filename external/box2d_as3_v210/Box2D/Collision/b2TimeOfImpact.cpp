@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -152,7 +152,7 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 		{
 			// Find the deepest point at t2. Store the witness point indices.
 			fcn.FindMinSeparation(sFindMinSeparationOutput, t2);
-			var indexA:int = sFindMinSeparationOutput.indexA, 
+			var indexA:int = sFindMinSeparationOutput.indexA,
 				indexB:int = sFindMinSeparationOutput.indexB;
 			var s2:Number = sFindMinSeparationOutput.separation;
 
@@ -246,9 +246,9 @@ public static function b2TimeOfImpact_ (output:b2TOIOutput, input:b2TOIInput):vo
 			}
 
 			b2_toiMaxRootIters = Math.max (b2_toiMaxRootIters, rootIterCount);
-			
+
 			++pushBackIter;
-			
+
 			if (pushBackIter == b2Settings.b2_maxPolygonVertices)
 			{
 				break;

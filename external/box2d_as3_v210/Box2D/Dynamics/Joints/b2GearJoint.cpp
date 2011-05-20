@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -46,7 +46,7 @@ public function b2GearJoint(def:b2GearJointDef)
 //: b2Joint(def)
 {
 	super (def);
-	
+
 	//b2JointType type1 = def->joint1->GetType();
 	//b2JointType type2 = def->joint2->GetType();
 	var type1:int = def.joint1.GetType();
@@ -111,7 +111,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 	var r:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var tempF:Number;
-	
+
 	var g1:b2Body = m_ground1;
 	var g2:b2Body = m_ground2;
 	var b1:b2Body = m_bodyA;
@@ -188,7 +188,7 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 override public function SolveVelocityConstraints(step:b2TimeStep):void
 {
 	var tempF:Number;
-	
+
 	//B2_NOT_USED(step);
 
 	var b1:b2Body = m_bodyA;
@@ -215,9 +215,9 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 override public function SolvePositionConstraints(baumgarte:Number):Boolean
 {
 	var tempF:Number;
-	
+
 	//B2_NOT_USED(baumgarte);
-	
+
 	var linearError:Number = 0.0;
 
 	var b1:b2Body = m_bodyA;
@@ -279,7 +279,7 @@ override public function GetReactionForce(inv_dt:Number):b2Vec2
 	// TODO_ERIN not tested
 	//b2Vec2 P = m_impulse * m_J.linear2;
 	//return inv_dt * P;
-	
+
 	var tempF:Number = inv_dt * m_impulse;
 	return b2Vec2.b2Vec2_From2Numbers (tempF * m_J.linearB.x, tempF * m_J.linearB.y);
 }
@@ -289,7 +289,7 @@ override public function GetReactionTorque(inv_dt:Number):Number
 	var r:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
 	var P:b2Vec2 = new b2Vec2 ();
-	
+
 	// TODO_ERIN not tested
 	//b2Vec2 r = b2Mul(m_bodyB->GetTransform().R, m_localAnchor2 - m_bodyB->GetLocalCenter());
 	b2Math.b2Subtract_Vector2_Output (m_localAnchor2, m_bodyB.GetLocalCenter(), tempV);

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 package Box2D.Dynamics.Joints
 {
 	//#include <Box2D/Common/b2Math.h>
-	
+
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Common.b2Transform;
 	import Box2D.Common.b2Math;
@@ -85,7 +85,7 @@ package Box2D.Dynamics.Joints
 	public class b2Joint
 	{
 		include "b2Joint.cpp";
-		
+
 		//enum b2JointType
 		//{
 			public static const e_unknownJoint:int = 0;
@@ -108,7 +108,7 @@ package Box2D.Dynamics.Joints
 			public static const e_atUpperLimit:int = 2;
 			public static const e_equalLimits:int = 3;
 		//};
-		
+
 	//public:
 
 		/// Get the type of the concrete joint.
@@ -163,7 +163,7 @@ package Box2D.Dynamics.Joints
 
 		//virtual void InitVelocityConstraints(const b2TimeStep& step) = 0;
 		public function InitVelocityConstraints(step:b2TimeStep):void {}
-		
+
 		//virtual void SolveVelocityConstraints(const b2TimeStep& step) = 0;
 		public function SolveVelocityConstraints(step:b2TimeStep):void {}
 
@@ -250,13 +250,13 @@ package Box2D.Dynamics.Joints
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
 		{
 			// to override
 		}
-		
+
 		final public function ChangeJointBody (newBody:b2Body, isBodyA:Boolean):void
 		{
 			if (m_collideConnected == false)
@@ -266,13 +266,13 @@ package Box2D.Dynamics.Joints
 
 			var oldBody:b2Body;
 			var edge:b2JointEdge;
-			
+
 			if (isBodyA)
 			{
 				oldBody = m_bodyA;
 				if (oldBody == newBody)
 					return;
-				
+
 				edge = m_edgeA;
 				m_bodyA = newBody;
 				m_edgeB.other = newBody;
@@ -282,7 +282,7 @@ package Box2D.Dynamics.Joints
 				oldBody = m_bodyB;
 				if (oldBody == newBody)
 					return;
-				
+
 				edge = m_edgeB;
 				m_bodyB = newBody;
 				m_edgeA.other = newBody;
@@ -308,7 +308,7 @@ package Box2D.Dynamics.Joints
 			{
 				oldBody.m_jointList = edge.next;
 			}
-			
+
 		// add self to new body joint list
 
           edge.prev = null;
@@ -346,10 +346,10 @@ package Box2D.Dynamics.Joints
 				edge = edge.next;
 			}
 		}
-		
+
 		public static var mCustomJointCreateFunction:Function = null;
 		public static var mCustomJointDestroyFunction:Function = null;
-		
+
 	} // class
 } // package
 //#endif

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -47,7 +47,7 @@ package Box2D.Dynamics.Joints
 	public class b2MouseJoint extends b2Joint
 	{
 		include "b2MouseJoint.cpp";
-		
+
 	//public:
 
 		/// Implements b2Joint.
@@ -97,11 +97,11 @@ package Box2D.Dynamics.Joints
 		public var m_dampingRatio:Number;
 		public var m_beta:Number;
 		public var m_gamma:Number;
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
 		{

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -136,10 +136,10 @@ public static function b2FindMaxSeparation(maxSeparation:b2Separation, //int32* 
 	{
 		//*edgeIndex = edge;
 		//return s;
-		
+
 		maxSeparation.edge = edge;
 		maxSeparation.separation = s;
-		
+
 		//return output;
 		return;
 	}
@@ -170,7 +170,7 @@ public static function b2FindMaxSeparation(maxSeparation:b2Separation, //int32* 
 
 	maxSeparation.edge = bestEdge;
 	maxSeparation.separation = bestSeparation;
-	
+
 	//return output;
 }
 
@@ -315,7 +315,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	//b2Vec2 localTangent = tempV12 - tempV11;
 	var localTangent:b2Vec2 = b2Vec2.b2Vec2_From2Numbers (tempV12.x - tempV11.x, tempV12.y - tempV11.y);
 	localTangent.Normalize();
-	
+
 	//b2Vec2 localNormal = b2Math.b2Cross2(localTangent, 1.0f);
 	//b2Vec2 planePoint = 0.5f * (tempV11 + tempV12);
 	var localNormal:b2Vec2 = b2Math.b2Cross_Vector2AndScalar (localTangent, 1.0);
@@ -325,7 +325,7 @@ public static function b2CollidePolygons(manifold:b2Manifold,
 	//b2Vec2 normal = b2Math.b2Cross2(tangent, 1.0f);
 	var tangent:b2Vec2 = b2Math.b2Mul_Matrix22AndVector2 (xf1.R, localTangent);
 	var normal:b2Vec2  = b2Math.b2Cross_Vector2AndScalar (tangent, 1.0);
-	
+
 	b2Math.b2Mul_TransformAndVector2_Output (xf1, tempV11, v11);
 	b2Math.b2Mul_TransformAndVector2_Output (xf1, tempV12, v12);
 

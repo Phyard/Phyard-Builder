@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2010 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2010 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 package Box2D.Collision.Shapes
 {
 	//#include <Box2D/Collision/Shapes/b2Shape.h>
-	
+
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
@@ -79,11 +79,11 @@ package Box2D.Collision.Shapes
 			m_hasVertex0 = false;
 			m_hasVertex3 = false;
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number):void
 		{
@@ -91,7 +91,7 @@ package Box2D.Collision.Shapes
 			m_vertex1.y += dy;
 			m_vertex2.x += dx;
 			m_vertex2.y += dy;
-			
+
 			if (m_hasVertex0)
 			{
 				m_vertex0.x += dx;
@@ -103,7 +103,7 @@ package Box2D.Collision.Shapes
 				m_vertex3.y += dy;
 			}
 		}
-		
+
 	} // class
 } // package
 //#endif

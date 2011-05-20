@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -120,14 +120,14 @@ circleB:b2CircleShape, xfB:b2Transform):void
 	// Compute barycentric coordinates
 	//var u1:Number = b2Math.b2Dot2 (cLocal - v1, v2 - v1);
 	//var u2:Number = b2Math.b2Dot2 (cLocal - v2, v1 - v2);
-	
+
 	temp1.x = cLocal.x - v1.x; temp1.y = cLocal.y - v1.y;
 	temp2.x = v2.x     - v1.x; temp2.y =  v2.y     - v1.y;
 	var u1:Number = b2Math.b2Dot2 (temp1, temp2);
 	temp1.x = cLocal.x - v2.x; temp1.y = cLocal.y - v2.y;
 	temp2.x =       - temp2.x; temp2.y =       - temp2.y;
 	var u2:Number = b2Math.b2Dot2 (temp1, temp2);
-	
+
 	if (u1 <= 0.0)
 	{
 		if (b2Math.b2DistanceSquared(cLocal, v1) > radius * radius)

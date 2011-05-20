@@ -23,7 +23,7 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    var shape1:EntityShape = proxyShape1.GetEntityShape ();
    var shape2:EntityShape = proxyShape2.GetEntityShape ();
    
-//trace ("+ OnShapeContactStarted, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
+//trace ("+++++++ OnShapeContactStarted, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
    
    if (shape1 == null || shape2 == null)
       return;
@@ -45,6 +45,8 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    
    if (contact_info != null)
    {
+//trace ("+ old");
+
       // if contact_info.mNumContactPoints is zero, it means there is "out-and-in" happens.
       // now the "out-and-in" <=> nothing happend
       
@@ -59,7 +61,7 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    }
    else
    {
-   //trace ("++++++++++++++++ id1 = " + id1 + ", id2 = " + id2);
+//trace ("+ new");
    
       if (mFreeContactInfoListHead != null)
       {
@@ -123,7 +125,7 @@ private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxySha
    var shape1:EntityShape = proxyShape1.GetEntityShape ();
    var shape2:EntityShape = proxyShape2.GetEntityShape ();
    
-//trace ("- OnShapeContactFinished, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
+//trace ("------------------------ OnShapeContactFinished, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
    
    if (shape1 == null || shape2 == null)
       return;
@@ -199,7 +201,9 @@ private function HandleShapeContactEvents ():void
    
    var count:int = mShapeContactInfos_StepQueue.length;
    var i:int;
-//trace ("> count = " + count);
+   
+//trace (">>>>>>>>>>>>>>>>>>>>>>> HandleShapeContactEvents, count = " + count);
+
    for (i = 0; i < count; ++ i)
    {
       contact_info = mShapeContactInfos_StepQueue [i] as ShapeContactInfo;
@@ -216,7 +220,7 @@ private function HandleShapeContactEvents ():void
           
          // add to new contact list 
          
-         contact_info..mIsNewContact = false;
+         contact_info.mIsNewContact = false;
          contact_info.mBeginContactingFrame = mNumSimulatedSteps;
                // sometimes, contact_info.mBeginContactingFrame + 1 = mNumSimulatdSteps, so adjust it 
                // ? forget what this means. :(, (maybe it is only needed in the old handling function)
@@ -246,7 +250,7 @@ private function HandleShapeContactEvents ():void
                
             if (contact_info.mInKeepContactingList)
             {
-//trace ("          mInKeepContactingList = " + contact_info.mInKeepContactingList);
+trace ("          mInKeepContactingList = " + contact_info.mInKeepContactingList);
                if (contact_info.mPrevContactInfo != null)
                   contact_info.mPrevContactInfo.mNextContactInfo = contact_info.mNextContactInfo;
                else //if (mFirstShapeContactInfo == contact_info)

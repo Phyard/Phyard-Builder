@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -28,14 +28,14 @@ package Box2D.Dynamics
 	import Box2D.Collision.b2BroadPhase_DynamicTree;
 	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Contacts.b2ContactEdge;
-	
+
 	import Box2D.Collision.b2BroadPhaseMonitor;
 
 	// Delegate of b2World
 	public class b2ContactManager implements b2BroadPhaseMonitor
 	{
 		include "b2ContactManager.cpp";
-		
+
 	//public:
 		//b2ContactManager();
 
@@ -47,14 +47,14 @@ package Box2D.Dynamics
 		//void Destroy(b2Contact* c);
 
 		//void Collide();
-				
+
 		public var m_broadPhase:b2BroadPhase;// = new b2BroadPhase_DynamicTree ();
 		public var m_contactList:b2Contact;
 		public var m_contactCount:int;
 		public var m_contactFilter:b2ContactFilter;
 		public var m_contactListener:b2ContactListener;
 		public var m_allocator:b2BlockAllocator;
-		
+
 		// hacking
 		//public var m_contactPreSolveListener:b2ContactPreSolveListener = null;
 		//public var m_contactPostSolveListener:b2ContactPostSolveListener = null;

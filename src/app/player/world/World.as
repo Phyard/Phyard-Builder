@@ -440,7 +440,16 @@ package player.world {
          mNumSimulatedSteps = 0;
          mStepStage = 0;
          mLevelSimulatedTime = 0.0;
+      
+      //------------------------------------
+      // build physics for entities
+      //------------------------------------
+      
+         // moved up from v1.56. Before v1.56, it is called below.
+         // Reason: so that many APIs can be called without problems in OnWorldBeforeInitializing event handlers
          
+         InitPhysics (); // now contacts have not been found yet
+      
       //------------------------------------
       // on level to init
       //------------------------------------
@@ -457,19 +466,19 @@ package player.world {
       // init physics
       //------------------------------------
          
-         InitPhysics ();
-         
-      //------------------------------------
-      // ai init
-      //------------------------------------
-         
-         mEntityList.InitEntities ();
+         //InitPhysics (); // moved up from v1.56
          
       //-----------------------------
       // update camera
       //-----------------------------
          
          UpdateCamera ();
+         
+      //------------------------------------
+      // init entities
+      //------------------------------------
+         
+         mEntityList.InitEntities ();
          
       //------------------------------------
       // on level inited
@@ -539,7 +548,7 @@ package player.world {
       // update
       //-----------------------------
          
-         if (mFunc_StepUpdate != null)
+         //if (mFunc_StepUpdate != null) // should not be null
             mFunc_StepUpdate (escapedTime, speedX);
          
       //-----------------------------
@@ -1114,7 +1123,7 @@ package player.world {
          
       // update body mass, coincide bodies with centroid
          
-         mEntityListBody.OnBodyPhysicsShapeListChanged ();
+         mEntityListBody.OnBodyShapeListChanged ();
          mEntityListBody.AddShapeMomentums ();
          
       // build joints
@@ -1126,9 +1135,9 @@ package player.world {
          
          SynchonizeWithPhysics (); // need it?
          
-      // handle contact events
-         
-         HandleShapeContactEvents ();
+      // handle contact events. (disabled from v1.56. Two reasons: 1. it is useless in fact. 2. more reasonable)
+      
+         // HandleShapeContactEvents ()
       }
 
    //===============================

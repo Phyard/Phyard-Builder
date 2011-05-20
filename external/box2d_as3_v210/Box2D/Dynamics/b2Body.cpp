@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -99,7 +99,7 @@ public function b2Body(bd:b2BodyDef, world:b2World)
 		m_mass = 0.0;
 		m_invMass = 0.0;
 	}
-	
+
 	m_I = 0.0;
 	m_invI = 0.0;
 
@@ -132,7 +132,7 @@ public function SetType(type:int):void
 	{
 		m_linearVelocity.SetZero();
 		m_angularVelocity = 0.0;
-		
+
 		//>>hacking
       m_sweep.c0.x = m_sweep.c.x;
       m_sweep.c0.y = m_sweep.c.y;
@@ -186,7 +186,7 @@ public function CreateFixture(def:b2FixtureDef):b2Fixture
 		//ResetMassData();
 		OnMassDataChanged ();
 	}
-	
+
 	// Let the world know we have a new fixture. This will cause new contacts
 	// to be created at the beginning of the next time step.
 	m_world.m_flags |= b2World.e_newFixture;
@@ -216,9 +216,9 @@ public function DestroyFixture(fixture:b2Fixture):void
 
 	// Remove the fixture from this body's singly linked list.
 	//b2Assert(m_fixtureCount > 0);
-	
-	var prev:b2Fixture = null; 
-	var node:b2Fixture = m_fixtureList; 
+
+	var prev:b2Fixture = null;
+	var node:b2Fixture = m_fixtureList;
 	var found:Boolean = false;
 	while (node != null)
 	{
@@ -264,13 +264,13 @@ public function DestroyFixture(fixture:b2Fixture):void
 	}
 
 	var allocator:b2BlockAllocator = m_world.m_blockAllocator;
-	
+
 	if (m_flags & e_activeFlag)
 	{
 		var broadPhase:b2BroadPhase = m_world.m_contactManager.m_broadPhase;
 		fixture.DestroyProxies(broadPhase);
 	}
-	
+
 	fixture.Destroy(null);
 	fixture.m_body = null;
 	fixture.m_next = null;
@@ -301,7 +301,7 @@ public function ResetMassData():void
 	m_sweep.localCenter.SetZero();
 
 	center.SetZero ();
-	
+
 	var f:b2Fixture;
 
 	// Static and kinematic bodies have zero mass.
@@ -310,18 +310,18 @@ public function ResetMassData():void
 		//m_sweep.c0 = m_sweep.c = m_xf.position;
 		//m_sweep.c0.x = m_sweep.c.x = m_xf.position.x;
 		//m_sweep.c0.y = m_sweep.c.y = m_xf.position.y;
-		
+
 		//>> hacking
 		var num:int = 0;
 		for (f = m_fixtureList; f != null; f = f.m_next)
 		{
 			++ num;
 			f.GetMassData(massData);
-			
+
 			center.x += massData.center.x;
 			center.y += massData.center.y;
 		}
-		
+
 		//m_sweep.localCenter = center;
 		if (num > 1)
 		{
@@ -330,13 +330,13 @@ public function ResetMassData():void
 		}
 		m_sweep.localCenter.x = center.x;
 		m_sweep.localCenter.y = center.y;
-		
+
 		//m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 		b2Math.b2Mul_TransformAndVector2_Output (m_xf, m_sweep.localCenter, tempV);
 		m_sweep.c0.x = m_sweep.c.x = tempV.x;
 		m_sweep.c0.y = m_sweep.c.y = tempV.y;
 		//<<
-		
+
 		return;
 	}
 
@@ -349,7 +349,7 @@ public function ResetMassData():void
 			continue;
 		}
 		f.GetMassData(massData);
-		
+
 		m_mass += massData.mass;
 		//center += massData.mass * massData.center;
 		center.x += massData.mass * massData.center.x;
@@ -378,7 +378,7 @@ public function ResetMassData():void
 			return;
 		}
 		//<<
-		
+
 		// Force all dynamic bodies to have a positive mass.
 		m_mass = 1.0;
 		m_invMass = 1.0;
@@ -449,7 +449,7 @@ public function SetMassData (massData:b2MassData):void
 			return;
 		}
 		//<<
-		
+
 		m_mass = 1.0;
 	}
 
@@ -564,7 +564,7 @@ public function SetActive (flag:Boolean):void
 
 	var broadPhase:b2BroadPhase;
 	var f:b2Fixture;
-	
+
 	if (flag)
 	{
 		m_flags |= e_activeFlag;

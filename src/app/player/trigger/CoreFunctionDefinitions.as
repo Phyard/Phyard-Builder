@@ -2597,20 +2597,7 @@ package player.trigger {
          if (entity.IsDestroyedAlready ())
             return;
 
-         var body:EntityBody = null;
-         if (entity is EntityShape)
-         {
-            var shape:EntityShape = entity as EntityShape;
-            if (shape.IsPhysicsShape ())
-               body = shape.GetBody ();
-         }
-
          entity.DestroyEntity ();
-
-         if (body != null)
-         {
-            body.OnPhysicsShapeListChanged ();
-         }
       }
 
       public static function AreTwoEntitiesCoincided (valueSource:Parameter, valueTarget:Parameter):void
@@ -3577,7 +3564,8 @@ package player.trigger {
          if (shape == null)
             return;
 
-         shape.Detach ();
+         //shape.DetachFromBrothers ();
+         EntityShape.DetachShape (shape);
       }
 
 	  public static function AttachTwoShapes (valueSource:Parameter, valueTarget:Parameter):void
@@ -3591,7 +3579,8 @@ package player.trigger {
          if (shape2 == null || shape2.IsDestroyedAlready ())
             return;
 
-         shape1.AttachWith (shape2);
+         //shape1.AttachWith (shape2);
+         EntityShape.AttachTwoShapes (shape1, shape2);
       }
 
 	  public static function DetachShapeThenAttachWithAnother (valueSource:Parameter, valueTarget:Parameter):void
@@ -3599,14 +3588,16 @@ package player.trigger {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
             return;
-
+         
+         EntityShape.DetachShape (shape1);
+         
          valueSource = valueSource.mNextParameter;
          var shape2:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
-         if (shape2 == null || shape2.IsDestroyedAlready ())
-            shape1.Detach ();
-         else
-            shape1.DetachThenAttachWith (shape2);
+         if (shape2 != null && (! shape2.IsDestroyedAlready ()))
+         {
+            EntityShape.AttachTwoShapes (shape1, shape2);
+         }
       }
 
       public static function BreakupShapeBrothers (valueSource:Parameter, valueTarget:Parameter):void

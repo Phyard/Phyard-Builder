@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 package Box2D.Collision.Shapes
 {
 	//#include <Box2D/Collision/Shapes/b2Shape.h>
-	
+
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
@@ -36,7 +36,7 @@ package Box2D.Collision.Shapes
 	public class b2CircleShape extends b2Shape
 	{
 		include "b2CircleShape.cpp";
-		
+
 	//public:
 		//b2CircleShape();
 
@@ -101,18 +101,18 @@ package Box2D.Collision.Shapes
 			//return m_p;
 			return m_p.Clone ();
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number):void
 		{
 			m_p.x += dx;
 			m_p.y += dy;
 		}
-		
+
 	} // class
 } // package
 //#endif

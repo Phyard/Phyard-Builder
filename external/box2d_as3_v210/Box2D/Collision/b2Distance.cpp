@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -101,7 +101,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 	simplex.ReadCache(cache, proxyA, transformA, proxyB, transformB);
 
 	// Get simplex vertices as an array.
-	//var vertices:b2SimplexVertex = simplex.m_v1; 
+	//var vertices:b2SimplexVertex = simplex.m_v1;
 	var vertices:Array = simplex.m_vertices;
 	const k_maxIters:int = 20;
 
@@ -196,7 +196,7 @@ public static function b2Distance_(output:b2DistanceOutput,
 		b2Math.b2Mul_TransformAndVector2_Output (transformB, proxyB.GetVertex(vertex.indexB), vertex.wB);
 		vertex.w.x = vertex.wB.x - vertex.wA.x;
 		vertex.w.y = vertex.wB.y - vertex.wA.y;
-		
+
 		// Iteration count is equated to the number of support point calls.
 		++iter;
 		++b2_gjkIters;

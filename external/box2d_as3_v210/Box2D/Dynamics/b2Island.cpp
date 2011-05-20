@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -173,7 +173,7 @@ public function b2Island(
 	m_contacts = new Array (contactCapacity);
 	m_joints = new Array (jointCapacity);
 
-	// as3: below 2 lines is not commented of in c++ version 
+	// as3: below 2 lines is not commented of in c++ version
 	//m_velocities = (b2Velocity*)m_allocator->Allocate(m_bodyCapacity * sizeof(b2Velocity));
 	//m_positions = (b2Position*)m_allocator->Allocate(m_bodyCapacity * sizeof(b2Position));
 }
@@ -188,7 +188,7 @@ public function Destructor ():void
 	m_bodies = null;
 	m_contacts = null;
 	m_joints = null;
-	
+
 	//m_allocator->Free(m_contacts);
 	//m_allocator->Free(m_bodies);
 }
@@ -202,7 +202,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	var b:b2Body;
 	var temp:Number;
 	var tempContact:b2Contact;
-	
+
 	// Integrate velocities and apply damping.
 	for (i = 0; i < m_bodyCount; ++i)
 	{
@@ -269,7 +269,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 	{
 		contactSolver.WarmStart();
 	}
-	
+
 	for (i = 0; i < m_jointCount; ++i)
 	{
 		(m_joints[i] as b2Joint).InitVelocityConstraints(step);
@@ -305,7 +305,7 @@ public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean):void
 		var translation:b2Vec2 = sTranslation; // hacking
 		translation.x = step.dt * b.m_linearVelocity.x;
 		translation.y = step.dt * b.m_linearVelocity.y;
-		
+
 		if (b2Math.b2Dot2(translation, translation) > mWorld.b2_maxTranslationSquared)
 		{
 			ratio = mWorld.b2_maxTranslation / translation.Length();
@@ -552,21 +552,21 @@ public function Report(constraints:Array):void
 	{
 		return;
 	}
-	
+
 	var i:int, j:int;
-	
+
 	var impulse:b2ContactImpulse = mContactImpulse; //new b2ContactImpulse ();
-	
+
 	var cc:b2ContactConstraint;
 	var ccp:b2ContactConstraintPoint;
-	
+
 	for (i = 0; i < m_contactCount; ++i)
 	{
 		var c:b2Contact = m_contacts[i];
 
 		//const b2ContactConstraint* cc = constraints + i;
 		cc = constraints[i];
-		
+
 		//@notice: it is best to use a member variable m_impulse
 		for (j = 0; j < cc.pointCount; ++j)
 		{

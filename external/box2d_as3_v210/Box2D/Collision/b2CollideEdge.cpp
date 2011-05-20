@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -121,7 +121,7 @@ public static function b2CollideEdgeAndCircle(manifold:b2Manifold,
 		//manifold->localPoint = P;
 		manifold.localPoint.x = P1.x;
 		manifold.localPoint.y = P1.y;
-		
+
 		var mp1:b2ManifoldPoint = manifold.points[0] as b2ManifoldPoint;
 		//manifold->points[0].id.key = 0;
 		mp1.id = 0; // hacking
@@ -132,7 +132,7 @@ public static function b2CollideEdgeAndCircle(manifold:b2Manifold,
 		mp1.localPoint.y = circleB.m_p.y;
 		return;
 	}
-	
+
 	// Region B
 	if (u <= 0.0)
 	{
@@ -177,7 +177,7 @@ public static function b2CollideEdgeAndCircle(manifold:b2Manifold,
 		//manifold->localPoint = P;
 		manifold.localPoint.x = P2.x;
 		manifold.localPoint.y = P2.y;
-		
+
 		var mp2:b2ManifoldPoint = manifold.points[0] as b2ManifoldPoint;
 		//manifold->points[0].id.key = 0;
 		mp2.id = 0; // hacking
@@ -224,7 +224,7 @@ public static function b2CollideEdgeAndCircle(manifold:b2Manifold,
 	manifold.localNormal.y = n.y;
 	manifold.localPoint.x = A.x;
 	manifold.localPoint.y = A.y;
-	
+
 	var mp3:b2ManifoldPoint = manifold.points[0] as b2ManifoldPoint;
 	//manifold->points[0].id.key = 0;
 	mp3.id = 0; // hacking

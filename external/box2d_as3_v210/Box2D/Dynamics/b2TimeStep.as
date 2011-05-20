@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@ package Box2D.Dynamics
 		{
 			var timeStep:b2TimeStep = new b2TimeStep ();
 			timeStep.CopyFrom (this);
-			
+
 			return timeStep;
 		}
 		// this function doesn't exist in the c++ version
@@ -45,7 +45,7 @@ package Box2D.Dynamics
 			positionIterations = another.positionIterations;
 			warmStarting = another.warmStarting;
 		}
-		
+
 		public var dt:Number;			// time step
 		public var inv_dt:Number;		// inverse time step (0 if dt == 0).
 		public var dtRatio:Number;	// dt * inv_dt0

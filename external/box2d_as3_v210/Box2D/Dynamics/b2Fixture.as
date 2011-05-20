@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -26,7 +26,7 @@ package Box2D.Dynamics
 	//#include <Box2D/Dynamics/b2Body.h>
 	//#include <Box2D/Collision/b2Collision.h>
 	//#include <Box2D/Collision/Shapes/b2Shape.h>
-	
+
 	import Box2D.Common.b2BlockAllocator;
 	import Box2D.Common.b2Transform;
 	import Box2D.Common.b2Vec2;
@@ -52,9 +52,9 @@ package Box2D.Dynamics
 	public class b2Fixture
 	{
 		include "b2Fixture.cpp";
-		
+
 	// public:
-	
+
 		/// Get the type of the child shape. You can use this to down cast to the concrete shape.
 		/// @return the shape type.
 		//b2Shape::Type GetType() const;
@@ -139,7 +139,7 @@ package Box2D.Dynamics
 	//protected:
 
 
-		
+
 		//b2Fixture();
 
 		// We need separation create/destroy functions from the constructor/destructor because
@@ -172,7 +172,7 @@ package Box2D.Dynamics
 		public var m_userData:Object;
 
 	// inline
-		
+
 		public function GetType():int
 		{
 			return m_shape.GetType();
@@ -231,7 +231,7 @@ package Box2D.Dynamics
 		public function SetDensity(density:Number):void
 		{
 			m_density = density;
-			
+
 			// the following doesn't exit in c++ version
 			if (m_body != null)
 			{

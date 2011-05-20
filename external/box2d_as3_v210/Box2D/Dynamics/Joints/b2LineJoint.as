@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -42,13 +42,13 @@ package Box2D.Dynamics.Joints
 	//};
 
 	/// A line joint. This joint provides two degrees of freedom: translation
-	/// along an axis fixed in body1 and rotation in the plane. You can use a 
+	/// along an axis fixed in body1 and rotation in the plane. You can use a
 	/// joint limit to restrict the range of motion and a joint motor to drive
-	/// the motion or to model joint friction. 
+	/// the motion or to model joint friction.
 	public class b2LineJoint extends b2Joint
 	{
 		include "b2LineJoint.cpp";
-		
+
 	//public:
 		//b2Vec2 GetAnchorA() const;
 		//b2Vec2 GetAnchorB() const;
@@ -135,16 +135,16 @@ package Box2D.Dynamics.Joints
 		{
 			return m_motorSpeed;
 		}
-		
+
 		public function GetMaxMotorForce():Number
 		{
 			return m_maxMotorForce;
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
 		{

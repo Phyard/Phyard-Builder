@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2010 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2010 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -43,7 +43,7 @@ public function Create(vertices:Array, count:int):void
 	{
 		var cloneV:b2Vec2 = new b2Vec2 ();
 		m_vertices [i] = cloneV;
-		
+
 		var v:b2Vec2 = vertices [i] as b2Vec2;
 		cloneV.x = v.x;
 		cloneV.y = v.y;

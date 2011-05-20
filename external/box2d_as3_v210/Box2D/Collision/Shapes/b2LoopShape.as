@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2010 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2010 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -119,15 +119,15 @@ package Box2D.Collision.Shapes
 			m_vertices = null;
 			m_count = 0;
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number):void
 		{
-			
+
 			for (var i:int = 0; i < m_count; ++ i)
 			{
 				var vertex:b2Vec2 = m_vertices [i];
@@ -135,7 +135,7 @@ package Box2D.Collision.Shapes
 				vertex.y += dy;
 			}
 		}
-		
+
 	} // class
 } // package
 //#endif

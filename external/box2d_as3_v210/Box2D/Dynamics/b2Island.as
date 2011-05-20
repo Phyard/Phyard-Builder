@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -24,7 +24,7 @@ package Box2D.Dynamics
 	//#include <Box2D/Common/b2Math.h>
 	//#include <Box2D/Dynamics/b2Body.h>
 	//#include <Box2D/Dynamics/b2TimeStep.h>
-	
+
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Sweep;
@@ -44,7 +44,7 @@ package Box2D.Dynamics
 	//struct b2ContactConstraint;
 
 	// the 2 structures seem not used. ?
-	
+
 	/// This is an internal structure.
 	//struct b2Position
 	//{
@@ -63,7 +63,7 @@ package Box2D.Dynamics
 	public class b2Island
 	{
 		include "b2Island.cpp";
-		
+
 	//public:
 		//b2Island(int32 bodyCapacity, int32 contactCapacity, int32 jointCapacity,
 		//		b2StackAllocator* allocator, b2ContactListener* listener);
@@ -127,9 +127,9 @@ package Box2D.Dynamics
 //====================================================================================
 // hacking
 //====================================================================================
-		
+
 		public var mWorld:b2World = null;
-		
+
 	} // class
 } // package
 //#endif

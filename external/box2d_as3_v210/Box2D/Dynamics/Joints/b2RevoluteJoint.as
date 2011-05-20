@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@ package Box2D.Dynamics.Joints
 {
 
 	//#include <Box2D/Dynamics/Joints/b2Joint.h>
-	
+
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Vec2;
@@ -43,7 +43,7 @@ package Box2D.Dynamics.Joints
 	public class b2RevoluteJoint extends b2Joint
 	{
 		include "b2RevoluteJoint.cpp";
-		
+
 	//public:
 		//b2Vec2 GetAnchorA() const;
 		//b2Vec2 GetAnchorB() const;
@@ -112,7 +112,7 @@ package Box2D.Dynamics.Joints
 
 		public var m_mass:b2Mat33 = new b2Mat33 ();			// effective mass for point-to-point constraint.
 		public var m_motorMass:Number;	// effective mass for motor/limit angular constraint.
-		
+
 		public var m_enableMotor:Boolean;
 		public var m_maxMotorTorque:Number;
 		public var m_motorSpeed:Number;
@@ -129,11 +129,11 @@ package Box2D.Dynamics.Joints
 		{
 			return m_motorSpeed;
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// call by b2Body
 
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
@@ -151,7 +151,7 @@ package Box2D.Dynamics.Joints
 		}
 
 		private static var worldAnchor:b2Vec2 = new b2Vec2 ();
-			
+
 		override protected function NotifyBodyChanged (oldBody:b2Body, isBodyA:Boolean):void
 		{
 			if (isBodyA)
@@ -169,7 +169,7 @@ package Box2D.Dynamics.Joints
 		}
 
 		protected var mReachMaxMotorTorqueCallback:Function = null;
-		
+
 		public function SetReachMaxMotorTorqueCallback (callback:Function):void
 		{
 			mReachMaxMotorTorqueCallback = callback;

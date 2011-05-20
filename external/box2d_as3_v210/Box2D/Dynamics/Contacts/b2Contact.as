@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -26,7 +26,7 @@ package Box2D.Dynamics.Contacts
 	//#include <Box2D/Collision/b2Collision.h>
 	//#include <Box2D/Collision/Shapes/b2Shape.h>
 	//#include <Box2D/Dynamics/b2Fixture.h>
-	
+
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Math;
 	import Box2D.Common.b2Transform;
@@ -79,7 +79,7 @@ package Box2D.Dynamics.Contacts
 	public class b2Contact
 	{
 		include "b2Contact.cpp";
-		
+
 	//public:
 
 		/// Get the contact manifold. Do not modify the manifold unless you understand the
@@ -135,19 +135,19 @@ package Box2D.Dynamics.Contacts
 		//{
 			// Used when crawling contact graph when forming islands.
 			public static const e_islandFlag:int		= 0x0001;
-			
+
 			// Set when the shapes are touching.
 			public static const e_touchingFlag:int		= 0x0002;
-			
+
 			// This contact can be disabled (by user)
 			public static const e_enabledFlag:int		= 0x0004;
-			
+
 			// This contact needs filtering because a fixture filter was changed.
 			public static const e_filterFlag:int		= 0x0008;
-			
+
 			// This bullet contact had a TOI event
 			public static const e_bulletHitFlag:int		= 0x0010;
-			
+
 			// This contact has a valid TOI in m_toi
 			public static const e_toiFlag:int		= 0x0020;
 		//};
@@ -193,9 +193,9 @@ package Box2D.Dynamics.Contacts
 		public var m_toiCount:int
 		public var m_toi:Number;
 	//};
-	
+
 	// inline
-	
+
 		public function GetManifold():b2Manifold
 		{
 			return m_manifold;
@@ -282,27 +282,27 @@ package Box2D.Dynamics.Contacts
 		{
 			m_flags |= e_filterFlag;
 		}
-		
+
 //***********************************************************************
 // hackings
 //***********************************************************************
-		
+
 		// hacking
 		public var mNextManifoldInPool:b2Manifold = null;
-		
+
 		// call by b2Body
 		public function OnBodyLocalCenterChanged (dx:Number, dy:Number, body:b2Body):void
 		{
 			if (m_manifold.pointCount <= 0)
 				return;
-			
+
 			var manifoldPoint:Array = m_manifold.points;
-			
+
 			var flip:Boolean = b2ContactID.ContactID_IsFlip ((manifoldPoint [0] as b2ManifoldPoint).id);
 			var isBodyA:Boolean = body == m_fixtureA.GetBody ();
-			
+
 			var firstBodyIsBodyA:Boolean = (isBodyA != flip);
-			
+
 			if (firstBodyIsBodyA)
 			{
 				m_manifold.localPoint.x += dx;
@@ -317,7 +317,7 @@ package Box2D.Dynamics.Contacts
 				}
 			}
 		}
-		
+
 	} // class
 } // package
 //#endif

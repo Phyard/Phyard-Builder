@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -37,7 +37,7 @@ public function b2MouseJoint(def:b2MouseJointDef)
 	//b2Assert(b2IsValid(def->maxForce) && def->maxForce >= 0.0f);
 	//b2Assert(b2IsValid(def->frequencyHz) && def->frequencyHz >= 0.0f);
 	//b2Assert(b2IsValid(def->dampingRatio) && def->dampingRatio >= 0.0f);
-	
+
 	m_target.CopyFrom (def.target);
 	//m_localAnchor = b2MulT(m_bodyB->GetTransform(), m_target);
 	b2Math.b2MulT_TransformAndVector2_Output (m_bodyB.GetTransform(), m_target, m_localAnchor);
@@ -100,11 +100,11 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 {
 	var r:b2Vec2 = new b2Vec2 ();
 	var tempV:b2Vec2 = new b2Vec2 ();
-	
+
 	var K1:b2Mat22 = new b2Mat22 ();
 	var K2:b2Mat22 = new b2Mat22 ();
 	var K:b2Mat22 = new b2Mat22 ();
-	
+
 	var b:b2Body = m_bodyB;
 
 	var mass:Number = b.GetMass();
@@ -180,7 +180,7 @@ override public function SolveVelocityConstraints(step:b2TimeStep):void
 	var oldImpulse:b2Vec2 = new b2Vec2 ();
 	var Cdot:b2Vec2 = new b2Vec2 ();
 	var impulse:b2Vec2 = new b2Vec2 ();
-	
+
 	var b:b2Body = m_bodyB;
 
 	//b2Vec2 r = b2Mul(b->GetTransform().R, m_localAnchor - b->GetLocalCenter());

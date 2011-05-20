@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -35,7 +35,7 @@ public static function b2World_FromWorldDefine (worldDef:b2WorldDef):b2World
 {
 	var world:b2World = new b2World (null, false, false);
 	world.Create (worldDef);
-	
+
 	return world;
 }
 
@@ -43,7 +43,7 @@ public function b2World(gravity:b2Vec2, doSleep:Boolean, createNow:Boolean = tru
 {
 	if (! createNow)
 		return;
-	
+
 	var worldDef:b2WorldDef = new b2WorldDef ();
 	if (gravity != null)
 	{
@@ -51,7 +51,7 @@ public function b2World(gravity:b2Vec2, doSleep:Boolean, createNow:Boolean = tru
 		worldDef.gravity.y = gravity.y;
 	}
 	worldDef.doSleep = doSleep;
-	
+
 	Create (worldDef);
 }
 
@@ -192,8 +192,8 @@ public function DestroyBody(b:b2Body):void
 	while (je != null)
 	{
 		var je0:b2JointEdge = je;
-		
-		//>> patch, if is possible the 2 bodies of a joint are the same body., 
+
+		//>> patch, if is possible the 2 bodies of a joint are the same body.,
 		// which means there are 2 same joints in the joint list of a body
 		// this block doesn't exist in v++ version
 		var prev_je:b2JointEdge = je0;
@@ -205,12 +205,12 @@ public function DestroyBody(b:b2Body):void
 				prev_je.next = next_je.next;
 				break;
 			}
-			
+
 			prev_je = next_je;
 			next_je = prev_je.next;
 		}
 		//<<
-		
+
 		je = je.next;
 
 		if (m_destructionListener != null)
@@ -440,9 +440,9 @@ public function Solve(step:b2TimeStep):void
 	var b:b2Body;
 	var c:b2Contact;
 	var j:b2Joint;
-	
+
 	var i:int;
-	
+
 	// Size the island for the worst case.
 	//var island:b2Island = new b2Island (m_bodyCount,
 	//									m_contactManager.m_contactCount,
@@ -517,7 +517,7 @@ public function Solve(step:b2TimeStep):void
 			for (var ce:b2ContactEdge = b.m_contactList; ce != null; ce = ce.next)
 			{
 				var contact:b2Contact = ce.contact;
-				
+
 				// Has this contact already been added to an island?
 				if (contact.m_flags & b2Contact.e_islandFlag)
 				{
@@ -605,7 +605,7 @@ public function Solve(step:b2TimeStep):void
 	for (b = m_bodyList; b != null; b = b.GetNext())
 	{
 		// If a body was not in an island then it did not move.
-		if ((b.m_flags & b2Body.e_islandFlag) == 0) 
+		if ((b.m_flags & b2Body.e_islandFlag) == 0)
 		{
 			continue;
 		}
@@ -910,7 +910,7 @@ public function SolveTOI(step:b2TimeStep):void
 					{
 						continue;
 					}
-					
+
 					// Add the other body to the island.
 					other.m_flags |= b2Body.e_islandFlag;
 

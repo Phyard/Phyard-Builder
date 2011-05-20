@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 public function b2BroadPhase_DynamicTree()
 {
 	var i:int;
-	
+
 	m_proxyCount = 0;
 
 	m_pairCapacity = 16
@@ -40,7 +40,7 @@ public function b2BroadPhase_DynamicTree()
 	//m_moveBuffer = (int32*)b2Alloc(m_moveCapacity * sizeof(int32));
 	m_moveBuffer = new Array (m_moveCapacity);
 	//for (i = 0; i < m_moveCapacity; ++ i)
-	//	m_moveBuffer [i] = int (e_nullProxy); 
+	//	m_moveBuffer [i] = int (e_nullProxy);
 }
 
 //b2BroadPhase::~b2BroadPhase()
@@ -75,6 +75,11 @@ override public function MoveProxy(proxyId:int, aabb:b2AABB, displacement:b2Vec2
 	}
 }
 
+override public function TouchProxy(proxyId:int):void
+{
+   BufferMove(proxyId);
+}
+
 public function BufferMove(proxyId:int):void
 {
 	if (m_moveCount == m_moveCapacity)
@@ -88,7 +93,7 @@ public function BufferMove(proxyId:int):void
 		m_moveCapacity *= 2;
 		m_moveBuffer.length = m_moveCapacity;
 		//for (var i:int = oldCapacity; i < m_moveCapacity; ++ i)
-		//	m_moveBuffer [i] = int (e_nullProxy); 
+		//	m_moveBuffer [i] = int (e_nullProxy);
 	}
 
 	m_moveBuffer[m_moveCount] = proxyId;
@@ -132,6 +137,6 @@ public function QueryCallback(proxyId:int):Boolean
 	pair.proxyIdA = Math.min (proxyId, m_queryProxyId);
 	pair.proxyIdB = Math.max (proxyId, m_queryProxyId);
 	++m_pairCount;
-	
+
 	return true;
 }

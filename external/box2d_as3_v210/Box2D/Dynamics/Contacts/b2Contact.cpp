@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -45,7 +45,7 @@ public static function InitializeRegisters():void
 			s_registers [i][j] = new b2ContactRegister ();
 		}
 	}
-	
+
 	AddType(b2CircleContact.Create, b2CircleContact.Destroy, b2Shape.e_circle, b2Shape.e_circle);
 	AddType(b2PolygonAndCircleContact.Create, b2PolygonAndCircleContact.Destroy, b2Shape.e_polygon, b2Shape.e_circle);
 	AddType(b2PolygonContact.Create, b2PolygonContact.Destroy, b2Shape.e_polygon, b2Shape.e_polygon);
@@ -60,7 +60,7 @@ public static function AddType(createFcn:Function, destoryFcn:Function,
 {
 	//b2Assert(b2Shape::e_unknown < type1 && type1 < b2Shape::e_typeCount);
 	//b2Assert(b2Shape::e_unknown < type2 && type2 < b2Shape::e_typeCount);
-	
+
 	s_registers[type1][type2].createFcn = createFcn;
 	s_registers[type1][type2].destroyFcn = destoryFcn;
 	s_registers[type1][type2].primary = true;
@@ -86,7 +86,7 @@ public static function Create(fixtureA:b2Fixture, indexA:int, fixtureB:b2Fixture
 
 	//b2Assert(b2Shape::e_unknown < type1 && type1 < b2Shape::e_typeCount);
 	//b2Assert(b2Shape::e_unknown < type2 && type2 < b2Shape::e_typeCount);
-	
+
 	var cr:b2ContactRegister = s_registers[type1][type2] as b2ContactRegister;
 	var createFcn:Function = cr.createFcn;
 	if (createFcn != null)
@@ -109,7 +109,7 @@ public static function Create(fixtureA:b2Fixture, indexA:int, fixtureB:b2Fixture
 public static function Destroy(contact:b2Contact, allocator:b2BlockAllocator = null):void
 {
 	//b2Assert(s_initialized == true);
-	
+
 	if (contact.m_manifold.pointCount > 0)
 	{
 		contact.GetFixtureA().GetBody().SetAwake(true);
@@ -156,7 +156,7 @@ public function b2Contact(fA:b2Fixture, indexA:int, fB:b2Fixture, indexB:int)
 		m_manifold.mNextManifoldInPool = null;
 	}
 	//<<
-	
+
 	m_manifold.pointCount = 0;
 
 	m_prev = null;
@@ -182,18 +182,18 @@ private static var mOldManifold:b2Manifold = new b2Manifold ();
 
 public function Update(listener:b2ContactListener
 	//, preSolveLinster:b2ContactPreSolveListener // hacking
-	):void 
+	):void
 {
 	var i:int;
 	var j:int;
 	var mp2:b2ManifoldPoint;
 	var mp1:b2ManifoldPoint;
-	
+
 	//b2Manifold oldManifold = m_manifold;
 	//var oldManifold:b2Manifold = m_manifold.Clone ();
 	//>> hacking, optimization
 	var oldManifold:b2Manifold = mOldManifold;
-	
+
 	//if (preSolveLinster == null)
 	//{
 	//	oldManifold.pointCount = m_manifold.pointCount;

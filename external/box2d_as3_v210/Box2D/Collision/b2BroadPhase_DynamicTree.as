@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -40,7 +40,7 @@ package Box2D.Collision
 	public class b2BroadPhase_DynamicTree extends b2BroadPhase implements b2QueryCallbackOwner
 	{
 		include "b2BroadPhase_DynamicTree.cpp"
-		
+
 	//public:
 
 		//enum
@@ -62,6 +62,9 @@ package Box2D.Collision
 		/// call UpdatePairs to finalized the proxy pairs (for your time step).
 		//void MoveProxy(int32 proxyId, const b2AABB& aabb, const b2Vec2& displacement);
 
+      /// Call to trigger a re-processing of it's pairs on the next call to UpdatePairs.
+      //void TouchProxy(int32 proxyId);
+      
 		/// Get the fat AABB for a proxy.
 		//const b2AABB& GetFatAABB(int32 proxyId) const;
 
@@ -215,7 +218,7 @@ package Box2D.Collision
 			//std::sort(m_pairBuffer, m_pairBuffer + m_pairCount, b2PairLessThan);
 			var sortedPairBuffer:Array = m_pairBuffer.slice (0, m_pairCount);
 			sortedPairBuffer.sort (b2PairLessThan, Array.NUMERIC);
-			
+
 			// Send the pairs back to the client.
 			i = 0;
 			while (i < m_pairCount)

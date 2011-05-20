@@ -86,7 +86,7 @@ package player.entity {
             SetRotation (mShape.mPhysicsRotation + mRelativeRotation);
          }
       }
-
+      
 //=============================================================
 //   initialize
 //=============================================================
@@ -121,13 +121,11 @@ package player.entity {
             SetRotation (mShape.mPhysicsRotation + mRelativeRotation);
          }
          
-         // the parent joint will update the positon of this anchor
+         // the parent joint will update the position of this anchor
          //mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
          //mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
-         mAnchorShape.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotationInTwoPI * Define.kRadians2Degrees);
          
-         mAnchorShape.visible = mVisible;
-         mAnchorShape.alpha = mAlpha;
+         mAnchorShape.rotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mRotationInTwoPI * Define.kRadians2Degrees);
       }
       
 //=============================================================
@@ -154,6 +152,9 @@ package player.entity {
       {
          mAnchorShape.x = mWorld.GetCoordinateSystem ().P2D_PositionX (mPositionX);
          mAnchorShape.y = mWorld.GetCoordinateSystem ().P2D_PositionY (mPositionY);
+         
+         mAnchorShape.visible = mVisible;
+         mAnchorShape.alpha = mAlpha;
       }
       
       private function ConfirmRebuildAppearanceFunction ():void
@@ -228,5 +229,6 @@ package player.entity {
                   1
                );
       }
+      
    }
 }

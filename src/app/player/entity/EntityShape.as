@@ -1190,6 +1190,24 @@ package player.entity {
          }
       }
       
+      internal function ScaleJointAnchorPositions (scaleX:Number, scaleY:Number):void
+      {
+         var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
+         while (jointAnchor != null)
+         {
+            jointAnchor.mLocalPositionX *= scaleX;
+            jointAnchor.mLocalPositionY *= scaleY;
+            var worldPoint:Point = new Point ();
+            LocalPoint2WorldPoint (jointAnchor.mLocalPositionX, jointAnchor.mLocalPositionY, worldPoint);
+            
+            jointAnchor.mJoint.GetPhysicsProxyJoint ().ModifyAnchorPosition (worldPoint.x, worldPoint.y, jointAnchor.mAnchorIndex == 0);
+            jointAnchor.SynchronizeWithPhysicsProxy ();
+            jointAnchor.mJoint.SynchronizeAnchorWithPhysicsProxy (jointAnchor.mAnchorIndex);
+            
+            jointAnchor = jointAnchor.mNextAnchor;
+         }
+      }
+      
 //=============================================================
 //   local <-> world, for SubEntityJointAnchors and other general uses
 //=============================================================

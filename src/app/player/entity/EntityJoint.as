@@ -209,24 +209,35 @@ package player.entity {
       
       override public function SynchronizeWithPhysicsProxy ():void
       {
-         if (mPhysicsProxy != null)
-         {
-            var proxyJoint:PhysicsProxyJoint = mPhysicsProxy as PhysicsProxyJoint;
+         SynchronizeAnchorWithPhysicsProxy (0);
+         SynchronizeAnchorWithPhysicsProxy (1)  
+         DelayUpdateAppearance ();
+      }
+      
+      public function SynchronizeAnchorWithPhysicsProxy (anchorId:int):void
+      {
+         if (mPhysicsProxy == null)
+            return;
+         
+         var proxyJoint:PhysicsProxyJoint = mPhysicsProxy as PhysicsProxyJoint;
             
+         if (anchorId == 0)
+         {
             var anchorPoint1:Point = proxyJoint.GetAnchorPoint1 ();
-            var anchorPoint2:Point = proxyJoint.GetAnchorPoint2 ();
             
             mAnchor1.mPositionX = anchorPoint1.x;
             mAnchor1.mPositionY = anchorPoint1.y;
             mAnchor1.UpdateDisplayObjectPosition ();
+         }
+         else if (anchorId == 1)
+         {
+            var anchorPoint2:Point = proxyJoint.GetAnchorPoint2 ();
             
             mAnchor2.mPositionX = anchorPoint2.x;
             mAnchor2.mPositionY = anchorPoint2.y;
             mAnchor2.UpdateDisplayObjectPosition ();
-            
-            DelayUpdateAppearance ();
          }
-      }
+      } 
       
 //=============================================================
 //   physics proxy

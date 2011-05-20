@@ -1,3 +1,53 @@
+// all these functions assume the physics of entities are all built already.
+
+//================================================================
+// change size 
+//================================================================
+
+public static function ChangeCircleRadius (circle:EntityShapeCircle, radius:Number):void
+{
+
+}
+
+public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Number, height:Number):void
+{
+   if (width <= 0 || height <= 0)
+      return;
+   
+   var body:EntityBody = rect.GetBody ();
+      
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = rect.IsPhysicsShape ();
+   
+   var scaleWidth:Number =  0.5 * width / rect.GetHalfWidth ();
+   var scaleHeight:Number =  0.5 * height / rect.GetHalfHeight ();
+   
+   rect.SetHalfWidth (width * 0.5);
+   rect.SetHalfHeight (height * 0.5);
+   
+   if (isPhysicsShape)
+   {
+      rect.RebuildShapePhysics ();
+      body.OnShapeListChanged (true);
+      body.NotifyMovedManually ();
+      body.NotifyVelocityChangedManually ();
+      body.SetSleeping (false);
+      body.SynchronizeWithPhysicsProxyManually ();
+      rect.SynchronizeWithPhysicsProxy ();
+   }
+   else if (! isPhysicsBody)
+   {
+      body.OnShapeListChanged (false);
+      body.NotifyMovedManually ();
+   }
+   
+   // modify joint anchor positions
+   rect.ScaleJointAnchorPositions (scaleWidth, scaleHeight);
+}
+
+//================================================================
+// transform 
+//================================================================
 
 public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
@@ -181,7 +231,6 @@ public function TranslateTo (targetX:Number, targetY:Number):void
 
 //================================================================
 // detach / attach (glue)
-// all these functions assume the physics of entities are all built already.
 //================================================================
 
 public function BreakupBrothers ():void

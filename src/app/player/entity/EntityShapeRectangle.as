@@ -58,6 +58,9 @@ package player.entity {
             halfWidth = 0;
          
          mHalfWidth = halfWidth;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
       }
       
       public function GetHalfWidth ():Number
@@ -71,6 +74,9 @@ package player.entity {
             halfHeight = 0;
          
          mHalfHeight = halfHeight;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
       }
       
       public function GetHalfHeight ():Number

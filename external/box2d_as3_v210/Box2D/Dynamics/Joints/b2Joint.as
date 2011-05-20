@@ -330,6 +330,11 @@ package Box2D.Dynamics.Joints
 		{
 			// to override
 		}
+		
+		public function NotifyAnchorPositionChanged (newWorldX:Number, newWorldY:Number, isAnchorA:Boolean):void
+		{
+		   // to override 
+		}
 
 		public function FlagConnectedContactsForFiltering ():void
 		{

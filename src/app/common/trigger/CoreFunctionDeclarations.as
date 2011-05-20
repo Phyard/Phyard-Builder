@@ -1,2564 +1,2579 @@
 package common.trigger {
-   
+
    import common.Define;
-   
+
    public class CoreFunctionDeclarations
    {
       public static var sCoreFunctionDeclarations:Array = new Array (IdPool.NumPlayerFunctions);
-      
+
       private static var mInitialized:Boolean = false;
-      
+
       public static function Initialize ():void
       {
          if (mInitialized)
             return;
-         
+
          mInitialized = true;
-         
+
       // ...
-         
+
          if (Compile::Is_Debugging)
          {
-            RegisterCoreDeclaration (CoreFunctionIds.ID_ForDebug,       
+            RegisterCoreDeclaration (CoreFunctionIds.ID_ForDebug,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
-                  
+
          }
-         
+
       // special,       some predefineds for internal using
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Void,       
-                     null,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Void,
+                     null,
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityFilter,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityFilter,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityPairFilter,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityPairFilter,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-       
+
       // global
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Return,       
-                     null,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Return,
+                     null,
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_ReturnIfTrue,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ReturnIfTrue,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_ReturnIfFalse,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ReturnIfFalse,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Break,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Break,
+                     null,
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Comment,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Comment,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Blank,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Blank,
+                     null,
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Removed,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Removed,
+                     null,
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_StartIf,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_StartIf,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Else,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Else,
+                     null,
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EndIf,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EndIf,
+                     null,
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_StartWhile,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_StartWhile,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EndWhile,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EndWhile,
+                     null,
                      null
                   );
-         
+
       // system / time
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GetProgramMilliseconds,       
-                     null,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetProgramMilliseconds,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GetCurrentDateTime,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetCurrentDateTime,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ],       
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GetDay,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetDay,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ],       
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GetTimeZone,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetTimeZone,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_IsKeyHold,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_IsKeyHold,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-          
+
       // string
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Assign,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Assign,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ConditionAssign,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ConditionAssign,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_SwapValues,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_SwapValues,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_IsNull,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_IsNull,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Equals,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Equals,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Add,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Add,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetLength,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetLength,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharAt,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharAt,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_CharCode2Char,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_CharCode2Char,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ToLowerCase,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ToLowerCase,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ToUpperCase,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_ToUpperCase,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_IndexOf,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_IndexOf,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       -1], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       -1],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_LastIndexOf,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_LastIndexOf,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7fffffff], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7fffffff],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       -1], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       -1],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Substring,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Substring,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7fffffff], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7fffffff],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         
+
        // bool
-          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Assign,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Assign,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_SwapValues,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_SwapValues,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Boolean_ToString,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Boolean_ToString,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Invert,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Invert,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_IsTrue,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_IsTrue,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_IsFalse,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_IsFalse,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_And,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_And,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Or,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Or,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Not,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Not,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Xor,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bool_Xor,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-          
-          
+
+
       // array
-          
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Assign,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Assign,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_ConditionAssign,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_ConditionAssign,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SwapValues,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SwapValues,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Equals,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Equals,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Create,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Create,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_IsNull,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_IsNull,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetLength,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetLength,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetLength,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetLength,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_RemoveElementAt,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_RemoveElementAt,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsBoolean,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsBoolean,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsNumber,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsNumber,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithString,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithString,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsString,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsString,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithCCat,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithCCat,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsCCat,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsCCat,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsEntity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsEntity,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsArray,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsArray,
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
-          
+
        // math basic op
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Assign,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Assign,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ConditionAssign,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ConditionAssign,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_SwapValues,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_SwapValues,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Equals,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Equals,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_LargerThan,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_LargerThan,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_LessThan,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_LessThan,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_IsNaN,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_IsNaN,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_IsInfinity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_IsInfinity,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Negative,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Negative,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Add,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Add,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Subtract,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Subtract,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Multiply,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Multiply,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Divide,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Divide,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Modulo,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Modulo,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
+
       // math / toString
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToString,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToString,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
          // disabled for flex bug
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToExponential,       
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToExponential,
          //            [
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       2.0], 
-         //            ], 
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       2.0],
+         //            ],
          //            [
-         //               [ValueTypeDefine.ValueType_String,       ""], 
+         //               [ValueTypeDefine.ValueType_String,       ""],
          //            ]
          //         );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToFixed,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToFixed,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       2], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       2],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToPrecision,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToPrecision,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       6], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       6],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       10], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       10],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ParseFloat,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ParseFloat,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ParseInteger,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ParseInteger,
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       10], 
-                     ], 
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       10],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
+
       // math / trogonomotry
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_SinRadians,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_SinRadians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_CosRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_CosRadians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_TanRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_TanRadians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcSinRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcSinRadians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcCosRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcCosRadians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcTanRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcTanRadians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDyDx,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDyDx,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcTan2Radians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcTan2Radians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
-         
+
       // math / bitwise
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number,       0.0], 
+                        [ValueTypeDefine.ValueType_Number,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number,       0.0], 
+                        [ValueTypeDefine.ValueType_Number,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_And,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_And,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Or,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Or,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Not,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Not,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Xor,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Xor,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
+
       // math / random
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Random,       
-                     null,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Random,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RandomRange,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RandomRange,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RandomIntRange,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RandomIntRange,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7FFFFFFF], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7FFFFFFF],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngCreate,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngCreate,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngSetSeed,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngSetSeed,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandom,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandom,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandomRange,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandomRange,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandomIntRange,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandomIntRange,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7FFFFFFF], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x7FFFFFFF],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
+
       // math / number convert
-         
-          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians,       
+
+          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Radians2Degrees,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Radians2Degrees,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
-          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Number2RGB,       
+          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Number2RGB,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RGB2Number,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RGB2Number,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-        
+
       // math / more
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Inverse,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Inverse,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Max,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Max,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Min,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Min,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Abs,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Abs,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Sqrt,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Sqrt,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Ceil,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Ceil,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Floor,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Floor,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Round,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Round,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Log,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Log,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Exp,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Exp,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Power,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Power,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolation,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolation,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor,       
+         RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Clamp,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Clamp,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
+
       // game / design
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,       
-                     null,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,
+                     null,
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelPaused,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelPaused,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetPlaySpeedX,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetPlaySpeedX,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetPlaySpeedX,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetPlaySpeedX,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       2], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       2],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetWorldScale,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetWorldScale,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetWorldScale,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetWorldScale,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds,       
-                     null,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetMousePosition,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetMousePosition,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelSuccessed,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelFailed,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished,       
-                     null,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsLevelUnfinished,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
+
       // game / world
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       9.8], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       9.8],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       9.8], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       9.8],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       9.8], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       9.8],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraCenter,       
-                     null,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraCenter,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,       
-                     null, 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,
+                     null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                        //ValueTypeDefine.ValueType_Boolean,       
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        //ValueTypeDefine.ValueType_Boolean,
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterXWithShape,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraCenterYWithShape,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraRotationWithShape,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       30], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       30], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       30], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       30],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       30],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       30],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallScript,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallScript,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_ConditionCallScript,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_ConditionCallScript,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallBoolFunction,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallBoolFunction,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_ConditionCallBoolFunction,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallScriptMultiTimes,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallScriptMultiTimes,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallBoolFunctionMultiTimes,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         
+
      // game / world / create ...
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CreateExplosion,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_CreateExplosion,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       64], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       60], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       25.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.8], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude,       50.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x0], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       64],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       60],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       25.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.8],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude,       50.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0x0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         
+
      // game / world / appearance
-         
-         
-         
+
+
+
      // game / collision category
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_Assign,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_Assign,
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ConditionAssign,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SwapValues,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SwapValues,
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_IsNull,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_IsNull,
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ToString,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_ToString,
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_Equals,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_Equals,
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetCollideInternally,
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetAsFriends,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CCat_SetAsFriends,
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         
+
      // game / entity
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Assign,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Assign,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_ConditionAssign,
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SwapValues,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SwapValues,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsNull,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsNull,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityId,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityId,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_ToString,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_ToString,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Equals,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Equals,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskSuccessed,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskFailed,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTaskUnfinished,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsJointEntity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsJointEntity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTriggerEntity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsTriggerEntity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsVisible,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsVisible,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetVisible,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetVisible,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetAlpha,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetAlpha,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetAlpha,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetAlpha,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsEnabled,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsEnabled,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetEnabled,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetEnabled,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetPosition,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetPosition,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetPosition,       
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetPosition,
          //            [
-         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
-         //            ], 
+         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+         //            ],
          //            null
          //         );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_WorldVector2LocalVector,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_WorldVector2LocalVector,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       1.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       1.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       1.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       1.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_LocalVector2WorldVector,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_LocalVector2WorldVector,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       1.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       1.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       1.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       1.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Destroy,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Destroy,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Coincided,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_Coincided,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.8], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.8], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       6], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.8],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.8],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       6],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
+
       // game / entity / shape
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsCircleShapeEntity,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsCircleShapeEntity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetOriginalCIType,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetOriginalCIType,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCIType,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledOpacity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledOpacity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledOpacity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledOpacity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColor,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColor,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColor,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColor,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderColorRGB,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderOpacity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderOpacity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderOpacity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderOpacity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       100.0],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
+                        [ValueTypeDefine.ValueType_Boolean,       true],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_CollisionCategory,       Define.CCatId_Hidden],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity,       
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity,
          //            [
-         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-         //            ], 
+         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+         //            ],
          //            [
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
          //            ]
          //         );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,       
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
          //            [
-         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-         //            ], 
+         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+         //            ],
          //            null
          //         );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetMass,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetMass,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Mass,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Mass,       0.0],
                      ]
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetMass,       
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetMass,
          //            [
-         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Mass,       0.0], 
-         //               [ValueTypeDefine.ValueType_Boolean,       false], 
-         //            ], 
+         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Mass,       0.0],
+         //               [ValueTypeDefine.ValueType_Boolean,       false],
+         //            ],
          //            null
          //         );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Inertia,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Inertia,       0.0],
                      ]
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetInertia,       
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetInertia,
          //            [
-         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Inertia,       0.0], 
-         //               [ValueTypeDefine.ValueType_Boolean,       false], 
-         //            ], 
+         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Inertia,       0.0],
+         //               [ValueTypeDefine.ValueType_Boolean,       false],
+         //            ],
          //            null
          //         );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,       
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
          //            [
-         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-         //            ], 
+         //               [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+         //               [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+         //            ],
          //            null
          //         );
-         
-         
+
+
          // todo: use single instead of double
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetLinearVelocity,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetLinearVelocity,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY,       0.0],
                      ]
                   );
          // todo: use single instead of double
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearVelocityY,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByRadians,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByDegrees,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByDegrees,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByDegrees,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByDegrees,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForce,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForce,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceY,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceY,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceY,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ForceY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepTorque,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepTorque,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_Torque,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_Torque,       0.0],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulse,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulse,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_ImpulseY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularImpulse,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_AngularImpulse,       0.0],
+                     ],
                      null
                   );
-         
+
          // ...
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
-                     ], 
-                     [
-                        [ValueTypeDefine.ValueType_Array,       null], 
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Teleport,       
-                     [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
-                     null
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets,       
-                     [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
-                     null
-                  );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers,       
-                     [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
                      ],
                      [
-                        [ValueTypeDefine.ValueType_Array,       null], 
+                        [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsAttchedWith,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Teleport,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Array,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Detach,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsAttchedWith,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Detach,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_AttachWith,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_DetachThenAttachWith,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_DestroyBrothers,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_DestroyBrothers,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-       
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
 
 
-         
+
       // game / entity / shape / text
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_GetText,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_GetText,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_String,       ""], 
+                        [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetText,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetText,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_AppendText,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_AppendText,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_String,       ""], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_String,       ""],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_AppendNewLine,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_AppendNewLine,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         
+
       // game / entity / shape / circle
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeCircle_GetRadius,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeCircle_GetRadius,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
                      ]
                   );
-         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeCircle_SetRadius,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       1.0],
+                     ],
+                     null
+                  );
+
       // game / entity / shape / rectangle
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_GetSize,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_GetSize,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
                      ]
                   );
-         
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetSize,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       1.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       1.0],
+                     ],
+                     null
+                  );
+
       // game / entity / shape / poly
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexCount,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexCount,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
-         
+
       // game / entity / joint
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointMotorEnabled,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetJointLimitsEnabled,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeAngleByDegrees,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeAngleByDegrees,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationDegrees,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeMotorSpeed,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_AngularVelocity,       0.0],
+                     ],
                      null
                   );
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderTranslation,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderTranslation,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_Length,       0.0],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderMotorSpeed,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude,       0.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude,       0.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearVelocityMagnitude,       0.0],
+                     ],
                      null
                   );
-         
+
       // game / entity / event handler
-         
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_ResetTimer,       
+
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_ResetTimer,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_IsTimerPaused,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_IsTimerPaused,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Boolean,       false], 
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerPaused,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Boolean,       true], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_GetTimerInterval,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_GetTimerInterval,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,       
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,
                      [
-                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None], 
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0], 
-                     ], 
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_General,       1.0],
+                     ],
                      null
                   );
-      
-      
+
+
       } // initialze
-         
+
 //===========================================================
 // util functions
 //===========================================================
-      
+
       private static function RegisterCoreDeclaration (functionId:int, inputParamDefines:Array, outputParamDefines:Array):void
       {
          if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return;
-         
+
          sCoreFunctionDeclarations [functionId] = new FunctionDeclaration (functionId, inputParamDefines, outputParamDefines);
       }
-      
+
       public static function GetCoreFunctionDeclaration (functionId:int):FunctionDeclaration
       {
          if (functionId < 0 || functionId >= IdPool.NumPlayerFunctions)
             return null;
-         
+
          if (! mInitialized)
             Initialize ();
-         
+
          return sCoreFunctionDeclarations [functionId];
       }
-      
+
    }
 }

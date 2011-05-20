@@ -52,6 +52,9 @@ package player.entity {
             radius = 0.0;
          
          mRadius = radius;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
       }
       
       public function GetRadius ():Number

@@ -145,6 +145,22 @@ package Box2D.Dynamics.Joints
 				m_localAnchor2.y += dy;
 			}
 		}
+		
+      override public function NotifyAnchorPositionChanged (newWorldX:Number, newWorldY:Number, isAnchorA:Boolean):void
+      {
+         worldAnchor.x = newWorldX; worldAnchor.y = newWorldY;
+         
+         if (isAnchorA)
+         {
+            m_bodyA.GetLocalPoint_Output (worldAnchor, m_localAnchor1);
+trace ("aaaaaaaaaaaa m_localAnchor1.x = " + m_localAnchor1.x + ", m_localAnchor1.y = " + m_localAnchor1.y);
+         }
+         else
+         {
+            m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchor2);
+trace ("bbbbbbbbbbb m_localAnchor2.x = " + m_localAnchor2.x + ", m_localAnchor2.y = " + m_localAnchor2.y);
+         }
+      }		
 
 		private static var worldAnchor:b2Vec2 = new b2Vec2 ();
 

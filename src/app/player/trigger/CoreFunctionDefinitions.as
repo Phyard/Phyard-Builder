@@ -401,10 +401,12 @@ package player.trigger {
       // game / entity / shape / circle
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeCircle_GetRadius,            GetShapeCircleRadius);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeCircle_SetRadius,            SetShapeCircleRadius);
 
       // game / entity / shape / rectangle
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeRectangle_GetSize,            GetShapeRectangleSize);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapeRectangle_SetSize,            SetShapeRectangleSize);
 
       // game / entity / shape / poly shapes
 
@@ -3704,6 +3706,18 @@ package player.trigger {
             valueTarget.AssignValueObject (circle.GetRadius ());
          }
       }
+      
+      public static function SetShapeCircleRadius (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var circle:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
+         if (circle == null || circle.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var radius:Number = valueSource.EvaluateValueObject () as Number;
+         
+         EntityShape.ChangeCircleRadius (circle, radius);
+      }
 
    //*******************************************************************
    // entity / shape / rectangle
@@ -3726,6 +3740,21 @@ package player.trigger {
             valueTarget = valueTarget.mNextParameter;
             valueTarget.AssignValueObject (2.0 * rect.GetHalfHeight ());
          }
+      }
+      
+      public static function SetShapeRectangleSize (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
+         if (rect == null || rect.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var width:Number = valueSource.EvaluateValueObject () as Number;
+         
+         valueSource = valueSource.mNextParameter;
+         var height:Number = valueSource.EvaluateValueObject () as Number;
+         
+         EntityShape.ChangeRectangleSize (rect, width, height);
       }
 
    //*******************************************************************

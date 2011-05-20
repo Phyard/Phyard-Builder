@@ -250,7 +250,7 @@ private function HandleShapeContactEvents ():void
                
             if (contact_info.mInKeepContactingList)
             {
-trace ("          mInKeepContactingList = " + contact_info.mInKeepContactingList);
+//trace ("          mInKeepContactingList = " + contact_info.mInKeepContactingList);
                if (contact_info.mPrevContactInfo != null)
                   contact_info.mPrevContactInfo.mNextContactInfo = contact_info.mNextContactInfo;
                else //if (mFirstShapeContactInfo == contact_info)

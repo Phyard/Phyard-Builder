@@ -22,6 +22,7 @@ package player.physics {
          return null; // to override
       }
       
+      // here shape must be passed in for the joint don't know the new body
       public function ReconncetShape (shape:EntityShape, isShapeA:Boolean):void
       {
          var joint:b2Joint = GetB2joint ();
@@ -32,6 +33,15 @@ package player.physics {
          var body:b2Body = proxyShape == null ? mPhysicsEngine._b2GroundBody : proxyShape.mProxyBody._b2Body;
          
          joint.ChangeJointBody (body, isShapeA);
+      }
+      
+      public function ModifyAnchorPosition (newWorldX:Number, newWorldY:Number, isAnchorA:Boolean):void
+      {
+         var joint:b2Joint = GetB2joint ();
+         if (joint == null)
+            return;
+         
+         joint.NotifyAnchorPositionChanged (newWorldX, newWorldY, isAnchorA);
       }
       
 //==================================================================

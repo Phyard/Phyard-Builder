@@ -637,6 +637,6 @@ override public function ComputeMass(massData:b2MassData, density:Number):void
    massData.center.x = center.x + s.x;
    massData.center.y = center.y + s.y;
 
-	// Inertia tensor relative to the local origin.
-	massData.I = density * I + massData.mass * b2Math.b2Dot2 (s, s);
+   // Inertia tensor relative to the local origin.
+   massData.I = density * I + massData.mass * b2Math.b2Dot2 (massData.center, massData.center);
 }

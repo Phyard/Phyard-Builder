@@ -140,6 +140,10 @@ package common.trigger {
       public static const NumberTypeUsage_LinearDeltaY                     :int = 30 << 20;
       public static const NumberTypeUsage_LinearDyDx                       :int = 31 << 20;
       
+      // the 2 are not used now. Maybe they are will be used later.
+      //public static const NumberTypeUsage_DeltaRotationRadians                     :int = 32 << 20;
+      //public static const NumberTypeUsage_DeltaRotationDegrees                     :int = 33 << 20;
+
       //
    }
 }

@@ -153,12 +153,10 @@ package Box2D.Dynamics.Joints
          if (isAnchorA)
          {
             m_bodyA.GetLocalPoint_Output (worldAnchor, m_localAnchor1);
-trace ("aaaaaaaaaaaa m_localAnchor1.x = " + m_localAnchor1.x + ", m_localAnchor1.y = " + m_localAnchor1.y);
          }
          else
          {
             m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchor2);
-trace ("bbbbbbbbbbb m_localAnchor2.x = " + m_localAnchor2.x + ", m_localAnchor2.y = " + m_localAnchor2.y);
          }
       }		
 

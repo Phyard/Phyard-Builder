@@ -117,20 +117,7 @@ package Box2D.Dynamics.Joints
 // hackings
 //***********************************************************************
 
-		// call by b2Body
-		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
-		{
-			if (jointEdge == m_edgeA)
-			{
-				m_localAnchor1.x += dx;
-				m_localAnchor1.y += dy;
-			}
-			else if (jointEdge == m_edgeB)
-			{
-				m_localAnchor2.x += dx;
-				m_localAnchor2.y += dy;
-			}
-		}
+
 
 	} // class
 } // package

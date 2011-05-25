@@ -827,6 +827,8 @@ package player.entity {
       {
          //if (mBody != null) // should no be null
          {
+            mBody.UpdateSinCos ();
+            
             mPositionX = mBody.mPositionX + mLocalPositionX * mBody.mCosRotation - mLocalPositionY * mBody.mSinRotation;
             mPositionY = mBody.mPositionY + mLocalPositionX * mBody.mSinRotation + mLocalPositionY * mBody.mCosRotation;
             SetRotation (mBody.mPhysicsRotation + mRelativeRotation);
@@ -861,6 +863,9 @@ package player.entity {
             mAppearanceObjectsContainer.y = newY;
             mAppearanceObjectsContainer.rotation = newR;
          }
+         
+         mAppearanceObjectsContainer.scaleX = mScaleX;
+         mAppearanceObjectsContainer.scaleY = mScaleY;
       }
       
 //=============================================================
@@ -1071,6 +1076,30 @@ package player.entity {
       protected var mLocalPositionY:Number;
       protected var mRelativeRotation:Number;
       
+      // relative to mBody, but also can be viewed as relative to world for body has no flip and scale
+      protected var mScaleX:Number = 1.0; // a nagetive value menas flipping
+      protected var mScaleY:Number = 1.0; // must be positive
+      
+      public function GetScaleX ():Number
+      {
+         return mScaleX;
+      }
+      
+      public function SetScaleX (scaleX:Number):void
+      {
+         mScaleX = scaleX;
+      }
+      
+      public function GetScaleY ():Number
+      {
+         return mScaleY;
+      }
+      
+      public function SetScaleY (scaleY:Number):void
+      {
+         mScaleY = scaleY;
+      }
+      
       public function GetBody ():EntityBody
       {
          return mBody;
@@ -1190,13 +1219,11 @@ package player.entity {
          }
       }
       
-      internal function ScaleJointAnchorPositions (scaleX:Number, scaleY:Number):void
+      internal function NotifyJointAnchorLocalPositionsChanged ():void
       {
          var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
          while (jointAnchor != null)
          {
-            jointAnchor.mLocalPositionX *= scaleX;
-            jointAnchor.mLocalPositionY *= scaleY;
             var worldPoint:Point = new Point ();
             LocalPoint2WorldPoint (jointAnchor.mLocalPositionX, jointAnchor.mLocalPositionY, worldPoint);
             
@@ -1206,6 +1233,20 @@ package player.entity {
             
             jointAnchor = jointAnchor.mNextAnchor;
          }
+      }
+      
+      internal function ScaleJointAnchorPositions (scaleX:Number, scaleY:Number):void
+      {
+         var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
+         while (jointAnchor != null)
+         {
+            jointAnchor.mLocalPositionX *= scaleX;
+            jointAnchor.mLocalPositionY *= scaleY;
+            
+            jointAnchor = jointAnchor.mNextAnchor;
+         }
+         
+         NotifyJointAnchorLocalPositionsChanged ();
       }
       
 //=============================================================
@@ -1232,6 +1273,9 @@ package player.entity {
       {
          UpdateSinCos ();
          
+         localX *= mScaleX;
+         localY *= mScaleY;
+         
          worldPoint.x = mPositionX + localX * mCosRotation - localY * mSinRotation;
          worldPoint.y = mPositionY + localX * mSinRotation + localY * mCosRotation;
       }
@@ -1245,6 +1289,15 @@ package player.entity {
          
          localPoint.x =   worldX * mCosRotation + worldY * mSinRotation;
          localPoint.y = - worldX * mSinRotation + worldY * mCosRotation;
+         
+         if (mScaleX != 0)
+         {
+            localPoint.x /= mScaleX;
+         }
+         if (mScaleY != 0)
+         {
+            localPoint.y /= mScaleY;
+         }
       }
       
       public function LocalVector2WorldVector (localVX:Number, localVY:Number, worldVector:Point):void

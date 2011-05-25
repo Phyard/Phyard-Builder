@@ -379,17 +379,17 @@ package common.trigger {
       public static const ID_EntityShape_Teleport:int                         = IdPool.CoreApiId_1252;
       public static const ID_EntityShape_TeleportOffsets:int                  = IdPool.CoreApiId_1253;
 
-      public static const ID_EntityShape_Translate:int                    = IdPool.CoreApiId_1253;
-      public static const ID_EntityShape_TranslateTo:int                  = IdPool.CoreApiId_1253;
-      public static const ID_EntityShape_Rotate:int                    = IdPool.CoreApiId_1253;
-      public static const ID_EntityShape_RotateTo:int                  = IdPool.CoreApiId_1253;
-      public static const ID_EntityShape_RotateWithFixedPoint:int         = IdPool.CoreApiId_1253;
-      //public static const ID_EntityShape_Scale:int                     = IdPool.CoreApiId_1253;
-      public static const ID_EntityShape_ScaleWithFixedPoint:int                     = IdPool.CoreApiId_1253;
-      //public static const ID_EntityShape_FlipByLocalLinePoint:int           = IdPool.CoreApiId_1253;
-      public static const ID_EntityShape_FlipByWorldLinePoint:int           = IdPool.CoreApiId_1253;
-      //public static const ID_EntityShape_FlipByLocalLineNormal:int           = IdPool.CoreApiId_1253;
-      //public static const ID_EntityShape_FlipByWorldLineNormal:int           = IdPool.CoreApiId_1253;
+      public static const ID_EntityShape_Translate:int                    = IdPool.CoreApiId_1220;
+      public static const ID_EntityShape_TranslateTo:int                  = IdPool.CoreApiId_1221;
+      //public static const ID_EntityShape_Rotate:int                    = IdPool.CoreApiId_1222;
+      //public static const ID_EntityShape_RotateTo:int                  = IdPool.CoreApiId_1223;
+      public static const ID_EntityShape_RotateAroundWorldPoint:int         = IdPool.CoreApiId_1224;
+      public static const ID_EntityShape_RotateToAroundWorldPoint:int         = IdPool.CoreApiId_1225;
+      //public static const ID_EntityShape_Scale:int                     = IdPool.CoreApiId_1226;
+      //public static const ID_EntityShape_ScaleWithFixedPoint:int                     = IdPool.CoreApiId_1227;
+      //public static const ID_EntityShape_ScaleAlongAxis:int                     = IdPool.CoreApiId_1228;
+      //public static const ID_EntityShape_FlipByLocalLinePoint:int           = IdPool.CoreApiId_1229;
+      public static const ID_EntityShape_FlipByWorldLinePoint:int           = IdPool.CoreApiId_1230;
 
       public static const ID_EntityShape_GetBrothers:int                    = IdPool.CoreApiId_1258;
       public static const ID_EntityShape_IsAttchedWith:int                  = IdPool.CoreApiId_1259;

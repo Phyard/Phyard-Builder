@@ -380,6 +380,11 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint,         GetPhysicsShapesAtPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Teleport,                      TeleportShape);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TeleportOffsets,               TeleportShape_Offsets);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Translate,                      TranslateShape);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TranslateTo,                    TranslateShapeTo);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,                      RotateShapeAroundWorldPoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,                    RotateShapeToAroundWorldPoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                    FlipShapeByWorldLinePoint);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBrothers,                 GetBrothers);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsAttchedWith,               IsAttchedWith);
@@ -3490,7 +3495,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Teleport (targetX, targetY, targetRotation - shape.GetRotation (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         shape.Teleport (targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), targetRotation - shape.GetRotation (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
       public static function TeleportShape_Offsets (valueSource:Parameter, valueTarget:Parameter):void
@@ -3520,7 +3525,154 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Teleport (shape.GetPositionX () + deltaX, shape.GetPositionY () + deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         shape.Teleport (deltaX, deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+      }
+      
+      public static function TranslateShape (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var deltaX:Number =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var deltaY:Number =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         shape.Translate (deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+      }
+      
+      public static function TranslateShapeTo (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var targetX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var targetY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         shape.Translate (targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+      }
+      
+      public static function RotateShapeAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var deltaRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
+
+         valueSource = valueSource.mNextParameter;
+         var fixedPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var fixedPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         shape.Rotate (deltaRotation, fixedPointX, fixedPointY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+      }
+      
+      public static function RotateShapeToAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var targetRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
+
+         valueSource = valueSource.mNextParameter;
+         var fixedPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var fixedPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         shape.Rotate (targetRotation - shape.GetRotation (), fixedPointX, fixedPointY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+      }
+      
+      public static function FlipShapeByWorldLinePoint (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var pointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var pointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var normalX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var normalY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         shape.Flip (pointX, pointY, normalX, normalY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
       public static function GetBrothers (valueSource:Parameter, valueTarget:Parameter):void

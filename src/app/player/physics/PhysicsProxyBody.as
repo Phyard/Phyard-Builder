@@ -88,6 +88,11 @@ package player.physics {
          return _b2Body.GetPosition ();
       }
       
+      public function SetLinearVelocity (vx:Number, vy:Number):void
+      {
+        _b2Body.SetLinearVelocity (b2Vec2.b2Vec2_From2Numbers (vx, vy));
+      }
+      
       public function GetLinearVelocityX ():Number
       {
         return _b2Body.GetLinearVelocity ().x;

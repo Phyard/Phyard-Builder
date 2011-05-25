@@ -2252,6 +2252,66 @@ package common.trigger {
                      null
                   );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Translate,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_TranslateTo,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_RotationRadians,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       1.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Single | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

@@ -80,6 +80,17 @@ public function ApplyTorque (torque:Number):void
    mPhysicsProxyBody.AddTorque (torque);
 }
 
+public function SetLinearVelocity (vx:Number, vy:Number):void
+{
+   if (mPhysicsProxy == null)
+      return;
+      
+   mPhysicsProxyBody.SetLinearVelocity (vx, vy);
+   
+   //FlagVelocitySynchronized (false);
+   NotifyVelocityChangedManually ();
+}
+
 public function ApplyLinearImpulse (worldPulseX:Number, worldPulseY:Number, worldPointX:Number, worldPointY:Number):void
 {
    if (mPhysicsProxy == null)

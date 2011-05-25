@@ -189,7 +189,7 @@ package player.physics {
                {
                   // use polyline instead
                   
-                  var numSegments:int = 50; //Math.PI * 2.0 * radius;
+                  var numSegments:int = 50; // Math.PI * 2.0 * radius / segmentLength;
                   var shapeLocalPoints:Array = new Array (numSegments);
                   var dAngle:Number = Math.PI * 2.0 / numSegments;
                   var angle:Number = 0.0;
@@ -242,12 +242,67 @@ package player.physics {
          _b2Fixtures.push (fixture);
       }
       
+      public function AddEllipse (isStatic:Boolean, shapeLocalCenterX:Number, shapeLocalCenterY:Number, radius1:Number, radius2:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
+      {
+         if ( (! buildBorder) && (! buildInterior))
+            return;
+         
+      // ...
+         
+         var fixture_def:b2FixtureDef = new b2FixtureDef ();
+         
+         fixture_def.density     = mEntityShape.GetDensity ();
+         fixture_def.friction    = mEntityShape.GetFriction ();
+         fixture_def.restitution = mEntityShape.GetRestitution ();
+         fixture_def.isSensor    = mEntityShape.IsSensor ();
+         
+         fixture_def.userData = this;
+         
+      // ...
+         
+         if (buildBorder)
+         {
+            var halfBorderThickness:Number = borderThickness * 0.5;
+            
+            if (buildInterior)
+            {
+               radius1 += halfBorderThickness;
+               radius2 += halfBorderThickness;
+               
+               // todo: create many bands along the long axis
+            }
+            else
+            {
+               var numSegments:int = 50; // Math.PI * 2.0 * radius / segmentLength;
+               var shapeLocalPoints:Array = new Array (numSegments);
+               var dAngle:Number = Math.PI * 2.0 / numSegments;
+               var angle:Number = 0.0;
+               
+               for (var i:int = 0; i < numSegments; ++ i)
+               {
+                  shapeLocalPoints [i] = new Point (radius1 * Math.cos (angle), radius2 * Math.sin (angle));
+                  
+                  angle += dAngle;
+               }
+               
+               var bodyLocalVertexes:Array = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
+               
+               CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, halfBorderThickness, true, true, true);
+            }
+         }
+      }
+      
       private function ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints:Array):Array
       {
          var rot:Number = mEntityShape.GetRotation ();
          
          var cos:Number = Math.cos (rot);
          var sin:Number = Math.sin (rot);
+         
+         var cosScaleX:Number = cos * mEntityShape.GetScaleX ();
+         var cosScaleY:Number = cos * mEntityShape.GetScaleY ();
+         var sinScaleX:Number = sin * mEntityShape.GetScaleX ();
+         var sinScaleY:Number = sin * mEntityShape.GetScaleY ();
          
          var count:int = shapeLocalPoints.length;
          var bodyLocalVertexes:Array = new Array (count);
@@ -261,10 +316,10 @@ package player.physics {
          for (var i:int = 0; i < count; ++ i)
          {
             point = shapeLocalPoints [i];
-            vec.x = shapePositionX + cos * point.x - sin * point.y;
-            vec.y = shapePositionY + sin * point.x + cos * point.y;
+            vec.x = shapePositionX + cosScaleX * point.x - sinScaleY * point.y;
+            vec.y = shapePositionY + sinScaleX * point.x + cosScaleY * point.y;
             
-            bodyLocalVertexes [i] = mProxyBody._b2Body.GetLocalPoint (vec);
+            bodyLocalVertexes [mEntityShape.GetScaleX () < 0 ? count - 1 - i : i] = mProxyBody._b2Body.GetLocalPoint (vec);
          }
          
          return bodyLocalVertexes;
@@ -348,14 +403,14 @@ package player.physics {
                   edgeShape.Set (vertex1, vertex2);
                   fixture_def.shape = edgeShape;
                   
-                  trace ("edgeShape");
+                  //trace ("edgeShape");
                }
                else
                {
                   polygon_shape.SetAsEdge (vertex1, vertex2);
                   fixture_def.shape = polygon_shape;
                   
-                  trace ("polygon_shape");
+                  //trace ("polygon_shape");
                }
                
                // ...
@@ -695,9 +750,7 @@ package player.physics {
             tx =   halfWidth; ty =   halfHeight; p = p2; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             tx = - halfWidth; ty =   halfHeight; p = p3; p.x = shapeLocalCenterX + tx * cos - ty * sin; p.y = shapeLocalCenterY + tx * sin + ty * cos;
             
-            if (roundCorners 
-               || ( (! buildInterior) &&  borderThickness < b2Settings.b2_epsilon)
-               )
+            if ( roundCorners || ( (! buildInterior) &&  borderThickness < b2Settings.b2_epsilon) )
             {
                bodyLocalVertexes = ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints);
                

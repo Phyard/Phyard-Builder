@@ -713,7 +713,7 @@ package Box2D.Dynamics
 
 			m_torque += torque;
 		}
-
+		
 		public function ApplyLinearImpulse(impulse:b2Vec2, point:b2Vec2):void
 		{
 			if (m_type != b2_dynamicBody)

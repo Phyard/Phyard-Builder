@@ -2275,6 +2275,66 @@ package editor.trigger {
                      null
                   );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Translate, shape_common_package, "Move Shape", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Offset X"),
+                             new VariableDefinitionNumber ("Offset Y"),
+                             new VariableDefinitionBoolean ("Move Connected Movables?"),
+                             new VariableDefinitionBoolean ("Move Connected Statics?"),
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_TranslateTo, shape_common_package, "Move Shape To", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Target Position X"),
+                             new VariableDefinitionNumber ("Target Position Y"),
+                             new VariableDefinitionBoolean ("Move Connected Movables?"),
+                             new VariableDefinitionBoolean ("Move Connected Statics?"),
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint, shape_common_package, "Rotate Shape Around World Point", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Target Angle (degrees)"),
+                             new VariableDefinitionNumber ("Around World Point X"),
+                             new VariableDefinitionNumber ("Around World Point Y"),
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"),
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"),
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint, shape_common_package, "Rotate Shape To Around World Point", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Delta Angle (degrees)"),
+                             new VariableDefinitionNumber ("Around World Point X"),
+                             new VariableDefinitionNumber ("Around World Point Y"),
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"),
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"),
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint, shape_common_package, "Flip Shape By World Line", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("One Line Point X"),
+                             new VariableDefinitionNumber ("One Line Point Y"),
+                             new VariableDefinitionNumber ("Line Normal X"),
+                             new VariableDefinitionNumber ("Line Normal Y"),
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"),
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"),
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                     ],
+                     null
+                  );
+
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers, entity_shape_brothers_package, "Get Shape Brothers", null, null,
                      [
                              new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),

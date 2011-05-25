@@ -65,10 +65,10 @@ package player.entity {
          {
             mShape.UpdateSinCos ();
             
-            var tempX:Number = (mPositionX - mShape.GetPositionX ());
-            var tempY:Number = (mPositionY - mShape.GetPositionY ());
-            mLocalPositionX =   tempX * mShape.mCosRotation + tempY * mShape.mSinRotation;
-            mLocalPositionY = - tempX * mShape.mSinRotation + tempY * mShape.mCosRotation;
+            var point:Point = new Point ();
+            mShape.WorldPoint2LocalPoint (mPositionX, mPositionY, point);
+            mLocalPositionX = point.x;
+            mLocalPositionY = point.y;
             mRelativeRotation  = mPhysicsRotation  - mShape.GetRotation  ();
          }
       }

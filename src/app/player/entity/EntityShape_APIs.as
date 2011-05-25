@@ -1,12 +1,369 @@
 // all these functions assume the physics of entities are all built already.
 
 //================================================================
+// 
+//================================================================
+
+/*
+possible actions:
+- clone
+- translate
+- rotate
+- scale
+- flip
+- ...
+*/
+
+public function GetRelatedEntities (bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):Object
+{
+   var returnObject:Object =  new Object (); 
+   
+   var shapesToTeleport:Array = new Array ();
+   var bodiesToTeleport:Array = new Array ();
+   var jointsToTeleport:Array = new Array ();
+   var jointsToBreak:Array = new Array ();
+
+   returnObject.mBodiesToTransform = bodiesToTeleport;
+   returnObject.mShapesToTransform = shapesToTeleport;
+   returnObject.mJointsToTransform = jointsToTeleport;
+   
+   // collect related entities
+   
+   var body:EntityBody;
+   var shape:EntityShape;
+   var anotherShape:EntityShape;
+   var joint:EntityJoint;
+   var anchor:SubEntityJointAnchor;
+   
+   IncreaseLastSpecialId ();
+   
+   mSpecialId = sLastSpecialId;
+   shapesToTeleport.push (this);
+   
+   var numShapesToTeleport:int = 0;
+
+   while (shapesToTeleport.length > numShapesToTeleport)
+   {
+      shape = shapesToTeleport [numShapesToTeleport];
+      //shape.mSpecialId = sLastSpecialId; // now call this when add shape in list
+
+      ++ numShapesToTeleport;
+      
+      // brothers
+      
+      body = shape.mBody;
+      if (body.mSpecialId != sLastSpecialId)
+      {
+         body.mSpecialId = sLastSpecialId;
+         bodiesToTeleport.push (body);
+         
+         anotherShape = body.mShapeListHead;
+         
+         while (anotherShape != null)
+         {
+            if (anotherShape.mSpecialId != sLastSpecialId)
+            {
+               anotherShape.mSpecialId = sLastSpecialId;
+               shapesToTeleport.push (anotherShape)
+            }
+            
+            anotherShape = anotherShape.mNextShapeInBody;
+         }
+      }
+      
+      // connected joints and shapes
+      
+      anchor = shape.mJointAnchorListHead;
+      
+      while (anchor != null)
+      {
+         joint = anchor.mJoint;
+         
+         if (joint.mSpecialId != sLastSpecialId)
+         {
+            joint.mSpecialId = sLastSpecialId;
+         
+            anotherShape = anchor.mAnotherJointAnchor.mShape;
+            
+            if (anotherShape == null)
+            {
+               if (bBreakEmbarrassedJoints)
+               {
+                  jointsToBreak.push (joint);
+               }
+            }
+            else if (anotherShape.mBody.IsStatic ())
+            {
+               if (bTeleprotConnectedStatics)
+               {
+                  if (anotherShape.mSpecialId != sLastSpecialId)
+                  {
+                     anotherShape.mSpecialId = sLastSpecialId;
+                     shapesToTeleport.push (anotherShape);
+                  }
+                  
+                  jointsToTeleport.push (joint);
+               }
+               else if (bBreakEmbarrassedJoints)
+               {
+                  jointsToBreak.push (joint);
+               }   
+            }
+            else
+            {
+               if (bTeleportConnectedMovables)
+               {
+                  if (anotherShape.mSpecialId != sLastSpecialId)
+                  {
+                     anotherShape.mSpecialId = sLastSpecialId;
+                     shapesToTeleport.push (anotherShape);
+                  }
+                  
+                  jointsToTeleport.push (joint);
+               }
+               else if (bBreakEmbarrassedJoints)
+               {
+                  jointsToBreak.push (joint);
+               }
+            }
+         }
+         
+         anchor = anchor.mNextAnchor;
+      }
+   }
+   
+   // break joints
+   
+   for (var i:int = jointsToBreak.length - 1; i >= 0; -- i)
+   {
+      (jointsToBreak[i] as EntityJoint).Destroy ();
+   }
+   
+   // ...
+ 
+   return returnObject;
+}
+
+public function Teleport (deltaX:Number, deltaY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+{
+   Rotate (deltaRotation, mPositionX, mPositionY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   Translate (deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+}
+
+public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+{
+   if (deltaX == 0 && deltaY == 0)
+      return;
+   
+//...
+
+   var infos:Object = GetRelatedEntities (bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+
+// ...
+
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   
+   var num:int = bodiesToTeleport.length;
+   
+   for (var i:int = 0; i < num; ++ i)
+   {
+      var body:EntityBody = bodiesToTeleport [i] as EntityBody;
+      
+      body.mPositionX += deltaX;
+      body.mPositionY += deltaY;
+      
+      if (body.mNumPhysicsShapes > 0)
+      {
+         body.NotifyMovedManually ();
+         body.SetSleeping (false);
+         body.SynchronizePositionAndRotationToPhysicsProxy ();
+      }
+      
+      // ...
+         
+      var shape:EntityShape = body.mShapeListHead;
+      
+      while (shape != null)
+      {
+         shape.SynchronizeWithPhysicsProxy ();
+         
+         shape = shape.mNextShapeInBody;
+      }
+   }
+}
+
+public function Rotate (deltaRotation:Number, fixedPointX:Number, fixedPointY:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+{
+   if (deltaRotation == 0)
+      return;
+
+// ...
+
+   var infos:Object = GetRelatedEntities (bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+
+// ...
+
+   var cos:Number = Math.cos (deltaRotation);
+   var sin:Number = Math.sin (deltaRotation);
+   
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   
+   var num:int = bodiesToTeleport.length;
+   
+   for (var i:int = 0; i < num; ++ i)
+   {
+      var body:EntityBody = bodiesToTeleport [i] as EntityBody;
+      
+      var dx:Number = body.mPositionX - fixedPointX;
+      var dy:Number = body.mPositionY - fixedPointY;
+      
+      body.mPositionX = fixedPointX + dx * cos - dy * sin;
+      body.mPositionY = fixedPointY + dx * sin + dy * cos;
+      body.SetRotation (body.mPhysicsRotation + deltaRotation);
+      
+      if (body.mNumPhysicsShapes > 0)
+      {
+         //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
+         //var vx:Number = body.GetLinearVelocityX ();
+         //var vy:Number = body.GetLinearVelocityY ();
+         //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call body.NotifyVelocityChangedManually ();
+         
+         body.NotifyVelocityChangedManually (); // shapes' velocity changed
+         body.NotifyMovedManually ();
+         body.SetSleeping (false);
+         body.SynchronizePositionAndRotationToPhysicsProxy ();
+      }
+      
+      // ...
+      
+      var shape:EntityShape = body.mShapeListHead;
+      
+      while (shape != null)
+      {
+         shape.SynchronizeWithPhysicsProxy ();
+         
+         shape = shape.mNextShapeInBody;
+      }
+   }
+}
+
+public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+{
+   var normalXX:Number = normalX * normalX;
+   var normalYY:Number = normalY * normalY;
+   var normalLength:Number = Math.sqrt (normalXX + normalYY);
+
+   if (normalLength < Define.kFloatEpsilon)
+      return;
+   
+// ...
+
+   var infos:Object = GetRelatedEntities (bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+
+// ...
+
+   var doubleLineAngle:Number = 2.0 * Math.atan2 (normalY, normalX);
+   
+   normalX /= normalLength;
+   normalY /= normalLength;
+   var normalXX2:Number = 2.0 * normalX * normalX;
+   var normalYY2:Number = 2.0 * normalY * normalY;
+   var normalXY2:Number = 2.0 * normalX * normalY;
+
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   
+   var num:int = bodiesToTeleport.length;
+   
+   for (var i:int = 0; i < num; ++ i)
+   {
+      var body:EntityBody = bodiesToTeleport [i] as EntityBody;
+      
+      //...
+      
+      var tempX:Number = body.mPositionX - pointX;
+      var tempY:Number = body.mPositionY - pointY;
+      
+      body.mPositionX = body.mPositionX - normalXX2 * tempX - normalXY2 * tempY;
+      body.mPositionY = body.mPositionY - normalYY2 * tempY - normalXY2 * tempX;
+      body.SetRotation (body.mPhysicsRotation + doubleLineAngle);
+      body.SynchronizePositionAndRotationToPhysicsProxy ();
+      
+      //...
+      
+      var shape:EntityShape = body.mShapeListHead;
+         
+      while (shape != null)
+      {
+         shape.mLocalPositionX = - shape.mLocalPositionX;
+         shape.mRelativeRotation = Define.kPI_x_2 - shape.mRelativeRotation;
+         if (shape.GetScaleX () < 0)
+         {
+            shape.mRelativeRotation -= doubleLineAngle + doubleLineAngle;
+            var cos:Number = Math.cos (- doubleLineAngle - doubleLineAngle);
+            var sin:Number = Math.sin (- doubleLineAngle - doubleLineAngle);
+            var oldLocalX:Number = shape.mLocalPositionX;
+            var oldLocalY:Number = shape.mLocalPositionY;
+            shape.mLocalPositionX = cos * oldLocalX - sin * oldLocalY;
+            shape.mLocalPositionY = sin * oldLocalX + cos * oldLocalY;
+         }
+         shape.SetScaleX (- shape.GetScaleX ());
+         shape.SynchronizeWithPhysicsProxy ();
+         if (shape.IsPhysicsShape ())
+            shape.RebuildShapePhysics ();
+         
+         shape = shape.mNextShapeInBody;
+      }     
+   
+      body.OnShapeListChanged (true);
+      
+      //...
+      
+      if (body.mNumPhysicsShapes > 0)
+      {
+         body.SynchronizeWithPhysicsProxyManually (); // essential?
+         
+         //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
+         //var vx:Number = body.GetLinearVelocityX ();
+         //var vy:Number = body.GetLinearVelocityY ();
+         //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call 
+         
+         body.NotifyVelocityChangedManually (); // shapes' velocity changed
+         body.NotifyMovedManually ();
+         body.SetSleeping (false);
+         body.SynchronizePositionAndRotationToPhysicsProxy ();
+      }
+      
+      // ...
+      
+      shape = body.mShapeListHead;
+      
+      while (shape != null)
+      {
+         shape.SynchronizeWithPhysicsProxy ();
+         shape.NotifyJointAnchorLocalPositionsChanged ();
+         
+         shape = shape.mNextShapeInBody;
+      }
+      
+      // todo: effects on joints: remove joint angle, limits, velocity, ...
+   }
+}
+
+public static function Scale (seedShape:EntityShape, scaleValue:Number, fixedPointX:Number, fixedPointY:Number, scaleSize:Boolean, scalePosition:Boolean, 
+                              scaleBrothers:Boolean, scaleMovableSisters:Boolean, scaleStaticSisters:Boolean, scaleJoints:Boolean, breakEmbarrasedJoints:Boolean,
+                              conserveMomentum:Boolean, conserveMass:Boolean
+                              ):void
+{
+   
+}
+
+//================================================================
 // change size 
 //================================================================
 
 public static function ChangeCircleRadius (circle:EntityShapeCircle, radius:Number):void
 {
-
+   
 }
 
 public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Number, height:Number):void
@@ -49,6 +406,7 @@ public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Num
 // transform 
 //================================================================
 
+/*
 public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
 // ...
@@ -223,11 +581,7 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
       }
    }
 }
-
-public function TranslateTo (targetX:Number, targetY:Number):void
-{
-   // todo
-}
+*/
 
 //================================================================
 // detach / attach (glue)

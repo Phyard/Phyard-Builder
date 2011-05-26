@@ -280,12 +280,12 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
       
       //...
       
-      var tempX:Number = body.mPositionX - pointX;
-      var tempY:Number = body.mPositionY - pointY;
+      var offsetX:Number = body.mPositionX - pointX;
+      var offsetY:Number = body.mPositionY - pointY;
       
-      body.mPositionX = body.mPositionX - normalXX2 * tempX - normalXY2 * tempY;
-      body.mPositionY = body.mPositionY - normalYY2 * tempY - normalXY2 * tempX;
-      body.SetRotation (body.mPhysicsRotation + doubleLineAngle);
+      body.mPositionX = body.mPositionX - normalXX2 * offsetX - normalXY2 * offsetY;
+      body.mPositionY = body.mPositionY - normalXY2 * offsetX - normalYY2 * offsetY;
+      //body.SetRotation (body.mPhysicsRotation + doubleLineAngle);
       body.SynchronizePositionAndRotationToPhysicsProxy ();
       
       //...
@@ -293,20 +293,21 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
       var shape:EntityShape = body.mShapeListHead;
          
       while (shape != null)
-      {
-         shape.mLocalPositionX = - shape.mLocalPositionX;
-         shape.mRelativeRotation = Define.kPI_x_2 - shape.mRelativeRotation;
-         if (shape.GetScaleX () < 0)
-         {
-            shape.mRelativeRotation -= doubleLineAngle + doubleLineAngle;
-            var cos:Number = Math.cos (- doubleLineAngle - doubleLineAngle);
-            var sin:Number = Math.sin (- doubleLineAngle - doubleLineAngle);
-            var oldLocalX:Number = shape.mLocalPositionX;
-            var oldLocalY:Number = shape.mLocalPositionY;
-            shape.mLocalPositionX = cos * oldLocalX - sin * oldLocalY;
-            shape.mLocalPositionY = sin * oldLocalX + cos * oldLocalY;
-         }
-         shape.SetScaleX (- shape.GetScaleX ());
+      {         
+         var localNormalX:Number =   normalX * mCosRotation + normalY * mSinRotation;
+         var localNormalY:Number = - normalX * mSinRotation + normalY * mCosRotation;
+         var localNormalXX2:Number = 2.0 * localNormalX * localNormalX;
+         var localNormalYY2:Number = 2.0 * localNormalY * localNormalY;
+         var localNormalXY2:Number = 2.0 * localNormalX * localNormalY;
+         
+         var oldLocalX:Number = shape.mLocalPositionX;
+         var oldLocalY:Number = shape.mLocalPositionY;
+         shape.mLocalPositionX = oldLocalX - normalXX2 * oldLocalX - normalXY2 * oldLocalY;
+         shape.mLocalPositionY = oldLocalY - normalXY2 * oldLocalX - normalYY2 * oldLocalY;
+         shape.mRelativeRotation = - shape.mRelativeRotation;
+         shape.mRelativeRotation += doubleLineAngle;
+         shape.SetScaleX (- shape.GetScaleX ()); 
+         
          shape.SynchronizeWithPhysicsProxy ();
          if (shape.IsPhysicsShape ())
             shape.RebuildShapePhysics ();

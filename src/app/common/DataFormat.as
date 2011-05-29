@@ -639,9 +639,14 @@ package common {
                trace ("brotherGroup == null");
                continue;
             }
-            if (brotherGroup.length  < 2)
+            if (brotherGroup.length == 0)
             {
-               trace ("brotherGroup.length  < 2");
+               trace ("blacnk group");
+               continue;
+            }
+            if (brotherGroup.length < 2)
+            {
+               trace ("one entity group, id = " + editorWorld.GetEntityCreationId (brotherGroup [brotherId] as Entity));
                continue;
             }
             

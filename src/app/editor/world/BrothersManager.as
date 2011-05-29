@@ -105,6 +105,7 @@ package editor.world {
          if (brothers.length == 1)
          {
             brothers [0].SetBrothers (null);
+            brothers.splice (0, 1);
          }
          
          if (brothers.length == 0)

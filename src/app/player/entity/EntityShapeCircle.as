@@ -39,6 +39,17 @@ package player.entity {
          }
       }
       
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mRadius = mWorld.GetCoordinateSystem ().P2D_Length (GetRadius ());
+         entityDefine.mAppearanceType = GetAppearanceType ();
+         
+         entityDefine.mEntityType = Define.EntityType_ShapeCircle;
+         return entityDefine;
+      }
+      
 //=============================================================
 //   
 //=============================================================

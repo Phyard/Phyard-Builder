@@ -32,6 +32,15 @@ package player.entity {
          }
       }
       
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mEntityType = Define.EntityType_JointWeld;
+         
+         return entityDefine;
+     }
+      
 //=============================================================
 //   
 //=============================================================

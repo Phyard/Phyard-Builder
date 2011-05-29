@@ -57,6 +57,25 @@ package player.entity {
             //SetTransparency (50);
          }
       }
+       
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mText = GetText ();
+         entityDefine.mWordWrap = mWordWrap;
+         entityDefine.mTextColor = GetTextColor ();
+         entityDefine.mFontSize = GetFontSize ();
+         entityDefine.mIsBold = IsBold ();
+         entityDefine.mIsItalic = IsItalic ();
+         entityDefine.mAdaptiveBackgroundSize = IsAdaptiveBackgroundSize ();
+         entityDefine.mTextAlign = GetTextAlign ();
+         entityDefine.mIsUnderlined = IsUnderlined ();
+         
+         entityDefine.mEntityType = Define.EntityType_ShapeText;
+         
+         return entityDefine;
+     }
       
 //=============================================================
 //   
@@ -74,7 +93,7 @@ package player.entity {
       
       public function GetText ():String
       {
-         return mText;
+         return mText == null ? "" : mText;
       }
       
       public function SetText (text:String):void

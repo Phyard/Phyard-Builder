@@ -49,6 +49,23 @@ package player.entity {
          }
       }
       
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mEnableLimits = IsLimitsEnabled ();
+         entityDefine.mLowerTranslation = mWorld.GetCoordinateSystem ().P2D_Length (GetLowerTranslation ());
+         entityDefine.mUpperTranslation = mWorld.GetCoordinateSystem ().P2D_Length (GetUpperTranslation ());
+         entityDefine.mEnableMotor = IsMotorEnabled ();
+         entityDefine.mMotorSpeed = mWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (GetMotorSpeed ());
+         entityDefine.mBackAndForth = IsBackAndForth ();
+         entityDefine.mMaxMotorForce = mWorld.GetCoordinateSystem ().D2P_ForceMagnitude (GetMaxMotorForce ());
+         
+         entityDefine.mEntityType = Define.EntityType_JointSlider;
+         
+         return entityDefine;
+     }
+      
 //=============================================================
 //   
 //=============================================================
@@ -100,6 +117,11 @@ package player.entity {
          }
       }
       
+      public function IsLimitsEnabled ():Boolean
+      {
+         return mEnableLimits;
+      }
+      
       override public function SetEnableMotor (enableMotor:Boolean):void
       {
          mEnableMotor = enableMotor;
@@ -108,6 +130,11 @@ package player.entity {
          {
             mProxyJointSlider.SetMotorEnabled (mEnableMotor);
          }
+      }
+      
+      public function IsMotorEnabled ():Boolean
+      {
+         return mEnableMotor;
       }
       
       public function GetMotorSpeed ():Number
@@ -123,17 +150,27 @@ package player.entity {
             mProxyJointSlider.SetMotorSpeed (mMotorSpeed);
       }
       
-      public function SetBackAndForth (backAndForth:Boolean):void
-      {
-         mBackAndForth = backAndForth;
-      }
-      
       public function SetMaxMotorForce (maxForce:Number):void
       {
          if (maxForce < 0)
             maxForce = 0.0;
          
          mMaxMotorForce = maxForce;
+      }
+      
+      public function GetMaxMotorForce ():Number
+      {
+         return mMaxMotorForce;
+      }
+      
+      public function SetBackAndForth (backAndForth:Boolean):void
+      {
+         mBackAndForth = backAndForth;
+      }
+      
+      public function IsBackAndForth ():Boolean
+      {
+         return mBackAndForth;
       }
       
 //=============================================================

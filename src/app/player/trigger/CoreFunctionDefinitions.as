@@ -319,6 +319,8 @@ package player.trigger {
 
       // game / entity / shape
 
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_Clone,                       CloneShape);
+         
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsCircleShapeEntity,              IsCircleShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,           IsRectangleShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,             IsPolygonShapeEntity);
@@ -2645,6 +2647,36 @@ package player.trigger {
    // entity / shape
    //*******************************************************************
 
+      public static function CloneShape (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+         {
+            valueTarget.AssignValueObject (null);
+            return;
+         }
+         
+         valueSource = valueSource.mNextParameter;
+         var targetX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var targetY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var targetRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
+
+         valueSource = valueSource.mNextParameter;
+         var bCloneBrothers:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bCloneConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bCloneConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueTarget.AssignValueObject (EntityShape.CloneShape (shape, targetX, targetY, targetRotation, bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics));
+      }
+      
       public static function IsCircleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;

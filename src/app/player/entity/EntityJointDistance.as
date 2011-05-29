@@ -42,6 +42,17 @@ package player.entity {
          }
       }
       
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mBreakDeltaLength = mWorld.GetCoordinateSystem ().P2D_Length (GetBreakDeltaLength ());
+         
+         entityDefine.mEntityType = Define.EntityType_JointDistance;
+         
+         return entityDefine;
+     }
+      
 //=============================================================
 //   
 //=============================================================

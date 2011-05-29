@@ -1757,6 +1757,20 @@ package editor.trigger {
                      ]
                   );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, shape_common_package, "Clone", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
+                             new VariableDefinitionNumber ("Target Position X"),
+                             new VariableDefinitionNumber ("Target Position Y"),
+                             new VariableDefinitionNumber ("Target Angle (degrees)"),
+                             new VariableDefinitionBoolean ("Clone Brothers?"),
+                             new VariableDefinitionBoolean ("Clone Connected Movables?"),
+                             new VariableDefinitionBoolean ("Clone Connected Statics?"),
+                     ],
+                     [
+                             new VariableDefinitionEntity ("The Cloned Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint, shape_common_package, "World Point -> Local Point", "@World Point ($0, $1) -&gt; Local Point (#0, #1)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes

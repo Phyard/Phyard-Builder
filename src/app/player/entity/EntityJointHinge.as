@@ -47,6 +47,23 @@ package player.entity {
          }
       }
       
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mEnableLimits = IsLimitsEnabled ();
+         entityDefine.mLowerAngle = mWorld.GetCoordinateSystem ().P2D_RotationDegrees (GetLowerAngle ()) * Define.kRadians2Degrees;
+         entityDefine.mUpperAngle = mWorld.GetCoordinateSystem ().P2D_RotationDegrees (GetUpperAngle ()) * Define.kRadians2Degrees;
+         entityDefine.mEnableMotor = IsMotorEnabled ();
+         entityDefine.mMotorSpeed = mWorld.GetCoordinateSystem ().P2D_AngularVelocity (GetMotorSpeed ()) * Define.kRadians2Degrees;
+         entityDefine.mBackAndForth = IsBackAndForth ();
+         entityDefine.mMaxMotorTorque = mWorld.GetCoordinateSystem ().D2P_Torque (GetMaxMotorTorque ());
+         
+         entityDefine.mEntityType = Define.EntityType_JointHinge;
+         
+         return entityDefine;
+     }
+      
 //=============================================================
 //   
 //=============================================================

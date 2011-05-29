@@ -23,17 +23,20 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    var shape1:EntityShape = proxyShape1.GetEntityShape ();
    var shape2:EntityShape = proxyShape2.GetEntityShape ();
    
-//trace ("+++++++ OnShapeContactStarted, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
+////trace ("+++++++++++++++++++++++++ OnShapeContactStarted, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
+//trace ("+++++++++++++++++++++++++ OnShapeContactStarted, id1 = " + shape1.GetContactProxyId () + ", id2 = " + shape2.GetContactProxyId ());
    
    if (shape1 == null || shape2 == null)
       return;
    
-   var id1:int = shape1.GetCreationId ();
-   if (id1 < 0 || id1 > 0x7FFF)
+   //var id1:int = shape1.GetCreationId ();
+   var id1:int = shape1.GetContactProxyId (); // from v1.56
+   if (id1 < 0 || id1 > 0xFFFF)
       return;
    
-   var id2:int = shape2.GetCreationId ();
-   if (id2 < 0 || id2 > 0x7FFF)
+   //var id2:int = shape2.GetCreationId ();
+   var id2:int = shape2.GetContactProxyId (); // from v1.56
+   if (id2 < 0 || id2 > 0xFFFF)
       return;
    
    var contact_id:int = id1 > id2 ? (id2 << 16) | (id1) : (id1 << 16) | (id2);
@@ -125,17 +128,20 @@ private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxySha
    var shape1:EntityShape = proxyShape1.GetEntityShape ();
    var shape2:EntityShape = proxyShape2.GetEntityShape ();
    
-//trace ("------------------------ OnShapeContactFinished, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
+////trace ("------------------------ OnShapeContactFinished, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
+//trace ("------------------------ OnShapeContactFinished, id1 = " + shape1.GetContactProxyId () + ", id2 = " + shape2.GetContactProxyId ());
    
    if (shape1 == null || shape2 == null)
       return;
    
-   var id1:int = shape1.GetCreationId ();
-   if (id1 < 0 || id1 > 0x7FFF)
+   //var id1:int = shape1.GetCreationId ();
+   var id1:int = shape1.GetContactProxyId (); // from v1.56
+   if (id1 < 0 || id1 > 0xFFFF)
       return;
    
-   var id2:int = shape2.GetCreationId ();
-   if (id2 < 0 || id2 > 0x7FFF)
+   //var id2:int = shape2.GetCreationId ();
+   var id2:int = shape2.GetContactProxyId (); // from v1.56
+   if (id2 < 0 || id2 > 0xFFFF)
       return;
    
    var contact_id:int = id1 > id2 ? (id2 << 16) | (id1) : (id1 << 16) | (id2);
@@ -310,7 +316,11 @@ private function HandleShapeContactEvents ():void
       contact_info.mInKeepContactingList = true;
 
       last_contact_info = contact_info;
-   } 
+   }
+   
+   // ...
+   
+   ConfirmFreedContactProxyIds ();
 }
 
 private function HandleShapeContactEvent (contactInfo:ShapeContactInfo, contactingHandlerListElement:ListElement_EventHandler, doInfection:Boolean):void

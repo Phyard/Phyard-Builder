@@ -302,6 +302,8 @@ package common.trigger {
 
    // game / entity / shape
 
+      public static const ID_EntityShape_Clone:int                      = IdPool.CoreApiId_1070;
+
       public static const ID_EntityShape_GetOriginalCIType:int            = IdPool.CoreApiId_1098;
       public static const ID_EntityShape_SetOriginalCIType:int            = IdPool.CoreApiId_1099;
       public static const ID_EntityShape_GetCIType:int                    = IdPool.CoreApiId_1100;

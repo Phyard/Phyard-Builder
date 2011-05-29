@@ -38,6 +38,18 @@ package player.entity {
          }
       }
       
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mFollowedTarget = GetFollowedTarget ();
+         entityDefine.mFollowingStyle = GetFollowingStyle ();
+         
+         entityDefine.mEntityType = Define.EntityType_UtilityCamera;
+         
+         return entityDefine;
+     }
+      
 //=============================================================
 //   
 //=============================================================
@@ -50,9 +62,19 @@ package player.entity {
          mFollowedTarget = target;
       }
       
+      public function GetFollowedTarget ():int
+      {
+         return mFollowedTarget;
+      }
+      
       public function SetFollowingStyle (style:int):void
       {
          mFollowingStyle = style;
+      }
+      
+      public function GetFollowingStyle ():int
+      {
+         return mFollowingStyle;
       }
       
 //=============================================================

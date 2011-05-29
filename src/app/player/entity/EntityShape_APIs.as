@@ -14,7 +14,7 @@ possible actions:
 - ...
 */
 
-public function GetRelatedEntities (bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):Object
+public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):Object
 {
    var returnObject:Object =  new Object (); 
    
@@ -40,41 +40,104 @@ public function GetRelatedEntities (bTeleportConnectedMovables:Boolean, bTelepro
    mSpecialId = sLastSpecialId;
    shapesToTeleport.push (this);
    
-   var numShapesToTeleport:int = 0;
-
-   while (shapesToTeleport.length > numShapesToTeleport)
+   if (bTeleportBrothers)
    {
-      shape = shapesToTeleport [numShapesToTeleport];
-      //shape.mSpecialId = sLastSpecialId; // now call this when add shape in list
-
-      ++ numShapesToTeleport;
-      
-      // brothers
-      
-      body = shape.mBody;
-      if (body.mSpecialId != sLastSpecialId)
+      var numShapesToTeleport:int = 0;
+   
+      while (shapesToTeleport.length > numShapesToTeleport)
       {
-         body.mSpecialId = sLastSpecialId;
-         bodiesToTeleport.push (body);
+         shape = shapesToTeleport [numShapesToTeleport];
+         //shape.mSpecialId = sLastSpecialId; // now call this when add shape in list
+   
+         ++ numShapesToTeleport;
          
-         anotherShape = body.mShapeListHead;
+         // brothers
          
-         while (anotherShape != null)
+         body = shape.mBody;
+         if (body.mSpecialId != sLastSpecialId)
          {
-            if (anotherShape.mSpecialId != sLastSpecialId)
+            body.mSpecialId = sLastSpecialId;
+            bodiesToTeleport.push (body);
+            
+            anotherShape = body.mShapeListHead;
+            
+            while (anotherShape != null)
             {
-               anotherShape.mSpecialId = sLastSpecialId;
-               shapesToTeleport.push (anotherShape)
+               if (anotherShape.mSpecialId != sLastSpecialId)
+               {
+                  anotherShape.mSpecialId = sLastSpecialId;
+                  shapesToTeleport.push (anotherShape)
+               }
+               
+               anotherShape = anotherShape.mNextShapeInBody;
+            }
+         }
+         
+         // connected joints and shapes
+         
+         anchor = shape.mJointAnchorListHead;
+         
+         while (anchor != null)
+         {
+            joint = anchor.mJoint;
+            
+            if (joint.mSpecialId != sLastSpecialId)
+            {
+               joint.mSpecialId = sLastSpecialId;
+            
+               anotherShape = anchor.mAnotherJointAnchor.mShape;
+               
+               if (anotherShape == null)
+               {
+                  if (bBreakEmbarrassedJoints)
+                  {
+                     jointsToBreak.push (joint);
+                  }
+               }
+               else if (anotherShape.mBody.IsStatic ())
+               {
+                  if (bTeleprotConnectedStatics)
+                  {
+                     if (anotherShape.mSpecialId != sLastSpecialId)
+                     {
+                        anotherShape.mSpecialId = sLastSpecialId;
+                        shapesToTeleport.push (anotherShape);
+                     }
+                     
+                     jointsToTeleport.push (joint);
+                  }
+                  else if (bBreakEmbarrassedJoints)
+                  {
+                     jointsToBreak.push (joint);
+                  }   
+               }
+               else
+               {
+                  if (bTeleportConnectedMovables)
+                  {
+                     if (anotherShape.mSpecialId != sLastSpecialId)
+                     {
+                        anotherShape.mSpecialId = sLastSpecialId;
+                        shapesToTeleport.push (anotherShape);
+                     }
+                     
+                     jointsToTeleport.push (joint);
+                  }
+                  else if (bBreakEmbarrassedJoints)
+                  {
+                     jointsToBreak.push (joint);
+                  }
+               }
             }
             
-            anotherShape = anotherShape.mNextShapeInBody;
+            anchor = anchor.mNextAnchor;
          }
       }
-      
-      // connected joints and shapes
-      
-      anchor = shape.mJointAnchorListHead;
-      
+   }
+   else if (bBreakEmbarrassedJoints)
+   {
+      anchor = this.mJointAnchorListHead;
+         
       while (anchor != null)
       {
          joint = anchor.mJoint;
@@ -82,50 +145,7 @@ public function GetRelatedEntities (bTeleportConnectedMovables:Boolean, bTelepro
          if (joint.mSpecialId != sLastSpecialId)
          {
             joint.mSpecialId = sLastSpecialId;
-         
-            anotherShape = anchor.mAnotherJointAnchor.mShape;
-            
-            if (anotherShape == null)
-            {
-               if (bBreakEmbarrassedJoints)
-               {
-                  jointsToBreak.push (joint);
-               }
-            }
-            else if (anotherShape.mBody.IsStatic ())
-            {
-               if (bTeleprotConnectedStatics)
-               {
-                  if (anotherShape.mSpecialId != sLastSpecialId)
-                  {
-                     anotherShape.mSpecialId = sLastSpecialId;
-                     shapesToTeleport.push (anotherShape);
-                  }
-                  
-                  jointsToTeleport.push (joint);
-               }
-               else if (bBreakEmbarrassedJoints)
-               {
-                  jointsToBreak.push (joint);
-               }   
-            }
-            else
-            {
-               if (bTeleportConnectedMovables)
-               {
-                  if (anotherShape.mSpecialId != sLastSpecialId)
-                  {
-                     anotherShape.mSpecialId = sLastSpecialId;
-                     shapesToTeleport.push (anotherShape);
-                  }
-                  
-                  jointsToTeleport.push (joint);
-               }
-               else if (bBreakEmbarrassedJoints)
-               {
-                  jointsToBreak.push (joint);
-               }
-            }
+            jointsToBreak.push (joint);
          }
          
          anchor = anchor.mNextAnchor;
@@ -144,6 +164,221 @@ public function GetRelatedEntities (bTeleportConnectedMovables:Boolean, bTelepro
    return returnObject;
 }
 
+//================================================================
+// clone and transform
+//================================================================
+
+public static function CloneShape (seedShape:EntityShape, positionX:Number, positionY:Number, rotation:Number, bCloneBrothers:Boolean, bCloneConnectedMovables:Boolean, bCloneConnectedStatics:Boolean):EntityShape
+{
+   if (seedShape == null)
+      return null;
+   
+   var infos:Object = seedShape.GetRelatedEntities (bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics, false);
+   
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   var shapesToTeleport:Array = infos.mShapesToTransform;
+   var jointsToTeleport:Array = infos.mJointsToTransform; 
+      
+   var worldDefine:WorldDefine = new WorldDefine ();
+   var entityDefineArray:Array = worldDefine.mEntityDefines;
+   
+   var entityDefine:Object;
+   var entity:Entity;
+   var body:EntityBody;
+   var shape:EntityShape;
+   var joint:EntityJoint;
+   var anchor:SubEntityJointAnchor;
+   
+   var i:int;
+   var count:int;
+   
+   // create entity defines for shapes
+   
+   var mapEntity2Define:Dictionary = new Dictionary ();
+   
+   count = shapesToTeleport.length;
+   for (i = 0; i < count; ++ i)
+   {
+      shape = shapesToTeleport [i] as EntityShape;
+      entityDefine = CreateAndPushEntityDefine (shape, entityDefineArray, mapEntity2Define);
+   }
+   
+   // create entity defines for joints and anchors
+   
+   count = jointsToTeleport.length;
+   for (i = 0; i < count; ++ i)
+   {
+      joint = jointsToTeleport [i] as EntityJoint;
+      entityDefine = CreateAndPushEntityDefine (joint, entityDefineArray, mapEntity2Define);
+      
+      anchor = joint.GetAnchor1 ();
+      entityDefine = CreateAndPushEntityDefine (anchor, entityDefineArray, mapEntity2Define);
+      
+      anchor = joint.GetAnchor2 ();
+      entityDefine = CreateAndPushEntityDefine (anchor, entityDefineArray, mapEntity2Define);
+   }
+   
+   // create appearance order array
+   
+   count = entityDefineArray.length;
+   entityDefineArray.sortOn ("mCreationOrderId", Array.NUMERIC);
+   for (i = 0; i < count; ++ i)
+   {
+      entityDefine = entityDefineArray [i] as Object;
+      entityDefine.mCreationOrderId = i;
+   }
+
+   var entityDefinesSortByAppearanceId:Array = entityDefineArray.concat ();
+   entityDefinesSortByAppearanceId.sortOn ("mAppearanceOrderId", Array.NUMERIC);
+   var appearanceOrderArray:Array = worldDefine.mEntityAppearanceOrder;
+   for (i = 0; i < count; ++ i)
+   {
+      entityDefine = entityDefinesSortByAppearanceId [i] as Object;
+      appearanceOrderArray.push (i);
+   }
+   
+   // create brother groups array
+   
+   var brotherGroupDefines:Array = worldDefine.mBrotherGroupDefines;
+   count = bodiesToTeleport.length;
+   for (i = 0; i < count; ++ i)
+   {
+      body = bodiesToTeleport [i] as EntityBody;
+      
+      var brotherShapeCreationOrderIds:Array = new Array ();
+      shape = body.mShapeListHead;
+      while (shape != null)
+      {
+         entityDefine = mapEntity2Define [shape] as Object;
+         if (entityDefine != null)
+         {
+            brotherShapeCreationOrderIds.push (entityDefine.mCreationOrderId);
+         }
+         
+         shape = shape.mNextShapeInBody;
+      }
+      
+      if (brotherShapeCreationOrderIds.length > 1)
+      {
+         brotherGroupDefines.push (brotherShapeCreationOrderIds);
+      }
+   }
+   
+   // set entity reference ids
+   
+   var anchorIndex1:int;
+   var anchorIndex2:int;
+   var shapeIndex1:int;
+   var shapeIndex2:int;
+
+   count = jointsToTeleport.length;
+   for (i = 0; i < count; ++ i)
+   {
+      joint = jointsToTeleport [i] as EntityJoint;
+      
+      anchor = joint.GetAnchor1 ();
+      anchorIndex1 = (mapEntity2Define [anchor] as Object).mCreationOrderId;
+      
+      shape = anchor.GetShape ();
+      shapeIndex1 = shape == null ? Define.EntityId_None : (mapEntity2Define [shape] as Object).mCreationOrderId;
+      
+      anchor = joint.GetAnchor2 ();
+      anchorIndex2 = (mapEntity2Define [anchor] as Object).mCreationOrderId;
+      
+      shape = anchor.GetShape ();
+      shapeIndex2 = shape == null ? Define.EntityId_None : (mapEntity2Define [shape] as Object).mCreationOrderId;
+      
+      entityDefine = mapEntity2Define [joint];
+      entityDefine.mAnchor1EntityIndex = anchorIndex1;
+      entityDefine.mAnchor2EntityIndex = anchorIndex2;
+      entityDefine.mConnectedShape1Index = shapeIndex1;
+      entityDefine.mConnectedShape2Index = shapeIndex2;
+   }
+   
+   // import world define
+   
+   var world:World = seedShape.GetWorld ();
+   var worldEntityList:EntityList = world.GetEntityList ();
+   var worldEntityBodyList:EntityList = world.GetEntityBodyList ();
+   worldEntityList.MarkLastTail ();
+   worldEntityBodyList.MarkLastTail ();
+
+   DataFormat2.WorldDefine2PlayerWorld (worldDefine, world);
+   
+   world.BuildEntityPhysics (true);
+   
+   worldEntityList.UnmarkLastTail ();
+   worldEntityBodyList.UnmarkLastTail ();
+   
+   // return
+   
+   entityDefine = mapEntity2Define [seedShape];
+   if (entityDefine == null)
+      return null;
+      
+   return entityDefine.mEntity as EntityShape;
+}
+
+private static function CreateAndPushEntityDefine (entity:Entity, entityDefineArray:Array, mapEntity2Define:Dictionary):Object
+{
+   var entityDefine:Object = entity.ToEntityDefine (new Object ());
+   if (entityDefine != null)
+   {
+      entityDefine.mOriginalEntity = entity;
+      
+      entityDefine.mAppearanceOrderId = entity.GetAppearanceId ();
+      entityDefine.mCreationOrderId = entity.GetCreationId ();
+      entityDefineArray.push (entityDefine);
+
+      mapEntity2Define [entity] = entityDefine;
+   }
+   
+   return entityDefine;
+} 
+   
+      /*
+      if (! bCloneBrothers)
+      {
+         entityDefine = seedShape.ToEntityDefine (new Object ());
+         if (entityDefine == null)
+            return null;
+         
+         var coordinateSystem:CoordinateSystem = world.GetCoordinateSystem ();
+         
+         entityDefine.mPosX = coordinateSystem.P2D_PositionX (positionX);
+         entityDefine.mPosY = coordinateSystem.P2D_PositionY (positionY);
+         entityDefine.mRotation = coordinateSystem.P2D_RotationRadians (rotation);
+         
+         entity = DataFormat2.CreateEntityInstance (world, entityDefine);
+         world.RegisterEntity (entity);
+         entity.InitCustomPropertyValues ();
+         for (var createStageId:int = 0; createStageId < Define.kNumCreateStages; ++ createStageId)
+         {
+            entity.Create (createStageId, entityDefine);
+         }
+         
+         shape = entity as EntityShape;
+         body = new EntityBody (world);
+         world.RegisterEntity (body);
+         shape.SetBody (body);
+         
+         shape.RebuildShapePhysics ();
+         body.OnShapeListChanged (body.GetNumPhysicsShapes () > 0);
+         body.AddShapeMomentums ();
+         //(entity as EntityJoint).ConfirmConnectedShapes ();
+         //(entity as EntityJoint).RebuildJointPhysics ();
+         
+         body.SynchronizeWithPhysicsProxy ();
+         shape.SynchronizeWithPhysicsProxy ();
+         
+         return shape;
+      }
+      */
+   
+//================================================================
+// transform
+//================================================================
+
 public function Teleport (deltaX:Number, deltaY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
    Rotate (deltaRotation, mPositionX, mPositionY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
@@ -157,7 +392,7 @@ public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovab
    
 //...
 
-   var infos:Object = GetRelatedEntities (bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
 // ...
 
@@ -199,7 +434,7 @@ public function Rotate (deltaRotation:Number, fixedPointX:Number, fixedPointY:Nu
 
 // ...
 
-   var infos:Object = GetRelatedEntities (bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
 // ...
 
@@ -258,7 +493,7 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
    
 // ...
 
-   var infos:Object = GetRelatedEntities (bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
 // ...
 
@@ -355,58 +590,14 @@ public static function Scale (seedShape:EntityShape, scaleValue:Number, fixedPoi
                               conserveMomentum:Boolean, conserveMass:Boolean
                               ):void
 {
-   
+   // todo
 }
 
 //================================================================
-// change size 
+// telport 
 //================================================================
 
-public static function ChangeCircleRadius (circle:EntityShapeCircle, radius:Number):void
-{
-   
-}
-
-public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Number, height:Number):void
-{
-   if (width <= 0 || height <= 0)
-      return;
-   
-   var body:EntityBody = rect.GetBody ();
-      
-   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
-   var isPhysicsShape:Boolean = rect.IsPhysicsShape ();
-   
-   var scaleWidth:Number =  0.5 * width / rect.GetHalfWidth ();
-   var scaleHeight:Number =  0.5 * height / rect.GetHalfHeight ();
-   
-   rect.SetHalfWidth (width * 0.5);
-   rect.SetHalfHeight (height * 0.5);
-   
-   if (isPhysicsShape)
-   {
-      rect.RebuildShapePhysics ();
-      body.OnShapeListChanged (true);
-      body.NotifyMovedManually ();
-      body.NotifyVelocityChangedManually ();
-      body.SetSleeping (false);
-      body.SynchronizeWithPhysicsProxyManually ();
-      rect.SynchronizeWithPhysicsProxy ();
-   }
-   else if (! isPhysicsBody)
-   {
-      body.OnShapeListChanged (false);
-      body.NotifyMovedManually ();
-   }
-   
-   // modify joint anchor positions
-   rect.ScaleJointAnchorPositions (scaleWidth, scaleHeight);
-}
-
-//================================================================
-// transform 
-//================================================================
-
+// the old teleport API is replaced with Translate+Rotate now (see above)
 /*
 public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
@@ -583,6 +774,81 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
    }
 }
 */
+
+//================================================================
+// change size (different with scale)
+//================================================================
+
+public static function ChangeCircleRadius (circle:EntityShapeCircle, radius:Number):void
+{
+   if (radius <= 0)
+      return;
+   
+   var body:EntityBody = circle.GetBody ();
+      
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = circle.IsPhysicsShape ();
+   
+   var scaleRadius:Number =  radius / circle.GetRadius ();
+   
+   circle.SetRadius (radius);
+   
+   if (isPhysicsShape)
+   {
+      circle.RebuildShapePhysics ();
+      body.OnShapeListChanged (true);
+      body.NotifyMovedManually ();
+      body.NotifyVelocityChangedManually ();
+      body.SetSleeping (false);
+      body.SynchronizeWithPhysicsProxyManually ();
+      circle.SynchronizeWithPhysicsProxy ();
+   }
+   else if (! isPhysicsBody)
+   {
+      body.OnShapeListChanged (false);
+      body.NotifyMovedManually ();
+   }
+   
+   // modify joint anchor positions
+   circle.ScaleJointAnchorPositions (scaleRadius, scaleRadius);
+}
+
+public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Number, height:Number):void
+{
+   if (width <= 0 || height <= 0)
+      return;
+   
+   var body:EntityBody = rect.GetBody ();
+      
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = rect.IsPhysicsShape ();
+   
+   var scaleWidth:Number =  0.5 * width / rect.GetHalfWidth ();
+   var scaleHeight:Number =  0.5 * height / rect.GetHalfHeight ();
+   
+   rect.SetHalfWidth (width * 0.5);
+   rect.SetHalfHeight (height * 0.5);
+   
+   if (isPhysicsShape)
+   {
+      rect.RebuildShapePhysics ();
+      body.OnShapeListChanged (true);
+      body.NotifyMovedManually ();
+      body.NotifyVelocityChangedManually ();
+      body.SetSleeping (false);
+      body.SynchronizeWithPhysicsProxyManually ();
+      rect.SynchronizeWithPhysicsProxy ();
+   }
+   else if (! isPhysicsBody)
+   {
+      body.OnShapeListChanged (false);
+      body.NotifyMovedManually ();
+   }
+   
+   // modify joint anchor positions
+   rect.ScaleJointAnchorPositions (scaleWidth, scaleHeight);
+}
+
 
 //================================================================
 // detach / attach (glue)

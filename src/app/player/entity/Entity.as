@@ -73,6 +73,20 @@ package player.entity {
          }
       }
       
+      public function ToEntityDefine (entityDefine:Object):Object
+      {
+         entityDefine.mPosX = mWorld.GetCoordinateSystem ().P2D_PositionX (GetPositionX ());
+         entityDefine.mPosY = mWorld.GetCoordinateSystem ().P2D_PositionY (GetPositionY ());
+         entityDefine.mRotation = mWorld.GetCoordinateSystem ().P2D_RotationRadians (GetRotation  ());
+         entityDefine.mIsVisible = IsVisible   ();
+         entityDefine.mAlpha = GetAlpha     ();
+         entityDefine.mIsEnabled = IsEnabled    ();
+         
+         entityDefine.mEntityType = Define.EntityType_Unkonwn;
+         
+         return null;
+      }
+      
 //=============================================================
 //   
 //=============================================================
@@ -91,14 +105,20 @@ package player.entity {
          return mWorld;
       }
       
-      public function IsDefinedInEditor ():Boolean
-      {
-         return mCreationId >= 0;
-      }
+      // removed from v1.56
+      //public function IsDefinedInEditor ():Boolean
+      //{
+      //   return mCreationId >= 0;
+      //}
       
       public function GetAppearanceId ():int
       {
          return mAppearanceId;
+      }
+      
+      public function SetCreationId (creationId:int):void
+      {
+         mCreationId = creationId;
       }
       
       public function GetCreationId ():int
@@ -108,7 +128,7 @@ package player.entity {
       
       internal function GetMainEntity ():Entity
       {
-         return this; // for SubEntity to override
+         return this; // SubEntity need to override this function
       }
       
 //=============================================================

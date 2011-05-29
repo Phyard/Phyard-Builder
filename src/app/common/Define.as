@@ -82,13 +82,18 @@ package common {
 // entity common
 //===========================================================================
       
+      // public static const MaxNumEntitiesInPlaying:uint = 10000; // entities defined in editor + entities created at runtime
+         // unlimited now. Notice: there are some other limits below:
+         // - MaxCoexistParticles
+         // - If there is no contact proxy id between 0 and 0xFFFF to apply for a new shape, there may be some problems
+      
       public static const MinEntityNameLength:int = 1;
       public static const MaxEntityNameLength:int = 30; // would be 32 when plus 2 digits number
       
       public static const EntityId_None:int = -1;
       public static const EntityId_Ground:int = -2;
       public static const MinEntityId:int = -2;
-      
+
 //===========================================================================
 // collsion category
 //===========================================================================
@@ -125,7 +130,7 @@ package common {
 // bomb
 //===========================================================================
       
-      public static const MaxCoexistParticles:uint = 1000;
+      public static const MaxCoexistParticles:uint = 1000; // in playing
       
       public static const MinBombRadius:uint = MinCircleRadius; // don't change
       public static const MaxBombRadius:uint = 16;
@@ -345,6 +350,8 @@ package common {
 // entity types
 //===========================================================================
       
+      public static const kNumCreateStages:int = 3;
+         
       // basic shapes
       public static const EntityType_Unkonwn:int = -1;
       public static const EntityType_ShapeCircle:int = 10;

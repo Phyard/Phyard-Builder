@@ -39,6 +39,17 @@ package player.entity {
          }
       }
       
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
+         super.ToEntityDefine (entityDefine);
+         
+         // vetexes handled on parent class
+         
+         entityDefine.mEntityType = Define.EntityType_ShapePolygon;
+         
+         return entityDefine;
+      }
+      
 //=============================================================
 //   appearance
 //=============================================================

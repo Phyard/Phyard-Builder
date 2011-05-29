@@ -41,6 +41,18 @@ package player.entity {
          }
       }
       
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mHalfWidth = mWorld.GetCoordinateSystem ().P2D_Length (GetHalfWidth ());
+         entityDefine.mHalfHeight = mWorld.GetCoordinateSystem ().P2D_Length (GetHalfHeight ());
+         entityDefine.mIsRoundCorners = IsRoundCornors ();
+         
+         entityDefine.mEntityType = Define.EntityType_ShapeRectangle;
+         return entityDefine;
+      }
+      
 //=============================================================
 //   
 //=============================================================

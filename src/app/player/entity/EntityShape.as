@@ -5,7 +5,10 @@ package player.entity {
    
    import flash.events.MouseEvent;
    
+   import flash.utils.Dictionary;
+   
    import player.world.World;
+   import player.world.EntityList;
    import player.world.CollisionCategory;
    
    import player.physics.PhysicsProxyBody;
@@ -16,7 +19,10 @@ package player.entity {
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
    
+   import common.DataFormat2;
+   import common.CoordinateSystem;
    import common.Define;
+   import common.WorldDefine;
    import common.trigger.CoreEventIds;
    
    // The shape class includes many types. Generally, if a entity has position and rotation and can be glued with other entities, then the entity can be viewed as a shape.
@@ -30,10 +36,18 @@ package player.entity {
 //   
 //=============================================================
       
+      private var mContactProxyId:int = -1;
+      
+      public function GetContactProxyId ():int
+      {
+         return mContactProxyId;
+      } 
       
       public function EntityShape (world:World)
       {
          super (world);
+         
+         mContactProxyId = mWorld.ApplyContactProxyId ();
          
          SetBorderThickness (mWorld.GetCoordinateSystem ().D2P_Length (1.0));
          
@@ -137,11 +151,6 @@ package player.entity {
             if (entityDefine.mAngularVelocity != undefined)
                SetAngularVelocity (mWorld.GetCoordinateSystem ().D2P_RotationRadians (entityDefine.mAngularVelocity * Define.kDegrees2Radians));
             
-            //if (entityDefine.mLinearDamping != undefined)
-            //   SetLinearDamping (entityDefine.mLinearDamping);
-            //if (entityDefine.mAngularDamping != undefined)
-            //   SetAngularDamping (entityDefine.mAngularDamping);
-            
             if (entityDefine.mIsSleepingAllowed != undefined)
                SetSleepingAllowed (entityDefine.mIsSleepingAllowed);
             if (entityDefine.mIsRotationFixed != undefined)
@@ -162,6 +171,65 @@ package player.entity {
                mAiTypeChangeable = false;
             }
          }
+      }
+      
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
+         super.ToEntityDefine (entityDefine);
+         
+         // > from 1.02
+         entityDefine.mCollisionCategoryIndex = GetCollisionCategory ().GetIndexInEditor ();
+         //<<
+         
+         //>>from v1.07
+         //mFriendGroupIndex = entityDefine.mFriendGroupIndex;
+         //<<
+         
+         entityDefine.mAiType = GetOriginalShapeAiType ();
+         entityDefine.mAiType = GetShapeAiType ();
+         
+         entityDefine.mIsPhysicsEnabled = mPhysicsEnabled;
+         
+         entityDefine.mDensity = GetDensity ();
+         entityDefine.mFriction = GetFriction ();
+         entityDefine.mRestitution = GetRestitution ();
+         
+         entityDefine.mIsStatic = IsStatic ();
+         entityDefine.mIsBullet = IsBullet ();
+         
+         // >> from v1.02
+         entityDefine.mDrawBorder = IsDrawBorder ();
+         entityDefine.mDrawBackground = IsDrawBackground ();
+         
+         entityDefine.mIsSensor = IsSensor ();
+         //<<
+         
+         // >> from v1.04
+         entityDefine.mBorderColor = mBorderColor;
+         entityDefine.mBorderThickness = mWorld.GetCoordinateSystem ().P2D_Length (GetBorderThickness ());
+         entityDefine.mBackgroundColor = mFilledColor;
+         entityDefine.mTransparency = mTransparency;
+         //<<
+         
+         // >> from v1.05
+         entityDefine.mBorderTransparency = GetBorderTransparency ();
+         entityDefine.mIsHollow = IsHollow ();
+         //<<
+         
+         //>> from v1.08
+         entityDefine.mBuildBorder = IsBuildBorder ()
+         
+         var vx:Number = mWorld.GetCoordinateSystem ().P2D_LinearVelocityX (GetLinearVelocityX ());
+         var vy:Number = mWorld.GetCoordinateSystem ().P2D_LinearVelocityY (GetLinearVelocityY ());
+         entityDefine.mLinearVelocityMagnitude = Math.sqrt (vx * vx + vy * vy);
+         entityDefine.mLinearVelocityAngle = mWorld.GetCoordinateSystem ().P2D_RotationRadians (Math.atan2 (vy, vx)) * Define.kRadians2Degrees;
+         entityDefine.mAngularVelocity = mWorld.GetCoordinateSystem ().D2P_RotationRadians (GetAngularVelocity ()) * Define.kRadians2Degrees;
+         
+         entityDefine.mIsSleepingAllowed = IsSleepingAllowed ();
+         entityDefine.mIsRotationFixed = IsRotationFixed ();
+         //<<
+         
+         return null;
       }
       
 //=============================================================
@@ -338,7 +406,7 @@ package player.entity {
          }
       }
       
-      public function IsBulidBorder ():Boolean
+      public function IsBuildBorder ():Boolean
       {
          return mBuildBorder;
       }
@@ -799,6 +867,8 @@ package player.entity {
          BreakAllJoints ();
          
          SetBody (null);
+         
+         mWorld.ReleaseContactProxyId (mContactProxyId);         
          
          if (GetMouseClickListener () != null)
             mAppearanceObjectsContainer.removeEventListener (MouseEvent.CLICK, GetMouseClickListener ());

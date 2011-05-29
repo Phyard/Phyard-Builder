@@ -67,7 +67,22 @@ package player.entity {
          {
          }
       }
-           
+
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mInteractiveZones = GetInteractiveZones ();
+         entityDefine.mInteractiveConditions = mInteractiveConditions;
+         entityDefine.mMaximalGravityAcceleration = mWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (mMaximalGravityAcceleration);
+         entityDefine.mInitialGravityAcceleration = mWorld.GetCoordinateSystem ().P2D_LinearAccelerationMagnitude (mGravityAcceleration);
+         entityDefine.mInitialGravityAngle = mWorld.GetCoordinateSystem ().P2D_RotationRadians (mGravityAngle) * Define.kRadians2Degrees;
+         
+         entityDefine.mEntityType = Define.EntityType_ShapeGravityController;
+         
+         return entityDefine;
+     }
+     
 //=============================================================
 //   
 //=============================================================

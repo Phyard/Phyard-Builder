@@ -14,6 +14,18 @@ package player.world {
       private var mNumEntitiesToDelayUnregister:int = 0;
       private var mEntitiesToDelayUnregister:Array = new Array ();
       
+      private var mLastMarkedTail:Entity = null;
+      
+      public function MarkLastTail ():void
+      {
+         mLastMarkedTail = mTail;
+      }
+      
+      public function UnmarkLastTail ():void
+      {
+         mLastMarkedTail = null;
+      }
+      
       internal function AddEntity (entity:Entity):void
       {
          if (entity.mEntityList != null)
@@ -128,11 +140,11 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function SynchronizeEntitiesWithPhysicsProxies ():void
+      internal function SynchronizeEntitiesWithPhysicsProxies (fromLastMarkedTail:Boolean = false):void
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = mHead;
+         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;
@@ -178,11 +190,11 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function BuildShapePhysics ():void
+      internal function BuildShapePhysics (fromLastMarkedTail:Boolean = false):void
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = mHead;
+         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;
@@ -204,11 +216,11 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function OnBodyShapeListChanged ():void
+      internal function OnBodyShapeListChanged (fromLastMarkedTail:Boolean = false):void
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = mHead;
+         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
          var body:EntityBody;
          if (entity != null)
          {
@@ -234,11 +246,11 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function AddShapeMomentums ():void
+      internal function AddShapeMomentums (fromLastMarkedTail:Boolean = false):void
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = mHead;
+         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
          var body:EntityBody;
          if (entity != null)
          {
@@ -264,11 +276,11 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function ConfirmConnectedShapes ():void
+      internal function ConfirmConnectedShapes (fromLastMarkedTail:Boolean = false):void
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = mHead;
+         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;
@@ -290,11 +302,11 @@ package player.world {
          DelayUnregisterEntities ();
       }
       
-      internal function BuildJointPhysics ():void
+      internal function BuildJointPhysics (fromLastMarkedTail:Boolean = false):void
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = mHead;
+         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;

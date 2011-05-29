@@ -71,6 +71,26 @@ package player.entity {
          }
       }
       
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mSpringType = GetSpringType ();
+         entityDefine.mStaticLengthRatio = GetStaticLengthRatio ();
+         entityDefine.mDampingRatio = GetDampingRatio ();
+      
+         //>>from v1.08
+         entityDefine.mFrequencyDeterminedManner = GetFrequencyDeterminedManner ();
+         entityDefine.mFrequency = GetFrequency ();
+         entityDefine.mSpringConstant = GetSpringConstant () * mWorld.GetCoordinateSystem ().D2P_ForceMagnitude (1.0) / mWorld.GetCoordinateSystem ().D2P_Length (1.0);
+         entityDefine.mBreakExtendedLength = mWorld.GetCoordinateSystem ().P2D_Length (GetBreakExtendedLength ());
+         //<<
+         
+         entityDefine.mEntityType = Define.EntityType_JointSpring;
+         
+         return entityDefine;
+     }
+      
 //=============================================================
 //   
 //=============================================================
@@ -94,14 +114,29 @@ package player.entity {
          mSpringType = type;
       }
       
+      public function GetSpringType ():int
+      {
+         return mSpringType;
+      }
+      
       public function SetStaticLengthRatio (ratio:Number):void
       {
          mStaticLengthRatio = ratio;
       }
       
+      public function GetStaticLengthRatio ():Number
+      {
+         return mStaticLengthRatio;
+      }
+      
       public function SetDampingRatio (ratio:Number):void
       {
          mDampingRatio = ratio;
+      }
+      
+      public function GetDampingRatio ():Number
+      {
+         return mDampingRatio;
       }
       
       public function SetFrequencyDeterminedManner (manner:int):void

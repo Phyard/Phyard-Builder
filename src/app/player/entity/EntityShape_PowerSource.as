@@ -67,6 +67,7 @@ package player.entity {
             if (entityDefine.mPowerSourceType != undefined && entityDefine.mPowerMagnitude != undefined)
             {
                SetPowerSourceType (entityDefine.mPowerSourceType);
+               mPowerMagnitude = entityDefine.mPowerMagnitude;
                
                var eventHandlerDefine:Object = new Object ();
                entityDefine.mEventHandlerDefine = eventHandlerDefine;
@@ -89,7 +90,7 @@ package player.entity {
                switch (mPowerSourceType)
                {
                   case Define.PowerSource_Torque:
-                     SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_Torque (entityDefine.mPowerMagnitude));
+                     //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_Torque (entityDefine.mPowerMagnitude));
                      functionDecalaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepTorque);
                      callingDefine.mInputValueSourceDefines = [
                               new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Entity, mCreationId), 
@@ -97,7 +98,7 @@ package player.entity {
                         ];
                      break;
                   case Define.PowerSource_LinearImpusle:
-                     SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_ImpulseMagnitude (entityDefine.mPowerMagnitude));
+                     //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_ImpulseMagnitude (entityDefine.mPowerMagnitude));
                      functionDecalaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint);
                      callingDefine.mInputValueSourceDefines = [
                               new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Entity, mCreationId), 
@@ -109,7 +110,7 @@ package player.entity {
                         ];
                      break;
                   case Define.PowerSource_AngularImpulse:
-                     SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_AngularImpulse (entityDefine.mPowerMagnitude));
+                     //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_AngularImpulse (entityDefine.mPowerMagnitude));
                      functionDecalaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse);
                      callingDefine.mInputValueSourceDefines = [
                               new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Entity, mCreationId), 
@@ -117,14 +118,14 @@ package player.entity {
                         ];
                      break;
                   case Define.PowerSource_AngularAcceleration:
-                     SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_AngularAcceleration (entityDefine.mPowerMagnitude));
+                     //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_AngularAcceleration (entityDefine.mPowerMagnitude));
                      break;
                   case Define.PowerSource_AngularVelocity:
-                     SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_AngularVelocity (entityDefine.mPowerMagnitude));
+                     //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_AngularVelocity (entityDefine.mPowerMagnitude));
                      break;
                   case Define.PowerSource_Force:
                   default:
-                     SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_ForceMagnitude (entityDefine.mPowerMagnitude));
+                     //SetPowerMagnitude (mWorld.GetCoordinateSystem ().D2P_ForceMagnitude (entityDefine.mPowerMagnitude));
                      functionDecalaration = CoreFunctionDeclarations.GetCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint);
                      callingDefine.mInputValueSourceDefines = [
                               new ValueSourceDefine_Direct (ValueTypeDefine.ValueType_Entity, mCreationId), 
@@ -144,6 +145,9 @@ package player.entity {
                   callingDefine.mNumOutputs = functionDecalaration.GetNumOutputs ();
                   callingDefine.mOutputValueTargetDefines = [];
                }
+               
+               mKeyCodes = entityDefine.mKeyCodes;
+               mKeyboardEventId = entityDefine.mKeyboardEventId;
                
                if (entityDefine.mKeyCodes != undefined && entityDefine.mKeyCodes.length > 0)
                {
@@ -177,25 +181,44 @@ package player.entity {
             }
          }
       }
+      
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mPowerSourceType = GetPowerSourceType ();
+         entityDefine.mPowerMagnitude = mPowerMagnitude;
+         entityDefine.mKeyCodes = mKeyCodes;
+         entityDefine.mKeyboardEventId = mKeyboardEventId;
+         
+         entityDefine.mEntityType = Define.EntityType_UtilityPowerSource;
+         
+         return entityDefine;
+     }      
+      
 //=============================================================
 //   
 //=============================================================
       
       protected var mPowerSourceType:int = Define.PowerSource_Force;
-      protected var mPowerMagnitude:Number = 0.0;
-      
+
       public function SetPowerSourceType (type:int):void
       {
          mPowerSourceType = type;
       }
       
-      public function SetPowerMagnitude (magnitude:Number):void
+      public function GetPowerSourceType ():Number
       {
-         mPowerMagnitude = magnitude;
+         return mPowerSourceType;
       }
       
       //protected var mKeyCodes:Array;
       protected var mEventHandler:EntityEventHandler = null;
+      
+      // these values are the original value, just used to create entityDefine
+      protected var mPowerMagnitude:Number = 0.0;
+      protected var mKeyCodes:Array = null;
+      protected var mKeyboardEventId:int = CoreEventIds.ID_OnWorldKeyDown;
       
 //=============================================================
 //   initialize

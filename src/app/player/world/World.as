@@ -4,6 +4,8 @@ package player.world {
    
    import flash.utils.ByteArray;
    
+   import flash.utils.Dictionary;
+   
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
@@ -120,6 +122,12 @@ package player.world {
       private var mEntityArrayOrderByCreationId:Array;
       private var mEntityArrayOrderByAppearanceId:Array;
       
+      private var mNextEntityCreationId:int; // initially equals the value of mNumEntitiesInEditor.
+         // if the UniqueID (replace creation id or not) is introduced later, 
+         // 1. it is best to limit the max UniqueID in editor with a not too large number, such as 65536. 
+         //     This is to make rooms for rumtime created ids.
+         // 2. set the initial value as mMaxEntityUniqueIdInEditor
+      
    // ...
       
       private var mCoordinateSystem:CoordinateSystem;
@@ -191,6 +199,8 @@ package player.world {
          mNumEntitiesInEditor = worldDefine.mEntityDefines.length;
          mEntityArrayOrderByCreationId   = new Array (mNumEntitiesInEditor);
          mEntityArrayOrderByAppearanceId = new Array (mNumEntitiesInEditor);
+         
+         mNextEntityCreationId = mNumEntitiesInEditor;
          
       // ...
          
@@ -283,6 +293,18 @@ package player.world {
       private var mEntityListBody:EntityList = new EntityList ();
       // when adding new list, check the references of the old lists
       
+      private var mDynamicCrreatedEntities:Dictionary = new Dictionary (); // no incuding entity bodies
+      
+      public function GetEntityList ():EntityList
+      {
+         return mEntityList;
+      }
+      
+      public function GetEntityBodyList ():EntityList
+      {
+         return mEntityListBody;
+      }
+      
       public function RegisterEntity (entity:Entity):void
       {
          if (entity is EntityBody)
@@ -293,10 +315,19 @@ package player.world {
          {
             mEntityList.AddEntity (entity);
             
-            if (entity.IsDefinedInEditor ())
+            //if (entity.IsDefinedInEditor ())
+            var creationId:int = entity.GetCreationId ();
+            if (creationId >= 0 && creationId < mNumEntitiesInEditor)
             {
                mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = entity;
                mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = entity;
+            }
+            else // runtime created
+            {
+               var nextId:int = mNextEntityCreationId ++;
+               entity.SetCreationId (nextId);
+               
+               mDynamicCrreatedEntities [nextId] = entity;
             }
          }
       }
@@ -306,14 +337,29 @@ package player.world {
          if (entity.mEntityList == null)
             return;
          
-         entity.mEntityList.RemoveEntity (entity);
-         
-         // an entity defined in editor will never removed from the 2 arrays to make the reference in api callings always be accessable.
-         //if (! entity.IsDefinedInEditor ())
-         //{
-         //   mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
-         //   mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;
-         //}
+         if (entity is EntityBody)
+         {
+            // == entity.mEntityList.RemoveEntity (entity);
+            mEntityListBody.RemoveEntity (entity);
+         }
+         else
+         {
+            // == entity.mEntityList.RemoveEntity (entity);
+            mEntityList.RemoveEntity (entity);
+
+            // an entity defined in editor will never removed from the 2 arrays to make the reference in api callings always be accessable.
+            //if (entity.IsDefinedInEditor ())
+            var creationId:int = entity.GetCreationId ();
+            if (creationId >= 0 && creationId < mNumEntitiesInEditor)
+            {
+               //mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
+               //mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;
+            }
+            else
+            {
+               delete mDynamicCrreatedEntities [creationId];
+            }
+         }
       }
       
       public function GetNumEntitiesInEditor ():int
@@ -323,13 +369,17 @@ package player.world {
       
       public function GetEntityByCreationId (createId:int):Entity
       {
-         if (createId >= 0 && createId < mNumEntitiesInEditor)
+         if (createId < 0)
          {
-            return mEntityArrayOrderByCreationId [createId];
+            return null;
+         }
+         else if (createId < mNumEntitiesInEditor)
+         {
+            return mEntityArrayOrderByCreationId [createId] as Entity;
          }
          else
          {
-            return null;
+            return mDynamicCrreatedEntities [createId] as Entity;
          }
       }
       
@@ -337,11 +387,56 @@ package player.world {
       {
          if (appearanceId >= 0 && appearanceId < mNumEntitiesInEditor)
          {
-            return mEntityArrayOrderByAppearanceId [appearanceId];
+            return mEntityArrayOrderByAppearanceId [appearanceId] as Entity;
          }
          else
          {
             return null;
+         }
+      }
+      
+      // for physics-potential shapes
+      
+      private var mPeekContactProxyId:int = 0;
+      private var mFreeContactProxyIds:Array = new Array (); // recycled
+      // some destroy contact events will be handled with one step delayed. So:
+      private var mFreeContactProxyIds_ThisStep:Array = new Array ();
+      private var mFreeContactProxyIds_LastStep:Array = new Array (); 
+      
+      public function ApplyContactProxyId ():int
+      {
+         if (mFreeContactProxyIds.length > 0)
+         {
+            return mFreeContactProxyIds.pop () as int;
+         }
+         else if (mPeekContactProxyId < 0xFFFF)
+         {
+            return mPeekContactProxyId ++;
+         }
+         else
+         {
+            return -1; // invalid
+         }
+      }
+      
+      public function ReleaseContactProxyId (proxyId:int):void
+      {
+         mFreeContactProxyIds_ThisStep.push (proxyId);
+      }
+      
+      public function ConfirmFreedContactProxyIds ():void
+      {
+         if (mFreeContactProxyIds_LastStep.length > 0)
+         {
+            mFreeContactProxyIds = mFreeContactProxyIds.concat (mFreeContactProxyIds_LastStep);
+            mFreeContactProxyIds_LastStep = mFreeContactProxyIds_ThisStep;
+            mFreeContactProxyIds_ThisStep = new Array ();
+         }
+         else if (mFreeContactProxyIds_ThisStep.length > 0)
+         {
+            var oldIds_LastStep:Array = mFreeContactProxyIds_LastStep;
+            mFreeContactProxyIds_LastStep = mFreeContactProxyIds_ThisStep;
+            mFreeContactProxyIds_ThisStep = oldIds_LastStep;
          }
       }
       
@@ -520,11 +615,11 @@ package player.world {
 //   SynchonizeWithPhysics
 //=============================================================
       
-      private function SynchonizeWithPhysics ():void
+      private function SynchonizeWithPhysics (fromLastMarkedTail:Boolean):void
       {
-         mEntityListBody.SynchronizeEntitiesWithPhysicsProxies ();
+         mEntityListBody.SynchronizeEntitiesWithPhysicsProxies (fromLastMarkedTail);
          
-         mEntityList.SynchronizeEntitiesWithPhysicsProxies ();
+         mEntityList.SynchronizeEntitiesWithPhysicsProxies (fromLastMarkedTail);
       }
 
 //=============================================================
@@ -1116,24 +1211,30 @@ package player.world {
          mShapeContactInfoHashtable = new Dictionary ();
          mFirstShapeContactInfo = null;
          mShapeContactInfos_StepQueue = new Array ();
-         
+
+      // build physics        
+         BuildEntityPhysics (false);
+     }
+     
+     public function BuildEntityPhysics (fromLastMarkedTail:Boolean):void
+     {
       // build proxy shapes
          
-         mEntityList.BuildShapePhysics ();
+         mEntityList.BuildShapePhysics (fromLastMarkedTail);
          
       // update body mass, coincide bodies with centroid
          
-         mEntityListBody.OnBodyShapeListChanged ();
-         mEntityListBody.AddShapeMomentums ();
+         mEntityListBody.OnBodyShapeListChanged (fromLastMarkedTail);
+         mEntityListBody.AddShapeMomentums (fromLastMarkedTail);
          
       // build joints
          
-         mEntityList.ConfirmConnectedShapes ();
-         mEntityList.BuildJointPhysics ();
+         mEntityList.ConfirmConnectedShapes (fromLastMarkedTail);
+         mEntityList.BuildJointPhysics (fromLastMarkedTail);
          
       // sycronize with physics, should before HandleShapeContactEvents
          
-         SynchonizeWithPhysics (); // need it?
+         SynchonizeWithPhysics (fromLastMarkedTail); // need it?
          
       // handle contact events. (disabled from v1.56. Two reasons: 1. it is useless in fact. 2. more reasonable)
       
@@ -1155,7 +1256,7 @@ package player.world {
          
       // sycronize with physics, should before HandleShapeContactEvents
          
-         SynchonizeWithPhysics ();
+         SynchonizeWithPhysics (false);
          
       // handle contact events
          

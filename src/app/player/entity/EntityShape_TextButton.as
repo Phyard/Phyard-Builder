@@ -90,6 +90,24 @@ package player.entity {
          }
       }
       
+     override public function ToEntityDefine (entityDefine:Object):Object
+     {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mUsingHandCursor = UsingHandCursor ();
+         entityDefine.mDrawBorder_MouseOver = mDrawBorder_MouseOver;
+         entityDefine.mDrawBackground_MouseOver = mDrawBackground_MouseOver;
+         entityDefine.mBorderColor_MouseOver = mBorderColor_MouseOver;
+         entityDefine.mBorderThickness_MouseOver = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness_MouseOver);
+         entityDefine.mBackgroundColor_MouseOver = mBackgroundColor_MouseOver;
+         entityDefine.mBackgroundTransparency_MouseOver = mTransparency_MouseOver;
+         entityDefine.mBorderTransparency_MouseOver = mBorderTransparency_MouseOver;
+         
+         entityDefine.mEntityType = Define.EntityType_ShapeTextButton;
+         
+         return entityDefine;
+     }
+      
 //=============================================================
 //   
 //=============================================================

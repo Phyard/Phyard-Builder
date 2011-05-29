@@ -110,6 +110,20 @@ package player.entity {
                mAnchor2.mAnchorIndex = Define.EntityId_None; // auto
          }
       }
+      
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mCollideConnected = IsCollideConnected ();
+         //>>from v1.08
+         entityDefine.mBreakable = IsBreakable ();
+         //<<
+         entityDefine.mConnectedShape1 = mAnchor1.GetShape ();
+         entityDefine.mConnectedShape2 = mAnchor2.GetShape ();
+         
+         return null;
+      }
 
 //=============================================================
 //   joint events

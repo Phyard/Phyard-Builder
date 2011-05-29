@@ -61,22 +61,154 @@ package common {
    
    public class DataFormat2
    {
-      
-      
-      
+   
 //===========================================================================
-// 
+// define -> world
 //===========================================================================
       
-      public static function WorldDefine2PlayerWorld (defObject:Object):World
+      public static function CreateEntityInstance (playerWorld:World, entityDefine:Object):Entity
+      {
+         var entity:Entity = null;
+         
+         switch (entityDefine.mEntityType)
+         {
+         // basic shapes
+            
+            case Define.EntityType_ShapeCircle:
+               if (entityDefine.mAiType == Define.ShapeAiType_Bomb)
+                  entity = new EntityShape_CircleBomb (playerWorld);
+               else
+                  entity = new EntityShapeCircle (playerWorld);
+               break;
+            case Define.EntityType_ShapeRectangle:
+               if (entityDefine.mAiType == Define.ShapeAiType_Bomb)
+                  entity = new EntityShape_RectangleBomb (playerWorld);
+               else
+                  entity = new EntityShapeRectangle (playerWorld);
+               break;
+            case Define.EntityType_ShapePolygon:
+               entity = new EntityShapePolygon (playerWorld);
+               break;
+            case Define.EntityType_ShapePolyline:
+               entity = new EntityShapePolyline (playerWorld);
+               break;
+            
+         // preset shapes
+            
+            case Define.EntityType_ShapeText:
+               entity = new EntityShape_Text (playerWorld);
+               break;
+            case Define.EntityType_ShapeTextButton:
+               entity = new EntityShape_TextButton (playerWorld);
+               break;
+            case Define.EntityType_UtilityCamera:
+               entity = new EntityShape_Camera (playerWorld);
+               break;
+            case Define.EntityType_UtilityPowerSource:
+               entity = new EntityShape_PowerSource (playerWorld);
+               break;
+            case Define.EntityType_ShapeGravityController:
+               entity = new EntityShape_GravityController (playerWorld);
+               break;
+            
+         // basic joints
+            
+            case Define.EntityType_JointHinge:
+               entity = new EntityJointHinge (playerWorld);
+               break;
+            case Define.EntityType_JointSlider:
+               entity = new EntityJointSlider (playerWorld);
+               break;
+            case Define.EntityType_JointDistance:
+               entity = new EntityJointDistance (playerWorld);
+               break;
+            case Define.EntityType_JointSpring:
+               entity = new EntityJointSpring (playerWorld);
+               break;
+            case Define.EntityType_JointWeld:
+               entity = new EntityJointWeld (playerWorld);
+               break;
+            case Define.EntityType_JointDummy:
+               entity = new EntityJointDummy (playerWorld);
+               break;
+            
+         // joint anchor
+            
+            case Define.SubEntityType_JointAnchor:
+               entity = new SubEntityJointAnchor (playerWorld);
+               break;
+            
+         // logic componnets
+            
+            case Define.EntityType_LogicCondition:
+               entity = new EntityBasicCondition (playerWorld);
+               break;
+            case Define.EntityType_LogicTask:
+               entity = new EntityTask (playerWorld);
+               break;
+            case Define.EntityType_LogicConditionDoor:
+               entity = new EntityConditionDoor (playerWorld);
+               break;
+            case Define.EntityType_LogicInputEntityAssigner:
+               entity = new EntityInputEntityAssigner (playerWorld, false);
+               break;
+            case Define.EntityType_LogicInputEntityPairAssigner:
+               entity = new EntityInputEntityAssigner (playerWorld, true);
+               break;
+            //case Define.EntityType_LogicInputEntityFilter:
+            //   entity = new EntityInputEntityFilter (playerWorld, false);
+            //   break;
+            //case Define.EntityType_LogicInputEntityPairFilter:
+            //   entity = new EntityInputEntityFilter (playerWorld, true);
+            //   break;
+            case Define.EntityType_LogicAction:
+               entity = new EntityAction (playerWorld);
+               break;
+            case Define.EntityType_LogicEventHandler:
+               var eventId:int = entityDefine.mEventId;
+               switch (eventId)
+               {
+                  case CoreEventIds.ID_OnWorldTimer:
+                  case CoreEventIds.ID_OnEntityTimer:
+                  case CoreEventIds.ID_OnEntityPairTimer:
+                     entity = new EntityEventHandler_Timer (playerWorld);
+                     break;
+                  case CoreEventIds.ID_OnWorldKeyDown:
+                  case CoreEventIds.ID_OnWorldKeyUp:
+                  case CoreEventIds.ID_OnWorldKeyHold:
+                     entity = new EntityEventHandler_Keyboard (playerWorld);
+                     break;
+                  default:
+                     entity = new EntityEventHandler (playerWorld);
+                     break;
+               }
+               break;
+            default:
+            {
+               trace ("unknown entity type: " + entityDefine.mEntityType);
+               break;
+            }
+         }
+         
+         return entity;
+      }
+      
+      // see Viewer.as to get why here use Object instead of WorldDefine
+      // playerWorld != null for importing, otherwise for laoding
+      public static function WorldDefine2PlayerWorld (defObject:Object, playerWorld:World = null):World
       {
          var worldDefine:WorldDefine = defObject as WorldDefine;
          
+         var isLoaingFromStretch:Boolean = (playerWorld == null); // false for importing
+         
          //trace ("WorldDefine2PlayerWorld");
          
-         FillMissedFieldsInWorldDefine (worldDefine);
-         if (worldDefine.mVersion >= 0x0103)
-            DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine, true);
+         if (isLoaingFromStretch)
+         {
+            FillMissedFieldsInWorldDefine (worldDefine);
+            if (worldDefine.mVersion >= 0x0103)
+               DataFormat2.AdjustNumberValuesInWorldDefine (worldDefine, true);
+         }
          
    //*********************************************************************************************************************************
    // 
@@ -93,11 +225,14 @@ package common {
    // 
    //*********************************************************************************************************************************
          
-         //
-         Global.InitGlobalData ();
-         
-         var playerWorld:player.world.World = new player.world.World (worldDefine);
-         Global.SetCurrentWorld (playerWorld);
+         if (isLoaingFromStretch)
+         {
+            //
+            Global.InitGlobalData ();
+            
+            playerWorld = new World (worldDefine);
+            Global.SetCurrentWorld (playerWorld);
+         }
          
    //*********************************************************************************************************************************
    // 
@@ -125,7 +260,7 @@ package common {
          // for history reason, entities are packaged by children order in editor world.
          // so the appearId is also the appearance order id
          
-         // instance entites by appearance layer order, entities can register their visual elements in constructor
+         // instance entities by appearance layer order, entities can register their visual elements in constructor
          
          for (appearId = 0; appearId < numEntities; ++ appearId)
          {
@@ -133,7 +268,8 @@ package common {
             entityDefine = entityDefineArray [createId];
             
             // >> starts from version 1.01
-            entityDefine.mWorldDefine = worldDefine;
+            // >> deprecated from v1.56
+            //entityDefine.mWorldDefine = worldDefine;
             // <<
             
             //>>from v1.07
@@ -141,125 +277,9 @@ package common {
             entityDefine.mCreationOrderId = createId;
             //<<
             
-            entity = null;
+            entityDefine.mBodyId = -1;
             
-            switch (entityDefine.mEntityType)
-            {
-            // basic shapes
-               
-               case Define.EntityType_ShapeCircle:
-                  if (entityDefine.mAiType == Define.ShapeAiType_Bomb)
-                     entity = new EntityShape_CircleBomb (playerWorld);
-                  else
-                     entity = new EntityShapeCircle (playerWorld);
-                  break;
-               case Define.EntityType_ShapeRectangle:
-                  if (entityDefine.mAiType == Define.ShapeAiType_Bomb)
-                     entity = new EntityShape_RectangleBomb (playerWorld);
-                  else
-                     entity = new EntityShapeRectangle (playerWorld);
-                  break;
-               case Define.EntityType_ShapePolygon:
-                  entity = new EntityShapePolygon (playerWorld);
-                  break;
-               case Define.EntityType_ShapePolyline:
-                  entity = new EntityShapePolyline (playerWorld);
-                  break;
-               
-            // preset shapes
-               
-               case Define.EntityType_ShapeText:
-                  entity = new EntityShape_Text (playerWorld);
-                  break;
-               case Define.EntityType_ShapeTextButton:
-                  entity = new EntityShape_TextButton (playerWorld);
-                  break;
-               case Define.EntityType_UtilityCamera:
-                  entity = new EntityShape_Camera (playerWorld);
-                  break;
-               case Define.EntityType_UtilityPowerSource:
-                  entity = new EntityShape_PowerSource (playerWorld);
-                  break;
-               case Define.EntityType_ShapeGravityController:
-                  entity = new EntityShape_GravityController (playerWorld);
-                  break;
-               
-            // basic joints
-               
-               case Define.EntityType_JointHinge:
-                  entity = new EntityJointHinge (playerWorld);
-                  break;
-               case Define.EntityType_JointSlider:
-                  entity = new EntityJointSlider (playerWorld);
-                  break;
-               case Define.EntityType_JointDistance:
-                  entity = new EntityJointDistance (playerWorld);
-                  break;
-               case Define.EntityType_JointSpring:
-                  entity = new EntityJointSpring (playerWorld);
-                  break;
-               case Define.EntityType_JointWeld:
-                  entity = new EntityJointWeld (playerWorld);
-                  break;
-               case Define.EntityType_JointDummy:
-                  entity = new EntityJointDummy (playerWorld);
-                  break;
-               
-            // joint anchor
-               
-               case Define.SubEntityType_JointAnchor:
-                  entity = new SubEntityJointAnchor (playerWorld);
-                  break;
-               
-            // logic componnets
-               
-               case Define.EntityType_LogicCondition:
-                  entity = new EntityBasicCondition (playerWorld);
-                  break;
-               case Define.EntityType_LogicTask:
-                  entity = new EntityTask (playerWorld);
-                  break;
-               case Define.EntityType_LogicConditionDoor:
-                  entity = new EntityConditionDoor (playerWorld);
-                  break;
-               case Define.EntityType_LogicInputEntityAssigner:
-                  entity = new EntityInputEntityAssigner (playerWorld, false);
-                  break;
-               case Define.EntityType_LogicInputEntityPairAssigner:
-                  entity = new EntityInputEntityAssigner (playerWorld, true);
-                  break;
-               //case Define.EntityType_LogicInputEntityFilter:
-               //   entity = new EntityInputEntityFilter (playerWorld, false);
-               //   break;
-               //case Define.EntityType_LogicInputEntityPairFilter:
-               //   entity = new EntityInputEntityFilter (playerWorld, true);
-               //   break;
-               case Define.EntityType_LogicAction:
-                  entity = new EntityAction (playerWorld);
-                  break;
-               case Define.EntityType_LogicEventHandler:
-                  var eventId:int = entityDefine.mEventId;
-                  switch (eventId)
-                  {
-                     case CoreEventIds.ID_OnWorldTimer:
-                     case CoreEventIds.ID_OnEntityTimer:
-                     case CoreEventIds.ID_OnEntityPairTimer:
-                        entity = new EntityEventHandler_Timer (playerWorld);
-                        break;
-                     case CoreEventIds.ID_OnWorldKeyDown:
-                     case CoreEventIds.ID_OnWorldKeyUp:
-                     case CoreEventIds.ID_OnWorldKeyHold:
-                        entity = new EntityEventHandler_Keyboard (playerWorld);
-                        break;
-                     default:
-                        entity = new EntityEventHandler (playerWorld);
-                        break;
-                  }
-                  break;
-               default:
-                  trace ("unknow entity type: " + entityDefine.mEntityType);
-                  break;
-            }
+            entity = CreateEntityInstance (playerWorld, entityDefine);
             
             if (entity == null)
             {
@@ -269,8 +289,6 @@ package common {
             {
                entityDefine.mEntity = entity;
             }
-            
-            entityDefine.mBodyId = -1;
          }
          
       // register entities by order of creation id
@@ -282,14 +300,44 @@ package common {
             
             if (entity != null)
             {
-               entity.Register (entityDefine.mCreationOrderId, entityDefine.mAppearanceOrderId);
+               if (isLoaingFromStretch)
+               {
+                  entity.Register (entityDefine.mCreationOrderId, entityDefine.mAppearanceOrderId);
+               }
+               else
+               {
+                  entity.Register (-1, -1);
+                  entityDefine.mCreationOrderId = entity.GetCreationId ();
+               }
             }
          }
          
-      // init custom variables
+      // init custom variables / correct entity refernce ids
          
-         //Global.InitCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
-         Global.InitCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines);
+         if (isLoaingFromStretch)
+         {
+            //Global.InitCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
+            Global.InitCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines);
+         }
+         else
+         {
+            for (createId = 0; createId < numEntities; ++ createId)
+            {
+               entityDefine = entityDefineArray [createId];
+               entity = entityDefine.mEntity;
+               
+               if (Define.IsPhysicsJointEntity (entityDefine.mEntityType))
+               {
+                  if (entityDefine.mConnectedShape1Index >= 0)
+                     entityDefine.mConnectedShape1Index = ((entityDefineArray [entityDefine.mConnectedShape1Index] as Object).mEntity as Entity).GetCreationId ();
+                  if (entityDefine.mConnectedShape2Index >= 0)
+                     entityDefine.mConnectedShape2Index = ((entityDefineArray [entityDefine.mConnectedShape2Index] as Object).mEntity as Entity).GetCreationId ();
+                  
+                  entityDefine.mAnchor1EntityIndex = ((entityDefineArray [entityDefine.mAnchor1EntityIndex] as Object).mEntity as Entity).GetCreationId ();
+                  entityDefine.mAnchor2EntityIndex = ((entityDefineArray [entityDefine.mAnchor2EntityIndex] as Object).mEntity as Entity).GetCreationId ();
+               }
+            }         
+         }
          
       // init entity custom properties
          
@@ -306,24 +354,25 @@ package common {
          
       // custom functions
          
-         Global.CreateCustomFunctionDefinitions (worldDefine.mFunctionDefines);
-         
-         var numFunctions:int = worldDefine.mFunctionDefines.length;
-         for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+         if (isLoaingFromStretch)
          {
-            var codeSnippetDefine:CodeSnippetDefine = ((worldDefine.mFunctionDefines [functionId] as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
-            codeSnippetDefine.DisplayValues2PhysicsValues (playerWorld.GetCoordinateSystem ());
+            Global.CreateCustomFunctionDefinitions (worldDefine.mFunctionDefines);
             
-            Global.GetCustomFunctionDefinition (functionId).SetCodeSnippetDefine (codeSnippetDefine);
+            var numFunctions:int = worldDefine.mFunctionDefines.length;
+            for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
+            {
+               var codeSnippetDefine:CodeSnippetDefine = ((worldDefine.mFunctionDefines [functionId] as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
+               codeSnippetDefine.DisplayValues2PhysicsValues (playerWorld.GetCoordinateSystem ());
+               
+               Global.GetCustomFunctionDefinition (functionId).SetCodeSnippetDefine (codeSnippetDefine);
+            }
          }
          
    //*********************************************************************************************************************************
    // create
    //*********************************************************************************************************************************
          
-         const kNumCreateStages:int = 3;
-         
-         for (var createStageId:int = 0; createStageId < kNumCreateStages; ++ createStageId)
+         for (var createStageId:int = 0; createStageId < Define.kNumCreateStages; ++ createStageId)
          {
             for (createId = 0; createId < numEntities; ++ createId)
             {
@@ -374,14 +423,15 @@ package common {
                
                body = entityDefine.mBody;
                
-               if (body == null)
+               if (body == null) // for solo shapes
                {
                   body = new EntityBody (playerWorld);
+                  entityDefine.mBody = body;
                }
                
-               shape.SetBody (body);
-               
                playerWorld.RegisterEntity (body);
+               
+               shape.SetBody (body);
             }
          }
          

@@ -44,6 +44,20 @@ package player.entity {
          }
       }
       
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
+         super.ToEntityDefine (entityDefine);
+         
+         // vetexes handled on parent class
+         
+         entityDefine.mCurveThickness = mWorld.GetCoordinateSystem ().P2D_Length (GetCurveThickness ());
+         entityDefine.mIsRoundEnds = IsRoundEnds ();
+         
+         entityDefine.mEntityType = Define.EntityType_ShapePolyline;
+         
+         return entityDefine;
+      }
+      
 //=============================================================
 //   
 //=============================================================

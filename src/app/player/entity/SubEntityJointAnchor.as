@@ -34,6 +34,23 @@ package player.entity {
          
          mWorld.AddChildToEntityLayer (mAnchorShape);
       }
+      
+//=============================================================
+//   
+//============================================================= 
+
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
+         super.ToEntityDefine (entityDefine);
+         
+         entityDefine.mEntityType = Define.SubEntityType_JointAnchor;
+         
+         return entityDefine;
+      }
+      
+//=============================================================
+//   
+//=============================================================
 
       public function GetShape ():EntityShape
       {

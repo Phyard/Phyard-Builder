@@ -20,6 +20,27 @@ package player.entity {
       }
 
 //=============================================================
+//   
+//=============================================================
+
+      override public function ToEntityDefine (entityDefine:Object):Object
+      {
+         super.ToEntityDefine (entityDefine);
+         
+         // vertexes
+         var numVertexes:int = mLocalDisplayPoints.length;
+         var localDeisplayPoints:Array = new Array (numVertexes);
+         for (var vId:int = 0; vId < numVertexes; ++ vId)
+         {
+            var point:Point = mLocalDisplayPoints [vId] as Point;
+            localDeisplayPoints [vId] = new Point (point.x, point.y);
+         }
+         entityDefine.mLocalPoints = localDeisplayPoints;
+         
+         return null;
+      }
+      
+//=============================================================
 //   data
 //=============================================================
 

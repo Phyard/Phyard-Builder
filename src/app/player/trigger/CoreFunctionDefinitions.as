@@ -2663,9 +2663,6 @@ package player.trigger {
          var targetY:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
-         var targetRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
-
-         valueSource = valueSource.mNextParameter;
          var bCloneBrothers:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
          valueSource = valueSource.mNextParameter;
@@ -2674,7 +2671,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bCloneConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         valueTarget.AssignValueObject (EntityShape.CloneShape (shape, targetX, targetY, targetRotation, bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics));
+         valueTarget.AssignValueObject (EntityShape.CloneShape (shape, targetX, targetY, bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics));
       }
       
       public static function IsCircleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
@@ -3624,13 +3621,13 @@ package player.trigger {
             return;
 
          valueSource = valueSource.mNextParameter;
-         var deltaRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
-
-         valueSource = valueSource.mNextParameter;
          var fixedPointX:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
          var fixedPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var deltaRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
 
          valueSource = valueSource.mNextParameter;
          var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
@@ -3641,7 +3638,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Rotate (deltaRotation, fixedPointX, fixedPointY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         shape.Rotate (fixedPointX, fixedPointY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
       public static function RotateShapeToAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
@@ -3654,13 +3651,13 @@ package player.trigger {
             return;
 
          valueSource = valueSource.mNextParameter;
-         var targetRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
-
-         valueSource = valueSource.mNextParameter;
          var fixedPointX:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
          var fixedPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var targetRotation:Number = (valueSource.EvaluateValueObject () as Number) * Define.kDegrees2Radians;
 
          valueSource = valueSource.mNextParameter;
          var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
@@ -3671,7 +3668,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Rotate (targetRotation - shape.GetRotation (), fixedPointX, fixedPointY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         shape.Rotate (fixedPointX, fixedPointY, targetRotation - shape.GetRotation (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
       public static function FlipShapeByWorldLinePoint (valueSource:Parameter, valueTarget:Parameter):void

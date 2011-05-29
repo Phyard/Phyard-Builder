@@ -1762,7 +1762,6 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
                              new VariableDefinitionNumber ("Target Position X"),
                              new VariableDefinitionNumber ("Target Position Y"),
-                             new VariableDefinitionNumber ("Target Angle (degrees)"),
                              new VariableDefinitionBoolean ("Clone Brothers?"),
                              new VariableDefinitionBoolean ("Clone Connected Movables?"),
                              new VariableDefinitionBoolean ("Clone Connected Statics?"),
@@ -2314,9 +2313,9 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint, shape_common_package, "Rotate Shape Around World Point", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                             new VariableDefinitionNumber ("Target Angle (degrees)"),
                              new VariableDefinitionNumber ("Around World Point X"),
                              new VariableDefinitionNumber ("Around World Point Y"),
+                             new VariableDefinitionNumber ("Target Angle (degrees)"),
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
@@ -2326,9 +2325,9 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint, shape_common_package, "Rotate Shape To Around World Point", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                             new VariableDefinitionNumber ("Delta Angle (degrees)"),
                              new VariableDefinitionNumber ("Around World Point X"),
                              new VariableDefinitionNumber ("Around World Point Y"),
+                             new VariableDefinitionNumber ("Delta Angle (degrees)"),
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),

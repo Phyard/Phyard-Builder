@@ -168,13 +168,15 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
 // clone and transform
 //================================================================
 
-public static function CloneShape (seedShape:EntityShape, positionX:Number, positionY:Number, rotation:Number, bCloneBrothers:Boolean, bCloneConnectedMovables:Boolean, bCloneConnectedStatics:Boolean):EntityShape
+public static function CloneShape (seedShape:EntityShape, targetX:Number, targetY:Number, bCloneBrothers:Boolean, bCloneConnectedMovables:Boolean, bCloneConnectedStatics:Boolean):EntityShape
 {
    if (seedShape == null)
       return null;
    
    var infos:Object = seedShape.GetRelatedEntities (bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics, false);
    
+   var world:World = seedShape.GetWorld ();
+
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
    var jointsToTeleport:Array = infos.mJointsToTransform; 
@@ -218,7 +220,10 @@ public static function CloneShape (seedShape:EntityShape, positionX:Number, posi
       entityDefine = CreateAndPushEntityDefine (anchor, entityDefineArray, mapEntity2Define);
    }
    
-   // create appearance order array
+   // reset creation ids and positions
+   
+   var deltaX:Number = world.GetCoordinateSystem ().P2D_LinearDeltaX (targetX - seedShape.GetPositionX ());
+   var deltaY:Number = world.GetCoordinateSystem ().P2D_LinearDeltaY (targetY - seedShape.GetPositionY ());
    
    count = entityDefineArray.length;
    entityDefineArray.sortOn ("mCreationOrderId", Array.NUMERIC);
@@ -226,8 +231,12 @@ public static function CloneShape (seedShape:EntityShape, positionX:Number, posi
    {
       entityDefine = entityDefineArray [i] as Object;
       entityDefine.mCreationOrderId = i;
+      entityDefine.mPosX += deltaX;
+      entityDefine.mPosY += deltaY;      
    }
 
+   // create appearance order array
+   
    var entityDefinesSortByAppearanceId:Array = entityDefineArray.concat ();
    entityDefinesSortByAppearanceId.sortOn ("mAppearanceOrderId", Array.NUMERIC);
    var appearanceOrderArray:Array = worldDefine.mEntityAppearanceOrder;
@@ -297,7 +306,6 @@ public static function CloneShape (seedShape:EntityShape, positionX:Number, posi
    
    // import world define
    
-   var world:World = seedShape.GetWorld ();
    var worldEntityList:EntityList = world.GetEntityList ();
    var worldEntityBodyList:EntityList = world.GetEntityBodyList ();
    worldEntityList.MarkLastTail ();
@@ -345,8 +353,8 @@ private static function CreateAndPushEntityDefine (entity:Entity, entityDefineAr
          
          var coordinateSystem:CoordinateSystem = world.GetCoordinateSystem ();
          
-         entityDefine.mPosX = coordinateSystem.P2D_PositionX (positionX);
-         entityDefine.mPosY = coordinateSystem.P2D_PositionY (positionY);
+         entityDefine.mPosX = coordinateSystem.P2D_PositionX (targetX);
+         entityDefine.mPosY = coordinateSystem.P2D_PositionY (targetY);
          entityDefine.mRotation = coordinateSystem.P2D_RotationRadians (rotation);
          
          entity = DataFormat2.CreateEntityInstance (world, entityDefine);
@@ -427,7 +435,7 @@ public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovab
    }
 }
 
-public function Rotate (deltaRotation:Number, fixedPointX:Number, fixedPointY:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
    if (deltaRotation == 0)
       return;

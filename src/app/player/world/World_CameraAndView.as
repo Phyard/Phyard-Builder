@@ -324,6 +324,10 @@ protected function UpdateCamera ():void
       dy = targetY - mCameraCenterY;
       distance = Math.sqrt (dx * dx + dy * dy);
       
+      if (distance > elasticStaticLength)
+      {
+      }
+      
       if (distance <= criteria2)
       {
          nextX = targetX;

@@ -1,12 +1,22 @@
 
-public function GlobalToLocal (point:Point):Point
+public function StageToContentLayer (point:Point):Point
 {
    return mContentLayer.globalToLocal (point);
 }
 
-public function LocalToGlobal (point:Point):Point
+public function ContentLayerToStage (point:Point):Point
 {
    return mContentLayer.localToGlobal (point);
+}
+
+public function ThisToContentLayer (point:Point):Point
+{
+   return mContentLayer.globalToLocal (localToGlobal (point));
+}
+
+public function ContentLayerToThis (point:Point):Point
+{
+   return globalToLocal (mContentLayer.localToGlobal (point));
 }
 
 //=====================================================================================
@@ -112,6 +122,8 @@ private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
 private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
 private var mCameraAngle:Number = 0; // degrees
 
+private var mCameraSpeed:Number = 0;
+
 public function GetCameraCenterDisplayX ():Number
 {
    return mCameraCenterX;
@@ -182,7 +194,7 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
          
       mContentLayer.rotation = - targetDisplayAngle % 360; // important, flash has rotation limit (65536?);
       
-      var point:Point = globalToLocal (mContentLayer.localToGlobal (new Point (mCameraCenterX, mCameraCenterY)));
+      var point:Point = ContentLayerToThis (new Point (mCameraCenterX, mCameraCenterY));
       
       mContentLayer.x -= point.x;
       mContentLayer.y -= point.y;
@@ -305,6 +317,12 @@ protected function UpdateCamera ():void
    
    var elasticStaticLength:Number = mViewportWidth < mViewportHeight ? mViewportWidth : mViewportHeight;
    elasticStaticLength /= (mZoomScale * 4.0);
+   var deltaCameraSpeed:Number = 1.0 / mZoomScale;
+   var generalCameraSpeed:Number = elasticStaticLength / 16.0;
+   if (generalCameraSpeed > deltaCameraSpeed)
+   {
+      generalCameraSpeed = deltaCameraSpeed;
+   }
    
    var nextX:Number;
    var nextY:Number;
@@ -313,10 +331,10 @@ protected function UpdateCamera ():void
    var dy:Number;
    var distance:Number;
    
-   var criteria1:Number = 300;
-   var criteria2:Number = 1;
-   
-   var maxSpeed:Number = 8;
+   //var criteria1:Number = 300;
+   //var criteria2:Number = 1;
+   //
+   //var maxSpeed:Number = 8;
    
    if (smoothX && smoothY)
    {
@@ -324,34 +342,43 @@ protected function UpdateCamera ():void
       dy = targetY - mCameraCenterY;
       distance = Math.sqrt (dx * dx + dy * dy);
       
-      if (distance <= criteria2)
+      if (distance <= generalCameraSpeed)
       {
          nextX = targetX;
          nextY = targetY;
-      }
-      els if (distance > elasticStaticLength)
-      {
-         mCameraSpeed += 
+         mCameraSpeed -= deltaCameraSpeed;
+         if (mCameraSpeed < generalCameraSpeed)
+         {
+            mCameraSpeed = generalCameraSpeed;
+         }
       }
       else
       {
+         mCameraSpeed += deltaCameraSpeed;
+         if (mCameraSpeed > distance)
+         {
+            mCameraSpeed = distance;
+         }
+         
+         nextX = mCameraCenterX + mCameraSpeed * dx / distance;
+         nextY = mCameraCenterY + mCameraSpeed * dy / distance;
       }
       
-      if (distance <= criteria2)
-      {
-         nextX = targetX;
-         nextY = targetY;
-      }
-      else if (distance > criteria1)
-      {
-         nextX = mCameraCenterX + maxSpeed * dx / distance;
-         nextY = mCameraCenterY + maxSpeed * dy / distance;
-      }
-      else
-      {
-         nextX = mCameraCenterX + maxSpeed * dx / criteria1;
-         nextY = mCameraCenterY + maxSpeed * dy / criteria1;
-      }
+      //if (distance <= criteria2)
+      //{
+      //   nextX = targetX;
+      //   nextY = targetY;
+      //}
+      //else if (distance > criteria1)
+      //{
+      //   nextX = mCameraCenterX + maxSpeed * dx / distance;
+      //   nextY = mCameraCenterY + maxSpeed * dy / distance;
+      //}
+      //else
+      //{
+      //   nextX = mCameraCenterX + maxSpeed * dx / criteria1;
+      //   nextY = mCameraCenterY + maxSpeed * dy / criteria1;
+      //}
    }
    else if (smoothX)
    {
@@ -360,18 +387,38 @@ protected function UpdateCamera ():void
       dx = targetX - mCameraCenterX;
       distance = Math.abs (dx);
       
-      if (distance <= criteria2)
+      if (distance <= generalCameraSpeed)
       {
          nextX = targetX;
-      }
-      else if (distance > criteria1)
-      {
-         nextX = mCameraCenterX + maxSpeed * dx / distance;
+         mCameraSpeed -= deltaCameraSpeed;
+         if (mCameraSpeed < generalCameraSpeed)
+         {
+            mCameraSpeed = generalCameraSpeed;
+         }
       }
       else
       {
-         nextX = mCameraCenterX + maxSpeed * dx / criteria1;
+         mCameraSpeed += deltaCameraSpeed;
+         if (mCameraSpeed > distance)
+         {
+            mCameraSpeed = distance;
+         }
+         
+         nextX = mCameraCenterX + mCameraSpeed * dx / distance;
       }
+      
+      //if (distance <= criteria2)
+      //{
+      //   nextX = targetX;
+      //}
+      //else if (distance > criteria1)
+      //{
+      //   nextX = mCameraCenterX + maxSpeed * dx / distance;
+      //}
+      //else
+      //{
+      //   nextX = mCameraCenterX + maxSpeed * dx / criteria1;
+      //}
    }
    else if (smoothY)
    {
@@ -380,18 +427,38 @@ protected function UpdateCamera ():void
       dy = targetY - mCameraCenterY;
       distance = Math.abs (dy);
       
-      if (distance <= criteria2)
+      if (distance <= generalCameraSpeed)
       {
          nextY = targetY;
-      }
-      else if (distance > criteria1)
-      {
-         nextY = mCameraCenterY + maxSpeed * dy / distance;
+         mCameraSpeed -= deltaCameraSpeed;
+         if (mCameraSpeed < generalCameraSpeed)
+         {
+            mCameraSpeed = generalCameraSpeed;
+         }
       }
       else
       {
-         nextY = mCameraCenterY + maxSpeed * dy / criteria1;
+         mCameraSpeed += deltaCameraSpeed;
+         if (mCameraSpeed > distance)
+         {
+            mCameraSpeed = distance;
+         }
+         
+         nextY = mCameraCenterY + mCameraSpeed * dy / distance;
       }
+      
+      //if (distance <= criteria2)
+      //{
+      //   nextY = targetY;
+      //}
+      //else if (distance > criteria1)
+      //{
+      //   nextY = mCameraCenterY + maxSpeed * dy / distance;
+      //}
+      //else
+      //{
+      //   nextY = mCameraCenterY + maxSpeed * dy / criteria1;
+      //}
    }
    else
    {
@@ -403,10 +470,12 @@ protected function UpdateCamera ():void
    var dAngle:Number;
    var distanceAngle:Number;
    
-   var criteriaAngle1:Number = 180; // degrees
-   var criteriaAngle2:Number = 0.3; // degrees
+   var angleSpeed:Number = 1.5; 
    
-   var maxAngularSpeed:Number = 10; // degrees
+   //var criteriaAngle1:Number = 180; // degrees
+   //var criteriaAngle2:Number = 0.3; // degrees
+   //
+   //var maxAngularSpeed:Number = 10; // degrees
    
    if (smoothAngle)
    {
@@ -415,18 +484,31 @@ protected function UpdateCamera ():void
          dAngle = dAngle - 360;
       distanceAngle = Math.abs (dAngle);
       
-      if (distanceAngle <= criteriaAngle2)
+      if (distanceAngle <= angleSpeed)
       {
          newAngle = targetAngle;
       }
-      else if (distanceAngle > criteriaAngle1)
+      else if (dAngle > 0)
       {
-         newAngle = mCameraAngle + maxAngularSpeed * dAngle / distanceAngle;
+         newAngle = mCameraAngle + angleSpeed;
       }
-      else
+      else //if (dAngle < 0)
       {
-         newAngle = mCameraAngle + maxAngularSpeed * dAngle / criteriaAngle1;
+         newAngle = mCameraAngle - angleSpeed;
       }
+      
+      //if (distanceAngle <= criteriaAngle2)
+      //{
+      //   newAngle = targetAngle;
+      //}
+      //else if (distanceAngle > criteriaAngle1)
+      //{
+      //   newAngle = mCameraAngle + maxAngularSpeed * dAngle / distanceAngle;
+      //}
+      //else
+      //{
+      //   newAngle = mCameraAngle + maxAngularSpeed * dAngle / criteriaAngle1;
+      //}
    }
    else
    {

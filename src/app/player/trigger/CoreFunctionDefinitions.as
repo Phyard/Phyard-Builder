@@ -1922,7 +1922,7 @@ package player.trigger {
 
          //valueSource = valueSource.mNextParameter;
          //var folowRotation:Boolean = valueSource.EvaluateValueObject () as Boolean;
-         var folowRotation:Boolean = false;
+         var folowRotation:Boolean = true;
 
          Global.GetCurrentWorld ().FollowCameraWithEntity (shape, isSmooth, folowRotation);
       }

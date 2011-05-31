@@ -135,17 +135,19 @@ public function GetCurrentMouseY ():Number
 
 private function UpdateMousePosition ():void
 {
+   var worldDisplayPoint:Point = ThisToContentLayer (new Point (mouseX, mouseY));
+   
    if (mCachedMousePoint == null)
    {
       mCachedMousePoint = new Point ();
    }
-   else if (mCachedMousePoint.x == mouseX && mCachedMousePoint.y == mouseY)
+   else if (mCachedMousePoint.x == worldDisplayPoint.x && mCachedMousePoint.y == worldDisplayPoint.y)
    {
       return;
    }
    
-   mCachedMousePoint.x = mouseX;
-   mCachedMousePoint.y = mouseY;
+   mCachedMousePoint.x = worldDisplayPoint.x;
+   mCachedMousePoint.y = worldDisplayPoint.y;
    
    var point:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (mCachedMousePoint.x, mCachedMousePoint.y);
    
@@ -289,7 +291,8 @@ public function OnMouseDown (event:MouseEvent):void
       // ...
       if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
       {
-         var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+         //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+         var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
          var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
          var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
          
@@ -334,7 +337,8 @@ public function OnMouseUp (event:MouseEvent):void
       RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseUp]);
       
       // ...
-      var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+      //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+      var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
       var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
       var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
       

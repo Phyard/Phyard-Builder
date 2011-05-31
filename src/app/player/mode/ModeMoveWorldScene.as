@@ -36,8 +36,8 @@ package player.mode {
       
       private function UpdateSession (endX:Number, endY:Number):void
       {
-         var startWorldPoint:Point = mWorld.GlobalToLocal (new Point (mStartX, mStartY));
-         var endWorldPoint:Point = mWorld.GlobalToLocal (new Point (endX, endY));
+         var startWorldPoint:Point = mWorld.StageToContentLayer (new Point (mStartX, mStartY));
+         var endWorldPoint:Point = mWorld.StageToContentLayer (new Point (endX, endY));
          
          var dx:Number = endWorldPoint.x - startWorldPoint.x;
          var dy:Number = endWorldPoint.y - startWorldPoint.y;

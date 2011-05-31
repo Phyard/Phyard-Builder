@@ -122,7 +122,8 @@ private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
 private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
 private var mCameraAngle:Number = 0; // degrees
 
-private var mCameraSpeed:Number = 0;
+private var mCameraSpeed:Number = 0; // m/step
+private var mCameraAngularSpeed:Number = 0; // degrees/step
 
 public function GetCameraCenterDisplayX ():Number
 {
@@ -346,19 +347,20 @@ protected function UpdateCamera ():void
       {
          nextX = targetX;
          nextY = targetY;
-         mCameraSpeed -= deltaCameraSpeed;
-         if (mCameraSpeed < generalCameraSpeed)
-         {
-            mCameraSpeed = generalCameraSpeed;
-         }
+         //mCameraSpeed -= deltaCameraSpeed;
+         //if (mCameraSpeed < generalCameraSpeed)
+         //{
+         //   mCameraSpeed = generalCameraSpeed;
+         //}
+         mCameraSpeed = 0;
       }
       else
       {
          mCameraSpeed += deltaCameraSpeed;
+         if (mCameraSpeed < generalCameraSpeed)
+            mCameraSpeed = generalCameraSpeed;
          if (mCameraSpeed > distance)
-         {
             mCameraSpeed = distance;
-         }
          
          nextX = mCameraCenterX + mCameraSpeed * dx / distance;
          nextY = mCameraCenterY + mCameraSpeed * dy / distance;
@@ -390,21 +392,22 @@ protected function UpdateCamera ():void
       if (distance <= generalCameraSpeed)
       {
          nextX = targetX;
-         mCameraSpeed -= deltaCameraSpeed;
-         if (mCameraSpeed < generalCameraSpeed)
-         {
-            mCameraSpeed = generalCameraSpeed;
-         }
+         //mCameraSpeed -= deltaCameraSpeed;
+         //if (mCameraSpeed < generalCameraSpeed)
+         //{
+         //   mCameraSpeed = generalCameraSpeed;
+         //}
+         mCameraSpeed = 0;
       }
       else
       {
          mCameraSpeed += deltaCameraSpeed;
+         if (mCameraSpeed < generalCameraSpeed)
+            mCameraSpeed = generalCameraSpeed;
          if (mCameraSpeed > distance)
-         {
             mCameraSpeed = distance;
-         }
          
-         nextX = mCameraCenterX + mCameraSpeed * dx / distance;
+         nextX = mCameraCenterX + (dx > 0 ? mCameraSpeed : - mCameraSpeed);
       }
       
       //if (distance <= criteria2)
@@ -430,21 +433,22 @@ protected function UpdateCamera ():void
       if (distance <= generalCameraSpeed)
       {
          nextY = targetY;
-         mCameraSpeed -= deltaCameraSpeed;
-         if (mCameraSpeed < generalCameraSpeed)
-         {
-            mCameraSpeed = generalCameraSpeed;
-         }
+         //mCameraSpeed -= deltaCameraSpeed;
+         //if (mCameraSpeed < generalCameraSpeed)
+         //{
+         //   mCameraSpeed = generalCameraSpeed;
+         //}
+         mCameraSpeed = 0;
       }
       else
       {
          mCameraSpeed += deltaCameraSpeed;
+         if (mCameraSpeed < generalCameraSpeed)
+            mCameraSpeed = generalCameraSpeed;
          if (mCameraSpeed > distance)
-         {
             mCameraSpeed = distance;
-         }
          
-         nextY = mCameraCenterY + mCameraSpeed * dy / distance;
+         nextY = mCameraCenterY + (dy > 0 ? mCameraSpeed : - mCameraSpeed);
       }
       
       //if (distance <= criteria2)
@@ -470,7 +474,8 @@ protected function UpdateCamera ():void
    var dAngle:Number;
    var distanceAngle:Number;
    
-   var angleSpeed:Number = 1.5; 
+   var generalAngleSpeed:Number = 0.5; 
+   var deltaAngleSpeed:Number = 0.1;
    
    //var criteriaAngle1:Number = 180; // degrees
    //var criteriaAngle2:Number = 0.3; // degrees
@@ -484,17 +489,25 @@ protected function UpdateCamera ():void
          dAngle = dAngle - 360;
       distanceAngle = Math.abs (dAngle);
       
-      if (distanceAngle <= angleSpeed)
+      if (distanceAngle <= generalAngleSpeed)
       {
          newAngle = targetAngle;
+         //mCameraAngularSpeed -= deltaAngleSpeed;
+         //if (mCameraAngularSpeed < generalAngleSpeed)
+         //{
+         //   mCameraAngularSpeed = generalAngleSpeed;
+         //}
+         mCameraAngularSpeed = 0;
       }
-      else if (dAngle > 0)
+      else
       {
-         newAngle = mCameraAngle + angleSpeed;
-      }
-      else //if (dAngle < 0)
-      {
-         newAngle = mCameraAngle - angleSpeed;
+         mCameraAngularSpeed += deltaAngleSpeed;
+         if (mCameraAngularSpeed < generalAngleSpeed)
+            mCameraAngularSpeed = generalAngleSpeed
+         if (mCameraAngularSpeed > distanceAngle)
+            mCameraAngularSpeed = distanceAngle;
+         
+         newAngle = mCameraAngle + (dAngle > 0 ? mCameraAngularSpeed : - mCameraAngularSpeed);
       }
       
       //if (distanceAngle <= criteriaAngle2)
@@ -546,7 +559,7 @@ protected function UpdateCamera ():void
    //   var sx:Number = 1.0 / scaleX;
    //   if (sprite.scaleX != sx)
    //      sprite.scaleX = sx;
-   //   
+   //   mCameraAngularSpeed
    //   var sy:Number = 1.0 / scaleY;
    //   if (sprite.scaleY != sy)
    //      sprite.scaleY = sy;

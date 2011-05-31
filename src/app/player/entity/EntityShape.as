@@ -831,6 +831,7 @@ package player.entity {
       
       // call this function before removing this shape from mBody or before being changed to static
       // This function has a bug: mass and inertia should be also removed.
+      // NOTICE: Before calling this function, the mass of old body must be re-calculated.
       //internal function RemoveSelfMomentumFromBody ():void
       //{
       //   if (mPhysicsProxy == null)

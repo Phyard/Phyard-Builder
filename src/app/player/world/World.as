@@ -367,7 +367,7 @@ package player.world {
          return mNumEntitiesInEditor;
       }
       
-      public function GetEntityByCreationId (createId:int):Entity
+      public function GetEntityByCreationId (createId:int, supportDynamicEntity:Boolean = true):Entity
       {
          if (createId < 0)
          {
@@ -377,9 +377,13 @@ package player.world {
          {
             return mEntityArrayOrderByCreationId [createId] as Entity;
          }
-         else
+         else if (supportDynamicEntity)
          {
             return mDynamicCrreatedEntities [createId] as Entity;
+         }
+         else
+         {
+            return null;
          }
       }
       
@@ -563,12 +567,6 @@ package player.world {
          
          //InitPhysics (); // moved up from v1.56
          
-      //-----------------------------
-      // update camera
-      //-----------------------------
-         
-         UpdateCamera ();
-         
       //------------------------------------
       // init entities
       //------------------------------------
@@ -605,6 +603,12 @@ package player.world {
          
          if (mDestroyed)
             DestroyReally ();
+         
+      //-----------------------------
+      // update camera
+      //-----------------------------
+         
+         UpdateCamera ();
          
       //-----------------------------
       // system dispatchs mouse, keyboard and other events
@@ -718,12 +722,6 @@ package player.world {
             
             ParticleManager_Update (dt);
             
-         //-----------------------------
-         // update camera
-         //-----------------------------
-            
-            UpdateCamera ();
-            
          //------------------------------------
          // handle key-hold eventgs
          //------------------------------------
@@ -741,6 +739,16 @@ package player.world {
          //-----------------------------
             
             HandleEventById (CoreEventIds.ID_OnWorldAfterUpdated);
+         
+         //-----------------------------
+         // update camera
+         //-----------------------------
+            
+            UpdateCamera ();
+         
+         //-----------------------------
+         // system dispatchs mouse, keyboard and other events
+         //-----------------------------
          }
       }
       
@@ -753,7 +761,7 @@ package player.world {
          if (mBackgroundNeedRepaint)
          {
             mBackgroundNeedRepaint = false;
-            RepaintBackground ();
+            RepaintViewSizeSprite (mBackgroundSprite, mBackgroundColor);
          }
          
          var next:Entity;
@@ -775,10 +783,10 @@ package player.world {
          if (mCameraFadeMaskNeedRepaint)
          {
             mCameraFadeMaskNeedRepaint = false;
-            RepaintFadeMaskSprite ();
+            RepaintViewSizeSprite (mFadeMaskSprite, mCameraFadeColor);
          }
       }
-
+      
    //==================================
    // buffer entities to rebuild appearance
    //==================================
@@ -833,6 +841,16 @@ package player.world {
          mForegroundLayer.addChild (mFadeMaskSprite);
          mFadeMaskSprite.visible = false;
       }
+      
+      private function RepaintViewSizeSprite (sprite:Sprite, bgColor:uint):void
+      {
+         sprite.x = 0;
+         sprite.y = 0;
+         sprite.graphics.clear ();
+         sprite.graphics.beginFill(bgColor);
+         sprite.graphics.drawRect (0, 0, mViewportWidth, mViewportHeight); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
+         sprite.graphics.endFill ();
+      }
 
    //===============================
    // background
@@ -858,15 +876,6 @@ package player.world {
          return mBackgroundColor;
       }
 
-      private function RepaintBackground ():void
-      {
-         mBackgroundSprite.graphics.clear ();
-         mBackgroundSprite.graphics.beginFill(mBackgroundColor);
-         //mBackgroundSprite.graphics.drawRect (mWorldLeft, mWorldTop, mWorldWidth, mWorldHeight); // sometimes, it is too large to build
-         mBackgroundSprite.graphics.drawRect (- 0.5 * mViewportWidth, - 0.5 * mViewportHeight, mViewportWidth, mViewportHeight); // at larget ennough one, the backgorynd sprite will be always put in screen center, and the scale will not chagned
-         mBackgroundSprite.graphics.endFill ();
-      }
-      
       // this function
       public function IsContentLayerContains (displayObject:DisplayObject):Boolean
       {
@@ -891,14 +900,6 @@ package player.world {
       private var mCameraFadeColor:uint = 0xFFFFFFFF;
       
       private var mCameraFadeMaskNeedRepaint:Boolean = true;
-
-      private function RepaintFadeMaskSprite ():void
-      {
-         mFadeMaskSprite.graphics.clear ();
-         mFadeMaskSprite.graphics.beginFill(mCameraFadeColor);
-         mFadeMaskSprite.graphics.drawRect (- 0.5 * mViewportWidth, - 0.5 * mViewportHeight, mViewportWidth, mViewportHeight); // at larget ennough one, the mask sprite will be always put in screen center, and the scale will not chagned
-         mFadeMaskSprite.graphics.endFill ();
-      }
 
    //===============================
    // border

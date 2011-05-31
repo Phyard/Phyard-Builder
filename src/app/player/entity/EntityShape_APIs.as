@@ -389,7 +389,7 @@ private static function CreateAndPushEntityDefine (entity:Entity, entityDefineAr
 
 public function Teleport (deltaX:Number, deltaY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
-   Rotate (deltaRotation, mPositionX, mPositionY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   Rotate (mPositionX, mPositionY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
    Translate (deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 }
 
@@ -445,9 +445,10 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
    var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
 // ...
-
-   var cos:Number = Math.cos (deltaRotation);
-   var sin:Number = Math.sin (deltaRotation);
+   
+   var deltaRotationInTwoPI:Number = deltaRotation % Define.kPI_x_2;
+   var cos:Number = Math.cos (deltaRotationInTwoPI);
+   var sin:Number = Math.sin (deltaRotationInTwoPI);
    
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    
@@ -977,23 +978,25 @@ public static function DetachShape (aShape:EntityShape):void
    var newPositionY:Number = newBody.mPositionY;
    var newMass:Number = newBody.GetMass ();
    var newInertia:Number = newBody.GetInertia ();
-   var newMomentumX:Number = newMass * newBody.GetLinearVelocityX ();
-   var newMomentumY:Number = newMass * newBody.GetLinearVelocityY ();
-   var newAngularMomentum:Number = newInertia * newBody.GetAngularVelocity ();
+   //var newMomentumX:Number = newMass * newBody.GetLinearVelocityX ();
+   //var newMomentumY:Number = newMass * newBody.GetLinearVelocityY ();
+   //var newAngularMomentum:Number = newInertia * newBody.GetAngularVelocity ();
    var newForceX:Number = newBody.GetAccForceX ();
    var newForceY:Number = newBody.GetAccForceY ();
-   var newTorque:Number = newBody.GetAccTorque ();   
+   //var newTorque:Number = newBody.GetAccTorque ();   
    
-   oldBody.ClearVelocities ();
-
-   if (oldBody.mNumPhysicsShapes > 0)
-   {
-      // conservation of momentum and angular momentum
-      oldBody.ApplyLinearImpulse (oldMomentumX, oldMomentumY, oldPositionX, oldPositionY);
-      oldBody.ApplyLinearImpulse (-newMomentumX, -newMomentumY, newPositionX, newPositionY);
-      oldBody.ApplyAngularImpulse (oldAngularMomentum);
-      oldBody.ApplyAngularImpulse (-newAngularMomentum);
-   }
+   // this block is not essential. Box2d will change the velocity of the old body automatically.
+   // 
+   //oldBody.ClearVelocities ();
+   //
+   //if (oldBody.mNumPhysicsShapes > 0)
+   //{
+   //   // conservation of momentum and angular momentum
+   //   oldBody.ApplyLinearImpulse (oldMomentumX, oldMomentumY, oldPositionX, oldPositionY);
+   //   oldBody.ApplyLinearImpulse (-newMomentumX, -newMomentumY, newPositionX, newPositionY);
+   //   oldBody.ApplyAngularImpulse (oldAngularMomentum);
+   //   oldBody.ApplyAngularImpulse (-newAngularMomentum);
+   //}
    
    oldBody.ClearPowers ();
    newBody.ClearPowers ();

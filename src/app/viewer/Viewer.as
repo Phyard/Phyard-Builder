@@ -807,7 +807,7 @@ package viewer {
                if (mPlayerWorldZoomScaleChangedSpeed < 0)
                   mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
 
-               newScale = (mPlayerWorld as Sprite).scaleX + mPlayerWorldZoomScaleChangedSpeed;
+               newScale = mWorldDesignProperties.GetZoomScale () + mPlayerWorldZoomScaleChangedSpeed;
 
                if (newScale >= mPlayerWorldZoomScale)
                   mWorldDesignProperties.SetZoomScale (mPlayerWorldZoomScale);
@@ -819,7 +819,7 @@ package viewer {
                if (mPlayerWorldZoomScaleChangedSpeed > 0)
                   mPlayerWorldZoomScaleChangedSpeed = - mPlayerWorldZoomScaleChangedSpeed;
 
-               newScale = (mPlayerWorld as Sprite).scaleX + mPlayerWorldZoomScaleChangedSpeed;
+               newScale = mWorldDesignProperties.GetZoomScale () + mPlayerWorldZoomScaleChangedSpeed;
 
                if (newScale <= mPlayerWorldZoomScale)
                   mWorldDesignProperties.SetZoomScale (mPlayerWorldZoomScale);

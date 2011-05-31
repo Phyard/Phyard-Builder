@@ -1,4 +1,13 @@
 
+public function GlobalToLocal (point:Point):Point
+{
+   return mContentLayer.globalToLocal (point);
+}
+
+public function LocalToGlobal (point:Point):Point
+{
+   return mContentLayer.localToGlobal (point);
+}
 
 //=====================================================================================
 //
@@ -80,16 +89,16 @@ public function GetZoomScale ():Number
       
 public function SetZoomScale (zoomScale:Number):void
 {
-   var oldViewCenterX:Number = x + mCameraCenterX * scaleX;
-   var oldViewCenterY:Number = y + mCameraCenterY * scaleY;
+   //var oldViewCenterX:Number = mContentLayer.x + mCameraCenterX * mContentLayer.scaleX;
+   //var oldViewCenterY:Number = mContentLayer.y + mCameraCenterY * mContentLayer.scaleY;
    
    mZoomScale = zoomScale;
+
+   mContentLayer.scaleX = zoomScale;
+   mContentLayer.scaleY = zoomScale;
    
-   scaleX = zoomScale;
-   scaleY = zoomScale;
-   
-   x = oldViewCenterX - mCameraCenterX * scaleX;
-   y = oldViewCenterY - mCameraCenterY * scaleY;
+   //mContentLayer.x = oldViewCenterX - mCameraCenterX * mContentLayer.scaleX;
+   //mContentLayer.y = oldViewCenterY - mCameraCenterY * mContentLayer.scaleY;
    
    MoveCameraCenterTo_DisplayPoint (mCameraCenterX, mCameraCenterY, mCameraAngle);
 }
@@ -155,8 +164,6 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
    if (mCameraRotatingEnabled)
    {
       // set world sprite rotation
-      rotation = - targetDisplayAngle;
-      
       mCameraAngle = targetDisplayAngle;
       
       if (targetDisplayX < mWorldLeft)
@@ -172,84 +179,67 @@ public function MoveCameraCenterTo_DisplayPoint (targetDisplayX:Number, targetDi
          mCameraCenterY = mWorldTop + mWorldHeight;
       else
          mCameraCenterY = targetDisplayY;
+         
+      mContentLayer.rotation = - targetDisplayAngle % 360; // important, flash has rotation limit (65536?);
       
-      var angleRadians:Number = Math.PI * (- targetDisplayAngle) / 180.0;
-      var cos:Number = Math.cos (angleRadians);
-      var sin:Number = Math.sin (angleRadians);
+      var point:Point = globalToLocal (mContentLayer.localToGlobal (new Point (mCameraCenterX, mCameraCenterY)));
       
-      x = (( - mCameraCenterX) * cos - ( - mCameraCenterY) * sin) * scaleX + mViewportWidth  * 0.5;
-      y = (( - mCameraCenterX) * sin + ( - mCameraCenterY) * cos) * scaleY + mViewportHeight * 0.5;
+      mContentLayer.x -= point.x;
+      mContentLayer.y -= point.y;
+      mContentLayer.x += mViewportWidth  * 0.5;
+      mContentLayer.y += mViewportHeight * 0.5;
+      
+      // use the above code now. The following code has some number errors.
+      ////var angleRadians:Number = Math.PI * (- targetDisplayAngle) / 180.0;
+      //var angleRadians:Number = Math.PI * mContentLayer.rotation / 180.0;
+      //var cos:Number = Math.cos (angleRadians);
+      //var sin:Number = Math.sin (angleRadians);
+      //
+      //mContentLayer.x = (( - mCameraCenterX) * cos - ( - mCameraCenterY) * sin) * mContentLayer.scaleX + mViewportWidth  * 0.5;
+      //mContentLayer.y = (( - mCameraCenterX) * sin + ( - mCameraCenterY) * cos) * mContentLayer.scaleY + mViewportHeight * 0.5;
    }
    else
    {
-      var worldViewWidth :Number = mWorldWidth  * scaleX;
-      var worldViewHeight:Number = mWorldHeight * scaleY;
+      var worldViewWidth :Number = mWorldWidth  * mContentLayer.scaleX;
+      var worldViewHeight:Number = mWorldHeight * mContentLayer.scaleY;
       
       if (worldViewWidth < mViewportWidth)
       {
          mCameraCenterX = mWorldLeft + mWorldWidth * 0.5;
-         x = (- mCameraCenterX) * scaleX + mViewportWidth * 0.5;
+         mContentLayer.x = (- mCameraCenterX) * mContentLayer.scaleX + mViewportWidth * 0.5;
       }
       else
       {
          mCameraCenterX = targetDisplayX;
-         var leftInView:Number = (mWorldLeft - mCameraCenterX) * scaleX + mViewportWidth * 0.5;
+         var leftInView:Number = (mWorldLeft - mCameraCenterX) * mContentLayer.scaleX + mViewportWidth * 0.5;
          
          if (leftInView > 0)
             leftInView = 0;
          if (leftInView + worldViewWidth < mViewportWidth)
             leftInView = mViewportWidth - worldViewWidth;
          
-         mCameraCenterX = mWorldLeft + (mViewportWidth * 0.5 - leftInView) / scaleX;
-         x = leftInView - mWorldLeft * scaleX;
+         mCameraCenterX = mWorldLeft + (mViewportWidth * 0.5 - leftInView) / mContentLayer.scaleX;
+         mContentLayer.x = leftInView - mWorldLeft * mContentLayer.scaleX;
       }
       
       if (worldViewHeight < mViewportHeight)
       {
          mCameraCenterY = mWorldTop + mWorldHeight * 0.5;
-         y = (- mCameraCenterY) * scaleY + mViewportHeight * 0.5;
+         mContentLayer.y = (- mCameraCenterY) * mContentLayer.scaleY + mViewportHeight * 0.5;
       }
       else
       {
          mCameraCenterY = targetDisplayY;
-         var topInView:Number = (mWorldTop - mCameraCenterY) * scaleY + mViewportHeight * 0.5;
+         var topInView:Number = (mWorldTop - mCameraCenterY) * mContentLayer.scaleY + mViewportHeight * 0.5;
          
          if (topInView > 0)
             topInView = 0;
          if (topInView + worldViewHeight < mViewportHeight)
             topInView = mViewportHeight - worldViewHeight;
          
-         mCameraCenterY = mWorldTop + (mViewportHeight * 0.5 - topInView) / scaleY;
-         y = topInView  - mWorldTop  * scaleY;
+         mCameraCenterY = mWorldTop + (mViewportHeight * 0.5 - topInView) / mContentLayer.scaleY;
+         mContentLayer.y = topInView  - mWorldTop  * mContentLayer.scaleY;
       }
-   }
-   
-   UpdateBackgroundSpriteOffsetAndScale ();
-}
-
-private function UpdateBackgroundSpriteOffsetAndScale ():void
-{
-   if (mBackgroundSprite != null)
-   {
-      if ((int(mBackgroundSprite.x * 20.0)) != (int (mCameraCenterX * 20.0)))
-         mBackgroundSprite.x = mCameraCenterX;
-      if ((int(mBackgroundSprite.y * 20.0)) != (int (mCameraCenterY * 20.0)))
-         mBackgroundSprite.y = mCameraCenterY;
-      
-      //var targetAngle:Number = mCameraAngle % 360.0; // the result is a float number
-      //if (targetAngle >= 180.0)
-      //   targetAngle = targetAngle - 360.0;
-      //if (mBackgroundSprite.rotation != targetAngle)
-      //   mBackgroundSprite.rotation = targetAngle;
-      mBackgroundSprite.rotation = mCameraAngle;
-         
-      var sx:Number = 1.0 / scaleX;
-      if (mBackgroundSprite.scaleX != sx)
-         mBackgroundSprite.scaleX = sx;
-      
-      var sy:Number = 1.0 / scaleY;
-      if (mBackgroundSprite.scaleY != sy)
-         mBackgroundSprite.scaleY = sy;
    }
 }
 
@@ -404,7 +394,9 @@ protected function UpdateCamera ():void
    
    if (smoothAngle)
    {
-      dAngle = targetAngle - mCameraAngle;
+      dAngle = (targetAngle - mCameraAngle) % 360;
+      if (dAngle > 180)
+         dAngle = dAngle - 360;
       distanceAngle = Math.abs (dAngle);
       
       if (distanceAngle <= criteriaAngle2)
@@ -427,12 +419,41 @@ protected function UpdateCamera ():void
    
    MoveCameraCenterTo_DisplayPoint (nextX, nextY, newAngle);
    
+   //UpdateSpriteOffsetAndScale (mBackgroundSprite);
+   
+   FadingCamera ();
+   
    mCameraMovedOffsetX_ByMouse = 0;
    mCameraMovedOffsetY_ByMouse = 0;
    mCameraMovedOffsetAngle_ByMouse = 0;
-   
-   FadingCamera ();
 }
+
+//private function UpdateSpriteOffsetAndScale (sprite:Sprite):void
+//{
+//   if (sprite != null)
+//   {
+   //   var angleChanged:Boolean = sprite.rotation != mCameraAngle;
+   //   if (angleChanged || (int(sprite.x * 20.0)) != (int (mCameraCenterX * 20.0)))
+   //      sprite.x = mCameraCenterX;
+   //   if (angleChanged || (int(sprite.y * 20.0)) != (int (mCameraCenterY * 20.0)))
+   //      sprite.y = mCameraCenterY;
+   //   
+   //   //var targetAngle:Number = mCameraAngle % 360.0; // the result is a float number
+   //   //if (targetAngle >= 180.0)
+   //   //   targetAngle = targetAngle - 360.0;
+   //   //if (mBackgroundSprite.rotation != targetAngle)
+   //   //   mBackgroundSprite.rotation = targetAngle;
+   //   sprite.rotation = mCameraAngle;
+   //      
+   //   var sx:Number = 1.0 / scaleX;
+   //   if (sprite.scaleX != sx)
+   //      sprite.scaleX = sx;
+   //   
+   //   var sy:Number = 1.0 / scaleY;
+   //   if (sprite.scaleY != sy)
+   //      sprite.scaleY = sy;
+//   }
+//}
 
 //=====================================================================================
 // mouse move camera
@@ -534,29 +555,19 @@ protected function FadingCamera ():void
          mCameraFadeParams = null;
          mFadeMaskSprite.visible = false;
       }
-      else
+   }
+   
+   if (mFadeMaskSprite.visible)
+   {
+      if (mCameraFadeParams.mFadeColor != mCameraFadeColor)
       {
-         if (mCameraFadeParams.mFadeColor != mCameraFadeColor)
-         {
-            mCameraFadeColor = mCameraFadeParams.mFadeColor;
-            mCameraFadeMaskNeedRepaint = true;
-         }
-         
-         if (mFadeMaskSprite.alpha != mCameraFadeParams.mCurrentAlpha)
-            mFadeMaskSprite.alpha = mCameraFadeParams.mCurrentAlpha;
-         
-         if ((int(mFadeMaskSprite.x * 20.0)) != (int (mCameraCenterX * 20.0)))
-            mFadeMaskSprite.x = mCameraCenterX;
-         if ((int(mFadeMaskSprite.y * 20.0)) != (int (mCameraCenterY * 20.0)))
-            mFadeMaskSprite.y = mCameraCenterY;
-         
-         var sx:Number = 1.0 / scaleX;
-         if (mFadeMaskSprite.scaleX != sx)
-            mFadeMaskSprite.scaleX = sx;
-         
-         var sy:Number = 1.0 / scaleY;
-         if (mFadeMaskSprite.scaleY != sy)
-            mFadeMaskSprite.scaleY = sy;
+         mCameraFadeColor = mCameraFadeParams.mFadeColor;
+         mCameraFadeMaskNeedRepaint = true;
       }
+      
+      if (mFadeMaskSprite.alpha != mCameraFadeParams.mCurrentAlpha)
+         mFadeMaskSprite.alpha = mCameraFadeParams.mCurrentAlpha;
+         
+      //UpdateSpriteOffsetAndScale (mFadeMaskSprite);
    }
 }

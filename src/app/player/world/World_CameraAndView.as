@@ -303,6 +303,9 @@ protected function UpdateCamera ():void
       targetAngle = mCameraAngle + mCameraMovedOffsetAngle_ByMouse;
    }
    
+   var elasticStaticLength:Number = mViewportWidth < mViewportHeight ? mViewportWidth : mViewportHeight;
+   elasticStaticLength /= (mZoomScale * 4.0);
+   
    var nextX:Number;
    var nextY:Number;
    

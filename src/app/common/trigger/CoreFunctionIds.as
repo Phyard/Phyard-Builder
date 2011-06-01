@@ -434,11 +434,12 @@ package common.trigger {
 
       public static const ID_EntityShapePoly_GetVertexCount:int                          = IdPool.CoreApiId_1558;
       public static const ID_EntityShapePoly_GetVertexLocalPosition:int                  = IdPool.CoreApiId_1559;
-      //public static const ID_EntityShapePoly_SetVertexLocalPosition:int                 = IdPool.CoreApiId_1560;
+      public static const ID_EntityShapePoly_SetVertexLocalPosition:int                 = IdPool.CoreApiId_1560;
       public static const ID_EntityShapePoly_GetVertexWorldPosition:int                  = IdPool.CoreApiId_1561;
-      //public static const ID_EntityShapePoly_SetVertexWorldPosition:int                 = IdPool.CoreApiId_1562;
-      //public static const ID_EntityShapePoly_DeleteVertexAt:int                     = IdPool.CoreApiId_1562;
-      //public static const ID_EntityShapePoly_InsertVertexAt:int                     = IdPool.CoreApiId_1562;
+      public static const ID_EntityShapePoly_SetVertexWorldPosition:int                 = IdPool.CoreApiId_1562;
+      public static const ID_EntityShapePoly_InsertVertexByLocalPosition:int                     = IdPool.CoreApiId_1563;
+      public static const ID_EntityShapePoly_InsertVertexByWorldPosition:int                     = IdPool.CoreApiId_1564;
+      public static const ID_EntityShapePoly_DeleteVertexAt:int                     = IdPool.CoreApiId_1565;
 
    // game / entity / joint
 

@@ -441,6 +441,9 @@ package common.trigger {
       public static const CoreApiId_1560:int = 1560; // entity.shape.poly
       public static const CoreApiId_1561:int = 1561; // entity.shape.poly
       public static const CoreApiId_1562:int = 1562; // entity.shape.poly
+      public static const CoreApiId_1563:int = 1563; // entity.shape.poly
+      public static const CoreApiId_1564:int = 1564; // entity.shape.poly
+      public static const CoreApiId_1565:int = 1565; // entity.shape.poly
 
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint

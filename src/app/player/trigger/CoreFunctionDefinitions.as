@@ -418,8 +418,16 @@ package player.trigger {
       // game / entity / shape / poly shapes
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexCount,                    GetVertexCount);
+
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,            GetVertexLocalPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition,            SetVertexLocalPosition);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,            GetVertexWorldPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition,            SetVertexWorldPosition);
+
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition,            InsertVertexByLocalPosition);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition,            InsertVertexByWorldPosition);
+
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt,            DeleteVertexAt);
 
       // game / entity / joint
 
@@ -3994,7 +4002,67 @@ package player.trigger {
             valueTarget.AssignValueObject (point.y);
          }
       }
+      
+      public static function SetVertexLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetVertexPosition (valueSource, valueTarget, false, false);
+      }
+      
+      public static function SetVertexWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetVertexPosition (valueSource, valueTarget, true, false);
+      }
+      
+      public static function InsertVertexByLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetVertexPosition (valueSource, valueTarget, false, true);
+      }
+      
+      public static function InsertVertexByWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SetVertexPosition (valueSource, valueTarget, true, true);
+      }
+      
+      public static function SetVertexPosition (valueSource:Parameter, valueTarget:Parameter, isWorldPoint:Boolean, isInsert:Boolean):void
+      {
+         var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
 
+         if (polyShape == null || polyShape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var vertexIndex:int = int (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var posX:Number = int (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var posY:Number = int (valueSource.EvaluateValueObject ());
+
+         if (isWorldPoint)
+         {
+            var point:Point = new Point ();
+            polyShape.WorldPoint2LocalPoint (posX, posY, point);
+            posX = point.x;
+            posY = point.y;
+         }
+
+         EntityShape.ModifyPolyShapeVertex (polyShape, vertexIndex, posX, posY, isInsert);
+      }
+      
+      public static function DeleteVertexAt (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
+
+         if (polyShape == null || polyShape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var vertexIndex:int = int (valueSource.EvaluateValueObject ());
+
+         EntityShape.DeletePolyShapeVertex (polyShape, vertexIndex);
+      }
+      
    //*******************************************************************
    // entity / joint
    //*******************************************************************

@@ -1323,21 +1323,21 @@ package editor.trigger {
 
       // game / world
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_physics_package, "Set Gravity Acceleration by Radians", "@SetGravityAcceleration ($0, Radians($1))", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians, world_physics_package, "Set Gravity Acceleration By Radians", "@SetGravityAcceleration ($0, Radians($1))", null,
                      [
                              new VariableDefinitionNumber ("Magnitude"),
                              new VariableDefinitionNumber ("Angle Radians"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees, world_physics_package, "Set Gravity Acceleration by Degrees", "@SetGravityAcceleration ($0, Degrees($1))", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees, world_physics_package, "Set Gravity Acceleration By Degrees", "@SetGravityAcceleration ($0, Degrees($1))", null,
                      [
                              new VariableDefinitionNumber ("Magnitude"),
                              new VariableDefinitionNumber ("Angle Degrees"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector, world_physics_package, "Set Gravity Acceleration by Vector", "@SetGravityAcceleration (Vector($0, $1))", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector, world_physics_package, "Set Gravity Acceleration By Vector", "@SetGravityAcceleration (Vector($0, $1))", null,
                      [
                              new VariableDefinitionNumber ("gX"),
                              new VariableDefinitionNumber ("gY"),
@@ -1361,7 +1361,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Camera Center Y"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraRotationByDegrees, world_camera_package, "Get Camera Rotation by Degrees", "@Degrees (#0) = Get Camera Rotation ()", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraRotationByDegrees, world_camera_package, "Get Camera Rotation By Degrees", "@Degrees (#0) = Get Camera Rotation ()", null,
                      null,
                      [
                              new VariableDefinitionNumber ("Camera Rotation (degrees)"),
@@ -1585,7 +1585,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Entity Id"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset, entity_common_package, "Get Another Entity by Id Offset", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset, entity_common_package, "Get Another Entity By Id Offset", null, null,
                      [
                              new VariableDefinitionEntity ("Base Entity"),
                              new VariableDefinitionNumber ("Id Offset"),
@@ -1732,7 +1732,7 @@ package editor.trigger {
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians, entity_common_package, "Get Rotation by Radians", "@Radians (#0) = Get Rotation ($0)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByRadians, entity_common_package, "Get Rotation By Radians", "@Radians (#0) = Get Rotation ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}),
                      ],
@@ -1740,7 +1740,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Rotation (radians)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees, entity_common_package, "Get Rotation by Degrees", "@Degrees (#0) = Get Rotation ($0)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees, entity_common_package, "Get Rotation By Degrees", "@Degrees (#0) = Get Rotation ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}),
                      ],
@@ -1748,7 +1748,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Rotation (degrees)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians, entity_common_package, "Get Accumulated Rotation by Radians", "@Radians (#0) = Get Accumulated Rotation ($0)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians, entity_common_package, "Get Accumulated Rotation By Radians", "@Radians (#0) = Get Accumulated Rotation ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sMoveableEntityClasses}),
                      ],
@@ -2496,6 +2496,15 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Local Y"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition, shape_geometry_package, "Set Poly Shape Vertexes Local Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Vertex Index"),
+                             new VariableDefinitionNumber ("Local X"),
+                             new VariableDefinitionNumber ("Local Y"),
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition, shape_geometry_package, "Get Poly Shape Vertexes World Position", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
@@ -2505,6 +2514,40 @@ package editor.trigger {
                              new VariableDefinitionNumber ("World X"),
                              new VariableDefinitionNumber ("World Y"),
                      ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition, shape_geometry_package, "Set Poly Shape Vertexes World Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Vertex Index"),
+                             new VariableDefinitionNumber ("World X"),
+                             new VariableDefinitionNumber ("World Y"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition, shape_geometry_package, "Insert Poly Shape Vertex By Local Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Vertex Index"),
+                             new VariableDefinitionNumber ("Local X"),
+                             new VariableDefinitionNumber ("Local Y"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition, shape_geometry_package, "Insert Poly Shape Vertex By World Position", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Vertex Index"),
+                             new VariableDefinitionNumber ("World X"),
+                             new VariableDefinitionNumber ("World Y"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt, shape_geometry_package, "Delete Poly Shape Vertex", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Vertex Index"),
+                     ],
+                     null
                   );
 
       // game / entity / joint

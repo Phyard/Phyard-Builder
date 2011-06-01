@@ -64,6 +64,60 @@ package player.entity {
          return new Point (localPoint.x, localPoint.y);
       }
       
+      public function ModifyLocalVertex (vertexIndex:int, localPhysicsX:Number, localPhysicsY:Number, isInsert:Boolean):void
+      {
+         if (vertexIndex < 0)
+            return;
+         
+         if (isInsert)
+         {
+            if (mLocalPoints == null) // so mLocalDisplayPoints is also null
+            {
+               if (vertexIndex > 0)
+                  return;
+               
+               mLocalPoints = new Array ();
+               mLocalDisplayPoints = new Array ();
+            }
+            else if (vertexIndex > GetVertexPointsCount ())
+            {
+               return;
+            }
+            
+            mLocalPoints.push (new Point (localPhysicsX, localPhysicsY));
+            mLocalDisplayPoints.push (new Point (mWorld.GetCoordinateSystem ().P2D_LinearDeltaX (localPhysicsX),
+                                                 mWorld.GetCoordinateSystem ().P2D_LinearDeltaY (localPhysicsY)));
+         }
+         else
+         {
+            if (vertexIndex >= GetVertexPointsCount ())
+               return;
+            
+            var physicsPoint:Point = mLocalPoints [vertexIndex];
+            physicsPoint.x = localPhysicsX;
+            physicsPoint.y = localPhysicsY;
+            
+            var displayPoint:Point = mLocalDisplayPoints [vertexIndex];
+            displayPoint.x =  mWorld.GetCoordinateSystem ().P2D_LinearDeltaX (localPhysicsX);
+            displayPoint.y =  mWorld.GetCoordinateSystem ().P2D_LinearDeltaY (localPhysicsY);
+         }
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance ();
+      }
+      
+      public function DeleteVertex (vertexIndex:int):void
+      {
+         if (vertexIndex < 0 || vertexIndex >= GetVertexPointsCount ())
+            return;
+         
+         mLocalPoints.splice (vertexIndex, 1);
+         mLocalDisplayPoints.splice (vertexIndex, 1);
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance ();
+      }
+      
       public function SetLocalDisplayVertexPoints (points:Array):void
       {
          var i:int;

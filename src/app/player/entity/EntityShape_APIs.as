@@ -344,44 +344,44 @@ private static function CreateAndPushEntityDefine (entity:Entity, entityDefineAr
    return entityDefine;
 } 
    
-      /*
-      if (! bCloneBrothers)
-      {
-         entityDefine = seedShape.ToEntityDefine (new Object ());
-         if (entityDefine == null)
-            return null;
-         
-         var coordinateSystem:CoordinateSystem = world.GetCoordinateSystem ();
-         
-         entityDefine.mPosX = coordinateSystem.P2D_PositionX (targetX);
-         entityDefine.mPosY = coordinateSystem.P2D_PositionY (targetY);
-         entityDefine.mRotation = coordinateSystem.P2D_RotationRadians (rotation);
-         
-         entity = DataFormat2.CreateEntityInstance (world, entityDefine);
-         world.RegisterEntity (entity);
-         entity.InitCustomPropertyValues ();
-         for (var createStageId:int = 0; createStageId < Define.kNumCreateStages; ++ createStageId)
-         {
-            entity.Create (createStageId, entityDefine);
-         }
-         
-         shape = entity as EntityShape;
-         body = new EntityBody (world);
-         world.RegisterEntity (body);
-         shape.SetBody (body);
-         
-         shape.RebuildShapePhysics ();
-         body.OnShapeListChanged (body.GetNumPhysicsShapes () > 0);
-         body.AddShapeMomentums ();
-         //(entity as EntityJoint).ConfirmConnectedShapes ();
-         //(entity as EntityJoint).RebuildJointPhysics ();
-         
-         body.SynchronizeWithPhysicsProxy ();
-         shape.SynchronizeWithPhysicsProxy ();
-         
-         return shape;
-      }
-      */
+/*
+if (! bCloneBrothers)
+{
+   entityDefine = seedShape.ToEntityDefine (new Object ());
+   if (entityDefine == null)
+      return null;
+   
+   var coordinateSystem:CoordinateSystem = world.GetCoordinateSystem ();
+   
+   entityDefine.mPosX = coordinateSystem.P2D_PositionX (targetX);
+   entityDefine.mPosY = coordinateSystem.P2D_PositionY (targetY);
+   entityDefine.mRotation = coordinateSystem.P2D_RotationRadians (rotation);
+   
+   entity = DataFormat2.CreateEntityInstance (world, entityDefine);
+   world.RegisterEntity (entity);
+   entity.InitCustomPropertyValues ();
+   for (var createStageId:int = 0; createStageId < Define.kNumCreateStages; ++ createStageId)
+   {
+      entity.Create (createStageId, entityDefine);
+   }
+   
+   shape = entity as EntityShape;
+   body = new EntityBody (world);
+   world.RegisterEntity (body);
+   shape.SetBody (body);
+   
+   shape.RebuildShapePhysics ();
+   body.OnShapeListChanged (body.GetNumPhysicsShapes () > 0);
+   body.AddShapeMomentums ();
+   //(entity as EntityJoint).ConfirmConnectedShapes ();
+   //(entity as EntityJoint).RebuildJointPhysics ();
+   
+   body.SynchronizeWithPhysicsProxy ();
+   shape.SynchronizeWithPhysicsProxy ();
+   
+   return shape;
+}
+*/
    
 //================================================================
 // transform
@@ -802,21 +802,7 @@ public static function ChangeCircleRadius (circle:EntityShapeCircle, radius:Numb
    
    circle.SetRadius (radius);
    
-   if (isPhysicsShape)
-   {
-      circle.RebuildShapePhysics ();
-      body.OnShapeListChanged (true);
-      body.NotifyMovedManually ();
-      body.NotifyVelocityChangedManually ();
-      body.SetSleeping (false);
-      body.SynchronizeWithPhysicsProxyManually ();
-      circle.SynchronizeWithPhysicsProxy ();
-   }
-   else if (! isPhysicsBody)
-   {
-      body.OnShapeListChanged (false);
-      body.NotifyMovedManually ();
-   }
+   OnShapeGeometryChanged (body, isPhysicsBody, circle, isPhysicsShape);
    
    // modify joint anchor positions
    circle.ScaleJointAnchorPositions (scaleRadius, scaleRadius);
@@ -838,26 +824,54 @@ public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Num
    rect.SetHalfWidth (width * 0.5);
    rect.SetHalfHeight (height * 0.5);
    
+   OnShapeGeometryChanged (body, isPhysicsBody, rect, isPhysicsShape);
+   
+   // modify joint anchor positions
+   rect.ScaleJointAnchorPositions (scaleWidth, scaleHeight);
+}
+
+public static function ModifyPolyShapeVertex (polyShape:EntityShapePolyShape, vertexIndex:int, newLocalPosX:Number, newLocalPosY:Number, isInsert:Boolean):void
+{
+   if (isNaN (vertexIndex) || isNaN (newLocalPosX) || isNaN (newLocalPosY))
+      return;
+   
+   var body:EntityBody = polyShape.GetBody ();
+      
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = polyShape.IsPhysicsShape ();
+   
+   polyShape.ModifyLocalVertex (vertexIndex, newLocalPosX, newLocalPosY, isInsert);
+   
+   OnShapeGeometryChanged (body, isPhysicsBody, polyShape, isPhysicsShape);
+}
+
+public static function DeletePolyShapeVertex (polyShape:EntityShapePolyShape, vertexIndex:int):void
+{
+   if (isNaN (vertexIndex))
+      return;
+   
+   polyShape.DeleteVertex (vertexIndex);
+}
+
+// isPhysicsShape and isPhysicsBody should not retrieved from the input params
+private static function OnShapeGeometryChanged (body:EntityBody, isPhysicsBody:Boolean, shape:EntityShape, isPhysicsShape:Boolean):void
+{
    if (isPhysicsShape)
    {
-      rect.RebuildShapePhysics ();
+      shape.RebuildShapePhysics ();
       body.OnShapeListChanged (true);
       body.NotifyMovedManually ();
       body.NotifyVelocityChangedManually ();
       body.SetSleeping (false);
       body.SynchronizeWithPhysicsProxyManually ();
-      rect.SynchronizeWithPhysicsProxy ();
+      shape.SynchronizeWithPhysicsProxy ();
    }
    else if (! isPhysicsBody)
    {
       body.OnShapeListChanged (false);
       body.NotifyMovedManually ();
    }
-   
-   // modify joint anchor positions
-   rect.ScaleJointAnchorPositions (scaleWidth, scaleHeight);
 }
-
 
 //================================================================
 // detach / attach (glue)

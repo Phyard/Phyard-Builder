@@ -24,8 +24,6 @@ package editor.trigger.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
-   
-   
    import common.Define;
    
    public class EntityInputEntityPairAssigner extends EntityLogic implements IEntityLimiter 
@@ -328,6 +326,7 @@ package editor.trigger.entity {
          var background:Shape = new Shape ();
          GraphicsUtil.ClearAndDrawCircle (background, 0, 0, kRadius2, borderColor, mBorderThickness, true, 0xFFC000);
          GraphicsUtil.DrawLine (background, -kRadius2, 0, kRadius2, 0);
+         GraphicsUtil.DrawLine (background, 0, -kRadius2, 0, kRadius2);
          GraphicsUtil.DrawCircle (background, 0, 0, kRadius, 0x0, 1, true, 0xFFFF00);
          
          addChild (background);

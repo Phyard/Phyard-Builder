@@ -99,7 +99,7 @@ package common {
          }
       }
       
-      public static function Function2FunctionDefine (editorWorld:World, codeSnippet:CodeSnippet):FunctionDefine
+      public static function Function2FunctionDefine (editorWorld:World, codeSnippet:CodeSnippet, createLocalVariableDefines:Boolean = true):FunctionDefine
       {
          var functionDefine:FunctionDefine = new FunctionDefine ();
          
@@ -115,8 +115,13 @@ package common {
             VariableSpace2VariableDefines (editorWorld, functionDefinition.GetOutputVariableSpace (), functionDefine.mOutputVariableDefines, false);
          }
          
-         functionDefine.mLocalVariableDefines = new Array ();
-         VariableSpace2VariableDefines (editorWorld, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false);
+         if (createLocalVariableDefines)
+         {
+            //>>from v1.56
+            functionDefine.mLocalVariableDefines = new Array ();
+            VariableSpace2VariableDefines (editorWorld, functionDefinition.GetLocalVariableSpace (), functionDefine.mLocalVariableDefines, false);
+            //<<
+         }
          //<<
          
          functionDefine.mCodeSnippetDefine = CodeSnippet2CodeSnippetDefine (editorWorld, codeSnippet);
@@ -316,7 +321,7 @@ package common {
 // define -> definition (editor)
 //==============================================================================================
       
-      public static function FunctionDefine2FunctionDefinition (editorWorld:World, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true):void
+      public static function FunctionDefine2FunctionDefinition (editorWorld:World, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true, createLocalVariables:Boolean = true):void
       {
          if (createVariables)
          {
@@ -328,7 +333,12 @@ package common {
                VariableDefines2VariableSpace (editorWorld, functionDefine.mOutputVariableDefines, functionDefinition.GetOutputVariableSpace (), false);
             }
             
-            VariableDefines2VariableSpace (editorWorld, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false);
+            if (createLocalVariables)
+            {
+               //>> from v1.56
+               VariableDefines2VariableSpace (editorWorld, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false);
+               //<<
+            }
             //<<
          }
          
@@ -681,7 +691,7 @@ package common {
 // define -> byte array
 //==============================================================================================
       
-      public static function WriteFunctionDefineIntoBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, writeVariables:Boolean, customFunctionDefines:Array):void
+      public static function WriteFunctionDefineIntoBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, writeVariables:Boolean, customFunctionDefines:Array, writeLocalVariables:Boolean = true):void
       {
          if (writeVariables)
          {
@@ -692,7 +702,10 @@ package common {
                WriteVariableDefinesIntoBinFile (binFile, functionDefine.mOutputVariableDefines, false);
             }
             
-            WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+            if (writeLocalVariables)
+            {
+               WriteVariableDefinesIntoBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+            }
          }
          
          if (customFunctionDefines != null)
@@ -912,7 +925,7 @@ package common {
          entityDefine.mInputConditionTargetValues = values;
       }
       
-      public static function Xml2FunctionDefine (functionElement:XML, functionDefine:FunctionDefine, parseParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array):void
+      public static function Xml2FunctionDefine (functionElement:XML, functionDefine:FunctionDefine, parseParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array, convertLocalVariables:Boolean = true, codeSnippetElement:XML = null):void
       {
          if (convertVariables)
          {
@@ -923,12 +936,15 @@ package common {
                VariablesXml2Define (functionElement.OutputParameters [0], functionDefine.mOutputVariableDefines, false);
             }
             
-            VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false);
+            if (convertLocalVariables)
+            {
+               VariablesXml2Define (functionElement.LocalVariables [0], functionDefine.mLocalVariableDefines, false);
+            }
          }
          
          if (customFunctionDefines != null)
          {
-            functionDefine.mCodeSnippetDefine = Xml2CodeSnippetDefine (functionElement.CodeSnippet [0], customFunctionDefines);
+            functionDefine.mCodeSnippetDefine = Xml2CodeSnippetDefine (codeSnippetElement == null ? functionElement.CodeSnippet [0] : codeSnippetElement, customFunctionDefines);
          }
       }
       

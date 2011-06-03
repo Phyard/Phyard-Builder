@@ -134,6 +134,7 @@ package editor {
    import editor.trigger.entity.EntityInputEntityRegionSelector;
    import editor.trigger.entity.EntityEventHandler;
    import editor.trigger.entity.EntityEventHandler_Timer;
+   import editor.trigger.entity.EntityEventHandler_TimerWithPrePostHandling;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
@@ -1022,8 +1023,8 @@ package editor {
       public var mButtonCreateEntityAssigner:Button;
       public var mButtonCreateEntityPairAssigner:Button;
       //public var mButtonCreateEntityRegionSelector:Button;
-      //public var mButtonCreateEntityFilter:Button;
-      //public var mButtonCreateEntityPairFilter:Button;
+      public var mButtonCreateEntityFilter:Button;
+      public var mButtonCreateEntityPairFilter:Button;
       public var mButtonCreateAction:Button;
       public var mButtonCreateEventHandler0:Button;
       public var mButtonCreateEventHandler1:Button;
@@ -1254,12 +1255,12 @@ package editor {
             //case mButtonCreateEntityRegionSelector:
             //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityRegionSelector) );
             //   break;
-            //case mButtonCreateEntityFilter:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityFilter) );
-            //   break;
-            //case mButtonCreateEntityPairFilter:
-            //   SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityPairFilter) );
-            //   break;
+            case mButtonCreateEntityFilter:
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityFilter) );
+               break;
+            case mButtonCreateEntityPairFilter:
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityInputEntityPairFilter) );
+               break;
                
             case mButtonCreateEventHandler0:
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldBeforeInitializing, mPotientialEventIds:null}) );
@@ -2045,6 +2046,7 @@ package editor {
       public var ShowConditionSettingDialog:Function = null;
       public var ShowEventHandlerSettingDialog:Function = null;
       public var ShowTimerEventHandlerSettingDialog:Function = null;
+      public var ShowTimerEventHandlerWithPreAndPostHandlingSettingDialog:Function = null;
       public var ShowKeyboardEventHandlerSettingDialog:Function = null;
       public var ShowMouseEventHandlerSettingDialog:Function = null;
       public var ShowContactEventHandlerSettingDialog:Function = null;
@@ -2115,7 +2117,18 @@ package editor {
                   values.mRunningInterval = timer_event_handler.GetRunningInterval ();
                   values.mOnlyRunOnce = timer_event_handler.IsOnlyRunOnce ();
                   
-                  ShowTimerEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  if (entity is EntityEventHandler_TimerWithPrePostHandling)
+                  {
+                     var timer_event_handler_withPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = entity as EntityEventHandler_TimerWithPrePostHandling;
+                     
+                     values.mPreCodeSnippet  = timer_event_handler_withPrePostHandling.GetPreCodeSnippet  ().Clone (null);
+                     values.mPostCodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ().Clone (null);
+                     ShowTimerEventHandlerWithPreAndPostHandlingSettingDialog (values, ConfirmSettingEntityProperties);
+                  }
+                  else
+                  {
+                     ShowTimerEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+                  }
                }
                else if (entity is EntityEventHandler_Keyboard)
                {
@@ -3753,9 +3766,11 @@ package editor {
             switch (options.mDefaultEventId)
             {
                case CoreEventIds.ID_OnWorldTimer:
+                  handler = mEditorWorld.CreateEntityEventHandler_Timer (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  break;
                case CoreEventIds.ID_OnEntityTimer:
                case CoreEventIds.ID_OnEntityPairTimer:
-                  handler = mEditorWorld.CreateEntityEventHandler_Timer (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  handler = mEditorWorld.CreateEntityEventHandler_TimerWithPrePostHandling (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
                case CoreEventIds.ID_OnPhysicsShapeMouseDown:
                case CoreEventIds.ID_OnPhysicsShapeMouseUp:
@@ -4432,6 +4447,19 @@ package editor {
                   
                   timer_event_handler.SetRunningInterval (params.mRunningInterval);
                   timer_event_handler.SetOnlyRunOnce (params.mOnlyRunOnce);
+                  
+                  if (entity is EntityEventHandler_TimerWithPrePostHandling)
+                  {
+                     var timer_event_handler_withPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = entity as EntityEventHandler_TimerWithPrePostHandling;
+                     
+                     var pre_code_snippet:CodeSnippet = timer_event_handler_withPrePostHandling.GetPreCodeSnippet ();
+                     pre_code_snippet.AssignFunctionCallings (params.mReturnPreFunctionCallings);
+                     pre_code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+                     
+                     var post_code_snippet:CodeSnippet = timer_event_handler_withPrePostHandling.GetPostCodeSnippet ();
+                     post_code_snippet.AssignFunctionCallings (params.mReturnPostFunctionCallings);
+                     post_code_snippet.PhysicsValues2DisplayValues (mEditorWorld.GetCoordinateSystem ());
+                  }
                }
                else if (entity is EntityEventHandler_Keyboard)
                {
@@ -5302,6 +5330,9 @@ package editor {
          }
          catch (error:Error)
          {
+            if (Compile::Is_Debugging)
+               throw error;
+            
             RestoreWorld (mWorldHistoryManager.GetCurrentWorldState ());
             
             //SetEditorWorld (new editor.world.World ());
@@ -5309,9 +5340,6 @@ package editor {
             //Alert.show("Sorry, loading error!", "Error");
             
             mFloatingMessageLayer.addChild (new EffectMessagePopup ("Offline loading failed", EffectMessagePopup.kBgColor_Error));
-
-            if (Compile::Is_Debugging)
-               throw error;
          }
       }
       

@@ -164,6 +164,10 @@ package editor.trigger {
          codeSnippet.SetName (mName);
          
          codeSnippet.CopyCallingsFrom (this, 0, callingIds);
+         if (ownerFunctionDefinition.IsCustom ())
+         {
+            ownerFunctionDefinition.SybchronizeDeclarationWithDefinition ();
+         }
          
          return codeSnippet;
       }

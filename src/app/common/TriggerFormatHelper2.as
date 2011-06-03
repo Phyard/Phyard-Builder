@@ -665,7 +665,7 @@ package common {
 // byte array -> define
 //==============================================================================================
       
-      public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, loadVariables:Boolean, customFunctionDefines:Array):FunctionDefine
+      public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, loadVariables:Boolean, customFunctionDefines:Array, loadLocalVariables:Boolean = true):FunctionDefine
       {
          if (functionDefine == null)
             functionDefine = new FunctionDefine ();
@@ -679,7 +679,10 @@ package common {
                LoadVariableDefinesFromBinFile (binFile, functionDefine.mOutputVariableDefines, false);
             }
             
-            LoadVariableDefinesFromBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+            if (loadLocalVariables)
+            {
+               LoadVariableDefinesFromBinFile (binFile, functionDefine.mLocalVariableDefines, false);
+            }
          }
          
          if (customFunctionDefines != null)
@@ -896,7 +899,7 @@ package common {
 // define -> xml
 //==============================================================================================
       
-      public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, hasParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array):void
+      public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, hasParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array, convertLocalVariables:Boolean = true, codeSnippetElement:XML = null):void
       {
          if (convertVariables)
          {
@@ -909,19 +912,25 @@ package common {
                VariablesDefine2Xml (functionDefine.mOutputVariableDefines, functionElement.OutputParameters [0], false);
             }
             
-            functionElement.LocalVariables = <LocalVariables/>;
-            VariablesDefine2Xml (functionDefine.mLocalVariableDefines, functionElement.LocalVariables [0], false);
+            if (convertLocalVariables)
+            {
+               functionElement.LocalVariables = <LocalVariables/>;
+               VariablesDefine2Xml (functionDefine.mLocalVariableDefines, functionElement.LocalVariables [0], false);
+            }
          }
          
          if (customFunctionDefines != null)
          {
-            functionElement.CodeSnippet = CodeSnippetDefine2Xml (functionDefine.mCodeSnippetDefine, customFunctionDefines);
+            functionElement.appendChild (CodeSnippetDefine2Xml (codeSnippetElement, functionDefine.mCodeSnippetDefine, customFunctionDefines));
          }
       }
       
-      public static function CodeSnippetDefine2Xml (codeSnippetDefine:CodeSnippetDefine, customFunctionDefines:Array):XML
+      public static function CodeSnippetDefine2Xml (elementCodeSnippet:XML, codeSnippetDefine:CodeSnippetDefine, customFunctionDefines:Array):XML
       {
-         var elementCodeSnippet:XML = <CodeSnippet />;
+         if (elementCodeSnippet == null)
+         {
+            elementCodeSnippet = <CodeSnippet />;
+         }
          
          elementCodeSnippet.@name = codeSnippetDefine.mName;
          
@@ -931,6 +940,8 @@ package common {
          {
             elementCodeSnippet.appendChild (FunctionCallingDefine2Xml (functionCallings[i], customFunctionDefines));
          }
+         
+         trace ("elementCodeSnippet = " + elementCodeSnippet.toXMLString ());
          
          return elementCodeSnippet;
       }
@@ -1152,6 +1163,7 @@ package common {
       public static function AdjustNumberPrecisionsInFunctionDefine (functionDefine:FunctionDefine):void
       {
          AdjustNumberPrecisionsInVariableDefines (functionDefine.mInputVariableDefines);
+         // output and local variables have no default values now.
          
          AdjustNumberPrecisionsInCodeSnippetDefine (functionDefine.mCodeSnippetDefine);
       }

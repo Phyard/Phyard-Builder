@@ -88,6 +88,8 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
       contact_info.mInKeepContactingList = false;
       contact_info.mBeginContactingFrame = mNumSimulatedSteps;
       
+      // todo: use cache to get a faster FindEventHandlerForEntityPair
+      
       contact_info.mFirstBeginContactingHandler = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, id1, id2, true);
       contact_info.mFirstKeepContactingHandler  = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, id1, id2, true);
       contact_info.mFirstEndContactingHandler   = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, id1, id2, true);

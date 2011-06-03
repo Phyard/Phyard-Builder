@@ -86,6 +86,16 @@ package editor.trigger.entity {
          return mFunctionId;
       }
       
+      public function IsDesignDependent ():Boolean
+      {
+         return mFunctionDefinition.IsDesignDependent ();
+      }
+      
+      public function SetDesignDependent (designDependent:Boolean):void
+      {
+         mFunctionDefinition.SetDesignDependent (designDependent);
+      }
+      
       override public function ToCodeString ():String
       {
          return "Function#" + mCreationOrderId;
@@ -152,7 +162,7 @@ package editor.trigger.entity {
          mHalfWidth = mHalfTextWidth;// + 15;
          mHalfHeight = mHalfTextHeight;
          
-         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, true ? 0xC0FFC0 : 0xFFD0D0);
+         GraphicsUtil.ClearAndDrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, -1, true, IsDesignDependent () ? 0xFFC20E : 0xC0FFC0);
          GraphicsUtil.DrawRect (this, - mHalfWidth, - mHalfHeight, mHalfWidth + mHalfWidth, mHalfHeight + mHalfHeight, borderColor, borderSize, false);
       }
       

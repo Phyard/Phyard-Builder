@@ -70,7 +70,7 @@ package editor.trigger {
             if (variable_instance.GetValueType () == valueType && variable_instance.GetName () == variableName)
                return variable_instance;
          }
-         
+       
          if (createIfNotExist)
          {
             var variableDefinition:VariableDefinition = VariableDefinition.CreateVariableDefinition (valueType, variableName);

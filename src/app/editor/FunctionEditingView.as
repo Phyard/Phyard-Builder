@@ -26,6 +26,7 @@ package editor {
    import mx.controls.CheckBox;
    import mx.controls.Label;
    import mx.controls.TextInput;
+   import mx.controls.RadioButton;
    
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
@@ -283,7 +284,8 @@ package editor {
 // mode
 //==================================================================================
       
-      public var mButtonCreateFunction:Button;
+      public var mButtonCreatePureFunction:Button;
+      public var mButtonCreateDirtyFunction:Button;
       public var mButtonCreatePackage:Button;
       public var mButtonCreateClass:Button;
       
@@ -297,8 +299,11 @@ package editor {
          
          switch (event.target)
          {
-            case mButtonCreateFunction:
-               SetCurrentCreateMode (new FunctionModePlaceCreateEntity (this, CreateEntityFunction));
+            case mButtonCreatePureFunction:
+               SetCurrentCreateMode (new FunctionModePlaceCreateEntity (this, CreateEntityFunction, {mIsDesignDependent: false}));
+               break;
+            case mButtonCreateDirtyFunction:
+               SetCurrentCreateMode (new FunctionModePlaceCreateEntity (this, CreateEntityFunction, {mIsDesignDependent: true}));
                break;
             case mButtonCreatePackage:
                //SetCurrentCreateMode (new FunctionModePlaceCreateEntity (this, CreateEntityFunctionPackage));
@@ -334,6 +339,8 @@ package editor {
       
       public var mLabelName:Label;
       public var mTextInputName:TextInput;
+      public var mButtonIsPure:RadioButton;
+      public var mButtonIsDirty:RadioButton;
       
       public function OnTextInputEnter (event:Event):void
       {
@@ -424,15 +431,15 @@ package editor {
 // creat
 //=================================================================================
       
-      public function CreateEntityFunction (options:Object = null):EntityFunction
+      public function CreateEntityFunction (options:Object):EntityFunction
       {
-         if (options != null && options.stage == FunctionModePlaceCreateEntity. StageFinished)
+         if (options.stage == FunctionModePlaceCreateEntity.StageFinished)
          {
             return null;
          }
          else
          {
-            var aFunction:EntityFunction = mFunctionManager.CreateEntityFunction ();
+            var aFunction:EntityFunction = mFunctionManager.CreateEntityFunction (null, options.mIsDesignDependent);
             if (aFunction == null)
                return null;
             
@@ -444,7 +451,7 @@ package editor {
       
       public function CreateEntityFunctionPackage (options:Object = null):EntityFunctionPackage
       {
-         if (options != null && options.stage == FunctionModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == FunctionModePlaceCreateEntity.StageFinished)
          {
             return null;
          }

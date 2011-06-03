@@ -191,10 +191,14 @@ package player.trigger.entity
             mEventHandlerDefinition.ExcuteEventHandler (valueSourceList);
 
             if (mExternalAction != null)
+            {
                mExternalAction.Perform ();
+            }
+            
+            return true;
          }
 
-         return true;
+         return false;
       }
    }
 }

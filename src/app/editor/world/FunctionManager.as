@@ -113,7 +113,7 @@ package editor.world {
          return mFunctionEntities [index] as EntityFunction;
       }
       
-      public function CreateEntityFunction (funcName:String = null):EntityFunction
+      public function CreateEntityFunction (funcName:String = null, designDependent:Boolean = false):EntityFunction
       {
          if (funcName == null)
             funcName = Define.FunctionDefaultName;
@@ -124,6 +124,7 @@ package editor.world {
          mFunctionEntities.push (aFunction);
          
          aFunction.SetFunctionName (GetFunctionRecommendName (funcName), false);
+         aFunction.SetDesignDependent (designDependent);
          
          mFunctionLookupTable [aFunction.GetFunctionName ()] = aFunction;
          

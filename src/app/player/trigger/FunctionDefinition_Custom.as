@@ -45,6 +45,19 @@ package player.trigger
          return mNumLocalVariables;
       }
       
+      //>>these are only for EntityEventHandler_Timer with pre and post handling
+      public function GetLocalVariableReferences ():Array
+      {
+         return mLocalVariableReferences;
+      }
+      
+      public function SetLocalVariableReferences (refs:Array):void
+      {
+         mLocalVariableReferences = refs;
+         mLocalVariableRefList = mNumLocalVariables > 0 ? mLocalVariableReferences [0] : null;
+      }
+      //<<
+      
       public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine):void
       {
          mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, Global.GetCurrentWorld (), codeSnippetDefine);

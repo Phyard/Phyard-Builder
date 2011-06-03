@@ -74,7 +74,7 @@ package editor.trigger {
       
       public function CloneSource (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueSource
       {
-         if (targetFunctionDefinition.IsPure ())
+         if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
          {
             if (mValueObject is Entity)
             {

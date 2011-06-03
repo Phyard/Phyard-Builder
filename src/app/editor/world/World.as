@@ -47,6 +47,7 @@ package editor.world {
    import editor.trigger.entity.EntityInputEntityRegionSelector;
    import editor.trigger.entity.EntityEventHandler;
    import editor.trigger.entity.EntityEventHandler_Timer;
+   import editor.trigger.entity.EntityEventHandler_TimerWithPrePostHandling;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
@@ -1119,6 +1120,17 @@ package editor.world {
             return null;
          
          var handler:EntityEventHandler_Timer = new EntityEventHandler_Timer (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         return handler;
+      }
+      
+      public function CreateEntityEventHandler_TimerWithPrePostHandling (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_Timer
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var handler:EntityEventHandler_Timer = new EntityEventHandler_TimerWithPrePostHandling (this, defaultEventId, potientialEventIds);
          addChild (handler);
          
          return handler;

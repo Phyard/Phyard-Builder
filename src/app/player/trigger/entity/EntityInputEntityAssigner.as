@@ -273,8 +273,39 @@ package player.trigger.entity
       }
       
 //==========================================================================================================
-//   as input of eneral entity event handlers
+//   as input of contact event handlers
 //==========================================================================================================
+      
+      public static const ContainingResult_False:int = 0;
+      public static const ContainingResult_True:int = 1;
+      public static const ContainingResult_TrueButNeedExchangePairOrder:int = 2;
+      
+      public static function GetContainingEntityPairResult (assignerListHead:ListElement_InputEntityAssigner, entityId1:int, entityId2:int, ignorePairOrder:Boolean = true):int
+      {
+         var list_element:ListElement_InputEntityAssigner = assignerListHead;
+         var result:int;
+         
+         while (list_element != null)
+         {
+            result = list_element.mInputEntityAssigner.ContainsEntityPair (entityId1, entityId2, ignorePairOrder);
+            
+            if (result != ContainingResult_False)
+               return result;
+            
+            list_element = list_element.mNextListElement;
+         }
+         
+         return ContainingResult_False;
+      }
+      
+//==========================================================================================================
+//   as input of general entity event handlers
+//==========================================================================================================
+      
+      public static function GetContainingEntityResult (assignerListHead:ListElement_InputEntityAssigner, entityId:int):int
+      {
+         return ContainingResult_False;
+      }
       
       // as input of an event handler
       public function RegisterEventHandlerForEntities (eventId:int, eventHandler:EntityEventHandler):void
@@ -308,37 +339,6 @@ package player.trigger.entity
             default:
                break;
          }
-      }
-      
-//==========================================================================================================
-//   as input of contact event handlers
-//==========================================================================================================
-      
-      public static const ContainingResult_False:int = 0;
-      public static const ContainingResult_True:int = 1;
-      public static const ContainingResult_TrueButNeedExchangePairOrder:int = 2;
-      
-      public static function GetContainingEntityPairResult (assignerListHead:ListElement_InputEntityAssigner, entityId1:int, entityId2:int, ignorePairOrder:Boolean = true):int
-      {
-         var list_element:ListElement_InputEntityAssigner = assignerListHead;
-         var result:int;
-         
-         while (list_element != null)
-         {
-            result = list_element.mInputEntityAssigner.ContainsEntityPair (entityId1, entityId2, ignorePairOrder);
-            
-            if (result != ContainingResult_False)
-               return result;
-            
-            list_element = list_element.mNextListElement;
-         }
-         
-         return ContainingResult_False;
-      }
-      
-      public static function GetContainingEntityResult (assignerListHead:ListElement_InputEntityAssigner, entityId:int):int
-      {
-         return ContainingResult_False;
       }
       
 //==========================================================================================================

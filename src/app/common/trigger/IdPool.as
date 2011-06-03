@@ -20,6 +20,8 @@ package common.trigger {
       public static const EventId_33:int = 33;
 
       public static const EventId_50:int = 50;
+      public static const EventId_51:int = 51;
+      public static const EventId_52:int = 52;
 
       public static const EventId_70:int = 70;
       public static const EventId_71:int = 71;

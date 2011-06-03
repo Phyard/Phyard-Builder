@@ -6,25 +6,25 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
     title="Event Handler Setting" width="600">
 
-   <mx:TabNavigator width="100%" height="100%">
+   <mx:TabNavigator width="100%" height="100%" creationPolicy="all">
       <mx:VBox label="Script" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnCodeSnippetSettingPanelCreationComplete()">
          <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
       </mx:VBox>
-      <!--mx:VBox label="Script (Pre-Handling)" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Script (Pre-Handling)" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnPreCodeSnippetSettingPanelCreationComplete()">
-         <CodeSnippetEditPanel id="preCodeSnippetEditPanel" width="100%" height="100%"/>
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <CodeSnippetEditPanel id="preCodeSnippetEditPanel" width="100%" height="100%" creationComplete="OnPreCodeSnippetSettingPanelCreationComplete()"/>
       </mx:VBox>
       <mx:VBox label="Script (Post-Handling)" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
-               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnPostCodeSnippetSettingPanelCreationComplete()">
-         <CodeSnippetEditPanel id="postCodeSnippetEditPanel" width="100%" height="100%"/>
-      </mx:VBox-->
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <CodeSnippetEditPanel id="postCodeSnippetEditPanel" width="100%" height="100%" creationComplete="OnPostCodeSnippetSettingPanelCreationComplete()"/>
+      </mx:VBox>
       <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
@@ -72,6 +72,7 @@
          import mx.controls.Menu;
          
          import common.Define;
+         import common.trigger.ValueSpaceTypeDefine;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
@@ -83,24 +84,85 @@
             mParams = initialValues;
          }
          
-         public function OnCodeSnippetSettingPanelCreationComplete ():void
+         private function OnCodeSnippetSettingPanelCreationComplete ():void
          {
             this.title = "Event Handler Setting - " + mParams.mCodeSnippet.GetOwnerFunctionDefinition ().GetName ();
             
             theCodeSnippetEditPanel.SetCodeSnippet (mParams.mCodeSnippet);
+            theCodeSnippetEditPanel.SetExternalOnSwitchMenuBar (OnSwitchMenuBar);
+            theCodeSnippetEditPanel.SetExternalOnVariableEditingDialogClosedCallback (OnVariableEditingDialogClosed);
          }
          
-         //public function OnPreCodeSnippetSettingPanelCreationComplete ():void
-         //{
-         //}
-         //
-         //public function OnPostCodeSnippetSettingPanelCreationComplete ():void
-         //{
-         //}
-         
-         public function GetValues (returnValues:Object):void
+         private function OnPreCodeSnippetSettingPanelCreationComplete ():void
          {
-            returnValues.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
+            preCodeSnippetEditPanel.SetCodeSnippet (mParams.mPreCodeSnippet);
+            preCodeSnippetEditPanel.SetExternalOnSwitchMenuBar (OnSwitchMenuBar);
+            preCodeSnippetEditPanel.SetExternalOnVariableEditingDialogClosedCallback (OnVariableEditingDialogClosed);
+         }
+         
+         private function OnPostCodeSnippetSettingPanelCreationComplete ():void
+         {
+            postCodeSnippetEditPanel.SetCodeSnippet (mParams.mPostCodeSnippet);
+            postCodeSnippetEditPanel.SetExternalOnSwitchMenuBar (OnSwitchMenuBar);
+            postCodeSnippetEditPanel.SetExternalOnVariableEditingDialogClosedCallback (OnVariableEditingDialogClosed);
+         }
+         
+         private function OnSwitchMenuBar (codeSnippetEditPanel:CodeSnippetEditPanel):void
+         {
+            if (codeSnippetEditPanel != theCodeSnippetEditPanel) // && theCodeSnippetEditPanel != null)
+            {
+               theCodeSnippetEditPanel.OnSwitchMenuBarPassively ();
+            }
+            
+            if (codeSnippetEditPanel != preCodeSnippetEditPanel) // && preCodeSnippetEditPanel != null)
+            {
+               preCodeSnippetEditPanel.OnSwitchMenuBarPassively ();
+            }
+            
+            if (codeSnippetEditPanel != postCodeSnippetEditPanel) // && postCodeSnippetEditPanel != null)
+            {
+               postCodeSnippetEditPanel.OnSwitchMenuBarPassively ();
+            }
+         }
+         
+         private function OnVariableEditingDialogClosed (codeSnippetEditPanel:CodeSnippetEditPanel, variableSpaceType:int):void
+         {
+            if (codeSnippetEditPanel != theCodeSnippetEditPanel) // && theCodeSnippetEditPanel != null)
+            {
+               NotifyVariableEditingDialogClosed (theCodeSnippetEditPanel, variableSpaceType);
+            }
+            
+            if (codeSnippetEditPanel != preCodeSnippetEditPanel) // && preCodeSnippetEditPanel != null)
+            {
+               NotifyVariableEditingDialogClosed (preCodeSnippetEditPanel, variableSpaceType);
+            }
+            
+            if (codeSnippetEditPanel != postCodeSnippetEditPanel) // && postCodeSnippetEditPanel != null)
+            {
+               NotifyVariableEditingDialogClosed (postCodeSnippetEditPanel, variableSpaceType);
+            }
+         }
+         
+         private function NotifyVariableEditingDialogClosed (codeSnippetEditPanel:CodeSnippetEditPanel, variableSpaceType:int):void
+         {
+            switch (variableSpaceType)
+            {
+               case ValueSpaceTypeDefine.ValueSpace_Global:
+                  codeSnippetEditPanel.OnGlobalVariablesEditingDialogClosed ();
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_Entity:
+                  codeSnippetEditPanel.OnEntityVariablesEditingDialogClosed ();
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_Local:
+                  codeSnippetEditPanel.OnLocalVariablesEditingDialogClosed ();
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_Input:
+                  break;
+               case ValueSpaceTypeDefine.ValueSpace_Output:
+                  break;
+               default:
+                  break;
+            }
          }
          
          private function OnInitPanel ():void
@@ -132,7 +194,17 @@
          
          private function OnClickOkButton():void 
          {
-            GetValues (mParams);
+            mParams.mReturnFunctionCallings = theCodeSnippetEditPanel.GetCommandListDefinition ();
+            
+            //if (preCodeSnippetEditPanel != null)
+            {
+               mParams.mReturnPreFunctionCallings = preCodeSnippetEditPanel.GetCommandListDefinition ();
+            }
+            
+            //if (postCodeSnippetEditPanel != null)
+            {
+               mParams.mReturnPostFunctionCallings = postCodeSnippetEditPanel.GetCommandListDefinition ();
+            }
             
             if (BasicSettingPanel != null)
             {

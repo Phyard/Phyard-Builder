@@ -83,7 +83,7 @@ package editor.trigger {
                   variableInstance = targetFunctionDefinition.GetInputVariableSpace ().GetNullVariableInstance ();
                else
                {
-                  variableInstance = targetFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), targetFunctionDefinition.IsPure ());
+                  variableInstance = targetFunctionDefinition.GetInputVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), targetFunctionDefinition.IsCustom ());
                   variableInstance.SetValueObject (mVariableInstance.GetValueObject ());
                }
                
@@ -102,7 +102,7 @@ package editor.trigger {
                   variableInstance = targetFunctionDefinition.GetOutputVariableSpace ().GetNullVariableInstance ();
                else
                {
-                  variableInstance = targetFunctionDefinition.GetOutputVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), targetFunctionDefinition.IsPure ());
+                  variableInstance = targetFunctionDefinition.GetOutputVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), targetFunctionDefinition.IsCustom ());
                   variableInstance.SetValueObject (mVariableInstance.GetValueObject ());
                }
                
@@ -121,18 +121,15 @@ package editor.trigger {
                   variableInstance = targetFunctionDefinition.GetLocalVariableSpace ().GetNullVariableInstance ();
                else
                {
-                  variableInstance = targetFunctionDefinition.GetLocalVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true); // targetFunctionDefinition.IsPure ());
+                  variableInstance = targetFunctionDefinition.GetLocalVariableSpace ().GetVariableInstanceByTypeAndName (mVariableInstance.GetValueType (), mVariableInstance.GetName (), true);
                   variableInstance.SetValueObject (mVariableInstance.GetValueObject ());
                }
                
                return new ValueSource_Variable (variableInstance);
             }
-            case ValueSpaceTypeDefine.ValueSpace_Entity:
-               // assert (targetFunctionDefinition.IsPure () == false);
-               // no problems to use the default handling.
             default: // global / register
             {
-               if (targetFunctionDefinition.IsPure ())
+               if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
                   return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueSource (triggerEngine);
                else
                   return new ValueSource_Variable (mVariableInstance);

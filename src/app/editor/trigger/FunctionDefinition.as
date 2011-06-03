@@ -17,15 +17,18 @@ package editor.trigger {
       
       public var mLocalVariableSpace:VariableSpaceLocal;
       
-      public var mPure:Boolean = false;
+      public var mDesignDependent:Boolean;
       
-      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, isPure:Boolean = false, toDiscardedDefinition:FunctionDefinition = null)
+      // runtime statistics info, not saved in file
+      //public var mPure:Boolean = true;
+      
+      public function FunctionDefinition (triggerEngine:TriggerEngine, functionDeclatation:FunctionDeclaration, designDependent:Boolean = false, toDiscardedDefinition:FunctionDefinition = null)
       {
          mTriggerEngine = triggerEngine;
          
          mFunctionDeclaration = functionDeclatation;
          
-         mPure = isPure;
+         mDesignDependent = designDependent;
          
          if (toDiscardedDefinition == null)
          {
@@ -59,14 +62,42 @@ package editor.trigger {
          }
       }
       
-      public function IsPure ():Boolean
+      //public function IsPure ():Boolean
+      //{
+      //   return mPure;
+      //}
+      //
+      //public function SetPure (pure:Boolean):void
+      //{
+      //   mPure = pure;
+      //}
+      
+      public function IsDesignDependent ():Boolean
       {
-         return mPure;
+         return mDesignDependent;
+      }
+      
+      public function SetDesignDependent (designDependent:Boolean):void
+      {
+         if (mDesignDependent != designDependent)
+         {
+            if (mDesignDependent)
+            {
+               // todo: remove references of global/entity/register variables and direct entities.
+            }
+            
+            mDesignDependent = designDependent;
+         }
       }
       
       public function GetFunctionDeclaration ():FunctionDeclaration
       {
          return mFunctionDeclaration;
+      }
+      
+      public function IsCustom ():Boolean
+      {
+         return mFunctionDeclaration == null ? false : mFunctionDeclaration.GetType () == FunctionTypeDefine.FunctionType_Custom;
       }
       
       public function GetFunctionDeclarationId ():int
@@ -90,6 +121,12 @@ package editor.trigger {
       public function GetLocalVariableSpace ():VariableSpaceLocal
       {
          return mLocalVariableSpace;
+      }
+      
+      // generally don't call this function, this function is specially for EntityEventHandler_TimerWithPrePostHandling
+      public function SetLocalVariableSpace (localVariableSpace:VariableSpaceLocal):void
+      {
+         mLocalVariableSpace = localVariableSpace;
       }
       
       public function ValidateValueSourcesAndTargets ():void
@@ -295,13 +332,13 @@ package editor.trigger {
          
          if ((mFunctionDeclaration is FunctionDeclaration_Custom))
          {
-            newFuncDefinition = new FunctionDefinition (mTriggerEngine, (mFunctionDeclaration as FunctionDeclaration_Custom).Clone (), mPure);
+            newFuncDefinition = new FunctionDefinition (mTriggerEngine, (mFunctionDeclaration as FunctionDeclaration_Custom).Clone (), mDesignDependent);
             
             newFuncDefinition.SybchronizeDeclarationWithDefinition ();
          }
          else
          {
-            newFuncDefinition = new FunctionDefinition (mTriggerEngine, mFunctionDeclaration, mPure);
+            newFuncDefinition = new FunctionDefinition (mTriggerEngine, mFunctionDeclaration, mDesignDependent);
          }
          
          var num_locals:int = mLocalVariableSpace.GetNumVariableInstances ();

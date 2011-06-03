@@ -67,7 +67,7 @@ package editor.trigger {
       
       public function CloneTarget (triggerEngine:TriggerEngine, targetFunctionDefinition:FunctionDefinition, callingFunctionDeclaration:FunctionDeclaration, paramIndex:int):ValueTarget
       {
-         if (targetFunctionDefinition.IsPure ())
+         if (targetFunctionDefinition.IsCustom () && (! targetFunctionDefinition.IsDesignDependent ()))
          {
             return callingFunctionDeclaration.GetInputParamDefinitionAt (paramIndex).GetDefaultValueTarget ();
          }

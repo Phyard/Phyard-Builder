@@ -37,7 +37,7 @@
          </mx:HBox>
       </mx:HBox>
       <mx:HBox id="Box_Commands" height="216" width="100%">
-         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" paddingTop="0" paddingBottom="0" labelField="null" showDataTips="false" useRollOver="false" allowMultipleSelection="true" width="100%" height="100%" editable="false" change="OnCurrentCommandChanged ()">
+         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" paddingTop="0" paddingBottom="0" labelField="null" showDataTips="false" useRollOver="false" allowMultipleSelection="true" width="100%" height="100%" editable="false" click="OnCurrentCommandChanged ();">
             <mx:itemRenderer>
                <mx:Component>
                   <ed:TextForFunctionCallingLine fontSize="10"/>
@@ -126,7 +126,7 @@
          //private var mInputValues:Object;
          
          private var mCodeSnippet:CodeSnippet = null;
-         private var mIsPureCustomFunction:Boolean;
+         private var mIsDesignIndependentCustomFunction:Boolean;
          
          private var mCurrentCallingLine:FunctionCallingLineData = null;
          
@@ -241,6 +241,26 @@
          private function OnSwitchMenuBar ():void
          {
             Runtime.mLongerCodeEditorMenuBar = Button_MenuBarSwitch.selected;
+
+            OnSwitchMenuBarPassively ();
+            
+            if (mExternalOnSwitchMenuBarCallback != null)
+            {
+               mExternalOnSwitchMenuBarCallback (this);
+            }
+         }
+         
+         private var mExternalOnSwitchMenuBarCallback:Function = null;
+         
+         public function SetExternalOnSwitchMenuBar (callback:Function):void
+         {
+            mExternalOnSwitchMenuBarCallback = callback;
+         }
+         
+         public function OnSwitchMenuBarPassively ():void
+         {
+            Button_MenuBarSwitch.selected = Runtime.mLongerCodeEditorMenuBar;
+            
             if (Button_MenuBarSwitch.selected)
             {
                Button_MenuBarSwitch.toolTip = "Shorter Manu Bar";
@@ -301,17 +321,19 @@
          {
             mCodeSnippet = codeSnippet;
             
-            mIsPureCustomFunction = mCodeSnippet.GetOwnerFunctionDefinition ().GetFunctionDeclaration () is FunctionDeclaration_Custom;
+            mIsDesignIndependentCustomFunction = false;
             
-            if (mIsPureCustomFunction)
-            {
-               Box_EditVariablesButtons.removeChild (Button_EditGlobalVariables);
-               Box_EditVariablesButtons.removeChild (Button_EditEntityVariables);
-            }
-            else
+            if (! mCodeSnippet.GetOwnerFunctionDefinition ().IsCustom ())
             {
                Box_EditVariablesButtons.removeChild (Button_EditInputVariables);
                Box_EditVariablesButtons.removeChild (Button_EditOutputVariables);
+            }
+            else if (! mCodeSnippet.GetOwnerFunctionDefinition ().IsDesignDependent ())
+            {
+               mIsDesignIndependentCustomFunction = true;
+               
+               Box_EditVariablesButtons.removeChild (Button_EditGlobalVariables);
+               Box_EditVariablesButtons.removeChild (Button_EditEntityVariables);
             }
             
             Initialize ();
@@ -843,7 +865,7 @@
             var value_control:UIComponent = null;
             if (value_source is ValueSource_Direct)
             {
-               value_control = variable_def.CreateControlForDirectValueSource (value_source as ValueSource_Direct, mIsPureCustomFunction);
+               value_control = variable_def.CreateControlForDirectValueSource (value_source as ValueSource_Direct, mIsDesignIndependentCustomFunction);
             }
             else if (value_source is ValueSource_Variable)
             {
@@ -1120,7 +1142,7 @@
                if (ownerFuncDefinition.HasInputsSatisfy (variableDefinition))
                   AppendContextMenuItem (sprite, "from Input Varialbe", OnSelectValueSource_InputVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Input);
                
-               if (! mIsPureCustomFunction)
+               if (! mIsDesignIndependentCustomFunction)
                {
                   if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                      AppendContextMenuItem (sprite, "from Entity Custom Property", OnSelectValueSource_EntityVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
@@ -1557,7 +1579,7 @@
             if (ownerFuncDefinition.HasOutputsSatisfiedBy (variableDefinition))
                AppendContextMenuItem (sprite, "to Output Variables", OnSelectValueTarget_ReturnVariable, false, space_type != ValueSpaceTypeDefine.ValueSpace_Output);
             
-            if (! mIsPureCustomFunction)
+            if (! mIsDesignIndependentCustomFunction)
             {
                if (Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().HasVariablesSatisfiedBy (variableDefinition))
                   AppendContextMenuItem (sprite, "to Custom Entity Property", OnSelectValueTarget_CustomEntityProperty, false, space_type != ValueSpaceTypeDefine.ValueSpace_Entity);
@@ -1732,6 +1754,20 @@
    // variable editing dialogs
    //=========================================================================================
          
+         private var mExternalOnVariableEditingDialogClosedCallback:Function = null;
+         public function SetExternalOnVariableEditingDialogClosedCallback (callback:Function):void
+         {
+            mExternalOnVariableEditingDialogClosedCallback = callback;
+         }
+         
+         private function ExternalOnVariableEditingDialogClosedCallback (variableSpaceType:int):void
+         {
+            if (mExternalOnVariableEditingDialogClosedCallback != null)
+            {
+               mExternalOnVariableEditingDialogClosedCallback (this, variableSpaceType);
+            }
+         }
+         
          public function CollectVariableEditingDialogsRelatedInfo ():void
          {
             mLastModifyTimesOfGlobalVariableSpace = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
@@ -1766,7 +1802,7 @@
          }
          
          private var mLastModifyTimesOfGlobalVariableSpace:int = -1;
-         private function OnGlobalVariablesEditingDialogClosed ():void
+         public function OnGlobalVariablesEditingDialogClosed ():void
          {
             var newModifyTimes:int = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfGlobalVariableSpace < newModifyTimes)
@@ -1774,6 +1810,8 @@
                OnCurrentCommandChanged ();
                OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
                mLastModifyTimesOfGlobalVariableSpace = newModifyTimes;
+               
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Global);
             }
          }
          
@@ -1785,7 +1823,7 @@
          }
          
          private var mLastModifyTimesOfEntityVariableSpace:int = -1;
-         private function OnEntityVariablesEditingDialogClosed ():void
+         public function OnEntityVariablesEditingDialogClosed ():void
          {
             var newModifyTimes:int = Runtime.GetCurrentWorld ().GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfEntityVariableSpace < newModifyTimes)
@@ -1793,6 +1831,8 @@
                OnCurrentCommandChanged ();
                OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
                mLastModifyTimesOfEntityVariableSpace = newModifyTimes;
+               
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Entity);
             }
          }
          
@@ -1805,7 +1845,7 @@
          }
          
          private var mLastModifyTimesOfLocalVariableSpace:int = -1;
-         private function OnLocalVariablesEditingDialogClosed ():void
+         public function OnLocalVariablesEditingDialogClosed ():void
          {
             var newModifyTimes:int = mCodeSnippet.GetOwnerFunctionDefinition ().GetLocalVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfLocalVariableSpace < newModifyTimes)
@@ -1813,6 +1853,8 @@
                OnCurrentCommandChanged ();
                OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
                mLastModifyTimesOfLocalVariableSpace = newModifyTimes;
+               
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Local);
             }
          }
          
@@ -1825,7 +1867,7 @@
          }
          
          private var mLastModifyTimesOfInputVariableSpace:int = -1;
-         private function OnInputVariablesEditingDialogClosed ():void
+         public function OnInputVariablesEditingDialogClosed ():void
          {
             var newModifyTimes:int = mCodeSnippet.GetOwnerFunctionDefinition ().GetInputVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfInputVariableSpace < newModifyTimes)
@@ -1840,6 +1882,8 @@
                OnCurrentCommandChanged (false);
                OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
                mLastModifyTimesOfInputVariableSpace = newModifyTimes;
+               
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Input);
             }
          }
           
@@ -1852,7 +1896,7 @@
          }
          
          private var mLastModifyTimesOfOutputVariableSpace:int = -1;
-         private function OnOutputVariablesEditingDialogClosed ():void
+         public function OnOutputVariablesEditingDialogClosed ():void
          {
             var newModifyTimes:int = mCodeSnippet.GetOwnerFunctionDefinition ().GetOutputVariableSpace ().GetNumModifiedTimes ();
             if (mLastModifyTimesOfOutputVariableSpace < newModifyTimes)
@@ -1868,6 +1912,8 @@
                OnCurrentCommandChanged (false);
                OnSwitchCodeFormat (Runtime.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
                mLastModifyTimesOfOutputVariableSpace = newModifyTimes;
+               
+               ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Output);
             }
          }
          

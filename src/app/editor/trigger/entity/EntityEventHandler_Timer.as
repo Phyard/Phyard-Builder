@@ -28,7 +28,6 @@ package editor.trigger.entity {
       public function EntityEventHandler_Timer (world:World, defaultEventId:int, potientialEventIds:Array = null)
       {
          super (world, defaultEventId, potientialEventIds);
-         
       }
       
       public function SetRunningInterval (interval:Number):void

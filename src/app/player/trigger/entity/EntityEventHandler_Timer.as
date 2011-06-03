@@ -3,6 +3,7 @@ package player.trigger.entity
    import player.world.World;
    
    import player.trigger.TriggerEngine;
+   import player.trigger.FunctionDefinition_Custom;   
    import player.trigger.CodeSnippet;
    import player.trigger.Parameter;
    import player.trigger.Parameter_Direct;
@@ -10,12 +11,18 @@ package player.trigger.entity
    import player.trigger.data.ListElement_InputEntityAssigner;
    
    import common.trigger.define.CodeSnippetDefine;
-   
+   import common.trigger.define.FunctionDefine;
+      
    import common.trigger.CoreEventIds;
    import common.trigger.CoreEventDeclarations;
+
+   import common.TriggerFormatHelper2;
    
    public class EntityEventHandler_Timer extends EntityEventHandler
    {
+      public var mPreEventHandlerDefinition:FunctionDefinition_Custom = null;
+      public var mPostEventHandlerDefinition:FunctionDefinition_Custom = null;
+      
       public function EntityEventHandler_Timer (world:World)
       {
          super (world);
@@ -36,6 +43,29 @@ package player.trigger.entity
             
             if (entityDefine.mOnlyRunOnce != undefined)
                SetOnlyRunOnce (entityDefine.mOnlyRunOnce as Boolean);
+            
+            if (mEventId == CoreEventIds.ID_OnEntityTimer || mEventId == CoreEventIds.ID_OnEntityPairTimer)
+            {
+               if (entityDefine.mPreFunctionDefine != undefined)
+               {
+                  var preCodeSnippetDefine:CodeSnippetDefine = ((entityDefine.mPreFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
+                  preCodeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
+   
+                  mPreEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mPreFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
+                  mPreEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
+                  mPreEventHandlerDefinition.SetCodeSnippetDefine (preCodeSnippetDefine);
+               }
+               
+               if (entityDefine.mPostFunctionDefine != undefined)
+               {
+                  var postCodeSnippetDefine:CodeSnippetDefine = ((entityDefine.mPostFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
+                  postCodeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
+   
+                  mPostEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mPostFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
+                  mPostEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
+                  mPostEventHandlerDefinition.SetCodeSnippetDefine (postCodeSnippetDefine);
+               }
+            }
          }
       }
       
@@ -191,6 +221,15 @@ package player.trigger.entity
          
          mTimerEventHandlerValueSource0.mValueObject = mRunningTimes;
          
+         // when running code here, mIsEnabled must be true
+         
+         // pre handling
+         if (mPreEventHandlerDefinition != null) // should not be null
+         {
+            mPreEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
+         }
+         
+         // handling
          var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
          while (list_element != null)
          {
@@ -198,6 +237,14 @@ package player.trigger.entity
             
             list_element = list_element.mNextListElement;
          }
+         
+         // when running code here, mIsEnabled may be false, but the post handling will be always called
+         
+         // post handling
+         if (mPostEventHandlerDefinition != null) // should not be null
+         {
+            mPostEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
+         } 
       }      
       public function HandleEntityPairTimerEvent ():void
       {
@@ -206,6 +253,15 @@ package player.trigger.entity
          
          mTimerEventHandlerValueSource0.mValueObject = mRunningTimes;
          
+         // when running code here, mIsEnabled must be true
+         
+         // pre handling
+         if (mPreEventHandlerDefinition != null) // should not be null
+         {
+            mPreEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
+         }
+         
+         // handling
          var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
          while (list_element != null)
          {
@@ -213,6 +269,13 @@ package player.trigger.entity
             
             list_element = list_element.mNextListElement;
          }
-      }      
-   }
+         
+         // when running code here, mIsEnabled may be false, but the post handling will be always called
+         
+         // post handling
+         if (mPostEventHandlerDefinition != null) // should not be null
+         {
+            mPostEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
+         } 
+      }   }
 }

@@ -90,9 +90,11 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
       
       // todo: use cache to get a faster FindEventHandlerForEntityPair
       
-      contact_info.mFirstBeginContactingHandler = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, id1, id2, true);
-      contact_info.mFirstKeepContactingHandler  = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, id1, id2, true);
-      contact_info.mFirstEndContactingHandler   = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, id1, id2, true);
+      contact_info.mFirstBeginContactingHandler = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting, shape1, shape2, true);
+      contact_info.mFirstEndContactingHandler   = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesEndContacting, shape1, shape2, true);
+      
+      //contact_info.mFirstKeepContactingHandler  = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, shape1, shape2, true); // make this search when nneeded now
+      contact_info.mKeepContactingHandlerSearched = false;
       
       //if (shape1.IsSensor () && shape2.IsShapeCenterPoint ())
       //   FindEventHandlerForEntityPair (CoreEventIds.ID_OnSensorContainsPhysicsShape, );
@@ -288,6 +290,12 @@ private function HandleShapeContactEvents ():void
    contact_info = mFirstShapeContactInfo;
    while (contact_info != null)
    {
+      if (! contact_info.mKeepContactingHandlerSearched)
+      {
+         contact_info.mFirstKeepContactingHandler  = FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting, contact_info.mEntityShape1, contact_info.mEntityShape2, true); // make this search when nneeded now
+         contact_info.mKeepContactingHandlerSearched = true;   
+      }
+      
       HandleShapeContactEvent (contact_info, contact_info.mFirstKeepContactingHandler, true);
       
       last_contact_info = contact_info;
@@ -449,31 +457,49 @@ private function HandleShapeContactEvents ():void
 }
 */
 
-private function FindEventHandlerForEntityPair (eventId:int, entityId1:int, entityId2:int, ignorePairOrder:Boolean):ListElement_EventHandler
+private function FindEventHandlerForEntityPair (eventId:int, shape1:EntityShape, shape2:EntityShape, ignorePairOrder:Boolean):ListElement_EventHandler
 {
    // assume all params are valid
    
-   var result:int;
-   var list_head:ListElement_EventHandler;
-   var list_element:ListElement_EventHandler;
+   var return_handlers:ListElement_EventHandler = null;
    
    var handler_element:ListElement_EventHandler = mEventHandlers [eventId];
    
+   var new_handler_element:ListElement_EventHandler;
+   var selector_element:ListElement_EntitySelector
+   var result:int;
+
    while (handler_element != null)
    {
-      result = EntityInputEntityAssigner.GetContainingEntityPairResult (handler_element.mEventHandler.mFirstEntityAssigner, entityId1, entityId2, ignorePairOrder);
+      // check if this handler will handle this pair contacting event
       
-      if (result != EntityInputEntityAssigner.ContainingResult_False)
+      result = EntitySelector.PairContainingResult_False;
+
+      selector_element = handler_element.mEventHandler.mFirstEntitySelector;
+      
+      while (selector_element != null)
       {
-         list_element = new ListElement_EventHandler (handler_element.mEventHandler);
-         list_element.mNeedExchangePairOrder = result == EntityInputEntityAssigner.ContainingResult_TrueButNeedExchangePairOrder;
+         result = selector_element.mEntitySelector.ContainsEntityPair (shape1, shape2, ignorePairOrder);
          
-         list_element.mNextListElement = list_head;
-         list_head = list_element;
+         if (result != EntitySelector.PairContainingResult_False)
+            break;
+         
+         selector_element = selector_element.mNextListElement;
+      }
+      
+      // handling?
+      
+      if (result != EntitySelector.PairContainingResult_False)
+      {
+         new_handler_element = new ListElement_EventHandler (handler_element.mEventHandler);
+         new_handler_element.mNeedExchangePairOrder = (result == EntitySelector.PairContainingResult_TrueButNeedExchangePairOrder);
+         
+         new_handler_element.mNextListElement = return_handlers;
+         return_handlers = new_handler_element;
       }
       
       handler_element = handler_element.mNextListElement;
    }
    
-   return list_head;
+   return return_handlers;
 }

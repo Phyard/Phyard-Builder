@@ -44,7 +44,8 @@ package player.trigger.entity
                   
                   for (var i:int = length - 1; i >= 0; -- i)
                   {
-                     newOne = new ConditionAndTargetValue (mWorld.GetEntityByCreationId (int(conditionEntityIndexes [i])) as EntityCondition, int (targetValues [i]));
+                     // must be an entity palced in editor
+                     newOne = new ConditionAndTargetValue (mWorld.GetEntityByCreateOrderId (int(conditionEntityIndexes [i]), false) as EntityCondition, int (targetValues [i]));
                      
                      newOne.mNextConditionAndTargetValue = mInputConditionListHead;
                      mInputConditionListHead = newOne;

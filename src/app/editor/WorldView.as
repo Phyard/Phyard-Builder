@@ -3719,14 +3719,14 @@ package editor {
       
       public function CreateEntityInputEntityFilter (options:Object = null):EntityInputEntityScriptFilter
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityScriptFilter).SetInternalComponentsVisible (true);
             return null;
          }
          
-         var entity_filter:EntityInputEntityScriptFilter = mEditorWorld.CreateEntityInputEntityFilter ();
+         var entity_filter:EntityInputEntityScriptFilter = mEditorWorld.CreateEntityInputEntityScriptFilter ();
          if (entity_filter == null)
             return null;
          
@@ -3737,14 +3737,14 @@ package editor {
       
       public function CreateEntityInputEntityPairFilter (options:Object = null):EntityInputEntityPairScriptFilter
       {
-         if (options != null && options.stage ==ModePlaceCreateEntity. StageFinished)
+         if (options != null && options.stage == ModePlaceCreateEntity. StageFinished)
          {
             // show the entity selector
             (options.entity as EntityInputEntityPairScriptFilter).SetInternalComponentsVisible (true);
             return null;
          }
          
-         var entity_pair_filter:EntityInputEntityPairScriptFilter = mEditorWorld.CreateEntityInputEntityPairFilter ();
+         var entity_pair_filter:EntityInputEntityPairScriptFilter = mEditorWorld.CreateEntityInputEntityPairScriptFilter ();
          if (entity_pair_filter == null)
             return null;
          

@@ -2,13 +2,13 @@ package player.trigger.entity
 {
    import player.world.World;
    
-   import player.trigger.data.ListElement_InputEntityAssigner;
+   import player.trigger.data.ListElement_EntitySelector;
    
    import common.trigger.ValueDefine;
    
    public class EntityTask extends EntityCondition
    {
-      protected var mFirstEntityAssigner:ListElement_InputEntityAssigner = null;
+      protected var mFirstEntitySelector:ListElement_EntitySelector = null;
       
       public function EntityTask (world:World)
       {
@@ -30,13 +30,14 @@ package player.trigger.entity
                var assignerEntityIndexes:Array = entityDefine.mInputAssignerCreationIds;
                if (assignerEntityIndexes != null)
                {
-                  var newElement:ListElement_InputEntityAssigner;
+                  var newElement:ListElement_EntitySelector;
                    
                   for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
                   {
-                     newElement = new ListElement_InputEntityAssigner (mWorld.GetEntityByCreationId (int(assignerEntityIndexes [i])) as EntityInputEntityAssigner);
-                     newElement.mNextListElement = mFirstEntityAssigner;
-                     mFirstEntityAssigner = newElement;
+                     // only support entities placed in editor
+                     newElement = new ListElement_EntitySelector (mWorld.GetEntityByCreateOrderId (int(assignerEntityIndexes [i]), false) as EntitySelector);
+                     newElement.mNextListElement = mFirstEntitySelector;
+                     mFirstEntitySelector = newElement;
                   }
                }
             }
@@ -51,12 +52,12 @@ package player.trigger.entity
       {
          var num_undetermineds:int = 0;
          
-         var element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
+         var element:ListElement_EntitySelector = mFirstEntitySelector;
          var status:int;
          
          while (element != null)
          {
-            status = element.mInputEntityAssigner.GetEntityListTaskStatus ();
+            status = element.mEntitySelector.GetEntityListTaskStatus ();
             if (status == ValueDefine.TaskStatus_Unfinished)
                ++ num_undetermineds;
             else if (status == ValueDefine.TaskStatus_Failed)

@@ -5,6 +5,7 @@ package player.trigger.entity
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
    import player.trigger.VariableInstance;
+   import player.trigger.Parameter_Direct;
    import player.trigger.Parameter_Variable;
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionDefine;
@@ -58,23 +59,24 @@ package player.trigger.entity
       
       public function RunScript ():void
       {
-         Evaluate ();
+         RunBoolFunction ();
       }
       
 //=============================================================
 //   as Bool Function
 //=============================================================
       
-      private var mBooleanReturnValueTarget:Parameter_Variable = new Parameter_Variable (new VariableInstance (false));
+      // todo, seems it is ok to use parameters like that in contact event handling.
+      // currently, ApplyNewDirectParameter and ReleaseDirectParameter are some not very efficient.
       
       public function RunBoolFunction ():Boolean
       {
-         //mBooleanReturnValueTarget.AssignValueObject (false); // default value
+         var outputValueTarget:Parameter_Direct = TriggerEngine.ApplyNewDirectParameter (false, null);
          
          // if (mConditionListDefinition != null) // should not be null
-         mConditionDefinition.EvaluateCondition (mBooleanReturnValueTarget);
+         mConditionDefinition.DoCall (null, outputValueTarget);
          
-         return mBooleanReturnValueTarget.EvaluateValueObject () as Boolean;
+         return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
       }
       
    }

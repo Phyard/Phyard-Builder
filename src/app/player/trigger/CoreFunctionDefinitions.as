@@ -2250,7 +2250,7 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             var idOffset:int = int (valueSource.EvaluateValueObject ());
 
-            valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetEntityByCreationId (baseEntity.GetCreationId () + idOffset, false));
+            valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetEntityByCreateOrderId (baseEntity.GetCreationId () + idOffset, false));
          }
       }
 

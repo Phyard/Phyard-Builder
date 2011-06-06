@@ -65,7 +65,7 @@ package player.entity {
             // for joints with 1 anchor in editor (hinge)
             if (entityDefine.mAnchorEntityIndex != undefined)
             {
-               mAnchor1 = mWorld.GetEntityByCreationId (entityDefine.mAnchorEntityIndex) as SubEntityJointAnchor;
+               mAnchor1 = mWorld.GetEntityByCreateOrderId (entityDefine.mAnchorEntityIndex, true) as SubEntityJointAnchor; // may be a runtime-created entity
                
                mAnchor2 = new SubEntityJointAnchor (mWorld); // this one doesn't exit in editor
                mAnchor2.SetPositionX (mAnchor1.GetPositionX ());
@@ -79,12 +79,12 @@ package player.entity {
             // for joint with 2 anchors in editor (slider, distance, spring, )
             if (entityDefine.mAnchor1EntityIndex != undefined)
             {
-               mAnchor1 = mWorld.GetEntityByCreationId (entityDefine.mAnchor1EntityIndex) as SubEntityJointAnchor;
+               mAnchor1 = mWorld.GetEntityByCreateOrderId (entityDefine.mAnchor1EntityIndex, true) as SubEntityJointAnchor; // may be a runtime-created entity
             }
 
             if (entityDefine.mAnchor2EntityIndex != undefined)
             {
-               mAnchor2 = mWorld.GetEntityByCreationId (entityDefine.mAnchor2EntityIndex) as SubEntityJointAnchor;
+               mAnchor2 = mWorld.GetEntityByCreateOrderId (entityDefine.mAnchor2EntityIndex, true) as SubEntityJointAnchor; // may be a runtime-created entity
             }
 
             // both anchors should not be null now
@@ -308,9 +308,9 @@ package player.entity {
          var shape2:EntityShape = null;
          
          if (shapeIndex1 != Define.EntityId_None)
-            shape1 = mWorld.GetEntityByCreationId (shapeIndex1) as EntityShape;
+            shape1 = mWorld.GetEntityByCreateOrderId (shapeIndex1, true) as EntityShape; // may be a runtime-created entity
          if (shapeIndex2 != Define.EntityId_None)
-            shape2 = mWorld.GetEntityByCreationId (shapeIndex2) as EntityShape;
+            shape2 = mWorld.GetEntityByCreateOrderId (shapeIndex2, true) as EntityShape; // may be a runtime-created entity
 
          if (shapeIndex1 == Define.EntityId_None || shapeIndex2 == Define.EntityId_None)
          {
@@ -445,9 +445,9 @@ package player.entity {
          var shape2:EntityShape = null;
          
          if (shapeIndex1 != Define.EntityId_None)
-            shape1 = mWorld.GetEntityByCreationId (shapeIndex1) as EntityShape;
+            shape1 = mWorld.GetEntityByCreateOrderId (shapeIndex1, true) as EntityShape; // may be a runtime-created entity
          if (shapeIndex2 != Define.EntityId_None)
-            shape2 = mWorld.GetEntityByCreationId (shapeIndex2) as EntityShape;
+            shape2 = mWorld.GetEntityByCreateOrderId (shapeIndex2, true) as EntityShape; // may be a runtime-created entity
          
          if (shapeIndex1 == Define.EntityId_None || shapeIndex2 == Define.EntityId_None)
          {

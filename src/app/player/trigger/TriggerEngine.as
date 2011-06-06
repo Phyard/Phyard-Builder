@@ -67,9 +67,58 @@ package player.trigger
          return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_Bool];
       }
       
+      public static function GetEntityFilterFunctionDeclaration ():FunctionDeclaration
+      {
+         return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_EntityFilter];
+      }
+      
+      public static function GetEntityPairFilterFunctionDeclaration ():FunctionDeclaration
+      {
+         return CoreFunctionDeclarations.sCoreFunctionDeclarations [CoreFunctionIds.ID_EntityPairFilter];
+      }
+      
 //=============================================================================
-// 
+// cached Parameter instances
 //=============================================================================
+      
+      public static var mFreeDirectParameterListHead:Parameter_Direct = null;
+      
+      public static function ApplyNewDirectParameter (initialValue:Object, nextParameter:Parameter):Parameter_Direct
+      {
+         var returnParameter:Parameter_Direct = mFreeDirectParameterListHead;
+         
+         if (returnParameter != null)
+         {
+            mFreeDirectParameterListHead = returnParameter.mNextParameter as Parameter_Direct;
+            returnParameter.mValueObject = initialValue; // a little faster than calling AssignValueObject
+         }
+         else
+         {
+            returnParameter = new Parameter_Direct (initialValue);
+         }
+         
+         returnParameter.mNextParameter = nextParameter;
+         
+         return returnParameter;
+      }
+      
+      public static function ReleaseDirectParameter_Target (parameter:Parameter_Direct):Object
+      {
+         var returnValue:Object = parameter.mValueObject;
+         
+         parameter.mValueObject = null; // a little faster than calling AssignValueObject
+         parameter.mNextParameter = mFreeDirectParameterListHead;
+         mFreeDirectParameterListHead = parameter;
+         
+         return returnValue;
+      }
+      
+      public static function ReleaseDirectParameter_Source (parameter:Parameter_Direct):void
+      {
+         parameter.mValueObject = null; // a little faster than calling AssignValueObject
+         parameter.mNextParameter = mFreeDirectParameterListHead;
+         mFreeDirectParameterListHead = parameter;
+      }
       
    }
 }

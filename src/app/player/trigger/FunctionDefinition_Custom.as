@@ -13,6 +13,8 @@ package player.trigger
       protected var mCurrentFunctionInstance:FunctionInstance = null;
       protected var mCodeSnippet:CodeSnippet;
       
+      protected var mDesignDependent:Boolean = true;
+      
       internal var mNumLocalVariables:int;
       
       internal var mInputVariableReferences:Array;
@@ -38,6 +40,16 @@ package player.trigger
          mLocalVariableRefList = mNumLocalVariables > 0 ? mLocalVariableReferences [0] : null;
          
          mPrimaryFunctionInstance = new FunctionInstance (this);
+      }
+      
+      public function SetDesignDependent (designDependent:Boolean):void
+      {
+         mDesignDependent = designDependent;
+      }
+      
+      public function IsDesignDependent ():Boolean
+      {
+         return mDesignDependent;
       }
       
       public function GetNumLocalVariables ():int
@@ -136,17 +148,8 @@ package player.trigger
          }
       }
       
-      // as condition component, no inputs
-      public function EvaluateCondition (outputParamList:Parameter):void
-      {
-         // no inputs
-         //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
-         
-         mCodeSnippet.Excute ();
-         
-         mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
-      }
-      
+      // special for event handlers, a little faster than DoCall. Maybe it is not worthy to create this function.
+      // NOTICE: DON'T call this function in iteration functions
       // as event handler, no returns
       public function ExcuteEventHandler (inputParamList:Parameter):void
       {
@@ -158,15 +161,28 @@ package player.trigger
          //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
       }
       
-      // as action, no inputs, returns
-      public function ExcuteAction ():void
-      {
-         //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
-         
-         mCodeSnippet.Excute ();
-         
-         // no returns
-         //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
-      }
+      // EvaluateCondition and ExcuteAction are disabled now for it is wrong to call them in CallScript API, which may can these functions in iteration functions
+      // 
+      //// as condition component, no inputs
+      //public function EvaluateCondition (outputParamList:Parameter):void
+      //{
+      //   // no inputs
+      //   //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+      //   
+      //   mCodeSnippet.Excute ();
+      //   
+      //   mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+      //}
+      //
+      //// as action, no inputs, returns
+      //public function ExcuteAction ():void
+      //{
+      //   //mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
+      //   
+      //   mCodeSnippet.Excute ();
+      //   
+      //   // no returns
+      //   //mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
+      //}
    }
 }

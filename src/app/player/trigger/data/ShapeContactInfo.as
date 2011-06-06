@@ -39,8 +39,11 @@ package player.trigger.data
       //public var mEndPointY:Number;
       
       public var mFirstBeginContactingHandler:ListElement_EventHandler = null;
-      public var mFirstKeepContactingHandler:ListElement_EventHandler = null;
       public var mFirstEndContactingHandler:ListElement_EventHandler = null;
+      
+      public var mFirstKeepContactingHandler:ListElement_EventHandler = null;
+      public var mKeepContactingHandlerSearched:Boolean = false;
+      
       //public var mFirstSensorContainsShapeHandler:ListElement_EventHandler = null;
    }
 }

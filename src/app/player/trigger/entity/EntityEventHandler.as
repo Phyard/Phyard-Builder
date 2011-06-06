@@ -6,7 +6,7 @@ package player.trigger.entity
    import player.trigger.FunctionDefinition_Custom;
    import player.trigger.Parameter;
 
-   import player.trigger.data.ListElement_InputEntityAssigner;
+   import player.trigger.data.ListElement_EntitySelector;
 
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionDefine;
@@ -22,7 +22,7 @@ package player.trigger.entity
 
       public var mExternalCondition:ConditionAndTargetValue = null;
 
-      public var mFirstEntityAssigner:ListElement_InputEntityAssigner = null;
+      public var mFirstEntitySelector:ListElement_EntitySelector = null;
 
       protected var mEventId:int = CoreEventIds.ID_Invalid;
       public var mEventHandlerDefinition:FunctionDefinition_Custom = null;
@@ -71,7 +71,8 @@ package player.trigger.entity
             // external condition
             if (entityDefine.mInputConditionEntityCreationId != undefined && entityDefine.mInputConditionTargetValue != undefined)
             {
-               var conditionEntity:EntityCondition = mWorld.GetEntityByCreationId (entityDefine.mInputConditionEntityCreationId) as EntityCondition;
+               // must be an entity placed in editor
+               var conditionEntity:EntityCondition = mWorld.GetEntityByCreateOrderId (entityDefine.mInputConditionEntityCreationId, false) as EntityCondition;
                if (conditionEntity != null)
                {
                   mExternalCondition =  new ConditionAndTargetValue (conditionEntity, entityDefine.mInputConditionTargetValue);
@@ -80,22 +81,24 @@ package player.trigger.entity
 
             if (entityDefine.mExternalActionEntityCreationId != undefined)
             {
-                mExternalAction = mWorld.GetEntityByCreationId (entityDefine.mExternalActionEntityCreationId) as EntityAction;
+               // must be an entity placed in editor
+                mExternalAction = mWorld.GetEntityByCreateOrderId (entityDefine.mExternalActionEntityCreationId, false) as EntityAction;
             }
          }
-         else if (createStageId == 1) // somthing to do after all EntityAssigners are created with stageId=0
+         else if (createStageId == 1) // somthing to do after all EntitySelectors are created with stageId=0
          {
             // entity (pair) assigners
             if (entityDefine.mInputAssignerCreationIds != undefined)
             {
                var assignerEntityIndexes:Array = entityDefine.mInputAssignerCreationIds;
-               var newElement:ListElement_InputEntityAssigner;
+               var newElement:ListElement_EntitySelector;
 
                for (var i:int = assignerEntityIndexes.length - 1; i >= 0; -- i)
                {
-                  newElement = new ListElement_InputEntityAssigner (mWorld.GetEntityByCreationId (int(assignerEntityIndexes [i])) as EntityInputEntityAssigner);
-                  newElement.mNextListElement = mFirstEntityAssigner;
-                  mFirstEntityAssigner = newElement;
+                  // must be an entity placed in editor
+                  newElement = new ListElement_EntitySelector (mWorld.GetEntityByCreateOrderId (int(assignerEntityIndexes [i]), false) as EntitySelector);
+                  newElement.mNextListElement = mFirstEntitySelector;
+                  mFirstEntitySelector = newElement;
                }
             }
 
@@ -132,10 +135,10 @@ package player.trigger.entity
             case CoreEventIds.ID_OnEntityMouseMove:
             case CoreEventIds.ID_OnEntityMouseEnter:
             case CoreEventIds.ID_OnEntityMouseOut:
-               var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
+               var list_element:ListElement_EntitySelector = mFirstEntitySelector;
                while (list_element != null)
                {
-                  list_element.mInputEntityAssigner.RegisterEventHandlerForEntities (mEventId, this);
+                  list_element.mEntitySelector.RegisterEventHandlerForEntities (mEventId, this);
 
                   list_element = list_element.mNextListElement;
                }

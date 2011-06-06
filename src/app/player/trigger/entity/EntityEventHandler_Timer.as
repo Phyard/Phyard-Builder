@@ -8,7 +8,7 @@ package player.trigger.entity
    import player.trigger.Parameter;
    import player.trigger.Parameter_Direct;
    
-   import player.trigger.data.ListElement_InputEntityAssigner;
+   import player.trigger.data.ListElement_EntitySelector;
    
    import common.trigger.define.CodeSnippetDefine;
    import common.trigger.define.FunctionDefine;
@@ -230,17 +230,17 @@ package player.trigger.entity
          }
          
          // handling
-         var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
+         var list_element:ListElement_EntitySelector = mFirstEntitySelector;
          while (list_element != null)
          {
-            list_element.mInputEntityAssigner.HandleTimerEventForEntities (this, mTimerEventHandlerValueSourceList);
+            list_element.mEntitySelector.HandleTimerEventForEntities (this, mTimerEventHandlerValueSourceList);
             
             list_element = list_element.mNextListElement;
          }
          
          // when running code here, mIsEnabled may be false, but the post handling will be always called
          
-         // post handling
+         // post handling (if pre handlign is called , the post must be also be called)
          if (mPostEventHandlerDefinition != null) // should not be null
          {
             mPostEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
@@ -262,17 +262,17 @@ package player.trigger.entity
          }
          
          // handling
-         var list_element:ListElement_InputEntityAssigner = mFirstEntityAssigner;
+         var list_element:ListElement_EntitySelector = mFirstEntitySelector;
          while (list_element != null)
          {
-            list_element.mInputEntityAssigner.HandleTimerEventForEntityPairs (this, mTimerEventHandlerValueSourceList);
+            list_element.mEntitySelector.HandleTimerEventForEntityPairs (this, mTimerEventHandlerValueSourceList);
             
             list_element = list_element.mNextListElement;
          }
          
          // when running code here, mIsEnabled may be false, but the post handling will be always called
          
-         // post handling
+         // post handling (if pre handlign is called , the post must be also be called)
          if (mPostEventHandlerDefinition != null) // should not be null
          {
             mPostEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);

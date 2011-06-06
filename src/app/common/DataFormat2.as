@@ -43,7 +43,7 @@ package common {
    import player.trigger.entity.EntityTask;
    import player.trigger.entity.EntityConditionDoor;
    import player.trigger.entity.EntityInputEntityAssigner;
-   //import player.trigger.entity.EntityInputEntityFilter;
+   import player.trigger.entity.EntityInputEntityFilter;
    import player.trigger.entity.EntityAction;
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.entity.EntityEventHandler_Timer;
@@ -155,12 +155,12 @@ package common {
             case Define.EntityType_LogicInputEntityPairAssigner:
                entity = new EntityInputEntityAssigner (playerWorld, true);
                break;
-            //case Define.EntityType_LogicInputEntityFilter:
-            //   entity = new EntityInputEntityFilter (playerWorld, false);
-            //   break;
-            //case Define.EntityType_LogicInputEntityPairFilter:
-            //   entity = new EntityInputEntityFilter (playerWorld, true);
-            //   break;
+            case Define.EntityType_LogicInputEntityFilter:
+               entity = new EntityInputEntityFilter (playerWorld, false);
+               break;
+            case Define.EntityType_LogicInputEntityPairFilter:
+               entity = new EntityInputEntityFilter (playerWorld, true);
+               break;
             case Define.EntityType_LogicAction:
                entity = new EntityAction (playerWorld);
                break;
@@ -361,10 +361,13 @@ package common {
             var numFunctions:int = worldDefine.mFunctionDefines.length;
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
             {
-               var codeSnippetDefine:CodeSnippetDefine = ((worldDefine.mFunctionDefines [functionId] as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
+               var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               var codeSnippetDefine:CodeSnippetDefine = (functionDefine.mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                codeSnippetDefine.DisplayValues2PhysicsValues (playerWorld.GetCoordinateSystem ());
                
-               Global.GetCustomFunctionDefinition (functionId).SetCodeSnippetDefine (codeSnippetDefine);
+               var customFunction:FunctionDefinition_Custom = Global.GetCustomFunctionDefinition (functionId);
+               customFunction.SetDesignDependent (functionDefine.mDesignDependent);
+               customFunction.SetCodeSnippetDefine (codeSnippetDefine);
             }
          }
          
@@ -609,6 +612,10 @@ package common {
                element.@name = functionDefine.mName;
                element.@x = functionDefine.mPosX;
                element.@y = functionDefine.mPosY;
+               if (worldDefine.mVersion >= 0x0156)
+               {
+                  element.@design_dependent = functionDefine.mDesignDependent ? 1 : 0;
+               }
                
                xml.CustomFunctions.appendChild (element);
             }
@@ -953,6 +960,16 @@ package common {
                else
                   TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
             }
+            //>>from v1.56
+            else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
+            {
+               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
+            }
+            else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
+            {
+               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
+            }
+            //<<            
          }
          else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
          {
@@ -1407,6 +1424,10 @@ package common {
                functionDefine.mName = byteArray.readUTF ();
                functionDefine.mPosX = byteArray.readFloat ();
                functionDefine.mPosY = byteArray.readFloat ();
+               if (worldDefine.mVersion >= 0x0153)
+               {
+                  functionDefine.mDesignDependent = byteArray.readByte () != 0;
+               }               
                
                TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, false, worldDefine.mFunctionDefines);
             }
@@ -1566,6 +1587,16 @@ package common {
                   else
                      entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
                }
+               //>>from v1.56
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
+               {
+                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
+               {
+                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
+               }
+               //<<  
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
@@ -2016,10 +2047,6 @@ package common {
                {
                   TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mFunctionDefine);
                }
-               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
-               {
-                  TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mFunctionDefine);
-               }
                else if (entityDefine.mEntityType == Define.EntityType_LogicEventHandler)
                {
                   TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mFunctionDefine);
@@ -2030,6 +2057,20 @@ package common {
                      TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPostFunctionDefine);
                   }
                }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
+               {
+                  TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mFunctionDefine);
+               }
+               //>>from v1.56
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
+               {
+                  TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mFunctionDefine);
+               }
+               else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
+               {
+                  TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mFunctionDefine);
+               }
+               //<<                 
             }
             else if ( Define.IsShapeEntity (entityDefine.mEntityType) )
             {
@@ -2535,6 +2576,17 @@ package common {
             for (var appearId:int = 0; appearId < numEntities; ++ appearId)
             {
                worldDefine.mEntityAppearanceOrder.push (appearId);
+            }
+         }
+         
+         // functions
+         for (var functionId:int = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+         {
+            var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+            
+            if (worldDefine.mVersion < 0x0156)
+            {
+               functionDefine.mDesignDependent = false;
             }
          }
       }

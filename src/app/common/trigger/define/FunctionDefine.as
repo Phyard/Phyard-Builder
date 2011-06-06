@@ -5,6 +5,7 @@ package common.trigger.define
       public var mName:String; // for custom function only
       public var mPosX:int; // for custom function only
       public var mPosY:int; // for custom function only
+      public var mDesignDependent:Boolean; // for custom function only
       
       public var mInputVariableDefines:Array = new Array (); // For custom function only
       

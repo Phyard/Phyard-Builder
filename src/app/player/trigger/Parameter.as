@@ -12,13 +12,13 @@ package player.trigger
       // as an input
       public function EvaluateValueObject ():Object
       {
-         return undefined;
+         return undefined; // to override
       }
       
       // as an output
       public function AssignValueObject (valueObject:Object):void
       {
-         // do nothing
+         // to override
       }
    }
 }

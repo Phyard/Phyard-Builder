@@ -330,6 +330,7 @@ package player.entity {
       {
          var  list_element:ListElement_EventHandler = list;
          
+         // avoid duplicated ones
          while (list_element != null)
          {
             if (list_element.mEventHandler == eventHandler)
@@ -338,6 +339,7 @@ package player.entity {
             list_element = list_element.mNextListElement;
          }
          
+         // ok, not exist yet, add it as new
          var new_element:ListElement_EventHandler = new ListElement_EventHandler (eventHandler);
          new_element.mNextListElement = list;
          
@@ -445,7 +447,7 @@ package player.entity {
          
          DestroyPhysicsProxy ();
          
-         var  list_element:ListElement_EventHandler = mDestroyEventHandlerList;
+         var list_element:ListElement_EventHandler = mDestroyEventHandlerList;
          
          mEventHandlerValueSource0.mValueObject = this;
          

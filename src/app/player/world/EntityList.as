@@ -26,6 +26,16 @@ package player.world {
          mLastMarkedTail = null;
       }
       
+      public function GetHead ():Entity
+      {
+         return mHead;
+      }
+      
+      public function GetTail ():Entity
+      {
+         return mTail;
+      }
+      
       internal function AddEntity (entity:Entity):void
       {
          if (entity.mEntityList != null)
@@ -97,6 +107,9 @@ package player.world {
          
          entity.mEntityList = null;
       }
+
+      // since mCreationIdsToDelete_ThisStep and mCreationIdsToDelete_LastStep are added, 
+      // the "mIsRemovingLocked" and "DelayUnregisterEntities" may be not essential any more.
       
       private function DelayUnregisterEntities ():void
       {

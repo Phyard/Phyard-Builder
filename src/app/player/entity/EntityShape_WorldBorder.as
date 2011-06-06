@@ -19,5 +19,10 @@ package player.entity {
          mWorld.RemoveChildFromEntityLayer (mAppearanceObjectsContainer); // added in EntityShape class
          mWorld.AddChildToBorderLayer (mAppearanceObjectsContainer);
       }
+      
+      override protected function RemoveAppearanceObjects ():void
+      {
+         mWorld.RemoveChildFromBorderLayer (mAppearanceObjectsContainer);
+      }
    }
 }

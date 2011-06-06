@@ -63,10 +63,13 @@ package player.world {
    import player.trigger.entity.EntityEventHandler_Timer;
    import player.trigger.entity.EntityEventHandler_Keyboard;
    import player.trigger.entity.EntityConditionDoor;
+   import player.trigger.entity.EntitySelector;
    import player.trigger.entity.EntityInputEntityAssigner;
+   import player.trigger.entity.EntityInputEntityFilter;
    
    import player.trigger.data.ShapeContactInfo;
    import player.trigger.data.ListElement_EventHandler;
+   import player.trigger.data.ListElement_EntitySelector;
    
    import player.trigger.Parameter;
    import player.trigger.Parameter_Direct;
@@ -345,20 +348,24 @@ package player.world {
          else
          {
             // == entity.mEntityList.RemoveEntity (entity);
-            mEntityList.RemoveEntity (entity);
+            //mEntityList.RemoveEntity (entity);
+            mCreationIdsToDelete_ThisStep.push (entity.GetCreationId ());
+               // reasons for delay deleting:
+               // - avoid null parameter sent to contact event handlers
+               // - aoivd entity link table being broken in callings of ForEachEntity api
 
             // an entity defined in editor will never removed from the 2 arrays to make the reference in api callings always be accessable.
             //if (entity.IsDefinedInEditor ())
-            var creationId:int = entity.GetCreationId ();
-            if (creationId >= 0 && creationId < mNumEntitiesInEditor)
-            {
-               //mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
-               //mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;
-            }
-            else
-            {
-               delete mDynamicCrreatedEntities [creationId];
-            }
+            //var creationId:int = entity.GetCreationId ();
+            //if (creationId >= 0 && creationId < mNumEntitiesInEditor)
+            //{
+            //   //mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
+            //   //mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;
+            //}
+            //else
+            //{
+            //   //delete mDynamicCrreatedEntities [creationId]; // will be delayed for on step
+            //}
          }
       }
       
@@ -367,7 +374,7 @@ package player.world {
          return mNumEntitiesInEditor;
       }
       
-      public function GetEntityByCreationId (createId:int, supportDynamicEntity:Boolean = true):Entity
+      public function GetEntityByCreateOrderId (createId:int, supportRuntimeCreatedEntity:Boolean):Entity
       {
          if (createId < 0)
          {
@@ -377,7 +384,7 @@ package player.world {
          {
             return mEntityArrayOrderByCreationId [createId] as Entity;
          }
-         else if (supportDynamicEntity)
+         else if (supportRuntimeCreatedEntity)
          {
             return mDynamicCrreatedEntities [createId] as Entity;
          }
@@ -403,9 +410,14 @@ package player.world {
       
       private var mPeekContactProxyId:int = 0;
       private var mFreeContactProxyIds:Array = new Array (); // recycled
+      
       // some destroy contact events will be handled with one step delayed. So:
       private var mFreeContactProxyIds_ThisStep:Array = new Array ();
-      private var mFreeContactProxyIds_LastStep:Array = new Array (); 
+      private var mFreeContactProxyIds_LastStep:Array = new Array ();
+      
+      // for the same reason, to make shape contact events handlers always get 2 non-null shape parameters:
+      private var mCreationIdsToDelete_ThisStep:Array = new Array ();
+      private var mCreationIdsToDelete_LastStep:Array = new Array ();
       
       public function ApplyContactProxyId ():int
       {
@@ -413,7 +425,7 @@ package player.world {
          {
             return mFreeContactProxyIds.pop () as int;
          }
-         else if (mPeekContactProxyId < 0xFFFF)
+         else if (mPeekContactProxyId < 0xFFFF) // max valid value
          {
             return mPeekContactProxyId ++;
          }
@@ -428,7 +440,7 @@ package player.world {
          mFreeContactProxyIds_ThisStep.push (proxyId);
       }
       
-      public function ConfirmFreedContactProxyIds ():void
+      private function ConfirmFreedContactProxyIds ():void
       {
          if (mFreeContactProxyIds_LastStep.length > 0)
          {
@@ -441,6 +453,44 @@ package player.world {
             var oldIds_LastStep:Array = mFreeContactProxyIds_LastStep;
             mFreeContactProxyIds_LastStep = mFreeContactProxyIds_ThisStep;
             mFreeContactProxyIds_ThisStep = oldIds_LastStep;
+         }
+      
+         // destroyed runtime-created entity ids
+         
+         if (mCreationIdsToDelete_LastStep.length > 0)
+         {
+            for each (var creationId:int in mCreationIdsToDelete_LastStep)
+            {
+               var entity:Entity;
+               if (creationId >= 0 && creationId < mNumEntitiesInEditor)
+               {
+                  entity = mEntityArrayOrderByCreationId [creationId] as Entity;
+                  
+                  // an entity defined in editor will never removed from the 2 arrays to make the reference in api callings always be accessable.
+                  //mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
+                  //mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;
+               }
+               else
+               {
+                  entity = mDynamicCrreatedEntities [creationId] as Entity;
+                  
+                  delete mDynamicCrreatedEntities [creationId];
+               }            
+               
+               if (entity != null)
+               {
+                  mEntityList.RemoveEntity (entity);
+               }
+            }
+            
+            mCreationIdsToDelete_LastStep = mCreationIdsToDelete_ThisStep;
+            mCreationIdsToDelete_ThisStep = new Array ();
+         }
+         else if (mCreationIdsToDelete_ThisStep.length > 0)
+         {
+            var oldCreationIds_LastStep:Array = mCreationIdsToDelete_LastStep;
+            mCreationIdsToDelete_LastStep = mCreationIdsToDelete_ThisStep;
+            mCreationIdsToDelete_ThisStep = oldCreationIds_LastStep;
          }
       }
       

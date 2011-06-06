@@ -3,18 +3,20 @@ package player.trigger.entity
    import flash.utils.Dictionary;
    
    import player.world.World;
+   import player.world.EntityList;
+
    import player.entity.Entity;
    
    import player.trigger.Parameter;
    import player.trigger.Parameter_Direct;
    
-   import player.trigger.data.ListElement_InputEntityAssigner;
+   import player.trigger.data.ListElement_EntitySelector;
    
    import common.trigger.ValueDefine;
    
    import common.Define;
    
-   public class EntityInputEntityAssigner extends EntityInputEntityLimiter
+   public class EntityInputEntityAssigner extends EntitySelector
    {
       protected var mAssignerType:int = Define.EntitySelectorType_Many; // if isPair, pair type, if not pair, selector type
       
@@ -75,9 +77,9 @@ package player.trigger.entity
                   
                   var length:int = mEntitiesIndexes1.length;
                   if (length > mEntitiesIndexes2.length)
-                  {
-                     length = mEntitiesIndexes2.length;
-                  }
+                     length = mEntitiesIndexes2.length; // some ones in array 2 will be ignored
+                  
+                  // create hash for fast judgement
                   
                   var id:int;
                   var id1:int;
@@ -86,14 +88,21 @@ package player.trigger.entity
                   {
                      id1 = mEntitiesIndexes1 [i];
                      id2 = mEntitiesIndexes2 [i];
-                     id = ((id1 & 0xFFFF) << 16) | (id2 & 0xFFFF);
                      
-                     mPairHashtable [id] = 1;
-                     mPairHashtable_IgnorePairOrder [id] = 1;
-                     
-                     id = ((id2 & 0xFFFF) << 16) | (id1 & 0xFFFF);
-                     
-                     mPairHashtable_IgnorePairOrder [id] = 1;
+                     if (id1 >= 0 && id2 >= 0)
+                     {
+                        id = ((id1 & 0xFFFF) << 16) | (id2 & 0xFFFF);
+                        
+                        mPairHashtable [id] = 1;
+                        mPairHashtable_IgnorePairOrder [id] = 1;
+                        
+                        if (id1 != id2)
+                        {
+                           id = ((id2 & 0xFFFF) << 16) | (id1 & 0xFFFF);
+                           
+                           mPairHashtable_IgnorePairOrder [id] = 1;
+                        }
+                     }
                   }
                }
             }
@@ -112,18 +121,18 @@ package player.trigger.entity
                }
                else
                {
-                  mEntitiesIndexes1 = new Array ();
+                  mEntitiesIndexes1 = new Array (); // avoid checkings of "mEntitiesIndexes1 == null"
                }
             }
             
-            // get entities
+            // get entities for optimizing 
             
             if (mEntitiesIndexes1 != null)
             {
                mInputEntityArray1 = new Array (mEntitiesIndexes1.length);
                for (i = 0; i < mEntitiesIndexes1.length; ++ i)
                {
-                  mInputEntityArray1 [i] = mWorld.GetEntityByCreationId (mEntitiesIndexes1 [i]);
+                  mInputEntityArray1 [i] = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes1 [i], false); // must be an entity placed in editor
                }
             }
             
@@ -132,7 +141,7 @@ package player.trigger.entity
                mInputEntityArray2 = new Array (mEntitiesIndexes2.length);
                for (i = 0; i < mEntitiesIndexes2.length; ++ i)
                {
-                  mInputEntityArray2 [i] = mWorld.GetEntityByCreationId (mEntitiesIndexes2 [i]);
+                  mInputEntityArray2 [i] = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes2 [i], false); // must be an entity placed in editor
                }
             }
          } // if (createStageId == 0)
@@ -142,202 +151,173 @@ package player.trigger.entity
 //   containing test
 //==========================================================================================================
       
-      public function ContainsEntity (entityIndex:int):Boolean
-      {
-         if (mIsPairLimiter)
-            return false;
-         
-         switch (mAssignerType)
-         {
-            case Define.EntityAssignerType_Any:
-               
-               return true;
-               
-            case Define.EntityAssignerType_Single:
-            case Define.EntityAssignerType_Many:
-               
-               if (mEntitiesIndexes1 == null)
-                  return false;
-               
-               return mEntitiesIndexes1.indexOf (entityIndex) >= 0; // need optimized
-               
-            default:
-               return false;
-         }
-      }
+      //override public function ContainsEntity (entityIndex:int):Boolean
+      //{
+      //   if (mIsPairLimiter)
+      //      return false;
+      //   
+      //   switch (mAssignerType)
+      //   {
+      //      case Define.EntityAssignerType_Any:
+      //         
+      //         return true;
+      //         
+      //      case Define.EntityAssignerType_Single:
+      //      case Define.EntityAssignerType_Many:
+      //         
+      //         if (mEntitiesIndexes1 == null)
+      //            return false;
+      //         
+      //         return mEntitiesIndexes1.indexOf (entityIndex) >= 0; // need optimized
+      //         
+      //      default:
+      //         return false;
+      //   }
+      //}
       
-      public function ContainsEntityPair (entityIndex1:int, entityIndex2:int, ignorePairOrder:Boolean):int
+      override public function ContainsEntityPair (entity1:Entity, entity2:Entity, ignorePairOrder:Boolean):int
       {
          if ( ! mIsPairLimiter)
-            return ContainingResult_False;
+            return PairContainingResult_False;
          
-         var p1:int;
-         var p2:int;
-         
+         var entityIndex1:int = entity1.GetCreationId ();
+         var entityIndex2:int = entity2.GetCreationId ();
+
          switch (mAssignerType)
          {
             case Define.EntityPairAssignerType_OneToOne:
                
+               // for it is hard in AS3 to create a hash key for creationIds larger than 0xFFFF.
+               // so all entities should be entities placed in editor.
+               
+               var numEntitiesInEditor:int = mWorld.GetNumEntitiesInEditor ();      
+         
+               if (entityIndex1 >= numEntitiesInEditor || entityIndex2 >= numEntitiesInEditor)
+                  return PairContainingResult_False;
+               
+               // ...
                var id:int = ((entityIndex1 & 0xFFFF) << 16) | (entityIndex2 & 0xFFFF);
                
                if (mPairHashtable [id] != null)
-                  return ContainingResult_True;
+                  return PairContainingResult_True;
                
                if (ignorePairOrder)
                {
                   id = ((entityIndex2 & 0xFFFF) << 16) | (entityIndex1 & 0xFFFF);
                   
-                  return mPairHashtable_IgnorePairOrder [id] != null ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
+                  return mPairHashtable_IgnorePairOrder [id] != null ? PairContainingResult_TrueButNeedExchangePairOrder : PairContainingResult_False;
                }
                
-               return ContainingResult_False;
+               return PairContainingResult_False;
                
             case Define.EntityPairAssignerType_ManyToMany:
                
                if (mEntitiesIndexes1 == null || mEntitiesIndexes2 == null)
-                  return ContainingResult_False;
+                  return PairContainingResult_False;
                
                if (mEntitiesIndexes1.indexOf (entityIndex1) < 0)
                {
                   if (ignorePairOrder)
                   {
                      if (mEntitiesIndexes2.indexOf (entityIndex1) < 0)
-                        return ContainingResult_False;
+                        return PairContainingResult_False;
                      
-                     return mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
+                     return mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? PairContainingResult_TrueButNeedExchangePairOrder : PairContainingResult_False;
                   }
-                  else return ContainingResult_False;
+                  else return PairContainingResult_False;
                }
                else
                {
                   if (mEntitiesIndexes2.indexOf (entityIndex2) >= 0)
-                     return ContainingResult_True;
+                     return PairContainingResult_True;
                   
                   if (ignorePairOrder)
                   {
                      if (mEntitiesIndexes2.indexOf (entityIndex1) < 0)
-                        return ContainingResult_False;
+                        return PairContainingResult_False;
                      
-                     return mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
+                     return mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? PairContainingResult_TrueButNeedExchangePairOrder : PairContainingResult_False;
                   }
-                  else return ContainingResult_False;
+                  else return PairContainingResult_False;
                }
                
             case Define.EntityPairAssignerType_BothInMany:
                
                if (mEntitiesIndexes1 == null)
-                  return ContainingResult_False;
+                  return PairContainingResult_False;
                
-               return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 && mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_True : ContainingResult_False;
+               return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 && mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? PairContainingResult_True : PairContainingResult_False;
                
             case Define.EntityPairAssignerType_EitherInMany:
                
                if (mEntitiesIndexes1 == null)
-                  return ContainingResult_False;
+                  return PairContainingResult_False;
                
-               return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 || mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_True : ContainingResult_False;
+               return mEntitiesIndexes1.indexOf (entityIndex1) >= 0 || mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? PairContainingResult_True : PairContainingResult_False;
                
             case Define.EntityPairAssignerType_ManyToAny:
             
                if (mEntitiesIndexes1 == null)
-                  return ContainingResult_False;
+                  return PairContainingResult_False;
             
                if (mEntitiesIndexes1.indexOf (entityIndex1) >= 0)
-                  return ContainingResult_True;
+                  return PairContainingResult_True;
                
                if (ignorePairOrder)
-                  return mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
+                  return mEntitiesIndexes1.indexOf (entityIndex2) >= 0 ? PairContainingResult_TrueButNeedExchangePairOrder : PairContainingResult_False;
                else 
-                  return ContainingResult_False;
+                  return PairContainingResult_False;
                
             case Define.EntityPairAssignerType_AnyToMany:
                
                if (mEntitiesIndexes2 == null)
-                  return ContainingResult_False;
+                  return PairContainingResult_False;
                
                if (mEntitiesIndexes2.indexOf (entityIndex2) >= 0)
-                  return ContainingResult_True;
+                  return PairContainingResult_True;
                
                if (ignorePairOrder)
-                  return mEntitiesIndexes2.indexOf (entityIndex1) >= 0 ? ContainingResult_TrueButNeedExchangePairOrder : ContainingResult_False;
+                  return mEntitiesIndexes2.indexOf (entityIndex1) >= 0 ? PairContainingResult_TrueButNeedExchangePairOrder : PairContainingResult_False;
                else 
-                  return ContainingResult_False;
+                  return PairContainingResult_False;
                
             case Define.EntityPairAssignerType_AnyToAny:
                
-               return ContainingResult_True;
+               return PairContainingResult_True;
                
             default:
-               return ContainingResult_False;
+               return PairContainingResult_False;
          }
       }
       
 //==========================================================================================================
-//   as input of contact event handlers
+//   register handlers for entities
 //==========================================================================================================
-      
-      public static const ContainingResult_False:int = 0;
-      public static const ContainingResult_True:int = 1;
-      public static const ContainingResult_TrueButNeedExchangePairOrder:int = 2;
-      
-      public static function GetContainingEntityPairResult (assignerListHead:ListElement_InputEntityAssigner, entityId1:int, entityId2:int, ignorePairOrder:Boolean = true):int
-      {
-         var list_element:ListElement_InputEntityAssigner = assignerListHead;
-         var result:int;
-         
-         while (list_element != null)
-         {
-            result = list_element.mInputEntityAssigner.ContainsEntityPair (entityId1, entityId2, ignorePairOrder);
-            
-            if (result != ContainingResult_False)
-               return result;
-            
-            list_element = list_element.mNextListElement;
-         }
-         
-         return ContainingResult_False;
-      }
-      
-//==========================================================================================================
-//   as input of general entity event handlers
-//==========================================================================================================
-      
-      public static function GetContainingEntityResult (assignerListHead:ListElement_InputEntityAssigner, entityId:int):int
-      {
-         return ContainingResult_False;
-      }
       
       // as input of an event handler
-      public function RegisterEventHandlerForEntities (eventId:int, eventHandler:EntityEventHandler):void
+      override public function RegisterEventHandlerForEntities (eventId:int, eventHandler:EntityEventHandler):void
       {
          if (mIsPairLimiter)
             return;
          
-         var i:int;
-         var count:int;
-         switch (mAssignerType)
+         if (mAssignerType == Define.EntitySelectorType_Any)
          {
-            case Define.EntitySelectorType_Single:
-            case Define.EntitySelectorType_Many:
-               if (mEntitiesIndexes1 != null)
-               {
-                  count = mEntitiesIndexes1.length;
-                  
-                  for (i = 0; i < count; ++ i)
-                  {
-                     mWorld.GetEntityByCreationId (mEntitiesIndexes1 [i]).RegisterEventHandler (eventId, eventHandler);
-                  }
-               }
-               break;
-            case Define.EntitySelectorType_Any:
-               count = mWorld.GetNumEntitiesInEditor ();
-               for (i = 0; i < count; ++ i)
-               {
-                  mWorld.GetEntityByCreationId (i).RegisterEventHandler (eventId, eventHandler);
-               }
-               break;
-            default:
-               break;
+            RegisterEventHandlerForEntitiesPlacedInEditor (null, eventId, eventHandler);
+         }
+         else // if (mAssignerType == Define.EntitySelectorType_Single || mAssignerType == Define.EntitySelectorType_Many)
+         {
+            var count:int = mEntitiesIndexes1.length;
+            
+            for (var i:int = 0; i < count; ++ i)
+            {
+               // only support entities placed in editor now
+               
+               var entity:Entity = mWorld.GetEntityByCreateOrderId (mEntitiesIndexes1 [i], false);
+               if (entity == null || entity.IsDestroyedAlready ())
+                  continue;
+               
+               entity.RegisterEventHandler (eventId, eventHandler);
+            }
          }
       }
       
@@ -347,80 +327,89 @@ package player.trigger.entity
       
       // as input of a task entity
       // Define.EntitySelectorType_Any: is not supported
-      public function GetEntityListTaskStatus ():int
+      override public function GetEntityListTaskStatus ():int
       {
-         if (mEntityList == null)
+         if (mIsPairLimiter)
             return ValueDefine.TaskStatus_Unfinished;
          
-         var numUndertermineds:int = 0;
-         
-         var num:int = mInputEntityArray1.length;
-         var entity:Entity;
-         var i:int = 0;
-         while (i < num)
+         if (mAssignerType == Define.EntitySelectorType_Any)
          {
-            entity = mInputEntityArray1 [i];
-            if (entity == null)
-            {
-               mInputEntityArray1.splice (i, 1);
-               -- num;
-            }
-            else if (entity.IsDestroyedAlready ())
-            {
-            }
-            else
-            {
-               ++ i;
-               
-               if (entity.IsTaskFailed ())
-                  return ValueDefine.TaskStatus_Failed;
-               else if (entity.IsTaskUnfinished ())
-                  ++ numUndertermineds;
-            }
+            return AggregateEntityListTaskStatus (mWorld.GetEntityList (), null);
          }
-         
-         if (numUndertermineds > 0)
-            return ValueDefine.TaskStatus_Unfinished;
-         else
-            return ValueDefine.TaskStatus_Successed;
+         else // if (mAssignerType == Define.EntitySelectorType_Single || mAssignerType == Define.EntitySelectorType_Many)
+         {
+            var numUndertermineds:int = 0;
+            
+            var count:int = mInputEntityArray1.length;
+            var entity:Entity;
+            var i:int = 0;
+            while (i < count)
+            {
+               entity = mInputEntityArray1 [i];
+               if (entity == null || entity.IsDestroyedAlready ())
+               {
+                  mInputEntityArray1.splice (i, 1);
+                  -- count;
+               }
+               else
+               {
+                  ++ i;
+                  
+                  if (entity.IsTaskFailed ())
+                     return ValueDefine.TaskStatus_Failed;
+                  else if (entity.IsTaskUnfinished ())
+                     ++ numUndertermineds;
+               }
+            }
+            
+            if (numUndertermineds > 0)
+               return ValueDefine.TaskStatus_Unfinished;
+            else
+               return ValueDefine.TaskStatus_Successed;
+         }
       }
       
 //==========================================================================================================
 //   as input of timer event handlers
 //==========================================================================================================
       
-      public function HandleTimerEventForEntities (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
+      override public function HandleTimerEventForEntities (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
          if (mIsPairLimiter)
             return;
          
-         // for Define.EntitySelectorType_Any, only support entities created in editor now
-         
-         var valueSourceEntity:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;
-         
-         var num:int = mInputEntityArray1.length;
-         var entity:Entity;
-         var i:int = 0;
-         while (i < num)
+         if (mAssignerType == Define.EntitySelectorType_Any)
          {
-            entity = mInputEntityArray1 [i];
-            if (entity == null) // || entity.IsDestroyedAlready ())
+            HandleTimerEventForEntityList (mWorld.GetEntityList (), null, timerEventHandler, valueSourceList);
+         }
+         else // if (mAssignerType == Define.EntitySelectorType_Single || mAssignerType == Define.EntitySelectorType_Many)
+         {
+            var valueSourceEntity:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;
+            
+            var count:int = mInputEntityArray1.length;
+            var entity:Entity;
+            var i:int = 0;
+            while (i < count)
             {
-               mInputEntityArray1.splice (i, 1);
-               -- num;
-            }
-            else
-            {
-               ++ i;
-               
-               valueSourceEntity.mValueObject = entity;
-               
-               timerEventHandler.HandleEvent (valueSourceList);
+               entity = mInputEntityArray1 [i];
+               if (entity == null || entity.IsDestroyedAlready ())
+               {
+                  mInputEntityArray1.splice (i, 1);
+                  -- count;
+               }
+               else
+               {
+                  ++ i;
+                  
+                  valueSourceEntity.mValueObject = entity;
+                  
+                  timerEventHandler.HandleEvent (valueSourceList);
+               }
             }
          }
       }
       
-      public function HandleTimerEventForEntityPairs (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
+      override public function HandleTimerEventForEntityPairs (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
          if (! mIsPairLimiter)
             return;
@@ -448,8 +437,8 @@ package player.trigger.entity
                   entity1 = mInputEntityArray1 [i];
                   entity2 = mInputEntityArray2 [i];
                   
-                  if (entity1 == null // || entity1.IsDestroyedAlready ()
-                     || entity2 == null) // || entity2.IsDestroyedAlready ())
+                  if (entity1 == null  || entity1.IsDestroyedAlready ()
+                     || entity2 == null || entity2.IsDestroyedAlready ())
                   {
                      mInputEntityArray1.splice (i, 1);
                      mInputEntityArray2.splice (i, 1);
@@ -462,6 +451,8 @@ package player.trigger.entity
                      
                      valueSourceEntity1.mValueObject = entity1;
                      valueSourceEntity2.mValueObject = entity2;
+                     
+                     // it is possible entity1 == entity2, this is not prevented now
                      
                      timerEventHandler.HandleEvent (valueSourceList);
                   }
@@ -477,7 +468,7 @@ package player.trigger.entity
                {
                   entity2 = mInputEntityArray2 [j];
                   
-                  if (entity2 == null) // || entity2.IsDestroyedAlready ())
+                  if (entity2 == null || entity2.IsDestroyedAlready ())
                   {
                      mInputEntityArray2.splice (j, 1);
                      -- num2;
@@ -492,7 +483,7 @@ package player.trigger.entity
                {
                   entity1 = mInputEntityArray1 [i];
                   
-                  if (entity1 == null) // || entity1.IsDestroyedAlready ())
+                  if (entity1 == null || entity1.IsDestroyedAlready ())
                   {
                      mInputEntityArray1.splice (i, 1);
                      -- num1;
@@ -508,6 +499,8 @@ package player.trigger.entity
                         valueSourceEntity1.mValueObject = entity1;
                         valueSourceEntity2.mValueObject = entity2;
                         
+                        // it is possible entity1 == entity2, this is not prevent now
+                        
                         timerEventHandler.HandleEvent (valueSourceList);
                      }
                   }
@@ -522,7 +515,7 @@ package player.trigger.entity
                {
                   entity1 = mInputEntityArray1 [i];
                   
-                  if (entity1 == null) // || entity1.IsDestroyedAlready ())
+                  if (entity1 == null || entity1.IsDestroyedAlready ())
                   {
                      mInputEntityArray1.splice (i, 1);
                      -- num1;
@@ -537,18 +530,25 @@ package player.trigger.entity
                {
                   entity1 = mInputEntityArray1 [i];
                   
-                  for (j = i; j < num1; ++ j)
+                  //for (j = i; j < num1; ++ j)
+                  for (j = i + 1; j < num1; ++ j) // from v1.56
                   {
                      entity2 = mInputEntityArray1 [j];
                      
                      valueSourceEntity1.mValueObject = entity1;
                      valueSourceEntity2.mValueObject = entity2;
                      
+                     // it is possible entity1 == entity2, this is not prevented now
+                     
                      timerEventHandler.HandleEvent (valueSourceList);
                   }
                }
                
                break;
+            
+            // the following types are not support for entity-pair-timer event handlers now.
+            // if later they are supported, it is best to add an option "enabled any-type selector for entity-pair-timer event handlers" 
+            
             case Define.EntityPairAssignerType_EitherInMany:
                
                break;

@@ -41,7 +41,7 @@ package player.trigger
       
       public function DoCall (inputValueSources:Parameter, returnValueTarget:Parameter):void
       {
-         throw new Error ("to override");
+         // throw new Error ("to override");
       }
    }
 }

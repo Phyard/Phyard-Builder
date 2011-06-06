@@ -619,7 +619,7 @@ package common {
                }
                else
                {
-                  return playerWorld.GetEntityByCreationId (entityIndex);
+                  return playerWorld.GetEntityByCreateOrderId (entityIndex, false); // must be an entity placed in editor
                }
             }
             case ValueTypeDefine.ValueType_CollisionCategory:
@@ -941,7 +941,7 @@ package common {
             elementCodeSnippet.appendChild (FunctionCallingDefine2Xml (functionCallings[i], customFunctionDefines));
          }
          
-         trace ("elementCodeSnippet = " + elementCodeSnippet.toXMLString ());
+         //trace ("elementCodeSnippet = " + elementCodeSnippet.toXMLString ());
          
          return elementCodeSnippet;
       }

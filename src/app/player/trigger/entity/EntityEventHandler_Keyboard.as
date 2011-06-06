@@ -6,8 +6,6 @@ package player.trigger.entity
    import player.trigger.Parameter;
    import player.trigger.Parameter_Direct;
    
-   import player.trigger.data.ListElement_InputEntityAssigner;
-   
    import common.trigger.define.CodeSnippetDefine;
    
    import common.trigger.CoreEventIds;

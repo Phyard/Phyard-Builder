@@ -39,7 +39,6 @@ package player.trigger.entity
                mVoidFunctionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetVoidFunctionDeclaration  ());
                mVoidFunctionDefinition.SetCodeSnippetDefine (codeSnippetDefine);
             }
-            
          }
       }
             
@@ -49,7 +48,7 @@ package player.trigger.entity
       
       public function Perform ():void
       {
-         mVoidFunctionDefinition.ExcuteAction ();
+         mVoidFunctionDefinition.DoCall (null, null);
       }
       
 //=============================================================

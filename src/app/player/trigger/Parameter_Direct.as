@@ -4,6 +4,9 @@ package player.trigger
    {
       public var mValueObject:Object;
       
+      // for optimizing, TriggerEngine will cache many Parameter_Direct instances. 
+      // Notice: when a Parameter_Direct is recycled, mValueObjec must be reset to null
+      
       public function Parameter_Direct (valueObject:Object, next:Parameter = null)
       {
          super (next);
@@ -18,7 +21,10 @@ package player.trigger
       
       override public function AssignValueObject (valueObject:Object):void
       {
-         // can't changed
+         mValueObject = valueObject;
+            // generally, assign a value object for a Parameter_Direct is useless.
+            // Here no preventing a Parameter_Direct from being assigned a new value is for internal usages, for example:
+            // - use as output parameter for BasicCondition and EntityFilter, etc.
       }
    }
 }

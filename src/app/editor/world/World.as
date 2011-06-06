@@ -1070,7 +1070,7 @@ package editor.world {
          return entity_pair_assigner;
       }
       
-      public function CreateEntityInputEntityFilter ():EntityInputEntityScriptFilter
+      public function CreateEntityInputEntityScriptFilter ():EntityInputEntityScriptFilter
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;
@@ -1081,7 +1081,7 @@ package editor.world {
          return entity_filter;
       }
       
-      public function CreateEntityInputEntityPairFilter ():EntityInputEntityPairScriptFilter
+      public function CreateEntityInputEntityPairScriptFilter ():EntityInputEntityPairScriptFilter
       {
          if (numChildren >= Define.MaxEntitiesCount)
             return null;

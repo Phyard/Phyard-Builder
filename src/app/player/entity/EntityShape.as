@@ -863,7 +863,7 @@ package player.entity {
       {
          mWorld.UnregisterShapeAiType (mOriginalAiType, mAiType);
          
-         mWorld.RemoveChildFromEntityLayer (mAppearanceObjectsContainer);
+         RemoveAppearanceObjects ();
          
          BreakAllJoints ();
          
@@ -883,6 +883,12 @@ package player.entity {
             mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_OVER, GetMouseEnterListener ());
          if  (GetMouseOutListener () != null)
             mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
+      }
+      
+      // for border shapes, this fucntions need to be overrode
+      protected function RemoveAppearanceObjects ():void
+      {
+         mWorld.RemoveChildFromEntityLayer (mAppearanceObjectsContainer);
       }
       
 //=============================================================

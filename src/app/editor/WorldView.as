@@ -4206,6 +4206,8 @@ package editor {
             
             Runtime.mCollisionCategoryView.UpdateFriendLinkLines ();
             Runtime.mFunctionEditingView.UpdateEntityLinkLines ();
+            
+            Runtime.SetRecommandDesignFilename (null);
          }
       }
       
@@ -6010,6 +6012,8 @@ package editor {
          
          if (params.mRootUrl == null || params.mAction == null || params.mAuthorName == null || params.mSlotID == null || params.mRevisionID == null)
             return false;
+         
+         Runtime.SetRecommandDesignFilename (Runtime.GetTimeStringInFilename () + " " + params.mAuthorName + "-" + params.mSlotID + "-" + params.mRevisionID + ".phyardx");
          
          if (isFirstTime && params.mAction == "create")
             return true;

@@ -8,6 +8,8 @@
 
    <mx:HBox width="100%">
       <mx:Label id="Label_SourceCode" text="Please paste your world XML source code in the text area:"/>
+      <mx:Spacer width="100%"/>
+      <mx:Button id="Button_SaveLocalFile" label="Or Load It From Local Disk" click="OnClickLoadFromLocalDisk ();"/>
    </mx:HBox>
 
    <mx:HBox width="100%" verticalAlign="top">
@@ -33,8 +35,16 @@
    
    
    <mx:Script>
-     <![CDATA[       
+     <![CDATA[
+         
+         import flash.net.FileReference;
+         import flash.net.FileFilter;
+         import flash.events.IOErrorEvent;
+         import flash.events.Event;
+         
          import mx.managers.PopUpManager;
+         
+         import editor.runtime.Runtime;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
@@ -47,6 +57,28 @@
          public function SetCloseFunc (onClose:Function):void
          {
             OnClose = onClose;
+         }
+         
+         private static const kFileFilter:Array = [new FileFilter("Phyard XML File", "*.phyardx;")];
+         private function OnClickLoadFromLocalDisk ():void
+         {
+            var fileReference:FileReference = new FileReference();
+            fileReference.addEventListener(Event.SELECT, OnSelectFileToLoad);
+            fileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
+            fileReference.browse (kFileFilter);
+         }
+         
+         private function OnSelectFileToLoad (event:Event):void
+         {
+            (event.target as FileReference).load();
+         }    
+         
+         private function OnFileLoadComplete (event:Event):void
+         {
+            var fileReference:FileReference = (event.target as FileReference);
+            TextArea_SourceCode.text = (fileReference.data).readUTFBytes (fileReference.data.length);
+
+            Runtime.SetRecommandDesignFilename ((event.target as FileReference).name);
          }
          
          private function OnClickOkButton():void 

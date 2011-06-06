@@ -20,6 +20,8 @@
    <mx:HBox width="100%">
       <mx:Label id="Label_SourceCode" text="Source Code:" fontWeight="bold"/>
       <mx:Spacer width="100%"/>
+      <mx:Button id="Button_SaveLocalFile" label="Save To Local Disk" click="OnClickSaveToLocalDisk ();"/>
+      <mx:Spacer width="100%"/>
       <mx:Button label="Copy Source Code" click="OnClickCopySourceCode ();"/>
    </mx:HBox>
 
@@ -67,6 +69,11 @@
    <mx:Script>
      <![CDATA[       
          
+         import flash.net.FileReference;
+         import flash.net.FileFilter;
+         import flash.events.IOErrorEvent;
+         import flash.events.Event;
+         
          import flash.events.TextEvent;
          
          import flash.system.System;
@@ -74,6 +81,8 @@
          import mx.managers.PopUpManager;
          
          import com.tapirgames.util.UrlUtil;
+         
+         import editor.runtime.Runtime;
          
          import common.Define;
          
@@ -102,12 +111,29 @@
                OnClose ();
          }
          
+         private function OnClickSaveToLocalDisk ():void
+         {
+            var fileReference:FileReference = new FileReference();
+            fileReference.addEventListener(Event.COMPLETE, OnFileSaveComplete);
+            fileReference.save (GetValidatedSourceCode (), Runtime.GetRecommandDesignFilename ());
+         }
+         
+         private function OnFileSaveComplete (event:Event):void
+         {
+            Runtime.SetRecommandDesignFilename ((event.target as FileReference).name);
+         }
+         
          private function OnClickCopySourceCode ():void
+         {
+            System.setClipboard(GetValidatedSourceCode ());
+         }
+         
+         private function GetValidatedSourceCode ():String
          {
             var pattern:RegExp = />\r([\s]*)</g;
             var newStr:String = ">\n$1<";
             
-            System.setClipboard(TextArea_SourceCode.text.replace(pattern, newStr));
+            return TextArea_SourceCode.text.replace(pattern, newStr);
          }
          
          private function OnClickCopyEmbedCode ():void

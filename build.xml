@@ -129,6 +129,7 @@
          <arg line="-default-background-color 0xFFFFFF"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
+         <arg line="--target-player=10.0.0" />
          <arg line="-use-network" />
          <arg line="-default-size ${--width} ${--height}" />
          <arg line="-source-path=${dir.build.src}" />
@@ -204,6 +205,7 @@
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
+         <arg line="--target-player=10.0.0" />
          <arg line="-use-network" />
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <!--arg line="-default-size ${##width} ${##height}" /-->
@@ -279,6 +281,7 @@
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
+         <arg line="--target-player=10.0.0" />
          <arg line="-use-network" />
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <!--arg line="-default-size ${##width} ${##height}" /-->
@@ -414,6 +417,7 @@
          <arg line="-default-background-color 0xFFFFFF"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
+         <arg line="--target-player=10.0.0" />
          <arg line="-use-network" />
          <arg line="-default-size ${--width} ${--height}" />
          <arg line="-source-path=${dir.build.src}" />

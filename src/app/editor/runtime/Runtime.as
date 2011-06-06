@@ -20,6 +20,36 @@ package editor.runtime {
 //
 //=====================================================================
       
+      private static var mDesignFilename:String  = null;
+      
+      public static function SetRecommandDesignFilename (filename:String):void
+      {
+         mDesignFilename = filename;
+      }
+      
+      public static function GetTimeStringInFilename ():String
+      {
+         var date:Date = new Date ();
+         return "[" 
+               + date.getFullYear () + "-" 
+               + (date.getMonth () < 9 ? "0" + (date.getMonth () + 1) : (date.getMonth () + 1)) + "-"
+               + (date.getDate () < 10 ? "0" + date.getDate () : date.getDate ())
+               + " " + (date.getHours () < 10 ? "0" + date.getHours () : date.getHours ())
+               + "." + (date.getMinutes () < 10 ? "0" + date.getMinutes () : date.getMinutes ())
+               + "." + (date.getSeconds () < 10 ? "0" + date.getSeconds () : date.getSeconds ())
+               + "]";
+      }
+      
+      public static function GetRecommandDesignFilename ():String
+      {
+         if (mDesignFilename == null)
+         {
+            mDesignFilename = GetTimeStringInFilename () + " {design name}.phyardx";
+         }
+         
+         return mDesignFilename;
+      }
+      
 //=====================================================================
 //
 //=====================================================================

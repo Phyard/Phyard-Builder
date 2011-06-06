@@ -86,6 +86,7 @@ package common.trigger {
       public static const CoreApiId_25:int = 25; //
       public static const CoreApiId_26:int = 26; //
       public static const CoreApiId_27:int = 27; //
+      public static const CoreApiId_28:int = 28; //
 
       public static const CoreApiId_30:int = 30; //
       public static const CoreApiId_31:int = 31; //

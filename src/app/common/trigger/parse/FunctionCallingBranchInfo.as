@@ -15,6 +15,8 @@ package common.trigger.parse {
       
       public var mOwnerBlockSupportBreak:FunctionCallingBlockInfo; // for break callings convenience
       public var mNumDirectBreakCallings:int = 0;
+      public var mOwnerBlockSupportContinue:FunctionCallingBlockInfo; // for continue callings convenience
+      public var mNumDirectContinueCallings:int = 0;
       
       public var mNumValidCallings:int = 0;
       public var mNumDirectReturnCallings:int = 0;

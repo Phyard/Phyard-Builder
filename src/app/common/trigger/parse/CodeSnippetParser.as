@@ -19,6 +19,7 @@ package common.trigger.parse {
          topBranch.mOwnerBlock = topBlock;
          topBranch.mFirstCallingLine = topBranch.mLastCallingLine = null;
          topBranch.mOwnerBlockSupportBreak = null;
+         topBranch.mOwnerBlockSupportContinue = null;
          
          topBlock.mFirstBranch = topBranch;
          topBlock.mLastBranch = topBranch;
@@ -61,17 +62,21 @@ package common.trigger.parse {
                      currentBlock = new FunctionCallingBlockInfo ();
                      currentBlock.mIndentLevel = currentBranch.mIndentLevel + 1;
                      currentBlock.mIsValid = currentBranch.mIsValid && (currentBranch.mNumDirectReturnCallings == 0)
-                                             && ((currentBranch.mOwnerBlockSupportBreak == null) || (currentBranch.mNumDirectBreakCallings == 0));
+                                             && ((currentBranch.mOwnerBlockSupportBreak == null) || (currentBranch.mNumDirectBreakCallings == 0))
+                                             && ((currentBranch.mOwnerBlockSupportContinue == null) || (currentBranch.mNumDirectContinueCallings == 0))
+                                             ;
                      currentBlock.mOwnerBlock = currentBranch.mOwnerBlock;
                      currentBlock.mOwnerBranch = currentBranch;
                      currentBlock.mStartCallingLine = currentCallingLineInfo;
                      if (currentCallingLineInfo.mFunctionId == CoreFunctionIds.ID_StartIf)
                      {
                         currentBlock.mOwnerBlockSupportBreak = currentBranch.mOwnerBlockSupportBreak;
+                        currentBlock.mOwnerBlockSupportContinue = currentBranch.mOwnerBlockSupportContinue;
                      }
                      else if (currentCallingLineInfo.mFunctionId == CoreFunctionIds.ID_StartWhile)
                      {
                         currentBlock.mOwnerBlockSupportBreak = currentBlock;
+                        currentBlock.mOwnerBlockSupportContinue = currentBlock;
                      }
                      
                      currentBranch = new FunctionCallingBranchInfo ();
@@ -80,6 +85,7 @@ package common.trigger.parse {
                      currentBranch.mOwnerBlock = currentBlock;
                      currentBranch.mFirstCallingLine = currentCallingLineInfo;
                      currentBranch.mOwnerBlockSupportBreak = currentBlock.mOwnerBlockSupportBreak;
+                     currentBranch.mOwnerBlockSupportContinue = currentBlock.mOwnerBlockSupportContinue;
                      
                      currentBlock.mFirstBranch = currentBranch;
                      currentBlock.mLastBranch = currentBranch;
@@ -117,6 +123,7 @@ package common.trigger.parse {
                      currentBranch.mOwnerBlock = currentBlock;
                      currentBranch.mFirstCallingLine = currentCallingLineInfo;
                      currentBranch.mOwnerBlockSupportBreak = currentBlock.mOwnerBlockSupportBreak;
+                     currentBranch.mOwnerBlockSupportContinue = currentBlock.mOwnerBlockSupportContinue;
                      
                      currentCallingLineInfo.mIsValid = currentBranch.mIsValid;
                      currentCallingLineInfo.mIndentLevel = currentBranch.mIndentLevel;
@@ -173,7 +180,9 @@ package common.trigger.parse {
                   else
                   {
                      currentCallingLineInfo.mIsValid = currentBranch.mIsValid && (currentBranch.mNumDirectReturnCallings == 0)
-                                                   && ((currentBranch.mOwnerBlockSupportBreak == null) || (currentBranch.mNumDirectBreakCallings == 0));
+                                                   && ((currentBranch.mOwnerBlockSupportBreak == null) || (currentBranch.mNumDirectBreakCallings == 0))
+                                                   && ((currentBranch.mOwnerBlockSupportContinue == null) || (currentBranch.mNumDirectContinueCallings == 0))
+                                                   ;
                      currentCallingLineInfo.mIndentLevel = currentBranch.mIndentLevel + 1;
                      currentCallingLineInfo.mOwnerBlock = currentBlock;
                      currentCallingLineInfo.mOwnerBranch = currentBranch;
@@ -189,6 +198,15 @@ package common.trigger.parse {
                            
                            // correct
                            currentCallingLineInfo.mIsValid = currentCallingLineInfo.mIsValid && (currentBranch.mOwnerBlockSupportBreak != null);
+                           
+                           break;
+                        case CoreFunctionIds.ID_Continue:
+                           currentBranch.mNumDirectContinueCallings ++;
+                           
+                           currentCallingLineInfo.mOwnerBlockSupportContinue = currentBranch.mOwnerBlockSupportContinue;
+                           
+                           // correct
+                           currentCallingLineInfo.mIsValid = currentCallingLineInfo.mIsValid && (currentBranch.mOwnerBlockSupportContinue != null);
                            
                            break;
                         case CoreFunctionIds.ID_Return:

@@ -66,6 +66,7 @@ package player.trigger {
 
          RegisterCoreFunction (CoreFunctionIds.ID_StartWhile,                    null);
          RegisterCoreFunction (CoreFunctionIds.ID_Break,                         null);
+         RegisterCoreFunction (CoreFunctionIds.ID_Continue,                      null);
          RegisterCoreFunction (CoreFunctionIds.ID_EndWhile,                      null);
 
       // system / time

@@ -155,10 +155,6 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Break, basic_package, "Break", "Break", "Break",
-                     null,
-                     null
-                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Comment, basic_package, "Comment Line", "@// $0", "@// $0",
                      [
                              new VariableDefinitionString ("Comment Text"),
@@ -198,6 +194,14 @@ package editor.trigger {
                      ],
                      null,
                      true
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Break, basic_package, "Break", "Break", "Break",
+                     null,
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Continue, basic_package, "Continue", "Continue", "Continue",
+                     null,
+                     null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EndWhile, basic_package, "End While", "@End While", "@End While",
                      null,

@@ -317,6 +317,9 @@ package common {
                      if (nextCallingInfo != null)
                         nextCallingInfo = nextCallingInfo.mNextGoodCallingLine;
                      break;
+                  case CoreFunctionIds.ID_Continue:
+                     nextCallingInfo = lastCallingInfo.mOwnerBlockSupportContinue.mStartCallingLine; // end while / end switch / end do while / end for / ...
+                     break;
                   default:
                   {
                      nextCallingInfo = callingInfo;
@@ -452,6 +455,7 @@ package common {
                case CoreFunctionIds.ID_EndWhile:
                case CoreFunctionIds.ID_Return:
                case CoreFunctionIds.ID_Break:
+               case CoreFunctionIds.ID_Continue:
                   calling = new FunctionCalling_Dummy (lineNumber, func_definition, value_source_list, value_target_list);
                   break;
                default:

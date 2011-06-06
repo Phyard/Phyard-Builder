@@ -15,6 +15,7 @@ package common.trigger.parse {
       public var mOwnerBranch:FunctionCallingBranchInfo; // may be null
       
       public var mOwnerBlockSupportBreak:FunctionCallingBlockInfo; // for break callings only
+      public var mOwnerBlockSupportContinue:FunctionCallingBlockInfo; // for continue callings only
       
       private var _mIsValid:Boolean = true;
       

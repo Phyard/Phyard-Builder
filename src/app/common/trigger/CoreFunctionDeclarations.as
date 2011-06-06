@@ -93,6 +93,10 @@ package common.trigger {
                      null,
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Continue,
+                     null,
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Comment,
                      [
                         [ValueTypeDefine.ValueType_String,       ""],

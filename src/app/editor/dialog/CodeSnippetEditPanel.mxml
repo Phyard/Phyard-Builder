@@ -158,6 +158,7 @@
             DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"While\" Block", OnAddWhileBlock);
             DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Else\"", OnAddElseBranch, true);
             DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Break\"", OnAddBreakBranch);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Continue\"", OnAddContiueBranch);
             DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Return\"", OnAddReturn);
             //DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"ReturnIfTrue\"", OnAddReturnIfTrue);
             //DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"ReturnIfFalse\"", OnAddReturnIfFalse);
@@ -509,6 +510,12 @@
          {
             var insertAt:int = List_Commands.selectedIndex + 1;
             OnNewCalling (FunctionTypeDefine.FunctionType_Core, CoreFunctionIds.ID_Break, insertAt, true);
+         }
+         
+         private function OnAddContiueBranch (event:ContextMenuEvent):void
+         {
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (FunctionTypeDefine.FunctionType_Core, CoreFunctionIds.ID_Continue, insertAt, true);
          }
          
          private function OnAddReturn (event:ContextMenuEvent):void

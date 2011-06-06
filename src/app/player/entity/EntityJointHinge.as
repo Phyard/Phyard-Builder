@@ -267,7 +267,7 @@ package player.entity {
          return mPhysicsProxy == null ? null : mProxyJointHinge;
       }
       
-      override public function ConfirmConnectedShapes ():void
+      override protected function ConfirmConnectedShapesInternal ():void
       {
          ConfirmConnectedShapes_OneAnchor (mAnchor1.GetPositionX (), mAnchor1.GetPositionY ());
       }

@@ -262,9 +262,17 @@ package player.entity {
          return null; // to override
       }
       
-      public function ConfirmConnectedShapes ():void
+      final public function ConfirmConnectedShapes ():void
       {
-         // to overide
+         if (mAlreadyDestroyed)
+            return;
+         
+         ConfirmConnectedShapesInternal ();
+      }
+      
+      protected function ConfirmConnectedShapesInternal ():void
+      {
+         // to override
       }
       
       final public function RebuildJointPhysics ():void

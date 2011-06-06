@@ -902,6 +902,9 @@ package player.entity {
       
       override public function SynchronizeWithPhysicsProxy ():void
       {
+         if (mAlreadyDestroyed)
+            return;
+         
          //if (mBody != null) // should no be null
          {
             mBody.UpdateSinCos ();

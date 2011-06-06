@@ -241,10 +241,13 @@ package player.world {
             
             while (true)
             {
-               body = entity as EntityBody;
-               if (body != null)
+               if (! entity.IsDestroyedAlready ())
                {
-                  body.OnShapeListChanged (body.GetNumPhysicsShapes () > 0);
+                  body = entity as EntityBody;
+                  if (body != null)
+                  {
+                     body.OnShapeListChanged (body.GetNumPhysicsShapes () > 0);
+                  }
                }
                
                if (entity == tail)
@@ -271,10 +274,13 @@ package player.world {
             
             while (true)
             {
-               body = entity as EntityBody;
-               if (body != null)
+               if (! entity.IsDestroyedAlready ())
                {
-                  body.AddShapeMomentums ();
+                  body = entity as EntityBody;
+                  if (body != null)
+                  {
+                     body.AddShapeMomentums ();
+                  }
                }
                
                if (entity == tail)

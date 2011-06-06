@@ -171,9 +171,10 @@ package editor.trigger {
                      false
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartIf, basic_package, "If", "@If ($0 is true)", "@If ($0 is true)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartIf, basic_package, "If", "@If ($0 is $1)", "@If ($0 is $1)",
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionBoolean ("Comparer"),
                      ],
                      null,
                      true
@@ -188,9 +189,10 @@ package editor.trigger {
                      null,
                      true
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartWhile, basic_package, "While", "@While ($0 is true)", "@While ($0 is true)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_StartWhile, basic_package, "While", "@While ($0 is $1)", "@While ($0 is $1)",
                      [
                              new VariableDefinitionBoolean ("Condition Result"),
+                             new VariableDefinitionBoolean ("Comparer"),
                      ],
                      null,
                      true

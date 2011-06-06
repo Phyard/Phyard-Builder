@@ -17,6 +17,7 @@ package common {
    import player.trigger.CodeSnippet;
    import player.trigger.FunctionCalling;
    import player.trigger.FunctionCalling_Condition;
+   import player.trigger.FunctionCalling_ConditionWithComparer;
    import player.trigger.FunctionCalling_Dummy;
    import player.trigger.Parameter;
    import player.trigger.Parameter_Direct;
@@ -446,9 +447,11 @@ package common {
             {
                case CoreFunctionIds.ID_ReturnIfTrue:
                case CoreFunctionIds.ID_ReturnIfFalse:
+                  calling = new FunctionCalling_Condition (lineNumber, func_definition, value_source_list, value_target_list);
+                  break;
                case CoreFunctionIds.ID_StartIf:
                case CoreFunctionIds.ID_StartWhile:
-                  calling = new FunctionCalling_Condition (lineNumber, func_definition, value_source_list, value_target_list);
+                  calling = new FunctionCalling_ConditionWithComparer (lineNumber, func_definition, value_source_list, value_target_list);
                   break;
                case CoreFunctionIds.ID_EndIf:
                case CoreFunctionIds.ID_Else:

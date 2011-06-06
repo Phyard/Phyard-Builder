@@ -115,6 +115,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_StartIf,
                      [
                         [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true], // add from v1.56
                      ],
                      null
                   );
@@ -129,6 +130,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_StartWhile,
                      [
                         [ValueTypeDefine.ValueType_Boolean,       false],
+                        [ValueTypeDefine.ValueType_Boolean,       true], // add from v1.56
                      ],
                      null
                   );

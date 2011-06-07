@@ -213,7 +213,7 @@
                            </mx:Tile>
                         </mx:ViewStack>
                      </mx:HBox>
-                     <mx:Spacer height="10"/>
+                     <mx:Spacer height="8"/>
                      <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="110"
                             tileWidth="36" tileHeight="36"
                             horizontalGap="1" verticalGap="1"
@@ -223,12 +223,12 @@
                         <mx:Button id="Button_CreateJoint_Distance" toolTip="Create Distance Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_distance.png')" downIcon="@Embed('res/create/joint-sel_distance.png')" overIcon="@Embed('res/create/joint_distance.png')" selectedUpIcon="@Embed('res/create/joint-sel_distance.png')" selectedOverIcon="@Embed('res/create/joint-sel_distance.png')" selectedDownIcon="@Embed('res/create/joint_distance.png')"   />
                         <mx:Button id="Button_CreateJoint_Spring" toolTip="Create Spring Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_spring.png')" downIcon="@Embed('res/create/joint-sel_spring.png')" overIcon="@Embed('res/create/joint_spring.png')" selectedUpIcon="@Embed('res/create/joint-sel_spring.png')" selectedOverIcon="@Embed('res/create/joint-sel_spring.png')" selectedDownIcon="@Embed('res/create/joint_spring.png')"   />
                         <mx:Button id="Button_CreateJoint_Weld" toolTip="Create Weld Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_weld.png')" downIcon="@Embed('res/create/joint-sel_weld.png')" overIcon="@Embed('res/create/joint_weld.png')" selectedUpIcon="@Embed('res/create/joint-sel_weld.png')" selectedOverIcon="@Embed('res/create/joint-sel_weld.png')" selectedDownIcon="@Embed('res/create/joint_weld.png')"   />
+                        <mx:Button id="Button_CreateJoint_Dummy" toolTip="Create Dummy Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_dummy.png')" downIcon="@Embed('res/create/joint-sel_dummy.png')" overIcon="@Embed('res/create/joint_dummy.png')" selectedUpIcon="@Embed('res/create/joint-sel_dummy.png')" selectedOverIcon="@Embed('res/create/joint-sel_dummy.png')" selectedDownIcon="@Embed('res/create/joint_dummy.png')"   />
                         <!--
                         <mx:Button id="Button_CreateJoint_HingeSlider" toolTip="Create Slider Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_hinge_slider.png')" downIcon="@Embed('res/create/joint-sel_hinge_slider.png')" overIcon="@Embed('res/create/joint_hinge_slider.png')" selectedUpIcon="@Embed('res/create/joint-sel_hinge_slider.png')" selectedOverIcon="@Embed('res/create/joint-sel_hinge_slider.png')" selectedDownIcon="@Embed('res/create/joint_hinge_slider.png')"   />
                         -->
-                        <mx:Button id="Button_CreateJoint_Dummy" toolTip="Create Dummy Joint" focusEnabled="false" fontSize="8"  width="36" height="36" toggle="true" cornerRadius="0" upIcon="@Embed('res/create/joint_dummy.png')" downIcon="@Embed('res/create/joint-sel_dummy.png')" overIcon="@Embed('res/create/joint_dummy.png')" selectedUpIcon="@Embed('res/create/joint-sel_dummy.png')" selectedOverIcon="@Embed('res/create/joint-sel_dummy.png')" selectedDownIcon="@Embed('res/create/joint_dummy.png')"   />
                      </mx:Tile>
-                     <mx:Spacer height="10"/>
+                     <mx:Spacer height="7"/>
                      <mx:Tile direction="horizontal" borderStyle="none" width="100%" height="73"
                             tileWidth="36" tileHeight="36"
                             horizontalGap="1" verticalGap="1"

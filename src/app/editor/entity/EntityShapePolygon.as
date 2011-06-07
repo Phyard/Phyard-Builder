@@ -45,7 +45,7 @@ package editor.entity {
       {
          var vertexController:VertexController = mWorld.GetTheOnlySelectedVertexControllers ();
          if (vertexController == null)
-            return super.GetInfoText (); 
+            return super.GetInfoText ();
          
          var vertexIndex:int = GetVertexControllerIndex (vertexController);
          

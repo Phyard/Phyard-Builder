@@ -7,7 +7,6 @@ package editor.mode {
    
    import editor.WorldView;
    
-   
    import editor.entity.EntityShapeCircle;
    
    import common.Define;
@@ -21,6 +20,8 @@ package editor.mode {
          mMinRadius = minRadius;
          mMaxRadius = maxRadius;
       }
+      
+      private var mStarted:Boolean = false; 
       
       private var mCenterX:Number;
       private var mCenterY:Number;
@@ -54,6 +55,11 @@ package editor.mode {
       
       protected function StartSession (startX:Number, startY:Number):void
       {
+         if (mStarted)
+            return;
+         
+         mStarted = true;
+         
          ResetSession (true);
          
          mCenterX = startX;

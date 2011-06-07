@@ -3135,6 +3135,7 @@ package editor {
          if ( new Rectangle (1, 1, width - 1, height - 1).containsPoint (point) )
             return;
          
+         /*
          if (IsCreating ())
          {
             if (mCurrentCreateMode != null)
@@ -3155,6 +3156,7 @@ package editor {
                CalSelectedEntitiesCenterPoint ();
             }
          }
+         */
       }
       
       public function OnMouseWheel (event:MouseEvent):void

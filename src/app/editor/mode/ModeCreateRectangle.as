@@ -7,7 +7,6 @@ package editor.mode {
    
    import editor.WorldView;
    
-   
    import editor.entity.EntityShapeRectangle;
    
    import common.Define;
@@ -43,6 +42,8 @@ package editor.mode {
             mMaxSideLength = maxSideLength;
       }
       
+      private var mStarted:Boolean = false; 
+      
       private var mStartX:Number;
       private var mStartY:Number;
       private var mEndX:Number;
@@ -77,6 +78,11 @@ package editor.mode {
       
       protected function StartSession (startX:Number, startY:Number):void
       {
+         if (mStarted)
+            return;
+         
+         mStarted = true;
+         
          ResetSession (true);
          
          mStartX = startX;

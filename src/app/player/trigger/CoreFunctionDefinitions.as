@@ -1083,7 +1083,8 @@ package player.trigger {
 
       public static function CreateArray (valueSource:Parameter, valueTarget:Parameter):void
       {
-         var length:int = valueSource.EvaluateValueObject () as int;
+         //var length:int = valueSource.EvaluateValueObject () as int;
+         var length:int = int (valueSource.EvaluateValueObject ());
          if (length < 0)
             length = 0;
 
@@ -1105,7 +1106,8 @@ package player.trigger {
          if (array != null)
          {
             valueSource = valueSource.mNextParameter;
-            var new_len:int = valueSource.EvaluateValueObject () as int;
+            //var new_len:int = valueSource.EvaluateValueObject () as int;
+            var new_len:int = int (valueSource.EvaluateValueObject ());
             if (new_len < 0)
                new_len = 0;
 
@@ -1120,7 +1122,8 @@ package player.trigger {
          if (array != null)
          {
             valueSource = valueSource.mNextParameter;
-            var index:int = valueSource.EvaluateValueObject () as int;
+            //var index:int = valueSource.EvaluateValueObject () as int;
+            var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
             if (index >= 0 && index < array.length)
             {
                array.splice (index, 1);
@@ -1135,7 +1138,8 @@ package player.trigger {
             return;
 
          valueSource = valueSource.mNextParameter;
-         var index:int = valueSource.EvaluateValueObject () as int;
+         //var index:int = valueSource.EvaluateValueObject () as int;
+         var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
          if (index < 0)
             return;
 
@@ -1154,7 +1158,8 @@ package player.trigger {
                break;
 
             valueSource = valueSource.mNextParameter;
-            var index:int = valueSource.EvaluateValueObject () as int;
+            //var index:int = valueSource.EvaluateValueObject () as int;
+            var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
             if (index < 0)
                break;
 

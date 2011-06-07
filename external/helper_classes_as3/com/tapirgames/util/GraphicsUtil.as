@@ -19,15 +19,15 @@ package com.tapirgames.util {
       public static function CreateTiled2dBackgroundInstance (appearanceDefine:Object, appearanceValue:Object):Tiled2dBackgroundInstance
       {
          var sprite2dFile:Sprite2dFile = Engine.GetDataAsset (appearanceDefine.mFilePath) as Sprite2dFile;
-         return new Tiled2dBackgroundInstance (sprite2dFile, appearanceValue as int);
+         return new Tiled2dBackgroundInstance (sprite2dFile, int(appearanceValue));
       }
       
       public static function CreateSprite2dModelInstance (appearanceDefine:Object, appearanceValue:Object):Sprite2dModelInstance
       {
          var sprite2dFile:Sprite2dFile = Engine.GetDataAsset (appearanceDefine.mFilePath) as Sprite2dFile;
-         var model:Sprite2dModelInstance = new Sprite2dModelInstance (sprite2dFile, appearanceDefine.mModelID as int);
+         var model:Sprite2dModelInstance = new Sprite2dModelInstance (sprite2dFile, int(appearanceDefine.mModelID));
          
-         model.SetAnimationID (appearanceValue as int);
+         model.SetAnimationID (int(appearanceValue));
          
          return model;
       }

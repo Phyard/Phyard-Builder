@@ -41,6 +41,17 @@ package editor.entity {
          return "Polygon";
       }
       
+      override public function GetInfoText ():String
+      {
+         var vertexController:VertexController = mWorld.GetTheOnlySelectedVertexControllers ();
+         if (vertexController == null)
+            return super.GetInfoText (); 
+         
+         var vertexIndex:int = GetVertexControllerIndex (vertexController);
+         
+         return super.GetInfoText () + ", vertex#" + vertexIndex + " is selected."; 
+      }
+      
       override public function GetPhysicsShapesCount ():uint
       {
          if ( ! IsPhysicsEnabled () )

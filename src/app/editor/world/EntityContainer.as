@@ -259,6 +259,14 @@ package editor.world {
          return [mTheSelectedVertexController];
       }
       
+      public function GetTheOnlySelectedVertexControllers ():VertexController
+      {
+         if (mTheSelectedVertexController == null)
+            return null;
+         
+         return mTheSelectedVertexController;
+      }
+      
       public function MoveSelectedVertexControllers (offsetX:Number, offsetY:Number):void
       {
          if (mTheSelectedVertexController != null)

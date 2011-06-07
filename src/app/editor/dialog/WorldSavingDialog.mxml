@@ -22,7 +22,7 @@
       <mx:Spacer width="100%"/>
       <mx:Button id="Button_SaveLocalFile" label="Save To Local Disk" click="OnClickSaveToLocalDisk ();"/>
       <mx:Spacer width="100%"/>
-      <mx:Button label="Copy Source Code" click="OnClickCopySourceCode ();"/>
+      <mx:Button label="Copy Source Code To Clipboard" click="OnClickCopySourceCode ();"/>
    </mx:HBox>
 
    <mx:HBox width="100%">

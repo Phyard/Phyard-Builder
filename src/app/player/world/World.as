@@ -22,6 +22,8 @@ package player.world {
    
    import flash.utils.Dictionary;
    
+   import flash.ui.Mouse;
+   
    import player.physics.PhysicsEngine;
    import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
@@ -814,6 +816,15 @@ package player.world {
             RepaintViewSizeSprite (mBackgroundSprite, mBackgroundColor);
          }
          
+         // mouse visibity
+         
+         if (mMouseVisible || mBackgroundSprite.mouseX < 0 || mBackgroundSprite.mouseY < 0 || mBackgroundSprite.mouseX > mViewportWidth || mBackgroundSprite.mouseY > mViewportHeight)
+            Mouse.show ();
+         else
+            Mouse.hide ();
+         
+         // ...
+                  
          var next:Entity;
          var entity:Entity = mEntityToDelayUpdateAppearanceListHead;
          mEntityToDelayUpdateAppearanceListHead = null;
@@ -890,6 +901,10 @@ package player.world {
          
          mForegroundLayer.addChild (mFadeMaskSprite);
          mFadeMaskSprite.visible = false;
+         
+         // for show/hide mouse api
+         
+         mBackgroundSprite.addEventListener(Event.REMOVED_FROM_STAGE, OnBackgroundRemovedFromStage)
       }
       
       private function RepaintViewSizeSprite (sprite:Sprite, bgColor:uint):void
@@ -902,6 +917,18 @@ package player.world {
          sprite.graphics.endFill ();
       }
 
+      private var mMouseVisible:Boolean = true;
+      public function SetMouseVisible (mouseVisible:Boolean):void
+      {
+         mMouseVisible = mouseVisible;
+      }
+      
+      private function OnBackgroundRemovedFromStage (e:Event):void
+      {
+         Mouse.show ();
+         mBackgroundSprite.removeEventListener(Event.REMOVED_FROM_STAGE, OnBackgroundRemovedFromStage)
+      }
+      
    //===============================
    // background
    //===============================

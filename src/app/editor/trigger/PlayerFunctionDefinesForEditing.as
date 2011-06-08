@@ -255,6 +255,18 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Hold?"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold, system_package, "Is Mouse Button Hold?", null, null,
+                     null,
+                     [
+                        new VariableDefinitionBoolean ("Hold?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SetMouseVisible, system_package, "Set Mouse Visible", null, null,
+                     [
+                        new VariableDefinitionBoolean ("Visible?"),
+                     ],
+                     null
+                  );
 
       // string
 
@@ -1293,12 +1305,6 @@ package editor.trigger {
                      [
                         new VariableDefinitionNumber ("Mouse X"),
                         new VariableDefinitionNumber ("Mouse Y"),
-                     ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold, world_general_package, "Is Mouse Button Hold?", null, null,
-                     null,
-                     [
-                        new VariableDefinitionBoolean ("Hold?"),
                      ]
                   );
 

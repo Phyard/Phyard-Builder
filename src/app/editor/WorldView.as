@@ -1824,6 +1824,8 @@ package editor {
       
       public function Play_Stop ():void
       {
+         //Mouse.show (); // maybe hide in playing. (now put in player.World)
+         
          mAlreadySavedWhenPlayingError = false;
          
          DestroyDesignPlayer ();

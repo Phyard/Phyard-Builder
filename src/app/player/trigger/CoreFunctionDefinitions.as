@@ -2,6 +2,7 @@
 package player.trigger {
    import flash.utils.getTimer;
    import flash.geom.Point;
+   import flash.ui.Mouse;
 
    import player.design.Global;
 
@@ -76,6 +77,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_GetDay,                           GetDay);
          RegisterCoreFunction (CoreFunctionIds.ID_GetTimeZone,                      GetTimeZone);
          RegisterCoreFunction (CoreFunctionIds.ID_IsKeyHold,                        IsKeyHold);
+         RegisterCoreFunction (CoreFunctionIds.ID_SetMouseVisible,                  SetMouseVisible);
 
       // string
 
@@ -566,6 +568,18 @@ package player.trigger {
          var keyCode:int = int (valueSource.EvaluateValueObject ());
 
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsKeyHold (keyCode));
+      }
+      
+      public static function IsMouseButtonHold (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsMouseButtonDown ());
+      }
+
+      public static function SetMouseVisible(valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var visible:Boolean = Boolean (valueSource.EvaluateValueObject ());
+
+         Global.GetCurrentWorld ().SetMouseVisible (visible);
       }
 
    //*******************************************************************
@@ -1838,11 +1852,6 @@ package player.trigger {
 
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseY ());
-      }
-
-      public static function IsMouseButtonHold (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsMouseButtonDown ());
       }
 
       public static function SetLevelStatus (valueSource:Parameter, valueTarget:Parameter):void

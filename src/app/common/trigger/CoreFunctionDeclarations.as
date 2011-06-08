@@ -172,7 +172,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetTimeZone,
                      null,
                      [
-                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_IsKeyHold,
@@ -182,6 +182,18 @@ package common.trigger {
                      [
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold,
+                     null,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SetMouseVisible,
+                     [
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
+                     null
                   );
 
       // string
@@ -1222,12 +1234,6 @@ package common.trigger {
                      [
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold,
-                     null,
-                     [
-                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
 

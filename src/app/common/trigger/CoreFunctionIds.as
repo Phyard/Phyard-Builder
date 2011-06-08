@@ -50,6 +50,8 @@ package common.trigger {
       public static const ID_GetDay:int                           = IdPool.CoreApiId_73; //
       public static const ID_GetTimeZone:int                      = IdPool.CoreApiId_74; //
       public static const ID_IsKeyHold:int                        = IdPool.CoreApiId_72; //
+      public static const ID_Design_IsMouseButtonHold:int                  = IdPool.CoreApiId_603;
+      public static const ID_SetMouseVisible:int                        = IdPool.CoreApiId_75; //
 
    // string
 
@@ -211,7 +213,6 @@ package common.trigger {
       public static const ID_Design_GetLevelMilliseconds:int                    = IdPool.CoreApiId_600;
       public static const ID_Design_GetLevelSteps:int                           = IdPool.CoreApiId_601;
       public static const ID_Design_GetMousePosition:int                        = IdPool.CoreApiId_602;
-      public static const ID_Design_IsMouseButtonHold:int                       = IdPool.CoreApiId_603;
 
       public static const ID_Design_SetLevelStatus:int                           = IdPool.CoreApiId_609;
       public static const ID_Design_IsLevelSuccessed:int                         = IdPool.CoreApiId_610;

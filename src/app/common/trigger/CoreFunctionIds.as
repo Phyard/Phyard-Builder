@@ -224,6 +224,7 @@ package common.trigger {
       public static const ID_World_SetGravityAcceleration_Radians:int       = IdPool.CoreApiId_710;
       public static const ID_World_SetGravityAcceleration_Degrees:int       = IdPool.CoreApiId_711;
       public static const ID_World_SetGravityAcceleration_Vector:int        = IdPool.CoreApiId_712;
+      public static const ID_World_GetGravityAcceleration_Vector:int        = IdPool.CoreApiId_713;
 
       public static const ID_World_SetCurrentCamera:int                               = IdPool.CoreApiId_717;
       public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719;

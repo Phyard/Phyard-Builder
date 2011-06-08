@@ -1356,6 +1356,14 @@ package editor.trigger {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetGravityAcceleration_Vector, world_physics_package, "Get Gravity Acceleration By Vector", "@GetGravityAcceleration (Vector($0, $1))", null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("gX"),
+                             new VariableDefinitionNumber ("gY"),
+                     ]
+                  );
+
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetPhysicsOnesAtPoint, world_physics_package, "Get Physics Shapes At Point", null, null,
                      [
                              new VariableDefinitionNumber ("Point X"),

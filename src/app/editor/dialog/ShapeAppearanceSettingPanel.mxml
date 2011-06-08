@@ -82,19 +82,19 @@
                
                CheckBox_DrawBorder.enabled = true;
                
-               Label_BorderColor.enabled = false;
-               ColorPicker_BorderColor.enabled = false;
+               //Label_BorderColor.enabled = false;
+               //ColorPicker_BorderColor.enabled = false;
                
                CheckBox_DrawBackground.enabled = false;
                
                Label_BackgroundColor.enabled = false;
                ColorPicker_BackgroundColor.enabled = false;
                
-               Label_BorderThickness.enabled = false;
-               NumericStepper_BorderThickness.enabled = false;
+               //Label_BorderThickness.enabled = false;
+               //NumericStepper_BorderThickness.enabled = false;
                
-               Label_BorderOpacity.enabled = false;
-               NumericStepper_BorderOpacity.enabled = false;
+               //Label_BorderOpacity.enabled = false;
+               //NumericStepper_BorderOpacity.enabled = false;
             }
             else
             {
@@ -106,19 +106,19 @@
                
                CheckBox_DrawBorder.enabled = true;
                
-               Label_BorderColor.enabled = true;
-               ColorPicker_BorderColor.enabled = true;
+               //Label_BorderColor.enabled = true;
+               //ColorPicker_BorderColor.enabled = true;
                
                CheckBox_DrawBackground.enabled = true;
                
                Label_BackgroundColor.enabled = true;
                ColorPicker_BackgroundColor.enabled = true;
                
-               Label_BorderThickness.enabled = true;
-               NumericStepper_BorderThickness.enabled = true;
+               //Label_BorderThickness.enabled = true;
+               //NumericStepper_BorderThickness.enabled = true;
                
-               Label_BorderOpacity.enabled = true;
-               NumericStepper_BorderOpacity.enabled = true;
+               //Label_BorderOpacity.enabled = true;
+               //NumericStepper_BorderOpacity.enabled = true;
             }
             
             if (mOnCiTypeChanged != null)

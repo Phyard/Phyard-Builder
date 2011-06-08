@@ -570,6 +570,9 @@ package Box2D.Dynamics
 				}
 			}
 			else
+			//>>hacking
+			if (IsSleepingAllowed ())
+			//<<
 			{
 				m_flags &= ~e_awakeFlag;
 				m_sleepTime = 0.0;

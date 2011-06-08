@@ -161,10 +161,12 @@ package Box2D.Common
       /// Friction mixing law. Feel free to customize this.
       public static function b2MixFriction_Default (friction1:Number, friction2:Number):Number
       {
+         //>>hacking
          //return Math.sqrt (friction1 * friction2);
          var f12:Number = friction1 * friction2;
          var f:Number = Math.sqrt (Math.abs (f12));
          return f12 >= 0 ? f : -f;
+         //<<
       }
 
       /// Restitution mixing law. Feel free to customize this.
@@ -173,8 +175,10 @@ package Box2D.Common
          return restitution1 > restitution2 ? restitution1 : restitution2;
       }
       
+      //>>hacking
       public static var b2MixFriction:Function = b2MixFriction_Default;
       public static var b2MixRestitution:Function = b2MixRestitution_Default;
+      //<<
       
 	}// class
 } // pacakge

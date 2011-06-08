@@ -23,6 +23,8 @@ package editor.trigger {
          {
             if (options.mMaxLength != undefined)
                mMaxLength = int (options.mMaxLength);
+            if (options.mDefaultValue != undefined)
+               mDefaultValue = options.mDefaultValue as String;
          }
       }
       
@@ -55,6 +57,7 @@ package editor.trigger {
       {
          var stringVariableDefinition:VariableDefinitionString = new VariableDefinitionString (mName, mDescription);
          stringVariableDefinition.mMaxLength = mMaxLength;
+         stringVariableDefinition.mDefaultValue = mDefaultValue;
          
          return stringVariableDefinition;
       }
@@ -74,7 +77,7 @@ package editor.trigger {
       
       override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         return new ValueSource_Direct ("");
+         return new ValueSource_Direct (mDefaultValue);
       }
       
       override public function CreateControlForDirectValueSource (valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
@@ -88,15 +91,18 @@ package editor.trigger {
       
       override public function RetrieveDirectValueSourceFromControl (valueSourceDirect:ValueSource_Direct, control:UIComponent, triggerEngine:TriggerEngine):ValueSource
       {
+         var text:String = mDefaultValue;
+         
          if (control is TextInput)
          {
             var text_input:TextInput = control as TextInput;
             
-            var text:String = String (text_input.text);
-            text = ValidateValue (text);
-            
-            valueSourceDirect.SetValueObject (text);
+            text = String (text_input.text);
          }
+
+         text = ValidateValue (text);
+         
+         valueSourceDirect.SetValueObject (text);
          
          return null;
       }

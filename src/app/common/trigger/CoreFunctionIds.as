@@ -51,7 +51,7 @@ package common.trigger {
       public static const ID_GetTimeZone:int                      = IdPool.CoreApiId_74; //
       public static const ID_IsKeyHold:int                        = IdPool.CoreApiId_72; //
       public static const ID_Design_IsMouseButtonHold:int                  = IdPool.CoreApiId_603;
-      public static const ID_SetMouseVisible:int                        = IdPool.CoreApiId_75; //
+      public static const ID_SetMouseVisible:int                        = IdPool.CoreApiId_75; // from v1.56
 
    // string
 
@@ -70,6 +70,7 @@ package common.trigger {
       public static const ID_String_IndexOf:int                   = IdPool.CoreApiId_130; // from v1.54
       public static const ID_String_LastIndexOf:int               = IdPool.CoreApiId_131; // from v1.54
       public static const ID_String_Substring:int                 = IdPool.CoreApiId_132; // from v1.54
+      public static const ID_String_Split:int                     = IdPool.CoreApiId_133; // from v1.56
 
    // bool
 

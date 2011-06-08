@@ -96,6 +96,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_String_IndexOf,                     IndexOfSubstring);
          RegisterCoreFunction (CoreFunctionIds.ID_String_LastIndexOf,                 LastIndexOfSubstring);
          RegisterCoreFunction (CoreFunctionIds.ID_String_Substring,                   Substring);
+         RegisterCoreFunction (CoreFunctionIds.ID_String_Split,                       SplitString);
 
       // bool
 
@@ -719,6 +720,34 @@ package player.trigger {
          var fromIndex:int = int (valueSource.EvaluateValueObject ());
 
          valueTarget.AssignValueObject (text.indexOf (substring, fromIndex));
+      }
+      
+      public static function SplitString (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var substrings:Array = null;
+         
+         var text:String = valueSource.EvaluateValueObject () as String;
+         if (text != null)
+         {
+            valueSource = valueSource.mNextParameter;
+            var delimiter:String = valueSource.EvaluateValueObject () as String;
+            if (delimiter != null)
+            {
+               var texts:Array = text.split (delimiter);
+               
+               if (texts != null)
+               {
+                  substrings = texts.concat ();
+               }
+            }
+         }
+         
+         if (substrings == null)
+         {
+            substrings = new Array ();
+         }
+
+         valueTarget.AssignValueObject (substrings);
       }
 
       public static function LastIndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void

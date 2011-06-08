@@ -401,6 +401,15 @@ package editor.trigger {
                              new VariableDefinitionString ("The Substring"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Split, string_package, "SplitString", null, null,
+                     [
+                             new VariableDefinitionString ("The Input String"),
+                             new VariableDefinitionString ("The Delimiter"),
+                     ],
+                     [
+                             new VariableDefinitionArray ("Array of Substrings"),
+                     ]
+                  );
 
        // bool
 

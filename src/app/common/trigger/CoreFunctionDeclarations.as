@@ -329,6 +329,16 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_String,       ""],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_String_Split,
+                     [
+                        [ValueTypeDefine.ValueType_String,       ""],
+                        [ValueTypeDefine.ValueType_String,       ","],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ]
+                  );
+
 
        // bool
 

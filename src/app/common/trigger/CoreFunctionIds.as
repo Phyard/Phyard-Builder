@@ -349,9 +349,9 @@ package common.trigger {
       public static const ID_EntityShape_IsSleeping:int                  = IdPool.CoreApiId_1161;
       public static const ID_EntityShape_SetSleeping:int                 = IdPool.CoreApiId_1162;
 
-      //public static const ID_EntityShape_GetLocalCentroid:int          = IdPool.CoreApiId_1070;
-      //public static const ID_EntityShape_GetWorldCentroid:int          = IdPool.CoreApiId_1071;
-      //public static const ID_EntityShape_AutoSetMassInertia:int        = IdPool.CoreApiId_1072;
+      public static const ID_EntityShape_GetLocalCentroid:int          = IdPool.CoreApiId_1071;
+      public static const ID_EntityShape_GetWorldCentroid:int          = IdPool.CoreApiId_1072;
+      //public static const ID_EntityShape_AutoSetMassInertia:int        = IdPool.CoreApiId_1073;
 
       public static const ID_EntityShape_GetMass:int                     = IdPool.CoreApiId_1130;
       //public static const ID_EntityShape_SetMass:int                     = IdPool.CoreApiId_1131;

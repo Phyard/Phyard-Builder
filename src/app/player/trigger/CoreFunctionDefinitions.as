@@ -361,6 +361,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsSleeping,                  IsShapeSleeping);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetSleeping,                 SetShapeSleeping);
 
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetLocalCentroid,                        GetLocalCentroid);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetWorldCentroid,                        GetWorldCentroid);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetMass,                        GetShapeMass);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetInertia,                     GetShapeInertia);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                     GetShapeDensity);
@@ -3185,6 +3187,51 @@ package player.trigger {
          var sleeping:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          shape.GetBody ().SetSleeping (sleeping);
+      }
+      
+      public static function GetLocalCentroid (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         if (shape == null || shape.IsDestroyedAlready ())
+            valueTarget.AssignValueObject (0.0);
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetLocalCentroidXInShapeSpace ());
+
+            valueTarget = valueTarget.mNextParameter;
+            valueTarget.AssignValueObject (shape.GetLocalCentroidYInShapeSpace ());
+         }
+      }
+
+      public static function GetWorldCentroid (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         if (shape == null || shape.IsDestroyedAlready ())
+            valueTarget.AssignValueObject (0.0);
+         else
+         {
+            valueSource = valueSource.mNextParameter;
+            var isBodyValue:Boolean = valueSource.EvaluateValueObject () as Boolean;
+            
+            if (isBodyValue)
+            {
+               var body:EntityBody = shape.GetBody ();
+               
+               valueTarget.AssignValueObject (body.GetPositionX ());
+   
+               valueTarget = valueTarget.mNextParameter;
+               valueTarget.AssignValueObject (body.GetPositionY ());
+            }
+            else
+            {
+               valueTarget.AssignValueObject (shape.GetWorldCentroidX ());
+   
+               valueTarget = valueTarget.mNextParameter;
+               valueTarget.AssignValueObject (shape.GetWorldCentroidY ());
+            }
+         }
       }
 
       public static function GetShapeMass (valueSource:Parameter, valueTarget:Parameter):void

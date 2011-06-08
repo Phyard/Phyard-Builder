@@ -19,8 +19,9 @@ package editor.trigger {
          
          ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
          
-         if ( ! CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id) ) )
-            throw new Error ("not consistent! event id = " + id);
+         var result:String = CheckConsistent (CoreEventDeclarations.GetCoreEventHandlerDeclarationById (id))
+         if (result != null)
+            throw new Error ("not consistent! event id = " + id + ", reason: " + result);
       }
       
       override public function GetType ():int 

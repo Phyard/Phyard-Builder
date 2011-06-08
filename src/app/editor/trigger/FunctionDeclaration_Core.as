@@ -32,8 +32,9 @@ package editor.trigger {
          
          ParseAllCallingTextSegments (poemCallingFormat, traditionalCallingFormat);
          
-         if ( ! CheckConsistent (mFunctionDeclaration_Common) )
-            throw new Error ("not consistent! id = " + id);
+         var result:String = CheckConsistent (mFunctionDeclaration_Common);
+         if (result != null)
+            throw new Error ("not consistent! id = " + id + ", reaspm: " + result);
       }
       
       override public function GetType ():int 

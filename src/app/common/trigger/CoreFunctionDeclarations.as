@@ -2061,6 +2061,26 @@ package common.trigger {
                      null
                   );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetLocalCentroid,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_LinearDeltaY,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetWorldCentroid,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionX,       0.0],
+                        [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Double | ValueTypeDefine.NumberTypeUsage_PositionY,       0.0],
+                     ]
+                  );
+
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetMass,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

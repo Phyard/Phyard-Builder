@@ -983,10 +983,31 @@ package player.entity {
          return mInertia;
       }
       
+      // local centroid should be always synchronized.
       public function SetCentroid (centroidX:Number, centroidY:Number):void
       {
          mLocalCentroidX = centroidX;
          mLocalCentroidY = centroidY;
+         
+         SynchronizeWorldCentroid ();
+         
+         var shpeLocalCentroid:Point = new Point ();
+         WorldPoint2LocalPoint (mWorldCentroidX, mWorldCentroidY, shpeLocalCentroid);
+         
+         mLocalCentroidXInShapeSpace = shpeLocalCentroid.x;
+         mLocalCentroidYInShapeSpace = shpeLocalCentroid.y;
+      }
+      
+      private var mLocalCentroidXInShapeSpace:Number = 0.0;
+      private var mLocalCentroidYInShapeSpace:Number = 0.0;
+      public function GetLocalCentroidXInShapeSpace ():Number
+      {
+         return mLocalCentroidXInShapeSpace;
+      }
+      
+      public function GetLocalCentroidYInShapeSpace ():Number
+      {
+         return mLocalCentroidYInShapeSpace;
       }
       
       public function UpdateMassAndInertiaAndLocalCentroid ():void

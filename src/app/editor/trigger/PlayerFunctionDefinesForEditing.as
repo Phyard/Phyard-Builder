@@ -2121,6 +2121,25 @@ package editor.trigger {
                      null
                   );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetLocalCentroid, shape_physics_properties_package, "Get Local Centroid", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Local Centroid X"),
+                             new VariableDefinitionNumber ("Local Centroid Y"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetWorldCentroid, shape_physics_properties_package, "Get World Centroid", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionBoolean ("Centroid of Brothers?"),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("World Centroid X"),
+                             new VariableDefinitionNumber ("World Centroid Y"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetMass, shape_physics_properties_package, "Get Mass", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),

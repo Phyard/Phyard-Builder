@@ -246,57 +246,51 @@ package editor.trigger {
 //
 //=================================================================
       
-      protected function CheckConsistent (coreDelcaration:common.trigger.FunctionDeclaration):Boolean
+      protected function CheckConsistent (coreDelcaration:common.trigger.FunctionDeclaration):String
       {
          if (coreDelcaration == null)
-            return false;
+            return "delc is null";
          
          if ( mId != coreDelcaration.GetID ())
-            return false;
+            return "id not equals";
          
          var num_inputs:int = coreDelcaration.GetNumInputs ();
          
-         if (mInputParamDefinitions == null && num_inputs != 0)
-            return false;
-         
-         if (mInputParamDefinitions != null && num_inputs == 0)
-            return false;
+         if ((mInputParamDefinitions == null && num_inputs != 0) || (mInputParamDefinitions != null && num_inputs == 0))
+            return "numInputs wrong";
          
          var i:int;
          
          if (mInputParamDefinitions != null && num_inputs != 0)
          {
             if (mInputParamDefinitions.length != num_inputs)
-               return false;
+               return "numInputs wrong";
             
             for (i = 0; i < num_inputs; ++ i)
             {
                if (GetInputParamValueType (i) != coreDelcaration.GetInputParamValueType (i))
-                  return false;
+                  return "input#" + i + " wrong";
             }
          }
          
          var num_outputs:int = coreDelcaration.GetNumOutputs ();
          
-         if (mOutputParamDefinitions == null && num_outputs != 0)
-            return false;
-         
-         if (mOutputParamDefinitions != null && num_outputs == 0)
-            return false;
+         if ((mOutputParamDefinitions == null && num_outputs != 0) || (mOutputParamDefinitions != null && num_outputs == 0))
+            return "numOutputs wrong";
          
          if (mOutputParamDefinitions != null && num_outputs != 0)
          {
             if (mOutputParamDefinitions.length != num_outputs)
-               return false;
+               return "numOutputs wrong";
             
             for (i = 0; i < num_outputs; ++ i)
             {
                if (GetOutputParamValueType (i) != coreDelcaration.GetOutputParamValueType (i))
-                  return false;
+                  return "ouput#" + i + " wrong";
             }
          }
          
-         return true;
+         return null;
       }
       
 //==========================================================================================

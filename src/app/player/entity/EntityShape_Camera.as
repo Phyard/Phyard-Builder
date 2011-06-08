@@ -83,6 +83,11 @@ package player.entity {
       
       override protected function InitializeInternal ():void
       {
+         SetAsCurrent ();
+      }
+      
+      public function SetAsCurrent ():void
+      {
          var targetEntity:Entity = null;
          
          if (mFollowedTarget == Define.Camera_FollowedTarget_Self)

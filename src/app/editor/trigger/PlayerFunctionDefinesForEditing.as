@@ -1366,6 +1366,12 @@ package editor.trigger {
                      ]
                   );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera, world_camera_package, "Set Current Camera", null, null,
+                     [
+                             new VariableDefinitionEntity ("The New Camera Entity", null, {mValidClasses: Filters.sCameraEntityClasses}),
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraCenter, world_camera_package, "Get Camera Center", null, null,
                      null,
                      [

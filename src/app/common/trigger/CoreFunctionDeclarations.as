@@ -1286,6 +1286,12 @@ package common.trigger {
                      null
                   );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraCenter,
                      null,
                      [

@@ -242,6 +242,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,     SetWorldGravityAcceleration_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,      SetWorldGravityAcceleration_Vector);
 
+         RegisterCoreFunction (CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
          RegisterCoreFunction (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
          RegisterCoreFunction (CoreFunctionIds.ID_World_FollowCameraWithShape,                       FollowCameraWithShape);
@@ -1919,6 +1920,15 @@ package player.trigger {
          var gaY:Number = valueSource.EvaluateValueObject () as Number;
 
          Global.GetCurrentWorld ().SetCurrentGravityAcceleration (gaX, gaY);
+      }
+      
+      public static function SetCurrentCamera (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var camera:EntityShape_Camera = valueSource.EvaluateValueObject () as EntityShape_Camera;
+         if (camera == null)
+            return;
+         
+         camera.SetAsCurrent ();
       }
 
       public static function GetCameraCenter (valueSource:Parameter, valueTarget:Parameter):void

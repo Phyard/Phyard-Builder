@@ -15,6 +15,12 @@ package player.physics {
    import Box2D.Dynamics.b2ContactListener;
    import Box2D.Dynamics.b2DestructionListener;
    
+   import Box2D.Common.b2BlockAllocator;
+   import Box2D.Dynamics.Joints.b2Joint;
+   import Box2D.Dynamics.Joints.b2JointDef;
+   import Box2dEx.Joint.b2eDummyJoint;
+   import Box2dEx.Joint.b2eDummyJointDef;
+   
    import Box2D.Common.b2Settings;
    
    import Box2D.b2WorldPool;
@@ -52,7 +58,9 @@ package player.physics {
          //_b2World.SetContactPreSolveListener (new _ContactPreSolveListener ());
          //_b2World.SetContactPostSolveListener (new _ContactPostSolveListener ());
          
-         b2World.SetCustomJointCreateAndDestroyFunction (_JointFactory.Create, _JointFactory.Destroy);
+         b2World.SetCustomJointCreateAndDestroyFunction (CreateCustomJoint, DestroyCustomJoint);
+         
+         //b2World.SetMixFrictionFunction (MixFriction_Fun);
       }
       
       public function SetShapeCollideFilterFunctions (shouldCollide:Function):void
@@ -63,6 +71,36 @@ package player.physics {
       public function SetShapeContactEventHandlingFunctions (contactBeginFunc:Function, contactEndFunc:Function):void
       {
          mContactListener.SetHandlingFunctions (contactBeginFunc, contactEndFunc);
+      }
+      
+      public static function CreateCustomJoint (def:b2JointDef, allocator:b2BlockAllocator = null):b2Joint
+      {
+         var joint:b2Joint = null;
+
+         if (def is b2eDummyJointDef)
+         {
+            joint = new b2eDummyJoint (def as b2eDummyJointDef);
+         }
+         
+         return joint;
+      }
+      
+      public static function DestroyCustomJoint (joint:b2Joint, allocator:b2BlockAllocator = null):void
+      {
+         //joint->~b2Joint();
+         joint.Destructor ();
+         
+         if (joint is b2eDummyJoint)
+         {
+            
+         }
+      }
+      
+      public static function MixFriction_Fun (friction1:Number, friction2:Number):Number
+      {
+         var f12:Number = friction1 * friction2;
+         var f:Number = Math.sqrt (Math.abs (f12));
+         return f12 >= 0 ? f : -f;
       }
       
 //=================================================================

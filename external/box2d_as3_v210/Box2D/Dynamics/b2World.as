@@ -453,6 +453,12 @@ package Box2D.Dynamics
 		//
 		public var b2_maxTranslation:Number = b2Settings.b2_maxTranslation;
 		public var b2_maxTranslationSquared:Number = b2Settings.b2_maxTranslationSquared;
+		
+		//
+		public static function SetMixFrictionFunction (mixFunc:Function):void
+		{
+		    b2Settings.b2MixFriction = mixFunc;
+		} 
 
 	} // class
 } // package

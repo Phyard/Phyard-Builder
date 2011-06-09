@@ -93,7 +93,7 @@ package common.trigger {
       public static const ValueType_CollisionCategory:int = 61;
       
 //=============================================================================
-// value type hints, generally, the hints are only useful for saving input parameters
+// number value type hints, generally, the hints are only useful for saving input parameters
 //=============================================================================
       
       // for direct numbers, default number is a double float (64 bits float), default is general number
@@ -145,5 +145,13 @@ package common.trigger {
       //public static const NumberTypeUsage_DeltaRotationDegrees                     :int = 33 << 20;
 
       //
+      
+//=============================================================================
+// array type hints, generally, the hints are only useful for saving input parameters
+//=============================================================================
+
+      public static const ArrayTypeUsage_General                         :int = 0 << 20;
+      public static const ArrayTypeUsage_Position                        :int = 1 << 20; // x0,y0,x1,y1,...
+
    }
 }

@@ -18,6 +18,11 @@ package player.world
          return mCategoryIndex;
       }
       
+      public function ToString ():String
+      {
+         return "CollisionCategory#" + mCategoryIndex;
+      }
+      
       internal function SetTableLength (length:int):void
       {
          mEnemyTable = new Array (length);

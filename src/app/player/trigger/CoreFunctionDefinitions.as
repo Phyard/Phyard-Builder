@@ -123,11 +123,13 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_ConditionAssign,      ConditionAssignArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SwapValues,           SwapArrayValues);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Equals,               EqualsWith_Arrays);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_ToString,             ArrayToString);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_Create,               CreateArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_IsNull,               IsNullArray);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetLength,               GetArrayLength);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetLength,               SetArrayLength);
-         RegisterCoreFunction (CoreFunctionIds.ID_Array_RemoveElementAt,               RemoveArrayElementAt);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_RemoveElements,               RemoveArrayElements);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_InsertElements,               InsertArrayElements);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElementWithBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElementAsBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithNumber,     SetArrayElementWithNumber);
@@ -364,8 +366,11 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetLocalCentroid,                        GetLocalCentroid);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetWorldCentroid,                        GetWorldCentroid);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetMass,                        GetShapeMass);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetMass,                        SetShapeMass);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetInertia,                     GetShapeInertia);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetInertia,                     SetShapeInertia);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetDensity,                     GetShapeDensity);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetDensity,                     SetShapeDensity);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,                        SetShapeLinearVelocity);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetLinearVelocity,                        GetShapeLinearVelocity);
@@ -428,14 +433,16 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexCount,                    GetVertexCount);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,            GetVertexLocalPosition);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition,            SetVertexLocalPosition);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition,            SetVertexLocalPosition);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,            GetVertexWorldPosition);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition,            SetVertexWorldPosition);
-
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition,            InsertVertexByLocalPosition);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition,            InsertVertexByWorldPosition);
-
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt,            DeleteVertexAt);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition,            SetVertexWorldPosition);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition,            InsertVertexByLocalPosition);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition,            InsertVertexByWorldPosition);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt,            DeleteVertexAt);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPositions,            GetVertexLocalPositions);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPositions,            SetVertexLocalPositions);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPositions,            GetVertexWorldPositions);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions,            SetVertexWorldPositions);
 
       // game / entity / joint
 
@@ -893,14 +900,14 @@ package player.trigger {
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
-         valueTarget.AssignValueObject (entity == null ? "null" : "Entity#" + entity.GetCreationId ());
+         valueTarget.AssignValueObject (entity == null ? "null" : entity.ToString ());
       }
 
       public static function CollisionCategoryToString (valueSource:Parameter, valueTarget:Parameter):void
       {
          var ccat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
-         valueTarget.AssignValueObject ("CollisionCategory#" + (ccat == null ? -1 : ccat.GetIndexInEditor ()));
+         valueTarget.AssignValueObject (ccat == null ? "null" : ccat.ToString ());
       }
 
    //************************************************
@@ -1021,6 +1028,39 @@ package player.trigger {
          var value2:Array = valueSource.EvaluateValueObject () as Array;
 
          valueTarget.AssignValueObject (value1 == value2);
+      }
+      
+      public static function ArrayToString (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var values:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueTarget.AssignValueObject (ConvertArrayToString (values));
+      }
+      
+      private static function ConvertArrayToString (values:Array):String
+      {
+         if (values == null)
+            return "null";
+
+         var returnText:String = "[";
+         
+         var numElements:int = values.length;
+         var value:Object;
+         if (numElements > 1)
+         {
+            value = values [0];
+            returnText = returnText + (value is Array ? ConvertArrayToString (value as Array) : String (value));
+            
+            for (var i:int = 1; i < numElements; ++ i)
+            {
+               value = values [i];
+               returnText = returnText + "," + (value is Array ? ConvertArrayToString (value as Array) : String (value));
+            }
+         }
+         
+         returnText = returnText + "]";
+         
+         return returnText;
       }
 
       public static function LargerThan (valueSource:Parameter, valueTarget:Parameter):void
@@ -1162,7 +1202,17 @@ package player.trigger {
          }
       }
 
-      public static function RemoveArrayElementAt (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RemoveArrayElements (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SpliceArrayElements (valueSource, valueTarget, true);
+      }
+      
+      public static function InsertArrayElements (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         SpliceArrayElements (valueSource, valueTarget, false);
+      }
+      
+      private static function SpliceArrayElements (valueSource:Parameter, valueTarget:Parameter, toRemove:Boolean):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
 
@@ -1171,9 +1221,31 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             //var index:int = valueSource.EvaluateValueObject () as int;
             var index:int = int (valueSource.EvaluateValueObject ()); // from v1.56
-            if (index >= 0 && index < array.length)
+            
+            valueSource = valueSource.mNextParameter;
+            var num:int = int (valueSource.EvaluateValueObject ()); // from v1.56
+            
+            if (num <= 0)
+               return;
+            
+            if (toRemove)
             {
-               array.splice (index, 1);
+               if (index >= 0 && index < array.length)
+               {
+                  array.splice (index, num);
+               }
+            }
+            else
+            {
+               if (index < 0)
+                  index = 0;
+               if (index > array.length)
+                  index = array.length;
+               
+               while (-- num >= 0)
+               {
+                  array.splice (index, 0, undefined);
+               }
             }
          }
       }
@@ -3255,6 +3327,19 @@ package player.trigger {
             }
          }
       }
+      
+      //public static function SetShapeMass (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+      //
+      //   if (shape == null || shape.IsDestroyedAlready ())
+      //     return;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var newMass:Number = valueSource.EvaluateValueObject () as Number;
+      //
+      //   shape.ChangeMass (newMass);
+      //}
 
       public static function GetShapeInertia (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3277,6 +3362,19 @@ package player.trigger {
             }
          }
       }
+      
+      //public static function SetShapeInertia (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+      //
+      //   if (shape == null || shape.IsDestroyedAlready ())
+      //     return;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var newIntertia:Number = valueSource.EvaluateValueObject () as Number;
+      //
+      //   shape.ChangeInteria (newIntertia);
+      //}
 
       public static function GetShapeDensity (valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3288,6 +3386,19 @@ package player.trigger {
          {
             valueTarget.AssignValueObject (shape.GetDensity ());
          }
+      }
+      
+      public static function SetShapeDensity (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         if (shape == null || shape.IsDestroyedAlready ())
+           return;
+         
+         valueSource = valueSource.mNextParameter;
+         var newDensity:Number = valueSource.EvaluateValueObject () as Number;
+         
+         shape.ChangeDensity (newDensity); // don't call SetDensity
       }
 
       public static function SetShapeLinearVelocity (valueSource:Parameter, valueTarget:Parameter):void
@@ -4101,9 +4212,16 @@ package player.trigger {
             var vertexIndex:int = int (valueSource.EvaluateValueObject ());
 
             var point:Point = polyShape.GetLocalVertex (vertexIndex);
-            if (isWorldPoint)
+            if (point == null)
             {
-               polyShape.LocalPoint2WorldPoint (point.x, point.y, point);
+               point = new Point (0.0, 0.0);
+            }
+            else
+            {
+               if (isWorldPoint)
+               {
+                  polyShape.LocalPoint2WorldPoint (point.x, point.y, point);
+               }
             }
 
             valueTarget.AssignValueObject (point.x);
@@ -4113,64 +4231,116 @@ package player.trigger {
          }
       }
       
-      public static function SetVertexLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetVertexPosition (valueSource, valueTarget, false, false);
-      }
+      //public static function SetVertexLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetVertexPosition (valueSource, valueTarget, false, false);
+      //}
+      //
+      //public static function SetVertexWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetVertexPosition (valueSource, valueTarget, true, false);
+      //}
+      //
+      //public static function InsertVertexByLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetVertexPosition (valueSource, valueTarget, false, true);
+      //}
+      //
+      //public static function InsertVertexByWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   SetVertexPosition (valueSource, valueTarget, true, true);
+      //}
+      //
+      //public static function SetVertexPosition (valueSource:Parameter, valueTarget:Parameter, isWorldPoint:Boolean, isInsert:Boolean):void
+      //{
+      //   var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
+      //
+      //   if (polyShape == null || polyShape.IsDestroyedAlready ())
+      //      return;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var vertexIndex:int = int (valueSource.EvaluateValueObject ());
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var posX:Number = int (valueSource.EvaluateValueObject ());
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var posY:Number = int (valueSource.EvaluateValueObject ());
+      //
+      //   if (isWorldPoint)
+      //   {
+      //      var point:Point = new Point ();
+      //      polyShape.WorldPoint2LocalPoint (posX, posY, point);
+      //      posX = point.x;
+      //      posY = point.y;
+      //   }
+      //
+      //   EntityShape.ModifyPolyShapeVertex (polyShape, vertexIndex, posX, posY, isInsert);
+      //}
+      //
+      //public static function DeleteVertexAt (valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
+      //
+      //   if (polyShape == null || polyShape.IsDestroyedAlready ())
+      //      return;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var vertexIndex:int = int (valueSource.EvaluateValueObject ());
+      //
+      //   EntityShape.DeletePolyShapeVertex (polyShape, vertexIndex);
+      //}
       
-      public static function SetVertexWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetVertexPosition (valueSource, valueTarget, true, false);
-      }
-      
-      public static function InsertVertexByLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetVertexPosition (valueSource, valueTarget, false, true);
-      }
-      
-      public static function InsertVertexByWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
-      {
-         SetVertexPosition (valueSource, valueTarget, true, true);
-      }
-      
-      public static function SetVertexPosition (valueSource:Parameter, valueTarget:Parameter, isWorldPoint:Boolean, isInsert:Boolean):void
+      public static function GetVertexLocalPositions (valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
-
+      
          if (polyShape == null || polyShape.IsDestroyedAlready ())
-            return;
-         
-         valueSource = valueSource.mNextParameter;
-         var vertexIndex:int = int (valueSource.EvaluateValueObject ());
-
-         valueSource = valueSource.mNextParameter;
-         var posX:Number = int (valueSource.EvaluateValueObject ());
-
-         valueSource = valueSource.mNextParameter;
-         var posY:Number = int (valueSource.EvaluateValueObject ());
-
-         if (isWorldPoint)
          {
-            var point:Point = new Point ();
-            polyShape.WorldPoint2LocalPoint (posX, posY, point);
-            posX = point.x;
-            posY = point.y;
+            valueTarget.AssignValueObject (null);
+            return;
          }
-
-         EntityShape.ModifyPolyShapeVertex (polyShape, vertexIndex, posX, posY, isInsert);
+         
+         valueTarget.AssignValueObject (polyShape.GetVertexPositions (false));
       }
       
-      public static function DeleteVertexAt (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetVertexLocalPositions (valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
-
+      
          if (polyShape == null || polyShape.IsDestroyedAlready ())
             return;
          
          valueSource = valueSource.mNextParameter;
-         var vertexIndex:int = int (valueSource.EvaluateValueObject ());
-
-         EntityShape.DeletePolyShapeVertex (polyShape, vertexIndex);
+         var positions:Array = valueSource.EvaluateValueObject () as Array;
+         
+         EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, false);
+      }
+      
+      public static function GetVertexWorldPositions (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
+      
+         if (polyShape == null || polyShape.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (null);
+            return;
+         }
+         
+         valueTarget.AssignValueObject (polyShape.GetVertexPositions (true));
+      }
+      
+      public static function SetVertexWorldPositions (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
+      
+         if (polyShape == null || polyShape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var positions:Array = valueSource.EvaluateValueObject () as Array;
+         
+         EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, true);
       }
       
    //*******************************************************************

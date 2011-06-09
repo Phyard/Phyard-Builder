@@ -830,27 +830,39 @@ public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Num
    rect.ScaleJointAnchorPositions (scaleWidth, scaleHeight);
 }
 
-public static function ModifyPolyShapeVertex (polyShape:EntityShapePolyShape, vertexIndex:int, newLocalPosX:Number, newLocalPosY:Number, isInsert:Boolean):void
+//public static function ModifyPolyShapeVertex (polyShape:EntityShapePolyShape, vertexIndex:int, newLocalPosX:Number, newLocalPosY:Number, isInsert:Boolean):void
+//{
+//   if (isNaN (vertexIndex) || isNaN (newLocalPosX) || isNaN (newLocalPosY))
+//      return;
+//   
+//   var body:EntityBody = polyShape.GetBody ();
+//      
+//   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+//   var isPhysicsShape:Boolean = polyShape.IsPhysicsShape ();
+//   
+//   polyShape.ModifyLocalVertex (vertexIndex, newLocalPosX, newLocalPosY, isInsert);
+//   
+//   OnShapeGeometryChanged (body, isPhysicsBody, polyShape, isPhysicsShape);
+//}
+//
+//public static function DeletePolyShapeVertex (polyShape:EntityShapePolyShape, vertexIndex:int):void
+//{
+//   if (isNaN (vertexIndex))
+//      return;
+//   
+//   polyShape.DeleteVertex (vertexIndex);
+//}
+
+public static function ModifyPolyShapeVertexPositions (polyShape:EntityShapePolyShape, xyValues:Array, inWorldSpace:Boolean):void
 {
-   if (isNaN (vertexIndex) || isNaN (newLocalPosX) || isNaN (newLocalPosY))
-      return;
-   
    var body:EntityBody = polyShape.GetBody ();
       
    var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
    var isPhysicsShape:Boolean = polyShape.IsPhysicsShape ();
    
-   polyShape.ModifyLocalVertex (vertexIndex, newLocalPosX, newLocalPosY, isInsert);
+   polyShape.SetVertexPositions (xyValues, inWorldSpace);
    
    OnShapeGeometryChanged (body, isPhysicsBody, polyShape, isPhysicsShape);
-}
-
-public static function DeletePolyShapeVertex (polyShape:EntityShapePolyShape, vertexIndex:int):void
-{
-   if (isNaN (vertexIndex))
-      return;
-   
-   polyShape.DeleteVertex (vertexIndex);
 }
 
 // isPhysicsShape and isPhysicsBody should not retrieved from the input params
@@ -871,6 +883,22 @@ private static function OnShapeGeometryChanged (body:EntityBody, isPhysicsBody:B
       body.OnShapeListChanged (false);
       body.NotifyMovedManually ();
    }
+}
+
+//================================================================
+// mass
+//================================================================
+
+public function ChangeDensity (newDensity:Number):void
+{
+   var body:EntityBody = this.GetBody ();
+      
+   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
+   var isPhysicsShape:Boolean = this.IsPhysicsShape ();
+   
+   mDensity = newDensity;
+   
+   OnShapeGeometryChanged (body, isPhysicsBody, this, isPhysicsShape);
 }
 
 //================================================================

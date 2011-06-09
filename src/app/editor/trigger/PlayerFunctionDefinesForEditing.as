@@ -554,6 +554,14 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ToString, array_package, "Array To String", null, null,
+                     [
+                              new VariableDefinitionArray ("Array"),
+                     ],
+                     [
+                             new VariableDefinitionString ("Result"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Create, array_package, "Create Array", null, null,
                      [
                               new VariableDefinitionNumber ("Initial Length"),
@@ -585,10 +593,19 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_RemoveElementAt, array_package, "Remove Element At", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_RemoveElements, array_package, "Remove Elements", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
-                              new VariableDefinitionNumber ("Element Index"),
+                              new VariableDefinitionNumber ("From Index"),
+                              new VariableDefinitionNumber ("Number Elements"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_InsertElements, array_package, "Insert Elements", null, null,
+                     [
+                              new VariableDefinitionArray ("The Array"),
+                              new VariableDefinitionNumber ("From Index"),
+                              new VariableDefinitionNumber ("Number Elements"),
                      ],
                      null
                   );
@@ -2149,6 +2166,14 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Mass"),
                      ]
                   );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetMass, shape_physics_properties_package, "Set Mass", null, null,
+         //            [
+         //                    new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+         //                    new VariableDefinitionNumber ("Mass"),
+         //                    //new VariableDefinitionBoolean ("Mass of Brothers?"),
+         //            ],
+         //            null
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia, shape_physics_properties_package, "Get Moment Of Inertia", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2158,6 +2183,14 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Moment Of Inertia"),
                      ]
                   );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetInertia, shape_physics_properties_package, "Set Moment Of Inertia", null, null,
+         //            [
+         //                    new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+         //                    new VariableDefinitionNumber ("Moment Of Inertia"),
+         //                    //new VariableDefinitionBoolean ("MOI of Brothers?"),
+         //            ],
+         //            null
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity, shape_physics_properties_package, "Get Density", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2165,6 +2198,13 @@ package editor.trigger {
                      [
                              new VariableDefinitionNumber ("The Density"),
                      ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, shape_physics_properties_package, "Set Density", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("The Density"),
+                     ],
+                     null
                   );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetLinearVelocity, shape_physics_dynamics_package, "Get Linear Velocity", "@Vector (#0, #1) = Get Linear Velocity ($0)", null,
@@ -2550,15 +2590,15 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Local Y"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition, shape_geometry_package, "Set Poly Shape Vertexes Local Position", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
-                             new VariableDefinitionNumber ("Vertex Index"),
-                             new VariableDefinitionNumber ("Local X"),
-                             new VariableDefinitionNumber ("Local Y"),
-                     ],
-                     null
-                  );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition, shape_geometry_package, "Set Poly Shape Vertexes Local Position", null, null,
+         //            [
+         //                    new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+         //                    new VariableDefinitionNumber ("Vertex Index"),
+         //                    new VariableDefinitionNumber ("Local X"),
+         //                    new VariableDefinitionNumber ("Local Y"),
+         //            ],
+         //            null
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition, shape_geometry_package, "Get Poly Shape Vertexes World Position", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
@@ -2569,37 +2609,68 @@ package editor.trigger {
                              new VariableDefinitionNumber ("World Y"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition, shape_geometry_package, "Set Poly Shape Vertexes World Position", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition, shape_geometry_package, "Set Poly Shape Vertexes World Position", null, null,
+         //            [
+         //                    new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+         //                    new VariableDefinitionNumber ("Vertex Index"),
+         //                    new VariableDefinitionNumber ("World X"),
+         //                    new VariableDefinitionNumber ("World Y"),
+         //            ],
+         //            null
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition, shape_geometry_package, "Insert Poly Shape Vertex By Local Position", null, null,
+         //            [
+         //                    new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+         //                    new VariableDefinitionNumber ("Vertex Index"),
+         //                    new VariableDefinitionNumber ("Local X"),
+         //                    new VariableDefinitionNumber ("Local Y"),
+         //            ],
+         //            null
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition, shape_geometry_package, "Insert Poly Shape Vertex By World Position", null, null,
+         //            [
+         //                    new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+         //                    new VariableDefinitionNumber ("Vertex Index"),
+         //                    new VariableDefinitionNumber ("World X"),
+         //                    new VariableDefinitionNumber ("World Y"),
+         //            ],
+         //            null
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt, shape_geometry_package, "Delete Poly Shape Vertex", null, null,
+         //            [
+         //                    new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+         //                    new VariableDefinitionNumber ("Vertex Index"),
+         //            ],
+         //            null
+         //         );
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPositions, shape_geometry_package, "Get Poly Shape Local Vertex Positions", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
-                             new VariableDefinitionNumber ("Vertex Index"),
-                             new VariableDefinitionNumber ("World X"),
-                             new VariableDefinitionNumber ("World Y"),
+                     ],
+                     [
+                             new VariableDefinitionArray ("Brothers (including self)"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPositions, shape_geometry_package, "Set Poly Shape Local Vertex Positions", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
+                             new VariableDefinitionArray ("Brothers (including self)"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition, shape_geometry_package, "Insert Poly Shape Vertex By Local Position", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPositions, shape_geometry_package, "Get Poly Shape World Vertex Positions", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
-                             new VariableDefinitionNumber ("Vertex Index"),
-                             new VariableDefinitionNumber ("Local X"),
-                             new VariableDefinitionNumber ("Local Y"),
                      ],
-                     null
+                     [
+                             new VariableDefinitionArray ("Brothers (including self)"),
+                     ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition, shape_geometry_package, "Insert Poly Shape Vertex By World Position", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions, shape_geometry_package, "Set Poly Shape World Vertex Positions", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
-                             new VariableDefinitionNumber ("Vertex Index"),
-                             new VariableDefinitionNumber ("World X"),
-                             new VariableDefinitionNumber ("World Y"),
-                     ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt, shape_geometry_package, "Delete Poly Shape Vertex", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
-                             new VariableDefinitionNumber ("Vertex Index"),
+                             new VariableDefinitionArray ("Brothers (including self)"),
                      ],
                      null
                   );

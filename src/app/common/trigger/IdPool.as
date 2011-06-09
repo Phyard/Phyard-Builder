@@ -131,6 +131,8 @@ package common.trigger {
       public static const CoreApiId_98:int = 98; //
       public static const CoreApiId_99:int = 99; //
       public static const CoreApiId_100:int = 100; //
+      public static const CoreApiId_101:int = 101; //
+      public static const CoreApiId_102:int = 102; //
 
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //
@@ -454,6 +456,10 @@ package common.trigger {
       public static const CoreApiId_1563:int = 1563; // entity.shape.poly
       public static const CoreApiId_1564:int = 1564; // entity.shape.poly
       public static const CoreApiId_1565:int = 1565; // entity.shape.poly
+      public static const CoreApiId_1566:int = 1566; // entity.shape.poly
+      public static const CoreApiId_1567:int = 1567; // entity.shape.poly
+      public static const CoreApiId_1568:int = 1568; // entity.shape.poly
+      public static const CoreApiId_1569:int = 1569; // entity.shape.poly
 
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint

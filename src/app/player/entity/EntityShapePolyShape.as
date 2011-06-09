@@ -11,6 +11,7 @@ package player.entity {
    import player.physics.PhysicsProxyShape;
    
    import common.Define;
+   import common.CoordinateSystem;
    
    public class EntityShapePolyShape extends EntityShape
    {
@@ -64,88 +65,193 @@ package player.entity {
          return new Point (localPoint.x, localPoint.y);
       }
       
-      public function ModifyLocalVertex (vertexIndex:int, localPhysicsX:Number, localPhysicsY:Number, isInsert:Boolean):void
+      public function GetVertexPositions (inWorldSpace:Boolean):Array
       {
-         if (vertexIndex < 0)
-            return;
+         if (mLocalPoints == null)
+            return null;
          
-         if (isInsert)
+         var numPoints:int = mLocalPoints.length;
+         
+         var returnValues:Array = new Array (numPoints + numPoints);
+         var index:int = 0;
+         var localPoint:Point;
+         
+         for (var vertexId:int = 0; vertexId < numPoints; ++ vertexId)
          {
-            if (mLocalPoints == null) // so mLocalDisplayPoints is also null
-            {
-               if (vertexIndex > 0)
-                  return;
-               
-               mLocalPoints = new Array ();
-               mLocalDisplayPoints = new Array ();
-            }
-            else if (vertexIndex > GetVertexPointsCount ())
-            {
-               return;
-            }
+            localPoint = mLocalPoints [vertexId] as Point;
             
-            mLocalPoints.push (new Point (localPhysicsX, localPhysicsY));
-            mLocalDisplayPoints.push (new Point (mWorld.GetCoordinateSystem ().P2D_LinearDeltaX (localPhysicsX),
-                                                 mWorld.GetCoordinateSystem ().P2D_LinearDeltaY (localPhysicsY)));
+            returnValues [index ++] = localPoint.x;
+            returnValues [index ++] = localPoint.y;
+         }
+         
+         if (inWorldSpace)
+         {
+            var numValues:int = returnValues.length;
+            var index2:int = 0;
+            var worldPoint:Point = new Point ();
+            
+            index = 0;
+            while (index < numValues)
+            {
+               LocalPoint2WorldPoint (returnValues [index ++], returnValues [index ++], worldPoint);
+               
+               returnValues [index2 ++] = worldPoint.x;
+               returnValues [index2 ++] = worldPoint.y;
+            }
+         }
+         
+         return returnValues;
+      }
+      
+      // physics values, either in local or world space
+      public function SetVertexPositions (xyValues:Array, inWorldSpace:Boolean):void
+      {
+         CreateVertexArrays (xyValues == null ? -1 : xyValues.length / 2);
+         
+         // ...
+         
+         var vertexCount:int = GetVertexPointsCount ();
+         var index:int = 0;
+         var vertexId:int;
+         var localPoint:Point;
+         
+         if (inWorldSpace)
+         {
+            for (vertexId = 0; vertexId < vertexCount; ++ vertexId)
+            {
+               localPoint = mLocalPoints [vertexId] as Point;
+               WorldPoint2LocalPoint (xyValues [index ++], xyValues [index ++], localPoint);
+            }
          }
          else
          {
-            if (vertexIndex >= GetVertexPointsCount ())
-               return;
+            for (vertexId = 0; vertexId < vertexCount; ++ vertexId)
+            {
+               localPoint = mLocalPoints [vertexId] as Point;
+               
+               localPoint.x = xyValues [index ++];
+               localPoint.y = xyValues [index ++];
+            }
+         }
+
+         // ...
+         
+         var coorinateSyatem:CoordinateSystem = mWorld.GetCoordinateSystem ();
+         var displayPoint:Point;
+         
+         for (vertexId = 0; vertexId < vertexCount; ++ vertexId)
+         {
+            localPoint = mLocalPoints [vertexId] as Point;
             
-            var physicsPoint:Point = mLocalPoints [vertexIndex];
-            physicsPoint.x = localPhysicsX;
-            physicsPoint.y = localPhysicsY;
-            
-            var displayPoint:Point = mLocalDisplayPoints [vertexIndex];
-            displayPoint.x =  mWorld.GetCoordinateSystem ().P2D_LinearDeltaX (localPhysicsX);
-            displayPoint.y =  mWorld.GetCoordinateSystem ().P2D_LinearDeltaY (localPhysicsY);
+            displayPoint = mLocalDisplayPoints [vertexId];
+            displayPoint.x = coorinateSyatem.P2D_LinearDeltaX (localPoint.x);
+            displayPoint.y = coorinateSyatem.P2D_LinearDeltaY (localPoint.y);
          }
          
-         mNeedRebuildAppearanceObjects = true;
-         DelayUpdateAppearance ();
+         return;
       }
       
-      public function DeleteVertex (vertexIndex:int):void
-      {
-         if (vertexIndex < 0 || vertexIndex >= GetVertexPointsCount ())
-            return;
-         
-         mLocalPoints.splice (vertexIndex, 1);
-         mLocalDisplayPoints.splice (vertexIndex, 1);
-         
+      //public function ModifyLocalVertex (vertexIndex:int, localPhysicsX:Number, localPhysicsY:Number, isInsert:Boolean):void
+      //{
+      //   if (vertexIndex < 0)
+      //      return;
+      //   
+      //   if (isInsert)
+      //   {
+      //      if (mLocalPoints == null) // so mLocalDisplayPoints is also null
+      //      {
+      //         if (vertexIndex > 0)
+      //            return;
+      //         
+      //         mLocalPoints = new Array ();
+      //         mLocalDisplayPoints = new Array ();
+      //      }
+      //      else if (vertexIndex > GetVertexPointsCount ())
+      //      {
+      //         return;
+      //      }
+      //      
+      //      mLocalPoints.push (new Point (localPhysicsX, localPhysicsY));
+      //      mLocalDisplayPoints.push (new Point (mWorld.GetCoordinateSystem ().P2D_LinearDeltaX (localPhysicsX),
+      //                                           mWorld.GetCoordinateSystem ().P2D_LinearDeltaY (localPhysicsY)));
+      //   }
+      //   else
+      //   {
+      //      if (vertexIndex >= GetVertexPointsCount ())
+      //         return;
+      //      
+      //      var physicsPoint:Point = mLocalPoints [vertexIndex];
+      //      physicsPoint.x = localPhysicsX;
+      //      physicsPoint.y = localPhysicsY;
+      //      
+      //      var displayPoint:Point = mLocalDisplayPoints [vertexIndex];
+      //      displayPoint.x =  mWorld.GetCoordinateSystem ().P2D_LinearDeltaX (localPhysicsX);
+      //      displayPoint.y =  mWorld.GetCoordinateSystem ().P2D_LinearDeltaY (localPhysicsY);
+      //   }
+      //   
+      //   mNeedRebuildAppearanceObjects = true;
+      //   DelayUpdateAppearance ();
+      //}
+      //
+      //public function DeleteVertex (vertexIndex:int):void
+      //{
+      //   if (vertexIndex < 0 || vertexIndex >= GetVertexPointsCount ())
+      //      return;
+      //   
+      //   mLocalPoints.splice (vertexIndex, 1);
+      //   mLocalDisplayPoints.splice (vertexIndex, 1);
+      //   
+      //   mNeedRebuildAppearanceObjects = true;
+      //   DelayUpdateAppearance ();
+      //}
+      
+      protected function CreateVertexArrays (vertexCount:int):void
+      {  
          mNeedRebuildAppearanceObjects = true;
-         DelayUpdateAppearance ();
+         DelayUpdateAppearance (); 
+         
+         if (vertexCount < 0)
+         {
+            mLocalPoints = null;
+            mLocalDisplayPoints = null;
+         
+            return;
+         }
+         
+         if (mLocalPoints == null || mLocalPoints.length != vertexCount)
+         {
+            mLocalPoints        = new Array (vertexCount);
+            mLocalDisplayPoints = new Array (vertexCount);
+            for (var vertexId:int = 0; vertexId < vertexCount; ++ vertexId)
+            {
+               mLocalPoints        [vertexId] = new Point ();
+               mLocalDisplayPoints [vertexId] = new Point ();
+            }
+         }
       }
       
       public function SetLocalDisplayVertexPoints (points:Array):void
       {
-         var i:int;
+         CreateVertexArrays (points == null ? -1 : points.length);
+         
+         var coorinateSyatem:CoordinateSystem = mWorld.GetCoordinateSystem ();
+         
          var inputDisplayPoint:Point;
          var displayPoint:Point;
          var physicsPoint:Point;
-         if (mLocalPoints == null || mLocalPoints.length != points.length)
-         {
-            mLocalPoints = new Array (points.length);
-            mLocalDisplayPoints = new Array (points.length);
-            for (i = 0; i < mLocalPoints.length; ++ i)
-            {
-               mLocalPoints        [i] = new Point ();
-               mLocalDisplayPoints [i] = new Point ();
-            }
-         }
-         
-         for (i = 0; i < mLocalPoints.length; ++ i)
-         {
-            inputDisplayPoint = points [i];
 
-            displayPoint = mLocalDisplayPoints [i];
+         var vertexCount:int = GetVertexPointsCount ();
+         for (var vertexId:int = 0; vertexId < vertexCount; ++ vertexId)
+         {
+            inputDisplayPoint = points [vertexId];
+
+            displayPoint = mLocalDisplayPoints [vertexId];
             displayPoint.x = inputDisplayPoint.x;
             displayPoint.y = inputDisplayPoint.y;
 
-            physicsPoint = mLocalPoints [i];
-            physicsPoint.x =  mWorld.GetCoordinateSystem ().D2P_LinearDeltaX (inputDisplayPoint.x);
-            physicsPoint.y =  mWorld.GetCoordinateSystem ().D2P_LinearDeltaY (inputDisplayPoint.y);
+            physicsPoint = mLocalPoints [vertexId];
+            physicsPoint.x = coorinateSyatem.D2P_LinearDeltaX (inputDisplayPoint.x);
+            physicsPoint.y = coorinateSyatem.D2P_LinearDeltaY (inputDisplayPoint.y);
          }
       }
    }

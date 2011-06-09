@@ -94,11 +94,13 @@ package common.trigger {
       public static const ID_Array_ConditionAssign:int       = IdPool.CoreApiId_81; // v1.54
       public static const ID_Array_SwapValues:int            = IdPool.CoreApiId_82; // v1.54
       public static const ID_Array_Equals:int                = IdPool.CoreApiId_83; // v1.54
+      public static const ID_Array_ToString:int                = IdPool.CoreApiId_101; // v1.56
       public static const ID_Array_Create:int                = IdPool.CoreApiId_84; // v1.54
       public static const ID_Array_IsNull:int                = IdPool.CoreApiId_85; // v1.54
       public static const ID_Array_GetLength:int                = IdPool.CoreApiId_86; // v1.54
       public static const ID_Array_SetLength:int                = IdPool.CoreApiId_99; // v1.54
-      public static const ID_Array_RemoveElementAt:int                = IdPool.CoreApiId_100; // v1.54
+      public static const ID_Array_RemoveElements:int                = IdPool.CoreApiId_100; // v1.54
+      public static const ID_Array_InsertElements:int                = IdPool.CoreApiId_102; // v1.56
       public static const ID_Array_SetElementWithBoolean:int     = IdPool.CoreApiId_87; // v1.54
       public static const ID_Array_GetElementAsBoolean:int       = IdPool.CoreApiId_88; // v1.54
       public static const ID_Array_SetElementWithNumber:int      = IdPool.CoreApiId_89; // v1.54
@@ -358,7 +360,7 @@ package common.trigger {
       public static const ID_EntityShape_GetInertia:int                  = IdPool.CoreApiId_1132;
       //public static const ID_EntityShape_SetInertia:int                  = IdPool.CoreApiId_1133;
       public static const ID_EntityShape_GetDensity:int                  = IdPool.CoreApiId_1134;
-      //public static const ID_EntityShape_SetDensity:int                  = IdPool.CoreApiId_1135;
+      public static const ID_EntityShape_SetDensity:int                  = IdPool.CoreApiId_1135;
       //public static const ID_EntityShape_GetFriction:int                 = IdPool.CoreApiId_1136;
       //public static const ID_EntityShape_SetFriction:int                 = IdPool.CoreApiId_1137;
       //public static const ID_EntityShape_GetRestitution:int              = IdPool.CoreApiId_1138;
@@ -441,12 +443,16 @@ package common.trigger {
 
       public static const ID_EntityShapePoly_GetVertexCount:int                          = IdPool.CoreApiId_1558;
       public static const ID_EntityShapePoly_GetVertexLocalPosition:int                  = IdPool.CoreApiId_1559;
-      public static const ID_EntityShapePoly_SetVertexLocalPosition:int                 = IdPool.CoreApiId_1560;
+      //public static const ID_EntityShapePoly_SetVertexLocalPosition:int                 = IdPool.CoreApiId_1560;
       public static const ID_EntityShapePoly_GetVertexWorldPosition:int                  = IdPool.CoreApiId_1561;
-      public static const ID_EntityShapePoly_SetVertexWorldPosition:int                 = IdPool.CoreApiId_1562;
-      public static const ID_EntityShapePoly_InsertVertexByLocalPosition:int                     = IdPool.CoreApiId_1563;
-      public static const ID_EntityShapePoly_InsertVertexByWorldPosition:int                     = IdPool.CoreApiId_1564;
-      public static const ID_EntityShapePoly_DeleteVertexAt:int                     = IdPool.CoreApiId_1565;
+      //public static const ID_EntityShapePoly_SetVertexWorldPosition:int                 = IdPool.CoreApiId_1562;
+      //public static const ID_EntityShapePoly_InsertVertexByLocalPosition:int                     = IdPool.CoreApiId_1563;
+      //public static const ID_EntityShapePoly_InsertVertexByWorldPosition:int                     = IdPool.CoreApiId_1564;
+      //public static const ID_EntityShapePoly_DeleteVertexAt:int                     = IdPool.CoreApiId_1565;
+      public static const ID_EntityShapePoly_GetVertexLocalPositions:int                     = IdPool.CoreApiId_1566;
+      public static const ID_EntityShapePoly_SetVertexLocalPositions:int                     = IdPool.CoreApiId_1567;
+      public static const ID_EntityShapePoly_GetVertexWorldPositions:int                     = IdPool.CoreApiId_1568;
+      public static const ID_EntityShapePoly_SetVertexWorldPositions:int                     = IdPool.CoreApiId_1569;
 
    // game / entity / joint
 

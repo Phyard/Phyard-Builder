@@ -87,6 +87,11 @@ package player.entity {
          return null;
       }
       
+      public function ToString ():String
+      {
+         return "Entity#" + mCreationId;
+      }
+      
 //=============================================================
 //   
 //=============================================================

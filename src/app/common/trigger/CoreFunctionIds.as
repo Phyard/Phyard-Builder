@@ -428,6 +428,9 @@ package common.trigger {
       public static const ID_EntityText_SetText:int                   = IdPool.CoreApiId_1551;
       public static const ID_EntityText_AppendText:int                = IdPool.CoreApiId_1552;
       public static const ID_EntityText_AppendNewLine:int             = IdPool.CoreApiId_1553;
+      public static const ID_EntityText_SetSize:int                   = IdPool.CoreApiId_1570;
+      public static const ID_EntityText_SetColor:int                  = IdPool.CoreApiId_1571;
+      public static const ID_EntityText_SetColorByRGB:int             = IdPool.CoreApiId_1572;
 
    // game / entity / shape / circle
 

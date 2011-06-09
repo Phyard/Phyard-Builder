@@ -2513,21 +2513,44 @@ package editor.trigger {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetText, shape_text_package, "Set Text", "@Set Text ($1) of $0", null,
                      [
-                             new VariableDefinitionEntity ("The Text Component", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
                              new VariableDefinitionString ("New Text String"),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendText, shape_text_package, "Append Text", "@Append Text ($1) to $0", null,
                      [
-                             new VariableDefinitionEntity ("The Text Component", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
                              new VariableDefinitionString ("Text to Append"),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_AppendNewLine, shape_text_package, "Append New Line", "@Append New Line to $0", null,
                      [
-                             new VariableDefinitionEntity ("The Text Component", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize, shape_text_package, "Set Font Size", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionNumber ("New Font Size"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor, shape_text_package, "Set Text Color", "@Set Text Color ($0, Color ($1))", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB, shape_text_package, "Set Text Color RGB", "@RGB (#0, #1, #2) = Get Text Color ($0)", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionNumber ("Red"),
+                             new VariableDefinitionNumber ("Green"),
+                             new VariableDefinitionNumber ("Blue"),
                      ],
                      null
                   );

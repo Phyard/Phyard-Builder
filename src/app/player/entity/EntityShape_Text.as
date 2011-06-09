@@ -129,6 +129,10 @@ package player.entity {
       public function SetTextColor (color:uint):void
       {
          mTextColor = color;
+         
+         mNeedRebuildAppearanceObjects = true;
+         mNeedRebuildTextSprite = true;
+         DelayUpdateAppearance ();
       }
       
       public function GetFontSize ():uint
@@ -139,6 +143,10 @@ package player.entity {
       public function SetFontSize (size:uint):void
       {
          mFontSize = size;
+         
+         mNeedRebuildAppearanceObjects = true;
+         mNeedRebuildTextSprite = true;
+         DelayUpdateAppearance ();
       }
       
       public function IsBold ():Boolean
@@ -149,6 +157,10 @@ package player.entity {
       public function SetBold (bold:Boolean):void
       {
          mIsBold = bold;
+         
+         mNeedRebuildAppearanceObjects = true;
+         mNeedRebuildTextSprite = true;
+         DelayUpdateAppearance ();
       }
       
       public function IsItalic ():Boolean
@@ -159,6 +171,10 @@ package player.entity {
       public function SetItalic (italic:Boolean):void
       {
          mIsItalic = italic;
+         
+         mNeedRebuildAppearanceObjects = true;
+         mNeedRebuildTextSprite = true;
+         DelayUpdateAppearance ();
       }
       
       public function IsAdaptiveBackgroundSize ():Boolean
@@ -169,6 +185,10 @@ package player.entity {
       public function SetAdaptiveBackgroundSize (adapt:Boolean):void
       {
          mAdaptiveBackgroundSize = adapt;
+         
+         mNeedRebuildAppearanceObjects = true;
+         mNeedRebuildTextSprite = true;
+         DelayUpdateAppearance ();
       }
       
       public function IsUnderlined ():Boolean
@@ -179,6 +199,10 @@ package player.entity {
       public function SetUnderlined (underlined:Boolean):void
       {
          mIsUnderlined = underlined;
+         
+         mNeedRebuildAppearanceObjects = true;
+         mNeedRebuildTextSprite = true;
+         DelayUpdateAppearance ();
       }
       
       public function GetTextAlign ():int
@@ -189,6 +213,10 @@ package player.entity {
       public function SetTextAlign (align:int):void
       {
          mTextAlign = align;
+         
+         mNeedRebuildAppearanceObjects = true;
+         mNeedRebuildTextSprite = true;
+         DelayUpdateAppearance ();
       }
       
 //=============================================================

@@ -417,6 +417,9 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetText,                  SetTextForTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendText,               AppendTextToTextComponent);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityText_AppendNewLine,            AppendNewLineToTextComponent);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetSize,                  SetTextDefaultSize);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColor,                 SetTextDefaultColor);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityText_SetColorByRGB,            SetTextDefaultColorByRGB);
 
       // game / entity / shape / circle
 
@@ -4061,10 +4064,7 @@ package player.trigger {
       public static function SetTextForTextComponent (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
-         if (entity_text == null)
-            return;
-
-         if (entity_text.IsDestroyedAlready ())
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
             return;
 
          valueSource = valueSource.mNextParameter;
@@ -4076,10 +4076,7 @@ package player.trigger {
       public static function AppendTextToTextComponent (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
-         if (entity_text == null)
-            return;
-
-         if (entity_text.IsDestroyedAlready ())
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
             return;
 
          valueSource = valueSource.mNextParameter;
@@ -4091,13 +4088,52 @@ package player.trigger {
       public static function AppendNewLineToTextComponent (valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
-         if (entity_text == null)
-            return;
-
-         if (entity_text.IsDestroyedAlready ())
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
             return;
 
          entity_text.SetText (entity_text.GetText () + "\n");
+      }
+      
+      public static function SetTextDefaultSize (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var size:Number = Number (valueSource.EvaluateValueObject ());
+         
+         entity_text.SetFontSize (size);
+      }
+      
+      public static function SetTextDefaultColor (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+         
+         entity_text.SetTextColor (color);
+      }
+      
+      public static function SetTextDefaultColorByRGB (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var red:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var green:int =  valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var blue:int =  valueSource.EvaluateValueObject () as Number;
+         
+         entity_text.SetTextColor ((red << 16) | (green << 8) | (blue));
       }
 
    //*******************************************************************

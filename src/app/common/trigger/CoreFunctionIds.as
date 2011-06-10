@@ -397,7 +397,7 @@ package common.trigger {
       public static const ID_EntityShape_RotateAroundWorldPoint:int         = IdPool.CoreApiId_1224;
       public static const ID_EntityShape_RotateToAroundWorldPoint:int         = IdPool.CoreApiId_1225;
       //public static const ID_EntityShape_Scale:int                     = IdPool.CoreApiId_1226;
-      //public static const ID_EntityShape_ScaleWithFixedPoint:int                     = IdPool.CoreApiId_1227;
+      public static const ID_EntityShape_ScaleWithFixedPoint:int                     = IdPool.CoreApiId_1227;
       //public static const ID_EntityShape_ScaleAlongAxis:int                     = IdPool.CoreApiId_1228;
       //public static const ID_EntityShape_FlipByLocalLinePoint:int           = IdPool.CoreApiId_1229;
       public static const ID_EntityShape_FlipByWorldLinePoint:int           = IdPool.CoreApiId_1230;

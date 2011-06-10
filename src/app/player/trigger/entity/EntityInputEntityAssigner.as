@@ -190,6 +190,8 @@ package player.trigger.entity
                // for it is hard in AS3 to create a hash key for creationIds larger than 0xFFFF.
                // so all entities should be entities placed in editor.
                
+               // NOTES: here the hash id is composed with 2 cteation ids, instead of contact proxy ids.
+               
                var numEntitiesInEditor:int = mWorld.GetNumEntitiesInEditor ();      
          
                if (entityIndex1 >= numEntitiesInEditor || entityIndex2 >= numEntitiesInEditor)

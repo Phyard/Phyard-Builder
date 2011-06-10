@@ -400,6 +400,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,                      RotateShapeAroundWorldPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,                    RotateShapeToAroundWorldPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                    FlipShapeByWorldLinePoint);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,                    ScaleShapeWithFixedPoint);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBrothers,                 GetBrothers);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsAttchedWith,               IsAttchedWith);
@@ -3934,6 +3935,36 @@ package player.trigger {
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
          shape.Flip (pointX, pointY, normalX, normalY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+      }
+      
+      public static function ScaleShapeWithFixedPoint (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var fixedPointX:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var fixedPointY:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var scaleRatio:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleportConnectedMovables:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bTeleprotConnectedStatics:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         valueSource = valueSource.mNextParameter;
+         var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         shape.Scale (fixedPointX, fixedPointY, scaleRatio, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
       public static function GetBrothers (valueSource:Parameter, valueTarget:Parameter):void

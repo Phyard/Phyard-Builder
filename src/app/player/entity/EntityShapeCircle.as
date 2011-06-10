@@ -105,11 +105,11 @@ package player.entity {
             var displayBorderThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
             if (mBuildInterior || displayBorderThickness < Number.MIN_VALUE)
             {
-               displayRadius += 0.5; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
+               displayRadius += 0.5 / mScale; // + 0.5 to avoid the visual leaps between contacting shapes sometimes
             }
             else
             {
-               displayBorderThickness += 1.0; // + 1.0 to avoid the visual leaps between contacting shapes sometimes
+               displayBorderThickness += 1.0 / mScale; // + 1.0 to avoid the visual leaps between contacting shapes sometimes
             }
             
          // background

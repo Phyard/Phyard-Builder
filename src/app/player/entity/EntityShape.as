@@ -944,8 +944,8 @@ package player.entity {
             mAppearanceObjectsContainer.rotation = newR;
          }
          
-         mAppearanceObjectsContainer.scaleX = mScaleX;
-         mAppearanceObjectsContainer.scaleY = mScaleY;
+         mAppearanceObjectsContainer.scaleX = mFlipped ? - mScale : mScale;
+         mAppearanceObjectsContainer.scaleY = mScale;
       }
       
 //=============================================================
@@ -1161,6 +1161,68 @@ package player.entity {
       protected var mAppearanceObjectsContainer:Sprite = new Sprite ();
       
 //=============================================================
+//   flipped and scale
+//=============================================================
+      
+      // relative to mBody, but also can be viewed as relative to world for body has no flip and scale
+      //protected var mScaleX:Number = 1.0; // a nagetive value menas flipping
+      //protected var mScaleY:Number = 1.0; // must be positive
+      //
+      //public function GetScaleX ():Number
+      //{
+      //   return mScaleX;
+      //}
+      //
+      //public function SetScaleX (scaleX:Number):void
+      //{
+      //   mScaleX = scaleX;
+      //   
+      //   mNeedRebuildAppearanceObjects = true;
+      //   DelayUpdateAppearance (); 
+      //}
+      //
+      //public function GetScaleY ():Number
+      //{
+      //   return mScaleY;
+      //}
+      //
+      //public function SetScaleY (scaleY:Number):void
+      //{
+      //   mScaleY = scaleY;
+      //   
+      //   mNeedRebuildAppearanceObjects = true;
+      //   DelayUpdateAppearance (); 
+      //}
+      
+      protected var mFlipped:Boolean = false;
+      public function IsFlipped ():Boolean
+      {
+         return mFlipped;
+      }
+      
+      public function SetFlipped (flipped:Boolean):void
+      {
+         mFlipped = flipped;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
+      }
+      
+      protected var mScale:Number = 1.0; // uniform scale
+      public function GetScale ():Number
+      {
+         return mScale;
+      }
+      
+      public function SetScale (scaleRatio:Number):void
+      {
+         mScale = scaleRatio;
+         
+         mNeedRebuildAppearanceObjects = true;
+         DelayUpdateAppearance (); 
+      }
+      
+//=============================================================
 //   body
 //=============================================================
       
@@ -1176,30 +1238,6 @@ package player.entity {
       protected var mLocalPositionX:Number;
       protected var mLocalPositionY:Number;
       protected var mRelativeRotation:Number;
-      
-      // relative to mBody, but also can be viewed as relative to world for body has no flip and scale
-      protected var mScaleX:Number = 1.0; // a nagetive value menas flipping
-      protected var mScaleY:Number = 1.0; // must be positive
-      
-      public function GetScaleX ():Number
-      {
-         return mScaleX;
-      }
-      
-      public function SetScaleX (scaleX:Number):void
-      {
-         mScaleX = scaleX;
-      }
-      
-      public function GetScaleY ():Number
-      {
-         return mScaleY;
-      }
-      
-      public function SetScaleY (scaleY:Number):void
-      {
-         mScaleY = scaleY;
-      }
       
       public function GetBody ():EntityBody
       {
@@ -1374,8 +1412,8 @@ package player.entity {
       {
          UpdateSinCos ();
          
-         localX *= mScaleX;
-         localY *= mScaleY;
+         localX *= (mFlipped ? - mScale : mScale);
+         localY *= mScale;
          
          worldPoint.x = mPositionX + localX * mCosRotation - localY * mSinRotation;
          worldPoint.y = mPositionY + localX * mSinRotation + localY * mCosRotation;
@@ -1391,13 +1429,10 @@ package player.entity {
          localPoint.x =   worldX * mCosRotation + worldY * mSinRotation;
          localPoint.y = - worldX * mSinRotation + worldY * mCosRotation;
          
-         if (mScaleX != 0)
+         if (mScale != 0)
          {
-            localPoint.x /= mScaleX;
-         }
-         if (mScaleY != 0)
-         {
-            localPoint.y /= mScaleY;
+            localPoint.x /= (mFlipped ? - mScale : mScale);
+            localPoint.y /= mScale;
          }
       }
       

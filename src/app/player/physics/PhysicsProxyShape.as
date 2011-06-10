@@ -177,6 +177,8 @@ package player.physics {
             if (buildInterior)
             {
                radius = outerRadius;
+               
+               // todo: if scale along axis is added later, the calculation will be some complex
             }
             else
             {
@@ -230,6 +232,9 @@ package player.physics {
          vec = mProxyBody._b2Body.GetLocalPoint (vec);
          
          // ...
+         
+         radius *= mEntityShape.GetScale (); // from v1.56
+         
          var circle_shape:b2CircleShape = new b2CircleShape ();
          circle_shape.m_radius = radius;
          
@@ -242,6 +247,7 @@ package player.physics {
          _b2Fixtures.push (fixture);
       }
       
+      /*
       public function AddEllipse (isStatic:Boolean, shapeLocalCenterX:Number, shapeLocalCenterY:Number, radius1:Number, radius2:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
          if ( (! buildBorder) && (! buildInterior))
@@ -291,6 +297,7 @@ package player.physics {
             }
          }
       }
+      */
       
       private function ShapeLocalPoints2BodyLocalVertexes (shapeLocalPoints:Array):Array
       {
@@ -299,10 +306,12 @@ package player.physics {
          var cos:Number = Math.cos (rot);
          var sin:Number = Math.sin (rot);
          
-         var cosScaleX:Number = cos * mEntityShape.GetScaleX ();
-         var cosScaleY:Number = cos * mEntityShape.GetScaleY ();
-         var sinScaleX:Number = sin * mEntityShape.GetScaleX ();
-         var sinScaleY:Number = sin * mEntityShape.GetScaleY ();
+         var flipped:Boolean = mEntityShape.IsFlipped ();
+         
+         var cosScaleX:Number = cos * (flipped ? - mEntityShape.GetScale () : mEntityShape.GetScale ()); //X (); // from v1.56
+         var cosScaleY:Number = cos * mEntityShape.GetScale (); //Y (); // from v1.56
+         var sinScaleX:Number = sin * (flipped ? - mEntityShape.GetScale () : mEntityShape.GetScale ()); //X (); // from v1.56
+         var sinScaleY:Number = sin * mEntityShape.GetScale (); //Y (); // from v1.56
          
          var count:int = shapeLocalPoints.length;
          var bodyLocalVertexes:Array = new Array (count);
@@ -319,7 +328,7 @@ package player.physics {
             vec.x = shapePositionX + cosScaleX * point.x - sinScaleY * point.y;
             vec.y = shapePositionY + sinScaleX * point.x + cosScaleY * point.y;
             
-            bodyLocalVertexes [mEntityShape.GetScaleX () < 0 ? count - 1 - i : i] = mProxyBody._b2Body.GetLocalPoint (vec);
+            bodyLocalVertexes [flipped ? count - 1 - i : i] = mProxyBody._b2Body.GetLocalPoint (vec);
          }
          
          return bodyLocalVertexes;
@@ -350,6 +359,9 @@ package player.physics {
          var vertexCount:int = inputBodyLocalVertexes.length;
          if (vertexCount < 1)
             return;
+         
+         // todo: if "scale along axis" is added later, the calculation will be some complex
+         halfCurveThickness *= mEntityShape.GetScale (); // from v1.56
          
          // remvoe too short lines
          

@@ -148,13 +148,7 @@ package player.entity {
                                              // this value only modified in SetRotation and is related with mPhysicsRotation, 
                                              // so DON'T assign value to mPhysicsRotation directly, please use SetRotation instead.
                                              // use this variable for efficiency. Maybe it is not very essential and calculate it in GetRotationInTwoPI runtimely.
-      //>> from v1.56
-      internal var mScale:Number; // a 
-         // If scaleX and scaleY are both supported later, then:
-         // - realScaleX = mScale * mScaleX
-         // - realScaleY = mScale * mScaleY
-      //<<
-      
+
       protected var mVisible:Boolean = true;
       protected var mAlpha:Number = 1.0;
       protected var mIsEnabled:Boolean = true;

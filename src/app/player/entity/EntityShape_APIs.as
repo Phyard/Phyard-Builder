@@ -467,6 +467,8 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
       
       if (body.mNumPhysicsShapes > 0)
       {
+         body.SynchronizeWithPhysicsProxyManually (); // essential?
+         
          //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
          //var vx:Number = body.GetLinearVelocityX ();
          //var vy:Number = body.GetLinearVelocityY ();
@@ -491,7 +493,9 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
    }
 }
 
-public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number, 
+                  bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
+                  ):void
 {
    var normalXX:Number = normalX * normalX;
    var normalYY:Number = normalY * normalY;
@@ -550,7 +554,7 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
          shape.mLocalPositionY = oldLocalY - normalXY2 * oldLocalX - normalYY2 * oldLocalY;
          shape.mRelativeRotation = - shape.mRelativeRotation;
          shape.mRelativeRotation += doubleLineAngle;
-         shape.SetScaleX (- shape.GetScaleX ()); 
+         shape.SetFlipped (! shape.IsFlipped ()); 
          
          shape.SynchronizeWithPhysicsProxy ();
          if (shape.IsPhysicsShape ())
@@ -594,12 +598,90 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
    }
 }
 
-public static function Scale (seedShape:EntityShape, scaleValue:Number, fixedPointX:Number, fixedPointY:Number, scaleSize:Boolean, scalePosition:Boolean, 
-                              scaleBrothers:Boolean, scaleMovableSisters:Boolean, scaleStaticSisters:Boolean, scaleJoints:Boolean, breakEmbarrasedJoints:Boolean,
-                              conserveMomentum:Boolean, conserveMass:Boolean
+public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number, 
+                              bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
+                              //, scaleBrothers:Boolean, 
+                              //scaleSize:Boolean, scalePosition:Boolean, 
+                              //conserveMomentum:Boolean, conserveMass:Boolean
                               ):void
 {
-   // todo
+   if (scaleRatio == 1.0)
+      return;
+
+   if (scaleRatio < Define.kFloatEpsilon) // may cause many problems. Negative values are also not allowed.
+      return;
+
+// ...
+
+   var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+
+// ...
+   
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   
+   var num:int = bodiesToTeleport.length;
+   
+   var shape:EntityShape;
+   
+   for (var i:int = 0; i < num; ++ i)
+   {
+      var body:EntityBody = bodiesToTeleport [i] as EntityBody;
+      
+      var dx:Number = body.mPositionX - fixedPointX;
+      var dy:Number = body.mPositionY - fixedPointY;
+      
+      body.mPositionX = fixedPointX + dx * scaleRatio;
+      body.mPositionY = fixedPointY + dy * scaleRatio;
+      body.SynchronizePositionAndRotationToPhysicsProxy ();
+      
+      // ...
+      
+      shape = body.mShapeListHead;
+      
+      while (shape != null)
+      {
+         //shape.ScaleSelf (scaleRatio);
+         shape.mLocalPositionX *= scaleRatio;
+         shape.mLocalPositionY *= scaleRatio;
+         shape.SetScale (shape.GetScale () * scaleRatio);
+         
+         shape.SynchronizeWithPhysicsProxy ();
+         if (shape.IsPhysicsShape ())
+            shape.RebuildShapePhysics ();
+         
+         shape = shape.mNextShapeInBody;
+      }
+
+      // ...
+      
+      if (body.mNumPhysicsShapes > 0)
+      {
+         body.SynchronizeWithPhysicsProxyManually (); // essential?
+         
+         //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
+         //var vx:Number = body.GetLinearVelocityX ();
+         //var vy:Number = body.GetLinearVelocityY ();
+         //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call body.NotifyVelocityChangedManually ();
+         
+         body.NotifyVelocityChangedManually (); // shapes' velocity changed
+         body.NotifyMovedManually ();
+         body.SetSleeping (false);
+         body.SynchronizePositionAndRotationToPhysicsProxy ();
+      }
+      
+      // ...
+      
+      shape= body.mShapeListHead;
+      
+      while (shape != null)
+      {
+         shape.SynchronizeWithPhysicsProxy ();
+         
+         shape = shape.mNextShapeInBody;
+      }
+      
+      // todo: effects on joints: remove joint angle, limits, velocity, ...
+   }
 }
 
 //================================================================

@@ -554,7 +554,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ToString, array_package, "Array To String", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ToString, array_package, "Array -> String", "NumberToString", "NumberToString",
                      [
                               new VariableDefinitionArray ("Array"),
                      ],
@@ -2435,6 +2435,18 @@ package editor.trigger {
                              new VariableDefinitionNumber ("One Line Point Y"),
                              new VariableDefinitionNumber ("Line Normal X"),
                              new VariableDefinitionNumber ("Line Normal Y"),
+                             new VariableDefinitionBoolean ("Teleport Connected Movables?"),
+                             new VariableDefinitionBoolean ("Teleport Connected Statics?"),
+                             new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint, shape_common_package, "Scale Shape With Fixed Point", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Fixed Point X"),
+                             new VariableDefinitionNumber ("Fixed Point Y"),
+                             new VariableDefinitionNumber ("Scale Ratio", null, {mMinValue: Define.kFloatEpsilon}),
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),

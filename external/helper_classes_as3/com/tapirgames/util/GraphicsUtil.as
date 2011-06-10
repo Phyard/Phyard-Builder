@@ -147,6 +147,7 @@ package com.tapirgames.util {
          shape.graphics.lineStyle(thickness, color);
          shape.graphics.moveTo(x1, y1);
          shape.graphics.lineTo(x2, y2);
+         shape.graphics.lineStyle();
       }
       
       public static function DrawLine (shape:Object, x1:Number, y1:Number, x2:Number, y2:Number, color:uint = 0x0, thickness:Number = 1):void
@@ -156,6 +157,7 @@ package com.tapirgames.util {
          shape.graphics.lineStyle(thickness, color);
          shape.graphics.moveTo(x1, y1);
          shape.graphics.lineTo(x2, y2);
+         shape.graphics.lineStyle();
       }
       
       public static function ClearAndDrawPolyline (shape:Object, points:Array, color:uint = 0x0, thickness:Number = 1, roundEnds:Boolean = true):void
@@ -214,6 +216,8 @@ package com.tapirgames.util {
             p2 = points [i];
             shape.graphics.lineTo(p2.x, p2.y);
          }
+         
+         shape.graphics.lineStyle();
       }
       
       public static function ClearAndDrawPolygon (shape:Object, points:Array, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, filledColor:uint = 0xFFFFF):void
@@ -241,6 +245,8 @@ package com.tapirgames.util {
          for (var i:uint = 0; i < vertexCount; ++ i)
             shape.graphics.lineTo (points[i].x, points[i].y);
          shape.graphics.lineTo( points [0].x, points [0].y );
+         if (borderSize >= 0) 
+            shape.graphics.lineStyle();
          if (filled) shape.graphics.endFill();
       }
       

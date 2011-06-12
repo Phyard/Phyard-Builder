@@ -253,6 +253,9 @@ package player.entity {
          if (numSegments < 1) numSegments = 1;
          var segmentLen:Number = currentDisplayLength / numSegments;
          
+         springWireWidth *= mScale; // v1.56
+         halfSpringWidth *= mScale; // v1.56
+         
          mSpringShape.graphics.clear ();
          
          var xa:Number = 0;
@@ -277,6 +280,8 @@ package player.entity {
          
          mSpringShape.visible = mVisible;
          mSpringShape.alpha = mAlpha;
+         
+         mSpringShape.scaleY = mFlipped ? - 1 : 1; // v1.56
       }
       
 //=============================================================

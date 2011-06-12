@@ -175,12 +175,12 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    
    var infos:Object = seedShape.GetRelatedEntities (bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics, false);
    
-   var world:World = seedShape.GetWorld ();
-
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
    var jointsToTeleport:Array = infos.mJointsToTransform; 
       
+   var world:World = seedShape.GetWorld ();
+
    var worldDefine:WorldDefine = new WorldDefine ();
    var entityDefineArray:Array = worldDefine.mEntityDefines;
    
@@ -402,10 +402,12 @@ public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovab
 
    var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   var shapesToTeleport:Array = infos.mShapesToTransform;
+   var jointsToTeleport:Array = infos.mJointsToTransform; 
+      
 // ...
 
-   var bodiesToTeleport:Array = infos.mBodiesToTransform;
-   
    var num:int = bodiesToTeleport.length;
    
    for (var i:int = 0; i < num; ++ i)
@@ -444,13 +446,15 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
 
    var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   var shapesToTeleport:Array = infos.mShapesToTransform;
+   var jointsToTeleport:Array = infos.mJointsToTransform; 
+      
 // ...
    
    var deltaRotationInTwoPI:Number = deltaRotation % Define.kPI_x_2;
    var cos:Number = Math.cos (deltaRotationInTwoPI);
    var sin:Number = Math.sin (deltaRotationInTwoPI);
-   
-   var bodiesToTeleport:Array = infos.mBodiesToTransform;
    
    var num:int = bodiesToTeleport.length;
    
@@ -493,6 +497,7 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
    }
 }
 
+/*
 public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number, 
                   bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
                   ):void
@@ -508,6 +513,10 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
 
    var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
+   var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   var shapesToTeleport:Array = infos.mShapesToTransform;
+   var jointsToTeleport:Array = infos.mJointsToTransform; 
+      
 // ...
 
    var doubleLineAngle:Number = 2.0 * Math.atan2 (normalY, normalX);
@@ -518,8 +527,6 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
    var normalYY2:Number = 2.0 * normalY * normalY;
    var normalXY2:Number = 2.0 * normalX * normalY;
 
-   var bodiesToTeleport:Array = infos.mBodiesToTransform;
-   
    var num:int = bodiesToTeleport.length;
    
    for (var i:int = 0; i < num; ++ i)
@@ -596,6 +603,14 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
       
       // todo: effects on joints: remove joint angle, limits, velocity, ...
    }
+   
+   // joint
+   num = jointsToTeleport.length;
+   for (i = 0; i < num; ++ i)
+   {
+      var joint:EntityJoint = jointsToTeleport [i] as EntityJoint;
+      joint.OnFlipped (normalXX2, normalYY2, normalXY2);
+   }   
 }
 
 public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number, 
@@ -615,15 +630,18 @@ public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number
 
    var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
-// ...
-   
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
+   var shapesToTeleport:Array = infos.mShapesToTransform;
+   var jointsToTeleport:Array = infos.mJointsToTransform;
+      
+// ...
    
    var num:int = bodiesToTeleport.length;
    
+   var i:int;
    var shape:EntityShape;
    
-   for (var i:int = 0; i < num; ++ i)
+   for (i = 0; i < num; ++ i)
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
       
@@ -651,6 +669,10 @@ public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number
          
          shape = shape.mNextShapeInBody;
       }
+      
+      // ...
+      
+      
 
       // ...
       
@@ -671,18 +693,28 @@ public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number
       
       // ...
       
-      shape= body.mShapeListHead;
+      shape = body.mShapeListHead;
       
       while (shape != null)
       {
          shape.SynchronizeWithPhysicsProxy ();
+         shape.NotifyJointAnchorLocalPositionsChanged ();
          
          shape = shape.mNextShapeInBody;
       }
       
       // todo: effects on joints: remove joint angle, limits, velocity, ...
    }
+   
+   // joint
+   num = jointsToTeleport.length;
+   for (i = 0; i < num; ++ i)
+   {
+      var joint:EntityJoint = jointsToTeleport [i] as EntityJoint;
+      joint.OnScaled (scaleRatio);
+   }
 }
+*/
 
 //================================================================
 // telport 

@@ -34,8 +34,8 @@ package editor.entity {
       protected var mSpringType:int = Define.SpringType_Unkonwn;
       
       protected var mFrequencyDeterminedManner:int = 0;
-      protected var mFrequency:Number = 0.0;
-      protected var mCustomSpringConstant:Number = 0.0; // Hookean Coefficient,(pixles / Newton)
+      protected var mFrequency:Number = 0.5;
+      protected var mCustomSpringConstant:Number = 0.125; // Hookean Coefficient,(pixles / Newton)
       
       protected var mBreakExtendedLength:Number = 0.0;
       

@@ -399,8 +399,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_TranslateTo,                    TranslateShapeTo);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,                      RotateShapeAroundWorldPoint);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,                    RotateShapeToAroundWorldPoint);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                    FlipShapeByWorldLinePoint);
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,                    ScaleShapeWithFixedPoint);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,                   FlipShapeByWorldLinePoint);
+         //RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,                    ScaleShapeWithFixedPoint);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetBrothers,                 GetBrothers);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsAttchedWith,               IsAttchedWith);
@@ -3904,6 +3904,7 @@ package player.trigger {
          shape.Rotate (fixedPointX, fixedPointY, targetRotation - shape.GetRotation (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
       
+      /*
       public static function FlipShapeByWorldLinePoint (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
@@ -3966,6 +3967,7 @@ package player.trigger {
 
          shape.Scale (fixedPointX, fixedPointY, scaleRatio, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
+      */
       
       public static function GetBrothers (valueSource:Parameter, valueTarget:Parameter):void
       {

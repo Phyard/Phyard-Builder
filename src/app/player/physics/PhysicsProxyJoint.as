@@ -44,6 +44,26 @@ package player.physics {
          joint.NotifyAnchorPositionChanged (newWorldX, newWorldY, isAnchorA);
       }
       
+      /*
+      public function Scale (scaleRatio:Number):void
+      {
+         var joint:b2Joint = GetB2joint ();
+         if (joint == null)
+            return;
+         
+         joint.NotifyScaled (scaleRatio);
+      }
+      
+      public function Flip (normalXX2:Number, normalYY2:Number, normalXY2:Number):void
+      {
+         var joint:b2Joint = GetB2joint ();
+         if (joint == null)
+            return;
+         
+         joint.NotifyFlipped (normalXX2, normalYY2, normalXY2);
+      }
+      */
+      
 //==================================================================
 //
 //==================================================================

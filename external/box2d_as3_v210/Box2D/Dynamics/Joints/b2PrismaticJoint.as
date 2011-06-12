@@ -168,7 +168,6 @@ package Box2D.Dynamics.Joints
 		private static var worldAxis:b2Vec2 = new b2Vec2 ();
 		override protected function NotifyBodyChanged (oldBody:b2Body, isBodyA:Boolean):void
 		{
-
 			if (isBodyA)
 			{
 				oldBody.GetWorldPoint_Output (m_localAnchor1, worldAnchor);

@@ -1809,7 +1809,7 @@ package editor.trigger {
                      ]
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, shape_common_package, "Clone", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Clone, shape_common_package, "Clone Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}), // currently, only for shapes
                              new VariableDefinitionNumber ("Target Position X"),
@@ -2367,7 +2367,8 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
                      ],
-                     null
+                     null,
+                     false
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets, shape_common_package, "Teleport Shape by Offsets", null, null,
                      [
@@ -2379,7 +2380,8 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
                      ],
-                     null
+                     null,
+                     false
                   );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_Translate, shape_common_package, "Move Shape", null, null,
@@ -2428,6 +2430,7 @@ package editor.trigger {
                      ],
                      null
                   );
+         /*
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint, shape_common_package, "Flip Shape By World Line", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2453,6 +2456,7 @@ package editor.trigger {
                      ],
                      null
                   );
+         */
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers, entity_shape_brothers_package, "Get Shape Brothers", null, null,
                      [

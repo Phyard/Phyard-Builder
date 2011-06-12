@@ -116,12 +116,15 @@ package player.entity {
       
       override public function UpdateAppearance ():void
       {
+         var thinkness:Number = mScale; // v1.56
+         
          GraphicsUtil.ClearAndDrawLine (
                   mLineShape, 
                   mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor1.GetPositionX ()), 
                   mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor1.GetPositionY ()), 
                   mWorld.GetCoordinateSystem ().P2D_PositionX (mAnchor2.GetPositionX ()), 
-                  mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor2.GetPositionY ())
+                  mWorld.GetCoordinateSystem ().P2D_PositionY (mAnchor2.GetPositionY ()),
+                  0x0, thinkness
                );
          
          mLineShape.visible = mVisible;
@@ -151,8 +154,6 @@ package player.entity {
                   mAnchor1, mAnchor2, mCollideConnected
                );
       }
-      
-      
       
    }
 }

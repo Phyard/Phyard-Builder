@@ -2383,6 +2383,7 @@ package common.trigger {
                      ],
                      null
                   );
+         /*
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
@@ -2408,6 +2409,7 @@ package common.trigger {
                      ],
                      null
                   );
+         */
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers,
                      [

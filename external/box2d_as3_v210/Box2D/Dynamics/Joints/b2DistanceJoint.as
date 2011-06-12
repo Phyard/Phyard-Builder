@@ -131,6 +131,8 @@ package Box2D.Dynamics.Joints
 // hackings
 //***********************************************************************
 
+      public var mSpringConstant:Number = -1.0;
+
 		// call by b2Body
 		override public function OnBodyLocalCenterChanged (dx:Number, dy:Number, jointEdge:b2JointEdge):void
 		{
@@ -175,8 +177,6 @@ package Box2D.Dynamics.Joints
 				m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchor2);
 			}
 		}
-
-		public var mSpringConstant:Number = -1.0;
 
 	} // class
 } // package

@@ -177,6 +177,14 @@ package Box2D.Dynamics.Joints
 				m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchor2);
 			}
 		}
+		
+		override public function CopyRuntimeInfosFrom (fromJoint:b2Joint):void
+      {
+         var fromDistanceJoint:b2DistanceJoint = fromJoint as b2DistanceJoint;
+         
+         m_impulse = fromDistanceJoint.m_impulse;
+         m_length = fromDistanceJoint.m_length;
+      }
 
 	} // class
 } // package

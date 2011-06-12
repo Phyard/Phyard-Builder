@@ -181,6 +181,16 @@ package Box2D.Dynamics.Joints
 				m_referenceAngle += m_bodyB.GetAngle () - oldBody.GetAngle ();
 			}
 		}
+		
+      override public function CopyRuntimeInfosFrom (fromJoint:b2Joint):void
+      {
+         var fromRevoluteJoint:b2RevoluteJoint = fromJoint as b2RevoluteJoint;
+         
+         m_referenceAngle = fromRevoluteJoint.m_referenceAngle - (fromRevoluteJoint.m_bodyB.GetAngle() - fromRevoluteJoint.m_bodyA.GetAngle());
+         //m_limitState = fromRevoluteJoint.m_limitState; // comment off for avoiding missing events
+         m_impulse.CopyFrom (fromRevoluteJoint.m_impulse);
+         m_motorImpulse = fromRevoluteJoint.m_motorImpulse;
+      }
 
 		protected var mReachMaxMotorTorqueCallback:Function = null;
 

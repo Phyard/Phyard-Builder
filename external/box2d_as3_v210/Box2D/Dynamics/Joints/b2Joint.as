@@ -335,6 +335,11 @@ package Box2D.Dynamics.Joints
 		{
 		   // to override 
 		}
+		
+		public function CopyRuntimeInfosFrom (fromJoint:b2Joint):void
+		{
+		   // to override
+		}
 
 		public function FlagConnectedContactsForFiltering ():void
 		{

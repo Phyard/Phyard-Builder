@@ -57,17 +57,29 @@ package player.entity {
          }
          else if (createStageId == 2)
          {
-            var currentLength:Number = Point.distance (new Point (mAnchor2.mPositionX, mAnchor2.mPositionY), new Point (mAnchor1.mPositionX, mAnchor1.mPositionY));
-            var staticPhysicsLength:Number = currentLength * mStaticLengthRatio;
-            var params:Object = Setting.GetSpringParamsByType (mSpringType,  mWorld.GetCoordinateSystem ().P2D_Length (staticPhysicsLength));
-            
-            mDisplayStaticLength = mWorld.GetCoordinateSystem ().P2D_Length (staticPhysicsLength);
-            mDisplayDiameter = params.mDiameter;
-            mDisplayWireDiameter = params.mWireDiameter;
-            mDisplayStaticSegmentLength = params.mStaticSegmentLength;
-            
-            if (mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_Preset)
-               mFrequency = params.mFrequencyHz;
+            if (entityDefine.mCloneFromEntity == null)
+            {
+               var currentLength:Number = Point.distance (new Point (mAnchor2.mPositionX, mAnchor2.mPositionY), new Point (mAnchor1.mPositionX, mAnchor1.mPositionY));
+               var staticPhysicsLength:Number = currentLength * mStaticLengthRatio;
+               var params:Object = Setting.GetSpringParamsByType (mSpringType,  mWorld.GetCoordinateSystem ().P2D_Length (staticPhysicsLength));
+               
+               mDisplayStaticLength = mWorld.GetCoordinateSystem ().P2D_Length (staticPhysicsLength);
+               mDisplayDiameter = params.mDiameter;
+               mDisplayWireDiameter = params.mWireDiameter;
+               mDisplayStaticSegmentLength = params.mStaticSegmentLength;
+               
+               if (mFrequencyDeterminedManner == Define.SpringFrequencyDetermineManner_Preset)
+                  mFrequency = params.mFrequencyHz;
+            }
+            else
+            {
+               var cloneFromJoint:EntityJointSpring = entityDefine.mCloneFromEntity as EntityJointSpring;
+               mDisplayStaticLength = cloneFromJoint.mDisplayStaticLength;
+               mDisplayDiameter = cloneFromJoint.mDisplayDiameter;
+               mDisplayWireDiameter = cloneFromJoint.mDisplayWireDiameter;
+               mDisplayStaticSegmentLength = cloneFromJoint.mDisplayStaticSegmentLength;
+               mFrequency = cloneFromJoint.mFrequency;
+            }
          }
       }
       

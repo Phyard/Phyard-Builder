@@ -124,7 +124,14 @@ package Box2D.Dynamics.Joints
             m_referenceAngle += m_bodyB.GetAngle () - oldBody.GetAngle ();
          }
       }
-
+      
+      override public function CopyRuntimeInfosFrom (fromJoint:b2Joint):void
+      {
+         var fromWeldJoint:b2WeldJoint = fromJoint as b2WeldJoint;
+         
+         m_referenceAngle = fromWeldJoint.m_referenceAngle - (fromWeldJoint.m_bodyB.GetAngle() - fromWeldJoint.m_bodyA.GetAngle());
+         m_impulse.CopyFrom (fromWeldJoint.m_impulse);
+      }
 	}
 }
 

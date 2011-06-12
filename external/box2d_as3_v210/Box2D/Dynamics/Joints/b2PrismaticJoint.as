@@ -185,7 +185,20 @@ package Box2D.Dynamics.Joints
 				m_refAngle += m_bodyB.GetAngle () - oldBody.GetAngle ();
 			}
 		}
-
+      
+      override public function CopyRuntimeInfosFrom (fromJoint:b2Joint):void
+      {
+         var fromPrismaticJoint:b2PrismaticJoint = fromJoint as b2PrismaticJoint;
+         
+         m_refAngle = fromPrismaticJoint.m_refAngle - (fromPrismaticJoint.m_bodyB.GetAngle() - fromPrismaticJoint.m_bodyA.GetAngle());
+         //m_limitState = fromRevoluteJoint.m_limitState; // comment off for avoiding missing events
+         m_impulse.CopyFrom (fromPrismaticJoint.m_impulse);
+         m_motorImpulse = fromPrismaticJoint.m_motorImpulse;
+         
+         m_localAnchor1.CopyFrom (fromPrismaticJoint.m_localAnchor1); // maybe not correct
+         m_localAnchor2.CopyFrom (fromPrismaticJoint.m_localAnchor2); // maybe not correct
+      }
+      
 	} // class
 } // pacakge
 //#endif

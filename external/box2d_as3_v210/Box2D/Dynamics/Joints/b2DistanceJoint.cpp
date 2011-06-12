@@ -109,7 +109,7 @@ override public function InitVelocityConstraints (step:b2TimeStep):void
 	{
 		m_u.Set(0.0, 0.0);
 	}
-
+	
 	var cr1u:Number = b2Math.b2Cross2 (r1, m_u);
 	var cr2u:Number = b2Math.b2Cross2 (r2, m_u);
 	var invMass:Number = b1.m_invMass + b1.m_invI * cr1u * cr1u + b2.m_invMass + b2.m_invI * cr2u * cr2u;
@@ -164,7 +164,7 @@ override public function InitVelocityConstraints (step:b2TimeStep):void
 		m_mass = invMass + m_gamma;
 		m_mass = m_mass != 0.0 ? 1.0 / m_mass : 0.0;
 	}
-
+	
 	if (step.warmStarting)
 	{
 		// Scale the impulse to support a variable time step.

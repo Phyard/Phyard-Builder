@@ -44,6 +44,19 @@ package player.physics {
          joint.NotifyAnchorPositionChanged (newWorldX, newWorldY, isAnchorA);
       }
       
+      public function CopyRuntimeInfosFrom (fromProxy:PhysicsProxyJoint):void
+      {
+         var joint:b2Joint = GetB2joint ();
+         if (joint == null)
+            return;
+         
+         var fromJoint:b2Joint = fromProxy.GetB2joint ();
+         if (fromProxy == null)
+            return;
+         
+         joint.CopyRuntimeInfosFrom (fromJoint);
+      }
+      
       /*
       public function Scale (scaleRatio:Number):void
       {

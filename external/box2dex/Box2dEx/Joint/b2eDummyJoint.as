@@ -95,6 +95,10 @@ package Box2dEx.Joint
 				m_bodyB.GetLocalPoint_Output (worldAnchor, m_localAnchor2);
 			}
 		}
+      
+      override public function CopyRuntimeInfosFrom (fromJoint:b2Joint):void
+      {
+      }
 
 	} // class
 } // package

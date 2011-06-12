@@ -199,7 +199,8 @@ override public function InitVelocityConstraints(step:b2TimeStep):void
 		if (m_motorMass > 0.0)
 		{
 			m_motorMass = 1.0 / m_motorMass;
-		}	}
+		}
+	}
 
 	// Prismatic constraint.
 	{

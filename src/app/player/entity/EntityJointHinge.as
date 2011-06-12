@@ -57,7 +57,7 @@ package player.entity {
          entityDefine.mEnableMotor = IsMotorEnabled ();
          entityDefine.mMotorSpeed = mWorld.GetCoordinateSystem ().P2D_AngularVelocity (GetMotorSpeed ()) * Define.kRadians2Degrees;
          entityDefine.mBackAndForth = IsBackAndForth ();
-         entityDefine.mMaxMotorTorque = mWorld.GetCoordinateSystem ().D2P_Torque (GetMaxMotorTorque ());
+         entityDefine.mMaxMotorTorque = mWorld.GetCoordinateSystem ().P2D_Torque (GetMaxMotorTorque ());
          
          entityDefine.mEntityType = Define.EntityType_JointHinge;
          

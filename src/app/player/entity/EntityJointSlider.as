@@ -59,7 +59,7 @@ package player.entity {
          entityDefine.mEnableMotor = IsMotorEnabled ();
          entityDefine.mMotorSpeed = mWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (GetMotorSpeed ());
          entityDefine.mBackAndForth = IsBackAndForth ();
-         entityDefine.mMaxMotorForce = mWorld.GetCoordinateSystem ().D2P_ForceMagnitude (GetMaxMotorForce ());
+         entityDefine.mMaxMotorForce = mWorld.GetCoordinateSystem ().P2D_ForceMagnitude (GetMaxMotorForce ());
          
          entityDefine.mEntityType = Define.EntityType_JointSlider;
          

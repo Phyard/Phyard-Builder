@@ -308,15 +308,29 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    
    var worldEntityList:EntityList = world.GetEntityList ();
    var worldEntityBodyList:EntityList = world.GetEntityBodyList ();
+   
    worldEntityList.MarkLastTail ();
    worldEntityBodyList.MarkLastTail ();
 
    DataFormat2.WorldDefine2PlayerWorld (worldDefine, world);
-   
    world.BuildEntityPhysics (true);
    
    worldEntityList.UnmarkLastTail ();
    worldEntityBodyList.UnmarkLastTail ();
+   
+   // clone runtime infos
+   // for joints only now. maybe it is better to put runtime infos in entityDefines
+   
+   count = jointsToTeleport.length;
+   for (i = 0; i < count; ++ i)
+   {
+      joint = jointsToTeleport [i] as EntityJoint;
+      entityDefine = mapEntity2Define [joint];
+      
+      entity = entityDefine.mEntity; // the cloned one
+      
+      (entity as EntityJoint).CopyRuntimeInfosFrom (joint)
+   }
    
    // return
    
@@ -332,7 +346,7 @@ private static function CreateAndPushEntityDefine (entity:Entity, entityDefineAr
    var entityDefine:Object = entity.ToEntityDefine (new Object ());
    if (entityDefine != null)
    {
-      entityDefine.mOriginalEntity = entity;
+      entityDefine.mCloneFromEntity = entity;
       
       entityDefine.mAppearanceOrderId = entity.GetAppearanceId ();
       entityDefine.mCreationOrderId = entity.GetCreationId ();
@@ -448,7 +462,7 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
 
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
-   var jointsToTeleport:Array = infos.mJointsToTransform; 
+   var jointsToTeleport:Array = infos.mJointsToTransform;
       
 // ...
    

@@ -5,6 +5,7 @@ package player.entity {
    
    import player.world.World;
    
+   import player.physics.PhysicsProxy;
    import player.physics.PhysicsProxyJoint;
    
    import player.trigger.entity.EntityEventHandler;
@@ -123,6 +124,19 @@ package player.entity {
          entityDefine.mConnectedShape2 = mAnchor2.GetShape ();
          
          return null;
+      }
+      
+      public function CopyRuntimeInfosFrom (fromJoint:EntityJoint):void
+      {
+         if (fromJoint == null)
+            return;
+         
+         var fromPhysicsProxy:PhysicsProxy = fromJoint.GetPhysicsProxy ();
+         
+         if (mPhysicsProxy != null && fromPhysicsProxy != null)
+         {
+            (mPhysicsProxy as PhysicsProxyJoint).CopyRuntimeInfosFrom (fromPhysicsProxy as PhysicsProxyJoint);
+         }
       }
 
 //=============================================================

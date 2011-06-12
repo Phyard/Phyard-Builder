@@ -218,6 +218,19 @@ package player.entity {
          return mRotationInTwoPI;
       }
       
+      // to avoid a large rotation jump
+      // targetRotation - shape.GetRotation ()
+      // the targetRotation value just represents a direction.
+      public function GetRotationOffset (targetRotation:Number):Number
+      {
+         var offset:Number = targetRotation - mPhysicsRotation;
+         offset = offset % Define.kPI_x_2;
+         if (offset > Math.PI)
+            offset -= Math.PI;
+         
+         return offset;
+      }
+      
       public function SetVisible (visible:Boolean):void
       {
          mVisible = visible;

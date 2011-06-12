@@ -471,7 +471,9 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
       
       if (body.mNumPhysicsShapes > 0)
       {
-         body.SynchronizeWithPhysicsProxyManually (); // essential?
+         //body.SynchronizeWithPhysicsProxyManually (); // essential? 
+            // bug! should not call this. This will make the changes roll back
+            // If to call this, must call body.SynchronizePositionAndRotationToPhysicsProxy firstly
          
          //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
          //var vx:Number = body.GetLinearVelocityX ();
@@ -498,6 +500,8 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
 }
 
 /*
+todo: need SetRotation intelligently. Use entity.GetRotationOffset ()
+
 public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number, 
                   bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
                   ):void

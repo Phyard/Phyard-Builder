@@ -915,15 +915,6 @@ package common {
                   element.@external_action_entity_index = entityDefine.mExternalActionEntityCreationId;
                }
                
-               if (worldDefine.mVersion >= 0x0153)
-               {
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
-               }
-               else
-               {
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
-               }
-               
                if (worldDefine.mVersion >= 0x0108)
                {
                   switch (entityDefine.mEventId)
@@ -934,12 +925,15 @@ package common {
                         element.@running_interval = entityDefine.mRunningInterval;
                         element.@only_run_once = entityDefine.mOnlyRunOnce ? 1 : 0;
                         
-                        if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
+                        if (worldDefine.mVersion >= 0x0156)
                         {
-                           var preHandlingCodeSnippetXML:XML = <PreHandlingCodeSnippet/>
-                           TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPreFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines, false, preHandlingCodeSnippetXML);
-                           var postHandlingCodeSnippetXML:XML = <PostHandlingCodeSnippet/>
-                           TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPostFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines, false, postHandlingCodeSnippetXML);
+                           if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
+                           {
+                              var preHandlingCodeSnippetXML:XML = <PreHandlingCodeSnippet/>
+                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPreFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines, false, preHandlingCodeSnippetXML);
+                              var postHandlingCodeSnippetXML:XML = <PostHandlingCodeSnippet/>
+                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPostFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines, false, postHandlingCodeSnippetXML);
+                           }
                         }
                         
                         break;
@@ -951,6 +945,15 @@ package common {
                      default:
                         break;
                   }
+               }
+               
+               if (worldDefine.mVersion >= 0x0153)
+               {
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, worldDefine.mFunctionDefines);
+               }
+               else
+               {
+                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, worldDefine.mFunctionDefines);
                }
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
@@ -1424,7 +1427,7 @@ package common {
                functionDefine.mName = byteArray.readUTF ();
                functionDefine.mPosX = byteArray.readFloat ();
                functionDefine.mPosY = byteArray.readFloat ();
-               if (worldDefine.mVersion >= 0x0153)
+               if (worldDefine.mVersion >= 0x0156)
                {
                   functionDefine.mDesignDependent = byteArray.readByte () != 0;
                }               
@@ -1544,15 +1547,6 @@ package common {
                      entityDefine.mExternalActionEntityCreationId = byteArray.readShort ();
                   }
                   
-                  if (worldDefine.mVersion >= 0x0153)
-                  {
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
-                  }
-                  else
-                  {
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
-                  }
-                  
                   if (worldDefine.mVersion >= 0x0108)
                   {
                      switch (entityDefine.mEventId)
@@ -1563,10 +1557,13 @@ package common {
                            entityDefine.mRunningInterval = byteArray.readFloat ();
                            entityDefine.mOnlyRunOnce = byteArray.readByte () != 0;
                            
-                           if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
+                           if (worldDefine.mVersion >= 0x0156)
                            {
-                              entityDefine.mPreFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines, false);
-                              entityDefine.mPostFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines, false);
+                              if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
+                              {
+                                 entityDefine.mPreFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines, false);
+                                 entityDefine.mPostFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines, false);
+                              }
                            }
                            
                            break;
@@ -1578,6 +1575,15 @@ package common {
                         default:
                            break;
                      }
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0153)
+                  {
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, worldDefine.mFunctionDefines);
+                  }
+                  else
+                  {
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, worldDefine.mFunctionDefines);
                   }
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
@@ -2051,11 +2057,15 @@ package common {
                {
                   TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mFunctionDefine);
                   
+                  // from v1.56
                   if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                   {
-                     TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPreFunctionDefine);
-                     TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPostFunctionDefine);
+                     if (entityDefine.mPreFunctionDefine != null)
+                        TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPreFunctionDefine);
+                     if (entityDefine.mPostFunctionDefine != null)
+                        TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPostFunctionDefine);
                   }
+                  //<<
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
@@ -2419,10 +2429,13 @@ package common {
                //   
                //   TriggerFormatHelper2.FillMissedFieldsInFunctionDefine (entityDefine.mFunctionDefine);
                //
-               //   if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
+               //   if (worldDefine.mVersion >= 0x0156)
                //   {
-               //      TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPreFunctionDefine);
-               //      TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPostFunctionDefine);
+               //      if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
+               //      {
+               //         TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPreFunctionDefine);
+               //         TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPostFunctionDefine);
+               //      }
                //   }
                //}
             }
@@ -2580,13 +2593,16 @@ package common {
          }
          
          // functions
-         for (var functionId:int = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
+         if (worldDefine.mVersion >= 0x0152)
          {
-            var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
-            
-            if (worldDefine.mVersion < 0x0156)
+            for (var functionId:int = 0; functionId < worldDefine.mFunctionDefines.length; ++ functionId)
             {
-               functionDefine.mDesignDependent = false;
+               var functionDefine:FunctionDefine = worldDefine.mFunctionDefines [functionId] as FunctionDefine;
+               
+               if (worldDefine.mVersion < 0x0156)
+               {
+                  functionDefine.mDesignDependent = false;
+               }
             }
          }
       }

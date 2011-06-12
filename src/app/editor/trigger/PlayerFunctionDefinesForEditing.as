@@ -2415,6 +2415,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                             new VariableDefinitionBoolean ("Rotate Linear Velocity?"),
                      ],
                      null
                   );
@@ -2427,6 +2428,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
+                             new VariableDefinitionBoolean ("Rotate Linear Velocity?"),
                      ],
                      null
                   );

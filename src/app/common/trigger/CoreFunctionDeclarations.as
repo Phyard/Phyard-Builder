@@ -2368,6 +2368,7 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       true],
                         [ValueTypeDefine.ValueType_Boolean,       false],
                         [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ],
                      null
                   );
@@ -2380,6 +2381,7 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       true],
                         [ValueTypeDefine.ValueType_Boolean,       false],
                         [ValueTypeDefine.ValueType_Boolean,       true],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ],
                      null
                   );

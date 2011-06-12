@@ -3871,7 +3871,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Rotate (fixedPointX, fixedPointY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         valueSource = valueSource.mNextParameter;
+         var rotateVelocity:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         shape.Rotate (fixedPointX, fixedPointY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
       }
       
       public static function RotateShapeToAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
@@ -3901,7 +3904,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var bBreakEmbarrassedJoints:Boolean =  valueSource.EvaluateValueObject () as Boolean;
 
-         shape.Rotate (fixedPointX, fixedPointY, shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+         valueSource = valueSource.mNextParameter;
+         var rotateVelocity:Boolean =  valueSource.EvaluateValueObject () as Boolean;
+
+         shape.Rotate (fixedPointX, fixedPointY, shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
       }
       
       /*

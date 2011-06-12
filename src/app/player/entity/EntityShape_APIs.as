@@ -403,7 +403,7 @@ if (! bCloneBrothers)
 
 public function Teleport (deltaX:Number, deltaY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
 {
-   Rotate (mPositionX, mPositionY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
+   Rotate (mPositionX, mPositionY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, false);
    Translate (deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 }
 
@@ -451,7 +451,7 @@ public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovab
    }
 }
 
-public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):void
+public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Number, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean, rotateVelocity:Boolean):void
 {
    if (deltaRotation == 0)
       return;
@@ -482,6 +482,12 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
       body.mPositionX = fixedPointX + dx * cos - dy * sin;
       body.mPositionY = fixedPointY + dx * sin + dy * cos;
       body.SetRotation (body.mPhysicsRotation + deltaRotation);
+      if (rotateVelocity)
+      {
+         var vx:Number = body.GetLinearVelocityX ();
+         var vy:Number = body.GetLinearVelocityY ();
+         body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos);
+      }
       
       if (body.mNumPhysicsShapes > 0)
       {

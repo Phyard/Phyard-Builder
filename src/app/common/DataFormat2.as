@@ -2060,9 +2060,9 @@ package common {
                   // from v1.56
                   if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                   {
-                     if (entityDefine.mPreFunctionDefine != null)
+                     if (entityDefine.mPreFunctionDefine != undefined)
                         TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPreFunctionDefine);
-                     if (entityDefine.mPostFunctionDefine != null)
+                     if (entityDefine.mPostFunctionDefine != undefined)
                         TriggerFormatHelper2.AdjustNumberPrecisionsInFunctionDefine (entityDefine.mPostFunctionDefine);
                   }
                   //<<

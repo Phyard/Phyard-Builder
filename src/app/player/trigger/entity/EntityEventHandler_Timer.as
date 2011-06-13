@@ -44,6 +44,7 @@ package player.trigger.entity
             if (entityDefine.mOnlyRunOnce != undefined)
                SetOnlyRunOnce (entityDefine.mOnlyRunOnce as Boolean);
             
+            // fron v1.56
             if (mEventId == CoreEventIds.ID_OnEntityTimer || mEventId == CoreEventIds.ID_OnEntityPairTimer)
             {
                if (entityDefine.mPreFunctionDefine != undefined)
@@ -66,6 +67,7 @@ package player.trigger.entity
                   mPostEventHandlerDefinition.SetCodeSnippetDefine (postCodeSnippetDefine);
                }
             }
+            //<<
          }
       }
       

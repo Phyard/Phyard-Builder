@@ -243,7 +243,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    for (i = 0; i < count; ++ i)
    {
       entityDefine = entityDefinesSortByAppearanceId [i] as Object;
-      appearanceOrderArray.push (i);
+      appearanceOrderArray.push (entityDefine.mCreationOrderId);
    }
    
    // create brother groups array

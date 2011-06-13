@@ -7,19 +7,19 @@
     title="Event Handler Setting" width="600">
 
    <mx:TabNavigator width="100%" height="100%" creationPolicy="all">
-      <mx:VBox label="Script" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnCodeSnippetSettingPanelCreationComplete()">
          <CodeSnippetEditPanel id="theCodeSnippetEditPanel" width="100%" height="100%"/>
       </mx:VBox>
-      <mx:VBox label="Script (Pre-Handling)" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Code Snippet (Pre-Handling)" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <CodeSnippetEditPanel id="preCodeSnippetEditPanel" width="100%" height="100%" creationComplete="OnPreCodeSnippetSettingPanelCreationComplete()"/>
       </mx:VBox>
-      <mx:VBox label="Script (Post-Handling)" borderStyle="solid" height="100%" width="100%"
+      <mx:VBox label="Code Snippet (Post-Handling)" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">

@@ -70,7 +70,7 @@ package player.entity {
          mCurveThickness = thickness;
       }
       
-      public function GetCurveThickness ():uint
+      public function GetCurveThickness ():Number
       {
          return mCurveThickness;
       }

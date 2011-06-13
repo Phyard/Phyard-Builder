@@ -516,7 +516,7 @@ package player.entity {
          DelayUpdateAppearance (); 
       }
       
-      public function GetBorderThickness ():uint
+      public function GetBorderThickness ():Number
       {
          return mBorderThickness;
       }

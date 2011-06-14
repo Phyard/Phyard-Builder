@@ -128,11 +128,11 @@ package player.world {
          mNumEntitiesToDelayUnregister = 0;
       }
       
-      internal function InitEntities ():void
+      public function InitEntities (fromLastMarkedTail:Boolean = false):void
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = mHead;
+         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;

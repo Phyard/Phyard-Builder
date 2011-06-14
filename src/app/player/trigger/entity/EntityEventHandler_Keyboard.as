@@ -1,6 +1,8 @@
 package player.trigger.entity
 {
    import player.world.World;
+
+   import player.entity.Entity;
    
    import player.trigger.TriggerEngine;
    import player.trigger.Parameter;
@@ -48,7 +50,7 @@ package player.trigger.entity
 //   register to entity
 //=============================================================
       
-      override protected function RegisterToEntityEventHandlerLists ():void
+      override public function RegisterToEntityEventHandlerLists (runtimeCreatedEntity:Entity = null):void
       {
          // do nothing
       }

@@ -50,7 +50,7 @@ package player.trigger.entity
          
          if (createStageId == 0)
          {
-            if (mIsPairLimiter)
+            if (mIsPairSelector)
             {
                if (entityDefine.mPairingType != undefined)
                   mAssignerType = entityDefine.mPairingType;
@@ -106,7 +106,7 @@ package player.trigger.entity
                   }
                }
             }
-            else // not mIsPairLimiter
+            else // not mIsPairSelector
             {
                if (entityDefine.mSelectorType != undefined)
                   mAssignerType = entityDefine.mSelectorType;
@@ -153,7 +153,7 @@ package player.trigger.entity
       
       //override public function ContainsEntity (entityIndex:int):Boolean
       //{
-      //   if (mIsPairLimiter)
+      //   if (mIsPairSelector)
       //      return false;
       //   
       //   switch (mAssignerType)
@@ -177,7 +177,7 @@ package player.trigger.entity
       
       override public function ContainsEntityPair (entity1:Entity, entity2:Entity, ignorePairOrder:Boolean):int
       {
-         if ( ! mIsPairLimiter)
+         if ( ! mIsPairSelector)
             return PairContainingResult_False;
          
          var entityIndex1:int = entity1.GetCreationId ();
@@ -297,14 +297,14 @@ package player.trigger.entity
 //==========================================================================================================
       
       // as input of an event handler
-      override public function RegisterEventHandlerForEntities (eventId:int, eventHandler:EntityEventHandler):void
+      override public function RegisterEventHandlerForEntitiesPlacedInEditor (eventId:int, eventHandler:EntityEventHandler):void
       {
-         if (mIsPairLimiter)
+         if (mIsPairSelector)
             return;
          
          if (mAssignerType == Define.EntitySelectorType_Any)
          {
-            RegisterEventHandlerForEntitiesPlacedInEditor (null, eventId, eventHandler);
+            _RegisterEventHandlerForEntitiesPlacedInEditor (null, eventId, eventHandler);
          }
          else // if (mAssignerType == Define.EntitySelectorType_Single || mAssignerType == Define.EntitySelectorType_Many)
          {
@@ -323,6 +323,15 @@ package player.trigger.entity
          }
       }
       
+      // as input of an event handler
+      override public function RegisterEventHandlerForRuntimeCreatedEntity (entity:Entity, eventId:int, eventHandler:EntityEventHandler):void
+      {
+         if (mAssignerType == Define.EntitySelectorType_Any)
+         {
+            entity.RegisterEventHandler (eventId, eventHandler);
+         }
+      }
+      
 //==========================================================================================================
 //   as input of task entities
 //==========================================================================================================
@@ -331,7 +340,7 @@ package player.trigger.entity
       // Define.EntitySelectorType_Any: is not supported
       override public function GetEntityListTaskStatus ():int
       {
-         if (mIsPairLimiter)
+         if (mIsPairSelector)
             return ValueDefine.TaskStatus_Unfinished;
          
          if (mAssignerType == Define.EntitySelectorType_Any)
@@ -377,7 +386,7 @@ package player.trigger.entity
       
       override public function HandleTimerEventForEntities (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
-         if (mIsPairLimiter)
+         if (mIsPairSelector)
             return;
          
          if (mAssignerType == Define.EntitySelectorType_Any)
@@ -413,7 +422,7 @@ package player.trigger.entity
       
       override public function HandleTimerEventForEntityPairs (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
-         if (! mIsPairLimiter)
+         if (! mIsPairSelector)
             return;
          
          var valueSourceEntity1:Parameter_Direct = valueSourceList.mNextParameter as Parameter_Direct;

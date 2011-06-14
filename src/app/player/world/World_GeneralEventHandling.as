@@ -1,15 +1,30 @@
 
-   protected var mEventHandlers:Array = new Array (IdPool.NumEventTypes);
+   protected var mAllEventHandlers:ListElement_EventHandler = null;
+   protected var mEventHandlersByTypes:Array = new Array (IdPool.NumEventTypes);
 
    public function RegisterEventHandler (eventId:int, eventHandler:EntityEventHandler):void
    {
       if (eventId < 0 || eventId >= IdPool.NumEventTypes || eventHandler == null)
          return;
       
-      var new_element:ListElement_EventHandler = new ListElement_EventHandler (eventHandler);
-      new_element.mNextListElement = mEventHandlers [eventId];
+      // ...
       
-      mEventHandlers [eventId] = new_element;
+      var new_element:ListElement_EventHandler = new ListElement_EventHandler (eventHandler);
+      new_element.mNextListElement = mAllEventHandlers;
+      
+      mAllEventHandlers = new_element;
+      
+      // ...
+      
+      var new_element_by_type:ListElement_EventHandler = new ListElement_EventHandler (eventHandler);
+      new_element_by_type.mNextListElement = mEventHandlersByTypes [eventId];
+      
+      mEventHandlersByTypes [eventId] = new_element_by_type;
+   }
+   
+   public function GetEventHandlerList ():ListElement_EventHandler
+   {
+      return mAllEventHandlers;
    }
 
 //==================================
@@ -18,7 +33,7 @@
 
    public function HandleEventById (eventId:int, valueSourceList:Parameter = null):void
    {
-      var handler_element:ListElement_EventHandler = mEventHandlers [eventId];
+      var handler_element:ListElement_EventHandler = mEventHandlersByTypes [eventId];
       
       IncStepStage ();
       while (handler_element != null)

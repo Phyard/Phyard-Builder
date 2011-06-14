@@ -2,6 +2,8 @@ package player.trigger.entity
 {
    import player.world.World;
 
+   import player.entity.Entity;
+
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
    import player.trigger.Parameter;
@@ -102,8 +104,10 @@ package player.trigger.entity
                }
             }
 
+            mWorld.RegisterEventHandler (mEventId, this);
+
             // register self
-            RegisterToEntityEventHandlerLists ();
+            //RegisterToEntityEventHandlerLists (); // now moved into DetaFormat2.WorldDefine2PlayerWorld ()
          }
       }
 
@@ -111,11 +115,10 @@ package player.trigger.entity
 //   register to entity
 //=============================================================
 
-      protected function RegisterToEntityEventHandlerLists ():void
+      // if runtimeCreatedEntity == null, then register this handler for all entities placed in editor
+      public function RegisterToEntityEventHandlerLists (runtimeCreatedEntity:Entity = null):void
       {
          //var eventId:int = mEventHandlerDefinition.GetFunctionDeclaration ().GetID ();
-
-         mWorld.RegisterEventHandler (mEventId, this);
 
          switch (mEventId)
          {
@@ -136,11 +139,23 @@ package player.trigger.entity
             case CoreEventIds.ID_OnEntityMouseEnter:
             case CoreEventIds.ID_OnEntityMouseOut:
                var list_element:ListElement_EntitySelector = mFirstEntitySelector;
-               while (list_element != null)
+               if (runtimeCreatedEntity != null)
                {
-                  list_element.mEntitySelector.RegisterEventHandlerForEntities (mEventId, this);
-
-                  list_element = list_element.mNextListElement;
+                  while (list_element != null)
+                  {
+                     list_element.mEntitySelector.RegisterEventHandlerForRuntimeCreatedEntity (runtimeCreatedEntity, mEventId, this);
+   
+                     list_element = list_element.mNextListElement;
+                  }
+               }
+               else
+               {
+                  while (list_element != null)
+                  {
+                     list_element.mEntitySelector.RegisterEventHandlerForEntitiesPlacedInEditor (mEventId, this);
+   
+                     list_element = list_element.mNextListElement;
+                  }
                }
                break;
             default:

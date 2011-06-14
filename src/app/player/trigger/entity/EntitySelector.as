@@ -18,14 +18,14 @@ package player.trigger.entity
    
    public class EntitySelector extends EntityLogic
    {
-      protected var mIsPairLimiter:Boolean;
+      protected var mIsPairSelector:Boolean;
       
       // 
       public function EntitySelector (world:World, isPairLimiter:Boolean)
       {
          super (world);
          
-         mIsPairLimiter = isPairLimiter;
+         mIsPairSelector = isPairLimiter;
       }
       
 //========================================
@@ -61,8 +61,14 @@ package player.trigger.entity
          return ValueDefine.TaskStatus_Unfinished; // to override
       }
       
-      // for entities placed in editor only. Called in world.Init
-      public function RegisterEventHandlerForEntities (eventId:int, eventHandler:EntityEventHandler):void
+      // for entities placed in editor only
+      public function RegisterEventHandlerForEntitiesPlacedInEditor (eventId:int, eventHandler:EntityEventHandler):void
+      {
+         // to override
+      }
+      
+      // for runtime created entities only
+      public function RegisterEventHandlerForRuntimeCreatedEntity (entity:Entity, eventId:int, eventHandler:EntityEventHandler):void
       {
          // to override
       }
@@ -72,8 +78,11 @@ package player.trigger.entity
 //==========================================================================================================
 
       // this one is not static in fact.
-      public function RegisterEventHandlerForEntitiesPlacedInEditor (filterFunc:Function, eventId:int, eventHandler:EntityEventHandler):void
+      protected function _RegisterEventHandlerForEntitiesPlacedInEditor (filterFunc:Function, eventId:int, eventHandler:EntityEventHandler):void
       {
+         if (mIsPairSelector)
+            return;
+               
          var count:int = mWorld.GetNumEntitiesInEditor ();
          for (var entityIndex:int = 0; entityIndex < count; ++ entityIndex)
          {

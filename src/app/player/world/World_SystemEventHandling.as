@@ -249,7 +249,7 @@ public function OnMouseClick (event:MouseEvent):void
    if (IsInteractiveEnabledNow ())
    {
       // ...
-      RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseClick]);
+      RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseClick]);
    }
 }
 
@@ -286,10 +286,10 @@ public function OnMouseDown (event:MouseEvent):void
       RegisterKeyboardEvent (KeyCodes.LeftMouseButton, _KeyboardDownEvent, mKeyDownEventHandlerLists);
       
       // ...
-      RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseDown]);
+      RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseDown]);
       
       // ...
-      if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
+      if (mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
       {
          //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
          var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
@@ -334,7 +334,7 @@ public function OnMouseUp (event:MouseEvent):void
       RegisterKeyboardEvent (KeyCodes.LeftMouseButton, _KeyboardUpEvent, mKeyUpEventHandlerLists);
       
       // ...
-      RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseUp]);
+      RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseUp]);
       
       // ...
       //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
@@ -342,7 +342,7 @@ public function OnMouseUp (event:MouseEvent):void
       var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
       var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
       
-      if (mEventHandlers [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
+      if (mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
       {
          var shape:EntityShape;
          var num:int = shapeArray.length;
@@ -372,7 +372,7 @@ public function OnMouseMove (event:MouseEvent):void
    if (IsInteractiveEnabledNow ())
    {
       //
-      RegisterMouseEvent (event, mEventHandlers [CoreEventIds.ID_OnWorldMouseMove]);
+      RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseMove]);
    }
 }
 

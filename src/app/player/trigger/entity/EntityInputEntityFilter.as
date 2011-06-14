@@ -43,7 +43,7 @@ package player.trigger.entity
                var codeSnippetDefine:CodeSnippetDefine = ((entityDefine.mFunctionDefine as FunctionDefine).mCodeSnippetDefine as CodeSnippetDefine).Clone ();
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
-               if (mIsPairLimiter)
+               if (mIsPairSelector)
                   mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetEntityPairFilterFunctionDeclaration ());
                else
                   mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (entityDefine.mFunctionDefine, TriggerEngine.GetEntityFilterFunctionDeclaration ());
@@ -92,7 +92,7 @@ package player.trigger.entity
       
       //override public function ContainsEntity (entityIndex:int):Boolean
       //{
-      //   if (mIsPairLimiter)
+      //   if (mIsPairSelector)
       //      return false;
       //   
       //   return DoFilterEntity (mWorld.GetEntityByCreateOrderId (entityIndex, true));
@@ -100,7 +100,7 @@ package player.trigger.entity
       
       override public function ContainsEntityPair (entity1:Entity, entity2:Entity, ignorePairOrder:Boolean):int
       {
-         if ( ! mIsPairLimiter)
+         if ( ! mIsPairSelector)
             return PairContainingResult_False;
             
          if (DoFilterEntityPair (entity1, entity2))
@@ -117,12 +117,21 @@ package player.trigger.entity
 //==========================================================================================================
 
       // as input of an event handler
-      override public function RegisterEventHandlerForEntities (eventId:int, eventHandler:EntityEventHandler):void
+      override public function RegisterEventHandlerForEntitiesPlacedInEditor (eventId:int, eventHandler:EntityEventHandler):void
       {
-         if (mIsPairLimiter)
+         if (mIsPairSelector)
             return;
          
-         RegisterEventHandlerForEntitiesPlacedInEditor (DoFilterEntity, eventId, eventHandler);
+         _RegisterEventHandlerForEntitiesPlacedInEditor (DoFilterEntity, eventId, eventHandler);
+      }
+      
+      // as input of an event handler
+      override public function RegisterEventHandlerForRuntimeCreatedEntity (entity:Entity, eventId:int, eventHandler:EntityEventHandler):void
+      {
+         if (DoFilterEntity (entity))
+         {
+            entity.RegisterEventHandler (eventId, eventHandler);
+         }
       }
       
 //==========================================================================================================
@@ -132,7 +141,7 @@ package player.trigger.entity
       // as input of a task entity
       override public function GetEntityListTaskStatus ():int
       {
-         if (mIsPairLimiter)
+         if (mIsPairSelector)
             return ValueDefine.TaskStatus_Unfinished;
       
          return AggregateEntityListTaskStatus (mWorld.GetEntityList (), DoFilterEntity);
@@ -144,7 +153,7 @@ package player.trigger.entity
       
       override public function HandleTimerEventForEntities (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
-         if (mIsPairLimiter)
+         if (mIsPairSelector)
             return;
          
          HandleTimerEventForEntityList (mWorld.GetEntityList (), DoFilterEntity, timerEventHandler, valueSourceList);
@@ -152,7 +161,7 @@ package player.trigger.entity
       
       override public function HandleTimerEventForEntityPairs (timerEventHandler:EntityEventHandler_Timer, valueSourceList:Parameter):void
       {
-         if (! mIsPairLimiter)
+         if (! mIsPairSelector)
             return;
             
          // script filter is not support for entity-pair-timer event handlers now.

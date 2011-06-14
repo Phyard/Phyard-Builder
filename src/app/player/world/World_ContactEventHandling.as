@@ -473,7 +473,7 @@ private function FindEventHandlerForEntityPair (eventId:int, shape1:EntityShape,
    
    var return_handlers:ListElement_EventHandler = null;
    
-   var handler_element:ListElement_EventHandler = mEventHandlers [eventId];
+   var handler_element:ListElement_EventHandler = mEventHandlersByTypes [eventId];
    
    var new_handler_element:ListElement_EventHandler;
    var selector_element:ListElement_EntitySelector

@@ -314,6 +314,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
 
    DataFormat2.WorldDefine2PlayerWorld (worldDefine, world);
    world.BuildEntityPhysics (true);
+   world.GetEntityList ().InitEntities (true);
    
    worldEntityList.UnmarkLastTail ();
    worldEntityBodyList.UnmarkLastTail ();

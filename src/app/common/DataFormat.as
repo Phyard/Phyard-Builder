@@ -771,7 +771,7 @@ package common {
          return worldDefine;
       }
       
-      public static function WorldDefine2EditorWorld (worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, editorWorld:editor.world.World = null):editor.world.World
+      public static function WorldDefine2EditorWorld (worldDefine:WorldDefine, adjustPrecisionsInWorldDefine:Boolean = true, editorWorld:editor.world.World = null, mergeVariablesWithSameNames:Boolean = false):editor.world.World
       {
          if (worldDefine == null)
             return editorWorld;
@@ -1413,9 +1413,17 @@ package common {
          var beginningGlobalVariableIndex:int = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumVariableInstances ();
          var beginningEntityVariableIndex:int = editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumVariableInstances ();
          if (worldDefine.mGlobalVariableDefines.length > 0)
+         {
+            if (mergeVariablesWithSameNames)
+               editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables (); // important
             TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mGlobalVariableDefines, editorWorld.GetTriggerEngine ().GetGlobalVariableSpace (), true);
+         }
          if (worldDefine.mEntityPropertyDefines.length > 0)
+         {
+            if (mergeVariablesWithSameNames)
+               editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().BeginMergeVariablesWithSameNamesInCreatingVariables ();
             TriggerFormatHelper.VariableDefines2VariableSpace (editorWorld, worldDefine.mEntityPropertyDefines, editorWorld.GetTriggerEngine ().GetEntityVariableSpace (), true);
+         }
          editorWorld.GetTriggerEngine ().NotifyGlobalVariableSpaceModified ();
          editorWorld.GetTriggerEngine ().NotifyEntityVariableSpaceModified ();
          //<<<
@@ -1673,6 +1681,19 @@ package common {
             }
             
             editorWorld.GlueEntitiesByCreationIds (brotherIds);
+         }
+         
+         // important
+         if (mergeVariablesWithSameNames)
+         {
+            if (worldDefine.mGlobalVariableDefines.length > 0)
+            {
+               editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
+            if (worldDefine.mEntityPropertyDefines.length > 0)
+            {
+               editorWorld.GetTriggerEngine ().GetEntityVariableSpace ().EndMergeVariablesWithSameNamesInCreatingVariables ();
+            }
          }
         
          return editorWorld;

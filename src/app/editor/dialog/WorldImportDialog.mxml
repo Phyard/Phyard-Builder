@@ -18,7 +18,7 @@
    </mx:HBox>
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
-      <mx:CheckBox id="CheckBox_MergeVariablesWithSameNames" label="Merge Custom Variables With Same Names"/>
+      <mx:CheckBox id="CheckBox_MergeVariablesWithSameNames" label="Merge Custom Variables With Same Name And Type"/>
       <mx:Spacer width="100%"/>
       <mx:CheckBox id="CheckBox_CenterNewEntitiesInScreen" label="Center New Entities In Screen" selected="true"/>
       <mx:Spacer width="100%"/>
@@ -62,13 +62,15 @@
             
             var params:Object = new Object ();
             
-           params.mXmlString = TextArea_SourceCode.text;
-             
-           if (OnClose != null)
-              OnClose ();
+            params.mXmlString = TextArea_SourceCode.text;
+            params.mMergeVariablesWithSameNames = CheckBox_MergeVariablesWithSameNames.selected;
+            params.mCenterNewEntitiesInScreen   = CheckBox_CenterNewEntitiesInScreen.selected;
             
-           if (OnConfirm != null)
-              OnConfirm (params);
+            if (OnClose != null)
+               OnClose ();
+            
+            if (OnConfirm != null)
+               OnConfirm (params);
          }
          
          private function OnClickCancelButton():void 

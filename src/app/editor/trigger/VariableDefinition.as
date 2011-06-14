@@ -358,7 +358,7 @@ package editor.trigger {
    	      var entityValueSource:ValueSource = valueTargetProperty.GetEntityValueSource ();
             var propertyValueTarget:ValueTarget_Variable = valueTargetProperty.GetPropertyValueTarget ();
             
-         trace ("entityValueSource = " + entityValueSource + ", propertyValueTarget = " + propertyValueTarget);
+         //trace ("entityValueSource = " + entityValueSource + ", propertyValueTarget = " + propertyValueTarget);
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {
@@ -582,7 +582,7 @@ package editor.trigger {
    	      var entityValueSource:ValueSource = valueSourceProperty.GetEntityValueSource ();
    	      var propertyValueSource:ValueSource_Variable = valueSourceProperty.GetPropertyValueSource ();
             
-         trace ("entityValueSource = " + entityValueSource + ", propertyValueSource = " + propertyValueSource);
+         //trace ("entityValueSource = " + entityValueSource + ", propertyValueSource = " + propertyValueSource);
             var entityValueSourceControl:UIComponent = box.getChildAt (0) as UIComponent;
             if (entityValueSource is ValueSource_Direct)
             {

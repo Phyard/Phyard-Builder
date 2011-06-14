@@ -23,8 +23,8 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    var shape1:EntityShape = proxyShape1.GetEntityShape ();
    var shape2:EntityShape = proxyShape2.GetEntityShape ();
    
-////trace ("+++++++++++++++++++++++++ OnShapeContactStarted, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
-//trace ("+++++++++++++++++++++++++ OnShapeContactStarted, id1 = " + shape1.GetContactProxyId () + ", id2 = " + shape2.GetContactProxyId ());
+//trace ("+++++++++++++++++++++++++ OnShapeContactStarted, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
+//trace ("+++++++++++++++++++++++++ OnShapeContactStarted, proxy id1 = " + shape1.GetContactProxyId () + ", proxy id2 = " + shape2.GetContactProxyId ());
    
    if (shape1 == null || shape2 == null)
       return;
@@ -48,7 +48,7 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    
    if (contact_info != null)
    {
-//trace ("+ old");
+//trace ("+ old, contact_id = " + contact_id);
 
       // if contact_info.mNumContactPoints is zero, it means there is "out-and-in" happens.
       // now the "out-and-in" <=> nothing happend
@@ -64,7 +64,7 @@ private function OnShapeContactStarted (proxyShape1:PhysicsProxyShape, proxyShap
    }
    else
    {
-//trace ("+ new");
+//trace ("+ new, contact_id = " + contact_id);
    
       if (mFreeContactInfoListHead != null)
       {
@@ -132,8 +132,8 @@ private function OnShapeContactFinished (proxyShape1:PhysicsProxyShape, proxySha
    var shape1:EntityShape = proxyShape1.GetEntityShape ();
    var shape2:EntityShape = proxyShape2.GetEntityShape ();
    
-////trace ("------------------------ OnShapeContactFinished, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
-//trace ("------------------------ OnShapeContactFinished, id1 = " + shape1.GetContactProxyId () + ", id2 = " + shape2.GetContactProxyId ());
+//trace ("------------------------ OnShapeContactFinished, id1 = " + shape1.GetCreationId () + ", id2 = " + shape2.GetCreationId ());
+//trace ("------------------------ OnShapeContactFinished, proxy id1 = " + shape1.GetContactProxyId () + ", proxy id2 = " + shape2.GetContactProxyId ());
    
    if (shape1 == null || shape2 == null)
       return;
@@ -209,10 +209,10 @@ private function HandleShapeContactEvents ():void
    
    var newShapeContactInfos:Array = new Array ();
    
-   var count:int = mShapeContactInfos_StepQueue.length;
    var i:int;
+   var count:int = mShapeContactInfos_StepQueue.length;
    
-//trace (">>>>>>>>>>>>>>>>>>>>>>> HandleShapeContactEvents, count = " + count);
+//if (count > 0 ) trace (">>>>>>>>>>>>>>>>>>>>>>> HandleShapeContactEvents, step events count = " + count + ", mNumContactInfos = " + mNumContactInfos);
 
    for (i = 0; i < count; ++ i)
    {
@@ -222,7 +222,7 @@ private function HandleShapeContactEvents ():void
       // the first start contacting event for a pair
       if (contact_info.mIsNewContact)
       {
-//trace ("          mIsNewContact = " + contact_info.mIsNewContact);
+//trace ("       aa   mIsNewContact = " + contact_info.mIsNewContact + ", contact_info.mContactId = " + contact_info.mContactId);
          // handle event
          HandleShapeContactEvent (contact_info, contact_info.mFirstBeginContactingHandler, true);
          ++ mNumContactInfos;
@@ -242,14 +242,14 @@ private function HandleShapeContactEvents ():void
          }
       }
 
-//trace ("222222222222222222");
+//trace ("222222222222222222 mNumContactPoints = " + contact_info.mNumContactPoints);
       // the last end contacting event for a pair 
       if (contact_info.mNumContactPoints <= 0)
       {
-//trace ("          mNumContactPoints = " + contact_info.mNumContactPoints);
+//trace ("     bb     contact_info.mLastIndexInStepQueue = " + contact_info.mLastIndexInStepQueue);
          if (contact_info.mLastIndexInStepQueue == i) // only handle it if it is the last one of this contact info in the queue
          {
-//trace ("          mLastIndexInStepQueue = " + contact_info.mLastIndexInStepQueue);
+//trace ("          mLastIndexInStepQueue = " + contact_info.mLastIndexInStepQueue + ", contact_info.mContactId = " + contact_info.mContactId);
             HandleShapeContactEvent (contact_info, contact_info.mFirstEndContactingHandler, false);
             -- mNumContactInfos;
             //trace (" -- mNumContactInfos = " + mNumContactInfos);
@@ -260,7 +260,7 @@ private function HandleShapeContactEvents ():void
                
             if (contact_info.mInKeepContactingList)
             {
-//trace ("          mInKeepContactingList = " + contact_info.mInKeepContactingList);
+//trace ("    bb   cc   mInKeepContactingList = " + contact_info.mInKeepContactingList);
                if (contact_info.mPrevContactInfo != null)
                   contact_info.mPrevContactInfo.mNextContactInfo = contact_info.mNextContactInfo;
                else //if (mFirstShapeContactInfo == contact_info)
@@ -283,6 +283,16 @@ private function HandleShapeContactEvents ():void
    
    //mShapeContactInfos_StepQueue = new Array (); // wrong!!! This will discard new ones created by API callings in the above loop.
    mShapeContactInfos_StepQueue = mShapeContactInfos_StepQueue.slice (count); // subArray. New created contact events will be handled in the next step.
+   
+   // very important! For contact events can't be added in the above loop block (the following should not use for (i = 0; i < count; )
+   for each (contact_info in mShapeContactInfos_StepQueue)
+   {
+      if (contact_info.mLastAdjustQueneIdStep < mNumSimulatedSteps)
+      {
+         contact_info.mLastAdjustQueneIdStep = mNumSimulatedSteps;
+         contact_info.mLastIndexInStepQueue -= count;
+      }
+   }
    
    // handle keep contacting events
    
@@ -424,7 +434,7 @@ private function HandleShapeContactEvents ():void
          
          delete mShapeContactInfoHashtable [contact_info.mContactId];
          
-         -- mNumContactInfos;
+         //-- mNumContactInfos; // move to handling function
          //trace (" --- mNumContactInfos = " + mNumContactInfos);
          
          // mvoe to free list

@@ -17,6 +17,7 @@ package player.trigger.data
       public var mIsNewContact:Boolean;
       public var mInKeepContactingList:Boolean;
       public var mLastIndexInStepQueue:int; // used to judge if the last one in queue
+      public var mLastAdjustQueneIdStep:int = -1; // very important, see world.contact handling part for details
       
       public var mBeginContactingFrame:int;       // for the first contact of the pair
       public var mNewestBeginContactingFrame:int; // for any contacts of the pair

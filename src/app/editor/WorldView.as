@@ -2648,7 +2648,7 @@ package editor {
       //   ShowPlayCodeLoadingDialog (LoadPlayerWorldFromHexString);
       //}
       
-      public function  OpenImportSourceCodeDialog (importFunctionsOnly:Boolean):void
+      public function OpenImportSourceCodeDialog (importFunctionsOnly:Boolean):void
       {
          if (! IsEditing ())
             return;
@@ -5458,6 +5458,8 @@ package editor {
       public function ImportFromXmlString (params:Object, importEntities:Boolean, importFunctions:Boolean):void
       {
          var xmlString:String = params.mXmlString;
+         var mergeVariablesWithSameNames:Boolean = params.mMergeVariablesWithSameNames;
+         var centerNewEntitiesInScreen:Boolean = params.mCenterNewEntitiesInScreen;         
          
          var xml:XML = new XML (xmlString);
          
@@ -5474,7 +5476,7 @@ package editor {
             if (oldCategoriesCount + worldDefine.mCollisionCategoryDefines.length > Define.MaxCCatsCount)
                return;
             
-            DataFormat.WorldDefine2EditorWorld (worldDefine, true, mEditorWorld);
+            DataFormat.WorldDefine2EditorWorld (worldDefine, true, mEditorWorld, mergeVariablesWithSameNames);
             
             if (mEditorWorld.GetFunctionManager ().IsChanged ())
             {
@@ -5497,10 +5499,11 @@ package editor {
             
             var newEntitiesCount:int = mEditorWorld.GetNumEntities ();
             
+            var entitiesToSelect:Array = new Array ();
             for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
             {
                entities = (mEditorWorld.GetEntityByCreationId (i) as Entity).GetSubEntities ();
-               mEditorWorld.SelectEntities (entities);
+               entitiesToSelect = entitiesToSelect.concat (entities);
                
                for (j = 0; j < entities.length; ++ j)
                {
@@ -5511,7 +5514,9 @@ package editor {
                }
             }
             
-            if (numSelecteds > 0)
+            SelectedEntities (entitiesToSelect, true, false);
+
+            if (centerNewEntitiesInScreen && numSelecteds > 0)
             {
                centerX /= numSelecteds;
                centerY /= numSelecteds;

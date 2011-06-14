@@ -1,5 +1,7 @@
 package editor.trigger {
    
+   import flash.utils.Dictionary;
+   
    import common.trigger.ValueTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
    
@@ -56,6 +58,13 @@ package editor.trigger {
       
       public function GetVariableInstanceAt (variableId:int):VariableInstance
       {
+         if (mVariableIdMapTable != null) // in importing
+         {
+            var newId:Object = mVariableIdMapTable [variableId];
+            if (newId != null)
+               variableId = int (newId);
+         }
+         
          if (variableId < 0 || variableId >= mVariableInstances.length)
             return mNullVariableInstance;
          
@@ -83,8 +92,32 @@ package editor.trigger {
          return mNullVariableInstance;
       }
       
+      
+      private var mVariableIdMapTable:Dictionary = null; 
+      private var mVirualVariablesCount:int;
+      public function BeginMergeVariablesWithSameNamesInCreatingVariables ():void
+      {
+         mVariableIdMapTable = new Dictionary ();
+         mVirualVariablesCount = GetNumVariableInstances ();
+      }
+      
+      public function EndMergeVariablesWithSameNamesInCreatingVariables ():void
+      {
+         mVariableIdMapTable = null;
+      }
+      
       public function CreateVariableInstanceFromDefinition (variableDefinition:VariableDefinition):VariableInstance
       {
+         if (mVariableIdMapTable != null) // in importing
+         {
+            var vi:VariableInstance = GetVariableInstanceByTypeAndName (variableDefinition.GetValueType (), variableDefinition.GetName ());
+            if (vi != null)
+            {
+               mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
+               return vi;
+            }
+         }
+         
          var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, variableDefinition);
          
          mVariableInstances.push (variable_instance);
@@ -96,6 +129,16 @@ package editor.trigger {
       
       public function CreateVariableInstance(valueType:int, variableName:String, intialValue:Object):VariableInstance
       {
+         if (mVariableIdMapTable != null) // in importing
+         {
+            var vi:VariableInstance = GetVariableInstanceByTypeAndName (valueType, variableName);
+            if (vi != null)
+            {
+               mVariableIdMapTable [mVirualVariablesCount ++] = vi.GetIndex ();
+               return vi;
+            }
+         }
+         
          var variable_instance:VariableInstance = new VariableInstance(this, mVariableInstances.length, null, valueType, variableName, intialValue);
          
          mVariableInstances.push (variable_instance);

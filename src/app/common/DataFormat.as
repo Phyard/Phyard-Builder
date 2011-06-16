@@ -6,30 +6,30 @@ package common {
    
    import editor.world.World;
    
-   import editor.entity. Entity;
+   import editor.entity.Entity;
    
-   import editor.entity. EntityShape
-   import editor.entity. EntityShapeCircle;
-   import editor.entity. EntityShapeRectangle;
-   import editor.entity. EntityShapePolygon;
-   import editor.entity. EntityShapePolyline;
-   import editor.entity. EntityShapeText;
-   import editor.entity. EntityShapeTextButton;
-   import editor.entity. EntityShapeGravityController;
+   import editor.entity.EntityShape
+   import editor.entity.EntityShapeCircle;
+   import editor.entity.EntityShapeRectangle;
+   import editor.entity.EntityShapePolygon;
+   import editor.entity.EntityShapePolyline;
+   import editor.entity.EntityShapeText;
+   import editor.entity.EntityShapeTextButton;
+   import editor.entity.EntityShapeGravityController;
    
-   import editor.entity. EntityJoint;
-   import editor.entity. EntityJointHinge;
-   import editor.entity. EntityJointSlider;
-   import editor.entity. EntityJointDistance;
-   import editor.entity. EntityJointSpring;
-   import editor.entity. EntityJointWeld;
-   import editor.entity. EntityJointDummy;
+   import editor.entity.EntityJoint;
+   import editor.entity.EntityJointHinge;
+   import editor.entity.EntityJointSlider;
+   import editor.entity.EntityJointDistance;
+   import editor.entity.EntityJointSpring;
+   import editor.entity.EntityJointWeld;
+   import editor.entity.EntityJointDummy;
    
-   import editor.entity. SubEntityJointAnchor;
+   import editor.entity.SubEntityJointAnchor;
    
-   import editor.entity. EntityUtility;
-   import editor.entity. EntityUtilityCamera;
-   import editor.entity. EntityUtilityPowerSource;
+   import editor.entity.EntityUtility;
+   import editor.entity.EntityUtilityCamera;
+   import editor.entity.EntityUtilityPowerSource;
    
    import editor.entity.EntityCollisionCategory;
    
@@ -44,7 +44,7 @@ package common {
    import editor.trigger.entity.EntityAction;
    import editor.trigger.entity.EntityEventHandler;
    import editor.trigger.entity.EntityEventHandler_Timer;
-   import editor.trigger.entity.EntityEventHandler_TimerWithPrePostHandling
+   import editor.trigger.entity.EntityEventHandler_TimerWithPrePostHandling;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
@@ -1592,24 +1592,12 @@ package common {
                         timerEventHandler.SetRunningInterval (entityDefine.mRunningInterval);
                         timerEventHandler.SetOnlyRunOnce (entityDefine.mOnlyRunOnce);
                         
+                        //>>from v1.56
                         if (eventHandler is EntityEventHandler_TimerWithPrePostHandling)
                         {
-                           var timerEventHandlerWithPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = eventHandler as EntityEventHandler_TimerWithPrePostHandling;
-                  
-                           //>>from v1.56
-                           if (entityDefine.mPreFunctionDefine != undefined)
-                           {
-                              TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
-                              TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, false);
-                           }
-                           
-                           if (entityDefine.mPostFunctionDefine != undefined)
-                           {
-                              TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
-                              TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, false);
-                           }
-                           //<<
+                           // the block is move down, see below. For need local variaible space of the main code snippet
                         }
+                        //<<
                      }
                      else if (eventHandler is EntityEventHandler_Keyboard)
                      {
@@ -1630,6 +1618,25 @@ package common {
                   
                   TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
                   TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mFunctionDefine, eventHandler.GetCodeSnippet (), eventHandler.GetCodeSnippet ().GetOwnerFunctionDefinition ());
+                  
+                  //>>from v1.56
+                  if (eventHandler is EntityEventHandler_TimerWithPrePostHandling)
+                  {
+                     var timerEventHandlerWithPrePostHandling:EntityEventHandler_TimerWithPrePostHandling = eventHandler as EntityEventHandler_TimerWithPrePostHandling;
+            
+                     if (entityDefine.mPreFunctionDefine != undefined)
+                     {
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPreFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
+                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPreFunctionDefine, timerEventHandlerWithPrePostHandling.GetPreCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPreCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
+                     }
+                     
+                     if (entityDefine.mPostFunctionDefine != undefined)
+                     {
+                        TriggerFormatHelper.ShiftReferenceIndexesInCodeSnippetDefine (editorWorld, entityDefine.mPostFunctionDefine.mCodeSnippetDefine, false, beginningEntityIndex, beginningCollisionCategoryIndex, beginningGlobalVariableIndex, beginningEntityVariableIndex, beginningCustomFunctionIndex);
+                        TriggerFormatHelper.FunctionDefine2FunctionDefinition (editorWorld, entityDefine.mPostFunctionDefine, timerEventHandlerWithPrePostHandling.GetPostCodeSnippet (), timerEventHandlerWithPrePostHandling.GetPostCodeSnippet ().GetOwnerFunctionDefinition (), true, true, eventHandler.GetEventHandlerDefinition ().GetLocalVariableSpace ());
+                     }
+                  }
+                  //<<
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {

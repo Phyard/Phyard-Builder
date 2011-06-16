@@ -103,6 +103,11 @@ package editor.trigger.entity {
          return mEventId;
       }
       
+      public function GetEventHandlerDefinition ():FunctionDefinition
+      {
+         return mEventHandlerDefinition;
+      }
+      
       public function GetInputConditionEntity ():ICondition
       {
          return mExternalCondition.mConditionEntity;

@@ -32,6 +32,7 @@ package common {
    import editor.trigger.VariableSpace;
    import editor.trigger.VariableInstance;
    import editor.trigger.VariableSpace;
+   import editor.trigger.VariableSpaceLocal;
    import editor.trigger.VariableDefinitionBoolean;
    import editor.trigger.VariableDefinitionNumber;
    import editor.trigger.VariableDefinitionString;
@@ -321,7 +322,7 @@ package common {
 // define -> definition (editor)
 //==============================================================================================
       
-      public static function FunctionDefine2FunctionDefinition (editorWorld:World, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true, createLocalVariables:Boolean = true):void
+      public static function FunctionDefine2FunctionDefinition (editorWorld:World, functionDefine:FunctionDefine, codeSnippet:CodeSnippet, functionDefinition:FunctionDefinition, createVariables:Boolean = true, createCodeSnippet:Boolean = true, localVariableSpace:VariableSpaceLocal = null):void
       {
          if (createVariables)
          {
@@ -333,13 +334,16 @@ package common {
                VariableDefines2VariableSpace (editorWorld, functionDefine.mOutputVariableDefines, functionDefinition.GetOutputVariableSpace (), false);
             }
             
-            if (createLocalVariables)
+            if (localVariableSpace == null)
             {
-               //>> from v1.56
                VariableDefines2VariableSpace (editorWorld, functionDefine.mLocalVariableDefines, functionDefinition.GetLocalVariableSpace (), false);
-               //<<
             }
-            //<<
+            //>> from v1.56
+            else
+            {
+               functionDefinition.SetLocalVariableSpace (localVariableSpace);
+            }
+           //<<
          }
          
          if (createCodeSnippet)

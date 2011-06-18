@@ -239,6 +239,9 @@ package player.entity {
       
       override public function SynchronizeWithPhysicsProxy ():void
       {
+         if (mAlreadyDestroyed)
+            return;
+          
          SynchronizeAnchorWithPhysicsProxy (0);
          SynchronizeAnchorWithPhysicsProxy (1)  
          DelayUpdateAppearance ();

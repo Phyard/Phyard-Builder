@@ -2398,8 +2398,11 @@ package player.trigger {
          {
             valueSource = valueSource.mNextParameter;
             var idOffset:int = int (valueSource.EvaluateValueObject ());
+            
+            valueSource = valueSource.mNextParameter;
+            var supportRuntimeEntity:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-            valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetEntityByCreateOrderId (baseEntity.GetCreationId () + idOffset, false));
+            valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetEntityByCreateOrderId (baseEntity.GetCreationId () + idOffset, supportRuntimeEntity));
          }
       }
 

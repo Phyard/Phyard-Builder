@@ -1564,6 +1564,7 @@ package common.trigger {
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                         [ValueTypeDefine.ValueType_Number | ValueTypeDefine.NumberTypeDetail_Integer | ValueTypeDefine.NumberTypeUsage_General,       0.0],
+                        [ValueTypeDefine.ValueType_Boolean,       false],
                      ],
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

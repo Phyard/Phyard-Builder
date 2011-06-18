@@ -472,18 +472,24 @@ package player.world {
                   // an entity defined in editor will never removed from the 2 arrays to make the reference in api callings always be accessable.
                   //mEntityArrayOrderByCreationId   [entity.GetCreationId ()  ] = null;
                   //mEntityArrayOrderByAppearanceId [entity.GetAppearanceId ()] = null;
+                  
+                  // from v1.56, entities placed in editor will not be removed from list to make task aggregators work correctly.
+                  //if (entity != null) // should not
+                  //{
+                  //   mEntityList.RemoveEntity (entity);
+                  //}
                }
                else
                {
                   entity = mDynamicCrreatedEntities [creationId] as Entity;
                   
                   delete mDynamicCrreatedEntities [creationId];
+                  
+                  if (entity != null) // should not
+                  {
+                     mEntityList.RemoveEntity (entity);
+                  }
                }            
-               
-               if (entity != null)
-               {
-                  mEntityList.RemoveEntity (entity);
-               }
             }
             
             mCreationIdsToDelete_LastStep = mCreationIdsToDelete_ThisStep;

@@ -1608,7 +1608,6 @@ package player.entity {
       
       final public function RebuildShapePhysics ():void
       {
-      // ...
          if (mAlreadyDestroyed)
             return;
          

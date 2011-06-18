@@ -1642,6 +1642,7 @@ package editor.trigger {
                      [
                              new VariableDefinitionEntity ("Base Entity"),
                              new VariableDefinitionNumber ("Id Offset"),
+                             new VariableDefinitionBoolean ("Suppurt Runtime-Created Entity?"),
                      ],
                      [
                              new VariableDefinitionEntity ("Another Entity"),

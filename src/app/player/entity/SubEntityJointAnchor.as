@@ -134,6 +134,9 @@ package player.entity {
       
       override public function SynchronizeWithPhysicsProxy ():void
       {
+         if (mAlreadyDestroyed)
+            return;
+          
          if (mShape != null)
          {
             SetRotation (mShape.mPhysicsRotation + mRelativeRotation);

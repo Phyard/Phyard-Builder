@@ -76,7 +76,7 @@ package player.entity {
                
                mWorld.RegisterEntity (mAnchor2);
                
-               mAnchor1.PutEntityFrontOfMe (mAnchor2);
+               mAnchor2.AdjustAppearanceOrder (mAnchor1, true);
             }
             
             // for joint with 2 anchors in editor (slider, distance, spring, )

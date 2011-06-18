@@ -304,6 +304,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetVisible,                  SetEntityVisible);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_GetAlpha,                    GetEntityAlpha);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetAlpha,                    SetEntityAlpha);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_AdjustAppearanceOrder,                    AdjustEntityAppearanceOrder);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_AdjustAppearanceOrderRelativeTo,          AdjustEntityAppearanceOrderRelativeTo);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsEnabled,                   IsEntityEnabled);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_SetEnabled,                  SetEntityEnabled);
 
@@ -2505,6 +2507,35 @@ package player.trigger {
          var alpha:Number = valueSource.EvaluateValueObject () as Number;
 
          entity.SetAlpha (alpha);
+      }
+      
+      public static function AdjustEntityAppearanceOrder (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
+         if (entity == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var toTop:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         entity.AdjustAppearanceOrder (null, toTop);
+      }
+
+      public static function AdjustEntityAppearanceOrderRelativeTo (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity:Entity = valueSource.EvaluateValueObject () as Entity;
+         if (entity == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var relativeToEntity:Entity = valueSource.EvaluateValueObject () as Entity;
+         if (relativeToEntity == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var frontOf:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         entity.AdjustAppearanceOrder (relativeToEntity, frontOf);
       }
 
       public static function IsEntityEnabled (valueSource:Parameter, valueTarget:Parameter):void

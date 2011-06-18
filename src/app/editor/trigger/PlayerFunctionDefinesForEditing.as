@@ -1751,6 +1751,21 @@ package editor.trigger {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_AdjustAppearanceOrder, entity_common_package, "Adjust Entity Appearance Order", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}),
+                             new VariableDefinitionBoolean ("To Top / To Bottom (true/false)"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_AdjustAppearanceOrderRelativeTo, entity_common_package, "Adjust Entity Appearance Order Relative To", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}),
+                             new VariableDefinitionEntity ("Relative-To Entity", null, {mValidClasses: Filters.sVisualEntityClasses}),
+                             new VariableDefinitionBoolean ("Front Of / Behind Of (true/false)"),
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsEnabled, entity_common_package, "Is Entity Enabled",  "@#0 = Is Entity ($0) Enabled?", null,
                      [
                              new VariableDefinitionEntity ("The Event Handler", null, {mValidClasses: Filters.sCanBeDisabledEntityClasses}),

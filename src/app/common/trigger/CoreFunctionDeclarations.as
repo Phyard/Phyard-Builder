@@ -1676,6 +1676,21 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_AdjustAppearanceOrder,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_AdjustAppearanceOrderRelativeTo,
+                     [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                        [ValueTypeDefine.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsEnabled,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

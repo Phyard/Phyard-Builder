@@ -382,7 +382,7 @@ package common {
                
                if (entity != null && cloneFromEntity != null)
                {
-                  cloneFromEntity.PutEntityFrontOfMe (entity);
+                  entity.AdjustAppearanceOrder (cloneFromEntity, true);
                }
             }
          }

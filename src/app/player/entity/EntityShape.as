@@ -56,6 +56,7 @@ package player.entity {
          mPhysicsShapePotentially = false; // to override
          
          mWorld.AddChildToEntityLayer (mAppearanceObjectsContainer);
+         mAppearanceObject = mAppearanceObjectsContainer;
          
          mWorld.RegisterShapeAiType (mOriginalAiType, mAiType);
       }
@@ -1159,16 +1160,6 @@ package player.entity {
       protected var mNeedRebuildAppearanceObjects:Boolean = true;
       
       protected var mAppearanceObjectsContainer:Sprite = new Sprite ();
-      
-      override public function PutEntityFrontOfMe (clonedEntity:Object):void
-      {
-         var clonedShape:EntityShape = clonedEntity as EntityShape;
-         if (clonedShape != null)
-         {
-            //mWorld.RemoveChildToEntityLayer (clonedShape.mAppearanceObjectsContainer);
-            mWorld.AddChildToEntityLayer (clonedShape.mAppearanceObjectsContainer, mAppearanceObjectsContainer);
-         }
-      }   
       
 //=============================================================
 //   flipped and scale

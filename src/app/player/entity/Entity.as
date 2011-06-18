@@ -1,4 +1,7 @@
 package player.entity {
+
+   import flash.display.DisplayObjectContainer;
+   import flash.display.DisplayObject;
    
    import player.world.World;
    import player.world.EntityList;
@@ -504,9 +507,35 @@ package player.entity {
          // to overrride
       }
       
-      public function PutEntityFrontOfMe (clonedEntity:Object):void
+      protected var mAppearanceObject:DisplayObject = null;
+      
+      final public function AdjustAppearanceOrder (relativeTo:Entity, frontOfRelativeTo:Boolean):void
       {
-         // to override
+         if (mAppearanceObject == null)
+            return;
+         
+         var layerContainer:DisplayObjectContainer;
+
+         if (relativeTo == null)
+         {
+            layerContainer = mAppearanceObject.parent as DisplayObjectContainer;
+            if (layerContainer != null)
+            {
+               layerContainer.removeChild (mAppearanceObject);
+               if (frontOfRelativeTo)
+                  layerContainer.addChild (mAppearanceObject);
+               else
+                  layerContainer.addChildAt (mAppearanceObject, 0);
+            }
+         }
+         else if (relativeTo.mAppearanceObject != null)
+         {
+            layerContainer = relativeTo.mAppearanceObject.parent as DisplayObjectContainer;
+            if (layerContainer != null)
+            {
+               layerContainer.addChildAt (mAppearanceObject, layerContainer.getChildIndex (relativeTo.mAppearanceObject) + (frontOfRelativeTo ? 1 : 0));
+            }
+         }
       }
       
 //=============================================================

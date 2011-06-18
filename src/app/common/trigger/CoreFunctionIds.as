@@ -287,6 +287,10 @@ package common.trigger {
       public static const ID_Entity_SetVisible:int                     = IdPool.CoreApiId_981;
       public static const ID_Entity_GetAlpha:int                       = IdPool.CoreApiId_982;
       public static const ID_Entity_SetAlpha:int                       = IdPool.CoreApiId_983;
+
+      public static const ID_Entity_AdjustAppearanceOrder:int                       = IdPool.CoreApiId_986;
+      public static const ID_Entity_AdjustAppearanceOrderRelativeTo:int             = IdPool.CoreApiId_987;
+
       public static const ID_Entity_IsEnabled:int                      = IdPool.CoreApiId_984;
       public static const ID_Entity_SetEnabled:int                     = IdPool.CoreApiId_985;
 

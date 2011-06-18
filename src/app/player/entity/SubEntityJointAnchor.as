@@ -151,6 +151,16 @@ package player.entity {
       
       internal var mAnchorShape:Shape = new Shape ();
       
+      override public function PutEntityFrontOfMe (clonedEntity:Object):void
+      {
+         var clonedAnchor:SubEntityJointAnchor = clonedEntity as SubEntityJointAnchor;
+         if (clonedAnchor != null)
+         {
+            //mWorld.RemoveChildToEntityLayer (clonedAnchor.mAnchorShape);
+            mWorld.AddChildToEntityLayer (clonedAnchor.mAnchorShape, mAnchorShape);
+         }
+      }      
+      
       private var mRebuildAppearanceFunc:Function = null;
       
       override public function UpdateAppearance ():void

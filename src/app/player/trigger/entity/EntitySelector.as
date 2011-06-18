@@ -108,7 +108,8 @@ package player.trigger.entity
             
             while (true)
             {
-               if ((! entity.IsDestroyedAlready ()) && (filterFunc == null || filterFunc (entity)))
+               //if ((! entity.IsDestroyedAlready ()) && (filterFunc == null || filterFunc (entity)))
+               if (filterFunc == null || filterFunc (entity)) // bug: destroyed entities still contribute in the final task aggregating result. 
                {
                   if (entity.IsTaskFailed ())
                      return ValueDefine.TaskStatus_Failed;

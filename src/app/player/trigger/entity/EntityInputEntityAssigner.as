@@ -357,10 +357,11 @@ package player.trigger.entity
             while (i < count)
             {
                entity = mInputEntityArray1 [i];
-               if (entity == null || entity.IsDestroyedAlready ())
+               if (entity == null) // || entity.IsDestroyedAlready ()) // bug: destroyed entities still contribute in the final task aggregating result. 
                {
-                  mInputEntityArray1.splice (i, 1);
-                  -- count;
+                  // commented off for potential bugs
+                  //mInputEntityArray1.splice (i, 1);
+                  //-- count;
                }
                else
                {
@@ -403,10 +404,11 @@ package player.trigger.entity
             while (i < count)
             {
                entity = mInputEntityArray1 [i];
-               if (entity == null || entity.IsDestroyedAlready ())
+               if (entity == null || entity.IsDestroyedAlready ()) // bug ! 
                {
-                  mInputEntityArray1.splice (i, 1);
-                  -- count;
+                  // commented off for potential bugs
+                  //mInputEntityArray1.splice (i, 1);
+                  //-- count;
                }
                else
                {
@@ -451,10 +453,11 @@ package player.trigger.entity
                   if (entity1 == null  || entity1.IsDestroyedAlready ()
                      || entity2 == null || entity2.IsDestroyedAlready ())
                   {
-                     mInputEntityArray1.splice (i, 1);
-                     mInputEntityArray2.splice (i, 1);
-                     
-                     -- num1;
+                     // commented off for potential bugs
+                     //mInputEntityArray1.splice (i, 1);
+                     //mInputEntityArray2.splice (i, 1);
+                     //
+                     //-- num1;
                   }
                   else
                   {
@@ -474,21 +477,22 @@ package player.trigger.entity
                num1 = mInputEntityArray1.length;
                num2 = mInputEntityArray2.length;
                
-               j = 0;
-               while (j < num2)
-               {
-                  entity2 = mInputEntityArray2 [j];
-                  
-                  if (entity2 == null || entity2.IsDestroyedAlready ())
-                  {
-                     mInputEntityArray2.splice (j, 1);
-                     -- num2;
-                  }
-                  else
-                  {
-                     ++ j;
-                  }
-               }
+               // commented off for potential bugs
+               //j = 0;
+               //while (j < num2)
+               //{
+               //   entity2 = mInputEntityArray2 [j];
+               //   
+               //   if (entity2 == null || entity2.IsDestroyedAlready ())
+               //   {
+               //      mInputEntityArray2.splice (j, 1);
+               //      -- num2;
+               //   }
+               //   else
+               //   {
+               //      ++ j;
+               //   }
+               //}
                
                while (i < num1)
                {
@@ -496,8 +500,9 @@ package player.trigger.entity
                   
                   if (entity1 == null || entity1.IsDestroyedAlready ())
                   {
-                     mInputEntityArray1.splice (i, 1);
-                     -- num1;
+                     // commented off for potential bugs
+                     //mInputEntityArray1.splice (i, 1);
+                     //-- num1;
                   }
                   else
                   {
@@ -507,12 +512,19 @@ package player.trigger.entity
                      {
                         entity2 = mInputEntityArray2 [j];
                         
-                        valueSourceEntity1.mValueObject = entity1;
-                        valueSourceEntity2.mValueObject = entity2;
-                        
-                        // it is possible entity1 == entity2, this is not prevent now
-                        
-                        timerEventHandler.HandleEvent (valueSourceList);
+                        if (entity2 == null || entity2.IsDestroyedAlready ())
+                        {
+                           // do nothing
+                        }
+                        else
+                        {
+                           valueSourceEntity1.mValueObject = entity1;
+                           valueSourceEntity2.mValueObject = entity2;
+                           
+                           // it is possible entity1 == entity2, this is not prevent now
+                           
+                           timerEventHandler.HandleEvent (valueSourceList);
+                        }
                      }
                   }
                }
@@ -521,37 +533,50 @@ package player.trigger.entity
             case Define.EntityPairAssignerType_BothInMany:
                num1 = mInputEntityArray1.length;
                
-               i = 0;
-               while (i < num1)
-               {
-                  entity1 = mInputEntityArray1 [i];
-                  
-                  if (entity1 == null || entity1.IsDestroyedAlready ())
-                  {
-                     mInputEntityArray1.splice (i, 1);
-                     -- num1;
-                  }
-                  else
-                  {
-                     ++ i;
-                  }
-               }
+               // commented off for potential bugs
+               //i = 0;
+               //while (i < num1)
+               //{
+               //   entity1 = mInputEntityArray1 [i];
+               //   
+               //   if (entity1 == null || entity1.IsDestroyedAlready ())
+               //   {
+               //      mInputEntityArray1.splice (i, 1);
+               //      -- num1;
+               //   }
+               //   else
+               //   {
+               //      ++ i;
+               //   }
+               //}
                
                for (i = 0; i < num1; ++ i)
                {
                   entity1 = mInputEntityArray1 [i];
                   
-                  //for (j = i; j < num1; ++ j)
-                  for (j = i + 1; j < num1; ++ j) // from v1.56
+                  if (entity1 == null || entity1.IsDestroyedAlready ())
                   {
-                     entity2 = mInputEntityArray1 [j];
-                     
-                     valueSourceEntity1.mValueObject = entity1;
-                     valueSourceEntity2.mValueObject = entity2;
-                     
-                     // it is possible entity1 == entity2, this is not prevented now
-                     
-                     timerEventHandler.HandleEvent (valueSourceList);
+                  }
+                  else
+                  {
+                     //for (j = i; j < num1; ++ j)
+                     for (j = i + 1; j < num1; ++ j) // from v1.56
+                     {
+                        entity2 = mInputEntityArray1 [j];
+                        
+                        if (entity2 == null || entity2.IsDestroyedAlready ())
+                        {
+                        }
+                        else
+                        {
+                           valueSourceEntity1.mValueObject = entity1;
+                           valueSourceEntity2.mValueObject = entity2;
+                           
+                           // it is possible entity1 == entity2, this is not prevented now
+                           
+                           timerEventHandler.HandleEvent (valueSourceList);
+                        }
+                     }
                   }
                }
                

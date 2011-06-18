@@ -37,6 +37,9 @@ package editor.mode {
       
       protected function StartSession (startX:Number, startY:Number):void
       {
+         if (mBoxShape != null)
+            return;
+         
          ResetSession ();
          
          mBoxShape = new Shape ();

@@ -1102,9 +1102,12 @@ package player.world {
          mDisplayObjectsDelayRemovedFromBorderLayer.splice (0, num);
       }
 
-      public function AddChildToEntityLayer (displayObject:DisplayObject):void
+      public function AddChildToEntityLayer (displayObject:DisplayObject, atFrontOf:DisplayObject = null):void
       {
-         mEntityLayer.addChild (displayObject);
+         if (atFrontOf == null)
+            mEntityLayer.addChild (displayObject);
+         else
+            mEntityLayer.addChildAt (displayObject, mEntityLayer.getChildIndex (atFrontOf) + 1);
       }
 
       public function RemoveChildFromEntityLayer (displayObject:DisplayObject):void
@@ -1119,9 +1122,12 @@ package player.world {
          }
       }
 
-      public function AddChildToBorderLayer (displayObject:DisplayObject):void
+      public function AddChildToBorderLayer (displayObject:DisplayObject, atFrontOf:DisplayObject = null):void
       {
-         mBorderLayer.addChild (displayObject);
+         if (atFrontOf == null)
+            mBorderLayer.addChild (displayObject);
+         else
+            mBorderLayer.addChildAt (displayObject, mBorderLayer.getChildIndex (atFrontOf) + 1);
       }
 
       public function RemoveChildFromBorderLayer (displayObject:DisplayObject):void

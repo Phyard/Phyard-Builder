@@ -372,6 +372,20 @@ package common {
                customFunction.SetCodeSnippetDefine (codeSnippetDefine);
             }
          }
+         else // Adjust Cloned Entities Z Order
+         {
+            for (createId = 0; createId < numEntities; ++ createId)
+            {
+               entityDefine = entityDefineArray [createId];
+               entity = entityDefine.mEntity as Entity;
+               var cloneFromEntity:Entity = entityDefine.mCloneFromEntity as Entity;
+               
+               if (entity != null && cloneFromEntity != null)
+               {
+                  cloneFromEntity.PutEntityFrontOfMe (entity);
+               }
+            }
+         }
          
    //*********************************************************************************************************************************
    // create

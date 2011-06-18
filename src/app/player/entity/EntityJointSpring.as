@@ -239,6 +239,16 @@ package player.entity {
       
       private var mSpringShape:Shape = new Shape ();
       
+      override public function PutEntityFrontOfMe (clonedEntity:Object):void
+      {
+         var clonedSpring:EntityJointSpring = clonedEntity as EntityJointSpring;
+         if (clonedSpring != null)
+         {
+            //mWorld.RemoveChildToEntityLayer (clonedSpring.mSpringShape);
+            mWorld.AddChildToEntityLayer (clonedSpring.mSpringShape, mSpringShape);
+         }
+      }
+      
       protected var mDisplayStaticLength:Number = 0.0;
       protected var mDisplayDiameter:Number = 11;
       protected var mDisplayWireDiameter:Number = 2;

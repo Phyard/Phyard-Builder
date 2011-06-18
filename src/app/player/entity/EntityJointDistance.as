@@ -114,6 +114,16 @@ package player.entity {
       
       private var mLineShape:Shape = new Shape ();
       
+      override public function PutEntityFrontOfMe (clonedEntity:Object):void
+      {
+         var clonedDistance:EntityJointDistance = clonedEntity as EntityJointDistance;
+         if (clonedDistance != null)
+         {
+            //mWorld.RemoveChildToEntityLayer (clonedDistance.mLineShape);
+            mWorld.AddChildToEntityLayer (clonedDistance.mLineShape, mLineShape);
+         }
+      }
+      
       override public function UpdateAppearance ():void
       {
          var thinkness:Number = mScale; // v1.56

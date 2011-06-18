@@ -504,6 +504,11 @@ package player.entity {
          // to overrride
       }
       
+      public function PutEntityFrontOfMe (clonedEntity:Object):void
+      {
+         // to override
+      }
+      
 //=============================================================
 //   physics proxy
 //

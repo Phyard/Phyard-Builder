@@ -209,6 +209,9 @@ private function HandleShapeContactEvents ():void
    
    var newShapeContactInfos:Array = new Array ();
    
+   var shape1:EntityShape;
+   var shape2:EntityShape;
+   
    var i:int;
    var count:int = mShapeContactInfos_StepQueue.length;
    
@@ -218,11 +221,19 @@ private function HandleShapeContactEvents ():void
    {
       contact_info = mShapeContactInfos_StepQueue [i] as ShapeContactInfo;
       
+      shape1 = contact_info.mEntityShape1;
+      shape2 = contact_info.mEntityShape2;
+
 //trace ("11111111111  i = " + i);
       // the first start contacting event for a pair
       if (contact_info.mIsNewContact)
       {
 //trace ("       aa   mIsNewContact = " + contact_info.mIsNewContact + ", contact_info.mContactId = " + contact_info.mContactId);
+
+         // add contact elements
+         contact_info.mContactElement1.mEntityShape = shape2; shape1.AddContactedShape (contact_info.mContactElement1);
+         contact_info.mContactElement2.mEntityShape = shape1; shape2.AddContactedShape (contact_info.mContactElement2);
+         
          // handle event
          HandleShapeContactEvent (contact_info, contact_info.mFirstBeginContactingHandler, true);
          ++ mNumContactInfos;
@@ -250,6 +261,12 @@ private function HandleShapeContactEvents ():void
          if (contact_info.mLastIndexInStepQueue == i) // only handle it if it is the last one of this contact info in the queue
          {
 //trace ("          mLastIndexInStepQueue = " + contact_info.mLastIndexInStepQueue + ", contact_info.mContactId = " + contact_info.mContactId);
+
+            // remove contact element
+            shape1.RemoveContactedShape (contact_info.mContactElement1); contact_info.mContactElement1.mEntityShape = null;
+            shape2.RemoveContactedShape (contact_info.mContactElement2); contact_info.mContactElement2.mEntityShape = null;
+
+            // handle event
             HandleShapeContactEvent (contact_info, contact_info.mFirstEndContactingHandler, false);
             -- mNumContactInfos;
             //trace (" -- mNumContactInfos = " + mNumContactInfos);

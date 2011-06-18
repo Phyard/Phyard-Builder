@@ -30,6 +30,8 @@ package player.trigger.data
       
       public var mEntityShape1:EntityShape;
       public var mEntityShape2:EntityShape;
+      public var mContactElement1:ListElement_EntityShape = new ListElement_EntityShape (); // .mEntityShape = mEntityShape2 // some wasteful
+      public var mContactElement2:ListElement_EntityShape = new ListElement_EntityShape (); // .mEntityShape = mEntityShape1 // some wasteful
       
       public var mNumContactPoints:int; // it is still possible more than one contacts exist simultaneously.
                                         // a value of 0 means the contact is finished

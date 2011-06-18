@@ -76,6 +76,7 @@ package editor.trigger {
              var shape_physics_dynamics_package:FunctionMenuGroup = new FunctionMenuGroup ("Physics Dynamics", entity_shape_package);
              var entity_shape_brothers_package:FunctionMenuGroup = new FunctionMenuGroup ("Brothers", entity_shape_package);
              var entity_shape_connections_package:FunctionMenuGroup = new FunctionMenuGroup ("Sisters", entity_shape_package);
+             var entity_shape_contaction_package:FunctionMenuGroup = new FunctionMenuGroup ("Contacts", entity_shape_package);
              var shape_text_package:FunctionMenuGroup  = new FunctionMenuGroup ("Text", entity_shape_package);
          var entity_joint_package:FunctionMenuGroup  = new FunctionMenuGroup ("Joint", sEntityMenuGroup);
          var entity_trigger_package:FunctionMenuGroup  = new FunctionMenuGroup ("Trigger", sEntityMenuGroup);
@@ -2525,11 +2526,54 @@ package editor.trigger {
                      null
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_connections_package, "Breakup All Connections", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_connections_package, "Breakup All Sisters", null, null,
                      [
                         new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAllSisters, entity_shape_connections_package, "Get Sisters", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionArray ("Sister Shapes"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsConnectedWith, entity_shape_connections_package, "Are Sisters", null, null,
+                     [
+                             new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Sisters?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsConnectedWithGround, entity_shape_connections_package, "Connected With Group?", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Connected With Group?"),
+                     ]
+                  );
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAllContactedShapes, entity_shape_contaction_package, "Get Contacted Shapes", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionArray ("Contacted Shapes"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsContactedWith, entity_shape_contaction_package, "Are Two Shape Contacted", null, null,
+                     [
+                             new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Contacted?"),
+                     ]
                   );
 
 

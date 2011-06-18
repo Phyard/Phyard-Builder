@@ -70,6 +70,7 @@ package player.world {
    import player.trigger.entity.EntityInputEntityFilter;
    
    import player.trigger.data.ShapeContactInfo;
+   import player.trigger.data.ListElement_EntityShape;
    import player.trigger.data.ListElement_EventHandler;
    import player.trigger.data.ListElement_EntitySelector;
    

@@ -18,6 +18,7 @@ package player.entity {
    import player.trigger.Parameter_Direct
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.data.ListElement_EventHandler;
+   import player.trigger.data.ListElement_EntityShape;
    
    import common.DataFormat2;
    import common.CoordinateSystem;
@@ -1387,6 +1388,106 @@ package player.entity {
          }
          
          NotifyJointAnchorLocalPositionsChanged ();
+      }
+      
+      public function PutConnectedShapesInArray (shapes:Array):void
+      {
+         var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
+         var hashtable:Dictionary = new Dictionary ();
+         var anotherAnchor:SubEntityJointAnchor;
+         while (jointAnchor != null)
+         {
+            anotherAnchor = jointAnchor.mAnotherJointAnchor;
+            if (anotherAnchor != null) // should not
+            {
+               if (anotherAnchor.mShape != null)
+               {
+                  if (hashtable [anotherAnchor.mShape] == null)
+                  {
+                     hashtable [anotherAnchor.mShape] = 1;
+                     shapes.push (anotherAnchor.mShape);
+                  }
+               }
+            }
+            
+            jointAnchor = jointAnchor.mNextAnchor;
+         }
+      }
+      
+      // "shape == null" means ground
+      public function IsConnectedWith (shape:EntityShape):Boolean
+      {
+         var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
+         var anotherAnchor:SubEntityJointAnchor;
+         while (jointAnchor != null)
+         {
+            anotherAnchor = jointAnchor.mAnotherJointAnchor;
+            if (anotherAnchor != null) // should not
+            {
+               if (anotherAnchor.mShape == shape)
+                  return true;
+            }
+            
+            jointAnchor = jointAnchor.mNextAnchor;
+         }
+         
+         return false;
+      }
+      
+//=============================================================
+//   contacted shapes
+//=============================================================
+     
+      protected var mContactedShapeList:ListElement_EntityShape = null;
+      
+      // make sure newListElement is new
+      public function AddContactedShape (newListElement:ListElement_EntityShape):void
+      {
+         newListElement.mNextListElement = mContactedShapeList;
+         newListElement.mPrevListElement = null;
+         if (mContactedShapeList != null)
+            mContactedShapeList.mPrevListElement = newListElement;
+         mContactedShapeList = newListElement;
+      }
+      
+      // make sure oldListElement is old and in mContactedShapeList
+      public function RemoveContactedShape (oldListElement:ListElement_EntityShape):void
+      {
+         if (oldListElement.mPrevListElement != null)
+            oldListElement.mPrevListElement.mNextListElement = oldListElement.mNextListElement;
+         if (oldListElement.mNextListElement != null)
+            oldListElement.mNextListElement.mPrevListElement = oldListElement.mPrevListElement;
+         
+         if (oldListElement == mContactedShapeList)
+            mContactedShapeList = oldListElement.mNextListElement;
+         
+         oldListElement.mNextListElement = null;
+         oldListElement.mPrevListElement = null;
+      }
+      
+      public function PutContactedShapesInArray (shapes:Array):void
+      {
+         var listElement:ListElement_EntityShape = mContactedShapeList;
+         while (listElement != null)
+         {
+            shapes.push (listElement.mEntityShape);
+            
+            listElement = listElement.mNextListElement;
+         }
+      }
+      
+      public function IsContactedWith (shape:EntityShape):Boolean
+      {
+         var listElement:ListElement_EntityShape = mContactedShapeList;
+         while (listElement != null)
+         {
+            if (listElement.mEntityShape == shape)
+               return true;
+            
+            listElement = listElement.mNextListElement;
+         }
+         
+         return false;
       }
       
 //=============================================================

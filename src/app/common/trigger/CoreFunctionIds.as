@@ -416,7 +416,15 @@ package common.trigger {
       public static const ID_EntityShape_BreakupBrothers:int                = IdPool.CoreApiId_1263;
       public static const ID_EntityShape_DestroyBrothers:int                = IdPool.CoreApiId_1264;
 
-      public static const ID_EntityShape_BreakAllJoints:int                 = IdPool.CoreApiId_1280;
+      //public static const ID_EntityShape_GetAllJoints:int                  = IdPool.CoreApiId_1281;
+      public static const ID_EntityShape_BreakAllJoints:int                  = IdPool.CoreApiId_1280;
+      public static const ID_EntityShape_GetAllSisters:int                   = IdPool.CoreApiId_1282;
+      //public static const ID_EntityShape_BreakupSister:int                   = IdPool.CoreApiId_1283;
+      public static const ID_EntityShape_IsConnectedWith:int                 = IdPool.CoreApiId_1284;
+      public static const ID_EntityShape_IsConnectedWithGround:int           = IdPool.CoreApiId_1285;
+
+      public static const ID_EntityShape_GetAllContactedShapes:int          = IdPool.CoreApiId_1290;
+      public static const ID_EntityShape_IsContactedWith:int                = IdPool.CoreApiId_1291;
 
    // game / shape / is a
 

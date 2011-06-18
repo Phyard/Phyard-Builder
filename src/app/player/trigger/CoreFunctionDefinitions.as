@@ -412,7 +412,13 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakupBrothers,             BreakupShapeBrothers);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_DestroyBrothers,             DestroyBrothers);
 
-         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakAllJoints,             BreakShapeJoints);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_BreakAllJoints,                 BreakShapeJoints);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetAllSisters,                 GetAllSisters);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsConnectedWith,                 IsConnectedWith);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsConnectedWithGround,                 IsConnectedWithGround);
+
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetAllContactedShapes,             GetAllContactedShapes);
+         RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_IsContactedWith,                   IsContactedWith);
 
       // game / entity / shape / text
 
@@ -4107,8 +4113,8 @@ package player.trigger {
          }
       }
 
-	  public static function BreakShapeJoints (valueSource:Parameter, valueTarget:Parameter):void
-      {
+     public static function BreakShapeJoints (valueSource:Parameter, valueTarget:Parameter):void
+     {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -4117,7 +4123,85 @@ package player.trigger {
             return;
 
          shape.BreakAllJoints ();
-      }
+     }
+     
+     public static function GetAllSisters (valueSource:Parameter, valueTarget:Parameter):void
+     {
+         var shapes:Array = new Array ();
+         
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape != null && (! shape.IsDestroyedAlready ()))
+         {  
+            shape.PutConnectedShapesInArray (shapes);
+         }
+
+         valueTarget.AssignValueObject (shapes);
+     }
+     
+     public static function IsConnectedWith (valueSource:Parameter, valueTarget:Parameter):void
+     {
+         var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape1 == null || shape1.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (false);
+            return;
+         }
+
+         valueSource = valueSource.mNextParameter;
+         var shape2:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape2 == null || shape2.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (false);
+            return;
+         }
+
+         valueTarget.AssignValueObject (shape1.IsConnectedWith (shape2));
+     }
+
+     public static function IsConnectedWithGround (valueSource:Parameter, valueTarget:Parameter):void
+     {
+         var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape1 == null || shape1.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (false);
+            return;
+         }
+
+         valueTarget.AssignValueObject (shape1.IsConnectedWith (null));
+     }
+          
+     public static function GetAllContactedShapes (valueSource:Parameter, valueTarget:Parameter):void
+     {
+         var shapes:Array = new Array ();
+         
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape != null && (! shape.IsDestroyedAlready ()))
+         {  
+            shape.PutContactedShapesInArray (shapes);
+         }
+
+         valueTarget.AssignValueObject (shapes);
+     }
+      
+     public static function IsContactedWith (valueSource:Parameter, valueTarget:Parameter):void
+     {
+         var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape1 == null || shape1.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (false);
+            return;
+         }
+
+         valueSource = valueSource.mNextParameter;
+         var shape2:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape2 == null || shape2.IsDestroyedAlready ())
+         {
+            valueTarget.AssignValueObject (false);
+            return;
+         }
+
+         valueTarget.AssignValueObject (shape1.IsContactedWith (shape2));
+     }
 
    //*******************************************************************
    // entity / shape / text

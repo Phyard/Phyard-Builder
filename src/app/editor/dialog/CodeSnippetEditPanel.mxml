@@ -37,7 +37,7 @@
          </mx:HBox>
       </mx:HBox>
       <mx:HBox id="Box_Commands" height="216" width="100%">
-         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" paddingTop="0" paddingBottom="0" labelField="null" showDataTips="false" useRollOver="false" allowMultipleSelection="true" width="100%" height="100%" editable="false" click="OnCurrentCommandChanged ();">
+         <mx:List id="List_Commands" dataProvider="{mCommandListDataProvider}" paddingTop="0" paddingBottom="0" labelField="null" showDataTips="false" useRollOver="false" allowMultipleSelection="true" width="100%" height="100%" editable="false" click="OnCurrentCommandChanged (true, false);">
             <mx:itemRenderer>
                <mx:Component>
                   <ed:TextForFunctionCallingLine fontSize="10"/>
@@ -200,7 +200,7 @@
             
             Runtime.SetCopiedCodeSnippet (mCodeSnippet.GetOwnerFunctionDefinition (), copiedCallings);
             
-            UpdateInterface ();
+            UpdateInterface (false);
          }
          
          private function OnPasteCallingsBefore (event:ContextMenuEvent):void
@@ -295,7 +295,7 @@
             
             List_Commands.invalidateList ();
             
-            UpdateInterface ();
+            UpdateInterface (false);
          }
          
          private function OnSwitchToTraditionalFormat (event:ContextMenuEvent):void
@@ -677,14 +677,19 @@
             }
          }
          
-         private function UpdateInterface ():void
+         private function UpdateInterface (scroolToSeelectedCommand:Boolean = true):void
          {
             var aboveCallingIsBlock:Boolean = false;
             var belowCallingIsBlock:Boolean = false;
             
             if (List_Commands.selectedIndex >= 0)
             {
-               List_Commands.scrollToIndex (List_Commands.selectedIndex);
+               if (scroolToSeelectedCommand)
+               {
+                  List_Commands.scrollToIndex (List_Commands.selectedIndex);
+               
+               trace (new Error ().getStackTrace ());
+               }
                
                if (List_Commands.selectedIndex > 0)
                {
@@ -716,7 +721,7 @@
             }
          }
          
-         private function OnCurrentCommandChanged (retieveParams:Boolean = true):void
+         private function OnCurrentCommandChanged (retieveParams:Boolean = true, scroolToSeelectedCommand:Boolean = true):void
          {
             if (retieveParams)
             {
@@ -732,7 +737,7 @@
          // ...
          //===========================
             
-            UpdateInterface ();
+            UpdateInterface (scroolToSeelectedCommand);
             
             if (List_Commands.selectedItem == null)
                return;

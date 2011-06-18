@@ -687,8 +687,6 @@
                if (scroolToSeelectedCommand)
                {
                   List_Commands.scrollToIndex (List_Commands.selectedIndex);
-               
-               trace (new Error ().getStackTrace ());
                }
                
                if (List_Commands.selectedIndex > 0)

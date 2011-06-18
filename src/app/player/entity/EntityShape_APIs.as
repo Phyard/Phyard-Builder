@@ -338,7 +338,7 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    entityDefine = mapEntity2Define [seedShape];
    if (entityDefine == null)
       return null;
-      
+
    return entityDefine.mEntity as EntityShape;
 }
 

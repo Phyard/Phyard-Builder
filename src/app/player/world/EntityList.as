@@ -132,7 +132,7 @@ package player.world {
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
+         var entity:Entity = (fromLastMarkedTail && mLastMarkedTail != null) ? mLastMarkedTail.mNextEntity : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;
@@ -157,7 +157,7 @@ package player.world {
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
+         var entity:Entity = (fromLastMarkedTail && mLastMarkedTail != null) ? mLastMarkedTail.mNextEntity : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;
@@ -207,7 +207,7 @@ package player.world {
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
+         var entity:Entity = (fromLastMarkedTail && mLastMarkedTail != null) ? mLastMarkedTail.mNextEntity : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;
@@ -233,7 +233,7 @@ package player.world {
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
+         var entity:Entity = (fromLastMarkedTail && mLastMarkedTail != null) ? mLastMarkedTail.mNextEntity : mHead;
          var body:EntityBody;
          if (entity != null)
          {
@@ -266,7 +266,7 @@ package player.world {
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
+         var entity:Entity = (fromLastMarkedTail && mLastMarkedTail != null) ? mLastMarkedTail.mNextEntity : mHead;
          var body:EntityBody;
          if (entity != null)
          {
@@ -299,7 +299,7 @@ package player.world {
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
+         var entity:Entity = (fromLastMarkedTail && mLastMarkedTail != null) ? mLastMarkedTail.mNextEntity : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;
@@ -325,7 +325,7 @@ package player.world {
       {
          mIsRemovingLocked = true;
          
-         var entity:Entity = fromLastMarkedTail ? mLastMarkedTail : mHead;
+         var entity:Entity = (fromLastMarkedTail && mLastMarkedTail != null) ? mLastMarkedTail.mNextEntity : mHead;
          if (entity != null)
          {
             var tail:Entity = mTail;

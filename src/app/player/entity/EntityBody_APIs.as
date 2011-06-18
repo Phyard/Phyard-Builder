@@ -68,7 +68,7 @@ public function ApplyForceAtPoint (worldForceX:Number, worldForceY:Number, world
 {
    if (mPhysicsProxy == null)
       return;
-   
+
    mPhysicsProxyBody.AddForceAtPoint (worldForceX, worldForceY, worldPointX, worldPointY);
 }
 

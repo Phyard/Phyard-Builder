@@ -218,10 +218,10 @@ package univiewer
 
       private function OnResize (event:Event):void
       {
-trace ("OnResize");
+//trace ("OnResize");
          if (mWiewer != null && mWiewer.hasOwnProperty ("OnContainerResized"))
          {
-trace ("  mWiewer.OnContainerResized");
+//trace ("  mWiewer.OnContainerResized");
             mWiewer.OnContainerResized ();
          }
       }

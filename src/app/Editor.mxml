@@ -10,7 +10,10 @@
          height="100%"
          borderStyle="solid"
          borderThickness="1"
-         creationComplete="InitApp()">
+         usePreloader="true"
+         percentWidth="100"
+         percentHeight="100"
+         creationComplete="InitApp ();">
 
    <mx:ApplicationControlBar backgroundColor="0xA0A0A0" dock="true" paddingTop="1" paddingBottom="1" verticalAlign="bottom">
 
@@ -491,6 +494,18 @@
             import editor.trigger.Lists;
             import common.Define;
             import common.ValueAdjuster;
+            
+            private function SetParamsFromUniEditor (params:Object):void
+            {
+               if (params != null)
+               {
+                  // params.mUniEditorCallback
+                  // mQuickLoadCallback
+                  
+                  if (params.mUniEditorCallback != null)
+                     MainView.SetUniEditorCallback (params.mUniEditorCallback);
+               }
+            }
             
             private function DesignNotSaved ():Boolean
             {

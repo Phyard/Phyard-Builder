@@ -75,7 +75,7 @@ package editor.trigger {
              var shape_physics_properties_package:FunctionMenuGroup = new FunctionMenuGroup ("Physics Properties", entity_shape_package);
              var shape_physics_dynamics_package:FunctionMenuGroup = new FunctionMenuGroup ("Physics Dynamics", entity_shape_package);
              var entity_shape_brothers_package:FunctionMenuGroup = new FunctionMenuGroup ("Brothers", entity_shape_package);
-             var entity_shape_connections_package:FunctionMenuGroup = new FunctionMenuGroup ("Sisters", entity_shape_package);
+             var entity_shape_connections_package:FunctionMenuGroup = new FunctionMenuGroup ("Connections", entity_shape_package);
              var entity_shape_contaction_package:FunctionMenuGroup = new FunctionMenuGroup ("Contacts", entity_shape_package);
              var shape_text_package:FunctionMenuGroup  = new FunctionMenuGroup ("Text", entity_shape_package);
          var entity_joint_package:FunctionMenuGroup  = new FunctionMenuGroup ("Joint", sEntityMenuGroup);
@@ -605,7 +605,7 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_InsertElements, array_package, "Insert Elements", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
-                              new VariableDefinitionNumber ("From Index"),
+                              new VariableDefinitionNumber ("Index"),
                               new VariableDefinitionNumber ("Number Elements"),
                      ],
                      null
@@ -1753,14 +1753,14 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_AdjustAppearanceOrder, entity_common_package, "Adjust Entity Appearance Order", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_AdjustAppearanceOrder, entity_common_package, "Adjust Appearance Order", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}),
                              new VariableDefinitionBoolean ("To Top / To Bottom (true/false)"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_AdjustAppearanceOrderRelativeTo, entity_common_package, "Adjust Entity Appearance Order Relative To", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_AdjustAppearanceOrderRelativeTo, entity_common_package, "Adjust Appearance Order Relative To", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity", null, {mValidClasses: Filters.sVisualEntityClasses}),
                              new VariableDefinitionEntity ("Relative-To Entity", null, {mValidClasses: Filters.sVisualEntityClasses}),
@@ -2428,7 +2428,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionNumber ("Around World Point X"),
                              new VariableDefinitionNumber ("Around World Point Y"),
-                             new VariableDefinitionNumber ("Target Angle (degrees)"),
+                             new VariableDefinitionNumber ("Delta Angle (degrees)"),
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
@@ -2441,7 +2441,7 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionNumber ("Around World Point X"),
                              new VariableDefinitionNumber ("Around World Point Y"),
-                             new VariableDefinitionNumber ("Delta Angle (degrees)"),
+                             new VariableDefinitionNumber ("Target Angle (degrees)"),
                              new VariableDefinitionBoolean ("Teleport Connected Movables?"),
                              new VariableDefinitionBoolean ("Teleport Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
@@ -2485,7 +2485,7 @@ package editor.trigger {
                              new VariableDefinitionArray ("Brothers (including self)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsAttchedWith, entity_shape_brothers_package, "Are Brothers", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsAttchedWith, entity_shape_brothers_package, "Are Two Shapes Brothers", null, null,
                      [
                              new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2527,35 +2527,35 @@ package editor.trigger {
                      null
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_connections_package, "Breakup All Sisters", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_connections_package, "Breakup All Connections", null, null,
                      [
-                        new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionEntity ("The Input Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAllSisters, entity_shape_connections_package, "Get Sisters", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAllSisters, entity_shape_connections_package, "Get All Connected Shapes", null, null,
                      [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("The Input Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionArray ("Sister Shapes"),
+                             new VariableDefinitionArray ("All Connected Shapes"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsConnectedWith, entity_shape_connections_package, "Are Sisters", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsConnectedWith, entity_shape_connections_package, "Are Two Shapes Connected", null, null,
                      [
                              new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionBoolean ("Sisters?"),
+                             new VariableDefinitionBoolean ("Connected?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsConnectedWithGround, entity_shape_connections_package, "Connected With Group?", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsConnectedWithGround, entity_shape_connections_package, "Is Connected With Ground?", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionBoolean ("Connected With Group?"),
+                             new VariableDefinitionBoolean ("Connected With Ground?"),
                      ]
                   );
 
@@ -2567,7 +2567,7 @@ package editor.trigger {
                              new VariableDefinitionArray ("Contacted Shapes"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsContactedWith, entity_shape_contaction_package, "Are Two Shape Contacted", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsContactedWith, entity_shape_contaction_package, "Are Two Shapes Contacted", null, null,
                      [
                              new VariableDefinitionEntity ("Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionEntity ("Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -2619,11 +2619,11 @@ package editor.trigger {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor, shape_text_package, "Set Text Color", "@Set Text Color ($0, Color ($1))", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
-                             new VariableDefinitionNumber ("Filled Color", null, {mIsColorValue: true}),
+                             new VariableDefinitionNumber ("New Color", null, {mIsColorValue: true}),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB, shape_text_package, "Set Text Color RGB", "@RGB (#0, #1, #2) = Get Text Color ($0)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB, shape_text_package, "Set Text Color By RGB", "@RGB (#0, #1, #2) = Get Text Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
                              new VariableDefinitionNumber ("Red"),

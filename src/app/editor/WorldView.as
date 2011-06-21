@@ -237,7 +237,7 @@ package editor {
          mouseFocusEnabled = true;
          
          addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
-         addEventListener(Event.RESIZE, OnResize);
+         addEventListener (Event.RESIZE, OnResize);
          
          //
          mEditiingViewContainer = new Sprite ();
@@ -5711,6 +5711,20 @@ package editor {
 //============================================================================
 // quick save and load 
 //============================================================================
+      
+      private var mUniEditorCallback:Function = null;
+      public function SetUniEditorCallback (callback:Function):void
+      {
+         mUniEditorCallback = callback;
+      }
+      
+      public function UniEditorCallback (command:String, params:Object):void
+      {
+         if (mUniEditorCallback != null)
+         {
+            mUniEditorCallback (command, params);
+         }
+      }
       
       public static const kQuickSaveFileName:String = "cieditor-quicksave";
       public static const kAutoSaveName:String = "quick save";

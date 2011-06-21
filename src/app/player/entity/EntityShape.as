@@ -1470,7 +1470,8 @@ package player.entity {
          var listElement:ListElement_EntityShape = mContactedShapeList;
          while (listElement != null)
          {
-            shapes.push (listElement.mEntityShape);
+            if (shapes.indexOf (listElement.mEntityShape) < 0) // may be not efficient
+               shapes.push (listElement.mEntityShape);
             
             listElement = listElement.mNextListElement;
          }

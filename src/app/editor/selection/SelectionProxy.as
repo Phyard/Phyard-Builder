@@ -87,7 +87,7 @@ package editor.selection {
       
       public function Destroy ():void
       {
-         if (_b2Body != null);
+         if (_b2Body != null)
             mSelectionEngine._b2World.DestroyBody (_b2Body);
       }
       

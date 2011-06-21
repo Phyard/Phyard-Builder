@@ -1,5 +1,7 @@
 package unieditor
 {
+   import flash.display.StageScaleMode;
+   import flash.display.StageAlign;
    import flash.utils.ByteArray;
    import flash.utils.getTimer;
    import flash.display.Sprite;
@@ -18,6 +20,9 @@ package unieditor
    import flash.events.ProgressEvent;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
+   import flash.ui.ContextMenu;
+   import flash.ui.ContextMenuItem;
+   import flash.ui.ContextMenuBuiltInItems;
    
    public dynamic class UniEditor extends Sprite
    {
@@ -25,20 +30,24 @@ package unieditor
       
       private static const StartLoadingPercent:int = 5;
       private static const StartLoadingBuilderPercent:int = 5;
-      private static const EndLoadingBuilderPercent = 86;
+      private static const EndLoadingBuilderPercent:int = 100;
       
    //================================================
    //   
    //================================================
       
-      public function UniViewer ()
+      public function UniEditor ()
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage)
       }
       
       private var mUniEditorUrl:String;
-      private function OnAddedToStage (e:Event):void 
+      private function OnAddedToStage (e:Event):void
       {
+         //stage.scaleMode = StageScaleMode.SHOW_ALL;
+         stage.scaleMode = StageScaleMode.NO_SCALE;
+         stage.align = StageAlign.TOP_LEFT;
+         
          //
          SetInfoText ("Loading ... (" + StartLoadingPercent + "%)");
          
@@ -56,31 +65,45 @@ package unieditor
             return;
          }
          
-         var index2:int = mUniEditorUrl.indexOf ("builder=");
+         var builderFileKey:String = "builder=";
+         var index2:int = mUniEditorUrl.indexOf (builderFileKey);
          if (index2 < 0)
          {
             SetInfoText ("Unknown editor file");
             return;
          }
+         index2 += builderFileKey.length;
+         if (index2 >= mUniEditorUrl.length)
+         {
+            SetInfoText ("Unknown editor file");
+            return;
+         }
          
-         var index3:int = mUniEditorUrl.indexOf ("&", index2 + 1);
+         var index3:int = mUniEditorUrl.indexOf ("&", index2);
          if (index3 < 0)
             index3 = mUniEditorUrl.length;
-            
-         realEditorSwfUrl = mUniEditorUrl.substring (0, index) + "/swfs/" +  mUniEditorUrl.substring (index2, index3) + ".swf";
-            
+         
+         var realEditorSwfUrl:String = mUniEditorUrl.substring (index2, index3);
+         
+         if (realEditorSwfUrl.indexOf ("://") < 0)
+         {
+            realEditorSwfUrl = mUniEditorUrl.substring (0, index) + "/swfs/" + realEditorSwfUrl;
+         }
+         
+trace ("realEditorSwfUrl = " + realEditorSwfUrl);
+          
          var request:URLRequest = new URLRequest (realEditorSwfUrl);
          request.method = URLRequestMethod.GET;
          
-         var loader:Loader = new Loader ();
+         mRealEditorFileLoader = new Loader ();
             
-         loader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnLoadBuilderSwfComplete);
-         loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, OnLoadBuilderSwfProgress);
-         loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
-         loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+         mRealEditorFileLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, OnLoadBuilderSwfComplete);
+         mRealEditorFileLoader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, OnLoadBuilderSwfProgress);
+         mRealEditorFileLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
+         mRealEditorFileLoader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
          
          mLoadingStage = " real editor ";
-         loader.load(request, new LoaderContext(false, ApplicationDomain.currentDomain));
+         mRealEditorFileLoader.load(request, new LoaderContext(false, ApplicationDomain.currentDomain));
          
          //
          var theContextMenu:ContextMenu = new ContextMenu ();
@@ -90,27 +113,13 @@ package unieditor
          contextMenu = theContextMenu;
       }
       
+      private var mRealEditorFileLoader:Loader = null;
+      
       private function OnLoadBuilderSwfComplete (event:Event):void 
       {
-         //SetInfoText (null);
+         SetInfoText (null);
          
-         var MainClass:Object = ApplicationDomain.currentDomain.getDefinition("Main") as Class;
-         if (MainClass == null)
-         {
-            SetInfoText ("Loading error! No main entry");
-            return;
-         }
-         
-         var paramsFromUniViewer:Object = new Object ();
-         
-         paramsFromUniEditor.mUniEditorUrl = mUniEditorUrl;
-         paramsFromUniEditor.mFlashVars = LoaderInfo(this.loaderInfo).parameters;
-         paramsFromUniEditor.mLoadingProgress = EndLoadingBuilderPercent;
-         paramsFromUniEditor.SetLoadingText = SetInfoText;
-         
-         var viewer:Sprite = (MainClass.Call as Function) ("NewBuilder", {mParamsFromUniEditor: paramsFromUniEditor}) as Sprite;
-         viewer.alpha = 0.0;
-         addChild (viewer);
+         addChild (mRealEditorFileLoader);
       }
       
       private function OnLoadBuilderSwfProgress (event:ProgressEvent):void
@@ -150,8 +159,10 @@ package unieditor
          {
             mInfoTextField.visible = true;
             mInfoTextField.htmlText = infoText;
-            mInfoTextField.x = 0.5 * (App::Default_Width - mInfoTextField.width);
-            mInfoTextField.y = 0.5 * (App::Default_Height - mInfoTextField.height);
+            //mInfoTextField.x = 0.5 * (App::Default_Width - mInfoTextField.width);
+            //mInfoTextField.y = 0.5 * (App::Default_Height - mInfoTextField.height);
+            mInfoTextField.x = 0.5 * (stage.stageWidth - mInfoTextField.width);
+            mInfoTextField.y = 0.5 * (stage.stageHeight - mInfoTextField.height);
          }
       }
    }

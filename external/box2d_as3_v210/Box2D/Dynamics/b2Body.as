@@ -447,6 +447,7 @@ package Box2D.Dynamics
 
 		public function GetInertia():Number
 		{
+		   // notice for porting: this is the desired result now.
 			return m_I + m_mass * b2Math.b2Dot2(m_sweep.localCenter, m_sweep.localCenter);
 		}
 
@@ -513,6 +514,8 @@ package Box2D.Dynamics
 			var temp:b2Vec2 = b2Math.b2Cross_ScalarAndVector2 (m_angularVelocity, b2Math.b2Subtract_Vector2 (worldPoint, m_sweep.c));
 			temp.x += m_linearVelocity.x;
 			temp.y += m_linearVelocity.y;
+			
+			//NOTICE for porting: here shows the linear velocity is the velocity at centroid instead of position. 
 
 			return temp;
 		}
@@ -851,12 +854,25 @@ package Box2D.Dynamics
 			if (abs_dx < Number.MIN_VALUE && abs_dy < Number.MIN_VALUE)
 				return false;// null;
 
+      // velocity
+      
+         // velocity should not change, for m_linearVelocity is the velocity at centroid instead of position
+         // see GetLinearVelocityFromWorldPoint
+         
+         //tempV.x = m_sweep.c.x - m_xf.position.x;
+         //tempV.y = m_sweep.c.y - m_xf.position.y;
+         //b2Math.b2Cross_ScalarAndVector2_Output (m_angularVelocity, tempV, tempVb);
+         //m_linearVelocity.x += tempVb.x;
+         //m_linearVelocity.y += tempVb.y;
+
+      // position
+
 			m_xf.position.x = m_sweep.c.x;
 			m_xf.position.y = m_sweep.c.y;
 
 			m_sweep.localCenter.x = 0.0;
 			m_sweep.localCenter.y = 0.0;
-
+      
 		// adjust shapes local vertices
 
 			var fixture:b2Fixture = m_fixtureList;

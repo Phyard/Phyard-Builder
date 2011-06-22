@@ -362,6 +362,8 @@ package player.trigger.entity
                   // commented off for potential bugs
                   //mInputEntityArray1.splice (i, 1);
                   //-- count;
+                  
+                  ++ i;
                }
                else
                {
@@ -409,6 +411,8 @@ package player.trigger.entity
                   // commented off for potential bugs
                   //mInputEntityArray1.splice (i, 1);
                   //-- count;
+                  
+                  ++ i;
                }
                else
                {
@@ -458,6 +462,8 @@ package player.trigger.entity
                      //mInputEntityArray2.splice (i, 1);
                      //
                      //-- num1;
+                     
+                     ++ i;
                   }
                   else
                   {
@@ -503,6 +509,8 @@ package player.trigger.entity
                      // commented off for potential bugs
                      //mInputEntityArray1.splice (i, 1);
                      //-- num1;
+                     
+                     ++ i;
                   }
                   else
                   {

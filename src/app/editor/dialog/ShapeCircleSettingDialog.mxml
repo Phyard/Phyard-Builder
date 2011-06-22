@@ -12,6 +12,7 @@
                horizontalScrollPolicy="off" verticalScrollPolicy="off"
                horizontalGap="0" verticalGap="0" borderThickness="0">
          <ShapePhysicsSettingPanel id="PhysicsSettingPanel" creationComplete="OnPhysicsSettingPanelCreationComplete()"/>
+         <mx:Spacer height="32" />
       </mx:VBox>
       <mx:VBox label="Appearance" borderStyle="solid" height="100%" width="100%"
                paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
@@ -65,8 +66,9 @@
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
          
-         import common.Define;
          import editor.trigger.Lists;
+
+         import common.Define;
          
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;

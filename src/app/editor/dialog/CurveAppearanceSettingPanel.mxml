@@ -18,11 +18,10 @@
       <mx:Spacer width="100%"/>
    </mx:HBox>
 
-   <mx:HBox width="100%">
-   </mx:HBox>
-
+   <mx:Spacer height="3"/>
    <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
-
+   <mx:Spacer height="3"/>
+   
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:Label id="Label_Opacity" text="Opacity:" textAlign="right" width="36%"/>

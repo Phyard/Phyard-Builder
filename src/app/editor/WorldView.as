@@ -1401,8 +1401,11 @@ package editor {
       // context menu of entity setting button
          
          var numEntities:int = 0;
-         var numShapes:int = 0;
-         var numJoints:int = 0;
+            var numShapes:int = 0;
+               var numCircles:int = 0; 
+               var numRectanges:int = 0; 
+               var numPolylines:int = 0; 
+            var numJoints:int = 0;
          
          var entity:Entity;
          for (var j:int = 0; j < selectedEntities.length; ++ j)
@@ -1413,9 +1416,20 @@ package editor {
                ++ numEntities;
                
                if (entity is EntityShape)
+               {
                   ++ numShapes;
+                  
+                  if (entity is EntityShapeCircle)
+                     ++ numCircles;
+                  else if (entity is EntityShapeRectangle)
+                     ++ numRectanges;
+                  else if (entity is EntityShapePolyline)
+                     ++ numPolylines;
+               }
                else if (entity is SubEntityJointAnchor)
+               {
                   ++ numJoints;
+               }
             }
          }
          
@@ -1425,8 +1439,9 @@ package editor {
                               
                               numShapes > 0,
                               numShapes > 0,
-                              numShapes > 0,
-                              numShapes > 0,
+                              numCircles > 0,
+                              numRectanges > 0,
+                              numPolylines > 0,
                               
                               numJoints > 0
                               );
@@ -4549,7 +4564,6 @@ package editor {
             
             shape.SetDrawBorder (params.mDrawBorder);
             shape.SetTransparency (params.mTransparency);
-            shape.SetDrawBorder (params.mDrawBorder);
             shape.SetBorderColor (params.mBorderColor);
             shape.SetBorderThickness (params.mBorderThickness);
             shape.SetDrawBackground (params.mDrawBackground);
@@ -4874,10 +4888,102 @@ package editor {
             CreateUndoPoint ("Modify common proeprties for " + selectedEntities.length + " entities", null, null);
       }
       
-      public function OnBatchModifyShapePhysicsFlags (params:Object):void
+      public function OnBatchModifyShapeCircleProperties (params:Object):void
+      {
+         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         var circle:EntityShapeCircle;
+         
+         var numCircles:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            circle = selectedEntities [i] as EntityShapeCircle;
+            
+            if (circle != null)
+            {
+               ++ numCircles;
+               
+               if (params.mToModifyAppearanceType)
+                  circle.SetAppearanceType (params.mAppearanceType);
+               if (params.mToModifyRadius)
+                  circle.SetRadius (mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mRadius));
+               
+               circle.UpdateAppearance ();
+               circle.UpdateSelectionProxy ();
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify proeprties for " + numCircles + " circles", null, null);
+      }
+      
+      public function OnBatchModifyShapeRectangleProperties (params:Object):void
+      {
+         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         var rect:EntityShapeRectangle;
+         
+         var numRectangles:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            rect = selectedEntities [i] as EntityShapeRectangle;
+            
+            if (rect != null)
+            {
+               ++ numRectangles;
+            
+               if (params.mToModifyRoundCorners)
+                  rect.SetRoundCorners (params.mIsRoundCorners);
+               if (params.mToModifyWidth)
+                  rect.SetHalfWidth (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mWidth));
+               if (params.mToModifyHeight)
+                  rect.SetHalfHeight (0.5 * mEditorWorld.GetCoordinateSystem ().P2D_Length (params.mHeight));
+            
+               rect.UpdateAppearance ();
+               rect.UpdateSelectionProxy ();
+               rect.UpdateVertexControllers (true);
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify proeprties for " + numRectangles + " rectangles", null, null);
+      }
+      
+      public function OnBatchModifyShapePolylineProperties (params:Object):void
+      {
+         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         var polyline:EntityShapePolyline;
+         
+         var numPolylines:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            polyline = selectedEntities [i] as EntityShapePolyline;
+            
+            if (polyline != null)
+            {
+               ++  numPolylines;
+            
+               if (params.mToModifyCurveThickness)
+                  polyline.SetCurveThickness (params.mCurveThickness);
+               if (params.mToModifyRoundEnds)
+                  polyline.SetRoundEnds (params.mIsRoundEnds);
+            
+               polyline.UpdateAppearance ();
+               polyline.UpdateSelectionProxy ();
+            }
+         }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify proeprties for " +  numPolylines + " polylines", null, null);
+      }
+      
+      public function OnBatchModifyShapeAppearanceProperties (params:Object):void
       {
          var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
          var shape:EntityShape;
+         
+         var numShapes:int = 0;
          
          for (var i:int = 0; i < selectedEntities.length; ++ i)
          {
@@ -4885,6 +4991,53 @@ package editor {
             
             if (shape != null)
             {
+               ++ numShapes;
+               
+               if (shape.IsBasicShapeEntity ())
+               {
+                  if (params.mToModifyAiType)
+                     shape.SetAiType (params.mAiType);
+               }
+               
+               if (params.mToModifyDrawBackground)
+                  shape.SetDrawBackground (params.mDrawBackground);
+               if (params.mToModifyTransparency)
+                  shape.SetTransparency (params.mTransparency);
+               if (params.mToModifyBackgroundColor)
+                  shape.SetFilledColor (params.mBackgroundColor);
+               if (params.mToModifyDrawBorder)
+                  shape.SetDrawBorder (params.mDrawBorder);
+               if (params.mToModifyBorderColor)
+                  shape.SetBorderColor (params.mBorderColor);
+               if (params.mToModifyBorderThickness)
+                  shape.SetBorderThickness (params.mBorderThickness);
+               if (params.mToModifyBorderTransparency)
+                  shape.SetBorderTransparency (params.mBorderTransparency);
+            }
+            
+            shape.UpdateAppearance ();
+         }
+         
+         if (selectedEntities.length > 0)
+            CreateUndoPoint ("Modify appearances proeprties for " + numShapes + " shapes", null, null);
+      }
+      
+      public function OnBatchModifyShapePhysicsProperties (params:Object):void
+      {
+         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+         var shape:EntityShape;
+         
+         var numShapes:int = 0;
+         
+         for (var i:int = 0; i < selectedEntities.length; ++ i)
+         {
+            shape = selectedEntities [i] as EntityShape;
+            
+            if (shape != null)
+            {
+               ++ numShapes;
+               
+               // flags
                if (params.mToModifyEnablePhysics)
                   shape.SetPhysicsEnabled (params.mIsPhysicsEnabled);
                if (params.mToModifyStatic)
@@ -4901,67 +5054,20 @@ package editor {
                   shape.SetAllowSleeping (params.mAllowSleeping);
                if (params.mToModifyFixRotation)
                   shape.SetFixRotation (params.mFixRotation);
-            }
-         }
-         
-         if (selectedEntities.length > 0)
-            CreateUndoPoint ("Modify physics proeprties for " + selectedEntities.length + " shapes", null, null);
-      }
-      
-      public function OnBatchModifyShapePhysicsCollisionCategory (params:Object):void
-      {
-         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var shape:EntityShape;
-         
-         for (var i:int = 0; i < selectedEntities.length; ++ i)
-         {
-            shape = selectedEntities [i] as EntityShape;
-            
-            if (shape != null)
-            {
-               shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
-            }
-         }
-         
-         if (selectedEntities.length > 0)
-            CreateUndoPoint ("Modify collision category for " + selectedEntities.length + " shapes", null, null);
-      }
-      
-      public function OnBatchModifyShapePhysicsVelocity (params:Object):void
-      {
-         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var shape:EntityShape;
-         
-         for (var i:int = 0; i < selectedEntities.length; ++ i)
-         {
-            shape = selectedEntities [i] as EntityShape;
-            
-            if (shape != null)
-            {
+               
+               // ccat
+               if (params.mToModifyCCat)
+                  shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
+               
+               // velocity
                if (params.mToModifyLinearVelocityMagnitude)
                   shape.SetLinearVelocityMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
                if (params.mToModifyLinearVelocityAngle)
                   shape.SetLinearVelocityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
                if (params.mToModifyAngularVelocity)
                   shape.SetAngularVelocity (mEditorWorld.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
-            }
-         }
-         
-         if (selectedEntities.length > 0)
-            CreateUndoPoint ("Modify physics velocities for " + selectedEntities.length + " shapes", null, null);
-      }
-      
-      public function OnBatchModifyShapePhysicsFixture (params:Object):void
-      {
-         var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
-         var shape:EntityShape;
-         
-         for (var i:int = 0; i < selectedEntities.length; ++ i)
-         {
-            shape = selectedEntities [i] as EntityShape;
-            
-            if (shape != null)
-            {
+               
+               // fixture
                if (params.mToModifyDensity)
                   shape.SetDensity (params.mDensity);
                if (params.mToModifyFriction)
@@ -4972,8 +5078,109 @@ package editor {
          }
          
          if (selectedEntities.length > 0)
-            CreateUndoPoint ("Modify physics material proeprties for " + selectedEntities.length + " shapes", null, null);
+            CreateUndoPoint ("Modify physics proeprties for " + numShapes + " shapes", null, null);
       }
+      
+      //public function OnBatchModifyShapePhysicsFlags (params:Object):void
+      //{
+      //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+      //   var shape:EntityShape;
+      //   
+      //   for (var i:int = 0; i < selectedEntities.length; ++ i)
+      //   {
+      //      shape = selectedEntities [i] as EntityShape;
+      //      
+      //      if (shape != null)
+      //      {
+      //         if (params.mToModifyEnablePhysics)
+      //            shape.SetPhysicsEnabled (params.mIsPhysicsEnabled);
+      //         if (params.mToModifyStatic)
+      //            shape.SetStatic (params.mIsStatic);
+      //         if (params.mToModifyBullet)
+      //            shape.SetAsBullet (params.mIsBullet);
+      //         if (params.mToModifySensor)
+      //            shape.SetAsSensor (params.mIsSensor);
+      //         if (params.mToModifyHollow)
+      //            shape.SetHollow (params.mIsHollow);
+      //         if (params.mToModifyBuildBorder)
+      //            shape.SetBuildBorder (params.mBuildBorder);
+      //         if (params.mToModifAllowSleeping)
+      //            shape.SetAllowSleeping (params.mAllowSleeping);
+      //         if (params.mToModifyFixRotation)
+      //            shape.SetFixRotation (params.mFixRotation);
+      //      }
+      //   }
+      //   
+      //   if (selectedEntities.length > 0)
+      //      CreateUndoPoint ("Modify physics proeprties for " + selectedEntities.length + " shapes", null, null);
+      //}
+      //
+      //public function OnBatchModifyShapePhysicsCollisionCategory (params:Object):void
+      //{
+      //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+      //   var shape:EntityShape;
+      //   
+      //   for (var i:int = 0; i < selectedEntities.length; ++ i)
+      //   {
+      //      shape = selectedEntities [i] as EntityShape;
+      //      
+      //      if (shape != null)
+      //      {
+      //         shape.SetCollisionCategoryIndex (params.mCollisionCategoryIndex);
+      //      }
+      //   }
+      //   
+      //   if (selectedEntities.length > 0)
+      //      CreateUndoPoint ("Modify collision category for " + selectedEntities.length + " shapes", null, null);
+      //}
+      //
+      //public function OnBatchModifyShapePhysicsVelocity (params:Object):void
+      //{
+      //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+      //   var shape:EntityShape;
+      //   
+      //   for (var i:int = 0; i < selectedEntities.length; ++ i)
+      //   {
+      //      shape = selectedEntities [i] as EntityShape;
+      //      
+      //      if (shape != null)
+      //      {
+      //         if (params.mToModifyLinearVelocityMagnitude)
+      //            shape.SetLinearVelocityMagnitude (mEditorWorld.GetCoordinateSystem ().P2D_LinearVelocityMagnitude (params.mLinearVelocityMagnitude));
+      //         if (params.mToModifyLinearVelocityAngle)
+      //            shape.SetLinearVelocityAngle (mEditorWorld.GetCoordinateSystem ().P2D_RotationDegrees (params.mLinearVelocityAngle));
+      //         if (params.mToModifyAngularVelocity)
+      //            shape.SetAngularVelocity (mEditorWorld.GetCoordinateSystem ().P2D_AngularVelocity (params.mAngularVelocity));
+      //      }
+      //   }
+      //   
+      //   if (selectedEntities.length > 0)
+      //      CreateUndoPoint ("Modify physics velocities for " + selectedEntities.length + " shapes", null, null);
+      //}
+      //
+      //public function OnBatchModifyShapePhysicsFixture (params:Object):void
+      //{
+      //   var selectedEntities:Array = mEditorWorld.GetSelectedEntities ();
+      //   var shape:EntityShape;
+      //   
+      //   for (var i:int = 0; i < selectedEntities.length; ++ i)
+      //   {
+      //      shape = selectedEntities [i] as EntityShape;
+      //      
+      //      if (shape != null)
+      //      {
+      //         if (params.mToModifyDensity)
+      //            shape.SetDensity (params.mDensity);
+      //         if (params.mToModifyFriction)
+      //            shape.SetFriction (params.mFriction);
+      //         if (params.mToModifyRestitution)
+      //            shape.SetRestitution (params.mRestitution);
+      //      }
+      //   }
+      //   
+      //   if (selectedEntities.length > 0)
+      //      CreateUndoPoint ("Modify physics material proeprties for " + selectedEntities.length + " shapes", null, null);
+      //}
       
       public function OnBatchModifyJointCollideConnectedsProperty (params:Object):void
       {

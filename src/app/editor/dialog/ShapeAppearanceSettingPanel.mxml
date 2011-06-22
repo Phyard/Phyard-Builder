@@ -15,9 +15,9 @@
       <mx:Label id="Label_AiType" text="C.I. Shape Type:" textAlign="right"/>
       <mx:ComboBox id="SelectList_AiType" rowCount="10" change="OnCiTypeSelectListClick ()"/>
    </mx:HBox>
-
+   <mx:Spacer height="3"/>
    <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
-
+   <mx:Spacer height="3"/>
    <mx:HBox width="100%">
       <mx:Spacer width="60"/>
       <mx:CheckBox id="CheckBox_DrawBackground" label="Filled" width="22%"/>
@@ -59,8 +59,9 @@
    <mx:Script>
       <![CDATA[       
          
-         import common.Define;
          import editor.trigger.Lists;
+
+         import common.Define;
          
          private var mInputValues:Object;
          private var mOnCiTypeChanged:Function = null;

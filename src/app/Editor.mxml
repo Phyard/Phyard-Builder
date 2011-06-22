@@ -38,8 +38,8 @@
                <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-to-top.png')" disabledIcon="@Embed('res/command/command-to-top-disabled.png')" />
                <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-to-bottom.png')" disabledIcon="@Embed('res/command/command-to-bottom-disabled.png')" />
                <mx:Spacer width="10"/>
-               <mx:Button id="Button_Glue" toolTip="Become Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-make.png')" disabledIcon="@Embed('res/command/command-brothers-make-disabled.png')" />
-               <mx:Button id="Button_BreakApart" toolTip="Break Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-break.png')" disabledIcon="@Embed('res/command/command-brothers-break-disabled.png')" />
+               <mx:Button id="Button_Glue" toolTip="Attach Entities As Brothers" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-make.png')" disabledIcon="@Embed('res/command/command-brothers-make-disabled.png')" />
+               <mx:Button id="Button_BreakApart" toolTip="Break Up Attached Entities (Brothers)" focusEnabled="false" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('res/command/command-brothers-break.png')" disabledIcon="@Embed('res/command/command-brothers-break-disabled.png')" />
                <mx:Spacer width="10"/>
                <mx:Button id="Button_Setting" toolTip="Set Properties of The Selected" focusEnabled="false" fontSize="8"  width="27" height="27" cornerRadius="0" icon="@Embed('res/command/command-setting.png')" disabledIcon="@Embed('res/command/command-setting-disabled.png')" />
                <mx:Spacer width="11"/>
@@ -880,10 +880,15 @@
                
                mEntityCommonContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Entity Common Basic Properties ...", ShowModifyEntityCommonDialog);
                
-               mShapePhysicsFlagsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Flags ...", ShowModifyShapeFlagsDialog, true);
-               mShapePhysicsCCatContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Collision Categories ...", ShowModifyShapeCollisionCategoryDialog);
-               mShapePhysicsVelocityContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Velocities ...", ShowModifyShapeVelocityDialog);
-               mShapePhysicsFixtureContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Other Physics Properties ...", ShowModifyShapeFixtureDialog);
+               mShapePhysicsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Physics Properties ...", ShowModifyShapePhysicsDialog, true);
+               mShapeAppearanceContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Appearance Properties ...", ShowModifyShapeAppearanceDialog);
+               mShapeCircleContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Circle Special Properties ...", ShowModifyShapeCircleDialog);
+               mShapeRectangleContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Rectangle Special Properties ...", ShowModifyShapeRectangleDialog);
+               mShapePolylineContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Polyline Special Properties ...", ShowModifyShapePolylineDialog);
+               //mShapePhysicsFlagsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Flags ...", ShowModifyShapeFlagsDialog, true);
+               //mShapePhysicsCCatContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Collision Categories ...", ShowModifyShapeCollisionCategoryDialog);
+               //mShapePhysicsVelocityContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Velocities ...", ShowModifyShapeVelocityDialog);
+               //mShapePhysicsFixtureContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Shape Other Physics Properties ...", ShowModifyShapeFixtureDialog);
                
                mJointCollideConnectedsContextMenuItem = DisplayObjectUtil.AppendContextMenuItem (Button_Setting, "Batch Modify Joint \"Collide Connecteds\" Property ...", ShowModifyJointCollideConnectedsDialog, true);
                
@@ -1995,30 +2000,45 @@
             
             private var mEntityCommonContextMenuItem:ContextMenuItem;
             
-            private var mShapePhysicsFlagsContextMenuItem:ContextMenuItem;
-            private var mShapePhysicsCCatContextMenuItem:ContextMenuItem;
-            private var mShapePhysicsVelocityContextMenuItem:ContextMenuItem;
-            private var mShapePhysicsFixtureContextMenuItem:ContextMenuItem;
+            private var mShapePhysicsContextMenuItem:ContextMenuItem;
+            private var mShapeAppearanceContextMenuItem:ContextMenuItem;
+            private var mShapeCircleContextMenuItem:ContextMenuItem;
+            private var mShapeRectangleContextMenuItem:ContextMenuItem;
+            private var mShapePolylineContextMenuItem:ContextMenuItem;
+            //private var mShapePhysicsFlagsContextMenuItem:ContextMenuItem;
+            //private var mShapePhysicsCCatContextMenuItem:ContextMenuItem;
+            //private var mShapePhysicsVelocityContextMenuItem:ContextMenuItem;
+            //private var mShapePhysicsFixtureContextMenuItem:ContextMenuItem;
             
             private var mJointCollideConnectedsContextMenuItem:ContextMenuItem;
             
             private function SetBatchSettingMenuItemsEnabled (
                               entityCommonEnabled:Boolean,
                               
-                              shapePhysicsFlagsEnabled:Boolean,
-                              shapePhysicsCCatEnabled:Boolean,
-                              shapePhysicsVelocityEnabled:Boolean,
-                              shapePhysicsFixtureEnabled:Boolean,
+                              shapePhysicsEnabled:Boolean,
+                              shapeAppearanceEnabled:Boolean,
+                              shapeCircleEmabled:Boolean,
+                              shapeRectangleEmabled:Boolean,
+                              shapePolylineEmabled:Boolean,
+                              //shapePhysicsFlagsEnabled:Boolean,
+                              //shapePhysicsCCatEnabled:Boolean,
+                              //shapePhysicsVelocityEnabled:Boolean,
+                              //shapePhysicsFixtureEnabled:Boolean,
                               
                               jointCollideConnectedsEnabled:Boolean
                         ):void
             {
                mEntityCommonContextMenuItem.enabled = entityCommonEnabled;
                
-               mShapePhysicsFlagsContextMenuItem.enabled = shapePhysicsFlagsEnabled;
-               mShapePhysicsCCatContextMenuItem.enabled = shapePhysicsCCatEnabled;
-               mShapePhysicsVelocityContextMenuItem.enabled = shapePhysicsVelocityEnabled;
-               mShapePhysicsFixtureContextMenuItem.enabled = shapePhysicsFixtureEnabled;
+               mShapePhysicsContextMenuItem.enabled = shapePhysicsEnabled;
+               mShapeAppearanceContextMenuItem.enabled = shapeAppearanceEnabled;
+               mShapeCircleContextMenuItem.enabled = shapeCircleEmabled;
+               mShapeRectangleContextMenuItem.enabled = shapeRectangleEmabled;
+               mShapePolylineContextMenuItem.enabled = shapePolylineEmabled;
+               //mShapePhysicsFlagsContextMenuItem.enabled = shapePhysicsFlagsEnabled;
+               //mShapePhysicsCCatContextMenuItem.enabled = shapePhysicsCCatEnabled;
+               //mShapePhysicsVelocityContextMenuItem.enabled = shapePhysicsVelocityEnabled;
+               //mShapePhysicsFixtureContextMenuItem.enabled = shapePhysicsFixtureEnabled;
                
                mJointCollideConnectedsContextMenuItem.enabled = jointCollideConnectedsEnabled;
             }
@@ -2034,49 +2054,104 @@
                dialog.SetCloseFunc (OnCloseDialog);
             }
             
-            private function ShowModifyShapeFlagsDialog (event:ContextMenuEvent):void
+            private function ShowModifyShapeCircleDialog (event:ContextMenuEvent):void
             {
                OnOpenDialog ();
                
-               var dialog:BatchShapePhysicsFlagsModifyDialog = new BatchShapePhysicsFlagsModifyDialog ();
+               var dialog:BatchShapeCirclePropertiesModifyDialog = new BatchShapeCirclePropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFlags);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapeCircleProperties);
                dialog.SetCloseFunc (OnCloseDialog);
             }
             
-            private function ShowModifyShapeCollisionCategoryDialog (event:ContextMenuEvent):void
+            private function ShowModifyShapeRectangleDialog (event:ContextMenuEvent):void
             {
                OnOpenDialog ();
                
-               var dialog:BatchShapePhysicsCollisionCategoryModifyDialog = new BatchShapePhysicsCollisionCategoryModifyDialog ();
+               var dialog:BatchShapeRectanglePropertiesModifyDialog = new BatchShapeRectanglePropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsCollisionCategory);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapeRectangleProperties);
                dialog.SetCloseFunc (OnCloseDialog);
             }
             
-            private function ShowModifyShapeVelocityDialog (event:ContextMenuEvent):void
+            private function ShowModifyShapePolylineDialog (event:ContextMenuEvent):void
             {
                OnOpenDialog ();
                
-               var dialog:BatchShapePhysicsVelocityModifyDialog = new BatchShapePhysicsVelocityModifyDialog ();
+               var dialog:BatchShapePolylinePropertiesModifyDialog = new BatchShapePolylinePropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsVelocity);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePolylineProperties);
                dialog.SetCloseFunc (OnCloseDialog);
             }
             
-            private function ShowModifyShapeFixtureDialog (event:ContextMenuEvent):void
+            private function ShowModifyShapeAppearanceDialog (event:ContextMenuEvent):void
             {
                OnOpenDialog ();
                
-               var dialog:BatchShapePhysicsFixtureModifyDialog = new BatchShapePhysicsFixtureModifyDialog ();
+               var dialog:BatchShapeAppearancePropertiesModifyDialog = new BatchShapeAppearancePropertiesModifyDialog ();
                PopUpManager.addPopUp (dialog, MainView, true);
                PopUpManager.centerPopUp (dialog);
-               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFixture);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapeAppearanceProperties);
                dialog.SetCloseFunc (OnCloseDialog);
             }
+            
+            private function ShowModifyShapePhysicsDialog (event:ContextMenuEvent):void
+            {
+               OnOpenDialog ();
+               
+               var dialog:BatchShapePhysicsPropertiesModifyDialog = new BatchShapePhysicsPropertiesModifyDialog ();
+               PopUpManager.addPopUp (dialog, MainView, true);
+               PopUpManager.centerPopUp (dialog);
+               dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsProperties);
+               dialog.SetCloseFunc (OnCloseDialog);
+            }
+            
+            //private function ShowModifyShapeFlagsDialog (event:ContextMenuEvent):void
+            //{
+            //   OnOpenDialog ();
+            //   
+            //   var dialog:BatchShapePhysicsFlagsModifyDialog = new BatchShapePhysicsFlagsModifyDialog ();
+            //   PopUpManager.addPopUp (dialog, MainView, true);
+            //   PopUpManager.centerPopUp (dialog);
+            //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFlags);
+            //   dialog.SetCloseFunc (OnCloseDialog);
+            //}
+            //
+            //private function ShowModifyShapeCollisionCategoryDialog (event:ContextMenuEvent):void
+            //{
+            //   OnOpenDialog ();
+            //   
+            //   var dialog:BatchShapePhysicsCollisionCategoryModifyDialog = new BatchShapePhysicsCollisionCategoryModifyDialog ();
+            //   PopUpManager.addPopUp (dialog, MainView, true);
+            //   PopUpManager.centerPopUp (dialog);
+            //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsCollisionCategory);
+            //   dialog.SetCloseFunc (OnCloseDialog);
+            //}
+            //
+            //private function ShowModifyShapeVelocityDialog (event:ContextMenuEvent):void
+            //{
+            //   OnOpenDialog ();
+            //   
+            //   var dialog:BatchShapePhysicsVelocityModifyDialog = new BatchShapePhysicsVelocityModifyDialog ();
+            //   PopUpManager.addPopUp (dialog, MainView, true);
+            //   PopUpManager.centerPopUp (dialog);
+            //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsVelocity);
+            //   dialog.SetCloseFunc (OnCloseDialog);
+            //}
+            //
+            //private function ShowModifyShapeFixtureDialog (event:ContextMenuEvent):void
+            //{
+            //   OnOpenDialog ();
+            //   
+            //   var dialog:BatchShapePhysicsFixtureModifyDialog = new BatchShapePhysicsFixtureModifyDialog ();
+            //   PopUpManager.addPopUp (dialog, MainView, true);
+            //   PopUpManager.centerPopUp (dialog);
+            //   dialog.SetConfirmFunc (MainView.OnBatchModifyShapePhysicsFixture);
+            //   dialog.SetCloseFunc (OnCloseDialog);
+            //}
             
             private function ShowModifyJointCollideConnectedsDialog  (event:ContextMenuEvent):void
             {

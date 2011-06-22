@@ -42,7 +42,7 @@
             if ( ! isNaN (valueRadius) )
                returnValues.mRadius = valueRadius;
             else
-               returnValues.mRadius =mInputValues.mRadius
+               returnValues.mRadius =mInputValues.mRadius;
          }
          
      ]]>

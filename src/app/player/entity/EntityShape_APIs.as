@@ -359,45 +359,6 @@ private static function CreateAndPushEntityDefine (entity:Entity, entityDefineAr
    return entityDefine;
 } 
    
-/*
-if (! bCloneBrothers)
-{
-   entityDefine = seedShape.ToEntityDefine (new Object ());
-   if (entityDefine == null)
-      return null;
-   
-   var coordinateSystem:CoordinateSystem = world.GetCoordinateSystem ();
-   
-   entityDefine.mPosX = coordinateSystem.P2D_PositionX (targetX);
-   entityDefine.mPosY = coordinateSystem.P2D_PositionY (targetY);
-   entityDefine.mRotation = coordinateSystem.P2D_RotationRadians (rotation);
-   
-   entity = DataFormat2.CreateEntityInstance (world, entityDefine);
-   world.RegisterEntity (entity);
-   entity.InitCustomPropertyValues ();
-   for (var createStageId:int = 0; createStageId < Define.kNumCreateStages; ++ createStageId)
-   {
-      entity.Create (createStageId, entityDefine);
-   }
-   
-   shape = entity as EntityShape;
-   body = new EntityBody (world);
-   world.RegisterEntity (body);
-   shape.SetBody (body);
-   
-   shape.RebuildShapePhysics ();
-   body.OnShapeListChanged (body.GetNumPhysicsShapes () > 0);
-   body.AddShapeMomentums ();
-   //(entity as EntityJoint).ConfirmConnectedShapes ();
-   //(entity as EntityJoint).RebuildJointPhysics ();
-   
-   body.SynchronizeWithPhysicsProxy ();
-   shape.SynchronizeWithPhysicsProxy ();
-   
-   return shape;
-}
-*/
-   
 //================================================================
 // transform
 //================================================================
@@ -1521,13 +1482,16 @@ public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = fals
 // misc 
 //================================================================
 
-public static function CreateParticle (world:World, posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, restitution:Number, lifeDuration:Number, color:uint, isVisible:Boolean, ccat:CollisionCategory):EntityShape_Particle
+public static function CreateParticle (world:World, createFrondOfEntity:Entity, posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, restitution:Number, lifeDuration:Number, color:uint, isVisible:Boolean, ccat:CollisionCategory):EntityShape_Particle
 {
    var body:EntityBody = new EntityBody (world);
    world.RegisterEntity (body);
    
    var particle:EntityShape_Particle = new EntityShape_Particle (world, lifeDuration);
    world.RegisterEntity (particle);
+   
+   particle.InitCustomPropertyValues (); // fixed in v1.56
+   // RegisterEventHandlersForEntity (particle); // maybe later to remove the comment
    
    particle.SetPositionX (posX);
    particle.SetPositionY (posY);
@@ -1547,6 +1511,12 @@ public static function CreateParticle (world:World, posX:Number, posY:Number, ve
    
    body.SynchronizeWithPhysicsProxyManually ();
    particle.SynchronizeWithPhysicsProxy ();
+   
+   //...
+   if (createFrondOfEntity != null)
+   {
+      particle.AdjustAppearanceOrder (createFrondOfEntity, true);
+   }
    
    // ...
    return particle;

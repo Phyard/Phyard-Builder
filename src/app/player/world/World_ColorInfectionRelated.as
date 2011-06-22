@@ -149,10 +149,10 @@ protected function RemoveBombsAndRemovableShapes (shapeArray:Array):void
             
             if (bombSize > 0)
             {
-               ExplodeBomb (shape.GetPositionX (), shape.GetPositionY (), bombSize, shape.GetDensity (), shape.GetCollisionCategory ());
+               ExplodeBomb (shape, bombSize);
             }
             
-            shape.DestroyEntity ();
+            //shape.DestroyEntity (); // now destroyed in UpdateParticelSystem ()
          }
       }
    }

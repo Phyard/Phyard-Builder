@@ -186,6 +186,12 @@ package player.design
          return mEntityVariableSpace.CloneSpace ();
       }
       
+      public static function GetDefaultEntityPropertyValue (propertyId:int):Object
+      {
+         var vi:VariableInstance = mEntityVariableSpace.GetVariableAt (propertyId);
+         return vi == null ? null : vi.GetValueObject ();
+      }
+      
       public static function CreateCustomFunctionDefinitions (functionDefines:Array):void
       {
          var numFunctions:int = functionDefines.length;

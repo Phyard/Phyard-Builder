@@ -89,7 +89,7 @@ package player.trigger.entity
             var entity:Entity = mWorld.GetEntityByCreateOrderId (entityIndex, false);
             if (entity == null || entity.IsDestroyedAlready ())
                continue;
-            
+
             if (filterFunc == null || filterFunc (entity))
             {
                entity.RegisterEventHandler (eventId, eventHandler);

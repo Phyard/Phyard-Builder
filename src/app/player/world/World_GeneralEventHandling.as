@@ -26,6 +26,23 @@
    {
       return mAllEventHandlers;
    }
+   
+   // "entity == null" means for all entities placed in editor
+   public function RegisterEventHandlersForEntity (entity:Entity = null):void
+   {
+      var list_element_eventHandler:ListElement_EventHandler = mAllEventHandlers;
+            
+      var eventHandler:EntityEventHandler;
+
+      while (list_element_eventHandler != null)
+      {
+         eventHandler = list_element_eventHandler.mEventHandler;
+         
+         eventHandler.RegisterToEntityEventHandlerLists (entity);
+         
+         list_element_eventHandler = list_element_eventHandler.mNextListElement;
+      }
+   }
 
 //==================================
 // general event handler

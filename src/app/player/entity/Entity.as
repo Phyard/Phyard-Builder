@@ -295,7 +295,16 @@ package player.entity {
          //
          //return (mCustomProeprtySpaces [spaceId] as VariableSpace).GetVariableAt (propertyId).GetValueObject ();
          
-         return mCustomProeprtySpace.GetVariableAt (propertyId).GetValueObject ();
+         var vi:VariableInstance = mCustomProeprtySpace.GetVariableAt (propertyId);
+         if (vi != null)
+         {
+            return vi.GetValueObject ();
+         }
+         
+         if (propertyId < 0)
+            return null;
+         
+         return vi == Global.GetDefaultEntityPropertyValue (propertyId);
       }
       
       public function SetCustomProperty (spaceId:int, propertyId:int, valueObject:Object):void

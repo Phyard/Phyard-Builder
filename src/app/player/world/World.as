@@ -1026,6 +1026,10 @@ package player.world {
                   
                   RegisterEntity (border);
                   
+                  border.InitCustomPropertyValues (); // fixed in v1.56
+                  
+                  RegisterEventHandlersForEntity (border);
+                  
                   border.SetBody (mBorderBody);
                   
                   border.SetPositionX  (mCoordinateSystem.D2P_PositionX (info [1]));

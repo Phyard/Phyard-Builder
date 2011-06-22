@@ -4,7 +4,7 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.dialog.*"
-    title="Batch Shape Physics Flags Setting" width="600"
+    title="Batch Polyline Setting" width="600"
     creationComplete="OnInitPanel()"
     >
 

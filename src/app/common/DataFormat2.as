@@ -342,7 +342,6 @@ package common {
          }
          
       // init entity custom properties
-         
          for (createId = 0; createId < numEntities; ++ createId)
          {
             entityDefine = entityDefineArray [createId];
@@ -409,38 +408,21 @@ package common {
    // register event handlers for entities
    //*********************************************************************************************************************************
          
-         var list_element_eventHandler:ListElement_EventHandler = playerWorld.GetEventHandlerList ();
          if (isLoaingFromStretch)
          {
-            while (list_element_eventHandler != null)
-            {
-               list_element_eventHandler.mEventHandler.RegisterToEntityEventHandlerLists ();
-               
-               list_element_eventHandler = list_element_eventHandler.mNextListElement;
-            }
+            playerWorld.RegisterEventHandlersForEntity (); // for all entities placed in editor
          }
          else
          {
-            var eventHandler:EntityEventHandler;
-            var eventId:int;
-
-            while (list_element_eventHandler != null)
+            for (createId = 0; createId < numEntities; ++ createId)
             {
-               eventHandler = list_element_eventHandler.mEventHandler;
-               eventId = eventHandler.GetEventId ();
+               entityDefine = entityDefineArray [createId];
+               entity = entityDefine.mEntity;
                
-               for (createId = 0; createId < numEntities; ++ createId)
+               if (entity != null)
                {
-                  entityDefine = entityDefineArray [createId];
-                  entity = entityDefine.mEntity;
-                  
-                  if (entity != null)
-                  {
-                     eventHandler.RegisterToEntityEventHandlerLists (entity);
-                  }
+                  playerWorld.RegisterEventHandlersForEntity (entity);
                }
-               
-               list_element_eventHandler = list_element_eventHandler.mNextListElement;
             }
          }
          

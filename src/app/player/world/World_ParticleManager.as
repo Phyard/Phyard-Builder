@@ -26,8 +26,13 @@ public function NotifyParticleDestroy ():void
    -- mNumParticles;
 }
 
-public function ExplodeBomb (posX:Number, posY:Number, radius:Number, density:Number, ccat:CollisionCategory):void
+public function ExplodeBomb (bombShape:EntityShape, radius:Number):void
 {
+   var posX:Number = bombShape.GetPositionX ();
+   var posY:Number = bombShape.GetPositionY ();
+   var density:Number = bombShape.GetDensity ();
+   var ccat:CollisionCategory = bombShape.GetCollisionCategory ();
+   
    var worldDisplayRadius:Number = mCoordinateSystem.P2D_Length (radius);
    
    var numParticles:int = 32 * ( 0.5 + worldDisplayRadius * 2.0 * worldDisplayRadius * 2.0 / (Define.DefaultBombSquareSideLength * Define.DefaultBombSquareSideLength) );
@@ -42,10 +47,10 @@ public function ExplodeBomb (posX:Number, posY:Number, radius:Number, density:Nu
    if (worldDisplayRadius < 1)
       worldDisplayRadius = 1;
    
-   CreateExplosion (posX, posY, ccat, numParticles, particleLifeTime, particleDensity, 0.8, particlePhysicsSpeed, worldDisplayRadius, Define.ColorBombObject, true);
+   CreateExplosion (bombShape, posX, posY, ccat, numParticles, particleLifeTime, particleDensity, 0.8, particlePhysicsSpeed, worldDisplayRadius, Define.ColorBombObject, true);
 }
 
-public function CreateExplosion (posX:Number, posY:Number, ccat:CollisionCategory, numParticles:int, lifeDuration:Number, density:Number, restitution:Number, physicsSpeed:Number, worldDisplayRadius:Number, color:uint, isVisible:Boolean):int
+public function CreateExplosion (createFrondOfEntity:Entity, posX:Number, posY:Number, ccat:CollisionCategory, numParticles:int, lifeDuration:Number, density:Number, restitution:Number, physicsSpeed:Number, worldDisplayRadius:Number, color:uint, isVisible:Boolean):int
 {
    if (mNumParticles + numParticles > Define.MaxCoexistParticles)
    {
@@ -85,6 +90,8 @@ public function CreateExplosion (posX:Number, posY:Number, ccat:CollisionCategor
    bomb.mNumCreatedParticles = 0;
    bomb.mParticleStartId = 0;
    
+   bomb.mCreateFrondOfEntity = createFrondOfEntity;
+   
    return numParticles;
 }
 
@@ -103,6 +110,8 @@ public function ParticleManager_Update (dt:Number):void
       bomb.mBornTime += dt;
       if (bomb.mBornTime - bomb.mLastTimeStamp < ParticlesCreateingStepInterval)
          continue;
+      
+      var createFrondOfEntity:Entity = bomb.mCreateFrondOfEntity as Entity;
       
       bomb.mLastTimeStamp = bomb.mBornTime;
       
@@ -137,6 +146,8 @@ public function ParticleManager_Update (dt:Number):void
       var cos:Number;
       var sin:Number;
       
+      var lastCreatedParticle:EntityShape_Particle = null;
+      
       for (var i:int = 0; i < count; ++ i)
       {
          a = mCoordinateSystem.D2P_RotationRadians (angle);
@@ -145,8 +156,9 @@ public function ParticleManager_Update (dt:Number):void
          cos = Math.cos (a);
          sin = Math.sin (a);
          
-         EntityShape.CreateParticle (
+         lastCreatedParticle = EntityShape.CreateParticle (
                   this,
+                  createFrondOfEntity,
                   bomb.mPosX + bomb.mRadius * cos, 
                   bomb.mPosY + bomb.mRadius * sin, 
                   bomb.mParticleSpeed * cos, 
@@ -161,6 +173,22 @@ public function ParticleManager_Update (dt:Number):void
          
          particleId += idInterval;
       }
+      
+      //>> added in v1.56 to avoid bomb particles being created in top layer 
+      if (createFrondOfEntity != null)
+      {
+         if (createFrondOfEntity is EntityShape)
+         {
+            var shape:EntityShape = (createFrondOfEntity as EntityShape);
+            if (shape.GetShapeAiType () == Define.ShapeAiType_Bomb)
+            {
+               shape.DestroyEntity ();
+            } 
+         }
+         
+         bomb.mCreateFrondOfEntity = lastCreatedParticle;
+      }
+      //<<
       
       bomb.mNumCreatedParticles += count;
       if (bomb.mNumCreatedParticles >= bomb.mNumParticles)

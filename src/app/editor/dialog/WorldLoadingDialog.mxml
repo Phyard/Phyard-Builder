@@ -60,23 +60,34 @@
          }
          
          private static const kFileFilter:Array = [new FileFilter("Phyard XML File", "*.phyardx;")];
+         
+         private var fileReference:FileReference = null; // flash bug: DON'T use this variable as a local variable, otherwise, the complete event will not fire.
+         
          private function OnClickLoadFromLocalDisk ():void
          {
-            var fileReference:FileReference = new FileReference();
+            fileReference = new FileReference();
             fileReference.addEventListener(Event.SELECT, OnSelectFileToLoad);
-            fileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
             fileReference.browse (kFileFilter);
          }
          
          private function OnSelectFileToLoad (event:Event):void
          {
-            (event.target as FileReference).load();
+            fileReference.addEventListener(Event.COMPLETE, OnFileLoadComplete);
+            fileReference.load();
          }    
          
          private function OnFileLoadComplete (event:Event):void
          {
             var fileReference:FileReference = (event.target as FileReference);
-            TextArea_SourceCode.text = (fileReference.data).readUTFBytes (fileReference.data.length);
+            try
+            {
+               TextArea_SourceCode.text = (fileReference.data).readUTFBytes (fileReference.data.length);
+            }
+            catch (e:Error)
+            {
+               trace ("local loading error");
+            }
+            fileReference.data.clear ();
 
             Runtime.SetRecommandDesignFilename ((event.target as FileReference).name);
          }

@@ -555,7 +555,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ToString, array_package, "Array -> String", "NumberToString", "NumberToString",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ToString, array_package, "Array -> String", "ArrayToString", "ArrayToString",
                      [
                               new VariableDefinitionArray ("Array"),
                      ],
@@ -775,7 +775,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_IsInfinity, numbe_general_package, "Is a Infinity Number?", null, "IsInfinity",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_IsInfinity, numbe_general_package, "Is Infinity Number?", null, "IsInfinity",
                      [
                              new VariableDefinitionNumber ("The Number"),
                      ],
@@ -891,7 +891,7 @@ package editor.trigger {
                              new VariableDefinitionString ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ParseFloat, convert_package, "Number <- String", "@$0 <- #0", "StringToNumber",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ParseFloat, convert_package, "Number <- String", "@$0 &lt;- #0", "StringToNumber",
                      [
                              new VariableDefinitionString ("String"),
                      ],
@@ -899,7 +899,7 @@ package editor.trigger {
                              new VariableDefinitionNumber ("The Number"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ParseInteger, convert_package, "Integer <- String", "@$0 <- #0 by radix $1", "StringToInteger",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ParseInteger, convert_package, "Integer <- String", "@$0 &lt;- #0 by radix $1", "StringToInteger",
                      [
                              new VariableDefinitionString ("String"),
                              new VariableDefinitionNumber ("The Radix ([2, 36])"),
@@ -1698,7 +1698,7 @@ package editor.trigger {
                      ]
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity, entity_is_subtype_package, "Is a Shape Component?", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsShapeEntity, entity_is_subtype_package, "Is Shape Component?", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity"),
                      ],
@@ -1706,7 +1706,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Shape?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsJointEntity, entity_is_subtype_package, "Is a Joint Component?", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsJointEntity, entity_is_subtype_package, "Is Joint Component?", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity"),
                      ],
@@ -1714,7 +1714,7 @@ package editor.trigger {
                              new VariableDefinitionBoolean ("Is Joint?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTriggerEntity, entity_is_subtype_package, "Is a Trigger Component?", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsTriggerEntity, entity_is_subtype_package, "Is Trigger Component?", null, null,
                      [
                              new VariableDefinitionEntity ("The Entity"),
                      ],
@@ -1914,7 +1914,7 @@ package editor.trigger {
 
       // game / entity / shape
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsCircleShapeEntity, shape_is_subtype_package, "Is a Circle Shape?", null, "IsCircleShape",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsCircleShapeEntity, shape_is_subtype_package, "Is Circle Shape?", null, "IsCircleShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -1922,7 +1922,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Circle?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity, shape_is_subtype_package, "Is a Rectangle Shape?", null, "IsRectangleShape",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity, shape_is_subtype_package, "Is Rectangle Shape?", null, "IsRectangleShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -1930,7 +1930,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Rectangle?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity, shape_is_subtype_package, "Is a Polygon Shape?", null, "IsPolygonShape",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity, shape_is_subtype_package, "Is Polygon Shape?", null, "IsPolygonShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -1938,7 +1938,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Polygon?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity, shape_is_subtype_package, "Is a Polyline Shape?", null, "IsPolylineShape",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity, shape_is_subtype_package, "Is Polyline Shape?", null, "IsPolylineShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -1946,7 +1946,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Polyline?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy, shape_is_subtype_package, "Is a Bomb Shape?", null, "IsBombShape",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy, shape_is_subtype_package, "Is Bomb Shape?", null, "IsBombShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -1954,7 +1954,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Bomb?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy, shape_is_subtype_package, "Is a World Border?", null, "IsWorldBorder",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy, shape_is_subtype_package, "Is World Border?", null, "IsWorldBorder",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -2429,8 +2429,8 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Around World Point X"),
                              new VariableDefinitionNumber ("Around World Point Y"),
                              new VariableDefinitionNumber ("Delta Angle (degrees)"),
-                             new VariableDefinitionBoolean ("Teleport Connected Movables?"),
-                             new VariableDefinitionBoolean ("Teleport Connected Statics?"),
+                             new VariableDefinitionBoolean ("Rotate Connected Movables?"),
+                             new VariableDefinitionBoolean ("Rotate Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
                              new VariableDefinitionBoolean ("Rotate Linear Velocity?"),
                      ],
@@ -2442,8 +2442,8 @@ package editor.trigger {
                              new VariableDefinitionNumber ("Around World Point X"),
                              new VariableDefinitionNumber ("Around World Point Y"),
                              new VariableDefinitionNumber ("Target Angle (degrees)"),
-                             new VariableDefinitionBoolean ("Teleport Connected Movables?"),
-                             new VariableDefinitionBoolean ("Teleport Connected Statics?"),
+                             new VariableDefinitionBoolean ("Rotate Connected Movables?"),
+                             new VariableDefinitionBoolean ("Rotate Connected Statics?"),
                              new VariableDefinitionBoolean ("Break Embarrassed Joints?"),
                              new VariableDefinitionBoolean ("Rotate Linear Velocity?"),
                      ],
@@ -2623,7 +2623,7 @@ package editor.trigger {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB, shape_text_package, "Set Text Color By RGB", "@RGB (#0, #1, #2) = Get Text Color ($0)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB, shape_text_package, "Set Text Color By RGB", "@RGB (#0, #1, #2) = Set Text Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
                              new VariableDefinitionNumber ("Red"),
@@ -2750,13 +2750,13 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionArray ("Brothers (including self)"),
+                             new VariableDefinitionArray ("Local Vertexes"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPositions, shape_geometry_package, "Set Poly Shape Local Vertex Positions", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
-                             new VariableDefinitionArray ("Brothers (including self)"),
+                             new VariableDefinitionArray ("Local Vertexes"),
                      ],
                      null
                   );
@@ -2765,13 +2765,13 @@ package editor.trigger {
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionArray ("Brothers (including self)"),
+                             new VariableDefinitionArray ("World Vertexes"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPositions, shape_geometry_package, "Set Poly Shape World Vertex Positions", null, null,
                      [
                              new VariableDefinitionEntity ("The Poly Shape", null, {mValidClasses: Filters.sPolyShapeEntityClasses}),
-                             new VariableDefinitionArray ("Brothers (including self)"),
+                             new VariableDefinitionArray ("World Vertexes"),
                      ],
                      null
                   );

@@ -50,6 +50,8 @@ package editor.runtime {
       
       // entity init / update / destroy
       
+      [Embed("../../res/create/event_on_entity_created.png")]
+      public static var IconOnEntityCteatedEvent:Class;
       [Embed("../../res/create/event_on_entity_initilized.png")]
       public static var IconOnEntityInitilizedEvent:Class;
       [Embed("../../res/create/event_on_entity_updated.png")]
@@ -143,6 +145,7 @@ package editor.runtime {
          {
             sEventId2IconClass = new Dictionary ();
             
+            sEventId2IconClass [CoreEventIds.ID_OnEntityCreated] = IconOnEntityCteatedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityInitialized] = IconOnEntityInitilizedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityUpdated    ] = IconOnEntityUpdatedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityDestroyed  ] = IconOnEntityDestroyedEvent;

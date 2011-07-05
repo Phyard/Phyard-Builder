@@ -108,6 +108,22 @@ package editor.trigger.entity {
          return mEventHandlerDefinition;
       }
       
+      public function ChangeToIsomorphicEventId (eventId:int):void
+      {
+         // todo: check whether or not really isomorphic
+         
+         if (mEventId != eventId)
+         {
+            mEventId = eventId;
+            
+            mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
+            
+            mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
+            
+            mIconBitmap = Resource.EventId2IconBitmap (mEventId);
+         }
+      }
+      
       public function GetInputConditionEntity ():ICondition
       {
          return mExternalCondition.mConditionEntity;

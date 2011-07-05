@@ -28,19 +28,20 @@ package editor.trigger.entity {
          
       }
       
-      public function ChangeMouseEventId (eventId:int):void
-      {
-         if (mEventId != eventId)
-         {
-            mEventId = eventId;
-            
-            mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
-            
-            mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
-            
-            mIconBitmap = Resource.EventId2IconBitmap (mEventId);
-         }
-      }
+      // ChangeToIsomorphicEventId
+      //public function ChangeMouseEventId (eventId:int):void
+      //{
+      //   if (mEventId != eventId)
+      //   {
+      //      mEventId = eventId;
+      //      
+      //      mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
+      //      
+      //      mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
+      //      
+      //      mIconBitmap = Resource.EventId2IconBitmap (mEventId);
+      //   }
+      //}
       
 //====================================================================
 //   clone

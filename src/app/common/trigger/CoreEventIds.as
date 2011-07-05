@@ -28,6 +28,7 @@ package common.trigger {
 
    // entity
 
+      public static const ID_OnEntityCreated:int = IdPool.EventId_69;
       public static const ID_OnEntityInitialized:int = IdPool.EventId_70;
       public static const ID_OnEntityUpdated:int = IdPool.EventId_71;
       public static const ID_OnEntityDestroyed:int = IdPool.EventId_72;

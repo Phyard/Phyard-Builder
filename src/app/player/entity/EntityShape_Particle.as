@@ -3,6 +3,9 @@ package player.entity {
    import player.world.World;
    
    import player.physics.PhysicsProxyShape;
+
+   import player.trigger.entity.EntityEventHandler;
+   import player.trigger.data.ListElement_EventHandler;
    
    import common.Define;
    
@@ -42,6 +45,12 @@ package player.entity {
       public function SetAffectedByGravity (affected:Boolean):void
       {
          mApplyAntiGravity = affected;
+      }
+      
+      override public function RegisterEventHandler (eventId:int, eventHandler:EntityEventHandler):void
+      {
+         // do nothing. Currently, registering event handlers for particles are not support
+         //super.RegisterEventHandler (eventId, eventHandler);
       }
       
 //=============================================================

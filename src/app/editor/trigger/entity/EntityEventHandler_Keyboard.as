@@ -31,19 +31,20 @@ package editor.trigger.entity {
          
       }
       
-      public function ChangeKeyboardEventId (eventId:int):void
-      {
-         if (mEventId != eventId)
-         {
-            mEventId = eventId;
-            
-            mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
-            
-            mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
-            
-            mIconBitmap = Resource.EventId2IconBitmap (mEventId);
-         }
-      }
+      //ChangeToIsomorphicEventId
+      //public function ChangeKeyboardEventId (eventId:int):void
+      //{
+      //   if (mEventId != eventId)
+      //   {
+      //      mEventId = eventId;
+      //      
+      //      mEventHandlerDefinition = new FunctionDefinition (mWorld.GetTriggerEngine (), TriggerEngine.GetEventDeclarationById (mEventId), false, mEventHandlerDefinition);
+      //      
+      //      mCodeSnippet = mCodeSnippet.Clone (mEventHandlerDefinition);
+      //      
+      //      mIconBitmap = Resource.EventId2IconBitmap (mEventId);
+      //   }
+      //}
       
       public function SetKeyCodes (keyCodes:Array):void
       {

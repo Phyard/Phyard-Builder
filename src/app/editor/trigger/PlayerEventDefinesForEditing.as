@@ -50,6 +50,10 @@ package editor.trigger {
 
       // ...
 
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityCreated, "OnEntityCreated", "OnEntityCreated",
+                    [
+                       new VariableDefinitionEntity ("The Entity"),
+                    ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized, "OnEntityInitialized", "OnEntityInitialized",
                     [
                        new VariableDefinitionEntity ("The Entity"),

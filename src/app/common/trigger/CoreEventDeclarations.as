@@ -49,6 +49,10 @@ package common.trigger {
 
       // ...
 
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityCreated,
+                    [
+                        [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
+                    ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityInitialized,
                     [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],

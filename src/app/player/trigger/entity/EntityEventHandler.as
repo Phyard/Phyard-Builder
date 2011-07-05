@@ -123,6 +123,7 @@ package player.trigger.entity
          switch (mEventId)
          {
             // ai flow
+            case CoreEventIds.ID_OnEntityCreated:
             case CoreEventIds.ID_OnEntityInitialized:
             case CoreEventIds.ID_OnEntityUpdated:
             case CoreEventIds.ID_OnEntityDestroyed:
@@ -144,7 +145,7 @@ package player.trigger.entity
                   while (list_element != null)
                   {
                      list_element.mEntitySelector.RegisterEventHandlerForRuntimeCreatedEntity (runtimeCreatedEntity, mEventId, this);
-   
+
                      list_element = list_element.mNextListElement;
                   }
                }
@@ -153,7 +154,7 @@ package player.trigger.entity
                   while (list_element != null)
                   {
                      list_element.mEntitySelector.RegisterEventHandlerForEntitiesPlacedInEditor (mEventId, this);
-   
+
                      list_element = list_element.mNextListElement;
                   }
                }
@@ -212,7 +213,7 @@ package player.trigger.entity
             {
                mExternalAction.Perform ();
             }
-            
+
             return true;
          }
 

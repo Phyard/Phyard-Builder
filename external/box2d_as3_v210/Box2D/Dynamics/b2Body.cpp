@@ -137,6 +137,7 @@ public function SetType(type:int):void
       m_sweep.c0.x = m_sweep.c.x;
       m_sweep.c0.y = m_sweep.c.y;
 		m_sweep.a0 = m_sweep.a;
+		SynchronizeFixtures(); // add from v1.56r018, may caused some incompability issues
 		//<<
 	}
 

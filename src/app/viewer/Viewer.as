@@ -935,6 +935,7 @@ package viewer {
       private var mTextFinished:TextFieldEx;
       private var mTextAuthorInfo:TextFieldEx;
       private var mButtonMainMenu:TextButton;
+      private var mButtonNextLevel:TextButton;
       private var mButtonReplay:TextButton;
       private var mButtonCloseFinishDialog:TextButton;
 
@@ -945,12 +946,19 @@ package viewer {
          var finishedText:String = "<font size='30' face='Verdana' color='#000000'> <b>Cool! It is solved.</b></font>";
          mTextFinished = TextFieldEx.CreateTextField (finishedText, false, 0xFFFFFF, 0x0, false);
 
-         mButtonMainMenu = new TextButton ("<font size='16' face='Verdana' color='#0000FF'> Menu</font>", OnMainMenu);
+         mButtonMainMenu = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Menu</font>", OnMainMenu);
+         mButtonNextLevel = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Next</font>", OnNextLevel);
          mButtonReplay = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Replay</font>", OnRestart);
          mButtonCloseFinishDialog = new TextButton ("<font size='16' face='Verdana' color='#0000FF'>Close</font>", CloseFinishedDialog);
          var buttonContainer:Sprite = new Sprite ();
          var buttonX:Number = 0;
-         if (mParamsFromContainer.OnMainMenu != null)
+         if (mParamsFromContainer.HasNextLevel != null && mParamsFromContainer.HasNextLevel ())
+         {
+            buttonContainer.addChild (mButtonNextLevel);
+            mButtonNextLevel.x = buttonX;
+            buttonX += mButtonNextLevel.width + 50;
+         }
+         else if (mParamsFromContainer.OnMainMenu != null)
          {
             buttonContainer.addChild (mButtonMainMenu);
             mButtonMainMenu.x = buttonX;
@@ -1077,7 +1085,7 @@ package viewer {
                               OnStart: OnStart,
                               OnPause: OnPause,
                               OnSpeed: OnSpeed, mShowSpeedAdjustor: mShowSpeedAdjustor,
-                              OnZoom: OnZoom, mShowScaleAdjustor: mShowScaleAdjustor,
+                              OnZoom: OnZoom, mShowScaleAdjustor: mShowScaleAdjustor && (mParamsFromContainer.mHideScaleButtons != undefined && mParamsFromContainer.mHideScaleButtons == false),
                               OnHelp: OnHelp, mShowHelpButton: mShowHelpButton,
                               OnMainMenu: null
                            });
@@ -1555,6 +1563,12 @@ package viewer {
       {
          if (mParamsFromContainer.OnMainMenu != null)
             mParamsFromContainer.OnMainMenu (data);
+      }
+      
+      private function OnNextLevel (data:Object = null):void
+      {
+         if (mParamsFromContainer.OnNextLevel != null)
+            mParamsFromContainer.OnNextLevel (data);
       }
 
       private function OnGotoPhyard (data:Object = null):void

@@ -83,16 +83,37 @@ package player.trigger.entity
          if (mIsPairSelector)
             return;
                
-         var count:int = mWorld.GetNumEntitiesInEditor ();
-         for (var entityIndex:int = 0; entityIndex < count; ++ entityIndex)
+         //var count:int = mWorld.GetNumEntitiesInEditor ();
+         //for (var entityIndex:int = 0; entityIndex < count; ++ entityIndex)
+         //{
+         //   var entity:Entity = mWorld.GetEntityByCreateOrderId (entityIndex, false);
+         //   if (entity == null || entity.IsDestroyedAlready ())
+         //      continue;
+         //
+         //   if (filterFunc == null || filterFunc (entity))
+         //   {
+         //      entity.RegisterEventHandler (eventId, eventHandler);
+         //   }
+         //}
+         
+         // from v1.57, not for EntitiesPlacedInEditor only.
+         var entityList:EntityList = mWorld.GetEntityList ();
+         var entity:Entity = entityList.GetHead ();
+         if (entity != null)
          {
-            var entity:Entity = mWorld.GetEntityByCreateOrderId (entityIndex, false);
-            if (entity == null || entity.IsDestroyedAlready ())
-               continue;
-
-            if (filterFunc == null || filterFunc (entity))
+            var tail:Entity = entityList.GetTail ();
+            
+            while (true)
             {
-               entity.RegisterEventHandler (eventId, eventHandler);
+               if (entity != null && (! entity.IsDestroyedAlready ()) && (filterFunc == null || filterFunc (entity)))
+               {
+                  entity.RegisterEventHandler (eventId, eventHandler);
+               }
+               
+               if (entity == tail)
+                  break;
+               
+               entity = entity.mNextEntity;
             }
          }
       }

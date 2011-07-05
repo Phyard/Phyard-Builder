@@ -1030,11 +1030,11 @@ package editor {
       public var mButtonCreateEventHandler1:Button;
       public var mButtonCreateEventHandler2:Button;
       public var mButtonCreateEventHandler3:Button;
-      public var mButtonCreateEventHandler4:Button;
       public var mButtonCreateEventHandler5:Button;
       public var mButtonCreateEventHandler6:Button;
       public var mButtonCreateEventHandler7:Button;
       public var mButtonCreateEventHandler8:Button;
+      public var mButtonCreateEventHandler59:Button;
       public var mButtonCreateEventHandler50:Button;
       public var mButtonCreateEventHandler51:Button;
       public var mButtonCreateEventHandler52:Button;
@@ -1274,9 +1274,6 @@ package editor {
             case mButtonCreateEventHandler3:
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldAfterUpdated, mPotientialEventIds:null}) );
                break;
-            case mButtonCreateEventHandler4:
-               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachLowerLimit, mPotientialEventIds:null}) );
-               break;
             case mButtonCreateEventHandler5:
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnJointReachUpperLimit, mPotientialEventIds:null}) );
                break;
@@ -1288,6 +1285,9 @@ package editor {
                break;
             case mButtonCreateEventHandler8:
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnWorldMouseClick, mPotientialEventIds:null}) );
+               break;
+            case mButtonCreateEventHandler59:
+               SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityCreated, mPotientialEventIds:null}) );
                break;
             case mButtonCreateEventHandler50:
                SetCurrentCreateMode (new ModePlaceCreateEntity (this, CreateEntityEventHandler, {mDefaultEventId:CoreEventIds.ID_OnEntityInitialized, mPotientialEventIds:null}) );
@@ -4486,20 +4486,29 @@ package editor {
                {
                   var keyboard_event_handler:EntityEventHandler_Keyboard = entity as EntityEventHandler_Keyboard;
                   
-                  keyboard_event_handler.ChangeKeyboardEventId (params.mEventId);
+                  //keyboard_event_handler.ChangeKeyboardEventId (params.mEventId);
                   keyboard_event_handler.SetKeyCodes (params.mKeyCodes);
                }
                else if (entity is EntityEventHandler_Mouse)
                {
                   var mouse_event_handler:EntityEventHandler_Mouse = entity as EntityEventHandler_Mouse;
                   
-                  mouse_event_handler.ChangeMouseEventId (params.mEventId);
+                  //mouse_event_handler.ChangeMouseEventId (params.mEventId);
                }
                else if (entity is EntityEventHandler_Contact)
                {
                   var contact_event_handler:EntityEventHandler_Contact = entity as EntityEventHandler_Contact;
                   
-                  contact_event_handler.ChangeContactEventId (params.mEventId);
+                  //contact_event_handler.ChangeContactEventId (params.mEventId);
+               }
+               //else if (entity is EntityEventHandler_JointReachLimit)
+               //{
+                  // seems EntityEventHandler_Contact and EntityEventHandler_Mouse class are not essential now after ChangeToIsomorphicEventId is added.
+               //}
+               
+               if (params.mEventId != event_handler.GetEventId ())
+               {
+                  event_handler.ChangeToIsomorphicEventId (params.mEventId );
                }
             }
             else if (entity is EntityBasicCondition)

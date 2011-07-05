@@ -1,7 +1,7 @@
 // all these functions assume the physics of entities are all built already.
 
 //================================================================
-// 
+//
 //================================================================
 
 /*
@@ -16,8 +16,8 @@ possible actions:
 
 public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean):Object
 {
-   var returnObject:Object =  new Object (); 
-   
+   var returnObject:Object =  new Object ();
+
    var shapesToTeleport:Array = new Array ();
    var bodiesToTeleport:Array = new Array ();
    var jointsToTeleport:Array = new Array ();
@@ -26,41 +26,41 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
    returnObject.mBodiesToTransform = bodiesToTeleport;
    returnObject.mShapesToTransform = shapesToTeleport;
    returnObject.mJointsToTransform = jointsToTeleport;
-   
+
    // collect related entities
-   
+
    var body:EntityBody;
    var shape:EntityShape;
    var anotherShape:EntityShape;
    var joint:EntityJoint;
    var anchor:SubEntityJointAnchor;
-   
+
    IncreaseLastSpecialId ();
-   
+
    mSpecialId = sLastSpecialId;
    shapesToTeleport.push (this);
-   
+
    if (bTeleportBrothers)
    {
       var numShapesToTeleport:int = 0;
-   
+
       while (shapesToTeleport.length > numShapesToTeleport)
       {
          shape = shapesToTeleport [numShapesToTeleport];
          //shape.mSpecialId = sLastSpecialId; // now call this when add shape in list
-   
+
          ++ numShapesToTeleport;
-         
+
          // brothers
-         
+
          body = shape.mBody;
          if (body.mSpecialId != sLastSpecialId)
          {
             body.mSpecialId = sLastSpecialId;
             bodiesToTeleport.push (body);
-            
+
             anotherShape = body.mShapeListHead;
-            
+
             while (anotherShape != null)
             {
                if (anotherShape.mSpecialId != sLastSpecialId)
@@ -68,25 +68,25 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
                   anotherShape.mSpecialId = sLastSpecialId;
                   shapesToTeleport.push (anotherShape)
                }
-               
+
                anotherShape = anotherShape.mNextShapeInBody;
             }
          }
-         
+
          // connected joints and shapes
-         
+
          anchor = shape.mJointAnchorListHead;
-         
+
          while (anchor != null)
          {
             joint = anchor.mJoint;
-            
+
             if (joint.mSpecialId != sLastSpecialId)
             {
                joint.mSpecialId = sLastSpecialId;
-            
+
                anotherShape = anchor.mAnotherJointAnchor.mShape;
-               
+
                if (anotherShape == null)
                {
                   if (bBreakEmbarrassedJoints)
@@ -103,13 +103,13 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
                         anotherShape.mSpecialId = sLastSpecialId;
                         shapesToTeleport.push (anotherShape);
                      }
-                     
+
                      jointsToTeleport.push (joint);
                   }
                   else if (bBreakEmbarrassedJoints)
                   {
                      jointsToBreak.push (joint);
-                  }   
+                  }
                }
                else
                {
@@ -120,7 +120,7 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
                         anotherShape.mSpecialId = sLastSpecialId;
                         shapesToTeleport.push (anotherShape);
                      }
-                     
+
                      jointsToTeleport.push (joint);
                   }
                   else if (bBreakEmbarrassedJoints)
@@ -129,7 +129,7 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
                   }
                }
             }
-            
+
             anchor = anchor.mNextAnchor;
          }
       }
@@ -137,30 +137,30 @@ public function GetRelatedEntities (bTeleportBrothers:Boolean, bTeleportConnecte
    else if (bBreakEmbarrassedJoints)
    {
       anchor = this.mJointAnchorListHead;
-         
+
       while (anchor != null)
       {
          joint = anchor.mJoint;
-         
+
          if (joint.mSpecialId != sLastSpecialId)
          {
             joint.mSpecialId = sLastSpecialId;
             jointsToBreak.push (joint);
          }
-         
+
          anchor = anchor.mNextAnchor;
       }
    }
-   
+
    // break joints
-   
+
    for (var i:int = jointsToBreak.length - 1; i >= 0; -- i)
    {
       (jointsToBreak[i] as EntityJoint).Destroy ();
    }
-   
+
    // ...
- 
+
    return returnObject;
 }
 
@@ -172,59 +172,59 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
 {
    if (seedShape == null)
       return null;
-   
+
    var infos:Object = seedShape.GetRelatedEntities (bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics, false);
-   
+
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
-   var jointsToTeleport:Array = infos.mJointsToTransform; 
-      
+   var jointsToTeleport:Array = infos.mJointsToTransform;
+
    var world:World = seedShape.GetWorld ();
 
    var worldDefine:WorldDefine = new WorldDefine ();
    var entityDefineArray:Array = worldDefine.mEntityDefines;
-   
+
    var entityDefine:Object;
    var entity:Entity;
    var body:EntityBody;
    var shape:EntityShape;
    var joint:EntityJoint;
    var anchor:SubEntityJointAnchor;
-   
+
    var i:int;
    var count:int;
-   
+
    // create entity defines for shapes
-   
+
    var mapEntity2Define:Dictionary = new Dictionary ();
-   
+
    count = shapesToTeleport.length;
    for (i = 0; i < count; ++ i)
    {
       shape = shapesToTeleport [i] as EntityShape;
       entityDefine = CreateAndPushEntityDefine (shape, entityDefineArray, mapEntity2Define);
    }
-   
+
    // create entity defines for joints and anchors
-   
+
    count = jointsToTeleport.length;
    for (i = 0; i < count; ++ i)
    {
       joint = jointsToTeleport [i] as EntityJoint;
       entityDefine = CreateAndPushEntityDefine (joint, entityDefineArray, mapEntity2Define);
-      
+
       anchor = joint.GetAnchor1 ();
       entityDefine = CreateAndPushEntityDefine (anchor, entityDefineArray, mapEntity2Define);
-      
+
       anchor = joint.GetAnchor2 ();
       entityDefine = CreateAndPushEntityDefine (anchor, entityDefineArray, mapEntity2Define);
    }
-   
+
    // reset creation ids and positions
-   
+
    var deltaX:Number = world.GetCoordinateSystem ().P2D_LinearDeltaX (targetX - seedShape.GetPositionX ());
    var deltaY:Number = world.GetCoordinateSystem ().P2D_LinearDeltaY (targetY - seedShape.GetPositionY ());
-   
+
    count = entityDefineArray.length;
    entityDefineArray.sortOn ("mCreationOrderId", Array.NUMERIC);
    for (i = 0; i < count; ++ i)
@@ -232,11 +232,11 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
       entityDefine = entityDefineArray [i] as Object;
       entityDefine.mCreationOrderId = i;
       entityDefine.mPosX += deltaX;
-      entityDefine.mPosY += deltaY;      
+      entityDefine.mPosY += deltaY;
    }
 
    // create appearance order array
-   
+
    var entityDefinesSortByAppearanceId:Array = entityDefineArray.concat ();
    entityDefinesSortByAppearanceId.sortOn ("mAppearanceOrderId", Array.NUMERIC);
    var appearanceOrderArray:Array = worldDefine.mEntityAppearanceOrder;
@@ -245,15 +245,15 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
       entityDefine = entityDefinesSortByAppearanceId [i] as Object;
       appearanceOrderArray.push (entityDefine.mCreationOrderId);
    }
-   
+
    // create brother groups array
-   
+
    var brotherGroupDefines:Array = worldDefine.mBrotherGroupDefines;
    count = bodiesToTeleport.length;
    for (i = 0; i < count; ++ i)
    {
       body = bodiesToTeleport [i] as EntityBody;
-      
+
       var brotherShapeCreationOrderIds:Array = new Array ();
       shape = body.mShapeListHead;
       while (shape != null)
@@ -263,18 +263,18 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
          {
             brotherShapeCreationOrderIds.push (entityDefine.mCreationOrderId);
          }
-         
+
          shape = shape.mNextShapeInBody;
       }
-      
+
       if (brotherShapeCreationOrderIds.length > 1)
       {
          brotherGroupDefines.push (brotherShapeCreationOrderIds);
       }
    }
-   
+
    // set entity reference ids
-   
+
    var anchorIndex1:int;
    var anchorIndex2:int;
    var shapeIndex1:int;
@@ -284,57 +284,77 @@ public static function CloneShape (seedShape:EntityShape, targetX:Number, target
    for (i = 0; i < count; ++ i)
    {
       joint = jointsToTeleport [i] as EntityJoint;
-      
+
       anchor = joint.GetAnchor1 ();
       anchorIndex1 = (mapEntity2Define [anchor] as Object).mCreationOrderId;
-      
+
       shape = anchor.GetShape ();
       shapeIndex1 = shape == null ? Define.EntityId_None : (mapEntity2Define [shape] as Object).mCreationOrderId;
-      
+
       anchor = joint.GetAnchor2 ();
       anchorIndex2 = (mapEntity2Define [anchor] as Object).mCreationOrderId;
-      
+
       shape = anchor.GetShape ();
       shapeIndex2 = shape == null ? Define.EntityId_None : (mapEntity2Define [shape] as Object).mCreationOrderId;
-      
+
       entityDefine = mapEntity2Define [joint];
       entityDefine.mAnchor1EntityIndex = anchorIndex1;
       entityDefine.mAnchor2EntityIndex = anchorIndex2;
       entityDefine.mConnectedShape1Index = shapeIndex1;
       entityDefine.mConnectedShape2Index = shapeIndex2;
    }
-   
-   // import world define
-   
+
+   // do some init jobs
+
    var worldEntityList:EntityList = world.GetEntityList ();
    var worldEntityBodyList:EntityList = world.GetEntityBodyList ();
-   
+
    worldEntityList.MarkLastTail ();
    worldEntityBodyList.MarkLastTail ();
 
    DataFormat2.WorldDefine2PlayerWorld (worldDefine, world);
+
    world.BuildEntityPhysics (true);
-   world.GetEntityList ().InitEntities (true);
-   
+   var clonedEntities:Array = worldEntityList.GetEntitiesFromLastMarkedTail ();
+
    worldEntityList.UnmarkLastTail ();
    worldEntityBodyList.UnmarkLastTail ();
-   
+
+   // bug! OnCreated and InitEntities may call cline APIs, which then call EntityList.MarkLastTail (),
+   //which will make nest MarkLastTail, ..., then bugs.
+
+   //world.RegisterEventHandlersForRuntimeCreatedEntities (true);
+   //world.GetEntityList ().OnCreated (true);
+   //if (world.ShouldInitRuntimeCteatedEntitiesManually ())
+   //{
+   //   world.RegisterEventHandlersForRuntimeCreatedEntities (false);
+   //   world.GetEntityList ().InitEntities (true);
+   //}
+   world.RegisterEventHandlersForRuntimeCreatedEntities (true, clonedEntities);
+   EntityList.OnCreated_RuntimeCreatedEntities (clonedEntities);
+   if (world.ShouldInitRuntimeCteatedEntitiesManually ())
+   {
+      world.RegisterEventHandlersForRuntimeCreatedEntities (false, clonedEntities);
+      EntityList.InitEntities_RuntimeCreatedEntities (clonedEntities);
+   }
+
+
    // clone runtime infos
    // for joints only now. maybe it is better to put runtime infos in entityDefines
-   
+
    count = jointsToTeleport.length;
    for (i = 0; i < count; ++ i)
    {
       joint = jointsToTeleport [i] as EntityJoint;
       entityDefine = mapEntity2Define [joint];
-      
+
       entity = entityDefine.mEntity; // the cloned one
-      
+
       (entity as EntityJoint).CopyRuntimeInfosFrom (joint)
    }
-   
+
    // return
-   
+
    entityDefine = mapEntity2Define [seedShape];
    if (entityDefine == null)
       return null;
@@ -348,17 +368,17 @@ private static function CreateAndPushEntityDefine (entity:Entity, entityDefineAr
    if (entityDefine != null)
    {
       entityDefine.mCloneFromEntity = entity;
-      
+
       entityDefine.mAppearanceOrderId = entity.GetAppearanceId ();
       entityDefine.mCreationOrderId = entity.GetCreationId ();
       entityDefineArray.push (entityDefine);
 
       mapEntity2Define [entity] = entityDefine;
    }
-   
+
    return entityDefine;
-} 
-   
+}
+
 //================================================================
 // transform
 //================================================================
@@ -373,41 +393,41 @@ public function Translate (deltaX:Number, deltaY:Number, bTeleportConnectedMovab
 {
    if (deltaX == 0 && deltaY == 0)
       return;
-   
+
 //...
 
    var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
-   var jointsToTeleport:Array = infos.mJointsToTransform; 
-      
+   var jointsToTeleport:Array = infos.mJointsToTransform;
+
 // ...
 
    var num:int = bodiesToTeleport.length;
-   
+
    for (var i:int = 0; i < num; ++ i)
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
-      
+
       body.mPositionX += deltaX;
       body.mPositionY += deltaY;
-      
+
       if (body.mNumPhysicsShapes > 0)
       {
          body.NotifyMovedManually ();
          body.SetSleeping (false);
          body.SynchronizePositionAndRotationToPhysicsProxy ();
       }
-      
+
       // ...
-         
+
       var shape:EntityShape = body.mShapeListHead;
-      
+
       while (shape != null)
       {
          shape.SynchronizeWithPhysicsProxy ();
-         
+
          shape = shape.mNextShapeInBody;
       }
    }
@@ -425,22 +445,22 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
    var jointsToTeleport:Array = infos.mJointsToTransform;
-      
+
 // ...
-   
+
    var deltaRotationInTwoPI:Number = deltaRotation % Define.kPI_x_2;
    var cos:Number = Math.cos (deltaRotationInTwoPI);
    var sin:Number = Math.sin (deltaRotationInTwoPI);
-   
+
    var num:int = bodiesToTeleport.length;
-   
+
    for (var i:int = 0; i < num; ++ i)
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
-      
+
       var dx:Number = body.mPositionX - fixedPointX;
       var dy:Number = body.mPositionY - fixedPointY;
-      
+
       body.mPositionX = fixedPointX + dx * cos - dy * sin;
       body.mPositionY = fixedPointY + dx * sin + dy * cos;
       body.SetRotation (body.mPhysicsRotation + deltaRotation);
@@ -450,32 +470,32 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
          var vy:Number = body.GetLinearVelocityY ();
          body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos);
       }
-      
+
       if (body.mNumPhysicsShapes > 0)
       {
-         //body.SynchronizeWithPhysicsProxyManually (); // essential? 
+         //body.SynchronizeWithPhysicsProxyManually (); // essential?
             // bug! should not call this. This will make the changes roll back
             // If to call this, must call body.SynchronizePositionAndRotationToPhysicsProxy firstly
-         
+
          //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
          //var vx:Number = body.GetLinearVelocityX ();
          //var vy:Number = body.GetLinearVelocityY ();
          //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call body.NotifyVelocityChangedManually ();
-         
+
          body.NotifyVelocityChangedManually (); // shapes' velocity changed
          body.NotifyMovedManually ();
          body.SetSleeping (false);
          body.SynchronizePositionAndRotationToPhysicsProxy ();
       }
-      
+
       // ...
-      
+
       var shape:EntityShape = body.mShapeListHead;
-      
+
       while (shape != null)
       {
          shape.SynchronizeWithPhysicsProxy ();
-         
+
          shape = shape.mNextShapeInBody;
       }
    }
@@ -484,7 +504,7 @@ public function Rotate (fixedPointX:Number, fixedPointY:Number, deltaRotation:Nu
 /*
 todo: need SetRotation intelligently. Use entity.GetRotationOffset ()
 
-public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number, 
+public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Number,
                   bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
                   ):void
 {
@@ -494,19 +514,19 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
 
    if (normalLength < Define.kFloatEpsilon)
       return;
-   
+
 // ...
 
    var infos:Object = GetRelatedEntities (true, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
 
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
-   var jointsToTeleport:Array = infos.mJointsToTransform; 
-      
+   var jointsToTeleport:Array = infos.mJointsToTransform;
+
 // ...
 
    var doubleLineAngle:Number = 2.0 * Math.atan2 (normalY, normalX);
-   
+
    normalX /= normalLength;
    normalY /= normalLength;
    var normalXX2:Number = 2.0 * normalX * normalX;
@@ -514,95 +534,95 @@ public function Flip (pointX:Number, pointY:Number, normalX:Number, normalY:Numb
    var normalXY2:Number = 2.0 * normalX * normalY;
 
    var num:int = bodiesToTeleport.length;
-   
+
    for (var i:int = 0; i < num; ++ i)
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
-      
+
       //...
-      
+
       var offsetX:Number = body.mPositionX - pointX;
       var offsetY:Number = body.mPositionY - pointY;
-      
+
       body.mPositionX = body.mPositionX - normalXX2 * offsetX - normalXY2 * offsetY;
       body.mPositionY = body.mPositionY - normalXY2 * offsetX - normalYY2 * offsetY;
       //body.SetRotation (body.mPhysicsRotation + doubleLineAngle);
       body.SynchronizePositionAndRotationToPhysicsProxy ();
-      
+
       //...
-      
+
       var shape:EntityShape = body.mShapeListHead;
-         
+
       while (shape != null)
-      {         
+      {
          var localNormalX:Number =   normalX * mCosRotation + normalY * mSinRotation;
          var localNormalY:Number = - normalX * mSinRotation + normalY * mCosRotation;
          var localNormalXX2:Number = 2.0 * localNormalX * localNormalX;
          var localNormalYY2:Number = 2.0 * localNormalY * localNormalY;
          var localNormalXY2:Number = 2.0 * localNormalX * localNormalY;
-         
+
          var oldLocalX:Number = shape.mLocalPositionX;
          var oldLocalY:Number = shape.mLocalPositionY;
          shape.mLocalPositionX = oldLocalX - normalXX2 * oldLocalX - normalXY2 * oldLocalY;
          shape.mLocalPositionY = oldLocalY - normalXY2 * oldLocalX - normalYY2 * oldLocalY;
          shape.mRelativeRotation = - shape.mRelativeRotation;
          shape.mRelativeRotation += doubleLineAngle;
-         shape.SetFlipped (! shape.IsFlipped ()); 
-         
+         shape.SetFlipped (! shape.IsFlipped ());
+
          shape.SynchronizeWithPhysicsProxy ();
          if (shape.IsPhysicsShape ())
             shape.RebuildShapePhysics ();
-         
+
          shape = shape.mNextShapeInBody;
-      }     
-   
+      }
+
       body.OnShapeListChanged (true);
-      
+
       //...
-      
+
       if (body.mNumPhysicsShapes > 0)
       {
          body.SynchronizeWithPhysicsProxyManually (); // essential?
-         
+
          //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
          //var vx:Number = body.GetLinearVelocityX ();
          //var vy:Number = body.GetLinearVelocityY ();
-         //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call 
-         
+         //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call
+
          body.NotifyVelocityChangedManually (); // shapes' velocity changed
          body.NotifyMovedManually ();
          body.SetSleeping (false);
          body.SynchronizePositionAndRotationToPhysicsProxy ();
       }
-      
+
       // ...
-      
+
       shape = body.mShapeListHead;
-      
+
       while (shape != null)
       {
          shape.SynchronizeWithPhysicsProxy ();
          shape.NotifyJointAnchorLocalPositionsChanged ();
-         
+
          shape = shape.mNextShapeInBody;
       }
-      
+
       // todo: effects on joints: remove joint angle, limits, velocity, ...
    }
-   
+
    // joint
    num = jointsToTeleport.length;
    for (i = 0; i < num; ++ i)
    {
       var joint:EntityJoint = jointsToTeleport [i] as EntityJoint;
       joint.OnFlipped (normalXX2, normalYY2, normalXY2);
-   }   
+   }
 }
 
-public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number, 
+public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number,
                               bTeleportConnectedMovables:Boolean, bTeleprotConnectedStatics:Boolean, bBreakEmbarrassedJoints:Boolean
-                              //, scaleBrothers:Boolean, 
-                              //scaleSize:Boolean, scalePosition:Boolean, 
+                              //, scaleBrothers:Boolean,
+                              //scaleSize:Boolean, scalePosition:Boolean,
                               //conserveMomentum:Boolean, conserveMass:Boolean
                               ):void
 {
@@ -619,79 +639,79 @@ public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number
    var bodiesToTeleport:Array = infos.mBodiesToTransform;
    var shapesToTeleport:Array = infos.mShapesToTransform;
    var jointsToTeleport:Array = infos.mJointsToTransform;
-      
+
 // ...
-   
+
    var num:int = bodiesToTeleport.length;
-   
+
    var i:int;
    var shape:EntityShape;
-   
+
    for (i = 0; i < num; ++ i)
    {
       var body:EntityBody = bodiesToTeleport [i] as EntityBody;
-      
+
       var dx:Number = body.mPositionX - fixedPointX;
       var dy:Number = body.mPositionY - fixedPointY;
-      
+
       body.mPositionX = fixedPointX + dx * scaleRatio;
       body.mPositionY = fixedPointY + dy * scaleRatio;
       body.SynchronizePositionAndRotationToPhysicsProxy ();
-      
+
       // ...
-      
+
       shape = body.mShapeListHead;
-      
+
       while (shape != null)
       {
          //shape.ScaleSelf (scaleRatio);
          shape.mLocalPositionX *= scaleRatio;
          shape.mLocalPositionY *= scaleRatio;
          shape.SetScale (shape.GetScale () * scaleRatio);
-         
+
          shape.SynchronizeWithPhysicsProxy ();
          if (shape.IsPhysicsShape ())
             shape.RebuildShapePhysics ();
-         
+
          shape = shape.mNextShapeInBody;
       }
-      
-      // ...
-      
-      
 
       // ...
-      
+
+
+
+      // ...
+
       if (body.mNumPhysicsShapes > 0)
       {
          body.SynchronizeWithPhysicsProxyManually (); // essential?
-         
+
          //todo: add an option "Modify Velocity?". Velocity are not changed defaultly.
          //var vx:Number = body.GetLinearVelocityX ();
          //var vy:Number = body.GetLinearVelocityY ();
          //body.SetLinearVelocity (vx * cos - vy * sin, vx * sin + vy * cos); // will call body.NotifyVelocityChangedManually ();
-         
+
          body.NotifyVelocityChangedManually (); // shapes' velocity changed
          body.NotifyMovedManually ();
          body.SetSleeping (false);
          body.SynchronizePositionAndRotationToPhysicsProxy ();
       }
-      
+
       // ...
-      
+
       shape = body.mShapeListHead;
-      
+
       while (shape != null)
       {
          shape.SynchronizeWithPhysicsProxy ();
          shape.NotifyJointAnchorLocalPositionsChanged ();
-         
+
          shape = shape.mNextShapeInBody;
       }
-      
+
       // todo: effects on joints: remove joint angle, limits, velocity, ...
    }
-   
+
    // joint
    num = jointsToTeleport.length;
    for (i = 0; i < num; ++ i)
@@ -703,7 +723,7 @@ public function Scale (fixedPointX:Number, fixedPointY:Number, scaleRatio:Number
 */
 
 //================================================================
-// telport 
+// telport
 //================================================================
 
 // the old teleport API is replaced with Translate+Rotate now (see above)
@@ -712,45 +732,45 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
 {
 // ...
    IncreaseLastSpecialId ();
-   
+
    var shape:EntityShape = this;
    var shapesToTeleport:Array = new Array ();
    var bodiesToTeleport:Array = new Array ();
    var jointsToTeleport:Array = new Array ();
    var jointsToBreak:Array = new Array ();
    shapesToTeleport.push (shape);
-   
+
    var anchor:SubEntityJointAnchor;
    var anotherShape:EntityShape;
    var body:EntityBody;
    var joint:EntityJoint;
-   
+
    var numShapesToTeleport:int = 0;
-   
+
    var i:int;
    var num:int;
-   
+
 // collect shapes to teleport
 // collect bodies of shapes to teleport
-   
+
    while (shapesToTeleport.length > numShapesToTeleport)
    {
       shape = shapesToTeleport [numShapesToTeleport];
       shape.mSpecialId = sLastSpecialId;
       ++ numShapesToTeleport;
-      
+
    // body
-      
+
       body = shape.mBody;
       if (body.mSpecialId != sLastSpecialId)
       {
          body.mSpecialId = sLastSpecialId;
          bodiesToTeleport.push (body);
-         
+
    // brother shapes
-         
+
          anotherShape = body.mShapeListHead;
-         
+
          while (anotherShape != null)
          {
             if (anotherShape.mSpecialId != sLastSpecialId)
@@ -758,24 +778,24 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
                anotherShape.mSpecialId = sLastSpecialId;
                shapesToTeleport.push (anotherShape)
             }
-            
+
             anotherShape = anotherShape.mNextShapeInBody;
          }
       }
-      
+
    // connected shapes
-      
+
       anchor = shape.mJointAnchorListHead;
-      
+
       while (anchor != null)
       {
          anotherShape = anchor.mAnotherJointAnchor.mShape;
          anchor = anchor.mNextAnchor;
-         
+
          if (anotherShape != null && anotherShape.mSpecialId != sLastSpecialId)
          {
             anotherShape.mSpecialId = sLastSpecialId;
-            
+
             if (anotherShape.mBody.IsStatic ())
             {
                if (bTeleprotConnectedStatics)
@@ -793,29 +813,29 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
          }
       }
    }
-   
+
 // collect joints connecting with 2 shapes to teleprot
 // collect joints connecting with only one shape to teleport
-   
+
    for (i = 0; i < numShapesToTeleport; ++ i)
    {
       shape = shapesToTeleport [i] as EntityShape;
-      
+
    // joints
-      
+
       anchor = shape.mJointAnchorListHead;
-      
+
       while (anchor != null)
       {
          anotherShape = anchor.mAnotherJointAnchor.mShape;
          joint = anchor.mJoint;
-         
+
          anchor = anchor.mNextAnchor;
-         
+
          if (joint.mSpecialId != sLastSpecialId)
          {
             joint.mSpecialId = sLastSpecialId;
-            
+
             if (anotherShape == null || anotherShape.mSpecialId != sLastSpecialId) // shape will teleport, anotherShape will not
             {
                jointsToBreak.push (joint);
@@ -833,11 +853,11 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
    if (bBreakEmbarrassedJoints)
    {
       num = jointsToBreak.length;
-      
+
       for (i = 0; i < num; ++ i)
       {
          joint = jointsToBreak [i] as EntityJoint;
-         
+
          joint.Destroy ();
       }
    }
@@ -851,33 +871,33 @@ public function Teleport (targetX:Number, targetY:Number, deltaRotation:Number, 
    var dx:Number;
    var dy:Number;
 // all these functions assume the physics of entities are all built.
-   
+
    num = bodiesToTeleport.length;
-   
+
    for (i = 0; i < num; ++ i)
    {
       body = bodiesToTeleport [i] as EntityBody;
-      
+
       body.SetSleeping (false);
-      
+
       dx = body.mPositionX - oldPositionX;
       dy = body.mPositionY - oldPositionY;
-      
+
       body.mPositionX = targetX + dx * cos - dy * sin;
       body.mPositionY = targetY + dx * sin + dy * cos;
       body.SetRotation (body.mPhysicsRotation + deltaRotation);
-      
+
       body.SynchronizePositionAndRotationToPhysicsProxy ();
-      
+
    // update postion and rotation of shapes in body
-      
+
       anotherShape = body.mShapeListHead;
-      
+
       while (anotherShape != null)
       {
          anotherShape.SynchronizeWithPhysicsProxy ();
          anotherShape.FlagWorldCentroidSynchronized (false);
-         
+
          anotherShape = anotherShape.mNextShapeInBody;
       }
    }
@@ -892,18 +912,18 @@ public static function ChangeCircleRadius (circle:EntityShapeCircle, radius:Numb
 {
    if (radius <= 0)
       return;
-   
+
    var body:EntityBody = circle.GetBody ();
-      
+
    var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
    var isPhysicsShape:Boolean = circle.IsPhysicsShape ();
-   
+
    var scaleRadius:Number =  radius / circle.GetRadius ();
-   
+
    circle.SetRadius (radius);
-   
+
    OnShapeGeometryChanged (body, isPhysicsBody, circle, isPhysicsShape);
-   
+
    // modify joint anchor positions
    circle.ScaleJointAnchorPositions (scaleRadius, scaleRadius);
 }
@@ -912,20 +932,20 @@ public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Num
 {
    if (width <= 0 || height <= 0)
       return;
-   
+
    var body:EntityBody = rect.GetBody ();
-      
+
    var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
    var isPhysicsShape:Boolean = rect.IsPhysicsShape ();
-   
+
    var scaleWidth:Number =  0.5 * width / rect.GetHalfWidth ();
    var scaleHeight:Number =  0.5 * height / rect.GetHalfHeight ();
-   
+
    rect.SetHalfWidth (width * 0.5);
    rect.SetHalfHeight (height * 0.5);
-   
+
    OnShapeGeometryChanged (body, isPhysicsBody, rect, isPhysicsShape);
-   
+
    // modify joint anchor positions
    rect.ScaleJointAnchorPositions (scaleWidth, scaleHeight);
 }
@@ -934,14 +954,14 @@ public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Num
 //{
 //   if (isNaN (vertexIndex) || isNaN (newLocalPosX) || isNaN (newLocalPosY))
 //      return;
-//   
+//
 //   var body:EntityBody = polyShape.GetBody ();
-//      
+//
 //   var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
 //   var isPhysicsShape:Boolean = polyShape.IsPhysicsShape ();
-//   
+//
 //   polyShape.ModifyLocalVertex (vertexIndex, newLocalPosX, newLocalPosY, isInsert);
-//   
+//
 //   OnShapeGeometryChanged (body, isPhysicsBody, polyShape, isPhysicsShape);
 //}
 //
@@ -949,19 +969,19 @@ public static function ChangeRectangleSize (rect:EntityShapeRectangle, width:Num
 //{
 //   if (isNaN (vertexIndex))
 //      return;
-//   
+//
 //   polyShape.DeleteVertex (vertexIndex);
 //}
 
 public static function ModifyPolyShapeVertexPositions (polyShape:EntityShapePolyShape, xyValues:Array, inWorldSpace:Boolean):void
 {
    var body:EntityBody = polyShape.GetBody ();
-      
+
    var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
    var isPhysicsShape:Boolean = polyShape.IsPhysicsShape ();
-   
+
    polyShape.SetVertexPositions (xyValues, inWorldSpace);
-   
+
    OnShapeGeometryChanged (body, isPhysicsBody, polyShape, isPhysicsShape);
 }
 
@@ -992,12 +1012,12 @@ private static function OnShapeGeometryChanged (body:EntityBody, isPhysicsBody:B
 public function ChangeDensity (newDensity:Number):void
 {
    var body:EntityBody = this.GetBody ();
-      
+
    var isPhysicsBody:Boolean = body.mNumPhysicsShapes > 0;
    var isPhysicsShape:Boolean = this.IsPhysicsShape ();
-   
+
    mDensity = newDensity;
-   
+
    OnShapeGeometryChanged (body, isPhysicsBody, this, isPhysicsShape);
 }
 
@@ -1009,31 +1029,31 @@ public function BreakupBrothers ():void
 {
    var oldBody:EntityBody = mBody;
    var oldBodyIsPhysics:Boolean = oldBody.mNumPhysicsShapes > 0;
-   
+
    var world:World = oldBody.GetWorld ();
-      
+
    var newBody:EntityBody;
    var shape:EntityShape;
    var isPhysicsShape:Boolean;
-   
+
    while (oldBody.mShapeListHead != null)
    {
       shape = oldBody.mShapeListHead;
-      
+
       isPhysicsShape = shape.IsPhysicsShape ();
-      
+
       if (isPhysicsShape)
       {
          shape.SynchronizeVelocityAndWorldCentroid ();
       }
-      
+
    // crete a new body
-      
+
       newBody = new EntityBody (world);
       world.RegisterEntity (newBody);
-      
+
       shape.SetBody (newBody);
-      
+
       if (isPhysicsShape)
       {
          shape.RebuildShapePhysics ();
@@ -1044,14 +1064,14 @@ public function BreakupBrothers ():void
       {
          newBody.OnShapeListChanged (false);
       }
-      
+
       shape.ReconnectJoints (); // shape may be a non-physics shape
-      
+
       newBody.SynchronizeWithPhysicsProxyManually ();
    }
-   
+
 // ..
-   
+
    oldBody.OnShapeListChanged (oldBodyIsPhysics); // destroy old body
    //oldBody.SynchronizeWithPhysicsProxyManually (); // no needs
 }
@@ -1060,14 +1080,14 @@ public static function DetachShape (aShape:EntityShape):void
 {
    if (aShape.IsTheOnlyShapeInBody ())
       return;
-   
+
    var isPhysicsShape:Boolean = aShape.IsPhysicsShape ();
-   
+
 // remove momentums from old body
-   
+
    var oldBody:EntityBody = aShape.GetBody ();
-   
-   // 
+
+   //
    var oldPositionX:Number = oldBody.mPositionX;
    var oldPositionY:Number = oldBody.mPositionY;
    var oldMass:Number = oldBody.GetMass ();
@@ -1085,14 +1105,14 @@ public static function DetachShape (aShape:EntityShape):void
    }
 
 // create a new body
-   
+
    var world:World = aShape.GetWorld ();
-   
+
    var newBody:EntityBody = new EntityBody (world);
    world.RegisterEntity (newBody);
-   
+
    aShape.SetBody (newBody);
-   
+
    if (isPhysicsShape)
    {
       aShape.RebuildShapePhysics ();
@@ -1103,19 +1123,19 @@ public static function DetachShape (aShape:EntityShape):void
    {
       newBody.OnShapeListChanged (false);
    }
-   
+
    aShape.ReconnectJoints (); // shape may be a non-physics shape
-   
+
    newBody.SynchronizeWithPhysicsProxyManually ();
-   
+
 // ...
 
    oldBody.OnShapeListChanged (isPhysicsShape);
    oldBody.SynchronizeWithPhysicsProxyManually ();
-   
+
 // ...
 
-   // 
+   //
    var newPositionX:Number = newBody.mPositionX;
    var newPositionY:Number = newBody.mPositionY;
    var newMass:Number = newBody.GetMass ();
@@ -1125,10 +1145,10 @@ public static function DetachShape (aShape:EntityShape):void
    //var newAngularMomentum:Number = newInertia * newBody.GetAngularVelocity ();
    var newForceX:Number = newBody.GetAccForceX ();
    var newForceY:Number = newBody.GetAccForceY ();
-   //var newTorque:Number = newBody.GetAccTorque ();   
-   
+   //var newTorque:Number = newBody.GetAccTorque ();
+
    // this block is not essential. Box2d will change the velocity of the old body automatically.
-   // 
+   //
    //oldBody.ClearVelocities ();
    //
    //if (oldBody.mNumPhysicsShapes > 0)
@@ -1139,7 +1159,7 @@ public static function DetachShape (aShape:EntityShape):void
    //   oldBody.ApplyAngularImpulse (oldAngularMomentum);
    //   oldBody.ApplyAngularImpulse (-newAngularMomentum);
    //}
-   
+
    oldBody.ClearPowers ();
    newBody.ClearPowers ();
 
@@ -1148,7 +1168,7 @@ public static function DetachShape (aShape:EntityShape):void
       oldBody.ApplyForceAtPoint (oldForceX * oldBody.GetMass () / oldMass, oldForceY * oldBody.GetMass () / oldMass, oldBody.mPositionX, oldBody.mPositionY);
       newBody.ApplyForceAtPoint (oldForceX * newMass / oldMass, oldForceY * newMass / oldMass, newPositionX, newPositionY);
    }
-   
+
    if (oldInertia > 0)
    {
       oldBody.ApplyTorque (oldTorque * oldBody.GetInertia () / oldInertia);
@@ -1159,14 +1179,14 @@ public static function DetachShape (aShape:EntityShape):void
 public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:EntityShape):void
 {
    var anotherBody:EntityBody = anotherShape.GetBody ();
-   
+
    if (anotherBody == oneBody)
       return;
-   
+
 // ...
 
    var oneBody:EntityBody = oneShape.GetBody ();
-   
+
    var keptBody:EntityBody;
    var discardedBody:EntityBody;
    if (oneBody.mNumPhysicsShapes > anotherBody.mNumPhysicsShapes)
@@ -1192,12 +1212,12 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
          discardedBody = oneBody;
       }
    }
-   
+
 // ...
-   
+
    var isDiscardedPhysicsBody:Boolean = discardedBody.mNumPhysicsShapes > 0;
    var isKeptPhysicsBody     :Boolean = keptBody.mNumPhysicsShapes > 0; // if isDiscardedPhysicsBody is true, then isKeptPhysicsBody must be true
-   
+
    //discardedBody.SynchronizeVelocityWithPhysicsProxy ();
    var discardPositionX:Number = discardedBody.mPositionX;
    var discardPositionY:Number = discardedBody.mPositionY;
@@ -1209,7 +1229,7 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
    var discardForceX:Number = discardedBody.GetAccForceX ();
    var discardForceY:Number = discardedBody.GetAccForceY ();
    var discardTorque:Number = discardedBody.GetAccTorque ();
-         
+
    //keptBody.SynchronizeVelocityWithPhysicsProxy ();
    var keptOldPositionX:Number = keptBody.mPositionX;
    var keptOldPositionY:Number = keptBody.mPositionY;
@@ -1221,7 +1241,7 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
    var keptOldForceX:Number = keptBody.GetAccForceX ();
    var keptOldForceY:Number = keptBody.GetAccForceY ();
    var keptOldTorque:Number = keptBody.GetAccTorque ();
-   
+
 // ...
 
    var shape:EntityShape;
@@ -1231,30 +1251,30 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
    while (discardedBody.mShapeListHead != null)
    {
       shape = discardedBody.mShapeListHead;
-      
+
       shape.SetBody (keptBody);
       if (shape.IsPhysicsShape ())
          shape.RebuildShapePhysics ();
-      
+
       shapesToReconnectJoints [--index] = shape;
       //shape.ReconnectJoints (); // put below now to optimize
    }
-   
+
 // ..
 
    keptBody.OnShapeListChanged (isDiscardedPhysicsBody);
-   
+
    index = shapesToReconnectJoints.length;
    while (-- index >= 0)
    {
       shape = shapesToReconnectJoints [index] as EntityShape;
       shape.ReconnectJoints ();
    }
-   
+
    keptBody.SynchronizeWithPhysicsProxyManually ();
 
 // ..
-   
+
    discardedBody.OnShapeListChanged (isDiscardedPhysicsBody); // this will destroy discardedBody
    //discardedBody.SynchronizeWithPhysicsProxyManually (); // no needs
 
@@ -1263,10 +1283,10 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
    if (isDiscardedPhysicsBody) // then the kept must be also is physics body
    {
       //keptBody.SynchronizeVelocityWithPhysicsProxy (); // body position may be changed in the last calling
-      
+
       //var newPositionX:Number = keptBody.mPositionX;
       //var newPositionY:Number = keptBody.mPositionY;
-      
+
       // conservation of momentum and angular momentum
       keptBody.ClearVelocities ();
       keptBody.ApplyLinearImpulse (discardMomentumX, discardMomentumY, discardPositionX, discardPositionY);
@@ -1276,24 +1296,24 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
 
 //trace ("discardMomentumX = " + discardMomentumX + ", discardMomentumY = " + discardMomentumY + ", discardAngularMomentum = " + discardAngularMomentum);
 //trace ("keptOldMomentumX = " + keptOldMomentumX + ", keptOldMomentumY = " + keptOldMomentumY + ", keptOldAngularMomentum = " + keptOldAngularMomentum);
-      
+
       // re-apply force and torques
       keptBody.ClearPowers ();
       keptBody.ApplyForceAtPoint (discardForceX, discardForceY, discardPositionX, discardPositionY);
       keptBody.ApplyForceAtPoint (keptOldForceX, keptOldForceY, keptOldPositionX, keptOldPositionY);
       keptBody.ApplyTorque (discardTorque);
       keptBody.ApplyTorque (keptOldTorque);
-   
+
       //var deltaMomentumX:Number = discardMomentumX + keptOldMomentumX - newMomentumX;
       //var deltaMomentumY:Number = discardMomentumY + keptOldMomentumY - newMomentumY;
-      
+
       //keptBody.mPhysicsProxyBody.AddLinearImpulseAtPoint (momentumX, momentumY, discardedBody.mPositionX, discardedBody.mPositionY);
       //keptBody.mPhysicsProxyBody.AddAngularImpulse (discardInertia * discardedBody.mAngularVelocity + (discardedBody.mPositionX - keptBody.mPositionX) * momentumY - (discardedBody.mPositionY - keptBody.mPositionY) * momentumX);
-      
+
       //keptBody.ApplyLinearImpulse (momentumX, momentumY, discardedBody.mPositionX, discardedBody.mPositionY);
       //keptBody.ApplyAngularImpulse (discardInertia * discardedBody.mAngularVelocity + (discardedBody.mPositionX - keptBody.mPositionX) * momentumY - (discardedBody.mPositionY - keptBody.mPositionY) * momentumX);
-      
-      // 
+
+      //
       //keptBody.SynchronizeVelocityWithPhysicsProxy ();
 //trace ("newMomentumX = " + keptBody.GetMass () * keptBody.mLinearVelocityX + ", newMomentumY = " + keptBody.GetMass () * keptBody.mLinearVelocityY + ", newAngularMomentum = " + keptBody.GetInertia () * keptBody.mAngularVelocity);
    }
@@ -1318,7 +1338,7 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
 //public function BreakupBrothers ():void
 //{
 //   var oldBody:EntityBody = mBody;
-//   
+//
 //   while (oldBody.mNumShapes > 1)
 //   {
 //      DetachShape (oldBody.mShapeListHead);
@@ -1328,45 +1348,45 @@ public static function AttachTwoShapes (oneShape:EntityShape, anotherShape:Entit
 //public function DetachThenAttachWith (anotherShape:EntityShape):void
 //{
 //   var anotherBody:EntityBody = anotherShape.GetBody ();
-//   
+//
 //   if (anotherBody == mBody)
 //      return;
-//   
+//
 //   var isPhysicsShape:Boolean = IsPhysicsShape ();
-//   
+//
 //   var oldBody:EntityBody = mBody;
-//   
+//
 //   SynchronizeVelocityAndWorldCentroid ();
-//   
+//
 //   SetBody (anotherBody);
 //   if (isPhysicsShape)
 //      RebuildShapePhysics ();
-//   
+//
 //// ...
-//   
+//
 //   var jointAnchor:SubEntityJointAnchor = mJointAnchorListHead;
 //   while (jointAnchor != null)
 //   {
 //      jointAnchor.mJoint.GetPhysicsProxyJoint ().ReconncetShape (this, jointAnchor.mAnchorIndex == 0);
-//      
+//
 //      jointAnchor = jointAnchor.mNextAnchor;
 //   }
-//   
+//
 //// ..
-//   
+//
 //   // now anotherBody == mBody
 //   anotherBody.OnShapeListChanged ();
-//   
+//
 //   if (isPhysicsShape)
 //      AddSelfMomentumToBody ();
-//   
+//
 //// ...
-//   
+//
 //   oldBody.OnShapeListChanged ();
 //}
 
 //================================================================
-// connections 
+// connections
 //================================================================
 
 public function BreakAllJoints ():void
@@ -1388,7 +1408,7 @@ public function BreakAllJointsOfIsland ():void
 }
 
 //================================================================
-// power 
+// power
 //================================================================
 
 // AddMomentumByLinearVelocity
@@ -1396,7 +1416,7 @@ public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity
 {
    var worldX:Number;
    var worldY:Number;
-   
+
    //>>> before v1.56
    //if (onBodyCenter)
    //{
@@ -1407,16 +1427,16 @@ public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity
    //{
    //   if (mPhysicsProxy == null)
    //      return;
-   //   
+   //
    //   //mBody.mNumPhysicsShapes > 0
    //}
    //<<<
-   
+
    //>>> from v1.56
    if (mBody.mNumPhysicsShapes == 0)
       return;
    //<<<
-   
+
    if (onBodyCenter || IsTheOnlyPhysicsShapeInBody ())
    {
       worldX = mBody.mPositionX;
@@ -1428,15 +1448,15 @@ public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity
       worldX = mWorldCentroidX;
       worldY = mWorldCentroidY;
    }
-   
+
    var momentumX:Number;
    var momentumY:Number;
-   
+
    if (valueIsVelocity)
    {
       // mMass is possible zero for many reasons
       var mass:Number = onBodyCenter ? mBody.GetMass () : mMass;
-      
+
       momentumX = mass * valueX;
       momentumY = mass * valueY;
    }
@@ -1445,7 +1465,7 @@ public function AddLinearMomentum (valueX:Number, valueY:Number, valueIsVelocity
       momentumX = valueX;
       momentumY = valueY;
    }
-   
+
    if (momentumX != 0.0 || momentumY != 0.0)
    {
       mBody.ApplyLinearImpulse (momentumX, momentumY, worldX, worldY);
@@ -1457,12 +1477,12 @@ public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = fals
    // non-physics will also be valid
    //if (mPhysicsProxy == null)
    //   return;
-   
+
    if (mBody.mNumPhysicsShapes == 0)
       return;
-   
+
    var momentum:Number;
-   
+
    if (valueIsVelocity)
    {
       momentum = mInertia * value;
@@ -1471,7 +1491,7 @@ public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = fals
    {
       momentum = value;
    }
-   
+
    if (momentum != 0.0)
    {
       mBody.ApplyAngularImpulse (momentum);
@@ -1479,20 +1499,19 @@ public function AddAngularMomentum (value:Number, valueIsVelocity:Boolean = fals
 }
 
 //================================================================
-// misc 
+// misc
 //================================================================
 
 public static function CreateParticle (world:World, createFrondOfEntity:Entity, posX:Number, posY:Number, velocityX:Number, velocityY:Number, density:Number, restitution:Number, lifeDuration:Number, color:uint, isVisible:Boolean, ccat:CollisionCategory):EntityShape_Particle
 {
    var body:EntityBody = new EntityBody (world);
    world.RegisterEntity (body);
-   
+
    var particle:EntityShape_Particle = new EntityShape_Particle (world, lifeDuration);
    world.RegisterEntity (particle);
-   
+
    particle.InitCustomPropertyValues (); // fixed in v1.56
-   // RegisterEventHandlersForEntity (particle); // maybe later to remove the comment
-   
+
    particle.SetPositionX (posX);
    particle.SetPositionY (posY);
    particle.SetLinearVelocityX (velocityX);
@@ -1503,21 +1522,33 @@ public static function CreateParticle (world:World, createFrondOfEntity:Entity, 
    particle.SetVisible (isVisible);
    particle.SetBody (body);
    particle.SetCollisionCategory (ccat);
-   
+
    particle.RebuildShapePhysics ();
-   
+
    body.OnShapeListChanged (true);
    body.AddShapeMomentums ();
-   
+
    body.SynchronizeWithPhysicsProxyManually ();
    particle.SynchronizeWithPhysicsProxy ();
-   
+
    //...
    if (createFrondOfEntity != null)
    {
       particle.AdjustAppearanceOrder (createFrondOfEntity, true);
    }
-   
+
+   // for efficiency, currently, event handlers are not registered on particles
+
+   // NOTE: EntityShape_Particle class overrides RegisterEventHandler function with a blank one.
+
+   // world.RegisterEventHandlersForEntity (true, particle);
+   // particle.OnCreated ();
+   // if (world.ShouldInitRuntimeCteatedEntitiesManually ())
+   // {
+   //    world.RegisterEventHandlersForEntity (false, particle);
+   //    particle.Initialize ();
+   // }
+
    // ...
    return particle;
 }

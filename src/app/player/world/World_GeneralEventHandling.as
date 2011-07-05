@@ -6,41 +6,74 @@
    {
       if (eventId < 0 || eventId >= IdPool.NumEventTypes || eventHandler == null)
          return;
-      
+
       // ...
-      
+
       var new_element:ListElement_EventHandler = new ListElement_EventHandler (eventHandler);
       new_element.mNextListElement = mAllEventHandlers;
-      
+
       mAllEventHandlers = new_element;
-      
+
       // ...
-      
+
       var new_element_by_type:ListElement_EventHandler = new ListElement_EventHandler (eventHandler);
       new_element_by_type.mNextListElement = mEventHandlersByTypes [eventId];
-      
+
       mEventHandlersByTypes [eventId] = new_element_by_type;
    }
-   
+
    public function GetEventHandlerList ():ListElement_EventHandler
    {
       return mAllEventHandlers;
    }
-   
+
    // "entity == null" means for all entities placed in editor
-   public function RegisterEventHandlersForEntity (entity:Entity = null):void
+   // "entity != null" is mainly used for runtime-created entities
+   public function RegisterEventHandlersForEntity (forOnEntityCreatedEventHandlers:Boolean, entity:Entity = null):void
    {
-      var list_element_eventHandler:ListElement_EventHandler = mAllEventHandlers;
-            
+      var list_element_eventHandler:ListElement_EventHandler;
       var eventHandler:EntityEventHandler;
 
-      while (list_element_eventHandler != null)
+      if (forOnEntityCreatedEventHandlers)
       {
-         eventHandler = list_element_eventHandler.mEventHandler;
-         
-         eventHandler.RegisterToEntityEventHandlerLists (entity);
-         
-         list_element_eventHandler = list_element_eventHandler.mNextListElement;
+         list_element_eventHandler = mEventHandlersByTypes [CoreEventIds.ID_OnEntityCreated];
+
+         while (list_element_eventHandler != null)
+         {
+            eventHandler = list_element_eventHandler.mEventHandler;
+
+            eventHandler.RegisterToEntityEventHandlerLists (entity);
+
+            list_element_eventHandler = list_element_eventHandler.mNextListElement;
+         }
+      }
+      else
+      {
+         list_element_eventHandler = mAllEventHandlers;
+
+         while (list_element_eventHandler != null)
+         {
+            eventHandler = list_element_eventHandler.mEventHandler;
+
+            if (eventHandler.GetEventId () != CoreEventIds.ID_OnEntityCreated)
+            {
+               eventHandler.RegisterToEntityEventHandlerLists (entity);
+            }
+
+            list_element_eventHandler = list_element_eventHandler.mNextListElement;
+         }
+      }
+   }
+
+   // used for runtime-created entities
+   public function RegisterEventHandlersForRuntimeCreatedEntities (forOnEntityCreatedEventHandlers:Boolean, entities:Array):void
+   {
+      if (entities == null)
+         return;
+
+      for each (var entity:Entity in entities)
+      {
+         RegisterEventHandlersForEntity (forOnEntityCreatedEventHandlers, entity);
       }
    }
 
@@ -51,12 +84,12 @@
    public function HandleEventById (eventId:int, valueSourceList:Parameter = null):void
    {
       var handler_element:ListElement_EventHandler = mEventHandlersByTypes [eventId];
-      
+
       IncStepStage ();
       while (handler_element != null)
       {
          handler_element.mEventHandler.HandleEvent (valueSourceList);
-         
+
          handler_element = handler_element.mNextListElement;
       }
    }
@@ -90,12 +123,12 @@
             break;
       }
    }
-   
+
    public function HandleTimerEvents ():void
    {
       var timerHandler:EntityEventHandler_Timer;
       var next:EntityEventHandler_Timer;
-      
+
       timerHandler = mHandlerToDelayRunListHead_EntityTimer;
       mHandlerToDelayRunListHead_EntityTimer = null;
       IncStepStage ();
@@ -107,7 +140,7 @@
          timerHandler.mIsAlreadyInDelayRunList = false;
          timerHandler = next;
       }
-      
+
       timerHandler = mHandlerToDelayRunListHead_EntityPairTimer;
       mHandlerToDelayRunListHead_EntityPairTimer = null;
       IncStepStage ();
@@ -119,7 +152,7 @@
          timerHandler.mIsAlreadyInDelayRunList = false;
          timerHandler = next;
       }
-      
+
       timerHandler = mHandlerToDelayRunListHead_WorldTimer;
       mHandlerToDelayRunListHead_WorldTimer = null;
       IncStepStage ();

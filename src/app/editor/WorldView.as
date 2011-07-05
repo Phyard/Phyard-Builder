@@ -138,6 +138,7 @@ package editor {
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
+   import editor.trigger.entity.EntityEventHandler_JointReachLimit;
    import editor.trigger.entity.EntityAction;
    
    import editor.trigger.entity.InputEntitySelector;
@@ -2067,6 +2068,7 @@ package editor {
       public var ShowKeyboardEventHandlerSettingDialog:Function = null;
       public var ShowMouseEventHandlerSettingDialog:Function = null;
       public var ShowContactEventHandlerSettingDialog:Function = null;
+      public var ShowJointReachLimitEventHandlerSettingDialog:Function = null;
       public var ShowActionSettingDialog:Function = null;
       public var ShowEntityAssignerSettingDialog:Function = null;
       public var ShowEntityPairAssignerSettingDialog:Function = null;
@@ -2162,6 +2164,10 @@ package editor {
                else if (entity is EntityEventHandler_Contact)
                {
                   ShowContactEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
+               }
+               else if (entity is EntityEventHandler_JointReachLimit)
+               {
+                  ShowJointReachLimitEventHandlerSettingDialog (values, ConfirmSettingEntityProperties);
                }
                else
                {
@@ -3815,6 +3821,10 @@ package editor {
                case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
                   handler = mEditorWorld.CreateEntityEventHandler_Contact (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
+               case CoreEventIds.ID_OnJointReachLowerLimit:
+                     case CoreEventIds.ID_OnJointReachUpperLimit:
+                  handler = mEditorWorld.CreateEntityEventHandler_JointReachLimit (int(options.mDefaultEventId), options.mPotientialEventIds);
+                  break;
                default:
                   handler = mEditorWorld.CreateEntityEventHandler (int(options.mDefaultEventId), options.mPotientialEventIds);
                   break;
@@ -4501,10 +4511,10 @@ package editor {
                   
                   //contact_event_handler.ChangeContactEventId (params.mEventId);
                }
-               //else if (entity is EntityEventHandler_JointReachLimit)
-               //{
-                  // seems EntityEventHandler_Contact and EntityEventHandler_Mouse class are not essential now after ChangeToIsomorphicEventId is added.
-               //}
+               else if (entity is EntityEventHandler_JointReachLimit)
+               {
+                   var jointReachLimit_event_handler:EntityEventHandler_JointReachLimit = entity as EntityEventHandler_JointReachLimit;
+               }
                
                if (params.mEventId != event_handler.GetEventId ())
                {

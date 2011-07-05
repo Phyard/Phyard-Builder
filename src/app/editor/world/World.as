@@ -51,6 +51,7 @@ package editor.world {
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
+   import editor.trigger.entity.EntityEventHandler_JointReachLimit;
    import editor.trigger.entity.EntityAction;
    
    import editor.trigger.entity.EntityFunctionPackage;
@@ -1164,6 +1165,17 @@ package editor.world {
             return null;
          
          var handler:EntityEventHandler_Contact = new EntityEventHandler_Contact (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         return handler;
+      }
+      
+      public function CreateEntityEventHandler_JointReachLimit (defaultEventId:int, potientialEventIds:Array = null):EntityEventHandler_JointReachLimit
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+         
+         var handler:EntityEventHandler_JointReachLimit = new EntityEventHandler_JointReachLimit (this, defaultEventId, potientialEventIds);
          addChild (handler);
          
          return handler;

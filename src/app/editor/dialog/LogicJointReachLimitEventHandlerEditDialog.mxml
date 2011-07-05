@@ -20,10 +20,14 @@
          <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
          <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
          <mx:Spacer height="100%" />
-         <mx:VBox width="100%" id="HanlderBasicSettingPanel" creationComplete="OnHanlderBasicSettingPanelCreationComplete()">
-            <mx:RadioButton groupName="EventType" id="RadioButton_LowerLimit" value="LowerLimit" label="Reach Lower Limit" />
-            <mx:RadioButton groupName="EventType" id="RadioButton_UpperLimit" value="UpperLimit" label="Reach Upper Limit" />
-         </mx:VBox>
+         <mx:HBox width="100%" id="HanlderBasicSettingPanel" creationComplete="OnHanlderBasicSettingPanelCreationComplete()">
+            <mx:Spacer width="100%"/>
+            <mx:VBox>
+               <mx:RadioButton groupName="EventType" id="RadioButton_LowerLimit" value="LowerLimit" label="Reach Lower Limit" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_UpperLimit" value="UpperLimit" label="Reach Upper Limit" />
+            </mx:VBox>
+            <mx:Spacer width="100%"/>
+         </mx:HBox>
          <mx:Spacer height="100%" />
       </mx:VBox>
    </mx:TabNavigator>

@@ -831,6 +831,7 @@
                MainView.ShowKeyboardEventHandlerSettingDialog = ShowKeyboardEventHandlerSettingDialog;
                MainView.ShowMouseEventHandlerSettingDialog = ShowMouseEventHandlerSettingDialog;
                MainView.ShowContactEventHandlerSettingDialog = ShowContactEventHandlerSettingDialog;
+               MainView.ShowJointReachLimitEventHandlerSettingDialog = ShowJointReachLimitEventHandlerSettingDialog;
                
                MainView.ShowConditionDoorSettingDialog = ShowConditionDoorSettingDialog;
                MainView.ShowTaskSettingDialog = ShowTaskSettingDialog;
@@ -1822,6 +1823,18 @@
                OnOpenDialog ();
                
                var settingDialog:LogicShapeContactEventHandlerEditDialog = new LogicShapeContactEventHandlerEditDialog ();
+               settingDialog.SetValues (initialValues);
+               settingDialog.SetConfirmFunc (onConfirmFunc);
+               settingDialog.SetCloseFunc (OnCloseDialog);
+               PopUpManager.addPopUp (settingDialog, MainView, true);
+               PopUpManager.centerPopUp (settingDialog);
+            }
+            
+            private function ShowJointReachLimitEventHandlerSettingDialog (initialValues:Object, onConfirmFunc:Function):void
+            {
+               OnOpenDialog ();
+               
+               var settingDialog:LogicJointReachLimitEventHandlerEditDialog = new LogicJointReachLimitEventHandlerEditDialog ();
                settingDialog.SetValues (initialValues);
                settingDialog.SetConfirmFunc (onConfirmFunc);
                settingDialog.SetCloseFunc (OnCloseDialog);

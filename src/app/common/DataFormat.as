@@ -48,6 +48,7 @@ package common {
    import editor.trigger.entity.EntityEventHandler_Keyboard;
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
+   import editor.trigger.entity.EntityEventHandler_JointReachLimit;
    
    import editor.trigger.entity.EntityFunction;
    
@@ -316,6 +317,10 @@ package common {
                   else if (editorEntity is EntityEventHandler_Contact)
                   {
                      var contactEventHandler:EntityEventHandler_Contact = eventHandler as EntityEventHandler_Contact;
+                  }
+                  else if (editorEntity is EntityEventHandler_JointReachLimit)
+                  {
+                     var jointReachLimitEventHandler:EntityEventHandler_JointReachLimit = eventHandler as EntityEventHandler_JointReachLimit;
                   }
                   //<<
                   
@@ -1009,6 +1014,10 @@ package common {
                      case CoreEventIds.ID_OnTwoPhysicsShapesEndContacting:
                         entity = logic = editorWorld.CreateEntityEventHandler_Contact (entityDefine.mEventId);
                         break;
+                     case CoreEventIds.ID_OnJointReachLowerLimit:
+                     case CoreEventIds.ID_OnJointReachUpperLimit:
+                        entity = logic = editorWorld.CreateEntityEventHandler_JointReachLimit (entityDefine.mEventId);
+                        break;
                      default:
                         entity = logic = editorWorld.CreateEntityEventHandler (entityDefine.mEventId);
                         break;
@@ -1612,6 +1621,10 @@ package common {
                      else if (eventHandler is EntityEventHandler_Contact)
                      {
                         var contactEventHandler:EntityEventHandler_Contact = eventHandler as EntityEventHandler_Contact;
+                     }
+                     else if (eventHandler is EntityEventHandler_JointReachLimit)
+                     {
+                        var jointReachLimitEventHandler:EntityEventHandler_JointReachLimit = eventHandler as EntityEventHandler_JointReachLimit;
                      }
                   }
                   //<<

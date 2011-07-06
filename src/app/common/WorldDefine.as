@@ -28,6 +28,7 @@ package common {
       public var mDefaultCollisionCategoryIndex:int = Define.CCatId_Hidden;
       public var mCollisionCategoryFriendLinkDefines:Array = new Array ();
       
+      public var mSessionVariableDefines:Array = new Array (); // from v1.57
       //public var mGlobalVariableSpaceDefines:Array = new Array (); // v1.52 only
       //public var mEntityPropertySpaceDefines:Array = new Array (); // v1.52 only
       public var mGlobalVariableDefines:Array = new Array ();

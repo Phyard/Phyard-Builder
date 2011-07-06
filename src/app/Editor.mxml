@@ -1053,7 +1053,7 @@
                   }
                   xml.appendChild (<menuitem label="Save Offline (xml) ..." data="save_offline"/>);
                   //xml.appendChild (<menuitem label="Save Local ..." data="save_local"/>);
-                  xml.appendChild (<menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/>);
+                  //xml.appendChild (<menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/>);
                   xml.appendChild (<menuitem label="Export Selected Entities to System Clipborad" data="export_selected_entities"/>);
                   //xml.appendChild (<menuitem label="Export All Functions to System Clipborad" data="export_all_functions"/>);
                   
@@ -1106,7 +1106,7 @@
                   }
                   xml.appendChild (<menuitem label="Load Offline (xml) ..." data="load_offline"/>);
                   //xml.appendChild (<menuitem label="Load Local ..." data="load_local"/>);
-                  xml.appendChild (<menuitem label="Quick Load ..." data="load_quick"/>);
+                  //xml.appendChild (<menuitem label="Quick Load ..." data="load_quick"/>);
                   xml.appendChild (<menuitem label="Import ..." data="import"/>);
                   //xml.appendChild (<menuitem label="Import Functions Only ..." data="import_functions"/>);
                   

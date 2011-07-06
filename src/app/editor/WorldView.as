@@ -4404,31 +4404,45 @@ package editor {
 //   set properties
 //=================================================================================
       
+      private var mLastSessionVariableSpaceModifiedTimes:int = 0;
       private var mLastGlobalVariableSpaceModifiedTimes:int = 0;
       private var mLastEntityVariableSpaceModifiedTimes:int = 0;
       
       public function StartSettingEntityProperties ():void
       {
+         mLastSessionVariableSpaceModifiedTimes = mEditorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes ();
          mLastGlobalVariableSpaceModifiedTimes = mEditorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes ();
          mLastEntityVariableSpaceModifiedTimes = mEditorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes ();
       }
       
       public function CancelSettingEntityProperties ():void
       {
+         var sessionVariableSpaceModified:Boolean = mEditorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetNumModifiedTimes () > mLastSessionVariableSpaceModifiedTimes;
          var globalVariableSpaceModified:Boolean = mEditorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetNumModifiedTimes () > mLastGlobalVariableSpaceModifiedTimes;
          var entityVariableSpaceModified:Boolean = mEditorWorld.GetTriggerEngine ().GetEntityVariableSpace ().GetNumModifiedTimes () > mLastEntityVariableSpaceModifiedTimes;
          
-         if (globalVariableSpaceModified && entityVariableSpaceModified)
+         if (sessionVariableSpaceModified || globalVariableSpaceModified || entityVariableSpaceModified)
          {
-            CreateUndoPoint ("Global variables and custom entity proeprties are changed", null, null);
-         }
-         else if (globalVariableSpaceModified)
-         {
-            CreateUndoPoint ("Global variables are changed", null, null);
-         }
-         else if (entityVariableSpaceModified)
-         {
-            CreateUndoPoint ("Custom entity proeprties are changed", null, null);
+            var message:String = "Custom variables (";
+            
+            var first:Boolean = true;
+            if (sessionVariableSpaceModified)
+            {
+               message = message + "session";
+               first = false;
+            }
+            if (globalVariableSpaceModified)
+            {
+               message = message + (first ? "global" : (entityVariableSpaceModified ? ", global" : "and global"));
+               first = false;
+            }
+            if (entityVariableSpaceModified)
+            {
+               message = message + (first ? "entity property" : "and entity property");
+               first = false;
+            }
+            
+            message = message + ") are modified";
          }
       }
       

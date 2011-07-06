@@ -319,7 +319,7 @@ package common {
          if (isLoaingFromStretch)
          {
             //Global.InitCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
-            Global.InitCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines);
+            Global.InitCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines);
          }
          else
          {
@@ -630,6 +630,11 @@ package common {
 
          if (worldDefine.mVersion >= 0x0152)
          {
+            if (worldDefine.mVersion >= 0x0157)
+            {
+               xml.SessionVariables = <SessionVariables />
+            }
+            
             xml.GlobalVariables = <GlobalVariables />
             xml.EntityProperties = <EntityProperties />
          }
@@ -763,6 +768,10 @@ package common {
             }
             else
             {
+               if (worldDefine.mVersion >= 0x0157)
+               {
+                  TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mSessionVariableDefines, xml.SessionVariables [0], true);
+               }
                TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mGlobalVariableDefines, xml.GlobalVariables [0], true);
                TriggerFormatHelper2.VariablesDefine2Xml (worldDefine.mEntityPropertyDefines, xml.EntityProperties [0], true);
             }
@@ -1963,6 +1972,11 @@ package common {
          // custom variables
          if (worldDefine.mVersion >= 0x0152)
          {
+            if (worldDefine.mVersion >= 0x0157)
+            {
+               TriggerFormatHelper2.LoadVariableDefinesFromBinFile (byteArray, worldDefine.mSessionVariableDefines, true);
+            }
+            
             //var numSpaces:int;
             //var spaceId:int;
             //var variableSpaceDefine:VariableSpaceDefine;
@@ -2319,6 +2333,7 @@ package common {
               //}
               //<<
 
+              TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mSessionVariableDefines);
               TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mGlobalVariableDefines);
               TriggerFormatHelper2.AdjustNumberPrecisionsInVariableDefines (worldDefine.mEntityPropertyDefines);
          //}

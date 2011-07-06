@@ -147,6 +147,9 @@
          {
             switch (variableSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_Session:
+                  codeSnippetEditPanel.OnSessionVariablesEditingDialogClosed ();
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   codeSnippetEditPanel.OnGlobalVariablesEditingDialogClosed ();
                   break;

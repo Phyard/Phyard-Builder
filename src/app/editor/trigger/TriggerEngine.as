@@ -47,6 +47,9 @@ package editor.trigger {
       private var mRegisterVariableSpace_CollisionCategory:VariableSpaceRegister;
       private var mRegisterVariableSpace_Array            :VariableSpaceRegister;
       
+      // custom session variables
+      private var mSessionVariableSpace:VariableSpaceSession;
+      
       // custom global variables
       private var mGlobalVariableSpace:VariableSpaceGlobal;
       
@@ -74,6 +77,10 @@ package editor.trigger {
          mRegisterVariableSpace_CollisionCategory = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_CollisionCategory);
          mRegisterVariableSpace_Array             = new VariableSpaceRegister (this, ValueTypeDefine.ValueType_Array);
          
+         // custom session variable space
+         
+         mSessionVariableSpace = new VariableSpaceSession (this);
+         
          // custom global variable space
          
          mGlobalVariableSpace = new VariableSpaceGlobal (this);
@@ -83,6 +90,9 @@ package editor.trigger {
          mEntityVariableSpace = new VariableSpaceEntity (this);
          
          // ...
+         
+         HideSessionVariablesEditDialog ();
+         mSessionVariablesEditDialog = null;
          
          HideGlobalVariablesEditDialog ();
          mGlobalVariablesEditDialog = null;
@@ -180,6 +190,71 @@ package editor.trigger {
                return mRegisterVariableSpace_Array;
             default:
                return null;
+         }
+      }
+      
+   //========================================================================================================
+   // session variable edit dialog
+   //========================================================================================================
+      
+      private static var mSessionVariablesEditDialog:VariablesEditDialog = null;
+      private static var mSessionVariablesEditDialogVisible:Boolean = false;
+      
+      public function ShowSessionVariablesEditDialog (parent:DisplayObject):void
+      {
+         var toCreate:Boolean = (mSessionVariablesEditDialog == null);
+         if (toCreate)
+         {
+            mSessionVariablesEditDialog = new VariablesEditDialog ();
+            mSessionVariablesEditDialog.SetTitle ("Session Variables Editing");
+            mSessionVariablesEditDialog.SetCloseFunc (HideSessionVariablesEditDialog);
+            //mSessionVariablesEditDialog.visible = false; // useless, when change to true first ime, show-event will not triggered
+         }
+         
+         mSessionVariablesEditDialog.SetVariableSpace (mSessionVariableSpace);
+         
+         if (! mSessionVariablesEditDialogVisible)
+         {
+            PopUpManager.addPopUp (mSessionVariablesEditDialog, parent, true);
+            mSessionVariablesEditDialogVisible = true;
+            mSessionVariablesEditDialog.visible = true;
+         }
+         
+         if (toCreate)
+         {
+            PopUpManager.centerPopUp (mSessionVariablesEditDialog);
+         }
+         
+         PopUpManager.bringToFront (mSessionVariablesEditDialog);
+      }
+      
+      public function HideSessionVariablesEditDialog ():void
+      {
+         if (mSessionVariablesEditDialog != null && mSessionVariablesEditDialogVisible)
+         {
+            mSessionVariablesEditDialog.visible = false;
+            
+            PopUpManager.removePopUp (mSessionVariablesEditDialog);
+            
+            if (Runtime.mSessionVariablesEditingDialogClosedCallBack != null)
+            {
+               Runtime.mSessionVariablesEditingDialogClosedCallBack ();
+            }
+         }
+         
+         mSessionVariablesEditDialogVisible = false;
+      }
+      
+      public function GetSessionVariableSpace ():VariableSpaceSession
+      {
+         return mSessionVariableSpace;
+      }
+      
+      public function NotifySessionVariableSpaceModified ():void
+      {
+         if (mSessionVariablesEditDialog != null)
+         {
+            mSessionVariablesEditDialog.NotifyVariableSpaceModified ();
          }
       }
       

@@ -34,6 +34,8 @@ package player.design
       
       public static var mRandomNumberGenerators:Array;
       
+      public static var mSessionVariableSpace:VariableSpace;
+      
       //public static var mGlobalVariableSpaces:Array;
       public static var mGlobalVariableSpace:VariableSpace;
       
@@ -74,6 +76,7 @@ package player.design
          
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
          
+         mSessionVariableSpace = null;
          mGlobalVariableSpace = null;
          mEntityVariableSpace = null;
          
@@ -129,7 +132,7 @@ package player.design
       }
       
       //public static function InitCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
-      public static function InitCustomVariables (globalVarialbeDefines:Array, entityVarialbeDefines:Array):void
+      public static function InitCustomVariables (globalVarialbeDefines:Array, entityVarialbeDefines:Array, sessionVariableDefines:Array):void // sessionVariableDefines added from v1.57
       {
          //>> v1.52 only
          //var numSpaces:int;
@@ -151,8 +154,14 @@ package player.design
          //}
          //<<
          
+         mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines);
          mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines);
          mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines);
+      }
+      
+      public static function GetSessionVariableSpace ():VariableSpace
+      {
+         return mSessionVariableSpace;
       }
       
       public static function GetGlobalVariableSpace ():VariableSpace

@@ -12,5 +12,6 @@ package common.trigger {
       public static const ValueSpace_GlobalRegister:int   = 0x5;
       //public static const ValueSpace_LocalRegister:int   = 0x6; // seems not a good idea
       public static const ValueSpace_Entity:int   = 0x7;
+      public static const ValueSpace_Session:int   = 0x8;
    }
 }

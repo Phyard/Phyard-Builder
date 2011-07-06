@@ -473,8 +473,8 @@ package common {
             
             switch (variable_source_define.mSpaceType)
             {
-               case ValueSpaceTypeDefine.ValueSpace_Global:
-                  variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
+               case ValueSpaceTypeDefine.ValueSpace_Session:
+                  variable_instance = editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
@@ -537,6 +537,9 @@ package common {
             
             switch (variable_target_define.mSpaceType)
             {
+               case ValueSpaceTypeDefine.ValueSpace_Session:
+                  variable_instance = editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
@@ -1163,7 +1166,7 @@ package common {
          codeSnippet.AdjustNumberPrecisions ();
       }
       
-      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int):void
+      public static function ShiftReferenceIndexesInCodeSnippetDefine (editorWorld:World, codeSnippetDefine:CodeSnippetDefine, isCustomCodeSnippet:Boolean, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, beginningCustomFunctionIndex:int, sessionVariableShiftIndex:int):void
       {
          var funcCallingDefine:FunctionCallingDefine;
          var i:int;
@@ -1199,13 +1202,13 @@ package common {
                   var numInputs:int = funcCallingDefine.mNumInputs;
                   for (j = 0; j < numInputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+                     ShiftReferenceIndexesInValueSourceDefine (funcCallingDefine.mInputValueSourceDefines [j] as ValueSourceDefine, funcDclaration.GetInputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex);
                   }
                   
                   var numOutputs:int = funcCallingDefine.mNumOutputs;
                   for (j = 0; j < numOutputs; ++ j)
                   {
-                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+                     ShiftReferenceIndexesInValueTargetDefine (funcCallingDefine.mOutputValueTargetDefines [j] as ValueTargetDefine, funcDclaration.GetOutputParamValueType (j), entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex);
                   }
                //}
                //else
@@ -1215,7 +1218,7 @@ package common {
          }
       }
       
-      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int):void
+      public static function ShiftReferenceIndexesInValueSourceDefine (sourceDefine:ValueSourceDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int):void
       {
          var valueSourceType:int = sourceDefine.GetValueSourceType ();
          
@@ -1242,9 +1245,19 @@ package common {
          {
             var variableSourceDefine:ValueSourceDefine_Variable = sourceDefine as ValueSourceDefine_Variable;
             
+            var variableIndex:int;
+            
+            if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+            {
+               variableIndex = variableSourceDefine.mVariableIndex;
+               
+               if (variableIndex >= 0)
+                  variableSourceDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
+            }
+            
             if (variableSourceDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
             {
-               var variableIndex:int = variableSourceDefine.mVariableIndex;
+               variableIndex = variableSourceDefine.mVariableIndex;
                
                if (variableIndex >= 0)
                   variableSourceDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
@@ -1258,11 +1271,11 @@ package common {
             if (propertyId >= 0)
                propertySourceDefine.mPropertyId = propertyId + entityVariableShiftIndex;
             
-            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+            ShiftReferenceIndexesInValueSourceDefine (propertySourceDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex);
          }
       }
       
-      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int):void
+      public static function ShiftReferenceIndexesInValueTargetDefine (targetDefine:ValueTargetDefine, valueType:int, entityIdShiftedValue:int, ccatIdShiftedValue:int, globalVariableShiftIndex:int, entityVariableShiftIndex:int, sessionVariableShiftIndex:int):void
       {
          var valueTargetType:int = targetDefine.GetValueTargetType ();
          
@@ -1270,9 +1283,19 @@ package common {
          {
             var variableTargetDefine:ValueTargetDefine_Variable = targetDefine as ValueTargetDefine_Variable;
             
+            var variableIndex:int;
+            
+            if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Session)
+            {
+               variableIndex = variableTargetDefine.mVariableIndex;
+               
+               if (variableIndex >= 0)
+                  variableTargetDefine.mVariableIndex = variableIndex + sessionVariableShiftIndex;
+            }
+            
             if (variableTargetDefine.mSpaceType == ValueSpaceTypeDefine.ValueSpace_Global)
             {
-               var variableIndex:int = variableTargetDefine.mVariableIndex;
+               variableIndex = variableTargetDefine.mVariableIndex;
                
                if (variableIndex >= 0)
                   variableTargetDefine.mVariableIndex = variableIndex + globalVariableShiftIndex;
@@ -1286,7 +1309,7 @@ package common {
             if (propertyId >= 0)
                propertyTargetDefine.mPropertyId = propertyId + entityVariableShiftIndex;
             
-            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex);
+            ShiftReferenceIndexesInValueSourceDefine (propertyTargetDefine.mEntityValueSourceDefine, ValueTypeDefine.ValueType_Entity, entityIdShiftedValue, ccatIdShiftedValue, globalVariableShiftIndex, entityVariableShiftIndex, sessionVariableShiftIndex);
          }
       }
    }

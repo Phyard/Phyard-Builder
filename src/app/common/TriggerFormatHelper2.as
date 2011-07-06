@@ -499,6 +499,12 @@ package common {
             
             switch (value_space_type)
             {
+               case ValueSpaceTypeDefine.ValueSpace_Session:
+                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_source = new Parameter_Variable (variable_instance);
+                  
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)
@@ -561,6 +567,12 @@ package common {
             
             switch (value_space_type)
             {
+               case ValueSpaceTypeDefine.ValueSpace_Session:
+                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableAt (variable_index);
+                  if (variable_instance != null)
+                     value_target = new Parameter_Variable (variable_instance);
+                  
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableAt (variable_index);
                   if (variable_instance != null)

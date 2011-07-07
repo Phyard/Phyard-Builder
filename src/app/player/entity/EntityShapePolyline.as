@@ -41,6 +41,8 @@ package player.entity {
                SetCurveThickness (mWorld.GetCoordinateSystem ().D2P_Length (entityDefine.mCurveThickness));
             if (entityDefine.mIsRoundEnds != undefined)
                SetRoundEnds (entityDefine.mIsRoundEnds);
+            if (entityDefine.mIsClosed != undefined)
+               SetClosed (entityDefine.mIsClosed);
          }
       }
       
@@ -62,8 +64,9 @@ package player.entity {
 //   
 //=============================================================
       
-      protected var mCurveThickness:Number = 1.0; 
-      protected var mIsRoundEnds:Boolean = true;
+      protected var mCurveThickness:Number = 1.0;  // from v?.??
+      protected var mIsRoundEnds:Boolean = true; // from v1.08
+      protected var mIsClosed:Boolean = true; // from v1.57
 
       public function SetCurveThickness (thickness:Number):void
       {
@@ -82,7 +85,17 @@ package player.entity {
       
       public function IsRoundEnds ():Boolean
       {
-         return mIsRoundEnds;
+         return mIsClosed || mIsRoundEnds;
+      }
+      
+      public function SetClosed (closed:Boolean):void
+      {
+         mIsClosed = closed;
+      }
+      
+      public function IsClosed ():Boolean
+      {
+         return mIsClosed;
       }
       
 //=============================================================
@@ -102,7 +115,7 @@ package player.entity {
             
             var displayCurveThickness:Number = mWorld.GetCoordinateSystem ().P2D_Length (mCurveThickness);
             
-            GraphicsUtil.ClearAndDrawPolyline (mLineShape, mLocalDisplayPoints, GetFilledColor (), displayCurveThickness, mIsRoundEnds);
+            GraphicsUtil.ClearAndDrawPolyline (mLineShape, mLocalDisplayPoints, GetFilledColor (), displayCurveThickness, IsRoundEnds (), IsClosed ());
          }
          
          if (mNeedUpdateAppearanceProperties)
@@ -122,7 +135,7 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null)
          {
-            mPhysicsShapeProxy.AddPolyline (mIsStatic, mLocalPoints, mCurveThickness, mIsRoundEnds);
+            mPhysicsShapeProxy.AddPolyline (mIsStatic, mLocalPoints, mCurveThickness, IsRoundEnds (), IsClosed ());
          }
       }
       

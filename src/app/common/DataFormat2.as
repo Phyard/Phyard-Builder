@@ -1133,6 +1133,11 @@ package common {
                   {
                      element.@round_ends = entityDefine.mIsRoundEnds ? 1 : 0;
                   }
+                  
+                  if (worldDefine.mVersion >= 0x0157)
+                  {
+                     element.@closed = entityDefine.mIsClosed ? 1 : 0
+                  }
 
                   element.LocalVertices = <LocalVertices />
                   for (vertexId = 0; vertexId < entityDefine.mLocalPoints.length; ++ vertexId)
@@ -1767,6 +1772,11 @@ package common {
                      if (worldDefine.mVersion >= 0x0108)
                      {
                         entityDefine.mIsRoundEnds = byteArray.readByte () != 0;
+                     }
+                  
+                     if (worldDefine.mVersion >= 0x0157)
+                     {
+                        entityDefine.mIsClosed = byteArray.readByte () != 0;
                      }
 
                      entityDefine.mLocalPoints = new Array ( byteArray.readShort () );
@@ -2515,6 +2525,11 @@ package common {
                      if (worldDefine.mVersion < 0x0108)
                      {
                         entityDefine.mIsRoundEnds = true;
+                     }
+                     
+                     if (worldDefine.mVersion < 0x0157)
+                     {
+                        entityDefine.mIsClosed = false;
                      }
                   }
                }

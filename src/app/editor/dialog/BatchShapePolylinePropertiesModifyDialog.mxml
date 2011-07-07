@@ -18,6 +18,11 @@
             <mx:Label text="(pixels)" id="Label_CurveThicknessUnit" enabled="false" textAlign="left"/>
          </mx:HBox>
          <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_Closed_Modify" label="" click="CheckBox_Closed.enabled=CheckBox_Closed_Modify.selected;"/>
+            <mx:Label visible="false" width="87"/>
+            <mx:CheckBox id="CheckBox_Closed" enabled="false" label="Closed"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
             <mx:CheckBox id="CheckBox_RoundEnds_Modify" label="" click="CheckBox_RoundEnds.enabled=CheckBox_RoundEnds_Modify.selected;"/>
             <mx:Label visible="false" width="87"/>
             <mx:CheckBox id="CheckBox_RoundEnds" enabled="false" label="Round Ends"/>
@@ -67,6 +72,10 @@
             returnValues.mToModifyCurveThickness = CheckBox_CurveThickness_Modify.selected;
             if (returnValues.mToModifyCurveThickness)
                returnValues.mCurveThickness = NumericStepper_CurveThickness.value;
+            
+            returnValues.mToModifyClosed = CheckBox_Closed_Modify.selected;
+            if (returnValues.mToModifyClosed)
+               returnValues.mIsClosed = CheckBox_Closed.selected;
             
             returnValues.mToModifyRoundEnds = CheckBox_RoundEnds_Modify.selected;
             if (returnValues.mToModifyRoundEnds)

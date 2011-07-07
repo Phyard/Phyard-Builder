@@ -7,7 +7,7 @@ package common {
       
       public var mForRestartLevel:Boolean = false;
       
-      public var mPlayerWorldHints:Object; // not used. When ad why it is add? 
+      public var mPlayerWorldHints:Object; // not used now. When and why is it added? 
       
    // ...
       public var mVersion:int;

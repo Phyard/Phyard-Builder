@@ -45,6 +45,12 @@
    <mx:HBox width="100%">
       <mx:Spacer width="30"/>
       <mx:Spacer width="36%"/>
+      <mx:CheckBox id="CheckBox_Closed" label="Closed" click="OnClosedOptionChanged ();"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="30"/>
+      <mx:Spacer width="36%"/>
       <mx:CheckBox id="CheckBox_RoundEnds" label="Round Ends"/>
    </mx:HBox>
 
@@ -93,6 +99,19 @@
             }
          }
          
+         public function OnClosedOptionChanged ():void
+         {
+            if (CheckBox_Closed.selected)
+            {
+               CheckBox_RoundEnds.selected = true;
+               CheckBox_RoundEnds.enabled = false;
+            }
+            else
+            {
+               CheckBox_RoundEnds.enabled = true;
+            }
+         }
+         
          public function SetValues (inputValues:Object):void
          {
             mOnCiTypeChanged = inputValues.mOnCiTypeChanged;
@@ -104,9 +123,11 @@
             ColorPicker_BackgroundColor.selectedColor = inputValues.mBackgroundColor;
             NumericStepper_CurveThickness.value = inputValues.mCurveThickness;
             
+            CheckBox_Closed.selected    = inputValues.mIsClosed;
             CheckBox_RoundEnds.selected = inputValues.mIsRoundEnds;
             
             OnCiTypeSelectListClick ();
+            OnClosedOptionChanged ();
          }
          
          public function GetValues (returnValues:Object):void
@@ -116,7 +137,8 @@
             returnValues.mTransparency = NumericStepper_Opacity.value;
             returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
             returnValues.mCurveThickness = NumericStepper_CurveThickness.value;
-               
+            
+            returnValues.mIsClosed    = CheckBox_Closed.selected;
             returnValues.mIsRoundEnds = CheckBox_RoundEnds.selected;
          }
          

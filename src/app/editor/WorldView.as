@@ -2301,6 +2301,7 @@ package editor {
                {
                   values.mCurveThickness = (shape as EntityShapePolyline).GetCurveThickness ();
                   values.mIsRoundEnds = (shape as EntityShapePolyline).IsRoundEnds ();
+                  values.mIsClosed = (shape as EntityShapePolyline).IsClosed ();
                   
                   ShowShapePolylineSettingDialog (values, ConfirmSettingEntityProperties);
                }
@@ -4649,6 +4650,7 @@ package editor {
                {
                   (shape as EntityShapePolyline).SetCurveThickness (params.mCurveThickness);
                   (shape as EntityShapePolyline).SetRoundEnds (params.mIsRoundEnds);
+                  (shape as EntityShapePolyline).SetClosed (params.mIsClosed);
                }
             }
             else // no physics entity
@@ -5001,6 +5003,8 @@ package editor {
                   polyline.SetCurveThickness (params.mCurveThickness);
                if (params.mToModifyRoundEnds)
                   polyline.SetRoundEnds (params.mIsRoundEnds);
+               if (params.mToModifyClosed)
+                  polyline.SetClosed (params.mIsClosed);
             
                polyline.UpdateAppearance ();
                polyline.UpdateSelectionProxy ();

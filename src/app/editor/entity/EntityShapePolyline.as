@@ -27,7 +27,9 @@ package editor.entity {
       
       protected var mCurveThickness:uint = 1;
       
-      protected var mRoundEnds:Boolean = true; // v1.08
+      protected var mIsRoundEnds:Boolean = true; // v1.08
+      
+      protected var mIsClosed:Boolean = false; // v1.57
       
       private var mMinX:Number;
       private var mMaxX:Number;
@@ -80,7 +82,7 @@ package editor.entity {
          
          SetVisibleInEditor (mVisibleInEditor); //  recal alpha
          
-         GraphicsUtil.ClearAndDrawPolyline (this, mLocalPoints, bgColor, curveThickness, mRoundEnds);
+         GraphicsUtil.ClearAndDrawPolyline (this, mLocalPoints, bgColor, curveThickness, IsRoundEnds (), IsClosed ());
       }
       
       override public function UpdateSelectionProxy ():void
@@ -101,18 +103,45 @@ package editor.entity {
          
          var halfThickness:Number = thickness * 0.5;
          
-         if (mRoundEnds && halfThickness > 2 && mLocalPoints.length > 0)
-            (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [0].x, mLocalPoints [0].y, halfThickness);
-         for (var i:int = 1; i < mLocalPoints.length; ++ i)
+         if (IsClosed () && mLocalPoints.length > 2)
          {
-            (mSelectionProxy as SelectionProxy).CreateLineSegmentZone (mLocalPoints [i - 1].x, mLocalPoints [i - 1].y, mLocalPoints [i].x, mLocalPoints [i].y, thickness);
-            if (halfThickness > 2 && i < (mLocalPoints.length - 1))
+            var lastVertex:Point;
+            var vertexIndex:int;
+            if (IsClosed () && mLocalPoints.length > 2)
             {
-               (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [i].x, mLocalPoints [i].y, halfThickness);
+               lastVertex = mLocalPoints [mLocalPoints.length - 1];
+               vertexIndex = -1;
+            }
+            else
+            {
+               lastVertex = mLocalPoints [0];
+               vertexIndex = 0; 
+            }
+            var currentVertex:Point;
+            while (++ vertexIndex < mLocalPoints.length)
+            {
+               currentVertex = mLocalPoints [vertexIndex];
+               (mSelectionProxy as SelectionProxy).CreateLineSegmentZone (lastVertex.x, lastVertex.y, currentVertex.x, currentVertex.y, thickness);
+               (mSelectionProxy as SelectionProxy).CreateCircleZone (lastVertex.x, lastVertex.y, halfThickness);
+               
+               lastVertex = currentVertex;
             }
          }
-         if (mRoundEnds && halfThickness > 2 && GetVertexPointsCount () > 1)
-            (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [mLocalPoints.length - 1].x, mLocalPoints [mLocalPoints.length - 1].y, halfThickness);
+         else
+         {
+            if (IsRoundEnds () && halfThickness > 2 && mLocalPoints.length > 0)
+               (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [0].x, mLocalPoints [0].y, halfThickness);
+            for (var i:int = 1; i < mLocalPoints.length; ++ i)
+            {
+               (mSelectionProxy as SelectionProxy).CreateLineSegmentZone (mLocalPoints [i - 1].x, mLocalPoints [i - 1].y, mLocalPoints [i].x, mLocalPoints [i].y, thickness);
+               if (halfThickness > 2 && i < (mLocalPoints.length - 1))
+               {
+                  (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [i].x, mLocalPoints [i].y, halfThickness);
+               }
+            }
+            if (IsRoundEnds () && halfThickness > 2 && GetVertexPointsCount () > 1)
+               (mSelectionProxy as SelectionProxy).CreateCircleZone (mLocalPoints [mLocalPoints.length - 1].x, mLocalPoints [mLocalPoints.length - 1].y, halfThickness);
+         }
          
          if (Compile::Is_Debugging)// && false)
          {
@@ -149,14 +178,24 @@ package editor.entity {
          return mCurveThickness;
       }
       
-      public function IsRoundEnds ():Boolean
-      {
-         return mRoundEnds;
-      }
-      
       public function SetRoundEnds (roundEnds:Boolean):void
       {
-         mRoundEnds = roundEnds;
+         mIsRoundEnds = roundEnds;
+      }
+      
+      public function IsRoundEnds ():Boolean
+      {
+         return mIsClosed || mIsRoundEnds;
+      }
+      
+      public function SetClosed (closed:Boolean):void
+      {
+         mIsClosed = closed;
+      }
+      
+      public function IsClosed ():Boolean
+      {
+         return mIsClosed;
       }
       
 //====================================================================

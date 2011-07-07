@@ -334,7 +334,7 @@ package player.physics {
          return bodyLocalVertexes;
       }
       
-      public function AddPolyline (isStatic:Boolean, shapeLocalPoints:Array, curveThickness:Number, roundEnds:Boolean):void
+      public function AddPolyline (isStatic:Boolean, shapeLocalPoints:Array, curveThickness:Number, roundEnds:Boolean, closed:Boolean):void
       {
          var fixture_def:b2FixtureDef = new b2FixtureDef ();
          
@@ -351,7 +351,7 @@ package player.physics {
       //trace ("AddPolyline: shapeLocalPoints = " + shapeLocalPoints);
       //trace ("AddPolyline: bodyLocalVertexes = " + bodyLocalVertexes);
       
-         CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, 0.5 * curveThickness, false, true, roundEnds);
+         CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, 0.5 * curveThickness, closed, true, roundEnds);
       }
       
       private function CreatePolyline (isStatic:Boolean, fixture_def:b2FixtureDef, inputBodyLocalVertexes:Array, halfCurveThickness:Number, isClosed:Boolean, isRoundJoints:Boolean, isRoundEnds:Boolean):void

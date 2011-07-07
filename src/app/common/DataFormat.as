@@ -458,6 +458,9 @@ package common {
                      //>> from v1.08
                      entityDefine.mIsRoundEnds = (shape as EntityShapePolyline).IsRoundEnds ();
                      //<<
+                     //>> from v1.57
+                     entityDefine.mIsClosed = (shape as EntityShapePolyline).IsClosed ();
+                     //<<
                      
                      entityDefine.mLocalPoints = (shape as EntityShapePolyline).GetLocalVertexPoints ();
                   }
@@ -1091,6 +1094,10 @@ package common {
                      
                      //>> from v1.08
                      polyline.SetRoundEnds (entityDefine.mIsRoundEnds);
+                     //<<
+                     
+                     //>> from v1.57
+                     polyline.SetClosed (entityDefine.mIsClosed);
                      //<<
                      
                      // commented off, do it in the 2nd round below
@@ -1987,7 +1994,7 @@ package common {
             }
             else
             {
-               if (worldDefine.mVersion == 0x0157)
+               if (worldDefine.mVersion >= 0x0157)
                {
                   TriggerFormatHelper.VariablesXml2Define (worldXml.SessionVariables [0], worldDefine.mSessionVariableDefines, true);
                }
@@ -2288,6 +2295,11 @@ package common {
                   if (worldDefine.mVersion >= 0x0108)
                   {
                      entityDefine.mIsRoundEnds = parseInt (element.@round_ends) != 0;
+                  }
+                  
+                  if (worldDefine.mVersion >= 0x0157)
+                  {
+                     entityDefine.mIsClosed = parseInt (element.@closed) != 0;
                   }
                   
                   entityDefine.mLocalPoints = new Array ();
@@ -2910,6 +2922,11 @@ package common {
                      if (worldDefine.mVersion >= 0x0108)
                      {
                         byteArray.writeByte (entityDefine.mIsRoundEnds ? 1 : 0);
+                     }
+                  
+                     if (worldDefine.mVersion >= 0x0157)
+                     {
+                        byteArray.writeByte (entityDefine.mIsClosed ? 1 : 0);
                      }
                      
                      byteArray.writeShort (entityDefine.mLocalPoints.length);

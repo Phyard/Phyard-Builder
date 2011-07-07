@@ -160,14 +160,14 @@ package com.tapirgames.util {
          shape.graphics.lineStyle();
       }
       
-      public static function ClearAndDrawPolyline (shape:Object, points:Array, color:uint = 0x0, thickness:Number = 1, roundEnds:Boolean = true):void
+      public static function ClearAndDrawPolyline (shape:Object, points:Array, color:uint = 0x0, thickness:Number = 1, roundEnds:Boolean = true, closed:Boolean = false):void
       {
          shape.graphics.clear ();
          
-         DrawPolyline (shape, points, color, thickness, roundEnds);
+         DrawPolyline (shape, points, color, thickness, roundEnds, closed);
       }
       
-      public static function DrawPolyline (shape:Object, points:Array, color:uint = 0x0, thickness:Number = 1, roundEnds:Boolean = true):void
+      public static function DrawPolyline (shape:Object, points:Array, color:uint = 0x0, thickness:Number = 1, roundEnds:Boolean = true, closed:Boolean = false):void
       {
          if (points == null)
             return;
@@ -215,6 +215,12 @@ package com.tapirgames.util {
             
             p2 = points [i];
             shape.graphics.lineTo(p2.x, p2.y);
+            
+            if (closed)
+            {
+               p2 = points [0];
+               shape.graphics.lineTo(p2.x, p2.y);
+            }
          }
          
          shape.graphics.lineStyle();

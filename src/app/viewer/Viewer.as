@@ -663,9 +663,9 @@ package viewer {
 //
 //======================================================================
 
-      private function RebuildPlayerWorld ():Boolean
+      private function RebuildPlayerWorld (restartLevel:Boolean = false):Boolean
       {
-      trace ("RebuildPlayerWorld");
+      //trace ("RebuildPlayerWorld");
 
          try
          {
@@ -702,6 +702,10 @@ package viewer {
 
             mWorldBinaryData.position = 0;
             var worldDefine:Object = (mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData);
+            if (worldDefine != null && worldDefine.hasOwnProperty ("mForRestartLevel"))
+            {
+               worldDefine.mForRestartLevel = restartLevel;
+            }
             mPlayerWorld = (mWorldPluginProperties.WorldFormat_WorldDefine2PlayerWorld as Function) (worldDefine);
 
             if (mPlayerWorld == null)
@@ -1510,7 +1514,7 @@ package viewer {
 
       private function OnRestart (data:Object = null):void
       {
-         RebuildPlayerWorld ();
+         RebuildPlayerWorld (true);
 
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();

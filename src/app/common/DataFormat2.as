@@ -230,7 +230,7 @@ package common {
          if (isLoaingFromStretch)
          {
             //
-            Global.InitGlobalData ();
+            Global.InitGlobalData (worldDefine.mForRestartLevel);
 
             playerWorld = new World (worldDefine);
             Global.SetCurrentWorld (playerWorld);

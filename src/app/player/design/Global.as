@@ -58,10 +58,17 @@ package player.design
 // static values
 //==============================================================================
       
-      public static function InitGlobalData ():void
+      public static function InitGlobalData (isRestartLevel:Boolean):void
       {
          //
          sTheGlobal = new Global ();
+         
+         if (! isRestartLevel)
+         {
+            mSessionVariableSpace = null;
+         }
+         mGlobalVariableSpace = null;
+         mEntityVariableSpace = null;
          
          //
          TriggerEngine.InitializeConstData ();
@@ -75,10 +82,6 @@ package player.design
          mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null);
          
          mRandomNumberGenerators = new Array (Define.NumRngSlots);
-         
-         mSessionVariableSpace = null;
-         mGlobalVariableSpace = null;
-         mEntityVariableSpace = null;
          
          //
          RestartPlay = null;
@@ -154,7 +157,10 @@ package player.design
          //}
          //<<
          
-         mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines);
+         if (mSessionVariableSpace == null) // for restart, this is false
+         {
+            mSessionVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, sessionVariableDefines);
+         }
          mGlobalVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, globalVarialbeDefines);
          mEntityVariableSpace = TriggerFormatHelper2.VariableDefines2VariableSpace (mCurrentWorld, entityVarialbeDefines);
       }

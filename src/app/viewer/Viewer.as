@@ -1322,7 +1322,7 @@ package viewer {
             addSeperaor = true;
          }
 
-         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer v" + DataFormat3.GetVersionString (Version.VersionNumber), addSeperaor);
+         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer"); // v" + DataFormat3.GetVersionString (Version.VersionNumber), addSeperaor);
          theContextMenu.customItems.push (aboutItem);
          aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
 

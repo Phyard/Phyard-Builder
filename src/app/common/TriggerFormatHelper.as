@@ -476,6 +476,9 @@ package common {
                case ValueSpaceTypeDefine.ValueSpace_Session:
                   variable_instance = editorWorld.GetTriggerEngine ().GetSessionVariableSpace ().GetVariableInstanceAt (variable_index);
                   break;
+               case ValueSpaceTypeDefine.ValueSpace_Global:
+                  variable_instance = editorWorld.GetTriggerEngine ().GetGlobalVariableSpace ().GetVariableInstanceAt (variable_index);
+                  break;
                case ValueSpaceTypeDefine.ValueSpace_GlobalRegister:
                   var variable_space:VariableSpace = editorWorld.GetTriggerEngine ().GetRegisterVariableSpace (valueType);
                   if (variable_space != null)

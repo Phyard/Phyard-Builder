@@ -8,6 +8,7 @@ package editor {
    
    import flash.utils.Dictionary;
    import flash.utils.ByteArray;
+   import flash.utils.getTimer;
    
    import flash.display.LoaderInfo;
    
@@ -3284,17 +3285,21 @@ package editor {
                   Redo ();
                   break;
                case 83: // S
-                  if (event.ctrlKey)
+                  if (event.ctrlKey && event.shiftKey)
                      QuickSave ();
+                  break;
+               //case 76: // L // cancelled
+               //   OpenPlayCodeLoadingDialog ();
+               //   break;
+               case 76: // L // cancelled
+                  if (event.ctrlKey && event.shiftKey)
+                     QuickLoad ();
                   break;
                //case 71: // G // cancelled
                //   GlueSelectedEntities ();
                //   break;
                //case 66: // B // cancelled
                //   BreakApartSelectedEntities ();
-               //   break;
-               //case 76: // L // cancelled
-               //   OpenPlayCodeLoadingDialog ();
                //   break;
                case 192: // ~
                   ToggleMouseEditLocked ();
@@ -6286,6 +6291,10 @@ package editor {
             return true;
          
          var designLoadUrl:String = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/revision/" + params.mRevisionID + "/loadsc";
+         var isNameRevision:Boolean = isNaN (parseInt (params.mRevisionID)); // "latest", "published"
+         if (isNameRevision) {
+            designLoadUrl = designLoadUrl + "?" + getTimer (); // avoid browser cache
+         }
          var request:URLRequest = new URLRequest (designLoadUrl);
          request.method = URLRequestMethod.GET;
          

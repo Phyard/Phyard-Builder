@@ -66,6 +66,8 @@ package editor.mode {
          {
             if (mRectEntity != null)
                mMainView.DestroyEntity (mRectEntity);
+            
+            mStarted = false;
          }
          else
          {

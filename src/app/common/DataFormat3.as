@@ -161,9 +161,10 @@ package common {
             return null;
          }
          
-         var num_bytes:int = num_bytes * 3;
+         ////var num_bytes:int = num_bytes * 3;
+         //var num_bytes:int = num_triples * 3;
          var data:ByteArray = new ByteArray ();
-         data.length = num_bytes;
+         //data.length = num_bytes;
          
          var b0:int, b1:int, b2:int, b3:int;
          

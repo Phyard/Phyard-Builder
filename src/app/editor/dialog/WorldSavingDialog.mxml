@@ -96,6 +96,8 @@
             
             TextArea_SourceCode.text = values.mXmlString;
             //TextArea_EmbedCode.text = values.mEmbedCode;
+            
+            Button_CopyPlayCode.label = Button_CopyPlayCode.label + " (" + values.mHexString.length +" bytes)";
          }
          
          public function SetCloseFunc (onClose:Function):void

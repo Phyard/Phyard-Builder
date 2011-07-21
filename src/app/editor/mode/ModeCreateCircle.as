@@ -43,6 +43,8 @@ package editor.mode {
          {
             if (mCircleEntity != null)
                mMainView.DestroyEntity (mCircleEntity);
+            
+            mStarted = false;
          }
          else
          {

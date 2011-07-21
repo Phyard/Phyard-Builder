@@ -1315,14 +1315,14 @@ package viewer {
                copyEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyEmbedCode);
             }
 
-            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Forum Embed Code", false);
+            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Phyard Forum Embed Code", false);
             theContextMenu.customItems.push (copyForumEmbedCodeMenuItem);
             copyForumEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyForumEmbedCode);
 
             addSeperaor = true;
          }
 
-         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer"); // v" + DataFormat3.GetVersionString (Version.VersionNumber), addSeperaor);
+         var aboutItem:ContextMenuItem = new ContextMenuItem("About Phyard Viewer", addSeperaor); // v" + DataFormat3.GetVersionString (Version.VersionNumber), addSeperaor);
          theContextMenu.customItems.push (aboutItem);
          aboutItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnAbout);
 

@@ -54,6 +54,7 @@ package player.entity {
          
          entityDefine.mCurveThickness = mWorld.GetCoordinateSystem ().P2D_Length (GetCurveThickness ());
          entityDefine.mIsRoundEnds = IsRoundEnds ();
+         entityDefine.mIsClosed = IsClosed ();
          
          entityDefine.mEntityType = Define.EntityType_ShapePolyline;
          

@@ -8,7 +8,6 @@ package editor {
    
    import flash.utils.Dictionary;
    import flash.utils.ByteArray;
-   import flash.utils.getTimer;
    
    import flash.display.LoaderInfo;
    
@@ -6290,10 +6289,19 @@ package editor {
          if (isFirstTime && params.mAction == "create")
             return true;
          
-         var designLoadUrl:String = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/revision/" + params.mRevisionID + "/loadsc";
-         var isNameRevision:Boolean = isNaN (parseInt (params.mRevisionID)); // "latest", "published"
-         if (isNameRevision) {
-            designLoadUrl = designLoadUrl + "?" + getTimer (); // avoid browser cache
+         var designLoadUrl:String;
+         if (isFirstTime)
+         {
+            designLoadUrl = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/revision/" + params.mRevisionID + "/loadsc";
+         }
+         else
+         {
+            designLoadUrl = params.mRootUrl + "design/" + params.mAuthorName + "/" + params.mSlotID + "/revision/latest/loadsc";
+            //var isNameRevision:Boolean = isNaN (parseInt (params.mRevisionID)); // "latest", "published"
+            //if (isNameRevision)
+            //{
+               designLoadUrl = designLoadUrl + "?time=" + (new Date ().getTime ()); // avoid browser cache
+            //}
          }
          var request:URLRequest = new URLRequest (designLoadUrl);
          request.method = URLRequestMethod.GET;

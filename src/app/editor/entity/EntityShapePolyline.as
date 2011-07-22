@@ -399,6 +399,7 @@ package editor.entity {
          
          polyline.SetCurveThickness (GetCurveThickness ());
          polyline.SetRoundEnds (IsRoundEnds ());
+         polyline.SetClosed (IsClosed ());
          
          for (var i:int = 0; i < mLocalPoints.length; ++ i)
          {

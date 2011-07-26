@@ -144,8 +144,8 @@ package editor.entity {
          if (text == null)
             text = "";
          
-         if (text.length > Define.MaxTextLength)
-            text = text.substr (0, Define.MaxTextLength);
+         //if (text.length > Define.MaxTextLength)
+         //   text = text.substr (0, Define.MaxTextLength);
          
          mText = text;
       }

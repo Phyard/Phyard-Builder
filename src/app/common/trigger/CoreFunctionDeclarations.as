@@ -536,6 +536,15 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Concat,
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ],
+                     [
+                        [ValueTypeDefine.ValueType_Array,       null],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean,
                      [
                         [ValueTypeDefine.ValueType_Array,       null],

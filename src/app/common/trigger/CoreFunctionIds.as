@@ -101,6 +101,7 @@ package common.trigger {
       public static const ID_Array_SetLength:int                = IdPool.CoreApiId_99; // v1.54
       public static const ID_Array_RemoveElements:int                = IdPool.CoreApiId_100; // v1.54
       public static const ID_Array_InsertElements:int                = IdPool.CoreApiId_102; // v1.56
+      public static const ID_Array_Concat:int                = IdPool.CoreApiId_79; // v1.57
       public static const ID_Array_SetElementWithBoolean:int     = IdPool.CoreApiId_87; // v1.54
       public static const ID_Array_GetElementAsBoolean:int       = IdPool.CoreApiId_88; // v1.54
       public static const ID_Array_SetElementWithNumber:int      = IdPool.CoreApiId_89; // v1.54

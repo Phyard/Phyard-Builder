@@ -61,7 +61,7 @@
          
          private function OnInitPanel ():void
          {
-            TextArea_Text.maxChars = Define.MaxTextLength;
+            //TextArea_Text.maxChars = 0; //Define.MaxTextLength;
          }
 
          private function OnChangeAdaptiveBackgroundSize ():void

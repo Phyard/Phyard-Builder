@@ -130,6 +130,7 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetLength,               SetArrayLength);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_RemoveElements,               RemoveArrayElements);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_InsertElements,               InsertArrayElements);
+         RegisterCoreFunction (CoreFunctionIds.ID_Array_Concat,                  ConcatArrays);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithBoolean,     SetArrayElementWithBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_GetElementAsBoolean,       GetArrayElementAsBoolean);
          RegisterCoreFunction (CoreFunctionIds.ID_Array_SetElementWithNumber,     SetArrayElementWithNumber);
@@ -1260,6 +1261,32 @@ package player.trigger {
                }
             }
          }
+      }
+      
+      private static function ConcatArrays (valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var array1:Array = valueSource.EvaluateValueObject () as Array;
+         
+         valueSource = valueSource.mNextParameter;
+         var array2:Array = valueSource.EvaluateValueObject () as Array;
+         
+         var resultArray:Array;
+         if (array1 == null)
+         {
+            if (array2 == null)
+               resultArray = null;
+            else
+               resultArray = array2.concat ();
+         }
+         else
+         {
+            if (array2 == null)
+               resultArray = array1.concat ();
+            else
+               resultArray = array1.concat (array2);
+         }
+         
+         valueTarget.AssignValueObject (resultArray);
       }
 
       private static function SetArrayElementWithSpecfiedClass (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void

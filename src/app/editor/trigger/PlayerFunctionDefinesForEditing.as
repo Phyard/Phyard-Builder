@@ -610,6 +610,15 @@ package editor.trigger {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Concat, array_package, "Concat Arrays", null, null,
+                     [
+                              new VariableDefinitionArray ("Array 1"),
+                              new VariableDefinitionArray ("Array 2"),
+                     ],
+                     [
+                              new VariableDefinitionArray ("Result Array"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean, array_package, "Set Element With Boolean", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),

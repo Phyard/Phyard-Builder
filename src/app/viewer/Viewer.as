@@ -1089,7 +1089,7 @@ package viewer {
                               OnStart: OnStart,
                               OnPause: OnPause,
                               OnSpeed: OnSpeed, mShowSpeedAdjustor: mShowSpeedAdjustor,
-                              OnZoom: OnZoom, mShowScaleAdjustor: mShowScaleAdjustor && (mParamsFromContainer.mHideScaleButtons != undefined && mParamsFromContainer.mHideScaleButtons == false),
+                              OnZoom: OnZoom, mShowScaleAdjustor: mShowScaleAdjustor && (mParamsFromContainer.mHideScaleButtons == undefined || mParamsFromContainer.mHideScaleButtons == false),
                               OnHelp: OnHelp, mShowHelpButton: mShowHelpButton,
                               OnMainMenu: null
                            });

@@ -229,7 +229,7 @@ package player.entity {
          var offset:Number = targetRotation - mPhysicsRotation;
          offset = offset % Define.kPI_x_2;
          if (offset > Math.PI)
-            offset -= Math.PI;
+            offset = offset - Define.kPI_x_2;
 
          return offset;
       }

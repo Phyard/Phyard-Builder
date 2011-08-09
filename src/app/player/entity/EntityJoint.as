@@ -77,6 +77,8 @@ package player.entity {
                mWorld.RegisterEntity (mAnchor2);
                
                mAnchor2.AdjustAppearanceOrder (mAnchor1, true);
+               
+               mAnchor2.InitCustomPropertyValues (); // fixed in v1.57
             }
             
             // for joint with 2 anchors in editor (slider, distance, spring, )

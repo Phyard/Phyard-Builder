@@ -3335,6 +3335,12 @@ package editor {
                case Keyboard.NUMPAD_SUBTRACT:
                   RoundPositionForSelectedEntities ();
                   break;
+               case Keyboard.F5:
+                  //OpenImageAssetEditDialog ();
+                  break;
+               case Keyboard.F6:
+                  //OpenSoundAssetEditDialog ();
+                  break;
                default:
                   break;
             }

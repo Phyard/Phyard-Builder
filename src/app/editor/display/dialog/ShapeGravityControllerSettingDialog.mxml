@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
+    title="Gravity Controller Setting" width="600" creationComplete="OnInitPanel()">
+
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:Box label="Main" direction="vertical" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnMainPanelCreationComplete()">
+         <mx:VBox width="100%">
+            <mx:HBox width="100%">
+               <mx:VBox width="44%" >
+                  <mx:HBox width="100%">
+                     <mx:Spacer width="100%"/>
+                     <mx:Label id="Label_InteractiveZones" text="Interactive Zones:" textAlign="right" width="39%"/>
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox>
+                  <mx:HBox>
+                     <mx:CheckBox id="CheckBox_ZoneUp" label="Up" width="15%"/>
+                     <mx:CheckBox id="CheckBox_ZoneDown" label="Down" width="15%"/>
+                  </mx:HBox>
+                  <mx:HBox>
+                     <mx:CheckBox id="CheckBox_ZoneLeft" label="Left" width="15%"/>
+                     <mx:CheckBox id="CheckBox_ZoneRight" label="Right" width="15%"/>
+                  </mx:HBox>
+                  <mx:HBox>
+                     <mx:CheckBox id="CheckBox_ZoneCenter" label="Center" width="15%"/>
+                     <mx:CheckBox id="CheckBox_ZoneAllArea" label="All Area" width="15%"/>
+                  </mx:HBox>
+               </mx:VBox>
+            </mx:HBox>
+
+            <mx:HBox width="100%">
+               <mx:Spacer width="100%"/>
+               <mx:CheckBox id="CheckBox_Condition" label="Only interactive when all shapes without joints connected are sleeping" />
+               <mx:Spacer width="100%"/>
+            </mx:HBox>
+
+            <mx:HBox width="100%">
+               <mx:VBox width="50%" >
+                  <mx:HBox width="100%">
+                     <mx:Spacer width="100%"/>
+                     <mx:Label id="Label_MaximalMagnitude" text="Maximal Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox>
+                  <mx:TextInput id="Text_MaximalMagnitude" text="" width="100"/>
+               </mx:VBox>
+            </mx:HBox>
+
+            <mx:HBox width="100%">
+               <mx:VBox width="50%" >
+                  <mx:HBox width="100%">
+                     <mx:Spacer width="100%"/>
+                     <mx:Label id="Label_InitialMagnitude" text="Initial Gravity Acceleration Magnitude:" textAlign="right" width="39%"/>
+                  </mx:HBox>
+               </mx:VBox>
+               <mx:VBox>
+                  <mx:TextInput id="Text_InitialMagnitude" text="" width="100"/>
+               </mx:VBox>
+            </mx:HBox>
+
+            <mx:HBox width="100%">
+               <mx:HBox width="50%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_InitialAngle" text="Initial Gravity Acceleration Angle:" textAlign="right" width="39%"/>
+               </mx:HBox>
+               <mx:HBox>
+                  <mx:TextInput id="Text_InitialAngle" text="" width="100"/>
+                  <mx:Label text="(degrees)"/>
+               </mx:HBox>
+            </mx:HBox>
+
+            <mx:Spacer height="10" />
+         </mx:VBox>
+      </mx:Box>
+      <mx:VBox label="Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="100%"/>
+         <EntityRadiusSettingPanel id="RadiusSettingPanel" creationComplete="OnEntityRadiusSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+   </mx:TabNavigator>
+
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:Script>
+      <![CDATA[
+         import mx.managers.PopUpManager;
+         import common.Define;
+
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+
+         private var mParams:Object;
+
+         private function OnInitPanel ():void
+         {
+         }
+
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
+
+         private function OnMainPanelCreationComplete ():void
+         {
+            InitMainPanel (mParams);
+         }
+
+         private function InitMainPanel (initialValues:Object):void
+         {
+            //CheckBox_Interactive.selected = initialValues.mIsInteractive;
+            CheckBox_ZoneUp.selected = (initialValues.mInteractiveZones & (1 <<Define.GravityController_InteractiveZone_Up)) != 0;
+            CheckBox_ZoneDown.selected = (initialValues.mInteractiveZones & (1 << Define.GravityController_InteractiveZone_Down)) != 0;
+            CheckBox_ZoneLeft.selected = (initialValues.mInteractiveZones & (1 << Define.GravityController_InteractiveZone_Left)) != 0;
+            CheckBox_ZoneRight.selected = (initialValues.mInteractiveZones & (1 << Define.GravityController_InteractiveZone_Right)) != 0;
+            CheckBox_ZoneCenter.selected = (initialValues.mInteractiveZones & (1 << Define.GravityController_InteractiveZone_Center)) != 0;
+            CheckBox_ZoneAllArea.selected = (initialValues.mInteractiveZones & (1 << Define.GravityController_InteractiveZone_AllArea)) != 0;
+
+            Text_MaximalMagnitude.text= initialValues.mMaximalGravityAcceleration;
+            Text_InitialMagnitude.text = initialValues.mInitialGravityAcceleration;
+            Text_InitialAngle.text = initialValues.mInitialGravityAngle;
+
+            CheckBox_Condition.selected = initialValues.mInteractiveConditions;
+         }
+
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            mParams.mEnabledNonsense = true;
+            BasicSettingPanel.SetValues (mParams);
+         }
+
+         private function OnEntityRadiusSettingPanelCreationComplete ():void
+         {
+            RadiusSettingPanel.SetValues (mParams);
+         }
+
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+
+         private function OnClickOkButton():void
+         {
+            //params.mIsInteractive = CheckBox_Interactive.selected;
+            mParams.mInteractiveZones = 0;
+            if (CheckBox_ZoneUp.selected)
+               mParams.mInteractiveZones |= (1 << Define.GravityController_InteractiveZone_Up);
+            if (CheckBox_ZoneDown.selected)
+               mParams.mInteractiveZones |= (1 << Define.GravityController_InteractiveZone_Down);
+            if (CheckBox_ZoneLeft.selected)
+               mParams.mInteractiveZones |= (1 << Define.GravityController_InteractiveZone_Left);
+            if (CheckBox_ZoneRight.selected)
+               mParams.mInteractiveZones |= (1 << Define.GravityController_InteractiveZone_Right);
+            if (CheckBox_ZoneCenter.selected)
+               mParams.mInteractiveZones |= (1 << Define.GravityController_InteractiveZone_Center);
+            if (CheckBox_ZoneAllArea.selected)
+               mParams.mInteractiveZones |= (1 << Define.GravityController_InteractiveZone_AllArea);
+
+            var maximalMagnitude:Number = parseFloat (Text_MaximalMagnitude.text);
+            if ( ! isNaN (maximalMagnitude) )
+               mParams.mMaximalGravityAcceleration = maximalMagnitude;
+
+            var initialMagnitude:Number = parseFloat (Text_InitialMagnitude.text);
+            if ( ! isNaN (initialMagnitude) )
+               mParams.mInitialGravityAcceleration = initialMagnitude;
+
+            var gravityAngle:Number = parseFloat (Text_InitialAngle.text);
+            if ( ! isNaN (gravityAngle) )
+               mParams.mInitialGravityAngle = gravityAngle;
+
+            mParams.mInteractiveConditions = CheckBox_Condition.selected;
+
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+
+            if (RadiusSettingPanel != null)
+            {
+               RadiusSettingPanel.GetValues (mParams);
+            }
+
+            PopUpManager.removePopUp(this);
+
+            if (OnClose != null)
+              OnClose ();
+
+            if (OnConfirm != null)
+              OnConfirm (mParams);
+         }
+
+         private function OnClickCancelButton():void
+         {
+             PopUpManager.removePopUp(this);
+
+             if (OnClose != null)
+               OnClose ();
+         }
+
+
+         private function OnClickDefaultButton ():void
+         {
+            var values:Object = new Object ();
+
+            // ...
+
+            SetValues (values);
+         }
+
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

@@ -33,7 +33,7 @@ package editor.trigger {
    import common.trigger.ValueTypeDefine;
    import editor.trigger.VariableSpace;
    
-   import editor.dialog.VariablesEditDialog;
+   import editor.display.dialog.VariablesEditDialog;
    
    import editor.runtime.Runtime;
    

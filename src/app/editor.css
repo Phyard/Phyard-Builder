@@ -1,0 +1,25 @@
+Application {
+   modalTransparency:0.3;
+   modalTransparencyBlur:2;
+   modalTransparencyColor:#DDDDDD;
+   modalTransparencyDuration:100;
+}
+
+Container {
+   color:#000000;;
+   fontWeight:normal;
+   fontSize:10px;
+}
+
+TitleWindow {
+   borderThicknessLeft:5px;
+   borderThicknessRight:5px;
+   borderThicknessTop:1px;
+   borderThicknessBottom:5px;
+   borderAlpha:1.0;
+   borderColor:#C0C0C0;
+   color:#000000;
+   fontWeight:bold;
+   fontSize:13px;
+}
+

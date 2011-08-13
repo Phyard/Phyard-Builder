@@ -1,7 +1,7 @@
 
 package editor.mode {
    
-   import editor.CollisionManagerView;
+   import editor.display.panel.CollisionManagerView;
    
    
    public class CollisionCategoryMode

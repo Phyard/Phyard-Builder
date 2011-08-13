@@ -1,7 +1,7 @@
 
 package editor.mode {
    
-   import editor.FunctionEditingView;
+   import editor.display.panel.FunctionEditingView;
    
    
    public class FunctionMode

@@ -6,7 +6,7 @@ package editor.mode {
    import com.tapirgames.util.GraphicsUtil;
    
    import editor.entity.Entity;
-   import editor.FunctionEditingView;
+   import editor.display.panel.FunctionEditingView;
    
    import editor.trigger.entity.Linkable;
    

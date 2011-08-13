@@ -5,8 +5,7 @@ package editor.mode {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.CollisionManagerView;
-   
+   import editor.display.panel.CollisionManagerView;
    
    public class CollisionCategoryModeRegionSelectEntities extends CollisionCategoryMode
    {

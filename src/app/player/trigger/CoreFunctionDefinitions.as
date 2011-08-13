@@ -3,6 +3,8 @@ package player.trigger {
    import flash.utils.getTimer;
    import flash.geom.Point;
    import flash.ui.Mouse;
+   
+   import flash.utils.Dictionary;
 
    import player.design.Global;
 
@@ -1050,7 +1052,7 @@ package player.trigger {
          valueTarget.AssignValueObject (ConvertArrayToString (values));
       }
       
-      private static function ConvertArrayToString (values:Array):String
+      private static function ConvertArrayToString (values:Array, convertedArrays:Dictionary = null):String
       {
          if (values == null)
             return "null";
@@ -1059,15 +1061,29 @@ package player.trigger {
          
          var numElements:int = values.length;
          var value:Object;
-         if (numElements > 1)
+         if (numElements > 0)
          {
-            value = values [0];
-            returnText = returnText + (value is Array ? ConvertArrayToString (value as Array) : String (value));
-            
-            for (var i:int = 1; i < numElements; ++ i)
+            if (convertedArrays == null)
             {
-               value = values [i];
-               returnText = returnText + "," + (value is Array ? ConvertArrayToString (value as Array) : String (value));
+               convertedArrays = new Dictionary ();
+            }
+            
+            if (convertedArrays [values])
+            {
+               return "(length: " + numElements + ")"; // avoid dead loop
+            }
+            else
+            {
+               convertedArrays [values] = true; // avoid dead loop
+
+               value = values [0];
+               returnText = returnText + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
+               
+               for (var i:int = 1; i < numElements; ++ i)
+               {
+                  value = values [i];
+                  returnText = returnText + "," + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
+               }
             }
          }
          

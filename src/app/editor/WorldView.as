@@ -84,14 +84,12 @@ package editor {
    
    import editor.mode.ModeCreateEntityLink;
    
-   
    import editor.runtime.Runtime;
    
-   import editor.display.CursorCrossingLine;
-   
-   import editor.display.EditingEffect
-   import editor.display.EffectCrossingAiming;
-   import editor.display.EffectMessagePopup;
+   import editor.display.sprite.CursorCrossingLine;
+   import editor.display.sprite.EditingEffect
+   import editor.display.sprite.EffectCrossingAiming;
+   import editor.display.sprite.EffectMessagePopup;
    
    import editor.entity.Entity;
    import editor.entity.EntityShape;
@@ -157,6 +155,10 @@ package editor {
    import editor.trigger.entity.Linkable;
    
    import editor.trigger.Filters;
+   
+   import editor.display.panel.AssetSoundEditingPanel;
+   import editor.display.panel.CollisionManagerView;
+   import editor.display.panel.FunctionEditingView;
    
    import player.world.World;
    
@@ -2872,22 +2874,25 @@ package editor {
          return mCurrentMouseEditMode == MouseEditMode_MoveWorld || mCurrentMouseEditMode == MouseEditMode_None;
       }
       
-      private function StartMouseEditMode ():void
+      private function StartMouseEditMode (worldPointX:Number, worldPointY:Number):void
       {
          if (_mouseEventShiftDown && _mouseEventCtrlDown)
          {
          }
-         else if (IsEntityMouseRotateEnabled ())
+         else
          {
-            SetCurrentEditMode (new ModeRotateSelectedEntities (this));
-         }
-         else if (IsEntityMouseScaleEnabled ())
-         {
-            SetCurrentEditMode (new ModeScaleSelectedEntities (this));
-         }
-         else if (IsEntityMouseMoveEnabled ())
-         {
-            SetCurrentEditMode (new ModeMoveSelectedEntities (this));
+            if (IsEntityMouseRotateEnabled ())
+            {
+               SetCurrentEditMode (new ModeRotateSelectedEntities (this));
+            }
+            else if (IsEntityMouseScaleEnabled ())
+            {
+               SetCurrentEditMode (new ModeScaleSelectedEntities (this));
+            }
+            else if (IsEntityMouseMoveEnabled ())
+            {
+               SetCurrentEditMode (new ModeMoveSelectedEntities (this));
+            }
          }
       }
       
@@ -2978,7 +2983,7 @@ package editor {
             {
                if (mEditorWorld.IsSelectedEntitiesContainPoint (worldPoint.x, worldPoint.y))
                {
-                  StartMouseEditMode ();
+                  StartMouseEditMode (worldPoint.x, worldPoint.y);
                    
                   if (mCurrentEditMode != null)
                      mCurrentEditMode.OnMouseDown (worldPoint.x, worldPoint.y);
@@ -3005,7 +3010,7 @@ package editor {
             {
                if (mEditorWorld.IsSelectedEntitiesContainPoint (worldPoint.x, worldPoint.y))
                {
-                  StartMouseEditMode ();
+                  StartMouseEditMode (worldPoint.x, worldPoint.y);
                    
                   if (mCurrentEditMode != null)
                      mCurrentEditMode.OnMouseDown (worldPoint.x, worldPoint.y);
@@ -3169,7 +3174,7 @@ package editor {
                CalSelectedEntitiesCenterPoint ();
             }
          }
-         
+         */
          
          if (IsEditing ())
          {
@@ -3180,7 +3185,6 @@ package editor {
                CalSelectedEntitiesCenterPoint ();
             }
          }
-         */
       }
       
       public function OnMouseWheel (event:MouseEvent):void
@@ -3336,10 +3340,9 @@ package editor {
                   RoundPositionForSelectedEntities ();
                   break;
                case Keyboard.F5:
-                  //OpenImageAssetEditDialog ();
                   break;
                case Keyboard.F6:
-                  //OpenSoundAssetEditDialog ();
+                  AssetSoundEditingPanel.ShowAssetSoundEditingPanel ();
                   break;
                default:
                   break;
@@ -3347,6 +3350,9 @@ package editor {
          }
       }
       
+//============================================================================
+//    
+//============================================================================
       
 //============================================================================
 //    

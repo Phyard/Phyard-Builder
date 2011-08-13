@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
+    title="Batch Rectangle Setting" width="600"
+    creationComplete="OnInitPanel()"
+    >
+
+   <mx:HBox width="100%" paddingTop="0" paddingBottom="0" borderStyle="solid" borderThickness="1">
+      <mx:Spacer width="100%"/>
+      <mx:VBox width="100%" paddingTop="10" paddingBottom="10">
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_Width_Modify" label="" click="Label_Width.enabled=Text_Width.enabled=CheckBox_Width_Modify.selected;"/>
+            <mx:Label text="Width:" id="Label_Width" enabled="false" textAlign="left" width="57"/>
+            <mx:TextInput id="Text_Width" enabled="false" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_Height_Modify" label="" click="Label_Height.enabled=Text_Height.enabled=CheckBox_Height_Modify.selected;"/>
+            <mx:Label text="Height:" id="Label_Height" enabled="false" textAlign="left" width="57"/>
+            <mx:TextInput id="Text_Height" enabled="false" text="" width="100"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_RoundCorners_Modify" label="" click="CheckBox_RoundCorners.enabled=CheckBox_RoundCorners_Modify.selected;"/>
+            <mx:Label visible="false" width="57"/>
+            <mx:CheckBox id="CheckBox_RoundCorners" enabled="false" label="Round Corners"/>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[
+
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+
+         import common.Define;
+
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+
+         private var mParams:Object = new Object ();
+
+         private function OnInitPanel ():void
+         {
+         }
+
+         //public function SetValues (initialValues:Object):void
+         //{
+         //   mParams = initialValues;
+         //}
+
+         public function GetValues (returnValues:Object):void
+         {
+            returnValues.mToModifyRoundCorners = CheckBox_RoundCorners_Modify.selected;
+            if (returnValues.mToModifyRoundCorners)
+               returnValues.mIsRoundCorners = CheckBox_RoundCorners.selected;
+
+            var valueWidth:Number = parseFloat (Text_Width.text);
+            returnValues.mToModifyWidth = (! isNaN (valueWidth)) && CheckBox_Width_Modify.selected;
+            if (returnValues.mToModifyWidth)
+               returnValues.mWidth = valueWidth;
+
+            var valueHeight:Number = parseFloat (Text_Height.text);
+            returnValues.mToModifyHeight = (! isNaN (valueHeight)) && CheckBox_Height_Modify.selected;
+            if (returnValues.mToModifyHeight)
+               returnValues.mHeight = valueHeight;
+         }
+
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+
+         private function OnClickOkButton():void
+         {
+            GetValues (mParams);
+
+            PopUpManager.removePopUp(this);
+
+            if (OnClose != null)
+               OnClose ();
+
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+
+         private function OnClickCancelButton():void
+         {
+             PopUpManager.removePopUp(this);
+
+             if (OnClose != null)
+               OnClose ();
+         }
+
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

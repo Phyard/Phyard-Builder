@@ -7,7 +7,7 @@ package editor.mode {
    
    import editor.entity.EntityCollisionCategory;
    
-   import editor.CollisionManagerView;
+   import editor.display.panel.CollisionManagerView;
    
    import common.Define;
    

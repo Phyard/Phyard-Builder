@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
+    title="Batch Shape Appearance Setting" width="600"
+    creationComplete="OnInitPanel()"
+    >
+
+   <mx:VBox width="100%" paddingTop="0" paddingBottom="0" borderStyle="solid" borderThickness="1">
+      <mx:HBox width="100%" paddingTop="10" paddingBottom="10">
+         <mx:Spacer width="60"/>
+         <mx:CheckBox id="CheckBox_CiShape_Modify" label="" click="CheckBox_IsCiShape.enabled=CheckBox_CiShape_Modify.selected;Label_AiType.enabled=CheckBox_CiShape_Modify.selected;SelectList_AiType.enabled=CheckBox_CiShape_Modify.selected;"/>
+         <mx:CheckBox id="CheckBox_IsCiShape" enabled="false" label="Is C.I. Shape" width="22%"/>
+         <mx:Label id="Label_AiType" enabled="false" text="C.I. Shape Type:" textAlign="right"/>
+         <mx:ComboBox id="SelectList_AiType" enabled="false" rowCount="10"/>
+      </mx:HBox>
+
+      <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="98%"/>
+
+      <mx:VBox width="100%" paddingTop="10" paddingBottom="10">
+         <mx:HBox width="100%">
+            <mx:Spacer width="60"/>
+            <mx:CheckBox id="CheckBox_DrawBackground_Modify" label="" click="CheckBox_DrawBackground.enabled=CheckBox_DrawBackground_Modify.selected;"/>
+            <mx:CheckBox id="CheckBox_DrawBackground" enabled="false" label="Filled" width="22%"/>
+            <mx:CheckBox id="CheckBox_Opacity_Modify" label="" click="Label_Opacity.enabled=CheckBox_Opacity_Modify.selected;NumericStepper_Opacity.enabled=CheckBox_Opacity_Modify.selected;Label_OpacityRange.enabled=CheckBox_Opacity_Modify.selected;"/>
+            <mx:Label id="Label_Opacity" enabled="false" text="Opacity:" textAlign="right"/>
+            <mx:NumericStepper id="NumericStepper_Opacity" enabled="false" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+            <mx:Label text="(0-100)" id="Label_OpacityRange" textAlign="left"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:Spacer width="60"/>
+            <mx:CheckBox label="" visible="false"/>
+            <mx:Spacer width="22%"/>
+            <mx:CheckBox id="CheckBox_BackgroundColor_Modify" label="" click="Label_BackgroundColor.enabled=CheckBox_BackgroundColor_Modify.selected;ColorPicker_BackgroundColor.enabled=CheckBox_BackgroundColor_Modify.selected;"/>
+            <mx:Label id="Label_BackgroundColor" enabled="false" text="Filled Color:" textAlign="right"/>
+            <mx:ColorPicker id="ColorPicker_BackgroundColor" enabled="false" showTextField="true" selectedColor="0xFFFFFF"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:Spacer width="60"/>
+            <mx:CheckBox id="CheckBox_DrawBorder_Modify" label="" click="CheckBox_DrawBorder.enabled=CheckBox_DrawBorder_Modify.selected;"/>
+            <mx:CheckBox id="CheckBox_DrawBorder" enabled="false" label="Show Border" width="22%"/>
+            <mx:CheckBox id="CheckBox_BorderColor_Modify" label="" click="Label_BorderColor.enabled=CheckBox_BorderColor_Modify.selected;ColorPicker_BorderColor.enabled=CheckBox_BorderColor_Modify.selected;"/>
+            <mx:Label id="Label_BorderColor" enabled="false" text="Border Color:" textAlign="right"/>
+            <mx:ColorPicker id="ColorPicker_BorderColor" enabled="false" showTextField="true" selectedColor="0x000000"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:Spacer width="60"/>
+            <mx:CheckBox label="" visible="false"/>
+            <mx:Spacer width="22%"/>
+            <mx:CheckBox id="CheckBox_BorderThickness_Modify" label="" click="Label_BorderThickness.enabled=CheckBox_BorderThickness_Modify.selected;NumericStepper_BorderThickness.enabled=CheckBox_BorderThickness_Modify.selected;Label_BorderThicknessUnit.enabled=CheckBox_BorderThickness_Modify.selected;"/>
+            <mx:Label id="Label_BorderThickness" enabled="false" text="Border Thickness:" textAlign="right"/>
+            <mx:NumericStepper id="NumericStepper_BorderThickness" enabled="false" stepSize="1" minimum="0" maximum="255" value="1" width="80" />
+            <mx:Label text="(pixels)" id="Label_BorderThicknessUnit" textAlign="left"/>
+         </mx:HBox>
+
+         <mx:HBox width="100%">
+            <mx:Spacer width="60"/>
+            <mx:CheckBox label="" visible="false"/>
+            <mx:Spacer width="22%"/>
+            <mx:CheckBox id="CheckBox_BorderOpacity_Modify" label="" click="Label_BorderOpacity.enabled=CheckBox_BorderOpacity_Modify.selected;NumericStepper_BorderOpacity.enabled=CheckBox_BorderOpacity_Modify.selected;Label_BorderOpacityRange.enabled=CheckBox_BorderOpacity_Modify.selected;"/>
+            <mx:Label id="Label_BorderOpacity" enabled="false" text="Border Opacity:" textAlign="right"/>
+            <mx:NumericStepper id="NumericStepper_BorderOpacity" enabled="false" stepSize="1" minimum="0" maximum="100" value="100" width="80" />
+            <mx:Label text="(0-100)" id="Label_BorderOpacityRange" textAlign="left"/>
+         </mx:HBox>
+      </mx:VBox>
+   </mx:VBox>
+
+
+
+   <mx:HBox width="100%" paddingTop="10">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[
+
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+
+         import editor.trigger.Lists;
+
+         import common.Define;
+
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+
+         private var mParams:Object = new Object ();
+
+         //public function SetValues (initialValues:Object):void
+         //{
+         //   mParams = initialValues;
+         //}
+
+         private function OnInitPanel ():void
+         {
+            SelectList_AiType.dataProvider = Lists.GetListWithDataInLabel (Lists.mAiTypeList);
+         }
+
+         public function GetValues (returnValues:Object):void
+         {
+            // ...
+            returnValues.mToModifyAiType = CheckBox_CiShape_Modify.selected;
+            if (returnValues.mToModifyAiType)
+               returnValues.mAiType = CheckBox_IsCiShape.selected && SelectList_AiType.selectedItem != null ? SelectList_AiType.selectedItem.data : Define.ShapeAiType_Unknown;
+
+            // ...
+            returnValues.mToModifyDrawBackground = CheckBox_DrawBackground_Modify.selected;
+            if (returnValues.mToModifyDrawBackground)
+               returnValues.mDrawBackground = CheckBox_DrawBackground.selected;
+            returnValues.mToModifyTransparency = CheckBox_Opacity_Modify.selected;
+            if (returnValues.mToModifyTransparency)
+               returnValues.mTransparency = NumericStepper_Opacity.value;
+            returnValues.mToModifyBackgroundColor = CheckBox_BackgroundColor_Modify.selected;
+            if (returnValues.mToModifyBackgroundColor)
+               returnValues.mBackgroundColor = ColorPicker_BackgroundColor.selectedColor;
+
+            returnValues.mToModifyDrawBorder = CheckBox_DrawBorder_Modify.selected;
+            if (returnValues.mToModifyDrawBorder)
+               returnValues.mDrawBorder = CheckBox_DrawBorder.selected;
+            returnValues.mToModifyBorderColor = CheckBox_BorderColor_Modify.selected;
+            if (returnValues.mToModifyBorderColor)
+               returnValues.mBorderColor = ColorPicker_BorderColor.selectedColor;
+            returnValues.mToModifyBorderThickness = CheckBox_BorderThickness_Modify.selected;
+            if (returnValues.mToModifyBorderThickness)
+               returnValues.mBorderThickness = NumericStepper_BorderThickness.value;
+            returnValues.mToModifyBorderTransparency = CheckBox_BorderOpacity_Modify.selected;
+            if (returnValues.mToModifyBorderTransparency)
+               returnValues.mBorderTransparency = NumericStepper_BorderOpacity.value;
+         }
+
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+
+         private function OnClickOkButton():void
+         {
+            GetValues (mParams);
+
+            PopUpManager.removePopUp(this);
+
+            if (OnClose != null)
+               OnClose ();
+
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+
+         private function OnClickCancelButton():void
+         {
+             PopUpManager.removePopUp(this);
+
+             if (OnClose != null)
+               OnClose ();
+         }
+
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

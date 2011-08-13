@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
+    title="Hinge Setting" width="600" creationComplete="OnInitPanel()">
+
+   <mx:TabNavigator width="100%" height="100%">
+      <mx:VBox label="Joint" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0" creationComplete="OnMainSettingPanelCreationComplete()">
+
+         <mx:HBox width="100%">
+            <JointCommonSettingPanel id="CommonSettingPanel" width="100%" />
+         </mx:HBox>
+
+         <mx:Spacer height="6"/>
+         <mx:HBox width="100%">
+            <mx:HRule  strokeWidth="1" strokeColor="0xC0C0C0" width="100%"/>
+         </mx:HBox>
+         <mx:Spacer height="6"/>
+
+         <mx:HBox width="100%">
+            <mx:VBox width="38%">
+               <mx:HBox width="100%">
+                  <mx:Spacer width="2"/>
+                  <mx:CheckBox id="CheckBox_LimitEnabled" label="Enable Limits"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_LowerAngle" text="Lower Angle:" textAlign="right" width="80"/>
+                  <mx:TextInput id="Text_LowerAngle" text="" width="60"/>
+                  <mx:Label text="(degrees)" textAlign="left"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Spacer width="100%"/>
+                  <mx:Label id="Label_UpperAngle" text="Upper Angle:" textAlign="right" width="80"/>
+                  <mx:TextInput id="Text_UpperAngle" text="" width="60"/>
+                  <mx:Label text="(degrees)" textAlign="left"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Spacer width="2"/>
+                  <mx:CheckBox id="CheckBox_BackAndForth" label="Back and Forth Between Limits"/>
+               </mx:HBox>
+            </mx:VBox>
+
+            <mx:VRule strokeWidth="1" strokeColor="0xC0C0C0" height="100%" width="2%"/>
+
+            <mx:VBox width="60%">
+               <mx:HBox width="100%">
+                  <mx:CheckBox id="CheckBox_MotorEnabled" label="Enable Motor"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Label id="Label_MotorSpeed" text="Motor Speed:" textAlign="right" width="120"/>
+                  <mx:TextInput id="Text_MotorSpeed" text="" width="100"/>
+                  <mx:Label text="(degres/s)" textAlign="left"/>
+               </mx:HBox>
+               <mx:HBox width="100%">
+                  <mx:Label id="Label_MaxMotorTorque" text="Max Motor Torque:" textAlign="right" width="120"/>
+                  <mx:TextInput id="Text_MaxMotorTorque" text="" width="100"/>
+                  <mx:Label text="   " textAlign="left"/>
+               </mx:HBox>
+            </mx:VBox>
+         </mx:HBox>
+
+      </mx:VBox>
+
+      <mx:VBox label="Joint Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="JointBasicSettingPanel" creationComplete="OnJointBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+
+      <mx:VBox label="Anchor Basic" borderStyle="solid" height="100%" width="100%"
+               paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
+               horizontalScrollPolicy="off" verticalScrollPolicy="off"
+               horizontalGap="0" verticalGap="0" borderThickness="0">
+         <EntityBasicSettingPanel id="BasicSettingPanel" creationComplete="OnEntityBasicSettingPanelCreationComplete()"/>
+         <mx:Spacer height="100%" />
+      </mx:VBox>
+   </mx:TabNavigator>
+
+   <mx:Spacer height="10"/>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+     <![CDATA[
+         import mx.managers.PopUpManager;
+         import mx.events.MenuEvent;
+
+         import common.Define;
+
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+
+         private var mParams:Object;
+
+         private function OnInitPanel ():void
+         {
+         }
+
+         public function SetValues (initialValues:Object):void
+         {
+            mParams = initialValues;
+         }
+
+         private function OnMainSettingPanelCreationComplete ():void
+         {
+            var jointParams:Object = mParams.mJointValues;
+
+            jointParams.mDisableBrealable = true;
+            CommonSettingPanel.SetValues (jointParams);
+
+            CheckBox_LimitEnabled.selected = jointParams.mEnableLimit;
+            Text_LowerAngle.text = jointParams.mLowerAngle;
+            Text_UpperAngle.text = jointParams.mUpperAngle;
+
+            CheckBox_MotorEnabled.selected = jointParams.mEnableMotor;
+            Text_MotorSpeed.text = jointParams.mMotorSpeed;
+
+            CheckBox_BackAndForth.selected = jointParams.mBackAndForth;
+
+            Text_MaxMotorTorque.text = jointParams.mMaxMotorTorque;
+         }
+
+         private function OnJointBasicSettingPanelCreationComplete ():void
+         {
+            mParams.mJointValues.mPositionNonSense = true;
+            mParams.mJointValues.mRotationNonSense = true;
+            mParams.mJointValues.mEnabledNonsense = true;
+            JointBasicSettingPanel.SetValues (mParams.mJointValues);
+         }
+
+         private function OnEntityBasicSettingPanelCreationComplete ():void
+         {
+            mParams.mEnabledNonsense = true;
+            mParams.mVisibleNonsense = true;
+            BasicSettingPanel.SetValues (mParams);
+         }
+
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+
+         private function OnClickOkButton():void
+         {
+            var jointParams:Object = mParams.mJointValues;
+
+            CommonSettingPanel.GetValues (jointParams);
+
+            jointParams.mEnableLimit = CheckBox_LimitEnabled.selected;
+
+            var lowerAngle:Number = parseFloat (Text_LowerAngle.text);
+            if ( ! isNaN (lowerAngle) )
+               jointParams.mLowerAngle = lowerAngle;
+
+            var upperAngle:Number = parseFloat (Text_UpperAngle.text);
+            if ( ! isNaN (upperAngle) )
+               jointParams.mUpperAngle = upperAngle;
+
+             jointParams.mEnableMotor = CheckBox_MotorEnabled.selected;
+
+            var motorSpeed:Number = parseFloat (Text_MotorSpeed.text);
+            if ( ! isNaN (motorSpeed) )
+               jointParams.mMotorSpeed = motorSpeed;
+
+            jointParams.mBackAndForth = CheckBox_BackAndForth.selected;
+
+            var maxMotorTorque:Number = parseFloat (Text_MaxMotorTorque.text);
+            if ( ! isNaN (maxMotorTorque) )
+               jointParams.mMaxMotorTorque = maxMotorTorque;
+
+            if (JointBasicSettingPanel != null)
+            {
+               JointBasicSettingPanel.GetValues (jointParams);
+            }
+
+            if (BasicSettingPanel != null)
+            {
+               BasicSettingPanel.GetValues (mParams);
+            }
+
+             //
+
+             PopUpManager.removePopUp(this);
+
+            if (OnClose != null)
+               OnClose ();
+
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+
+         private function OnClickCancelButton():void
+         {
+             PopUpManager.removePopUp(this);
+
+             if (OnClose != null)
+               OnClose ();
+         }
+
+         private function OnClickDefaultButton ():void
+         {
+            var values:Object = new Object ();
+
+            // ...
+
+            SetValues (values);
+         }
+
+         private function OnSelectConnectedShape1(event:MenuEvent):void
+         {
+         }
+
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
+    title="Batch Joint Setting" width="600">
+
+      <mx:HBox label="Basic" width="100%" paddingTop="10" paddingBottom="10" borderStyle="solid" borderThickness="1">
+         <mx:Spacer width="100%"/>
+         <mx:CheckBox id="CheckBox_CollideConnected" label="Collide Connected Shapes"/>
+         <mx:Spacer width="100%"/>
+      </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[
+
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+
+         import common.Define;
+
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+
+         private var mParams:Object = new Object ();
+
+         //public function SetValues (initialValues:Object):void
+         //{
+         //   mParams = initialValues;
+         //}
+
+         public function GetValues (returnValues:Object):void
+         {
+            returnValues.mCollideConnected = CheckBox_CollideConnected.selected;
+         }
+
+         private function OnInitPanel ():void
+         {
+         }
+
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+
+         private function OnClickOkButton():void
+         {
+            GetValues (mParams);
+
+            PopUpManager.removePopUp(this);
+
+            if (OnClose != null)
+               OnClose ();
+
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+
+         private function OnClickCancelButton():void
+         {
+             PopUpManager.removePopUp(this);
+
+             if (OnClose != null)
+               OnClose ();
+         }
+
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

@@ -4,7 +4,7 @@ package editor.mode {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.FunctionEditingView;
+   import editor.display.panel.FunctionEditingView;
    
    import editor.entity.Entity;
    

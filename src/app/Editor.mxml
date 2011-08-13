@@ -2,7 +2,8 @@
 <mx:Application 
          xmlns:mx="http://www.adobe.com/2006/mxml" 
          xmlns:editor="editor.*" 
-         xmlns:dialog="editor.dialog.*" 
+         xmlns:panel="editor.display.panel.*"
+         xmlns:dialog="editor.display.dialog.*" 
          xmlns="*" 
          styleName = "plain" 
          layout="absolute" 
@@ -14,6 +15,8 @@
          percentWidth="100"
          percentHeight="100"
          creationComplete="InitApp ();">
+   
+   <mx:Style source="editor.css"/>
 
    <mx:ApplicationControlBar backgroundColor="0xA0A0A0" dock="true" paddingTop="1" paddingBottom="1" verticalAlign="bottom">
 
@@ -440,14 +443,14 @@
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0"
                   >
-            <editor:CollisionManagerView id="CollisionManagerView" width="100%" height="100%"/>
+            <panel:CollisionManagerView id="CollisionManagerView" width="100%" height="100%"/>
          </mx:HBox>
          <mx:HBox id="FunctionDesignView" backgroundColor="0xE0E0E0" borderStyle="solid" height="100%" width="100%"
                   paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
                   horizontalScrollPolicy="off" verticalScrollPolicy="off"
                   horizontalGap="0" verticalGap="0" borderThickness="0"
                   >
-            <editor:FunctionEditingView id="FunctionEditingView" width="100%" height="100%"/>
+            <panel:FunctionEditingView id="FunctionEditingView" width="100%" height="100%"/>
          </mx:HBox>
       </mx:ViewStack>
 
@@ -489,7 +492,7 @@
             import com.tapirgames.util.DisplayObjectUtil;
             import com.tapirgames.util.UrlUtil;
             import editor.WorldView;
-            import editor.dialog.*;
+            import editor.display.dialog.*;
             import editor.runtime.Runtime;
             import editor.trigger.Lists;
             import common.Define;
@@ -539,6 +542,7 @@
                
             //===================================================================================================
                
+               Runtime.SetApplication (this)
                Runtime.SetActiveView (MainView);
                
                Runtime.mEditorWorldView = MainView;
@@ -757,6 +761,8 @@
                
                MainView.mButton_Play = Button_Play;
                MainView.mButton_Stop = Button_Stop;
+               
+               // ...
                
             //===================================================================================================
                
@@ -2308,6 +2314,12 @@
                PopUpManager.addPopUp (settingDialog, FunctionEditingView, true);
                PopUpManager.centerPopUp (settingDialog);
             }
+            
+//========================================================================================
+// panels
+//========================================================================================
+            
+
             
 //========================================================================================
 // make sure editor.swf includes the follow classes

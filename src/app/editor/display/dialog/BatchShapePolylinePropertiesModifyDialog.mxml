@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
+    title="Batch Polyline Setting" width="600"
+    creationComplete="OnInitPanel()"
+    >
+
+   <mx:HBox width="100%" paddingTop="0" paddingBottom="0" borderStyle="solid" borderThickness="1">
+      <mx:Spacer width="100%"/>
+      <mx:VBox width="100%" paddingTop="10" paddingBottom="10">
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_CurveThickness_Modify" label="" click="Label_CurveThickness.enabled=NumericStepper_CurveThickness.enabled=Label_CurveThicknessUnit.enabled=CheckBox_CurveThickness_Modify.selected;"/>
+            <mx:Label id="Label_CurveThickness" enabled="false" text="Thickness:" textAlign="left" width="87"/>
+            <mx:NumericStepper id="NumericStepper_CurveThickness" enabled="false" stepSize="1" minimum="0" maximum="255" value="1" width="80" />
+            <mx:Label text="(pixels)" id="Label_CurveThicknessUnit" enabled="false" textAlign="left"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_Closed_Modify" label="" click="CheckBox_Closed.enabled=CheckBox_Closed_Modify.selected;"/>
+            <mx:Label visible="false" width="87"/>
+            <mx:CheckBox id="CheckBox_Closed" enabled="false" label="Closed"/>
+         </mx:HBox>
+         <mx:HBox width="100%">
+            <mx:CheckBox id="CheckBox_RoundEnds_Modify" label="" click="CheckBox_RoundEnds.enabled=CheckBox_RoundEnds_Modify.selected;"/>
+            <mx:Label visible="false" width="87"/>
+            <mx:CheckBox id="CheckBox_RoundEnds" enabled="false" label="Round Ends"/>
+         </mx:HBox>
+      </mx:VBox>
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="100%"/>
+      <mx:Button label="OK" click="OnClickOkButton ();"/>
+      <mx:Spacer width="30"/>
+      <mx:Button label="Cancel" click="OnClickCancelButton ();"/>
+      <!--
+      <mx:Spacer width="30"/>
+      <mx:Button label="Default" click="OnClickDefaultButton ();"/>
+      -->
+      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+
+   <mx:Script>
+      <![CDATA[
+
+         import mx.events.MenuEvent;
+         import mx.managers.PopUpManager;
+         import mx.controls.Menu;
+
+         import common.Define;
+
+         private var OnConfirm:Function = null;
+         private var OnClose:Function = null;
+
+         private var mParams:Object = new Object ();
+
+         private function OnInitPanel ():void
+         {
+         }
+
+         //public function SetValues (initialValues:Object):void
+         //{
+         //   mParams = initialValues;
+         //}
+
+         public function GetValues (returnValues:Object):void
+         {
+            returnValues.mToModifyCurveThickness = CheckBox_CurveThickness_Modify.selected;
+            if (returnValues.mToModifyCurveThickness)
+               returnValues.mCurveThickness = NumericStepper_CurveThickness.value;
+
+            returnValues.mToModifyClosed = CheckBox_Closed_Modify.selected;
+            if (returnValues.mToModifyClosed)
+               returnValues.mIsClosed = CheckBox_Closed.selected;
+
+            returnValues.mToModifyRoundEnds = CheckBox_RoundEnds_Modify.selected;
+            if (returnValues.mToModifyRoundEnds)
+               returnValues.mIsRoundEnds = CheckBox_RoundEnds.selected;
+         }
+
+         public function SetConfirmFunc (onConfirm:Function):void
+         {
+            OnConfirm = onConfirm;
+         }
+
+         public function SetCloseFunc (onClose:Function):void
+         {
+            OnClose = onClose;
+         }
+
+         private function OnClickOkButton():void
+         {
+            GetValues (mParams);
+
+            PopUpManager.removePopUp(this);
+
+            if (OnClose != null)
+               OnClose ();
+
+            if (OnConfirm != null)
+               OnConfirm (mParams);
+         }
+
+         private function OnClickCancelButton():void
+         {
+             PopUpManager.removePopUp(this);
+
+             if (OnClose != null)
+               OnClose ();
+         }
+
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

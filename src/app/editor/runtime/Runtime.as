@@ -2,11 +2,13 @@ package editor.runtime {
    
    import flash.display.DisplayObject;
    
+   import mx.core.Application;
+   
    import editor.world.World;
    
    import editor.WorldView;
-   import editor.CollisionManagerView;
-   import editor.FunctionEditingView;
+   import editor.display.panel.CollisionManagerView;
+   import editor.display.panel.FunctionEditingView;
    
    import editor.trigger.CodeSnippet;
    import editor.trigger.FunctionDefinition
@@ -48,6 +50,19 @@ package editor.runtime {
          }
          
          return mDesignFilename;
+      }
+      
+      
+      private static var mApplication:Application;
+      
+      public static function SetApplication (app:Application):void
+      {
+         mApplication = app;
+      }
+      
+      public static function GetApplication ():Application
+      {
+         return mApplication;
       }
       
 //=====================================================================

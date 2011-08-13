@@ -5,7 +5,7 @@ package editor.mode {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import editor.FunctionEditingView;
+   import editor.display.panel.FunctionEditingView;
    
    public class FunctionModeRegionSelectEntities extends FunctionMode
    {

@@ -1063,18 +1063,24 @@ package player.trigger {
          var value:Object;
          if (numElements > 0)
          {
+            var valuesString:String;
             if (convertedArrays == null)
             {
                convertedArrays = new Dictionary ();
-            }
-            
-            if (convertedArrays [values])
-            {
-               return "(length: " + numElements + ")"; // avoid dead loop
+               valuesString = null;
             }
             else
             {
-               convertedArrays [values] = true; // avoid dead loop
+               valuesString = convertedArrays [values];
+            }
+            
+            if (valuesString != null)
+            {
+               return valuesString;
+            }
+            else
+            {
+               convertedArrays [values] = "(length: " + numElements + ")"; // A not good but not worst value. Avoid dead loop.
 
                value = values [0];
                returnText = returnText + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
@@ -1084,6 +1090,8 @@ package player.trigger {
                   value = values [i];
                   returnText = returnText + "," + (value is Array ? ConvertArrayToString (value as Array, convertedArrays) : String (value));
                }
+               
+               convertedArrays [values] = returnText; // correct the value. Avoid dead loop.
             }
          }
          

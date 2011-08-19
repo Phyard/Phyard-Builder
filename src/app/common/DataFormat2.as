@@ -27,7 +27,6 @@ package common {
    import player.entity.EntityJointWeld;
    import player.entity.EntityJointDummy;
 
-   import player.entity.SubEntity;
    import player.entity.SubEntityJointAnchor;
 
    import player.entity.EntityShape_Text;

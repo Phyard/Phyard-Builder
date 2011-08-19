@@ -10,7 +10,6 @@ package editor.trigger.entity {
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.display.TextFieldEx;
    
-   import editor.world.EntityContainer;
    import editor.world.World;
    
    import editor.selection.SelectionEngine;

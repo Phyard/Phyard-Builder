@@ -43,7 +43,7 @@ package editor.entity {
       
       override public function GetInfoText ():String
       {
-         return super.GetInfoText () + ", radius = " + ValueAdjuster.Number2Precision (mEntityContainer.GetCoordinateSystem ().D2P_Length (GetRadius ()), 6);
+         return super.GetInfoText () + ", radius = " + ValueAdjuster.Number2Precision (mWorld.GetCoordinateSystem ().D2P_Length (GetRadius ()), 6);
       }
       
       override public function GetPhysicsShapesCount ():uint

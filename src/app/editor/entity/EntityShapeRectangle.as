@@ -7,7 +7,6 @@ package editor.entity {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
-   import editor.world.EntityContainer;
    import editor.world.World;
    
    import editor.selection.SelectionEngine;

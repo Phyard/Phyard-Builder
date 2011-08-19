@@ -14,7 +14,6 @@ package editor.trigger.entity {
    //import flash.ui.ContextMenuClipboardItems; // flash 10
    import flash.events.ContextMenuEvent;
    
-   import editor.world.EntityContainer;
    import editor.world.World;
    import editor.entity.Entity;
    import editor.entity.WorldEntity;

@@ -9,22 +9,6 @@ package editor.world {
    import com.tapirgames.util.Logger;
    
    import editor.entity.Entity;
-   import editor.entity.SubEntity;
-   
-   import editor.entity.EntityShape;
-   import editor.entity.EntityShapeCircle;
-   import editor.entity.EntityShapeRectangle;
-   import editor.entity.EntityShapeText;
-   
-   import editor.entity.EntityJoint;
-   import editor.entity.EntityJointDistance;
-   import editor.entity.EntityJointHinge;
-   import editor.entity.EntityJointSlider;
-   import editor.entity.EntityJointSpring;
-   
-   
-   
-   import editor.entity.SubEntitySliderAnchor;
    
    import editor.entity.VertexController;
    

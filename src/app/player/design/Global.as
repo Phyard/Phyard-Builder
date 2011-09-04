@@ -7,8 +7,8 @@ package player.design
    import player.trigger.VariableInstance;
    import player.trigger.FunctionDefinition_Custom;
    
-   import actionscript.util.RandomNumberGenerator;
-   import com.stephencalenderblog.MersenneTwisterRNG;
+   import com.tapirgames.util.RandomNumberGenerator;
+   import com.tapirgames.util.MersenneTwisterRNG;
    
    import common.trigger.ValueTypeDefine;
    import common.trigger.define.FunctionDefine;

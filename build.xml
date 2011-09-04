@@ -27,6 +27,11 @@
    <property name="dir.release.editor"        value="${basedir}/.release_editor" />
    <property name="dir.release.unieditor"        value="${basedir}/.release_unieditor" />
    <property name="dir.release.univiewer"        value="${basedir}/.release_univiewer" />
+   
+   <!-- -DForAir=true -->
+   <condition property="program.as3compiler" value="${dir.flexsdk}/bin/amxmlc" else="${dir.flexsdk}/bin/mxmlc">
+      <isset property="ForAir"/>
+   </condition>
 
    <path id="java-class-path">
       <fileset dir="${dir.third-party}/java_libs" includes="**/*.jar" />
@@ -120,7 +125,7 @@
          <istrue value="${--debug}"/>
       </condition>
 
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
+      <exec dir="${dir.build.src}" executable="${program.as3compiler}">
          <!--arg line="-compatibility-version=3.0"/-->
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
@@ -198,7 +203,7 @@
          <istrue value="${--debug}"/>
       </condition>
 
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
+      <exec dir="${dir.build.src}" executable="${program.as3compiler}">
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
@@ -268,7 +273,7 @@
          <istrue value="${--debug}"/>
       </condition>
 
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
+      <exec dir="${dir.build.src}" executable="${program.as3compiler}">
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
@@ -344,7 +349,7 @@
          <istrue value="${--debug}"/>
       </condition>
 
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
+      <exec dir="${dir.build.src}" executable="${program.as3compiler}">
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />
@@ -481,7 +486,7 @@
          <istrue value="${--debug}"/>
       </condition>
 
-      <exec dir="${dir.build.src}" executable="${dir.flexsdk}/bin/mxmlc">
+      <exec dir="${dir.build.src}" executable="${program.as3compiler}">
          <arg line="-debug=${--debug}"/>
          <arg line="-default-script-limits 100 8"/>
          <arg line="-define+=Compile::Is_Debugging,${is-debugging}" />

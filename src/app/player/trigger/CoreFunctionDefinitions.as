@@ -18,7 +18,7 @@ package player.trigger {
    import player.trigger.Parameter;
    import player.trigger.Parameter;
 
-   import actionscript.util.RandomNumberGenerator;
+   import com.tapirgames.util.RandomNumberGenerator;
 
    import common.trigger.ValueTypeDefine;
    import common.trigger.CoreFunctionIds;
@@ -338,8 +338,8 @@ package player.trigger {
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsRectangleShapeEntity,           IsRectangleShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsPolygonShapeEntity,             IsPolygonShapeEntity);
          RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsPolylineShapeEntity,            IsPolylineShapeEntity);
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy,               IsBombShapeEntitiy);
-         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy,        IsWorldBorderEntitiy);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsBombShapeEntity,               IsBombShapeEntity);
+         RegisterCoreFunction (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity,        IsWorldBorderEntity);
 
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_GetOriginalCIType,           GetShapeOriginalCIType);
          RegisterCoreFunction (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,           SetShapeOriginalCIType);
@@ -780,6 +780,7 @@ package player.trigger {
          if (text == null)
          {
             valueTarget.AssignValueObject (-1);
+
             return;
          }
 
@@ -2943,14 +2944,14 @@ package player.trigger {
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsBombShapeEntitiy (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsBombShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape
 
          valueTarget.AssignValueObject (shape is EntityShape_CircleBomb || shape is EntityShape_RectangleBomb);
       }
 
-      public static function IsWorldBorderEntitiy (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsWorldBorderEntity (valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape_WorldBorder = valueSource.EvaluateValueObject () as EntityShape_WorldBorder;
 

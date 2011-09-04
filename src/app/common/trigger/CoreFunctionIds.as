@@ -433,8 +433,8 @@ package common.trigger {
       public static const ID_Entity_IsRectangleShapeEntity:int         = IdPool.CoreApiId_1401;
       public static const ID_Entity_IsPolygonShapeEntity:int           = IdPool.CoreApiId_1402;
       public static const ID_Entity_IsPolylineShapeEntity:int          = IdPool.CoreApiId_1403;
-      public static const ID_Entity_IsBombShapeEntitiy:int             = IdPool.CoreApiId_1404;
-      public static const ID_Entity_IsWorldBorderShapeEntitiy:int      = IdPool.CoreApiId_1405;
+      public static const ID_Entity_IsBombShapeEntity:int             = IdPool.CoreApiId_1404;
+      public static const ID_Entity_IsWorldBorderShapeEntity:int      = IdPool.CoreApiId_1405;
 
 
    // game / entity / shape / text

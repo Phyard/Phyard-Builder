@@ -223,7 +223,7 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicTask;
                   
                   var task:EntityTask = editorEntity as EntityTask;
-                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (task.GetEntityAssigners ());
+                  entityIndexArray = editorWorld.EntityArray2EntityCreationIdArray (task.GetEntityAssigners ());
                   
                   entityDefine.mInputAssignerCreationIds = entityIndexArray;
                }
@@ -242,7 +242,7 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicInputEntityAssigner;
                   
                   var entityAssigner:EntityInputEntityAssigner = editorEntity as EntityInputEntityAssigner;
-                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (entityAssigner.GetInputEntities ());
+                  entityIndexArray = editorWorld.EntityArray2EntityCreationIdArray (entityAssigner.GetInputEntities ());
                   
                   entityDefine.mSelectorType = entityAssigner.GetSelectorType ();
                   entityDefine.mNumEntities = entityIndexArray == null ? 0 : entityIndexArray.length;
@@ -257,12 +257,12 @@ package common {
                   entityDefine.mPairingType = pairAssigner.GetPairingType ();
                   
                   var pairEntities:Array = pairAssigner.GetInputPairEntities ();
-                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (pairEntities [0]);
+                  entityIndexArray = editorWorld.EntityArray2EntityCreationIdArray (pairEntities [0]);
                   
                   entityDefine.mNumEntities1 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds1 = entityIndexArray;
                   
-                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (pairEntities [1]);
+                  entityIndexArray = editorWorld.EntityArray2EntityCreationIdArray (pairEntities [1]);
                   
                   entityDefine.mNumEntities2 = entityIndexArray == null ? 0 : entityIndexArray.length;
                   entityDefine.mEntityCreationIds2 = entityIndexArray;
@@ -272,7 +272,7 @@ package common {
                   entityDefine.mEntityType = Define.EntityType_LogicEventHandler;
                   
                   var eventHandler:EntityEventHandler = editorEntity as EntityEventHandler;
-                  entityIndexArray = editorWorld.EntitiyArray2EntityCreationIdArray (eventHandler.GetEntityAssigners ());
+                  entityIndexArray = editorWorld.EntityArray2EntityCreationIdArray (eventHandler.GetEntityAssigners ());
                   
                   entityDefine.mEventId = eventHandler.GetEventId ();
                   

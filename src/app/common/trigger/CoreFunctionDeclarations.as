@@ -1879,7 +1879,7 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntity,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ],
@@ -1887,7 +1887,7 @@ package common.trigger {
                         [ValueTypeDefine.ValueType_Boolean,       false],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity,
                      [
                         [ValueTypeDefine.ValueType_Entity,       Define.EntityId_None],
                      ],

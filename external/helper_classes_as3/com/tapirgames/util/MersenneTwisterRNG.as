@@ -1,6 +1,4 @@
-package com.stephencalenderblog {
-   
-   import actionscript.util.RandomNumberGenerator;
+package com.tapirgames.util {
    
    // refs:
    // - http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/

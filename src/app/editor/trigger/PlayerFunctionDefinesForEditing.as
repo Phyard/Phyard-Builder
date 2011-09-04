@@ -1955,7 +1955,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Polyline?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntitiy, shape_is_subtype_package, "Is Bomb Shape?", null, "IsBombShape",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsBombShapeEntity, shape_is_subtype_package, "Is Bomb Shape?", null, "IsBombShape",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -1963,7 +1963,7 @@ package editor.trigger {
                         new VariableDefinitionBoolean ("Is Bomb?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntitiy, shape_is_subtype_package, "Is World Border?", null, "IsWorldBorder",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsWorldBorderShapeEntity, shape_is_subtype_package, "Is World Border?", null, "IsWorldBorder",
                      [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],

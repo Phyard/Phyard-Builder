@@ -65,7 +65,7 @@ package editor.trigger.entity {
       
       override public function GetInfoText ():String
       {
-         return mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities).toString ();
+         return mWorld.EntityArray2EntityCreationIdArray (mInputEntities).toString ();
       }
       
       public function GetSelectorType ():int

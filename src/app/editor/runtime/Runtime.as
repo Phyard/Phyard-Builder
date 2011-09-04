@@ -4,6 +4,8 @@ package editor.runtime {
    
    import mx.core.Application;
    
+   import com.tapirgames.util.UrlUtil;
+   
    import editor.world.World;
    
    import editor.WorldView;
@@ -63,6 +65,15 @@ package editor.runtime {
       public static function GetApplication ():Application
       {
          return mApplication;
+      }
+      
+//=====================================================================
+//
+//=====================================================================
+      
+      public static function OpenAboutLink ():void
+      {
+         UrlUtil.PopupPage (Define.AboutUrl);
       }
       
 //=====================================================================

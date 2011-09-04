@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<mx:TitleWindow 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:image="editor.image.*" 
+    xmlns="editor.display.dialog.*"
+    title="Image Modules Manager"
+    width="600" height="530"
+    paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+    showCloseButton="true"
+    creationComplete="InitDialog ();"
+    close="Hide ();"
+    >
+
+   <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+      <mx:HBox id="Box_DesignCommands" width="100%" backgroundColor="0xD0D0D0" verticalAlign="middle" borderStyle="none" horizontalGap="1" verticalGap="0" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" borderThickness="0">
+         <mx:Button id="Button_CreateImageDivision" toolTip="New Image" click="panelAssetImageDividing.StartCreateImageDivision ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" disabledIcon="@Embed('../../../res/function/create-function-disabled.png')" selectedDisabledIcon="@Embed('../../../res/function/create-function-disabled.png')" upIcon="@Embed('../../../res/function/create-function-dirty.png')" downIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" overIcon="@Embed('../../../res/function/create-function-dirty.png')" selectedUpIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedOverIcon="@Embed('../../../res/function/create-function-dirty-sel.png')" selectedDownIcon="@Embed('../../../res/function/create-function-dirty.png')"   />
+         <mx:Spacer width="30"/>
+         <mx:Button id="Button_DeleteImageDivision" toolTip="Delete Image" click="panelAssetImageDividing.DeleteImageDivision ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
+         <mx:Spacer width="30"/>
+         <mx:Spacer width="100%"/>
+         <mx:Label id="Label_ImageInfo" fontSize="8" text="5 modules" />
+      </mx:HBox>
+      <mx:HDividedBox liveDragging="true" width="100%" height="100%" backgroundColor="0xD0D0D0" dividerThickness="3" dividerAffordance="5" dividerAlpha="1.0" dividerColor="0xFFFFFF">
+         <mx:VBox width="100%" height="100%" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" borderStyle="none" borderThickness="0" horizontalGap="0" verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+            <image:AssetImageDividingPanel id="panelAssetImageDividing" width="100%" height="100%"/>
+         </mx:VBox>
+         <mx:List id="List_Modules" width="100%" height="100%" paddingTop="0" paddingBottom="0" labelField="null" showDataTips="false" useRollOver="false" allowMultipleSelection="true" editable="false" click="OnCurrentModuleChanged ();">
+            <!--mx:itemRenderer>
+               <mx:Component>
+                  <ed:TextForFunctionCallingLine fontSize="10"/>
+               </mx:Component>
+            </mx:itemRenderer-->
+         </mx:List>
+      </mx:HDividedBox>
+   </mx:VBox>
+
+   <mx:Script>
+      <![CDATA[
+      
+         import mx.managers.PopUpManager;
+         
+         import editor.image.AssetImageDivisionManager;
+         
+         import editor.runtime.Runtime;
+         
+         public static function ShowAssetImageDivideDialog (assetImageDivisionManager:AssetImageDivisionManager):void
+         {
+            var assetImageDivideDialog:AssetImageDivideDialog = assetImageDivisionManager.GetAssetImageDivideDialog ();
+            
+            if (assetImageDivideDialog == null)
+            {
+               assetImageDivideDialog = new AssetImageDivideDialog ();
+            }
+            
+            if (assetImageDivideDialog.parent != null)
+            {
+               PopUpManager.bringToFront (assetImageDivideDialog);
+            }
+            else
+            {
+               PopUpManager.addPopUp (assetImageDivideDialog, Runtime.GetApplication (), false);
+               PopUpManager.centerPopUp (assetImageDivideDialog);
+            }
+            
+            assetImageDivideDialog.GetAssetImageDividingPanel ().SetAssetImageDivisionManager (assetImageDivisionManager);
+            assetImageDivisionManager.SetAssetImageDivideDialog (assetImageDivideDialog);
+         }
+         
+         public function Hide ():void
+         {
+            PopUpManager.removePopUp(this);
+         }
+         
+         public function GetAssetImageDividingPanel ():AssetImageDividingPanel
+         {
+            return panelAssetImageDividing;
+         }
+      
+      //=====================================================================
+      
+         public function InitDialog ():void
+         {
+         }
+         
+         public function OnCurrentModuleChanged ():void
+         {
+         }
+
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

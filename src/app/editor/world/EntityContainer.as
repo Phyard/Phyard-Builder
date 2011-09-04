@@ -212,9 +212,9 @@ package editor.world {
             mSelectionListManager.AddSelectedEntity (entity);
       }
       
-      public function IsSelectedEntitiesContainPoint (pointX:Number, pointY:Number):Boolean
+      public function AreSelectedEntitiesContainingPoint (pointX:Number, pointY:Number):Boolean
       {
-         return mSelectionListManager.IsSelectedEntitiesContainPoint (pointX, pointY);
+         return mSelectionListManager.AreSelectedEntitiesContainingPoint (pointX, pointY);
       }
       
       
@@ -592,7 +592,7 @@ package editor.world {
             if (newEntity != null)
             {
                addChild (newEntity);
-               SelectEntities (newEntity.GetSubEntities ());
+               SelectEntities (newEntity.GetSelectableEntities ());
             }
          }
          
@@ -931,7 +931,7 @@ package editor.world {
          return entity.GetCreationOrderId ();
       }
       
-      public function EntitiyArray2EntityCreationIdArray (entities:Array):Array
+      public function EntityArray2EntityCreationIdArray (entities:Array):Array
       {
          if (entities == null)
             return null;

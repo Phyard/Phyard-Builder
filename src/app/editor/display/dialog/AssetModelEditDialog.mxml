@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple custom MXML TitleWindow component.
+     The TitleWindowApp application displays this component.
+     You cannot run it independently. -->
+
+<mx:TitleWindow 
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:model="editor.model.*" 
+    xmlns="editor.display.dialog.*"
+    title="Model Assets Manager"
+    width="500" height="500"
+    paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+    showCloseButton="true"
+    close="HideAssetModelEditDialog ();"
+    >
+
+   <mx:HBox backgroundColor="0xE0E0E0" borderStyle="solid" width="100%" height="100%"
+            paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+            horizontalScrollPolicy="off" verticalScrollPolicy="off"
+            horizontalGap="0" verticalGap="0" borderThickness="0"
+            >
+      <model:AssetModelEditingPanel id="panelAssetModelEditing" width="100%" height="100%"/>
+   </mx:HBox>
+
+   <mx:Script>
+      <![CDATA[
+      
+         import mx.managers.PopUpManager;
+         
+         import editor.runtime.Runtime;
+
+      // static functions
+         
+         private static var sAssetModelEditDialog:AssetModelEditDialog = null;
+         public static function ShowAssetModelEditDialog ():void
+         {
+            if (sAssetModelEditDialog == null)
+            {
+               sAssetModelEditDialog = new AssetModelEditDialog ();
+            }
+            
+            if (sAssetModelEditDialog.parent != null)
+            {
+               PopUpManager.bringToFront (sAssetModelEditDialog);
+            }
+            else
+            {
+               PopUpManager.addPopUp (sAssetModelEditDialog, Runtime.GetApplication (), false);
+               PopUpManager.centerPopUp (sAssetModelEditDialog);
+            }
+         }
+         
+         public static function HideAssetModelEditDialog ():void
+         {
+            PopUpManager.removePopUp(sAssetModelEditDialog);
+         }
+         
+      // ...
+
+     ]]>
+   </mx:Script>
+
+
+
+</mx:TitleWindow>

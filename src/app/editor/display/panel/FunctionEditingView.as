@@ -559,7 +559,7 @@ package editor.display.panel {
             
             // move selecteds, first time
             {
-               if (mFunctionManager.IsSelectedEntitiesContainPoint (worldPoint.x, worldPoint.y))
+               if (mFunctionManager.AreSelectedEntitiesContainingPoint (worldPoint.x, worldPoint.y))
                {
                   if (_mouseEventShiftDown && _mouseEventCtrlDown)
                   {
@@ -598,7 +598,7 @@ package editor.display.panel {
             
             // move selecteds, 2nd time
             {
-               if (mFunctionManager.IsSelectedEntitiesContainPoint (worldPoint.x, worldPoint.y))
+               if (mFunctionManager.AreSelectedEntitiesContainingPoint (worldPoint.x, worldPoint.y))
                {
                   SetCurrentEditMode (new FunctionModeMoveSelectedEntities (this));
                   
@@ -618,7 +618,7 @@ package editor.display.panel {
             
             // region select
             {
-               //var entityArray:Array = mCollisionManager.GetEntitiyAtPoint (worldPoint.x, worldPoint.y, null);
+               //var entityArray:Array = mCollisionManager.GetEntityAtPoint (worldPoint.x, worldPoint.y, null);
                if (entityArray.length == 0)
                {
                   _isZeroMove = false;
@@ -964,7 +964,7 @@ package editor.display.panel {
          switch (event.target)
          {
             case mMenuItemAbout:
-               WorldView.OpenAboutLink ();
+               Runtime.OpenAboutLink ();
                break;
             default:
                break;

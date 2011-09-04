@@ -156,7 +156,9 @@ package editor {
    
    import editor.trigger.Filters;
    
-   import editor.display.panel.AssetSoundEditingPanel;
+   import editor.display.dialog.AssetSoundEditDialog;
+   import editor.display.dialog.AssetImageEditDialog;
+   import editor.display.dialog.AssetModelEditDialog;
    import editor.display.panel.CollisionManagerView;
    import editor.display.panel.FunctionEditingView;
    
@@ -1615,7 +1617,7 @@ package editor {
             //   QuickLoad ();
             //   break;
             case mMenuItemAbout:
-               OpenAboutLink ();
+               Runtime.OpenAboutLink ();
                break;
             default:
                break;
@@ -2656,11 +2658,6 @@ package editor {
          ShowCollisionGroupManageDialog (null);
       }
       
-      public static function OpenAboutLink ():void
-      {
-         UrlUtil.PopupPage (Define.AboutUrl);
-      }
-      
       //private function OpenPlayCodeLoadingDialog ():void
       //{
       //   if (! IsPlaying ())
@@ -2981,7 +2978,7 @@ package editor {
             
             // move selecteds, first time
             {
-               if (mEditorWorld.IsSelectedEntitiesContainPoint (worldPoint.x, worldPoint.y))
+               if (mEditorWorld.AreSelectedEntitiesContainingPoint (worldPoint.x, worldPoint.y))
                {
                   StartMouseEditMode (worldPoint.x, worldPoint.y);
                    
@@ -3008,7 +3005,7 @@ package editor {
             
             // move selecteds, 2nd time
             {
-               if (mEditorWorld.IsSelectedEntitiesContainPoint (worldPoint.x, worldPoint.y))
+               if (mEditorWorld.AreSelectedEntitiesContainingPoint (worldPoint.x, worldPoint.y))
                {
                   StartMouseEditMode (worldPoint.x, worldPoint.y);
                    
@@ -3026,7 +3023,7 @@ package editor {
             
             // region select
             {
-               //var entityArray:Array = mEditorWorld.GetEntitiyAtPoint (worldPoint.x, worldPoint.y, null);
+               //var entityArray:Array = mEditorWorld.GetEntityAtPoint (worldPoint.x, worldPoint.y, null);
                if (entityArray.length == 0)
                {
                   //_isZeroMove = false;
@@ -3340,9 +3337,13 @@ package editor {
                   RoundPositionForSelectedEntities ();
                   break;
                case Keyboard.F5:
+                  AssetSoundEditDialog.ShowAssetSoundEditDialog ();
                   break;
                case Keyboard.F6:
-                  AssetSoundEditingPanel.ShowAssetSoundEditingPanel ();
+                  AssetImageEditDialog.ShowAssetImageEditDialog ();
+                  break;
+               case Keyboard.F7:
+                  AssetModelEditDialog.ShowAssetModelEditDialog ();
                   break;
                default:
                   break;
@@ -5506,18 +5507,22 @@ package editor {
             // aiming effect
             mEditingEffectLayer.addChild (new EffectCrossingAiming (entity));
             
-            //
-            if (entity is EntityJoint)
+            //if (entity is EntityJoint)
+            //{
+            //   var subEntities:Array = (entity as EntityJoint).GetSubEntities ();
+            //   for each (var subEntity:Entity in subEntities)
+            //   {
+            //      entites.push (subEntity);
+            //   }
+            //}
+            //else
+            //{
+            //   entites.push (entity);
+            //}
+            var selectableEntites:Array =  (entity as EntityJoint).GetSelectableEntities ();
+            for each (var selectableEntity:Entity in selectableEntites)
             {
-               var subEntities:Array = (entity as EntityJoint).GetSubEntities ();
-               for each (var subEntity:Entity in subEntities)
-               {
-                  entites.push (subEntity);
-               }
-            }
-            else
-            {
-               entites.push (entity);
+                entites.push (selectableEntity);
             }
          }
          
@@ -5637,7 +5642,7 @@ package editor {
                
                entity = entity.GetMainEntity ();
                newWorld.SelectEntity (entity);
-               newWorld.SelectEntities (entity.GetSubEntities ());
+               newWorld.SelectEntities (entity.GetSelectableEntities ());
             }
             
             i = 0;
@@ -5762,7 +5767,7 @@ package editor {
             var entitiesToSelect:Array = new Array ();
             for (i = oldEntitiesCount; i < newEntitiesCount; ++ i)
             {
-               entities = (mEditorWorld.GetEntityByCreationId (i) as Entity).GetSubEntities ();
+               entities = (mEditorWorld.GetEntityByCreationId (i) as Entity).GetSelectableEntities ();
                entitiesToSelect = entitiesToSelect.concat (entities);
                
                for (j = 0; j < entities.length; ++ j)

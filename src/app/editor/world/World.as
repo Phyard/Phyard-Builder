@@ -65,20 +65,24 @@ package editor.world {
    import editor.trigger.TriggerEngine;
    import editor.trigger.PlayerFunctionDefinesForEditing;
    
+   import editor.image.AssetImageManager;
+   
    import common.Define;
    import common.ValueAdjuster;
    
    public class World extends EntityContainer 
    {
+      public var mSelectionEngineForVertexes:SelectionEngine; // used within package
+
       public var mBrothersManager:BrothersManager;
       
       public var mCollisionManager:CollisionManager;
       
-      public var mFunctionManager:FunctionManager;
-      
-      public var mSelectionEngineForVertexes:SelectionEngine; // used within package
-      
       public var mTriggerEngine:TriggerEngine;
+      
+      public var mFunctionManager:FunctionManager;
+
+      protected var mAssetImageManager:AssetImageManager;
       
       // temp the 2 is not used
       // somewhere need to be modified to use the 2 
@@ -87,19 +91,23 @@ package editor.world {
       
       public function World ()
       {
+         super ();
+         
       //
+         //mSelectionEngineForVertexes = new SelectionEngine ();
+         mSelectionEngineForVertexes = mSelectionEngine;
+         
          mBrothersManager = new BrothersManager ();
          
          mCollisionManager = new CollisionManager ();
          
-         mFunctionManager = new FunctionManager (this);
-         
-         //mSelectionEngineForVertexes = new SelectionEngine ();
-         mSelectionEngineForVertexes = mSelectionEngine;
-         
          mTriggerEngine = new TriggerEngine ();
          
+         mFunctionManager = new FunctionManager (this);
+         
          mFunctionManager.SetFunctionMenuGroup (PlayerFunctionDefinesForEditing.sCustomMenuGroup);
+         
+         mAssetImageManager = new AssetImageManager ();
       }
       
       override public function Destroy ():void
@@ -635,8 +643,6 @@ package editor.world {
          var selectedEntity:Entity;
          var mainEntity:Entity;
          var clonedMainEntity:Entity;
-         var subEntities:Array;
-         var clonedSubEntities:Array;
          
          var jointEntity:EntityJoint;
          var shapeIndex1:int;
@@ -697,20 +703,20 @@ package editor.world {
            //<<
            ///////////////////////////////////////////////////////
                
-               subEntities = mainEntity.GetSubEntities ();
-               clonedSubEntities = clonedMainEntity.GetSubEntities ();
+               var selectableEntities:Array = mainEntity.GetSelectableEntities ();
+               var clonedSelectableEntities:Array = clonedMainEntity.GetSelectableEntities ();
                
-               for (j = 0; j < subEntities.length; ++ j)
+               for (j = 0; j < selectableEntities.length; ++ j)
                {
-                  index = selectedEntities.indexOf (subEntities [j]);
+                  index = selectedEntities.indexOf (selectableEntities [j]);
                   if (index < 0)
                   {
                      index = selectedEntities.length;
-                     selectedEntities.push (subEntities [j]);
+                     selectedEntities.push (selectableEntities [j]);
                      cloningInfoArray.push (info);
                   }
                   
-                  clonedEntities [index] = clonedSubEntities [j];
+                  clonedEntities [index] = clonedSelectableEntities [j];
                   
                   cloningInfoArray [index].mChecked = true;
                }
@@ -1548,6 +1554,15 @@ package editor.world {
       public function GetTriggerEngine ():TriggerEngine
       {
          return mTriggerEngine;
+      }
+      
+//=================================================================================
+//   image asset
+//=================================================================================
+      
+      public function GetAssetImageManager ():AssetImageManager
+      {
+         return mAssetImageManager;
       }
       
 //=================================================================================

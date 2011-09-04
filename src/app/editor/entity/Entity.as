@@ -424,15 +424,33 @@ package editor.entity {
          return this;
       }
       
+      public function GetSelectableEntities ():Array
+      {
+         // currently, only joints have sub entities.
+         
+         // this is just an implementation satisfied current need.
+         
+         var selectableEntities:Array = GetSubEntities ();
+         if (selectableEntities.length == 0)
+         {
+            selectableEntities.push (this);
+         }
+         
+         return selectableEntities;
+      }
+      
       public function GetSubEntities ():Array
       {
-         return [this]; // maybe be not a good idea
-         //return []; // if use this, be careful! Many need to modify.
+         //return [this]; // maybe be not a good idea
+         
+         // after add GetSelectableEntities, the more reasonable implementation is used now.
+         
+         return []; // if use this, be careful! Many need to modify.
       }
       
       public function GetSubIndex ():int
       {
-         return 0;
+         return -1;
       }
       
 //====================================================================

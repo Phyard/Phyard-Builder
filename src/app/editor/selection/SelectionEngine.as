@@ -102,15 +102,32 @@ package editor.selection {
          return objectArray;
       }
       
+      /*
+      public function GetObjectsIntersectWithRegion (x1:Number, y1:Number, x2:Number, y2:Number):Array
+      {
+         var aabb:b2AABB = new b2AABB ();
+         aabb.lowerBound.Set (x1, y1);
+         aabb.upperBound.Set (x2, y2);
+         var fixtures:Array = b2eWorldAABBQueryCallback.GetFixturesIntersectWithAABB (_b2World, aabb);
+         
+         return Fixtures2SelectionProxyUserDatas (fixtures);      
+      }
+      */
       
       public function GetObjectsAtPoint (pointX:Number, pointY:Number):Array
       {
          var fixtures:Array = b2eWorldAABBQueryCallback.GetFixturesContainPoint (_b2World, b2Vec2.b2Vec2_From2Numbers (pointX, pointY));
+         
+         return Fixtures2SelectionProxyUserDatas (fixtures);      
+      }
+      
+      private function Fixtures2SelectionProxyUserDatas (fixtures:Array):Array 
+      {
          var num_fixtures:int = fixtures.length;
          var fixture:b2Fixture;
          var body:b2Body;
          
-         var objectArray:Array = new Array ();
+         var objectArray:Array = new Array (num_fixtures);
          
          for (var i:int = 0; i < num_fixtures; ++ i)
          {

@@ -105,8 +105,8 @@ package editor.trigger.entity {
          }
          else
          {
-            var ids1:Array = mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities1);
-            var ids2:Array = mWorld.EntitiyArray2EntityCreationIdArray (mInputEntities2);
+            var ids1:Array = mWorld.EntityArray2EntityCreationIdArray (mInputEntities1);
+            var ids2:Array = mWorld.EntityArray2EntityCreationIdArray (mInputEntities2);
             return "(" + (ids1 == null ? "" : ids1.toString ()) + ")-(" + (ids2 == null ? "" : ids2.toString ()) + ")";
          }
       }

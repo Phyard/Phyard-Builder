@@ -1,14 +1,13 @@
 
 package editor.world {
    
+   import flash.utils.Dictionary;
+   
    import editor.entity.Entity;
    
    public class SelectionListManager 
-   {
-      
+   {  
       private var mSelectedEntities:Array = new Array ();
-      
-      
       
       public function GetSelectedEntities ():Array
       {
@@ -73,7 +72,7 @@ package editor.world {
          return false;
       }
       
-      public function IsSelectedEntitiesContainPoint (pointX:Number, pointY:Number):Boolean
+      public function AreSelectedEntitiesContainingPoint (pointX:Number, pointY:Number):Boolean
       {
          for (var i:uint = 0; i < mSelectedEntities.length; ++ i)
          {
@@ -91,33 +90,24 @@ package editor.world {
          var i:uint;
          var entity:Entity;
          
+         var checkTable:Dictionary = new Dictionary ();
          var newArray:Array = new Array ();
-         var k:uint;
           
          for (i = 0; i < mSelectedEntities.length; ++ i)
          {
             entity = (mSelectedEntities [i] as Entity).GetMainEntity ();
             
-            //for (k = 0; k < newArray.length; ++ k)
-            //{
-            //   if (newArray[k] == entity)
-            //      break;
-            //}
-            //
-            //if (k == newArray.length)
-            //   newArray.unshift (entity);
-            
-            if (newArray.indexOf (entity) < 0)
-               newArray.unshift (entity);
+            if (checkTable [entity] != true)
+            {
+               newArray.push (entity);
+               checkTable [entity] = true;
+            }
          }
+         
+         //newArray = newArray.reverse ();
          
          return newArray;
       }
-      
-      
-      
-      
-      
       
    }
 }

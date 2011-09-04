@@ -89,7 +89,7 @@
             }
             fileReference.data.clear ();
 
-            Runtime.SetRecommandDesignFilename ((event.target as FileReference).name);
+            Runtime.SetRecommandDesignFilename (fileReference.name);
          }
          
          private function OnClickOkButton():void 

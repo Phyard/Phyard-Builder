@@ -243,7 +243,8 @@ package common {
          
          var char_index:int;
          
-         for (var i_char:int = 0; i_char < num_chars; ++ i_char) {
+         for (var i_char:int = 0; i_char < num_chars; ++ i_char)
+         {
             char_index = char_indexes [i_char];
             char_indexes [i_char] = DataFormat3.Base64Chars.charCodeAt(char_index);
          }

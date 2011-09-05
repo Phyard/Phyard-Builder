@@ -19,11 +19,12 @@ package com.tapirgames.util
    // original data
    
       private var mOriginalData:ByteArray = null;
+      private var mIsBadSwfFile:Boolean = true; // valid when mOriginalData != null
       
       private var mStartOffset_TagDefineBitsJPEG2:int;
       private var mEndOffset_TagDefineBitsJPEG2:int;
       private var mCharacterID_TagDefineBitsJPEG2:int;
-   
+      
    // load
       
       override public function loadBytes (imageFileData:ByteArray, context:LoaderContext = null):void
@@ -53,32 +54,37 @@ package com.tapirgames.util
                   var tagType:int = tagTypeAndLength >> 6;
                   if (tagType == 0) // end tag
                   {
-                     //break;
-                     throw new Error ("DefineBitsJPEG2 tag is not found!");
+                     mIsBadSwfFile = true;
+                     break;
                   }
                   
                   var tagLength:int = tagTypeAndLength & 0x3f;
                   if (tagLength == 0x3f)
                   {
-		               tagLength = mOriginalData.readInt ();
-	               }
+   	               tagLength = mOriginalData.readInt ();
+                  }
 	               
 	               var endOffset:int = mOriginalData.position + tagLength;
 
-	               if (tagType == 21) // tag DefineBitsJPEG2
-	               {
-	                  mCharacterID_TagDefineBitsJPEG2 = mOriginalData.readShort ();
-	                  mStartOffset_TagDefineBitsJPEG2 = startOffset;
-	                  mEndOffset_TagDefineBitsJPEG2 = endOffset;
-	                  
-	                  break;
-	               }
-	               
-	               mOriginalData.position = endOffset;
+                  if (tagType == 21) // tag DefineBitsJPEG2
+                  {
+                     mCharacterID_TagDefineBitsJPEG2 = mOriginalData.readShort ();
+                     mStartOffset_TagDefineBitsJPEG2 = startOffset;
+                     mEndOffset_TagDefineBitsJPEG2 = endOffset;
+                  
+                     mIsBadSwfFile = false;
+                  
+                     break;
+                  }
+               
+                  mOriginalData.position = endOffset;
                }
             }
             
             mOriginalData.position = 0;
+            
+            if (mIsBadSwfFile)
+               throw new Error ("bad template swf file");
             
          // write
             
